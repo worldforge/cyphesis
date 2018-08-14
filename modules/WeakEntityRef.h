@@ -47,41 +47,41 @@ class WeakEntityRef : public sigc::trackable
 
     WeakEntityRef& operator=(const WeakEntityRef& ref);
 
-    LocatedEntity& operator*() const noexcept
+    constexpr LocatedEntity& operator*() const noexcept
     {
         return *m_inner;
     }
 
-    LocatedEntity* operator->() const noexcept
+    constexpr LocatedEntity* operator->() const noexcept
     {
         return m_inner;
     }
 
-    LocatedEntity* get() const noexcept
+    constexpr LocatedEntity* get() const noexcept
     {
         return m_inner;
     }
 
-    bool operator==(const WeakEntityRef& e) const noexcept
+    constexpr bool operator==(const WeakEntityRef& e) const noexcept
     {
         return (m_inner == e.m_inner);
     }
 
-    bool operator==(const LocatedEntity* e) const noexcept
+    constexpr bool operator==(const LocatedEntity* e) const noexcept
     {
         return (m_inner == e);
     }
 
-    bool operator<(const WeakEntityRef& e) const noexcept
+    constexpr bool operator<(const WeakEntityRef& e) const noexcept
     {
         return (m_inner < e.m_inner);
     }
 
-    bool operator!() const noexcept {
+    constexpr bool operator!() const noexcept {
         return this->m_inner == nullptr;
     }
 
-    explicit operator bool () const noexcept
+    constexpr explicit operator bool () const noexcept
     {
         return !this->operator!();
     }

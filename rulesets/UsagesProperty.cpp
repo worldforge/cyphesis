@@ -27,6 +27,7 @@
 #include "common/debug.h"
 #include "common/AtlasQuery.h"
 #include "ScriptUtils.h"
+#include "PlantedOnProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -212,12 +213,18 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             //Check if the tools is attached, and if so the attachment is ready
             auto actorReadyAtProp = actor->getPropertyType<MapType>("_ready_at_attached");
             if (actorReadyAtProp) {
-                //FIXME: don't hardcode this, instead get it from the tools "planted_on" prop
-                auto attachI = actorReadyAtProp->data().find("right_hand_wield");
-                if (attachI != actorReadyAtProp->data().end()) {
-                    if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
-                        actor->clientError(op, "Actor is not ready yet.", res, actor->getId());
-                        return OPERATION_IGNORED;
+
+                auto plantedOnProp = e->getPropertyClassFixed<PlantedOnProperty>();
+                //First check if the tool is attached to the actor at an attach point
+                if (plantedOnProp && plantedOnProp->data().entity.get() == actor.get() && plantedOnProp->data().attachment) {
+                    auto attachPoint = *plantedOnProp->data().attachment;
+                    //Lastly check if there's a value for this attach point.
+                    auto attachI = actorReadyAtProp->data().find(attachPoint);
+                    if (attachI != actorReadyAtProp->data().end()) {
+                        if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
+                            actor->clientError(op, "Actor is not ready yet.", res, actor->getId());
+                            return OPERATION_IGNORED;
+                        }
                     }
                 }
             }

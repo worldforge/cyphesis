@@ -33,7 +33,7 @@ class EntityProperty : public PropertyBase
 
         static constexpr const char* property_atlastype = "string";
 
-        explicit EntityProperty() = default;
+        explicit EntityProperty(std::uint32_t flags = 0);
 
         WeakEntityRef& data()
         { return m_data; }

@@ -194,6 +194,22 @@
   }
 #endif //STUB_SoftProperty_copy
 
+#ifndef STUB_SoftProperty_data
+//#define STUB_SoftProperty_data
+  Atlas::Message::Element& SoftProperty::data()
+  {
+    return *static_cast<Atlas::Message::Element*>(nullptr);
+  }
+#endif //STUB_SoftProperty_data
+
+#ifndef STUB_SoftProperty_data
+//#define STUB_SoftProperty_data
+  const Atlas::Message::Element& SoftProperty::data() const
+  {
+    return *static_cast<const Atlas::Message::Element*>(nullptr);
+  }
+#endif //STUB_SoftProperty_data
+
 
 #ifndef STUB_BoolProperty_get
 //#define STUB_BoolProperty_get

@@ -74,6 +74,8 @@
 #include <rulesets/ScriptsProperty.h>
 #include <rulesets/UsagesProperty.h>
 #include <rulesets/MindsProperty.h>
+#include <rulesets/PlantedOnProperty.h>
+#include <rulesets/AttachmentsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -124,6 +126,7 @@ CorePropertyManager::CorePropertyManager()
     installBaseProperty<ListType>("list", "root_type");
     installBaseProperty<MapType>("map", "root_type");
 
+    installProperty<EntityProperty>("entity_ref");
     installProperty<Property<double>>("stamina");
     installProperty<ModeProperty>();
     installProperty<LineProperty>("coords");
@@ -153,7 +156,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<TeleportProperty>("linked");
     installProperty<SuspendedProperty>();
     installProperty<TasksProperty>();
-    installProperty<EntityProperty>("right_hand_wield");
     installProperty<SpawnerProperty>();
     installProperty<ImmortalProperty>();
     installProperty<RespawningProperty>();
@@ -182,7 +184,7 @@ CorePropertyManager::CorePropertyManager()
     /**
      * Refers to an entity on which another entity is planted on.
      */
-    installProperty<EntityProperty>("planted_on");
+    installProperty<PlantedOnProperty>();
 
 
     installProperty<BoolProperty>("floats");
@@ -281,6 +283,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<Property<double>>("ready_at")->m_flags |= per_ephem;
 
     installProperty<MindsProperty>();
+
+    installProperty<AttachmentsProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

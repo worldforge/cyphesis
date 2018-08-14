@@ -321,6 +321,7 @@ wf_add_test(EntityFilterTest.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
     ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp)
 target_link_libraries(EntityFilterTest entityfilter)
+target_compile_definitions(EntityFilterTest PRIVATE -DBOOST_SPIRIT_DEBUG)
 
 wf_add_test(EntityFilterParserTest.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp

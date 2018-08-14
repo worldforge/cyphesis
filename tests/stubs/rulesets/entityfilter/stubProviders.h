@@ -285,6 +285,28 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
+#ifndef STUB_ChildProvider_ChildProvider
+//#define STUB_ChildProvider_ChildProvider
+   ChildProvider::ChildProvider(Consumer<LocatedEntity>* consumer)
+    : EntityProvider(consumer)
+  {
+    
+  }
+#endif //STUB_ChildProvider_ChildProvider
+
+#ifndef STUB_ChildProvider_value
+//#define STUB_ChildProvider_value
+  void ChildProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+  {
+    
+  }
+#endif //STUB_ChildProvider_value
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
 #ifndef STUB_SelfEntityProvider_SelfEntityProvider
 //#define STUB_SelfEntityProvider_SelfEntityProvider
    SelfEntityProvider::SelfEntityProvider(Consumer<LocatedEntity>* consumer)
@@ -563,7 +585,7 @@ namespace EntityFilter {
 
 #ifndef STUB_ContainsRecursiveFunctionProvider_checkContainer
 //#define STUB_ContainsRecursiveFunctionProvider_checkContainer
-  bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container) const
+  bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container, const QueryContext& context) const
   {
     return false;
   }

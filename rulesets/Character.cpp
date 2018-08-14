@@ -125,107 +125,107 @@ static const std::string TASKS = "tasks";
 /// So 10080 / 90 = 6720 ticks.
 /// @param res Any result of changes is returned here.
 /// @param ammount Time scale factor, currently not used.
-void Character::metabolise(OpVector & res, double ammount)
-{
-    // Currently handles energy
-    // We should probably call this whenever the entity performs a movement.
-
-    StatusProperty * status_prop = modPropertyClassFixed<StatusProperty>();
-    bool status_changed = false;
-    if (status_prop == nullptr) {
-        // FIXME Probably don't do enough here to set up the property.
-        status_prop = new StatusProperty;
-        assert(status_prop != 0);
-        m_properties[StatusProperty::property_name] = status_prop;
-        status_prop->set(1.f);
-        status_changed = true;
-    }
-    double & status = status_prop->data();
-    status_prop->addFlags(flag_unsent);
-
-    Property<double> * food_prop = modPropertyType<double>(FOOD);
-    // DIGEST
-    if (food_prop != nullptr) {
-        double & food = food_prop->data();
-        if (food >= foodConsumption && status < 2) {
-            // It is important that the metabolise bit is done next, as this
-            // handles the status change
-            status += foodConsumption;
-            status_changed = true;
-            food -= foodConsumption;
-
-            food_prop->addFlags(flag_unsent);
-            food_prop->apply(this);
-            propertyApplied(FOOD, *food_prop);
-
-        }
-    }
-
-    Property<double> * mass_prop = modPropertyType<double>(MASS);
-    // If status is very high, we gain weight
-    if (status > (1.5 + energyLaidDown)) {
-        status -= energyLaidDown;
-        status_changed = true;
-        if (mass_prop != nullptr) {
-            double & mass = mass_prop->data();
-            mass += weightGain;
-            mass_prop->addFlags(flag_unsent);
-            Element maxmass_attr;
-            if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
-                mass = std::min(mass, maxmass_attr.Float());
-            }
-            mass_prop->apply(this);
-            propertyApplied(MASS, *mass_prop);
-        }
-    } else {
-        // If status is relatively is not very high, then energy is burned
-        double energy_used = energyConsumption * ammount;
-        status -= energy_used;
-        status_changed = true;
-        if (mass_prop != nullptr) {
-            double & mass = mass_prop->data();
-            double weight_used = weightConsumption * mass * ammount;
-            if (status <= 0.5 && mass > weight_used) {
-                // Drain away a little less energy and lose some weight
-                // This ensures there is a long term penalty to allowing
-                // something to starve
-                status += (energy_used / 2);
-                status_changed = true;
-                mass -= weight_used;
-                mass_prop->addFlags(flag_unsent);
-                mass_prop->apply(this);
-                propertyApplied(MASS, *mass_prop);
-           }
-        }
-    }
-    // FIXME Stamina property?
-
-    //TODO The idea here seems to be that as long as there's no active tasks, stamina should recover.
-    // This needs to be refactored into a different system.
-    auto tp = getPropertyClass<TasksProperty>(TASKS);
-    if ((tp == nullptr || !tp->busy())) {
-
-        Property<double> * stamina_prop = modPropertyType<double>(STAMINA);
-        if (stamina_prop != nullptr) {
-            double & stamina = stamina_prop->data();
-            if (stamina < 1.f) {
-                stamina = 1.f;
-                stamina_prop->addFlags(flag_unsent);
-                stamina_prop->apply(this);
-                propertyApplied(STAMINA, *stamina_prop);
-            }
-        }
-    }
-
-    if (status_changed) {
-        status_prop->apply(this);
-    }
-
-    Update update;
-    update->setTo(getId());
-
-    res.push_back(update);
-}
+//void Character::metabolise(OpVector & res, double ammount)
+//{
+//    // Currently handles energy
+//    // We should probably call this whenever the entity performs a movement.
+//
+//    StatusProperty * status_prop = modPropertyClassFixed<StatusProperty>();
+//    bool status_changed = false;
+//    if (status_prop == nullptr) {
+//        // FIXME Probably don't do enough here to set up the property.
+//        status_prop = new StatusProperty;
+//        assert(status_prop != 0);
+//        m_properties[StatusProperty::property_name] = status_prop;
+//        status_prop->set(1.f);
+//        status_changed = true;
+//    }
+//    double & status = status_prop->data();
+//    status_prop->addFlags(flag_unsent);
+//
+//    Property<double> * food_prop = modPropertyType<double>(FOOD);
+//    // DIGEST
+//    if (food_prop != nullptr) {
+//        double & food = food_prop->data();
+//        if (food >= foodConsumption && status < 2) {
+//            // It is important that the metabolise bit is done next, as this
+//            // handles the status change
+//            status += foodConsumption;
+//            status_changed = true;
+//            food -= foodConsumption;
+//
+//            food_prop->addFlags(flag_unsent);
+//            food_prop->apply(this);
+//            propertyApplied(FOOD, *food_prop);
+//
+//        }
+//    }
+//
+//    Property<double> * mass_prop = modPropertyType<double>(MASS);
+//    // If status is very high, we gain weight
+//    if (status > (1.5 + energyLaidDown)) {
+//        status -= energyLaidDown;
+//        status_changed = true;
+//        if (mass_prop != nullptr) {
+//            double & mass = mass_prop->data();
+//            mass += weightGain;
+//            mass_prop->addFlags(flag_unsent);
+//            Element maxmass_attr;
+//            if (getAttrType(MAXMASS, maxmass_attr, Element::TYPE_FLOAT) == 0) {
+//                mass = std::min(mass, maxmass_attr.Float());
+//            }
+//            mass_prop->apply(this);
+//            propertyApplied(MASS, *mass_prop);
+//        }
+//    } else {
+//        // If status is relatively is not very high, then energy is burned
+//        double energy_used = energyConsumption * ammount;
+//        status -= energy_used;
+//        status_changed = true;
+//        if (mass_prop != nullptr) {
+//            double & mass = mass_prop->data();
+//            double weight_used = weightConsumption * mass * ammount;
+//            if (status <= 0.5 && mass > weight_used) {
+//                // Drain away a little less energy and lose some weight
+//                // This ensures there is a long term penalty to allowing
+//                // something to starve
+//                status += (energy_used / 2);
+//                status_changed = true;
+//                mass -= weight_used;
+//                mass_prop->addFlags(flag_unsent);
+//                mass_prop->apply(this);
+//                propertyApplied(MASS, *mass_prop);
+//           }
+//        }
+//    }
+//    // FIXME Stamina property?
+//
+//    //TODO The idea here seems to be that as long as there's no active tasks, stamina should recover.
+//    // This needs to be refactored into a different system.
+//    auto tp = getPropertyClass<TasksProperty>(TASKS);
+//    if ((tp == nullptr || !tp->busy())) {
+//
+//        Property<double> * stamina_prop = modPropertyType<double>(STAMINA);
+//        if (stamina_prop != nullptr) {
+//            double & stamina = stamina_prop->data();
+//            if (stamina < 1.f) {
+//                stamina = 1.f;
+//                stamina_prop->addFlags(flag_unsent);
+//                stamina_prop->apply(this);
+//                propertyApplied(STAMINA, *stamina_prop);
+//            }
+//        }
+//    }
+//
+//    if (status_changed) {
+//        status_prop->apply(this);
+//    }
+//
+//    Update update;
+//    update->setTo(getId());
+//
+//    res.push_back(update);
+//}
 
 /// \brief Hooked to the Entity::containered signal of the wielded entity
 /// to indicate a change of location

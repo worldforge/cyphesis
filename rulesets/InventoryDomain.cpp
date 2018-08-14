@@ -27,6 +27,7 @@
 #include "common/TypeNode.h"
 #include "common/debug.h"
 #include "common/Unseen.h"
+#include "PlantedOnProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -67,9 +68,9 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
     entity.removeFlags(entity_clean);
 
     //Reset any planted_on properties when moving to this domain.
-    if (auto prop = entity.getPropertyClass<EntityProperty>("planted_on")) {
+    if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {
         if (prop->data()) {
-            entity.setAttr("planted_on", Atlas::Message::Element());
+            entity.setAttr(PlantedOnProperty::property_name, Atlas::Message::Element());
             Atlas::Objects::Operation::Update update;
             update->setTo(entity.getId());
             entity.sendWorld(update);
@@ -89,30 +90,14 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
         return true;
     }
 
-    if (observingEntity.getType()->isTypeOf("creator")) {
+    if (observingEntity.flags().hasFlags(entity_admin)) {
         return true;
     }
 
-    //Entities can only be seen by outside observers if they are outfitted or wielded.
-    const OutfitProperty* outfitProperty = m_entity.getPropertyClassFixed<OutfitProperty>();
-    if (outfitProperty) {
-        for (auto& entry : outfitProperty->data()) {
-            auto outfittedEntity = entry.second.get();
-            if (outfittedEntity && outfittedEntity == &observedEntity) {
-                return true;
-            }
-        }
-    }
-    //If the entity isn't outfitted, perhaps it's wielded?
-    const EntityProperty* rightHandWieldProperty = m_entity.getPropertyClass<EntityProperty>("right_hand_wield");
-    if (rightHandWieldProperty) {
-        auto entity = rightHandWieldProperty->data().get();
-        if (entity && entity == &observedEntity) {
-            return true;
-        }
-    }
+    //Entities can only be seen by outside observers if they are attached.
+    auto plantedOnProp = observedEntity.getPropertyClassFixed<PlantedOnProperty>();
+    return plantedOnProp && plantedOnProp->data().entity.get() == &m_entity;
 
-    return false;
 }
 
 void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const

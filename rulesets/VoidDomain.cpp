@@ -23,6 +23,7 @@
 #include "common/Update.h"
 #include "VoidDomain.h"
 #include "EntityProperty.h"
+#include "PlantedOnProperty.h"
 
 VoidDomain::VoidDomain(LocatedEntity& entity)
 : Domain(entity)
@@ -48,9 +49,9 @@ void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
 
 void VoidDomain::addEntity(LocatedEntity& entity) {
     //Reset any planted_on properties when moving to this domain.
-    if (auto prop = entity.getPropertyClass<EntityProperty>("planted_on")) {
+    if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {
         if (prop->data()) {
-            entity.setAttr("planted_on", Atlas::Message::Element());
+            entity.setAttr(PlantedOnProperty::property_name, Atlas::Message::Element());
             Atlas::Objects::Operation::Update update;
             update->setTo(entity.getId());
             entity.sendWorld(update);

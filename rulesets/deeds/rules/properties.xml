@@ -1,12 +1,6 @@
 <atlas>
 
     <map>
-        <string name="id">attachment</string>
-        <string name="objtype">type</string>
-        <string name="parent">int</string>
-    </map>
-
-    <map>
         <string name="id">_eat_mass_conversion</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>
@@ -51,6 +45,5 @@
         <string name="parent">float</string>
         <string name="description">Used on consumers, to define the max amount of food mass their stomach can contains as a factor of their mass.</string>
     </map>
-
 
 </atlas>

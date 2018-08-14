@@ -29,7 +29,7 @@
 
 static const bool debug_flag = false;
 
-int EntityProperty::get(Atlas::Message::Element & val) const
+int EntityProperty::get(Atlas::Message::Element& val) const
 {
     if (m_data.get() != nullptr) {
         Atlas::Message::MapType refMap;
@@ -41,15 +41,15 @@ int EntityProperty::get(Atlas::Message::Element & val) const
     }
 }
 
-void EntityProperty::set(const Atlas::Message::Element & val)
+void EntityProperty::set(const Atlas::Message::Element& val)
 {
     // INT id?
     if (val.isString()) {
-        const std::string & id = val.String();
+        const std::string& id = val.String();
         if (m_data.get() == nullptr || m_data->getId() != id) {
             debug(std::cout << "Assigning " << id << std::endl << std::flush;);
             if (id.empty()) {
-                m_data = WeakEntityRef(nullptr );
+                m_data = WeakEntityRef(nullptr);
             } else {
                 auto e = BaseWorld::instance().getEntity(id);
                 if (!e) {
@@ -72,10 +72,10 @@ void EntityProperty::set(const Atlas::Message::Element & val)
     }
 }
 
-void EntityProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
+void EntityProperty::add(const std::string& s,
+                         Atlas::Message::MapType& map) const
 {
-    if (m_data.get() != nullptr ) {
+    if (m_data.get() != nullptr) {
         //The "id" attribute is special.
         if (s == "id") {
             map[s] = m_data->getId();
@@ -89,13 +89,13 @@ void EntityProperty::add(const std::string & s,
     }
 }
 
-void EntityProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
+void EntityProperty::add(const std::string& s,
+                         const Atlas::Objects::Entity::RootEntity& ent) const
 {
     if (m_data.get() != nullptr) {
         //The "id" attribute is special.
         if (s == "id") {
-            ent->setAttr(s , m_data->getId());
+            ent->setAttr(s, m_data->getId());
         } else {
             Atlas::Message::MapType refMap;
             refMap["$eid"] = m_data->getId();
@@ -106,7 +106,13 @@ void EntityProperty::add(const std::string & s,
     }
 }
 
-EntityProperty * EntityProperty::copy() const
+EntityProperty* EntityProperty::copy() const
 {
     return new EntityProperty(*this);
+}
+
+EntityProperty::EntityProperty(uint32_t flags)
+    : PropertyBase(flags)
+{
+
 }

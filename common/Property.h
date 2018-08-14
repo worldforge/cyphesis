@@ -44,20 +44,20 @@ class PropertyBase : public OperationsListener {
     /// \brief Accessor for Property flags
     Flags& flags() { return m_flags; }
 
-        void addFlags(std::uint32_t flags)
-        {
-            m_flags.addFlags(flags);
-        }
+    void addFlags(std::uint32_t flags)
+    {
+        m_flags.addFlags(flags);
+    }
 
-        void removeFlags(std::uint32_t flags)
-        {
-            m_flags.removeFlags(flags);
-        }
+    void removeFlags(std::uint32_t flags)
+    {
+        m_flags.removeFlags(flags);
+    }
 
-        bool hasFlags(std::uint32_t flags) const
-        {
-            return m_flags.hasFlags(flags);
-        }
+    bool hasFlags(std::uint32_t flags) const
+    {
+        return m_flags.hasFlags(flags);
+    }
 
     /// \brief Install this property on an entity
     ///
@@ -185,6 +185,9 @@ class SoftProperty : public PropertyBase {
     int get(Atlas::Message::Element & val) const override ;
     void set(const Atlas::Message::Element & val) override ;
     SoftProperty * copy() const override;
+
+    Atlas::Message::Element& data();
+    const Atlas::Message::Element& data() const;
 };
 
 class BoolProperty : public PropertyBase {

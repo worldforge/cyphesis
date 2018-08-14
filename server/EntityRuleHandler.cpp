@@ -254,13 +254,15 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
                 continue;
             }
             const MapType & attr = K->second.asMap();
+            Atlas::Message::Element defaultValue;
             auto L = attr.find("default");
             if (L != attr.end()) {
-                // Store this value in the defaults for this class
-                factory->m_classAttributes[K->first] = L->second;
-                // and merge it with the defaults inherited from the parent
-                factory->m_attributes[K->first] = L->second;
+                defaultValue = L->second;
             }
+            // Store this value in the defaults for this class
+            factory->m_classAttributes[K->first] = defaultValue;
+            // and merge it with the defaults inherited from the parent
+            factory->m_attributes[K->first] = defaultValue;
         }
     }
 

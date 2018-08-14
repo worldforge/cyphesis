@@ -20,6 +20,16 @@
             <map name="present">
                 <string name="default">dural/creatures/biped/human.entitymap</string>
             </map>
+            <map name="attachments">
+                <map name="default">
+                    <string name="hand_primary">contains_recursive(actor.contains, child = tool)</string>
+                    <string name="hand_secondary">contains_recursive(actor.contains, child = tool)</string>
+                    <string name="hand_torso">actor contains tool &amp;&amp; tool.props.worn = 'torso'</string>
+                    <string name="hand_legs">actor contains tool &amp;&amp; tool.props.worn = 'legs'</string>
+                    <string name="hand_feet">actor contains tool &amp;&amp; tool.props.worn = 'feet'</string>
+                    <string name="hand_head">actor contains tool &amp;&amp; tool.props.worn = 'head'</string>
+                </map>
+            </map>
             <map name="decays">
                 <string name="default">dead_human_skull</string>
             </map>

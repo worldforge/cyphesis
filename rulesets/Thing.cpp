@@ -32,6 +32,7 @@
 #include "common/Unseen.h"
 #include "common/TypeNode.h"
 #include "EntityProperty.h"
+#include "PlantedOnProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -190,9 +191,9 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     //It's expected that only admins should ever send a "planted_on" as Move ops (to build the world).
     //In all other cases we want to let regular Domain rules apply
     Element attr_plantedOn;
-    Ref<LocatedEntity> plantedOnEntity;
-    if (ent->copyAttr("planted_on", attr_plantedOn) == 0 && attr_plantedOn.isString()) {
-        plantedOnEntity = BaseWorld::instance().getEntity(attr_plantedOn.String());
+    PlantedOnProperty::Data plantedOn;
+    if (ent->copyAttr(PlantedOnProperty::property_name, attr_plantedOn) == 0) {
+        plantedOn = PlantedOnProperty::parse(attr_plantedOn);
     }
 
     //Move ops can also alter the "planted_offset" property
@@ -330,7 +331,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             processAppearDisappear(std::move(previousObserving), res);
         } else {
             if (updatedTransform) {
-                Domain::TransformData transformData{newOrientation, newPos, newVelocity, plantedOnEntity.get()};
+                Domain::TransformData transformData{newOrientation, newPos, newVelocity, plantedOn.entity.get(), plantedOn.attachment};
                 domain->applyTransform(*this, transformData, transformedEntities);
             }
         }
@@ -346,12 +347,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         assert(marg.isValid());
         m_location.addToEntity(marg);
         {
-            auto plantedOnProp = getPropertyClass<EntityProperty>("planted_on");
+            auto plantedOnProp = getPropertyClassFixed<PlantedOnProperty>();
             if (plantedOnProp) {
                 if (plantedOnProp->hasFlags(flag_unsent)) {
                     Element plantedOnElem;
                     if (plantedOnProp->get(plantedOnElem) == 0) {
-                        marg->setAttr("planted_on", plantedOnElem);
+                        marg->setAttr(PlantedOnProperty::property_name, plantedOnElem);
                     }
                 }
             }
@@ -377,12 +378,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     movedArg->setId(transformedEntity->getId());
                     transformedEntity->m_location.addToEntity(movedArg);
 
-                    auto plantedOnProp = transformedEntity->getPropertyClass<EntityProperty>("planted_on");
+                    auto plantedOnProp = transformedEntity->getPropertyClassFixed<PlantedOnProperty>();
                     if (plantedOnProp) {
                         if (plantedOnProp->hasFlags(flag_unsent)) {
                             Element plantedOnElem;
                             if (plantedOnProp->get(plantedOnElem) == 0) {
-                                movedArg->setAttr("planted_on", plantedOnElem);
+                                movedArg->setAttr(PlantedOnProperty::property_name, plantedOnElem);
                             }
                         }
                     }
@@ -441,13 +442,8 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     debug(std::cout << "Generating property update" << std::endl << std::flush;);
 
     Anonymous set_arg;
-    set_arg->setId(getId());
-
     Anonymous set_arg_protected;
-    set_arg_protected->setId(getId());
-
     Anonymous set_arg_private;
-    set_arg_private->setId(getId());
 
     bool hadChanges = false;
     bool hadPublicChanges = false;
@@ -482,6 +478,8 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
 
     if (hadPublicChanges) {
 
+        set_arg->setId(getId());
+
         Set set;
         set->setTo(getId());
         set->setFrom(getId());
@@ -494,6 +492,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     }
 
     if (hadProtectedChanges) {
+        set_arg_protected->setId(getId());
 
         Set set;
         set->setTo(getId());
@@ -507,6 +506,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     }
 
     if (hadPrivateChanges) {
+        set_arg_private->setId(getId());
 
         Set set;
         set->setTo(getId());

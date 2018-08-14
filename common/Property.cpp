@@ -172,6 +172,17 @@ SoftProperty * SoftProperty::copy() const
     return new SoftProperty(*this);
 }
 
+Atlas::Message::Element& SoftProperty::data()
+{
+    return m_data;
+}
+
+const Atlas::Message::Element& SoftProperty::data() const
+{
+    return m_data;
+}
+
+
 int BoolProperty::get(Atlas::Message::Element & ent) const
 {
     ent = m_flags.hasFlags(flag_bool) ? 1 : 0;

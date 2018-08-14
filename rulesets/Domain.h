@@ -27,6 +27,7 @@
 #include <string>
 #include <list>
 #include <set>
+#include <boost/optional.hpp>
 
 class LocatedEntity;
 
@@ -52,7 +53,8 @@ class Domain
             const WFMath::Quaternion& orientation;
             const WFMath::Point<3>& pos;
             const WFMath::Vector<3>& velocity;
-            LocatedEntity* plantedOn;
+            LocatedEntity* plantedOnEntity;
+            boost::optional<std::string> plantedOnAttachPoint;
         };
 
         explicit Domain(LocatedEntity& entity);

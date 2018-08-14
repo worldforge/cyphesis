@@ -135,4 +135,27 @@ namespace EntityFilter {
 
 }  // namespace EntityFilter
 
+namespace EntityFilter {
+
+#ifndef STUB_BoolPredicate_BoolPredicate
+//#define STUB_BoolPredicate_BoolPredicate
+   BoolPredicate::BoolPredicate(const Consumer<QueryContext>* consumer)
+    : Predicate(consumer)
+    , m_consumer(nullptr)
+  {
+    
+  }
+#endif //STUB_BoolPredicate_BoolPredicate
+
+#ifndef STUB_BoolPredicate_isMatch
+//#define STUB_BoolPredicate_isMatch
+  bool BoolPredicate::isMatch(const QueryContext& context) const
+  {
+    return false;
+  }
+#endif //STUB_BoolPredicate_isMatch
+
+
+}  // namespace EntityFilter
+
 #endif

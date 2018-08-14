@@ -249,6 +249,14 @@
   }
 #endif //STUB_LocatedEntity_removeListener
 
+#ifndef STUB_LocatedEntity_applyProperty
+//#define STUB_LocatedEntity_applyProperty
+  void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_applyProperty
+
 #ifndef STUB_LocatedEntity_collectObservers
 //#define STUB_LocatedEntity_collectObservers
   void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& observers) const

@@ -150,11 +150,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
 
     prop->set(attr);
     // Allow the value to take effect.
-    prop->apply(this);
-    prop->addFlags(flag_unsent);
-    propertyApplied(name, *prop);
-    // Mark the Entity as unclean
-    m_flags.removeFlags(entity_clean);
+    applyProperty(name, prop);
     return prop;
 }
 

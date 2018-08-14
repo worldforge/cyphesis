@@ -7,6 +7,15 @@
 #include "rulesets/EntityProperty.h"
 #include "stubEntityProperty_custom.h"
 
+#ifndef STUB_EntityProperty_EntityProperty
+//#define STUB_EntityProperty_EntityProperty
+   EntityProperty::EntityProperty(std::uint32_t flags )
+    : PropertyBase(flags)
+  {
+    
+  }
+#endif //STUB_EntityProperty_EntityProperty
+
 #ifndef STUB_EntityProperty_get
 //#define STUB_EntityProperty_get
   int EntityProperty::get(Atlas::Message::Element& val) const

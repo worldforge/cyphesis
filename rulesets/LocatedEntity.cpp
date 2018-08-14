@@ -402,7 +402,14 @@ void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previo
     }
 }
 
-
+void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop) {
+    // Allow the value to take effect.
+    prop->apply(this);
+    prop->addFlags(flag_unsent);
+    propertyApplied(name, *prop);
+    // Mark the Entity as unclean
+    m_flags.removeFlags(entity_clean);
+}
 
 void LocatedEntity::addChild(LocatedEntity& childEntity)
 {

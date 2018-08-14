@@ -220,7 +220,7 @@
                         <string name="$eid">pants</string>
                     </map>
                 </map>
-                <map name="right_hand_wield">
+                <map name="attach_hand_primary">
                     <string name="$eid">sword</string>
                 </map>
                 <map name="statistics">
@@ -318,7 +318,7 @@
                 <list name="contains">
                     <string>axe</string>
                 </list>
-                <map name="right_hand_wield">
+                <map name="attach_hand_primary">
                     <string name="$eid">axe</string>
                 </map>
                 <string name="parent">goblin</string>

@@ -23,6 +23,22 @@
   }
 #endif //STUB_ExternalMind_purgeEntity
 
+#ifndef STUB_ExternalMind_RelayOperation
+//#define STUB_ExternalMind_RelayOperation
+  void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_ExternalMind_RelayOperation
+
+#ifndef STUB_ExternalMind_externalRelayedOperation
+//#define STUB_ExternalMind_externalRelayedOperation
+  void ExternalMind::externalRelayedOperation(const Operation& op, Link& link)
+  {
+    
+  }
+#endif //STUB_ExternalMind_externalRelayedOperation
+
 #ifndef STUB_ExternalMind_ExternalMind
 //#define STUB_ExternalMind_ExternalMind
    ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity& entity)

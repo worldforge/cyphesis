@@ -7,14 +7,6 @@
 #include "rulesets/Character.h"
 #include "stubCharacter_custom.h"
 
-#ifndef STUB_Character_metabolise
-//#define STUB_Character_metabolise
-  void Character::metabolise(OpVector &, double ammount )
-  {
-    
-  }
-#endif //STUB_Character_metabolise
-
 #ifndef STUB_Character_wieldDropped
 //#define STUB_Character_wieldDropped
   void Character::wieldDropped()
@@ -64,14 +56,6 @@
   }
 #endif //STUB_Character_destroy
 
-#ifndef STUB_Character_getThoughts
-//#define STUB_Character_getThoughts
-  std::vector<Atlas::Objects::Root> Character::getThoughts() const
-  {
-    return std::vector<Atlas::Objects::Root>();
-  }
-#endif //STUB_Character_getThoughts
-
 #ifndef STUB_Character_NourishOperation
 //#define STUB_Character_NourishOperation
   void Character::NourishOperation(const Operation & op, OpVector &)
@@ -87,22 +71,6 @@
     
   }
 #endif //STUB_Character_WieldOperation
-
-#ifndef STUB_Character_ActuateOperation
-//#define STUB_Character_ActuateOperation
-  void Character::ActuateOperation(const Operation & op, OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_ActuateOperation
-
-#ifndef STUB_Character_RelayOperation
-//#define STUB_Character_RelayOperation
-  void Character::RelayOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Character_RelayOperation
 
 
 #endif

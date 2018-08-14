@@ -278,6 +278,12 @@ class LocatedEntity : public Router {
     virtual void addListener(OperationsListener* listener);
     virtual void removeListener(OperationsListener* listener);
 
+    /**
+     * Applies the property and set flags on both the property and the entity to mark them as unclean.
+     * @param name
+     * @param prop
+     */
+    void applyProperty(const std::string& name, PropertyBase* prop);
 
     /**
      * Collects all entities that are observing this entity.

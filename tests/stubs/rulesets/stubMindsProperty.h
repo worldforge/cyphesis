@@ -112,13 +112,13 @@
   }
 #endif //STUB_MindsProperty_operation
 
-#ifndef STUB_MindsProperty_operation
-//#define STUB_MindsProperty_operation
-  HandlerResult MindsProperty::operation(LocatedEntity*, const Operation&, OpVector&) const
+#ifndef STUB_MindsProperty_sendToMinds
+//#define STUB_MindsProperty_sendToMinds
+  void MindsProperty::sendToMinds(const Operation& op, OpVector& res) const
   {
-    return *static_cast<HandlerResult*>(nullptr);
+    
   }
-#endif //STUB_MindsProperty_operation
+#endif //STUB_MindsProperty_sendToMinds
 
 #ifndef STUB_MindsProperty_world2mind
 //#define STUB_MindsProperty_world2mind
@@ -232,13 +232,21 @@
   }
 #endif //STUB_MindsProperty_w2mRelayOperation
 
-#ifndef STUB_MindsProperty_filterExternalOperation
-//#define STUB_MindsProperty_filterExternalOperation
-  void MindsProperty::filterExternalOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
+#ifndef STUB_MindsProperty_ThoughtOperation
+//#define STUB_MindsProperty_ThoughtOperation
+  HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
   {
-    
+    return *static_cast<HandlerResult*>(nullptr);
   }
-#endif //STUB_MindsProperty_filterExternalOperation
+#endif //STUB_MindsProperty_ThoughtOperation
+
+#ifndef STUB_MindsProperty_RelayOperation
+//#define STUB_MindsProperty_RelayOperation
+  HandlerResult MindsProperty::RelayOperation(LocatedEntity* ent, const Operation& op, OpVector& res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_MindsProperty_RelayOperation
 
 #ifndef STUB_MindsProperty_mindActuateOperation
 //#define STUB_MindsProperty_mindActuateOperation

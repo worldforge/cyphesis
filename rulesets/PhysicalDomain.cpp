@@ -31,6 +31,7 @@
 #include "VisibilityProperty.h"
 #include "TerrainModProperty.h"
 #include "PhysicalWorld.h"
+#include "PlantedOnProperty.h"
 
 #include "physics/Convert.h"
 
@@ -1110,9 +1111,9 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         mContainingEntityEntry.observedByThis.insert(entry);
     }
 
-    auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
-    if (plantedOnProp && plantedOnProp->data()) {
-        auto plantedOnI = m_entries.find(plantedOnProp->data()->getIntId());
+    auto plantedOnProp = entity.getPropertyClassFixed<PlantedOnProperty>();
+    if (plantedOnProp && plantedOnProp->data().entity) {
+        auto plantedOnI = m_entries.find(plantedOnProp->data().entity->getIntId());
         if (plantedOnI != m_entries.end()) {
             plantedOnI->second->attachedEntities.erase(entry);
         }
@@ -1349,7 +1350,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
         }
     } else if (name == PerceptionSightProperty::property_name) {
         toggleChildPerception(*bulletEntry->entity);
-    } else if (name == "planted_on") {
+    } else if (name == PlantedOnProperty::property_name) {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos, true);
         sendMoveSight(*bulletEntry, true, false, false, false, false);
     }
@@ -1610,9 +1611,9 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
 
                 if (!plantedOn) {
 
-                    auto plantedOnProp = entity.getPropertyClass<EntityProperty>("planted_on");
+                    auto plantedOnProp = entity.getPropertyClassFixed<PlantedOnProperty>();
                     if (plantedOnProp) {
-                        const auto& plantedOnEntityRef = plantedOnProp->data();
+                        const auto& plantedOnEntityRef = plantedOnProp->data().entity;
                         if (plantedOnEntityRef) {
                             //If it's desired that the entity should be planted on the ground then make it so.
                             //Since the ground is everywhere.
@@ -1933,8 +1934,8 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const TransformData& 
     BulletEntry* entry = I->second;
     BulletEntry* entryPlantedOn = nullptr;
 
-    if (transformData.plantedOn) {
-        auto plantedOnI = m_entries.find(transformData.plantedOn->getIntId());
+    if (transformData.plantedOnEntity) {
+        auto plantedOnI = m_entries.find(transformData.plantedOnEntity->getIntId());
         if (plantedOnI != m_entries.end()) {
             entryPlantedOn = plantedOnI->second;
         }
@@ -2502,12 +2503,12 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
 
 void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, PhysicalDomain::BulletEntry* entryPlantedOn)
 {
-    auto existingPlantedOnProp = plantedEntry->entity->getPropertyClass<EntityProperty>("planted_on");
+    auto existingPlantedOnProp = plantedEntry->entity->getPropertyClassFixed<PlantedOnProperty>();
 
     if (existingPlantedOnProp) {
         //Check if we're already planted, and perhaps should be detached.
-        if (existingPlantedOnProp->data()) {
-            if (entryPlantedOn && existingPlantedOnProp->data().get() == entryPlantedOn->entity) {
+        if (existingPlantedOnProp->data().entity) {
+            if (entryPlantedOn && existingPlantedOnProp->data().entity.get() == entryPlantedOn->entity) {
                 //Already planted on entity, nothing to do
                 return;
             }
@@ -2516,7 +2517,7 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
                 return;
             }
 
-            auto I = m_entries.find(existingPlantedOnProp->data()->getIntId());
+            auto I = m_entries.find(existingPlantedOnProp->data().entity->getIntId());
             if (I != m_entries.end()) {
                 I->second->attachedEntities.erase(plantedEntry);
             }
@@ -2530,13 +2531,13 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
     }
 
     //We need to change the property for this
-    auto newPlantedOnProp = plantedEntry->entity->requirePropertyClass<EntityProperty>("planted_on");
+    auto newPlantedOnProp = plantedEntry->entity->requirePropertyClassFixed<PlantedOnProperty>();
 
     if (entryPlantedOn) {
-        newPlantedOnProp->data() = WeakEntityRef(entryPlantedOn->entity);
+        newPlantedOnProp->data() = PlantedOnProperty::Data{WeakEntityRef(entryPlantedOn->entity)};
         entryPlantedOn->attachedEntities.insert(plantedEntry);
     } else {
-        newPlantedOnProp->data() = WeakEntityRef(nullptr);
+        newPlantedOnProp->data() = PlantedOnProperty::Data{};
     }
 
     newPlantedOnProp->addFlags(flag_unsent);
