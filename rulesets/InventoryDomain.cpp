@@ -20,7 +20,6 @@
 #endif
 
 #include "InventoryDomain.h"
-#include "OutfitProperty.h"
 #include "EntityProperty.h"
 #include "LocatedEntity.h"
 

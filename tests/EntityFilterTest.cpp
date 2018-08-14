@@ -17,7 +17,6 @@
 #include "rulesets/EntityProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "common/Property.h"
 #include "rulesets/BaseWorld.h"
@@ -384,22 +383,22 @@ void EntityFilterTest::test_Parentheses()
 
 void EntityFilterTest::test_Outfit()
 {
-    //Test soft property of outfit
-    TestQuery("entity.outfit.hands.color='brown'", {m_ch1}, {});
-    //Test type of outfit
-    TestQuery("entity.outfit.hands.type=types.gloves", {m_ch1}, {});
-    //Test an entity without outfit
-    TestQuery("entity.outfit.hands.type=types.gloves", {}, {m_bl1});
-    //Test outfit that doesn't have the specified part
-    TestQuery("entity.outfit.chest.color='red'", {}, {m_ch1});
-    //Test outfit with another criterion
-    TestQuery("entity.type=types.character&&entity.outfit.hands.color='brown'",
-              {m_ch1}, {m_b1});
-    //Test nested outfit
-    TestQuery("entity.outfit.hands.outfit.thumb.color='green'", {m_ch1}, {});
-
-    TestQuery("entity.outfit.hands.outfit.thumb.type=types.cloth", {m_ch1},
-              {});
+//    //Test soft property of outfit
+//    TestQuery("entity.outfit.hands.color='brown'", {m_ch1}, {});
+//    //Test type of outfit
+//    TestQuery("entity.outfit.hands.type=types.gloves", {m_ch1}, {});
+//    //Test an entity without outfit
+//    TestQuery("entity.outfit.hands.type=types.gloves", {}, {m_bl1});
+//    //Test outfit that doesn't have the specified part
+//    TestQuery("entity.outfit.chest.color='red'", {}, {m_ch1});
+//    //Test outfit with another criterion
+//    TestQuery("entity.type=types.character&&entity.outfit.hands.color='brown'",
+//              {m_ch1}, {m_b1});
+//    //Test nested outfit
+//    TestQuery("entity.outfit.hands.outfit.thumb.color='green'", {m_ch1}, {});
+//
+//    TestQuery("entity.outfit.hands.outfit.thumb.type=types.cloth", {m_ch1},
+//              {});
 
     TestQuery("entity instance_of types.barrel|types.boulder|types.gloves",
               {m_b1, m_bl1, m_glovesEntity}, {});
@@ -421,8 +420,8 @@ void EntityFilterTest::test_BBox()
     TestQuery("entity.type=types.barrel&&entity.bbox.height>0.0", {m_b1}, {
         m_b2, m_bl1});
     //Test BBox of an outfit
-    TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48.0", {m_ch1},
-              {});
+//    TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48.0", {m_ch1},
+//              {});
 }
 
 void EntityFilterTest::test_ContainsRecursive()
@@ -533,11 +532,11 @@ void EntityFilterTest::setup()
     m_bootsEntity->setProperty("color", new SoftProperty("black"));
     m_bootsEntity->setProperty("mass", new SoftProperty(10));
 
-    std::map<std::string, Element> outfitMap;
-    outfitMap.insert(std::make_pair("feet", Element(m_bootsEntity.get())));
-    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
-    OutfitProperty* outfit1 = new OutfitProperty;
-    outfit1->set(outfitMap);
+//    std::map<std::string, Element> outfitMap;
+//    outfitMap.insert(std::make_pair("feet", Element(m_bootsEntity.get())));
+//    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
+//    OutfitProperty* outfit1 = new OutfitProperty;
+//    outfit1->set(outfitMap);
 
     m_cloth = new Entity("8", 8);
     m_cloth->setType(m_clothType);
@@ -549,13 +548,13 @@ void EntityFilterTest::setup()
 
     std::map<std::string, Element> outfitMap1;
     outfitMap1.insert(std::make_pair("thumb", Element(m_cloth.get())));
-    OutfitProperty* outfit2 = new OutfitProperty;
-    outfit2->set(outfitMap1);
-    m_glovesEntity->setProperty("outfit", outfit2);
+//    OutfitProperty* outfit2 = new OutfitProperty;
+//    outfit2->set(outfitMap1);
+//    m_glovesEntity->setProperty("outfit", outfit2);
 
     m_ch1 = new Entity("7", 7);
     m_ch1->setType(m_characterType);
-    m_ch1->setProperty("outfit", outfit1);
+//    m_ch1->setProperty("outfit", outfit1);
 
     BBoxProperty* bbox1 = new BBoxProperty;
     bbox1->set((std::vector<Element>{-1, -3, -2, 1, 3, 2}));

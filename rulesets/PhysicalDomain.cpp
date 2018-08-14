@@ -24,7 +24,6 @@
 
 #include "TerrainProperty.h"
 #include "LocatedEntity.h"
-#include "OutfitProperty.h"
 #include "PropelProperty.h"
 #include "GeometryProperty.h"
 #include "AngularFactorProperty.h"

@@ -23,7 +23,6 @@
 #include "server/TeleportProperty.h"
 
 #include "rulesets/LineProperty.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/SolidProperty.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/StatisticsProperty.h"
@@ -134,7 +133,6 @@ CorePropertyManager::CorePropertyManager()
     //installProperty<Property<IdList> >("start_intersections", "list");
     //installProperty<Property<IdList> >("end_intersections", "list");
     installProperty<DecaysProperty>();
-    installProperty<OutfitProperty>();
     installProperty<SolidProperty>();
     installProperty<SimpleProperty>();
     installProperty<StatusProperty>();

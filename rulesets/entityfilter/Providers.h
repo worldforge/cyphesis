@@ -301,14 +301,6 @@ namespace EntityFilter {
             const std::string m_attribute_name;
     };
 
-    class OutfitEntityProvider : public ConsumingNamedAttributeProviderBase<LocatedEntity, OutfitProperty>
-    {
-        public:
-            OutfitEntityProvider(Consumer<LocatedEntity>* consumer, const std::string& attribute_name);
-
-            void value(Atlas::Message::Element& value, const OutfitProperty& prop) const override;
-    };
-
     class BBoxProvider : public ConsumingProviderBase<Atlas::Message::Element, BBoxProperty>
     {
         public:
@@ -437,8 +429,6 @@ namespace EntityFilter {
             T* createEntityProvider(SegmentsList segments) const;
 
             SelfEntityProvider* createSelfEntityProvider(SegmentsList segments) const;
-
-            OutfitEntityProvider* createOutfitEntityProvider(SegmentsList segments) const;
 
             BBoxProvider* createBBoxProvider(SegmentsList segments) const;
 

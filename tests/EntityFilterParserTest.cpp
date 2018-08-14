@@ -15,7 +15,6 @@
 #include "rulesets/EntityProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "common/Property.h"
 #include "rulesets/BaseWorld.h"
@@ -222,6 +221,7 @@ int main(int argc, char ** argv)
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"

@@ -4,7 +4,9 @@ add_library(rulesetbase
     AtlasProperties.cpp
     Script.cpp
     Location.cpp
-    EntityLocation.cpp)
+    EntityLocation.cpp
+    EntityProperty.cpp
+    )
 
 add_library(rulesetentity
     Entity.cpp
@@ -17,8 +19,6 @@ add_library(rulesetentity
     ExternalMind.cpp
     Movement.cpp
     Pedestrian.cpp
-    EntityProperty.cpp
-    OutfitProperty.cpp
     LineProperty.cpp
     AreaProperty.cpp
     TerrainProperty.cpp
@@ -67,7 +67,12 @@ add_library(rulesetentity
     UsagesProperty.cpp UsagesProperty.h
     WorldTimeProperty.cpp
     UsageInstance.cpp UsageInstance.h
-    ScriptUtils.cpp ScriptUtils.h MindsProperty.cpp MindsProperty.h AdminMind.cpp AdminMind.h AdminProperty.cpp AdminProperty.h PlantedOnProperty.cpp PlantedOnProperty.h AttachmentsProperty.cpp AttachmentsProperty.h)
+    ScriptUtils.cpp ScriptUtils.h
+    MindsProperty.cpp MindsProperty.h
+    AdminMind.cpp AdminMind.h
+    AdminProperty.cpp AdminProperty.h
+    PlantedOnProperty.cpp PlantedOnProperty.h
+    AttachmentsProperty.cpp AttachmentsProperty.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

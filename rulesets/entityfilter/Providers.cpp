@@ -23,7 +23,6 @@
 
 #include "Providers.h"
 
-#include "../OutfitProperty.h"
 #include "../BBoxProperty.h"
 #include "../EntityProperty.h"
 #include "../../common/TypeNode.h"
@@ -222,26 +221,6 @@ namespace EntityFilter {
     {
         if (m_attribute_name == "name") {
             value = type.name();
-        }
-    }
-
-    OutfitEntityProvider::OutfitEntityProvider(Consumer<LocatedEntity>* consumer, const std::string& attribute_name)
-        : ConsumingNamedAttributeProviderBase<LocatedEntity, OutfitProperty>(consumer, attribute_name)
-    {
-
-    }
-
-    void OutfitEntityProvider::value(Atlas::Message::Element& value, const OutfitProperty& prop) const
-    {
-        auto outfit_entity = prop.getEntity(m_attribute_name);
-        if (!outfit_entity) {
-            return;
-        }
-
-        if (m_consumer) {
-            m_consumer->value(value, *outfit_entity);
-        } else {
-            value = outfit_entity;
         }
     }
 
@@ -490,34 +469,14 @@ namespace EntityFilter {
                 return new EntityTypeProvider(createTypeNodeProvider(std::move(segments)));
             } else if (attr == "id") {
                 return new EntityIdProvider();
-            } else if (attr == "outfit") {
-                return new PropertyProvider<OutfitProperty>(createOutfitEntityProvider(std::move(segments)), attr);
             } else if (attr == BBoxProperty::property_name) {
                 return new PropertyProvider<BBoxProperty>(createBBoxProvider(std::move(segments)), attr);
             } else if (attr == "contains") {
                 return new ContainsProvider();
-            } else if (attr == "right_hand_wield") {
-                return new EntityRefProvider(createPropertyProvider(std::move(segments)), attr);
             } else {
                 return new SoftPropertyProvider(createMapProvider(std::move(segments)), attr);
             }
         }
-    }
-
-
-    OutfitEntityProvider* ProviderFactory::createOutfitEntityProvider(SegmentsList segments) const
-    {
-        if (segments.empty()) {
-            return nullptr;
-        }
-
-        auto segment = std::move(segments.front());
-        auto attr = segment.attribute;
-
-        segments.pop_front();
-
-        return new OutfitEntityProvider(createPropertyProvider(std::move(segments)), attr);
-
     }
 
     BBoxProvider* ProviderFactory::createBBoxProvider(SegmentsList segments) const

@@ -149,7 +149,6 @@ wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ${PROJECT_SOURCE_DIR}/rule
     ${PROJECT_SOURCE_DIR}/rulesets/CalendarProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LineProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/StatisticsProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp
@@ -177,9 +176,6 @@ wf_add_test(MindPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rule
 target_link_libraries(MindPropertyTest pycxx)
 
 wf_add_test(ModePropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/ModeProperty.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(OutfitPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
-    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(SolidPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/SolidProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
@@ -313,7 +309,6 @@ target_link_libraries(PythonEntityScriptTest ${PYTHON_TESTS_LIBS})
 wf_add_test(EntityFilterTest.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
@@ -326,7 +321,6 @@ target_compile_definitions(EntityFilterTest PRIVATE -DBOOST_SPIRIT_DEBUG)
 wf_add_test(EntityFilterParserTest.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
@@ -337,7 +331,6 @@ target_link_libraries(EntityFilterParserTest entityfilter)
 
 wf_add_test(EntityFilterProvidersTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/OutfitProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp

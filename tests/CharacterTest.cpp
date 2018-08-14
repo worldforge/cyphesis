@@ -35,7 +35,6 @@
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/Script.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Task.h"

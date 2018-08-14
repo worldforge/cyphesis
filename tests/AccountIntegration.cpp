@@ -405,7 +405,6 @@ int main()
 #include "rulesets/InternalProperties.h"
 #include "rulesets/LineProperty.h"
 #include "rulesets/MindProperty.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/SolidProperty.h"
 #include "rulesets/SpawnProperty.h"
 #include "rulesets/StatusProperty.h"

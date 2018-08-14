@@ -336,7 +336,6 @@ int main()
 #include "rulesets/CalendarProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/TasksProperty.h"
 #include "rulesets/TerrainProperty.h"

@@ -23,7 +23,6 @@
 #include "EntityProperty.h"
 #include "ExternalMind.h"
 #include "ExternalProperty.h"
-#include "OutfitProperty.h"
 #include "StatusProperty.h"
 #include "TasksProperty.h"
 #include "Domain.h"
@@ -318,123 +317,123 @@ void Character::NourishOperation(const Operation & op, OpVector & res)
 
 void Character::WieldOperation(const Operation & op, OpVector & res)
 {
-    if (op->getArgs().empty()) {
-        std::set<const LocatedEntity*> prevObserving, newObserving;
-        EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-        if (rhw == nullptr) {
-            return;
-        }
-
-        auto wieldedEntity = rhw->data().get();
-        if (wieldedEntity) {
-            wieldedEntity->collectObservers(prevObserving);
-        }
-
-        rhw->data() = WeakEntityRef(nullptr);
-        rhw->addFlags(flag_unsent);
-        // FIXME Remove the property?
-
-        // FIXME Make sure we stop wielding if the container changes,
-        // but connections are cleared, and don't build up.
-        if (m_rightHandWieldConnection.connected()) {
-            m_rightHandWieldConnection.disconnect();
-        }
-
-        Update update;
-        update->setTo(getId());
-        res.push_back(update);
-
-        if (wieldedEntity) {
-            wieldedEntity->processAppearDisappear(std::move(prevObserving), res);
-        }
-
-        return;
-    }
-    const Root & arg = op->getArgs().front();
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "Wield arg has no ID", res, getId());
-        return;
-    }
-    const std::string & id = arg->getId();
-    auto item = BaseWorld::instance().getEntity(id);
-    if (!item) {
-        error(op, "Wield arg does not exist", res, getId());
-        return;
-    }
-
-    if (m_contains == nullptr || m_contains->find(item) == m_contains->end()) {
-        error(op, String::compose("Wield arg %1(%2) is not in inventory "
-                "of %3(%4)", item->getType()->name(), id, getType()->name(), getId()), res, getId());
-        return;
-    }
-
-    Element worn_attr;
-    if (item->getAttr("worn", worn_attr) == 0) {
-        debug(std::cout << "Got wield for a garment" << std::endl << std::flush
-        ;);
-
-        if (worn_attr.isString()) {
-            std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
-
-            OutfitProperty * outfit = requirePropertyClassFixed<OutfitProperty>();
-            LocatedEntity* prevEntity = outfit->getEntity(worn_attr.String());
-            if (prevEntity) {
-                prevEntity->collectObservers(oldEntityPrevObserving);
-            }
-            item->collectObservers(newEntityPrevObserving);
-            outfit->wear(this, worn_attr.String(), item.get());
-            outfit->cleanUp();
-
-            outfit->addFlags(flag_unsent);
-
-            if (prevEntity) {
-                prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
-            }
-            item->processAppearDisappear(std::move(newEntityPrevObserving), res);
-
-        } else {
-            log(WARNING, "Got clothing with non-string worn attribute. " + describeEntity());
-            return;
-        }
-        // FIXME Implement adding stuff to the outfit propert, as efficiently
-        // as possible
-        // Must make sure that we can install the entity we have already
-        // looked up here, and fix the GuiseProperty code so it does not
-        // need a repeat lookup
-    } else {
-        std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
-        debug(std::cout << "Got wield for a tool" << std::endl << std::flush
-        ;);
-
-        EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
-        LocatedEntity* prevEntity = rhw->data().get();
-        if (prevEntity) {
-            prevEntity->collectObservers(oldEntityPrevObserving);
-        }
-        item->collectObservers(newEntityPrevObserving);
-        // FIXME Make sure we don't stay linked to the previous wielded
-        // tool.
-        if (m_rightHandWieldConnection.connected()) {
-            m_rightHandWieldConnection.disconnect();
-        }
-
-        // The value is ignored by the update handler, but should be the
-        // right type.
-        rhw->data() = WeakEntityRef(item);
-        rhw->addFlags(flag_unsent);
-
-        m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
-
-        if (prevEntity) {
-            prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
-        }
-        item->processAppearDisappear(std::move(newEntityPrevObserving), res);
-
-        debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush
-        ;);
-    }
-
-    Update update;
-    update->setTo(getId());
-    res.push_back(update);
+//    if (op->getArgs().empty()) {
+//        std::set<const LocatedEntity*> prevObserving, newObserving;
+//        EntityProperty * rhw = modPropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+//        if (rhw == nullptr) {
+//            return;
+//        }
+//
+//        auto wieldedEntity = rhw->data().get();
+//        if (wieldedEntity) {
+//            wieldedEntity->collectObservers(prevObserving);
+//        }
+//
+//        rhw->data() = WeakEntityRef(nullptr);
+//        rhw->addFlags(flag_unsent);
+//        // FIXME Remove the property?
+//
+//        // FIXME Make sure we stop wielding if the container changes,
+//        // but connections are cleared, and don't build up.
+//        if (m_rightHandWieldConnection.connected()) {
+//            m_rightHandWieldConnection.disconnect();
+//        }
+//
+//        Update update;
+//        update->setTo(getId());
+//        res.push_back(update);
+//
+//        if (wieldedEntity) {
+//            wieldedEntity->processAppearDisappear(std::move(prevObserving), res);
+//        }
+//
+//        return;
+//    }
+//    const Root & arg = op->getArgs().front();
+//    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+//        error(op, "Wield arg has no ID", res, getId());
+//        return;
+//    }
+//    const std::string & id = arg->getId();
+//    auto item = BaseWorld::instance().getEntity(id);
+//    if (!item) {
+//        error(op, "Wield arg does not exist", res, getId());
+//        return;
+//    }
+//
+//    if (m_contains == nullptr || m_contains->find(item) == m_contains->end()) {
+//        error(op, String::compose("Wield arg %1(%2) is not in inventory "
+//                "of %3(%4)", item->getType()->name(), id, getType()->name(), getId()), res, getId());
+//        return;
+//    }
+//
+//    Element worn_attr;
+//    if (item->getAttr("worn", worn_attr) == 0) {
+//        debug(std::cout << "Got wield for a garment" << std::endl << std::flush
+//        ;);
+//
+//        if (worn_attr.isString()) {
+//            std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
+//
+//            OutfitProperty * outfit = requirePropertyClassFixed<OutfitProperty>();
+//            LocatedEntity* prevEntity = outfit->getEntity(worn_attr.String());
+//            if (prevEntity) {
+//                prevEntity->collectObservers(oldEntityPrevObserving);
+//            }
+//            item->collectObservers(newEntityPrevObserving);
+//            outfit->wear(this, worn_attr.String(), item.get());
+//            outfit->cleanUp();
+//
+//            outfit->addFlags(flag_unsent);
+//
+//            if (prevEntity) {
+//                prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
+//            }
+//            item->processAppearDisappear(std::move(newEntityPrevObserving), res);
+//
+//        } else {
+//            log(WARNING, "Got clothing with non-string worn attribute. " + describeEntity());
+//            return;
+//        }
+//        // FIXME Implement adding stuff to the outfit propert, as efficiently
+//        // as possible
+//        // Must make sure that we can install the entity we have already
+//        // looked up here, and fix the GuiseProperty code so it does not
+//        // need a repeat lookup
+//    } else {
+//        std::set<const LocatedEntity*> oldEntityPrevObserving, newEntityPrevObserving;
+//        debug(std::cout << "Got wield for a tool" << std::endl << std::flush
+//        ;);
+//
+//        EntityProperty * rhw = requirePropertyClass<EntityProperty>(RIGHT_HAND_WIELD);
+//        LocatedEntity* prevEntity = rhw->data().get();
+//        if (prevEntity) {
+//            prevEntity->collectObservers(oldEntityPrevObserving);
+//        }
+//        item->collectObservers(newEntityPrevObserving);
+//        // FIXME Make sure we don't stay linked to the previous wielded
+//        // tool.
+//        if (m_rightHandWieldConnection.connected()) {
+//            m_rightHandWieldConnection.disconnect();
+//        }
+//
+//        // The value is ignored by the update handler, but should be the
+//        // right type.
+//        rhw->data() = WeakEntityRef(item);
+//        rhw->addFlags(flag_unsent);
+//
+//        m_rightHandWieldConnection = item->containered.connect(sigc::hide<0>(sigc::mem_fun(this, &Character::wieldDropped)));
+//
+//        if (prevEntity) {
+//            prevEntity->processAppearDisappear(std::move(oldEntityPrevObserving), res);
+//        }
+//        item->processAppearDisappear(std::move(newEntityPrevObserving), res);
+//
+//        debug(std::cout << "Wielding " << item->getId() << std::endl << std::flush
+//        ;);
+//    }
+//
+//    Update update;
+//    update->setTo(getId());
+//    res.push_back(update);
 }

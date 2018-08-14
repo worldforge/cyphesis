@@ -277,7 +277,6 @@ int main()
 #include "rulesets/Domain.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/ExternalProperty.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/Script.h"
 #include "rulesets/StatusProperty.h"
 #include "rulesets/Task.h"

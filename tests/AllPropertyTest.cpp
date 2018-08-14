@@ -30,7 +30,6 @@
 #include "rulesets/CalendarProperty.h"
 #include "rulesets/EntityProperty.h"
 #include "rulesets/LineProperty.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/StatisticsProperty.h"
 #include "rulesets/TerrainProperty.h"
 

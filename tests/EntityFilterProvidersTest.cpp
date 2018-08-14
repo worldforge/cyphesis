@@ -14,7 +14,6 @@
 #include "rulesets/EntityProperty.h"
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
-#include "rulesets/OutfitProperty.h"
 #include "rulesets/BBoxProperty.h"
 #include "common/Property.h"
 #include "rulesets/BaseWorld.h"
@@ -146,31 +145,31 @@ void ProvidersTest::test_BBoxProviders()
     assert(value.Float() == 8.0);
 }
 
-void ProvidersTest::test_OutfitProviders()
-{
-    Atlas::Message::Element value;
-    //Check if we get the right entity in outfit query
-    auto provider = CreateProvider( { "entity", "outfit", "hands" });
-    provider->value(value, QueryContext { *m_ch1 });
-    assert(value.Ptr() == m_glovesEntity.get());
-
-    //Check for outfit's property query
-    provider = CreateProvider( { "entity", "outfit", "hands", "color" });
-    provider->value(value, QueryContext { *m_ch1 });
-    assert(value.String() == "brown");
-
-    //Check if we get the right entity in nested outfit query
-    provider = CreateProvider(
-            { "entity", "outfit", "hands", "outfit", "thumb" });
-    provider->value(value, QueryContext { *m_ch1 });
-    assert(value.Ptr() == m_cloth.get());
-
-    //Check for nested outfit's property
-    provider = CreateProvider( { "entity", "outfit", "hands", "outfit", "thumb",
-            "color" });
-    provider->value(value, QueryContext { *m_ch1 });
-    assert(value.String() == "green");
-}
+//void ProvidersTest::test_OutfitProviders()
+//{
+//    Atlas::Message::Element value;
+//    //Check if we get the right entity in outfit query
+//    auto provider = CreateProvider( { "entity", "outfit", "hands" });
+//    provider->value(value, QueryContext { *m_ch1 });
+//    assert(value.Ptr() == m_glovesEntity.get());
+//
+//    //Check for outfit's property query
+//    provider = CreateProvider( { "entity", "outfit", "hands", "color" });
+//    provider->value(value, QueryContext { *m_ch1 });
+//    assert(value.String() == "brown");
+//
+//    //Check if we get the right entity in nested outfit query
+//    provider = CreateProvider(
+//            { "entity", "outfit", "hands", "outfit", "thumb" });
+//    provider->value(value, QueryContext { *m_ch1 });
+//    assert(value.Ptr() == m_cloth.get());
+//
+//    //Check for nested outfit's property
+//    provider = CreateProvider( { "entity", "outfit", "hands", "outfit", "thumb",
+//            "color" });
+//    provider->value(value, QueryContext { *m_ch1 });
+//    assert(value.String() == "green");
+//}
 
 void ProvidersTest::test_ComparePredicates()
 {
@@ -354,7 +353,7 @@ ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
     ADD_TEST(ProvidersTest::test_BBoxProviders);
-    ADD_TEST(ProvidersTest::test_OutfitProviders);
+//    ADD_TEST(ProvidersTest::test_OutfitProviders);
     ADD_TEST(ProvidersTest::test_ComparePredicates);
     ADD_TEST(ProvidersTest::test_ListComparators);
     ADD_TEST(ProvidersTest::test_InstanceOf);
@@ -420,26 +419,26 @@ void ProvidersTest::setup()
     m_cloth->setProperty("color", new SoftProperty("green"));
 
     //Create outfit map where "thumb" outfit contains cloth
-    std::map<std::string, Element> outfitMap1;
-    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth.get())));
-    OutfitProperty* outfit2 = new OutfitProperty;
-    outfit2->set(outfitMap1);
+//    std::map<std::string, Element> outfitMap1;
+//    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth.get())));
+//    OutfitProperty* outfit2 = new OutfitProperty;
+//    outfit2->set(outfitMap1);
     m_glovesEntity = new Entity("4", 4);
     m_glovesEntity->setProperty("color", new SoftProperty("brown"));
-    m_glovesEntity->setProperty("outfit", outfit2);
+//    m_glovesEntity->setProperty("outfit", outfit2);
 
     //Create outfit map where hands of character contain brown gloves
-    std::map<std::string, Element> outfitMap;
-    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
-    OutfitProperty* outfit1 = new OutfitProperty;
-    outfit1->set(outfitMap);
+//    std::map<std::string, Element> outfitMap;
+//    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
+//    OutfitProperty* outfit1 = new OutfitProperty;
+//    outfit1->set(outfitMap);
 
     //Create the character for testing
     m_characterType = new TypeNode("character");
     types["character"] = m_characterType;
     m_ch1 = new Entity("5", 5);
     m_ch1->setType(m_characterType);
-    m_ch1->setProperty("outfit", outfit1);
+//    m_ch1->setProperty("outfit", outfit1);
 
     //Make second barrel contain the character
     m_b2_container = new LocatedEntitySet;
@@ -483,6 +482,7 @@ int main()
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
