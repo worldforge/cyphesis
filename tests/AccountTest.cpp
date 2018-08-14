@@ -32,8 +32,6 @@
 #include "server/Lobby.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Character.h"
-
 #include "common/CommSocket.h"
 #include "common/compose.hpp"
 #include "common/debug.h"

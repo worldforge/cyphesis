@@ -34,7 +34,6 @@
 
 #include "rulesets/Python_API.h"
 #include "rulesets/Entity.h"
-#include "rulesets/Character.h"
 
 #include <cassert>
 #include <common/Inheritance.h>

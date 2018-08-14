@@ -33,7 +33,6 @@
 #include "server/Connection.h"
 #include "server/WorldRouter.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/Domain.h"
 #include "rulesets/Entity.h"
 #include "rulesets/ExternalMind.h"

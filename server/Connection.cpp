@@ -24,7 +24,6 @@
 #include "ExternalMindsConnection.h"
 #include "ExternalMindsManager.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/ExternalMind.h"
 
 #include "common/id.h"
@@ -33,6 +32,9 @@
 #include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
+#include "common/log.h"
+#include "common/compose.hpp"
+
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

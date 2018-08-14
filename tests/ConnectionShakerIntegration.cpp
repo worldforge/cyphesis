@@ -30,8 +30,6 @@
 #include "rulesets/ExternalMind.h"
 #include "rulesets/ExternalProperty.h"
 
-#include "rulesets/Character.h"
-
 #include "common/CommSocket.h"
 #include "common/Shaker.h"
 #include "common/PropertyManager.h"

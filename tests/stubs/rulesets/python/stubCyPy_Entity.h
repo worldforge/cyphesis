@@ -41,30 +41,6 @@
   }
 #endif //STUB_CyPy_Entity_init_type
 
-#ifndef STUB_CyPy_Entity_check
-//#define STUB_CyPy_Entity_check
-   bool CyPy_Entity::check(PyObject* object)
-  {
-    return false;
-  }
-#endif //STUB_CyPy_Entity_check
-
-#ifndef STUB_CyPy_Entity_check
-//#define STUB_CyPy_Entity_check
-   bool CyPy_Entity::check(const Py::Object& object)
-  {
-    return false;
-  }
-#endif //STUB_CyPy_Entity_check
-
-#ifndef STUB_CyPy_Entity_value
-//#define STUB_CyPy_Entity_value
-   Ref<Entity> CyPy_Entity::value(const Py::Object& object)
-  {
-    return *static_cast< Ref<Entity>*>(nullptr);
-  }
-#endif //STUB_CyPy_Entity_value
-
 #ifndef STUB_CyPy_Entity_send_world
 //#define STUB_CyPy_Entity_send_world
    Py::Object CyPy_Entity::send_world(const Ref<Entity>& entity, const Py::Tuple& args)

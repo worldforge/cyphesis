@@ -18,7 +18,6 @@
 
 #include "EntityFactory_impl.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/World.h"

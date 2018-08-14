@@ -16,12 +16,15 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/mind/AwareMind.h>
-#include "navigation/Steering.h"
 #include "CyPy_BaseMind.h"
 #include "CyPy_Point3D.h"
 #include "CyPy_MemMap.h"
 #include "CyPy_WorldTime.h"
+#include "rulesets/mind/AwareMind.h"
+
+#include "common/id.h"
+
+#include "navigation/Steering.h"
 
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)

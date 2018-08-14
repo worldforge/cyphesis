@@ -28,7 +28,6 @@
 
 #include "rulesets/World.h"
 #include "rulesets/Python_API.h"
-#include "rulesets/Character.h"
 
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"

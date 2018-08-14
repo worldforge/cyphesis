@@ -19,7 +19,7 @@
 #ifndef COMMON_DEBUG_H
 #define COMMON_DEBUG_H
 
-#include <iosfwd>
+#include <iostream>
 #include <string>
 
 namespace Atlas { namespace Message { class Element; } }

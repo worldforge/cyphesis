@@ -27,7 +27,6 @@
 #include "TestWorld.h"
 
 #include "rulesets/Entity.h"
-#include "rulesets/Character.h"
 
 #include "common/log.h"
 

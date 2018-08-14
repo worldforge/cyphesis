@@ -26,11 +26,13 @@
 #include "PossessionAuthenticator.h"
 #include "common/custom.h"
 
-#include "rulesets/Character.h"
-
 #include "rulesets/BaseWorld.h"
+#include "rulesets/LocatedEntity.h"
+
 #include "common/id.h"
 #include "common/debug.h"
+#include "common/log.h"
+#include "common/compose.hpp"
 
 #include <wfmath/atlasconv.h>
 
@@ -40,6 +42,7 @@
 #include <sigc++/adaptors/bind.h>
 #include <rulesets/MindsProperty.h>
 #include <common/Update.h>
+
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

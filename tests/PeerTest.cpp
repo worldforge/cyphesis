@@ -34,8 +34,6 @@
 #include "rulesets/BaseWorld.h"
 #include "common/CommSocket.h"
 
-#include "rulesets/Character.h"
-
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -437,7 +435,6 @@ int main()
 
 #include "server/TeleportState.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/Script.h"
 
 #include "common/id.h"

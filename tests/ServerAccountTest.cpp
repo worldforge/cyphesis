@@ -32,8 +32,6 @@
 #include "server/ServerRouting.h"
 #include "server/PossessionAuthenticator.h"
 
-#include "rulesets/Character.h"
-
 #include "common/CommSocket.h"
 #include "common/compose.hpp"
 

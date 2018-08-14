@@ -27,7 +27,6 @@
 
 #include "server/CorePropertyManager.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/Domain.h"
 #include "rulesets/Entity.h"
 #include "rulesets/ExternalMind.h"

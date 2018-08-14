@@ -140,7 +140,6 @@ target_link_libraries(PlantTest physics)
 wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Stackable.cpp)
 wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp)
 wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/World.cpp)
-wf_add_test(CharacterTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp)
 wf_add_test(ThingupdatePropertiesTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(TaskTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp)
 wf_add_test(EntityPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
@@ -499,7 +498,6 @@ wf_add_test(WorldRouterIntegration.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.
     ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp
     ${PROJECT_SOURCE_DIR}/server/ArithmeticBuilder.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
@@ -521,20 +519,16 @@ wf_add_test(ConnectionShakerIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Connect
     ${PROJECT_SOURCE_DIR}/common/Shaker.cpp)
 wf_add_test(ConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(ConnectionCreatorIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(TrustedConnectionCreatorIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(AccountConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
     ${PROJECT_SOURCE_DIR}/server/Account.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
     ${PROJECT_SOURCE_DIR}/server/EntityFactory.cpp
@@ -551,7 +545,6 @@ wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cp
     ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Character.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp

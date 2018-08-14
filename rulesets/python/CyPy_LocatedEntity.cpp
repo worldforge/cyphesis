@@ -19,7 +19,6 @@
 #include "CyPy_LocatedEntity.h"
 
 #include "CyPy_MemEntity.h"
-#include "CyPy_Character.h"
 #include "CyPy_BaseMind.h"
 #include "CyPy_Entity.h"
 
@@ -33,18 +32,12 @@ Py::Object wrapLocatedEntity(Ref<LocatedEntity> le)
         if (baseMind) {
             wrapper = WrapperBase<Ref<BaseMind>, CyPy_BaseMind>::wrap(baseMind);
         } else {
-            auto character = dynamic_cast<Character*>(le.get());
-            if (character) {
-                wrapper = WrapperBase<Ref<Character>, CyPy_Character>::wrap(character);
+            auto memEntity = dynamic_cast<MemEntity*>(le.get());
+            if (memEntity) {
+                wrapper = WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(memEntity);
             } else {
-
-                auto memEntity = dynamic_cast<MemEntity*>(le.get());
-                if (memEntity) {
-                    wrapper = WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(memEntity);
-                } else {
-                    auto entity = dynamic_cast<Entity*>(le.get());
-                    wrapper = WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(entity);
-                }
+                auto entity = dynamic_cast<Entity*>(le.get());
+                wrapper = WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(entity);
             }
         }
 
@@ -67,10 +60,7 @@ LocatedEntity& CyPy_LocatedEntity::value(const Py::Object& object)
     if (CyPy_MemEntity::check(object)) {
         return *CyPy_MemEntity::value(object);
     }
-    if (CyPy_BaseMind::check(object)) {
-        return *CyPy_BaseMind::value(object);
-    }
-    return *CyPy_Character::value(object);
+    return *CyPy_BaseMind::value(object);
 
 }
 
@@ -83,7 +73,6 @@ bool CyPy_LocatedEntity::check(PyObject* object)
 {
     return CyPy_Entity::check(object)
            || CyPy_MemEntity::check(object)
-           || CyPy_BaseMind::check(object)
-           || CyPy_Character::check(object);
+           || CyPy_BaseMind::check(object);
 }
 

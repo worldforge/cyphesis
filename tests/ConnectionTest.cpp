@@ -35,8 +35,6 @@
 #include "server/Player.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Character.h"
-
 #include "common/compose.hpp"
 #include "common/Inheritance.h"
 #include "common/log.h"

@@ -127,8 +127,6 @@ int main()
 #include "server/Persistence.h"
 #include "server/PossessionAuthenticator.h"
 
-#include "rulesets/Character.h"
-
 #include "common/globals.h"
 #include "common/id.h"
 #include "common/log.h"

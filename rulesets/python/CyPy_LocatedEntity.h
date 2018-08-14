@@ -23,15 +23,6 @@
 #include "rulesets/LocatedEntity.h"
 #include "WrapperBase.h"
 
-#include <common/id.h>
-#include "rulesets/Character.h"
-#include "rulesets/MemEntity.h"
-#include "CyPy_Props.h"
-#include "common/TypeNode.h"
-#include "common/Inheritance.h"
-#include "CyPy_Location.h"
-#include "CyPy_Element.h"
-
 template<typename TValue, typename TPythonClass>
 class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 {

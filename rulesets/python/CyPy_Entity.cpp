@@ -19,9 +19,9 @@
 #include <rulesets/TasksProperty.h>
 #include "CyPy_Entity.h"
 #include "CyPy_Operation.h"
-#include "CyPy_Character.h"
 #include "CyPy_Task.h"
 #include "CyPy_Oplist.h"
+#include "common/id.h"
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
@@ -90,27 +90,6 @@ Py::Object CyPy_Entity::send_world(const Py::Tuple& args)
     return CyPy_Entity::send_world(m_value, args);
 }
 
-bool CyPy_Entity::check(const Py::Object& object)
-{
-    return check(object.ptr());
-}
-
-bool CyPy_Entity::check(PyObject* object)
-{
-    //FIXME: Hack to fake inheritance
-    return WrapperBase::check(object)
-           || CyPy_Character::check(object);
-}
-
-Ref<Entity> CyPy_Entity::value(const Py::Object& object)
-{
-    //FIXME: Hack to fake inheritance
-    if (CyPy_Character::check(object)) {
-        return Py::PythonClassObject<CyPy_Character>(object).getCxxObject()->m_value;
-    }
-    return Py::PythonClassObject<CyPy_Entity>(object).getCxxObject()->m_value;
-
-}
 
 Py::Object CyPy_Entity::send_world(const Ref<Entity>& entity, const Py::Tuple& args)
 {

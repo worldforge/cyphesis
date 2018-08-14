@@ -402,28 +402,6 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
-#ifndef STUB_OutfitEntityProvider_OutfitEntityProvider
-//#define STUB_OutfitEntityProvider_OutfitEntityProvider
-   OutfitEntityProvider::OutfitEntityProvider(Consumer<LocatedEntity>* consumer, const std::string& attribute_name)
-    : ConsumingNamedAttributeProviderBase(consumer, attribute_name)
-  {
-    
-  }
-#endif //STUB_OutfitEntityProvider_OutfitEntityProvider
-
-#ifndef STUB_OutfitEntityProvider_value
-//#define STUB_OutfitEntityProvider_value
-  void OutfitEntityProvider::value(Atlas::Message::Element& value, const OutfitProperty& prop) const
-  {
-    
-  }
-#endif //STUB_OutfitEntityProvider_value
-
-
-}  // namespace EntityFilter
-
-namespace EntityFilter {
-
 #ifndef STUB_BBoxProvider_BBoxProvider
 //#define STUB_BBoxProvider_BBoxProvider
    BBoxProvider::BBoxProvider(Consumer<Atlas::Message::Element>* consumer, Measurement measurement)
@@ -635,14 +613,6 @@ namespace EntityFilter {
     return nullptr;
   }
 #endif //STUB_ProviderFactory_createSelfEntityProvider
-
-#ifndef STUB_ProviderFactory_createOutfitEntityProvider
-//#define STUB_ProviderFactory_createOutfitEntityProvider
-  OutfitEntityProvider* ProviderFactory::createOutfitEntityProvider(SegmentsList segments) const
-  {
-    return nullptr;
-  }
-#endif //STUB_ProviderFactory_createOutfitEntityProvider
 
 #ifndef STUB_ProviderFactory_createBBoxProvider
 //#define STUB_ProviderFactory_createBBoxProvider

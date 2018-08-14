@@ -21,7 +21,6 @@
 
 #include "RespawningProperty.h"
 #include "LocatedEntity.h"
-#include "Character.h"
 #include "ExternalMind.h"
 #include "BaseWorld.h"
 #include "MindsProperty.h"

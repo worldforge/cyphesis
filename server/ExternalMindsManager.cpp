@@ -27,8 +27,8 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
-#include "rulesets/Character.h"
 #include "rulesets/ExternalMind.h"
+#include "rulesets/LocatedEntity.h"
 
 #include <Atlas/Objects/Entity.h>
 
@@ -36,6 +36,8 @@
 
 #include <sigc++/bind.h>
 #include <rulesets/MindsProperty.h>
+
+#include <iostream>
 
 static const bool debug_flag = false;
 

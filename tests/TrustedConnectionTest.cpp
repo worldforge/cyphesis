@@ -37,8 +37,6 @@
 #include "server/WorldRouter.h"
 #include "server/SystemAccount.h"
 
-#include "rulesets/Character.h"
-
 #include "common/compose.hpp"
 #include "common/Inheritance.h"
 #include "common/SystemTime.h"

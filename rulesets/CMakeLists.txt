@@ -12,7 +12,6 @@ add_library(rulesetentity
     Entity.cpp
     Thing.cpp
     World.cpp
-    Character.cpp
     Plant.cpp
     Stackable.cpp
     Domain.cpp
@@ -123,7 +122,6 @@ add_library(scriptpython
     python/CyPy_Server.cpp python/CyPy_Server.h
     python/CyPy_MemMap.cpp python/CyPy_MemMap.h
     python/CyPy_MemEntity.cpp python/CyPy_MemEntity.h
-    python/CyPy_Character.cpp python/CyPy_Character.h
     python/CyPy_BaseMind.cpp python/CyPy_BaseMind.h
     python/CyPy_Task.cpp python/CyPy_Task.h
     python/CyPy_WorldTime.cpp python/CyPy_WorldTime.h

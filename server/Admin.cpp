@@ -26,7 +26,6 @@
 
 
 #include "rulesets/LocatedEntity.h"
-#include "rulesets/Character.h"
 
 #include "rulesets/BaseWorld.h"
 #include "common/id.h"

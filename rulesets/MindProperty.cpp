@@ -20,7 +20,6 @@
 #include "server/PossessionAuthenticator.h"
 #include "server/ExternalMindsManager.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/BaseMind.h"
 
 #include "common/Setup.h"

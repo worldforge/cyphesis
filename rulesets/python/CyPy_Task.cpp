@@ -16,13 +16,16 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/PythonWrapper.h>
-#include <rulesets/PythonEntityScript.h>
 #include "CyPy_Task.h"
 #include "CyPy_Operation.h"
 #include "CyPy_LocatedEntity.h"
 #include "CyPy_UsageInstance.h"
 #include "CyPy_EntityLocation.h"
+#include "CyPy_Element.h"
+
+#include "rulesets/PythonWrapper.h"
+#include "rulesets/PythonEntityScript.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)

@@ -22,7 +22,6 @@
 
 #include "Python_Script_Utils.h"
 #include "PythonArithmeticScript.h"
-#include "Character.h"
 
 /// \brief PythonArithmeticFactory constructor
 ///

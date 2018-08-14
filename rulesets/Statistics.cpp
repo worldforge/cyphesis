@@ -21,7 +21,6 @@
 
 #include "Statistics.h"
 
-#include "Character.h"
 #include "ArithmeticScript.h"
 
 #include "common/log.h"

@@ -30,7 +30,6 @@
 #include "python_testers.h"
 
 #include "rulesets/Python_API.h"
-#include "rulesets/Character.h"
 #include "rulesets/Task.h"
 
 #include <cassert>

@@ -23,6 +23,10 @@
 #include "CyPy_Point3D.h"
 #include "CyPy_Operation.h"
 #include "CyPy_EntityLocation.h"
+#include "CyPy_Props.h"
+#include "CyPy_Location.h"
+#include "CyPy_Element.h"
+#include "common/Inheritance.h"
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)

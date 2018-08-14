@@ -17,6 +17,7 @@
  */
 
 #include "CyPy_MemEntity.h"
+#include "common/id.h"
 
 CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)

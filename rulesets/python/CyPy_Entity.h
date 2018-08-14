@@ -33,12 +33,6 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         static void init_type();
 
-        static bool check(PyObject* object);
-
-        static bool check(const Py::Object& object);
-
-        static Ref<Entity> value(const Py::Object& object);
-
         static Py::Object send_world(const Ref<Entity>& entity, const Py::Tuple& args);
 
         static Py::Object start_task(const Ref<Entity>& entity, const Py::Tuple& args);

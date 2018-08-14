@@ -34,8 +34,6 @@
 #include "server/ServerRouting.h"
 #include "server/SystemAccount.h"
 
-#include "rulesets/Character.h"
-
 #include "common/id.h"
 #include "common/TypeNode.h"
 #include "common/CommSocket.h"

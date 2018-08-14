@@ -19,7 +19,6 @@
 #include "EntityBuilder.h"
 #include "WorldRouter.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/Plant.h"
 
 #include "common/debug.h"

@@ -29,7 +29,6 @@
 #include "server/MindInspector.h"
 
 #include "rulesets/Entity.h"
-#include "rulesets/Character.h"
 #include "rulesets/MindProperty.h"
 
 #include "common/SystemTime.h"

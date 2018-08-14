@@ -23,7 +23,6 @@
 #include "MindInspector.h"
 
 #include "rulesets/LocatedEntity.h"
-#include "rulesets/Character.h"
 #include "rulesets/MindProperty.h"
 #include "rulesets/Domain.h"
 
@@ -327,16 +326,12 @@ bool StorageManager::storeThoughts(LocatedEntity * ent)
         return false;
     }
     //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
-    Character* character = dynamic_cast<Character*>(ent);
-    if (character) {
-
-        auto mindProperty = character->getPropertyClassFixed<MindProperty>();
-        if (mindProperty) {
-            if (mindProperty->isMindEnabled()) {
-                m_mindInspector->queryEntityForThoughts(character->getId());
-                m_outstandingThoughtRequests.insert(character->getId());
-                return true;
-            }
+    auto mindProperty = ent->getPropertyClassFixed<MindProperty>();
+    if (mindProperty) {
+        if (mindProperty->isMindEnabled()) {
+            m_mindInspector->queryEntityForThoughts(ent->getId());
+            m_outstandingThoughtRequests.insert(ent->getId());
+            return true;
         }
     }
     return false;

@@ -52,7 +52,6 @@
 
 #include <cassert>
 #include <server/Ruleset.h>
-#include <rulesets/Character.h>
 
 #include "DatabaseNull.h"
 
@@ -341,7 +340,6 @@ int main()
 #include "rulesets/TerrainProperty.h"
 #include "rulesets/DomainProperty.h"
 
-#include "rulesets/Character.h"
 #include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"

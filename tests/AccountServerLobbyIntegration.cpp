@@ -210,8 +210,6 @@ int main()
 #include "server/Persistence.h"
 #include "server/PossessionAuthenticator.h"
 
-#include "rulesets/Character.h"
-
 #include "common/const.h"
 #include "common/globals.h"
 #include "common/id.h"

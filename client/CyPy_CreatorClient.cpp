@@ -16,13 +16,17 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "CyPy_CreatorClient.h"
+
 #include "rulesets/python/CyPy_Element.h"
 #include "rulesets/python/CyPy_RootEntity.h"
 #include "rulesets/python/CyPy_LocatedEntity.h"
 #include "rulesets/python/CyPy_Operation.h"
 #include "rulesets/python/CyPy_MemMap.h"
 #include "rulesets/python/CyPy_WorldTime.h"
-#include "CyPy_CreatorClient.h"
+#include "rulesets/python/CyPy_Location.h"
+
+#include "common/TypeNode.h"
 
 CyPy_CreatorClient::CyPy_CreatorClient(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds) :
     WrapperBase(self, args, kwds)
