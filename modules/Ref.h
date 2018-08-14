@@ -34,11 +34,13 @@ class Ref
 
         constexpr Ref(Ref&& rhs) noexcept;
 
+        /* implicit */
         constexpr Ref(T* entity);
 
         /**
          * This allows us to create a new Ref from a Ref for a subclass.
          */
+        /* implicit */
         template<class TSubclass>
         constexpr operator Ref<TSubclass>() const noexcept
         {
@@ -48,6 +50,7 @@ class Ref
         /**
          * This allows us to create a new Ref from a Ref for a subclass.
          */
+        /* implicit */
         template<class TSubclass>
         constexpr operator Ref<const TSubclass>() const noexcept
         {
@@ -119,7 +122,7 @@ class Ref
             return m_inner;
         }
 
-        constexpr operator bool() const
+        constexpr explicit operator bool() const
         {
             return (m_inner != nullptr);
         }

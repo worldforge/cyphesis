@@ -300,7 +300,7 @@ void ArchetypeFactory::resolveEntityReference(std::map<std::string, EntityCreati
             auto resolvedI = entities.find(id);
             if (resolvedI != entities.end()) {
                 if (resolvedI->second.createdEntity != nullptr) {
-                    attr = Atlas::Message::Element(resolvedI->second.createdEntity);
+                    attr = Atlas::Message::Element(resolvedI->second.createdEntity.get());
                     return;
                 } else {
                     log(WARNING, String::compose("Attribute '%1' refers to an entity which wasn't created.", id));
