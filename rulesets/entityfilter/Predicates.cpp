@@ -201,4 +201,19 @@ namespace EntityFilter {
     {
         return !m_pred->isMatch(context);
     }
+
+    BoolPredicate::BoolPredicate(const Consumer<QueryContext>* consumer) :
+        m_consumer(consumer)
+    {
+    }
+
+    bool BoolPredicate::isMatch(const QueryContext& context) const
+    {
+        if (!m_consumer) {
+            return false;
+        }
+        Atlas::Message::Element value;
+        m_consumer->value(value, context);
+        return value.isInt() && value.Int() != 0;
+    }
 }

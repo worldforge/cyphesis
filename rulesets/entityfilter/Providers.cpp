@@ -138,6 +138,20 @@ namespace EntityFilter {
         }
     }
 
+    ChildProvider::ChildProvider(Consumer<LocatedEntity>* consumer)
+        : EntityProvider(consumer)
+    {
+    }
+
+    void ChildProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+    {
+        if (m_consumer && context.child) {
+            m_consumer->value(value, *context.child);
+        } else {
+            value = (void*) (context.child);
+        }
+    }
+
     SelfEntityProvider::SelfEntityProvider(Consumer<LocatedEntity>* consumer) :
         ConsumingProviderBase<LocatedEntity, QueryContext>(consumer)
     {
@@ -364,21 +378,24 @@ namespace EntityFilter {
         Atlas::Message::Element container;
         m_consumer->value(container, context);
         if (container.isPtr()) {
-            value = checkContainer((LocatedEntitySet*) container.Ptr());
+            value = checkContainer((LocatedEntitySet*) container.Ptr(), context);
         } else {
             value = false;
         }
     }
 
-    bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container) const
+    bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container,
+                                                           const QueryContext& context) const
     {
+        QueryContext childContext = context;
         for (auto& item : *container) {
-            if (m_condition->isMatch(QueryContext{*item})) {
+            childContext.child = item.get();
+            if (m_condition->isMatch(childContext)) {
                 return true;
             } else {
                 //If an item we're looking at also contains other items - check them too using recursion
                 if (item->m_contains && !item->m_contains->empty()) {
-                    if (this->checkContainer(item->m_contains)) {
+                    if (this->checkContainer(item->m_contains, context)) {
                         return true;
                     }
                 }
@@ -407,6 +424,8 @@ namespace EntityFilter {
                 return createEntityProvider<ActorProvider>(std::move(segments));
             } else if (first_attribute == "tool") {
                 return createEntityProvider<ToolProvider>(std::move(segments));
+            } else if (first_attribute == "child") {
+                return createEntityProvider<ChildProvider>(std::move(segments));
             }
         }
         return nullptr;

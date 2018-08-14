@@ -25,6 +25,7 @@
 #include <Atlas/Message/Element.h>
 #include <list>
 #include <utility>
+#include <map>
 
 class OutfitProperty;
 
@@ -38,9 +39,29 @@ namespace EntityFilter {
 
     struct QueryContext
     {
+        /**
+         * The main entity which the filter is applied on. This is required, all other parameters are optional.
+         */
         LocatedEntity& entity;
+
+        /**
+         * Represents an actor, mainly used together with the "tool" field. The "actor" is the entity which uses the "tool".
+         */
         LocatedEntity* actor = nullptr;
+
+        /**
+         * Represents something being used, often along with an "actor".
+         */
         LocatedEntity* tool = nullptr;
+
+        /**
+         * Do not set this field yourself. This is used when iterating through Entity sets, and is set automatically by the Providers.
+         */
+        LocatedEntity* child = nullptr;
+
+        /**
+         * A memory, using when filters are attached to Minds.
+         */
         std::map<std::string, Atlas::Message::Element> memory;
 
         //This field can be used by client code to specify entity for "self.*" query
@@ -234,6 +255,15 @@ namespace EntityFilter {
 
     };
 
+    class ChildProvider : public EntityProvider
+    {
+        public:
+            explicit ChildProvider(Consumer<LocatedEntity>* consumer);
+
+            void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+    };
+
     class SelfEntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
     {
         public:
@@ -380,7 +410,8 @@ namespace EntityFilter {
             ///\brief A Consumer which must return LocatedEntitySet* i.e. entity.contains
             Consumer<QueryContext>* m_consumer;
 
-            bool checkContainer(LocatedEntitySet* container) const;
+            bool checkContainer(LocatedEntitySet* container,
+                                const QueryContext& context) const;
     };
 
     class ProviderFactory

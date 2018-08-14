@@ -83,6 +83,7 @@ namespace EntityFilter {
                                    | qi::no_skip[+space >> no_case[qi::string("contains")] >> +space]
                                    | qi::no_skip[+space >> no_case[qi::string("in")] >> +space]
                                    | qi::no_skip[+space >> no_case[qi::string("can_reach")] >> +space];
+                comp_operator_g.name("comp operator");
 
                 //A list of logical operators
                 //String operators ("and", "or") require at least one space before and after to distinguish
@@ -90,26 +91,32 @@ namespace EntityFilter {
                 logical_operator_g %= qi::string("&&") | qi::string("||") | qi::string("!") | no_skip[+space >> no_case[qi::string("and")] >> +space] |
                                       no_skip[+space >> no_case[qi::string("or")] >> +space] |
                                       no_skip[+space >> no_case[qi::string("not")] >> +space];
+                logical_operator_g.name("logical operator");
 
                 //An attribute of a segment. no_skip is used to disable skipper parser and read white spaces
                 segment_attribute_g %= qi::no_skip[+(qi::char_ - space - "." - ":" - comp_operator_g - logical_operator_g - "(" - ")" - "|" - ",")];
+                segment_attribute_g.name("segment attribute");
 
                 //A single segment. Consists of a delimiter followed by the attribute. (i.e. ".type")
                 segment_g %= (char_(".") | char_(":")) >>
                                                        segment_attribute_g;
+                segment_g.name("segment");
 
                 //Special segment is used as the first segment in a token (it has no delimiter)
                 //qi eps is used to specify that the delimiter is empty
                 special_segment_g = (qi::eps[at_c<0>(_val) = ""] >>
                                                                  (segment_attribute_g)[at_c<1>(_val) = _1]);
+                special_segment_g.name("special expr");
 
                 //Collects segments into SegmentsList, which is used to construct
                 //a consumer by a consumer factory
                 segmented_expr_g %= special_segment_g >> +segment_g;
+                segmented_expr_g.name("segmented expr");
 
                 //Distinguish between string literals from regular segments
                 //(i.e. entity.type="entity")
                 quoted_string_g %= "'" >> +(char_ - "'") >> "'";
+                quoted_string_g.name("quoted string");
 
                 //Construct a new consumer. Simple values are constructed via FixedElementProvider.
                 //Doubles have to have a dot, otherwise numbers are parsed as int (this affects type of Element)
@@ -147,6 +154,8 @@ namespace EntityFilter {
 
                     special_segment_g[_val = boost::phoenix::bind(&ProviderFactory::createProvider, m_factory, _1)];
 
+                consumer_g.name("consumer");
+
                 //Construct comparer predicate, depending on which comparison operator we encounter.
                 comparer_predicate_g =
                     //Try to match a normal case, but save LHS and comparator into local variables
@@ -165,6 +174,7 @@ namespace EntityFilter {
                         //is interpreted as entity.type instance_of types.bear || entity.type instance_of types.tiger
                         >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1, _d))])
                         >> qi::eps[_val = _c];
+                comparer_predicate_g.name("comparer predicate");
 
                 //Construct a predicate with logical operators
                 predicate_g =
@@ -178,8 +188,10 @@ namespace EntityFilter {
                                                    (("||" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)]) |
                                                    qi::eps[_val = _a]) |
                     //Collect parentheses
-                    "(" >> predicate_g[_val = _1] >> ")";
-
+                    "(" >> predicate_g[_val = _1] >> ")"
+                    |
+                    consumer_g[_val = new_<BoolPredicate>(_1)];
+                predicate_g.name("predicate");
 
                 //Another level that constructs predicates after parentheses were consumed
                 parenthesised_predicate_g = predicate_g[_a = _1] >>
@@ -187,6 +199,8 @@ namespace EntityFilter {
                                                                   (("||" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)]) |
                                                                   qi::eps[_val = _a]) |
                                             "(" >> parenthesised_predicate_g[_val = _1] >> ")";
+
+                parenthesised_predicate_g.name("parenthesised predicate");
             }
 
             const ProviderFactory& m_factory;
@@ -197,8 +211,7 @@ namespace EntityFilter {
             qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> special_segment_g;
             qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
             qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
-            qi::rule<Iterator, Consumer < QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type>
-            consumer_g;
+            qi::rule<Iterator, Consumer < QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type> consumer_g;
             qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*, Consumer < QueryContext>*, Predicate*, ComparePredicate::Comparator>> comparer_predicate_g;
             qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*>> predicate_g;
             qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;

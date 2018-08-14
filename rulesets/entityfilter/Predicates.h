@@ -79,6 +79,16 @@ class NotPredicate : public Predicate {
 
         const Predicate* m_pred;
 };
+
+class BoolPredicate : public Predicate {
+    public:
+        explicit BoolPredicate(const Consumer<QueryContext>* consumer);
+
+        bool isMatch(const QueryContext& context) const override;
+
+        const Consumer<QueryContext>* m_consumer;
+};
+
 }
 
 #endif

@@ -67,7 +67,7 @@ struct TestEntity : Entity
 
 struct TestDomain : Domain
 {
-    TestDomain(LocatedEntity& e) : Domain(e)
+    explicit TestDomain(LocatedEntity& e) : Domain(e)
     {}
 
     void tick(double t, OpVector& res) override
@@ -94,7 +94,7 @@ struct TestDomain : Domain
      * @param observingEntity The entity that is observing.
      * @param entityList A list of entities.
      */
-    void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
+    void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override
     {}
 
     bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override
@@ -284,11 +284,7 @@ void EntityFilterTest::test_SoftProperty()
     //test query with spaces
     TestQuery("  entity.type = types.barrel   ", {m_b1}, {m_bl1});
 
-    try {
-        TestQuery("foobar", {}, {m_b1, m_bl1});
-        assert(false);
-    } catch (std::invalid_argument& e) {
-    }
+    TestQuery("foobar", {}, {m_b1, m_bl1});
 
     //test a non-existing type
     try {
@@ -433,16 +429,21 @@ void EntityFilterTest::test_ContainsRecursive()
 {
     //Test contains_recursive function
     TestQuery(
-        "contains_recursive(entity.contains, entity.type=types.boulder) = True",
+        "contains_recursive(entity.contains, child.type=types.boulder)",
         {m_b1}, {m_b2});
 
     TestQuery(
-        "contains_recursive(entity.contains, entity.type=types.barrel) = True",
+        "contains_recursive(entity.contains, child.type=types.barrel)",
         {m_b1, m_bl1}, {m_b2});
 
     TestQuery(
-        "contains_recursive(entity.contains, entity.type=types.barrel or entity.mass = 25) = true",
+        "contains_recursive(entity.contains, child.type=types.barrel or child.mass = 25) = true",
         {m_b1, m_bl1}, {m_b2});
+
+
+    TestContextQuery(
+        "contains_recursive(entity.contains, child = tool)",
+        {{*m_b1, nullptr, m_bl1.get()}}, {});
 }
 
 void EntityFilterTest::setup()
@@ -686,6 +687,7 @@ void EntityFilterTest::teardown()
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubDensityProperty.h"

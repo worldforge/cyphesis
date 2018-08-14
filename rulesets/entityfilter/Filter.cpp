@@ -10,6 +10,7 @@ namespace EntityFilter
 Filter::Filter(const std::string &what, const ProviderFactory& factory)
 {
     parser::query_parser<std::string::const_iterator> grammar(factory);
+    //boost::spirit::qi::debug(grammar.parenthesised_predicate_g);
     auto iter_begin = what.begin();
     auto iter_end = what.end();
     bool parse_success;
