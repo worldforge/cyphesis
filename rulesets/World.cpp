@@ -72,7 +72,7 @@ World::~World() = default;
 void World::LookOperation(const Operation & op, OpVector & res)
 {
     // We must be the top level entity
-    assert(m_location.m_loc == nullptr);
+    assert(m_location.m_parent == nullptr);
     // We must contains something, or where the hell did the look come from?
     assert(m_contains != nullptr);
 
@@ -89,8 +89,8 @@ void World::LookOperation(const Operation & op, OpVector & res)
     BaseWorld::instance().addPerceptive(from.get());
 
     Domain* domain = nullptr;
-    if (m_location.m_loc) {
-        domain = m_location.m_loc->getDomain();
+    if (m_location.m_parent) {
+        domain = m_location.m_parent->getDomain();
     }
     if (domain) {
         generateSightOp(*from, op, res);
@@ -109,7 +109,7 @@ void World::LookOperation(const Operation & op, OpVector & res)
 
 void World::MoveOperation(const Operation & op, OpVector & res)
 {
-    assert(m_location.m_loc == nullptr);
+    assert(m_location.m_parent == nullptr);
     // Can't move the world.
 }
 
@@ -141,7 +141,7 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
             log(ERROR, "World::DeleteOperation got delete op with arg but no id.");
         }
     } else {
-        assert(m_location.m_loc == nullptr);
+        assert(m_location.m_parent == nullptr);
         // Deleting has no effect.
     }
 }

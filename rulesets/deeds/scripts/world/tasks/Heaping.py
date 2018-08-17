@@ -23,7 +23,7 @@ class Heaping(server.Task):
         if len(op) < 1:
             sys.stderr.write("%s task has no target in setup op" % self.__class__.__name__)
 
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -118,7 +118,7 @@ class Heaping(server.Task):
             raise Heaping.Obstructed("Another mod is in the way")
     def _create_initial_mod(self):
         print("no existing mod")
-        y=self.character.location.coordinates.y + 1.0
+        y=self.character.location.position.y + 1.0
         modmap = {'height': y,
                   'shape': Polygon([[ -0.7, -0.7 ],
                                     [ -1.0, 0.0 ],
@@ -134,7 +134,7 @@ class Heaping(server.Task):
 
         mod_loc = Location(self.character.location.parent)
         mod_loc.velocity = Vector3D()
-        mod_loc.coordinates = self.pos
+        mod_loc.position = self.pos
 
         mod_create=Operation("create",
                              Entity(name="motte",

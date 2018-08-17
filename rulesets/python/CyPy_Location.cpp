@@ -34,10 +34,10 @@ CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py:
         //If it's a LocatedEntity there could be an additional position too.
         if (args.length() == 1 && CyPy_EntityLocation::check(args[0])) {
             const auto& entityLocation = CyPy_EntityLocation::value(args[0]);
-            m_value.m_loc = entityLocation.m_loc;
+            m_value.m_parent = entityLocation.m_parent;
             m_value.m_pos = entityLocation.m_pos;
         } else {
-            m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(args[0]);
+            m_value.m_parent = &verifyObject<CyPy_LocatedEntity>(args[0]);
             if (args.length() == 2) {
                 m_value.m_pos = CyPy_Point3D::parse(args[1]);
             }
@@ -71,15 +71,13 @@ Py::Object CyPy_Location::copy()
 Py::Object CyPy_Location::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
-    //FIXME: rename to "loc"
     if ("parent" == nameStr) {
-        if (!m_value.m_loc) {
+        if (!m_value.m_parent) {
             return Py::None();
         }
-        return CyPy_LocatedEntity::wrap(m_value.m_loc);
+        return CyPy_LocatedEntity::wrap(m_value.m_parent);
     }
-    //FIXME: rename to "pos"
-    if ("coordinates" == nameStr) {
+    if ("pos" == nameStr) {
         return CyPy_Point3D::wrap(m_value.m_pos);
     }
     if ("velocity" == nameStr) {
@@ -98,12 +96,11 @@ int CyPy_Location::setattro(const Py::String& name, const Py::Object& attr)
 {
 
     auto nameStr = name.as_string();
-    //FIXME: rename to "loc"
     if (nameStr == "parent") {
         if (!CyPy_LocatedEntity::check(attr)) {
             throw Py::TypeError("parent must be an entity");
         }
-        m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(attr);
+        m_value.m_parent = &verifyObject<CyPy_LocatedEntity>(attr);
 
         return 0;
     }
@@ -136,8 +133,7 @@ int CyPy_Location::setattro(const Py::String& name, const Py::Object& attr)
     } else {
         throw Py::TypeError("value must be a vector");
     }
-    //FIXME: rename to "pos"
-    if (nameStr == "coordinates") {
+    if (nameStr == "pos") {
         m_value.m_pos = Point3D(vector.x(), vector.y(), vector.z());
         return 0;
     }

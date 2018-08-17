@@ -33,7 +33,7 @@ class Sift(server.Task):
             sys.stderr.write("Sift task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -80,9 +80,9 @@ class Sift(server.Task):
             moisture = 10 * world.moisture
         else:
             moisture = 1
-        self_loc.coordinates = self.pos
+        self_loc.position = self.pos
 
-        quality = int(self.get_quality(self_loc.coordinates, self.target(), moisture))
+        quality = int(self.get_quality(self_loc.position, self.target(), moisture))
         print(quality)
         for i in range(int(quality/2), quality):
             res = res + Operation("create", Entity(name = "scrawny earthworm", parent="annelid", location = self_loc), to=self.character)

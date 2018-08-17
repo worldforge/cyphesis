@@ -57,7 +57,7 @@ AwareMind::~AwareMind()
         auto& entities = m_map.getEntities();
         //Remove all our still known entities from the awareness
         for (auto entry : entities) {
-            if (entry.second->m_location.m_loc == m_location.m_loc) {
+            if (entry.second->m_location.m_parent == m_location.m_parent) {
                 mAwareness->removeEntity(*this, *entry.second);
             }
         }
@@ -187,12 +187,12 @@ void AwareMind::entityAdded(const MemEntity& entity)
     if (mAwareness) {
 //        log(INFO, String::compose("Adding entity %1", entity.getId()));
         //TODO: check if the entity is dynamic
-        if (entity.m_location.m_loc == m_location.m_loc) {
+        if (entity.m_location.m_parent == m_location.m_parent) {
             mAwareness->addEntity(*this, entity, false);
         }
     } else {
         //Check if we've received the current domain entity.
-        if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
+        if (this->m_location.m_parent && entity.getIntId() == this->m_location.m_parent->getIntId()) {
             //log(INFO, "Creating awareness.");
             requestAwareness(entity);
 
@@ -213,7 +213,7 @@ void AwareMind::requestAwareness(const MemEntity& entity)
     //Add all existing known entities that have the same parent entity as ourselves.
     for (auto entry : entities) {
         if (entry.first != getIntId()) {
-            if (entry.second->m_location.m_loc == m_location.m_loc) {
+            if (entry.second->m_location.m_parent == m_location.m_parent) {
                 mAwareness->addEntity(*this, *entry.second, false);
             }
         }
@@ -227,18 +227,18 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
         //Update the awareness if location, position, velocity, orientation or bbox has changed
         if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
                 || ent->hasAttr("orientation") || ent->hasAttr("bbox")) {
-            if (oldLocation == entity.m_location.m_loc.get()) {
+            if (oldLocation == entity.m_location.m_parent.get()) {
                 //Location wasn't changed
-                if (entity.m_location.m_loc == this->m_location.m_loc) {
+                if (entity.m_location.m_parent == this->m_location.m_parent) {
                     //log(INFO, "Updated entity.");
                     mAwareness->updateEntityMovement(*this, entity);
                 }
             } else {
                 //Check if new location is the domain, and then add the entity
-                if (entity.m_location.m_loc == this->m_location.m_loc) {
+                if (entity.m_location.m_parent == this->m_location.m_parent) {
                     //log(INFO, "Adding entity.");
                     mAwareness->addEntity(*this, entity, false);
-                } else if (oldLocation == this->m_location.m_loc.get()) {
+                } else if (oldLocation == this->m_location.m_parent.get()) {
                     //log(INFO, "Removing entity.");
                     mAwareness->removeEntity(*this, entity);
                 }
@@ -250,7 +250,7 @@ void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Ent
             }
         }
     } else {
-        if (this->m_location.m_loc && entity.getIntId() == this->m_location.m_loc->getIntId()) {
+        if (this->m_location.m_parent && entity.getIntId() == this->m_location.m_parent->getIntId()) {
             if (ent->hasAttr("terrain")) {
 
                 Atlas::Message::Element terrainElement;

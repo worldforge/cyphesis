@@ -53,12 +53,12 @@ IGEntityExerciser::IGEntityExerciser(Ref<Entity> e) :
     if (e->getIntId() == 0) {
         new TestWorld(e);
     } else {
-        assert(e->m_location.m_loc != nullptr);
-        e->m_location.m_loc = new Entity("0", 0);
-        e->m_location.m_loc->makeContainer();
-        assert(e->m_location.m_loc->m_contains != nullptr);
-        e->m_location.m_loc->m_contains->insert(e);
-        new TestWorld(e->m_location.m_loc);
+        assert(e->m_location.m_parent != nullptr);
+        e->m_location.m_parent = new Entity("0", 0);
+        e->m_location.m_parent->makeContainer();
+        assert(e->m_location.m_parent->m_contains != nullptr);
+        e->m_location.m_parent->m_contains->insert(e);
+        new TestWorld(e->m_location.m_parent);
     }
     BaseWorld::instance().addEntity(e);
 }
@@ -218,8 +218,8 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        if (this->m_ent->m_location.m_loc != nullptr) {
-            move_arg->setLoc(this->m_ent->m_location.m_loc->getId());
+        if (this->m_ent->m_location.m_parent != nullptr) {
+            move_arg->setLoc(this->m_ent->m_location.m_parent->getId());
             this->m_ent->MoveOperation(op, ov);
             if (!ov.empty()) {
                 assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
@@ -235,8 +235,8 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        if (this->m_ent->m_location.m_loc != nullptr) {
-            move_arg->setLoc(this->m_ent->m_location.m_loc->getId());
+        if (this->m_ent->m_location.m_parent != nullptr) {
+            move_arg->setLoc(this->m_ent->m_location.m_parent->getId());
         }
         std::vector<double> pos(3, 0);
         move_arg->setPos(pos);

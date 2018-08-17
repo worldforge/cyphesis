@@ -87,13 +87,13 @@ void BaseMindMapEntityintegration::test_MemMapdel_top()
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->m_contains = new LocatedEntitySet;
-    e2->m_location.m_loc = tlve;
+    e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->m_contains = new LocatedEntitySet;
-    e3->m_location.m_loc = e2;
+    e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
 
@@ -103,7 +103,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_top()
     m_mind->m_map.del(tlve->getId());
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
-    ASSERT_FALSE(e2->m_location.m_loc);
+    ASSERT_FALSE(e2->m_location.m_parent);
     ASSERT_TRUE(e2->m_contains->find(e3) != e2->m_contains->end());
 }
 
@@ -117,13 +117,13 @@ void BaseMindMapEntityintegration::test_MemMapdel_mid()
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->m_contains = new LocatedEntitySet;
-    e2->m_location.m_loc = tlve;
+    e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->m_contains = new LocatedEntitySet;
-    e3->m_location.m_loc = e2;
+    e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
 
@@ -138,7 +138,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_mid()
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
     ASSERT_TRUE(tlve->m_contains->find(e2) == tlve->m_contains->end());
 
-    ASSERT_FALSE(e2->m_location.m_loc);
+    ASSERT_FALSE(e2->m_location.m_parent);
     ASSERT_EQUAL(e2->checkRef(), 0);
 }
 
@@ -152,13 +152,13 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->m_contains = new LocatedEntitySet;
-    e2->m_location.m_loc = tlve;
+    e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->m_contains = new LocatedEntitySet;
-    e3->m_location.m_loc = e2;
+    e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
 
@@ -173,7 +173,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
     ASSERT_TRUE(tlve->m_contains->find(e2) != tlve->m_contains->end());
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
 
-    ASSERT_FALSE(e3->m_location.m_loc);
+    ASSERT_FALSE(e3->m_location.m_parent);
     ASSERT_EQUAL(e3->checkRef(), 0);
 }
 
@@ -185,7 +185,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->m_contains = new LocatedEntitySet;
-    e2->m_location.m_loc = tlve;
+    e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
@@ -193,7 +193,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     m_mind->m_map.m_entities[3] = e3;
 
     ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
-    ASSERT_FALSE(e3->m_location.m_loc);
+    ASSERT_FALSE(e3->m_location.m_parent);
 
     Anonymous data;
     data->setLoc(tlve->getId());
@@ -201,7 +201,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     // Read in entity data the sets the LOC of e3 to tlve
     m_mind->m_map.readEntity(e3, data, 0);
 
-    ASSERT_EQUAL(e3->m_location.m_loc.get(), tlve.get())
+    ASSERT_EQUAL(e3->m_location.m_parent.get(), tlve.get())
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
 
@@ -213,13 +213,13 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->m_contains = new LocatedEntitySet;
-    e2->m_location.m_loc = tlve;
+    e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->m_contains = new LocatedEntitySet;
-    e3->m_location.m_loc = e2;
+    e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
 
@@ -231,7 +231,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     // Read in entity data that changes the LOC of e3 from e2 to TLVE
     m_mind->m_map.readEntity(e3, data, 0);
 
-    ASSERT_EQUAL(e3->m_location.m_loc.get(), tlve.get())
+    ASSERT_EQUAL(e3->m_location.m_parent.get(), tlve.get())
     ASSERT_TRUE(e2->m_contains->find(e3) == e2->m_contains->end());
     ASSERT_TRUE(tlve->m_contains->find(e3) != tlve->m_contains->end());
 }
@@ -283,14 +283,14 @@ void BaseMindMapEntityintegration::test_MemMapcheck()
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->setType(MemMap::m_entity_type);
     e2->m_contains = new LocatedEntitySet;
-    e2->m_location.m_loc = tlve;
+    e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->setType(MemMap::m_entity_type);
     e3->m_contains = new LocatedEntitySet;
-    e3->m_location.m_loc = e2;
+    e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
 
@@ -311,7 +311,7 @@ void BaseMindMapEntityintegration::test_MemMapcheck()
 
     //TODO: Enable this check again, as we've disabled removal of entities from MemMap since there are issues
     // Check the reference we have is the only one remaining
-    //ASSERT_NULL(e3->m_location.m_loc)
+    //ASSERT_NULL(e3->m_location.m_parent)
 
     //TODO: Enable this check again; it's disabled since we've disabled ref decrements in MemMap, since the knowledge code doesn't handle entity references correctly.
     //ASSERT_EQUAL(e3->checkRef(), 0);

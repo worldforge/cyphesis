@@ -19,7 +19,7 @@ class Destroying(server.Task):
             sys.stderr.write("Destroy task has no target in attack op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -39,7 +39,7 @@ class Destroying(server.Task):
 
         res=Oplist()
         chunk_loc = self.target().location.copy()
-        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.position = self.target().location.position
         chunk_loc.orientation = self.target().location.orientation
         # Some entity do not have status defined. If not present we assume that the entity is unharmed 
         if hasattr ( self.target().props, 'status' ) :

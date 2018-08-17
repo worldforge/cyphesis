@@ -93,10 +93,6 @@ int CyPy_LocatedEntityBase<TValue, TPythonClass>::setattro(const Py::String& nam
 {
     auto nameStr = name.as_string();
 
-    //FIXME: perhaps in BaseMind instead?
-    if (nameStr == "map") {
-        throw Py::AttributeError("map attribute forbidden");
-    }
     if (nameStr == "type") {
         if (this->m_value->getType()) {
             throw Py::RuntimeError("Cannot mutate entity type");

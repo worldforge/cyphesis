@@ -62,7 +62,7 @@ void BiomassPropertyintegration::setup()
     m_world = new Entity("0", 0);
 
     m_entity = new Entity("1", 1);
-    m_entity->m_location.m_loc = m_world;
+    m_entity->m_location.m_parent = m_world;
 
     PropertyFactory<BiomassProperty> decays_property_factory;
 

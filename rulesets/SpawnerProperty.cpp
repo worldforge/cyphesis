@@ -172,7 +172,7 @@ void SpawnerProperty::handleTick(LocatedEntity * e, const Operation & op,
         return;
     }
 
-    auto parentLoc = e->m_location.m_loc;
+    auto parentLoc = e->m_location.m_parent;
     float squared_radius = m_radius * m_radius;
     auto container_entity = parentLoc;
     if (m_mode_external) {
@@ -273,7 +273,7 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
     create_arg->setAttr("orientation", orientation.toAtlas());
 
     Create create;
-    create->setTo(e->m_location.m_loc->getId());
+    create->setTo(e->m_location.m_parent->getId());
     create->setArgs1(create_arg);
     res.push_back(create);
 

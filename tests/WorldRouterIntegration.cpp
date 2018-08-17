@@ -103,7 +103,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
             ASSERT_EQUAL(3, test_world->m_entityCount);
             //Make sure ent2 is a child of ent1.
-            ASSERT_EQUAL(ent2->m_location.m_loc.get(), ent1.get());
+            ASSERT_EQUAL(ent2->m_location.m_parent.get(), ent1.get());
 
             //Make sure that a child when removed has all references removed too.
             test_world->delEntity(ent2.get());
@@ -200,7 +200,7 @@ void WorldRouterintegration::test_sequence()
 
     Entity* ent2 = new Thing(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = base;
+    ent2->m_location.m_parent = base;
     ent2->m_location.m_pos = Point3D(0, 0, 0);
     test_world->addEntity(ent2);
 

@@ -104,7 +104,7 @@ struct TestDomain : Domain
             return false;
         }
         //Only allow reaching if parent or child
-        if (reachingEntity.m_location.m_loc == &queriedEntity || queriedEntity.m_location.m_loc == &reachingEntity) {
+        if (reachingEntity.m_location.m_parent == &queriedEntity || queriedEntity.m_location.m_parent == &reachingEntity) {
             return true;
         }
         return false;
@@ -523,13 +523,13 @@ void EntityFilterTest::setup()
 //b1 contains bl1 which contains b3
     m_b1_container = new LocatedEntitySet;
     m_b1_container->insert(m_bl1);
-    m_bl1->m_location.m_loc = m_b1;
+    m_bl1->m_location.m_parent = m_b1;
     m_b1->m_contains = m_b1_container;
     m_b1->test_setDomain(new TestDomain(*m_b1));
 
     m_bl1_container = new LocatedEntitySet;
     m_bl1_container->insert(m_b3);
-    m_b3->m_location.m_loc = m_bl1;
+    m_b3->m_location.m_parent = m_bl1;
 
     m_bl1->m_contains = m_bl1_container;
 

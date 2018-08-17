@@ -53,7 +53,7 @@ void RespawningProperty::remove(LocatedEntity *owner, const std::string & name)
 void RespawningProperty::apply(LocatedEntity * ent)
 {
     //Check if we're already in limbo.
-    if (BaseWorld::instance().getLimboLocation() && ent->m_location.m_loc.get() == BaseWorld::instance().getLimboLocation()) {
+    if (BaseWorld::instance().getLimboLocation() && ent->m_location.m_parent.get() == BaseWorld::instance().getLimboLocation()) {
         sigc::connection* connection = sInstanceState.getState(ent);
         if (!(*connection)) {
             (*connection) = ent->propertyApplied.connect([this, ent](const std::string& propName, const PropertyBase& prop){
@@ -91,7 +91,7 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
         //Check if there are minds. If no minds are controlling we should put it in Limbo
         if (mindsProp && mindsProp->getMinds().empty() &&
                 BaseWorld::instance().getLimboLocation()) {
-            new_loc.m_loc = BaseWorld::instance().getLimboLocation();
+            new_loc.m_parent = BaseWorld::instance().getLimboLocation();
             new_loc.m_pos = Point3D::ZERO();
 
             sigc::connection* connection = sInstanceState.getState(e);
@@ -119,7 +119,7 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
             if (BaseWorld::instance().moveToSpawn(m_data, new_loc) == 0) {
             } else {
                 //TODO: handle that the entity now is in limbo
-                new_loc.m_loc = nullptr;
+                new_loc.m_parent = nullptr;
             }
         }
 

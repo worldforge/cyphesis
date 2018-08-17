@@ -121,7 +121,7 @@ void ServerAccounttest::setup()
     {
         auto ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
         if (ne) {
-            ne->m_location.m_loc = gw;
+            ne->m_location.m_parent = gw;
             ne->m_location.m_pos = Point3D(0,0,0);
             assert(ne->m_location.isValid());
         }

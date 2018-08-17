@@ -21,7 +21,7 @@ class Fishing(server.Task):
             sys.stderr.write("Fish task has no target in sow op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -53,11 +53,11 @@ class Fishing(server.Task):
         float_loc = Location(self.character.location.parent)
         #This is <server.Entity object at 0xb161b90>
         
-        float_loc.coordinates = self.pos
+        float_loc.position = self.pos
 
         bait_vector = Vector3D(0,  -0.5, - 0)
         bait_loc = float_loc.copy()
-        bait_loc.coordinates = bait_loc.coordinates + bait_vector
+        bait_loc.position = bait_loc.position + bait_vector
         
         res = Operation("create", Entity(name = "bobber", parent="bobber", location = float_loc), to = self.target())
         res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)

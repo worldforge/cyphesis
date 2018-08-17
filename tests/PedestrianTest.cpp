@@ -42,10 +42,10 @@ int main()
     Ref<Entity> e = new Entity("1", 1);
     Ref<Entity>  wrld = new Entity("0", 0);
 
-    e->m_location.m_loc = wrld;
-    e->m_location.m_loc->makeContainer();
-    assert(e->m_location.m_loc->m_contains != 0);
-    e->m_location.m_loc->m_contains->insert(e);
+    e->m_location.m_parent = wrld;
+    e->m_location.m_parent->makeContainer();
+    assert(e->m_location.m_parent->m_contains != 0);
+    e->m_location.m_parent->m_contains->insert(e);
 
     TestWorld test_world(wrld);
 

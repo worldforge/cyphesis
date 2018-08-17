@@ -153,7 +153,7 @@ void WorldRoutertest::test_addEntity()
 
     auto ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = m_rootEntity;
+    ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 }
@@ -165,7 +165,7 @@ void WorldRoutertest::test_addEntity_tick()
 
     auto ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = m_rootEntity;
+    ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -183,7 +183,7 @@ void WorldRoutertest::test_addEntity_tick_get()
 
     auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = m_rootEntity;
+    ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -217,7 +217,7 @@ void WorldRoutertest::test_createSpawnPoint()
 
     auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = m_rootEntity;
+    ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -265,7 +265,7 @@ void WorldRoutertest::test_delEntity()
 
     auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_loc = m_rootEntity;
+    ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
     test_world->addEntity(ent2);
 
@@ -313,8 +313,8 @@ template class OpQueEntry<LocatedEntity>;
 // memory management works correctly.
 LocatedEntity::~LocatedEntity()
 {
-    if (m_location.m_loc) {
-        m_location.m_loc = nullptr;
+    if (m_location.m_parent) {
+        m_location.m_parent = nullptr;
     }
     delete m_contains;
 }
@@ -368,7 +368,7 @@ static bool distanceFromAncestor(const Location & self,
         return true;
     }
 
-    if (other.m_loc == nullptr) {
+    if (other.m_parent == nullptr) {
         return false;
     }
 
@@ -379,7 +379,7 @@ static bool distanceFromAncestor(const Location & self,
         c = c.toParentCoords(other.m_pos, identity);
     }
 
-    return distanceFromAncestor(self, other.m_loc->m_location, c);
+    return distanceFromAncestor(self, other.m_parent->m_location, c);
 }
 
 static bool distanceToAncestor(const Location & self,
@@ -388,8 +388,8 @@ static bool distanceToAncestor(const Location & self,
     c.setToOrigin();
     if (distanceFromAncestor(self, other, c)) {
         return true;
-    } else if ((self.m_loc) &&
-               distanceToAncestor(self.m_loc->m_location, other, c)) {
+    } else if ((self.m_parent) &&
+               distanceToAncestor(self.m_parent->m_location, other, c)) {
         if (self.orientation().isValid()) {
             c = c.toLocalCoords(self.m_pos, self.orientation());
         } else {
@@ -399,12 +399,12 @@ static bool distanceToAncestor(const Location & self,
         return true;
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_loc) {
-        std::cerr << "Self(" << self.m_loc->getId() << "," << self.m_loc->describeEntity() << ")"
+    if (self.m_parent) {
+        std::cerr << "Self(" << self.m_parent->getId() << "," << self.m_parent->describeEntity() << ")"
                   << std::endl << std::flush;
     }
-    if (other.m_loc) {
-        std::cerr << "Other(" << other.m_loc->getId() << "," << other.m_loc->describeEntity() << ")"
+    if (other.m_parent) {
+        std::cerr << "Other(" << other.m_parent->getId() << "," << other.m_parent->describeEntity() << ")"
                   << std::endl << std::flush;
     }
      
@@ -492,7 +492,7 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
 {
     if (type == "thing") {
         auto e = new Entity(id, intId);
-        e->m_location.m_loc = &world.getDefaultLocation();
+        e->m_location.m_parent = &world.getDefaultLocation();
         e->m_location.m_pos = Point3D(0,0,0);
         return e;
     }

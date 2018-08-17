@@ -20,7 +20,7 @@ class Trailblaze(server.Task):
             sys.stderr.write("Trailblaze task has no target in strike op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.stuff = 'stuff'
@@ -42,11 +42,11 @@ class Trailblaze(server.Task):
             self.rate = 0
             self.progress = 0
             if 'world' in target.type:
-                new_loc = Location(target, self.character.location.coordinates)
+                new_loc = Location(target, self.character.location.position)
                 create = Operation("create", Entity(name='pile', type='pile',
                                                     location = new_loc), to=target)
                 res.append(create)
-                self.points.append(self.character.location.coordinates)
+                self.points.append(self.character.location.position)
             elif 'pile' in target.type:
                 print('Pile')
             else:
@@ -55,9 +55,9 @@ class Trailblaze(server.Task):
                 return
         else:
             if not self.character.location.velocity.is_valid() or \
-               self.character.location.velocity.square_mag() < 1:
-                if self.character.location.coordinates != self.points[-1:][0]:
-                    self.points.append(self.character.location.coordinates)
+               self.character.location.velocity.sqr_mag() < 1:
+                if self.character.location.position != self.points[-1:][0]:
+                    self.points.append(self.character.location.position)
                 if self.rate:
                     # Finish up, and create the path
                     self._create_path(target, res)
@@ -69,8 +69,8 @@ class Trailblaze(server.Task):
             else:
                 self.progress = 0
                 self.rate = 0
-                if self.character.location.coordinates != self.points[-1:][0]:
-                    self.points.append(self.character.location.coordinates)
+                if self.character.location.position != self.points[-1:][0]:
+                    self.points.append(self.character.location.position)
         res.append(self.next_tick(1.75))
         return res
 

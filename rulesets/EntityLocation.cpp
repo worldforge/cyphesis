@@ -20,12 +20,12 @@
 #include "LocatedEntity.h"
 
 EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
-    : m_loc(std::move(loc))
+    : m_parent(std::move(loc))
 {
 }
 
 EntityLocation::EntityLocation(Ref<LocatedEntity> loc, const WFMath::Point<3>& pos)
-    : m_loc(std::move(loc)), m_pos(pos)
+    : m_parent(std::move(loc)), m_pos(pos)
 {
 }
 
@@ -36,5 +36,5 @@ const WFMath::Point<3>& EntityLocation::pos() const
 
 bool EntityLocation::isValid() const
 {
-    return (m_loc && m_pos.isValid());
+    return (m_parent && m_pos.isValid());
 }

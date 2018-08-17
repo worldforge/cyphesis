@@ -19,7 +19,7 @@ class Bisect(server.Task):
             sys.stderr.write("Bisect task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
 
@@ -51,18 +51,18 @@ class Bisect(server.Task):
 
         # work out half the materials size in this dimension. This should
         # become a parameter too
-        length = self.target().location.bbox.far_point[cut_plane] - \
-                 self.target().location.bbox.near_point[cut_plane]
+        length = self.target().location.bbox.high_corner[cut_plane] - \
+                 self.target().location.bbox.low_corner[cut_plane]
         mid = length/2
 
         res=Oplist()
         # A new BBox which changes the size of original entity
-        new_bbox = [self.target().location.bbox.near_point.x,
-                    self.target().location.bbox.near_point.y,
-                    self.target().location.bbox.near_point.z,
-                    self.target().location.bbox.far_point.x,
-                    self.target().location.bbox.far_point.y,
-                    self.target().location.bbox.far_point.z]
+        new_bbox = [self.target().location.bbox.low_corner.x,
+                    self.target().location.bbox.low_corner.y,
+                    self.target().location.bbox.low_corner.z,
+                    self.target().location.bbox.high_corner.x,
+                    self.target().location.bbox.high_corner.y,
+                    self.target().location.bbox.high_corner.z]
 
         # reduce the size of the existing entities bbox by the length to be
         # removed, along the correct axis
@@ -70,7 +70,7 @@ class Bisect(server.Task):
 
         # print "mid ", mid
 
-        # print "mod",self.target().location.coordinates, new_bbox
+        # print "mod",self.target().location.position, new_bbox
 
         set=Operation("set", Entity(self.target().id, bbox=new_bbox), to=self.target())
         res.append(set)
@@ -90,20 +90,20 @@ class Bisect(server.Task):
             pos_offset.rotate(self.target().location.orientation)
 
         # apply the offset to the new entity position
-        slice_loc.coordinates = self.target().location.coordinates + pos_offset
+        slice_loc.position = self.target().location.position + pos_offset
 
-        slice_bbox = [self.target().location.bbox.near_point.x,
-                      self.target().location.bbox.near_point.y,
-                      self.target().location.bbox.near_point.z,
-                      self.target().location.bbox.far_point.x,
-                      self.target().location.bbox.far_point.y,
-                      self.target().location.bbox.far_point.z]
+        slice_bbox = [self.target().location.bbox.low_corner.x,
+                      self.target().location.bbox.low_corner.y,
+                      self.target().location.bbox.low_corner.z,
+                      self.target().location.bbox.high_corner.x,
+                      self.target().location.bbox.high_corner.y,
+                      self.target().location.bbox.high_corner.z]
 
         # set the size of the bbox of this new entity to the know slice size
         slice_bbox[cut_plane] = 0.0
         slice_bbox[cut_plane + 3] = mid
 
-        # print "new",slice_loc.coordinates, slice_bbox
+        # print "new",slice_loc.position, slice_bbox
 
         slice_loc.orientation = self.target().location.orientation
 

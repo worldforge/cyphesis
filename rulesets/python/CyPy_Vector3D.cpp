@@ -59,7 +59,6 @@ void CyPy_Vector3D::init_type()
     PYCXX_ADD_VARARGS_METHOD(rotate, rotate, "");
     PYCXX_ADD_VARARGS_METHOD(angle, angle, "");
 
-    //FIXME: rename to "sqr_mag"
     PYCXX_ADD_NOARGS_METHOD(square_mag, sqr_mag, "");
     PYCXX_ADD_NOARGS_METHOD(mag, mag, "");
     PYCXX_ADD_NOARGS_METHOD(is_valid, is_valid, "");
@@ -115,7 +114,7 @@ Py::Object CyPy_Vector3D::rotatex(const Py::Tuple& args)
     args.verify_length(1, 1);
 
     if (!args.front().isFloat()) {
-        throw Py::TypeError("Can only rotatex with a float");
+        throw Py::TypeError("Can only rotate x with a float");
     }
     m_value.rotateX(Py::Float(args.front()));
     return self();
@@ -126,7 +125,7 @@ Py::Object CyPy_Vector3D::rotatey(const Py::Tuple& args)
     args.verify_length(1, 1);
 
     if (!args.front().isFloat()) {
-        throw Py::TypeError("Can only rotatey with a float");
+        throw Py::TypeError("Can only rotate y with a float");
     }
     m_value.rotateY(Py::Float(args.front()));
     return self();
@@ -137,7 +136,7 @@ Py::Object CyPy_Vector3D::rotatez(const Py::Tuple& args)
     args.verify_length(1, 1);
 
     if (!args.front().isFloat()) {
-        throw Py::TypeError("Can only rotatez with a float");
+        throw Py::TypeError("Can only rotate z with a float");
     }
     m_value.rotateZ(Py::Float(args.front()));
     return self();
@@ -159,7 +158,7 @@ Py::Object CyPy_Vector3D::angle(const Py::Tuple& args)
     args.verify_length(1, 1);
 
     if (!CyPy_Vector3D::check(args.front())) {
-        throw Py::TypeError("Can get angle to Vector3D\"");
+        throw Py::TypeError("Can get angle to Vector3D");
     }
     return Py::Float(WFMath::Angle(m_value, CyPy_Vector3D::value(args.front())));
 }

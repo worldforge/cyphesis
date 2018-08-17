@@ -13,14 +13,14 @@ class SkeletonMind(BaseMind):
         #target=op[0].location.copy()
         if other.location.parent.id!=self.location.parent.id: return
         if hasattr(other, "type") and other.type[0] not in ['pig', 'farmer', 'guard']: return
-        destination=other.location.coordinates
-        distance=destination.distance(self.location.coordinates)
+        destination=other.location.position
+        distance=destination.distance(self.location.position)
         if distance<1: return
         # CHeat, random chance that it ignores movement
         if uniform(0, 30/distance)<1: return
         target=Location(self.location.parent)
-        velocity=destination-self.location.coordinates
+        velocity=destination-self.location.position
         if velocity.mag()==0: return
         target.velocity=velocity.unit_vector()
-        target.coordinates=destination
+        target.position=destination
         return Operation("move", Entity(self.id, location=target))

@@ -44,10 +44,10 @@ std::pair<bool, std::string> UsageInstance::isValid() const
 
     for (size_t i = 0; i < targets.size(); ++i) {
         auto& entry = targets[i];
-        if (entry.m_loc->isDestroyed()) {
+        if (entry.m_parent->isDestroyed()) {
             return {false, String::compose("Target nr. %1 is destroyed.", i)};
         }
-        EntityFilter::QueryContext queryContext{*entry.m_loc, actor.get(), tool.get()};
+        EntityFilter::QueryContext queryContext{*entry.m_parent, actor.get(), tool.get()};
         queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
         if (!definition.targets[i]->match(queryContext)) {
             return {false, String::compose("Target nr. %1 does not match the filter.", i)};
@@ -56,10 +56,10 @@ std::pair<bool, std::string> UsageInstance::isValid() const
 
     for (size_t i = 0; i < consumed.size(); ++i) {
         auto& entry = consumed[i];
-        if (entry.m_loc->isDestroyed()) {
+        if (entry.m_parent->isDestroyed()) {
             return {false, String::compose("Consumable nr. %1 is destroyed.", i)};
         }
-        EntityFilter::QueryContext queryContext{*entry.m_loc, actor.get(), tool.get()};
+        EntityFilter::QueryContext queryContext{*entry.m_parent, actor.get(), tool.get()};
         queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
         if (!definition.consumed[i]->match(queryContext)) {
             return {false, String::compose("Consumable nr. %1 does not match the filter.", i)};

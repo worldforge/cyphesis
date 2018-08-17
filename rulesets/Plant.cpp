@@ -73,7 +73,7 @@ void Plant::dropFruit(OpVector & res, const std::string& fruitName)
                                               -height);
     Anonymous fruit_arg;
     fruit_arg->setParent(fruitName);
-    Location floc(m_location.m_loc, Point3D(rx, 0, rz));
+    Location floc(m_location.m_parent, Point3D(rx, 0, rz));
     floc.addToEntity(fruit_arg);
     Create create;
     create->setTo(getId());
@@ -173,12 +173,12 @@ void Plant::TickOperation(const Operation & op, OpVector & res)
         status->apply(this);
     }
 
-    if (m_location.m_loc != nullptr) {
+    if (m_location.m_parent != nullptr) {
         Element mode_attr;
         if (getAttrType("mode", mode_attr, Element::TYPE_STRING) == 0 && mode_attr.String() == "planted") {
         	//Only send eat ops if we're planted.
         	Eat eat_op;
-            eat_op->setTo(m_location.m_loc->getId());
+            eat_op->setTo(m_location.m_parent->getId());
             res.push_back(eat_op);
         }
 

@@ -19,10 +19,10 @@ class Pulling(server.Task):
             std.stderr.write("Pulling task has no target in pull op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
         self.points = []
-        self.points.append(self.character.location.coordinates)
+        self.points.append(self.character.location.position)
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
@@ -38,9 +38,9 @@ class Pulling(server.Task):
             return
 
         target_location = Location(self.target().location.parent,
-                                   self.target().location.coordinates)
+                                   self.target().location.position)
         target_location.velocity=Vector3D(0, -0.5, 0)
-        new_loc = self.character.location.coordinates
+        new_loc = self.character.location.position
         origin = self.points[0]
         # Get the diffrence in the location of user at current time to the time when he started the task
         diff = origin.x - new_loc.x
@@ -48,9 +48,9 @@ class Pulling(server.Task):
 
         # Replicate the diffrence in position to the corresponding change in height.
         target_location = Location(self.target().location.parent,
-                                   Point3D(self.target().location.coordinates.x, 
-                                   self.target().location.coordinates.y + diff,
-                                   self.target().location.coordinates.z))
+                                   Point3D(self.target().location.position.x, 
+                                   self.target().location.position.y + diff,
+                                   self.target().location.position.z))
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target().id, location = target_location)
 

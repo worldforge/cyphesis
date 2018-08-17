@@ -348,9 +348,9 @@ class NPCMind(server.Mind):
                     if type(objectVal) is Location:
                         #Serialize Location as tuple, with parent if available
                         if (objectVal.parent is None):
-                            location=objectVal.coordinates
+                            location=objectVal.position
                         else:
-                            location=("$eid:" + objectVal.parent.id,objectVal.coordinates)
+                            location=("$eid:" + objectVal.parent.id,objectVal.position)
                         object=str(location)
                     else:
                         object=str(d[key])
@@ -464,7 +464,7 @@ class NPCMind(server.Mind):
                     #If only coords are supplied, it's handled as a location within the same parent space as ourselves
                     if (len(locdata) == 3):
                         loc=self.location.copy()
-                        loc.coordinates=Vector3D(list(locdata))
+                        loc.position=Vector3D(list(locdata))
                     elif (len(locdata) == 2):
                         entity_id_string = locdata[0]
                         #A prefix of "$eid:" denotes an entity id; it should be stripped first.
@@ -538,7 +538,7 @@ class NPCMind(server.Mind):
             #CHEAT!: remove eval
             xyz=list(eval(object))
             loc=self.location.copy()
-            loc.coordinates=Vector3D(xyz)
+            loc.position=Vector3D(xyz)
             self.add_knowledge(predicate,subject,loc)
         else:
             self.add_knowledge(predicate,subject,object)
@@ -904,7 +904,7 @@ class NPCMind(server.Mind):
     def face(self, other):
         vector = distance_to(self.location, other.location)
         vector.y = 0
-        if vector.square_mag() < 0.1:
+        if vector.sqr_mag() < 0.1:
             return
         vector = vector.unit_vector()
         newloc = Location(self.location.parent)

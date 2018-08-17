@@ -18,7 +18,7 @@ class Reap(server.Task):
             sys.stderr.write("Reap task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -36,8 +36,8 @@ class Reap(server.Task):
 
 
         if not self.character.location.velocity.is_valid() or \
-           self.character.location.velocity.square_mag() < 1 or \
-           self.character.location.velocity.square_mag() > 10:
+           self.character.location.velocity.sqr_mag() < 1 or \
+           self.character.location.velocity.sqr_mag() > 10:
             self.rate = 0
             self.progress = 0
             # print "Not moving the right speed"
@@ -52,7 +52,7 @@ class Reap(server.Task):
             # print "Wasn't moving right speed"
             return self.next_tick(1.75)
 
-        surface = self.target().props.terrain.get_surface(self.character.location.coordinates)
+        surface = self.target().props.terrain.get_surface(self.character.location.position)
         if surface is not 2:
             # print "Not grass"
             return self.next_tick(1.75)
@@ -62,7 +62,7 @@ class Reap(server.Task):
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
-        chunk_loc.coordinates = self.character.location.coordinates
+        chunk_loc.position = self.character.location.position
 
         create=Operation("create",
                          Entity(name = "grass",

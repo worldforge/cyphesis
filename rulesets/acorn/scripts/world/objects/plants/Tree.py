@@ -127,10 +127,10 @@ class Tree(Thing):
                 # pick a random spot between the 2 extremes of the plant
                 if debug_tree:
                     print("Creating Fruit")
-                randx = uniform ( self.location.coordinates.x - cs( x1 * self.height, x2 * self.height, xMax) , self.location.coordinates.x + cs( x2 * self.height, x1 * self.height, xMax) )
+                randx = uniform ( self.location.position.x - cs( x1 * self.height, x2 * self.height, xMax) , self.location.position.x + cs( x2 * self.height, x1 * self.height, xMax) )
                 randy = 0
-                randz = uniform ( self.location.coordinates.z - cs( z1 * self.height, z2 * self.height, zMax) , self.location.coordinates.z + cs( z2 * self.height, z1 * self.height, zMax) )
-                #randz = uniform ( self.location.coordinates.z - cs( z1 * self.size, z2 * self.size, zMax) , self.location.coordinates.z + cs( z2 * self.size, z1 * self.size, zMax) )
+                randz = uniform ( self.location.position.z - cs( z1 * self.height, z2 * self.height, zMax) , self.location.position.z + cs( z2 * self.height, z1 * self.height, zMax) )
+                #randz = uniform ( self.location.position.z - cs( z1 * self.size, z2 * self.size, zMax) , self.location.position.z + cs( z2 * self.size, z1 * self.size, zMax) )
                 if hasattr(self,"coords_modify"):
                     randx,randy,randz=coords_modify(randx,randy,randz)
                 fruit=Entity(name=self.fruitname,location=Location(server.world,Vector3D(randx,randy,randz)),parent=self.fruitname)

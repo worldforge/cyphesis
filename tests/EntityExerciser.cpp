@@ -65,10 +65,10 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
         e->makeContainer();
         assert(e->m_contains != 0);
     } else {
-        e->m_location.m_loc = new LocatedEntityTest("0", 0);
-        e->m_location.m_loc->makeContainer();
-        assert(e->m_location.m_loc->m_contains != 0);
-        e->m_location.m_loc->m_contains->insert(e);
+        e->m_location.m_parent = new LocatedEntityTest("0", 0);
+        e->m_location.m_parent->makeContainer();
+        assert(e->m_location.m_parent->m_contains != 0);
+        e->m_location.m_parent->m_contains->insert(e);
     }
     if (e->getType() == 0) {
         TypeNode * test_type = new TypeNode("test_type");

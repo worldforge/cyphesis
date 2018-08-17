@@ -50,7 +50,7 @@ void testDistanceFunctions()
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent(new Entity("1", 1));
 
-        ent->m_location.m_loc = tlve;
+        ent->m_location.m_parent = tlve;
         ent->m_location.m_pos = Point3D(1, 1, 0);
         ent->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -68,18 +68,18 @@ void testDistanceFunctions()
         std::cout << "RelPos tlve -> ent: " << relPos
                   << std::endl << std::flush;
 
-        ent->m_location.m_loc = 0;
+        ent->m_location.m_parent = 0;
     }
 
     // Coverage for broken entity hierarchy
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2));
 
-        // BROKEN ent1->m_location.m_loc = tlve;
+        // BROKEN ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        // BROKEN ent2->m_location.m_loc = tlve;
+        // BROKEN ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -89,18 +89,18 @@ void testDistanceFunctions()
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        // BROKEN ent2->m_location.m_loc = tlve;
+        // BROKEN ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -110,18 +110,18 @@ void testDistanceFunctions()
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2));
 
-        // BROKEN ent1->m_location.m_loc = tlve;
+        // BROKEN ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -131,18 +131,18 @@ void testDistanceFunctions()
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -152,27 +152,27 @@ void testDistanceFunctions()
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2)),
               ent3(new Entity("3", 3)),ent4(new Entity("4", 4));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent3->m_location.m_loc = ent1;
+        ent3->m_location.m_parent = ent1;
         ent3->m_location.m_pos = Point3D(-1, 1, 0);
         ent3->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent4->m_location.m_loc = ent2;
+        ent4->m_location.m_parent = ent2;
         ent4->m_location.m_pos = Point3D(1, 1, 0);
         ent4->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -181,28 +181,28 @@ void testDistanceFunctions()
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
-        ent3->m_location.m_loc = 0;
-        ent4->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
+        ent3->m_location.m_parent = 0;
+        ent4->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2)),ent3(new Entity("3", 3)),ent4(new Entity("4", 4));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent3->m_location.m_loc = ent1;
+        ent3->m_location.m_parent = ent1;
         ent3->m_location.m_pos = Point3D(-1, 1, 0);
         ent3->m_location.m_orientation = WFMath::Quaternion(2, M_PI / 2.f);
 
-        ent4->m_location.m_loc = ent2;
+        ent4->m_location.m_parent = ent2;
         ent4->m_location.m_pos = Point3D(1, 1, 0);
         ent4->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -211,10 +211,10 @@ void testDistanceFunctions()
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
-        ent3->m_location.m_loc = 0;
-        ent4->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
+        ent3->m_location.m_parent = 0;
+        ent4->m_location.m_parent = 0;
     }
 
     // Coverage for no orientation
@@ -222,16 +222,16 @@ void testDistanceFunctions()
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2)),
               ent3(new Entity("3", 3)),ent4(new Entity("4", 4));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
 
-        ent3->m_location.m_loc = ent1;
+        ent3->m_location.m_parent = ent1;
         ent3->m_location.m_pos = Point3D(-1, 1, 0);
 
-        ent4->m_location.m_loc = ent2;
+        ent4->m_location.m_parent = ent2;
         ent4->m_location.m_pos = Point3D(1, 1, 0);
 
         Point3D relPos = relativePos(ent3->m_location, ent4->m_location);
@@ -239,29 +239,29 @@ void testDistanceFunctions()
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
-        ent3->m_location.m_loc = 0;
-        ent4->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
+        ent3->m_location.m_parent = 0;
+        ent4->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2)),
               ent3(new Entity("3", 3)),ent4(new Entity("4", 4));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion(2, -M_PI / 2.f);
 
-        ent3->m_location.m_loc = ent1;
+        ent3->m_location.m_parent = ent1;
         ent3->m_location.m_pos = Point3D(-1, 1, 0);
         ent3->m_location.m_orientation = WFMath::Quaternion(2, M_PI / 2.f);
 
-        ent4->m_location.m_loc = ent2;
+        ent4->m_location.m_parent = ent2;
         ent4->m_location.m_pos = Point3D(1, 1, 0);
         ent4->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -270,29 +270,29 @@ void testDistanceFunctions()
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
-        ent3->m_location.m_loc = 0;
-        ent4->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
+        ent3->m_location.m_parent = 0;
+        ent4->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2)),
               ent3(new Entity("3", 3)),ent4(new Entity("4", 4));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(-1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion(2, M_PI / 2.f);
 
-        ent2->m_location.m_loc = tlve;
+        ent2->m_location.m_parent = tlve;
         ent2->m_location.m_pos = Point3D(1, 1, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent3->m_location.m_loc = ent1;
+        ent3->m_location.m_parent = ent1;
         ent3->m_location.m_pos = Point3D(-1, 1, 0);
         ent3->m_location.m_orientation = WFMath::Quaternion(2, M_PI / 2.f);
 
-        ent4->m_location.m_loc = ent2;
+        ent4->m_location.m_parent = ent2;
         ent4->m_location.m_pos = Point3D(1, 1, 0);
         ent4->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -307,20 +307,20 @@ void testDistanceFunctions()
                   << " square horizontal distance ent3 -> ent4: " << hd
                   << std::endl << std::flush;
 
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
-        ent3->m_location.m_loc = 0;
-        ent4->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
+        ent3->m_location.m_parent = 0;
+        ent4->m_location.m_parent = 0;
     }
 
     {
         Ref<Entity> tlve(new Entity("0", 0)),ent1(new Entity("1", 1)),ent2(new Entity("2", 2));
 
-        ent1->m_location.m_loc = tlve;
+        ent1->m_location.m_parent = tlve;
         ent1->m_location.m_pos = Point3D(1, 1, 0);
         ent1->m_location.m_orientation = WFMath::Quaternion().identity();
 
-        ent2->m_location.m_loc = ent1;
+        ent2->m_location.m_parent = ent1;
         ent2->m_location.m_pos = Point3D(0, 0, 0);
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
@@ -332,8 +332,8 @@ void testDistanceFunctions()
 
         assert(distance.isValid());
         assert(distance == Vector3D(0,0,0));
-        ent1->m_location.m_loc = 0;
-        ent2->m_location.m_loc = 0;
+        ent1->m_location.m_parent = 0;
+        ent2->m_location.m_parent = 0;
     }
 
 }
@@ -343,7 +343,7 @@ int main()
     {
         Location testloc;
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -354,7 +354,7 @@ int main()
     {
         Location testloc(0);
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -366,7 +366,7 @@ int main()
 
         assert(!testPos.isValid());
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -378,7 +378,7 @@ int main()
 
         assert(testPos.isValid());
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -392,7 +392,7 @@ int main()
         assert(testPos.isValid());
         assert(!testVel.isValid());
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -406,7 +406,7 @@ int main()
         assert(testPos.isValid());
         assert(testVel.isValid());
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(testloc.pos().isValid());
         assert(testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -422,7 +422,7 @@ int main()
 
         testloc.m_bBox = BBox(Point3D(0,0,0), Point3D(1,1,1));
 
-        assert(!testloc.m_loc);
+        assert(!testloc.m_parent);
         assert(!testloc.pos().isValid());
         assert(!testloc.velocity().isValid());
         assert(!testloc.orientation().isValid());
@@ -448,7 +448,7 @@ int main()
 
         Ref<Entity> le1(new Entity("1", 1));
 
-        testLoc.m_loc = le1;
+        testLoc.m_parent = le1;
         testLoc.m_pos = Point3D(0,0,0);
         testLoc.m_velocity = Vector3D(1,0,0);
         testLoc.m_orientation = Quaternion(1, 0, 0, 0);

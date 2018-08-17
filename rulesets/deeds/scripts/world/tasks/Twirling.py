@@ -18,7 +18,7 @@ class Twirling(server.Task):
             sys.stderr.write("Twirling task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
 
@@ -50,7 +50,7 @@ class Twirling(server.Task):
 
         chunk_loc = target.location.copy()
 
-        chunk_loc.coordinates = target.location.coordinates
+        chunk_loc.position = target.location.position
 
         chunk_loc.orientation = target.location.orientation
         create=Operation("create",

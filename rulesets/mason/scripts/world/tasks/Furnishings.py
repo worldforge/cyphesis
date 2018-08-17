@@ -20,15 +20,15 @@ class Furnishings(server.Task):
         if len(op) < 1:
             sys.stderr.write("Furnishings  task has no target in op")
 
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
     def info_operation(self,op):
         print("Furnishings info")
-        item = server.world.get_object_ref(op[0].id)
+        item = server.world.get_object(op[0].id)
         chunk_loc = Location(item())
-        chunk_loc.coordinates =Point3D([0,0,0])
+        chunk_loc.position =Point3D([0,0,0])
         res=Oplist()
         target=self.target()
         raw_materials=[]
@@ -72,7 +72,7 @@ class Furnishings(server.Task):
             res.append(create)
             #create the table top
             offset=Vector3D(0, 1, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             lbbox=[-.7,-.7,-.1,.7,.7,.1]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
@@ -85,49 +85,49 @@ class Furnishings(server.Task):
                 count = count - 1
             #create the legs
             #leg 1
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(.2, 0, -.2)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
 
 
             #leg 2
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(-.2, 0, -.2)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
 
             #leg 3
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(-.2, 0, .2)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
 
             #leg 4
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(.2, 0, .2)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,mode="fixed"), to = target)
             res.append(create)
 
 
             
             #create the seat
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(0, .5, 0)
             lbbox=[-.3,-.3,-.1,.3,.3,.1]#Local bbox
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
 
             #create the back of the seat
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(-.3, .75, 0)
             lbbox=[-.1,-.3,-.4,.1,.3,.4]#local bbox
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             
@@ -156,23 +156,23 @@ class Furnishings(server.Task):
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #Top part
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(0, 4, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             lbbox=[-3,-.1,-1,3,.1,2]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #left part
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(-2, 2, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             lbbox=[-1,-.1,-.5,1,.1,.5]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #Right part
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(2, 2, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             lbbox=[-1,-.1,-.5,1,.1,.5]
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
@@ -192,65 +192,65 @@ class Furnishings(server.Task):
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #make wall 1 of fireplace
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(-1.6, 0, 0)
             lbbox=[-.1,-1,-.1,.1,1,1.5]
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #make wall 2 of fireplace
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(1.6, 0, 0)
             lbbox=[-.1,-1,-.1,.1,1,1.5]
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #make back of fireplace
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             offset=Vector3D(0, 0, .6)
             lbbox=[-2,-.1,-.1,2,.1,1.5]
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "boulder", type = "boulder", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
         if self.fname=="Wallframe":
             #Bottom part of wall frame
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             tar = raw_materials.pop()
-            lumberlength=tar.location.bbox.far_point[2]-tar.location.bbox.near_point[2]
+            lumberlength=tar.location.bbox.high_corner[2]-tar.location.bbox.low_corner[2]
             chunk_loc.orientation=Quaternion([.5,.5,.5,.5])
             offset=Vector3D(-lumberlength/2, 0, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
             #Top part of wall frame
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             tar = raw_materials.pop()
             offset=Vector3D(-lumberlength/2, lumberlength*.8, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             chunk_loc.orientation=Quaternion([.5,.5,.5,.5])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
             #Left part of wall frame
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             tar = raw_materials.pop()
             offset=Vector3D((lumberlength/2.0)*-.8, lumberlength*.8, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
             #Right part of wall frame
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             tar = raw_materials.pop()
             offset=Vector3D((lumberlength/2.0)*.8, lumberlength*.8, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
             #Center part of wall frame
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             tar = raw_materials.pop()
             offset=Vector3D((lumberlength/2.0)*-.8, lumberlength*.1, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             chunk_loc.orientation=Quaternion([.27,.27,.65,.65])
             create=Operation("move", Entity(tar.id, location = chunk_loc,mode="fixed"), to = tar)
             res.append(create)
@@ -264,14 +264,14 @@ class Furnishings(server.Task):
             #create the top, it is one large wood
             lbbox=[-4,-4,-.1,4,4,.3]#local bbox
             offset=Vector3D(0, 5, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "wood", type = "wood", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
             #create column
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             lbbox=[-.5,-.5,-.1,.5,.5,6]#local bbox
             offset=Vector3D(0, 0, 0)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             create=Operation("create", Entity(name = "lumber", type = "lumber", location = chunk_loc,bbox=lbbox,mode="fixed"), to = target)
             res.append(create)
 
@@ -306,7 +306,7 @@ class Furnishings(server.Task):
        
 
         chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates = self.pos
+        chunk_loc.position = self.pos
         
         chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
@@ -321,7 +321,7 @@ class Furnishings(server.Task):
         for item in self.character.contains:
             if item.type[0] == "lumber":
                 lcount = lcount + 1
-                lumberwidth=item.location.bbox.far_point[2]-item.location.bbox.near_point[2]
+                lumberwidth=item.location.bbox.high_corner[2]-item.location.bbox.low_corner[2]
             if item.type[0] == "wood":
                 wcount = wcount + 1
             if item.type[0] == "campfire":

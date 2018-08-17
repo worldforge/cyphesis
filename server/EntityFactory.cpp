@@ -60,7 +60,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
 {
     thing.setType(m_type);
-    thing.m_location.m_loc = location;
+    thing.m_location.m_parent = location;
 
     //Only apply attributes if the supplied attributes is valid.
     //The main use of this is when doing restoration from stored entities and we don't want to apply the default attributes directly when

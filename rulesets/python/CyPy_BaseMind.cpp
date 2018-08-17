@@ -114,8 +114,8 @@ Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
             auto entityIdString = verifyString(args[2]);
             entityId = std::stol(entityIdString);
         } else {
-            if (awareMind->m_location.m_loc) {
-                entityId = awareMind->m_location.m_loc->getIntId();
+            if (awareMind->m_location.m_parent) {
+                entityId = awareMind->m_location.m_parent->getIntId();
             } else {
                 throw Py::RuntimeError("Mind has no location.");
             }

@@ -20,7 +20,7 @@ def create_skeletonpart(self, op):
     newloc.velocity=Vector3D()
     items = ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']
     item = items[randint(0,5)]
-    newloc.coordinates = newloc.coordinates + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
+    newloc.position = newloc.position + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
     retops += Operation("create", Entity(name=item,parent=item,location=newloc.copy()), to=self)
     return retops
 

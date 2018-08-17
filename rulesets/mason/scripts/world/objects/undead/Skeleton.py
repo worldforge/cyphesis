@@ -17,7 +17,7 @@ class Skeleton(server.Thing):
         newloc.velocity=Vector3D()
         retops = retops + Operation("move", Entity(self.id, location=newloc.copy(), mode="collapsed"), to=self)
         for item in ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']:
-            newloc.coordinates = newloc.coordinates + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
+            newloc.position = newloc.position + Vector3D(uniform(-1,1), uniform(-1,1), uniform(-1,1))
             retops = retops + Operation("create", Entity(name=item,parent=item,location=newloc.copy()), to=self)
         retops = retops + Operation("set", Entity(self.id, status=self.status), to=self)
         return retops

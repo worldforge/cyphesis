@@ -22,13 +22,13 @@ class Gateconstruction(server.Task):
         if len(op) < 1:
             sys.stderr.write("Gateconstruction  task has no target in op")
 
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
     def info_operation(self,op):
         print("Gate info")
-        gate = server.world.get_object_ref(op[0].id)
+        gate = server.world.get_object(op[0].id)
         self.lcount = 0#needs 1 lumber for basic gate
         self.acount=0#needs 2 a frames for basic gate
         raw_materials = []#Holds construction
@@ -51,7 +51,7 @@ class Gateconstruction(server.Task):
 
 
         chunk_loc = Location(gate())
-        chunk_loc.coordinates =Point3D([0,0,0]) 
+        chunk_loc.position =Point3D([0,0,0]) 
         res=Oplist()
 
 
@@ -59,13 +59,13 @@ class Gateconstruction(server.Task):
             count1=self.lcount
             while (count1 > 0):
                 tar = raw_materials1.pop()
-                self.lumber_length = tar.location.bbox.far_point[2]- \
-                                     tar.location.bbox.near_point[2]
+                self.lumber_length = tar.location.bbox.high_corner[2]- \
+                                     tar.location.bbox.low_corner[2]
                 offset=Vector3D(self.lumber_length/7, self.lumber_length*.63, -
                 self.lumber_length/3.5)
                 chunk_loc.orientation=Quaternion([.707,0,0,.707])
                 #Same as an Euler of (0,90 Degrees,0)
-                chunk_loc.coordinates=chunk_loc.coordinates+offset
+                chunk_loc.position=chunk_loc.position+offset
                 move1=Operation("move", Entity(tar.id,location=chunk_loc,
                                                mode="fixed"), to=tar)
                 res.append(move1)
@@ -74,7 +74,7 @@ class Gateconstruction(server.Task):
             
             count = self.acount
             chunk_loc = Location(gate())
-            chunk_loc.coordinates =Point3D([0,0,0])
+            chunk_loc.position =Point3D([0,0,0])
             #Resets    
             #loops through raw_materials and places 3 lumber
             #in inventory infront of user
@@ -84,18 +84,18 @@ class Gateconstruction(server.Task):
               
                 if count == 2 :
                     #left component of gate
-                    chunk_loc.coordinates =Point3D([0,0,0])
+                    chunk_loc.position =Point3D([0,0,0])
                     offset=Vector3D(0, self.lumber_length*.7, 0)
                     chunk_loc.orientation=Quaternion([.707,0,0,.707])
-                    chunk_loc.coordinates=chunk_loc.coordinates+offset
+                    chunk_loc.position=chunk_loc.position+offset
                     
                 if count == 1 :
                     #right component of gate
-                    chunk_loc.coordinates =Point3D([0,0,0])
+                    chunk_loc.position =Point3D([0,0,0])
                     offset=Vector3D(0,
                                     self.lumber_length*.7, (self.lumber_length/2))
                     chunk_loc.orientation=Quaternion([.707,0,0,.707])
-                    chunk_loc.coordinates=chunk_loc.coordinates+offset
+                    chunk_loc.position=chunk_loc.position+offset
                     
                 move=Operation("move", Entity(tar.id,location=chunk_loc,
                                               mode="fixed"), to=tar)
@@ -105,36 +105,36 @@ class Gateconstruction(server.Task):
         if self.gname=="House_Gate":
             #Left leg of the house frame
             tar = raw_materials1.pop()
-            chunk_loc.coordinates = Point3D([0,0,0]) 
-            self.lumber_length = tar.location.bbox.far_point[2]- \
-                                 tar.location.bbox.near_point[2]
+            chunk_loc.position = Point3D([0,0,0]) 
+            self.lumber_length = tar.location.bbox.high_corner[2]- \
+                                 tar.location.bbox.low_corner[2]
             offset=Vector3D(0, self.lumber_length*.8, -self.lumber_length/4)
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,
                                            mode="fixed"), to=tar)
             res.append(move1)
             #Right Leg of the house frame
             tar = raw_materials1.pop()
-            chunk_loc.coordinates =Point3D([0,0,0]) 
-            self.lumber_length = tar.location.bbox.far_point[2]- \
-                                 tar.location.bbox.near_point[2]
+            chunk_loc.position =Point3D([0,0,0]) 
+            self.lumber_length = tar.location.bbox.high_corner[2]- \
+                                 tar.location.bbox.low_corner[2]
             offset=Vector3D(0,
                             self.lumber_length*.8, -self.lumber_length*(3.0/4.0))
             chunk_loc.orientation=Quaternion([.707,.707,0,0])
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,
                                            mode="fixed"), to=tar)
             res.append(move1)
             #Top of the house frame
             tar = raw_materials1.pop()
-            chunk_loc.coordinates =Point3D([0,0,0]) 
-            self.lumber_length=tar.location.bbox.far_point[2]- \
-                               tar.location.bbox.near_point[2]
+            chunk_loc.position =Point3D([0,0,0]) 
+            self.lumber_length=tar.location.bbox.high_corner[2]- \
+                               tar.location.bbox.low_corner[2]
             offset=Vector3D(0, self.lumber_length*(.7, -self.lumber_length))
             chunk_loc.orientation=Quaternion([.5,.5,-.5,.5])
             #Same as (90 Degrees, 0, 90 Degrees)
-            chunk_loc.coordinates=chunk_loc.coordinates+offset
+            chunk_loc.position=chunk_loc.position+offset
             move1=Operation("move", Entity(tar.id,location=chunk_loc,
                                            mode="fixed"), to=tar)
             res.append(move1)
@@ -187,7 +187,7 @@ class Gateconstruction(server.Task):
        
 
         chunk_loc = Location(self.character.location.parent)
-        chunk_loc.coordinates = self.pos
+        chunk_loc.position = self.pos
         chunk_loc.orientation=self.character.location.orientation
         res=Oplist()
         bbox1=[-4,-4,-.01,4,4,.01]    #Needed so it can be viewed from afar

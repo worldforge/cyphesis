@@ -127,8 +127,8 @@ class Entity : public LocatedEntity {
 inline std::ostream & operator<<(std::ostream& s, Location& v)
 {
     s << "{";
-    if (v.m_loc) {
-        s << v.m_loc->getId();
+    if (v.m_parent) {
+        s << v.m_parent->getId();
     } else {
         s << "null";
     }

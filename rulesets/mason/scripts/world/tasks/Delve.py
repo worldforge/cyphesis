@@ -21,7 +21,7 @@ class Delve(server.Task):
             sys.stderr.write("Delve task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -58,7 +58,7 @@ class Delve(server.Task):
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
-        chunk_loc.coordinates = self.pos
+        chunk_loc.position = self.pos
 
         if not hasattr(self, 'terrain_mod'):
             mods = self.target().terrain.find_mods(self.pos)
@@ -74,7 +74,7 @@ class Delve(server.Task):
                     return
                 self.surface = surface
 
-                y=self.character.location.coordinates.y + 1.0
+                y=self.character.location.position.y + 1.0
                 modmap = {
                           'height': y,
                           'shape': {

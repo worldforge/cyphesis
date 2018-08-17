@@ -22,7 +22,7 @@ class Raise(server.Task):
             std.stderr.write("Raise task hsa no target in lever op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
     def tick_operation(self, op):
@@ -44,7 +44,7 @@ class Raise(server.Task):
         # Check we are not too far away from the object to interact with it
         # This calculation is imprecise as it sums the square radii, but
         # its usually close enough.
-        d = distance.square_mag()
+        d = distance.sqr_mag()
         r = self.character.location.bbox.square_bounding_radius() + \
             self.target().location.bbox.square_bounding_radius()
         if d > r:
@@ -65,7 +65,7 @@ class Raise(server.Task):
 
         # print "NEW_ROT", rotation, rotation.is_valid()
         target_location=Location(self.target().location.parent,
-                                 self.target().location.coordinates)
+                                 self.target().location.position)
         target_location.orientation=rotation
         move=Operation("move", Entity(self.target().id,
                                       location=target_location), to=self.target())

@@ -18,7 +18,7 @@ class Drying(server.Task):
             sys.stderr.write("Drying task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
 
@@ -49,7 +49,7 @@ class Drying(server.Task):
 
         chunk_loc = self.target().location.copy()
 
-        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.position = self.target().location.position
 
         chunk_loc.orientation = self.target().location.orientation
 

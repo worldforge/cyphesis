@@ -18,7 +18,7 @@ class Slice(server.Task):
             sys.stderr.write("Slice task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.width = 0.2
@@ -46,7 +46,7 @@ class Slice(server.Task):
             # print "Not done yet"
             return self.next_tick(0.75)
 
-        width = target.location.bbox.far_point.x - target.location.bbox.near_point.x
+        width = target.location.bbox.high_corner.x - target.location.bbox.low_corner.x
         if width <= self.width:
             # print "Nothing more to cut"
             self.irrelevant()
@@ -54,29 +54,29 @@ class Slice(server.Task):
 
         res=Oplist()
 
-        new_bbox = [target.location.bbox.near_point.x,
-                    target.location.bbox.near_point.y,
-                    target.location.bbox.near_point.z,
-                    target.location.bbox.far_point.x - self.width,
-                    target.location.bbox.far_point.y,
-                    target.location.bbox.far_point.z]
+        new_bbox = [target.location.bbox.low_corner.x,
+                    target.location.bbox.low_corner.y,
+                    target.location.bbox.low_corner.z,
+                    target.location.bbox.high_corner.x - self.width,
+                    target.location.bbox.high_corner.y,
+                    target.location.bbox.high_corner.z]
 
         set=Operation("set", Entity(target.id, bbox=new_bbox), to=target)
         res.append(set)
 
         slice_loc = target.location.copy()
 
-        pos_offset = Vector3D(target.location.bbox.far_point.x, 0, 0)
+        pos_offset = Vector3D(target.location.bbox.high_corner.x, 0, 0)
         pos_offset.rotate(target.location.orientation)
 
-        slice_loc.coordinates = target.location.coordinates + pos_offset
+        slice_loc.position = target.location.position + pos_offset
 
         slice_bbox = [0,
-                      target.location.bbox.near_point.y,
-                      target.location.bbox.near_point.z,
+                      target.location.bbox.low_corner.y,
+                      target.location.bbox.low_corner.z,
                       self.width,
-                      target.location.bbox.far_point.y,
-                      target.location.bbox.far_point.z]
+                      target.location.bbox.high_corner.y,
+                      target.location.bbox.high_corner.z]
 
         slice_loc.orientation = target.location.orientation
 

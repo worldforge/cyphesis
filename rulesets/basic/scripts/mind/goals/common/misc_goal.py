@@ -339,8 +339,8 @@ class amble(Goal):
         #ground = world.id 
         #op = Operation("eat", ground)
         #print "Fish ambling"
-        target = Location(me.location.parent, me.location.coordinates)
-        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y, target.coordinates.z+ uniform(-1.5,1.5))
+        target = Location(me.location.parent, me.location.position)
+        target.position = Vector3D(target.position.x + uniform(-1.5,1.5), target.position.y, target.position.z+ uniform(-1.5,1.5))
         target.velocity = Vector3D(1,0,0)
         return Operation("move",  Entity(me.id, location=target))
 
@@ -420,8 +420,8 @@ class peck(feed):
         #world = 
         #ground = world.id 
         #op = Operation("eat", ground)
-        target = Location(me.location.parent, me.location.coordinates)
-        target.coordinates = Vector3D(target.coordinates.x + uniform(-1.5,1.5), target.coordinates.y, target.coordinates.z+ uniform(-1.5,1.5))
+        target = Location(me.location.parent, me.location.position)
+        target.position = Vector3D(target.position.x + uniform(-1.5,1.5), target.position.y, target.position.z+ uniform(-1.5,1.5))
         target.velocity = Vector3D(1,0,0)
         #op += Operation("move",  Entity(me.id, location=target))
         return Operation("move",  Entity(me.id, location=target))
@@ -679,10 +679,10 @@ class keep(Goal):
         thing_all=me.find_thing(self.what)
         where=me.find_thing(self.where)[0]
         to_location=Location(where,Point3D(0,0,0))
-        minx=where.location.bbox.near_point.x
-        minz=where.location.bbox.near_point.z
-        maxx=where.location.bbox.far_point.x
-        maxz=where.location.bbox.far_point.z
+        minx=where.location.bbox.low_corner.x
+        minz=where.location.bbox.low_corner.z
+        maxx=where.location.bbox.high_corner.x
+        maxz=where.location.bbox.high_corner.z
         for thing in thing_all:
             if thing.location.parent.id!=where.id and thing.location.parent.id!=me.id:
                 thingloc=Location(where,Point3D(uniform(minx,maxx),0,uniform(minz,maxz)))

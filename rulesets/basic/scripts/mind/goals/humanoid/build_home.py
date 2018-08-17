@@ -15,7 +15,7 @@ def is_suitable_place_for_home(me):
 def find_place(me):
     "find place for home: wander randomly"
     loc=me.location.copy()
-    loc.coordinates=Vector3D([c+uniform(-50,50) for c in loc.coordinates])
+    loc.position=Vector3D([c+uniform(-50,50) for c in loc.position])
     ent=Entity(me,location=loc)
     return Operation("move",ent)
 

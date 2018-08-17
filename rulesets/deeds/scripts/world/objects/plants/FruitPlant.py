@@ -7,11 +7,11 @@ import random
 class FruitPlant(server.Thing):
 
     def dropFruit(self, res, parent):
-        height = self.location.bbox.far_point.y
+        height = self.location.bbox.high_corner.y
 
         newloc=self.location.copy()
         newloc.velocity=Vector3D()
-        newloc.coordinates = newloc.coordinates + Vector3D(random.uniform(-height, height), 0, random.uniform(-height, height))
+        newloc.position = newloc.position + Vector3D(random.uniform(-height, height), 0, random.uniform(-height, height))
 
         res += Operation("create", Entity(parent=parent,location=newloc), to=self)
 
@@ -19,7 +19,7 @@ class FruitPlant(server.Thing):
         res = Oplist()
 
         if self.props.sizeAdult:
-            if self.location.bbox.far_point.y > self.props.sizeAdult:
+            if self.location.bbox.high_corner.y > self.props.sizeAdult:
                 if self.props.fruits and self.props.fruits > 0:
                     if self.props.fruitName and self.props.fruitChance:
                         if random.uniform(0, 100) < self.props.fruitChance:

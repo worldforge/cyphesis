@@ -20,7 +20,7 @@ class Pioneering(server.Task):
             sys.stderr.write("Pioneering task has no target in crafting op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -67,7 +67,7 @@ class Pioneering(server.Task):
         count = rcount + wcount + lcount
 
         chunk_loc = self.target().location.copy()
-        chunk_loc.coordinates = self.target().location.coordinates
+        chunk_loc.position = self.target().location.position
         chunk_loc.orientation = self.target().location.orientation
 
         # Select which structure to produce depending on the recipe present in inventory

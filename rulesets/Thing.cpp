@@ -71,10 +71,10 @@ Thing::Thing(const std::string& id, long intId) :
 
 void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
-    if (m_location.m_loc == nullptr) {
+    if (m_location.m_parent == nullptr) {
         log(ERROR, String::compose("Deleting %1(%2) when it is not "
                                        "in the world.", getType(), getId()));
-        assert(m_location.m_loc != nullptr);
+        assert(m_location.m_parent != nullptr);
         return;
     }
     // The actual destruction and removal of this entity will be handled
@@ -104,10 +104,10 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 {
     debug(std::cout << "Thing::move_operation" << std::endl << std::flush;);
 
-    if (m_location.m_loc == nullptr) {
+    if (m_location.m_parent == nullptr) {
         log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
                                    getType(), getId()));
-        assert(m_location.m_loc != nullptr);
+        assert(m_location.m_parent != nullptr);
         return;
     }
 
@@ -130,7 +130,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     Ref<LocatedEntity> new_loc = nullptr;
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         const std::string& new_loc_id = ent->getLoc();
-        if (new_loc_id != m_location.m_loc->getId()) {
+        if (new_loc_id != m_location.m_parent->getId()) {
             // If the LOC has not changed, we don't need to look it up, or do
             // any of the following checks.
             new_loc = BaseWorld::instance().getEntity(new_loc_id);
@@ -140,14 +140,14 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             }
             debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
             auto test_loc = new_loc;
-            for (; test_loc != nullptr; test_loc = test_loc->m_location.m_loc) {
+            for (; test_loc != nullptr; test_loc = test_loc->m_location.m_parent) {
                 if (test_loc == this) {
                     error(op, "Attempt to move into itself", res, getId());
                     return;
                 }
             }
             assert(new_loc != nullptr);
-            assert(m_location.m_loc != new_loc);
+            assert(m_location.m_parent != new_loc);
         }
 
     }
@@ -206,8 +206,8 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
     //We can only move if there's a domain
     Domain* domain = nullptr;
-    if (m_location.m_loc) {
-        domain = m_location.m_loc->getDomain();
+    if (m_location.m_parent) {
+        domain = m_location.m_parent->getDomain();
     }
 
 
@@ -275,14 +275,14 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         if (new_loc != nullptr) {
             // new_loc should only be non-null if the LOC specified is
             // different from the current LOC
-            assert(m_location.m_loc != new_loc);
+            assert(m_location.m_parent != new_loc);
             // Check for pickup, ie if the new LOC is the actor, and the
             // previous LOC is the actor's LOC.
             if (new_loc->getId() == op->getFrom() &&
-                m_location.m_loc == new_loc->m_location.m_loc) {
+                m_location.m_parent == new_loc->m_location.m_parent) {
 
                 //Send Pickup to those entities which are currently observing
-                if (m_location.m_loc) {
+                if (m_location.m_parent) {
 
                     Pickup p;
                     p->setFrom(op->getFrom());
@@ -290,7 +290,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
                     Sight s;
                     s->setArgs1(p);
-                    m_location.m_loc->broadcast(s, res, Visibility::PUBLIC);
+                    m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
                 }
 
                 Anonymous wield_arg;
@@ -302,15 +302,15 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             }
             // Check for drop, ie if the old LOC is the actor, and the
             // new LOC is the actor's LOC.
-            if (m_location.m_loc->getId() == op->getFrom() &&
-                new_loc == m_location.m_loc->m_location.m_loc) {
+            if (m_location.m_parent->getId() == op->getFrom() &&
+                new_loc == m_location.m_parent->m_location.m_parent) {
 
                 Drop d;
                 d->setFrom(op->getFrom());
                 d->setTo(getId());
                 Sight s;
                 s->setArgs1(d);
-                m_location.m_loc->broadcast(s, res, Visibility::PUBLIC);
+                m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
             }
 
             // Update loc
@@ -622,8 +622,8 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 //            }
     }
 
-    if (m_location.m_loc) {
-        if (!m_location.m_loc->isVisibleForOtherEntity(&observingEntity)) {
+    if (m_location.m_parent) {
+        if (!m_location.m_parent->isVisibleForOtherEntity(&observingEntity)) {
             sarg->removeAttr("loc");
         }
     }
@@ -680,8 +680,8 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         }
 
         //If there's no location set we'll use the same one as the current entity.
-        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_loc)) {
-            ent->setLoc(m_location.m_loc->getId());
+        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_parent)) {
+            ent->setLoc(m_location.m_parent->getId());
         }
         debug_print(getId() << " creating " << type);
 

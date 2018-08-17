@@ -14,10 +14,10 @@ class Bow(server.Thing):
         ammo = op[0].id
         to_ = op[1].id
         target = server.world.get_object(to_)
-        vel = target.location.coordinates - self.location.parent.location.coordinates
+        vel = target.location.position - self.location.parent.location.position
         time = vel.mag() / 5
         vel = vel.unit_vector() * 5
-        loc1 = Location(self.location.parent.location.parent,self.location.parent.location.coordinates)
+        loc1 = Location(self.location.parent.location.parent,self.location.parent.location.position)
         loc1.velocity = vel
         loc2 = Location(target.location.parent,Point3D(0,0,0))
         loc2.velocity = Vector3D(0,0,0)

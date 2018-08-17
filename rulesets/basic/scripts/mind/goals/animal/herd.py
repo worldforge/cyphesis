@@ -38,12 +38,12 @@ class school(DynamicGoal):
         if me.location.parent.id!=ent.location.parent.id:
             #print "me.location.parent.id!=ent.location.parent.id"
             return
-        if type(ent.location.coordinates)!=object:
-            #print ent.location.coordinates
-            #print type(ent.location.coordinates)
-            #print "type(ent.location.coordinates)!=object"
+        if type(ent.location.position)!=object:
+            #print ent.location.position
+            #print type(ent.location.position)
+            #print "type(ent.location.position)!=object"
             return
-        distance=(ent.location.coordinates-me.location.coordinates).mag()
+        distance=(ent.location.position-me.location.position).mag()
         id=me.get_knowledge('focus', 'hook')
         if id != None: 
             thing = me.map.get(id)
@@ -65,7 +65,7 @@ class school(DynamicGoal):
             print("changing both location and velocity")
             myvel=me.location.velocity.unit_vector()
             evel=ent.location.velocity.unit_vector()
-            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
+            edir=(ent.location.position-me.location.position).unit_vector()
             if myvel and (evel.dot(myvel) > 0.9 or edir.dot(myvel) > 0.9):
                 return
             if edir.dot(evel) < 0:
@@ -78,8 +78,8 @@ class school(DynamicGoal):
         else:
             print("everything perfect, not doing anything")
             new_loc=ent.location.copy()
-            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
-            new_loc.coordinates=new_loc.coordinates-edir
+            edir=(ent.location.position-me.location.position).unit_vector()
+            new_loc.position=new_loc.position-edir
         return Operation("move", Entity(me.id, location=new_loc))
 
 class flock(DynamicGoal):
@@ -111,18 +111,18 @@ class flock(DynamicGoal):
         if me.location.parent.id!=ent.location.parent.id:
             print("not convering on something elsewhere")
             return
-        if type(ent.location.coordinates)!=Point3D:
-            print("coordinates not an Point", type(ent.location.coordinates))
+        if type(ent.location.position)!=Point3D:
+            print("position not an Point", type(ent.location.position))
             return
-        edist=(ent.location.coordinates-me.location.coordinates)
-        if edist.square_mag() < 50:
+        edist=(ent.location.position-me.location.position)
+        if edist.sqr_mag() < 50:
             print("not convering on close enough")
             return
         evel=ent.location.velocity
-        if evel and evel.square_mag() > 0.1:
+        if evel and evel.sqr_mag() > 0.1:
             myvel=me.location.velocity
             edir=edist.unit_vector()
-            if myvel and myvel.square_mag() > 0.1:
+            if myvel and myvel.sqr_mag() > 0.1:
                 myvel = myvel.unit_vector()
                 #If I move in the same direction, then do nothing
                 if evel.dot(myvel) > 0.5:
@@ -140,8 +140,8 @@ class flock(DynamicGoal):
             new_loc.velocity=ent.location.velocity
         else:
             new_loc=ent.location.copy()
-            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
-            new_loc.coordinates=new_loc.coordinates-edir
+            edir=(ent.location.position-me.location.position).unit_vector()
+            new_loc.position=new_loc.position-edir
         print("converging")
         return Operation("move", Entity(me.id, location=new_loc))
 
@@ -165,9 +165,9 @@ class herd(DynamicGoal):
             val = self.herd_members[ent.id]
         except KeyError:
             val=0
-        if type(ent.location.coordinates)!=Point3D:
+        if type(ent.location.position)!=Point3D:
             return
-        if me.location.coordinates.distance(ent.location.coordinates)<6:
+        if me.location.position.distance(ent.location.position)<6:
             val = val+1
             self.herd_members[ent.id]=val
             return
@@ -179,7 +179,7 @@ class herd(DynamicGoal):
         if ent.location.velocity:
             myvel=me.location.velocity.unit_vector()
             evel=ent.location.velocity.unit_vector()
-            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
+            edir=(ent.location.position-me.location.position).unit_vector()
             #If I am moving towards them, or in the same direction, then do nothing
             if myvel and (evel.dot(myvel) > 0.5 or edir.dot(myvel) > 0.5):
                 return
@@ -190,6 +190,6 @@ class herd(DynamicGoal):
             new_loc.velocity=ent.location.velocity
         else:
             new_loc=ent.location.copy()
-            edir=(ent.location.coordinates-me.location.coordinates).unit_vector()
-            new_loc.coordinates=new_loc.coordinates-edir
+            edir=(ent.location.position-me.location.position).unit_vector()
+            new_loc.position=new_loc.position-edir
         return Operation("move", Entity(me.id, location=new_loc))

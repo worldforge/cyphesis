@@ -39,7 +39,6 @@ void CyPy_World::init_type()
     behaviors().doc("");
 
     PYCXX_ADD_VARARGS_METHOD(get_object, get_object, "");
-    PYCXX_ADD_VARARGS_METHOD(get_object_ref, get_object_ref, "");
 
     PYCXX_ADD_NOARGS_METHOD(get_time, get_time, "");
 
@@ -62,8 +61,3 @@ Py::Object CyPy_World::get_object(const Py::Tuple& args)
     return CyPy_LocatedEntity::wrap(std::move(ent));
 }
 
-//FIXME: remove this one
-Py::Object CyPy_World::get_object_ref(const Py::Tuple& args)
-{
-    return get_object(args);
-}

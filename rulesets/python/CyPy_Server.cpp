@@ -52,9 +52,7 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
     d["Thing"] = CyPy_Entity::type();
     d["Mind"] = CyPy_BaseMind::type();
     d["MemEntity"] = CyPy_MemEntity::type();
-    //FIXME: Rename to "MemMap"
-    //TODO: should this really be exposed?
-    d["Map"] = CyPy_MemMap::type();
+    d["MemMap"] = CyPy_MemMap::type();
     d["Task"] = CyPy_Task::type();
     d["WorldTime"] = CyPy_WorldTime::type();
 

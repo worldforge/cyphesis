@@ -242,8 +242,8 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
     float square_range = radius * radius;
 
     Py::List list;
-    if (location.m_loc && location.m_loc->m_contains) {
-        for (const auto& entry : *location.m_loc->m_contains) {
+    if (location.m_parent && location.m_parent->m_contains) {
+        for (const auto& entry : *location.m_parent->m_contains) {
             EntityFilter::QueryContext queryContext{*entry};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
 

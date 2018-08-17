@@ -269,8 +269,8 @@ void Entity::removeDelegate(int class_no, const std::string & delegate)
 /// removing from the containership tree.
 void Entity::destroy()
 {
-    assert(m_location.m_loc);
-    assert(m_location.m_loc->m_contains);
+    assert(m_location.m_parent);
+    assert(m_location.m_parent->m_contains);
     if (m_contains != nullptr) {
         for (auto& entity : *m_contains) {
             Location & child = entity->m_location;
@@ -291,7 +291,7 @@ void Entity::destroy()
                 static const Quaternion identity(1, 0, 0, 0);
                 m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), identity);
             }
-            m_location.m_loc->addChild(*entity);
+            m_location.m_parent->addChild(*entity);
         }
     }
 

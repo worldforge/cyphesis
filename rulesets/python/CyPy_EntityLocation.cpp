@@ -30,7 +30,7 @@ CyPy_EntityLocation::CyPy_EntityLocation(Py::PythonClassInstance* self, Py::Tupl
 
     if (args.length() > 0) {
 
-        m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(args[0]);
+        m_value.m_parent = &verifyObject<CyPy_LocatedEntity>(args[0]);
 
         if (args.length() == 2) {
             m_value.m_pos = CyPy_Point3D::parse(args[1]);
@@ -64,15 +64,13 @@ Py::Object CyPy_EntityLocation::copy()
 Py::Object CyPy_EntityLocation::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
-    //FIXME: rename to "loc"
     if ("parent" == nameStr || "entity" == nameStr) {
-        if (!m_value.m_loc) {
+        if (!m_value.m_parent) {
             return Py::None();
         }
-        return CyPy_LocatedEntity::wrap(m_value.m_loc);
+        return CyPy_LocatedEntity::wrap(m_value.m_parent);
     }
-    //FIXME: rename to "pos"
-    if ("coordinates" == nameStr || "pos" == nameStr) {
+    if ("pos" == nameStr) {
         return CyPy_Point3D::wrap(m_value.m_pos);
     }
     return PythonExtensionBase::getattro(name);
@@ -82,18 +80,16 @@ int CyPy_EntityLocation::setattro(const Py::String& name, const Py::Object& attr
 {
 
     auto nameStr = name.as_string();
-    //FIXME: rename to "loc"
     if ("parent" == nameStr || "entity" == nameStr) {
         if (!CyPy_LocatedEntity::check(attr)) {
             throw Py::TypeError("parent must be an entity");
         }
-        m_value.m_loc = &verifyObject<CyPy_LocatedEntity>(attr);
+        m_value.m_parent = &verifyObject<CyPy_LocatedEntity>(attr);
 
         return 0;
     }
 
-    //FIXME: rename to "pos"
-    if ("coordinates" == nameStr || "pos" == nameStr) {
+    if ("pos" == nameStr) {
         m_value.m_pos = CyPy_Point3D::parse(attr);
         return 0;
     }

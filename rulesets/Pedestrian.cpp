@@ -119,10 +119,10 @@ int Pedestrian::getUpdatedLocation(Location & return_location)
     }
     // FIXME Use the movement_domain to apply the constraints.
 
-//    if (m_body.m_location.m_loc) {
-//        auto domain = m_body.m_location.m_loc->getDomain();
+//    if (m_body.m_location.m_parent) {
+//        auto domain = m_body.m_location.m_parent->getDomain();
 //        if (domain) {
-//            float z = domain->constrainHeight(m_body, new_location.m_loc,
+//            float z = domain->constrainHeight(m_body, new_location.m_parent,
 //                                                                  new_location.m_pos,
 //                                                                  "standing");
 //            debug(std::cout << "Height adjustment " << z << " " << new_location.m_pos.z()

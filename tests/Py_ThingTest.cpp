@@ -70,10 +70,10 @@ int main()
     prop->set("bar");
     e->setProperty("foo", prop);
     Ref<Entity> wrld = new Entity("0", 0);
-    e->m_location.m_loc = wrld;
-    e->m_location.m_loc->makeContainer();
-    assert(e->m_location.m_loc->m_contains != nullptr);
-    e->m_location.m_loc->m_contains->insert(e);
+    e->m_location.m_parent = wrld;
+    e->m_location.m_parent->makeContainer();
+    assert(e->m_location.m_parent->m_contains != nullptr);
+    e->m_location.m_parent->m_contains->insert(e);
     TestWorld test_world(wrld);
 
     auto wrap_e = CyPy_LocatedEntity::wrap(e);

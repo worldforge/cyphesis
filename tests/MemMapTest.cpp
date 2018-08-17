@@ -306,7 +306,7 @@ void MemMaptest::test_findByLoc()
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
-    e4->m_location.m_loc = tlve;
+    e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
@@ -314,7 +314,7 @@ void MemMaptest::test_findByLoc()
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
-    e5->m_location.m_loc = tlve;
+    e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
@@ -339,7 +339,7 @@ void MemMaptest::test_findByLoc_results()
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
-    e4->m_location.m_loc = tlve;
+    e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
@@ -347,7 +347,7 @@ void MemMaptest::test_findByLoc_results()
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
-    e5->m_location.m_loc = tlve;
+    e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
@@ -372,7 +372,7 @@ void MemMaptest::test_findByLoc_invalid()
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
-    e4->m_location.m_loc = tlve;
+    e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
@@ -380,7 +380,7 @@ void MemMaptest::test_findByLoc_invalid()
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
-    e5->m_location.m_loc = tlve;
+    e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
@@ -406,7 +406,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
-    e4->m_location.m_loc = tlve;
+    e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
@@ -414,7 +414,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
-    e5->m_location.m_loc = tlve;
+    e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 

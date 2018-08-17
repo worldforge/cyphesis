@@ -155,11 +155,11 @@ void TerrainProperty::set(const Element & ent)
     if (I != t.end() && I->second.isMap()) {
         const MapType & points = I->second.asMap();
         auto Iend = points.end();
-        for (auto I = points.begin(); I != Iend; ++I) {
-            if (!I->second.isList()) {
+        for (auto pointsI = points.begin(); pointsI != Iend; ++pointsI) {
+            if (!pointsI->second.isList()) {
                 continue;
             }
-            const ListType & point = I->second.asList();
+            const ListType & point = pointsI->second.asList();
             if (point.size() < 3) {
                 continue;
             }
@@ -252,7 +252,7 @@ void TerrainProperty::apply(LocatedEntity* entity) {
 
 Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList) {
     if (!surfaceList.empty()) {
-        Mercator::TileShader* tileShader = new Mercator::TileShader();
+        auto* tileShader = new Mercator::TileShader();
         for (auto& surfaceElement : surfaceList) {
             if (!surfaceElement.isMap()) {
                 continue;

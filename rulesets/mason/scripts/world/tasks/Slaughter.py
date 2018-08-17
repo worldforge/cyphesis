@@ -18,7 +18,7 @@ class Slaughter(server.Task):
             sys.stderr.write("Slaughter task has no target in cut op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.count = 0
@@ -72,7 +72,7 @@ class Slaughter(server.Task):
         if hasattr(target, 'meat'):
             meat_type = target.meat
 
-        chunk_loc.coordinates = target.location.coordinates
+        chunk_loc.position = target.location.position
 
         chunk_loc.orientation = target.location.orientation
 

@@ -19,7 +19,7 @@ class Ram(server.Task):
             std.stderr.write("Ram task has no target in strike op")
 
         # FIXME Use weak references, once we have them
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
     def tick_operation(self, op):
         """ Op handler for regular tick op """
@@ -37,11 +37,11 @@ class Ram(server.Task):
         if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
             return self.next_tick(1)
 
-        target_location = Location(self.target().location.parent, self.target().location.coordinates)
+        target_location = Location(self.target().location.parent, self.target().location.position)
         target_location.velocity=Vector3D(0, -0.5, 0)
         target_entity_moving = Entity(self.target().id, location = target_location)
 
-        target_location = Location(self.target().location.parent, Point3D(self.target().location.coordinates.x, self.target().location.coordinates.y - 0.1, self.target().location.coordinates.z))
+        target_location = Location(self.target().location.parent, Point3D(self.target().location.position.x, self.target().location.position.y - 0.1, self.target().location.position.z))
         target_location.velocity=Vector3D(0,0,0)
         target_entity = Entity(self.target().id, location = target_location)
 

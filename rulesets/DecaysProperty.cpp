@@ -66,11 +66,11 @@ HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
     Anonymous create_arg;
     create_arg->setParent(type);
     ::addToEntity(e->m_location.pos(), create_arg->modifyPos());
-    create_arg->setLoc(e->m_location.m_loc->getId());
+    create_arg->setLoc(e->m_location.m_parent->getId());
     create_arg->setAttr("orientation", e->m_location.orientation().toAtlas());
 
     Create create;
-    create->setTo(e->m_location.m_loc->getId());
+    create->setTo(e->m_location.m_parent->getId());
     create->setArgs1(create_arg);
     res.push_back(create);
 

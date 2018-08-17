@@ -126,7 +126,7 @@ int SpawnEntity::addToMessage(MapType & msg) const
 int SpawnEntity::placeInSpawn(Location& location) const
 {
 
-    location.m_loc = m_ent->m_location.m_loc;
+    location.m_parent = m_ent->m_location.m_parent;
     const AreaProperty * ap = m_ent->getPropertyClassFixed<AreaProperty>();
     if (ap != 0 && ap->shape()) {
         // FIXME orientation ignored

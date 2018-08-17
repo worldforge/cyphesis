@@ -103,11 +103,11 @@ void LocatedEntity::makeContainer()
 #define STUB_LocatedEntity_changeContainer
 void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 {
-    assert(m_location.m_loc != nullptr);
-    assert(m_location.m_loc->m_contains != nullptr);
-    m_location.m_loc->m_contains->erase(this);
-    if (m_location.m_loc->m_contains->empty()) {
-        m_location.m_loc->onUpdated();
+    assert(m_location.m_parent != nullptr);
+    assert(m_location.m_parent->m_contains != nullptr);
+    m_location.m_parent->m_contains->erase(this);
+    if (m_location.m_parent->m_contains->empty()) {
+        m_location.m_parent->onUpdated();
     }
     new_loc->makeContainer();
     bool was_empty = new_loc->m_contains->empty();
@@ -115,10 +115,10 @@ void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
     if (was_empty) {
         new_loc->onUpdated();
     }
-    assert(m_location.m_loc->checkRef() > 0);
-    auto oldLoc = m_location.m_loc;
-    m_location.m_loc = new_loc;
-    assert(m_location.m_loc->checkRef() > 0);
+    assert(m_location.m_parent->checkRef() > 0);
+    auto oldLoc = m_location.m_parent;
+    m_location.m_parent = new_loc;
+    assert(m_location.m_parent->checkRef() > 0);
 
     onContainered(oldLoc);
 }

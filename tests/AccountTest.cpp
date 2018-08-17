@@ -345,7 +345,7 @@ void Accounttest::setup()
                         const Atlas::Objects::Entity::RootEntity &){
         Ref<Entity>  ne = Accounttest::get_TestWorld_addNewEntity_ret_value();
         if (ne != nullptr) {
-            ne->m_location.m_loc = m_gw;
+            ne->m_location.m_parent = m_gw;
             ne->m_location.m_pos = Point3D(0,0,0);
             assert(ne->m_location.isValid());
         }

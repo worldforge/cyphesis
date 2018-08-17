@@ -138,7 +138,7 @@ class Combat(server.Task):
             we are facing the character we are hitting """
         vector = distance_to(self.character.location, other.location)
         vector.y = 0
-        if vector.square_mag() < 0.1:
+        if vector.sqr_mag() < 0.1:
             return
         vector = vector.unit_vector()
         newloc = Location(self.character.location.parent)

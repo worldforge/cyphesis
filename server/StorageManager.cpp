@@ -239,8 +239,8 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         }
     }
 
-    if (ent->m_location.m_loc) {
-        auto domain = ent->m_location.m_loc->getDomain();
+    if (ent->m_location.m_parent) {
+        auto domain = ent->m_location.m_parent->getDomain();
         if (domain) {
             domain->addEntity(*ent);
         }
@@ -266,13 +266,13 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
     }
     //We should also send a sight op to the parent entity which owns the entity.
     //TODO: should this really be necessary or should we rely on other Sight functionality?
-    if (ent->m_location.m_loc) {
+    if (ent->m_location.m_parent) {
         Atlas::Objects::Operation::Sight sight;
-        sight->setTo(ent->m_location.m_loc->getId());
+        sight->setTo(ent->m_location.m_parent->getId());
         Atlas::Objects::Entity::Anonymous args;
         ent->addToEntity(args);
         sight->setArgs1(args);
-        ent->m_location.m_loc->sendWorld(sight);
+        ent->m_location.m_parent->sendWorld(sight);
     }
 
     restoreThoughts(ent);
@@ -349,7 +349,7 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     Database::instance().encodeObject(map, location);
 
     Database::instance().insertEntity(ent->getId(),
-                                       ent->m_location.m_loc->getId(),
+                                       ent->m_location.m_parent->getId(),
                                        ent->getType()->name(),
                                        ent->getSeq(),
                                        location);
@@ -404,11 +404,11 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     Database::instance().encodeObject(map, location);
 
     //Under normal circumstances only the top world won't have a location.
-    if (ent->m_location.m_loc) {
+    if (ent->m_location.m_parent) {
         Database::instance().updateEntity(ent->getId(),
                                        ent->getSeq(),
                                        location,
-                                       ent->m_location.m_loc->getId());
+                                       ent->m_location.m_parent->getId());
     } else {
         Database::instance().updateEntityWithoutLoc(ent->getId(),
                                        ent->getSeq(),
@@ -481,7 +481,7 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
                                "POS data. Ignored.", child->describeEntity()));
             continue;
         }
-        child->m_location.m_loc = parent;
+        child->m_location.m_parent = parent;
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
         restoreChildren(child.get());

@@ -63,7 +63,7 @@ class move_me(Goal):
             #print "Can't move - no location"
             return
         #print "Moving to location " + str(location)
-        me.setDestination(location.coordinates, self.radius, location.parent.id)
+        me.setDestination(location.position, self.radius, location.parent.id)
         refreshResult = me.refreshPath()
         #If result is 0 it means that we're already there
         if refreshResult == 0:
@@ -203,7 +203,7 @@ class move_it(Goal):
             if (self.what in me.things)==0: return 1
             what=me.things[self.what][0]
         if what.location.parent.id!=self.location.parent.id: return 0
-        return what.location.coordinates.distance(self.location.coordinates)<1.5
+        return what.location.position.distance(self.location.position)<1.5
     def move_it_to_loc(self, me):
         if self.wait>0:
             self.wait=self.wait-1
@@ -219,12 +219,12 @@ class move_it(Goal):
         if self.speed==0 or what.location.parent.id!=self.location.parent.id:
             return Operation("move", Entity(what.id, location=self.location))
         iloc=what.location.copy()
-        vel=what.location.coordinates.unit_vector_to(self.location.coordinates)
+        vel=what.location.position.unit_vector_to(self.location.position)
         iloc.velocity = vel * self.speed
         self.location.velocity=Vector3D(0.0,0.0,0.0)
         mOp1=Operation("move", Entity(what.id, location=iloc))
         mOp2=Operation("move", Entity(what.id, location=self.location))
-        time=((self.location.coordinates-what.location.coordinates).mag() / self.speed)
+        time=((self.location.position-what.location.position).mag() / self.speed)
         self.wait=(time/const.basic_tick)+1
         mOp2.setFutureSeconds(time)
         return Oplist(mOp1,mOp2)
@@ -277,7 +277,7 @@ class move_me_to_possession(Goal):
             what=me.things[what][0]
         target=what.location.copy()
         if target.parent.id==me.location.parent.id:
-            target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
+            target.velocity=me.location.position.unit_vector_to(target.position)
             target.rotation=target.velocity
             return Operation("move", Entity(me.id, location=target))
 
@@ -322,7 +322,7 @@ class move_me_to_focus(Goal):
                 return
             target=thing.location.copy()
             if target.parent.id==me.location.parent.id:
-                target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
+                target.velocity=me.location.position.unit_vector_to(target.position)
                 return Operation("move", Entity(me.id, location=target))
 
 
@@ -380,7 +380,7 @@ class move_me_near_focus(Goal):
                 return
             target=thing.location.copy()
             if target.parent.id==me.location.parent.id:
-                target.velocity=me.location.coordinates.unit_vector_to(target.coordinates)
+                target.velocity=me.location.position.unit_vector_to(target.position)
                 return Operation("move", Entity(me.id, location=target))
 
 
@@ -464,7 +464,7 @@ class wander(Goal):
                        self.do_wandering])
     def do_wandering(self, me):
         loc = me.location.copy()
-        loc.coordinates=Point3D([c+uniform(-5,5) for c in loc.coordinates])
+        loc.position=Point3D([c+uniform(-5,5) for c in loc.position])
         self.subgoals[0].location = loc
 
 ############################ WANDER & SEARCH ############################
@@ -510,7 +510,7 @@ class pursuit(Goal):
         dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction * const.basic_tick
         loc = Location(me.location.parent)
-        loc.coordinates =  me.location.coordinates + (dist_vect * multiply)
+        loc.position =  me.location.position + (dist_vect * multiply)
         ent=Entity(me.id,location=loc)
         return Operation("move",ent)
 
@@ -593,7 +593,7 @@ class accompany(Goal):
 
         dist=distance_to(me.location, who.location)
         # Are we further than 3 metres away
-        if dist.square_mag() > 25:
+        if dist.sqr_mag() > 25:
             #print "We are far away", dist
             if me.location.velocity.is_valid() and me.location.velocity.dot(dist) > 0.5:
                 #print "We moving towards them already"
@@ -613,7 +613,7 @@ class accompany(Goal):
             return
         dist=distance_to(me.location, who.location)
         target = Location(me.location.parent)
-        square_dist=dist.square_mag()
+        square_dist=dist.sqr_mag()
         if square_dist > 64:
             #print "We must be far far away - run"
             target.velocity = dist.unit_vector() * 3
@@ -655,5 +655,5 @@ class roam(Goal):
         waypoint = me.get_knowledge("location",waypointName)
         
         loc = me.location.copy()
-        loc.coordinates=Point3D([c+uniform(-self.radius,self.radius) for c in waypoint.coordinates])
+        loc.position=Point3D([c+uniform(-self.radius,self.radius) for c in waypoint.position])
         move_me_goal.location = loc

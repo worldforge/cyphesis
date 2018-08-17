@@ -365,7 +365,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
         if (ent->canReach({other, {}})) {
             //Now also check that we can reach wherever we're trying to move the entity.
 
-            auto targetLoc = other->m_location.m_loc;
+            auto targetLoc = other->m_location.m_parent;
 
             //Only allow some things to be set when moving another entity.
             RootEntity newArgs1;
@@ -468,8 +468,8 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
         return;
     }
 
-    debug(std::cout << ":" << new_loc << ":" << ent->m_location.m_loc->getId() << ":" << std::endl << std::flush;);
-    if (!new_loc.empty() && (new_loc != ent->m_location.m_loc->getId())) {
+    debug(std::cout << ":" << new_loc << ":" << ent->m_location.m_parent->getId() << ":" << std::endl << std::flush;);
+    if (!new_loc.empty() && (new_loc != ent->m_location.m_parent->getId())) {
         debug(std::cout << "Changing loc" << std::endl << std::flush;);
         auto target_loc = BaseWorld::instance().getEntity(new_loc);
         if (!target_loc) {
@@ -686,8 +686,8 @@ void MindsProperty::mindLookOperation(LocatedEntity* ent, const Operation& op, O
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         //If nothing is specified, send to parent, if available.
-        if (ent->m_location.m_loc) {
-            op->setTo(ent->m_location.m_loc->getId());
+        if (ent->m_location.m_parent) {
+            op->setTo(ent->m_location.m_parent->getId());
         } else {
             return;
         }

@@ -19,8 +19,8 @@ class PigMind(NPCMind):
            if sowee_pattern.match(say):
               if op.from_.location.parent!=self.location.parent:
                   return
-              source=op.from_.location.coordinates
-              distance=(self.location.coordinates-source).mag()
+              source=op.from_.location.position
+              distance=(self.location.position-source).mag()
               if distance>10:
                   return
               destination=Location(self.location.parent)

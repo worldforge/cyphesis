@@ -78,7 +78,7 @@ int main()
 
     IGEntityExerciser ee(e);
 
-    assert(e->m_location.m_loc == nullptr);
+    assert(e->m_location.m_parent == nullptr);
 
     // Throw an op of every type at the entity
     ee.runOperations();

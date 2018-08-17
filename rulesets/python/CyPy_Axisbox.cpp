@@ -142,12 +142,10 @@ Py::Object CyPy_Axisbox::as_sequence()
 Py::Object CyPy_Axisbox::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
-    //FIXME: use low_corner
-    if (nameStr == "near_point") {
+    if (nameStr == "low_corner") {
         return CyPy_Point3D::wrap(m_value.lowCorner());
     }
-    //FIXME: use high_corner
-    if (nameStr == "far_point") {
+    if (nameStr == "high_corner") {
         return CyPy_Point3D::wrap(m_value.highCorner());
     }
 
@@ -159,18 +157,15 @@ int CyPy_Axisbox::setattro(const Py::String& name, const Py::Object& attr)
     auto nameStr = name.as_string();
     if (!CyPy_Point3D::check(attr)) {
         throw Py::TypeError("BBox setattr must take a Point");
-        return -1;
     }
     auto& point = CyPy_Point3D::value(attr);
     if (!point.isValid()) {
         throw Py::ValueError("BBox setattr must take a valid Point");
     }
-    //FIXME: use low_corner
-    if (nameStr == "near_point") {
+    if (nameStr == "low_corner") {
         m_value.lowCorner() = point;
         return 0;
-        //FIXME: use high_corner
-    } else if (nameStr == "far_point") {
+    } else if (nameStr == "high_corner") {
         m_value.highCorner() = point;
         return 0;
     }

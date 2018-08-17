@@ -32,9 +32,9 @@ class LocatedEntity;
 struct EntityLocation
 {
     /**
-     * The entity.
+     * The parent entity.
      */
-    Ref<LocatedEntity> m_loc;
+    Ref<LocatedEntity> m_parent;
     /**
      * Coords relative to the entity
      */

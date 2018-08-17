@@ -44,7 +44,7 @@ class Location : public EntityLocation {
     float m_squareRadius;
   public:
     /**
-     * Velocity vector, relative to m_loc entity.
+     * Velocity vector, relative to m_parent entity.
      */
     Vector3D m_velocity;
     /**

@@ -996,7 +996,7 @@ def add_castle(host='', account='', password='', **args):
 
     # put the keep on the peninsula
     
-    # the foundation looks ugly in sear and does not work in ember, so I left it out. coordinates are probably wrong
+    # the foundation looks ugly in sear and does not work in ember, so I left it out. position are probably wrong
     #m.make('castle_foundation', pos=(-415, -70, settlement_height))
 
     # castle wall

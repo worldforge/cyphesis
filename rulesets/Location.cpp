@@ -91,8 +91,8 @@ Location::Location(LocatedEntity * rf,
 
 void Location::addToMessage(MapType & omap) const
 {
-    if (m_loc!=nullptr) {
-        omap["loc"] = m_loc->getId();
+    if (m_parent!=nullptr) {
+        omap["loc"] = m_parent->getId();
     }
     if (pos().isValid()) {
         omap["pos"] = pos().toAtlas();
@@ -110,8 +110,8 @@ void Location::addToMessage(MapType & omap) const
 
 void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
-    if (m_loc!=nullptr) {
-        ent->setLoc(m_loc->getId());
+    if (m_parent!=nullptr) {
+        ent->setLoc(m_parent->getId());
     }
     if (pos().isValid()) {
         ::addToEntity(pos(), ent->modifyPos());
@@ -230,7 +230,7 @@ static const Location* distanceFromAncestor(const Location & self,
         return &self;
     }
 
-    if (other.m_loc == nullptr) {
+    if (other.m_parent == nullptr) {
         return nullptr;
     }
 
@@ -245,7 +245,7 @@ static const Location* distanceFromAncestor(const Location & self,
         c = c.toParentCoords(other.m_pos, identity);
     }
 
-    return distanceFromAncestor(self, other.m_loc->m_location, c);
+    return distanceFromAncestor(self, other.m_parent->m_location, c);
 }
 
 static const Location* distanceToAncestor(const Location & self,
@@ -255,11 +255,11 @@ static const Location* distanceToAncestor(const Location & self,
     const Location* ancestor = distanceFromAncestor(self, other, c);
     if (ancestor) {
         return ancestor;
-    } else if ((self.m_loc != nullptr)) {
+    } else if ((self.m_parent != nullptr)) {
         if (!self.m_pos.isValid()) {
             return nullptr;
         }
-        ancestor = distanceToAncestor(self.m_loc->m_location, other, c);
+        ancestor = distanceToAncestor(self.m_parent->m_location, other, c);
         if (ancestor) {
             if (self.orientation().isValid()) {
                 c = c.toLocalCoords(self.m_pos, self.orientation());
@@ -271,15 +271,15 @@ static const Location* distanceToAncestor(const Location & self,
         }
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_loc != nullptr) {
-        std::cerr << "Self("<< &self << ", loc:" << self.m_loc->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
+    if (self.m_parent != nullptr) {
+        std::cerr << "Self("<< &self << ", loc:" << self.m_parent->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Self has no location"
                   << std::endl << std::flush;
     }
-    if (other.m_loc != nullptr) {
-        std::cerr << "Other("<< &other << ", loc:" << other.m_loc->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
+    if (other.m_parent != nullptr) {
+        std::cerr << "Other("<< &other << ", loc:" << other.m_parent->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Other has no location"
@@ -357,8 +357,8 @@ float squareHorizontalDistance(const Location & self, const Location & other)
 std::ostream & operator<<(std::ostream& s, Location& v)
 {
     s << "{";
-    if (v.m_loc != nullptr) {
-        s << v.m_loc->getId();
+    if (v.m_parent != nullptr) {
+        s << v.m_parent->getId();
     } else {
         s << "null";
     }

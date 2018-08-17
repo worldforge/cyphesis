@@ -23,7 +23,7 @@ class Earthbarrier(server.Task):
         if len(op) < 1:
             sys.stderr.write("%s task has no target in setup op" % self.__class__.__name__)
 
-        self.target = server.world.get_object_ref(op[0].id)
+        self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
@@ -97,7 +97,7 @@ class Earthbarrier(server.Task):
                     return mod
             raise Earthbarrier.Obstructed("Another mod is in the way")
     def _create_initial_mod(self):
-        y=self.character.location.coordinates.y + 1.0
+        y=self.character.location.position.y + 1.0
         mod_path = Line([[ self.pos.x, self.pos.z ]])
         modmap = {
                   'height': y,
@@ -116,7 +116,7 @@ class Earthbarrier(server.Task):
 
         mod_loc = Location(self.character.location.parent)
         mod_loc.velocity = Vector3D()
-        mod_loc.coordinates = self.pos
+        mod_loc.position = self.pos
 
         mod_create=Operation("create",
                              Entity(name="wall",

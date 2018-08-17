@@ -76,7 +76,7 @@ void TerrainModPropertyintegration::setup()
 
     m_entity = new Entity("1", 1);
     m_entity->m_location.m_pos = Point3D(5.f, 5.f, 5.f);
-    m_entity->m_location.m_loc = m_rootEntity;
+    m_entity->m_location.m_parent = m_rootEntity;
     ASSERT_TRUE(m_entity->m_location.isValid());
 
     PropertyFactory<TerrainModProperty> terrainmod_property_factory;

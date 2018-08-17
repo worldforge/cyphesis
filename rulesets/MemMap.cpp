@@ -97,21 +97,21 @@ void MemMap::readEntity(const Ref<MemEntity> entity, const RootEntity & ent, dou
     }
     entity->merge(ent->asMessage());
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        auto old_loc = entity->m_location.m_loc;
+        auto old_loc = entity->m_location.m_parent;
         const std::string & new_loc_id = ent->getLoc();
         // Has LOC been changed?
         if (!old_loc || new_loc_id != old_loc->getId()) {
-            entity->m_location.m_loc = getAdd(new_loc_id);
-            assert(entity->m_location.m_loc);
-            assert(old_loc != entity->m_location.m_loc);
+            entity->m_location.m_parent = getAdd(new_loc_id);
+            assert(entity->m_location.m_parent);
+            assert(old_loc != entity->m_location.m_parent);
             if (old_loc) {
                 assert(old_loc->m_contains != nullptr);
                 old_loc->m_contains->erase(entity);
             }
-            if (entity->m_location.m_loc->m_contains == nullptr) {
-                entity->m_location.m_loc->m_contains = new LocatedEntitySet{};
+            if (entity->m_location.m_parent->m_contains == nullptr) {
+                entity->m_location.m_parent->m_contains = new LocatedEntitySet{};
             }
-            entity->m_location.m_loc->m_contains->insert(entity);
+            entity->m_location.m_parent->m_contains->insert(entity);
         }
         entity->m_location.readFromEntity(ent);
         entity->m_location.update(timestamp);
@@ -126,7 +126,7 @@ void MemMap::updateEntity(const Ref<MemEntity> entity, const RootEntity & ent, d
 
     debug( std::cout << " got " << entity->describeEntity() << std::endl << std::flush;);
 
-    auto old_loc = entity->m_location.m_loc;
+    auto old_loc = entity->m_location.m_parent;
     readEntity(entity, ent, timestamp);
 
     if (m_script) {
@@ -391,7 +391,7 @@ EntityVector MemMap::findByLocation(const Location & loc,
 // FIXME Don't return by value
 {
     EntityVector res;
-    auto place = loc.m_loc;
+    auto place = loc.m_parent;
     if (place->m_contains == 0) {
         return res;
     }
@@ -446,13 +446,13 @@ void MemMap::check(const double & time)
 //            }
 //            m_entities.erase(m_checkIterator);
 //            // Remove deleted entity from its parents contains attribute
-//            if (me->m_location.m_loc != 0) {
-//                assert(me->m_location.m_loc->m_contains != 0);
-//                me->m_location.m_loc->m_contains->erase(me);
+//            if (me->m_location.m_parent != 0) {
+//                assert(me->m_location.m_parent->m_contains != 0);
+//                me->m_location.m_parent->m_contains->erase(me);
 //            }
 //
 //            // FIXME This is required until MemMap uses parent refcounting
-//            me->m_location.m_loc = 0;
+//            me->m_location.m_parent = 0;
 //
 //            if (next != -1) {
 //                m_checkIterator = m_entities.find(next);
@@ -485,7 +485,7 @@ void MemMap::flush()
 //    MemEntityDict::const_iterator Iend = m_entities.end();
 //    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
 //        // FIXME This is required until MemMap uses parent refcounting
-//        I->second->m_location.m_loc = 0;
+//        I->second->m_location.m_parent = 0;
 //        I->second->decRef();
 //    }
 }
