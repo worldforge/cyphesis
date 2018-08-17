@@ -27,6 +27,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
+#include <rulesets/PlantedOnProperty.h>
 
 using namespace EntityFilter;
 using Atlas::Message::Element;
@@ -69,7 +70,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         ///\Test BBox providers (bbox volume, height, area etc)
         void test_BBoxProviders();
         ///\Test Outfit providers
-        void test_OutfitProviders();
+        void test_GetEntityProviders();
         ///\Test comparator and logical predicates
         void test_ComparePredicates();
         ///\Test comparators that work on lists
@@ -83,6 +84,22 @@ class ProvidersTest : public Cyphesis::TestBase {
         void test_InstanceOf();
 
         Inheritance* m_inheritance;
+
+        std::map<std::string, Ref<LocatedEntity>> m_entities;
+
+        Ref<LocatedEntity> find_entity(const std::string& id)
+        {
+            auto I = m_entities.find(id);
+            if (I != m_entities.end()) {
+                return I->second;
+            }
+            return nullptr;
+        }
+
+        void add_entity(Ref<LocatedEntity> entity)
+        {
+            m_entities.emplace(entity->getId(), entity);
+        }
 };
 
 void ProvidersTest::test_EntityProperty()
@@ -145,9 +162,20 @@ void ProvidersTest::test_BBoxProviders()
     assert(value.Float() == 8.0);
 }
 
-//void ProvidersTest::test_OutfitProviders()
-//{
-//    Atlas::Message::Element value;
+void ProvidersTest::test_GetEntityProviders()
+{
+    auto entity_provider = CreateProvider( { "entity", "attached_hand_primary" });
+
+    GetEntityFunctionProvider getEntityProvider(entity_provider, nullptr);
+
+    Atlas::Message::Element value;
+    QueryContext queryContext{*m_ch1};
+    queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+
+    getEntityProvider.value(value, queryContext);
+
+    assert(value.Ptr() == m_glovesEntity.get());
+//
 //    //Check if we get the right entity in outfit query
 //    auto provider = CreateProvider( { "entity", "outfit", "hands" });
 //    provider->value(value, QueryContext { *m_ch1 });
@@ -169,7 +197,7 @@ void ProvidersTest::test_BBoxProviders()
 //            "color" });
 //    provider->value(value, QueryContext { *m_ch1 });
 //    assert(value.String() == "green");
-//}
+}
 
 void ProvidersTest::test_ComparePredicates()
 {
@@ -281,12 +309,12 @@ void ProvidersTest::test_ContainsRecursive()
     Element value;
 
     //entity.mass
-    auto lhs_provider1 = CreateProvider( { "entity", "mass" });
+    auto lhs_provider1 = CreateProvider( { "child", "mass" });
     //entity.contains
     auto lhs_provider2 = CreateProvider( { "entity", "contains" });
 
     //entity.mass = 30
-    ComparePredicate compPred17(lhs_provider1, new FixedElementProvider(30),
+    ComparePredicate compPred17(lhs_provider1, new FixedElementProvider(20),
                                 ComparePredicate::Comparator::EQUALS);
 
     //contains_recursive(entity.contains, entity.mass = 30)
@@ -294,13 +322,13 @@ void ProvidersTest::test_ContainsRecursive()
     ContainsRecursiveFunctionProvider contains_recursive(lhs_provider2,
                                                          &compPred17);
     contains_recursive.value(value, QueryContext { *m_b1 });
-    assert(value.Int() == 1);
+    ASSERT_EQUAL(value.Int(), 1);
 
     contains_recursive.value(value, QueryContext { *m_b2 });
-    assert(value.Int() == 0);
+    ASSERT_EQUAL(value.Int(), 0);
 
     //entity.type
-    auto lhs_provider3 = CreateProvider( { "entity", "type" });
+    auto lhs_provider3 = CreateProvider( { "child", "type" });
     //types.character
     auto rhs_provider1 = CreateProvider( { "types", "character" });
 
@@ -315,13 +343,13 @@ void ProvidersTest::test_ContainsRecursive()
 
     //Should be true for both barrels since character is in b2, while b2 is in b1
     contains_recursive2.value(value, QueryContext { *m_b1 });
-    assert(value.Int() == 1);
+    ASSERT_EQUAL(1, value.Int());
 
     contains_recursive2.value(value, QueryContext { *m_b2 });
-    assert(value.Int() == 1);
+    ASSERT_EQUAL(value.Int(), 1);
 
     contains_recursive2.value(value, QueryContext { *m_ch1 });
-    assert(value.Int() == 0);
+    ASSERT_EQUAL(value.Int(), 0);
 }
 
 void ProvidersTest::test_InstanceOf()
@@ -353,10 +381,12 @@ ProvidersTest::ProvidersTest()
 {
     ADD_TEST(ProvidersTest::test_EntityProperty);
     ADD_TEST(ProvidersTest::test_BBoxProviders);
-//    ADD_TEST(ProvidersTest::test_OutfitProviders);
+    ADD_TEST(ProvidersTest::test_GetEntityProviders);
     ADD_TEST(ProvidersTest::test_ComparePredicates);
     ADD_TEST(ProvidersTest::test_ListComparators);
     ADD_TEST(ProvidersTest::test_InstanceOf);
+    ADD_TEST(ProvidersTest::test_ContainsRecursive);
+
 }
 
 void ProvidersTest::setup()
@@ -368,6 +398,7 @@ void ProvidersTest::setup()
 
     //Make a barrel with mass and burn speed properties
     m_b1 = new Entity("1", 1);
+    add_entity(m_b1);
     m_barrelType = new TypeNode("barrel");
     m_barrelType->setParent(m_thingType);
     types["barrel"] = m_barrelType;
@@ -387,6 +418,7 @@ void ProvidersTest::setup()
 
     //Make a second barrel
     m_b2 = new Entity("2", 2);
+    add_entity(m_b2);
     m_b2->setProperty("mass", new SoftProperty(Element(20)));
     m_b2->setProperty("burn_speed", new SoftProperty(0.25));
     m_b2->setType(m_barrelType);
@@ -415,30 +447,43 @@ void ProvidersTest::setup()
     types["cloth"] = m_clothType;
 
     m_cloth = new Entity("3", 3);
+    add_entity(m_cloth);
     m_cloth->setType(m_clothType);
     m_cloth->setProperty("color", new SoftProperty("green"));
 
-    //Create outfit map where "thumb" outfit contains cloth
-//    std::map<std::string, Element> outfitMap1;
-//    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth.get())));
-//    OutfitProperty* outfit2 = new OutfitProperty;
-//    outfit2->set(outfitMap1);
     m_glovesEntity = new Entity("4", 4);
+    add_entity(m_glovesEntity);
     m_glovesEntity->setProperty("color", new SoftProperty("brown"));
-//    m_glovesEntity->setProperty("outfit", outfit2);
 
-    //Create outfit map where hands of character contain brown gloves
-//    std::map<std::string, Element> outfitMap;
-//    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
-//    OutfitProperty* outfit1 = new OutfitProperty;
-//    outfit1->set(outfitMap);
+
+    //The m_cloth entity is attached to the gloves by the "thumb" attachment
+    {
+        auto attachedProp = new SoftProperty();
+        attachedProp->data() = Atlas::Message::MapType{{"$eid", m_cloth->getId()}};
+        m_glovesEntity->setProperty("attached_thumb", attachedProp);
+
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = WeakEntityRef(m_glovesEntity.get());
+        m_cloth->setProperty("planted_on", plantedOnProp);
+    }
 
     //Create the character for testing
     m_characterType = new TypeNode("character");
     types["character"] = m_characterType;
     m_ch1 = new Entity("5", 5);
+    add_entity(m_ch1);
     m_ch1->setType(m_characterType);
-//    m_ch1->setProperty("outfit", outfit1);
+
+    //The m_glovesEntity entity is attached to the m_ch1 by the "hand_primary" attachment
+    {
+        auto attachedHandPrimaryProp = new SoftProperty();
+        attachedHandPrimaryProp->data() = Atlas::Message::MapType{{"$eid", m_glovesEntity->getId()}};
+        m_ch1->setProperty("attached_hand_primary", attachedHandPrimaryProp);
+
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = WeakEntityRef(m_ch1.get());
+        m_glovesEntity->setProperty("planted_on", plantedOnProp);
+    }
 
     //Make second barrel contain the character
     m_b2_container = new LocatedEntitySet;
@@ -453,6 +498,8 @@ void ProvidersTest::teardown()
     delete m_characterType;
     delete m_clothType;
     delete m_thingType;
+
+    m_entities.clear();
 }
 
 Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<

@@ -86,6 +86,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                     //Check that the attached entity matches the constraint filter
                     if (attachment.filter) {
                         EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
+                        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
                         if (!attachment.filter->match(queryContext)) {
                             entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
                             return OPERATION_BLOCKED;

@@ -35,6 +35,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
 
     if (definition.constraint) {
         EntityFilter::QueryContext queryContext{*tool, actor.get(), tool.get()};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
 
         if (!definition.constraint->match(queryContext)) {
             return {false, "Constraint does not match."};
@@ -47,6 +48,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
             return {false, String::compose("Target nr. %1 is destroyed.", i)};
         }
         EntityFilter::QueryContext queryContext{*entry.m_loc, actor.get(), tool.get()};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
         if (!definition.targets[i]->match(queryContext)) {
             return {false, String::compose("Target nr. %1 does not match the filter.", i)};
         }
@@ -58,6 +60,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
             return {false, String::compose("Consumable nr. %1 is destroyed.", i)};
         }
         EntityFilter::QueryContext queryContext{*entry.m_loc, actor.get(), tool.get()};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
         if (!definition.consumed[i]->match(queryContext)) {
             return {false, String::compose("Consumable nr. %1 does not match the filter.", i)};
         }

@@ -27,9 +27,9 @@
                         <list name="targets">
                             <string>entity instance_of types.game_entity</string>
                         </list>
-                        <list name="consumed">
-                        </list>
                         <string name="handler">world.objects.tools.Tinderbox.ignite</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
+                        <string name="description">Light a fire a wielded tinderbox.</string>
                     </map>
                 </map>
             </map>

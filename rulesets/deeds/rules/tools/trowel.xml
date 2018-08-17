@@ -23,6 +23,8 @@
                             <string>entity instance_of types.game_entity &amp;&amp; entity.germinates != none &amp;&amp; actor can_reach entity with tool</string>
                         </list>
                         <string name="handler">world.objects.tools.Trowel.sow</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
+                        <string name="description">Plant a seed with a wielded trowel.</string>
                     </map>
                 </map>
             </map>

@@ -20,9 +20,6 @@ class Filter {
         Filter(const std::string &what, const ProviderFactory& factory);
         ~Filter();
 
-        ///\brief test given entity for a match
-        ///@param entity - entity to be tested
-        bool match(LocatedEntity& entity);
         ///\brief test given QueryContext for a match
         bool match(const QueryContext& context);
     private:

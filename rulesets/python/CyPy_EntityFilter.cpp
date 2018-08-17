@@ -17,6 +17,7 @@
  */
 
 #include <rulesets/entityfilter/Providers.h>
+#include <rulesets/BaseWorld.h>
 #include "external/pycxx/CXX/Objects.hxx"
 #include "CyPy_EntityFilter.h"
 #include "CyPy_LocatedEntity.h"
@@ -48,7 +49,9 @@ Py::Boolean CyPy_Filter::match_entity(const Py::Tuple& args)
     args.verify_length(1);
     auto arg = args.front();
     if (CyPy_LocatedEntity::check(arg)) {
-        return m_value->match(CyPy_LocatedEntity::value(arg));
+        EntityFilter::QueryContext queryContext{CyPy_LocatedEntity::value(arg)};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
+        return m_value->match(queryContext);
     }
     throw Py::TypeError("First arg must be LocatedEntity.");
 }

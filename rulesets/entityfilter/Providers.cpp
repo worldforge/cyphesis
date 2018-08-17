@@ -29,6 +29,7 @@
 #include "../../common/Inheritance.h"
 
 #include <algorithm>
+#include <rulesets/BaseWorld.h>
 
 namespace EntityFilter {
 
@@ -410,6 +411,19 @@ namespace EntityFilter {
         return nullptr;
     }
 
+    Consumer<QueryContext>* ProviderFactory::createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const
+    {
+        if (segments.empty()) {
+            return new GetEntityFunctionProvider(entity_provider, nullptr);
+        }
+        return new GetEntityFunctionProvider(entity_provider, createPropertyProvider(std::move(segments)));
+    }
+
+    Consumer<QueryContext>* ProviderFactory::createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const
+    {
+        return new GetEntityFunctionProvider(entity_provider, nullptr);
+    }
+
     FixedTypeNodeProvider* ProviderFactory::createFixedTypeNodeProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
@@ -556,6 +570,46 @@ namespace EntityFilter {
         }
         segments.pop_front();
         return new MemoryProvider(createMapProvider(std::move(segments)));
+    }
+
+
+    GetEntityFunctionProvider::GetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, Consumer<LocatedEntity>* consumer)
+        : ConsumingProviderBase(consumer),
+          m_entity_provider(entity_provider)
+    {
+
+    }
+
+    void GetEntityFunctionProvider::value(Atlas::Message::Element& value,
+                                          const QueryContext& context) const
+    {
+
+        if (m_entity_provider && context.entity_lookup_fn) {
+            Atlas::Message::Element innerValue;
+            m_entity_provider->value(innerValue, context);
+            if (innerValue.isMap()) {
+                auto I = innerValue.Map().find("$eid");
+                if (I != innerValue.Map().end() && I->second.isString()) {
+                    auto entity = context.entity_lookup_fn(I->second.String());
+                    if (entity) {
+                        if (m_consumer) {
+                            return m_consumer->value(value, *entity);
+                        } else {
+                            value = entity.get();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    const std::type_info* GetEntityFunctionProvider::getType() const
+    {
+        if (m_consumer) {
+            return m_consumer->getType();
+        } else {
+            return &typeid(const LocatedEntity*);
+        }
     }
 
 }

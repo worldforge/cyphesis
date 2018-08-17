@@ -26,6 +26,7 @@
 #include <list>
 #include <utility>
 #include <map>
+#include <functional>
 
 class OutfitProperty;
 
@@ -66,6 +67,8 @@ namespace EntityFilter {
 
         //This field can be used by client code to specify entity for "self.*" query
         LocatedEntity* self_entity = nullptr;
+
+        std::function<Ref<LocatedEntity>(const std::string&)> entity_lookup_fn;
     };
 
     class TypedProvider
@@ -406,6 +409,21 @@ namespace EntityFilter {
                                 const QueryContext& context) const;
     };
 
+
+    class GetEntityFunctionProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
+    {
+        public:
+            explicit GetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, Consumer<LocatedEntity>* consumer);
+
+            void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+            const std::type_info* getType() const override;
+
+        private:
+            Consumer<QueryContext>* m_entity_provider;
+    };
+
+
     class ProviderFactory
     {
         public:
@@ -421,6 +439,10 @@ namespace EntityFilter {
             virtual Consumer<QueryContext>* createProviders(SegmentsList segments) const;
 
             virtual Consumer<QueryContext>* createProvider(Segment segment) const;
+
+            virtual Consumer<QueryContext>* createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const;
+
+            virtual Consumer<QueryContext>* createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const;
 
         protected:
             FixedTypeNodeProvider* createFixedTypeNodeProvider(SegmentsList segments) const;

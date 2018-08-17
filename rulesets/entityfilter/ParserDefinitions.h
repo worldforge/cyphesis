@@ -98,20 +98,21 @@ namespace EntityFilter {
                 segment_attribute_g.name("segment attribute");
 
                 //A single segment. Consists of a delimiter followed by the attribute. (i.e. ".type")
-                segment_g %= (char_(".") | char_(":")) >>
-                                                       segment_attribute_g;
+                segment_g %= (char_(".") | char_(":")) >> segment_attribute_g;
                 segment_g.name("segment");
 
                 //Special segment is used as the first segment in a token (it has no delimiter)
                 //qi eps is used to specify that the delimiter is empty
-                special_segment_g = (qi::eps[at_c<0>(_val) = ""] >>
-                                                                 (segment_attribute_g)[at_c<1>(_val) = _1]);
-                special_segment_g.name("special expr");
+                special_segment_g = (qi::eps[at_c<0>(_val) = ""] >> (segment_attribute_g)[at_c<1>(_val) = _1]);
+                special_segment_g.name("special segment");
 
                 //Collects segments into SegmentsList, which is used to construct
                 //a consumer by a consumer factory
                 segmented_expr_g %= special_segment_g >> +segment_g;
                 segmented_expr_g.name("segmented expr");
+
+                delimited_segmented_expr_g %= +segment_g;
+                delimited_segmented_expr_g.name("delimited segmented expr");
 
                 //Distinguish between string literals from regular segments
                 //(i.e. entity.type="entity")
@@ -150,9 +151,18 @@ namespace EntityFilter {
                     (no_case[qi::lit("contains_recursive")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
                     [_val = new_<ContainsRecursiveFunctionProvider>(_1, _2)] |
 
+                    //allows the "get_entity" function which is used to extract an entity from any property
+                    //which follows the "entity ref protocol", i.e. returns a map with a "$eid" entry.
+                    ((no_case[qi::lit("get_entity")] >> "(" >> consumer_g >> ")") >> delimited_segmented_expr_g)
+                    [_val = boost::phoenix::bind(&ProviderFactory::createGetEntityFunctionProvider, m_factory, _1, _2)]
+                    |
+                    ((no_case[qi::lit("get_entity")] >> "(" >> consumer_g >> ")"))
+                    [_val = boost::phoenix::bind(&ProviderFactory::createSimpleGetEntityFunctionProvider, m_factory, _1)]
+                    |
                     segmented_expr_g[_val = boost::phoenix::bind(&ProviderFactory::createProviders, m_factory, _1)] |
 
-                    special_segment_g[_val = boost::phoenix::bind(&ProviderFactory::createProvider, m_factory, _1)];
+                    special_segment_g[_val = boost::phoenix::bind(&ProviderFactory::createProvider, m_factory, _1)]
+                    ;
 
                 consumer_g.name("consumer");
 
@@ -190,6 +200,7 @@ namespace EntityFilter {
                     //Collect parentheses
                     "(" >> predicate_g[_val = _1] >> ")"
                     |
+                    //A single predicate should be evaluated as if boolean
                     consumer_g[_val = new_<BoolPredicate>(_1)];
                 predicate_g.name("predicate");
 
@@ -211,6 +222,7 @@ namespace EntityFilter {
             qi::rule<Iterator, EntityFilter::ProviderFactory::Segment(), ascii::space_type> special_segment_g;
             qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
             qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
+            qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> delimited_segmented_expr_g;
             qi::rule<Iterator, Consumer < QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type> consumer_g;
             qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*, Consumer < QueryContext>*, Predicate*, ComparePredicate::Comparator>> comparer_predicate_g;
             qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*>> predicate_g;

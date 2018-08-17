@@ -22,6 +22,8 @@
 #include "CyPy_EntityFilter.h"
 
 #include <Atlas/Objects/objectFactory.h>
+#include <rulesets/entityfilter/Providers.h>
+#include <rulesets/BaseWorld.h>
 
 
 using Atlas::Objects::Root;
@@ -213,7 +215,10 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
     Py::List list;
 
     for (auto& entry : m_value->getEntities()) {
-        if (filter->match(*entry.second)) {
+        EntityFilter::QueryContext queryContext{*entry.second};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
+
+        if (filter->match(queryContext)) {
             list.append(CyPy_MemEntity::wrap(entry.second.get()));
         }
     }
@@ -239,7 +244,10 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
     Py::List list;
     if (location.m_loc && location.m_loc->m_contains) {
         for (const auto& entry : *location.m_loc->m_contains) {
-            if (entry->isVisible() && filter->match(*entry)) {
+            EntityFilter::QueryContext queryContext{*entry};
+            queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
+
+            if (entry->isVisible() && filter->match(queryContext)) {
                 if (squareDistance(location.pos(), entry->m_location.pos()) < square_range) {
                     list.append(CyPy_LocatedEntity::wrap(entry));
                 }

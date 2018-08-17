@@ -4,11 +4,6 @@
             <map name="density">
                 <float name="default">30</float>
             </map>
-            <map name="operations">
-                <list name="default">
-                    <string>wear</string>
-                </list>
-            </map>
         </map>
         <string name="id">garment</string>
         <string name="objtype">class</string>

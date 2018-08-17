@@ -12,7 +12,7 @@
                 <string name="default">dural/creatures/biped/malebuilder/folded_shirt.entitymap</string>
             </map>
             <map name="worn">
-                <string name="default">body</string>
+                <string name="default">torso</string>
             </map>
         </map>
         <string name="id">shirt</string>

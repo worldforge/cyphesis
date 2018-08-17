@@ -310,6 +310,7 @@ wf_add_test(EntityFilterTest.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+    ${PROJECT_SOURCE_DIR}/rulesets/PlantedOnProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
@@ -332,6 +333,7 @@ wf_add_test(EntityFilterProvidersTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityP
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+    ${PROJECT_SOURCE_DIR}/rulesets/PlantedOnProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp

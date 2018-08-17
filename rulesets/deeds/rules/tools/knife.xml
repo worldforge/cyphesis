@@ -28,9 +28,9 @@
                         <list name="targets">
                             <string>entity instance_of types.game_entity</string>
                         </list>
-                        <list name="consumed">
-                        </list>
                         <string name="handler">world.objects.tools.Hitting.strike</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
+                        <string name="description">Strike an enemy with a wielded knife.</string>
                     </map>
                 </map>
             </map>

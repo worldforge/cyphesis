@@ -18,12 +18,13 @@
 #include "rulesets/Domain.h"
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/BBoxProperty.h"
-#include "common/Property.h"
+#include "rulesets/PlantedOnProperty.h"
 #include "rulesets/BaseWorld.h"
+#include "rulesets/Entity.h"
+
+#include "common/Property.h"
 #include "common/log.h"
 #include "common/Inheritance.h"
-
-#include "rulesets/Entity.h"
 #include "common/TypeNode.h"
 
 #include <wfmath/point.h>
@@ -113,75 +114,91 @@ struct TestDomain : Domain
 struct EntityFilterTest : public Cyphesis::TestBase
 {
 
-        ProviderFactory m_factory;
+    ProviderFactory m_factory;
 
-        //Entities for testing
+    //Entities for testing
 
-        //Barrels
-        Ref<TestEntity> m_b1;
-        Ref<Entity> m_b2;
-        Ref<Entity> m_b3;
-        LocatedEntitySet* m_b1_container; //Container property for b1
+    //Barrels
+    Ref<TestEntity> m_b1;
+    Ref<Entity> m_b2;
+    Ref<Entity> m_b3;
+    LocatedEntitySet* m_b1_container; //Container property for b1
 
-        //Boulder
-        Ref<Entity> m_bl1;
-        LocatedEntitySet* m_bl1_container;
+    //Boulder
+    Ref<Entity> m_bl1;
+    LocatedEntitySet* m_bl1_container;
 
-        Ref<Entity> m_ch1; //Character entity
-        //Outfit for the character
-        Ref<Entity> m_glovesEntity; //Gloves for the character entity's outfit
-        Ref<Entity> m_bootsEntity;
-        Ref<Entity> m_cloth; //Cloth for gloves' outfit
-        Ref<Entity> m_leather;
+    Ref<Entity> m_ch1; //Character entity
+    //Outfit for the character
+    Ref<Entity> m_glovesEntity; //Gloves for the character entity's outfit
+    Ref<Entity> m_bootsEntity;
+    Ref<Entity> m_cloth; //Cloth for gloves' outfit
+    Ref<Entity> m_leather;
 
-        //Types for testing
-        TypeNode* m_thingType;
-        TypeNode* m_barrelType;
-        TypeNode* m_boulderType;
-        TypeNode* m_characterType;
-        TypeNode* m_clothType;
-        TypeNode* m_glovesType;
-        TypeNode* m_bootsType;
+    std::map<std::string, Ref<LocatedEntity>> m_entities;
 
-        //\brief a tester function for entity filter. Accepts a query and lists of entities that
-        // are supposed to pass or fail the test for a given query
-        void TestQuery(const std::string& query,
-                       std::initializer_list<Ref<Entity>> entitiesToPass,
-                       std::initializer_list<Ref<Entity>> entitiesToFail);
+    //Types for testing
+    TypeNode* m_thingType;
+    TypeNode* m_barrelType;
+    TypeNode* m_boulderType;
+    TypeNode* m_characterType;
+    TypeNode* m_clothType;
+    TypeNode* m_glovesType;
+    TypeNode* m_bootsType;
 
-        void TestContextQuery(const std::string& query,
-                              std::initializer_list<QueryContext> contextsToPass,
-                              std::initializer_list<QueryContext> contextsToFail);
+    //\brief a tester function for entity filter. Accepts a query and lists of entities that
+    // are supposed to pass or fail the test for a given query
+    void TestQuery(const std::string& query,
+                   std::initializer_list<Ref<Entity>> entitiesToPass,
+                   std::initializer_list<Ref<Entity>> entitiesToFail);
 
-        EntityFilterTest();
+    void TestContextQuery(const std::string& query,
+                          std::initializer_list<QueryContext> contextsToPass,
+                          std::initializer_list<QueryContext> contextsToFail);
 
-        ///\Initialize private variables for testing before each test.
-        void setup() override;
+    EntityFilterTest();
 
-        ///\Free allocated space after every test
-        void teardown() override;
+    ///\Initialize private variables for testing before each test.
+    void setup() override;
 
-        void test_CanReach();
+    ///\Free allocated space after every test
+    void teardown() override;
 
-        //General tests for soft properties. Also includes a few misc. tests
-        void test_SoftProperty();
+    void test_CanReach();
 
-        //Test logical operators and precedence
-        void test_LogicalOperators();
+    //General tests for soft properties. Also includes a few misc. tests
+    void test_SoftProperty();
 
-        //Test queries with parentheses
-        void test_Parentheses();
+    //Test logical operators and precedence
+    void test_LogicalOperators();
 
-        //Test outfit queries
-        void test_Outfit();
+    //Test queries with parentheses
+    void test_Parentheses();
 
-        //Test BBox queries (such as volume and other dimensions)
-        void test_BBox();
+    //Test outfit queries
+    void test_Outfit();
 
-        //Test contains_recursive function
-        void test_ContainsRecursive();
+    //Test BBox queries (such as volume and other dimensions)
+    void test_BBox();
 
-        Inheritance* m_inheritance;
+    //Test contains_recursive function
+    void test_ContainsRecursive();
+
+    Inheritance* m_inheritance;
+
+    Ref<LocatedEntity> find_entity(const std::string& id)
+    {
+        auto I = m_entities.find(id);
+        if (I != m_entities.end()) {
+            return I->second;
+        }
+        return nullptr;
+    }
+
+    void add_entity(Ref<LocatedEntity> entity)
+    {
+        m_entities.emplace(entity->getId(), entity);
+    }
 };
 
 void EntityFilterTest::test_CanReach()
@@ -383,25 +400,29 @@ void EntityFilterTest::test_Parentheses()
 
 void EntityFilterTest::test_Outfit()
 {
-//    //Test soft property of outfit
-//    TestQuery("entity.outfit.hands.color='brown'", {m_ch1}, {});
-//    //Test type of outfit
-//    TestQuery("entity.outfit.hands.type=types.gloves", {m_ch1}, {});
-//    //Test an entity without outfit
-//    TestQuery("entity.outfit.hands.type=types.gloves", {}, {m_bl1});
-//    //Test outfit that doesn't have the specified part
-//    TestQuery("entity.outfit.chest.color='red'", {}, {m_ch1});
-//    //Test outfit with another criterion
-//    TestQuery("entity.type=types.character&&entity.outfit.hands.color='brown'",
-//              {m_ch1}, {m_b1});
-//    //Test nested outfit
-//    TestQuery("entity.outfit.hands.outfit.thumb.color='green'", {m_ch1}, {});
-//
-//    TestQuery("entity.outfit.hands.outfit.thumb.type=types.cloth", {m_ch1},
-//              {});
+    //Test soft property of outfit
+    TestQuery("get_entity(entity.attached_hand_primary).color='brown'", {m_ch1}, {});
+    //Test type of outfit
+    TestQuery("get_entity(entity.attached_hand_primary).type=types.gloves", {m_ch1}, {});
+    //Test an entity without outfit
+    TestQuery("get_entity(entity.attached_hand_primary).type=types.gloves", {}, {m_bl1});
+    //Test outfit that doesn't have the specified part
+    TestQuery("get_entity(entity.attached_chest_primary).color='red'", {}, {m_ch1});
+    //Test outfit with another criterion
+    TestQuery("entity.type=types.character&&get_entity(entity.attached_hand_primary).color='brown'",
+              {m_ch1}, {m_b1});
+    //Test nested outfit
+    TestQuery("get_entity(get_entity(entity.attached_hand_primary).attached_thumb).color='green'", {m_ch1}, {});
+
+    TestQuery("get_entity(get_entity(entity.attached_hand_primary).attached_thumb).type=types.cloth", {m_ch1}, {});
 
     TestQuery("entity instance_of types.barrel|types.boulder|types.gloves",
               {m_b1, m_bl1, m_glovesEntity}, {});
+
+    QueryContext queryContext{*m_ch1};
+    queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+    queryContext.tool = m_glovesEntity.get();
+    TestContextQuery("get_entity(entity.attached_hand_primary) = tool", {queryContext}, {});
 }
 
 void EntityFilterTest::test_BBox()
@@ -450,6 +471,7 @@ void EntityFilterTest::setup()
     m_inheritance = new Inheritance();
 //Set up testing environment for Type/Soft properties
     m_b1 = new TestEntity("1", 1);
+    add_entity(m_b1);
 
     m_thingType = new TypeNode("thing");
     types["thing"] = m_thingType;
@@ -463,12 +485,14 @@ void EntityFilterTest::setup()
     m_b1->setProperty("isVisible", new SoftProperty(Element(true)));
 
     m_b2 = new Entity("2", 2);
+    add_entity(m_b2);
     m_b2->setProperty("mass", new SoftProperty(Element(20)));
     m_b2->setProperty("burn_speed", new SoftProperty(0.25));
     m_b2->setType(m_barrelType);
     m_b2->setProperty("isVisible", new SoftProperty(Element(false)));
 
     m_b3 = new Entity("3", 3);
+    add_entity(m_b3);
     m_b3->setProperty("mass", new SoftProperty(Element(25)));
     m_b3->setProperty("burn_speed", new SoftProperty(Element(0.25)));
     m_b3->setType(m_barrelType);
@@ -476,6 +500,7 @@ void EntityFilterTest::setup()
     m_boulderType = new TypeNode("boulder");
     types["boulder"] = m_boulderType;
     m_bl1 = new Entity("4", 4);
+    add_entity(m_bl1);
     m_bl1->setProperty("mass", new SoftProperty(Element(25)));
     m_bl1->setType(m_boulderType);
 
@@ -519,6 +544,7 @@ void EntityFilterTest::setup()
     TypeNode* m_leatherType = new TypeNode("leather");
 
     m_glovesEntity = new Entity("5", 5);
+    add_entity(m_glovesEntity);
     m_glovesEntity->setType(m_glovesType);
     m_glovesEntity->setProperty("color", new SoftProperty("brown"));
     m_glovesEntity->setProperty("mass", new SoftProperty(5));
@@ -528,33 +554,49 @@ void EntityFilterTest::setup()
     m_glovesEntity->setProperty("reach", reachProp);
 
     m_bootsEntity = new Entity("6", 6);
+    add_entity(m_bootsEntity);
     m_bootsEntity->setType(m_bootsType);
     m_bootsEntity->setProperty("color", new SoftProperty("black"));
     m_bootsEntity->setProperty("mass", new SoftProperty(10));
 
-//    std::map<std::string, Element> outfitMap;
-//    outfitMap.insert(std::make_pair("feet", Element(m_bootsEntity.get())));
-//    outfitMap.insert(std::make_pair("hands", Element(m_glovesEntity.get())));
-//    OutfitProperty* outfit1 = new OutfitProperty;
-//    outfit1->set(outfitMap);
 
     m_cloth = new Entity("8", 8);
+    add_entity(m_cloth);
     m_cloth->setType(m_clothType);
     m_cloth->setProperty("color", new SoftProperty("green"));
 
     m_leather = new Entity("9", 9);
+    add_entity(m_leather);
     m_leather->setType(m_leatherType);
     m_leather->setProperty("color", new SoftProperty("pink"));
 
-    std::map<std::string, Element> outfitMap1;
-    outfitMap1.insert(std::make_pair("thumb", Element(m_cloth.get())));
-//    OutfitProperty* outfit2 = new OutfitProperty;
-//    outfit2->set(outfitMap1);
-//    m_glovesEntity->setProperty("outfit", outfit2);
+    //The m_cloth entity is attached to the gloves by the "thumb" attachment
+    {
+        auto attachedProp = new SoftProperty();
+        attachedProp->data() = Atlas::Message::MapType{{"$eid", m_cloth->getId()}};
+        m_glovesEntity->setProperty("attached_thumb", attachedProp);
+
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = WeakEntityRef(m_glovesEntity.get());
+        m_cloth->setProperty("planted_on", plantedOnProp);
+    }
 
     m_ch1 = new Entity("7", 7);
+    add_entity(m_ch1);
     m_ch1->setType(m_characterType);
-//    m_ch1->setProperty("outfit", outfit1);
+
+    //The m_glovesEntity entity is attached to the m_ch1 by the "hand_primary" attachment
+    {
+        auto attachedHandPrimaryProp = new SoftProperty();
+        attachedHandPrimaryProp->data() = Atlas::Message::MapType{{"$eid", m_glovesEntity->getId()}};
+        m_ch1->setProperty("attached_hand_primary", attachedHandPrimaryProp);
+    }
+
+    {
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = WeakEntityRef(m_ch1.get());
+        m_glovesEntity->setProperty("planted_on", plantedOnProp);
+    }
 
     BBoxProperty* bbox1 = new BBoxProperty;
     bbox1->set((std::vector<Element>{-1, -3, -2, 1, 3, 2}));
@@ -647,11 +689,15 @@ void EntityFilterTest::TestQuery(const std::string& query,
 {
     EntityFilter::ProviderFactory factory;
     EntityFilter::Filter f(query, factory);
-    for (auto entity : entitiesToPass) {
-        assert(f.match(*entity));
+    for (const auto& entity : entitiesToPass) {
+        QueryContext queryContext{*entity};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+        assert(f.match(queryContext));
     }
-    for (auto entity : entitiesToFail) {
-        assert(!f.match(*entity));
+    for (const auto& entity : entitiesToFail) {
+        QueryContext queryContext{*entity};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+        assert(!f.match(queryContext));
     }
 }
 
@@ -671,6 +717,8 @@ void EntityFilterTest::TestContextQuery(const std::string& query,
 
 void EntityFilterTest::teardown()
 {
+    m_entities.clear();
+
     delete m_inheritance;
 //    Clean up
 
