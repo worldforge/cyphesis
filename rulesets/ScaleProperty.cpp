@@ -23,12 +23,11 @@
 #include <wfmath/atlasconv.h>
 
 
-void ScaleProperty::apply(LocatedEntity * ent)
+void ScaleProperty::apply(LocatedEntity* ent)
 {
     auto bboxProp = ent->getPropertyClassFixed<BBoxProperty>();
     if (bboxProp) {
         bboxProp->updateBboxOnEntity(ent);
-        //ent->propertyApplied(BBoxProperty::property_name, *bboxProp);
     }
 }
 
@@ -40,9 +39,10 @@ int ScaleProperty::get(Atlas::Message::Element& val) const
         } else {
             val = m_data.toAtlas();
         }
-        return 0;
+    } else {
+        val = Atlas::Message::Element();
     }
-    return 1;
+    return 0;
 
 }
 
@@ -57,6 +57,12 @@ void ScaleProperty::set(const Atlas::Message::Element& val)
         } else {
             m_data.fromAtlas(val.List());
         }
+    } else if (val.isNone()) {
+        m_data.setValid(false);
+    } else if (val.isNum()) {
+        //Warn here. We don't accept single numbers. We could, but it would be confusing since the 'get' method always returns a list.
+        //So we instead want to keep the API less confusing and forcing rule writers to supply lists.
+        log(WARNING, "Trying to set a 'scale' property to a number. It only accepts list of numbers (even if it only contains one entry).");
     }
 }
 
