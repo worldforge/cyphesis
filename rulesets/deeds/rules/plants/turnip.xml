@@ -1,8 +1,10 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="biomass">
-                <float name="default">0.5</float>
+            <map name="geometry">
+                <map name="default">
+                    <string name="type">cylinder-z</string>
+                </map>
             </map>
             <map name="bbox">
                 <list name="default">

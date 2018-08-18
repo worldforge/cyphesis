@@ -22,10 +22,6 @@
                     <string name="type">cylinder-y</string>
                 </map>
             </map>
-            <!-- Your typical plant doesn't eat meat. -->
-            <map name="_modifier_eat_type_meat">
-                <float name="default">0</float>
-            </map>
             <map name="_modifier_eat_type_plant">
                 <float name="default">1</float>
             </map>

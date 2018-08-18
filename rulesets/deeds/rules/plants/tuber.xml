@@ -1,11 +1,16 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="biomass">
-                <float name="default">0.5</float>
-            </map>
             <map name="density">
                 <float name="default">800</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">tuber</string>

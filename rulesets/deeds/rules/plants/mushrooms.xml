@@ -11,11 +11,16 @@
             <map name="present">
                 <string name="default">dural/plants/mushrooms/silkfoot.modeldef</string>
             </map>
-            <map name="biomass">
-                <float name="default">0.1</float>
-            </map>
             <map name="density">
                 <float name="default">900</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="eat">
+                        <string name="handler">world.objects.Consumable.eat</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">mushroom</string>

@@ -2,9 +2,6 @@
 
     <map>
         <map name="attributes">
-            <map name="biomass">
-                <float name="default">0.1</float>
-            </map>
             <map name="germinates">
                 <string name="default">pine</string>
             </map>
