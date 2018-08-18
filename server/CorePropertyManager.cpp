@@ -139,7 +139,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<BiomassProperty>();
     installProperty<BurnSpeedProperty>();
     installProperty<TransientProperty>();
-    installProperty<Property<double>>("food");
     installProperty<Property<double>>("mass");
     installProperty<BBoxProperty>();
     installProperty<MindProperty>();

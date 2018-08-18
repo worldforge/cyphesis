@@ -651,7 +651,6 @@ int main()
 
 #include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Task.h"
-#include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 
 #include "stubs/rulesets/stubCreator.h"

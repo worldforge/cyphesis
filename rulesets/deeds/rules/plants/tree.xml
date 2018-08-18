@@ -31,6 +31,18 @@
                         <string name="language">python</string>
                         <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
                     </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Nourishable.Nourishable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Growing.Growing</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.PlantFeeding.PlantFeeding</string>
+                    </map>
                 </list>
             </map>
         </map>

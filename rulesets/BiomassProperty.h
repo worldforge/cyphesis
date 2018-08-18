@@ -24,6 +24,8 @@
 /**
  * \brief Keeps track of the current biomass of living creatures.
  * \ingroup PropertyClasses
+ *
+ * TODO: remove
  */
 class BiomassProperty : public Property<double>
 {

@@ -22,11 +22,34 @@
                     <string name="type">cylinder-y</string>
                 </map>
             </map>
+            <!-- Your typical plant doesn't eat meat. -->
+            <map name="_modifier_eat_type_meat">
+                <float name="default">0</float>
+            </map>
+            <map name="_modifier_eat_type_plant">
+                <float name="default">1</float>
+            </map>
+            <!-- The max amount of nutrients we can hold in our reserves, compared to our mass -->
+            <map name="_nutrients_max_factor">
+                <float name="default">0.1</float>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.objects.plants.FruitPlant.FruitPlant</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Nourishable.Nourishable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Growing.Growing</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.PlantFeeding.PlantFeeding</string>
                     </map>
                 </list>
             </map>

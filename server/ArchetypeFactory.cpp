@@ -19,7 +19,7 @@
 #include "EntityBuilder.h"
 #include "WorldRouter.h"
 
-#include "rulesets/Plant.h"
+#include "rulesets/LocatedEntity.h"
 
 #include "common/debug.h"
 #include "common/TypeNode.h"
@@ -353,7 +353,7 @@ void ArchetypeFactory::sendThoughts(LocatedEntity& entity, std::vector<Atlas::Me
 
 ArchetypeFactory * ArchetypeFactory::duplicateFactory()
 {
-    ArchetypeFactory * f = new ArchetypeFactory(*this);
+    auto* f = new ArchetypeFactory(*this);
     // Copy the defaults to the parent
     f->m_entities = this->m_entities;
     f->m_thoughts = this->m_thoughts;
@@ -363,7 +363,7 @@ ArchetypeFactory * ArchetypeFactory::duplicateFactory()
 
 void ArchetypeFactory::addProperties()
 {
-    assert(m_type != 0);
+    assert(m_type != nullptr);
     MapType attributes;
     ListType entities;
     for (auto I : m_entities) {
@@ -377,7 +377,7 @@ void ArchetypeFactory::addProperties()
 
 void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
-    assert(m_type != 0);
+    assert(m_type != nullptr);
 
     MapType attributes;
     ListType entities;

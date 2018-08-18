@@ -49,7 +49,7 @@
                 <string name="default">inventory</string>
             </map>
             <!-- The max amount of food we can contain in our stomach, relative to our mass. -->
-            <map name="_food_max_factor">
+            <map name="_nutrients_max_factor">
                 <float name="default">0.1</float>
             </map>
             <map name="__scripts">
@@ -61,6 +61,10 @@
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Metabolizing.Metabolizing</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Nourishable.Nourishable</string>
                     </map>
                 </list>
             </map>

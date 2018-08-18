@@ -420,7 +420,6 @@ int main()
 #include "rulesets/DefaultLocationProperty.h"
 #include "rulesets/DomainProperty.h"
 #include "rulesets/LimboProperty.h"
-#include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "stubs/rulesets/stubScaleProperty.h"
 

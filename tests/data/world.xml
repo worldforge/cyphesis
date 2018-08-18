@@ -1864,8 +1864,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -1956,8 +1956,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2178,8 +2178,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2270,8 +2270,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2362,8 +2362,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2454,8 +2454,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2529,8 +2529,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2604,8 +2604,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2679,8 +2679,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2771,8 +2771,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2863,8 +2863,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -2938,8 +2938,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3030,8 +3030,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3105,8 +3105,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3197,8 +3197,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3272,8 +3272,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3364,8 +3364,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3439,8 +3439,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3531,8 +3531,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3623,8 +3623,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3698,8 +3698,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3790,8 +3790,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3882,8 +3882,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -3974,8 +3974,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4066,8 +4066,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4141,8 +4141,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4233,8 +4233,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4308,8 +4308,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4400,8 +4400,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4475,8 +4475,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4567,8 +4567,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4642,8 +4642,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4734,8 +4734,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4809,8 +4809,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4901,8 +4901,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -4993,8 +4993,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5068,8 +5068,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5143,8 +5143,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5218,8 +5218,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5293,8 +5293,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5368,8 +5368,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5460,8 +5460,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5552,8 +5552,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5627,8 +5627,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5702,8 +5702,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5794,8 +5794,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5869,8 +5869,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -5944,8 +5944,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">19</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -6036,8 +6036,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>
@@ -6111,8 +6111,8 @@
       <float>12</float>
     </list>
     <float name="burn_speed">0.025</float>
-    <int name="fruitChance">2</int>
-    <string name="fruitName">acorn</string>
+    <int name="fruit_chance">2</int>
+    <string name="fruit_name">acorn</string>
     <int name="fruits">20</int>
     <float name="height">6</float>
     <float name="mass">5000</float>

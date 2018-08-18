@@ -16,13 +16,13 @@
             <map name="burn_speed">
                 <float name="default">0.025</float>
             </map>
-            <map name="fruitsMax">
+            <map name="fruits_max">
                 <int name="default">5</int>
             </map>
-            <map name="fruitChance">
+            <map name="fruit_chance">
                 <int name="default">5</int>
             </map>
-            <map name="fruitName">
+            <map name="fruit_name">
                 <string name="default">apple</string>
             </map>
             <map name="fruits">
@@ -32,7 +32,7 @@
                 <float name="default">750</float>
             </map>
             <map name="maxscale">
-                <float name="default">1.5</float>
+                <float name="default">1</float>
             </map>
             <map name="sizeAdult">
                 <int name="default">4</int>
@@ -59,7 +59,7 @@
                 <float name="default">600</float>
             </map>
             <map name="maxscale">
-                <float name="default">1.5</float>
+                <float name="default">1</float>
             </map>
         </map>
         <string name="id">willow</string>

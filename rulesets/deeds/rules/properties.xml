@@ -40,7 +40,15 @@
     </map>
 
     <map>
-        <string name="id">_food_max_factor</string>
+        <string name="id">_nutrients</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">For living things, the amount of 'food' contained in them. Nutrients are consumed to recover 'status' or to grow.</string>
+    </map>
+
+
+    <map>
+        <string name="id">_nutrients_max_factor</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>
         <string name="description">Used on consumers, to define the max amount of food mass their stomach can contains as a factor of their mass.</string>

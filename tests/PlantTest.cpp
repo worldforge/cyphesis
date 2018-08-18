@@ -26,8 +26,6 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Plant.h"
-
 #include "rulesets/AtlasProperties.h"
 #include "rulesets/AreaProperty.h"
 #include "rulesets/BBoxProperty.h"

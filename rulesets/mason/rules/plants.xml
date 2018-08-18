@@ -63,10 +63,10 @@
             <map name="burn_speed">
                 <float name="default">0.025</float>
             </map>
-            <map name="fruitChance">
+            <map name="fruit_chance">
                 <int name="default">15</int>
             </map>
-            <map name="fruitName">
+            <map name="fruit_name">
                 <string name="default">apple</string>
             </map>
             <map name="fruits">
@@ -350,10 +350,10 @@
             <map name="burn_speed">
                 <float name="default">0.025</float>
             </map>
-            <map name="fruitChance">
+            <map name="fruit_chance">
                 <int name="default">2</int>
             </map>
-            <map name="fruitName">
+            <map name="fruit_name">
                 <string name="default">acorn</string>
             </map>
             <map name="fruits">

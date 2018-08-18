@@ -340,7 +340,6 @@ int main()
 #include "rulesets/TerrainProperty.h"
 #include "rulesets/DomainProperty.h"
 
-#include "rulesets/Plant.h"
 #include "rulesets/Stackable.h"
 #include "rulesets/ExternalMind.h"
 #include "rulesets/PythonArithmeticFactory.h"

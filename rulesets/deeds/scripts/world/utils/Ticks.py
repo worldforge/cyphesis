@@ -1,4 +1,4 @@
-from xml.dom.minidom import Entity
+import random
 
 from atlas import *
 
@@ -6,17 +6,17 @@ from atlas import *
 # Typically you would want to call 'init_ticks' in your __init__ method,
 # and then call 'verify_tick' in 'tick_operation' method.
 
-def init_ticks(self, interval):
+def init_ticks(self, interval, jitter=0):
     self.tick_refno = 0
-    self.send_world(Operation("tick", Entity(name=self.__class__.__name__), refno=self.tick_refno, future_seconds=interval, to=self.id))
+    self.send_world(Operation("tick", Entity(name=self.__class__.__name__), refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
 
 
-def verify_tick(self, op, res, interval):
+def verify_tick(self, op, res, interval, jitter=0):
     if len(op) > 0:
         arg = op[0]
 
         if arg.name == self.__class__.__name__ and op.refno == self.tick_refno:
             self.tick_refno += 1
-            res.append(Operation("tick", arg, refno=self.tick_refno, future_seconds=interval, to=self.id))
+            res.append(Operation("tick", arg, refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
             return True
     return False

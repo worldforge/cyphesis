@@ -35,7 +35,7 @@ class Property;
 /// The basic functionality of Plant is as follows:
 /// 1) The plant receives a tick operation. It checks it's m_nourishment value to see
 /// whether it should grow or wither.
-/// If the plant has fruitName set, it will also do a check whether it should drop a fruit or not.
+/// If the plant has fruit_name set, it will also do a check whether it should drop a fruit or not.
 /// It also sends an Eat operation to it's parent.
 /// 2) If the parent is the world, the world will respond to the Eat operation by checking
 /// if the plant is in a favourable spot (i.e. a place where it can grow, like in the bare ground).
@@ -62,7 +62,7 @@ class Plant : public Thing {
     static const int m_speed = 20; // Number of basic_ticks per tick
 
     void handleFruiting(OpVector & res, Property<int>& fruits_prop);
-    void dropFruit(OpVector & res, const std::string& fruitName);
+    void dropFruit(OpVector & res, const std::string& fruit_name);
     /**
      * If there's an area attached to the plant it will be scaled according to the radius of the bounding box.
      */

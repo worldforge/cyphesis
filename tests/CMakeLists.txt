@@ -135,8 +135,6 @@ set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp EntityExerciser
 
 wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
 wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp)
-wf_add_test(PlantTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Plant.cpp ${PROJECT_SOURCE_DIR}/rulesets/DensityProperty.cpp)
-target_link_libraries(PlantTest physics)
 wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Stackable.cpp)
 wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp)
 wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/World.cpp)

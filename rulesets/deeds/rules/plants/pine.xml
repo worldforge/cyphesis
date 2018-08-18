@@ -21,7 +21,7 @@
                 <float name="default">600</float>
             </map>
             <map name="maxscale">
-                <float name="default">1.5</float>
+                <float name="default">1</float>
             </map>
         </map>
         <string name="id">pine</string>

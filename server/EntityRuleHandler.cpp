@@ -42,8 +42,6 @@ using String::compose;
 
 class Entity;
 
-class Plant;
-
 class Stackable;
 
 class Thing;
@@ -52,9 +50,6 @@ class World;
 
 extern template
 class EntityFactory<Thing>;
-
-extern template
-class EntityFactory<Plant>;
 
 extern template
 class EntityFactory<Stackable>;
@@ -76,11 +71,6 @@ EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
     };
     mFactories["thing"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
         auto factory = new EntityFactory<Thing>();
-        factory->m_parent = parent;
-        return factory;
-    };
-    mFactories["plant"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
-        auto factory = new EntityFactory<Plant>();
         factory->m_parent = parent;
         return factory;
     };

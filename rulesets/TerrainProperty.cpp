@@ -480,6 +480,7 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
             Nourish nourish;
             nourish->setTo(from_id);
             Anonymous nour_arg;
+            nour_arg->setAttr("eat_type", "plant");
             Element mass;
             from->getAttr("mass", mass);
             if (!mass.isFloat()) {

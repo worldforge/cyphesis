@@ -12,7 +12,6 @@ add_library(rulesetentity
     Entity.cpp
     Thing.cpp
     World.cpp
-    Plant.cpp
     Stackable.cpp
     Domain.cpp
     ExternalMind.cpp

@@ -29,9 +29,4 @@ PythonWrapper::PythonWrapper(const Py::Object& wrapper)
 {
 }
 
-PythonWrapper::~PythonWrapper()
-{
-    if (m_wrapper.reference_count() != 1) {
-        log(WARNING, String::compose("Deleting Python object of type '%1' with %2 > 1 refs to its wrapper/script", "FIXME: expose type in Py::Type", m_wrapper.reference_count()));
-    }
-}
+PythonWrapper::~PythonWrapper() = default;

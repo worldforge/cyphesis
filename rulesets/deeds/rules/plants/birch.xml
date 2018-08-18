@@ -21,7 +21,7 @@
                 <float name="default">600</float>
             </map>
             <map name="maxscale">
-                <float name="default">1.5</float>
+                <float name="default">1</float>
             </map>
             <map name="present">
                 <string name="default">dural/plants/trees/birch/birch_a.modeldef</string>
