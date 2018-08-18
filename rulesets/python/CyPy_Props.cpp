@@ -16,9 +16,11 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rulesets/BBoxProperty.h>
 #include "CyPy_Props.h"
 #include "CyPy_Element.h"
 #include "CyPy_TerrainProperty.h"
+#include "CyPy_Axisbox.h"
 
 CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
@@ -46,6 +48,14 @@ void CyPy_Props::init_type()
 Py::Object CyPy_Props::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
+
+    if (nameStr == "bbox") {
+        auto bboxProperty = m_value->getPropertyClassFixed<BBoxProperty>();
+        if (bboxProperty) {
+            return CyPy_Axisbox::wrap(bboxProperty->data());
+        }
+        return Py::None();
+    }
 
     auto prop = m_value->getProperty(nameStr);
     if (prop) {
