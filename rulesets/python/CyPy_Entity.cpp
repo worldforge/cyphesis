@@ -60,6 +60,7 @@ void CyPy_Entity::init_type()
 
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
     PYCXX_ADD_VARARGS_METHOD(mod_property, mod_property, "");
+    PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
 
 
     //behaviors().type_object()->tp_base = base;
