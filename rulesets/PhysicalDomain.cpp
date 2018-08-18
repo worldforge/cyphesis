@@ -274,7 +274,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
             btVector3 finalSpeed = entry.second.velocity * speed;
 
             //Apply gravity
-            if (verticalVelocity != 0) {
+            if (!WFMath::Equal(verticalVelocity, 0, WFMath::numeric_constants<float>::epsilon())) {
                 verticalVelocity += entry.second.rigidBody->getGravity().y() * timeStep;
                 entry.second.rigidBody->setLinearVelocity(finalSpeed + btVector3(0, verticalVelocity, 0));
             } else {
