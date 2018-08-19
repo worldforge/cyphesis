@@ -112,7 +112,7 @@ class StorageManager : public sigc::trackable {
     bool persistance_characterDeleted(const std::string& entityId);
 
   public:
-    StorageManager(WorldRouter &);
+    explicit StorageManager(WorldRouter &);
     virtual ~StorageManager();
 
     void tick();

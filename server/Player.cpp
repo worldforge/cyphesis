@@ -50,16 +50,6 @@ const char * Player::getType() const
     return "player";
 }
 
-void Player::addToMessage(MapType & omap) const
-{
-    Account::addToMessage(omap);
-}
-
-void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-    Account::addToEntity(ent);
-}
-
 int Player::characterError(const Operation & op,
                            const Root & ent, OpVector & res) const
 {

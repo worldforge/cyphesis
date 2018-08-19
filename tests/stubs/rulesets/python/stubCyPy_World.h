@@ -41,14 +41,6 @@
   }
 #endif //STUB_CyPy_World_get_time
 
-#ifndef STUB_CyPy_World_get_object_ref
-//#define STUB_CyPy_World_get_object_ref
-  Py::Object CyPy_World::get_object_ref(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_World_get_object_ref
-
 #ifndef STUB_CyPy_World_get_object
 //#define STUB_CyPy_World_get_object
   Py::Object CyPy_World::get_object(const Py::Tuple& args)

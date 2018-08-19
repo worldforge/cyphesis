@@ -28,6 +28,7 @@
 #include "common/Router.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/Visibility.h"
 
 #include <sigc++/signal.h>
 
@@ -142,30 +143,13 @@ class LocatedEntity : public Router {
 
     public:
 
-        /**
-         * Visibility for broadcasted entities.
-         */
-        enum class Visibility {
-                /**
-                 * Sent to all.
-                 */
-                PUBLIC,
-                /**
-                 * Sent to the entity itself and admins.
-                 */
-                PROTECTED,
-
-                /**
-                 * Sent only to admins (not even the entity itself).
-                 */
-                PRIVATE
-        };
-
-        /// Flags indicating entity behaviour
-        Flags m_flags;
 
 
-        /// Scripts that are associated with this entity.
+    /// Flags indicating entity behaviour
+    Flags m_flags;
+
+
+    /// Scripts that are associated with this entity.
     std::vector<Script*> m_scripts;
     /// Full details of location
     Location m_location;

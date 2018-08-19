@@ -113,7 +113,7 @@ void ThingIntegration::test_visibility()
     auto verifyBroadcastContains = [&](Ref<ThingExt> thing, std::initializer_list<const Ref<ThingExt>> expectedThings) {
         OpVector res;
         Atlas::Objects::Operation::Sight s;
-        thing->broadcast(s, res, LocatedEntity::Visibility::PUBLIC);
+        thing->broadcast(s, res, Visibility::PUBLIC);
 
         for (auto expectedThing : expectedThings) {
             auto I = std::find_if(std::begin(res), std::end(res), [&](Operation entry) { return entry->getTo() == expectedThing->getId(); });

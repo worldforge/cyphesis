@@ -78,7 +78,7 @@ WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity)
             for (auto& entry: typeNodes) {
                 auto typeNode = entry.first;
                 Atlas::Objects::Entity::Anonymous o;
-                o->setObjtype(typeNode->description()->getObjtype());
+                o->setObjtype(typeNode->description(Visibility::PRIVATE)->getObjtype());
                 o->setId(typeNode->name());
                 args.emplace_back(o);
             }
@@ -366,7 +366,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
     if (op->isDefaultTo()) {
         if (shouldBroadcastPerception(op)) {
             OpVector res;
-            fromEntity.broadcast(op, res, LocatedEntity::Visibility::PUBLIC);
+            fromEntity.broadcast(op, res, Visibility::PUBLIC);
             for (auto& broadcastedOp : res) {
                 m_operationsDispatcher.addOperationToQueue(broadcastedOp, Ref<LocatedEntity>(&fromEntity));
             }

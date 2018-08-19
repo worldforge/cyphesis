@@ -28,14 +28,6 @@ namespace EntityFilter {
 
 #ifndef STUB_Filter_match
 //#define STUB_Filter_match
-  bool Filter::match(LocatedEntity& entity)
-  {
-    return false;
-  }
-#endif //STUB_Filter_match
-
-#ifndef STUB_Filter_match
-//#define STUB_Filter_match
   bool Filter::match(const QueryContext& context)
   {
     return false;

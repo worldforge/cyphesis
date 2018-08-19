@@ -42,6 +42,7 @@
 
 #include <cassert>
 #include <rulesets/Entity.h>
+#include <common/TypeNode.h>
 
 
 using Atlas::Objects::Operation::RootOperation;

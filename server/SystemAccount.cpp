@@ -26,9 +26,7 @@ SystemAccount::SystemAccount(Connection * conn,
 {
 }
 
-SystemAccount::~SystemAccount()
-{
-}
+SystemAccount::~SystemAccount() = default;
 
 const char * SystemAccount::getType() const
 {

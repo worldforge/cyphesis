@@ -90,7 +90,7 @@ static void addTypeToList(const Root & type, ListType & typeList)
     auto I = children.List().begin();
     auto Iend = children.List().end();
     for (; I != Iend; ++I) {
-        Root child = Inheritance::instance().getClass(I->asString());
+        Root child = Inheritance::instance().getClass(I->asString(), Visibility::PRIVATE);
         if (!child.isValid()) {
             log(ERROR, compose("Unable to find %1 in inheritance table",
                                I->asString()));
@@ -257,7 +257,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
     } else if (objtype == "class" ||
                objtype == "meta" ||
                objtype == "op_definition") {
-        const Root & o = Inheritance::instance().getClass(id);
+        const Root & o = Inheritance::instance().getClass(id, Visibility::PRIVATE);
         if (!o.isValid()) {
             clientError(op, compose("Unknown type definition for \"%1\" "
                                     "requested", id), res);
@@ -346,7 +346,7 @@ void Admin::createObject(const Root & arg,
                   getId());
             return;
         }
-        const Root & o = Inheritance::instance().getClass(type_str);
+        const Root & o = Inheritance::instance().getClass(type_str, Visibility::PRIVATE);
         if (!o.isValid()) {
             error(op, compose("Attempt to install type with non-existant "
                               "parent \"%1\"", type_str), res, getId());

@@ -32,21 +32,5 @@
   }
 #endif //STUB_Player_getType
 
-#ifndef STUB_Player_addToMessage
-//#define STUB_Player_addToMessage
-  void Player::addToMessage(Atlas::Message::MapType &) const
-  {
-    
-  }
-#endif //STUB_Player_addToMessage
-
-#ifndef STUB_Player_addToEntity
-//#define STUB_Player_addToEntity
-  void Player::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
-  {
-    
-  }
-#endif //STUB_Player_addToEntity
-
 
 #endif

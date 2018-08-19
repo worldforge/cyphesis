@@ -304,7 +304,7 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
     assert(!name.empty());
     assert(name != "objtype");
     PropertyBase * p = nullptr;
-    PropertyFactoryDict::const_iterator I = m_propertyFactories.find(name);
+    auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
         switch (type) {
           case Element::TYPE_INT:
@@ -323,6 +323,7 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
     } else {
         p = I->second->newProperty();
     }
+    p->flags().addFlags(PropertyBase::flagsForPropertyName(name));
     debug(std::cout << name << " property found. " << std::endl << std::flush;);
     return p;
 }

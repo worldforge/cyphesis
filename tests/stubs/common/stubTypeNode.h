@@ -9,7 +9,7 @@
 
 #ifndef STUB_TypeNode_TypeNode
 //#define STUB_TypeNode_TypeNode
-   TypeNode::TypeNode(const std::string &)
+   TypeNode::TypeNode(const std::string&)
     : m_parent(nullptr)
   {
     
@@ -18,7 +18,7 @@
 
 #ifndef STUB_TypeNode_TypeNode
 //#define STUB_TypeNode_TypeNode
-   TypeNode::TypeNode(const std::string &, const Atlas::Objects::Root &)
+   TypeNode::TypeNode(const std::string&, const Atlas::Objects::Root&)
     : m_parent(nullptr)
   {
     
@@ -43,7 +43,7 @@
 
 #ifndef STUB_TypeNode_addProperties
 //#define STUB_TypeNode_addProperties
-  void TypeNode::addProperties(const Atlas::Message::MapType & attributes)
+  void TypeNode::addProperties(const Atlas::Message::MapType& attributes)
   {
     
   }
@@ -51,7 +51,7 @@
 
 #ifndef STUB_TypeNode_updateProperties
 //#define STUB_TypeNode_updateProperties
-  TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
+  TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType& attributes)
   {
     return *static_cast<TypeNode::PropertiesUpdate*>(nullptr);
   }
@@ -59,7 +59,7 @@
 
 #ifndef STUB_TypeNode_isTypeOf
 //#define STUB_TypeNode_isTypeOf
-  bool TypeNode::isTypeOf(const std::string & base_type) const
+  bool TypeNode::isTypeOf(const std::string& base_type) const
   {
     return false;
   }
@@ -67,11 +67,35 @@
 
 #ifndef STUB_TypeNode_isTypeOf
 //#define STUB_TypeNode_isTypeOf
-  bool TypeNode::isTypeOf(const TypeNode * base_type) const
+  bool TypeNode::isTypeOf(const TypeNode* base_type) const
   {
     return false;
   }
 #endif //STUB_TypeNode_isTypeOf
+
+#ifndef STUB_TypeNode_setDescription
+//#define STUB_TypeNode_setDescription
+  void TypeNode::setDescription(const Atlas::Objects::Root& description)
+  {
+    
+  }
+#endif //STUB_TypeNode_setDescription
+
+#ifndef STUB_TypeNode_description
+//#define STUB_TypeNode_description
+  Atlas::Objects::Root& TypeNode::description(Visibility visibility)
+  {
+    return *static_cast<Atlas::Objects::Root*>(nullptr);
+  }
+#endif //STUB_TypeNode_description
+
+#ifndef STUB_TypeNode_description
+//#define STUB_TypeNode_description
+  const Atlas::Objects::Root& TypeNode::description(Visibility visibility) const
+  {
+    return *static_cast<const Atlas::Objects::Root*>(nullptr);
+  }
+#endif //STUB_TypeNode_description
 
 
 #endif

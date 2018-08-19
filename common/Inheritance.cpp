@@ -124,13 +124,13 @@ void Inheritance::flush()
     atlasObjects.clear();
 }
 
-const Root & Inheritance::getClass(const std::string & parent)
+const Root & Inheritance::getClass(const std::string & parent, Visibility visibility)
 {
     auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return noClass;
     }
-    return I->second->description();
+    return I->second->description(visibility);
 }
 
 int Inheritance::updateClass(const std::string & parent,
@@ -141,16 +141,16 @@ int Inheritance::updateClass(const std::string & parent,
         return -1;
     }
     TypeNode * tn = I->second;
-    if (tn->description()->getParent() != description->getParent()) {
+    if (tn->description(Visibility::PRIVATE)->getParent() != description->getParent()) {
         return -1;
     }
-    tn->description() = description;
+    tn->setDescription(description);
     return 0;
 }
 
 const TypeNode * Inheritance::getType(const std::string & parent)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return nullptr;
     }
@@ -159,23 +159,23 @@ const TypeNode * Inheritance::getType(const std::string & parent)
 
 bool Inheritance::hasClass(const std::string & parent)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     return !(I == atlasObjects.end());
 }
 
 TypeNode * Inheritance::addChild(const Root & obj)
 {
-    assert(obj.isValid() && obj->getParent() != "");
+    assert(obj.isValid() && !obj->getParent().empty());
     const std::string & child = obj->getId();
     const std::string & parent = obj->getParent();
-    TypeNodeDict::const_iterator I = atlasObjects.find(child);
-    TypeNodeDict::const_iterator Iend = atlasObjects.end();
+    auto I = atlasObjects.find(child);
+    auto Iend = atlasObjects.end();
     if (I != Iend) {
         const TypeNode * existing = I->second->parent();
         log(ERROR, String::compose("Installing %1 \"%2\"(\"%3\") "
                                    "which was already installed as %4 (\"%5\")",
                                    obj->getObjtype(), child, parent,
-                                   I->second->description()->getObjtype(),
+                                   I->second->description(Visibility::PRIVATE)->getObjtype(),
                                    existing ? existing->name() : "NON"));
         return nullptr;
     }
@@ -187,13 +187,17 @@ TypeNode * Inheritance::addChild(const Root & obj)
         return nullptr;
     }
     Element children(ListType(1, child));
-    if (I->second->description()->copyAttr("children", children) == 0) {
+
+    auto description = I->second->description(Visibility::PRIVATE);
+
+    if (description->copyAttr("children", children) == 0) {
         assert(children.isList());
         children.asList().push_back(child);
     }
-    I->second->description()->setAttr("children", children);
+    description->setAttr("children", children);
+    I->second->setDescription(description);
 
-    TypeNode * type = new TypeNode(child, obj);
+    auto* type = new TypeNode(child, obj);
     type->setParent(I->second);
 
     atlasObjects.insert(std::make_pair(child, type));

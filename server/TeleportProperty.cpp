@@ -47,7 +47,7 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {
-    ServerRouting *svr = ServerRouting::instancePtr();
+    auto* svr = ServerRouting::instancePtr();
     if(svr == nullptr) {
         log(ERROR, "Unable to access ServerRouting object");
         return OPERATION_IGNORED;
@@ -57,7 +57,7 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
         log(ERROR, "Unknown peer ID specified");
         return OPERATION_IGNORED;
     }
-    Juncture * link = dynamic_cast<Juncture *>(obj);
+    auto* link = dynamic_cast<Juncture *>(obj);
     if(link == nullptr) {
         log(ERROR, "Non Peer ID specified");
         return OPERATION_IGNORED;

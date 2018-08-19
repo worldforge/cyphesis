@@ -24,10 +24,11 @@
 class TeleportProperty : public Property<std::string>
 {
   public:
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual HandlerResult operation(LocatedEntity *,
+    void install(LocatedEntity *, const std::string &) override;
+
+    HandlerResult operation(LocatedEntity *,
                                     const Operation &,
-                                    OpVector &);
+                                    OpVector &) override;
 
     HandlerResult teleport_handler(LocatedEntity * e,
                                    const Operation & op,

@@ -37,9 +37,6 @@ class Player : public Account {
 
     const char * getType() const override;
 
-    void addToMessage(Atlas::Message::MapType &) const override;
-    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
-
     friend class Playertest;
 };
 

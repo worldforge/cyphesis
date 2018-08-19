@@ -125,7 +125,7 @@ int Ruleset::installRule(const std::string & class_name,
 
     if (!changes.empty()) {
         for (auto &entry : changes) {
-            Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+            Inheritance::instance().updateClass(entry.first->name(), entry.first->description(Visibility::PRIVATE));
             //TODO: write to user writable rule files
         }
 
@@ -180,7 +180,7 @@ int Ruleset::modifyRule(const std::string & class_name,
 
     if (!changes.empty()) {
         for (auto &entry : changes) {
-            Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+            Inheritance::instance().updateClass(entry.first->name(), entry.first->description(Visibility::PRIVATE));
             //TODO: write to user writable rule files
         }
 
@@ -196,7 +196,7 @@ int Ruleset::modifyRuleInner(const std::string & class_name,
 {
     assert(class_name == class_desc->getId());
 
-    Root o = Inheritance::instance().getClass(class_name);
+    Root o = Inheritance::instance().getClass(class_name, Visibility::PRIVATE);
     if (!o.isValid()) {
         log(ERROR, compose("Could not find existing type \"%1\" in "
                            "inheritance", class_name));
@@ -260,7 +260,7 @@ void Ruleset::processChangedRules() {
             }
             if (!changes.empty()) {
                 for (auto &entry : changes) {
-                    Inheritance::instance().updateClass(entry.first->name(), entry.first->description());
+                    Inheritance::instance().updateClass(entry.first->name(), entry.first->description(Visibility::PRIVATE));
                     //TODO: write to user writable rule files
                 }
 

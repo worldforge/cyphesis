@@ -27,10 +27,11 @@ class SystemAccount : public Admin {
                   const std::string & username,
                   const std::string & passwd,
                   const std::string & id, long intId);
-    ~SystemAccount();
+    ~SystemAccount() override;
 
-    virtual const char * getType() const;
-    virtual bool isPersisted() const;
+    const char * getType() const override;
+
+    bool isPersisted() const override;
 };
 
 

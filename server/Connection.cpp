@@ -423,7 +423,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         }
         const std::string & id = arg->getId();
         debug(std::cout << "Get got for " << id << std::endl << std::flush;);
-        Atlas::Objects::Root o = Inheritance::instance().getClass(id);
+        Atlas::Objects::Root o = Inheritance::instance().getClass(id, Visibility::PUBLIC);
         if (!o.isValid()) {
             error(op, String::compose("Unknown type definition for \"%1\" "
                                       "requested", id),

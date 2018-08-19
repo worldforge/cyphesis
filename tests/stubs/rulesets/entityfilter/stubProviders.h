@@ -574,6 +574,37 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
+#ifndef STUB_GetEntityFunctionProvider_GetEntityFunctionProvider
+//#define STUB_GetEntityFunctionProvider_GetEntityFunctionProvider
+   GetEntityFunctionProvider::GetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, Consumer<LocatedEntity>* consumer)
+    : ConsumingProviderBase(entity_provider, consumer)
+    , m_entity_provider(nullptr)
+  {
+    
+  }
+#endif //STUB_GetEntityFunctionProvider_GetEntityFunctionProvider
+
+#ifndef STUB_GetEntityFunctionProvider_value
+//#define STUB_GetEntityFunctionProvider_value
+  void GetEntityFunctionProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+  {
+    
+  }
+#endif //STUB_GetEntityFunctionProvider_value
+
+#ifndef STUB_GetEntityFunctionProvider_getType
+//#define STUB_GetEntityFunctionProvider_getType
+  const std::type_info* GetEntityFunctionProvider::getType() const
+  {
+    return nullptr;
+  }
+#endif //STUB_GetEntityFunctionProvider_getType
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
 #ifndef STUB_ProviderFactory_createProviders
 //#define STUB_ProviderFactory_createProviders
   Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) const
@@ -589,6 +620,22 @@ namespace EntityFilter {
     return nullptr;
   }
 #endif //STUB_ProviderFactory_createProvider
+
+#ifndef STUB_ProviderFactory_createSimpleGetEntityFunctionProvider
+//#define STUB_ProviderFactory_createSimpleGetEntityFunctionProvider
+  Consumer<QueryContext>* ProviderFactory::createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const
+  {
+    return nullptr;
+  }
+#endif //STUB_ProviderFactory_createSimpleGetEntityFunctionProvider
+
+#ifndef STUB_ProviderFactory_createGetEntityFunctionProvider
+//#define STUB_ProviderFactory_createGetEntityFunctionProvider
+  Consumer<QueryContext>* ProviderFactory::createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const
+  {
+    return nullptr;
+  }
+#endif //STUB_ProviderFactory_createGetEntityFunctionProvider
 
 #ifndef STUB_ProviderFactory_createFixedTypeNodeProvider
 //#define STUB_ProviderFactory_createFixedTypeNodeProvider

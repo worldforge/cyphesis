@@ -31,13 +31,13 @@
 class PropertyBase;
 
 typedef std::map<std::string, PropertyBase *> PropertyDict;
-typedef std::map<std::string, TypeNode *> TypeNodeDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
 class Inheritance : public Singleton<Inheritance> {
   protected:
     const Atlas::Objects::Root noClass;
-    TypeNodeDict atlasObjects;
+
+    std::map<std::string, TypeNode *> atlasObjects;
 
 
   public:
@@ -46,11 +46,11 @@ class Inheritance : public Singleton<Inheritance> {
 
     ~Inheritance() override;
 
-    const TypeNodeDict & getAllObjects() const {
+    const std::map<std::string, TypeNode *> & getAllObjects() const {
         return atlasObjects;
     }
 
-    const Atlas::Objects::Root & getClass(const std::string & parent);
+    const Atlas::Objects::Root & getClass(const std::string & parent, Visibility visibility);
     int updateClass(const std::string & name,
                     const Atlas::Objects::Root & obj);
     const TypeNode * getType(const std::string & parent);

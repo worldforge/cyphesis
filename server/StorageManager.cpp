@@ -190,14 +190,14 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         }
         MapType prop_data;
         db->decodeMessage(val_string, prop_data);
-        MapType::const_iterator J = prop_data.find("val");
+        auto J = prop_data.find("val");
         if (J == prop_data.end()) {
             log(ERROR, compose("No property value data for %1:%2",
                                ent->describeEntity(), name));
             continue;
         }
         assert(ent->getType() != nullptr);
-        const Element & val = J->second;
+        auto& val = J->second;
 
         Element existingVal;
         if (ent->getAttr(name, existingVal) == 0) {
@@ -208,8 +208,8 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         }
 
 
-        PropertyBase * prop = ent->modProperty(name);
-        if (prop == nullptr) {
+        auto* prop = ent->modProperty(name);
+        if (!prop) {
             prop = PropertyManager::instance().addProperty(name, val.getType());
             prop->install(ent, name);
             //This transfers ownership of the property to the entity.

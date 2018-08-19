@@ -17,7 +17,7 @@
 
 #ifndef STUB_Plant_dropFruit
 //#define STUB_Plant_dropFruit
-  void Plant::dropFruit(OpVector & res, const std::string& fruitName)
+  void Plant::dropFruit(OpVector & res, const std::string& fruit_name)
   {
     
   }
