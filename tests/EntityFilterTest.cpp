@@ -419,10 +419,25 @@ void EntityFilterTest::test_Outfit()
     TestQuery("entity instance_of types.barrel|types.boulder|types.gloves",
               {m_b1, m_bl1, m_glovesEntity}, {});
 
-    QueryContext queryContext{*m_ch1};
-    queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
-    queryContext.tool = m_glovesEntity.get();
-    TestContextQuery("get_entity(entity.attached_hand_primary) = tool", {queryContext}, {});
+    {
+        QueryContext queryContext{*m_ch1};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+        queryContext.tool = m_glovesEntity.get();
+        TestContextQuery("get_entity(entity.attached_hand_primary) = tool", {queryContext}, {});
+    }
+    {
+        QueryContext queryContext{*m_b1};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+
+        TestContextQuery("get_entity(entity.attached_hand_primary) = none", {queryContext}, {});
+    }
+
+    {
+        QueryContext queryContext{*m_ch1};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+
+        TestContextQuery("get_entity(entity.attached_not_exists) = none", {queryContext}, {});
+    }
 }
 
 void EntityFilterTest::test_BBox()

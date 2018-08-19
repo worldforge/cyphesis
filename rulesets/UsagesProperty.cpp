@@ -271,6 +271,8 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 }
                 return OPERATION_BLOCKED;
 
+            } else {
+                actor->clientError(op, String::compose("Expected %1 targets, got %2", usage.targets.size() + usage.consumed.size(), involvedEntities.size()), res, actor->getId());
             }
         }
     }

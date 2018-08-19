@@ -3,13 +3,13 @@
 #ifndef STUB_EntityLocation_EntityLocation
 #define STUB_EntityLocation_EntityLocation
 EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
-:m_loc(loc)
+:m_parent(loc)
 {
 
 }
 
 EntityLocation::EntityLocation(Ref<LocatedEntity> loc, const WFMath::Point<3>& pos)
-: m_loc(loc), m_pos(pos)
+: m_parent(loc), m_pos(pos)
 {
 
 }
@@ -27,6 +27,6 @@ const WFMath::Point<3>& EntityLocation::pos() const
 #define STUB_EntityLocation_isValid
 bool EntityLocation::isValid() const
 {
-    return (m_loc && m_pos.isValid());
+    return (m_parent && m_pos.isValid());
 }
 #endif //STUB_EntityLocation_isValid

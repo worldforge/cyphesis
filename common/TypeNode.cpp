@@ -257,24 +257,26 @@ bool TypeNode::isTypeOf(const TypeNode* base_type) const
 Atlas::Objects::Root& TypeNode::description(Visibility visibility)
 {
     switch (visibility) {
-        case Visibility::PUBLIC:
-            return m_publicDescription;
         case Visibility::PROTECTED:
             return m_protectedDescription;
         case Visibility::PRIVATE:
             return m_privateDescription;
+        case Visibility::PUBLIC:
+        default:
+            return m_publicDescription;
     }
 }
 
 const Atlas::Objects::Root& TypeNode::description(Visibility visibility) const
 {
     switch (visibility) {
-        case Visibility::PUBLIC:
-            return m_publicDescription;
         case Visibility::PROTECTED:
             return m_protectedDescription;
         case Visibility::PRIVATE:
             return m_privateDescription;
+        case Visibility::PUBLIC:
+        default:
+            return m_publicDescription;
     }
 }
 

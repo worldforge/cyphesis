@@ -6,25 +6,32 @@ from atlas import *
 import server
 from world.utils import Usage
 
-def strike(instance):
-    # Check that we can reach the target with our weapon
-    extraReach = 0.0
-    if instance.tool.props.reach:
-        extraReach = instance.tool.props.reach
 
+def set_cooldown(actor):
+    cooldown = actor.cooldown_punch
+    if cooldown and cooldown > 0.0:
+        ready_at_attached_prop = actor.props._ready_at_attached
+        if not ready_at_attached_prop:
+            ready_at_attached_prop = {}
+
+        ready_at_attached_prop['attached_hand_primary'] = server.world.get_time() + cooldown
+        actor.send_world(Operation('set', Entity(actor.id, _ready_at_attached=ready_at_attached_prop), to=actor.id))
+
+
+def punch(instance):
     # If there's a cooldown we need to mark the actor
-    Usage.set_cooldown_on_attached(instance.tool, instance.actor)
+    set_cooldown(instance.actor)
 
     # Send sight even if we miss
     instance.actor.send_world(Operation("sight", instance.op))
 
-    # Melee weapons only handles one target
+    # Punching only handles one target
     target = instance.targets[0]
     # Ignore pos
-    if instance.actor.can_reach(target, extraReach):
+    if instance.actor.can_reach(target):
         damage = 0
-        if instance.tool.props.damage:
-            damage = instance.tool.props.damage
+        if instance.actor.props.damage_punch:
+            damage = instance.actor.props.damage_punch
         hitOp = Operation('hit', Entity(damage=damage, hit_type=instance.op.id), to=target.entity)
         return (server.OPERATION_BLOCKED, hitOp, Operation('sight', hitOp))
     else:

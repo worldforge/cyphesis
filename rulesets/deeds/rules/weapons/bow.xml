@@ -25,6 +25,28 @@
                     </map>
                 </list>
             </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="shoot">
+                        <map name="params">
+                            <map name="direction">
+                                <string name="type">direction</string>
+                                <int name="min">1</int>
+                                <int name="max">1</int>
+                            </map>
+                            <map name="consumed">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.arrow and contains_recursive(actor, entity)</string>
+                                <int name="min">1</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Bow.shoot</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
+                        <string name="description">Strike an enemy with a wielded sword.</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">bow</string>
         <string name="objtype">class</string>

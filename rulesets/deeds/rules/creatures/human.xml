@@ -33,6 +33,7 @@
             <map name="decays">
                 <string name="default">dead_human_skull</string>
             </map>
+            <!-- TODO: replace or otherwise handle -->
             <map name="guise">
                 <map name="default">
                     <map name="material">
@@ -51,6 +52,21 @@
             <!-- Don't move too slow or it makes traversal boring -->
             <map name="speed_ground">
                 <float name="default">8</float>
+            </map>
+            <map name="damage_punch">
+                <float name="default">5</float>
+            </map>
+            <map name="_usages">
+                <map name="default">
+                    <map name="punch">
+                        <list name="targets">
+                            <string>entity instance_of types.game_entity</string>
+                        </list>
+                        <string name="handler">world.objects.creatures.Hitting.punch</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
+                        <string name="description">Punch something with a your fist.</string>
+                    </map>
+                </map>
             </map>
         </map>
         <string name="id">human</string>

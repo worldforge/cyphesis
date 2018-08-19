@@ -121,6 +121,12 @@
     </map>
 
     <map>
+        <string name="id">punch</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">action</string>
+    </map>
+
+    <map>
         <string name="id">trench</string>
         <string name="objtype">op_definition</string>
         <string name="parent">root_operation</string>
