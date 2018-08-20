@@ -28,6 +28,7 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
 {
@@ -66,6 +67,7 @@ void CyPy_Task::init_type()
     behaviors().supportRichCompare();
 
     PYCXX_ADD_VARARGS_METHOD(irrelevant, irrelevant, "");
+    PYCXX_ADD_VARARGS_METHOD(get_arg, getArg, "");
 
     PYCXX_ADD_NOARGS_METHOD(obsolete, obsolete, "");
 
@@ -105,20 +107,20 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "tool") {
         return CyPy_LocatedEntity::wrap(m_value->m_usageInstance.tool);
     }
-    if (nameStr == "targets") {
-        Py::List list(m_value->m_usageInstance.targets.size());
-        for (size_t i = 0; i < m_value->m_usageInstance.targets.size(); ++i) {
-            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.targets[i]);
-        }
-        return list;
-    }
-    if (nameStr == "consumed") {
-        Py::List list(m_value->m_usageInstance.consumed.size());
-        for (size_t i = 0; i < m_value->m_usageInstance.consumed.size(); ++i) {
-            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.consumed[i]);
-        }
-        return list;
-    }
+//    if (nameStr == "targets") {
+//        Py::List list(m_value->m_usageInstance.targets.size());
+//        for (size_t i = 0; i < m_value->m_usageInstance.targets.size(); ++i) {
+//            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.targets[i]);
+//        }
+//        return list;
+//    }
+//    if (nameStr == "consumed") {
+//        Py::List list(m_value->m_usageInstance.consumed.size());
+//        for (size_t i = 0; i < m_value->m_usageInstance.consumed.size(); ++i) {
+//            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.consumed[i]);
+//        }
+//        return list;
+//    }
     if (nameStr == "definition") {
         return CyPy_Usage::wrap(m_value->m_usageInstance.definition);
     }
@@ -198,6 +200,11 @@ Py::Object CyPy_Task::rich_compare(const Py::Object& other, int type)
         return Py::True();
     }
     throw Py::NotImplementedError("Not implemented");
+}
+
+Py::Object CyPy_Task::getArg(const Py::Tuple& args)
+{
+    return CyPy_UsageInstance::getArg(m_value->m_usageInstance, args);
 }
 
 

@@ -24,14 +24,34 @@
 #include "modules/Ref.h"
 #include "EntityLocation.h"
 #include <Atlas/Objects/RootOperation.h>
+
+#include <boost/variant.hpp>
+
 #include <memory>
+
+struct UsageParameter
+{
+    enum class Type
+    {
+            ENTITY,
+            ENTITYLOCATION,
+            POSITION,
+            DIRECTION
+    };
+
+    Type type;
+    std::shared_ptr<EntityFilter::Filter> constraint;
+    int min = 1;
+    int max = 1;
+
+};
 
 struct Usage
 {
     std::string description;
 
-    std::vector<std::shared_ptr<EntityFilter::Filter>> targets;
-    std::vector<std::shared_ptr<EntityFilter::Filter>> consumed;
+    std::map<std::string, UsageParameter> params;
+
     /**
      * The Python script which will handle this op.
      */
@@ -43,13 +63,14 @@ struct Usage
 class UsageInstance
 {
     public:
+
+        typedef boost::variant<EntityLocation, WFMath::Point<3>, WFMath::Vector<3>> UsageArg;
         Usage definition;
 
         Ref<LocatedEntity> actor;
         Ref<LocatedEntity> tool;
 
-        std::vector<EntityLocation> targets;
-        std::vector<EntityLocation> consumed;
+        std::map<std::string, std::vector<UsageArg>> args;
 
         Atlas::Objects::Operation::RootOperation op;
 

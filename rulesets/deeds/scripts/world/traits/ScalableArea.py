@@ -10,15 +10,14 @@ class ScalableArea(server.Thing):
         init_ticks(self, self.tick_interval)
 
     def set_operation(self, op):
-        #TODO: implement
+        # TODO: implement
         res = Oplist()
         return server.OPERATION_IGNORED
 
-
-#C++ code from Plant
+# C++ code from Plant
 #
 #
-#void Plant::scaleArea() {
+# void Plant::scaleArea() {
 # static float AREA_SCALING_FACTOR=3.0f;
 #
 # const WFMath::AxisBox<3>& bbox = m_location.bBox();

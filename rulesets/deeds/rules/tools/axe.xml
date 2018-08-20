@@ -25,9 +25,14 @@
             <map name="usages">
                 <map name="default">
                     <map name="chop">
-                        <list name="targets">
-                            <string>entity instance_of types.game_entity</string>
-                        </list>
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity</string>
+                                <int name="min">0</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
                         <string name="handler">world.objects.tools.Hitting.strike</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
                         <string name="description">Strike something with a wielded axe.</string>

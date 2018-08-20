@@ -4,5 +4,5 @@ add_library(modules
     WeakEntityRef.cpp
     TerrainContext.cpp
     Ref.h
-    Flags.h)
+    Flags.h Variant.h)
 

@@ -1,7 +1,8 @@
 from atlas import *
 import server
 
-#When status is set to <= 0 the entity is deleted
+
+# When status is set to <= 0 the entity is deleted
 class StatusDeletable(server.Thing):
 
     def update_operation(self, op):

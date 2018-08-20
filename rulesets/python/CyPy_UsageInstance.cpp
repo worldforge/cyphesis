@@ -21,6 +21,9 @@
 #include "CyPy_EntityLocation.h"
 #include "CyPy_EntityFilter.h"
 #include "CyPy_Operation.h"
+#include "modules/Variant.h"
+#include "CyPy_Point3D.h"
+#include "CyPy_Vector3D.h"
 
 
 CyPy_UsageInstance::CyPy_UsageInstance(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -42,6 +45,8 @@ void CyPy_UsageInstance::init_type()
 
     PYCXX_ADD_NOARGS_METHOD(is_valid, isValid, "");
 
+    PYCXX_ADD_VARARGS_METHOD(get_arg, getArg, "");
+
     behaviors().readyType();
 }
 
@@ -54,20 +59,20 @@ Py::Object CyPy_UsageInstance::getattro(const Py::String& name)
     if (nameStr == "tool") {
         return CyPy_LocatedEntity::wrap(m_value.tool);
     }
-    if (nameStr == "targets") {
-        Py::List list(m_value.targets.size());
-        for (size_t i = 0; i < m_value.targets.size(); ++i) {
-            list[i] = CyPy_EntityLocation::wrap(m_value.targets[i]);
-        }
-        return list;
-    }
-    if (nameStr == "consumed") {
-        Py::List list(m_value.consumed.size());
-        for (size_t i = 0; i < m_value.consumed.size(); ++i) {
-            list[i] = CyPy_EntityLocation::wrap(m_value.consumed[i]);
-        }
-        return list;
-    }
+//    if (nameStr == "targets") {
+//        Py::List list(m_value.targets.size());
+//        for (size_t i = 0; i < m_value.targets.size(); ++i) {
+//            list[i] = CyPy_EntityLocation::wrap(m_value.targets[i]);
+//        }
+//        return list;
+//    }
+//    if (nameStr == "consumed") {
+//        Py::List list(m_value.consumed.size());
+//        for (size_t i = 0; i < m_value.consumed.size(); ++i) {
+//            list[i] = CyPy_EntityLocation::wrap(m_value.consumed[i]);
+//        }
+//        return list;
+//    }
     if (nameStr == "definition") {
         return CyPy_Usage::wrap(m_value.definition);
     }
@@ -90,6 +95,47 @@ Py::Object CyPy_UsageInstance::isValid()
     }
 
     return Py::TupleN(Py::Boolean(res.first), Py::None());
+}
+
+Py::Object CyPy_UsageInstance::getArg(const Py::Tuple& args)
+{
+    return getArg(m_value, args);
+}
+
+Py::Object CyPy_UsageInstance::getArg(const UsageInstance& usageInstance, const Py::Tuple& args)
+{
+    args.verify_length(2);
+    auto key = verifyString(args[0]);
+    auto index = verifyLong(args[1]);
+
+    auto I = usageInstance.args.find(key);
+    if (I == usageInstance.args.end()) {
+        return Py::None();
+    }
+
+    auto& vector = I->second;
+    if (index >= vector.size()) {
+        return Py::None();
+    }
+
+    auto& vector_instance = vector[index];
+
+    Py::Object returnObject;
+
+    auto visitor = compose(
+        [&](const EntityLocation& value) {
+            returnObject = CyPy_EntityLocation::wrap(value);
+        },
+        [&](const WFMath::Point<3>& value) {
+            returnObject = CyPy_Point3D::wrap(value);
+        },
+        [&](const WFMath::Vector<3>& value) {
+            returnObject = CyPy_Vector3D::wrap(value);
+        }
+    );
+
+    boost::apply_visitor(visitor, vector_instance);
+    return returnObject;
 }
 
 CyPy_Usage::CyPy_Usage(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -115,20 +161,20 @@ void CyPy_Usage::init_type()
 Py::Object CyPy_Usage::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
-    if (nameStr == "targets") {
-        Py::List list(m_value.targets.size());
-        for (size_t i = 0; i < m_value.targets.size(); ++i) {
-            list[i] = CyPy_Filter::wrap(m_value.targets[i]);
-        }
-        return list;
-    }
-    if (nameStr == "consumed") {
-        Py::List list(m_value.consumed.size());
-        for (size_t i = 0; i < m_value.consumed.size(); ++i) {
-            list[i] = CyPy_Filter::wrap(m_value.consumed[i]);
-        }
-        return list;
-    }
+//    if (nameStr == "targets") {
+//        Py::List list(m_value.targets.size());
+//        for (size_t i = 0; i < m_value.targets.size(); ++i) {
+//            list[i] = CyPy_Filter::wrap(m_value.targets[i]);
+//        }
+//        return list;
+//    }
+//    if (nameStr == "consumed") {
+//        Py::List list(m_value.consumed.size());
+//        for (size_t i = 0; i < m_value.consumed.size(); ++i) {
+//            list[i] = CyPy_Filter::wrap(m_value.consumed[i]);
+//        }
+//        return list;
+//    }
     if (nameStr == "description") {
         return Py::String(m_value.description);
     }

@@ -7,9 +7,10 @@ from world.utils import Usage
 
 import server
 
+
 def ignite(instance):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
-    target = instance.targets[0]
+    target = instance.get_arg("targets", 0)
     if instance.actor.can_reach(target):
         return (server.OPERATION_BLOCKED, Operation("create", Entity(parent='fire', status=0.05, location=Location(target)), to=target.entity))
     else:

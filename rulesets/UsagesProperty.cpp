@@ -79,20 +79,64 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
                         //TODO: should be a usage constraint provider factory
                         usage.constraint.reset(new EntityFilter::Filter(value, EntityFilter::ProviderFactory()));
                     });
-                    AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
+                    AtlasQuery::find<Atlas::Message::MapType>(map, "params", [&](const Atlas::Message::MapType& value) {
                         for (auto& entry : value) {
-                            if (entry.isString()) {
-                                usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
+                            UsageParameter parameter{};
+
+                            if (!entry.second.isMap()) {
+                                throw std::invalid_argument("Parameter must be a map.");
                             }
+                            auto& paramMap = entry.second.Map();
+
+                            auto I = paramMap.find("type");
+                            if (I == paramMap.end() || !I->second.isString()) {
+                                throw std::invalid_argument("Parameter must define a string 'type'.");
+                            }
+                            if (I->second.String() == "entity") {
+                                parameter.type = UsageParameter::Type::ENTITY;
+                            } else if (I->second.String() == "entity_location") {
+                                parameter.type = UsageParameter::Type::ENTITYLOCATION;
+                            } else if (I->second.String() == "direction") {
+                                parameter.type = UsageParameter::Type::DIRECTION;
+                            } else if (I->second.String() == "position") {
+                                parameter.type = UsageParameter::Type::POSITION;
+                            } else {
+                                throw std::invalid_argument(String::compose("Parameter type not recognized: %1.", I->second.String()));
+                            }
+
+
+                            AtlasQuery::find<std::string>(paramMap, "constraint", [&](const std::string& constraint) {
+                                //TODO: should be a usage constraint provider factory
+                                parameter.constraint.reset(new EntityFilter::Filter(constraint, EntityFilter::ProviderFactory()));
+                            });
+                            AtlasQuery::find<long>(paramMap, "min", [&](const long& min) {
+                                parameter.min = min;
+                            });
+                            AtlasQuery::find<long>(paramMap, "max", [&](const long& max) {
+                                parameter.max = max;
+                            });
+
+                            usage.params.emplace(entry.first, std::move(parameter));
+
                         }
                     });
-                    AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
-                        for (auto& entry : value) {
-                            if (entry.isString()) {
-                                usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
-                            }
-                        }
-                    });
+//
+//
+//
+//                    AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
+//                        for (auto& entry : value) {
+//                            if (entry.isString()) {
+//                                usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
+//                            }
+//                        }
+//                    });
+//                    AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
+//                        for (auto& entry : value) {
+//                            if (entry.isString()) {
+//                                usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
+//                            }
+//                        }
+//                    });
                     m_usages.emplace(usageEntry.first, std::move(usage));
                 }
             } catch (const std::invalid_argument& e) {
@@ -168,33 +212,12 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         rop->setTo(e->getId());
         rop->setSeconds(op->getSeconds());
 
-        //Optionally extract any involved entities
-        std::vector<EntityLocation> involvedEntities;
-        auto& arg_op_args = argOp->getArgs();
-        for (const auto& arg_op_arg : arg_op_args) {
-            auto entity_arg = smart_dynamic_cast<RootEntity>(arg_op_arg);
-            if (!entity_arg.isValid()) {
-                actor->error(op, "Use op involved is malformed", res, actor->getId());
-                return OPERATION_IGNORED;
-            }
-
-            if (!entity_arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-                actor->error(op, "Involved entity has no ID", res, actor->getId());
-                return OPERATION_IGNORED;
-            }
-
-            auto involved = BaseWorld::instance().getEntity(entity_arg->getId());
-            if (!involved) {
-                actor->error(op, "Involved entity does not exist", res, actor->getId());
-                return OPERATION_IGNORED;
-            }
-            if (!entity_arg->isDefaultPos()) {
-                involvedEntities.emplace_back(involved, WFMath::Point<3>(Element(entity_arg->getPosAsList()).List()));
-            } else {
-                involvedEntities.emplace_back(involved, WFMath::Point<3>());
-            }
-
+        if (argOp->getArgs().empty()) {
+            actor->error(op, "Use arg op has no arguments; one expected.", res, actor->getId());
+            return OPERATION_IGNORED;
         }
+
+        auto arguments = argOp->getArgs().front();
 
         //Check that there's an action registered for this operation
         auto usagesI = m_usages.find(op_type);
@@ -229,51 +252,92 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 }
             }
 
-            //Check that the number of involved entities match targets and consumed.
-            if (usage.targets.size() + usage.consumed.size() == involvedEntities.size()) {
-                std::vector<EntityLocation> targets;
-                std::vector<EntityLocation> consumed;
-                for (size_t i = 0; i < usage.targets.size(); ++i) {
-                    targets.push_back(involvedEntities[i]);
-                }
-                for (size_t i = 0; i < usage.consumed.size(); ++i) {
-                    consumed.push_back(involvedEntities[usage.targets.size() + i]);
+            //Populate the usage arguments
+            std::map<std::string, std::vector<UsageInstance::UsageArg>> usage_instance_args;
+
+            for (auto& param : usage.params) {
+                Atlas::Message::Element element;
+                if (arguments->copyAttr(param.first, element) != 0 || !element.isList()) {
+                    actor->clientError(op, String::compose("Could not find required list argument '%1'.", param.first), res, actor->getId());
+                    return OPERATION_IGNORED;
                 }
 
-                UsageInstance usageInstance{usage, actor, e, std::move(targets), std::move(consumed), rop};
-                //Check that the usage is valid before continuing
-                auto validRes = usageInstance.isValid();
-                if (!validRes.first) {
-                    actor->clientError(op, validRes.second, res, actor->getId());
-                } else {
-                    auto lastSeparatorPos = usage.handler.find_last_of('.');
-                    if (lastSeparatorPos != std::string::npos) {
-                        auto moduleName = usage.handler.substr(0, lastSeparatorPos);
-                        auto functionName = usage.handler.substr(lastSeparatorPos + 1);
-                        Py::Module module(PyImport_Import(Py::String(moduleName).ptr()));
-                        PyImport_ReloadModule(module.ptr());
-                        auto functionObject = module.getDict()[functionName];
-                        if (!functionObject.isCallable()) {
-                            actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
-                            return OPERATION_IGNORED;
-                        }
+                auto& argVector = usage_instance_args[param.first];
 
-                        try {
-                            auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));
-                            return ScriptUtils::processScriptResult(usage.handler, ret, res, e);
-                        } catch (const Py::BaseException& py_ex) {
-                            log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
-                            if (PyErr_Occurred()) {
-                                PyErr_Print();
+                for (auto& argElement : element.List()) {
+                    switch (param.second.type) {
+                        case UsageParameter::Type::ENTITY: {
+                            if (!argElement.isMap()) {
+                                actor->clientError(op, String::compose("Inner argument in list of arguments for '%1' was not a map.", param.first), res, actor->getId());
+                                return OPERATION_IGNORED;
                             }
+                            //The arg is for an RootEntity, expressed as a message. Extract id and pos.
+                            auto idI = argElement.Map().find("id");
+                            if (idI == argElement.Map().end() || !idI->second.isString()) {
+                                actor->clientError(op, String::compose("Inner argument in list of arguments for '%1' had no id string.", param.first), res, actor->getId());
+                                return OPERATION_IGNORED;
+                            }
+
+                            auto involved = BaseWorld::instance().getEntity(idI->second.String());
+                            if (!involved) {
+                                actor->error(op, "Involved entity does not exist", res, actor->getId());
+                                return OPERATION_IGNORED;
+                            }
+
+                            auto posI = argElement.Map().find("pos");
+                            if (posI != argElement.Map().end() && posI->second.isList()) {
+                                argVector.emplace_back(EntityLocation(involved, WFMath::Point<3>(posI->second)));
+                            } else {
+                                argVector.emplace_back(EntityLocation(involved));
+                            }
+                        }
+                            break;
+                        case UsageParameter::Type::ENTITYLOCATION:
+                            argVector.emplace_back(WFMath::Point<3>(argElement));
+                            break;
+                        case UsageParameter::Type::POSITION:
+                            argVector.emplace_back(WFMath::Point<3>(argElement));
+                            break;
+                        case UsageParameter::Type::DIRECTION:
+                            argVector.emplace_back(WFMath::Vector<3>(argElement));
+                            break;
+                    }
+                }
+
+            }
+
+
+            UsageInstance usageInstance{usage, actor, e, std::move(usage_instance_args), rop};
+            //Check that the usage is valid before continuing
+            auto validRes = usageInstance.isValid();
+            if (!validRes.first) {
+                actor->clientError(op, validRes.second, res, actor->getId());
+            } else {
+                auto lastSeparatorPos = usage.handler.find_last_of('.');
+                if (lastSeparatorPos != std::string::npos) {
+                    auto moduleName = usage.handler.substr(0, lastSeparatorPos);
+                    auto functionName = usage.handler.substr(lastSeparatorPos + 1);
+                    Py::Module module(PyImport_Import(Py::String(moduleName).ptr()));
+                    PyImport_ReloadModule(module.ptr());
+                    auto functionObject = module.getDict()[functionName];
+                    if (!functionObject.isCallable()) {
+                        actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
+                        return OPERATION_IGNORED;
+                    }
+
+                    try {
+                        auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));
+                        return ScriptUtils::processScriptResult(usage.handler, ret, res, e);
+                    } catch (const Py::BaseException& py_ex) {
+                        log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
+                        if (PyErr_Occurred()) {
+                            PyErr_Print();
                         }
                     }
                 }
-                return OPERATION_BLOCKED;
-
-            } else {
-                actor->clientError(op, String::compose("Expected %1 targets, got %2", usage.targets.size() + usage.consumed.size(), involvedEntities.size()), res, actor->getId());
             }
+            return OPERATION_BLOCKED;
+
         }
     }
     //We couldn't find any suitable task.

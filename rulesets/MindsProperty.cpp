@@ -256,26 +256,34 @@ void MindsProperty::mindUseOperation(LocatedEntity* ent, const Operation& op, Op
     // which is then sent to the actual tool.
 
     auto& args = op->getArgs();
-    if (args.size() < 2) {
-        log(ERROR, "mindUseOperation: use op has no argument, should have two. " + ent->describeEntity());
-        return;
-    }
-    auto toolEnt = smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(args.front());
-    if (!toolEnt) {
-        log(ERROR, "mindUseOperation: First arg is not an entity. " + ent->describeEntity());
-        return;
-    }
-    if (!toolEnt->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindMoveOperation: First arg has no ID. " + ent->describeEntity());
+    if (args.empty()) {
+        log(ERROR, "mindUseOperation: use op has no arguments. " + ent->describeEntity());
         return;
     }
 
     //TODO: should we perhaps check that this only can be Action ops?
-    auto innerOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args[1]);
+    auto innerOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args.front());
     if (!innerOp) {
         log(ERROR, "mindUseOperation: Second arg is not an operation. " + ent->describeEntity());
         return;
     }
+
+    auto& innerArgs = innerOp->getArgs();
+    if (innerArgs.empty()) {
+        log(ERROR, "mindUseOperation: inner use op has no arguments. " + ent->describeEntity());
+        return;
+    }
+
+    auto toolEnt = smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(innerArgs.front());
+    if (!toolEnt) {
+        log(ERROR, "mindUseOperation: First inner arg is not an entity. " + ent->describeEntity());
+        return;
+    }
+    if (!toolEnt->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        log(ERROR, "mindMoveOperation: First inner arg has no ID. " + ent->describeEntity());
+        return;
+    }
+
 
     Atlas::Objects::Operation::Use useOp;
     useOp->setTo(toolEnt->getId());

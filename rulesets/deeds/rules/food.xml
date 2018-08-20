@@ -85,14 +85,6 @@
             <map name="consumable_type">
                 <string name="default">plant</string>
             </map>
-            <map name="usages">
-                <map name="default">
-                    <map name="eat">
-                        <string name="handler">world.objects.Consumable.eat</string>
-                        <string name="constraint">actor can_reach tool</string>
-                    </map>
-                </map>
-            </map>
         </map>
         <string name="id">bread_cut</string>
         <string name="objtype">class</string>
@@ -115,14 +107,6 @@
             </map>
             <map name="consumable_type">
                 <string name="default">plant</string>
-            </map>
-            <map name="usages">
-                <map name="default">
-                    <map name="eat">
-                        <string name="handler">world.objects.Consumable.eat</string>
-                        <string name="constraint">actor can_reach tool</string>
-                    </map>
-                </map>
             </map>
         </map>
         <string name="id">bread_slice</string>

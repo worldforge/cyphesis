@@ -16,10 +16,11 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rulesets/entityfilter/Providers.h>
+#include "entityfilter/Providers.h"
 #include "UsageInstance.h"
 #include "LocatedEntity.h"
 #include "BaseWorld.h"
+#include "modules/Variant.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -30,41 +31,110 @@ using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
+
+
 std::pair<bool, std::string> UsageInstance::isValid() const
 {
 
     if (definition.constraint) {
         EntityFilter::QueryContext queryContext{*tool, actor.get(), tool.get()};
-        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
 
         if (!definition.constraint->match(queryContext)) {
             return {false, "Constraint does not match."};
         }
     }
 
-    for (size_t i = 0; i < targets.size(); ++i) {
-        auto& entry = targets[i];
-        if (entry.m_parent->isDestroyed()) {
-            return {false, String::compose("Target nr. %1 is destroyed.", i)};
+    for (auto& param : definition.params) {
+        auto I = args.find(param.first);
+        if (I == args.end()) {
+            return {false, String::compose("Could not find required '%1' argument.", param.first)};
         }
-        EntityFilter::QueryContext queryContext{*entry.m_parent, actor.get(), tool.get()};
-        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
-        if (!definition.targets[i]->match(queryContext)) {
-            return {false, String::compose("Target nr. %1 does not match the filter.", i)};
+        int count = 0;
+        for (auto& arg : I->second) {
+            bool is_valid = false;
+
+            switch (param.second.type) {
+                case UsageParameter::Type::DIRECTION: {
+
+                    auto visitor = compose(
+                        [&](const EntityLocation& value) {},
+                        [&](const WFMath::Point<3>& value) {},
+                        [&](const WFMath::Vector<3>& value) {
+                            is_valid = value.isValid();
+                        }
+                    );
+
+                    boost::apply_visitor(visitor, arg);
+
+                    break;
+                }
+                case UsageParameter::Type::POSITION: {
+                    auto visitor = compose(
+                        [&](const EntityLocation& value) {},
+                        [&](const WFMath::Point<3>& value) {
+                            is_valid = value.isValid();
+                        },
+                        [&](const WFMath::Vector<3>& value) {}
+                    );
+
+                    boost::apply_visitor(visitor, arg);
+
+                    break;
+                }
+                case UsageParameter::Type::ENTITY: {
+
+                    auto visitor = compose(
+                        [&](const EntityLocation& value) {
+                            if (value.m_parent && !value.m_parent->isDestroyed()) {
+                                if (param.second.constraint) {
+                                    EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
+                                    queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                                    is_valid = param.second.constraint->match(queryContext);
+                                } else {
+                                    is_valid = true;
+                                }
+                            }
+                        },
+                        [&](const WFMath::Point<3>& value) {},
+                        [&](const WFMath::Vector<3>& value) {}
+                    );
+                    boost::apply_visitor(visitor, arg);
+                    break;
+                }
+                case UsageParameter::Type::ENTITYLOCATION: {
+                    auto visitor = compose(
+                        [&](const EntityLocation& value) {
+                            if (value.isValid() && !value.m_parent->isDestroyed()) {
+                                if (param.second.constraint) {
+                                    EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
+                                    queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                                    is_valid = param.second.constraint->match(queryContext);
+                                } else {
+                                    is_valid = true;
+                                }
+                            }
+                        },
+                        [&](const WFMath::Point<3>& value) {},
+                        [&](const WFMath::Vector<3>& value) {}
+                    );
+                    boost::apply_visitor(visitor, arg);
+                }
+            }
+            if (is_valid) {
+                count++;
+            }
         }
+
+        if (count < param.second.min) {
+            return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};
+        }
+        if (count > param.second.max) {
+            return {false, String::compose("Too many '%1' arguments. Should be maximum %2, got %3.", param.first, param.second.max, count)};
+        }
+
     }
 
-    for (size_t i = 0; i < consumed.size(); ++i) {
-        auto& entry = consumed[i];
-        if (entry.m_parent->isDestroyed()) {
-            return {false, String::compose("Consumable nr. %1 is destroyed.", i)};
-        }
-        EntityFilter::QueryContext queryContext{*entry.m_parent, actor.get(), tool.get()};
-        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
-        if (!definition.consumed[i]->match(queryContext)) {
-            return {false, String::compose("Consumable nr. %1 does not match the filter.", i)};
-        }
-    }
 
     return {true, ""};
 }

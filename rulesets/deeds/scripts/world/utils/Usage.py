@@ -2,11 +2,12 @@ from atlas import Operation
 from atlas import Entity
 import server
 
+
 def set_cooldown_on_attached(tool, actor):
     cooldown = tool.props.cooldown
     if cooldown and cooldown > 0.0:
 
-        #Get the attach point name from the attached tool
+        # Get the attach point name from the attached tool
         if tool.props.planted_on:
             planted_on_data = tool.props.planted_on
             if planted_on_data["attachment"]:

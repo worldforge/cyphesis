@@ -56,6 +56,11 @@ class CyPy_UsageInstance : public WrapperBase<UsageInstance, CyPy_UsageInstance>
         Py::Object isValid();
         PYCXX_NOARGS_METHOD_DECL(CyPy_UsageInstance, isValid);
 
+        Py::Object getArg(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_UsageInstance, getArg);
+
+        static Py::Object getArg(const UsageInstance& instance, const Py::Tuple& args);
+
 };
 
 

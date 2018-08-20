@@ -49,6 +49,9 @@ class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
 
         Py::Object rich_compare(const Py::Object& other, int type) override;
 
+        Py::Object getArg(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Task, getArg);
+
 };
 
 

@@ -19,9 +19,12 @@
             <map name="usages">
                 <map name="default">
                     <map name="sow">
-                        <list name="targets">
-                            <string>entity instance_of types.game_entity &amp;&amp; entity.germinates != none &amp;&amp; actor can_reach entity with tool</string>
-                        </list>
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity &amp;&amp; entity.germinates != none &amp;&amp; actor can_reach entity with tool</string>
+                            </map>
+                        </map>
                         <string name="handler">world.objects.tools.Trowel.sow</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
                         <string name="description">Plant a seed with a wielded trowel.</string>
