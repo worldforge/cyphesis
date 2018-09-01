@@ -22,6 +22,9 @@
                     <string name="name">mind.NPCMind.NPCMind</string>
                 </map>
             </map>
+            <map name="status">
+                <float name="default">1.0</float>
+            </map>
             <!-- Standard density for meat and bones -->
             <map name="density">
                 <float name="default">125</float>

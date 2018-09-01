@@ -696,8 +696,6 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
         obj->addToEntity(new_ent);
 
         if (!op->isDefaultSerialno()) {
-            log(NOTICE, String::compose("Sending create response for creation of '%1'.", type));
-
             Info i;
             i->setArgs1(new_ent);
             i->setTo(op->getFrom());
