@@ -123,6 +123,9 @@ Py::Object CyPy_Entity::mod_property(const Ref<Entity>& entity, const Py::Tuple&
     } else {
         prop = entity->modProperty(name);
     }
+    if (!prop) {
+        return Py::None();
+    }
     Atlas::Message::Element value;
     if (prop->get(value) != 0) {
         throw Py::RuntimeError(String::compose("Could not create property '%1'.", name));
