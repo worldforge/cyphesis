@@ -103,6 +103,7 @@ class ExternalMind : public Router
 
         void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
 
+        void GetOperation(const Operation& smartPtr, OpVector& res);
 };
 
 #endif // RULESETS_EXTERNAL_MIND_H

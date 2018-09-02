@@ -22,10 +22,13 @@
 
 #include "BaseWorld.h"
 #include "common/Link.h"
+#include "common/TypeNode.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <modules/Variant.h>
 #include "common/Think.h"
 #include "common/Thought.h"
 #include "common/Relay.h"
@@ -96,16 +99,25 @@ void ExternalMind::externalOperation(const Operation& op, Link& link)
     if (!op->isDefaultRefno()) {
         externalRelayedOperation(op, link);
     } else {
-        //Any ops coming from the mind must be Thought ops.
-        Atlas::Objects::Operation::Thought thought{};
-        thought->setTo(m_entity.getId());
-        thought->setArgs1(op);
+        if (op->getClassNo() == Atlas::Objects::Operation::GET_NO) {
+            OpVector res;
+            GetOperation(op, res);
+            for (auto& resOp : res) {
+                link.send(resOp);
+            }
+        } else {
+            OpVector res;
 
-        OpVector res;
-        m_entity.operation(thought, res);
+            //Any ops coming from the mind must be Thought ops.
+            Atlas::Objects::Operation::Thought thought{};
+            thought->setTo(m_entity.getId());
+            thought->setArgs1(op);
 
-        for (auto& resOp : res) {
-            m_entity.sendWorld(resOp);
+            m_entity.operation(thought, res);
+
+            for (auto& resOp : res) {
+                m_entity.sendWorld(resOp);
+            }
         }
     }
 }
@@ -308,4 +320,34 @@ const std::string& ExternalMind::connectionId()
 void ExternalMind::linkUp(Link* c)
 {
     m_link = c;
+}
+
+void ExternalMind::GetOperation(const Operation& op, OpVector& res)
+{
+    if (!op->getArgs().empty()) {
+        auto arg = op->getArgs().front();
+
+        if (!arg->isDefaultId()) {
+            auto id = arg->getId();
+            auto visibility = Visibility::PUBLIC;
+            //Check if the id is of the same type as the entity; that means we're allowed to see protected fields.
+            if (m_entity.getType()->isTypeOf(id)) {
+                visibility = Visibility::PROTECTED;
+            }
+
+            const Root& o = Inheritance::instance().getClass(id, visibility);
+            if (!o.isValid()) {
+                clientError(op, String::compose("Unknown type definition for \"%1\" "
+                                                "requested", id), res);
+                return;
+            }
+            Atlas::Objects::Operation::Info info;
+            info->setArgs1(o);
+            info->setTo(m_entity.getId());
+            if (!op->isDefaultSerialno()) {
+                info->setRefno(op->getSerialno());
+            }
+            res.push_back(info);
+        }
+    }
 }
