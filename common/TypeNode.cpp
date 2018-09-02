@@ -58,8 +58,8 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
 {
     //We need to split out any private and protected attributes
     m_privateDescription = description;
-    m_protectedDescription = description;
-    m_publicDescription = description;
+    m_protectedDescription = description.copy();
+    m_publicDescription = description.copy();
 
     Atlas::Message::Element attributesElement;
     if (description->copyAttr("attributes", attributesElement) == 0 && attributesElement.isMap()) {
@@ -142,19 +142,26 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
 
     PropertiesUpdate propertiesUpdate;
 
-    //Update the description
-    Atlas::Message::MapType attributesMap = Atlas::Message::MapType();
-    if (m_privateDescription->hasAttr("attributes")) {
-        auto elem = m_privateDescription->getAttr("attributes");
-        if (elem.isMap()) {
-            attributesMap = std::move(elem.Map());
-        } else {
-            log(WARNING, String::compose("TypeNode '%1' had an 'attribute' element which wasn't a map.", m_name));
+    auto extractAttributesFn = [&](const  Atlas::Objects::Root& description, Atlas::Message::MapType& attributesMap){
+        if (description->hasAttr("attributes")) {
+            auto elem = description->getAttr("attributes");
+            if (elem.isMap()) {
+                attributesMap = std::move(elem.Map());
+            } else {
+                log(WARNING, String::compose("TypeNode '%1' had an 'attribute' element which wasn't a map.", m_name));
+            }
         }
-    }
-    auto attributesMapProtected = attributesMap;
-    auto attributesMapPublic = attributesMap;
+    };
 
+    //Update the description
+    Atlas::Message::MapType attributesMapPrivate;
+    extractAttributesFn(m_privateDescription, attributesMapPrivate);
+
+    Atlas::Message::MapType attributesMapProtected;
+    extractAttributesFn(m_protectedDescription, attributesMapProtected);
+
+    Atlas::Message::MapType attributesMapPublic;
+    extractAttributesFn(m_publicDescription, attributesMapPublic);
 
     // Discover the default attributes which are no longer
     // present after the update.
@@ -194,7 +201,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
                 {"default", entry.second}
             };
 
-            attributesMap[entry.first] = map_entry;
+            attributesMapPrivate[entry.first] = map_entry;
             if (!boost::starts_with(entry.first, "__")) {
                 attributesMapProtected[entry.first] = map_entry;
             }
@@ -212,7 +219,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
                     {"default", entry.second}
                 };
 
-                attributesMap[entry.first] = map_entry;
+                attributesMapPrivate[entry.first] = map_entry;
                 if (!boost::starts_with(entry.first, "__")) {
                     attributesMapProtected[entry.first] = map_entry;
                 }
@@ -223,7 +230,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
         }
     }
 
-    m_privateDescription->setAttr("attributes", attributesMap);
+    m_privateDescription->setAttr("attributes", attributesMapPrivate);
     m_protectedDescription->setAttr("attributes", attributesMapProtected);
     m_publicDescription->setAttr("attributes", attributesMapPublic);
 
