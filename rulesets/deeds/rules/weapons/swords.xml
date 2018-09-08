@@ -34,7 +34,7 @@
                                 <int name="max">1</int>
                             </map>
                         </map>
-                        <string name="handler">world.objects.tools.Hitting.strike</string>
+                        <string name="handler">world.objects.tools.Melee.strike</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
                         <string name="description">Strike an enemy with a wielded sword.</string>
                     </map>

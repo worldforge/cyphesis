@@ -54,7 +54,10 @@
                 <float name="default">8</float>
             </map>
             <map name="damage_punch">
-                <float name="default">5</float>
+                <float name="default">1</float>
+            </map>
+            <map name="cooldown_punch">
+                <float name="default">1</float>
             </map>
             <map name="_usages">
                 <map name="default">
@@ -67,9 +70,9 @@
                                 <int name="max">1</int>
                             </map>
                         </map>
-                        <string name="handler">world.objects.creatures.Hitting.punch</string>
+                        <string name="handler">world.objects.tools.Unarmed.strike</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
-                        <string name="description">Punch something with a your fist.</string>
+                        <string name="description">Punch something with your fist.</string>
                     </map>
                 </map>
             </map>

@@ -20,6 +20,29 @@
             <map name="present">
                 <string name="default">dural/creatures/biped/skeleton/skeleton.modeldef</string>
             </map>
+            <map name="damage_punch">
+                <float name="default">5</float>
+            </map>
+            <map name="cooldown_punch">
+                <float name="default">1</float>
+            </map>
+            <map name="_usages">
+                <map name="default">
+                    <map name="punch">
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity</string>
+                                <int name="min">0</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Unarmed.strike</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
+                        <string name="description">Punch something with your fist.</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">lych</string>
         <string name="objtype">class</string>

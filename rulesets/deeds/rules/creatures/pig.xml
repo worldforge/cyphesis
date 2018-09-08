@@ -17,6 +17,26 @@
             <map name="meat">
                 <string name="default">ham</string>
             </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Hittable.Hittable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Metabolizing.Metabolizing</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Nourishable.Nourishable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">pig</string>
         <string name="objtype">class</string>

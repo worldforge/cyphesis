@@ -18,8 +18,28 @@
             <map name="_modifier_eat_type_plant">
                 <float name="default">0</float>
             </map>
-
-        </map>
+            <map name="damage_strike">
+                <float name="default">10</float>
+            </map>
+            <map name="cooldown_strike">
+                <float name="default">1</float>
+            </map>
+            <map name="_usages">
+                <map name="default">
+                    <map name="strike">
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity</string>
+                                <int name="min">0</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Unarmed.strike</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
+                    </map>
+                </map>
+            </map>        </map>
         <string name="id">wolf</string>
         <string name="objtype">class</string>
         <string name="parent">mobile</string>
