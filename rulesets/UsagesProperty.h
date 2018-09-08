@@ -30,9 +30,6 @@ class UsagesProperty : public Property<Atlas::Message::MapType>
 {
     public:
 
-        static constexpr const char* property_name = "usages";
-
-
         void set(const Atlas::Message::Element& val) override;
 
         void install(LocatedEntity* owner, const std::string& name) override;

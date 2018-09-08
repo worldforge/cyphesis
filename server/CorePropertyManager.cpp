@@ -265,7 +265,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ScriptsProperty>("__scripts");
     installProperty<ScriptsProperty>("__scripts_instance");
 
-    installProperty<UsagesProperty>();
+    installProperty<UsagesProperty>("usages");
+    installProperty<UsagesProperty>("_usages");
 
     /**
      * Keeps track of when attachments are ready to be used again.
