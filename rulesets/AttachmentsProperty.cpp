@@ -80,52 +80,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                 //Get the entities currently observing the attached entity
                 // existing_entity->collectObservers(prevObserving);
 
-
-                auto new_entity = BaseWorld::instance().getEntity(entity_id);
-                if (new_entity) {
-                    //Check that the attached entity matches the constraint filter
-                    if (attachment.filter) {
-                        EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
-                        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
-                        if (!attachment.filter->match(queryContext)) {
-                            entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
-                            return OPERATION_BLOCKED;
-                        }
-                    }
-                    //Check if the entity already is attached, and if so abort. The client needs to first send a detach/unwield op in this case.
-                    auto plantedOnProp = new_entity->requirePropertyClassFixed<PlantedOnProperty>();
-                    if (plantedOnProp->data().entity) {
-                        //Check if the entity is attached to ourselves; if so we can just detach it from ourselves.
-                        //Otherwise we need to abort, since we don't allow ourselves to detach it from another entity.
-                        if (plantedOnProp->data().entity.get() == entity) {
-                            if (plantedOnProp->data().attachment) {
-                                //We need to reset the old attached value for the attached entity
-                                auto old_attached_prop_name = std::string("attached_") + *plantedOnProp->data().attachment;
-                                auto oldAttachedProp = entity->modPropertyClass<SoftProperty>(old_attached_prop_name);
-                                if (oldAttachedProp) {
-                                    oldAttachedProp->data() = Atlas::Message::Element();
-                                    entity->applyProperty(old_attached_prop_name, oldAttachedProp);
-                                }
-                            }
-                        } else {
-                            entity->clientError(op, "The entity is already attached to another entity.", res, entity->getId());
-                            return OPERATION_BLOCKED;
-                        }
-                    }
-
-                    plantedOnProp->data().entity = WeakEntityRef(entity);
-                    plantedOnProp->data().attachment = attachment_name.String();
-
-                    new_entity->applyProperty(PlantedOnProperty::property_name, plantedOnProp);
-                    {
-                        Atlas::Objects::Operation::Update update;
-                        update->setTo(new_entity->getId());
-                        new_entity->sendWorld(update);
-                    }
-
-                    entity->setAttr(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
-
-                    //Check if there was another entity attached to the attachment, and if so reset it's attachment.
+                auto resetExistingEntityPlantedOn = [&]() {
                     if (existing_entity) {
                         auto existing_entity_planted_on_prop = existing_entity->modPropertyClassFixed<PlantedOnProperty>();
                         if (existing_entity_planted_on_prop) {
@@ -134,17 +89,80 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             {
                                 Atlas::Objects::Operation::Update update;
                                 update->setTo(existing_entity->getId());
-                                new_entity->sendWorld(update);
+                                existing_entity->sendWorld(update);
                             }
                         }
                     }
+                };
+
+                if (entity_id.empty()) {
+                    //Unwielding
+
+                    entity->setAttr(attached_prop_name, "");
+
+                    //Check if there was another entity attached to the attachment, and if so reset it's attachment.
+                    resetExistingEntityPlantedOn();
 
                     Atlas::Objects::Operation::Update update;
                     update->setTo(entity->getId());
                     entity->sendWorld(update);
 
                 } else {
-                    entity->clientError(op, "Could not find wielded entity.", res, entity->getId());
+
+                    auto new_entity = BaseWorld::instance().getEntity(entity_id);
+                    if (new_entity) {
+                        //Check that the attached entity matches the constraint filter
+                        if (attachment.filter) {
+                            EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
+                            queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                            if (!attachment.filter->match(queryContext)) {
+                                entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
+                                return OPERATION_BLOCKED;
+                            }
+                        }
+                        //Check if the entity already is attached, and if so abort. The client needs to first send a detach/unwield op in this case.
+                        auto plantedOnProp = new_entity->requirePropertyClassFixed<PlantedOnProperty>();
+                        if (plantedOnProp->data().entity) {
+                            //Check if the entity is attached to ourselves; if so we can just detach it from ourselves.
+                            //Otherwise we need to abort, since we don't allow ourselves to detach it from another entity.
+                            if (plantedOnProp->data().entity.get() == entity) {
+                                if (plantedOnProp->data().attachment) {
+                                    //We need to reset the old attached value for the attached entity
+                                    auto old_attached_prop_name = std::string("attached_") + *plantedOnProp->data().attachment;
+                                    auto oldAttachedProp = entity->modPropertyClass<SoftProperty>(old_attached_prop_name);
+                                    if (oldAttachedProp) {
+                                        oldAttachedProp->data() = Atlas::Message::Element();
+                                        entity->applyProperty(old_attached_prop_name, oldAttachedProp);
+                                    }
+                                }
+                            } else {
+                                entity->clientError(op, "The entity is already attached to another entity.", res, entity->getId());
+                                return OPERATION_BLOCKED;
+                            }
+                        }
+
+                        plantedOnProp->data().entity = WeakEntityRef(entity);
+                        plantedOnProp->data().attachment = attachment_name.String();
+
+                        new_entity->applyProperty(PlantedOnProperty::property_name, plantedOnProp);
+                        {
+                            Atlas::Objects::Operation::Update update;
+                            update->setTo(new_entity->getId());
+                            new_entity->sendWorld(update);
+                        }
+
+                        entity->setAttr(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
+
+                        //Check if there was another entity attached to the attachment, and if so reset it's attachment.
+                        resetExistingEntityPlantedOn();
+
+                        Atlas::Objects::Operation::Update update;
+                        update->setTo(entity->getId());
+                        entity->sendWorld(update);
+
+                    } else {
+                        entity->clientError(op, "Could not find wielded entity.", res, entity->getId());
+                    }
                 }
                 return OPERATION_BLOCKED;
             }
