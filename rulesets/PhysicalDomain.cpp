@@ -608,7 +608,7 @@ std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedE
         }
     }
 
-    return std::move(entityList);
+    return entityList;
 }
 
 class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback
@@ -620,7 +620,7 @@ class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResul
         btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
                                  int partId1, int index1) override
         {
-            BulletEntry* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+            auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
             if (bulletEntry) {
                 m_entries.insert(bulletEntry);
             }
