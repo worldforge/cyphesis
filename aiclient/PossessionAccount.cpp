@@ -35,15 +35,18 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
+#include <common/Inheritance.h>
 
 
 static const bool debug_flag = false;
+
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Look;
+using Atlas::Objects::Operation::Possess;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
@@ -76,12 +79,13 @@ void PossessionAccount::enablePossession(OpVector& res)
 
 void PossessionAccount::operation(const Operation & op, OpVector & res)
 {
-
-    if (!op->isDefaultRefno() && m_possessionRefNumbers.find(op->getRefno()) != m_possessionRefNumbers.end()) {
-        m_possessionRefNumbers.erase(op->getRefno());
-        createMind(op, res);
+    if (!op->isDefaultRefno()) {
+        auto I = m_callbacks.find(op->getRefno());
+        if (I != m_callbacks.end()) {
+            I->second(op, res);
+            m_callbacks.erase(I);
+        }
     } else {
-
         if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
             PossessOperation(op, res);
         } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
@@ -93,6 +97,15 @@ void PossessionAccount::operation(const Operation & op, OpVector & res)
         } else {
             log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParent()));
         }
+    }
+
+
+    if (!op->isDefaultRefno() && m_possessionRefNumbers.find(op->getRefno()) != m_possessionRefNumbers.end()) {
+        m_possessionRefNumbers.erase(op->getRefno());
+        createMind(op, res);
+    } else {
+
+
     }
 }
 
@@ -124,26 +137,77 @@ void PossessionAccount::PossessOperation(const Operation& op, OpVector & res)
 
 void PossessionAccount::takePossession(OpVector& res, const std::string& possessEntityId, const std::string& possessKey)
 {
-    debug(std::cout << String::compose("Taking possession of entity with id %1.", possessEntityId) << std::endl;);
+    log(INFO, String::compose("Taking possession of entity with id %1.", possessEntityId));
 
     Anonymous what;
     what->setId(possessEntityId);
     what->setAttr("possess_key", possessKey);
 
-    Look l;
-    l->setFrom(getId());
-    l->setArgs1(what);
-    l->setSerialno(m_serialNoCounter++);
-    m_possessionRefNumbers.insert(l->getSerialno());
-    res.push_back(l);
+    Possess possess;
+    possess->setFrom(getId());
+    possess->setArgs1(what);
+    possess->setSerialno(m_serialNoCounter++);
+
+    m_callbacks[possess->getSerialno()] = [this](const Operation& op, OpVector& res) {
+//        std::cout << "PossessionAccount::createMind {" << std::endl;
+//        debug_dump(op, std::cout);
+//        std::cout << "}" << std::endl << std::flush;
+
+        if (op->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
+            log(ERROR, "Malformed possession response: not an info.");
+        }
+
+        const std::vector<Root>& args = op->getArgs();
+        if (args.empty()) {
+            log(ERROR, "no args character possession response");
+            return;
+        }
+
+        RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
+        if (!ent.isValid()) {
+            log(ERROR, "malformed character possession response");
+            return;
+        }
+
+        if (!ent->hasAttr("entity")) {
+            log(ERROR, "malformed character possession response");
+            return;
+        }
+        auto entityElem = ent->getAttr("entity");
+        if (!entityElem.isMap()) {
+            log(ERROR, "malformed character possession response");
+            return;
+        }
+
+        auto I = entityElem.Map().find("id");
+        if (I == entityElem.Map().end() || !I->second.isString()) {
+            log(ERROR, "malformed character possession response");
+            return;
+        }
+
+        auto entityId = I->second.String();
+
+        mLocatedEntityRegistry.addPendingMind(entityId, ent->getId(), res);
+
+//        //Create an entity, but do not "start" it yet. We need to fetch the type first.
+//        auto mind = m_mindFactory.newMind(entityId, std::stol(entityId));
+//        mind->setMindId(ent->getId());
+//
+//        mLocatedEntityRegistry.addLocatedEntity(mind);
+//
+//        mind->setup(res);
+
+    };
+
+    res.push_back(possess);
 }
 
 void PossessionAccount::createMind(const Operation & op, OpVector & res)
 {
 
-//    std::cout << "PossessionAccount::createMind {" << std::endl;
-//    debug_dump(op, std::cout);
-//    std::cout << "}" << std::endl << std::flush;
+    std::cout << "PossessionAccount::createMind {" << std::endl;
+    debug_dump(op, std::cout);
+    std::cout << "}" << std::endl << std::flush;
 
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
@@ -162,15 +226,26 @@ void PossessionAccount::createMind(const Operation & op, OpVector & res)
         return;
     }
 
+
+
     std::string entityId = ent->getId();
     std::string entityType = ent->getParent();
 
-    debug(std::cout << String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, entityType) << std::endl;);
-    log(INFO, String::compose("Creating mind for entity with id %1 of type '%2'. Name '%3'.", entityId, entityType, ent->getName()));
+    auto type = Inheritance::instance().getType(entityType);
+    if (!type) {
+
+    } else {
+        createMindInstance(op, res, entityId, type, ent);
+    }
+
+}
+
+void PossessionAccount::createMindInstance(const Operation & op, OpVector & res, const std::string& entityId, const TypeNode* type, const RootEntity& ent) {
+    debug(std::cout << String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, type->name()) << std::endl;);
+    log(INFO, String::compose("Creating mind for entity with id %1 of type '%2'. Name '%3'.", entityId, type->name(), ent->getName()));
     BaseMind* mind = m_mindFactory.newMind(entityId, integerId(entityId));
     mLocatedEntityRegistry.addLocatedEntity(mind);
-    //TODO: setup and get type from Inheritance
-    mind->setType(new TypeNode(entityType));
+    mind->setType(type);
 
     if (m_mindFactory.m_scriptFactory != nullptr) {
         debug(std::cout << "Adding script to entity." << std::endl;);
@@ -200,5 +275,4 @@ void PossessionAccount::createMind(const Operation & op, OpVector & res)
     Look l;
     l->setFrom(entityId);
     res.push_back(l);
-
 }

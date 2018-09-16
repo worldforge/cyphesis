@@ -171,12 +171,13 @@ TypeNode * Inheritance::addChild(const Root & obj)
     auto I = atlasObjects.find(child);
     auto Iend = atlasObjects.end();
     if (I != Iend) {
-        const TypeNode * existing = I->second->parent();
-        log(ERROR, String::compose("Installing %1 \"%2\"(\"%3\") "
-                                   "which was already installed as %4 (\"%5\")",
+
+        const TypeNode * existingParent = I->second->parent();
+        log(ERROR, String::compose("Installing %1 \"%2\"(parent \"%3\") "
+                                   "which was already installed as a %4 with parent \"%5\"",
                                    obj->getObjtype(), child, parent,
                                    I->second->description(Visibility::PRIVATE)->getObjtype(),
-                                   existing ? existing->name() : "NON"));
+                                   existingParent ? existingParent->name() : "NON"));
         return nullptr;
     }
     I = atlasObjects.find(parent);

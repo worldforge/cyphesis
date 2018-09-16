@@ -413,8 +413,7 @@ void Account::externalOperation(const Operation & op, Link &)
             if (!op->isDefaultSerialno()) {
                 // Should we respect existing refnos?
                 if (replyOp->isDefaultRefno()) {
-                    long serialno = op->getSerialno();
-                    replyOp->setRefno(serialno);
+                    replyOp->setRefno(op->getSerialno());
                 }
             }
         }
@@ -649,14 +648,14 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
                                          m_username));
             }
         }
+    } else {
+        auto J = m_charactersDict.find(intId);
+        if (J != m_charactersDict.end()) {
+            connectCharacter(J->second, res);
+            return;
+        }
+        clientError(op, String::compose("Could not find character '%1' to possess.", to), res, getId());
     }
-    auto J = m_charactersDict.find(intId);
-    if (J != m_charactersDict.end()) {
-        connectCharacter(J->second, res);
-        return;
-    }
-    clientError(op, String::compose("Could not find character '%1' to possess.", to), res, getId());
-
 
 }
 

@@ -22,9 +22,11 @@
 
 #include <memory>
 #include <unordered_set>
+#include <functional>
 
 class MindKit;
 class MindRegistry;
+class TypeNode;
 
 class PossessionAccount: public Router
 {
@@ -47,11 +49,15 @@ class PossessionAccount: public Router
         int m_serialNoCounter;
 
         std::unordered_set<long> m_possessionRefNumbers;
+        std::map<long, std::function<void(const Operation &, OpVector &)>> m_callbacks;
 
         void PossessOperation(const Operation & op, OpVector & res);
 
         void takePossession(OpVector& res, const std::string& possessEntityId, const std::string& possessKey);
         void createMind(const Operation & op, OpVector & res);
+        void createMindInstance(const Operation & op, OpVector & res, const std::string& entityId, const TypeNode* type, const Atlas::Objects::Entity::RootEntity& ent) ;
+
+        void registerOpCallback(std::function<void(const Operation &, OpVector &)> callback);
 
 };
 

@@ -124,82 +124,11 @@ void ExternalMind::externalOperation(const Operation& op, Link& link)
 
 void ExternalMind::operation(const Operation& op, OpVector& res)
 {
-
-//    //TODO: remove this hacked in fix.
-//    //So, what's happening here is that if the external connection has been disconnected, and
-//    //the entity either is marked as ephemeral, or has been inactive for an hour, it is
-//    //deleted along with all of its inventory. This is to prevent the starting position
-//    //being spammed by abandoned characters. Now, there are a lot of better ways to handle this.
-//    //One solution is to make sure that all new entities are created in an instanced location.
-//    //Thus players have to actively move from the instanced location to the main world, which
-//    //would make sure that only those players which are active end up in the real world.
-//    //Another solution is to do something with the entity when the connection is cut; perhaps move
-//    //it to limbo or some other place. All of these solutions are better than just deleting it.
-//    if (m_link == nullptr) {
-//        if (m_entity.hasFlags(entity_ephem)) {
-//            // If this entity no longer has a connection, and is ephemeral
-//            // we should delete it.
-//            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-//                purgeEntity(m_entity);
-//            }
-//        }
-////        if (BaseWorld::instance().getTime() - m_lossTime > character_expire_time) {
-////            if (op->getClassNo() != Atlas::Objects::Operation::DELETE_NO) {
-////                //reset m_lossTime since it's not a given that the entity will be deleted
-////                //(properties such as respawnable might intervene)
-////                m_lossTime = BaseWorld::instance().getTime();
-////                purgeEntity(m_entity);
-////            }
-////        }
-//        return;
-//    }
-
     if (op->getClassNo() == Atlas::Objects::Operation::RELAY_NO) {
         RelayOperation(op, res);
     } else {
         m_link->send(op);
     }
-
-
-//    // Here we see if there is anything we should be sending the user
-//    // extra info about. The initial demo implementation checks for
-//    // Set ops which make the characters status less than 0.1, and sends
-//    // emotes that the character is hungry.
-//    const std::vector<Root>& args = op->getArgs();
-//    if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO && !args.empty()) {
-//        Operation sub_op = smart_dynamic_cast<Operation>(args.front());
-//        if (sub_op.isValid()) {
-//            const std::vector<Root>& sub_args = sub_op->getArgs();
-//            if (sub_op->getClassNo() == Atlas::Objects::Operation::SET_NO && !sub_args.empty()) {
-//                const Root& arg = sub_args.front();
-//                Element status_value;
-//                if (arg->getId() == getId() and
-//                    arg->copyAttr("status", status_value) == 0 and
-//                    status_value.isFloat() and status_value.Float() < 0.1) {
-//
-//                    Anonymous imaginary_arg;
-//                    imaginary_arg->setId(getId());
-//                    if (status_value.Float() < 0.01) {
-//                        imaginary_arg->setAttr("description", "is starving.");
-//                    } else {
-//                        imaginary_arg->setAttr("description", "is hungry.");
-//                    }
-//
-//                    Imaginary imaginary;
-//                    imaginary->setTo(getId());
-//                    imaginary->setFrom(getId());
-//                    imaginary->setArgs1(imaginary_arg);
-//
-//                    Sight sight;
-//                    sight->setTo(getId());
-//                    sight->setFrom(getId());
-//                    sight->setArgs1(imaginary);
-//
-//                    m_link->send(sight);
-//                }
-//            }
-//        }
-//    }
 }
 
 void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
@@ -215,8 +144,12 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
             if (!relay.op->isDefaultSerialno() || !relay.op->isDefaultFrom()) {
                 //Also send a no-op to any entity to make it stop waiting for any response.
                 Atlas::Objects::Operation::Relay noop;
-                noop->setRefno(relay.op->getSerialno());
-                noop->setTo(relay.op->getFrom());
+                if (!relay.op->isDefaultSerialno()) {
+                    noop->setRefno(relay.op->getSerialno());
+                }
+                if (!relay.op->isDefaultFrom()) {
+                    noop->setTo(relay.op->getFrom());
+                }
                 noop->setFrom(m_entity.getId());
                 noop->setId(relay.from_id);
                 m_entity.sendWorld(noop);

@@ -41,9 +41,7 @@ RuleTraversalTask::RuleTraversalTask(const std::string& accountId, std::function
 {
 }
 
-RuleTraversalTask::~RuleTraversalTask()
-{
-}
+RuleTraversalTask::~RuleTraversalTask() = default;
 
 void RuleTraversalTask::setup(const std::string & arg, OpVector & res)
 {

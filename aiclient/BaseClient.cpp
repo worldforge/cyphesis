@@ -170,8 +170,7 @@ int BaseClient::pollOne(const boost::posix_time::time_duration& duration)
             operation(input, res);
             OpVector::const_iterator Iend = res.end();
             for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-                if (input->hasAttrFlag(
-                        Atlas::Objects::Operation::SERIALNO_FLAG)) {
+                if (!input->isDefaultSerialno()) {
                     (*I)->setRefno(input->getSerialno());
                 }
                 send(*I);

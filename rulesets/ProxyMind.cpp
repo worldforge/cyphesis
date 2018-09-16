@@ -85,7 +85,7 @@ void ProxyMind::thinkGetOperation(const Operation & op, OpVector & res)
 {
     Atlas::Objects::Operation::Think think;
     Atlas::Objects::Operation::Set set;
-    if (op->getSerialno()) {
+    if (!op->isDefaultSerialno()) {
         think->setRefno(op->getSerialno());
     }
     std::vector<Root> thoughts;
@@ -119,7 +119,7 @@ void ProxyMind::thinkLookOperation(const Operation & op, OpVector & res)
 {
     Atlas::Objects::Operation::Think think;
     Atlas::Objects::Operation::Info info;
-    if (op->getSerialno()) {
+    if (!op->isDefaultSerialno()) {
         think->setRefno(op->getSerialno());
     }
     std::vector<Root> thoughts;

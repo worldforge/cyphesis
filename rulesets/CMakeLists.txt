@@ -70,7 +70,7 @@ add_library(rulesetentity
     AdminMind.cpp AdminMind.h
     AdminProperty.cpp AdminProperty.h
     PlantedOnProperty.cpp PlantedOnProperty.h
-    AttachmentsProperty.cpp AttachmentsProperty.h)
+    AttachmentsProperty.cpp AttachmentsProperty.h TypeResolver.cpp TypeResolver.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 

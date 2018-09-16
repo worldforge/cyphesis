@@ -37,7 +37,18 @@ class BaseMind : public MemEntity {
     /// \brief World time as far as this mind is aware
     WorldTime m_time;
 
-  public:
+    std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
+    std::vector<Operation> m_pendingOperations;
+
+    std::unique_ptr<TypeResolver> m_typeResolver;
+
+    std::string m_mindId;
+
+    std::map<long, std::function<void(const Operation &, OpVector &)>> m_callbacks;
+
+    long m_serialNoCounter;
+
+    public:
     BaseMind(const std::string & id, long intId);
 
     ~BaseMind() override;
@@ -73,6 +84,7 @@ class BaseMind : public MemEntity {
     virtual void DisappearanceOperation(const Operation &, OpVector &);
     virtual void UnseenOperation(const Operation &, OpVector &);
     virtual void ThinkOperation(const Operation &, OpVector &);
+    void InfoOperation(const Operation&, OpVector& );
 
     void callSightOperation(const Operation &, OpVector &);
     void callSoundOperation(const Operation &, OpVector &);
@@ -81,6 +93,11 @@ class BaseMind : public MemEntity {
 
     void setScript(Script * scrpt) override;
 
+    void setMindId(const std::string& mindId);
+
+    const std::string& getMindId() const;
+
+    void setTypeResolver(std::unique_ptr<TypeResolver> typeResolver);
 };
 
 #endif // RULESETS_BASE_MIND_H

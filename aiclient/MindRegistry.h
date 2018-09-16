@@ -19,6 +19,7 @@
 #define AICLIENT_MINDREGISTRY_H
 
 #include <modules/Ref.h>
+#include "common/OperationRouter.h"
 
 class BaseMind;
 
@@ -30,6 +31,9 @@ class MindRegistry {
 
         virtual void addLocatedEntity(Ref<BaseMind>) = 0;
         virtual void removeLocatedEntity(Ref<BaseMind>) = 0;
+
+        virtual void addPendingMind(std::string entityId, std::string mindId, OpVector& res) = 0;
+        virtual void removePendingMind(std::string mindId) = 0;
 
 };
 

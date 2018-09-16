@@ -21,6 +21,7 @@
 
 #include "BaseClient.h"
 #include "MindRegistry.h"
+#include "PendingMind.h"
 #include "rulesets/BaseMind.h"
 #include "common/OperationsDispatcher.h"
 #include "common/OperationsDispatcher_impl.h"
@@ -52,7 +53,11 @@ class PossessionClient: public BaseClient, public MindRegistry
 
         void removeLocatedEntity(Ref<BaseMind> mind) override;
 
-        const std::unordered_map<long, Ref<BaseMind>>& getMinds() const {
+        void addPendingMind(std::string entityId, std::string mindId, OpVector& res) override;
+
+        void removePendingMind(std::string mindId) override;
+
+        const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const {
             return m_minds;
         };
 
@@ -69,9 +74,12 @@ class PossessionClient: public BaseClient, public MindRegistry
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
 
-        std::unordered_map<long, Ref<BaseMind>> m_minds;
+        std::unordered_map<std::string, Ref<BaseMind>> m_minds;
+
+        std::unordered_map<std::string, PendingMind> m_pendingMinds;
 
         std::unique_ptr<Inheritance> m_inheritance;
+
 
 };
 

@@ -5,7 +5,7 @@ add_executable(cyaiclient
     PossessionClient.cpp
     aiclient.cpp
     PossessionAccount.cpp
-    MindRegistry.h)
+    MindRegistry.h PendingMind.cpp PendingMind.h)
 
 
 target_link_libraries(cyaiclient

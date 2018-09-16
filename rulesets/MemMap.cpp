@@ -40,7 +40,6 @@ using Atlas::Objects::Entity::Anonymous;
 
 using String::compose;
 
-const TypeNode * MemMap::m_entity_type = nullptr;
 
 void MemMap::setScript(Script* script)
 {
@@ -48,7 +47,7 @@ void MemMap::setScript(Script* script)
 }
 
 
-Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity> entity)
+Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
 {
     assert(entity != nullptr);
     assert(!entity->getId().empty());
@@ -79,20 +78,23 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity> entity)
     return entity;
 }
 
-void MemMap::readEntity(const Ref<MemEntity> entity, const RootEntity & ent, double timestamp)
+void MemMap::resolveType(const std::string& type)
+{
+
+}
+
+
+void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity & ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-        const std::string& parent = ent->getParent();
-        if (entity->getType() == m_entity_type) {
-            const TypeNode * type = Inheritance::instance().getType(parent);
-            if (type != 0) {
-                entity->setType(type);
-            }
-        } else if (entity->getType()->name() != parent) {
-            debug(std::cout << "Attempting to mutate " << entity->getType()
-                            << " into " << parent
-                            << std::endl << std::flush;);
+        auto& parent = ent->getParent();
+        auto* type = Inheritance::instance().getType(parent);
+        if (type != nullptr) {
+            entity->setType(type);
+        } else {
+            m_unresolvedEntities[parent].insert(entity);
+            resolveType(parent);
         }
     }
     entity->merge(ent->asMessage());
@@ -119,7 +121,7 @@ void MemMap::readEntity(const Ref<MemEntity> entity, const RootEntity & ent, dou
     addContents(ent);
 }
 
-void MemMap::updateEntity(const Ref<MemEntity> entity, const RootEntity & ent, double timestamp)
+void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity & ent, double timestamp)
 // Update contents of entity an Atlas message.
 {
     assert(entity != nullptr);
@@ -149,7 +151,6 @@ Ref<MemEntity> MemMap::newEntity(const std::string & id, long int_id,
     assert(m_entities.find(int_id) == m_entities.end());
 
     Ref<MemEntity> entity = new MemEntity(id, int_id);
-    entity->setType(m_entity_type);
 
     readEntity(entity, ent, timestamp);
 
@@ -158,12 +159,7 @@ Ref<MemEntity> MemMap::newEntity(const std::string & id, long int_id,
 
 MemMap::MemMap() : m_checkIterator(m_entities.begin()), m_listener(nullptr)
 {
-    if (m_entity_type == 0) {
-        // m_entity_type = Inheritance::instance().getType("game_entity");
-        // FIXME What to do with this?
-        m_entity_type = new TypeNode("");
-        assert(m_entity_type != 0);
-    }
+
 }
 
 void MemMap::sendLooks(OpVector & res)
@@ -190,7 +186,6 @@ Ref<MemEntity> MemMap::addId(const std::string & id, long int_id)
     debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
     Ref<MemEntity> entity = new MemEntity(id, int_id);
-    entity->setType(m_entity_type);
     return addEntity(entity);
 }
 
@@ -206,20 +201,12 @@ void MemMap::del(const std::string & id)
         auto ent = I->second;
         assert(ent);
 
-        //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
-        //The result is that if an entity is removed here, it will be deleted, and any
-        //knowledge or goal referring to it will point to an invalid pointer.
-        //Then result is a segfault whenever the mind is queried.
-        //To prevent this we'll add this interim fix, where we exit from the method.
-        //This is an interim solution until we've better dealt with Locations in goals and knowledge.
-
         long next = -1;
         if (m_checkIterator != m_entities.end()) {
             next = m_checkIterator->first;
         }
         m_entities.erase(I);
 
-        ent->destroy(); // should probably go here, but maybe earlier
 
         if (next != -1) {
             m_checkIterator = m_entities.find(next);
@@ -236,8 +223,6 @@ void MemMap::del(const std::string & id)
         if (m_listener) {
             m_listener->entityDeleted(*ent);
         }
-
-//        ent->decRef();
     }
 }
 
@@ -392,7 +377,7 @@ EntityVector MemMap::findByLocation(const Location & loc,
 {
     EntityVector res;
     auto place = loc.m_parent;
-    if (place->m_contains == 0) {
+    if (place->m_contains == nullptr) {
         return res;
     }
 #ifndef NDEBUG

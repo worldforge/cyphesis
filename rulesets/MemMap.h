@@ -37,6 +37,7 @@ class LocatedEntity;
 class Location;
 class Script;
 class TypeNode;
+class TypeResolver;
 
 typedef std::vector<LocatedEntity *> EntityVector;
 typedef std::map<long, Ref<MemEntity>> MemEntityDict;
@@ -46,7 +47,8 @@ class MemMap {
   public:
     class MapListener {
         public:
-        virtual ~MapListener() {}
+        virtual ~MapListener() = default;
+
         virtual void entityAdded(const MemEntity& entity) = 0;
         virtual void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation) = 0;
         virtual void entityDeleted(const MemEntity& entity) = 0;
@@ -55,7 +57,7 @@ class MemMap {
   protected:
     friend class BaseMind;
 
-    static const TypeNode * m_entity_type;
+    std::map<std::string, std::set<Ref<MemEntity>>> m_unresolvedEntities;
 
     MemEntityDict m_entities;
     MemEntityDict::iterator m_checkIterator;
@@ -67,23 +69,27 @@ class MemMap {
 
     MapListener* m_listener;
 
+    TypeResolver* m_typeResolver;
+
     ///\brief a map that holds memories related to other entities.
     ///@key - ID of the entity to which we relate memories
     ///@value - Element of map type containing name of a memory as a key
     ///and the value of that memory (i.e. disposition: 25)
     std::map<std::string, std::map<std::string, Atlas::Message::Element>> m_entityRelatedMemory;
 
-    Ref<MemEntity> addEntity(const Ref<MemEntity>);
-    void readEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp);
-    void updateEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp);
+    void readEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp);
+    void updateEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp);
     Ref<MemEntity> newEntity(const std::string &, long,
                           const Atlas::Objects::Entity::RootEntity &, double timestamp);
     void addContents(const Atlas::Objects::Entity::RootEntity &);
     Ref<MemEntity> addId(const std::string &, long);
+
+    void resolveType(const std::string& type);
   public:
 
     explicit MemMap();
 
+    Ref<MemEntity> addEntity(const Ref<MemEntity>&);
     void setScript(Script* script);
 
     bool find(const std::string & id) const;

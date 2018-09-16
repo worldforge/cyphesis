@@ -69,17 +69,21 @@ static int tryToConnect(PossessionClient& possessionClient)
             std::cerr << "ERROR: Logged in, but account has no id" << std::endl << std::flush;
         } else {
 
-            int rulesCounter = 0;
-            log(INFO, "Requesting rules from server");
-            std::function<bool(const Atlas::Objects::Root&)> inheritenceFn = [&](const Atlas::Objects::Root& root) -> bool {
-                Inheritance::instance().addChild(root);
-                rulesCounter++;
-                return true;
-            };
-
-            possessionClient.runTask(new RuleTraversalTask(systemAccountResponse->getId(), inheritenceFn), "game_entity");
-            possessionClient.pollUntilTaskComplete();
-            log(INFO, String::compose("Completed receiving %1 rules from server", rulesCounter));
+//            int rulesCounter = 0;
+//            log(INFO, "Requesting rules from server.");
+//            std::function<bool(const Atlas::Objects::Root&)> inheritenceFn = [&](const Atlas::Objects::Root& root) -> bool {
+//                if (root->getId() == "game_entity") {
+//                    Inheritance::instance().updateClass("game_entity", root);
+//                } else {
+//                    Inheritance::instance().addChild(root);
+//                }
+//                rulesCounter++;
+//                return true;
+//            };
+//
+//            possessionClient.runTask(new RuleTraversalTask(systemAccountResponse->getId(), inheritenceFn), "game_entity");
+//            possessionClient.pollUntilTaskComplete();
+//            log(INFO, String::compose("Completed receiving %1 rules from server", rulesCounter));
 
             possessionClient.createAccount(systemAccountResponse->getId());
         }
