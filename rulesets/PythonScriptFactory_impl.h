@@ -19,6 +19,7 @@
 #ifndef RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
 #define RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
 
+#include <rulesets/python/CyPy_BaseMind.h>
 #include "rulesets/python/CyPy_LocatedEntity.h"
 #include "rulesets/python/CyPy_Task.h"
 #include "rulesets/BaseMind.h"
@@ -36,7 +37,7 @@ Py::Object wrapPython(LocatedEntity* value) {
     return CyPy_LocatedEntity::wrap(value);
 }
 Py::Object wrapPython(BaseMind* value) {
-    return CyPy_LocatedEntity::wrap(value);
+    return CyPy_BaseMind::wrap(value);
 }
 Py::Object wrapPython(Task* value) {
     return CyPy_Task::wrap(value);

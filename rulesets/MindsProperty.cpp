@@ -204,8 +204,10 @@ HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operatio
             // If the original op had a serial no, we assume the first consequence
             // of that is effectively the same operation.
             // FIXME Can this be guaranteed by the mind2body phase?
-            if (!mres.empty() && mres.front()->isDefaultSerialno()) {
-                mres.front()->setSerialno(op->getSerialno());
+            if (!op->isDefaultSerialno()) {
+                if (!mres.empty() && mres.front()->isDefaultSerialno()) {
+                    mres.front()->setSerialno(op->getSerialno());
+                }
             }
 
             for (auto& resOp : mres) {

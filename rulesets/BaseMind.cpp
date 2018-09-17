@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000,2001 Alistair Riddoch
 //
@@ -26,6 +28,7 @@
 #include "common/op_switch.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
+#include "common/Setup.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
@@ -41,30 +44,30 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-/// \brief BaseMind constructor
-///
-/// @param id String identifier
-/// @param intId Integer identifier
-/// @param body_name The name attribute of the body this mind controls
-BaseMind::BaseMind(const std::string& id, long intId) :
-    MemEntity(id, intId),
+BaseMind::BaseMind(const std::string& mindId, const std::string& entityId) :
+    Router(mindId, std::stol(mindId)),
+    m_refCount(0),
+    m_entityId(entityId),
+    m_flags(0),
     m_map(),
+    m_typeResolver(new TypeResolver()),
     m_serialNoCounter(0)
 {
-    setVisible(true);
-//    m_map.addEntity(this);
 }
 
-BaseMind::~BaseMind()
+BaseMind::~BaseMind() = default;
+
+
+void BaseMind::init(OpVector& res)
 {
-    m_map.m_entities.erase(getIntId());
-    // FIXME Remove this once MemMap uses parent refcounting
-    m_location.m_parent = nullptr;
-    // debug(std::cout << getId() << ":" << getType() << " flushing mind with "
-    // << m_map.getEntities().size() << " entities in it"
-    // << std::endl << std::flush;);
-    m_map.flush();
+    Look look;
+    Root lookArg;
+    lookArg->setId(m_entityId);
+    look->setArgs1(lookArg);
+    look->setFrom(getId());
+    res.push_back(look);
 }
+
 
 /// \brief Process the Sight of a Create operation.
 ///
@@ -168,7 +171,7 @@ void BaseMind::SoundOperation(const Operation& op, OpVector& res)
         std::string event_name("sound_");
         event_name += op2->getParent();
 
-        if (m_scripts.empty() || m_scripts.front()->operation(event_name, op2, res) != OPERATION_BLOCKED) {
+        if (m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
             callSoundOperation(op2, res);
         }
     }
@@ -198,7 +201,7 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
             log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParent()));
         }
 
-        if (m_scripts.empty() || m_scripts.front()->operation(event_name, op2, res) != OPERATION_BLOCKED) {
+        if (m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
             callSightOperation(op2, res);
         }
     } else /* if (op2->getObjtype() == "object") */ {
@@ -233,25 +236,8 @@ void BaseMind::ThinkOperation(const Operation& op, OpVector& res)
 
         OpVector mres;
 
-        if (m_scripts.empty() || m_scripts.front()->operation(event_name, op2, mres) != OPERATION_BLOCKED) {
-            int op2ClassNo = op2->getClassNo();
-            switch (op2ClassNo) {
-                case Atlas::Objects::Operation::SET_NO:
-                    thinkSetOperation(op2, mres);
-                    break;
-                case Atlas::Objects::Operation::DELETE_NO:
-                    thinkDeleteOperation(op2, mres);
-                    break;
-                case Atlas::Objects::Operation::GET_NO:
-                    thinkGetOperation(op2, mres);
-                    break;
-                case Atlas::Objects::Operation::LOOK_NO:
-                    thinkLookOperation(op2, mres);
-                    break;
-                default:
-                    log(WARNING, "Got invalid Think operation. We only support 'Set', 'Delete', 'Get' and 'Look'.");
-                    break;
-            }
+        if (m_script) {
+            m_script->operation(event_name, op2, mres);
         }
 
         if (!mres.empty() && !op->isDefaultSerialno()) {
@@ -262,22 +248,6 @@ void BaseMind::ThinkOperation(const Operation& op, OpVector& res)
         }
 
     }
-}
-
-void BaseMind::thinkSetOperation(const Operation& op, OpVector& res)
-{
-}
-
-void BaseMind::thinkDeleteOperation(const Operation& op, OpVector& res)
-{
-}
-
-void BaseMind::thinkGetOperation(const Operation& op, OpVector& res)
-{
-}
-
-void BaseMind::thinkLookOperation(const Operation& op, OpVector& res)
-{
 }
 
 void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
@@ -341,6 +311,28 @@ void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
     m_map.del(arg->getId());
 }
 
+void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
+{
+    m_ownEntity = std::move(ownEntity);
+    //Also send a "Setup" op to the mind, which will trigger any setup hooks.
+    Atlas::Objects::Operation::Setup s;
+    Anonymous setup_arg;
+    setup_arg->setName("mind");
+    s->setTo(getId());
+    s->setFrom(getId());
+    s->setArgs1(setup_arg);
+    operation(s, res);
+
+    //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
+    Look l;
+    l->setFrom(getId());
+    res.push_back(l);
+
+    res.insert(std::end(res), std::begin(m_pendingOperations), std::end(m_pendingOperations));
+    m_pendingOperations.clear();
+}
+
+
 void BaseMind::InfoOperation(const Operation& op, OpVector& res)
 {
     if (m_typeResolver) {
@@ -351,11 +343,18 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
             if (I != m_map.m_unresolvedEntities.end()) {
                 for (auto& entity : I->second) {
                     entity->setType(type);
+
                     auto J = m_pendingEntitiesOperations.find(entity->getId());
                     if (J != m_pendingEntitiesOperations.end()) {
                         res.insert(std::end(res), std::begin(J->second), std::end(J->second));
                     }
                     m_pendingEntitiesOperations.erase(J);
+
+                    //If we have resolved our own entity we should do some house keeping
+                    if (entity->getId() == m_entityId) {
+
+                        setOwnEntity(res, entity);
+                    }
                 }
             }
             m_map.m_unresolvedEntities.erase(I);
@@ -364,64 +363,11 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
 
 }
 
-void BaseMind::setMindId(const std::string& mindId)
-{
-    m_mindId = mindId;
-}
-
-const std::string& BaseMind::getMindId() const
-{
-    return m_mindId;
-}
 
 void BaseMind::setTypeResolver(std::unique_ptr<TypeResolver> typeResolver)
 {
     m_typeResolver = std::move(typeResolver);
 }
-
-//
-//void BaseMind::setup(OpVector& res)
-//{
-//    Look look;
-//    Root lookArg;
-//    lookArg->setId(getId());
-//    look->setArgs1(lookArg);
-//    look->setFrom(getMindId());
-//    look->setSerialno(m_serialNoCounter++);
-//
-//    m_callbacks[look->getSerialno()] = [this](const Operation& op, OpVector& res){
-//        if (op->getClassNo() != Atlas::Objects::Operation::SIGHT_NO || op->getArgs().empty()) {
-//            log(ERROR, "Malformed initial sight when setting up mind.");
-//            return;
-//        }
-//
-//        auto ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(op->getArgs().front());
-//
-//        if (!ent || ent->isDefaultParent()) {
-//            log(ERROR, "Malformed initial sight when setting up mind.");
-//            return;
-//        }
-//
-//        auto parent = ent->getParent();
-//
-//        auto typeNode = Inheritance::instance().getType(parent);
-//
-//        if (!typeNode) {
-//            m_typeResolver->requestType(parent, res);
-//        } else {
-//
-//        }
-//
-//
-//
-//        m_typeResolver->
-//
-//
-//    };
-//
-//    res.push_back(look);
-//
-//}
 
 void BaseMind::operation(const Operation& op, OpVector& res)
 {
@@ -452,6 +398,19 @@ void BaseMind::operation(const Operation& op, OpVector& res)
             InfoOperation(op, res);
         } else {
 
+            //If we haven't yet resolved our own entity we should delay delivery of the ops
+            if (!m_ownEntity) {
+                if (!op->isDefaultFrom()) {
+                    if (op->getFrom() != m_entityId) {
+                        m_pendingOperations.push_back(op);
+                        return;
+                    }
+                } else {
+                    log(WARNING, String::compose("Got %1 operation without any 'from'.", op->getParent()));
+                }
+            }
+
+
             m_map.check(op->getSeconds());
 
             //Unless it's an Unseen op, we should add the entity the op was from.
@@ -463,9 +422,9 @@ void BaseMind::operation(const Operation& op, OpVector& res)
                 }
             }
             m_map.sendLooks(res);
-            if (!m_scripts.empty()) {
-                m_scripts.front()->operation("call_triggers", op, res);
-                if (m_scripts.front()->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
+            if (m_script) {
+                m_script->operation("call_triggers", op, res);
+                if (m_script->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
                     return;
                 }
             }
@@ -493,6 +452,13 @@ void BaseMind::operation(const Operation& op, OpVector& res)
             }
         }
     }
+
+    for (auto& resOp : res) {
+        if (resOp->isDefaultFrom()) {
+            resOp->setFrom(getId());
+        }
+    }
+
     if (debug_flag) {
         for (const auto& resOp : res) {
             std::cout << "BaseMind::operation sent {" << std::endl;
@@ -501,6 +467,12 @@ void BaseMind::operation(const Operation& op, OpVector& res)
         }
     }
 }
+
+void BaseMind::externalOperation(const Operation& op, Link&)
+{
+
+}
+
 
 void BaseMind::callSightOperation(const Operation& op,
                                   OpVector& res)
@@ -544,8 +516,6 @@ void BaseMind::callSoundOperation(const Operation& op,
 
 void BaseMind::setScript(Script* scrpt)
 {
-    LocatedEntity::setScript(scrpt);
-    if (m_scripts.size() == 1) {
-        m_map.setScript(m_scripts.front());
-    }
+    m_script.reset(scrpt);
+    m_map.setScript(scrpt);
 }

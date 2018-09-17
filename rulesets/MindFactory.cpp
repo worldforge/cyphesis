@@ -33,7 +33,7 @@ MindKit::~MindKit()
     delete m_scriptFactory;
 }
 
-BaseMind * MindFactory::newMind(const std::string & id, long intId) const
-{
-    return new BaseMind(id, intId);
-}
+//BaseMind * MindFactory::newMind(const std::string & mind_id, const std::string & entity_id) const
+//{
+//    return new BaseMind(mind_id, entity_id);
+//}

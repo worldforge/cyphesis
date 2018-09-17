@@ -276,10 +276,10 @@ void ExternalMind::GetOperation(const Operation& op, OpVector& res)
             }
             Atlas::Objects::Operation::Info info;
             info->setArgs1(o);
-            info->setTo(m_entity.getId());
             if (!op->isDefaultSerialno()) {
                 info->setRefno(op->getSerialno());
             }
+
             res.push_back(info);
         }
     }

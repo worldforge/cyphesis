@@ -51,7 +51,7 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
 {
     assert(entity != nullptr);
     assert(!entity->getId().empty());
-    assert(entity->getType() != nullptr);
+    //assert(entity->getType() != nullptr);
 
     debug(std::cout << "MemMap::addEntity " << entity->describeEntity() << " " << entity->getId()
                     << std::endl << std::flush;);

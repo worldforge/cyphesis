@@ -19,19 +19,24 @@
 #define AICLIENT_POSSESSIONACCOUNT_H_
 
 #include "common/Router.h"
+#include "rulesets/BaseMind.h"
 
 #include <memory>
 #include <unordered_set>
 #include <functional>
+#include <unordered_map>
 
 class MindKit;
+
 class MindRegistry;
+
 class TypeNode;
 
-class PossessionAccount: public Router
+class PossessionAccount : public Router
 {
     public:
-        PossessionAccount(const std::string& id, long intId, MindRegistry& locatedEntityRegistry, const MindKit& mindFactory);
+        PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory);
+
         ~PossessionAccount() override = default;
 
         /**
@@ -39,25 +44,34 @@ class PossessionAccount: public Router
          */
         void enablePossession(OpVector& res);
 
-        void operation(const Operation & op, OpVector & res) override;
-        void externalOperation(const Operation & op, Link &) override;
+        void operation(const Operation& op, OpVector& res) override;
+
+        void externalOperation(const Operation& op, Link&) override;
+
+        const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const {
+            return m_minds;
+        };
 
     protected:
-        MindRegistry& mLocatedEntityRegistry;
+        std::unordered_map<std::string, Ref<BaseMind>> m_minds;
+        std::unordered_map<std::string, Ref<BaseMind>> m_entitiesWithMinds;
+
         const MindKit& m_mindFactory;
 
         int m_serialNoCounter;
 
         std::unordered_set<long> m_possessionRefNumbers;
-        std::map<long, std::function<void(const Operation &, OpVector &)>> m_callbacks;
+        std::map<long, std::function<void(const Operation&, OpVector&)>> m_callbacks;
 
-        void PossessOperation(const Operation & op, OpVector & res);
+        void PossessOperation(const Operation& op, OpVector& res);
 
         void takePossession(OpVector& res, const std::string& possessEntityId, const std::string& possessKey);
-        void createMind(const Operation & op, OpVector & res);
-        void createMindInstance(const Operation & op, OpVector & res, const std::string& entityId, const TypeNode* type, const Atlas::Objects::Entity::RootEntity& ent) ;
 
-        void registerOpCallback(std::function<void(const Operation &, OpVector &)> callback);
+        void createMind(const Operation& op, OpVector& res);
+
+        void createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId);
+
+        void registerOpCallback(std::function<void(const Operation&, OpVector&)> callback);
 
 };
 

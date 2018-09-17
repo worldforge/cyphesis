@@ -28,17 +28,12 @@ Py::Object wrapLocatedEntity(Ref<LocatedEntity> le)
         return boost::any_cast<Py::Object>(le->m_scriptEntity);
     } else {
         Py::Object wrapper;
-        auto baseMind = dynamic_cast<BaseMind*>(le.get());
-        if (baseMind) {
-            wrapper = WrapperBase<Ref<BaseMind>, CyPy_BaseMind>::wrap(baseMind);
+        auto memEntity = dynamic_cast<MemEntity*>(le.get());
+        if (memEntity) {
+            wrapper = WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(memEntity);
         } else {
-            auto memEntity = dynamic_cast<MemEntity*>(le.get());
-            if (memEntity) {
-                wrapper = WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(memEntity);
-            } else {
-                auto entity = dynamic_cast<Entity*>(le.get());
-                wrapper = WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(entity);
-            }
+            auto entity = dynamic_cast<Entity*>(le.get());
+            wrapper = WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(entity);
         }
 
         le->m_scriptEntity = boost::any(wrapper);
@@ -60,8 +55,7 @@ LocatedEntity& CyPy_LocatedEntity::value(const Py::Object& object)
     if (CyPy_MemEntity::check(object)) {
         return *CyPy_MemEntity::value(object);
     }
-    return *CyPy_BaseMind::value(object);
-
+    throw std::invalid_argument("Supplied value is not a LocatedEntity");
 }
 
 bool CyPy_LocatedEntity::check(const Py::Object& object)

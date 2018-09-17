@@ -51,12 +51,12 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-PossessionAccount::PossessionAccount(const std::string& id, long intId, MindRegistry& locatedEntityRegistry, const MindKit& mindFactory) :
-        Router(id, intId),
-        mLocatedEntityRegistry(locatedEntityRegistry),
-        m_mindFactory(mindFactory),
-        m_serialNoCounter(1)
+PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory) :
+    Router(id, intId),
+    m_mindFactory(mindFactory),
+    m_serialNoCounter(1)
 {
+    assert(m_mindFactory.m_scriptFactory);
 }
 
 
@@ -77,50 +77,62 @@ void PossessionAccount::enablePossession(OpVector& res)
     res.push_back(set);
 }
 
-void PossessionAccount::operation(const Operation & op, OpVector & res)
+void PossessionAccount::operation(const Operation& op, OpVector& res)
 {
     if (!op->isDefaultRefno()) {
         auto I = m_callbacks.find(op->getRefno());
         if (I != m_callbacks.end()) {
             I->second(op, res);
             m_callbacks.erase(I);
-        }
-    } else {
-        if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
-            PossessOperation(op, res);
-        } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
-            //Ignore appearance ops, since they just signal other accounts being connected
-        } else if (op->getClassNo() == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-            //Ignore disappearance ops, since they just signal other accounts being disconnected
-        } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-            //Ignore info ops, since they just signal other accounts doing things
+            return;
         } else {
-            log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParent()));
+            log(WARNING, String::compose("Got %1 op with refno %2, but there's no callback registered for that refno.", op->getParent(), op->getRefno()));
         }
     }
 
+    if (!op->isDefaultTo()) {
+        auto I = m_minds.find(op->getTo());
+        if (I != m_minds.end()) {
+            I->second->operation(op, res);
+            return;
+        }
 
-    if (!op->isDefaultRefno() && m_possessionRefNumbers.find(op->getRefno()) != m_possessionRefNumbers.end()) {
-        m_possessionRefNumbers.erase(op->getRefno());
-        createMind(op, res);
+        I = m_entitiesWithMinds.find(op->getTo());
+        if (I != m_entitiesWithMinds.end()) {
+            I->second->operation(op, res);
+            return;
+        }
+
+    }
+
+    if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
+        PossessOperation(op, res);
+    } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
+        //Ignore appearance ops, since they just signal other accounts being connected
+    } else if (op->getClassNo() == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
+        //Ignore disappearance ops, since they just signal other accounts being disconnected
+    } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+        //Send info ops on to all minds
+        for (auto& entry : m_minds) {
+            entry.second->operation(op, res);
+        }
     } else {
-
-
+        log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParent()));
     }
 }
 
-void PossessionAccount::externalOperation(const Operation & op, Link &)
+void PossessionAccount::externalOperation(const Operation& op, Link&)
 {
 
 }
 
-void PossessionAccount::PossessOperation(const Operation& op, OpVector & res)
+void PossessionAccount::PossessOperation(const Operation& op, OpVector& res)
 {
     debug(std::cout << "Got possession request." << std::endl;);
 
     auto args = op->getArgs();
     if (!args.empty()) {
-        const Root & arg = args.front();
+        const Root& arg = args.front();
 
         Element possessKeyElement;
         if (arg->copyAttr("possess_key", possessKeyElement) == 0 && possessKeyElement.isString()) {
@@ -149,9 +161,6 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
     possess->setSerialno(m_serialNoCounter++);
 
     m_callbacks[possess->getSerialno()] = [this](const Operation& op, OpVector& res) {
-//        std::cout << "PossessionAccount::createMind {" << std::endl;
-//        debug_dump(op, std::cout);
-//        std::cout << "}" << std::endl << std::flush;
 
         if (op->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
             log(ERROR, "Malformed possession response: not an info.");
@@ -187,92 +196,48 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
 
         auto entityId = I->second.String();
 
-        mLocatedEntityRegistry.addPendingMind(entityId, ent->getId(), res);
-
-//        //Create an entity, but do not "start" it yet. We need to fetch the type first.
-//        auto mind = m_mindFactory.newMind(entityId, std::stol(entityId));
-//        mind->setMindId(ent->getId());
-//
-//        mLocatedEntityRegistry.addLocatedEntity(mind);
-//
-//        mind->setup(res);
+        createMindInstance(res, ent->getId(), entityId);
 
     };
 
     res.push_back(possess);
 }
 
-void PossessionAccount::createMind(const Operation & op, OpVector & res)
+void PossessionAccount::createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId)
 {
+    log(INFO, String::compose("Creating mind instance for entity id %1 with mind id %2.", entityId, mindId));
+    Ref<BaseMind> mind = m_mindFactory.newMind(mindId, entityId);
+    m_minds.emplace(mindId, mind);
+    m_entitiesWithMinds.emplace(entityId, mind);
 
-    std::cout << "PossessionAccount::createMind {" << std::endl;
-    debug_dump(op, std::cout);
-    std::cout << "}" << std::endl << std::flush;
+    m_mindFactory.m_scriptFactory->addScript(mind.get());
 
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "no args character create/take response");
-        return;
-    }
-
-    RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(args.front());
-    if (!ent.isValid()) {
-        log(ERROR, "malformed character create/take response");
-        return;
-    }
-
-    if (ent->isDefaultParent()) {
-        log(ERROR, "malformed character create/take response");
-        return;
-    }
-
-
-
-    std::string entityId = ent->getId();
-    std::string entityType = ent->getParent();
-
-    auto type = Inheritance::instance().getType(entityType);
-    if (!type) {
-
-    } else {
-        createMindInstance(op, res, entityId, type, ent);
-    }
-
-}
-
-void PossessionAccount::createMindInstance(const Operation & op, OpVector & res, const std::string& entityId, const TypeNode* type, const RootEntity& ent) {
-    debug(std::cout << String::compose("Got info on account, creating mind for entity with id %1 of type %2.", entityId, type->name()) << std::endl;);
-    log(INFO, String::compose("Creating mind for entity with id %1 of type '%2'. Name '%3'.", entityId, type->name(), ent->getName()));
-    BaseMind* mind = m_mindFactory.newMind(entityId, integerId(entityId));
-    mLocatedEntityRegistry.addLocatedEntity(mind);
-    mind->setType(type);
-
-    if (m_mindFactory.m_scriptFactory != nullptr) {
-        debug(std::cout << "Adding script to entity." << std::endl;);
-        m_mindFactory.m_scriptFactory->addScript(mind);
-    }
-
-    OpVector mindRes;
-
-    //Send the Sight operation we just got on to the mind, since it contains info about the entity.
-    mind->operation(op, mindRes);
-
-    //Also send a "Setup" op to the mind, which will trigger any setup hooks.
-    Atlas::Objects::Operation::Setup s;
-    Anonymous setup_arg;
-    setup_arg->setName("mind");
-    s->setTo(ent->getId());
-    s->setArgs1(setup_arg);
-    mind->operation(s, mindRes);
-
-    //Mark all resulting ops as coming from the mind.
-    for (auto& resOp : mindRes) {
-        resOp->setFrom(entityId);
-        res.push_back(resOp);
-    }
-
-    //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
-    Look l;
-    l->setFrom(entityId);
-    res.push_back(l);
+    mind->init(res);
+//
+//
+//
+//
+//    OpVector mindRes;
+//
+//    //Send the Sight operation we just got on to the mind, since it contains info about the entity.
+//    mind->operation(op, mindRes);
+//
+//    //Also send a "Setup" op to the mind, which will trigger any setup hooks.
+//    Atlas::Objects::Operation::Setup s;
+//    Anonymous setup_arg;
+//    setup_arg->setName("mind");
+//    s->setTo(ent->getId());
+//    s->setArgs1(setup_arg);
+//    mind->operation(s, mindRes);
+//
+//    //Mark all resulting ops as coming from the mind.
+//    for (auto& resOp : mindRes) {
+//        resOp->setFrom(entityId);
+//        res.push_back(resOp);
+//    }
+//
+//    //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
+//    Look l;
+//    l->setFrom(entityId);
+//    res.push_back(l);
 }

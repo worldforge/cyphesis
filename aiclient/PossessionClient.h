@@ -21,7 +21,6 @@
 
 #include "BaseClient.h"
 #include "MindRegistry.h"
-#include "PendingMind.h"
 #include "rulesets/BaseMind.h"
 #include "common/OperationsDispatcher.h"
 #include "common/OperationsDispatcher_impl.h"
@@ -35,7 +34,7 @@ class Inheritance;
 /**
  * Manages possession requests from the server and spawns new AI clients.
  */
-class PossessionClient: public BaseClient, public MindRegistry
+class PossessionClient: public BaseClient
 {
     public:
         explicit PossessionClient(MindKit& mindFactory);
@@ -49,17 +48,7 @@ class PossessionClient: public BaseClient, public MindRegistry
 
         void createAccount(const std::string& accountId);
 
-        void addLocatedEntity(Ref<BaseMind> mind) override;
-
-        void removeLocatedEntity(Ref<BaseMind> mind) override;
-
-        void addPendingMind(std::string entityId, std::string mindId, OpVector& res) override;
-
-        void removePendingMind(std::string mindId) override;
-
-        const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const {
-            return m_minds;
-        };
+        const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const;
 
     protected:
 
@@ -73,10 +62,6 @@ class PossessionClient: public BaseClient, public MindRegistry
         PossessionAccount* m_account;
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
-
-        std::unordered_map<std::string, Ref<BaseMind>> m_minds;
-
-        std::unordered_map<std::string, PendingMind> m_pendingMinds;
 
         std::unique_ptr<Inheritance> m_inheritance;
 

@@ -69,20 +69,10 @@ void PossessionClient::markQueueAsClean()
     m_operationsDispatcher.markQueueAsClean();
 }
 
-void PossessionClient::addLocatedEntity(Ref<BaseMind> entity)
-{
-    m_minds.insert(std::make_pair(entity->getMindId(), std::move(entity)));
-}
-
-void PossessionClient::removeLocatedEntity(Ref<BaseMind> entity)
-{
-    m_minds.erase(entity->getMindId());
-}
-
 void PossessionClient::createAccount(const std::string& accountId)
 {
     log(INFO, "Creating possession account on server.");
-    m_account = new PossessionAccount(accountId, integerId(accountId), *this, m_mindFactory);
+    m_account = new PossessionAccount(accountId, integerId(accountId), m_mindFactory);
     OpVector res;
     m_account->enablePossession(res);
     for (auto& op : res) {
@@ -105,9 +95,6 @@ void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> lo
                 send(resOp);
             }
         }
-        if (locatedEntity->isDestroyed()) {
-            removeLocatedEntity(std::move(locatedEntity));
-        }
     }
 }
 
@@ -119,53 +106,56 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
         std::cout << "}" << std::endl << std::flush;
     }
 
-    if (op->isDefaultTo() || op->getTo() == m_account->getId()) {
-        OpVector accountRes;
-        m_account->operation(op, accountRes);
-        for (auto& resOp : accountRes) {
-            //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
-            if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-                auto I = m_minds.find(resOp->getFrom());
-                if (I != m_minds.end()) {
-                    resOp->setTo(resOp->getFrom());
-                    m_operationsDispatcher.addOperationToQueue(resOp, I->second);
-                }
-            } else {
-                res.push_back(resOp);
+    OpVector accountRes;
+    m_account->operation(op, accountRes);
+    for (auto& resOp : accountRes) {
+        //Any op with both "from" and "to" set should be re-sent.
+        if ((!resOp->isDefaultTo() && !resOp->isDefaultFrom())) {
+            auto& minds = getMinds();
+            auto I = minds.find(resOp->getTo());
+            if (I != minds.end()) {
+                m_operationsDispatcher.addOperationToQueue(resOp, I->second);
             }
-        }
-    } else {
-        auto mindI = m_minds.find(op->getTo());
-        if (mindI != m_minds.end()) {
-            OpVector mindRes;
-            auto mind = mindI->second;
-            mind->operation(op, mindRes);
-            for (auto& resOp : mindRes) {
-                resOp->setFrom(mind->getId());
-                //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
-                if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-                    resOp->setTo(mind->getId());
-                    m_operationsDispatcher.addOperationToQueue(resOp, mind);
-                } else {
-                    res.push_back(resOp);
-                }
-            }
-
-            if (mind->isDestroyed()) {
-                removeLocatedEntity(mind);
-            }
-
         } else {
-            auto pendingMindI = m_pendingMinds.find(op->getTo());
-            if (pendingMindI != m_pendingMinds.end()) {
-                pendingMindI->second.operation(op, res);
-            } else if (op->getTo() == m_account->getId()){
-                m_account->operation(op, res);
-            } else {
-                log(WARNING, String::compose("Got %1 operation with unknown 'to' (%2).", op->getParent(), op->getTo()));
-            }
+            res.push_back(resOp);
         }
     }
+
+//
+//
+//    if (op->isDefaultTo() || op->getTo() == m_account->getId()) {
+//    } else {
+//        auto mindI = m_minds.find(op->getTo());
+//        if (mindI != m_minds.end()) {
+//            OpVector mindRes;
+//            auto mind = mindI->second;
+//            mind->operation(op, mindRes);
+//            for (auto& resOp : mindRes) {
+//                resOp->setFrom(mind->getId());
+//                //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
+//                if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+//                    resOp->setTo(mind->getId());
+//                    m_operationsDispatcher.addOperationToQueue(resOp, mind);
+//                } else {
+//                    res.push_back(resOp);
+//                }
+//            }
+//
+//            if (mind->isDestroyed()) {
+//                removeLocatedEntity(mind);
+//            }
+//
+//        } else {
+//            auto pendingMindI = m_pendingMinds.find(op->getTo());
+//            if (pendingMindI != m_pendingMinds.end()) {
+//                pendingMindI->second.operation(op, res);
+//            } else if (op->getTo() == m_account->getId()){
+//                m_account->operation(op, res);
+//            } else {
+//                log(WARNING, String::compose("Got %1 operation with unknown 'to' (%2).", op->getParent(), op->getTo()));
+//            }
+//        }
+//    }
 
     if (debug_flag) {
         for (auto resOp : res) {
@@ -184,14 +174,7 @@ double PossessionClient::getTime() const
     return (double) (time.seconds()) + (double) time.microseconds() / 1000000.;
 }
 
-void PossessionClient::addPendingMind(std::string entityId, std::string mindId, OpVector& res)
-{
-    auto result = m_pendingMinds.emplace(entityId, PendingMind(entityId, mindId, *this, m_mindFactory));
-    result.first->second.init(res);
 
-}
-
-void PossessionClient::removePendingMind(std::string mindId)
-{
-    m_pendingMinds.erase(mindId);
-}
+const std::unordered_map<std::string, Ref<BaseMind>>& PossessionClient::getMinds() const {
+    return m_account->getMinds();
+};

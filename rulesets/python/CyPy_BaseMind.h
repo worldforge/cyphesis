@@ -21,9 +21,9 @@
 
 
 #include "rulesets/BaseMind.h"
-#include "CyPy_LocatedEntity_impl.h"
+#include "WrapperBase.h"
 
-class CyPy_BaseMind : public CyPy_LocatedEntityBase<Ref<BaseMind>, CyPy_BaseMind>
+class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 {
     public:
         CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);

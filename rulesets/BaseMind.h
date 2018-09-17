@@ -30,8 +30,15 @@
 /// handles most of the AI. The main purpose of this class is to handle
 /// operations and interface to the MemMap used as the core of
 /// the entity's memory.
-class BaseMind : public MemEntity {
+class BaseMind : public Router {
   protected:
+
+    int m_refCount;
+
+    std::string m_entityId;
+
+    Flags m_flags;
+
     /// \brief Memory map of world entities this mind knows about
     MemMap m_map;
     /// \brief World time as far as this mind is aware
@@ -42,16 +49,25 @@ class BaseMind : public MemEntity {
 
     std::unique_ptr<TypeResolver> m_typeResolver;
 
-    std::string m_mindId;
 
     std::map<long, std::function<void(const Operation &, OpVector &)>> m_callbacks;
 
     long m_serialNoCounter;
 
+    std::unique_ptr<Script> m_script;
+
+    Ref<MemEntity> m_ownEntity;
+
+
+
+    virtual void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity);
+
     public:
-    BaseMind(const std::string & id, long intId);
+    BaseMind(const std::string & mindId, const std::string & entityId);
 
     ~BaseMind() override;
+
+    void init(OpVector& res);
 
     /// \brief Accessor for the memory map of world entities
     MemMap * getMap() { return &m_map; }
@@ -71,12 +87,9 @@ class BaseMind : public MemEntity {
     void sightMoveOperation(const Operation &, OpVector &);
     void sightSetOperation(const Operation &, OpVector &);
 
-    virtual void thinkSetOperation(const Operation & op, OpVector & res);
-    virtual void thinkDeleteOperation(const Operation & op, OpVector & res);
-    virtual void thinkGetOperation(const Operation & op, OpVector & res);
-    virtual void thinkLookOperation(const Operation & op, OpVector & res);
-
     void operation(const Operation &, OpVector &) override;
+
+    void externalOperation(const Operation & op, Link &) override;
 
     virtual void SightOperation(const Operation &, OpVector &);
     virtual void SoundOperation(const Operation &, OpVector &);
@@ -91,13 +104,23 @@ class BaseMind : public MemEntity {
 
     friend class BaseMindMapEntityintegration;
 
-    void setScript(Script * scrpt) override;
-
-    void setMindId(const std::string& mindId);
-
-    const std::string& getMindId() const;
+    void setScript(Script * scrpt);
 
     void setTypeResolver(std::unique_ptr<TypeResolver> typeResolver);
+
+    void incRef() {
+        ++m_refCount;
+    }
+
+    void decRef() {
+        if (--m_refCount == 0) {
+            delete this;
+        }
+        assert(m_refCount >= 0);
+    }
+
+    /// \brief Check if this entity is flagged as destroyed
+    bool isDestroyed() const { return m_flags.hasFlags(entity_destroyed); }
 };
 
 #endif // RULESETS_BASE_MIND_H

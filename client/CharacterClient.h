@@ -24,7 +24,7 @@
 class ClientConnection;
 
 /// \brief Class to implement a character entity in an admin client
-class CharacterClient : public BaseMind {
+class CharacterClient : public Router {
   protected:
     ClientConnection & m_connection;
 

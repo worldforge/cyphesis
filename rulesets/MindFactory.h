@@ -35,17 +35,17 @@ class MindKit {
 
     virtual ~MindKit() = 0;
 
-    virtual BaseMind * newMind(const std::string & id, long) const = 0;
+    virtual BaseMind * newMind(const std::string & mind_id, const std::string & entity_id) const = 0;
 };
 
 /// \brief Factory class for creating minds
 ///
 /// A mind consists of a C++ base class and an associated script object
-class MindFactory : public MindKit {
-  public:
-    ~MindFactory() override = default;
-
-    BaseMind * newMind(const std::string &, long) const override;
-};
+//class MindFactory : public MindKit {
+//  public:
+//    ~MindFactory() override = default;
+//
+//    BaseMind * newMind(const std::string & mind_id, const std::string & entity_id) const override;
+//};
 
 #endif // RULESETS_MIND_FACTORY_H

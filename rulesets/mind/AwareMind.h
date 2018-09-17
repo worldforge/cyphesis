@@ -33,15 +33,13 @@ class SharedTerrain;
 class AwareMind: public BaseMind, public MemMap::MapListener
 {
     public:
-        AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
+        AwareMind(const std::string & mind_id, const std::string & entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
 
         ~AwareMind() override;
 
         void entityAdded(const MemEntity& entity) override;
         void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation) override;
         void entityDeleted(const MemEntity& entity) override;
-
-        void setType(const TypeNode * t) override;
 
         void operation(const Operation & op, OpVector & res) override;
 
@@ -62,7 +60,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         AwarenessStore* mAwarenessStore;
         std::shared_ptr<Awareness> mAwareness;
-        Steering* mSteering;
+        std::unique_ptr<Steering> mSteering;
 
         /**
          * @brief Difference in time between server time and local time.
@@ -73,7 +71,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
          */
         double mServerTimeDiff;
 
-        void onContainered(const Ref<LocatedEntity>& new_loc) override;
+        void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 
         void processMoveTick(const Operation & op, OpVector & res);
 

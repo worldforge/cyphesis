@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2013 Erik Ogenvik
+ Copyright (C) 2018 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -41,25 +42,25 @@
  * proxy mind about what it knows (i.e. thus given knowledge about recent events rather than just what's
  * just in the current vicinity).
  */
-class ProxyMind : public BaseMind
+class ProxyMind
 {
     public:
-        ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity);
+        ProxyMind(const std::string& id, long intId, LocatedEntity& ownerEntity);
 
-        ~ProxyMind() override = default;
+        ~ProxyMind() = default;
 
         /**
          * Gets all registered thoughts.
          * @return All registered thoughts.
          */
-        std::vector<Atlas::Objects::Root> getThoughts() const override;
+        std::vector<Atlas::Objects::Root> getThoughts() const;
 
         /**
          * Clear all registered thoughts.
          */
         void clearThoughts();
 
-        void operation(const Operation & op, OpVector & res) override;
+        void operation(const Operation& op, OpVector& res);
 
     private:
 
@@ -81,10 +82,15 @@ class ProxyMind : public BaseMind
          */
         std::vector<Atlas::Objects::Root> m_randomThoughts;
 
-        void thinkSetOperation(const Operation & op, OpVector & res) override;
-        void thinkDeleteOperation(const Operation & op, OpVector & res) override;
-        void thinkGetOperation(const Operation & op, OpVector & res) override;
-        void thinkLookOperation(const Operation & op, OpVector & res) override;
+        void thinkSetOperation(const Operation& op, OpVector& res);
+
+        void thinkDeleteOperation(const Operation& op, OpVector& res);
+
+        void thinkGetOperation(const Operation& op, OpVector& res);
+
+        void thinkLookOperation(const Operation& op, OpVector& res);
+
+        void ThinkOperation(const Operation& op, OpVector& res);
 
 };
 

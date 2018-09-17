@@ -35,13 +35,13 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-ProxyMind::ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity) :
-        BaseMind(id, intId), m_ownerEntity(ownerEntity)
+ProxyMind::ProxyMind(const std::string& id, long intId, LocatedEntity& ownerEntity) :
+    m_ownerEntity(ownerEntity)
 {
 
 }
 
-void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
+void ProxyMind::thinkSetOperation(const Operation& op, OpVector& res)
 {
     //If it's a Set op named "persistthoughts" it's coming from an AI client, and is meant
     //for persisting thoughts. We should remove all existing thoughts first.
@@ -49,7 +49,7 @@ void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
         m_randomThoughts.clear();
         m_thoughtsWithId.clear();
     }
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     for (const Root& arg : args) {
         if (arg->isDefaultId()) {
             m_randomThoughts.push_back(arg);
@@ -61,9 +61,9 @@ void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
     m_ownerEntity.onUpdated();
 }
 
-void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
+void ProxyMind::thinkDeleteOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         //No args means "delete all"
         m_thoughtsWithId.clear();
@@ -81,7 +81,7 @@ void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
     m_ownerEntity.onUpdated();
 }
 
-void ProxyMind::thinkGetOperation(const Operation & op, OpVector & res)
+void ProxyMind::thinkGetOperation(const Operation& op, OpVector& res)
 {
     Atlas::Objects::Operation::Think think;
     Atlas::Objects::Operation::Set set;
@@ -115,7 +115,7 @@ void ProxyMind::thinkGetOperation(const Operation & op, OpVector & res)
     res.push_back(think);
 }
 
-void ProxyMind::thinkLookOperation(const Operation & op, OpVector & res)
+void ProxyMind::thinkLookOperation(const Operation& op, OpVector& res)
 {
     Atlas::Objects::Operation::Think think;
     Atlas::Objects::Operation::Info info;
@@ -164,7 +164,7 @@ void ProxyMind::clearThoughts()
     m_thoughtsWithId.clear();
 }
 
-void ProxyMind::operation(const Operation & op, OpVector & res)
+void ProxyMind::operation(const Operation& op, OpVector& res)
 {
     //For proxy minds we're only interested in Think ops; all others are ignored.
     auto op_no = op->getClassNo();
@@ -174,3 +174,49 @@ void ProxyMind::operation(const Operation & op, OpVector & res)
 
 }
 
+void ProxyMind::ThinkOperation(const Operation& op, OpVector& res)
+{
+    //Get the contained op
+    debug_print("BaseMind::ThinkOperation(Think)");
+    const std::vector<Root>& args = op->getArgs();
+    if (args.empty()) {
+        debug_print(" no args!");
+        return;
+    }
+    const Root& arg = args.front();
+    Operation op2(Atlas::Objects::smart_dynamic_cast<Operation>(arg));
+    if (op2.isValid()) {
+        debug_print(" args is an op!");
+        std::string event_name("think_");
+        event_name += op2->getParent();
+
+        OpVector mres;
+
+        int op2ClassNo = op2->getClassNo();
+        switch (op2ClassNo) {
+            case Atlas::Objects::Operation::SET_NO:
+                thinkSetOperation(op2, mres);
+                break;
+            case Atlas::Objects::Operation::DELETE_NO:
+                thinkDeleteOperation(op2, mres);
+                break;
+            case Atlas::Objects::Operation::GET_NO:
+                thinkGetOperation(op2, mres);
+                break;
+            case Atlas::Objects::Operation::LOOK_NO:
+                thinkLookOperation(op2, mres);
+                break;
+            default:
+                log(WARNING, "Got invalid Think operation. We only support 'Set', 'Delete', 'Get' and 'Look'.");
+                break;
+        }
+
+        if (!mres.empty() && !op->isDefaultSerialno()) {
+            mres.front()->setRefno(op->getSerialno());
+        }
+        for (auto& resOp : mres) {
+            res.push_back(resOp);
+        }
+
+    }
+}

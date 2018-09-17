@@ -29,9 +29,9 @@ AwareMindFactory::AwareMindFactory()
 
 }
 
-BaseMind * AwareMindFactory::newMind(const std::string & id, long intId) const
+BaseMind * AwareMindFactory::newMind(const std::string & mind_id, const std::string & entity_id) const
 {
-    return new AwareMind(id, intId, *mSharedTerrain, *mAwarenessStoreProvider);
+    return new AwareMind(mind_id, entity_id, *mSharedTerrain, *mAwarenessStoreProvider);
 }
 
 

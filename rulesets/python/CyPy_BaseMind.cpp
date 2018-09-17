@@ -26,21 +26,29 @@
 
 #include "navigation/Steering.h"
 
+
+CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
+    : WrapperBase(self, value)
+{
+
+}
+
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : CyPy_LocatedEntityBase(self, args, kwds)
+    : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
 
     auto arg = args.front();
-    if (arg.isString()) {
-        auto id = verifyString(args.front());
-
-        long intId = integerId(id);
-        if (intId == -1L) {
-            throw Py::TypeError("Mind() requires string/int ID");
-        }
-        m_value = new BaseMind(id, intId);
-    } else if (CyPy_BaseMind::check(arg)) {
+//    if (arg.isString()) {
+//        auto id = verifyString(args.front());
+//
+//        long intId = integerId(id);
+//        if (intId == -1L) {
+//            throw Py::TypeError("Mind() requires string/int ID");
+//        }
+//        m_value = new BaseMind(id, intId);
+//    } else
+    if (CyPy_BaseMind::check(arg)) {
         m_value = CyPy_BaseMind::value(arg);
     } else {
         throw Py::TypeError("Mind() requires string ID or Mind");
@@ -56,10 +64,10 @@ void CyPy_BaseMind::init_type()
 
     behaviors().supportRichCompare();
 
-    PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
-    PYCXX_ADD_VARARGS_METHOD(can_reach, can_reach, "");
-    PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
-    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
+//    PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
+//    PYCXX_ADD_VARARGS_METHOD(can_reach, can_reach, "");
+//    PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
+//    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
     //TODO: split into a CyPy_Steering class and rename according to PEP8
     PYCXX_ADD_VARARGS_METHOD(setDestination, setDestination, "");
@@ -70,11 +78,6 @@ void CyPy_BaseMind::init_type()
     behaviors().readyType();
 }
 
-CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
-    : CyPy_LocatedEntityBase(self, std::move(value))
-{
-
-}
 
 Py::Object CyPy_BaseMind::refreshPath()
 {
@@ -89,42 +92,42 @@ Py::Object CyPy_BaseMind::refreshPath()
 
 Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
 {
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-
-    //FIXME: provide a "stopSteering" method instead
-    if (args.length() == 0) {
-        awareMind->getSteering().stopSteering();
-
-    } else {
-        args.verify_length(2, 3);
-
-        auto destination = verifyObject<CyPy_Point3D>(args[0]);
-        float radius = verifyNumeric(args[1]);
-
-        if (!destination.isValid()) {
-            throw Py::RuntimeError("Destination must be a valid location.");
-        }
-
-        long entityId;
-        //If no entity id was specified, the location is relative to the parent entity.
-        if (args.size() == 3) {
-            auto entityIdString = verifyString(args[2]);
-            entityId = std::stol(entityIdString);
-        } else {
-            if (awareMind->m_location.m_parent) {
-                entityId = awareMind->m_location.m_parent->getIntId();
-            } else {
-                throw Py::RuntimeError("Mind has no location.");
-            }
-        }
-
-        awareMind->getSteering().setDestination(entityId, destination, radius, awareMind->getCurrentServerTime());
-        awareMind->getSteering().startSteering();
-    }
-
+//    auto awareMind = dynamic_cast<AwareMind*>(m_value);
+//    if (!awareMind) {
+//        throw Py::TypeError("Not an AwareMind");
+//    }
+//
+//    //FIXME: provide a "stopSteering" method instead
+//    if (args.length() == 0) {
+//        awareMind->getSteering().stopSteering();
+//
+//    } else {
+//        args.verify_length(2, 3);
+//
+//        auto destination = verifyObject<CyPy_Point3D>(args[0]);
+//        float radius = verifyNumeric(args[1]);
+//
+//        if (!destination.isValid()) {
+//            throw Py::RuntimeError("Destination must be a valid location.");
+//        }
+//
+//        long entityId;
+//        //If no entity id was specified, the location is relative to the parent entity.
+//        if (args.size() == 3) {
+//            auto entityIdString = verifyString(args[2]);
+//            entityId = std::stol(entityIdString);
+//        } else {
+//            if (awareMind->m_location.m_parent) {
+//                entityId = awareMind->m_location.m_parent->getIntId();
+//            } else {
+//                throw Py::RuntimeError("Mind has no location.");
+//            }
+//        }
+//
+//        awareMind->getSteering().setDestination(entityId, destination, radius, awareMind->getCurrentServerTime());
+//        awareMind->getSteering().startSteering();
+//    }
+//
     return Py::None();
 
 }
@@ -172,7 +175,7 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
         return CyPy_WorldTime::wrap(WorldTimeWrapper(decltype(WorldTimeWrapper::m_value){m_value}));
     }
 
-    return CyPy_LocatedEntityBase::getattro(name);
+    return PythonExtensionBase::getattro(name);
 }
 
 int CyPy_BaseMind::setattro(const Py::String& name, const Py::Object& attr)
@@ -192,6 +195,6 @@ int CyPy_BaseMind::setattro(const Py::String& name, const Py::Object& attr)
         throw Py::AttributeError("Setting map on mind is forbidden");
     }
 
-    return CyPy_LocatedEntityBase::setattro(name, attr);
+    return PythonExtensionBase::setattro(name, attr);
 }
 
