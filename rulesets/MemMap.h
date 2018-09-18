@@ -40,13 +40,11 @@ class TypeNode;
 class TypeResolver;
 
 typedef std::vector<LocatedEntity *> EntityVector;
-typedef std::map<long, Ref<MemEntity>> MemEntityDict;
 
 /// \brief Class to handle the basic entity memory of a mind
 class MemMap {
   public:
-    class MapListener {
-        public:
+    struct MapListener {
         virtual ~MapListener() = default;
 
         virtual void entityAdded(const MemEntity& entity) = 0;
@@ -57,9 +55,12 @@ class MemMap {
   protected:
     friend class BaseMind;
 
+    typedef std::map<long, Ref<MemEntity>> MemEntityDict;
+
     std::map<std::string, std::set<Ref<MemEntity>>> m_unresolvedEntities;
 
     MemEntityDict m_entities;
+
     MemEntityDict::iterator m_checkIterator;
     std::list<std::string> m_additionsById;
     std::vector<std::string> m_addHooks;
@@ -69,13 +70,15 @@ class MemMap {
 
     MapListener* m_listener;
 
-    TypeResolver* m_typeResolver;
+    TypeResolver& m_typeResolver;
 
     ///\brief a map that holds memories related to other entities.
     ///@key - ID of the entity to which we relate memories
     ///@value - Element of map type containing name of a memory as a key
     ///and the value of that memory (i.e. disposition: 25)
     std::map<std::string, std::map<std::string, Atlas::Message::Element>> m_entityRelatedMemory;
+
+    OpVector m_typeResolverOps;
 
     void readEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp);
     void updateEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp);
@@ -84,10 +87,11 @@ class MemMap {
     void addContents(const Atlas::Objects::Entity::RootEntity &);
     Ref<MemEntity> addId(const std::string &, long);
 
-    void resolveType(const std::string& type);
   public:
 
-    explicit MemMap();
+    explicit MemMap(TypeResolver& typeResolver);
+
+    std::vector<Ref<MemEntity>> resolveEntitiesForType(TypeNode* typeNode);
 
     Ref<MemEntity> addEntity(const Ref<MemEntity>&);
     void setScript(Script* script);
@@ -112,7 +116,7 @@ class MemMap {
     ///@param id - the id of entity to which we relate the memory
     ///@param memory - the name of the memory (i.e. "disposition")
     ///@param val - value of the memory in Element (i.e. 25)
-        void addEntityMemory(const std::string& id,
+    void addEntityMemory(const std::string& id,
                              const std::string& memory,
                              const Atlas::Message::Element& value);
 
@@ -120,12 +124,12 @@ class MemMap {
     ///@param id - the id of entity to which we relate the memory
     ///@param memory - the name of the memory (i.e. "disposition")
     ///@param val - the Element to record the value in.
-        void recallEntityMemory(const std::string& id,
+    void recallEntityMemory(const std::string& id,
                                 const std::string& memory,
                                 Atlas::Message::Element& value) const;
 
     ///\brief m_entityRelatedMemory accessor
-        const std::map<std::string, std::map<std::string, Atlas::Message::Element>>& getEntityRelatedMemory() const;
+    const std::map<std::string, std::map<std::string, Atlas::Message::Element>>& getEntityRelatedMemory() const;
 
     EntityVector findByType(const std::string & what);
     EntityVector findByLocation(const Location & where,
@@ -140,6 +144,8 @@ class MemMap {
     std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
 
     void setListener(MapListener* listener);
+
+    void collectTypeResolverOps(OpVector& res);
 
     friend class MemMaptest;
     friend class BaseMindMapEntityintegration;

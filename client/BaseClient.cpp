@@ -40,13 +40,11 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-BaseClient::BaseClient() : m_character(0)
+BaseClient::BaseClient() : m_character(nullptr)
 {
 }
 
-BaseClient::~BaseClient()
-{
-}
+BaseClient::~BaseClient() = default;
 
 /// \brief Send an operation to the server
 void BaseClient::send(const Operation & op)
@@ -74,7 +72,7 @@ Root BaseClient::createSystemAccount()
         std::cerr << "ERROR: Failed to log into server: \""
                   << m_connection.errorMessage() << "\""
                   << std::endl << std::flush;
-        return Root(0);
+        return Root(nullptr);
     }
 
     const Root & ent = m_connection.getInfoReply();
@@ -120,7 +118,7 @@ Root BaseClient::createAccount(const std::string & name,
         if (m_connection.wait() != 0) {
             std::cerr << "ERROR: Failed to log into server" << std::endl
                       << std::flush;
-            return Root(0);
+            return Root(nullptr);
         }
     }
 
@@ -162,15 +160,35 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
         return nullptr;
     }
 
+
     RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
 
-    if(!ent.isValid()) {
-        return 0;
+    if (!ent.isValid()) {
+        log(ERROR, "malformed character possession response");
+        return nullptr;
     }
+
+    if (!ent->hasAttr("entity")) {
+        log(ERROR, "malformed character possession response");
+        return nullptr;
+    }
+    auto entityElem = ent->getAttr("entity");
+    if (!entityElem.isMap()) {
+        log(ERROR, "malformed character possession response");
+        return nullptr;
+    }
+
+    auto I = entityElem.Map().find("id");
+    if (I == entityElem.Map().end() || !I->second.isString()) {
+        log(ERROR, "malformed character possession response");
+        return nullptr;
+    }
+
+    auto entityId = I->second.String();
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, "Character created, but has no id");
-        return 0;
+        return nullptr;
     }
 
     const std::string & id = ent->getId();
@@ -181,16 +199,22 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
         log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id));
     }
 
-    CreatorClient * obj = new CreatorClient(id, intId, m_connection);
-    obj->merge(ent->asMessage());
+    auto* obj = new CreatorClient(ent->getId(), entityId, m_connection);
+
+    Ref<MemEntity> ownEntity = new MemEntity(id, intId);
+
+    ownEntity->merge(ent->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to
     // set it to.
-    obj->m_location.readFromEntity(ent);
+    ownEntity->m_location.readFromEntity(ent);
+    OpVector res; //Ignored
+    obj->setOwnEntity(res, std::move(ownEntity));
+
     // obj = EntityFactory::instance().newThing(type, body, tmp);
     // FIXME Do we need to create a local entity for this as is done in
     // the python version? If so, do we need to keep track of a full world
     // model here, or just in the minds (when we become an AI client
-    if (m_character == 0) {
+    if (m_character == nullptr) {
         m_character = obj;
     }
     return obj;

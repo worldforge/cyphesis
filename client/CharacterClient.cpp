@@ -36,9 +36,9 @@ static const bool debug_flag = false;
 /// @param intId Integer identifier
 /// @param name The name of the avatar used by this remote agent
 /// @param c The network connection to the server used for communication
-CharacterClient::CharacterClient(const std::string & id, long intId,
+CharacterClient::CharacterClient(const std::string & mindId, const std::string & entityId,
                                  ClientConnection & c) :
-                 BaseMind(id, intId), m_connection(c)
+                 BaseMind(mindId, entityId), m_connection(c)
 {
 }
 

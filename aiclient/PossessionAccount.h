@@ -60,18 +60,13 @@ class PossessionAccount : public Router
 
         int m_serialNoCounter;
 
-        std::unordered_set<long> m_possessionRefNumbers;
         std::map<long, std::function<void(const Operation&, OpVector&)>> m_callbacks;
 
         void PossessOperation(const Operation& op, OpVector& res);
 
         void takePossession(OpVector& res, const std::string& possessEntityId, const std::string& possessKey);
 
-        void createMind(const Operation& op, OpVector& res);
-
         void createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId);
-
-        void registerOpCallback(std::function<void(const Operation&, OpVector&)> callback);
 
 };
 

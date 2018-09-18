@@ -33,9 +33,9 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-CreatorClient::CreatorClient(const std::string & id, long intId,
+CreatorClient::CreatorClient(const std::string & mindId, const std::string & entityId,
                              ClientConnection &c) :
-               CharacterClient(id, intId, c)
+               CharacterClient(mindId, entityId, c)
 {
 }
 
@@ -59,7 +59,7 @@ LocatedEntity * CreatorClient::handleMakeResponse(const RootOperation & op,
         return nullptr;
     }
     const std::string & created_id = created->getId();
-    if (created->getParent() == "") {
+    if (created->getParent().empty()) {
         std::cerr << "Created entity " << created_id << " has no type"
                   << std::endl << std::flush;
         return nullptr;

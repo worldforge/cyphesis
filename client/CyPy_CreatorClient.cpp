@@ -35,15 +35,12 @@ CyPy_CreatorClient::CyPy_CreatorClient(Py::PythonClassInstance* self, Py::Tuple&
 }
 
 CyPy_CreatorClient::CyPy_CreatorClient(Py::PythonClassInstance* self, Ref<CreatorClient> value)
-    : WrapperBase(self, std::move(value))
+    : WrapperBase(self, value)
 {
 
 }
 
-CyPy_CreatorClient::~CyPy_CreatorClient()
-{
-
-}
+CyPy_CreatorClient::~CyPy_CreatorClient() = default;
 
 void CyPy_CreatorClient::init_type()
 {
@@ -132,26 +129,26 @@ Py::Object CyPy_CreatorClient::getattro(const Py::String& name)
 //        PyErr_SetString(PyExc_AttributeError, name);
 //        return nullptr;
 //    }
-    if (nameStr == "type") {
-        if (m_value->getType()) {
-            return Py::String(m_value->getType()->name());
-        } else {
-            return Py::None();
-        }
-    }
-    if (nameStr == "map") {
-        return CyPy_MemMap::wrap(m_value->getMap());
-    }
-    if (nameStr == "location") {
-        return CyPy_Location::wrap(m_value->m_location);
-    }
+//    if (nameStr == "type") {
+//        if (m_value->getType()) {
+//            return Py::String(m_value->getType()->name());
+//        } else {
+//            return Py::None();
+//        }
+//    }
+//    if (nameStr == "map") {
+//        return CyPy_MemMap::wrap(m_value->getMap());
+//    }
+//    if (nameStr == "location") {
+//        return CyPy_Location::wrap(m_value->m_location);
+//    }
     if (nameStr == "time") {
         return CyPy_WorldTime::wrap(WorldTimeWrapper{m_value});
     }
-    Atlas::Message::Element attr;
-    if (m_value->getAttr(nameStr, attr) == 0) {
-        return CyPy_Element::wrap(std::move(attr));
-    }
+//    Atlas::Message::Element attr;
+//    if (m_value->getAttr(nameStr, attr) == 0) {
+//        return CyPy_Element::wrap(std::move(attr));
+//    }
     return PythonExtensionBase::getattro(name);
 }
 
@@ -163,8 +160,9 @@ int CyPy_CreatorClient::setattro(const Py::String& name, const Py::Object& attr)
         throw Py::AttributeError("map attribute forbidden");
     }
 
+    return PythonExtensionBase::setattro(name, attr);
 
-    m_value->setAttr(nameStr, CyPy_Element::asElement(attr));
-    return 0;
+//    m_value->setAttr(nameStr, CyPy_Element::asElement(attr));
+//    return 0;
 }
 

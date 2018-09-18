@@ -21,6 +21,7 @@
 #include "MemEntity.h"
 #include "BaseMind.h"
 #include "Script.h"
+#include "TypeResolver.h"
 
 #include "common/id.h"
 #include "common/debug.h"
@@ -51,7 +52,6 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
 {
     assert(entity != nullptr);
     assert(!entity->getId().empty());
-    //assert(entity->getType() != nullptr);
 
     debug(std::cout << "MemMap::addEntity " << entity->describeEntity() << " " << entity->getId()
                     << std::endl << std::flush;);
@@ -62,29 +62,24 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
     m_entities[entity->getIntId()] = entity;
     m_checkIterator = m_entities.find(next);
 
-    if (m_script) {
-        debug( std::cout << this << std::endl << std::flush;);
-        auto I = m_addHooks.begin();
-        auto Iend = m_addHooks.end();
-        for (; I != Iend; ++I) {
-            m_script->hook(*I, entity.get());
+    //Only signal if the type has been resolved, otherwise this will happen later when the entity obtains a type
+    if (entity->getType()) {
+        if (m_script) {
+            debug_print(this);
+            for (auto& hook : m_addHooks) {
+                m_script->hook(hook, entity.get());
+            }
         }
-    }
 
-    if (m_listener) {
-        m_listener->entityAdded(*entity);
+        if (m_listener) {
+            m_listener->entityAdded(*entity);
+        }
     }
 
     return entity;
 }
 
-void MemMap::resolveType(const std::string& type)
-{
-
-}
-
-
-void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity & ent, double timestamp)
+void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
@@ -94,13 +89,13 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity & ent, do
             entity->setType(type);
         } else {
             m_unresolvedEntities[parent].insert(entity);
-            resolveType(parent);
+            m_typeResolver.requestType(parent, m_typeResolverOps);
         }
     }
     entity->merge(ent->asMessage());
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         auto old_loc = entity->m_location.m_parent;
-        const std::string & new_loc_id = ent->getLoc();
+        const std::string& new_loc_id = ent->getLoc();
         // Has LOC been changed?
         if (!old_loc || new_loc_id != old_loc->getId()) {
             entity->m_location.m_parent = getAdd(new_loc_id);
@@ -121,31 +116,34 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity & ent, do
     addContents(ent);
 }
 
-void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity & ent, double timestamp)
+void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
 // Update contents of entity an Atlas message.
 {
     assert(entity != nullptr);
 
-    debug( std::cout << " got " << entity->describeEntity() << std::endl << std::flush;);
+    debug(std::cout << " got " << entity->describeEntity() << std::endl << std::flush;);
 
     auto old_loc = entity->m_location.m_parent;
     readEntity(entity, ent, timestamp);
 
-    if (m_script) {
-        auto K = m_updateHooks.begin();
-        auto Kend = m_updateHooks.end();
-        for (; K != Kend; ++K) {
-            m_script->hook(*K, entity.get());
+    //Only signal for those entities that have resolved types.
+    if (entity->getType()) {
+        if (m_script) {
+            auto K = m_updateHooks.begin();
+            auto Kend = m_updateHooks.end();
+            for (; K != Kend; ++K) {
+                m_script->hook(*K, entity.get());
+            }
         }
-    }
-    if (m_listener) {
-        m_listener->entityUpdated(*entity, ent, old_loc.get());
+        if (m_listener) {
+            m_listener->entityUpdated(*entity, ent, old_loc.get());
+        }
     }
 
 }
 
-Ref<MemEntity> MemMap::newEntity(const std::string & id, long int_id,
-                              const RootEntity & ent, double timestamp)
+Ref<MemEntity> MemMap::newEntity(const std::string& id, long int_id,
+                                 const RootEntity& ent, double timestamp)
 // Create a new entity from an Atlas message.
 {
     assert(m_entities.find(int_id) == m_entities.end());
@@ -157,14 +155,17 @@ Ref<MemEntity> MemMap::newEntity(const std::string & id, long int_id,
     return addEntity(entity);
 }
 
-MemMap::MemMap() : m_checkIterator(m_entities.begin()), m_listener(nullptr)
+MemMap::MemMap(TypeResolver& typeResolver)
+    : m_checkIterator(m_entities.begin()),
+      m_listener(nullptr),
+      m_typeResolver(typeResolver)
 {
 
 }
 
-void MemMap::sendLooks(OpVector & res)
+void MemMap::sendLooks(OpVector& res)
 {
-    debug( std::cout << "MemMap::sendLooks" << std::endl << std::flush;);
+    debug(std::cout << "MemMap::sendLooks" << std::endl << std::flush;);
     auto I = m_additionsById.begin();
     auto Iend = m_additionsById.end();
     for (; I != Iend; ++I) {
@@ -177,22 +178,22 @@ void MemMap::sendLooks(OpVector & res)
     m_additionsById.clear();
 }
 
-Ref<MemEntity> MemMap::addId(const std::string & id, long int_id)
+Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
 // Queue the ID of an entity we are interested in
 {
     assert(!id.empty());
     assert(m_entities.find(int_id) == m_entities.end());
 
-    debug( std::cout << "MemMap::add_id" << std::endl << std::flush;);
+    debug(std::cout << "MemMap::add_id" << std::endl << std::flush;);
     m_additionsById.push_back(id);
     Ref<MemEntity> entity = new MemEntity(id, int_id);
     return addEntity(entity);
 }
 
-void MemMap::del(const std::string & id)
+void MemMap::del(const std::string& id)
 // Delete an entity from memory
 {
-    debug( std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
+    debug(std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
 
     long int_id = integerId(id);
 
@@ -214,22 +215,27 @@ void MemMap::del(const std::string & id)
             m_checkIterator = m_entities.begin();
         }
 
-        if (m_script) {
-            for (auto& hook : m_deleteHooks) {
-                m_script->hook(hook, ent.get());
+        //Only signal for those entities that have resolved types.
+        if (ent->getType()) {
+            if (m_script) {
+                for (auto& hook : m_deleteHooks) {
+                    m_script->hook(hook, ent.get());
+                }
+            }
+
+            if (m_listener) {
+                m_listener->entityDeleted(*ent);
             }
         }
-
-        if (m_listener) {
-            m_listener->entityDeleted(*ent);
-        }
     }
+
+    m_unresolvedEntities.erase(id);
 }
 
-Ref<MemEntity> MemMap::get(const std::string & id) const
+Ref<MemEntity> MemMap::get(const std::string& id) const
 // Get an entity from memory
 {
-    debug( std::cout << "MemMap::get" << std::endl << std::flush;);
+    debug(std::cout << "MemMap::get" << std::endl << std::flush;);
     if (id.empty()) {
         // This shouldn't really occur, and shouldn't be a problem
         log(ERROR, "MemMap::get queried for empty ID string.");
@@ -246,11 +252,11 @@ Ref<MemEntity> MemMap::get(const std::string & id) const
     return nullptr;
 }
 
-Ref<MemEntity> MemMap::getAdd(const std::string & id)
+Ref<MemEntity> MemMap::getAdd(const std::string& id)
 // Get an entity from memory, or add it if we haven't seen it yet
 // This could be implemented by calling get() for all but the the last line
 {
-    debug( std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
+    debug(std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
     if (id.empty()) {
         return nullptr;
     }
@@ -270,13 +276,13 @@ Ref<MemEntity> MemMap::getAdd(const std::string & id)
     return addId(id, int_id);
 }
 
-void MemMap::addContents(const RootEntity & ent)
+void MemMap::addContents(const RootEntity& ent)
 // Iterate over the contains attribute of a message, looking at all the contents
 {
     if (!ent->hasAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG)) {
         return;
     }
-    const std::list<std::string> & contlist = ent->getContains();
+    const std::list<std::string>& contlist = ent->getContains();
     auto Jend = contlist.end();
     auto J = contlist.begin();
     for (; J != Jend; ++J) {
@@ -284,19 +290,19 @@ void MemMap::addContents(const RootEntity & ent)
     }
 }
 
-Ref<MemEntity> MemMap::updateAdd(const RootEntity & ent, const double & d)
+Ref<MemEntity> MemMap::updateAdd(const RootEntity& ent, const double& d)
 // Update an entity in our memory, from an Atlas message
 // The mind code relies on this function never sending a Sight to
 // be sure that seeing something created does not imply that the created
 // entity is visible, as we may have received it because we can see the
 // creator.
 {
-    debug( std::cout << "MemMap::updateAdd" << std::endl << std::flush;);
+    debug(std::cout << "MemMap::updateAdd" << std::endl << std::flush;);
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, "MemMap::updateAdd, Missing id in updated entity");
         return nullptr;
     }
-    const std::string & id = ent->getId();
+    const std::string& id = ent->getId();
     if (id.empty()) {
         log(ERROR, "MemMap::updateAdd, Empty ID in updated entity.");
         return nullptr;
@@ -330,7 +336,7 @@ void MemMap::addEntityMemory(const std::string& id,
         entity_memory->second[memory] = value;
     } else {
         m_entityRelatedMemory.insert(
-                std::make_pair(id, std::map<std::string, Element> { { memory, value } }));
+            std::make_pair(id, std::map<std::string, Element>{{memory, value}}));
     }
 }
 
@@ -353,15 +359,15 @@ const std::map<std::string, std::map<std::string, Element>>& MemMap::getEntityRe
 }
 
 
-EntityVector MemMap::findByType(const std::string & what)
+EntityVector MemMap::findByType(const std::string& what)
 // Find an entity in our memory of a certain type
 {
     EntityVector res;
-    
+
     auto Iend = m_entities.end();
     for (auto I = m_entities.begin(); I != Iend; ++I) {
         auto item = I->second;
-        debug( std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
+        debug(std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
         if (item->isVisible() && item->getType()->name() == what) {
             res.push_back(I->second.get());
         }
@@ -369,11 +375,9 @@ EntityVector MemMap::findByType(const std::string & what)
     return res;
 }
 
-EntityVector MemMap::findByLocation(const Location & loc,
-                                       WFMath::CoordType radius,
-                                       const std::string & what)
-// Find an entity in our memory in a certain place
-// FIXME Don't return by value
+EntityVector MemMap::findByLocation(const Location& loc,
+                                    WFMath::CoordType radius,
+                                    const std::string& what)
 {
     EntityVector res;
     auto place = loc.m_parent;
@@ -410,49 +414,23 @@ EntityVector MemMap::findByLocation(const Location & loc,
     return res;
 }
 
-void MemMap::check(const double & time)
+void MemMap::check(const double& time)
 {
 
-    MemEntityDict::const_iterator entities_end = m_entities.end();
-    if (m_checkIterator == entities_end) {
+    if (m_checkIterator == m_entities.end()) {
         m_checkIterator = m_entities.begin();
     } else {
         auto me = m_checkIterator->second;
-        assert(me != nullptr);
-        if (!me->isVisible() && (time - me->lastSeen()) > 600 &&
+        assert(me);
+        if (me->getType() && !me->isVisible() && (time - me->lastSeen()) > 600 &&
             (me->m_contains == nullptr || me->m_contains->empty())) {
-            //Don't remove any entities; we need to instead implement reference counted locations
-//            debug(std::cout << me->getId() << "|" << me->getType()->name()
-//                      << " is a waste of space" << std::endl << std::flush;);
-//            MemEntityDict::const_iterator J = m_checkIterator;
-//            long next = -1;
-//            if (++J != entities_end) {
-//                next = J->first;
-//            }
-//            m_entities.erase(m_checkIterator);
-//            // Remove deleted entity from its parents contains attribute
-//            if (me->m_location.m_parent != 0) {
-//                assert(me->m_location.m_parent->m_contains != 0);
-//                me->m_location.m_parent->m_contains->erase(me);
-//            }
-//
-//            // FIXME This is required until MemMap uses parent refcounting
-//            me->m_location.m_parent = 0;
-//
-//            if (next != -1) {
-//                m_checkIterator = m_entities.find(next);
-//            } else {
-//                m_checkIterator = m_entities.begin();
-//            }
-            //HACK: We currently do refcounting for Locations kept in the mind as knowledge.
-            //The result is that if an entity is removed here, it will be deleted, and any
-            //knowledge or goal referring to it will point to an invalid pointer.
-            //Then result is a segfault whenever the mind is queried.
-            //To prevent this we'll add this interim fix, where we won't decrease the reference.
-            //This is an interim solution until we've better dealt with Locations in goals and knowledge.
+            m_checkIterator = m_entities.erase(m_checkIterator);
 
-            // attribute of its its parent.
-            //me->decRef();
+            if (me->m_location.m_parent) {
+                me->m_location.m_parent->removeChild(*me);
+                me->m_location.m_parent = nullptr;
+            }
+
         } else {
             debug(std::cout << me->getId() << "|" << me->getType()->name() << "|"
                             << me->lastSeen() << "|" << me->isVisible()
@@ -478,5 +456,40 @@ void MemMap::flush()
 void MemMap::setListener(MapListener* listener)
 {
     m_listener = listener;
+}
+
+std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(TypeNode* typeNode)
+{
+    std::vector<Ref<MemEntity>> resolvedEntities;
+
+    auto I = m_unresolvedEntities.find(typeNode->name());
+    if (I != m_unresolvedEntities.end()) {
+        for (auto& entity : I->second) {
+            log(INFO, String::compose("Resolved entity %1.", entity->getId()));
+            entity->setType(typeNode);
+
+            if (m_script) {
+                debug_print(this);
+                for (auto& hook : m_addHooks) {
+                    m_script->hook(hook, entity.get());
+                }
+            }
+
+            if (m_listener) {
+                m_listener->entityAdded(*entity);
+            }
+
+            resolvedEntities.emplace_back(entity);
+
+        }
+        m_unresolvedEntities.erase(I);
+    }
+    return resolvedEntities;
+}
+
+void MemMap::collectTypeResolverOps(OpVector& res)
+{
+    res.insert(std::end(res), std::begin(m_typeResolverOps), std::end(m_typeResolverOps));
+    m_typeResolverOps.clear();
 }
 

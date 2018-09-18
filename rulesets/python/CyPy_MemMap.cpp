@@ -33,7 +33,7 @@ using Atlas::Objects::Entity::RootEntity;
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds), m_owned(true)
 {
-    m_value = new MemMap();
+    throw Py::TypeError("MemMap() can't be instanced from Python.");
 }
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value)

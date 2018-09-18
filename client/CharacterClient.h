@@ -24,14 +24,14 @@
 class ClientConnection;
 
 /// \brief Class to implement a character entity in an admin client
-class CharacterClient : public Router {
+class CharacterClient : public BaseMind {
   protected:
     ClientConnection & m_connection;
 
     int sendAndWaitReply(const Operation &, OpVector &);
     Ref<LocatedEntity> sendLook(const Operation & op);
   public:
-    CharacterClient(const std::string &, long, ClientConnection&);
+    CharacterClient(const std::string & mindId, const std::string & entityId, ClientConnection&);
 
     void send(const Operation & op);
     Ref<LocatedEntity> look(const std::string &);

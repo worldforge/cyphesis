@@ -19,7 +19,6 @@
 #ifndef RULESETS_BASE_MIND_H
 #define RULESETS_BASE_MIND_H
 
-#include "MemEntity.h"
 #include "MemMap.h"
 
 #include "modules/WorldTime.h"
@@ -30,14 +29,14 @@
 /// handles most of the AI. The main purpose of this class is to handle
 /// operations and interface to the MemMap used as the core of
 /// the entity's memory.
-class BaseMind : public Router {
+class BaseMind : public Router, public ReferenceCounted {
   protected:
-
-    int m_refCount;
 
     std::string m_entityId;
 
     Flags m_flags;
+
+    std::unique_ptr<TypeResolver> m_typeResolver;
 
     /// \brief Memory map of world entities this mind knows about
     MemMap m_map;
@@ -47,7 +46,6 @@ class BaseMind : public Router {
     std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
     std::vector<Operation> m_pendingOperations;
 
-    std::unique_ptr<TypeResolver> m_typeResolver;
 
 
     std::map<long, std::function<void(const Operation &, OpVector &)>> m_callbacks;
@@ -58,9 +56,6 @@ class BaseMind : public Router {
 
     Ref<MemEntity> m_ownEntity;
 
-
-
-    virtual void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity);
 
     public:
     BaseMind(const std::string & mindId, const std::string & entityId);
@@ -106,21 +101,11 @@ class BaseMind : public Router {
 
     void setScript(Script * scrpt);
 
-    void setTypeResolver(std::unique_ptr<TypeResolver> typeResolver);
-
-    void incRef() {
-        ++m_refCount;
-    }
-
-    void decRef() {
-        if (--m_refCount == 0) {
-            delete this;
-        }
-        assert(m_refCount >= 0);
-    }
-
     /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const { return m_flags.hasFlags(entity_destroyed); }
+
+    virtual void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity);
+
 };
 
 #endif // RULESETS_BASE_MIND_H

@@ -46,11 +46,10 @@ static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string& mindId, const std::string& entityId) :
     Router(mindId, std::stol(mindId)),
-    m_refCount(0),
     m_entityId(entityId),
     m_flags(0),
-    m_map(),
     m_typeResolver(new TypeResolver()),
+    m_map(*m_typeResolver),
     m_serialNoCounter(0)
 {
 }
@@ -110,6 +109,7 @@ void BaseMind::sightDeleteOperation(const Operation& op, OpVector& res)
     const std::string& id = obj->getId();
     if (!id.empty()) {
         m_map.del(obj->getId());
+        m_pendingEntitiesOperations.erase(obj->getId());
     } else {
         log(WARNING, "Sight Delete with no ID");
     }
@@ -284,9 +284,8 @@ void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
 {
     if (!isAwake()) { return; }
     const std::vector<Root>& args = op->getArgs();
-    auto Iend = args.end();
-    for (auto I = args.begin(); I != Iend; ++I) {
-        const std::string& id = (*I)->getId();
+    for (const auto& arg : args) {
+        const std::string& id = arg->getId();
         if (id.empty()) { continue; }
         auto me = m_map.get(id);
         if (me) {
@@ -309,6 +308,8 @@ void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
         return;
     }
     m_map.del(arg->getId());
+    m_pendingEntitiesOperations.erase(arg->getId());
+
 }
 
 void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
@@ -339,34 +340,29 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
         auto resolvedTypes = m_typeResolver->InfoOperation(op, res);
         //For any resolved types, find any unresolved entities, set their type and put any pending operations in "res".
         for (auto& type : resolvedTypes) {
-            auto I = m_map.m_unresolvedEntities.find(type->name());
-            if (I != m_map.m_unresolvedEntities.end()) {
-                for (auto& entity : I->second) {
-                    entity->setType(type);
+            log(INFO, String::compose("Resolved type '%1'.", type->name()));
 
-                    auto J = m_pendingEntitiesOperations.find(entity->getId());
-                    if (J != m_pendingEntitiesOperations.end()) {
-                        res.insert(std::end(res), std::begin(J->second), std::end(J->second));
-                    }
+            auto resolved = m_map.resolveEntitiesForType(type);
+            for (auto& entity : resolved) {
+
+                log(INFO, String::compose("Resolved entity %1.", entity->getId()));
+                entity->setType(type);
+
+                auto J = m_pendingEntitiesOperations.find(entity->getId());
+                if (J != m_pendingEntitiesOperations.end()) {
+                    res.insert(std::end(res), std::begin(J->second), std::end(J->second));
                     m_pendingEntitiesOperations.erase(J);
+                }
 
-                    //If we have resolved our own entity we should do some house keeping
-                    if (entity->getId() == m_entityId) {
+                //If we have resolved our own entity we should do some house keeping
+                if (entity->getId() == m_entityId) {
 
-                        setOwnEntity(res, entity);
-                    }
+                    setOwnEntity(res, entity);
                 }
             }
-            m_map.m_unresolvedEntities.erase(I);
         }
     }
 
-}
-
-
-void BaseMind::setTypeResolver(std::unique_ptr<TypeResolver> typeResolver)
-{
-    m_typeResolver = std::move(typeResolver);
 }
 
 void BaseMind::operation(const Operation& op, OpVector& res)
@@ -413,42 +409,46 @@ void BaseMind::operation(const Operation& op, OpVector& res)
 
             m_map.check(op->getSeconds());
 
+            bool isPending = false;
             //Unless it's an Unseen op, we should add the entity the op was from.
             if (op_no != Atlas::Objects::Operation::UNSEEN_NO && !op->isDefaultFrom()) {
                 auto entity = m_map.getAdd(op->getFrom());
                 if (!entity) {
                     m_pendingEntitiesOperations[op->getFrom()].push_back(op);
-                    return;
+                    isPending = true;
                 }
             }
-            m_map.sendLooks(res);
-            if (m_script) {
-                m_script->operation("call_triggers", op, res);
-                if (m_script->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
-                    return;
+            if (!isPending) {
+                m_map.sendLooks(res);
+                if (m_script) {
+                    m_script->operation("call_triggers", op, res);
+                    m_script->operation(op->getParent(), op, res);
+//                    if (m_script->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
+//                        return;
+//                    }
                 }
-            }
-            switch (op_no) {
-                case Atlas::Objects::Operation::SIGHT_NO:
-                    SightOperation(op, res);
-                    break;
-                case Atlas::Objects::Operation::SOUND_NO:
-                    SoundOperation(op, res);
-                    break;
-                case Atlas::Objects::Operation::APPEARANCE_NO:
-                    AppearanceOperation(op, res);
-                    break;
-                case Atlas::Objects::Operation::DISAPPEARANCE_NO:
-                    DisappearanceOperation(op, res);
-                    break;
-                default:
-                    if (op_no == Atlas::Objects::Operation::UNSEEN_NO) {
-                        UnseenOperation(op, res);
-                    } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
-                        ThinkOperation(op, res);
-                    }
-                    // ERROR
-                    break;
+                switch (op_no) {
+                    case Atlas::Objects::Operation::SIGHT_NO:
+                        SightOperation(op, res);
+                        break;
+                    case Atlas::Objects::Operation::SOUND_NO:
+                        SoundOperation(op, res);
+                        break;
+                    case Atlas::Objects::Operation::APPEARANCE_NO:
+                        AppearanceOperation(op, res);
+                        break;
+                    case Atlas::Objects::Operation::DISAPPEARANCE_NO:
+                        DisappearanceOperation(op, res);
+                        break;
+                    default:
+                        if (op_no == Atlas::Objects::Operation::UNSEEN_NO) {
+                            UnseenOperation(op, res);
+                        } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
+                            ThinkOperation(op, res);
+                        }
+                        // ERROR
+                        break;
+                }
             }
         }
     }
@@ -458,6 +458,9 @@ void BaseMind::operation(const Operation& op, OpVector& res)
             resOp->setFrom(getId());
         }
     }
+
+    res.insert(std::end(res), std::begin(m_map.m_typeResolverOps), std::end(m_map.m_typeResolverOps));
+    m_map.m_typeResolverOps.clear();
 
     if (debug_flag) {
         for (const auto& resOp : res) {
