@@ -21,6 +21,7 @@
 
 
 #include "modules/Ref.h"
+#include "modules/ReferenceCounted.h"
 #include "modules/Flags.h"
 #include "Location.h"
 
@@ -113,13 +114,11 @@ static const std::uint32_t entity_admin = 1u << 12u;
 /// which lists other entities which specify their location with reference to
 /// this one. It also provides the script interface for handling operations
 /// in scripts rather than in the C++ code.
-class LocatedEntity : public Router {
+class LocatedEntity : public Router, public ReferenceCounted {
   private:
     static std::set<std::string> s_immutable;
     static const std::set<std::string> & immutables();
 
-    /// Count of references held by other objects to this entity
-    int m_refCount;
   protected:
     /// Map of properties
     PropertyDict m_properties;
@@ -161,24 +160,6 @@ class LocatedEntity : public Router {
     explicit LocatedEntity(const std::string & id, long intId);
     ~LocatedEntity() override;
 
-    /// \brief Increment the reference count on this entity
-    void incRef() {
-        ++m_refCount;
-    }
-
-    /// \brief Decrement the reference count on this entity
-    void decRef() {
-        if (--m_refCount == 0) {
-            delete this;
-        }
-        assert(m_refCount >= 0);
-    }
-
-    /// \brief Check the reference count on this entity
-    int checkRef() const {
-        return m_refCount;
-    }
-
     /// \brief Check if this entity is flagged as perceptive
     bool isPerceptive() const { return m_flags.hasFlags(entity_perceptive); }
 
@@ -191,20 +172,20 @@ class LocatedEntity : public Router {
     const Flags& flags() const { return m_flags; }
     Flags& flags() { return m_flags; }
 
-        void addFlags(std::uint32_t flags)
-        {
-            m_flags.addFlags(flags);
-        }
+    void addFlags(std::uint32_t flags)
+    {
+        m_flags.addFlags(flags);
+    }
 
-        void removeFlags(std::uint32_t flags)
-        {
-            m_flags.removeFlags(flags);
-        }
+    void removeFlags(std::uint32_t flags)
+    {
+        m_flags.removeFlags(flags);
+    }
 
-        bool hasFlags(std::uint32_t flags) const
-        {
-            return m_flags.hasFlags(flags);
-        }
+    bool hasFlags(std::uint32_t flags) const
+    {
+        return m_flags.hasFlags(flags);
+    }
 
     /// \brief Accessor for sequence number
     const int getSeq() const { return m_seq; }
