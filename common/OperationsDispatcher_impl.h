@@ -131,7 +131,7 @@ OpQueEntry<T>::OpQueEntry(const OpQueEntry & o) :
 }
 
 template<typename T>
-OpQueEntry<T>::OpQueEntry(OpQueEntry&& o)
+OpQueEntry<T>::OpQueEntry(OpQueEntry&& o) noexcept
     : op(std::move(o.op)),
     from(std::move(o.from))
 {
@@ -139,9 +139,7 @@ OpQueEntry<T>::OpQueEntry(OpQueEntry&& o)
 }
 
 template <typename T>
-OpQueEntry<T>::~OpQueEntry()
-{
-}
+OpQueEntry<T>::~OpQueEntry() = default;
 
 
 

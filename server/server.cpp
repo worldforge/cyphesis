@@ -65,6 +65,7 @@
 #include <common/AssetsManager.h>
 #include <common/DatabaseSQLite.h>
 #include <common/RepeatedTask.h>
+#include <common/MainLoop.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -90,50 +91,6 @@ INT_OPTION(ai_clients, 1, CYPHESIS, "aiclients",
         "Number of AI clients to spawn.")
 ;
 
-void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number) {
-    if (!error) {
-        switch (signal_number) {
-            case SIGINT:
-            case SIGTERM:
-            case SIGHUP:
-                //If we've already received one call to shut down softly we should elevate
-                //it to a hard shutdown.
-                //This also happens if "soft" exit isn't enabled.
-                if (exit_flag_soft || !exit_soft_enabled) {
-                    exit_flag = true;
-                } else {
-                    exit_flag_soft = true;
-                }
-                break;
-            case SIGQUIT:
-                exit_flag = true;
-                break;
-            default:
-                break;
-        }
-        this_.async_wait(std::bind(interactiveSignalsHandler, std::ref(this_), std::placeholders::_1, std::placeholders::_2));
-    }
-}
-
-void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number) {
-    if (!error) {
-        switch (signal_number) {
-            case SIGTERM:
-                //If we've already received one call to shut down softly we should elevate
-                //it to a hard shutdown.
-                //This also happens if "soft" exit isn't enabled.
-                if (exit_flag_soft || !exit_soft_enabled) {
-                    exit_flag = true;
-                } else {
-                    exit_flag_soft = true;
-                }
-                break;
-            default:
-                break;
-        }
-        this_.async_wait(std::bind(daemonSignalsHandler, std::ref(this_), std::placeholders::_1, std::placeholders::_2));
-    }
-}
 
 int main(int argc, char ** argv)
 {
@@ -255,20 +212,7 @@ int main(int argc, char ** argv)
     int nice = 1;
     readConfigItem(instance, "nice", nice);
 
-    boost::asio::signal_set* signalSet = new boost::asio::signal_set(*io_service);
-    //If we're not running as a daemon we should use the interactive signal handler.
-    if (!daemon_flag) {
-        signalSet->add(SIGINT);
-        signalSet->add(SIGTERM);
-        signalSet->add(SIGHUP);
-        signalSet->add(SIGQUIT);
 
-        signalSet->async_wait(std::bind(interactiveSignalsHandler, std::ref(*signalSet), std::placeholders::_1, std::placeholders::_2));
-    } else {
-        signalSet->add(SIGTERM);
-
-        signalSet->async_wait(std::bind(daemonSignalsHandler, std::ref(*signalSet), std::placeholders::_1, std::placeholders::_2));
-    }
 
     FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
 
@@ -472,7 +416,7 @@ int main(int argc, char ** argv)
             //We should only try to import if the world isn't populated.
             bool isPopulated = false;
             if (baseEntity->m_contains) {
-                for (auto entity : *baseEntity->m_contains) {
+                for (const auto& entity : *baseEntity->m_contains) {
                     //if there's any entity that's not transient we consider it populated
                     if (!entity->hasAttr("transient")) {
                         isPopulated = true;
@@ -509,131 +453,60 @@ int main(int argc, char ** argv)
         }
     }
 
+    auto softExitStart = [&]() {
+        size_t requestNumber = store->requestMinds(world->getEntities());
+        log(INFO, String::compose("Soft exit requested, persisting %1 minds.", requestNumber));
+
+        //Set a deadline for five seconds.
+        boost::posix_time::seconds duration(5);
+        log(NOTICE, String::compose("Deadline for mind persistence set to %1 seconds.", duration.ticks()));
+
+        return duration;
+    };
 
 
-
-    bool soft_exit_in_progress = false;
-
-    {
-        //Make sure that the io_service never runs out of work.
-        boost::asio::io_service::work work(*io_service);
-        //This timer is used to wake the io_service when next op needs to be handled.
-        boost::asio::deadline_timer nextOpTimer(*io_service);
-        //This timer will set a deadline for any mind persistence during soft exits.
-        boost::asio::deadline_timer softExitTimer(*io_service);
-        // Loop until the exit flag is set. The exit flag can be set anywhere in
-        // the code easily.
-        while (!exit_flag) {
-            try {
-                time.update();
-                bool busy = world->idle();
-                world->markQueueAsClean();
-                //If the world is busy we should just poll.
-                if (busy) {
-                    io_service->poll();
-                } else {
-                    //If it's not busy however we should run until we get a task.
-                    //We will either get an io task, or we will be triggered by the timer
-                    //which is set to expire when the next op should be dispatched.
-                    double secondsUntilNextOp = world->secondsUntilNextOp();
-                    if (secondsUntilNextOp <= 0.0) {
-                        io_service->poll();
-                    } else {
-                        bool nextOpTimeExpired = false;
-                        boost::posix_time::microseconds waitTime((int64_t)(secondsUntilNextOp * 1000000L));
-                        nextOpTimer.expires_from_now(waitTime);
-                        nextOpTimer.async_wait([&](boost::system::error_code ec){
-                            if (ec != boost::asio::error::operation_aborted) {
-                                nextOpTimeExpired = true;
-                            }
-                        });
-                        //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
-                        //any new operation) or the timer has expired.
-                        do {
-                            io_service->run_one();
-                        } while (!world->isQueueDirty() && !nextOpTimeExpired &&
-                                !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
-                        nextOpTimer.cancel();
-                    }
-                }
-                if (soft_exit_in_progress) {
-                    //If we're in soft exit mode and either the deadline has been exceeded
-                    //or we've persisted all minds we should shut down normally.
-                    if (store->numberOfOutstandingThoughtRequests() == 0) {
-                        log(NOTICE, "All entity thoughts were persisted.");
-                        exit_flag = true;
-                        softExitTimer.cancel();
-                    }
-                } else if (exit_flag_soft) {
-                    exit_flag_soft = false;
-                    soft_exit_in_progress = true;
-                    size_t requestNumber = store->requestMinds(
-                            world->getEntities());
-                    log(INFO,
-                            String::compose(
-                                    "Soft exit requested, persisting %1 minds.",
-                                    requestNumber));
-                    //Set a deadline for five seconds.
-                    softExitTimer.expires_from_now(boost::posix_time::seconds(5));
-                    softExitTimer.async_wait([&](boost::system::error_code ec){
-                        if (!ec) {
-                            log(WARNING,
-                                    String::compose("Waiting for persisting thoughts timed out. This might "
-                                            "lead to lost entity thoughts. %1 thoughts outstanding.",
-                                            store->numberOfOutstandingThoughtRequests()));
-                            exit_flag = true;
-                        }
-                    });
-                    log(NOTICE,
-                            String::compose(
-                                    "Deadline for mind persistence set to %1 seconds.",
-                                    5));
-                }
-                // It is hoped that commonly thrown exception, particularly
-                // exceptions that can be caused  by external influences
-                // should be caught close to where they are thrown. If
-                // an exception makes it here then it should be debugged.
-            } catch (const std::exception& e) {
-                log(ERROR,
-                        String::compose("Exception caught in main(): %1",
-                                e.what()));
-            } catch (...) {
-                log(ERROR, "Exception caught in main()");
-            }
+    auto softExitPoll = [&](){
+        if (store->numberOfOutstandingThoughtRequests() == 0) {
+            log(NOTICE, "All entity thoughts were persisted.");
+            return true;
         }
-        // exit flag has been set so we close down the databases, and indicate
-        // to the metaserver (if we are using one) that this server is going down.
-        // It is assumed that any preparation for the shutdown that is required
-        // by the game has been done before exit flag was set.
-        log(NOTICE, "Performing clean shutdown...");
+        return false;
+    };
 
-        //Actually, there's no way for the world to know that it's shutting down,
-        //as the shutdown signal most probably comes from a sighandler. We need to
-        //tell it it's shutting down so it can do some housekeeping.
-        try {
-            exit_flag = false;
-            if (store->shutdown(exit_flag, world->getEntities()) != 0) {
-                //Ignore this error and carry on with shutting down.
-                log(ERROR, "Error when shutting down");
-            }
-        } catch (const std::exception& e) {
-            log(ERROR,
-                    String::compose("Exception caught when shutting down: %1",
-                            e.what()));
-        } catch (...) {
+    auto softExitTimeout = [&]() {
+        log(WARNING, String::compose("Waiting for persisting thoughts timed out. This might "
+                                     "lead to lost entity thoughts. %1 thoughts outstanding.",
+                                     store->numberOfOutstandingThoughtRequests()));
+
+    };
+
+    MainLoop::run(daemon_flag, *io_service, world->getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
+
+
+    //Actually, there's no way for the world to know that it's shutting down,
+    //as the shutdown signal most probably comes from a sighandler. We need to
+    //tell it it's shutting down so it can do some housekeeping.
+    try {
+        exit_flag = false;
+        if (store->shutdown(exit_flag, world->getEntities()) != 0) {
             //Ignore this error and carry on with shutting down.
-            log(ERROR, "Exception caught when shutting down");
+            log(ERROR, "Error when shutting down");
         }
+    } catch (const std::exception& e) {
+        log(ERROR,
+            String::compose("Exception caught when shutting down: %1",
+                            e.what()));
+    } catch (...) {
+        //Ignore this error and carry on with shutting down.
+        log(ERROR, "Exception caught when shutting down");
     }
+
 
     delete dbvacuumTask;
 
     delete assets_manager;
 
     delete file_system_observer;
-
-    signalSet->clear();
-    delete signalSet;
 
     delete cmdns;
 

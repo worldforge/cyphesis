@@ -33,14 +33,15 @@
 
 #include <Atlas/Objects/Entity.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-PossessionClient::PossessionClient(MindKit& mindFactory) :
+PossessionClient::PossessionClient(boost::asio::io_service& io_service, MindKit& mindFactory) :
+    BaseClient(io_service),
     m_mindFactory(mindFactory),
     m_account(nullptr),
     m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
@@ -51,7 +52,11 @@ PossessionClient::PossessionClient(MindKit& mindFactory) :
 
 bool PossessionClient::idle()
 {
-    return m_operationsDispatcher.idle();
+    if (!m_connection.isConnected()) {
+
+    } else {
+        return m_operationsDispatcher.idle();
+    }
 }
 
 double PossessionClient::secondsUntilNextOp() const
@@ -177,4 +182,9 @@ double PossessionClient::getTime() const
 
 const std::unordered_map<std::string, Ref<BaseMind>>& PossessionClient::getMinds() const {
     return m_account->getMinds();
+}
+
+OperationsHandler& PossessionClient::getOperationsHandler()
+{
+    return m_operationsDispatcher;
 };

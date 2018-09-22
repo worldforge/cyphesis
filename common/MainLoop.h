@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2014 Erik Ogenvik
+ Copyright (C) 2018 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,28 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#endif
+#ifndef CYPHESIS_MAINLOOP_H
+#define CYPHESIS_MAINLOOP_H
 
+#include <boost/asio/io_service.hpp>
+#include <boost/date_time/posix_time/posix_time_config.hpp>
+
+class OperationsHandler;
+
+class MainLoop
+{
+    public:
+
+        struct Callbacks {
+            std::function<boost::posix_time::time_duration()> softExitStart;
+            std::function<bool()> softExitPoll;
+            std::function<void()> softExitTimeout;
+        };
+
+        static void run(bool daemon, boost::asio::io_service& io_service, OperationsHandler& operationsHandler, const Callbacks& callbacks);
+
+
+};
+
+
+#endif //CYPHESIS_MAINLOOP_H

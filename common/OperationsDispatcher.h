@@ -49,7 +49,7 @@ struct OpQueEntry {
     {
     }
     OpQueEntry(const OpQueEntry & o);
-    OpQueEntry(OpQueEntry && o);
+    OpQueEntry(OpQueEntry && o) noexcept;
     ~OpQueEntry();
 
     constexpr OpQueEntry& operator=(OpQueEntry&& rhs) noexcept
@@ -70,13 +70,47 @@ struct OpQueEntry {
 
 };
 
-//typedef std::queue<OpQueEntry> OpQueue;
-//typedef std::priority_queue<OpQueEntry, std::vector<OpQueEntry>, std::greater<> > OpPriorityQueue;
+struct OperationsHandler {
+    /// \brief Main world loop function.
+    /// This function is called whenever the communications code is idle.
+    /// It updates the in-game time, and dispatches operations that are
+    /// now due for dispatch. The number of operations dispatched is limited
+    /// to 10 to ensure that client communications are always handled in a timely
+    /// manner. If the maximum number of operations are dispatched, the return
+    /// value indicates that this is the case, and the communications code
+    /// will call this function again as soon as possible rather than sleeping.
+    /// This ensures that the maximum possible number of operations are dispatched
+    /// without becoming unresponsive to client communications traffic.
+    virtual bool idle() = 0;
 
+    /**
+     * Gets the number of seconds until the next operation needs to be dispatched.
+     * @return Seconds.
+     */
+    virtual double secondsUntilNextOp() const = 0;
+
+    /**
+     * @brief Checks if the operation queues have been marked as dirty.
+     *
+     * This means that something has been added to them.
+     * @return True if the queues are dirty.
+     */
+    virtual bool isQueueDirty() const = 0;
+
+    /**
+     * @brief Marks all queues as clean.
+     */
+    virtual void markQueueAsClean() = 0;
+
+    /**
+     * @brief Removes all operations from the queues.
+     */
+    virtual void clearQueues() = 0;
+};
 /// \brief Handles dispatching of operations at suitable time.
 ///
 template <typename T>
-class OperationsDispatcher
+class OperationsDispatcher : public OperationsHandler
 {
     public:
         /**
@@ -97,13 +131,13 @@ class OperationsDispatcher
         /// will call this function again as soon as possible rather than sleeping.
         /// This ensures that the maximum possible number of operations are dispatched
         /// without becoming unresponsive to client communications traffic.
-        bool idle();
+        bool idle() override;
 
         /**
          * Gets the number of seconds until the next operation needs to be dispatched.
          * @return Seconds.
          */
-        double secondsUntilNextOp() const;
+        double secondsUntilNextOp() const override;
 
         /**
          * @brief Checks if the operation queues have been marked as dirty.
@@ -111,17 +145,17 @@ class OperationsDispatcher
          * This means that something has been added to them.
          * @return True if the queues are dirty.
          */
-        bool isQueueDirty() const;
+        bool isQueueDirty() const override;
 
         /**
          * @brief Marks all queues as clean.
          */
-        void markQueueAsClean();
+        void markQueueAsClean() override;
 
         /**
          * @brief Removes all operations from the queues.
          */
-        void clearQueues();
+        void clearQueues() override;
 
         /**
          * @brief Adds an operation to the queue.

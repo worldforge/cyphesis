@@ -1,3 +1,5 @@
+#include <memory>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2009 Alistair Riddoch
 //
@@ -23,6 +25,8 @@
 #include "common/ClientTask.h"
 
 #include "common/debug.h"
+#include "AtlasStreamClient.h"
+
 
 #include <Atlas/Codec.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -50,7 +54,12 @@ static const bool debug_flag = false;
 
 
 StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
-: m_io_service(io_service), mDispatcher(dispatcher), m_ios(&mBuffer), m_codec(nullptr), m_encoder(nullptr), m_is_connected(false)
+    : m_io_service(io_service),
+      mDispatcher(dispatcher),
+      m_ios(&mBuffer),
+      m_codec(nullptr),
+      m_encoder(nullptr),
+      m_is_connected(false)
 {
 }
 
@@ -144,7 +153,10 @@ int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duratio
     return 0;
 }
 
-
+bool StreamClientSocketBase::isConnected() const
+{
+    return m_is_connected;
+}
 
 
 TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
@@ -321,7 +333,7 @@ void AtlasStreamClient::operation(const RootOperation & op)
         debug_print("Received:");
         debug_dump(op, std::cout);
     }
-    if (m_currentTask != 0) {
+    if (m_currentTask != nullptr) {
         OpVector res;
         m_currentTask->operation(op, res);
         OpVector::const_iterator Iend = res.end();
@@ -331,7 +343,7 @@ void AtlasStreamClient::operation(const RootOperation & op)
 
         if (m_currentTask->isComplete()) {
             delete m_currentTask;
-            m_currentTask = 0;
+            m_currentTask = nullptr;
         }
     }
 
@@ -416,20 +428,22 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
     }
 }
 
-AtlasStreamClient::AtlasStreamClient() : m_io_work(m_io_service), reply_flag(false), error_flag(false),
-                                         serialNo(512), m_socket(nullptr),
-                                         m_currentTask(0), m_spacing(2)
+AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service) :
+    m_io_service(io_service),
+    reply_flag(false),
+    error_flag(false),
+    serialNo(512),
+    m_socket(nullptr),
+    m_currentTask(nullptr),
+    m_spacing(2)
 {
 }
 
-AtlasStreamClient::~AtlasStreamClient()
-{
-    delete m_socket;
-}
+AtlasStreamClient::~AtlasStreamClient() = default;
 
 void AtlasStreamClient::send(const RootOperation & op)
 {
-    if (m_socket == 0) {
+    if (!m_socket) {
         return;
     }
 
@@ -446,11 +460,10 @@ void AtlasStreamClient::send(const RootOperation & op)
 
 int AtlasStreamClient::connect(const std::string & host, unsigned short port)
 {
-    delete m_socket;
-    m_socket = nullptr;
+    m_socket.reset();
     try {
         std::function<void()> dispatcher = [&]{this->dispatch();};
-        m_socket = new TcpStreamClientSocket(m_io_service, dispatcher, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
+        m_socket = std::make_unique<TcpStreamClientSocket>(m_io_service, dispatcher, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
     } catch (const std::exception& e) {
         return -1;
     }
@@ -460,11 +473,11 @@ int AtlasStreamClient::connect(const std::string & host, unsigned short port)
 
 int AtlasStreamClient::connectLocal(const std::string & filename)
 {
-    delete m_socket;
-    m_socket = nullptr;
+    m_socket.reset();
+
     try {
         std::function<void()> dispatcher = [&]{this->dispatch();};
-        m_socket = new LocalStreamClientSocket(m_io_service, dispatcher, local::stream_protocol::endpoint(filename));
+        m_socket = std::make_unique<LocalStreamClientSocket>(m_io_service, dispatcher, local::stream_protocol::endpoint(filename));
     } catch (const std::exception& e) {
         return -1;
     }
@@ -473,8 +486,7 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 
 int AtlasStreamClient::cleanDisconnect()
 {
-    delete m_socket;
-    m_socket = nullptr;
+    m_socket.reset();
 //    // Shutting down our write side will cause the server to get a HUP once
 //    // it has consumed all we have left for it
 //    m_ios->shutdown(true);
@@ -575,9 +587,9 @@ int AtlasStreamClient::poll(int seconds, int microseconds)
 
 int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
 {
-    assert(task != 0);
+    assert(task != nullptr);
 
-    if (m_currentTask != 0) {
+    if (m_currentTask != nullptr) {
         std::cout << "Busy" << std::endl << std::flush;
         return -1;
     }
@@ -590,7 +602,7 @@ int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
 
     if (m_currentTask->isComplete()) {
         delete task;
-        m_currentTask = 0;
+        m_currentTask = nullptr;
         return -1;
     }
 
@@ -603,11 +615,11 @@ int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
 
 int AtlasStreamClient::endTask()
 {
-    if (m_currentTask == 0) {
+    if (m_currentTask == nullptr) {
         return -1;
     }
     delete m_currentTask;
-    m_currentTask = 0;
+    m_currentTask = nullptr;
     return 0;
 }
 
@@ -627,5 +639,11 @@ int AtlasStreamClient::pollUntilTaskComplete()
     }
     return 0;
 }
+
+bool AtlasStreamClient::isConnected() const
+{
+    return m_socket && m_socket->
+}
+
 
 

@@ -575,3 +575,8 @@ LocatedEntity& WorldRouter::getDefaultLocation() const
     }
     return *m_baseEntity;
 }
+
+OperationsHandler& WorldRouter::getOperationsHandler()
+{
+    return m_operationsDispatcher;
+}

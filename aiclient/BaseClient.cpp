@@ -227,3 +227,9 @@ int BaseClient::pollUntilTaskComplete()
 {
     return m_connection.pollUntilTaskComplete();
 }
+
+BaseClient::BaseClient(boost::asio::io_service& io_service)
+: m_connection(io_service)
+{
+
+}

@@ -6,7 +6,6 @@ add_library(comm
     CommMDNSPublisher.cpp
     HttpCache.cpp
     CommAsioListener.cpp
-    CommAsioClient.cpp
     IdleConnector.cpp
     CommAsioClient_impl.h
     CommAsioListener_impl.h)

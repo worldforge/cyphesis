@@ -54,6 +54,8 @@ class StreamClientSocketBase
         virtual size_t write() = 0;
         int poll(const boost::posix_time::time_duration& duration);
         int poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn);
+
+        bool isConnected() const;
     protected:
         enum
         {
@@ -99,9 +101,7 @@ class LocalStreamClientSocket : public StreamClientSocketBase
 class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 {
   protected:
-    boost::asio::io_service m_io_service;
-    /// \brief Use a "work" instance to make sure the io_service never runs out of work and is stopped.
-    boost::asio::io_service::work m_io_work;
+    boost::asio::io_service& m_io_service;
 
     /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;
@@ -110,7 +110,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     /// \brief Counter used to track serial numbers sent to the server
     int serialNo;
 
-    StreamClientSocketBase* m_socket;
+    std::unique_ptr<StreamClientSocketBase> m_socket;
     ClientTask * m_currentTask;
 
     std::string m_username;
@@ -146,7 +146,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     virtual void loginSuccess(const Atlas::Objects::Root & arg);
 
   public:
-    AtlasStreamClient();
+    AtlasStreamClient(boost::asio::io_service& io_service);
 
     ~AtlasStreamClient() override;
 
@@ -198,6 +198,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
      * @return 0 if successful
      */
     int pollUntilTaskComplete();
+
+    bool isConnected() const;
 
 };
 

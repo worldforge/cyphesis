@@ -119,6 +119,8 @@ class WorldRouter : public BaseWorld {
     friend class WorldRouterintegration;
 
     LocatedEntity& getDefaultLocation() const override;
+
+        OperationsHandler& getOperationsHandler();
 };
 
 #endif // SERVER_WORLD_ROUTER_H

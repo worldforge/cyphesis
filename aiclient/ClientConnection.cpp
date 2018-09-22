@@ -37,6 +37,13 @@ using Atlas::Objects::Operation::RootOperation;
 
 static bool debug_flag = false;
 
+
+ClientConnection::ClientConnection(boost::asio::io_service& io_service)
+    : AtlasStreamClient(io_service)
+{
+
+}
+
 void ClientConnection::operation(const RootOperation & op)
 {
     if (debug_flag) {

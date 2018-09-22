@@ -38,7 +38,7 @@ class ClientConnection : public AtlasStreamClient {
     void operation(const Atlas::Objects::Operation::RootOperation&) override;
 
   public:
-    ClientConnection() = default;
+    explicit ClientConnection(boost::asio::io_service& io_service);
 
     ~ClientConnection() override = default;
 

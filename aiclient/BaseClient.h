@@ -51,7 +51,7 @@ class BaseClient {
     std::string getErrorMessage(const Operation & err);
 
   public:
-    BaseClient() = default;
+    explicit BaseClient(boost::asio::io_service& io_service);
     virtual ~BaseClient() = default;
 
     const std::string & id() const {

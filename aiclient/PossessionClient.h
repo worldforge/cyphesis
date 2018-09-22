@@ -37,7 +37,7 @@ class Inheritance;
 class PossessionClient: public BaseClient
 {
     public:
-        explicit PossessionClient(MindKit& mindFactory);
+        explicit PossessionClient(boost::asio::io_service& io_service, MindKit& mindFactory);
 
         ~PossessionClient() override = default;
 
@@ -49,6 +49,8 @@ class PossessionClient: public BaseClient
         void createAccount(const std::string& accountId);
 
         const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const;
+
+        OperationsHandler& getOperationsHandler();
 
     protected:
 

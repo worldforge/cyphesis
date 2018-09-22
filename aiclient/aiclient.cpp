@@ -30,6 +30,7 @@
 #define _GLIBCXX_USE_NANOSLEEP 1
 
 #include <sys/prctl.h>
+#include <common/MainLoop.h>
 #include "common/AssetsManager.h"
 #include "common/FileSystemObserver.h"
 #include "common/Think.h"
@@ -147,8 +148,6 @@ int main(int argc, char** argv)
         time.update();
 
         AwareMindFactory mindFactory;
-//    MindFactory mindFactory;
-//    AwareMindFactory awareMindFactory;
 
         //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
         std::string script_package = "mind.NPCMind";
@@ -171,7 +170,7 @@ int main(int argc, char** argv)
             }
         }
 
-        std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(mindFactory));
+        std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(io_service, mindFactory));
 
         python_reload_scripts.connect([&]() {
             mindFactory.m_scriptFactory->refreshClass();
@@ -203,11 +202,15 @@ int main(int argc, char** argv)
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
+        /// \brief Use a "work" instance to make sure the io_service never runs out of work and is stopped.
+        boost::asio::io_service::work m_io_work(io_service);
+
+        MainLoop::run(false, io_service, possessionClient->getOperationsHandler(), {});
+
         while (!exit_flag) {
             try {
                 double secondsUntilNextOp = possessionClient->secondsUntilNextOp();
                 boost::posix_time::microseconds waitTime((long long) (secondsUntilNextOp * 1000000));
-                //Handle file system changes
                 io_service.poll();
                 int netResult = possessionClient->pollOne(waitTime);
                 if (netResult >= 0) {
@@ -219,7 +222,7 @@ int main(int argc, char** argv)
                     //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
                     //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
                     possessionClient.reset();
-                    possessionClient.reset(new PossessionClient(mindFactory));
+                    possessionClient.reset(new PossessionClient(io_service, mindFactory));
                     while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                     }
