@@ -199,8 +199,6 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
      */
     int pollUntilTaskComplete();
 
-    bool isConnected() const;
-
 };
 
 #endif // COMMON_ATLAS_STREAM_CLIENT_H

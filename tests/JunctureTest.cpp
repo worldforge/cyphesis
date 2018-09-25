@@ -29,7 +29,7 @@
 #include "server/Connection.h"
 #include "server/Peer.h"
 #include "server/ServerRouting.h"
-#include "server/CommAsioClient_impl.h"
+#include "common/CommAsioClient_impl.h"
 
 #include "common/Connect.h"
 #include "common/CommSocket.h"

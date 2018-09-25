@@ -523,7 +523,7 @@ void WorldRouter::addPerceptive(LocatedEntity *)
 /// without becoming unresponsive to client communications traffic.
 bool WorldRouter::idle()
 {
-    return m_operationsDispatcher.idle();
+    return m_operationsDispatcher.idle(10);
 }
 
 

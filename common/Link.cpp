@@ -30,13 +30,13 @@
 static const bool debug_flag = false;
 
 Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
+            Router(id, iid),
+            m_encoder(nullptr),
+            m_commSocket(socket)
 {
 }
 
-Link::~Link()
-{
-}
+Link::~Link() = default;
 
 void Link::send(const Operation & op) const
 {
@@ -83,4 +83,8 @@ void Link::sendError(const Operation & op,
 void Link::disconnect()
 {
     m_commSocket.disconnect();
+}
+
+void Link::notifyConnectionComplete()
+{
 }

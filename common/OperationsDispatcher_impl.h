@@ -61,14 +61,14 @@ void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T> & oqe)
 
 
 template <typename T>
-bool OperationsDispatcher<T>::idle()
+bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
 {
-    unsigned int op_count = 0;
+    int op_count = 0;
 
     double realtime = getTime();
     bool opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
 
-    while (opsAvailableRightNow && op_count < 10) {
+    while (opsAvailableRightNow && op_count < numberOfOpsToProcess) {
         ++op_count;
         auto opQueueEntry = m_operationQueue.top();
         //Pop it before we dispatch it, since dispatching might alter the queue.

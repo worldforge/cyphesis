@@ -48,7 +48,8 @@ using Atlas::Objects::Operation::Error;
 static const bool debug_flag = false;
 
 /// \brief AdminClient constructor
-AdminClient::AdminClient()
+AdminClient::AdminClient(boost::asio::io_service& io_service)
+: AtlasStreamClient(io_service)
 {
 }
 

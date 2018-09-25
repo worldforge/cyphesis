@@ -30,7 +30,9 @@
 #define _GLIBCXX_USE_NANOSLEEP 1
 
 #include <sys/prctl.h>
-#include <common/MainLoop.h>
+#include "common/MainLoop.h"
+#include "common/CommAsioClient.h"
+#include "common/CommAsioClient_impl.h"
 #include "common/AssetsManager.h"
 #include "common/FileSystemObserver.h"
 #include "common/Think.h"
@@ -57,42 +59,33 @@ STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenti
 
 static bool debug_flag = false;
 
-static int tryToConnect(PossessionClient& possessionClient)
+static void connectToServer(boost::asio::io_service& io_service, AwareMindFactory& mindFactory)
 {
-    if (possessionClient.connectLocal(client_socket_name) == 0) {
-        log(INFO, String::compose("Connected to server at %1.", client_socket_name));
-        Root systemAccountResponse = possessionClient.createSystemAccount();
-        if (!systemAccountResponse.isValid()) {
-            return -2;
-        }
-
-        if (!systemAccountResponse->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            std::cerr << "ERROR: Logged in, but account has no id" << std::endl << std::flush;
-        } else {
-
-//            int rulesCounter = 0;
-//            log(INFO, "Requesting rules from server.");
-//            std::function<bool(const Atlas::Objects::Root&)> inheritenceFn = [&](const Atlas::Objects::Root& root) -> bool {
-//                if (root->getId() == "game_entity") {
-//                    Inheritance::instance().updateClass("game_entity", root);
-//                } else {
-//                    Inheritance::instance().addChild(root);
-//                }
-//                rulesCounter++;
-//                return true;
-//            };
-//
-//            possessionClient.runTask(new RuleTraversalTask(systemAccountResponse->getId(), inheritenceFn), "game_entity");
-//            possessionClient.pollUntilTaskComplete();
-//            log(INFO, String::compose("Completed receiving %1 rules from server", rulesCounter));
-
-            possessionClient.createAccount(systemAccountResponse->getId());
-        }
-        return 0;
-    } else {
-        return -1;
+    if (exit_flag_soft || exit_flag) {
+        return;
     }
+    auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_service);
+
+    commClient->getSocket().async_connect({client_socket_name}, [&io_service, &mindFactory, commClient](boost::system::error_code ec) {
+        if (!ec) {
+            log(INFO, "Connection detected; creating possession client.");
+            commClient->startConnect(new PossessionClient(*commClient, mindFactory, [&]() {
+                connectToServer(io_service, mindFactory);
+            }));
+        } else {
+            //If we couldn't connect we'll wait five seconds and try again.
+            auto timer = std::make_shared<boost::asio::steady_timer>(io_service);
+            timer->expires_after(std::chrono::seconds(5));
+            timer->async_wait([&io_service, &mindFactory, timer](boost::system::error_code ec) {
+                if (!ec) {
+                    connectToServer(io_service, mindFactory);
+                }
+            });
+        }
+    });
 }
+
+
 
 int main(int argc, char** argv)
 {
@@ -101,8 +94,6 @@ int main(int argc, char** argv)
     prctl(PR_SET_PDEATHSIG, SIGTERM);
 
     std::unique_ptr<Monitors> monitors(new Monitors());
-
-    interactive_signals();
 
     int config_status = loadConfig(argc, argv, USAGE_AICLIENT);
     if (config_status < 0) {
@@ -131,11 +122,12 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    AwareMindFactory mindFactory;
+
     boost::asio::io_service io_service;
 
     {
         FileSystemObserver file_system_observer(io_service);
-
 
         AssetsManager assets_manager(file_system_observer);
         assets_manager.init();
@@ -147,7 +139,6 @@ int main(int argc, char** argv)
         SystemTime time{};
         time.update();
 
-        AwareMindFactory mindFactory;
 
         //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
         std::string script_package = "mind.NPCMind";
@@ -170,77 +161,42 @@ int main(int argc, char** argv)
             }
         }
 
-        std::unique_ptr<PossessionClient> possessionClient(new PossessionClient(io_service, mindFactory));
+        boost::asio::signal_set signalSet(io_service);
+        //If we're not running as a daemon we should use the interactive signal handler.
+        if (!daemon_flag) {
+            signalSet.add(SIGINT);
+            signalSet.add(SIGTERM);
+            signalSet.add(SIGHUP);
+            signalSet.add(SIGQUIT);
 
+        } else {
+            signalSet.add(SIGTERM);
+        }
+        signalSet.async_wait([&](boost::system::error_code ec, int signal){
+            if (!ec) {
+                exit_flag = true;
+                exit_flag_soft = true;
+                io_service.stop();
+            }
+        });
+
+
+        //Reload the script factory when scripts changes.
+        //Any PossessionAccount instance will also take care of reloading the script instances.
         python_reload_scripts.connect([&]() {
             mindFactory.m_scriptFactory->refreshClass();
-
-            if (possessionClient) {
-                auto& minds = possessionClient->getMinds();
-                for (auto& entry : minds) {
-                    auto entity = entry.second;
-                    //First store all thoughts
-                    Atlas::Objects::Operation::Think think;
-                    think->setArgs1(Atlas::Objects::Operation::Get());
-                    OpVector res;
-                    entity->operation(think, res);
-
-                    mindFactory.m_scriptFactory->addScript(entity.get());
-
-                    //After updating the script restore all thoughts
-                    OpVector ignoresRes;
-                    for (auto& op : res) {
-                        entity->operation(op, ignoresRes);
-                    }
-                }
-            }
-
         });
 
         log(INFO, "Trying to connect to server.");
-        while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
+        connectToServer(io_service, mindFactory);
 
         /// \brief Use a "work" instance to make sure the io_service never runs out of work and is stopped.
         boost::asio::io_service::work m_io_work(io_service);
 
-        MainLoop::run(false, io_service, possessionClient->getOperationsHandler(), {});
+        io_service.run();
 
-        while (!exit_flag) {
-            try {
-                double secondsUntilNextOp = possessionClient->secondsUntilNextOp();
-                boost::posix_time::microseconds waitTime((long long) (secondsUntilNextOp * 1000000));
-                io_service.poll();
-                int netResult = possessionClient->pollOne(waitTime);
-                if (netResult >= 0) {
-                    //As long as we're connected we'll keep on processing minds
-                    possessionClient->idle();
-                    possessionClient->markQueueAsClean();
-                } else if (!exit_flag) {
-                    log(ERROR, "Disconnected from server; will try to reconnect every one second.");
-                    //We're disconnected. We'll now enter a loop where we'll try to reconnect at an interval.
-                    //First we need to shut down the current client. Perhaps we could find a way to persist the minds in a better way?
-                    possessionClient.reset();
-                    possessionClient.reset(new PossessionClient(io_service, mindFactory));
-                    while (tryToConnect(*possessionClient) != 0 && !exit_flag) {
-                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                    }
-                }
-
-                // It is hoped that commonly thrown exception, particularly
-                // exceptions that can be caused  by external influences
-                // should be caught close to where they are thrown. If
-                // an exception makes it here then it should be debugged.
-            } catch (const std::exception& e) {
-                log(ERROR, String::compose("Exception caught in main(): %1", e.what()));
-            } catch (...) {
-                log(ERROR, "Exception caught in main()");
-            }
-        }
+        signalSet.clear();
 
         log(INFO, "Shutting down.");
     }
-    //Run any outstanding tasks before shutting down.
-    io_service.run();
 }

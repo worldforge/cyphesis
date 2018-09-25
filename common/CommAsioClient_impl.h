@@ -47,9 +47,20 @@ static const bool comm_asio_client_debug_flag = false;
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string& name,
                                           boost::asio::io_service& io_service) :
-    CommSocket(io_service), mSocket(io_service), mWriteBuffer(new boost::asio::streambuf()), mSendBuffer(new boost::asio::streambuf()), mInStream(&mReadBuffer),
-    mOutStream(mWriteBuffer), mNegotiateTimer(io_service, boost::posix_time::seconds(1)), mIsSending(false), mShouldSend(false),
-    m_codec(nullptr), m_encoder(nullptr), m_negotiate(nullptr), m_link(nullptr), mName(name)
+    CommSocket(io_service),
+    mSocket(io_service),
+    mWriteBuffer(new boost::asio::streambuf()),
+    mSendBuffer(new boost::asio::streambuf()),
+    mInStream(&mReadBuffer),
+    mOutStream(mWriteBuffer),
+    mNegotiateTimer(io_service, boost::posix_time::seconds(1)),
+    mIsSending(false),
+    mShouldSend(false),
+    m_codec(nullptr),
+    m_encoder(nullptr),
+    m_negotiate(nullptr),
+    m_link(nullptr),
+    mName(name)
 {
 }
 
@@ -148,6 +159,7 @@ void CommAsioClient<ProtocolT>::write()
                                              ss << "Error when writing to socket: (" << ec << ") " << ec.message();
                                              log(WARNING, ss.str());
                                          }
+
                                      }
                                  });
     }
@@ -280,6 +292,8 @@ int CommAsioClient<ProtocolT>::negotiate()
 
     // This should always be sent at the beginning of a session
     m_codec->streamBegin();
+
+    m_link->notifyConnectionComplete();
 
     return 0;
 }

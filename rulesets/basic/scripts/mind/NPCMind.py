@@ -55,10 +55,6 @@ class NPCMind(server.Mind):
     ########## Initialization
     def __init__(self, cppthing):
         #FIXME: this shouldn't be needed
-        print('wee1')
-
-
-
         self.mind = cppthing
 
 

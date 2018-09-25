@@ -1,3 +1,5 @@
+#include <utility>
+
 /*
  Copyright (C) 2013 Erik Ogenvik
 
@@ -32,6 +34,7 @@
 #include "common/debug.h"
 
 #include <Atlas/Objects/Entity.h>
+#include <common/CommSocket.h>
 
 static const bool debug_flag = false;
 
@@ -40,65 +43,59 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
-PossessionClient::PossessionClient(boost::asio::io_service& io_service, MindKit& mindFactory) :
-    BaseClient(io_service),
+PossessionClient::PossessionClient(CommSocket& commSocket, MindKit& mindFactory, std::function<void()> reconnectFn) :
+    BaseClient(commSocket),
     m_mindFactory(mindFactory),
+    m_reconnectFn(std::move(reconnectFn)),
     m_account(nullptr),
     m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
                            [&]() -> double { return getTime(); }),
-    m_inheritance(new Inheritance())
+    m_inheritance(new Inheritance()),
+    m_dispatcherTimer(commSocket.m_io_service)
 {
+
+
 }
 
-bool PossessionClient::idle()
-{
-    if (!m_connection.isConnected()) {
 
-    } else {
-        return m_operationsDispatcher.idle();
+PossessionClient::~PossessionClient()
+{
+    if (m_reconnectFn) {
+        m_reconnectFn();
     }
 }
 
-double PossessionClient::secondsUntilNextOp() const
-{
-    return m_operationsDispatcher.secondsUntilNextOp();
-}
-
-bool PossessionClient::isQueueDirty() const
-{
-    return m_operationsDispatcher.isQueueDirty();
-}
-
-void PossessionClient::markQueueAsClean()
-{
-    m_operationsDispatcher.markQueueAsClean();
-}
-
-void PossessionClient::createAccount(const std::string& accountId)
+void PossessionClient::notifyAccountCreated(const std::string& accountId)
 {
     log(INFO, "Creating possession account on server.");
-    m_account = new PossessionAccount(accountId, integerId(accountId), m_mindFactory);
+    m_account = new PossessionAccount(accountId, integerId(accountId), m_mindFactory, *this);
     OpVector res;
     m_account->enablePossession(res);
     for (auto& op : res) {
-        m_connection.send(op);
+        send(op);
     }
 }
+
 
 void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity)
 {
     if (!locatedEntity->isDestroyed()) {
         OpVector res;
         locatedEntity->operation(op, res);
+        bool updatedDispatcher = false;
         for (auto& resOp : res) {
             //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
             if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
                 resOp->setTo(resOp->getFrom());
                 m_operationsDispatcher.addOperationToQueue(resOp, locatedEntity);
+                updatedDispatcher = true;
             } else {
                 resOp->setFrom(locatedEntity->getId());
                 send(resOp);
             }
+        }
+        if (updatedDispatcher) {
+            scheduleDispatch();
         }
     }
 }
@@ -113,6 +110,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
 
     OpVector accountRes;
     m_account->operation(op, accountRes);
+    bool updatedDispatcher = false;
     for (auto& resOp : accountRes) {
         //Any op with both "from" and "to" set should be re-sent.
         if ((!resOp->isDefaultTo() && !resOp->isDefaultFrom())) {
@@ -120,12 +118,15 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
             auto I = minds.find(resOp->getTo());
             if (I != minds.end()) {
                 m_operationsDispatcher.addOperationToQueue(resOp, I->second);
+                updatedDispatcher = true;
             }
         } else {
             res.push_back(resOp);
         }
     }
-
+    if (updatedDispatcher) {
+        scheduleDispatch();
+    }
 //
 //
 //    if (op->isDefaultTo() || op->getTo() == m_account->getId()) {
@@ -180,11 +181,23 @@ double PossessionClient::getTime() const
 }
 
 
-const std::unordered_map<std::string, Ref<BaseMind>>& PossessionClient::getMinds() const {
+const std::unordered_map<std::string, Ref<BaseMind>>& PossessionClient::getMinds() const
+{
     return m_account->getMinds();
 }
 
-OperationsHandler& PossessionClient::getOperationsHandler()
+
+void PossessionClient::scheduleDispatch()
 {
-    return m_operationsDispatcher;
-};
+    m_dispatcherTimer.cancel();
+    std::chrono::microseconds waitTime((int64_t) (m_operationsDispatcher.secondsUntilNextOp() * 1000000L));
+    m_dispatcherTimer.expires_from_now(waitTime);
+
+    m_dispatcherTimer.async_wait([&](boost::system::error_code ec) {
+        if (!ec) {
+            m_operationsDispatcher.idle(10);
+            scheduleDispatch();
+        }
+    });
+
+}

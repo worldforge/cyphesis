@@ -37,7 +37,7 @@ class ClientConnection : public AtlasStreamClient {
     virtual void operation(const Atlas::Objects::Operation::RootOperation&);
 
   public:
-    ClientConnection();
+    ClientConnection(boost::asio::io_service& io_service);
     ~ClientConnection();
 
     int wait();

@@ -640,10 +640,5 @@ int AtlasStreamClient::pollUntilTaskComplete()
     return 0;
 }
 
-bool AtlasStreamClient::isConnected() const
-{
-    return m_socket && m_socket->
-}
-
 
 

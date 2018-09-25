@@ -38,7 +38,8 @@ class Link : public Router {
     CommSocket & m_commSocket;
 
     Link(CommSocket & commSocket, const std::string & id, long iid);
-    virtual ~Link();
+
+    ~Link() override;
 
     void setEncoder(Atlas::Objects::ObjectsEncoder * e) {
         m_encoder = e;
@@ -64,6 +65,8 @@ class Link : public Router {
                    const std::string &,
                    const std::string &) const;
     void disconnect();
+
+    virtual void notifyConnectionComplete();
 };
 
 #endif // COMMON_LINK_H

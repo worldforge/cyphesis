@@ -5,9 +5,7 @@ add_library(comm
     CommMetaClient.cpp
     CommMDNSPublisher.cpp
     HttpCache.cpp
-    CommAsioListener.cpp
     IdleConnector.cpp
-    CommAsioClient_impl.h
     CommAsioListener_impl.h)
 
 if (AVAHI_FOUND)

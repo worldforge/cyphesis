@@ -25,19 +25,20 @@
 #include <unordered_set>
 #include <functional>
 #include <unordered_map>
+#include <sigc++/connection.h>
 
 class MindKit;
 
-class MindRegistry;
-
 class TypeNode;
+
+class PossessionClient;
 
 class PossessionAccount : public Router
 {
     public:
-        PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory);
+        PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client);
 
-        ~PossessionAccount() override = default;
+        ~PossessionAccount() override;
 
         /**
          * Notify the server that we are able to possess minds.
@@ -53,14 +54,15 @@ class PossessionAccount : public Router
         };
 
     protected:
+        PossessionClient& m_client;
+
         std::unordered_map<std::string, Ref<BaseMind>> m_minds;
         std::unordered_map<std::string, Ref<BaseMind>> m_entitiesWithMinds;
 
         const MindKit& m_mindFactory;
 
-        int m_serialNoCounter;
+        sigc::connection m_python_connection;
 
-        std::map<long, std::function<void(const Operation&, OpVector&)>> m_callbacks;
 
         void PossessOperation(const Operation& op, OpVector& res);
 

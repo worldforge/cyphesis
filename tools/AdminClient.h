@@ -42,7 +42,7 @@ class AdminClient : public AtlasStreamClient
     void waitForInfo();
     int checkRule(const std::string & id);
   public:
-    AdminClient();
+    AdminClient(boost::asio::io_service& io_service);
     ~AdminClient();
 
     int login();

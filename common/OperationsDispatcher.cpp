@@ -19,5 +19,5 @@
 #include "OperationsDispatcher_impl.h"
 
 template class OperationsDispatcher<LocatedEntity>;
-template class OpQueEntry<LocatedEntity>;
+template struct OpQueEntry<LocatedEntity>;
 

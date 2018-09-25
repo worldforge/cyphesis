@@ -105,7 +105,7 @@ void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsH
     // the code easily.
     while (!exit_flag) {
         try {
-            bool busy = operationsHandler.idle();
+            bool busy = operationsHandler.idle(10);
             operationsHandler.markQueueAsClean();
             //If the world is busy we should just poll.
             if (busy) {

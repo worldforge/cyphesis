@@ -20,89 +20,69 @@
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
 
+#include "common/Link.h"
 #include "ClientConnection.h"
 
 class CreatorClient;
 
 /// \brief Base class for classes that implement clients used to connect to a
 /// cyphesis server
-class BaseClient {
-  protected:
-    /// \brief Low level connection to the server
-    ClientConnection m_connection;
-    /// \brief Store for details of the account after login
-    Atlas::Objects::Root m_player;
-    /// \brief Name used for the username of the account and the name of avatars
-    std::string m_playerName;
-    /// \brief Identifier of the Account on the server after login
-    std::string m_playerId;
+class BaseClient : public Link
+{
+    protected:
 
-    std::string m_username;
-    std::string m_password;
 
-    /**
-     * Called when an operation is received from the server.
-     *
-     * @param op The operation.
-     * @param res Any operations to be sent back.
-     */
-    virtual void operation(const Operation & op, OpVector & res) = 0;
+        std::string m_username;
+        std::string m_password;
 
-    std::string getErrorMessage(const Operation & err);
+        long m_serialNo;
 
-  public:
-    explicit BaseClient(boost::asio::io_service& io_service);
-    virtual ~BaseClient() = default;
+        struct CallbackEntry
+        {
+            std::function<void(const Operation&, OpVector&)> callback;
+            boost::asio::steady_timer timeout;
+            std::function<void()> timeoutCallback;
+        };
 
-    const std::string & id() const {
-        return m_playerId;
-    }
+        std::map<long, CallbackEntry> m_callbacks;
 
-    Atlas::Objects::Root createSystemAccount(const std::string& usernameSuffix = "");
-    Atlas::Objects::Root createAccount(const std::string & name,
-                                       const std::string & pword);
-    CreatorClient * createCharacter(const std::string & name);
-    void logout();
-    int pollOne(const boost::posix_time::time_duration& duration);
-    
-    /// \brief Function called when nothing else is going on
-    //virtual void idle() = 0;
 
-    /// \brief Connect to a local server via a unix socket
-    int connectLocal(const std::string & socket) {
-        return m_connection.connectLocal(socket);
-    }
+        static std::string getErrorMessage(const Operation& err);
 
-    /// \brief Connect to a remote server using a network socket
-    int connect(const std::string & server, int port) {
-        return m_connection.connect(server, port);
-    }
+        virtual void notifyAccountCreated(const std::string& accountId) = 0;
 
-    /// \brief Send an operation to the server
-    void send(const Atlas::Objects::Operation::RootOperation & op);
+    public:
+        explicit BaseClient(CommSocket& commSocket);
 
-    int wait() {
-        return m_connection.wait();
-    }
+        ~BaseClient() override = default;
 
-    int sendAndWaitReply(const Operation & op, OpVector & res) {
-        return m_connection.sendAndWaitReply(op, res);
-    }
+        void createSystemAccount(const std::string& usernameSuffix = "");
 
-    int runTask(ClientTask * task, const std::string & arg);
-    int endTask();
+        Atlas::Objects::Root createAccount(const std::string& name,
+                                           const std::string& pword);
 
-    /**
-     * Checks if there's an active task.
-     * @return True if there's a task set.
-     */
-    bool hasTask() const;
+        CreatorClient* createCharacter(const std::string& name);
 
-    /**
-     * Poll the server until the current task has completed.
-     * @return 0 if successful
-     */
-    int pollUntilTaskComplete();
+        void logout();
+
+        void externalOperation(const Operation& op, Link&) override;
+
+
+        int runTask(ClientTask* task, const std::string& arg);
+
+        int endTask();
+
+        void sendWithCallback(Operation op, std::function<void(const Operation&, OpVector&)> callback,
+                              std::function<void()> timeoutCallback = std::function<void()>(),
+                              std::chrono::milliseconds timeout = std::chrono::milliseconds(5000));
+
+        /**
+         * Checks if there's an active task.
+         * @return True if there's a task set.
+         */
+        bool hasTask() const;
+
+        void notifyConnectionComplete() override;
 
 };
 

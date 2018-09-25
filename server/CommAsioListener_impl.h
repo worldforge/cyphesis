@@ -20,7 +20,7 @@
 #define COMMASIOLISTENER_IMPL_H_
 
 #include "CommAsioListener.h"
-#include "CommAsioClient_impl.h"
+#include "common/CommAsioClient_impl.h"
 
 template<class ProtocolT, typename ClientT>
 CommAsioListener<ProtocolT, ClientT>::CommAsioListener(

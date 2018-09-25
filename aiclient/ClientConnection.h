@@ -27,29 +27,16 @@
 #include <Atlas/Objects/Root.h>
 
 #include <deque>
+#include "common/Link.h"
 
 /// \brief Class to handle socket connection to a cyphesis server from an
 /// an admin client
-class ClientConnection : public AtlasStreamClient {
-  protected:
-    /// \brief Store for operations arrived from the server
-    std::deque<Atlas::Objects::Operation::RootOperation> operationQueue;
-
-    void operation(const Atlas::Objects::Operation::RootOperation&) override;
+class ClientConnection : public Link {
 
   public:
-    explicit ClientConnection(boost::asio::io_service& io_service);
+    explicit ClientConnection(CommSocket & commSocket, const std::string & id, long iid);
 
     ~ClientConnection() override = default;
-
-    int wait();
-    int sendAndWaitReply(const Operation & op, OpVector & res);
-
-    Atlas::Objects::Operation::RootOperation pop();
-    bool pending();
-
-    void send(const Operation & op) override;
-
 
     friend class ClientConnectionintegration;
     friend class ClientConnectiontest;

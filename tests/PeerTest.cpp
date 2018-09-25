@@ -27,7 +27,7 @@
 
 #include "server/Peer.h"
 
-#include "server/CommAsioClient_impl.h"
+#include "common/CommAsioClient_impl.h"
 #include "server/CommPeer.h"
 #include "rulesets/ExternalMind.h"
 

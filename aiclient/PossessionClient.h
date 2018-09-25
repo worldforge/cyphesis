@@ -37,20 +37,11 @@ class Inheritance;
 class PossessionClient: public BaseClient
 {
     public:
-        explicit PossessionClient(boost::asio::io_service& io_service, MindKit& mindFactory);
+        explicit PossessionClient(CommSocket& commSocket, MindKit& mindFactory, std::function<void()> reconnectFn);
 
-        ~PossessionClient() override = default;
-
-        bool idle();
-        double secondsUntilNextOp() const;
-        bool isQueueDirty() const;
-        void markQueueAsClean();
-
-        void createAccount(const std::string& accountId);
+        ~PossessionClient() override;
 
         const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const;
-
-        OperationsHandler& getOperationsHandler();
 
     protected:
 
@@ -58,14 +49,22 @@ class PossessionClient: public BaseClient
         void operationFromEntity(const Operation & op, Ref<BaseMind> locatedEntity);
         double getTime() const;
 
+        void scheduleDispatch();
+
+        void notifyAccountCreated(const std::string& accountId) override;
 
         MindKit& m_mindFactory;
+
+        std::function<void()> m_reconnectFn;
 
         PossessionAccount* m_account;
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
 
         std::unique_ptr<Inheritance> m_inheritance;
+
+        boost::asio::steady_timer m_dispatcherTimer;
+
 
 
 };

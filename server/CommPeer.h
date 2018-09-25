@@ -19,7 +19,7 @@
 #ifndef SERVER_COMM_PEER_H
 #define SERVER_COMM_PEER_H
 
-#include "CommAsioClient.h"
+#include "common/CommAsioClient.h"
 
 #include <sigc++/signal.h>
 

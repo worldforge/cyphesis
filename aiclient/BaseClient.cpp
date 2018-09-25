@@ -26,6 +26,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
+#include <common/CommSocket.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -41,21 +42,53 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-
-/// \brief Send an operation to the server
-void BaseClient::send(const Operation & op)
+BaseClient::BaseClient(CommSocket& commSocket)
+    : Link(commSocket, "", 0)
 {
-    m_connection.send(op);
+
+}
+
+
+void BaseClient::externalOperation(const Operation& op, Link& link)
+{
+
+    if (debug_flag) {
+        std::cout << "BaseClient::externalOperation received {" << std::endl;
+        debug_dump(op, std::cout);
+        std::cout << "}" << std::endl << std::flush;
+    }
+
+    OpVector res;
+
+    if (op->isDefaultTo() && !op->isDefaultRefno()) {
+        auto I = m_callbacks.find(op->getRefno());
+        if (I != m_callbacks.end()) {
+            I->second.timeout.cancel();
+            I->second.callback(op, res);
+            m_callbacks.erase(I);
+        }
+    } else {
+        operation(op, res);
+    }
+
+    link.send(res);
+
+    if (debug_flag) {
+        for (auto resOp : res) {
+            std::cout << "BaseClient::externalOperation sent {" << std::endl;
+            debug_dump(resOp, std::cout);
+            std::cout << "}" << std::endl << std::flush;
+        }
+    }
+
 }
 
 /// \brief Create a new account on the server
 ///
 /// @param name User name of the new account
 /// @param password Password of the new account
-Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
+void BaseClient::createSystemAccount(const std::string& usernameSuffix)
 {
-    //reset info reply first
-    m_connection.getInfoReply() = Root(nullptr);
 
     Anonymous player_ent;
     m_username = create_session_username() + usernameSuffix;
@@ -66,127 +99,37 @@ Root BaseClient::createSystemAccount(const std::string& usernameSuffix)
 
     Create createAccountOp;
     createAccountOp->setArgs1(player_ent);
-    createAccountOp->setSerialno(m_connection.newSerialNo());
-    send(createAccountOp);
-    if (m_connection.wait() != 0) {
-        std::cerr << "ERROR: Failed to log into server: \""
-                << m_connection.errorMessage() << "\"" << std::endl
-                << std::flush;
-        return Root(nullptr);
-    }
-
-    Root ent = m_connection.getInfoReply();
-
-    if (!ent) {
-        return ent;
-    }
-
-    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        std::cerr << "ERROR: Logged in, but account has no id" << std::endl
-                << std::flush;
-    } else {
-        m_playerId = ent->getId();
-    }
-
-    return ent;
-}
-
-/// \brief Create a new account on the server
-///
-/// @param name User name of the new account
-/// @param password Password of the new account
-Root BaseClient::createAccount(const std::string & name,
-        const std::string & password)
-{
-
-    //reset info reply first
-    m_connection.getInfoReply() = Root(nullptr);
-
-    m_playerName = name;
-
-    Anonymous player_ent;
-    player_ent->setAttr("username", name);
-    player_ent->setAttr("password", password);
-    player_ent->setParent("player");
-
-    debug(
-            std::cout << "Logging " << name << " in with " << password
-                    << " as password" << std::endl << std::flush
-            ;);
-
-    Login loginAccountOp;
-    loginAccountOp->setArgs1(player_ent);
-    loginAccountOp->setSerialno(m_connection.newSerialNo());
-    send(loginAccountOp);
-
-    if (m_connection.wait() != 0) {
-        Create createAccountOp;
-        createAccountOp->setArgs1(player_ent);
-        createAccountOp->setSerialno(m_connection.newSerialNo());
-        send(createAccountOp);
-        if (m_connection.wait() != 0) {
-            std::cerr << "ERROR: Failed to log into server" << std::endl
-                    << std::flush;
-            return Root(nullptr);
-        }
-    }
-
-    const Root & ent = m_connection.getInfoReply();
-
-    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        std::cerr << "ERROR: Logged in, but account has no id" << std::endl
-                << std::flush;
-    } else {
-        m_playerId = ent->getId();
-    }
-
-    return ent;
+    sendWithCallback(createAccountOp, [&](const Operation& op, OpVector& res) {
+                         if (!op->getArgs().empty()) {
+                             auto ent = op->getArgs().front();
+                             if (!ent->isDefaultId()) {
+                                 notifyAccountCreated(ent->getId());
+                             } else {
+                                 log(ERROR, "ERROR: Logged in, but account has no id.");
+                             }
+                         }
+                     },
+                     []() {
+                         std::cerr << "ERROR: Failed to log into server: \""
+                                   //<< m_connection.errorMessage() << "\""
+                                   << std::endl << std::flush;
+                     });
 }
 
 void BaseClient::logout()
 {
     Logout logout;
     send(logout);
-
-    if (m_connection.wait() != 0) {
-        std::cerr << "ERROR: Failed to logout" << std::endl << std::flush;
-    }
 }
 
-/// \brief Handle any operations that have arrived from the server
-int BaseClient::pollOne(const boost::posix_time::time_duration& duration)
-{
-    int pollResult = m_connection.pollOne(duration);
-    if (pollResult == 0) {
-        Operation input;
-        while ((input = m_connection.pop()).isValid()) {
-            if (input->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
-                log(ERROR,
-                        String::compose("Got error from server: %1",
-                                getErrorMessage(input)));
-            }
 
-            OpVector res;
-            operation(input, res);
-            OpVector::const_iterator Iend = res.end();
-            for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-                if (!input->isDefaultSerialno()) {
-                    (*I)->setRefno(input->getSerialno());
-                }
-                send(*I);
-            }
-        }
-    }
-    return pollResult;
-}
-
-std::string BaseClient::getErrorMessage(const Operation & err)
+std::string BaseClient::getErrorMessage(const Operation& err)
 {
     const std::vector<Root>& args = err->getArgs();
     if (args.empty()) {
         return "Unknown error.";
     } else {
-        const Root & arg = args.front();
+        const Root& arg = args.front();
         Atlas::Message::Element message;
         if (arg->copyAttr("message", message) != 0) {
             return "Unknown error.";
@@ -200,14 +143,16 @@ std::string BaseClient::getErrorMessage(const Operation & err)
     }
 }
 
-int BaseClient::runTask(ClientTask * task, const std::string & arg)
+int BaseClient::runTask(ClientTask* task, const std::string& arg)
 {
-    return m_connection.runTask(task, arg);
+    return 0;
+//    return m_connection.runTask(task, arg);
 }
 
 int BaseClient::endTask()
 {
-    return m_connection.endTask();
+    return 0;
+//    return m_connection.endTask();
 }
 
 /**
@@ -216,20 +161,44 @@ int BaseClient::endTask()
  */
 bool BaseClient::hasTask() const
 {
-    return m_connection.hasTask();
+    return false;
+//    return m_connection.hasTask();
 }
 
-/**
- * Poll the server until the current task has completed.
- * @return 0 if successful
- */
-int BaseClient::pollUntilTaskComplete()
+
+void BaseClient::notifyConnectionComplete()
 {
-    return m_connection.pollUntilTaskComplete();
+    createSystemAccount();
 }
 
-BaseClient::BaseClient(boost::asio::io_service& io_service)
-: m_connection(io_service)
+void BaseClient::sendWithCallback(Operation op, std::function<void(const Operation&, OpVector&)> timeout, std::function<void()> timeoutCallback, std::chrono::milliseconds duration)
 {
+    auto serialno = m_serialNo++;
+    op->setSerialno(serialno);
+
+    boost::asio::steady_timer timer(m_commSocket.m_io_service);
+    timer.expires_after(duration);
+    timer.async_wait([&, serialno](boost::system::error_code ec) {
+        if (!ec) {
+            log(WARNING, String::compose("Timeout on operation with serial no %1.", serialno));
+            auto I = m_callbacks.find(serialno);
+            if (I != m_callbacks.end()) {
+                if (I->second.timeoutCallback) {
+                    I->second.timeoutCallback();
+                }
+                m_callbacks.erase(I);
+            }
+        }
+    });
+
+    CallbackEntry entry{
+        std::move(timeout),
+        std::move(timer),
+        std::move(timeoutCallback)
+    };
+
+    m_callbacks.emplace(serialno, std::move(entry));
+    send(op);
 
 }
+

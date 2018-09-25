@@ -20,10 +20,12 @@
 #endif
 
 #include "PossessionAccount.h"
+#include "PossessionClient.h"
 #include "MindRegistry.h"
 
 #include "rulesets/MindFactory.h"
 #include "rulesets/BaseMind.h"
+#include <rulesets/Python_API.h>
 
 #include "common/Possess.h"
 #include "common/id.h"
@@ -32,6 +34,7 @@
 #include "common/ScriptKit.h"
 #include "common/Setup.h"
 #include "common/debug.h"
+#include <common/Think.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -51,12 +54,37 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
-PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory) :
+PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client) :
     Router(id, intId),
-    m_mindFactory(mindFactory),
-    m_serialNoCounter(1)
+    m_client(client),
+    m_mindFactory(mindFactory)
 {
     assert(m_mindFactory.m_scriptFactory);
+
+    m_python_connection = python_reload_scripts.connect([&]() {
+        for (auto& entry : m_minds) {
+            auto entity = entry.second;
+            //First store all thoughts
+            Atlas::Objects::Operation::Think think;
+            think->setArgs1(Atlas::Objects::Operation::Get());
+            OpVector res;
+            entity->operation(think, res);
+
+            m_mindFactory.m_scriptFactory->addScript(entity.get());
+
+            //After updating the script restore all thoughts
+            OpVector ignoresRes;
+            for (auto& op : res) {
+                entity->operation(op, ignoresRes);
+            }
+        }
+
+    });
+}
+
+PossessionAccount::~PossessionAccount()
+{
+    m_python_connection.disconnect();
 }
 
 
@@ -79,17 +107,6 @@ void PossessionAccount::enablePossession(OpVector& res)
 
 void PossessionAccount::operation(const Operation& op, OpVector& res)
 {
-    if (!op->isDefaultRefno()) {
-        auto I = m_callbacks.find(op->getRefno());
-        if (I != m_callbacks.end()) {
-            I->second(op, res);
-            m_callbacks.erase(I);
-            return;
-        } else {
-            log(WARNING, String::compose("Got %1 op with refno %2, but there's no callback registered for that refno.", op->getParent(), op->getRefno()));
-        }
-    }
-
     if (!op->isDefaultTo()) {
         auto I = m_minds.find(op->getTo());
         if (I != m_minds.end()) {
@@ -158,9 +175,7 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
     Possess possess;
     possess->setFrom(getId());
     possess->setArgs1(what);
-    possess->setSerialno(m_serialNoCounter++);
-
-    m_callbacks[possess->getSerialno()] = [this](const Operation& op, OpVector& res) {
+    m_client.sendWithCallback(possess, [this](const Operation& op, OpVector& res) {
 
         if (op->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
             log(ERROR, "Malformed possession response: not an info.");
@@ -198,9 +213,10 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
 
         createMindInstance(res, ent->getId(), entityId);
 
-    };
+    });
 
-    res.push_back(possess);
+
+    //res.push_back(possess);
 }
 
 void PossessionAccount::createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId)
