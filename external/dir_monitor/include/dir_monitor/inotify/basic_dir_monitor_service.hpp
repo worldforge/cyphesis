@@ -102,22 +102,23 @@ public:
     protected:
         void PostAndWait(const boost::system::error_code ec, const dir_monitor_event& ev) const
         {
-            std::mutex post_mutex;
-            std::condition_variable post_condition_variable;
-            bool post_cancel = false;
+            if (ev.type != dir_monitor_event::null) {
+                std::mutex post_mutex;
+                std::condition_variable post_condition_variable;
+                bool post_cancel = false;
 
-            this->io_service_.post(
-                [&]
-                {
-                    handler_(ec, ev);
-                    std::lock_guard<std::mutex> lock(post_mutex);
-                    post_cancel = true;
-                    post_condition_variable.notify_one();
-                }
-            );
-            std::unique_lock<std::mutex> lock(post_mutex);
-            while (!post_cancel)
-                post_condition_variable.wait(lock);
+                this->io_service_.post(
+                    [&] {
+                        handler_(ec, ev);
+                        std::lock_guard<std::mutex> lock(post_mutex);
+                        post_cancel = true;
+                        post_condition_variable.notify_one();
+                    }
+                );
+                std::unique_lock<std::mutex> lock(post_mutex);
+                while (!post_cancel)
+                    post_condition_variable.wait(lock);
+            }
         }
 
     private:
