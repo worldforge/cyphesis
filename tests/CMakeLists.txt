@@ -295,11 +295,8 @@ target_link_libraries(Py_TerrainPropertyTest ${PYTHON_TESTS_LIBS})
 wf_add_test(Py_FilterTest.cpp python_testers.cpp)
 target_link_libraries(Py_FilterTest ${PYTHON_TESTS_LIBS})
 
-wf_add_test(PythonWrapperTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonWrapper.cpp)
-target_link_libraries(PythonWrapperTest pycxx)
-
-wf_add_test(PythonEntityScriptTest.cpp python_testers.cpp)
-target_link_libraries(PythonEntityScriptTest ${PYTHON_TESTS_LIBS})
+wf_add_test(PythonWrapperTest.cpp python_testers.cpp)
+target_link_libraries(PythonWrapperTest ${PYTHON_TESTS_LIBS})
 
 #Entity filter tests
 

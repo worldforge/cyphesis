@@ -24,7 +24,6 @@
 #include "CyPy_Element.h"
 
 #include "rulesets/PythonWrapper.h"
-#include "rulesets/PythonEntityScript.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

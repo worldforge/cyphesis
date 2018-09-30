@@ -39,6 +39,8 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 
         static Py::Object wrap(LocatedEntity* value);
 
+        Py::Object str() override;
+
 
     protected:
         CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value);

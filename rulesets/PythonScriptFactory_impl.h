@@ -25,7 +25,7 @@
 #include "rulesets/BaseMind.h"
 #include "PythonScriptFactory.h"
 
-#include "PythonEntityScript.h"
+#include "PythonWrapper.h"
 #include "Python_Script_Utils.h"
 
 /// \brief PythonScriptFactory constructor
@@ -81,7 +81,7 @@ int PythonScriptFactory<T>::addScript(T * entity) const
 {
     auto script = createScript(entity);
     if (!script.isNone()) {
-        auto scriptInstance = new PythonEntityScript(script);
+        auto scriptInstance = new PythonWrapper(script);
         entity->setScript(scriptInstance);
     }
 

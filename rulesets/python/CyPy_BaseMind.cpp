@@ -135,6 +135,9 @@ Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
 Py::Object CyPy_BaseMind::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
+    if (nameStr == "id") {
+        return Py::String(m_value->getId());
+    }
     if (nameStr == "map") {
         return CyPy_MemMap::wrap(m_value->getMap());
     }

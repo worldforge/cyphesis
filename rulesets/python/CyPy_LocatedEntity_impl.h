@@ -178,5 +178,10 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::wrap(LocatedEntity* val
     return wrapLocatedEntity(value);
 }
 
+template<typename TValue, typename TPythonClass>
+Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::str()
+{
+    return describe_entity();
+}
 
 #endif //CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H

@@ -42,3 +42,4 @@ PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
 
 template class PythonScriptFactory<LocatedEntity>;
 template class PythonScriptFactory<BaseMind>;
+

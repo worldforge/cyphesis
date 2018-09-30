@@ -21,7 +21,6 @@
 #include "Python_API.h"
 #include "Python_Script_Utils.h"
 
-#include "PythonEntityScript.h"
 #include "BaseMind.h"
 
 #include "common/globals.h"

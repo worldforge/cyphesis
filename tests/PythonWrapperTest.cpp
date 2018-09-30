@@ -23,29 +23,108 @@
 #define DEBUG
 #endif
 
-#include <Python.h>
 
-#include "rulesets/PythonWrapper.h"
+#include "python_testers.h"
+
+#include "rulesets/Entity.h"
+#include "rulesets/Python_API.h"
+#include "rulesets/PythonScriptFactory.h"
+#include "rulesets/Script.h"
+
+#include "common/Tick.h"
+#include "rulesets/BaseWorld.h"
+
+#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
+#include <rulesets/PythonWrapper.h>
+#include "external/pycxx/CXX/Extensions.hxx"
+
+#include "TestWorld.h"
+
+struct TestMod : public Py::ExtensionModule<TestMod>
+{
+    TestMod() : ExtensionModule("testmod")
+    {
+        initialize("testmod");
+    }
+};
 
 int main()
 {
-    Py_Initialize();
+    PyImport_AppendInittab("testmod", []() {
+        auto module = new TestMod();
+        return module->module().ptr();
+    });
 
-    PythonWrapper * pw = new PythonWrapper(Py::Long(1L));
-    delete pw;
+    init_python_api("9fb5e26d-5631-479c-bdfc-cdb3c14b5428");
 
-    Py_Finalize();
+    run_python_string("import server");
+    run_python_string("import testmod");
+    run_python_string("from atlas import Operation");
+    run_python_string("class TestEntity(server.Thing):\n"
+                      " def __init__(self, cppthing):\n"
+                      "  self.foo = 'bar'\n"
+                      "  assert self.foo == 'bar'\n"
+                      " def look_operation(self, op): pass\n"
+                      " def delete_operation(self, op):\n"
+                      "  raise AssertionError('deliberate')\n"
+                      " def tick_operation(self, op):\n"
+                      "  raise AssertionError('deliberate')\n"
+                      " def talk_operation(self, op):\n"
+                      "  return 'invalid result'\n"
+                      " def set_operation(self, op):\n"
+                      "  return Operation('sight')\n"
+                      " def move_operation(self, op):\n"
+                      "  return Operation('sight') + Operation('move')\n"
+                      " def test_hook(self, ent): pass\n");
+    run_python_string("testmod.TestEntity=TestEntity");
+
+    // PyObject * package_name = PyUnicode_FromString("testmod");
+    // PyObject * testmod = PyImport_Import(package_name);
+    // Py_DECREF(package_name);
+    // assert(testmod);
+
+    PythonScriptFactory<LocatedEntity> psf("testmod", "TestEntity");
+    int ret = psf.setup();
+    assert(ret == 0);
+    Ref<Entity> e = new Entity("1", 1);
+    new TestWorld(e);
+    ret = psf.addScript(e.get());
+    assert(ret == 0);
+
+    assert(e->m_scripts.size() == 1);
+    assert(dynamic_cast<PythonWrapper*>(e->m_scripts.front())->wrapper().getAttr("foo").as_string() == "bar");
+
+    OpVector res;
+    Atlas::Objects::Operation::Look op1;
+    e->operation(op1, res);
+
+    Atlas::Objects::Operation::Create op2;
+    e->operation(op2, res);
+
+    Atlas::Objects::Operation::Delete op3;
+    e->operation(op3, res);
+
+    Atlas::Objects::Operation::Talk op4;
+    e->operation(op4, res);
+
+    Atlas::Objects::Operation::Set op5;
+    e->operation(op5, res);
+
+    Atlas::Objects::Operation::Move op6;
+    e->operation(op6, res);
+
+    Atlas::Objects::Operation::Tick op7;
+    e->operation(op7, res);
+
+    Script * script = e->m_scripts.front();
+    assert(script != 0);
+
+    script->hook("nohookfunction", e.get());
+    script->hook("test_hook", e.get());
+    e = nullptr;
+
+    shutdown_python_api();
     return 0;
-}
-
-// stubs
-
-#include "common/log.h"
-
-#include "stubs/rulesets/stubScript.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
 }

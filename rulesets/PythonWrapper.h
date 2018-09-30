@@ -22,7 +22,7 @@
 #include "Script.h"
 #include "external/pycxx/CXX/Objects.hxx"
 
-/// \brief Wrapper class for entities without scripts but with wrappers
+/// \brief A Python script wrapping a C++ class.
 /// \ingroup Scripts
 class PythonWrapper : public Script {
   protected:
@@ -32,7 +32,17 @@ class PythonWrapper : public Script {
     explicit PythonWrapper(const Py::Object& wrapper);
     ~PythonWrapper() override;
 
-    /// \brief Accessor for the python object that wraps the entity.
+    HandlerResult operation(const std::string & opname,
+                            const Atlas::Objects::Operation::RootOperation & op,
+                            OpVector & res) override;
+
+    void hook(const std::string & function, LocatedEntity * entity) override;
+
+    static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res);
+
+
+
+        /// \brief Accessor for the python object that wraps the entity.
     const Py::Object& wrapper() const { return m_wrapper; }
 };
 

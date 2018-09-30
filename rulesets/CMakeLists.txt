@@ -94,7 +94,6 @@ add_library(scriptpython
     PythonClass.cpp
     PythonContext.cpp
     PythonWrapper.cpp
-    PythonEntityScript.cpp
     PythonArithmeticScript.cpp
     PythonArithmeticFactory.cpp
     PythonScriptFactory.cpp
