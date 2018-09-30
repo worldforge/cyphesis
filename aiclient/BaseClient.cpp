@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000-2005 Alistair Riddoch
 // Copyright (C) 2013 Erik Ogenvik
@@ -22,11 +24,13 @@
 #include "common/debug.h"
 #include "common/compose.hpp"
 #include "common/system.h"
+#include "common/CommSocket.h"
+#include "common/ClientTask.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Operation.h>
 
 #include <iostream>
-#include <common/CommSocket.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -60,15 +64,25 @@ void BaseClient::externalOperation(const Operation& op, Link& link)
 
     OpVector res;
 
-    if (op->isDefaultTo() && !op->isDefaultRefno()) {
-        auto I = m_callbacks.find(op->getRefno());
-        if (I != m_callbacks.end()) {
-            I->second.timeout.cancel();
-            I->second.callback(op, res);
-            m_callbacks.erase(I);
+    if (m_task) {
+        m_task->operation(op, res);
+
+        if (m_task->isComplete()) {
+            m_task.reset();
         }
     } else {
-        operation(op, res);
+
+
+        if (op->isDefaultTo() && !op->isDefaultRefno()) {
+            auto I = m_callbacks.find(op->getRefno());
+            if (I != m_callbacks.end()) {
+                I->second.timeout.cancel();
+                I->second.callback(op, res);
+                m_callbacks.erase(I);
+            }
+        } else {
+            operation(op, res);
+        }
     }
 
     link.send(res);
@@ -143,16 +157,34 @@ std::string BaseClient::getErrorMessage(const Operation& err)
     }
 }
 
-int BaseClient::runTask(ClientTask* task, const std::string& arg)
+int BaseClient::runTask(std::shared_ptr<ClientTask> task, const std::string& arg)
 {
+
+    if (m_task != nullptr) {
+        std::cout << "Busy" << std::endl << std::flush;
+        return -1;
+    }
+
+    m_task = std::move(task);
+
+    OpVector res;
+
+    m_task->setup(arg, res);
+
+    if (m_task->isComplete()) {
+        m_task.reset();
+        return -1;
+    }
+
+    send(res);
+
     return 0;
-//    return m_connection.runTask(task, arg);
 }
 
 int BaseClient::endTask()
 {
+    m_task.reset();
     return 0;
-//    return m_connection.endTask();
 }
 
 /**
@@ -161,8 +193,7 @@ int BaseClient::endTask()
  */
 bool BaseClient::hasTask() const
 {
-    return false;
-//    return m_connection.hasTask();
+    return (bool)m_task;
 }
 
 

@@ -21,9 +21,11 @@
 #define CLIENT_BASE_CLIENT_H
 
 #include "common/Link.h"
-#include "ClientConnection.h"
+#include <memory>
+#include <boost/asio/steady_timer.hpp>
 
 class CreatorClient;
+class ClientTask;
 
 /// \brief Base class for classes that implement clients used to connect to a
 /// cyphesis server
@@ -31,6 +33,7 @@ class BaseClient : public Link
 {
     protected:
 
+        std::shared_ptr<ClientTask> m_task;
 
         std::string m_username;
         std::string m_password;
@@ -68,7 +71,7 @@ class BaseClient : public Link
         void externalOperation(const Operation& op, Link&) override;
 
 
-        int runTask(ClientTask* task, const std::string& arg);
+        int runTask(std::shared_ptr<ClientTask> task, const std::string& arg);
 
         int endTask();
 

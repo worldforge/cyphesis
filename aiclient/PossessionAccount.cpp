@@ -138,6 +138,23 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
     }
 }
 
+Ref<BaseMind> PossessionAccount::findMindForId(const std::string& id)
+{
+
+    auto I = m_minds.find(id);
+    if (I != m_minds.end()) {
+        return I->second;
+    }
+    I = m_entitiesWithMinds.find(id);
+    if (I != m_entitiesWithMinds.end()) {
+        return I->second;
+    }
+
+    return {};
+
+}
+
+
 void PossessionAccount::externalOperation(const Operation& op, Link&)
 {
 

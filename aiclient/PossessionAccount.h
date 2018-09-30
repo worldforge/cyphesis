@@ -53,6 +53,8 @@ class PossessionAccount : public Router
             return m_minds;
         };
 
+        Ref<BaseMind> findMindForId(const std::string& id);
+
     protected:
         PossessionClient& m_client;
 

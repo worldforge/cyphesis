@@ -135,29 +135,34 @@ class NPCMind(server.Mind):
         
         #Setup a tick operation for thinking
         thinkTickOp = Operation("tick")
+        thinkTickOp.setTo(self.id)
         thinkTickOp.setArgs([Entity(name="think")])
 
         #Setup a tick operation for moving
         moveTickOp = Operation("tick")
+        thinkTickOp.setTo(self.id)
         moveTickOp.setArgs([Entity(name="move")])
         moveTickOp.setFutureSeconds(0.2)
         
         #Setup a tick operation for periodical persistence of thoughts to the server
         sendThoughtsTickOp = Operation("tick")
+        thinkTickOp.setTo(self.id)
         sendThoughtsTickOp.setArgs([Entity(name="persistthoughts")])
         sendThoughtsTickOp.setFutureSeconds(5)
         
         return Operation("look")+thinkTickOp+moveTickOp+sendThoughtsTickOp
     def tick_operation(self, op):
-        """periodically reasses situation
+        """periodically reassess situation
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name.
         """
+        print('tick!')
         args=op.getArgs()
         if len(args) != 0:
+            print('think arg: ' + args[0].name)
             if args[0].name == "think":
                 #It's a "thinking" op, which is the base of the AI behaviour.
-                #At regular intervals the AI needs to assess its goals; this is one through "thinkning" ops.
+                #At regular intervals the AI needs to assess its goals; this is done through "thinkning" ops.
                 opTick=Operation("tick")
                 #just copy the args from the previous tick
                 opTick.setArgs(args)

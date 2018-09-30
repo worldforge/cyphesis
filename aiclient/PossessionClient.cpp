@@ -36,7 +36,7 @@
 #include <Atlas/Objects/Entity.h>
 #include <common/CommSocket.h>
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -81,22 +81,8 @@ void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> lo
 {
     if (!locatedEntity->isDestroyed()) {
         OpVector res;
-        locatedEntity->operation(op, res);
-        bool updatedDispatcher = false;
-        for (auto& resOp : res) {
-            //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
-            if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-                resOp->setTo(resOp->getFrom());
-                m_operationsDispatcher.addOperationToQueue(resOp, locatedEntity);
-                updatedDispatcher = true;
-            } else {
-                resOp->setFrom(locatedEntity->getId());
-                send(resOp);
-            }
-        }
-        if (updatedDispatcher) {
-            scheduleDispatch();
-        }
+        operation(op, res);
+        send(res);
     }
 }
 
@@ -111,14 +97,21 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
     OpVector accountRes;
     m_account->operation(op, accountRes);
     bool updatedDispatcher = false;
+
     for (auto& resOp : accountRes) {
+        if (debug_flag) {
+            std::cout << "PossessionClient::operation return {" << std::endl;
+            debug_dump(resOp, std::cout);
+            std::cout << "}" << std::endl << std::flush;
+        }
         //Any op with both "from" and "to" set should be re-sent.
         if ((!resOp->isDefaultTo() && !resOp->isDefaultFrom())) {
-            auto& minds = getMinds();
-            auto I = minds.find(resOp->getTo());
-            if (I != minds.end()) {
-                m_operationsDispatcher.addOperationToQueue(resOp, I->second);
+            auto mind = m_account->findMindForId(resOp->getTo());
+            if (mind) {
+                m_operationsDispatcher.addOperationToQueue(resOp, std::move(mind));
                 updatedDispatcher = true;
+            } else {
+                log(WARNING, String::compose("Resulting op of type '%1' is set to the mind with id '%2', which can't be found.", resOp->getParent(), resOp->getTo()));
             }
         } else {
             res.push_back(resOp);
@@ -163,13 +156,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
 //        }
 //    }
 
-    if (debug_flag) {
-        for (auto resOp : res) {
-            std::cout << "PossessionClient::operation sent {" << std::endl;
-            debug_dump(resOp, std::cout);
-            std::cout << "}" << std::endl << std::flush;
-        }
-    }
+
 
 }
 
