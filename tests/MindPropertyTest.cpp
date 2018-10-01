@@ -59,11 +59,6 @@ int SETUP_NO = -1;
 
 #include "stubs/rulesets/stubPythonClass.h"
 
-BaseMind * MindFactory::newMind(const std::string & id, long intId) const
-{
-    return 0;
-}
-
 MindKit::MindKit() : m_scriptFactory(0)
 {
 }

@@ -671,7 +671,6 @@ void ExternalMind::linkUp(Link * c)
     m_link = c;
 }
 
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"

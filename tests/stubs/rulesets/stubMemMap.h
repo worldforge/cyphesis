@@ -7,17 +7,9 @@
 #include "rulesets/MemMap.h"
 #include "stubMemMap_custom.h"
 
-#ifndef STUB_MemMap_addEntity
-//#define STUB_MemMap_addEntity
-  Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>)
-  {
-    return *static_cast<Ref<MemEntity>*>(nullptr);
-  }
-#endif //STUB_MemMap_addEntity
-
 #ifndef STUB_MemMap_readEntity
 //#define STUB_MemMap_readEntity
-  void MemMap::readEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  void MemMap::readEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp)
   {
     
   }
@@ -25,7 +17,7 @@
 
 #ifndef STUB_MemMap_updateEntity
 //#define STUB_MemMap_updateEntity
-  void MemMap::updateEntity(const Ref<MemEntity>, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  void MemMap::updateEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp)
   {
     
   }
@@ -57,12 +49,28 @@
 
 #ifndef STUB_MemMap_MemMap
 //#define STUB_MemMap_MemMap
-   MemMap::MemMap()
+   MemMap::MemMap(TypeResolver& typeResolver)
     : m_script(nullptr),m_listener(nullptr)
   {
     
   }
 #endif //STUB_MemMap_MemMap
+
+#ifndef STUB_MemMap_resolveEntitiesForType
+//#define STUB_MemMap_resolveEntitiesForType
+  std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(TypeNode* typeNode)
+  {
+    return std::vector<Ref<MemEntity>>();
+  }
+#endif //STUB_MemMap_resolveEntitiesForType
+
+#ifndef STUB_MemMap_addEntity
+//#define STUB_MemMap_addEntity
+  Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>&)
+  {
+    return *static_cast<Ref<MemEntity>*>(nullptr);
+  }
+#endif //STUB_MemMap_addEntity
 
 #ifndef STUB_MemMap_setScript
 //#define STUB_MemMap_setScript
@@ -183,6 +191,14 @@
     
   }
 #endif //STUB_MemMap_setListener
+
+#ifndef STUB_MemMap_collectTypeResolverOps
+//#define STUB_MemMap_collectTypeResolverOps
+  void MemMap::collectTypeResolverOps(OpVector& res)
+  {
+    
+  }
+#endif //STUB_MemMap_collectTypeResolverOps
 
 
 #endif

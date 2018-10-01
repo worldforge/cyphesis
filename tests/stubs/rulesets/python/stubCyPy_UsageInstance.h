@@ -100,5 +100,21 @@
   }
 #endif //STUB_CyPy_UsageInstance_isValid
 
+#ifndef STUB_CyPy_UsageInstance_getArg
+//#define STUB_CyPy_UsageInstance_getArg
+  Py::Object CyPy_UsageInstance::getArg(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_UsageInstance_getArg
+
+#ifndef STUB_CyPy_UsageInstance_getArg
+//#define STUB_CyPy_UsageInstance_getArg
+   Py::Object CyPy_UsageInstance::getArg(const UsageInstance& instance, const Py::Tuple& args)
+  {
+    return *static_cast< Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_UsageInstance_getArg
+
 
 #endif

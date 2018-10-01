@@ -113,8 +113,6 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
 #include "stubs/rulesets/stubPlant.h"
 
 
-#include "stubs/rulesets/stubCreator.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubThing.h"

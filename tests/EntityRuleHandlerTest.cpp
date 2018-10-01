@@ -142,7 +142,6 @@ int main()
 #include "common/Inheritance.h"
 #include "common/log.h"
 
-std::set<std::string> Player::playableTypes;
 #include "stubs/server/stubEntityBuilder.h"
 
 template <class T>

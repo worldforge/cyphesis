@@ -6,7 +6,7 @@
 #define STUB_LocatedEntity_LocatedEntity
 LocatedEntity::LocatedEntity(const std::string & id, long intId)
     : Router(id, intId)
-    , m_refCount(0), m_seq(0)
+    , m_seq(0)
     , m_type(nullptr), m_flags(0), m_contains(nullptr)
 {
 

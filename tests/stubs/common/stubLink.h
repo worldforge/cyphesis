@@ -57,5 +57,13 @@
   }
 #endif //STUB_Link_disconnect
 
+#ifndef STUB_Link_notifyConnectionComplete
+//#define STUB_Link_notifyConnectionComplete
+  void Link::notifyConnectionComplete()
+  {
+    
+  }
+#endif //STUB_Link_notifyConnectionComplete
+
 
 #endif

@@ -371,8 +371,6 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubMemMap.h"
 #include "stubs/rulesets/stubPropelProperty.h"
-#include "stubs/rulesets/stubCreator.h"
-#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubPythonClass.h"
 #include "stubs/rulesets/stubPedestrian.h"
 #include "stubs/rulesets/stubMovement.h"

@@ -24,5 +24,29 @@
   }
 #endif //STUB_PythonWrapper_PythonWrapper_DTOR
 
+#ifndef STUB_PythonWrapper_operation
+//#define STUB_PythonWrapper_operation
+  HandlerResult PythonWrapper::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_PythonWrapper_operation
+
+#ifndef STUB_PythonWrapper_hook
+//#define STUB_PythonWrapper_hook
+  void PythonWrapper::hook(const std::string & function, LocatedEntity * entity)
+  {
+    
+  }
+#endif //STUB_PythonWrapper_hook
+
+#ifndef STUB_PythonWrapper_processScriptResult
+//#define STUB_PythonWrapper_processScriptResult
+   HandlerResult PythonWrapper::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res)
+  {
+    return *static_cast< HandlerResult*>(nullptr);
+  }
+#endif //STUB_PythonWrapper_processScriptResult
+
 
 #endif

@@ -1755,7 +1755,6 @@ void Lobby::operation(const Operation & op, OpVector & res)
     Accounttest::set_Lobby_operation_called(op->getClassNo());
 }
 
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"

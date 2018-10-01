@@ -9,9 +9,9 @@
 
 #ifndef STUB_AwareMind_AwareMind
 //#define STUB_AwareMind_AwareMind
-   AwareMind::AwareMind(const std::string &id, long intId, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
-    : BaseMind(id, intId, sharedTerrain, awarenessStoreProvider)
-    , mAwarenessStore(nullptr),mSteering(nullptr)
+   AwareMind::AwareMind(const std::string & mind_id, const std::string & entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
+    : BaseMind(mind_id, entity_id, sharedTerrain, awarenessStoreProvider)
+    , mAwarenessStore(nullptr)
   {
     
   }
@@ -48,14 +48,6 @@
     
   }
 #endif //STUB_AwareMind_entityDeleted
-
-#ifndef STUB_AwareMind_setType
-//#define STUB_AwareMind_setType
-  void AwareMind::setType(const TypeNode * t)
-  {
-    
-  }
-#endif //STUB_AwareMind_setType
 
 #ifndef STUB_AwareMind_operation
 //#define STUB_AwareMind_operation
@@ -105,13 +97,13 @@
   }
 #endif //STUB_AwareMind_getCurrentServerTime
 
-#ifndef STUB_AwareMind_onContainered
-//#define STUB_AwareMind_onContainered
-  void AwareMind::onContainered(const Ref<LocatedEntity>& new_loc)
+#ifndef STUB_AwareMind_setOwnEntity
+//#define STUB_AwareMind_setOwnEntity
+  void AwareMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
   {
     
   }
-#endif //STUB_AwareMind_onContainered
+#endif //STUB_AwareMind_setOwnEntity
 
 #ifndef STUB_AwareMind_processMoveTick
 //#define STUB_AwareMind_processMoveTick

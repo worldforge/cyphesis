@@ -160,7 +160,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/common/stubRouter.h"

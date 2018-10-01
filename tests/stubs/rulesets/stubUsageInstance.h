@@ -8,6 +8,7 @@
 #include "stubUsageInstance_custom.h"
 
 
+
 #ifndef STUB_UsageInstance_isValid
 //#define STUB_UsageInstance_isValid
   std::pair<bool, std::string> UsageInstance::isValid() const

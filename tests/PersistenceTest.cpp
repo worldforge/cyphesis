@@ -96,14 +96,6 @@ void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
 #include "stubs/server/stubAccount.h"
 
 ServerAccount::ServerAccount(Connection * conn,
@@ -127,8 +119,7 @@ int ServerAccount::characterError(const Operation & op,
     return -1;
 }
 
-void ServerAccount::createObject(const std::string & type_str,
-                                 const Root & arg,
+void ServerAccount::createObject(const Root & arg,
                                  const Operation & op,
                                  OpVector & res)
 {
@@ -148,13 +139,6 @@ const char * Player::getType() const
     return "player";
 }
 
-void Player::addToMessage(MapType & omap) const
-{
-}
-
-void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
 int Player::characterError(const Operation & op,
                            const Root & ent, OpVector & res) const

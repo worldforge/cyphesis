@@ -425,13 +425,13 @@ void AtlasFileLoader::read()
 
 
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility visibility)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return noClass;
     }
-    return I->second->description();
+    return I->second->description(visibility);
 }
 
 #define STUB_Inheritance_addChild
@@ -444,13 +444,9 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 }
 
 #include "stubs/common/stubInheritance.h"
+#include "stubs/common/stubTypeNode.h"
 
-TypeNode::TypeNode(const std::string & name,
-                   const Atlas::Objects::Root & d) : m_name(name),
-                                                     m_description(d),
-                                                     m_parent(0)
-{
-}
+
 
 void log(LogLevel lvl, const std::string & msg)
 {

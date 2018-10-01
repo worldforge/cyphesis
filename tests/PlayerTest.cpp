@@ -331,7 +331,6 @@ void Juncture::addToEntity(const RootEntity & ent) const
 #include "stubs/server/stubPossessionAuthenticator.h"
 
 #include "stubs/server/stubPersistence.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"

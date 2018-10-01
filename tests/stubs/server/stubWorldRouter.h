@@ -208,5 +208,13 @@
   }
 #endif //STUB_WorldRouter_getDefaultLocation
 
+#ifndef STUB_WorldRouter_getOperationsHandler
+//#define STUB_WorldRouter_getOperationsHandler
+  OperationsHandler& WorldRouter::getOperationsHandler()
+  {
+    return *static_cast<OperationsHandler*>(nullptr);
+  }
+#endif //STUB_WorldRouter_getOperationsHandler
+
 
 #endif

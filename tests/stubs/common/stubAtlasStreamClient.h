@@ -80,6 +80,14 @@
   }
 #endif //STUB_StreamClientSocketBase_poll
 
+#ifndef STUB_StreamClientSocketBase_isConnected
+//#define STUB_StreamClientSocketBase_isConnected
+  bool StreamClientSocketBase::isConnected() const
+  {
+    return false;
+  }
+#endif //STUB_StreamClientSocketBase_isConnected
+
 #ifndef STUB_StreamClientSocketBase_read_blocking
 //#define STUB_StreamClientSocketBase_read_blocking
   size_t StreamClientSocketBase::read_blocking()
@@ -255,9 +263,9 @@
 
 #ifndef STUB_AtlasStreamClient_AtlasStreamClient
 //#define STUB_AtlasStreamClient_AtlasStreamClient
-   AtlasStreamClient::AtlasStreamClient()
-    : Atlas::Objects::ObjectsDecoder()
-    , m_socket(nullptr),m_currentTask(nullptr)
+   AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service)
+    : Atlas::Objects::ObjectsDecoder(io_service)
+    , m_currentTask(nullptr)
   {
     
   }

@@ -206,7 +206,6 @@ int main()
 #include "stubs/server/stubWorldRouter.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 

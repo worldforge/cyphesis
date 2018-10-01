@@ -123,12 +123,6 @@ int UPDATE_NO = -1;
 
 
 
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
 int CommSocket::flush()
 {
     return 0;
@@ -136,104 +130,24 @@ int CommSocket::flush()
 
 #include "stubs/server/stubPlayer.h"
 #include "stubs/server/stubAccount.h"
-
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 
-Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Router(id, intId),
-       m_server(s)
-{
-}
-
-Lobby::~Lobby()
-{
-}
-
-void Lobby::delAccount(Account * ac)
-{
-}
-
-void Lobby::addToMessage(MapType & omap) const
-{
-}
-
-void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Lobby::addAccount(Account * ac)
-{
-}
-
-void Lobby::externalOperation(const Operation &, Link &)
-{
-}
-
-void Lobby::operation(const Operation & op, OpVector & res)
-{
-}
-
-ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_link(0), m_entity(e)
-{
-}
-
-void ExternalMind::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ExternalMind::operation(const Operation & op, OpVector & res)
-{
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
+#define STUB_ExternalMind_connectionId
 const std::string & ExternalMind::connectionId()
 {
     assert(m_link != 0);
     return m_link->getId();
 }
 
+#define STUB_ExternalMind_linkUp
 void ExternalMind::linkUp(Link * c)
 {
     m_link = c;
 }
 
-#include "stubs/rulesets/stubCharacter.h"
+#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rulesets/stubExternalProperty.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"

@@ -1506,7 +1506,6 @@ ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 
 
 #include "stubs/server/stubPersistence.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 
 #define STUB_Entity_addToEntity

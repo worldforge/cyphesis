@@ -124,7 +124,7 @@ void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 }
 
 #define STUB_LocatedEntity_broadcast
-void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, LocatedEntity::Visibility visibility) const
+void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const
 {
     auto copy = op.copy();
     copy->setTo(getId());
@@ -163,6 +163,8 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rulesets/stubPlantedOnProperty.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

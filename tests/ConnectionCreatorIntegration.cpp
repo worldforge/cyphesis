@@ -460,7 +460,6 @@ void Entity::setType(const TypeNode* t) {
 
 
 #include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/rulesets/stubEntityProperty.h"

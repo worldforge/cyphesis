@@ -44,10 +44,52 @@
 #endif //STUB_OpQueEntry_OpQueEntry_DTOR
 
 
+#ifndef STUB_OperationsHandler_idle
+//#define STUB_OperationsHandler_idle
+  bool OperationsHandler::idle(int numberOfOpsToProcess)
+  {
+    return false;
+  }
+#endif //STUB_OperationsHandler_idle
+
+#ifndef STUB_OperationsHandler_secondsUntilNextOp
+//#define STUB_OperationsHandler_secondsUntilNextOp
+  double OperationsHandler::secondsUntilNextOp() const
+  {
+    return 0;
+  }
+#endif //STUB_OperationsHandler_secondsUntilNextOp
+
+#ifndef STUB_OperationsHandler_isQueueDirty
+//#define STUB_OperationsHandler_isQueueDirty
+  bool OperationsHandler::isQueueDirty() const
+  {
+    return false;
+  }
+#endif //STUB_OperationsHandler_isQueueDirty
+
+#ifndef STUB_OperationsHandler_markQueueAsClean
+//#define STUB_OperationsHandler_markQueueAsClean
+  void OperationsHandler::markQueueAsClean()
+  {
+    
+  }
+#endif //STUB_OperationsHandler_markQueueAsClean
+
+#ifndef STUB_OperationsHandler_clearQueues
+//#define STUB_OperationsHandler_clearQueues
+  void OperationsHandler::clearQueues()
+  {
+    
+  }
+#endif //STUB_OperationsHandler_clearQueues
+
+
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
   template <typename T>
    OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, const std::function<double()>& timeProviderFn)
+    : OperationsHandler(operationProcessor, timeProviderFn)
   {
     
   }
@@ -65,7 +107,7 @@
 #ifndef STUB_OperationsDispatcher_idle
 //#define STUB_OperationsDispatcher_idle
   template <typename T>
-  bool OperationsDispatcher<T>::idle()
+  bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
   {
     return false;
   }

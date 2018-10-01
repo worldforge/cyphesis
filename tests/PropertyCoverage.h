@@ -25,7 +25,6 @@
 class PropertyBase;
 class Entity;
 class BaseWorld;
-class Character;
 
 class PropertyCoverage {
   protected:
@@ -45,7 +44,7 @@ class PropertyCoverage {
 
     void basicCoverage();
 
-    Ref<Character> createCharacterEntity();
+    Ref<Entity> createCharacterEntity();
 
     void testDataAppend(const Atlas::Message::Element &);
 

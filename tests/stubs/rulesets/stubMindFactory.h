@@ -26,20 +26,11 @@
 
 #ifndef STUB_MindKit_newMind
 //#define STUB_MindKit_newMind
-  BaseMind* MindKit::newMind(const std::string & id, long) const
+  BaseMind* MindKit::newMind(const std::string & mind_id, const std::string & entity_id) const
   {
     return nullptr;
   }
 #endif //STUB_MindKit_newMind
-
-
-#ifndef STUB_MindFactory_newMind
-//#define STUB_MindFactory_newMind
-  BaseMind* MindFactory::newMind(const std::string &, long) const
-  {
-    return nullptr;
-  }
-#endif //STUB_MindFactory_newMind
 
 
 #endif

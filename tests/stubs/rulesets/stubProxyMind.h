@@ -9,8 +9,7 @@
 
 #ifndef STUB_ProxyMind_ProxyMind
 //#define STUB_ProxyMind_ProxyMind
-   ProxyMind::ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity)
-    : BaseMind(id, intId, ownerEntity)
+   ProxyMind::ProxyMind(const std::string& id, long intId, LocatedEntity& ownerEntity)
   {
     
   }
@@ -34,7 +33,7 @@
 
 #ifndef STUB_ProxyMind_operation
 //#define STUB_ProxyMind_operation
-  void ProxyMind::operation(const Operation & op, OpVector & res)
+  void ProxyMind::operation(const Operation& op, OpVector& res)
   {
     
   }
@@ -42,7 +41,7 @@
 
 #ifndef STUB_ProxyMind_thinkSetOperation
 //#define STUB_ProxyMind_thinkSetOperation
-  void ProxyMind::thinkSetOperation(const Operation & op, OpVector & res)
+  void ProxyMind::thinkSetOperation(const Operation& op, OpVector& res)
   {
     
   }
@@ -50,7 +49,7 @@
 
 #ifndef STUB_ProxyMind_thinkDeleteOperation
 //#define STUB_ProxyMind_thinkDeleteOperation
-  void ProxyMind::thinkDeleteOperation(const Operation & op, OpVector & res)
+  void ProxyMind::thinkDeleteOperation(const Operation& op, OpVector& res)
   {
     
   }
@@ -58,7 +57,7 @@
 
 #ifndef STUB_ProxyMind_thinkGetOperation
 //#define STUB_ProxyMind_thinkGetOperation
-  void ProxyMind::thinkGetOperation(const Operation & op, OpVector & res)
+  void ProxyMind::thinkGetOperation(const Operation& op, OpVector& res)
   {
     
   }
@@ -66,11 +65,19 @@
 
 #ifndef STUB_ProxyMind_thinkLookOperation
 //#define STUB_ProxyMind_thinkLookOperation
-  void ProxyMind::thinkLookOperation(const Operation & op, OpVector & res)
+  void ProxyMind::thinkLookOperation(const Operation& op, OpVector& res)
   {
     
   }
 #endif //STUB_ProxyMind_thinkLookOperation
+
+#ifndef STUB_ProxyMind_ThinkOperation
+//#define STUB_ProxyMind_ThinkOperation
+  void ProxyMind::ThinkOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_ProxyMind_ThinkOperation
 
 
 #endif

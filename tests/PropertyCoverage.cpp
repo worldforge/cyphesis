@@ -116,12 +116,12 @@ void PropertyCoverage::basicCoverage()
     interfaceCoverage();
 }
 
-Ref<Character> PropertyCoverage::createCharacterEntity()
+Ref<Entity> PropertyCoverage::createCharacterEntity()
 {
     m_ent->m_location.m_parent = 0;
     m_tlve->m_contains->clear();
 
-    Ref<Character> chr = new Character("2", 2);
+    Ref<Entity> chr = new Entity("2", 2);
     m_ent = chr;
     m_ent->m_location.m_parent = m_tlve;
     m_ent->m_location.m_pos = Point3D(1,0,0);
@@ -137,7 +137,6 @@ void PropertyCoverage::testDataAppend(const Element & o)
 
 // stubs
 
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubThing.h"
 
 

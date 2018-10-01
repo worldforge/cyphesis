@@ -97,5 +97,13 @@
   }
 #endif //STUB_ExternalMind_addToEntity
 
+#ifndef STUB_ExternalMind_GetOperation
+//#define STUB_ExternalMind_GetOperation
+  void ExternalMind::GetOperation(const Operation& smartPtr, OpVector& res)
+  {
+    
+  }
+#endif //STUB_ExternalMind_GetOperation
+
 
 #endif

@@ -297,7 +297,6 @@ int main()
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubTasksProperty.h"
-#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/rulesets/stubProxyMind.h"

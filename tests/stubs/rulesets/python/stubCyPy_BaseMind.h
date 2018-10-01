@@ -10,7 +10,7 @@
 #ifndef STUB_CyPy_BaseMind_CyPy_BaseMind
 //#define STUB_CyPy_BaseMind_CyPy_BaseMind
    CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : CyPy_LocatedEntityBase(self, args, kwds)
+    : WrapperBase(self, args, kwds)
   {
     
   }
@@ -19,7 +19,7 @@
 #ifndef STUB_CyPy_BaseMind_CyPy_BaseMind
 //#define STUB_CyPy_BaseMind_CyPy_BaseMind
    CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
-    : CyPy_LocatedEntityBase(self, value)
+    : WrapperBase(self, value)
   {
     
   }

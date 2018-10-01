@@ -40,4 +40,22 @@
 #endif //STUB_ClientTask_operation
 
 
+#ifndef STUB_FunctionClientTask_FunctionClientTask
+//#define STUB_FunctionClientTask_FunctionClientTask
+   FunctionClientTask::FunctionClientTask(std::function<bool(const Operation &, OpVector &)> function)
+    : ClientTask(function)
+  {
+    
+  }
+#endif //STUB_FunctionClientTask_FunctionClientTask
+
+#ifndef STUB_FunctionClientTask_operation
+//#define STUB_FunctionClientTask_operation
+  void FunctionClientTask::operation(const Operation &, OpVector &)
+  {
+    
+  }
+#endif //STUB_FunctionClientTask_operation
+
+
 #endif

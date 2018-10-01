@@ -62,6 +62,15 @@
   }
 #endif //STUB_CyPy_LocatedEntityBase_wrap
 
+#ifndef STUB_CyPy_LocatedEntityBase_str
+//#define STUB_CyPy_LocatedEntityBase_str
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::str()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_str
+
 #ifndef STUB_CyPy_LocatedEntityBase_CyPy_LocatedEntityBase
 //#define STUB_CyPy_LocatedEntityBase_CyPy_LocatedEntityBase
   template <typename TValue,typename TPythonClass>

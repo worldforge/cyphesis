@@ -38,7 +38,7 @@
 class TestExternalMind : public ExternalMind
 {
   public:
-    TestExternalMind(Entity & e) : ExternalMind(e) { }
+    TestExternalMind(Entity & e) : ExternalMind("", 0, e) { }
 
     void test_deleteEntity(const std::string & id) {
         deleteEntity(id, false);
@@ -48,7 +48,6 @@ class TestExternalMind : public ExternalMind
         purgeEntity(ent);
     }
 
-    void test_setLossTime(double t) { m_lossTime = t; }
 };
 
 int stub_baseworld_receieved_op = -1;
@@ -68,7 +67,7 @@ int main()
     {
         Entity e("2", 2);
 
-        ExternalMind em(e);
+        ExternalMind em("3", 3, e);
     }
 
     {
@@ -104,7 +103,7 @@ int main()
     {
         Entity e("2", 2);
 
-        ExternalMind em(e);
+        ExternalMind em("3", 3, e);
 
         em.linkUp(0);
     }
@@ -113,7 +112,7 @@ int main()
     {
         Entity e("2", 2);
 
-        ExternalMind em(e);
+        ExternalMind em("3", 3, e);
 
         em.linkUp(new Connection(*(CommSocket*)0,
                                  *(ServerRouting*)0,
@@ -124,7 +123,7 @@ int main()
     {
         Entity e("2", 2);
 
-        ExternalMind em(e);
+        ExternalMind em("3", 3, e);
 
         em.linkUp(new Connection(*(CommSocket*)0,
                                  *(ServerRouting*)0,
@@ -136,7 +135,7 @@ int main()
     {
         Entity e("2", 2);
 
-        ExternalMind em(e);
+        ExternalMind em("3", 3, e);
 
         em.linkUp(new Connection(*(CommSocket*)0,
                                  *(ServerRouting*)0,
@@ -150,7 +149,6 @@ int main()
         Entity e("2", 2);
 
         TestExternalMind em(e);
-        em.test_setLossTime(BaseWorld::instance().getTime());
 
         stub_baseworld_receieved_op = -1;
         OpVector res;
@@ -163,7 +161,6 @@ int main()
         Entity e("2", 2);
 
         TestExternalMind em(e);
-        em.test_setLossTime(BaseWorld::instance().getTime());
 
         stub_baseworld_receieved_op = -1;
         OpVector res;
@@ -177,7 +174,6 @@ int main()
         e.addFlags(entity_ephem);
 
         TestExternalMind em(e);
-        em.test_setLossTime(BaseWorld::instance().getTime());
 
         stub_baseworld_receieved_op = -1;
         OpVector res;
@@ -191,7 +187,6 @@ int main()
         e.addFlags(entity_ephem);
 
         TestExternalMind em(e);
-        em.test_setLossTime(BaseWorld::instance().getTime());
 
         stub_baseworld_receieved_op = -1;
         OpVector res;
@@ -305,6 +300,9 @@ int main()
 using Atlas::Message::MapType;
 
 #include "stubs/server/stubConnection.h"
+#include "stubs/common/stubInheritance.h"
+#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubTypeNode.h"
 
 #define STUB_Entity_destroy
 void Entity::destroy()

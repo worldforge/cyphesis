@@ -414,7 +414,6 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 #include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubLink.h"

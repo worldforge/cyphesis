@@ -448,7 +448,6 @@ ExternalProperty * ExternalProperty::copy() const
 
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/physics/stubVector3D.h"
 
 #define STUB_Entity_callOperation

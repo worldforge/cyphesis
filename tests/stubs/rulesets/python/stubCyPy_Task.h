@@ -81,5 +81,13 @@
   }
 #endif //STUB_CyPy_Task_rich_compare
 
+#ifndef STUB_CyPy_Task_getArg
+//#define STUB_CyPy_Task_getArg
+  Py::Object CyPy_Task::getArg(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Task_getArg
+
 
 #endif

@@ -125,22 +125,6 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
@@ -164,6 +148,8 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/rulesets/stubLocation.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubLink.h"
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)

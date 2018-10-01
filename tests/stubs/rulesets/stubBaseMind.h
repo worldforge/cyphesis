@@ -9,8 +9,8 @@
 
 #ifndef STUB_BaseMind_BaseMind
 //#define STUB_BaseMind_BaseMind
-   BaseMind::BaseMind(const std::string & id, long intId)
-    : MemEntity(id, intId)
+   BaseMind::BaseMind(const std::string & mindId, const std::string & entityId)
+    : Router(mindId, entityId)
   {
     
   }
@@ -23,6 +23,14 @@
     
   }
 #endif //STUB_BaseMind_BaseMind_DTOR
+
+#ifndef STUB_BaseMind_init
+//#define STUB_BaseMind_init
+  void BaseMind::init(OpVector& res)
+  {
+    
+  }
+#endif //STUB_BaseMind_init
 
 #ifndef STUB_BaseMind_sightCreateOperation
 //#define STUB_BaseMind_sightCreateOperation
@@ -56,38 +64,6 @@
   }
 #endif //STUB_BaseMind_sightSetOperation
 
-#ifndef STUB_BaseMind_thinkSetOperation
-//#define STUB_BaseMind_thinkSetOperation
-  void BaseMind::thinkSetOperation(const Operation & op, OpVector & res)
-  {
-    
-  }
-#endif //STUB_BaseMind_thinkSetOperation
-
-#ifndef STUB_BaseMind_thinkDeleteOperation
-//#define STUB_BaseMind_thinkDeleteOperation
-  void BaseMind::thinkDeleteOperation(const Operation & op, OpVector & res)
-  {
-    
-  }
-#endif //STUB_BaseMind_thinkDeleteOperation
-
-#ifndef STUB_BaseMind_thinkGetOperation
-//#define STUB_BaseMind_thinkGetOperation
-  void BaseMind::thinkGetOperation(const Operation & op, OpVector & res)
-  {
-    
-  }
-#endif //STUB_BaseMind_thinkGetOperation
-
-#ifndef STUB_BaseMind_thinkLookOperation
-//#define STUB_BaseMind_thinkLookOperation
-  void BaseMind::thinkLookOperation(const Operation & op, OpVector & res)
-  {
-    
-  }
-#endif //STUB_BaseMind_thinkLookOperation
-
 #ifndef STUB_BaseMind_operation
 //#define STUB_BaseMind_operation
   void BaseMind::operation(const Operation &, OpVector &)
@@ -95,6 +71,14 @@
     
   }
 #endif //STUB_BaseMind_operation
+
+#ifndef STUB_BaseMind_externalOperation
+//#define STUB_BaseMind_externalOperation
+  void BaseMind::externalOperation(const Operation & op, Link &)
+  {
+    
+  }
+#endif //STUB_BaseMind_externalOperation
 
 #ifndef STUB_BaseMind_SightOperation
 //#define STUB_BaseMind_SightOperation
@@ -144,6 +128,14 @@
   }
 #endif //STUB_BaseMind_ThinkOperation
 
+#ifndef STUB_BaseMind_InfoOperation
+//#define STUB_BaseMind_InfoOperation
+  void BaseMind::InfoOperation(const Operation&, OpVector&)
+  {
+    
+  }
+#endif //STUB_BaseMind_InfoOperation
+
 #ifndef STUB_BaseMind_callSightOperation
 //#define STUB_BaseMind_callSightOperation
   void BaseMind::callSightOperation(const Operation &, OpVector &)
@@ -167,6 +159,14 @@
     
   }
 #endif //STUB_BaseMind_setScript
+
+#ifndef STUB_BaseMind_setOwnEntity
+//#define STUB_BaseMind_setOwnEntity
+  void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
+  {
+    
+  }
+#endif //STUB_BaseMind_setOwnEntity
 
 
 #endif

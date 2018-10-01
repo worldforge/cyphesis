@@ -415,7 +415,6 @@ ExternalProperty * ExternalProperty::copy() const
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubEntityProperty.h"
 #include "stubs/rulesets/stubTask.h"
 

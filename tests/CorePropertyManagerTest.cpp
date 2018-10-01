@@ -38,7 +38,6 @@
 
 #include "TestWorld.h"
 
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 
 #include <Atlas/Objects/SmartPtr.h>
@@ -265,7 +264,6 @@ int main()
 #include "stubs/rulesets/stubBurnSpeedProperty.h"
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubDecaysProperty.h"
-#include "stubs/rulesets/stubOutfitProperty.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubTasksProperty.h"
 #include "stubs/rulesets/stubSpawnProperty.h"

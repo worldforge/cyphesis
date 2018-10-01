@@ -156,7 +156,6 @@ void Character::filterExternalOperation(const Operation & op)
     Creatortest::Character_filterExternalOperation_called(op);
 }
 
-#include "stubs/rulesets/stubCharacter.h"
 
 
 

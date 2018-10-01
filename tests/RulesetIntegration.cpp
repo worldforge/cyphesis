@@ -653,7 +653,6 @@ int main()
 #include "rulesets/Task.h"
 #include "rulesets/Stackable.h"
 
-#include "stubs/rulesets/stubCreator.h"
 #include "stubs/server/stubAdmin.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubScriptsProperty.h"
@@ -812,7 +811,6 @@ void ServerAccount::createObject(const std::string & type_str,
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubCharacter.h"
 #include "stubs/rulesets/stubWorld.h"
 
 #define STUB_LocatedEntity_getAttr
