@@ -21,7 +21,6 @@
 
 #include "PossessionAccount.h"
 #include "PossessionClient.h"
-#include "MindRegistry.h"
 
 #include "rulesets/MindFactory.h"
 #include "rulesets/BaseMind.h"

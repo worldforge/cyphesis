@@ -20,7 +20,6 @@
 #define POSSESSIONCLIENT_H_
 
 #include "common/BaseClient.h"
-#include "MindRegistry.h"
 #include "rulesets/BaseMind.h"
 #include "common/OperationsDispatcher.h"
 #include "common/OperationsDispatcher_impl.h"
