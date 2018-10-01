@@ -22,6 +22,7 @@
 #include "common/OperationRouter.h"
 
 #include <string>
+#include <functional>
 
 /// \brief Base class for admin tasks which run for some time.
 ///
@@ -54,4 +55,14 @@ class ClientTask {
     const std::string & description() { return m_description; }
 };
 
+class FunctionClientTask : public ClientTask {
+    protected:
+        std::function<bool(const Operation &, OpVector &)> m_function;
+    public:
+        explicit FunctionClientTask(std::function<bool(const Operation &, OpVector &)> function);
+        /// \brief Set up the task processing user arguments
+        void setup(const std::string & arg, OpVector &) override {}
+        /// \brief Handle an operation from the server
+        void operation(const Operation &, OpVector &) override;
+};
 #endif // COMMON_CLIENT_TASK_H

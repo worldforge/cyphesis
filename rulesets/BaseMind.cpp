@@ -356,7 +356,7 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
 
                 //If we have resolved our own entity we should do some house keeping
                 if (entity->getId() == m_entityId) {
-
+                    log(INFO, String::compose("Resolved own entity for %1.", entity->describeEntity()));
                     setOwnEntity(res, entity);
                 }
             }

@@ -90,7 +90,8 @@ int main(int argc, char ** argv)
     int useslave = 0;
     readConfigItem("client", "useslave", useslave);
 
-    AtlasStreamClient bridge;
+    boost::asio::io_service io_service;
+    AtlasStreamClient bridge(io_service);
     std::string localSocket;
     if (useslave != 0) {
         localSocket = slave_socket_name;

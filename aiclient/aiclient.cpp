@@ -16,7 +16,6 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include "ClientConnection.h"
 #include "PossessionClient.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/PythonScriptFactory.h"
@@ -56,8 +55,6 @@ STRING_OPTION(server, "localhost", "aiclient", "serverhost", "Hostname of the se
 STRING_OPTION(account, "", "aiclient", "account", "Account name to use to authenticate to the server");
 
 STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenticate to the server");
-
-static bool debug_flag = false;
 
 static void connectToServer(boost::asio::io_service& io_service, AwareMindFactory& mindFactory)
 {

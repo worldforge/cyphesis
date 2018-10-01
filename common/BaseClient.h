@@ -20,7 +20,7 @@
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
 
-#include "common/Link.h"
+#include "Link.h"
 #include <memory>
 #include <boost/asio/steady_timer.hpp>
 
@@ -72,6 +72,7 @@ class BaseClient : public Link
 
 
         int runTask(std::shared_ptr<ClientTask> task, const std::string& arg);
+        int runTask(std::function<bool(const Operation&, OpVector&)> function);
 
         int endTask();
 

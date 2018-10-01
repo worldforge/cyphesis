@@ -19,7 +19,7 @@
 #ifndef POSSESSIONCLIENT_H_
 #define POSSESSIONCLIENT_H_
 
-#include "BaseClient.h"
+#include "common/BaseClient.h"
 #include "MindRegistry.h"
 #include "rulesets/BaseMind.h"
 #include "common/OperationsDispatcher.h"

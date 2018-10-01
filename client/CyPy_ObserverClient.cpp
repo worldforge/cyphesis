@@ -24,7 +24,9 @@
 CyPy_ObserverClient::CyPy_ObserverClient(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
 {
-    m_value = new ObserverClient();
+    throw Py::RuntimeError("Can't be created from Python.");
+
+//    m_value = new ObserverClient();
 }
 
 CyPy_ObserverClient::CyPy_ObserverClient(Py::PythonClassInstance* self, ObserverClient* value)

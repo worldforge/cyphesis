@@ -1,7 +1,6 @@
 
 add_executable(cyaiclient
-    ClientConnection.cpp
-    BaseClient.cpp
+    ../common/BaseClient.cpp
     PossessionClient.cpp
     aiclient.cpp
     PossessionAccount.cpp

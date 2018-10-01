@@ -83,7 +83,8 @@ int main(int argc, char ** argv)
         interactive = false;
     }
 
-    Interactive bridge;
+    boost::asio::io_service io_service;
+    Interactive bridge(io_service);
 
     if (server.empty()) {
         std::string localSocket;

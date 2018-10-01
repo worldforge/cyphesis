@@ -26,7 +26,8 @@
 
 #include "common/sockets.h"
 
-ObserverClient::ObserverClient()
+ObserverClient::ObserverClient(boost::asio::io_service& io_service)
+: BaseClient(io_service)
 {
 }
 

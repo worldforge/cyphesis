@@ -20,12 +20,12 @@
 
 #include "BaseClient.h"
 
-#include "common/log.h"
-#include "common/debug.h"
-#include "common/compose.hpp"
-#include "common/system.h"
-#include "common/CommSocket.h"
-#include "common/ClientTask.h"
+#include "log.h"
+#include "debug.h"
+#include "compose.hpp"
+#include "system.h"
+#include "CommSocket.h"
+#include "ClientTask.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -180,6 +180,12 @@ int BaseClient::runTask(std::shared_ptr<ClientTask> task, const std::string& arg
 
     return 0;
 }
+
+int BaseClient::runTask(std::function<bool(const Operation&, OpVector&)> function)
+{
+    return runTask(std::make_shared<FunctionClientTask>(function), "");
+}
+
 
 int BaseClient::endTask()
 {

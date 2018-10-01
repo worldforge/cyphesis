@@ -58,7 +58,7 @@ class Interactive : public AdminClient,
     virtual void loginSuccess(const Atlas::Objects::Root & arg);
 
   public:
-    Interactive();
+    Interactive(boost::asio::io_service& io_service);
     ~Interactive();
 
     int setup();

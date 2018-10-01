@@ -25,6 +25,7 @@ class CreatorClient;
 
 /// \brief Base class for classes that implement clients used to connect to a
 /// cyphesis server
+/// TODO: remove in favour of common/BaseClient which uses the asio event loop
 class BaseClient {
   protected:
     /// \brief Low level connection to the server
@@ -39,7 +40,7 @@ class BaseClient {
     std::string m_playerId;
 
   public:
-    BaseClient();
+    BaseClient(boost::asio::io_service& io_service);
     virtual ~BaseClient();
 
     CreatorClient * character() {

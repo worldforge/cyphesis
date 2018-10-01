@@ -40,7 +40,9 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-BaseClient::BaseClient() : m_character(nullptr)
+BaseClient::BaseClient(boost::asio::io_service& io_service) :
+    m_connection(io_service),
+    m_character(nullptr)
 {
 }
 

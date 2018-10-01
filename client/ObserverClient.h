@@ -31,7 +31,7 @@ class ObserverClient : public BaseClient {
   protected:
     std::string m_server;
   public:
-    ObserverClient();
+    ObserverClient(boost::asio::io_service& io_service);
     virtual ~ObserverClient();
 
     void setServer(const std::string & server) {
