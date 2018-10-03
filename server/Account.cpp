@@ -92,6 +92,7 @@ void Account::characterDestroyed(long id)
             log(WARNING, "Account still had minds even after connection had been shut down.");
         }
         delete I->second;
+        m_minds.erase(I);
     }
     m_charactersDict.erase(id);
     if (isPersisted()) {
