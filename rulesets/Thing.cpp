@@ -419,6 +419,15 @@ void Thing::SetOperation(const Operation& op, OpVector& res)
     const Root& ent = args.front();
     merge(ent->asMessage());
 
+    //If there's a serial number we should return a sight here already.
+    if (!op->isDefaultSerialno() && !op->isDefaultFrom()) {
+        Sight sight;
+        sight->setTo(op->getFrom());
+        sight->setRefno(op->getSerialno());
+        sight->setArgs1(op);
+        res.emplace_back(std::move(sight));
+    }
+
     Update update;
     update->setTo(getId());
     res.push_back(std::move(update));
