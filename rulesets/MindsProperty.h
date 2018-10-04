@@ -71,31 +71,6 @@ class MindsProperty : public PropertyBase
 
         bool world2mind(const Operation& op) const;
 
-        bool w2mSightOperation(const Operation&) const;
-
-        bool w2mSoundOperation(const Operation&) const;
-
-        bool w2mTouchOperation(const Operation&) const;
-
-        bool w2mTickOperation(const Operation&) const;
-
-        bool w2mUnseenOperation(const Operation&) const;
-
-        bool w2mSetupOperation(const Operation&) const;
-
-        bool w2mAppearanceOperation(const Operation&) const;
-
-        bool w2mDisappearanceOperation(const Operation&) const;
-
-        bool w2mErrorOperation(const Operation&) const;
-
-        bool w2mThoughtOperation(const Operation& op) const;
-
-        bool w2mThinkOperation(const Operation& op) const;
-
-        bool w2mCommuneOperation(const Operation& op) const;
-
-        bool w2mRelayOperation(const Operation& op) const;
 
         HandlerResult ThoughtOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const;
 
