@@ -111,7 +111,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int serialNo;
 
     std::unique_ptr<StreamClientSocketBase> m_socket;
-    ClientTask * m_currentTask;
+    std::shared_ptr<ClientTask> m_currentTask;
 
     std::string m_username;
     size_t m_spacing;
@@ -184,7 +184,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     void output(const Atlas::Message::Element & item, size_t depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;
 
-    int runTask(ClientTask * task, const std::string & arg);
+    int runTask(std::shared_ptr<ClientTask> task, const std::string & arg);
     int endTask();
 
     /**

@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
             localSocket = client_socket_name;
         }
 
-        std::cout << "Attempting local connection" << std::endl << std::flush;
+        std::cout << "Attempting local connection" << std::endl;
         if (bridge.connectLocal(localSocket) == 0) {
             bridge.setup();
             if (bridge.create("sys",

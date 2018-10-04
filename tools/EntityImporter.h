@@ -34,61 +34,63 @@
 /**
  * @brief Imports a previously exported entity.
  */
-class EntityImporter: public ClientTask, public EntityImporterBase
+class EntityImporter : public ClientTask, public EntityImporterBase
 {
-public:
-	explicit EntityImporter(const std::string & accountId,
-            const std::string & avatarId);
-	virtual ~EntityImporter();
+    public:
+        explicit EntityImporter(const std::string& accountId,
+                                const std::string& avatarId);
 
-protected:
+        ~EntityImporter() override;
 
-	/**
-     * Keeps track of the current OpVector in which operations to be
-     * sent can be placed.
-     *
-     * Note that this setup is a little unintuitive. This is because the
-     * EntityExporterBase class is written for Ember which has a slightly
-     * different way of dispatching ops.
-     * The way we need to do it is to act on the setup() and operation()
-     * methods and while in those methods set this field to point to the
-     * current OpVector.
-     *
-     */
-    OpVector* mCurrentRes;
+    protected:
 
-	std::unordered_map<long int, CallbackFunction> mCallbacks;
+        /**
+         * Keeps track of the current OpVector in which operations to be
+         * sent can be placed.
+         *
+         * Note that this setup is a little unintuitive. This is because the
+         * EntityExporterBase class is written for Ember which has a slightly
+         * different way of dispatching ops.
+         * The way we need to do it is to act on the setup() and operation()
+         * methods and while in those methods set this field to point to the
+         * current OpVector.
+         *
+         */
+        OpVector* mCurrentRes;
 
-    virtual void setup(const std::string & arg, OpVector & ret);
-    virtual void operation(const Operation & op, OpVector & res);
+        std::unordered_map<long int, CallbackFunction> mCallbacks;
 
-	/**
-	 * @brief Create a new unique serial number for operations.
-	 * @return A new serial number.
-	 */
-	virtual long int newSerialNumber();
+        void setup(const std::string& arg, OpVector& ret) override;
 
-	/**
-	 * @brief Send an object to the server.
-	 * @param op An object which is to be sent.
-	 */
-	virtual void send(const Atlas::Objects::Operation::RootOperation& op);
+        void operation(const Operation& op, OpVector& res) override;
 
-	/**
-	 * @brief Send an object to the server and await a response.
-	 * @param op An object which is to be sent.
-	 * @param callback A callback, called when a response is received.
-	 */
-	virtual void sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback);
+        /**
+         * @brief Create a new unique serial number for operations.
+         * @return A new serial number.
+         */
+        long int newSerialNumber() override;
 
-	/**
-	 * @brief Loads from a file.
-	 * @param filename The full path to the file.
-	 * @return The top level object stored in the file.
-	 */
-	virtual Atlas::Objects::Root loadFromFile(const std::string& filename);
+        /**
+         * @brief Send an object to the server.
+         * @param op An object which is to be sent.
+         */
+        void send(const Atlas::Objects::Operation::RootOperation& op) override;
 
-	void completed();
+        /**
+         * @brief Send an object to the server and await a response.
+         * @param op An object which is to be sent.
+         * @param callback A callback, called when a response is received.
+         */
+        void sendAndAwaitResponse(const Atlas::Objects::Operation::RootOperation& op, CallbackFunction& callback) override;
+
+        /**
+         * @brief Loads from a file.
+         * @param filename The full path to the file.
+         * @return The top level object stored in the file.
+         */
+        Atlas::Objects::Root loadFromFile(const std::string& filename) override;
+
+        void completed();
 
 };
 

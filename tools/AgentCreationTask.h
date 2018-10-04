@@ -20,7 +20,7 @@
 #define AGENTCREATIONTASK_H_
 
 #include "common/ClientTask.h"
-
+#include <boost/optional.hpp>
 /**
  * A client task for creating a new agent in the game world.
  */
@@ -35,13 +35,16 @@ class AgentCreationTask: public ClientTask
          * (once created) will be put.
          */
         AgentCreationTask(const std::string& account_id,
-                const std::string& agent_type, std::string& agent_id);
+                const std::string& agent_type);
         virtual ~AgentCreationTask();
 
         /// \brief Set up the task processing user arguments
         virtual void setup(const std::string & arg, OpVector &);
         /// \brief Handle an operation from the server
         virtual void operation(const Operation &, OpVector &);
+
+        boost::optional<std::string> m_agent_id;
+        boost::optional<std::string> m_mind_id;
 
     protected:
 
@@ -54,12 +57,6 @@ class AgentCreationTask: public ClientTask
          * The type of the agent.
          */
         const std::string m_agent_type;
-
-        /**
-         * Reference to an external string into which the id of the created
-         * agent entity will be written.
-         */
-        std::string& m_agent_id;
 
         /**
          * Keeps track of the serial number of the sent op.

@@ -50,7 +50,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 using namespace boost::asio;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 
 StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
@@ -342,7 +342,6 @@ void AtlasStreamClient::operation(const RootOperation & op)
         }
 
         if (m_currentTask->isComplete()) {
-            delete m_currentTask;
             m_currentTask = nullptr;
         }
     }
@@ -585,7 +584,7 @@ int AtlasStreamClient::poll(int seconds, int microseconds)
     return poll(boost::posix_time::seconds(seconds) + boost::posix_time::microseconds(microseconds));
 }
 
-int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
+int AtlasStreamClient::runTask(std::shared_ptr<ClientTask> task, const std::string & arg)
 {
     assert(task != nullptr);
 
@@ -601,7 +600,6 @@ int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
     m_currentTask->setup(arg, res);
 
     if (m_currentTask->isComplete()) {
-        delete task;
         m_currentTask = nullptr;
         return -1;
     }
@@ -618,7 +616,6 @@ int AtlasStreamClient::endTask()
     if (m_currentTask == nullptr) {
         return -1;
     }
-    delete m_currentTask;
     m_currentTask = nullptr;
     return 0;
 }

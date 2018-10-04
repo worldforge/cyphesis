@@ -29,11 +29,13 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <iostream>
+#include <common/Possess.h>
 
 AgentCreationTask::AgentCreationTask(const std::string& account_id,
-        const std::string& agent_type, std::string& agent_id) :
-        m_account_id(account_id), m_agent_type(agent_type), m_agent_id(
-                agent_id), m_serial_no(0)
+                                     const std::string& agent_type) :
+    m_account_id(account_id),
+    m_agent_type(agent_type),
+    m_serial_no(0)
 {
 }
 
@@ -41,7 +43,7 @@ AgentCreationTask::~AgentCreationTask()
 {
 }
 
-void AgentCreationTask::setup(const std::string & arg, OpVector & res)
+void AgentCreationTask::setup(const std::string& arg, OpVector& res)
 {
     Atlas::Objects::Operation::Create c;
 
@@ -49,6 +51,7 @@ void AgentCreationTask::setup(const std::string & arg, OpVector & res)
     cmap->setParent("creator");
     cmap->setName("cyexport agent");
     cmap->setObjtype("obj");
+    cmap->setAttr("possess", 1);
     c->setArgs1(cmap);
     m_serial_no = newSerialNo();
     c->setSerialno(m_serial_no);
@@ -56,22 +59,34 @@ void AgentCreationTask::setup(const std::string & arg, OpVector & res)
     res.push_back(c);
 
 }
-void AgentCreationTask::operation(const Operation & op, OpVector & res)
+
+void AgentCreationTask::operation(const Operation& op, OpVector& res)
 {
-    if (!op->isDefaultRefno() && op->getRefno() == m_serial_no) {
-        m_complete = true;
-        if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
-            log(ERROR,
-                    String::compose(
-                            "Got error when creating agent. Message: %1",
-                            op->getArgs().front()->getAttr("message").asString()));
-        } else {
+    if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
+        log(ERROR,
+            String::compose(
+                "Got error when creating agent. Message: %1",
+                op->getArgs().front()->getAttr("message").asString()));
+    } else if (!op->isDefaultRefno() && op->getRefno() == m_serial_no) {
+        if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
             if (!op->getArgs().empty()) {
                 auto arg = op->getArgs().front();
-                m_agent_id = arg->getId();
+                m_mind_id = arg->getId();
+
+                Atlas::Message::Element element;
+                if (arg->copyAttr("entity", element) == 0 && element.isMap()) {
+                    auto idElement = element.Map().find("id");
+                    if (idElement != element.Map().end() && idElement->second.isString()) {
+                        m_agent_id = idElement->second.String();
+                    }
+                }
             } else {
                 log(ERROR, "No id received in response to creation.");
             }
+            m_complete = true;
+
         }
+
     }
 }
+

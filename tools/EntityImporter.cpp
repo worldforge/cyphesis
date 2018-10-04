@@ -71,9 +71,7 @@ EntityImporter::EntityImporter(const std::string & accountId,
     EventCompleted.connect(sigc::mem_fun(*this, &EntityImporter::completed));
 }
 
-EntityImporter::~EntityImporter()
-{
-}
+EntityImporter::~EntityImporter() = default;
 
 void EntityImporter::setup(const std::string & arg, OpVector & ret)
 {

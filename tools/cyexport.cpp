@@ -82,7 +82,7 @@ int main(int argc, char ** argv)
         localSocket = client_socket_name;
     }
 
-    std::cout << "Attempting local connection" << std::flush;
+    std::cout << "Attempting local connection" << std::endl;
     if (bridge.connectLocal(localSocket) == 0) {
         if (bridge.create("sys", create_session_username(),
                 String::compose("%1%2", ::rand(), ::rand())) != 0) {
@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
         }
         std::cout << "done." << std::endl << std::flush;
 
-        std::cout << "Starting export" << std::flush;
+        std::cout << "Starting export" << std::endl;
 
         //Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
         auto exporter = new EntityExporter(accountId, agent_id);
