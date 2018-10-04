@@ -99,31 +99,27 @@ int main(int argc, char ** argv)
         localSocket = client_socket_name;
     }
 
-    std::cout << "Attempting local connection" << std::endl;
+    log(NOTICE, "Attempting local connection");
     if (bridge.connectLocal(localSocket) == 0) {
         if (bridge.create("sys", create_session_username(),
                 String::compose("%1%2", ::rand(), ::rand())) != 0) {
-            std::cerr << "Could not create sys account." << std::endl
-                    << std::flush;
+            log(ERROR, "Could not create sys account.");
             return -1;
         }
-        std::cout << " done." << std::endl << std::flush;
         auto loginInfo = bridge.getInfoReply();
         const std::string accountId = loginInfo->getId();
 
-        std::cout << "Attempting creation of agent " << std::endl;
+        log(NOTICE, "Attempting creation of agent");
         auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, "creator");
         bridge.runTask(agentCreationTask, "");
         if (bridge.pollUntilTaskComplete() != 0) {
-            std::cerr << "Could not create agent." << std::endl << std::flush;
+            log(ERROR, "Could not create agent.");
             return -1;
         }
         if (!agentCreationTask->m_agent_id || !agentCreationTask->m_mind_id) {
-            std::cerr << "Could not create agent; no id received." << std::endl
-                    << std::flush;
+            log(ERROR, "Could not create agent; no id received.");
             return -1;
         }
-        std::cout << "done." << std::endl << std::flush;
 
         auto agent_id = *agentCreationTask->m_agent_id;
         auto mind_id = *agentCreationTask->m_mind_id;
@@ -153,7 +149,7 @@ int main(int argc, char ** argv)
                         return true;
                     };
 
-            std::cout << "Checking if world already is populated."  << std::endl << std::flush;
+            log(NOTICE, "Checking if world already is populated.");
             auto populationCheck = std::make_shared<EntityTraversalTask>(accountId, visitor);
             bridge.runTask(populationCheck, "0");
             if (bridge.pollUntilTaskComplete() != 0) {
@@ -177,7 +173,7 @@ int main(int argc, char ** argv)
         }
 
         if (clear) {
-            std::cout << "Clearing world first." << std::endl << std::flush;
+            log(NOTICE, "Clearing world first.");
             //Tell the world to clear itself
             Anonymous deleteArg;
             deleteArg->setId("0");
@@ -189,7 +185,7 @@ int main(int argc, char ** argv)
 
             bridge.send(deleteOp);
 
-            std::cout << "Waiting for world to be cleared." << std::endl << std::flush;
+            log(NOTICE, "Waiting for world to be cleared.");
             //Wait for the agent to be deleted.
             bridge.runTask(std::make_shared<WaitForDeletionTask>(agent_id), "");
             if (bridge.pollUntilTaskComplete() != 0) {
@@ -198,7 +194,7 @@ int main(int argc, char ** argv)
                 return -1;
             }
 
-            std::cout << "World is cleared; creating new agent." << std::endl << std::flush;
+            log(NOTICE, "World is cleared; creating new agent.");
 
             //Once the world has been cleared we need to create a new agent,
             //since the first one got deleted
@@ -218,7 +214,7 @@ int main(int argc, char ** argv)
             mind_id = *agentCreationTask->m_mind_id;
         }
 
-        std::cout << "Starting import." << std::endl << std::flush;
+        log(NOTICE, "Starting import.");
 
         auto importer = std::make_shared<EntityImporter>(accountId, mind_id);
 
@@ -230,7 +226,7 @@ int main(int argc, char ** argv)
             return -1;
         }
 
-        std::cout << "Import done." << std::endl << std::flush;
+        log(INFO, "Import done.");
         return 0;
     }
 

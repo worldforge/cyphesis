@@ -110,8 +110,15 @@ void CommAsioClient<ProtocolT>::do_read()
                                     //No need to write if connection has been actively shut down.
                                     if (m_active) {
                                         std::stringstream ss;
-                                        ss << "Error when reading from socket: (" << ec << ") " << ec.message();
-                                        log(WARNING, ss.str());
+                                        log_level level = WARNING;
+                                        if (ec == boost::asio::error::eof) {
+                                            ss << "Client hung up unexpectedly.";
+                                            level = INFO;
+                                        } else {
+                                            ss << "Error when reading from socket: (" << ec << ") " << ec.message();
+
+                                        }
+                                        log(level, ss.str());
                                     }
                                 }
                             });
@@ -124,10 +131,6 @@ void CommAsioClient<ProtocolT>::write()
         if (mIsSending) {
             //We're already sending in the background.
             //Make that we should send again once we've completed sending.
-            //        std::cerr << "Delaying send." << std::endl << std::flush;
-            //        if (!mShouldSend) {
-            //            start = boost::posix_time::microsec_clock::local_time();
-            //        }
             mShouldSend = true;
             return;
         }
@@ -148,16 +151,21 @@ void CommAsioClient<ProtocolT>::write()
                                          mSendBuffer->consume(length);
                                          //Is there data queued for transmission which we should send right away?
                                          if (mShouldSend) {
-//                            auto diff = boost::posix_time::microsec_clock::local_time() - start;
-//                            std::cerr << "Sending delayed "<< diff.total_microseconds() <<" microseconds." << std::endl << std::flush;
                                              this->write();
                                          }
                                      } else {
                                          //No need to write if connection has been actively shut down.
                                          if (m_active) {
                                              std::stringstream ss;
-                                             ss << "Error when writing to socket: (" << ec << ") " << ec.message();
-                                             log(WARNING, ss.str());
+                                             log_level level = WARNING;
+                                             if (ec == boost::asio::error::eof) {
+                                                 ss << "Client hung up unexpectedly.";
+                                                 level = INFO;
+                                             } else {
+                                                 ss << "Error when reading from socket: (" << ec << ") " << ec.message();
+
+                                             }
+                                             log(level, ss.str());
                                          }
 
                                      }
@@ -242,7 +250,7 @@ void CommAsioClient<ProtocolT>::startNegotiation()
     auto self(this->shared_from_this());
     mNegotiateTimer.expires_from_now(boost::posix_time::seconds(10));
     mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec) {
-        //If the negotiator still exists after the deadline it means that the negotation hasn't
+        //If the negotiator still exists after the deadline it means that the negotiation hasn't
         //completed yet; we'll consider that a "timeout".
         if (m_negotiate != nullptr) {
             log(NOTICE, "Client disconnected because of negotiation timeout.");
@@ -355,13 +363,7 @@ int CommAsioClient<ProtocolT>::send(
         return -1;
     }
     assert(m_encoder);
-//    if (m_clientIos.fail()) {
-//        return -1;
-//    }
-//    if (m_encoder == 0) {
-//        log(ERROR, "Encoder not initialized");
-//        return -1;
-//    }
+
 
     if (comm_asio_client_debug_flag) {
         std::stringstream debugStream;

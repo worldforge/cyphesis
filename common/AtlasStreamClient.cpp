@@ -50,7 +50,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 using namespace boost::asio;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 
 StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
@@ -438,7 +438,11 @@ AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service) :
 {
 }
 
-AtlasStreamClient::~AtlasStreamClient() = default;
+AtlasStreamClient::~AtlasStreamClient()
+{
+    //Send a Logout op to inform the server that we're shutting down cleanly.
+    send(Atlas::Objects::Operation::Logout());
+}
 
 void AtlasStreamClient::send(const RootOperation & op)
 {

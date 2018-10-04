@@ -942,7 +942,7 @@ void MindsProperty::removeMind(Router* mind, LocatedEntity* entity)
     if (m_data.empty()) {
         //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
         if (entity->getProperty(TransientProperty::property_name)) {
-            log(INFO, "Removing entity marked as transient when mind disconnected. " + entity->describeEntity());
+            log(NOTICE, "Removing entity marked as transient when mind disconnected. " + entity->describeEntity());
 
             Atlas::Objects::Operation::Delete delOp;
             delOp->setTo(entity->getId());

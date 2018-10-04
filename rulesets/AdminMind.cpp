@@ -80,8 +80,10 @@ void AdminMind::externalOperation(const Operation& op, Link& link)
                 op->setAttr("from_id", getId());
                 m_entity.sendWorld(op);
             } else {
+                m_entity.sendWorld(op);
                 // Make it appear like it came from target itself;
-                to->sendWorld(op);
+//                op->setFrom(m_entity.getId());
+//                to->sendWorld(op);
 
 //                //Send a sight of the operation to the mind
 //                //NOTE: Is this really a good idea? There's no serial number set, so the op

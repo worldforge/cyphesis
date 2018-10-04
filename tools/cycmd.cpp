@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
             localSocket = client_socket_name;
         }
 
-        std::cout << "Attempting local connection" << std::endl;
+        log(NOTICE, "Attempting local connection");
         if (bridge.connectLocal(localSocket) == 0) {
             bridge.setup();
             if (bridge.create("sys",
@@ -106,7 +106,6 @@ int main(int argc, char ** argv)
                     return 1;
                 }
             }
-            std::cout << "done." << std::endl << std::flush;
             if (!interactive) {
                 bridge.exec(cmd, "");
             } else {
@@ -118,7 +117,7 @@ int main(int argc, char ** argv)
         server = "localhost";
     }
     
-    std::cerr << "Attempting tcp connection" << std::endl << std::flush;
+    log(NOTICE, "Attempting tcp connection");
 
     if (bridge.connect(server) != 0) {
         return 1;
@@ -131,12 +130,9 @@ int main(int argc, char ** argv)
                   << std::endl << std::flush;
     } else {
         bridge.getLogin();
-        std::cout << "Logging in... " << std::flush;
         if (bridge.login() != 0) {
-            std::cout << "failed." << std::endl << std::flush;
             return 1;
         }
-        std::cout << "done." << std::endl << std::flush;
     }
     if (!interactive) {
         bridge.exec(cmd, "");

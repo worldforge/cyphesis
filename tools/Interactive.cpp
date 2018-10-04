@@ -647,8 +647,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         send(g);
     } else if (cmd == "monitor") {
-        ClientTask * task = new OperationMonitor;
-        if (runTask(task, arg) == 0) {
+        if (runTask(std::make_shared<OperationMonitor>(), arg) == 0) {
             Monitor m;
 
             m->setArgs1(Anonymous());
@@ -659,9 +658,9 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
         reply_expected = false;
     } else if (cmd == "unmonitor") {
-        OperationMonitor * om = dynamic_cast<OperationMonitor *>(m_currentTask);
+        auto om = dynamic_cast<OperationMonitor *>(m_currentTask.get());
 
-        if (om != 0) {
+        if (om) {
             Monitor m;
 
             m->setFrom(m_accountId);
@@ -670,7 +669,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             reply_expected = false;
 
-            SystemTime now;
+            SystemTime now{};
             now.update();
 
             time_t monitor_time = now.seconds() - om->startTime();
@@ -784,8 +783,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             std::cout << "Please specify the type to flush" << std::endl << std::flush;
             reply_expected = false;
         } else {
-            ClientTask * task = new Flusher(command_context);
-            runTask(task, arg);
+            runTask(std::make_shared<Flusher>(command_context), arg);
             reply_expected = false;
         }
     } else if (cmd == "cancel") {
@@ -799,8 +797,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             //Extract the avatar id by "misusing" the setFromContext method
             Operation op;
             command_context->setFromContext(op);
-            ClientTask * task = new EntityExporter(m_accountId, op->getFrom());
-            runTask(task, "world.xml");
+            runTask(std::make_shared<EntityExporter>(m_accountId, op->getFrom()), "world.xml");
             reply_expected = false;
         }
     } else if (cmd == "restore") {
@@ -810,8 +807,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
             //Extract the avatar id by "misusing" the setFromContext method
             Operation op;
             command_context->setFromContext(op);
-            ClientTask * task = new EntityImporter(m_accountId, op->getFrom());
-            runTask(task, "world.xml");
+            runTask(std::make_shared<EntityImporter>(m_accountId, op->getFrom()), "world.xml");
             reply_expected = false;
         }
     } else if (cmd == "create") {

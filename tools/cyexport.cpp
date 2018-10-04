@@ -95,24 +95,27 @@ int main(int argc, char ** argv)
         const std::string accountId = loginInfo->getId();
 
         std::cout << "Attempting creation of agent" << std::flush;
-        std::string agent_id;
-        bridge.runTask(new AgentCreationTask(accountId, "creator", agent_id),
-                "");
+        auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, "creator");
+        bridge.runTask(agentCreationTask, "");
         if (bridge.pollUntilTaskComplete() != 0) {
             std::cerr << "Could not create agent." << std::endl << std::flush;
             return -1;
         }
-        if (agent_id == "") {
+        if (!agentCreationTask->m_agent_id || !agentCreationTask->m_mind_id) {
             std::cerr << "Could not create agent; no id received." << std::endl
-                    << std::flush;
+                      << std::flush;
             return -1;
         }
+        std::cout << "done." << std::endl << std::flush;
+
+        auto agent_id = *agentCreationTask->m_agent_id;
+        auto mind_id = *agentCreationTask->m_mind_id;
         std::cout << "done." << std::endl << std::flush;
 
         std::cout << "Starting export" << std::endl;
 
         //Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
-        auto exporter = new EntityExporter(accountId, agent_id);
+        auto exporter = std::make_shared<EntityExporter>(accountId, mind_id);
         exporter->setExportRules(rules);
         exporter->setExportTransient(transients);
         exporter->setExportMinds(minds);
