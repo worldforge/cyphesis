@@ -588,14 +588,20 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 
     Anonymous sarg;
 
-    //Don't call "addToEntity" since we want to filter out private and protected properties
-    if (observingEntity.getIntId() == getIntId() || observingEntity.hasFlags(entity_admin)) {
+    //Admin entities can see all properties
+    if (observingEntity.hasFlags(entity_admin)) {
+        for (auto& entry : m_properties) {
+            entry.second->add(entry.first, sarg);
+        }
+    } else if (observingEntity.getIntId() == getIntId()) {
+        //Our own entity can see both public and protected, but not private properties.
         for (auto& entry : m_properties) {
             if (!entry.second->hasFlags(vis_private)) {
                 entry.second->add(entry.first, sarg);
             }
         }
     } else {
+        //Other entities can only see public properties.
         for (auto& entry : m_properties) {
             if (!entry.second->hasFlags(vis_non_public)) {
                 entry.second->add(entry.first, sarg);
@@ -652,10 +658,6 @@ void Thing::LookOperation(const Operation& op, OpVector& res)
         log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
         return;
     }
-
-    //TODO: this does nothing. How should we handle entities with no perception_sight property which looks at things?
-    // Register the entity with the world router as perceptive.
-    BaseWorld::instance().addPerceptive(from.get());
 
     bool result = lookAtEntity(op, res, from.get());
 

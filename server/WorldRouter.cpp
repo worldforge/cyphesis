@@ -501,16 +501,6 @@ void WorldRouter::operation(const Operation & op, Ref<LocatedEntity> from)
     }
 }
 
-/// Add entity provided to the list of perceptive entities.
-/// Look up the entity with the id provided, and add a pointer
-/// to the entity to the set of perceptive entities. This method is
-/// called when key events occur that indicate that the entity in
-/// question can receive broadcast perception operations.
-void WorldRouter::addPerceptive(LocatedEntity *)
-{
-    debug(std::cout << "WorldRouter::addPerceptive" << std::endl << std::flush;);
-}
-
 /// Main world loop function.
 /// This function is called whenever the communications code is idle.
 /// It updates the in-game time, and dispatches operations that are

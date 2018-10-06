@@ -28,3 +28,9 @@ void AdminProperty::apply(LocatedEntity* entity)
         entity->flags().removeFlags(entity_admin);
     }
 }
+
+AdminProperty * AdminProperty::copy() const
+{
+    return new AdminProperty(*this);
+}
+

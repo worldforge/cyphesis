@@ -190,9 +190,6 @@ class BaseWorld : public Singleton<BaseWorld> {
     /// \brief Find an entity of the given type.
     virtual Ref<LocatedEntity> findByType(const std::string & type) = 0;
 
-    /// \brief Add an entity provided to the list of perceptive entities.
-    virtual void addPerceptive(LocatedEntity *) = 0;
-
     /// \brief Signal that an operation is being dispatched.
     sigc::signal<void, Atlas::Objects::Operation::RootOperation> Dispatching;
 };

@@ -90,7 +90,6 @@ class WorldRouter : public BaseWorld {
     void operation(const Atlas::Objects::Operation::RootOperation &,
                    Ref<LocatedEntity>);
 
-    void addPerceptive(LocatedEntity *) override;
     void message(const Atlas::Objects::Operation::RootOperation &,
                          LocatedEntity &) override;
 

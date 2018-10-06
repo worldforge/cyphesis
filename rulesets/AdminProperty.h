@@ -29,10 +29,13 @@
 class AdminProperty : public BoolProperty
 {
     public:
+        static constexpr const char* property_name = "is_admin";
 
         explicit AdminProperty() = default;
 
         void apply(LocatedEntity* entity) override;
+        AdminProperty * copy() const override;
+
 };
 
 

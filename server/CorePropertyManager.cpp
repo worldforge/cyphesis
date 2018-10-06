@@ -56,6 +56,12 @@
 #include "rulesets/Vector3Property.h"
 #include "rulesets/PerceptionSightProperty.h"
 #include "rulesets/ScaleProperty.h"
+#include "rulesets/ScriptsProperty.h"
+#include "rulesets/UsagesProperty.h"
+#include "rulesets/MindsProperty.h"
+#include "rulesets/PlantedOnProperty.h"
+#include "rulesets/AttachmentsProperty.h"
+#include "rulesets/AdminProperty.h"
 
 #include "common/Eat.h"
 #include "common/Burn.h"
@@ -70,11 +76,6 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
-#include <rulesets/ScriptsProperty.h>
-#include <rulesets/UsagesProperty.h>
-#include <rulesets/MindsProperty.h>
-#include <rulesets/PlantedOnProperty.h>
-#include <rulesets/AttachmentsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -161,6 +162,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<LimboProperty>();
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
+    installProperty<AdminProperty>();
     /**
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
      * This is for "sliding", see "friction-roll" and "friction-spin".
@@ -283,6 +285,11 @@ CorePropertyManager::CorePropertyManager()
     installProperty<MindsProperty>();
 
     installProperty<AttachmentsProperty>();
+
+    /**
+     * Goals for the minds.
+     */
+    installProperty<Property<Atlas::Message::ListType>>("_goals");
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
