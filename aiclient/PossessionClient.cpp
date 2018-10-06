@@ -36,7 +36,7 @@
 #include <Atlas/Objects/Entity.h>
 #include <common/CommSocket.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
