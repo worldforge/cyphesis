@@ -45,6 +45,9 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
         Py::Object setDestination(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setDestination);
 
+        Py::Object addPropertyCallback(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, addPropertyCallback);
+
 };
 
 

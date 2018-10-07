@@ -320,11 +320,6 @@ void MindsProperty::mindWieldOperation(LocatedEntity* ent, const Operation& op, 
 /// @param res The filtered result is returned here.
 void MindsProperty::mindTickOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    Anonymous tick_arg;
-    tick_arg->setName("mind");
-    op->setArgs1(tick_arg);
-    op->setTo(ent->getId());
-    res.push_back(op);
 }
 
 /// \brief Filter a Move operation coming from the mind

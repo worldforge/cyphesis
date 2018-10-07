@@ -25,6 +25,7 @@
 #include "common/id.h"
 
 #include "navigation/Steering.h"
+#include "CyPy_Props.h"
 
 
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
@@ -71,6 +72,8 @@ void CyPy_BaseMind::init_type()
 
     //TODO: split into a CyPy_Steering class and rename according to PEP8
     PYCXX_ADD_VARARGS_METHOD(setDestination, setDestination, "");
+
+    PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
     PYCXX_ADD_NOARGS_METHOD(refreshPath, refreshPath, "");
 
     //behaviors().type_object()->tp_base = base;
@@ -173,6 +176,10 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
         return Py::Long(awareMind->getSteering().getPathResult());
     }
 
+    if (nameStr == "props") {
+        return CyPy_Props::wrap(m_value->getEntity());
+    }
+
 
     if (nameStr == "time") {
         return CyPy_WorldTime::wrap(WorldTimeWrapper(decltype(WorldTimeWrapper::m_value){m_value}));
@@ -199,5 +206,12 @@ int CyPy_BaseMind::setattro(const Py::String& name, const Py::Object& attr)
     }
 
     return PythonExtensionBase::setattro(name, attr);
+}
+
+Py::Object CyPy_BaseMind::addPropertyCallback(const Py::Tuple& args)
+{
+    args.verify_length(2);
+    m_value->addPropertyScriptCallback(verifyString(args[0]), verifyString(args[1]));
+    return Py::None();
 }
 

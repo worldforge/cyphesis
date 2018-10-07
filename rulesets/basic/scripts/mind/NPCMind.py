@@ -75,6 +75,13 @@ class NPCMind(server.Mind):
         self.map.update_hooks_append("update_map")
         self.map.delete_hooks_append("delete_map")
         self.goal_id_counter=0
+        self.add_property_callback('_goals', 'goals_updated')
+    def goals_updated(self, entity):
+        print('Goals updated')
+        goals = entity.props._goals
+        print(str(goals))
+        for goalElement in goals:
+
     def print_debug(self, message):
         """Prints a debug message using 'print', prepending the message with a description of the entity."""
         print(self.describeEntity() + ": " + message)
@@ -156,10 +163,8 @@ class NPCMind(server.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name.
         """
-        print('tick!')
         args=op.getArgs()
         if len(args) != 0:
-            print('think arg: ' + args[0].name)
             if args[0].name == "think":
                 #It's a "thinking" op, which is the base of the AI behaviour.
                 #At regular intervals the AI needs to assess its goals; this is done through "thinkning" ops.
@@ -167,6 +172,7 @@ class NPCMind(server.Mind):
                 #just copy the args from the previous tick
                 opTick.setArgs(args)
                 opTick.setFutureSeconds(const.basic_tick + self.jitter)
+                opTick.setTo(self.id)
                 for t in self.pending_things:
                     thing = self.map.get(t)
                     if thing and thing.type[0]:
@@ -185,6 +191,7 @@ class NPCMind(server.Mind):
                 opTick.setArgs(args)
                 #Persist the thoughts to the server at 30 second intervals.
                 opTick.setFutureSeconds(30)
+                opTick.setTo(self.id)
                 result = self.commune_all_thoughts(op, "persistthoughts")
                 return opTick+result
        

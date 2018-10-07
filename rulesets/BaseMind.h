@@ -46,15 +46,13 @@ class BaseMind : public Router, public ReferenceCounted {
     std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
     std::vector<Operation> m_pendingOperations;
 
-
-
-    std::map<long, std::function<void(const Operation &, OpVector &)>> m_callbacks;
-
     long m_serialNoCounter;
 
     std::unique_ptr<Script> m_script;
 
     Ref<MemEntity> m_ownEntity;
+
+    std::map<std::string, std::string> m_propertyScriptCallbacks;
 
 
     public:
@@ -69,6 +67,10 @@ class BaseMind : public Router, public ReferenceCounted {
     /// \brief Accessor for the world time
     WorldTime * getTime() { return &m_time; }
 
+    const Ref<MemEntity>& getEntity() const {
+        return m_ownEntity;
+    }
+
     /// \brief Is this mind active
     bool isAwake() const { return !m_flags.hasFlags(entity_asleep); }
 
@@ -81,6 +83,8 @@ class BaseMind : public Router, public ReferenceCounted {
     void sightDeleteOperation(const Operation &, OpVector &);
     void sightMoveOperation(const Operation &, OpVector &);
     void sightSetOperation(const Operation &, OpVector &);
+
+    void addPropertyScriptCallback(std::string propertyName, std::string scriptMethod);
 
     void operation(const Operation &, OpVector &) override;
 

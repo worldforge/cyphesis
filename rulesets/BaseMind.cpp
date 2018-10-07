@@ -315,6 +315,14 @@ void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
 void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
 {
     m_ownEntity = std::move(ownEntity);
+    m_ownEntity->propertyApplied.connect([&](const std::string& name, const PropertyBase&) {
+        if (m_script) {
+            auto I = m_propertyScriptCallbacks.find(name);
+            if (I != m_propertyScriptCallbacks.end()) {
+                m_script->hook(I->second, m_ownEntity.get());
+            }
+        }
+    });
     //Also send a "Setup" op to the mind, which will trigger any setup hooks.
     Atlas::Objects::Operation::Setup s;
     Anonymous setup_arg;
@@ -365,6 +373,12 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
 
 }
 
+void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string scriptMethod)
+{
+    m_propertyScriptCallbacks.emplace(propertyName, scriptMethod);
+}
+
+
 void BaseMind::operation(const Operation& op, OpVector& res)
 {
     // This might end up being quite tricky to do
@@ -381,77 +395,70 @@ void BaseMind::operation(const Operation& op, OpVector& res)
 
     int op_no = op->getClassNo();
     m_time.update((int) op->getSeconds());
-    if (!op->isDefaultRefno()) {
-        auto I = m_callbacks.find(op->getRefno());
-        if (I != m_callbacks.end()) {
-            I->second(op, res);
-            m_callbacks.erase(I);
-        }
+
+
+    if (op_no == Atlas::Objects::Operation::INFO_NO) {
+        InfoOperation(op, res);
     } else {
 
-
-        if (op_no == Atlas::Objects::Operation::INFO_NO) {
-            InfoOperation(op, res);
-        } else {
-
-            //If we haven't yet resolved our own entity we should delay delivery of the ops
-            if (!m_ownEntity) {
-                if (!op->isDefaultFrom()) {
-                    if (op->getFrom() != m_entityId) {
-                        m_pendingOperations.push_back(op);
-                        return;
-                    }
-                } else {
-                    log(WARNING, String::compose("Got %1 operation without any 'from'.", op->getParent()));
+        //If we haven't yet resolved our own entity we should delay delivery of the ops
+        if (!m_ownEntity) {
+            if (!op->isDefaultFrom()) {
+                if (op->getFrom() != m_entityId) {
+                    m_pendingOperations.push_back(op);
+                    return;
                 }
+            } else {
+                log(WARNING, String::compose("Got %1 operation without any 'from'.", op->getParent()));
             }
+        }
 
 
-            m_map.check(op->getSeconds());
+        m_map.check(op->getSeconds());
 
-            bool isPending = false;
-            //Unless it's an Unseen op, we should add the entity the op was from.
-            if (op_no != Atlas::Objects::Operation::UNSEEN_NO && !op->isDefaultFrom()) {
-                auto entity = m_map.getAdd(op->getFrom());
-                if (!entity) {
-                    m_pendingEntitiesOperations[op->getFrom()].push_back(op);
-                    isPending = true;
-                }
+        bool isPending = false;
+        //Unless it's an Unseen op, we should add the entity the op was from.
+        if (op_no != Atlas::Objects::Operation::UNSEEN_NO && !op->isDefaultFrom()) {
+            auto entity = m_map.getAdd(op->getFrom());
+            if (!entity) {
+                m_pendingEntitiesOperations[op->getFrom()].push_back(op);
+                isPending = true;
             }
-            if (!isPending) {
-                m_map.sendLooks(res);
-                if (m_script) {
-                    m_script->operation("call_triggers", op, res);
-                    m_script->operation(op->getParent(), op, res);
+        }
+        if (!isPending) {
+            m_map.sendLooks(res);
+            if (m_script) {
+                m_script->operation("call_triggers", op, res);
+                m_script->operation(op->getParent(), op, res);
 //                    if (m_script->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
 //                        return;
 //                    }
-                }
-                switch (op_no) {
-                    case Atlas::Objects::Operation::SIGHT_NO:
-                        SightOperation(op, res);
-                        break;
-                    case Atlas::Objects::Operation::SOUND_NO:
-                        SoundOperation(op, res);
-                        break;
-                    case Atlas::Objects::Operation::APPEARANCE_NO:
-                        AppearanceOperation(op, res);
-                        break;
-                    case Atlas::Objects::Operation::DISAPPEARANCE_NO:
-                        DisappearanceOperation(op, res);
-                        break;
-                    default:
-                        if (op_no == Atlas::Objects::Operation::UNSEEN_NO) {
-                            UnseenOperation(op, res);
-                        } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
-                            ThinkOperation(op, res);
-                        }
-                        // ERROR
-                        break;
-                }
+            }
+            switch (op_no) {
+                case Atlas::Objects::Operation::SIGHT_NO:
+                    SightOperation(op, res);
+                    break;
+                case Atlas::Objects::Operation::SOUND_NO:
+                    SoundOperation(op, res);
+                    break;
+                case Atlas::Objects::Operation::APPEARANCE_NO:
+                    AppearanceOperation(op, res);
+                    break;
+                case Atlas::Objects::Operation::DISAPPEARANCE_NO:
+                    DisappearanceOperation(op, res);
+                    break;
+                default:
+                    if (op_no == Atlas::Objects::Operation::UNSEEN_NO) {
+                        UnseenOperation(op, res);
+                    } else if (op_no == Atlas::Objects::Operation::THINK_NO) {
+                        ThinkOperation(op, res);
+                    }
+                    // ERROR
+                    break;
             }
         }
     }
+
 
     for (auto& resOp : res) {
         if (resOp->isDefaultFrom()) {

@@ -245,31 +245,5 @@ void PossessionAccount::createMindInstance(OpVector& res, const std::string& min
     m_mindFactory.m_scriptFactory->addScript(mind.get());
 
     mind->init(res);
-//
-//
-//
-//
-//    OpVector mindRes;
-//
-//    //Send the Sight operation we just got on to the mind, since it contains info about the entity.
-//    mind->operation(op, mindRes);
-//
-//    //Also send a "Setup" op to the mind, which will trigger any setup hooks.
-//    Atlas::Objects::Operation::Setup s;
-//    Anonymous setup_arg;
-//    setup_arg->setName("mind");
-//    s->setTo(ent->getId());
-//    s->setArgs1(setup_arg);
-//    mind->operation(s, mindRes);
-//
-//    //Mark all resulting ops as coming from the mind.
-//    for (auto& resOp : mindRes) {
-//        resOp->setFrom(entityId);
-//        res.push_back(resOp);
-//    }
-//
-//    //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
-//    Look l;
-//    l->setFrom(entityId);
-//    res.push_back(l);
+
 }
