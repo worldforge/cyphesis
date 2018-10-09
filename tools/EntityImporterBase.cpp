@@ -843,29 +843,32 @@ void EntityImporterBase::start(const std::string& filename)
         }
     }
 
-    if (!entitiesElem.isList()) {
+    if (!entitiesElem.isNone() && !entitiesElem.isList()) {
         S_LOG_WARNING("Entities element is not list.");
         EventCompleted.emit();
         return;
     }
-    if (!mindsElem.isList()) {
+    if (!mindsElem.isNone() && !mindsElem.isList()) {
         S_LOG_WARNING("Minds element is not list.");
         EventCompleted.emit();
         return;
     }
 
-    for (auto& entityMessage : entitiesElem.asList()) {
-        if (entityMessage.isMap()) {
-            auto& entityMap = entityMessage.asMap();
-            auto object = factories->createObject(entityMap);
-            if (object.isValid()) {
-                if (!object->isDefaultId()) {
-                    registerEntityReferences(object->getId(), entityMap);
-                    mPersistedEntities.insert(std::make_pair(object->getId(), object));
+    if (!entitiesElem.isNone()) {
+        for (auto& entityMessage : entitiesElem.asList()) {
+            if (entityMessage.isMap()) {
+                auto& entityMap = entityMessage.asMap();
+                auto object = factories->createObject(entityMap);
+                if (object.isValid()) {
+                    if (!object->isDefaultId()) {
+                        registerEntityReferences(object->getId(), entityMap);
+                        mPersistedEntities.insert(std::make_pair(object->getId(), object));
+                    }
                 }
             }
         }
     }
+
     //If we should resume the world, check if the world has a "suspended" property,
     //and disable it if so.
     if (mResumeWorld) {
@@ -877,12 +880,14 @@ void EntityImporterBase::start(const std::string& filename)
             }
         }
     }
-    for (auto& mindMessage : mindsElem.asList()) {
-        if (mindMessage.isMap()) {
-            auto object = factories->createObject(mindMessage.asMap());
-            if (object.isValid()) {
-                if (!object->isDefaultId()) {
-                    mPersistedMinds.insert(std::make_pair(object->getId(), object));
+    if (!mindsElem.isNone()) {
+        for (auto& mindMessage : mindsElem.asList()) {
+            if (mindMessage.isMap()) {
+                auto object = factories->createObject(mindMessage.asMap());
+                if (object.isValid()) {
+                    if (!object->isDefaultId()) {
+                        mPersistedMinds.insert(std::make_pair(object->getId(), object));
+                    }
                 }
             }
         }
