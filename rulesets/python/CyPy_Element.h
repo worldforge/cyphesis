@@ -46,6 +46,7 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
 
+        Py::Object iter() override;
 
         Py::Object get_name();
 
@@ -72,6 +73,7 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         Py::Object rich_compare(const Py::Object& other, int op) override;
 };
+
 
 
 #endif //CYPHESIS_CYPY_ELEMENT_H

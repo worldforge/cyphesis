@@ -28,6 +28,68 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
+/**
+ * Used when iterating over a List element.
+ */
+struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
+{
+    //The owning element. Reference count is incremented at construction and decremented at destruction.
+    CyPy_Element* m_element;
+    Atlas::Message::ListType::const_iterator iter;
+
+    CyPy_ListElementIterator(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+        : PythonClass(self, args, kwds), m_element(nullptr)
+    {
+        throw Py::RuntimeError("Can not instantiate directly.");
+    }
+
+
+    CyPy_ListElementIterator(Py::PythonClassInstance* self, CyPy_Element* value)
+        : PythonClass(self),
+          m_element(value),
+          iter(m_element->m_value.List().begin())
+    {
+        m_element->self().increment_reference_count();
+    }
+
+    ~CyPy_ListElementIterator() override
+    {
+        m_element->self().decrement_reference_count();
+    }
+
+    PyObject* iternext()
+    {
+        if (iter != m_element->m_value.List().end()) {
+            auto wrapper = CyPy_Element::wrap(*iter);
+            wrapper.increment_reference_count();
+            *(iter)++;
+            return wrapper.ptr();
+        } else {
+            return nullptr;
+        }
+    }
+
+    static void init_type()
+    {
+        behaviors().name("Element list iterator");
+        behaviors().doc("");
+        behaviors().supportIter(Py::PythonType::support_iter_iternext);
+
+        behaviors().readyType();
+
+
+    }
+
+    static Py::PythonClassObject<CyPy_ListElementIterator> wrap(CyPy_Element* value)
+    {
+        auto obj = extension_object_new(type_object(), nullptr, nullptr);
+        reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_ListElementIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
+        return Py::PythonClassObject<CyPy_ListElementIterator>(obj);
+    }
+
+
+};
+
 CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds) :
     WrapperBase(self, args, kwds)
 {
@@ -54,11 +116,14 @@ void CyPy_Element::init_type()
 
     behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
                                    | Py::PythonType::support_mapping_subscript);
+    behaviors().supportIter(Py::PythonType::support_iter_iter);
 
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
     PYCXX_ADD_NOARGS_METHOD(pythonize, pythonize, "");
 
     behaviors().readyType();
+
+    CyPy_ListElementIterator::init_type();
 }
 
 Py::Object CyPy_Element::get_name()
@@ -295,3 +360,12 @@ int CyPy_Element::mapping_ass_subscript(const Py::Object& key, const Py::Object&
     return 0;
 
 }
+
+Py::Object CyPy_Element::iter()
+{
+    if (!m_value.isList()) {
+        return Py::None();
+    }
+    return CyPy_ListElementIterator::wrap(this);
+}
+
