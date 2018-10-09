@@ -324,12 +324,15 @@ void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
         }
     });
 
-    //If there are any property callbacks registered call them now.
-    for (auto& entry : m_propertyScriptCallbacks) {
-        if (m_ownEntity->hasAttr(entry.first)) {
-            m_script->hook(entry.second, m_ownEntity.get());
+    if (m_script) {
+        //If there are any property callbacks registered call them now.
+        for (auto& entry : m_propertyScriptCallbacks) {
+            if (m_ownEntity->hasAttr(entry.first)) {
+                m_script->hook(entry.second, m_ownEntity.get());
+            }
         }
     }
+
 
     //Also send a "Setup" op to the mind, which will trigger any setup hooks.
     Atlas::Objects::Operation::Setup s;
@@ -384,8 +387,7 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
 void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string scriptMethod)
 {
     m_propertyScriptCallbacks.emplace(propertyName, scriptMethod);
-
-    if (m_ownEntity) {
+    if (m_ownEntity && m_script) {
         if (m_ownEntity->hasAttr(propertyName)) {
             m_script->hook(scriptMethod, m_ownEntity.get());
         }
@@ -542,4 +544,12 @@ void BaseMind::setScript(Script* scrpt)
 {
     m_script.reset(scrpt);
     m_map.setScript(scrpt);
+    if (m_script && m_ownEntity) {
+        //If there are any property callbacks registered call them now.
+        for (auto& entry : m_propertyScriptCallbacks) {
+            if (m_ownEntity->hasAttr(entry.first)) {
+                m_script->hook(entry.second, m_ownEntity.get());
+            }
+        }
+    }
 }
