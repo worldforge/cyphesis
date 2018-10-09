@@ -129,7 +129,7 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
         if (result.direction.isValid()) {
             Atlas::Objects::Operation::Move move;
             Atlas::Objects::Entity::Anonymous what;
-            what->setId(getId());
+            what->setId(m_ownEntity->getId());
             what->setAttr("propel", result.direction.toAtlas());
             WFMath::Quaternion orientation;
             orientation.rotation(WFMath::Vector<3>(0, 0, 1), result.direction, WFMath::Vector<3>(0, 1, 0));
@@ -163,6 +163,8 @@ void AwareMind::processMoveTick(const Operation & op, OpVector & res)
     arg->setName("move");
     tick->setArgs1(arg);
     tick->setFutureSeconds(futureTick);
+    tick->setTo(getId());
+    tick->setFrom(getId());
 
     res.push_back(tick);
 }
@@ -327,5 +329,13 @@ void AwareMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
     mSteering = std::make_unique<Steering>(*ownEntity);
     mAwarenessStore = &mAwarenessStoreProvider.getStore(ownEntity->getType());
 
+    //Start the move ticks
+    Atlas::Objects::Operation::Tick tick;
+    Atlas::Objects::Entity::Anonymous arg;
+    arg->setName("move");
+    tick->setArgs1(arg);
+    tick->setTo(getId());
+
+    res.push_back(tick);
 }
 
