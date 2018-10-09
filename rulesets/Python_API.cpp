@@ -193,7 +193,7 @@ void reloadChangedPaths() {
             auto& package = entry.second;
             auto& path = entry.first;
             auto module = Get_PyModule(package);
-            if (module.isNull()) {
+            if (!module.isNull()) {
                 log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
                 auto result = PyImport_ReloadModule(module.ptr());
                 if (result != module.ptr()) {
