@@ -120,44 +120,6 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
     if (updatedDispatcher) {
         scheduleDispatch();
     }
-//
-//
-//    if (op->isDefaultTo() || op->getTo() == m_account->getId()) {
-//    } else {
-//        auto mindI = m_minds.find(op->getTo());
-//        if (mindI != m_minds.end()) {
-//            OpVector mindRes;
-//            auto mind = mindI->second;
-//            mind->operation(op, mindRes);
-//            for (auto& resOp : mindRes) {
-//                resOp->setFrom(mind->getId());
-//                //All resulting ops should go out to the server, except for Ticks which we'll keep ourselves.
-//                if (resOp->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-//                    resOp->setTo(mind->getId());
-//                    m_operationsDispatcher.addOperationToQueue(resOp, mind);
-//                } else {
-//                    res.push_back(resOp);
-//                }
-//            }
-//
-//            if (mind->isDestroyed()) {
-//                removeLocatedEntity(mind);
-//            }
-//
-//        } else {
-//            auto pendingMindI = m_pendingMinds.find(op->getTo());
-//            if (pendingMindI != m_pendingMinds.end()) {
-//                pendingMindI->second.operation(op, res);
-//            } else if (op->getTo() == m_account->getId()){
-//                m_account->operation(op, res);
-//            } else {
-//                log(WARNING, String::compose("Got %1 operation with unknown 'to' (%2).", op->getParent(), op->getTo()));
-//            }
-//        }
-//    }
-
-
-
 }
 
 double PossessionClient::getTime() const
