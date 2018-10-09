@@ -17,19 +17,19 @@ class chase(DynamicGoal):
     def event(self, me, original_op, op):
         # FIXME Now that this code is trigger goal, has this update been done?
         other = me.map.update(op[0], op.getSeconds())
-        if other.id==me.id: return
+        if other.id==me.entity.id: return
         #target=op[0].location.copy()
-        if other.location.parent.id!=me.location.parent.id: return
+        if other.location.parent.id!=me.entity.location.parent.id: return
         if hasattr(other, "type") and other.type[0] not in self.kinds: return
-        destination=other.location.position
-        distance=destination.distance(me.location.position)
+        destination=other.location.pos
+        distance=destination.distance(me.entity.location.pos)
         if distance<1: return
         # CHeat, random chance that it ignores movement
         if uniform(0, 30/distance)<1: return
-        target=Location(me.location.parent)
-        velocity=destination-me.location.position
+        target=Location(me.entity.location.parent)
+        velocity=destination-me.entity.location.pos
         if velocity.mag()==0: return
         target.velocity=velocity.unit_vector()
-        target.position=destination
-        return Operation("move", Entity(me.id, location=target))
+        target.pos=destination
+        return Operation("move", Entity(me.entity.id, location=target))
 

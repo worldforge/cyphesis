@@ -32,9 +32,9 @@ class gather(Goal):
         nothing_near = 1
         what_all=me.map.find_by_filter(self.filter)
         for thing in what_all:
-            square_dist=square_distance(me.location, thing.location)
+            square_dist=square_distance(me.entity.location, thing.location)
             if square_dist < square_near_dist and \
-               thing.location.parent.id != me.id:
+               thing.location.parent.id != me.entity.id:
                 return 0
         return 1
 

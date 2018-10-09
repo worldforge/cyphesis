@@ -16,10 +16,10 @@ class driven(DynamicGoal):
     def __init__(self, desc="Move away when touched, as by a swineherd"):
         DynamicGoal.__init__(self, trigger="touch", desc=desc)
     def event(self, me, original_op, op):
-        distance=distance_to(me.map.get(op.from_).location, me.location)
+        distance=distance_to(me.map.get(op.from_).location, me.entity.location)
         destination=Location()
         destination.velocity=distance.unit_vector()
-        return Operation("move", Entity(me.id, location=destination))
+        return Operation("move", Entity(me.entity.id, location=destination))
 
 
 class summons(DynamicGoal):
@@ -35,4 +35,4 @@ class summons(DynamicGoal):
            if sowee_pattern.match(say):
               destination=Location()
               destination.velocity=Vector3D(0,0,0)
-              return Operation("move", Entity(me.id, location=destination))
+              return Operation("move", Entity(me.entity.id, location=destination))

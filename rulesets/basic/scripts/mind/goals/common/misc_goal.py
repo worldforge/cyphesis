@@ -220,11 +220,11 @@ class spot_something(Goal):
                 else:
                     continue
 
-            sqr_dist = square_distance(me.location, thing.location)
+            sqr_dist = square_distance(me.entity.location, thing.location)
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist < nearsqrdist and thing.location.parent.id==me.location.parent.id:
+            if sqr_dist < nearsqrdist and thing.location.parent.id==me.entity.location.parent.id:
                 if self.condition(thing):
                     nearest = thing
                     nearsqrdist = nearsqrdist
@@ -304,9 +304,9 @@ class sit_down(Goal):
                        move_me_to_focus(where),
                        sit])
     def am_i_sat(self,me):
-        return me.mode=="sitting"
+        return me.entity.props.mode=="sitting"
     def sit(self,me):
-        return Operation("set", Entity(me.id, mode="sitting"))
+        return Operation("set", Entity(me.entity.id, mode="sitting"))
 
 ############################ MOVE AROUND RANDOMLY ###########################################
 
@@ -319,7 +319,7 @@ class amble(Goal):
         self.what="world"
     
     def am_i_moving(self,me):
-        if me.location.velocity:
+        if me.entity.location.velocity:
             return 0
         return 1
 
@@ -330,19 +330,19 @@ class amble(Goal):
             if thing == None:
                 me.remove_knowledge('focus', what)
             else:
-                if thing.location.parent.id != me.location.parent.id:
+                if thing.location.parent.id != me.entity.location.parent.id:
                     me.remove_knowledge('focus', what)
                 else:
-                    if thing.location.parent.id == me.id:
+                    if thing.location.parent.id == me.entity.id:
                         return
         #world = 
         #ground = world.id 
         #op = Operation("eat", ground)
         #print "Fish ambling"
-        target = Location(me.location.parent, me.location.position)
-        target.position = Vector3D(target.position.x + uniform(-1.5,1.5), target.position.y, target.position.z+ uniform(-1.5,1.5))
+        target = Location(me.entity.location.parent, me.entity.location.pos)
+        target.pos = Vector3D(target.pos.x + uniform(-1.5,1.5), target.pos.y, target.pos.z+ uniform(-1.5,1.5))
         target.velocity = Vector3D(1,0,0)
-        return Operation("move",  Entity(me.id, location=target))
+        return Operation("move",  Entity(me.entity.id, location=target))
 
 ############################ FEED (FOR FOOD) ##################################
 
@@ -420,11 +420,11 @@ class peck(feed):
         #world = 
         #ground = world.id 
         #op = Operation("eat", ground)
-        target = Location(me.location.parent, me.location.position)
-        target.position = Vector3D(target.position.x + uniform(-1.5,1.5), target.position.y, target.position.z+ uniform(-1.5,1.5))
+        target = Location(me.entity.location.parent, me.entity.location.pos)
+        target.pos = Vector3D(target.pos.x + uniform(-1.5,1.5), target.pos.y, target.pos.z+ uniform(-1.5,1.5))
         target.velocity = Vector3D(1,0,0)
-        #op += Operation("move",  Entity(me.id, location=target))
-        return Operation("move",  Entity(me.id, location=target))
+        #op += Operation("move",  Entity(me.entity.id, location=target))
+        return Operation("move",  Entity(me.entity.id, location=target))
                                       
 
 
@@ -503,7 +503,7 @@ class hunt(Goal):
     def none_in_range(self, me):
         thing_all=me.map.find_by_filter(self.filter)
         for thing in thing_all:
-            if square_distance(me.location, thing.location) < self.square_range:
+            if square_distance(me.entity.location, thing.location) < self.square_range:
                 return 0
         return 1
     def fight(self, me):
@@ -669,7 +669,7 @@ class keep(Goal):
         thing_all=me.find_thing(self.what)
         where=me.find_thing(self.where)[0]
         for thing in thing_all:
-            if thing.location.parent.id!=where.id and thing.location.parent.id!=me.id:
+            if thing.location.parent.id!=where.id and thing.location.parent.id!=me.entity.id:
                 return 0
         return 1
     def keep_it(self,me):
@@ -684,7 +684,7 @@ class keep(Goal):
         maxx=where.location.bbox.high_corner.x
         maxz=where.location.bbox.high_corner.z
         for thing in thing_all:
-            if thing.location.parent.id!=where.id and thing.location.parent.id!=me.id:
+            if thing.location.parent.id!=where.id and thing.location.parent.id!=me.entity.id:
                 thingloc=Location(where,Point3D(uniform(minx,maxx),0,uniform(minz,maxz)))
                 result.append(Operation("move",Entity(thing.id, location=thingloc)))
         return result
@@ -702,7 +702,7 @@ class keep_on_me(Goal):
     def are_they_on_me(self,me):
         thing_all=me.find_thing(self.what)
         for thing in thing_all:
-            if thing.location.parent.id!=me.id:
+            if thing.location.parent.id!=me.entity.id:
                 return 0
         return 1
     def keep_it(self,me):
@@ -711,7 +711,7 @@ class keep_on_me(Goal):
         thing_all=me.find_thing(self.what)
         to_loc=Location(me,Point3D(0,0,0))
         for thing in thing_all:
-            if thing.location.parent.id!=me.id:
+            if thing.location.parent.id!=me.entity.id:
                 result.append(Operation("move",Entity(thing.id, location=to_loc)))
         return result
 
@@ -723,7 +723,7 @@ class assemble(Goal):
         sgoals=[]
         for item in fromwhat:
             sgoals.append(spot_something(item))
-            sgoals.append(move_it(item, me.location, 1))
+            sgoals.append(move_it(item, me.entity.location, 1))
         sgoals.append(self.build)
         Goal.__init__(self, "Build "+what+" from parts.",
                      false, sgoals)
@@ -737,7 +737,7 @@ class assemble(Goal):
         for item in self.fromwhat:
             cmpnt=me.find_thing(item)[0]
             retops = retops + Operation("set", Entity(cmpnt.id,status=-1))
-        retops = retops + Operation("create", Entity(name=self.what,parent=self.what, location=me.location.copy()))
+        retops = retops + Operation("create", Entity(name=self.what,parent=self.what, location=me.entity.location.copy()))
         retops = retops + Operation("imaginary", Entity("conjure"))
         return retops
 
@@ -804,7 +804,7 @@ class hireling_transaction(transaction):
         if self.payed < self.cost:
             return Operation("talk",Entity(say=who.name+" you owe me "+str(self.cost-self.payed)+" coins."))
         res=Oplist()
-        me.add_knowledge('employer', me.id, who.id)
+        me.add_knowledge('employer', me.entity.id, who.id)
         # FIXME add the new goal
         goal = accompany(who.id)
         me.goals.insert(0,goal)

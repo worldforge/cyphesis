@@ -39,7 +39,7 @@ class welcome(DynamicGoal):
             return
         
         entity = me.map.update(first_op, op.getSeconds())
-        if original_op.from_==me.id:
+        if original_op.from_==me.entity.id:
             self.add_thing(entity)
         if self.filter.match_entity(entity):
             return Operation("talk", Entity(say=self.message)) + me.face(entity)

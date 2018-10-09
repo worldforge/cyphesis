@@ -37,6 +37,8 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
+        Py::Object str() override;
+
     protected:
 
         Py::Object refreshPath();
@@ -48,6 +50,8 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
         Py::Object addPropertyCallback(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, addPropertyCallback);
 
+        Py::Object setSpeed(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setSpeed);
 };
 
 

@@ -57,6 +57,7 @@ class NPCMind(server.Mind):
         #FIXME: this shouldn't be needed
         self.mind = cppthing
 
+        self.print_debug('init')
 
         self.knowledge=Knowledge()
         self.mem=Memory(map=self.map)
@@ -76,15 +77,19 @@ class NPCMind(server.Mind):
         self.map.delete_hooks_append("delete_map")
         self.goal_id_counter=0
         self.add_property_callback('_goals', 'goals_updated')
+
     def goals_updated(self, entity):
-        print('Goals updated')
+        self.print_debug('Goals updated.')
         goals = entity.props._goals
-        print(str(goals))
-        for goalElement in goals:
+        self.goals.clear()
+        if goals:
+            for goalElement in goals:
+                if hasattr(goalElement, 'goal'):
+                    self.add_goal(goalElement.goal)
 
     def print_debug(self, message):
         """Prints a debug message using 'print', prepending the message with a description of the entity."""
-        print(self.describeEntity() + ": " + message)
+        print(str(self) + ": " + message)
     def find_op_method(self, op_id, prefix="",undefined_op_method=None):
         """find right operation to invoke"""
         if not undefined_op_method: undefined_op_method=self.undefined_op_method
@@ -110,7 +115,7 @@ class NPCMind(server.Mind):
             addressElement = talk_entity.address
             if len(addressElement) == 0:
                 return True
-            return self.id in addressElement
+            return self.entity.id in addressElement
         return True
     ########## Map updates
     def add_map(self, obj):
@@ -209,7 +214,7 @@ class NPCMind(server.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         obj=self.map.update(op[0], op.getSeconds())
-        if obj.location.parent and obj.location.parent.id==self.id:
+        if obj.location.parent and obj.location.parent.id==self.entity.id:
             self.add_thing(obj)
             if op.to != self.id:
                 self.transfers.append((op.from_, obj.id))
@@ -369,16 +374,6 @@ class NPCMind(server.Mind):
 
                     thoughts.append(Entity(predicate=what, subject=str(key), object=object))
         
-        #It's important that the order of the goals is retained
-        for goal in self.goals:
-            if hasattr(goal, "str"):
-                thoughts.append(Entity(goal=goal.str, id=goal.str))
-
-        for (trigger, goallist) in sorted(self.trigger_goals.items()):
-            for goal in goallist:
-                if hasattr(goal, "str"):
-                    thoughts.append(Entity(goal=goal.str, id=goal.str))
-            
         if len(self.things) > 0:
             things={}
             for (id, thinglist) in sorted(self.things.items()):
@@ -400,26 +395,6 @@ class NPCMind(server.Mind):
         res = Oplist()
         res = res + thinkOp
         return res
-    
-    def think_delete_operation(self, op):
-        """Deletes a thought, or all thoughts if no argument is specified.
-        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
-
-        if not op.getArgs():
-            self.goals = []
-            self.trigger_goals = {}
-        else:
-            args=op.getArgs()
-            for thought in args:
-                for goal in self.goals:
-                    if goal.str == thought.id:
-                        self.goals.remove(goal)
-                        return
-                for (trigger, goallist) in sorted(self.trigger_goals.items()):
-                    for goal in goallist:
-                        if goal.str == thought.id:
-                            goallist.remove(goal)
-                            return
 
     def think_set_operation(self, op):
         """Sets a new thought, or updates an existing one
@@ -452,18 +427,7 @@ class NPCMind(server.Mind):
                 elif hasattr(thought, "pending_things"):
                     for id in thought.pending_things:
                         self.pending_things.append(str(id))
-                elif hasattr(thought, "goal"):
-                    goalString=str(thought.goal)
-                    if hasattr(thought, "id"):
-                        id=str(thought.id)
-                        goal = self.find_goal(id)
-                        if goal:
-                            self.update_goal(goal, goalString)
-                        else:
-                            self.add_goal(goalString)
-                    else:
-                        self.add_goal(goalString)
-                        
+
             else:
                 subject=thought.subject
                 predicate=thought.predicate
@@ -475,7 +439,7 @@ class NPCMind(server.Mind):
                     locdata=eval(object)
                     #If only coords are supplied, it's handled as a location within the same parent space as ourselves
                     if (len(locdata) == 3):
-                        loc=self.location.copy()
+                        loc=self.entity.location.copy()
                         loc.position=Vector3D(list(locdata))
                     elif (len(locdata) == 2):
                         entity_id_string = locdata[0]
@@ -492,10 +456,10 @@ class NPCMind(server.Mind):
     ########## Talk operations
     def admin_sound(self, op):
         assert(op.from_ == op.to)
-        return op.from_ == self.id
+        return op.from_ == self.entity.id
 
     def interlinguish_warning(self, op, say, msg):
-        log.debug(1,str(self.id)+" interlinguish_warning: "+str(msg)+\
+        log.debug(1,str(self.entity.id)+" interlinguish_warning: "+str(msg)+\
                   ": "+str(say[0].lexlink.id[1:]),op)
     def interlinguish_desire_verb3_buy_verb1_operation(self, op, say):
         """Handle a sentence of the form 'I would like to buy a ....'
@@ -549,7 +513,7 @@ class NPCMind(server.Mind):
         if object[0]=='(':
             #CHEAT!: remove eval
             xyz=list(eval(object))
-            loc=self.location.copy()
+            loc=self.entity.location.copy()
             loc.position=Vector3D(xyz)
             self.add_knowledge(predicate,subject,loc)
         else:
@@ -576,7 +540,7 @@ class NPCMind(server.Mind):
         else:
             k_type = type(k)
             if k_type==type(Location()):
-                dist = distance_to(self.location, k)
+                dist = distance_to(self.entity.location, k)
                 dist.y = 0
                 distmag = dist.mag()
                 if distmag < 8:
@@ -640,13 +604,13 @@ class NPCMind(server.Mind):
 ##         print "subject found:",subject
         object=self.map.get_add(say[2].word)
 ##         print "object found:",object
-##         if subject.id==self.id:
+##         if subject.id==self.entity.id:
 ##             foo
-        if subject.id==self.id:
+        if subject.id==self.entity.id:
             self.add_thing(object)
     def interlinguish_undefined_operation(self, op, say):
         #CHEAT!: any way to handle these?
-        log.debug(2,str(self.id)+" interlinguish_undefined_operation:",op)
+        log.debug(2,str(self.entity.id)+" interlinguish_undefined_operation:",op)
         log.debug(2,str(say))
     ########## Sound operations
     def sound_talk_operation(self, op):
@@ -789,6 +753,7 @@ class NPCMind(server.Mind):
     ########## goals
     def add_goal(self, str_goal):
         """add goal..."""
+        print('Adding goal: ' + str_goal)
         try:
             goal = self.create_goal(str_goal)
         except BaseException as e:
@@ -810,8 +775,8 @@ class NPCMind(server.Mind):
             if self.cmp_goal_importance(self.goals[i],goal):
                 self.goals.insert(i+1,goal)
                 return
-        self.goals.insert(0,goal)
-        
+        self.goals.insert(0, goal)
+
     def update_goal(self, goal, str_goal):
         try:
             new_goal = self.create_goal(goal.key, str_goal)
@@ -843,6 +808,7 @@ class NPCMind(server.Mind):
         return goal
     def remove_goal(self, goal):
         """Removes a goal."""
+        self.print_debug('Removing goal')
         if hasattr(goal,"trigger"):
             dictlist.remove_value(self.trigger_goals, goal)
         else:
@@ -852,6 +818,7 @@ class NPCMind(server.Mind):
         "see if all goals are fulfilled: if not try to fulfill them"
         for g in self.goals[:]:
             if g.irrelevant:
+                self.print_debug('Removing irrelevant goal')
                 self.goals.remove(g)
                 continue
             #Don't process goals which have had three errors in them.
@@ -872,9 +839,9 @@ class NPCMind(server.Mind):
                 else:
                     goalstring=g.__class__.__name__
                 if hasattr(self, "name"):
-                    print("Error in NPC with id " + self.id + " of type " + str(self.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace)
+                    print("Error in NPC with id " + self.entity.id + " of type " + str(self.entity.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace)
                 else:
-                    print("Error in NPC with id " + self.id + " of type " + str(self.type) + " when checking goal " + goalstring + "\n" + stacktrace)
+                    print("Error in NPC with id " + self.entity.id + " of type " + str(self.entity.type) + " when checking goal " + goalstring + "\n" + stacktrace)
                 continue
             # if res!=None: return res
     def teach_children(self, child):
@@ -900,8 +867,6 @@ class NPCMind(server.Mind):
         return res
     ########## thinking (needs rewrite)
     def think(self):
-        if const.debug_thinking:
-            log.thinking("think: "+str(self.id))
         output=self.fulfill_goals(self.time)
 #        if output and const.debug_thinking:
 #            log.thinking(str(self)+" result at "+str(self.time)+": "+output[-1][0].description)
@@ -914,14 +879,14 @@ class NPCMind(server.Mind):
             self.message_queue.append(op)
     ########## turn to face other entity
     def face(self, other):
-        vector = distance_to(self.location, other.location)
+        vector = distance_to(self.entity.location, other.location)
         vector.y = 0
         if vector.sqr_mag() < 0.1:
             return
         vector = vector.unit_vector()
-        newloc = Location(self.location.parent)
+        newloc = Location(self.entity.location.parent)
         newloc.orientation = Quaternion(Vector3D(0,0,1), vector, Vector3D(0,1,0))
-        return Operation("move", Entity(self.id, location=newloc))
+        return Operation("move", Entity(self.entity.id, location=newloc))
     def address(self, entity_id, message):
         """Creates a new Talk op which is addressed to an entity"""
         return Operation('talk', Entity(say=message, address=[entity_id]))

@@ -66,16 +66,19 @@ void CyPy_BaseMind::init_type()
 
     behaviors().supportRichCompare();
 
+    behaviors().supportStr();
+
 //    PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
 //    PYCXX_ADD_VARARGS_METHOD(can_reach, can_reach, "");
 //    PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
 //    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
-    //TODO: split into a CyPy_Steering class and rename according to PEP8
-    PYCXX_ADD_VARARGS_METHOD(setDestination, setDestination, "");
+    //TODO: split into a CyPy_Steering class
+    PYCXX_ADD_VARARGS_METHOD(set_destination, setDestination, "");
+    PYCXX_ADD_VARARGS_METHOD(set_speed, setSpeed, "");
 
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
-    PYCXX_ADD_NOARGS_METHOD(refreshPath, refreshPath, "");
+    PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
 
     //behaviors().type_object()->tp_base = base;
 
@@ -216,6 +219,25 @@ Py::Object CyPy_BaseMind::addPropertyCallback(const Py::Tuple& args)
 {
     args.verify_length(2);
     m_value->addPropertyScriptCallback(verifyString(args[0]), verifyString(args[1]));
+    return Py::None();
+}
+
+Py::Object CyPy_BaseMind::str()
+{
+    if (m_value->getEntity()) {
+        return Py::String(String::compose("BaseMind with id %1 for entity %2", m_value->getId(), m_value->getEntity()->describeEntity()));
+    }
+    return Py::String(String::compose("BaseMind with id %1", m_value->getId()));
+}
+
+Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    if (!awareMind) {
+        throw Py::TypeError("Not an AwareMind");
+    }
+    awareMind->getSteering().setDesiredSpeed(verifyFloat(args[0]));
     return Py::None();
 }
 

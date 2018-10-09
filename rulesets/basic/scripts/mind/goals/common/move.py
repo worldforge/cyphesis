@@ -22,7 +22,7 @@ class move_me(Goal):
     """Move me to a certain place.
     'radius' specifies how close to the location we accept.
     """
-    def __init__(self, location, radius=0.5, speed=0.5):
+    def __init__(self, location, radius=0.5, speed=0.2):
         Goal.__init__(self,"move me to certain place",
                       self.am_I_at_loc,
                       [self.move_to_loc],
@@ -46,12 +46,12 @@ class move_me(Goal):
         return location_
     def am_I_at_loc(self, me):
         location=self.get_location_instance(me)
-        if me.location is None:
+        if me.entity.location is None:
             return 1
         if not location:
             #print "No location"
             return 1
-        if square_horizontal_distance(me.location, location) <= self.squared_radius:
+        if square_horizontal_distance(me.entity.location, location) <= self.squared_radius:
             #print "We are there"
             return 1
         else:
@@ -62,9 +62,9 @@ class move_me(Goal):
         if not location:
             #print "Can't move - no location"
             return
-        #print "Moving to location " + str(location)
-        me.setDestination(location.position, self.radius, location.parent.id)
-        refreshResult = me.refreshPath()
+        me.set_speed(self.speed)
+        me.set_destination(location.pos, self.radius, location.parent.id)
+        refreshResult = me.refresh_path()
         #If result is 0 it means that we're already there
         if refreshResult == 0:
             return
@@ -129,7 +129,7 @@ class move_me_area(Goal):
             return 0
         if self.arrived:
             #print "Already arrived at location"
-            square_dist=square_distance(me.location, location)
+            square_dist=square_distance(me.entity.location, location)
             if square_dist > self.square_range:
                 self.arrived=0
                 #print "Moved away"
@@ -203,7 +203,7 @@ class move_it(Goal):
             if (self.what in me.things)==0: return 1
             what=me.things[self.what][0]
         if what.location.parent.id!=self.location.parent.id: return 0
-        return what.location.position.distance(self.location.position)<1.5
+        return what.location.pos.distance(self.location.pos)<1.5
     def move_it_to_loc(self, me):
         if self.wait>0:
             self.wait=self.wait-1
@@ -219,12 +219,12 @@ class move_it(Goal):
         if self.speed==0 or what.location.parent.id!=self.location.parent.id:
             return Operation("move", Entity(what.id, location=self.location))
         iloc=what.location.copy()
-        vel=what.location.position.unit_vector_to(self.location.position)
+        vel=what.location.pos.unit_vector_to(self.location.pos)
         iloc.velocity = vel * self.speed
         self.location.velocity=Vector3D(0.0,0.0,0.0)
         mOp1=Operation("move", Entity(what.id, location=iloc))
         mOp2=Operation("move", Entity(what.id, location=self.location))
-        time=((self.location.position-what.location.position).mag() / self.speed)
+        time=((self.location.pos-what.location.pos).mag() / self.speed)
         self.wait=(time/const.basic_tick)+1
         mOp2.setFutureSeconds(time)
         return Oplist(mOp1,mOp2)
@@ -246,7 +246,7 @@ class move_it_outof_me(Goal):
         things = self.what_filter.search_contains(me)
         if things > 0:
             me.remove_thing(things[0])
-            return Operation("move", Entity(things[0].id, location=me.location))
+            return Operation("move", Entity(things[0].id, location=me.entity.location))
         else:
             return
         
@@ -265,7 +265,7 @@ class move_me_to_possession(Goal):
         if type(what)==str:
             if (what in me.things)==0: return 0
             what=me.things[what][0]
-        if square_horizontal_distance(me.location, what.location) < 4: # 2 * 2
+        if square_horizontal_distance(me.entity.location, what.location) < 4: # 2 * 2
             return 1
         else:
             return 0
@@ -276,10 +276,10 @@ class move_me_to_possession(Goal):
             if (what in me.things)==0: return
             what=me.things[what][0]
         target=what.location.copy()
-        if target.parent.id==me.location.parent.id:
-            target.velocity=me.location.position.unit_vector_to(target.position)
+        if target.parent.id==me.entity.location.parent.id:
+            target.velocity=me.entity.location.pos.unit_vector_to(target.pos)
             target.rotation=target.velocity
-            return Operation("move", Entity(me.id, location=target))
+            return Operation("move", Entity(me.entity.id, location=target))
 
 class move_me_to_focus(Goal):
     """Move me to something I am interested in."""
@@ -308,7 +308,7 @@ class move_me_to_focus(Goal):
             bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
             #TODO: Add a check for solid and non solid entities.
             #When moving to a non solid entity, we should try to get at its center.
-            if square_horizontal_distance(me.location, thing.location) < ((self.distance * self.distance) + bbox_size):
+            if square_horizontal_distance(me.entity.location, thing.location) < ((self.distance * self.distance) + bbox_size):
                 return 1
         return 0
 
@@ -321,9 +321,9 @@ class move_me_to_focus(Goal):
                 me.remove_knowledge('focus', what)
                 return
             target=thing.location.copy()
-            if target.parent.id==me.location.parent.id:
-                target.velocity=me.location.position.unit_vector_to(target.position)
-                return Operation("move", Entity(me.id, location=target))
+            if target.parent.id==me.entity.location.parent.id:
+                target.velocity=me.entity.location.pos.unit_vector_to(target.pos)
+                return Operation("move", Entity(me.entity.id, location=target))
 
 
 class move_me_near_focus(Goal):
@@ -358,7 +358,7 @@ class move_me_near_focus(Goal):
             bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
             #TODO: Add a check for solid and non solid entities.
             #When moving to a non solid entity, we should try to get at its center.
-            squared_distance_to_thing = square_horizontal_distance(me.location, thing.location)
+            squared_distance_to_thing = square_horizontal_distance(me.entity.location, thing.location)
             if squared_distance_to_thing < ((self.distance * self.distance) + bbox_size):
                 self.is_close_to_thing=True
                 return 1
@@ -379,9 +379,9 @@ class move_me_near_focus(Goal):
                 me.remove_knowledge('focus', what)
                 return
             target=thing.location.copy()
-            if target.parent.id==me.location.parent.id:
-                target.velocity=me.location.position.unit_vector_to(target.position)
-                return Operation("move", Entity(me.id, location=target))
+            if target.parent.id==me.entity.location.parent.id:
+                target.velocity=me.entity.location.pos.unit_vector_to(target.pos)
+                return Operation("move", Entity(me.entity.id, location=target))
 
 
 
@@ -402,11 +402,11 @@ class pick_up_possession(Goal):
         if type(what)==str:
             if (self.what in me.things)==0: return 0
             what=me.things[self.what][0]
-        if what.location.parent.id!=me.id:
-            if what.location.parent.id!=me.location.parent.id:
+        if what.location.parent.id!=me.entity.id:
+            if what.location.parent.id!=me.entity.location.parent.id:
                 me.remove_thing(what.id)
                 me.map.delete(what.id)
-        return what.location.parent.id==me.id
+        return what.location.parent.id==me.entity.id
     def pick_it_up(self, me):
         what=self.what
         if type(what)==str:
@@ -436,10 +436,10 @@ class pick_up_focus(Goal):
                 me.remove_knowledge('focus', what)
                 continue
             # If its not not near us on the ground, forget about it.
-            if thing.location.parent.id != me.location.parent.id:
+            if thing.location.parent.id != me.entity.location.parent.id:
                 me.remove_knowledge('focus', what)
                 continue
-            if thing.location.parent.id != me.id:
+            if thing.location.parent.id != me.entity.id:
                 return 0
         return 1
     def pick_it_up(self, me):
@@ -450,7 +450,7 @@ class pick_up_focus(Goal):
             if thing == None:
                 me.remove_knowledge('focus', what)
                 continue
-            if thing.location.parent.id != me.id:
+            if thing.location.parent.id != me.entity.id:
                 return Operation("move", Entity(id, location=Location(me, Point3D(0,0,0))))
 
 ############################ WANDER ####################################
@@ -463,8 +463,8 @@ class wander(Goal):
                        extragoal,
                        self.do_wandering])
     def do_wandering(self, me):
-        loc = me.location.copy()
-        loc.position=Point3D([c+uniform(-5,5) for c in loc.position])
+        loc = me.entity.location.copy()
+        loc.pos=Point3D([c+uniform(-5,5) for c in loc.pos])
         self.subgoals[0].location = loc
 
 ############################ WANDER & SEARCH ############################
@@ -502,16 +502,16 @@ class pursuit(Goal):
         self.direction = direction
         self.vars=["what","range","direction"]
     def not_visible(self, me):
-        #print self.__class__.__name__,me.mem.recall_place(me.location,self.range,self.what)
-        return not me.mem.recall_place(me.location,self.range,self.filter)
+        #print self.__class__.__name__,me.mem.recall_place(me.entity.location,self.range,self.what)
+        return not me.mem.recall_place(me.entity.location,self.range,self.filter)
     def run(self, me):
-        lst_of_what = me.mem.recall_place(me.location,self.range,self.filter)
+        lst_of_what = me.mem.recall_place(me.entity.location,self.range,self.filter)
         if not lst_of_what or len(lst_of_what)==0: return
-        dist_vect=distance_to(me.location,lst_of_what[0].location).unit_vector()
+        dist_vect=distance_to(me.entity.location,lst_of_what[0].location).unit_vector()
         multiply = const.base_velocity * self.direction * const.basic_tick
-        loc = Location(me.location.parent)
-        loc.position =  me.location.position + (dist_vect * multiply)
-        ent=Entity(me.id,location=loc)
+        loc = Location(me.entity.location.parent)
+        loc.pos =  me.entity.location.pos + (dist_vect * multiply)
+        ent=Entity(me.entity.id,location=loc)
         return Operation("move",ent)
 
 ############################ AVOID ####################################
@@ -546,7 +546,7 @@ class hunt_for(pursuit):
         if id==None: return
         thing=me.map.get(id)
         if thing==None: return
-        square_dist = square_distance(me.location, thing.location)
+        square_dist = square_distance(me.entity.location, thing.location)
         return square_dist < self.square_proximity
 
 ################################ PATROL ##############################
@@ -591,17 +591,17 @@ class accompany(Goal):
         if who == None:
             return 0
 
-        dist=distance_to(me.location, who.location)
+        dist=distance_to(me.entity.location, who.location)
         # Are we further than 3 metres away
         if dist.sqr_mag() > 25:
             #print "We are far away", dist
-            if me.location.velocity.is_valid() and me.location.velocity.dot(dist) > 0.5:
+            if me.entity.location.velocity.is_valid() and me.entity.location.velocity.dot(dist) > 0.5:
                 #print "We moving towards them already"
                 return 1
             return 0
         else:
             #print "We are close", dist
-            if me.location.velocity.is_valid() and me.location.velocity.dot(dist) < 0.5:
+            if me.entity.location.velocity.is_valid() and me.entity.location.velocity.dot(dist) < 0.5:
                 #print "We going away from them"
                 return 0
             return 1
@@ -611,8 +611,8 @@ class accompany(Goal):
         if who == None:
             self.irrelevant = 1
             return
-        dist=distance_to(me.location, who.location)
-        target = Location(me.location.parent)
+        dist=distance_to(me.entity.location, who.location)
+        target = Location(me.entity.location.parent)
         square_dist=dist.sqr_mag()
         if square_dist > 64:
             #print "We must be far far away - run"
@@ -623,7 +623,7 @@ class accompany(Goal):
         else:
             #print "We must be close - stop"
             target.velocity = Vector3D(0,0,0)
-        return Operation("move", Entity(me.id, location=target))
+        return Operation("move", Entity(me.entity.id, location=target))
 
 ############################ ROAM ####################################
 
@@ -654,6 +654,6 @@ class roam(Goal):
         waypointName = self.list[randint(0, self.count - 1)]
         waypoint = me.get_knowledge("location",waypointName)
         
-        loc = me.location.copy()
-        loc.position=Point3D([c+uniform(-self.radius,self.radius) for c in waypoint.position])
+        loc = me.entity.location.copy()
+        loc.pos=Point3D([c+uniform(-self.radius,self.radius) for c in waypoint.pos])
         move_me_goal.location = loc
