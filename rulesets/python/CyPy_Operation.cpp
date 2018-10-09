@@ -302,14 +302,14 @@ Py::Object CyPy_Operation::sequence_item(Py_ssize_t item)
     }
     const Root& arg = args[item];
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(arg);
-    if (op.isValid()) {
+    if (op) {
         return CyPy_Operation::wrap(std::move(op));
     }
     RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(arg);
-    if (ent.isValid()) {
+    if (ent) {
         return CyPy_RootEntity::wrap(std::move(ent));
     }
-    log(WARNING, "Non operation or entity being returned as arg of operation");
+    //log(WARNING, "Non operation or entity being returned as arg of operation");
     return CyPy_Element::wrap(arg->asMessage());
 }
 
