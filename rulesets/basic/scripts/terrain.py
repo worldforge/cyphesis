@@ -1,10 +1,11 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 1999 Aloril (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import *
 from random import *
 from mind.panlingua import interlinguish
-il=interlinguish
+
+il = interlinguish
 from world import probability
 from editor import editor
 from physics import Quaternion
@@ -12,40 +13,42 @@ from Vector3D import Vector3D
 import time
 from math import *
 
+
 def plain(mapeditor):
-#   general things
+    #   general things
 
-    m=editor(mapeditor)
+    m = editor(mapeditor)
 
-    world=m.look()
-    points = { }
+    world = m.look()
+    points = {}
     for i in range(-6, 7):
         for j in range(-6, 7):
-            points['%ix%i'%(i,j)] = [i, j, 8]
+            points['%ix%i' % (i, j)] = [i, j, 8]
 
-    m.set(world.id, terrain={'points' : points})
+    m.set(world.id, terrain={'points': points})
+
 
 def modify_terrain(mapeditor):
-#   general things
+    #   general things
 
-    m=editor(mapeditor)
+    m = editor(mapeditor)
 
-    world=m.look()
-    points = { }
+    world = m.look()
+    points = {}
     for i in range(-6, 7):
         for j in range(-6, 7):
-            if i>=5 or j>=5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(100, 150)]
-            elif i<=-5 or j <= -5:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-30, -10)]
-            elif (i==2 or i==3) and (j==2 or j==3):
-                points['%ix%i'%(i,j)] = [i, j, uniform(20, 25)]
-            elif i==4 or j==4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(30, 80)]
-            elif i==-4 or j==-4:
-                points['%ix%i'%(i,j)] = [i, j, uniform(-5, 5)]
+            if i >= 5 or j >= 5:
+                points['%ix%i' % (i, j)] = [i, j, uniform(100, 150)]
+            elif i <= -5 or j <= -5:
+                points['%ix%i' % (i, j)] = [i, j, uniform(-30, -10)]
+            elif (i == 2 or i == 3) and (j == 2 or j == 3):
+                points['%ix%i' % (i, j)] = [i, j, uniform(20, 25)]
+            elif i == 4 or j == 4:
+                points['%ix%i' % (i, j)] = [i, j, uniform(30, 80)]
+            elif i == -4 or j == -4:
+                points['%ix%i' % (i, j)] = [i, j, uniform(-5, 5)]
             else:
-                points['%ix%i'%(i,j)] = [i, j, 1+uniform(3, 11)*(abs(i)+abs(j))]
+                points['%ix%i' % (i, j)] = [i, j, 1 + uniform(3, 11) * (abs(i) + abs(j))]
 
     points['-4x-1'] = [-4, -1, 12.4]
     points['-4x-2'] = [-4, -2, -8.3]
@@ -67,4 +70,4 @@ def modify_terrain(mapeditor):
     points['0x1'] = [0, 1, 14.2]
     points['1x1'] = [1, 1, 19.7]
 
-    m.set(world.id, terrain={'points' : points})
+    m.set(world.id, terrain={'points': points})

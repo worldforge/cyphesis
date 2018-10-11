@@ -13,16 +13,16 @@ LIST_REQ = socket.htonl(7)
 LIST_RESP = socket.htonl(8)
 PROTO_ERANGE = socket.htonl(9)
 
+
 def metaquery():
     ip = "80.68.90.68"
     port = 8453
 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-
     s.sendto(struct.pack('I', CKEEP_ALIVE), (ip, port))
 
-    data,addr = s.recvfrom(8)
+    data, addr = s.recvfrom(8)
 
     res = struct.unpack('II', data)
     if res[0] != HANDSHAKE:
@@ -37,11 +37,11 @@ def metaquery():
     s.sendto(struct.pack('II', CLIENTSHAKE, shake), (ip, port))
 
     print("listing")
-    segment=0
+    segment = 0
     while True:
         s.sendto(struct.pack('II', LIST_REQ, socket.htonl(segment)), (ip, port))
 
-        data,addr = s.recvfrom(4096)
+        data, addr = s.recvfrom(4096)
         print(len(data))
         res = struct.unpack('I', data[:4])
         print(socket.ntohl(res[0]))
@@ -52,7 +52,7 @@ def metaquery():
                 print("Error: ", len(data), count * 4)
                 return
             for i in range(0, count):
-                entry = struct.unpack('BBBB', data[12+i*4:16+i*4])
+                entry = struct.unpack('BBBB', data[12 + i * 4:16 + i * 4])
                 print("%d.%d.%d.%d" % entry)
             segment += count
             print(segment, " got.")

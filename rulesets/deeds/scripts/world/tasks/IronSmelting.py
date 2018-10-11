@@ -1,6 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2011 Peter <elminister@interia.pl> (See the file COPYING for details).
-
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2011 Peter <elminister@interia.pl> (See the file COPYING for details).
 
 
 from atlas import *
@@ -11,9 +10,10 @@ from physics import Vector3D
 
 import server
 
+
 class IronSmelting(server.Task):
     """A task for making iron in bloomery"""
-    
+
     def craft_operation(self, op):
         """ Op handler for crafting op which activates this task """
 
@@ -36,31 +36,29 @@ class IronSmelting(server.Task):
         self.progress += 0.1
         bloomery_location = self.target().location.copy()
 
-        res=Oplist()
+        res = Oplist()
 
         if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius() + 0.1:
             self.rate = 0
             self.progress -= 0.1
             # no progress
-        
+
         if self.progress < 1:
             # print "Not done yet"
             return self.next_tick(0.75)
 
-
         # Destroy bloomery, bloomeries were for single use only!
-        set = Operation("set", Entity(self.target().id, status = -1), to = self.target())
+        set = Operation("set", Entity(self.target().id, status=-1), to=self.target())
         res.append(set)
- 
 
         # A bit naive iron ingot can not be made without anvil & hammer but..
 
         # Create iron stab in place of bloomery
         print("Trying to create iron ingot")
-        create = Operation("create", Entity(name = "iron_ingot", type = "iron_ingot"), to = self.character )
+        create = Operation("create", Entity(name="iron_ingot", type="iron_ingot"), to=self.character)
         res.append(create)
 
         self.progress = 1
         self.irrelevant()
-  
+
         return res

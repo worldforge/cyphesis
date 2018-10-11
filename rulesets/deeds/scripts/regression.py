@@ -1,17 +1,26 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2009 Alistair Riddoch
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2009 Alistair Riddoch
 
 from atlas import *
 from cyphesis.editor import create_editor
 
-ALL_CLASSES=["acorn", "annelid", "apple", "appletree", "region", "arm", "armory", "arrow", "axe", "barrel", "birch", "block_house", "blueprint", "board", "boat", "boots", "bottle", "boulder", "boundary", "bow", "bowl", "bucksaw", "rabbit", "butcher_house", "campfire", "carrot", "chicken", "cleaver", "cloak", "coin", "construction", "cow", "crab", "deed", "deer", "dog", "castle_don_jon", "door", "feature", "fern", "fir", "fircone", "fire", "fish", "fishingrod", "bobber", "flower", "forest", "gallows", "garment", "gateway", "goblin", "grass", "gravestone", "hall", "ham", "hammer", "hat", "hook", "horse", "house", "jetty", "keep", "knife", "larva", "leaf", "loaf", "longtable", "lumber", "lych", "maggot", "marshall", "material", "mausoleum", "mercenary", "merchant", "mobile", "mushroom", "oak", "ocean", "path", "pelvis", "pickaxe", "pig", "pile", "ploughed_field", "pole", "poplar", "ribcage", "rope", "scythe", "seed", "settler", "shin", "shirt", "shovel", "sieve", "skeleton", "skull", "spider", "squirrel", "stake", "stall", "statue", "stone", "stonehouse", "structure", "sty", "sword", "tent", "theodolite", "thigh", "tinderbox", "torch", "tower", "tree", "pants", "trowel", "tuber", "turnip", "twobyfour", "venison", "wall", "weather", "willow", "wolf", "wood"]
+ALL_CLASSES = ["acorn", "annelid", "apple", "appletree", "region", "arm", "armory", "arrow", "axe", "barrel", "birch", "block_house", "blueprint", "board", "boat", "boots", "bottle", "boulder",
+               "boundary", "bow", "bowl", "bucksaw", "rabbit", "butcher_house", "campfire", "carrot", "chicken", "cleaver", "cloak", "coin", "construction", "cow", "crab", "deed", "deer", "dog",
+               "castle_don_jon", "door", "feature", "fern", "fir", "fircone", "fire", "fish", "fishingrod", "bobber", "flower", "forest", "gallows", "garment", "gateway", "goblin", "grass",
+               "gravestone", "hall", "ham", "hammer", "hat", "hook", "horse", "house", "jetty", "keep", "knife", "larva", "leaf", "loaf", "longtable", "lumber", "lych", "maggot", "marshall",
+               "material", "mausoleum", "mercenary", "merchant", "mobile", "mushroom", "oak", "ocean", "path", "pelvis", "pickaxe", "pig", "pile", "ploughed_field", "pole", "poplar", "ribcage",
+               "rope", "scythe", "seed", "settler", "shin", "shirt", "shovel", "sieve", "skeleton", "skull", "spider", "squirrel", "stake", "stall", "statue", "stone", "stonehouse", "structure",
+               "sty", "sword", "tent", "theodolite", "thigh", "tinderbox", "torch", "tower", "tree", "pants", "trowel", "tuber", "turnip", "twobyfour", "venison", "wall", "weather", "willow", "wolf",
+               "wood"]
+
 
 class RegressionTester:
-    def __init__(self, editor, sx = 0, sy = 0, width = 64):
+    def __init__(self, editor, sx=0, sy=0, width=64):
         self.editor = editor
         self.x = sx
         self.y = sy
         self.width = width
+
     def get_pos(self):
         "Get the next position on a spaced out grid"
         pos = (self.x, self.y, 0)
@@ -30,19 +39,19 @@ class RegressionTester:
         "Create a character entity"
         return self.editor.make(type, pos=pos)
 
-    def test_task(self, task, target, tool, op, avatar = 'settler'):
+    def test_task(self, task, target, tool, op, avatar='settler'):
         "Test activating a task using a tool on a target"
-        if type(avatar)== str:
+        if type(avatar) == str:
             c = self.create_character(avatar, self.get_pos())
         else:
             c = avatar
 
-        if type(tool)==str:
-            t = self.editor.make(tool, pos=(0,0,0), parent=c.id)
+        if type(tool) == str:
+            t = self.editor.make(tool, pos=(0, 0, 0), parent=c.id)
         else:
             t = tool
 
-        if type(target)==str:
+        if type(target) == str:
             o = self.editor.make(target, pos=self.get_pos())
         else:
             o = target
@@ -57,16 +66,15 @@ class RegressionTester:
 
         if c.tasks[0].name != task:
             raise AssertionError('Task \'%s\' started instead of ' \
-                                  'expected \"%s\"' % (c.tasks[0].name, task))
-
+                                 'expected \"%s\"' % (c.tasks[0].name, task))
 
 
 def default(host='', account='', password='', **args):
     m = create_editor(host, account, password)
 
-    world=m.look()
+    world = m.look()
 
-    p=RegressionTester(m)
+    p = RegressionTester(m)
 
     p.create_all(ALL_CLASSES)
 
@@ -78,4 +86,3 @@ def default(host='', account='', password='', **args):
     p.test_task('raise', 'stake', 'pole', 'lever')
     p.test_task('reap', world, 'scythe', 'cut')
     p.test_task('ram', 'stake', 'hammer', 'strike')
-

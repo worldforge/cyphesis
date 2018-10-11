@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -8,8 +8,10 @@ from physics import Vector3D
 
 import server
 
+
 class Slice(server.Task):
     """ A task for cutting a log into boards."""
+
     def plane_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Slice.cut"
@@ -27,7 +29,7 @@ class Slice(server.Task):
         """ Op handler for regular tick op """
         # print "Slice.tick"
 
-        target=self.target()
+        target = self.target()
         if target is None:
             # print "Target is no more"
             self.irrelevant()
@@ -52,7 +54,7 @@ class Slice(server.Task):
             self.irrelevant()
             return
 
-        res=Oplist()
+        res = Oplist()
 
         new_bbox = [target.location.bbox.low_corner.x,
                     target.location.bbox.low_corner.y,
@@ -61,7 +63,7 @@ class Slice(server.Task):
                     target.location.bbox.high_corner.y,
                     target.location.bbox.high_corner.z]
 
-        set=Operation("set", Entity(target.id, bbox=new_bbox), to=target)
+        set = Operation("set", Entity(target.id, bbox=new_bbox), to=target)
         res.append(set)
 
         slice_loc = target.location.copy()
@@ -80,7 +82,7 @@ class Slice(server.Task):
 
         slice_loc.orientation = target.location.orientation
 
-        create=Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
+        create = Operation("create", Entity(name='wood', type='wood', location=slice_loc, bbox=slice_bbox), to=target)
         res.append(create)
 
         if width - self.width > self.width:
@@ -88,7 +90,7 @@ class Slice(server.Task):
         else:
             # FIXME Integrate with other set op.
             # Add create to convert remaining fragment into a board
-            set=Operation("set", Entity(target.id, status=-1), to=target)
+            set = Operation("set", Entity(target.id, status=-1), to=target)
             res.append(set)
 
         res.append(self.next_tick(0.75))

@@ -5,12 +5,12 @@ from atlas import *
 
 import server
 
+
 def strike(instance):
     # If there's a cooldown we need to mark the actor
     cooldown = getattr(instance.tool.props, "cooldown_" + instance.op.id)
     if cooldown and cooldown > 0.0:
         instance.tool.send_world(Operation('set', Entity(instance.tool.id, ready_at=server.world.get_time() + cooldown), to=instance.tool.id))
-
 
     # Send sight even if we miss
     instance.actor.send_world(Operation("sight", instance.op))

@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -8,8 +8,10 @@ from physics import Vector3D
 
 import server
 
+
 class Twirling(server.Task):
     """ A task for Twirling fibre to get rope."""
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Twirling.cut"
@@ -21,12 +23,11 @@ class Twirling(server.Task):
         self.target = server.world.get_object(op[0].id)
         self.tool = op.to
 
-
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Twirling.tick"
 
-        target=self.target()
+        target = self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()
@@ -34,13 +35,13 @@ class Twirling(server.Task):
 
         self.rate = 0.5 / 0.75
         self.progress += 1
- 
+
         if square_distance(self.character.location, target.location) > target.location.bbox.square_bounding_radius():
             self.rate = 0
             # print "Too far away "
             return self.next_tick(0.75)
 
-        res=Oplist()
+        res = Oplist()
 
         if self.progress < 1:
             # print "Not done yet"
@@ -53,13 +54,13 @@ class Twirling(server.Task):
         chunk_loc.position = target.location.position
 
         chunk_loc.orientation = target.location.orientation
-        create=Operation("create",
-                         Entity(name = "rope",
-                                type = "rope",
-                                location = chunk_loc), to = target)
+        create = Operation("create",
+                           Entity(name="rope",
+                                  type="rope",
+                                  location=chunk_loc), to=target)
         res.append(create)
 
-        set = Operation("set", Entity(target.id, status = -1), to = target)
+        set = Operation("set", Entity(target.id, status=-1), to=target)
         res.append(set)
 
         res.append(self.next_tick(0.75))

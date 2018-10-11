@@ -1,12 +1,16 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from random import *
 
+
 class Statistics(object):
     """A very simple Statistics example."""
-    def __init__(self, entity=None): pass
-        # Set it up or sumink
+
+    def __init__(self, entity=None):
+        pass
+
+    # Set it up or sumink
 
     def calc_attack(self):
         # print "Request for attack"
@@ -23,8 +27,10 @@ class Statistics(object):
         else:
             return 0
 
-    def set_strength(self, val): pass
-        # print "Setting strength to %d" % val
+    def set_strength(self, val):
+        pass
+
+    # print "Setting strength to %d" % val
 
     attack = property(calc_attack)
     defence = property(calc_defence)

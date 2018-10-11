@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2009 Amey Parulekar (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2009 Amey Parulekar (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,13 +10,15 @@ from physics import Vector3D
 import math
 import server
 
+
 class Sift(server.Task):
     """A task for sifting through a pile of earth for earthworms"""
-    
+
     materials = ['earth']
+
     def get_quality(self, location, target, moisture):
         y = location.y
-        yval = math.exp(-y*y/2)
+        yval = math.exp(-y * y / 2)
         if not hasattr(target, 'location'):
             self.irrelevant()
             return 0
@@ -49,8 +51,8 @@ class Sift(server.Task):
         world = self.target().location.parent
 
         material = self.target().props.name
-        #print material
-                
+        # print material
+
         if material not in Sift.materials:
             print("Not right material for earthworms")
             self.irrelevant()
@@ -72,7 +74,7 @@ class Sift(server.Task):
 
         self.progress = 0
 
-        res=Oplist()
+        res = Oplist()
 
         self_loc = Location(self.character)
         self_loc.velocity = Vector3D()
@@ -84,10 +86,10 @@ class Sift(server.Task):
 
         quality = int(self.get_quality(self_loc.position, self.target(), moisture))
         print(quality)
-        for i in range(int(quality/2), quality):
-            res = res + Operation("create", Entity(name = "scrawny earthworm", parent="annelid", location = self_loc), to=self.character)
-        for i in range(int((10-quality)/2), quality):
-            res = res + Operation("create", Entity(name = "juicy earthworm", parent="annelid", location = self_loc), to=self.character)
+        for i in range(int(quality / 2), quality):
+            res = res + Operation("create", Entity(name="scrawny earthworm", parent="annelid", location=self_loc), to=self.character)
+        for i in range(int((10 - quality) / 2), quality):
+            res = res + Operation("create", Entity(name="juicy earthworm", parent="annelid", location=self_loc), to=self.character)
 
         self.irrelevant()
         return res

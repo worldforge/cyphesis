@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,8 +10,10 @@ import weakref
 
 import server
 
+
 class Heaping(server.Task):
     """ A task for laying down built up terrain with a digging implement."""
+
     class Obstructed(Exception):
         "An exception indicating this task is obstructed by an entity>"
         pass
@@ -37,7 +39,6 @@ class Heaping(server.Task):
             self.irrelevant()
             return
 
-
         old_rate = self.rate
 
         self.rate = 0.5 / 0.75
@@ -53,7 +54,6 @@ class Heaping(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
-
 
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
             try:
@@ -79,7 +79,7 @@ class Heaping(server.Task):
 
         # Determine which way the user is facing relative to the mod
         user_to_mod = (mod.location - self.character.location).unit_vector()
-        user_facing = Vector3D(1,0,0)
+        user_facing = Vector3D(1, 0, 0)
         face_factor = user_facing.rotate(self.character.location.orientation)
 
         area = mod.terrainmod.shape.area()
@@ -105,10 +105,11 @@ class Heaping(server.Task):
 
         # We have modified the attribute in place,
         # so must send an update op to propagate
-        res=Oplist()
+        res = Oplist()
         res.append(Operation("update", to=mod.id))
         res.append(self.next_tick(0.75))
         return res
+
     def _find_mod(self, name):
         mods = self.target().props.terrain.find_mods(self.pos)
         if len(mods) != 0:
@@ -116,19 +117,20 @@ class Heaping(server.Task):
                 if hasattr(mod, 'name') and mod.name == name:
                     return mod
             raise Heaping.Obstructed("Another mod is in the way")
+
     def _create_initial_mod(self):
         print("no existing mod")
-        y=self.character.location.position.y + 1.0
+        y = self.character.location.position.y + 1.0
         modmap = {'height': y,
-                  'shape': Polygon([[ -0.7, -0.7 ],
-                                    [ -1.0, 0.0 ],
-                                    [ -0.7, 0.7 ],
-                                    [ 0.0, 1.0 ],
-                                    [ 0.7, 0.7 ],
-                                    [ 1.0, 0.0 ],
-                                    [ 0.7, -0.7 ],
-                                    [ 0.0, -1.0 ]]).as_data(),
-                  'type': 'levelmod' }
+                  'shape': Polygon([[-0.7, -0.7],
+                                    [-1.0, 0.0],
+                                    [-0.7, 0.7],
+                                    [0.0, 1.0],
+                                    [0.7, 0.7],
+                                    [1.0, 0.0],
+                                    [0.7, -0.7],
+                                    [0.0, -1.0]]).as_data(),
+                  'type': 'levelmod'}
         area_map = {'shape': modmap['shape'],
                     'layer': 7}
 
@@ -136,14 +138,14 @@ class Heaping(server.Task):
         mod_loc.velocity = Vector3D()
         mod_loc.position = self.pos
 
-        mod_create=Operation("create",
-                             Entity(name="motte",
-                                    type="path",
-                                    location = mod_loc,
-                                    terrainmod = modmap,
-                                    area = area_map),
-                             to=self.target())
-        res=Oplist()
+        mod_create = Operation("create",
+                               Entity(name="motte",
+                                      type="path",
+                                      location=mod_loc,
+                                      terrainmod=modmap,
+                                      area=area_map),
+                               to=self.target())
+        res = Oplist()
         res.append(mod_create)
         res.append(self.next_tick(0.75))
         return res

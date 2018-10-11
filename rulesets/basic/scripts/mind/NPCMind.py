@@ -160,20 +160,20 @@ class NPCMind(server.Mind):
 
         # Setup a tick operation for thinking
         think_tick_op = Operation("tick")
-        think_tick_op.setTo(self.id)
-        think_tick_op.setArgs([Entity(name="think")])
+        think_tick_op.set_to(self.id)
+        think_tick_op.set_args([Entity(name="think")])
 
         # Setup a tick operation for moving
         move_tick_op = Operation("tick")
-        think_tick_op.setTo(self.id)
-        move_tick_op.setArgs([Entity(name="move")])
-        move_tick_op.setFutureSeconds(0.2)
+        think_tick_op.set_to(self.id)
+        move_tick_op.set_args([Entity(name="move")])
+        move_tick_op.set_future_seconds(0.2)
 
         # Setup a tick operation for periodical persistence of thoughts to the server
         send_thoughts_tick_op = Operation("tick")
-        think_tick_op.setTo(self.id)
-        send_thoughts_tick_op.setArgs([Entity(name="persistthoughts")])
-        send_thoughts_tick_op.setFutureSeconds(5)
+        think_tick_op.set_to(self.id)
+        send_thoughts_tick_op.set_args([Entity(name="persistthoughts")])
+        send_thoughts_tick_op.set_future_seconds(5)
 
         return Operation("look") + think_tick_op + move_tick_op + send_thoughts_tick_op
 
@@ -182,16 +182,16 @@ class NPCMind(server.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name.
         """
-        args = op.getArgs()
+        args = op.get_args()
         if len(args) != 0:
             if args[0].name == "think":
                 # It's a "thinking" op, which is the base of the AI behaviour.
                 # At regular intervals the AI needs to assess its goals; this is done through "thinkning" ops.
                 op_tick = Operation("tick")
                 # just copy the args from the previous tick
-                op_tick.setArgs(args)
-                op_tick.setFutureSeconds(const.basic_tick + self.jitter)
-                op_tick.setTo(self.id)
+                op_tick.set_args(args)
+                op_tick.set_future_seconds(const.basic_tick + self.jitter)
+                op_tick.set_to(self.id)
                 for t in self.pending_things:
                     thing = self.map.get(t)
                     if thing and thing.type[0]:
@@ -207,10 +207,10 @@ class NPCMind(server.Mind):
                 # TODO: only send thoughts when they have changed.
                 op_tick = Operation("tick")
                 # just copy the args from the previous tick
-                op_tick.setArgs(args)
+                op_tick.set_args(args)
                 # Persist the thoughts to the server at 30 second intervals.
-                op_tick.setFutureSeconds(30)
-                op_tick.setTo(self.id)
+                op_tick.set_future_seconds(30)
+                op_tick.set_to(self.id)
                 result = self.commune_all_thoughts(op, "persistthoughts")
                 return op_tick + result
 
@@ -220,7 +220,7 @@ class NPCMind(server.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         # BaseMind version overridden!
-        obj = self.map.add(op[0], op.getSeconds())
+        obj = self.map.add(op[0], op.get_seconds())
         if op.to == self.id:
             self.add_thing(obj)
 
@@ -228,7 +228,7 @@ class NPCMind(server.Mind):
         """change position in our local map
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
-        obj = self.map.update(op[0], op.getSeconds())
+        obj = self.map.update(op[0], op.get_seconds())
         if obj.location.parent and obj.location.parent.id == self.entity.id:
             self.add_thing(obj)
             if op.to != self.id:
@@ -250,7 +250,7 @@ class NPCMind(server.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
 
-        args = op.getArgs()
+        args = op.get_args()
         # If there are no args we should send all of our thoughts
         if len(args) == 0:
             return self.commune_all_thoughts(op, None)
@@ -267,17 +267,17 @@ class NPCMind(server.Mind):
 
     def commune_path(self, op):
         """Sends back information about the path."""
-        thinkOp = Operation("think")
+        think_op = Operation("think")
         path = []
-        myPath = self.path
-        # self.print_debug("path size: " + str(len(myPath)))
-        for point in myPath:
+        my_path = self.path
+        # self.print_debug("path size: " + str(len(my_path)))
+        for point in my_path:
             path.append([point.x, point.y, point.z])
 
-        thinkOp.setArgs([Entity(path=path)])
+        think_op.set_args([Entity(path=path)])
 
         res = Oplist()
-        res = res + thinkOp
+        res = res + think_op
         return res
 
     def commune_goals(self, op, goal_entity):
@@ -288,27 +288,27 @@ class NPCMind(server.Mind):
 
         # It's important that the order of the goals is retained
         for goal in self.goals:
-            goalString = ""
+            goal_string = ""
             if hasattr(goal, "str"):
-                goalString = goal.str
+                goal_string = goal.str
             else:
-                goalString = goal.__class__.__name__
+                goal_string = goal.__class__.__name__
 
-            thoughts.append(Entity(goal=goalString, id=goalString))
+            thoughts.append(Entity(goal=goal_string, id=goal_string))
 
         for (trigger, goallist) in sorted(self.trigger_goals.items()):
             for goal in goallist:
-                goalString = ""
+                goal_string = ""
                 if hasattr(goal, "str"):
-                    goalString = goal.str
+                    goal_string = goal.str
                 else:
-                    goalString = goal.__class__.__name__
+                    goal_string = goal.__class__.__name__
 
-                thoughts.append(Entity(goal=goalString, id=goalString))
+                thoughts.append(Entity(goal=goal_string, id=goal_string))
 
-        set_op.setArgs(thoughts)
-        think_op.setArgs([set_op])
-        think_op.setRefno(op.getSerialno())
+        set_op.set_args(thoughts)
+        think_op.set_args([set_op])
+        think_op.set_refno(op.get_serialno())
         res = Oplist()
         res = res + think_op
         return res
@@ -338,7 +338,7 @@ class NPCMind(server.Mind):
         goal_info_op = Operation("info")
         goal_infos = []
 
-        if not op.getArgs():
+        if not op.get_args():
             # get all goals
             for goal in self.goals:
                 goal_infos.append(Entity(id=goal.str, report=goal.report()))
@@ -346,14 +346,14 @@ class NPCMind(server.Mind):
                 for goal in goallist:
                     goal_infos.append(Entity(id=goal.str, report=goal.report()))
         else:
-            for arg in op.getArgs():
+            for arg in op.get_args():
                 goal = self.find_goal(arg.id)
                 if goal and goal is not None:
                     goal_infos.append(Entity(id=goal.str, report=goal.report()))
 
-        goal_info_op.setArgs(goal_infos)
-        think_op.setRefno(op.getSerialno())
-        think_op.setArgs([goal_info_op])
+        goal_info_op.set_args(goal_infos)
+        think_op.set_refno(op.get_serialno())
+        think_op.set_args([goal_info_op])
         res = Oplist()
         res = res + think_op
         return res
@@ -366,26 +366,26 @@ class NPCMind(server.Mind):
         this way the mind can support server side persistence of its thoughts.
         A name can optionally be supplied, which will be set on the Set operation.
         """
-        thinkOp = Operation("think")
-        setOp = Operation("set")
+        think_op = Operation("think")
+        set_op = Operation("set")
         thoughts = []
 
         for what in sorted(self.knowledge.knowings.keys()):
             d = self.knowledge.knowings[what]
             for key in sorted(d):
                 if what != "goal":
-                    objectVal = d[key]
-                    if type(objectVal) is Location:
+                    object_val = d[key]
+                    if type(object_val) is Location:
                         # Serialize Location as tuple, with parent if available
-                        if (objectVal.parent is None):
-                            location = objectVal.position
+                        if object_val.parent is None:
+                            location = object_val.position
                         else:
-                            location = ("$eid:" + objectVal.parent.id, objectVal.position)
-                        object = str(location)
+                            location = ("$eid:" + object_val.parent.id, object_val.position)
+                        goal_object = str(location)
                     else:
-                        object = str(d[key])
+                        goal_object = str(d[key])
 
-                    thoughts.append(Entity(predicate=what, subject=str(key), object=object))
+                    thoughts.append(Entity(predicate=what, subject=str(key), object=goal_object))
 
         if len(self.things) > 0:
             things = {}
@@ -399,14 +399,14 @@ class NPCMind(server.Mind):
         if len(self.pending_things) > 0:
             thoughts.append(Entity(pending_things=self.pending_things))
 
-        setOp.setArgs(thoughts)
-        thinkOp.setArgs([setOp])
-        if not op.isDefaultSerialno():
-            thinkOp.setRefno(op.getSerialno())
+        set_op.set_args(thoughts)
+        think_op.set_args([set_op])
+        if not op.is_default_serialno():
+            think_op.set_refno(op.get_serialno())
         if name:
-            setOp.setName(name)
+            set_op.set_name(name)
         res = Oplist()
-        res = res + thinkOp
+        res = res + think_op
         return res
 
     def think_set_operation(self, op):
@@ -416,10 +416,10 @@ class NPCMind(server.Mind):
 
         # If the Set op has the name "peristthoughts" it's a Set op sent to ourselves meant for the server
         # (so it can persist the thoughts in the database). We should ignore it.
-        if op.getName() == "persistthoughts":
+        if op.get_name() == "persistthoughts":
             return
 
-        args = op.getArgs()
+        args = op.get_args()
         for thought in args:
             # Check if there's a 'predicate' set; if so handle it as knowledge.
             # Else check if it's things that we know we own or ought to own.

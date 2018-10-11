@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,8 +10,10 @@ from random import *
 
 import server
 
+
 class Cultivate(server.Task):
     """ A proof of concept task germinating seeds into plants."""
+
     def sow_operation(self, op):
         """ Op handler for sow op which activates this task """
         # print "Cultivate.sow"
@@ -26,18 +28,18 @@ class Cultivate(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Cultivate.tick"
-        res=Oplist()
+        res = Oplist()
 
         if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
             return
 
-        #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
-        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location) 
-        
-        #Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
-        standard_human_reach_squared=1.5*1.5
+        # Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
+        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location)
+
+        # Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
+        standard_human_reach_squared = 1.5 * 1.5
 
         if distance_between_entity_edges_squared > standard_human_reach_squared:
             self.progress = 0
@@ -51,18 +53,18 @@ class Cultivate(server.Task):
 
         new_loc = self.target().location.copy()
         new_loc.orientation = self.target().location.orientation
-        create=Operation("create", Entity(parent = self.target().props.germinates,
-                                          scale = [0.1],
-                                          location = new_loc,
-                                          mode = "planted"), to = self.target())
+        create = Operation("create", Entity(parent=self.target().props.germinates,
+                                            scale=[0.1],
+                                            location=new_loc,
+                                            mode="planted"), to=self.target())
         res.append(create)
 
-        set=Operation("set", Entity(self.target().id, status=-1), to=self.target())
+        set = Operation("set", Entity(self.target().id, status=-1), to=self.target())
         res.append(set)
 
         self.progress = 1
         self.rate = 0
-        
+
         res.append(self.next_tick(1.75))
 
         return res

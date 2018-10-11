@@ -1,6 +1,6 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details)
-#Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details)
+# Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -9,8 +9,10 @@ from physics import Vector3D
 
 import server
 
+
 class Bisect(server.Task):
     """ A task for cutting a section of material in two."""
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Bisect.cut"
@@ -21,7 +23,6 @@ class Bisect(server.Task):
         # FIXME Use weak references, once we have them
         self.target = server.world.get_object(op[0].id)
         self.tool = op.to
-
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
@@ -47,15 +48,15 @@ class Bisect(server.Task):
 
         # this is the axis defining the plane of the cut. Once tasks can
         # be parameterized we can vary this to any axis
-        cut_plane = 2 # z
+        cut_plane = 2  # z
 
         # work out half the materials size in this dimension. This should
         # become a parameter too
         length = self.target().location.bbox.high_corner[cut_plane] - \
                  self.target().location.bbox.low_corner[cut_plane]
-        mid = length/2
+        mid = length / 2
 
-        res=Oplist()
+        res = Oplist()
         # A new BBox which changes the size of original entity
         new_bbox = [self.target().location.bbox.low_corner.x,
                     self.target().location.bbox.low_corner.y,
@@ -72,7 +73,7 @@ class Bisect(server.Task):
 
         # print "mod",self.target().location.position, new_bbox
 
-        set=Operation("set", Entity(self.target().id, bbox=new_bbox), to=self.target())
+        set = Operation("set", Entity(self.target().id, bbox=new_bbox), to=self.target())
         res.append(set)
 
         # A new entity is to be created by this cut task, and we use the
@@ -109,16 +110,16 @@ class Bisect(server.Task):
 
         typ = str(self.target().type[0])
         # Some entity do not have name attribute defined. If name not present assign the same name as type.
-        if hasattr ( self.target(), 'name' ) : 
+        if hasattr(self.target(), 'name'):
             nam = str(self.target().name)
-        else : 
+        else:
             nam = typ
-        
+
         # create a new fragment of the remaining dimensions 
-        create=Operation("create", Entity(name=nam,
-                                          type=typ,
-                                          location=slice_loc,
-                                          bbox=slice_bbox), to=self.target())
+        create = Operation("create", Entity(name=nam,
+                                            type=typ,
+                                            location=slice_loc,
+                                            bbox=slice_bbox), to=self.target())
         res.append(create)
 
         self.progress = 1

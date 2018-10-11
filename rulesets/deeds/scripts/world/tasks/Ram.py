@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -11,8 +11,10 @@ from random import *
 
 import server
 
+
 class Ram(server.Task):
     """ A proof of concept task for drivinf object into the ground."""
+
     def strike_operation(self, op):
         """ Op handler for strike op which activates this task """
         if len(op) < 1:
@@ -21,6 +23,7 @@ class Ram(server.Task):
         # FIXME Use weak references, once we have them
         self.target = server.world.get_object(op[0].id)
         self.tool = op.to
+
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         res = Oplist()
@@ -38,23 +41,22 @@ class Ram(server.Task):
             return self.next_tick(1)
 
         target_location = Location(self.target().location.parent, self.target().location.position)
-        target_location.velocity=Vector3D(0, -0.5, 0)
-        target_entity_moving = Entity(self.target().id, location = target_location)
+        target_location.velocity = Vector3D(0, -0.5, 0)
+        target_entity_moving = Entity(self.target().id, location=target_location)
 
         target_location = Location(self.target().location.parent, Point3D(self.target().location.position.x, self.target().location.position.y - 0.1, self.target().location.position.z))
-        target_location.velocity=Vector3D(0,0,0)
-        target_entity = Entity(self.target().id, location = target_location)
+        target_location.velocity = Vector3D(0, 0, 0)
+        target_entity = Entity(self.target().id, location=target_location)
 
         if not hasattr(self.target(), 'mode') or self.target().props.mode != 'fixed':
             target_entity.mode = 'fixed'
 
-        move=Operation("move", target_entity, to=self.target())
-        move.setFutureSeconds(0.2)
+        move = Operation("move", target_entity, to=self.target())
+        move.set_future_seconds(0.2)
         res.append(move)
-        move=Operation("move", target_entity_moving, to=self.target())
+        move = Operation("move", target_entity_moving, to=self.target())
         res.append(move)
 
         res.append(self.next_tick(1))
 
         return res
-

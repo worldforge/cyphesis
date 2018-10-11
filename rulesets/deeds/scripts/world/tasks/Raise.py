@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -12,8 +12,10 @@ import server
 
 from random import *
 
+
 class Raise(server.Task):
     """ A proof of concept task for raiseing a heavy item from the ground."""
+
     def lever_operation(self, op):
         """ Op handler for lever op which activates this task """
         # print "Raise.lever"
@@ -40,7 +42,7 @@ class Raise(server.Task):
             self.irrelevant()
             return
 
-        distance=distance_to(self.character.location, self.target().location)
+        distance = distance_to(self.character.location, self.target().location)
         # Check we are not too far away from the object to interact with it
         # This calculation is imprecise as it sums the square radii, but
         # its usually close enough.
@@ -53,23 +55,23 @@ class Raise(server.Task):
             # print "Going nowhere"
             return self.next_tick(1);
         # print "DISTANCE ", distance, distance.is_valid()
-        axis=distance.cross(Vector3D(0, 1, 0))
+        axis = distance.cross(Vector3D(0, 1, 0))
         # If distance is zero, axis becomes zero
         # print "DISTANCE ", distance, distance.is_valid(), axis, axis.is_valid()
         # If axis is zero, the quaternion contains NaNs.
-        rotation=Quaternion(axis, -0.05)
+        rotation = Quaternion(axis, -0.05)
         # print "ROT ", rotation, rotation.is_valid()
         if self.target().location.orientation.is_valid():
             # print "VALID"
             rotation = self.target().location.orientation * rotation
 
         # print "NEW_ROT", rotation, rotation.is_valid()
-        target_location=Location(self.target().location.parent,
-                                 self.target().location.position)
-        target_location.orientation=rotation
-        move=Operation("move", Entity(self.target().id,
-                                      location=target_location), to=self.target())
-        res=Oplist()
+        target_location = Location(self.target().location.parent,
+                                   self.target().location.position)
+        target_location.orientation = rotation
+        move = Operation("move", Entity(self.target().id,
+                                        location=target_location), to=self.target())
+        res = Oplist()
         res.append(move)
 
         res.append(self.next_tick(0.5))

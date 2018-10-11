@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2005-2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2005-2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,8 +10,10 @@ from random import *
 
 import server
 
+
 class Combat(server.Task):
     """A very simple combat system example."""
+
     def attack_operation(self, op):
         """ The attack op is FROM the the character that initiated combat which
             we term the attacker, TO the character that is attacker which we
@@ -21,7 +23,7 @@ class Combat(server.Task):
             # print "Aborting defender stamina low"
             self.irrelevant()
             return
-        assert(op.from_ != op.to)
+        assert (op.from_ != op.to)
         if op.to != self.character.id:
             self.oponent = op.to
             # print "Attack operation is not to this character"
@@ -33,13 +35,14 @@ class Combat(server.Task):
             # We do not have initiative
         # Attach this task to the attacker. Its already implicitly attached
         # to the defender who owns this task.
-        a=server.world.get_object(self.oponent)
+        a = server.world.get_object(self.oponent)
         # Check if the attacking characters stamina is too low for combat
         if not a or a.stamina < 0.1:
             self.irrelevant()
             return
         # a.set_task(self.cppthing)
         self.square_range = 25
+
     def tick_operation(self, op):
         """ This method is called repeatedly, each time a combat turn occurs.
             In this example the interval is fixed, but it can be varied.
@@ -48,11 +51,11 @@ class Combat(server.Task):
             attacked The self.attack flag is used to alternate the attack from
             one combatant to the other. """
         # if self.count() < 2:
-            # print "Someone has dropped out"
-            # self.irrelevant()
-            # return
+        # print "Someone has dropped out"
+        # self.irrelevant()
+        # return
 
-        assert(self.character.id == op.to)
+        assert (self.character.id == op.to)
 
         if self.character.props.stamina <= 0:
             # print "I am exhausted"
@@ -79,21 +82,21 @@ class Combat(server.Task):
         if hasattr(self, 'surprise') and self.surprise:
             # print 'Surprised!'
             self.surprise = False
-            return self.next_tick(0.75 + uniform(0,0.25))
+            return self.next_tick(0.75 + uniform(0, 0.25))
 
         if square_distance(self.character.location, defender.location) > self.square_range:
-            return self.next_tick(1.75 + uniform(0,0.25))
+            return self.next_tick(1.75 + uniform(0, 0.25))
 
-        a=self.character.id
-        d=self.oponent
+        a = self.character.id
+        d = self.oponent
 
         # A very simple formula is used to determine the damage done
-        damage = (attacker.statistics.attack / defender.statistics.defence) / uniform(2,10)
+        damage = (attacker.statistics.attack / defender.statistics.defence) / uniform(2, 10)
         # Damage is counted against stamina, to ensure combat is non lethal,
         # and make recovery easier.
-        stamina=defender.props.stamina-damage
-        if stamina<0: stamina=0
-        set_arg=Entity(self.oponent, stamina=stamina)
+        stamina = defender.props.stamina - damage
+        if stamina < 0: stamina = 0
+        set_arg = Entity(self.oponent, stamina=stamina)
 
         # We send 3 operations to indicate what is going on. The imginary ops
         # provide emotes for the actions. The sight(attack) operation
@@ -112,7 +115,7 @@ class Combat(server.Task):
             attacker.send_world(Operation("imaginary", Entity(description="is victorious"), to=attacker))
             self.irrelevant()
 
-        res=Oplist()
+        res = Oplist()
         # This set op makes the change to defenders stamina, and a small health
         # change if they have been defeated
         res.append(Operation("set", set_arg, to=defender))
@@ -120,9 +123,9 @@ class Combat(server.Task):
         # Turn the attacker to face the defender. This has to go through
         # the mind2body interface, so it does not interrupt what the
         # the character is doing.
-        faceop=self.face(defender)
+        faceop = self.face(defender)
         if faceop:
-            faceop=attacker.mind2body(faceop)
+            faceop = attacker.mind2body(faceop)
             if faceop:
                 res.append(faceop)
 
@@ -131,8 +134,9 @@ class Combat(server.Task):
             return res
 
         # Schedule a new tick op
-        res.append(self.next_tick(1.75 + uniform(0,0.25)))
+        res.append(self.next_tick(1.75 + uniform(0, 0.25)))
         return res
+
     def face(self, other):
         """ Turn to face that another character, ensuring that
             we are facing the character we are hitting """
@@ -142,5 +146,5 @@ class Combat(server.Task):
             return
         vector = vector.unit_vector()
         newloc = Location(self.character.location.parent)
-        newloc.orientation = Quaternion(Vector3D(1,0,0), vector)
+        newloc.orientation = Quaternion(Vector3D(1, 0, 0), vector)
         return Operation("move", Entity(self.character.id, location=newloc))

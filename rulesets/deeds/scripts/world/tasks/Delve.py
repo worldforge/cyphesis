@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -9,10 +9,12 @@ from physics import Vector3D
 
 import server
 
+
 class Delve(server.Task):
     """ A task for cutting chunks of material from the terrain with a pickaxe."""
 
-    materials = { 0: 'boulder', 4: 'ice' }
+    materials = {0: 'boulder', 4: 'ice'}
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Delve.cut"
@@ -35,7 +37,6 @@ class Delve(server.Task):
             self.irrelevant()
             return
 
-
         old_rate = self.rate
 
         self.rate = 0.5 / 0.75
@@ -52,8 +53,7 @@ class Delve(server.Task):
 
         self.progress = 0
 
-
-        res=Oplist()
+        res = Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
@@ -74,24 +74,24 @@ class Delve(server.Task):
                     return
                 self.surface = surface
 
-                y=self.character.location.position.y + 1.0
+                y = self.character.location.position.y + 1.0
                 modmap = {
-                          'height': y,
-                          'shape': {
-                                    'points': [[ -1.0, -1.0 ],
-                                               [ -1.0, 1.0 ],
-                                               [ 1.0, 1.0 ],
-                                               [ 1.0, -1.0 ]],
-                                    'type': 'polygon'
-                                    },
-                          'type': 'levelmod'                                    
-                          }
-                quarry_create=Operation("create",
-                                        Entity(name="quarry",
-                                               type="path",
-                                               location = chunk_loc,
-                                               terrainmod = modmap),
-                                        to=self.target())
+                    'height': y,
+                    'shape': {
+                        'points': [[-1.0, -1.0],
+                                   [-1.0, 1.0],
+                                   [1.0, 1.0],
+                                   [1.0, -1.0]],
+                        'type': 'polygon'
+                    },
+                    'type': 'levelmod'
+                }
+                quarry_create = Operation("create",
+                                          Entity(name="quarry",
+                                                 type="path",
+                                                 location=chunk_loc,
+                                                 terrainmod=modmap),
+                                          to=self.target())
                 res.append(quarry_create)
             else:
                 print(mods)
@@ -107,12 +107,10 @@ class Delve(server.Task):
                     break
             # self.terrain_mod = "moddy_mod_mod"
 
-
-
-        create=Operation("create",
-                         Entity(name = Delve.materials[self.surface],
-                                type = Delve.materials[self.surface],
-                                location = chunk_loc), to = self.target())
+        create = Operation("create",
+                           Entity(name=Delve.materials[self.surface],
+                                  type=Delve.materials[self.surface],
+                                  location=chunk_loc), to=self.target())
         res.append(create)
 
         res.append(self.next_tick(0.75))

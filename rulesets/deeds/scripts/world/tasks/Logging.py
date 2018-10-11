@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -12,8 +12,10 @@ from random import *
 
 import server
 
+
 class Logging(server.Task):
     """ A proof of concept task for logging."""
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Logging.cut"
@@ -35,27 +37,27 @@ class Logging(server.Task):
 
         current_status = self.target().props.status
 
-        #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
+        # Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
         distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location)
 
-        #Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
-        standard_human_reach_squared=1.5*1.5
+        # Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
+        standard_human_reach_squared = 1.5 * 1.5
 
-        #TODO: replace this with asking the domain about the entities' reach
+        # TODO: replace this with asking the domain about the entities' reach
         if distance_between_entity_edges_squared > standard_human_reach_squared:
             self.progress = 1 - current_status
             self.rate = 0
             return self.next_tick(1.75)
 
-        res=Oplist()
+        res = Oplist()
         if current_status > 0.11:
-            set=Operation("set", Entity(self.target().id, status=current_status-0.1), to=self.target())
+            set = Operation("set", Entity(self.target().id, status=current_status - 0.1), to=self.target())
             res.append(set)
 
             if current_status <= 0.5 and self.target().props.mode != 'free':
                 print("Timber!")
 
-                #Make it fall initially 15 degrees away from the logger entity.
+                # Make it fall initially 15 degrees away from the logger entity.
                 axis = distance_to(self.character.location,
                                    self.target().location).cross(Vector3D(0, 1, 0))
                 # the axis must be a unit vector
@@ -76,23 +78,23 @@ class Logging(server.Task):
 
                 move = Operation("move", Entity(self.target().id, mode='free',
                                                 location=move_location),
-                                                to = self.target())
+                                 to=self.target())
 
                 res.append(move)
         else:
             # print "become log"
-            set = Operation("set", Entity(self.target().id, status = -1),
-                            to = self.target())
+            set = Operation("set", Entity(self.target().id, status=-1),
+                            to=self.target())
             res.append(set)
             create_loc = self.target().location.copy()
             create_loc.orientation = self.target().location.orientation
             create = Operation("create",
                                Entity(parent="lumber",
-                                      mass = self.target().props.mass,
-                                      location = create_loc,
-                                      #bbox = self.target().bbox,
-                                      mode = "free"),
-                               to = self.target())
+                                      mass=self.target().props.mass,
+                                      location=create_loc,
+                                      # bbox = self.target().bbox,
+                                      mode="free"),
+                               to=self.target())
             res.append(create)
 
         self.progress = 1 - current_status

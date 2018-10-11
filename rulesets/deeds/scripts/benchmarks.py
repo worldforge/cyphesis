@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2008 Alistair Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2008 Alistair Riddoch (See the file COPYING for details).
 
 from atlas import *
 from random import *
@@ -10,10 +10,11 @@ from math import *
 
 import time
 
+
 def default(host='', account='', password='', **args):
     # Spray the world with rubbish
 
-    m=create_editor(host, account, password)
+    m = create_editor(host, account, password)
 
     for i in range(10000):
         m.make('oak', pos=(uniform(-500, 300), uniform(-500, 300), 0))

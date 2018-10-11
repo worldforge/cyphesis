@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -9,10 +9,12 @@ from physics import Vector3D
 
 import server
 
+
 class Dig(server.Task):
     """ A task for digging soft material from the terrain."""
 
-    materials = { 1: 'sand', 2: 'earth', 3: 'silt' }
+    materials = {1: 'sand', 2: 'earth', 3: 'silt'}
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Dig.cut"
@@ -28,6 +30,7 @@ class Dig(server.Task):
 
     def info_operation(self, op):
         print("Dig.info")
+
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dig.tick"
@@ -60,19 +63,19 @@ class Dig(server.Task):
             self.irrelevant()
             return
 
-        res=Oplist()
+        res = Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
         chunk_loc.position = self.pos
 
-        create=Operation("create",
-                         Entity(name = Dig.materials[surface],
-                                type = "pile",
-                                material = Dig.materials[surface],
-                                location = chunk_loc), to = self.target())
-        create.setSerialno(0)
+        create = Operation("create",
+                           Entity(name=Dig.materials[surface],
+                                  type="pile",
+                                  material=Dig.materials[surface],
+                                  location=chunk_loc), to=self.target())
+        create.set_serialno(0)
         res.append(create)
 
         res.append(self.next_tick(1.75))

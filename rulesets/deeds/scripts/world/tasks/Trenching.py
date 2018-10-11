@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -9,10 +9,12 @@ from physics import Vector3D
 
 import server
 
+
 class Trenching(server.Task):
     """ A task for creating Trench with a pickaxe."""
 
-    materials = { 0: 'boulder', 1: 'sand', 2: 'earth', 3: 'silt', 4: 'ice' }
+    materials = {0: 'boulder', 1: 'sand', 2: 'earth', 3: 'silt', 4: 'ice'}
+
     def trench_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Trenching.trench"
@@ -30,7 +32,7 @@ class Trenching(server.Task):
         """ Op handler for regular tick op """
         # print "Trenching.tick"
 
-        target=self.target()
+        target = self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()
@@ -54,8 +56,7 @@ class Trenching(server.Task):
 
         self.progress = 0
 
-
-        res=Oplist()
+        res = Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
@@ -76,24 +77,24 @@ class Trenching(server.Task):
                     return
                 self.surface = surface
 
-                y=self.character.location.position.y - 1.0
+                y = self.character.location.position.y - 1.0
                 modmap = {
-                          'height': y,
-                          'shape': {
-                                    'points': [[ -1.0, -1.0 ],
-                                               [ -1.0, 1.0 ],
-                                               [ 1.0, 1.0 ],
-                                               [ 1.0, -1.0 ]],
-                                    'type': 'polygon'
-                                    },
-                          'type': 'levelmod'                                    
-                          }
-                trenches_create=Operation("create",
-                                        Entity(name="trenches",
-                                               type="path",
-                                               location = chunk_loc,
-                                               terrainmod = modmap),
-                                        to=target)
+                    'height': y,
+                    'shape': {
+                        'points': [[-1.0, -1.0],
+                                   [-1.0, 1.0],
+                                   [1.0, 1.0],
+                                   [1.0, -1.0]],
+                        'type': 'polygon'
+                    },
+                    'type': 'levelmod'
+                }
+                trenches_create = Operation("create",
+                                            Entity(name="trenches",
+                                                   type="path",
+                                                   location=chunk_loc,
+                                                   terrainmod=modmap),
+                                            to=target)
                 res.append(trenches_create)
             else:
                 for mod in mods:
@@ -107,11 +108,11 @@ class Trenching(server.Task):
                     break
             # self.terrain_mod = "moddy_mod_mod"
 
-        create=Operation("create",
-                         Entity(name = Trenching.materials[self.surface],
-                                type = "pile",
-                                material = Trenching.materials[self.surface],
-                                location = chunk_loc), to = target)
+        create = Operation("create",
+                           Entity(name=Trenching.materials[self.surface],
+                                  type="pile",
+                                  material=Trenching.materials[self.surface],
+                                  location=chunk_loc), to=target)
         res.append(create)
 
         res.append(self.next_tick(0.75))

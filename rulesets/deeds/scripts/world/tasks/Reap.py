@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -8,8 +8,10 @@ from physics import Vector3D
 
 import server
 
+
 class Reap(server.Task):
     """ A task for reaping grass from the ground."""
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Reap.cut"
@@ -34,10 +36,9 @@ class Reap(server.Task):
             self.count = int(self.target().props.mass)
             # print "setting target mass to ", self.count
 
-
         if not self.character.location.velocity.is_valid() or \
-           self.character.location.velocity.sqr_mag() < 1 or \
-           self.character.location.velocity.sqr_mag() > 10:
+            self.character.location.velocity.sqr_mag() < 1 or \
+            self.character.location.velocity.sqr_mag() > 10:
             self.rate = 0
             self.progress = 0
             # print "Not moving the right speed"
@@ -57,17 +58,17 @@ class Reap(server.Task):
             # print "Not grass"
             return self.next_tick(1.75)
 
-        res=Oplist()
+        res = Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
         chunk_loc.position = self.character.location.position
 
-        create=Operation("create",
-                         Entity(name = "grass",
-                                type = "grass",
-                                location = chunk_loc), to = self.target())
+        create = Operation("create",
+                           Entity(name="grass",
+                                  type="grass",
+                                  location=chunk_loc), to=self.target())
         res.append(create)
 
         res.append(self.next_tick(1.75))

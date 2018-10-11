@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -8,6 +8,7 @@ from physics import Point3D
 from physics import Vector3D
 
 import server
+
 
 class Dragging(server.Task):
     """ A task for dragging heavy objects by using a pulley ."""
@@ -55,7 +56,7 @@ class Dragging(server.Task):
 
         self.progress = 0
 
-        res=Oplist()
+        res = Oplist()
 
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
@@ -63,7 +64,7 @@ class Dragging(server.Task):
         chunk_loc.position = self.pos
         # Move the entity to user's position.
         res = res + Operation("move", Entity(self.target().id,
-                                             location = chunk_loc), to = self.target())
+                                             location=chunk_loc), to=self.target())
         res.append(self.next_tick(0.75))
 
         return res

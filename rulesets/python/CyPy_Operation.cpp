@@ -101,23 +101,22 @@ void CyPy_Operation::init_type()
                                     | Py::PythonType::support_sequence_item);
 
 
-    PYCXX_ADD_VARARGS_METHOD(setSerialno, setSerialno, "");
-    PYCXX_ADD_VARARGS_METHOD(setRefno, setRefno, "");
-    PYCXX_ADD_VARARGS_METHOD(setFrom, setFrom, "");
-    PYCXX_ADD_VARARGS_METHOD(setTo, setTo, "");
-    PYCXX_ADD_VARARGS_METHOD(setSeconds, setSeconds, "");
-    PYCXX_ADD_VARARGS_METHOD(setFutureSeconds, setFutureSeconds, "");
-    PYCXX_ADD_VARARGS_METHOD(setName, setName, "");
-    PYCXX_ADD_VARARGS_METHOD(setArgs, setArgs, "");
-    PYCXX_ADD_NOARGS_METHOD(getSerialno, getSerialno, "");
-    PYCXX_ADD_NOARGS_METHOD(isDefaultSerialno, isDefaultSerialno, "");
-    PYCXX_ADD_NOARGS_METHOD(getRefno, getRefno, "");
-    PYCXX_ADD_NOARGS_METHOD(getFrom, getFrom, "");
-    PYCXX_ADD_NOARGS_METHOD(getTo, getTo, "");
-    PYCXX_ADD_NOARGS_METHOD(getSeconds, getSeconds, "");
-    PYCXX_ADD_NOARGS_METHOD(getFutureSeconds, getFutureSeconds, "");
-    PYCXX_ADD_NOARGS_METHOD(getName, getName, "");
-    PYCXX_ADD_NOARGS_METHOD(getArgs, getArgs, "");
+    PYCXX_ADD_VARARGS_METHOD(set_serialno, setSerialno, "");
+    PYCXX_ADD_VARARGS_METHOD(set_refno, setRefno, "");
+    PYCXX_ADD_VARARGS_METHOD(set_from, setFrom, "");
+    PYCXX_ADD_VARARGS_METHOD(set_to, setTo, "");
+    PYCXX_ADD_VARARGS_METHOD(set_seconds, setSeconds, "");
+    PYCXX_ADD_VARARGS_METHOD(set_future_seconds, setFutureSeconds, "");
+    PYCXX_ADD_VARARGS_METHOD(set_name, setName, "");
+    PYCXX_ADD_VARARGS_METHOD(set_args, setArgs, "");
+    PYCXX_ADD_NOARGS_METHOD(get_serialno, getSerialno, "");
+    PYCXX_ADD_NOARGS_METHOD(is_default_serialno, isDefaultSerialno, "");
+    PYCXX_ADD_NOARGS_METHOD(get_refno, getRefno, "");
+    PYCXX_ADD_NOARGS_METHOD(get_from, getFrom, "");
+    PYCXX_ADD_NOARGS_METHOD(get_to, getTo, "");
+    PYCXX_ADD_NOARGS_METHOD(get_seconds, getSeconds, "");
+    PYCXX_ADD_NOARGS_METHOD(get_future_seconds, getFutureSeconds, "");
+    PYCXX_ADD_NOARGS_METHOD(get_args, getArgs, "");
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
 
     behaviors().readyType();

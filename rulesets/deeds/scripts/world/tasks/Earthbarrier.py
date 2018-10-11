@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,8 +10,10 @@ import weakref
 
 import server
 
+
 class Earthbarrier(server.Task):
     """ A task for creating Earthbarrier with a shovel."""
+
     class Obstructed(Exception):
         "An exception indicating this task is obstructed by an entity>"
         pass
@@ -37,7 +39,6 @@ class Earthbarrier(server.Task):
             self.irrelevant()
             return
 
-
         old_rate = self.rate
 
         self.rate = 0.5 / 0.75
@@ -53,7 +54,6 @@ class Earthbarrier(server.Task):
             return self.next_tick(0.75)
 
         self.progress = 0
-
 
         if not hasattr(self, 'terrain_mod') or self.terrain_mod() is None:
             try:
@@ -85,10 +85,11 @@ class Earthbarrier(server.Task):
         mod.area = area_map
         # We have modified the attribute in place,
         # so must send an update op to propagate
-        res=Oplist()
+        res = Oplist()
         res.append(Operation("update", to=mod.id))
         res.append(self.next_tick(0.75))
         return res
+
     def _find_mod(self, name):
         mods = self.target().props.terrain.find_mods(self.pos)
         if len(mods) != 0:
@@ -96,20 +97,21 @@ class Earthbarrier(server.Task):
                 if hasattr(mod, 'name') and mod.name == name:
                     return mod
             raise Earthbarrier.Obstructed("Another mod is in the way")
+
     def _create_initial_mod(self):
-        y=self.character.location.position.y + 1.0
-        mod_path = Line([[ self.pos.x, self.pos.z ]])
+        y = self.character.location.position.y + 1.0
+        mod_path = Line([[self.pos.x, self.pos.z]])
         modmap = {
-                  'height': y,
-                  'shape': {
-                            'points': [[ -1.0, -1.0 ],
-                                       [ -1.0, 1.0 ],
-                                       [ 1.0, 1.0 ],
-                                       [ 1.0, -1.0 ]],
-                            'type': 'polygon'
-                           },
-                  'type': 'levelmod'
-                  }
+            'height': y,
+            'shape': {
+                'points': [[-1.0, -1.0],
+                           [-1.0, 1.0],
+                           [1.0, 1.0],
+                           [1.0, -1.0]],
+                'type': 'polygon'
+            },
+            'type': 'levelmod'
+        }
         area_map = {'shape': modmap['shape'],
                     'layer': 7}
         line_map = mod_path.as_data()
@@ -118,15 +120,15 @@ class Earthbarrier(server.Task):
         mod_loc.velocity = Vector3D()
         mod_loc.position = self.pos
 
-        mod_create=Operation("create",
-                             Entity(name="wall",
-                                    type="path",
-                                    line = line_map,
-                                    location = mod_loc,
-                                    terrainmod = modmap,
-                                    area = area_map),
-                             to=self.target())
-        res=Oplist()
+        mod_create = Operation("create",
+                               Entity(name="wall",
+                                      type="path",
+                                      line=line_map,
+                                      location=mod_loc,
+                                      terrainmod=modmap,
+                                      area=area_map),
+                               to=self.target())
+        res = Oplist()
         res.append(mod_create)
         res.append(self.next_tick(0.75))
         return res

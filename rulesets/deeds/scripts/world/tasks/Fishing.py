@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2009 Amey Parulekar (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2009 Amey Parulekar (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,10 +10,12 @@ from physics import Vector3D
 import server
 import weakref
 
+
 class Fishing(server.Task):
     """A task for fishing in the ocean"""
-    
+
     baitlist = ["annelid", "larva", "maggot"]
+
     def sow_operation(self, op):
         """ Op handler for sow op which activates this task """
 
@@ -25,15 +27,15 @@ class Fishing(server.Task):
         self.tool = op.to
 
         self.pos = Point3D(op[0].pos)
-        
-        #self.character.contains is a list of entities inside the player's inventory
-        
+
+        # self.character.contains is a list of entities inside the player's inventory
+
         bait = 0
-        
+
         for item in self.character.contains:
             if item.type[0] in self.baitlist:
                 bait = item
-                #self.character.contains.remove(item)
+                # self.character.contains.remove(item)
                 break
         else:
             print("No bait in inventory")
@@ -48,25 +50,25 @@ class Fishing(server.Task):
         self.bait = weakref.ref(bait)
         self.progress = 0.5
 
-        res=Oplist()
-        
+        res = Oplist()
+
         float_loc = Location(self.character.location.parent)
-        #This is <server.Entity object at 0xb161b90>
-        
+        # This is <server.Entity object at 0xb161b90>
+
         float_loc.position = self.pos
 
-        bait_vector = Vector3D(0,  -0.5, - 0)
+        bait_vector = Vector3D(0, -0.5, - 0)
         bait_loc = float_loc.copy()
         bait_loc.position = bait_loc.position + bait_vector
-        
-        res = Operation("create", Entity(name = "bobber", parent="bobber", location = float_loc), to = self.target())
-        res = res + Operation("move", Entity(bait.id, location = bait_loc), to = bait)
-        res = res + Operation("create", Entity(parent="fishing_hook", location = Location(bait, Point3D(0,0,0))), to = bait)
+
+        res = Operation("create", Entity(name="bobber", parent="bobber", location=float_loc), to=self.target())
+        res = res + Operation("move", Entity(bait.id, location=bait_loc), to=bait)
+        res = res + Operation("create", Entity(parent="fishing_hook", location=Location(bait, Point3D(0, 0, 0))), to=bait)
         return res
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
-        res=Oplist()
+        res = Oplist()
         hook = 0
         if not self.bait() is None:
             if not hasattr(self, 'fishing_hook'):
@@ -74,7 +76,7 @@ class Fishing(server.Task):
                     if item.type[0] == "fishing_hook":
                         self.hook = weakref.ref(item)
             if not hasattr(self, 'fishing_hook'):
-                #something has gone wrong, there is bait, but no hook inside it
+                # something has gone wrong, there is bait, but no hook inside it
                 self.irrelevant()
                 return
             old_rate = self.rate
@@ -88,13 +90,13 @@ class Fishing(server.Task):
                 self.progress += 0.1
             res.append(self.next_tick(0.75))
         else:
-        #a fish has eaten the bait
+            # a fish has eaten the bait
             if self.hook() is None:
                 self.irrelevant()
                 return
             fish = self.hook().location.parent
-            #TODO: add check to ensure that the fish's parent isn't world or something like that
-            res.append(Operation("move", Entity(fish.id, location = Location(self.character, Point3D(0,0,0))), to=fish))
+            # TODO: add check to ensure that the fish's parent isn't world or something like that
+            res.append(Operation("move", Entity(fish.id, location=Location(self.character, Point3D(0, 0, 0))), to=fish))
             self.progress = 1
             self.irrelevant()
         return res

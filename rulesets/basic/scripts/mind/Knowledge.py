@@ -1,16 +1,19 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 1999 Aloril (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 class Knowledge:
     def __init__(self):
-        self.knowings={}
+        self.knowings = {}
+
     def add(self, what, key, value):
         if what not in self.knowings:
             self.knowings[what] = {}
         self.knowings[what][key] = value
+
     def remove(self, what, key):
         if what in self.knowings:
             del self.knowings[what][key]
+
     def get(self, what, key=None):
         if not key:
             return self.knowings.get(what, {})
@@ -18,6 +21,7 @@ class Knowledge:
             if what not in self.knowings:
                 return None
             return self.knowings[what][key]
+
     def __str__(self):
-        s="<know: " + str(self.knowings)
-        return s+">\n"
+        s = "<know: " + str(self.knowings)
+        return s + ">\n"

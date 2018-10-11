@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -8,8 +8,10 @@ from physics import Vector3D
 
 import server
 
+
 class Slaughter(server.Task):
     """ A task for killing livestock for food."""
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Slaughter.cut"
@@ -38,25 +40,25 @@ class Slaughter(server.Task):
             self.count = int(target.mass)
             # print "setting target mass to ", self.count
 
-        #Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
-        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location) 
-        
-        #Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
-        standard_human_reach_squared=1.5*1.5
+        # Measure the distance between the entity horizontal edges. Else we won't be able to reach if either entity is too thick.
+        distance_between_entity_edges_squared = square_horizontal_edge_distance(self.character.location, self.target().location)
+
+        # Assume that a standard human can reach 1.5 meters, and use this to determine if we're close enough to be able to perform the logging
+        standard_human_reach_squared = 1.5 * 1.5
 
         if distance_between_entity_edges_squared > standard_human_reach_squared:
             self.rate = 0
             # print "Too far away"
             return self.next_tick(1.75)
 
-        res=Oplist()
+        res = Oplist()
 
         if target.mass <= 1:
-            set = Operation("set", Entity(target.id, status = -1), to = target)
+            set = Operation("set", Entity(target.id, status=-1), to=target)
             res.append(set)
         else:
-            set = Operation("set", Entity(target.id, mass = target.mass - 1),
-                            to = target)
+            set = Operation("set", Entity(target.id, mass=target.mass - 1),
+                            to=target)
             res.append(set)
 
         if self.count < 1:
@@ -76,11 +78,11 @@ class Slaughter(server.Task):
 
         chunk_loc.orientation = target.location.orientation
 
-        create=Operation("create",
-                         Entity(name = meat_type,
-                                type = meat_type,
-                                mass = 1,
-                                location = chunk_loc), to = target)
+        create = Operation("create",
+                           Entity(name=meat_type,
+                                  type=meat_type,
+                                  mass=1,
+                                  location=chunk_loc), to=target)
         res.append(create)
 
         res.append(self.next_tick(1.75))

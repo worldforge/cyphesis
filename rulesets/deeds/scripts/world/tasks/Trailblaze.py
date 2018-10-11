@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -10,8 +10,10 @@ from random import *
 
 import server
 
+
 class Trailblaze(server.Task):
     """ A proof of concept task for making new paths and roads."""
+
     def strike_operation(self, op):
         """ Op handler for strike op which activates this task """
         # print "Trailblaze.strike"
@@ -30,9 +32,9 @@ class Trailblaze(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Trailblaze.tick"
-        res=Oplist()
+        res = Oplist()
 
-        target=self.target()
+        target = self.target()
         if not target:
             # print "Target is no more"
             self.irrelevant()
@@ -44,7 +46,7 @@ class Trailblaze(server.Task):
             if 'world' in target.type:
                 new_loc = Location(target, self.character.location.position)
                 create = Operation("create", Entity(name='pile', type='pile',
-                                                    location = new_loc), to=target)
+                                                    location=new_loc), to=target)
                 res.append(create)
                 self.points.append(self.character.location.position)
             elif 'pile' in target.type:
@@ -55,7 +57,7 @@ class Trailblaze(server.Task):
                 return
         else:
             if not self.character.location.velocity.is_valid() or \
-               self.character.location.velocity.sqr_mag() < 1:
+                self.character.location.velocity.sqr_mag() < 1:
                 if self.character.location.position != self.points[-1:][0]:
                     self.points.append(self.character.location.position)
                 if self.rate:
@@ -125,7 +127,6 @@ class Trailblaze(server.Task):
             area.append([local_point.x - vfp.z - vtn.z, local_point.z + vfp.x + vtn.x])
             area_tail.append([local_point.x + vfp.z + vtn.z, local_point.z - vfp.x - vtn.x])
 
-
         # Reverse the right side of the path
         area_tail.reverse()
         # and append it to the left side to make an area boundary
@@ -137,8 +138,8 @@ class Trailblaze(server.Task):
         bbox = [minx, miny, minz, maxx, maxy, maxz]
         print("area %r box %r" % (area, bbox))
         create = Operation('create',
-              Entity(name='path', type='path', location=new_loc, bbox=bbox,
-                     area={'shape': {'points' : area, 'type': 'polygon'},
-                           'layer': 7}, line=line), to=target)
+                           Entity(name='path', type='path', location=new_loc, bbox=bbox,
+                                  area={'shape': {'points': area, 'type': 'polygon'},
+                                        'layer': 7}, line=line), to=target)
         res.append(create)
         return

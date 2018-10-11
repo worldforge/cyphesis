@@ -1,5 +1,5 @@
-#This file is distributed under the terms of the GNU General Public license.
-#Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2011 Jekin Trivedi <jekintrivedi@gmail.com> (See the file COPYING for details).
 
 from atlas import *
 from physics import *
@@ -8,8 +8,10 @@ from physics import Vector3D
 
 import server
 
+
 class Drying(server.Task):
     """ A task for Drying grass to fibre."""
+
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
         # print "Drying.cut"
@@ -20,7 +22,6 @@ class Drying(server.Task):
         # FIXME Use weak references, once we have them
         self.target = server.world.get_object(op[0].id)
         self.tool = op.to
-
 
     def tick_operation(self, op):
         """ Op handler for regular tick op """
@@ -39,7 +40,7 @@ class Drying(server.Task):
             # print "Too far away"
             return self.next_tick(0.75)
 
-        res=Oplist()
+        res = Oplist()
 
         if self.progress < 1:
             # print "Not done yet"
@@ -53,13 +54,13 @@ class Drying(server.Task):
 
         chunk_loc.orientation = self.target().location.orientation
 
-        create=Operation("create",
-                         Entity(name = "fibre",
-                                type = "fibre",
-                                location = chunk_loc), to = self.target())
+        create = Operation("create",
+                           Entity(name="fibre",
+                                  type="fibre",
+                                  location=chunk_loc), to=self.target())
         res.append(create)
 
-        set = Operation("set", Entity(self.target().id, status = -1), to = self.target())
+        set = Operation("set", Entity(self.target().id, status=-1), to=self.target())
         res.append(set)
 
         res.append(self.next_tick(0.75))
