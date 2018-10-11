@@ -99,6 +99,10 @@ if (NOT SQLITE3_FOUND)
     message(FATAL_ERROR "Could not find SQLite 3 development package.")
 endif(NOT SQLITE3_FOUND)
 
+pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
+link_directories(${XDG_LIBRARY_DIRS})
+link_libraries(${XDG_LIBRARIES})
+include_directories(${XDG_INCLUDE_DIRS})
 
 find_package(Readline REQUIRED)
 link_directories(${READLINE_LIBRARY_DIRS})

@@ -16,6 +16,7 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+#include <Python.h>
 #include "PossessionClient.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/PythonScriptFactory.h"
@@ -28,7 +29,6 @@
 
 #define _GLIBCXX_USE_NANOSLEEP 1
 
-#include <sys/prctl.h>
 #include "common/MainLoop.h"
 #include "common/CommAsioClient.h"
 #include "common/CommAsioClient_impl.h"
@@ -36,6 +36,8 @@
 #include "common/FileSystemObserver.h"
 #include "common/Think.h"
 #include "common/globals.h"
+
+#include <sys/prctl.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -81,7 +83,6 @@ static void connectToServer(boost::asio::io_service& io_service, AwareMindFactor
         }
     });
 }
-
 
 
 int main(int argc, char** argv)
@@ -133,6 +134,8 @@ int main(int argc, char** argv)
         observe_python_directories(io_service, assets_manager);
 
 
+        run_user_scripts("cyaiclient");
+
         SystemTime time{};
         time.update();
 
@@ -169,7 +172,7 @@ int main(int argc, char** argv)
         } else {
             signalSet.add(SIGTERM);
         }
-        signalSet.async_wait([&](boost::system::error_code ec, int signal){
+        signalSet.async_wait([&](boost::system::error_code ec, int signal) {
             if (!ec) {
                 exit_flag = true;
                 exit_flag_soft = true;

@@ -32,7 +32,7 @@ namespace consts {
   // @{
 
   /// \brief Should python code emit thinking ops
-  static const int debug_thinking = 0;
+  static int debug_thinking = 1;
   /// \brief Debug level for python code
   static const int debug_level = 0;
 

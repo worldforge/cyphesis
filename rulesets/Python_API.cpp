@@ -26,18 +26,23 @@
 #include "common/globals.h"
 #include "common/const.h"
 #include "common/debug.h"
+#include "common/AssetsManager.h"
+
+#include "rulesets/python/CyPy_EntityFilter.h"
+#include "rulesets/python/CyPy_Common.h"
+#include "rulesets/python/CyPy_Atlas.h"
+#include "rulesets/python/CyPy_Physics.h"
+#include "rulesets/python/CyPy_Server.h"
+#include "rulesets/python/WrapperBase.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <common/AssetsManager.h>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/steady_timer.hpp>
-#include <rulesets/python/CyPy_EntityFilter.h>
-#include <rulesets/python/CyPy_Common.h>
-#include <rulesets/python/CyPy_Atlas.h>
-#include <rulesets/python/CyPy_Physics.h>
-#include <rulesets/python/CyPy_Server.h>
-#include <rulesets/python/WrapperBase.h>
+#include <boost/filesystem.hpp>
+
+#include <basedir.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -65,6 +70,7 @@ static const bool debug_flag = false;
 struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 {
     std::string m_message;
+
     LogWriter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
         : WrapperBase(self, args, kwds)
     {
@@ -105,15 +111,18 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 
         return Py::None();
     }
+
     PYCXX_VARARGS_METHOD_DECL(LogWriter, write)
 
     Py::Object flush()
     {
         return Py::None();
     }
+
     PYCXX_NOARGS_METHOD_DECL(LogWriter, flush)
 
-    static void init_type() {
+    static void init_type()
+    {
         behaviors().name("LogWriter");
         behaviors().doc("");
 
@@ -132,8 +141,8 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
 /// @param type the name of the class or type
 /// @return new reference
 Py::Object Get_PyClass(const Py::Module& module,
-                       const std::string & package,
-                       const std::string & type)
+                       const std::string& package,
+                       const std::string& type)
 {
     auto py_class = module.getAttr(type);
     if (py_class.isNull()) {
@@ -154,10 +163,10 @@ Py::Object Get_PyClass(const Py::Module& module,
 ///
 /// @param package the name of the module
 /// @return new reference
-Py::Module Get_PyModule(const std::string & package)
+Py::Module Get_PyModule(const std::string& package)
 {
     Py::String package_name(package);
-    PyObject * module = PyImport_Import(package_name.ptr());
+    PyObject* module = PyImport_Import(package_name.ptr());
     if (module == nullptr) {
         log(ERROR, String::compose("Missing python module \"%1\"", package));
         PyErr_Print();
@@ -186,7 +195,8 @@ std::vector<std::string> python_directories;
 
 std::map<boost::filesystem::path, std::string> changedPaths;
 
-void reloadChangedPaths() {
+void reloadChangedPaths()
+{
     if (!changedPaths.empty()) {
 
         for (auto& entry : changedPaths) {
@@ -208,7 +218,8 @@ void reloadChangedPaths() {
     }
 }
 
-void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager) {
+void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager)
+{
 
     for (auto& directory : python_directories) {
         AssetsManager::instance().observeDirectory(directory, [=, &io_service](const boost::filesystem::path& path) {
@@ -241,26 +252,26 @@ void register_baseworld_with_python(BaseWorld* baseWorld)
     server->registerWorld(baseWorld);
 }
 
-void init_python_api(const std::string & ruleset, bool log_stdout)
+void init_python_api(const std::string& ruleset, bool log_stdout)
 {
 
-    PyImport_AppendInittab("entity_filter", [](){
+    PyImport_AppendInittab("entity_filter", []() {
         static auto module = new CyPy_EntityFilter();
         return module->module().ptr();
     });
-    PyImport_AppendInittab("atlas", [](){
+    PyImport_AppendInittab("atlas", []() {
         static auto module = new CyPy_Atlas();
         return module->module().ptr();
     });
-    PyImport_AppendInittab("physics", [](){
+    PyImport_AppendInittab("physics", []() {
         static auto module = new CyPy_Physics();
         return module->module().ptr();
     });
-    PyImport_AppendInittab("common", [](){
+    PyImport_AppendInittab("common", []() {
         static auto module = new CyPy_Common();
         return module->module().ptr();
     });
-    PyImport_AppendInittab("server", [](){
+    PyImport_AppendInittab("server", []() {
         server = new CyPy_Server();
         return server->module().ptr();
     });
@@ -301,6 +312,8 @@ void init_python_api(const std::string & ruleset, bool log_stdout)
             // Add the path to the ruleset specific code.
             python_directories.push_back(share_directory + "/cyphesis/rulesets/" + ruleset + "/scripts");
 
+            python_directories.push_back(share_directory + "/cyphesis/pycharm-debug-py3k.egg");
+
             for (auto& path : python_directories) {
                 paths.append(Py::String(path));
             }
@@ -319,4 +332,41 @@ void shutdown_python_api()
 {
 
     Py_Finalize();
+}
+
+void run_user_scripts(const std::string& prefix)
+{
+    xdgHandle baseDirHandle{};
+    boost::filesystem::path path;
+    if (xdgInitHandle(&baseDirHandle)) {
+        auto dataHome = xdgDataHome(&baseDirHandle);
+        if (dataHome) {
+            path = dataHome;
+        }
+        xdgWipeHandle(&baseDirHandle);
+    }
+
+    if (!path.empty()) {
+        path /= "cyphesis";
+        path /= (prefix + ".d");
+        log(INFO, String::compose("Looking for extra python scripts in %1.", path));
+        if (boost::filesystem::is_directory(path)) {
+            boost::filesystem::recursive_directory_iterator dir(path), end{};
+
+            while (dir != end) {
+                if (boost::filesystem::is_regular_file(dir->status()) && dir->path().extension() == ".py") {
+                    auto fileHandle = fopen(dir->path().c_str(), "r");
+                    if (fileHandle) {
+                        log(INFO, String::compose("Running script '%1'.", dir->path().c_str()));
+                        PyRun_SimpleFileEx(fileHandle, dir->path().c_str(), true);
+                        if (PyErr_Occurred()) {
+                            PyErr_Print();
+                        }
+                    }
+                }
+                ++dir;
+            }
+        }
+
+    }
 }

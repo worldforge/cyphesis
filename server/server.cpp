@@ -372,6 +372,7 @@ int main(int argc, char ** argv)
     // Configuration is now complete, and verified as somewhat sane, so
     // we save the updated user config.
 
+    run_user_scripts("cyphesis");
 
     IdleConnector* storage_idle = nullptr;
 

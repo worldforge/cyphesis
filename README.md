@@ -162,6 +162,23 @@ you can see these message by looking at /var/log/messages. Please see the
 syslog documentation for information about how to control these log
 messages.
 
+## User provided Python scripts
+
+When both the "cyphesis" server and the "cyaiclient" AI process starts they look
+for extra python scripts to run in the "~/.local/share/cyphesis/cyaiclient.d"
+and "~/.local/share/cyphesis/cyphesis.d" directories respectively.
+
+This allows a developer to for example set up Python remote debugging.
+One example would be to use the remote Python debugger included in PyCharm
+Professional. By creating a file named "10-debug.py" containing this code
+a connection will be made at startup with the debugger on port 9999.
+```python
+import sys
+sys.path.append('path_to_pycharm-debug-py3k.egg')
+import pydevd
+pydevd.settrace('localhost', port=9999, stdoutToServer=False, stderrToServer=False, suspend=False)
+```
+
 ## Copyright notices
 
 The server code in C++ is distributed under the GNU General Public

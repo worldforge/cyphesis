@@ -32,6 +32,12 @@ extern sigc::signal<void> python_reload_scripts;
 void init_python_api(const std::string & ruleset, bool log_stdout = true);
 void shutdown_python_api();
 
+/**
+ * When called will look in the XDG user directory for any scripts to run, for the supplied prefix.
+ * @param prefix
+ */
+void run_user_scripts(const std::string& prefix);
+
 void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager);
 
 void register_baseworld_with_python(BaseWorld* baseWorld);
