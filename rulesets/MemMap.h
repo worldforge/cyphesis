@@ -32,6 +32,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <boost/optional.hpp>
 
 class LocatedEntity;
 class Location;
@@ -91,7 +92,7 @@ class MemMap {
 
     explicit MemMap(TypeResolver& typeResolver);
 
-    std::vector<Ref<MemEntity>> resolveEntitiesForType(TypeNode* typeNode);
+    std::vector<Ref<MemEntity>> resolveEntitiesForType(const TypeNode* typeNode);
 
     Ref<MemEntity> addEntity(const Ref<MemEntity>&);
     void setScript(Script* script);

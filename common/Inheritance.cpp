@@ -243,7 +243,7 @@ using Atlas::Objects::Entity::AdminEntity;
 using Atlas::Objects::Entity::Game;
 using Atlas::Objects::Entity::GameEntity;
 
-void installStandardObjects(Inheritance & i)
+void installStandardObjects(TypeStore & i)
 {
     i.addChild(atlasOpDefinition("root_operation", "root"));
     i.addChild(atlasOpDefinition("action", "root_operation"));

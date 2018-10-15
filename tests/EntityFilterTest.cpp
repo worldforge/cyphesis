@@ -157,11 +157,13 @@ struct EntityFilterTest : public Cyphesis::TestBase
         for (const auto& entity : entitiesToPass) {
             QueryContext queryContext{*entity};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
             assert(f.match(queryContext));
         }
         for (const auto& entity : entitiesToFail) {
             QueryContext queryContext{*entity};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
             assert(!f.match(queryContext));
         }
     }
@@ -440,12 +442,14 @@ struct EntityFilterTest : public Cyphesis::TestBase
         {
             QueryContext queryContext{*m_ch1};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
             queryContext.tool = m_glovesEntity.get();
             TestContextQuery("get_entity(entity.attached_hand_primary) = tool", {queryContext}, {});
         }
         {
             QueryContext queryContext{*m_b1};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
 
             TestContextQuery("get_entity(entity.attached_hand_primary) = none", {queryContext}, {});
         }
@@ -453,6 +457,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
         {
             QueryContext queryContext{*m_ch1};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
 
             TestContextQuery("get_entity(entity.attached_not_exists) = none", {queryContext}, {});
         }

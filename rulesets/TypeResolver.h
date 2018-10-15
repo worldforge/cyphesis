@@ -25,6 +25,7 @@
 #include <set>
 #include <Atlas/Objects/RootEntity.h>
 #include <boost/optional.hpp>
+#include "common/TypeStore.h"
 
 class TypeNode;
 
@@ -32,13 +33,17 @@ class TypeResolver
 {
     public:
 
+        explicit TypeResolver(TypeStore& typeStore);
+
         boost::optional<std::string> m_typeProviderId;
 
-        std::set<TypeNode*> InfoOperation(const Operation& op, OpVector& res);
+        std::set<const TypeNode*> InfoOperation(const Operation& op, OpVector& res);
 
-        void requestType(const std::string& id, OpVector& res);
+        const TypeNode* requestType(const std::string& id, OpVector& res);
 
     private:
+
+        TypeStore& m_typeStore;
 
         struct PendingType {
             Atlas::Objects::Root ent;
@@ -47,10 +52,10 @@ class TypeResolver
 
         std::map<std::string, PendingType> m_pendingTypes;
 
-        std::set<TypeNode*> processTypeData(const Atlas::Objects::Root& data, OpVector& res);
+        std::set<const TypeNode*> processTypeData(const Atlas::Objects::Root& data, OpVector& res);
 
 
-        std::set<TypeNode*> resolveType(const std::string& id, const Atlas::Objects::Root& ent, OpVector& res);
+        std::set<const TypeNode*> resolveType(const std::string& id, const Atlas::Objects::Root& ent, OpVector& res);
 };
 
 

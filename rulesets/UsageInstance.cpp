@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <common/Inheritance.h>
 #include "entityfilter/Providers.h"
 #include "UsageInstance.h"
 #include "LocatedEntity.h"
@@ -39,6 +40,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
     if (definition.constraint) {
         EntityFilter::QueryContext queryContext{*tool, actor.get(), tool.get()};
         queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
 
         if (!definition.constraint->match(queryContext)) {
             return {false, "Constraint does not match."};
@@ -90,6 +92,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
                                 if (param.second.constraint) {
                                     EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
                                     queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                                    queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                                     is_valid = param.second.constraint->match(queryContext);
                                 } else {
                                     is_valid = true;
@@ -109,6 +112,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
                                 if (param.second.constraint) {
                                     EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
                                     queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                                    queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                                     is_valid = param.second.constraint->match(queryContext);
                                 } else {
                                     is_valid = true;

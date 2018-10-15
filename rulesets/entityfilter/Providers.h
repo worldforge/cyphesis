@@ -69,6 +69,8 @@ namespace EntityFilter {
         LocatedEntity* self_entity = nullptr;
 
         std::function<Ref<LocatedEntity>(const std::string&)> entity_lookup_fn;
+
+        std::function<const TypeNode*(const std::string&)> type_lookup_fn;
     };
 
     class TypedProvider
@@ -391,7 +393,7 @@ namespace EntityFilter {
             const std::type_info* getType() const override;
     };
 
-///\brief This class retrieves a pointer to the m_contains property of a given entity
+    ///\brief This class retrieves a pointer to the m_contains property of a given entity
     class ContainsProvider : public Consumer<LocatedEntity>
     {
         public:
@@ -400,8 +402,8 @@ namespace EntityFilter {
             const std::type_info* getType() const override;
     };
 
-///\brief This class uses container Consumer to retrieve a container and condition Predicate
-///to check whether there exists an entity within the container that matches the given condition
+    ///\brief This class uses container Consumer to retrieve a container and condition Predicate
+    ///to check whether there exists an entity within the container that matches the given condition
     class ContainsRecursiveFunctionProvider : public Consumer<QueryContext>
     {
         public:
@@ -459,7 +461,6 @@ namespace EntityFilter {
         protected:
 
             DynamicTypeNodeProvider* createDynamicTypeNodeProvider(SegmentsList segments) const;
-            FixedTypeNodeProvider* createFixedTypeNodeProvider(SegmentsList segments) const;
 
             template<typename T>
             T* createEntityProvider(SegmentsList segments) const;

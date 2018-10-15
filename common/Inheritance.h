@@ -21,6 +21,7 @@
 
 #include "Singleton.h"
 #include "TypeNode.h"
+#include "TypeStore.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
@@ -33,7 +34,7 @@ class PropertyBase;
 typedef std::map<std::string, PropertyBase *> PropertyDict;
 
 /// \brief Class to manage the inheritance tree for in-game entity types
-class Inheritance : public Singleton<Inheritance> {
+class Inheritance : public Singleton<Inheritance>, public TypeStore {
   protected:
     const Atlas::Objects::Root noClass;
 
@@ -78,7 +79,7 @@ Atlas::Objects::Root atlasType(const std::string & name,
                                const std::string & parent,
                                bool abstract = false);
 
-void installStandardObjects(Inheritance & i);
-void installCustomOperations(Inheritance & i);
-void installCustomEntities(Inheritance & i);
+void installStandardObjects(TypeStore & i);
+void installCustomOperations(TypeStore & i);
+void installCustomEntities(TypeStore & i);
 #endif // COMMON_INHERITANCE_H

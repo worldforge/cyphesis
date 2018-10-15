@@ -171,6 +171,7 @@ void ProvidersTest::test_GetEntityProviders()
     Atlas::Message::Element value;
     QueryContext queryContext{*m_ch1};
     queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+    queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
 
     getEntityProvider.value(value, queryContext);
 

@@ -23,6 +23,7 @@
 #include "PlantedOnProperty.h"
 #include <Atlas/Objects/Operation.h>
 #include <rulesets/entityfilter/Providers.h>
+#include <common/Inheritance.h>
 
 AttachmentsProperty::AttachmentsProperty(uint32_t flags)
     : PropertyBase(flags)
@@ -115,6 +116,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                         if (attachment.filter) {
                             EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
                             queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                             if (!attachment.filter->match(queryContext)) {
                                 entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
                                 return OPERATION_BLOCKED;

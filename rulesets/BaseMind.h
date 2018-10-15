@@ -23,6 +23,8 @@
 
 #include "modules/WorldTime.h"
 
+class SimpleTypeStore;
+
 /// \brief This is core class for representing the mind of an AI entity.
 ///
 /// Instances of this class almost always have an associated script which
@@ -36,6 +38,7 @@ class BaseMind : public Router, public ReferenceCounted {
 
     Flags m_flags;
 
+    std::unique_ptr<SimpleTypeStore> m_typeStore;
     std::unique_ptr<TypeResolver> m_typeResolver;
 
     /// \brief Memory map of world entities this mind knows about

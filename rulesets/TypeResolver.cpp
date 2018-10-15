@@ -20,9 +20,11 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <common/Inheritance.h>
+#include <common/log.h>
+#include <common/compose.hpp>
 
-std::set<TypeNode*> TypeResolver::InfoOperation(const Operation& op, OpVector& res)
+
+std::set<const TypeNode*> TypeResolver::InfoOperation(const Operation& op, OpVector& res)
 {
     if (!op->getArgs().empty()) {
         auto& arg = op->getArgs().front();
@@ -39,13 +41,13 @@ std::set<TypeNode*> TypeResolver::InfoOperation(const Operation& op, OpVector& r
     return {};
 }
 
-std::set<TypeNode*> TypeResolver::processTypeData(const Atlas::Objects::Root& data, OpVector& res)
+std::set<const TypeNode*> TypeResolver::processTypeData(const Atlas::Objects::Root& data, OpVector& res)
 {
     if (!data->isDefaultId()) {
         auto& id = data->getId();
         if (!data->isDefaultParent()) {
             auto& parent = data->getParent();
-            auto parentType = Inheritance::instance().getType(parent);
+            auto parentType = m_typeStore.getType(parent);
             if (!parentType) {
                 m_pendingTypes[id].ent = data;
                 requestType(parent, res);
@@ -54,13 +56,21 @@ std::set<TypeNode*> TypeResolver::processTypeData(const Atlas::Objects::Root& da
                 //Parent was resolved, now we also are resolved
                 return resolveType(id, data, res);
             }
+        } else {
+            //We got a top level entity, resolve it.
+            return resolveType(id, data, res);
         }
     }
     return {};
 }
 
-void TypeResolver::requestType(const std::string& id, OpVector& res)
+const TypeNode* TypeResolver::requestType(const std::string& id, OpVector& res)
 {
+    auto type = m_typeStore.getType(id);
+    if (type) {
+        return type;
+    }
+
     auto I = m_pendingTypes.find(id);
     if (I == m_pendingTypes.end()) {
         Atlas::Objects::Entity::Anonymous what;
@@ -76,14 +86,17 @@ void TypeResolver::requestType(const std::string& id, OpVector& res)
 
         m_pendingTypes[id] = {};
     }
-
+    return nullptr;
 }
 
-std::set<TypeNode*> TypeResolver::resolveType(const std::string& id, const Atlas::Objects::Root& ent, OpVector& res)
+std::set<const TypeNode*> TypeResolver::resolveType(const std::string& id, const Atlas::Objects::Root& ent, OpVector& res)
 {
-    std::set<TypeNode*> resolved;
+    std::set<const TypeNode*> resolved;
 
-    auto typeNode = Inheritance::instance().addChild(ent);
+    auto typeNode = m_typeStore.getType(id);
+    if (!typeNode) {
+        typeNode = m_typeStore.addChild(ent);
+    }
     if (typeNode) {
         resolved.insert(typeNode);
         auto I = m_pendingTypes.find(id);
@@ -104,4 +117,10 @@ std::set<TypeNode*> TypeResolver::resolveType(const std::string& id, const Atlas
         }
     }
     return resolved;
+}
+
+TypeResolver::TypeResolver(TypeStore& typeStore)
+    : m_typeStore(typeStore)
+{
+
 }

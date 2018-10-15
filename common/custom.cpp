@@ -22,7 +22,7 @@
 
 #include <Atlas/Objects/Generic.h>
 
-void installCustomOperations(Inheritance & i)
+void installCustomOperations(TypeStore & i)
 {
     Atlas::Objects::Factories * atlas_factories = Atlas::Objects::Factories::instance();
 
@@ -101,7 +101,7 @@ void installCustomOperations(Inheritance & i)
     Atlas::Objects::Operation::HIT_NO = atlas_factories->addFactory("hit", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
-void installCustomEntities(Inheritance & i)
+void installCustomEntities(TypeStore & i)
 {
 
     i.addChild(atlasClass("room", "admin_entity"));

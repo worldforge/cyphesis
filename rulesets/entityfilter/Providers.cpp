@@ -26,7 +26,6 @@
 #include "../BBoxProperty.h"
 #include "../EntityProperty.h"
 #include "../../common/TypeNode.h"
-#include "../../common/Inheritance.h"
 
 #include <algorithm>
 #include <rulesets/BaseWorld.h>
@@ -74,7 +73,7 @@ namespace EntityFilter {
 
     void DynamicTypeNodeProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
     {
-        auto type = Inheritance::instance().getType(m_type);
+        auto type = context.type_lookup_fn(m_type);
 
         if (m_consumer && type) {
             m_consumer->value(value, *type);
@@ -462,24 +461,6 @@ namespace EntityFilter {
         auto type = segments.front().attribute;
         segments.pop_front();
         return new DynamicTypeNodeProvider(createTypeNodeProvider(std::move(segments)), type);
-    }
-
-    FixedTypeNodeProvider* ProviderFactory::createFixedTypeNodeProvider(SegmentsList segments) const
-    {
-        if (segments.empty()) {
-            return nullptr;
-        }
-        segments.pop_front();
-        //A little hack here to avoid calling yet another method.
-        if (segments.empty()) {
-            return nullptr;
-        }
-        const TypeNode* typeNode = Inheritance::instance().getType(segments.front().attribute);
-        if (!typeNode) {
-            return nullptr;
-        }
-        segments.pop_front();
-        return new FixedTypeNodeProvider(createTypeNodeProvider(std::move(segments)), *typeNode);
     }
 
     template<typename T>

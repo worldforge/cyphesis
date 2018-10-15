@@ -22,6 +22,7 @@
 
 #include "Script.h"
 #include "TypeResolver.h"
+#include "SimpleTypeStore.h"
 
 #include "common/custom.h"
 #include "common/debug.h"
@@ -48,7 +49,8 @@ BaseMind::BaseMind(const std::string& mindId, const std::string& entityId) :
     Router(mindId, std::stol(mindId)),
     m_entityId(entityId),
     m_flags(0),
-    m_typeResolver(new TypeResolver()),
+    m_typeStore(new SimpleTypeStore()),
+    m_typeResolver(new TypeResolver(*m_typeStore)),
     m_map(*m_typeResolver),
     m_serialNoCounter(0)
 {

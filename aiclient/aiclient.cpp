@@ -22,7 +22,6 @@
 #include "rulesets/PythonScriptFactory.h"
 
 #include "common/sockets.h"
-#include "common/Inheritance.h"
 #include "common/SystemTime.h"
 #include "common/system.h"
 #include "common/RuleTraversalTask.h"

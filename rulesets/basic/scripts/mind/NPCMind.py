@@ -151,6 +151,7 @@ class NPCMind(server.Mind):
     def add_map(self, obj):
         """Hook called by underlying map code when an entity is added."""
         # print "Map add",obj
+        print('See entity ' + str(obj))
         pass
 
     def update_map(self, obj):

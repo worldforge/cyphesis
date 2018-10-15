@@ -81,7 +81,7 @@ add_library(common
     MainLoop.cpp
     MainLoop.h
     CommAsioClient_impl.h
-    )
+    TypeStore.h)
 
 target_link_libraries(common ${GCRYPT_LIBRARIES})
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})

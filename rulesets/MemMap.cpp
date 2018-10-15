@@ -53,8 +53,7 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
     assert(entity != nullptr);
     assert(!entity->getId().empty());
 
-    debug(std::cout << "MemMap::addEntity " << entity->describeEntity() << " " << entity->getId()
-                    << std::endl << std::flush;);
+    debug_print("MemMap::addEntity " << entity->describeEntity() << " " << entity->getId());
     long next = -1;
     if (m_checkIterator != m_entities.end()) {
         next = m_checkIterator->first;
@@ -84,12 +83,12 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
 {
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         auto& parent = ent->getParent();
-        auto* type = Inheritance::instance().getType(parent);
-        if (type != nullptr) {
+        auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
+
+        if (type) {
             entity->setType(type);
         } else {
             m_unresolvedEntities[parent].insert(entity);
-            m_typeResolver.requestType(parent, m_typeResolverOps);
         }
     }
     entity->merge(ent->asMessage());
@@ -121,7 +120,7 @@ void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, d
 {
     assert(entity != nullptr);
 
-    debug(std::cout << " got " << entity->describeEntity() << std::endl << std::flush;);
+    debug_print(" got " << entity->describeEntity());
 
     auto old_loc = entity->m_location.m_parent;
     readEntity(entity, ent, timestamp);
@@ -268,7 +267,7 @@ Ref<MemEntity> MemMap::getAdd(const std::string& id)
         return nullptr;
     }
 
-    MemEntityDict::const_iterator I = m_entities.find(int_id);
+    auto I = m_entities.find(int_id);
     if (I != m_entities.end()) {
         assert(I->second != nullptr);
         return I->second;
@@ -315,7 +314,7 @@ Ref<MemEntity> MemMap::updateAdd(const RootEntity& ent, const double& d)
         return nullptr;
     }
 
-    MemEntityDict::const_iterator I = m_entities.find(int_id);
+    auto I = m_entities.find(int_id);
     Ref<MemEntity> entity;
     if (I == m_entities.end()) {
         entity = newEntity(id, int_id, ent, d);
@@ -458,7 +457,7 @@ void MemMap::setListener(MapListener* listener)
     m_listener = listener;
 }
 
-std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(TypeNode* typeNode)
+std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeNode)
 {
     std::vector<Ref<MemEntity>> resolvedEntities;
 

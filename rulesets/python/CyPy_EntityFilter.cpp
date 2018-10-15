@@ -18,6 +18,7 @@
 
 #include <rulesets/entityfilter/Providers.h>
 #include <rulesets/BaseWorld.h>
+#include <common/Inheritance.h>
 #include "external/pycxx/CXX/Objects.hxx"
 #include "CyPy_EntityFilter.h"
 #include "CyPy_LocatedEntity.h"
@@ -51,6 +52,7 @@ Py::Boolean CyPy_Filter::match_entity(const Py::Tuple& args)
     if (CyPy_LocatedEntity::check(arg)) {
         EntityFilter::QueryContext queryContext{CyPy_LocatedEntity::value(arg)};
         queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
+        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
         return m_value->match(queryContext);
     }
     throw Py::TypeError("First arg must be LocatedEntity.");

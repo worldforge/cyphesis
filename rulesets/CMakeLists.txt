@@ -70,7 +70,8 @@ add_library(rulesetentity
     AdminMind.cpp AdminMind.h
     AdminProperty.cpp AdminProperty.h
     PlantedOnProperty.cpp PlantedOnProperty.h
-    AttachmentsProperty.cpp AttachmentsProperty.h TypeResolver.cpp TypeResolver.h)
+    AttachmentsProperty.cpp AttachmentsProperty.h
+    TypeResolver.cpp TypeResolver.h)
 
 target_link_libraries(rulesetentity ${BULLET_LIBRARIES})
 
@@ -88,7 +89,8 @@ add_library(rulesetmind
     MemMap.cpp
     mind/AwareMind.cpp mind/AwareMindFactory.cpp
     mind/AwarenessStore.cpp mind/AwarenessStoreProvider.cpp
-    mind/SharedTerrain.cpp)
+    mind/SharedTerrain.cpp
+    SimpleTypeStore.cpp SimpleTypeStore.h)
 
 add_library(scriptpython
     PythonClass.cpp

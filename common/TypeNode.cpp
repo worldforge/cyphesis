@@ -60,6 +60,9 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
     m_privateDescription = description;
     m_protectedDescription = description.copy();
     m_publicDescription = description.copy();
+    m_privateDescription->setAttr("access", "private");
+    m_protectedDescription->setAttr("access", "protected");
+    m_publicDescription->setAttr("access", "public");
 
     Atlas::Message::Element attributesElement;
     if (description->copyAttr("attributes", attributesElement) == 0 && attributesElement.isMap()) {
