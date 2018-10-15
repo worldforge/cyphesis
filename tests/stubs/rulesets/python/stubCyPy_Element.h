@@ -81,6 +81,14 @@
   }
 #endif //STUB_CyPy_Element_mapping_ass_subscript
 
+#ifndef STUB_CyPy_Element_iter
+//#define STUB_CyPy_Element_iter
+  Py::Object CyPy_Element::iter()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_iter
+
 #ifndef STUB_CyPy_Element_get_name
 //#define STUB_CyPy_Element_get_name
   Py::Object CyPy_Element::get_name()

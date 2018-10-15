@@ -19,10 +19,10 @@ endif (SEGFAULT_LIBRARY)
 
 set(PYTHON_TESTS_LIBS
     scriptpython
+    entityfilter
     rulesetmind
     rulesetentity
     rulesetbase
-    entityfilter
     stubnavigation
     modules
     physics

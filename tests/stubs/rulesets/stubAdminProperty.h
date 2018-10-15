@@ -15,5 +15,13 @@
   }
 #endif //STUB_AdminProperty_apply
 
+#ifndef STUB_AdminProperty_copy
+//#define STUB_AdminProperty_copy
+  AdminProperty* AdminProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_AdminProperty_copy
+
 
 #endif

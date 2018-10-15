@@ -57,6 +57,14 @@
   }
 #endif //STUB_CyPy_BaseMind_setattro
 
+#ifndef STUB_CyPy_BaseMind_str
+//#define STUB_CyPy_BaseMind_str
+  Py::Object CyPy_BaseMind::str()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_str
+
 #ifndef STUB_CyPy_BaseMind_refreshPath
 //#define STUB_CyPy_BaseMind_refreshPath
   Py::Object CyPy_BaseMind::refreshPath()
@@ -72,6 +80,22 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_BaseMind_setDestination
+
+#ifndef STUB_CyPy_BaseMind_addPropertyCallback
+//#define STUB_CyPy_BaseMind_addPropertyCallback
+  Py::Object CyPy_BaseMind::addPropertyCallback(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_addPropertyCallback
+
+#ifndef STUB_CyPy_BaseMind_setSpeed
+//#define STUB_CyPy_BaseMind_setSpeed
+  Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_setSpeed
 
 
 #endif

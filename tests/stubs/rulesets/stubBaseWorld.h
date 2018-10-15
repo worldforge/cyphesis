@@ -193,13 +193,5 @@
   }
 #endif //STUB_BaseWorld_findByType
 
-#ifndef STUB_BaseWorld_addPerceptive
-//#define STUB_BaseWorld_addPerceptive
-  void BaseWorld::addPerceptive(LocatedEntity *)
-  {
-    
-  }
-#endif //STUB_BaseWorld_addPerceptive
-
 
 #endif

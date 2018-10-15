@@ -64,6 +64,14 @@
   }
 #endif //STUB_BaseMind_sightSetOperation
 
+#ifndef STUB_BaseMind_addPropertyScriptCallback
+//#define STUB_BaseMind_addPropertyScriptCallback
+  void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string scriptMethod)
+  {
+    
+  }
+#endif //STUB_BaseMind_addPropertyScriptCallback
+
 #ifndef STUB_BaseMind_operation
 //#define STUB_BaseMind_operation
   void BaseMind::operation(const Operation &, OpVector &)

@@ -84,7 +84,6 @@ struct TestWorld : public BaseWorld {
     void messageToClients(const Atlas::Objects::Operation::RootOperation &) override{}
     Ref<LocatedEntity> findByName(const std::string & name) override { return nullptr; }
     Ref<LocatedEntity> findByType(const std::string & type) override { return nullptr; }
-    void addPerceptive(LocatedEntity *) override { }
 
     LocatedEntity& getDefaultLocation() const override {return *m_gw;};
 

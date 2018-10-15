@@ -144,14 +144,6 @@
   }
 #endif //STUB_WorldRouter_operation
 
-#ifndef STUB_WorldRouter_addPerceptive
-//#define STUB_WorldRouter_addPerceptive
-  void WorldRouter::addPerceptive(LocatedEntity *)
-  {
-    
-  }
-#endif //STUB_WorldRouter_addPerceptive
-
 #ifndef STUB_WorldRouter_message
 //#define STUB_WorldRouter_message
   void WorldRouter::message(const Atlas::Objects::Operation::RootOperation &, LocatedEntity &)

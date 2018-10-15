@@ -132,6 +132,10 @@ int main()
     run_python_string("assert m != 1.0");
     run_python_string("assert m != '1'");
 
+    run_python_string("m=Message({'foo': {'bar': 1.0}})");
+    run_python_string("assert m['foo']['bar'] == 1.0");
+
+
     shutdown_python_api();
     return 0;
 }

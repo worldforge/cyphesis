@@ -265,7 +265,6 @@
 //#define STUB_AtlasStreamClient_AtlasStreamClient
    AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service)
     : Atlas::Objects::ObjectsDecoder(io_service)
-    , m_currentTask(nullptr)
   {
     
   }
@@ -369,7 +368,7 @@
 
 #ifndef STUB_AtlasStreamClient_runTask
 //#define STUB_AtlasStreamClient_runTask
-  int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
+  int AtlasStreamClient::runTask(std::shared_ptr<ClientTask> task, const std::string & arg)
   {
     return 0;
   }
