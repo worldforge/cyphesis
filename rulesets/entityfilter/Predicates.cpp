@@ -12,16 +12,21 @@ namespace EntityFilter {
         m_lhs(lhs), m_rhs(rhs), m_comparator(comparator), m_with(with)
     {
         //make sure rhs and lhs exist
-        if (!m_lhs || !m_rhs) {
-            throw std::invalid_argument(
-                "At least one side of the comparison operator is invalid");
+        if (!m_lhs) {
+            throw std::invalid_argument("Left side statement is invalid");
+        }
+        if (!m_rhs) {
+            throw std::invalid_argument("Right side statement is invalid");
         }
         if (m_comparator == Comparator::INSTANCE_OF) {
             //make sure that left hand side returns an entity and right hand side a typenode
-            if ((m_lhs->getType() != &typeid(const LocatedEntity*))
-                || (m_rhs->getType() != &typeid(const TypeNode*))) {
+            if (m_lhs->getType() != &typeid(const LocatedEntity*)) {
                 throw std::invalid_argument(
-                    "When using the 'instanceof' comparator, left statement must return an entity and right a TypeNode. For example, 'entity instance_of types.world'.");
+                    "When using the 'instanceof' comparator, left statement must return an entity. For example, 'entity instance_of types.world'.");
+            }
+            if (m_rhs->getType() != &typeid(const TypeNode*)) {
+                throw std::invalid_argument(
+                    "When using the 'instanceof' comparator, right statement must return a TypeNode. For example, 'entity instance_of types.world'.");
             }
         } else if (m_comparator == Comparator::CAN_REACH) {
             //make sure that both sides return an entity
