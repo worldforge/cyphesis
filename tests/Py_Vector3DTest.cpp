@@ -70,7 +70,7 @@ int main()
     expect_python_error("v.rotate(Vector3D(0,1,0))", PyExc_TypeError);
     expect_python_error("v.angle(1.0)", PyExc_TypeError);
     run_python_string("v.angle(v1)");
-    run_python_string("v.square_mag()");
+    run_python_string("v.sqr_mag()");
     run_python_string("v.mag()");
     run_python_string("v.is_valid()");
     run_python_string("v.unit_vector()");

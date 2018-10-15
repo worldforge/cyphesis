@@ -59,7 +59,7 @@ void CyPy_Vector3D::init_type()
     PYCXX_ADD_VARARGS_METHOD(rotate, rotate, "");
     PYCXX_ADD_VARARGS_METHOD(angle, angle, "");
 
-    PYCXX_ADD_NOARGS_METHOD(square_mag, sqr_mag, "");
+    PYCXX_ADD_NOARGS_METHOD(sqr_mag, sqr_mag, "");
     PYCXX_ADD_NOARGS_METHOD(mag, mag, "");
     PYCXX_ADD_NOARGS_METHOD(is_valid, is_valid, "");
     PYCXX_ADD_NOARGS_METHOD(unit_vector, unit_vector, "");
