@@ -117,6 +117,14 @@ void CyPy_Element::init_type()
     behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
                                    | Py::PythonType::support_mapping_subscript);
     behaviors().supportIter(Py::PythonType::support_iter_iter);
+    behaviors().supportSequenceType(Py::PythonType::support_sequence_length
+                                    | Py::PythonType::support_sequence_contains
+                                    | Py::PythonType::support_sequence_item
+                                    | Py::PythonType::support_sequence_ass_item
+                                    | Py::PythonType::support_sequence_repeat
+                                    | Py::PythonType::support_sequence_slice
+                                    | Py::PythonType::support_sequence_inplace_concat
+                                    | Py::PythonType::support_sequence_inplace_repeat);
 
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
     PYCXX_ADD_NOARGS_METHOD(pythonize, pythonize, "");
@@ -133,28 +141,36 @@ Py::Object CyPy_Element::get_name()
 
 Py::Object CyPy_Element::pythonize()
 {
-    return asPyObject(m_value);
+    return asPyObject(m_value, true);
 }
 
-Py::Object CyPy_Element::mapAsPyObject(const MapType& map)
+Py::Object CyPy_Element::mapAsPyObject(const MapType& map, bool useNativePythonType)
 {
     Py::Dict dict;
     for (auto& entry : map) {
-        dict.setAttr(entry.first, CyPy_Element::wrap(entry.second));
+        if (useNativePythonType) {
+            dict.setItem(entry.first, CyPy_Element::asPyObject(entry.second, useNativePythonType));
+        } else {
+            dict.setItem(entry.first, CyPy_Element::wrap(entry.second));
+        }
     }
     return dict;
 }
 
-Py::Object CyPy_Element::listAsPyObject(const ListType& list)
+Py::Object CyPy_Element::listAsPyObject(const ListType& list, bool useNativePythonType)
 {
     Py::List pyList;
     for (auto& entry : list) {
-        pyList.append(CyPy_Element::wrap(entry));
+        if (useNativePythonType) {
+            pyList.append(CyPy_Element::asPyObject(entry, useNativePythonType));
+        } else {
+            pyList.append(CyPy_Element::wrap(entry));
+        }
     }
     return pyList;
 }
 
-Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj)
+Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj, bool useNativePythonType)
 {
     switch (obj.getType()) {
         case Element::TYPE_INT:
@@ -164,9 +180,9 @@ Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj)
         case Element::TYPE_STRING:
             return Py::String(obj.String());
         case Element::TYPE_MAP:
-            return mapAsPyObject(obj.Map());
+            return mapAsPyObject(obj.Map(), useNativePythonType);
         case Element::TYPE_LIST:
-            return listAsPyObject(obj.List());
+            return listAsPyObject(obj.List(), useNativePythonType);
         default:
             break;
     }
@@ -186,7 +202,7 @@ Py::Object CyPy_Element::getattro(const Py::String& name)
     if (m_value.isMap()) {
         auto I = m_value.Map().find(name);
         if (I != m_value.Map().end()) {
-            return asPyObject(I->second);
+            return asPyObject(I->second, false);
         }
     }
     return PythonExtensionBase::getattro(name);
@@ -274,6 +290,9 @@ MapType CyPy_Element::dictAsElement(const Py::Dict& dict)
 
 Element CyPy_Element::asElement(const Py::Object& o)
 {
+    if (CyPy_Element::check(o)) {
+        return CyPy_Element::value(o);
+    }
     if (o.isLong()) {
         return Py::Long(o).as_long();
     }
@@ -296,9 +315,6 @@ Element CyPy_Element::asElement(const Py::Object& o)
             list.push_back(asElement(entry));
         }
         return list;
-    }
-    if (CyPy_Element::check(o)) {
-        return CyPy_Element::value(o);
     }
     if (CyPy_Operation::check(o)) {
         return CyPy_Operation::value(o)->asMessage();
@@ -340,18 +356,36 @@ Py::Object CyPy_Element::wrap(Atlas::Message::Element value)
 
 Py::Object CyPy_Element::mapping_subscript(const Py::Object& key)
 {
+    if (m_value.isList()) {
+        if (key.isNumeric()) {
+            auto index = Py::Long(key).as_long();
+            return sequence_item(index);
+        } else {
+            throw Py::RuntimeError("Index must be a number.");
+        }
+    }
+
     if (!m_value.isMap()) {
-        throw Py::RuntimeError("Element is not of Map type.");
+        throw Py::RuntimeError("Element is not of Map or List type.");
     }
     auto I = m_value.Map().find(verifyString(key));
     if (I != m_value.Map().end()) {
-        return CyPy_Element::asPyObject(I->second);
+        return asPyObject(I->second, false);
     }
     return Py::None();
 }
 
 int CyPy_Element::mapping_ass_subscript(const Py::Object& key, const Py::Object& value)
 {
+    if (m_value.isList()) {
+        if (key.isNumeric()) {
+            auto index = Py::Long(key).as_long();
+            return sequence_ass_item(index, value);
+        } else {
+            throw Py::RuntimeError("Index must be a number.");
+        }
+    }
+
     if (!m_value.isMap()) {
         throw Py::RuntimeError("Element is not of Map type.");
     }
@@ -367,5 +401,96 @@ Py::Object CyPy_Element::iter()
         return Py::None();
     }
     return CyPy_ListElementIterator::wrap(this);
+}
+
+void CyPy_Element::checkIsList()
+{
+    if (!m_value.isList()) {
+        throw Py::RuntimeError("Element is not of List type.");
+    }
+
+}
+
+PyCxx_ssize_t CyPy_Element::sequence_length()
+{
+    checkIsList();
+    return m_value.List().size();
+}
+
+Py::Object CyPy_Element::sequence_repeat(Py_ssize_t count)
+{
+    checkIsList();
+    Py::List list;
+    for (size_t i = 0; i < count; ++count) {
+        for (auto& entry : m_value.List()) {
+            list.append(asPyObject(entry, false));
+        }
+    }
+}
+
+
+int CyPy_Element::sequence_contains(const Py::Object& object)
+{
+    checkIsList();
+    auto& element = CyPy_Element::value(object);
+
+    for (auto& entity : m_value.List()) {
+        if (entity == element) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+Py::Object CyPy_Element::sequence_inplace_repeat(Py_ssize_t)
+{
+//TODO: implement
+}
+
+Py::Object CyPy_Element::sequence_inplace_concat(const Py::Object&)
+{
+//TODO: implement
+}
+
+int CyPy_Element::sequence_ass_item(Py_ssize_t index, const Py::Object& object)
+{
+    checkIsList();
+    if (index < m_value.List().size()) {
+        m_value.List()[index] = value(object);
+        return 1;
+    }
+    return -1;
+
+}
+
+Py::Object CyPy_Element::sequence_item(Py_ssize_t index)
+{
+    checkIsList();
+    if (index < m_value.List().size()) {
+        return wrap(m_value.List().at(index));
+    }
+    return Py::None();
+}
+
+Py::Object CyPy_Element::sequence_concat(const Py::Object& otherValue)
+{
+    checkIsList();
+    auto& element = value(otherValue);
+
+    if (element.isMap()) {
+        throw Py::TypeError("Can not concatenate a Map.");
+    }
+    auto list = m_value.List();
+
+    if (element.isString()) {
+        list.push_back(element.String());
+    } else if (element.isFloat()) {
+        list.push_back(element.Float());
+    } else if (element.isInt()) {
+        list.push_back(element.Int());
+    } else if (element.isList()) {
+        list.insert(list.end(), element.List().begin(), element.List().end());
+    }
+    return wrap(list);
 }
 

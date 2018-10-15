@@ -131,5 +131,5 @@ Py::Object CyPy_Entity::mod_property(const Ref<Entity>& entity, const Py::Tuple&
     if (prop->get(value) != 0) {
         throw Py::RuntimeError(String::compose("Could not create property '%1'.", name));
     }
-    return CyPy_Element::asPyObject(value);
+    return CyPy_Element::asPyObject(value, false);
 }

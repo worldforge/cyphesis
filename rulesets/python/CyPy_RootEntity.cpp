@@ -107,7 +107,7 @@ Py::Object CyPy_RootEntity::getattro(const Py::String& name)
             if (attr.isPtr()) {
                 return Py::Object((PyObject*) attr.Ptr());
             }
-            return CyPy_Element::asPyObject(attr);
+            return CyPy_Element::asPyObject(attr, false);
         }
     }
 
