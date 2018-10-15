@@ -566,7 +566,7 @@ class pursuit(Goal):
 class avoid(pursuit):
     """avoid something at range"""
 
-    def __init__(self, what, range):
+    def __init__(self, what='', range=0):
         pursuit.__init__(self, "avoid something", what, range, -1)
 
 

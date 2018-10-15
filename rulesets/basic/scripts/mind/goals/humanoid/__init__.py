@@ -1,1 +1,1 @@
-# This sets up the include directries
+# This sets up the include directories

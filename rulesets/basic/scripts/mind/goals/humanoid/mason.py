@@ -29,10 +29,10 @@ class keep_livestock(keep):
 class welcome(DynamicGoal):
     """Welcome entities of a given type that are created nearby."""
 
-    def __init__(self, message, what, desc="welcome new players"):
+    def __init__(self, message="", what=""):
         DynamicGoal.__init__(self,
                              trigger="sight_create",
-                             desc=desc)
+                             desc="welcome new players")
         self.what = what
         self.message = message
         self.filter = get_filter(self.what)
@@ -91,11 +91,11 @@ class help(Goal):
 class add_help(add_unique_goal):
     """Set off a help goal if we get a touch operation."""
 
-    def __init__(self, messages, responses=[], desc="help people out"):
+    def __init__(self, messages=None, responses=None):
         add_unique_goal.__init__(self,
                                  help,
                                  trigger="touch",
-                                 desc=desc)
+                                 desc="help people out")
         self.messages = messages
         self.responses = responses
 

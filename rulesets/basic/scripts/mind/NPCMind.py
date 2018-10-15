@@ -2,8 +2,9 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 import random
+import sys
 import traceback
-from xml.dom.minidom import Entity
+import importlib
 
 from atlas import *
 from physics import *
@@ -88,13 +89,32 @@ class NPCMind(server.Mind):
         goals = entity.props._goals
         self.goals.clear()
         if goals:
-            for goalElement in goals:
-                if hasattr(goalElement, 'goal'):
-                    self.add_goal(goalElement.goal)
+            for goal_element in goals:
+                if hasattr(goal_element, 'class'):
+                    goal_class = goal_element['class']
+                    splits = goal_class.split('.')
+                    module_name = '.'.join(splits[0:-1])
+                    class_name = splits[-1]
+
+                    module = importlib.import_module(module_name)
+                    class_ = getattr(module, class_name)
+                    params = {}
+                    if hasattr(goal_element, 'params'):
+                        params = goal_element['params']
+
+                    self.print_debug('Creating an instance of {}'.format(goal_class))
+                    try:
+                        instance = class_(**params)
+
+                        if instance:
+                            self.insert_goal(instance)
+                    except:
+                        self.print_debug('Error when creating goal from data\n {}'.format(str(goal_element)))
+                        raise
 
     def print_debug(self, message):
         """Prints a debug message using 'print', prepending the message with a description of the entity."""
-        print(str(self) + ": " + message)
+        print(str(self) + ": " + str(message))
 
     def find_op_method(self, op_id, prefix="", undefined_op_method=None):
         """find right operation to invoke"""
