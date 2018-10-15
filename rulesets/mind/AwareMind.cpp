@@ -176,9 +176,9 @@ int AwareMind::updatePath()
     return mSteering->updatePath(getCurrentServerTime());
 }
 
-Steering& AwareMind::getSteering()
+Steering* AwareMind::getSteering()
 {
-    return *mSteering;
+    return mSteering.get();
 }
 
 void AwareMind::entityAdded(const MemEntity& entity)

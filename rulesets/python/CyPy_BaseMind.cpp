@@ -104,9 +104,13 @@ Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
         throw Py::TypeError("Not an AwareMind");
     }
 
+    if (!awareMind->getSteering()) {
+        return Py::None();
+    }
+
     //FIXME: provide a "stopSteering" method instead
     if (args.length() == 0) {
-        awareMind->getSteering().stopSteering();
+        awareMind->getSteering()->stopSteering();
 
     } else {
         args.verify_length(2, 3);
@@ -131,8 +135,8 @@ Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
             }
         }
 
-        awareMind->getSteering().setDestination(entityId, destination, radius, awareMind->getCurrentServerTime());
-        awareMind->getSteering().startSteering();
+        awareMind->getSteering()->setDestination(entityId, destination, radius, awareMind->getCurrentServerTime());
+        awareMind->getSteering()->startSteering();
     }
 
     return Py::None();
@@ -157,7 +161,10 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }
-        return Py::Long(awareMind->getSteering().unawareAreaCount());
+        if (awareMind->getSteering()) {
+            return Py::Long(awareMind->getSteering()->unawareAreaCount());
+        }
+        return Py::Long(0);
     }
     if (nameStr == "path") {
         auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
@@ -165,10 +172,12 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
             throw Py::TypeError("Not an AwareMind");
         }
         Py::List list;
-        const auto& path = awareMind->getSteering().getPath();
+        if (awareMind->getSteering()) {
+            const auto& path = awareMind->getSteering()->getPath();
 
-        for (auto& point : path) {
-            list.append(CyPy_Point3D::wrap(point));
+            for (auto& point : path) {
+                list.append(CyPy_Point3D::wrap(point));
+            }
         }
 
         return list;
@@ -180,7 +189,11 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
             throw Py::TypeError("Not an AwareMind");
         }
 
-        return Py::Long(awareMind->getSteering().getPathResult());
+        if (!awareMind->getSteering()) {
+            return Py::Long(0);
+        }
+
+        return Py::Long(awareMind->getSteering()->getPathResult());
     }
 
     if (nameStr == "props") {
@@ -237,7 +250,9 @@ Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)
     if (!awareMind) {
         throw Py::TypeError("Not an AwareMind");
     }
-    awareMind->getSteering().setDesiredSpeed(verifyFloat(args[0]));
+    if (awareMind->getSteering()) {
+        awareMind->getSteering()->setDesiredSpeed(verifyFloat(args[0]));
+    }
     return Py::None();
 }
 

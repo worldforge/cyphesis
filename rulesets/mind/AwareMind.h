@@ -45,7 +45,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         int updatePath();
 
-        Steering& getSteering();
+        Steering* getSteering();
 
         double getServerTimeDiff() const;
 
