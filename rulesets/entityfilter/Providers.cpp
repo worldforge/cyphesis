@@ -67,6 +67,31 @@ namespace EntityFilter {
         }
     }
 
+    DynamicTypeNodeProvider::DynamicTypeNodeProvider(Consumer<TypeNode>* consumer, const std::string& type)
+        : ConsumingProviderBase<TypeNode, QueryContext>(consumer), m_type(type)
+    {
+    }
+
+    void DynamicTypeNodeProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+    {
+        auto type = Inheritance::instance().getType(m_type);
+
+        if (m_consumer && type) {
+            m_consumer->value(value, *type);
+        } else {
+            value = (void*)type;
+        }
+    }
+
+    const std::type_info* DynamicTypeNodeProvider::getType() const
+    {
+        if (m_consumer) {
+            return m_consumer->getType();
+        } else {
+            return &typeid(const TypeNode*);
+        }
+    }
+
     MemoryProvider::MemoryProvider(Consumer<Atlas::Message::Element>* consumer)
         : ConsumingProviderBase<Atlas::Message::Element, QueryContext>(consumer)
     {
@@ -399,7 +424,7 @@ namespace EntityFilter {
             } else if (first_attribute == "self") {
                 return createSelfEntityProvider(std::move(segments));
             } else if (first_attribute == "types") {
-                return createFixedTypeNodeProvider(std::move(segments));
+                return createDynamicTypeNodeProvider(std::move(segments));
             } else if (first_attribute == "actor") {
                 return createEntityProvider<ActorProvider>(std::move(segments));
             } else if (first_attribute == "tool") {
@@ -422,6 +447,21 @@ namespace EntityFilter {
     Consumer<QueryContext>* ProviderFactory::createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const
     {
         return new GetEntityFunctionProvider(entity_provider, nullptr);
+    }
+
+    DynamicTypeNodeProvider* ProviderFactory::createDynamicTypeNodeProvider(SegmentsList segments) const
+    {
+        if (segments.empty()) {
+            return nullptr;
+        }
+        segments.pop_front();
+        //A little hack here to avoid calling yet another method.
+        if (segments.empty()) {
+            return nullptr;
+        }
+        auto type = segments.front().attribute;
+        segments.pop_front();
+        return new DynamicTypeNodeProvider(createTypeNodeProvider(std::move(segments)), type);
     }
 
     FixedTypeNodeProvider* ProviderFactory::createFixedTypeNodeProvider(SegmentsList segments) const

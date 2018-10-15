@@ -210,6 +210,18 @@ namespace EntityFilter {
             const Atlas::Message::Element m_element;
     };
 
+    class DynamicTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext>
+    {
+        public:
+            DynamicTypeNodeProvider(Consumer<TypeNode>* consumer, const std::string& type);
+
+            void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+            const std::type_info* getType() const override;
+
+            const std::string m_type;
+    };
+
     class FixedTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext>
     {
         public:
@@ -445,6 +457,8 @@ namespace EntityFilter {
             virtual Consumer<QueryContext>* createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const;
 
         protected:
+
+            DynamicTypeNodeProvider* createDynamicTypeNodeProvider(SegmentsList segments) const;
             FixedTypeNodeProvider* createFixedTypeNodeProvider(SegmentsList segments) const;
 
             template<typename T>
