@@ -484,8 +484,7 @@ void BaseMind::operation(const Operation& op, OpVector& res)
         }
     }
 
-    res.insert(std::end(res), std::begin(m_map.m_typeResolverOps), std::end(m_map.m_typeResolverOps));
-    m_map.m_typeResolverOps.clear();
+    m_map.collectTypeResolverOps(res);
 
     if (debug_flag) {
         for (const auto& resOp : res) {
@@ -555,3 +554,9 @@ void BaseMind::setScript(Script* scrpt)
         }
     }
 }
+
+const TypeStore& BaseMind::getTypeStore() const
+{
+    return *m_typeStore;
+}
+

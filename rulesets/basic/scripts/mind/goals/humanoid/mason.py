@@ -6,7 +6,7 @@ from mind.Goal import Goal
 from mind.goals.common.misc_goal import keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal
-from entity_filter import *
+import entity_filter
 from atlas import *
 
 
@@ -35,7 +35,7 @@ class welcome(DynamicGoal):
                              desc="welcome new players")
         self.what = what
         self.message = message
-        self.filter = get_filter(self.what)
+        self.filter = entity_filter.Filter(self.what)
 
     def event(self, me, original_op, op):
         if not op:
@@ -47,7 +47,7 @@ class welcome(DynamicGoal):
         entity = me.map.update(first_op, op.get_seconds())
         if original_op.from_ == me.entity.id:
             self.add_thing(entity)
-        if self.filter.match_entity(entity):
+        if me.match_entity(self.filter, entity):
             return Operation("talk", Entity(say=self.message)) + me.face(entity)
 
 

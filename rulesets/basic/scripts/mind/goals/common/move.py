@@ -7,7 +7,7 @@ from physics import *
 from physics import Vector3D
 from physics import Point3D
 
-from entity_filter import *
+import entity_filter
 
 from mind.Goal import Goal
 from mind.goals.common.common import *
@@ -258,14 +258,14 @@ class move_it_outof_me(Goal):
                       self.is_it_not_with_me,
                       [self.drop_it])
         self.what = what
-        self.what_filter = get_filter(what)
+        self.what_filter = entity_filter.Filter(what)
 
     def is_it_not_with_me(self, me):
-        things = self.what_filter.search_contains(me)
+        things = me.match_entities(self.what_filter, me.entity.contains)
         return len(things) == 0
 
     def drop_it(self, me):
-        things = self.what_filter.search_contains(me)
+        things = me.match_entities(self.what_filter, me.entity.contains)
         if things > 0:
             me.remove_thing(things[0])
             return Operation("move", Entity(things[0].id, location=me.entity.location))
@@ -541,7 +541,7 @@ class pursuit(Goal):
             self.what = str(what[0])
         else:
             self.what = str(what)
-        self.filter = get_filter(self.what)
+        self.filter = entity_filter.Filter(self.what)
         self.range = range
         self.direction = direction
         self.vars = ["what", "range", "direction"]

@@ -21,7 +21,6 @@
 #include "CyPy_RootEntity.h"
 #include "CyPy_EntityFilter.h"
 
-#include <Atlas/Objects/objectFactory.h>
 #include <rulesets/entityfilter/Providers.h>
 #include <rulesets/BaseWorld.h>
 
@@ -217,7 +216,7 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
     for (auto& entry : m_value->getEntities()) {
         EntityFilter::QueryContext queryContext{*entry.second};
         queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
-        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+        queryContext.type_lookup_fn = [&](const std::string& id) { return m_value->getTypeStore().getType(id); };
 
         if (filter->match(queryContext)) {
             list.append(CyPy_MemEntity::wrap(entry.second.get()));
@@ -247,7 +246,7 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
         for (const auto& entry : *location.m_parent->m_contains) {
             EntityFilter::QueryContext queryContext{*entry};
             queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
-            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+            queryContext.type_lookup_fn = [&](const std::string& id) { return m_value->getTypeStore().getType(id); };
 
             if (entry->isVisible() && filter->match(queryContext)) {
                 if (squareDistance(location.pos(), entry->m_location.pos()) < square_range) {

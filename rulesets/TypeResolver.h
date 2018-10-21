@@ -41,6 +41,8 @@ class TypeResolver
 
         const TypeNode* requestType(const std::string& id, OpVector& res);
 
+        const TypeStore& getTypeStore() const;
+
     private:
 
         TypeStore& m_typeStore;

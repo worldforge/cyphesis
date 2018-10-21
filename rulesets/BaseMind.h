@@ -24,6 +24,7 @@
 #include "modules/WorldTime.h"
 
 class SimpleTypeStore;
+class TypeStore;
 
 /// \brief This is core class for representing the mind of an AI entity.
 ///
@@ -73,6 +74,8 @@ class BaseMind : public Router, public ReferenceCounted {
     const Ref<MemEntity>& getEntity() const {
         return m_ownEntity;
     }
+
+    const TypeStore& getTypeStore() const;
 
     /// \brief Is this mind active
     bool isAwake() const { return !m_flags.hasFlags(entity_asleep); }

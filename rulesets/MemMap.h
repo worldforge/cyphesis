@@ -33,6 +33,7 @@
 #include <map>
 #include <string>
 #include <boost/optional.hpp>
+#include <common/TypeStore.h>
 
 class LocatedEntity;
 class Location;
@@ -147,6 +148,8 @@ class MemMap {
     void setListener(MapListener* listener);
 
     void collectTypeResolverOps(OpVector& res);
+
+    const TypeStore& getTypeStore() const;
 
     friend class MemMaptest;
     friend class BaseMindMapEntityintegration;

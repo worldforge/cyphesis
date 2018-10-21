@@ -148,7 +148,7 @@ int Inheritance::updateClass(const std::string & parent,
     return 0;
 }
 
-const TypeNode * Inheritance::getType(const std::string & parent)
+const TypeNode * Inheritance::getType(const std::string & parent) const
 {
     auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {

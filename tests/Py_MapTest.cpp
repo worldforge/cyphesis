@@ -32,25 +32,31 @@
 #include "rulesets/Python_API.h"
 
 #include <cassert>
-#include <common/Inheritance.h>
 #include <rulesets/python/CyPy_MemMap.h>
+#include <rulesets/SimpleTypeStore.h>
+#include <rulesets/TypeResolver.h>
+#include <Atlas/Objects/RootOperation.h>
 
 int main()
 {
-    Inheritance inheritance;
 
     init_python_api("93b8eac3-9ab9-40f7-b419-d740c18c09e4");
 
-    MemMap memMap;
+    SimpleTypeStore typeStore{};
+    TypeResolver typeResolver{typeStore};
+
+    MemMap memMap(typeResolver);
     auto map = CyPy_MemMap::wrap(&memMap);
     assert(!map.isNull());
 
-    run_python_string("from server import Map");
+    Py::Module module("server");
+    module.setAttr("testmap", map);
+
+    run_python_string("import server");
     run_python_string("from atlas import Location");
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Message");
-    run_python_string("from entity_filter import get_filter");
-    run_python_string("m=Map()");
+    run_python_string("m=server.testmap");
     expect_python_error("m.find_by_location()", PyExc_IndexError);
     run_python_string("l=Location()");
     expect_python_error("m.find_by_location(l)", PyExc_IndexError);

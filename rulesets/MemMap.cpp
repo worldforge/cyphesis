@@ -492,3 +492,8 @@ void MemMap::collectTypeResolverOps(OpVector& res)
     m_typeResolverOps.clear();
 }
 
+const TypeStore& MemMap::getTypeStore() const
+{
+    return m_typeResolver.getTypeStore();
+}
+

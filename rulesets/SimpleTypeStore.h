@@ -28,7 +28,7 @@ class SimpleTypeStore : public TypeStore
 
         SimpleTypeStore();
 
-        const TypeNode* getType(const std::string& parent) override;
+        const TypeNode* getType(const std::string& parent) const override;
 
         TypeNode* addChild(const Atlas::Objects::Root& obj) override;
 

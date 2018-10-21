@@ -1,3 +1,5 @@
+#include <utility>
+
 /*
  Copyright (C) 2018 Erik Ogenvik
 
@@ -28,10 +30,12 @@ CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
     : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (arg.isString()) {
-        EntityFilter::MindProviderFactory factory;
-        m_value.reset(new EntityFilter::Filter(Py::String(arg).as_string(), factory));
+    auto filterString = verifyString(args.front());
+    EntityFilter::MindProviderFactory factory;
+    try {
+        m_value.reset(new EntityFilter::Filter(filterString, factory));
+    } catch (const std::exception& e) {
+        throw Py::TypeError(String::compose("Error when parsing query: %1", e.what()));
     }
 }
 
@@ -40,43 +44,11 @@ void CyPy_Filter::init_type()
     behaviors().name("Filter");
     behaviors().doc("");
 
-    PYCXX_ADD_VARARGS_METHOD(match_entity, match_entity, "");
-    PYCXX_ADD_VARARGS_METHOD(search_contains, search_contains, "");
     behaviors().readyType();
 }
 
-Py::Boolean CyPy_Filter::match_entity(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    auto arg = args.front();
-    if (CyPy_LocatedEntity::check(arg)) {
-        EntityFilter::QueryContext queryContext{CyPy_LocatedEntity::value(arg)};
-        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id);};
-        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
-        return m_value->match(queryContext);
-    }
-    throw Py::TypeError("First arg must be LocatedEntity.");
-}
-
-Py::List CyPy_Filter::search_contains(const Py::Tuple& args)
-{
-    Py::List list;
-
-    args.verify_length(1);
-    auto arg = args.front();
-    if (CyPy_LocatedEntity::check(arg)) {
-        auto& entity = CyPy_LocatedEntity::value(arg);
-        if (entity.m_contains) {
-            for (auto& contained : *entity.m_contains) {
-                list.append(CyPy_LocatedEntity::wrap(contained));
-            }
-        }
-    }
-    return list;
-}
-
 CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, std::shared_ptr<EntityFilter::Filter> value)
-: WrapperBase(self, value)
+    : WrapperBase(self, std::move(value))
 {
 
 }
@@ -87,29 +59,9 @@ CyPy_EntityFilter::CyPy_EntityFilter()
 
     CyPy_Filter::init_type();
 
-    add_varargs_method("get_filter", &CyPy_EntityFilter::get_filter, "");
-
 
     initialize("Entity filtering");
 
-}
-
-///\brief Create a new Filter object for a given query
-Py::Object CyPy_EntityFilter::get_filter(const Py::Tuple& args)
-{
-
-    args.verify_length(1);
-    try {
-        auto arg = args.front();
-        if (arg.isString()) {
-            Py::Callable class_type(CyPy_Filter::type());
-            Py::PythonClassObject<CyPy_Filter> filter_obj(class_type.apply(args));
-
-            return filter_obj;
-        }
-    }
-    catch (std::invalid_argument& e) {
-        throw Py::TypeError(String::compose("Invalid query for Entity Filter: %1", e.what()).c_str());
-    }
-    return Py::None();
+    Py::Dict d(moduleDictionary());
+    d["Filter"] = CyPy_Filter::type();
 }

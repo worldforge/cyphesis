@@ -23,7 +23,7 @@
 
 struct TypeStore
 {
-    virtual const TypeNode* getType(const std::string& parent) = 0;
+    virtual const TypeNode* getType(const std::string& parent) const = 0;
     virtual TypeNode * addChild(const Atlas::Objects::Root & obj) = 0;
 };
 

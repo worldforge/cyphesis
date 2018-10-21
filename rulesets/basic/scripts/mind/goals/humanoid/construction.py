@@ -2,7 +2,7 @@
 # Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
 from physics import *
-from entity_filter import *
+import entity_filter
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
 
@@ -25,7 +25,7 @@ class gather(Goal):
         else:
             self.what = str(what)
         # FIXME: This goal shares the same filter as spot_something
-        self.filter = get_filter(self.what)
+        self.filter = entity_filter.Filter(self.what)
         self.vars = ["what"]
 
     def is_there_none_around(self, me):
@@ -105,7 +105,7 @@ class plant_seeds(Goal):
                        clear_focus(source)])
         self.seed = seed
         self.source = source
-        self.source_filter = get_filter(source)
+        self.source_filter = entity_filter.Filter(source)
         self.place = place
         self.tool = tool
         self.range = range

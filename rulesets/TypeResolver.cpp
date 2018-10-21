@@ -24,6 +24,12 @@
 #include <common/compose.hpp>
 
 
+const TypeStore& TypeResolver::getTypeStore() const
+{
+    return m_typeStore;
+}
+
+
 std::set<const TypeNode*> TypeResolver::InfoOperation(const Operation& op, OpVector& res)
 {
     if (!op->getArgs().empty()) {

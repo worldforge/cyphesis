@@ -27,6 +27,8 @@
 
 #include "navigation/Steering.h"
 #include "CyPy_Props.h"
+#include "CyPy_EntityFilter.h"
+#include "rulesets/entityfilter/Providers.h"
 
 
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
@@ -80,11 +82,56 @@ void CyPy_BaseMind::init_type()
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
     PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
 
+
+    PYCXX_ADD_VARARGS_METHOD(ma, matchEntity, "");
+    PYCXX_ADD_VARARGS_METHOD(match_entities, matchEntities, "");
+
     //behaviors().type_object()->tp_base = base;
 
     behaviors().readyType();
 }
 
+Py::Object CyPy_BaseMind::matchEntity(const Py::Tuple& args)
+{
+    args.verify_length(2);
+
+    auto& filter = verifyObject<CyPy_Filter>(args.getItem(0));
+    auto& entity = verifyObject<CyPy_LocatedEntity>(args.getItem(1));
+
+    EntityFilter::QueryContext queryContext{entity, m_value->getEntity().get()};
+    queryContext.type_lookup_fn = [&](const std::string& id) -> const TypeNode* {
+        return m_value->getTypeStore().getType(id);
+    };
+    queryContext.entity_lookup_fn = [&](const std::string& id) -> Ref<LocatedEntity> {
+        return m_value->getMap()->get(id);
+    };
+
+    return Py::Boolean(filter->match(queryContext));
+}
+
+Py::Object CyPy_BaseMind::matchEntities(const Py::Tuple& args)
+{
+    args.verify_length(2);
+
+    auto& filter = verifyObject<CyPy_Filter>(args.getItem(0));
+    auto entities = verifyList(args.getItem(1));
+    Py::List list;
+
+    for (auto entity : entities) {
+        EntityFilter::QueryContext queryContext{verifyObject<CyPy_LocatedEntity>(entity), m_value->getEntity().get()};
+        queryContext.type_lookup_fn = [&](const std::string& id) -> const TypeNode* {
+            return m_value->getTypeStore().getType(id);
+        };
+        queryContext.entity_lookup_fn = [&](const std::string& id) -> Ref<LocatedEntity> {
+            return m_value->getMap()->get(id);
+        };
+        if (filter->match(queryContext)) {
+            list.append(entity);
+        }
+    }
+
+    return list;
+}
 
 Py::Object CyPy_BaseMind::refreshPath()
 {

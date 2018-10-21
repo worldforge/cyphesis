@@ -52,6 +52,12 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 
         Py::Object setSpeed(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setSpeed);
+
+        Py::Object matchEntity(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntity);
+
+        Py::Object matchEntities(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntities);
 };
 
 

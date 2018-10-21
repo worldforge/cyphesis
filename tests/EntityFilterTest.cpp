@@ -771,7 +771,7 @@ ContainsProperty* ContainsProperty::copy() const
 
 #define STUB_Inheritance_getType
 
-const TypeNode* Inheritance::getType(const std::string& parent)
+const TypeNode* Inheritance::getType(const std::string& parent) const
 {
     auto I = types.find(parent);
     if (I == types.end()) {

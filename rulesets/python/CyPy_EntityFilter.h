@@ -35,22 +35,6 @@ class CyPy_Filter : public WrapperBase<std::shared_ptr<EntityFilter::Filter>, Cy
 
         static void init_type();
 
-        ///\brief Match a single entity using a filter that called this method.
-        Py::Boolean match_entity(const Py::Tuple& args);
-
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Filter, match_entity);
-
-        ///\This method is used to search the "contains" property of an entity,
-        ///returning a list of entities that match a given filter
-        ///
-        ///This is useful when the client code knows that the query always requires
-        ///to search within a contains property (i.e. inventory of a given entity)
-        ///
-        ///@param py_entity - an entity whose "contains" property to search
-        Py::List search_contains(const Py::Tuple& args);
-
-        PYCXX_VARARGS_METHOD_DECL(CyPy_Filter, search_contains);
-
 
     private:
 
@@ -60,10 +44,6 @@ class CyPy_EntityFilter : public Py::ExtensionModule<CyPy_EntityFilter>
 {
     public:
         CyPy_EntityFilter();
-
-    private:
-        Py::Object get_filter(const Py::Tuple& args);
-
 
 };
 

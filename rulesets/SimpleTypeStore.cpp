@@ -25,7 +25,7 @@
 
 #include <Atlas/Objects/Entity.h>
 
-const TypeNode* SimpleTypeStore::getType(const std::string& parent)
+const TypeNode* SimpleTypeStore::getType(const std::string& parent) const
 {
     auto I = m_types.find(parent);
     if (I == m_types.end()) {

@@ -7,7 +7,7 @@ from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
 from random import *
-from entity_filter import *
+import entity_filter
 
 import time
 import types
@@ -217,7 +217,7 @@ class spot_something(Goal):
         else:
             self.what = str(what)
 
-        self.filter = get_filter(what)
+        self.filter = entity_filter.Filter(what)
 
         self.range = range
         self.condition = condition
@@ -558,7 +558,7 @@ class hunt(Goal):
                        self.fight])
         self.weapon = weapon
         self.what = what
-        self.filter = get_filter(what)
+        self.filter = entity_filter.Filter(what)
         self.range = range
         self.square_range = range * range
         self.vars = ["weapon", "what", "range"]
@@ -599,7 +599,7 @@ class defend(Goal):
                        hunt_for(what, range),
                        self.fight])
         self.what = what
-        self.filter = get_filter(what)
+        self.filter = entity_filter.Filter(what)
         self.range = range
         self.vars = ["what", "range"]
 
