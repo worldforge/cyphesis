@@ -41,7 +41,7 @@
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubThing.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubLocation.h"
 

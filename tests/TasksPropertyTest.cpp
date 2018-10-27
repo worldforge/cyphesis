@@ -48,14 +48,14 @@ int main()
 
     Py::Dict fake;
     OpVector res;
-    Ref<Character> actor = pc.createCharacterEntity();
+    Ref<Entity> actor = pc.createCharacterEntity();
     UsageInstance usageInstance;
     usageInstance.actor = actor;
     usageInstance.op = Atlas::Objects::Operation::Action();
     Ref<Task> task = new Task(usageInstance, fake);
     task->progress() = .1;
     task->rate() = .1;
-    actor->startTask(task, usageInstance.op, res);
+    actor->requirePropertyClassFixed<TasksProperty>()->startTask("", task, actor.get(), res);
 
     MapType map;
     map["one"] = 23;
@@ -74,7 +74,13 @@ int main()
 
 // stubs
 
+#define STUB_Task_initTask
+void Task::initTask(const std::string& id, OpVector & res)
+{
+    this->m_obsolete = true;
+}
+
 #include "stubs/rulesets/stubTask.h"
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 

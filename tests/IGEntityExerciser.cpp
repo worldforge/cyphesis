@@ -311,7 +311,7 @@ void IGEntityExerciser::runOperations()
         op->setArgs1(empty_arg);
         this->m_ent->SetOperation(op, ov);
         if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::UPDATE_NO);
         }
         this->flushOperations(ov);
 
@@ -319,15 +319,14 @@ void IGEntityExerciser::runOperations()
         op->setArgs1(set_arg);
         this->m_ent->SetOperation(op, ov);
         if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::UPDATE_NO);
         }
         this->flushOperations(ov);
 
         op->setAttr("status", -1);
         this->m_ent->SetOperation(op, ov);
         if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
-            assert(ov[1]->getClassNo() == Atlas::Objects::Operation::UPDATE_NO);
+            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::UPDATE_NO);
         }
         this->flushOperations(ov);
     }

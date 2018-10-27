@@ -58,7 +58,7 @@
 
 #ifndef STUB_MemMap_resolveEntitiesForType
 //#define STUB_MemMap_resolveEntitiesForType
-  std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(TypeNode* typeNode)
+  std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeNode)
   {
     return std::vector<Ref<MemEntity>>();
   }
@@ -162,7 +162,7 @@
 
 #ifndef STUB_MemMap_findByLocation
 //#define STUB_MemMap_findByLocation
-  EntityVector MemMap::findByLocation(const Location & where, WFMath::CoordType radius, const std::string & what)
+  EntityVector MemMap::findByLocation(const EntityLocation & where, WFMath::CoordType radius, const std::string & what)
   {
     return *static_cast<EntityVector*>(nullptr);
   }
@@ -199,6 +199,14 @@
     
   }
 #endif //STUB_MemMap_collectTypeResolverOps
+
+#ifndef STUB_MemMap_getTypeStore
+//#define STUB_MemMap_getTypeStore
+  const TypeStore& MemMap::getTypeStore() const
+  {
+    return *static_cast<const TypeStore*>(nullptr);
+  }
+#endif //STUB_MemMap_getTypeStore
 
 
 #endif

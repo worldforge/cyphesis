@@ -24,6 +24,14 @@
   }
 #endif //STUB_Player_Player
 
+#ifndef STUB_Player_Player_DTOR
+//#define STUB_Player_Player_DTOR
+   Player::~Player()
+  {
+    
+  }
+#endif //STUB_Player_Player_DTOR
+
 #ifndef STUB_Player_getType
 //#define STUB_Player_getType
   const char* Player::getType() const

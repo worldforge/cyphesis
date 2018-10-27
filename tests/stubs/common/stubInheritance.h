@@ -42,7 +42,7 @@
 
 #ifndef STUB_Inheritance_getType
 //#define STUB_Inheritance_getType
-  const TypeNode* Inheritance::getType(const std::string & parent)
+  const TypeNode* Inheritance::getType(const std::string & parent) const
   {
     return nullptr;
   }

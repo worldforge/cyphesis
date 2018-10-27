@@ -304,6 +304,7 @@ int CHANGE_NO = -1;
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/common/stubTypeNode.h"
 
 template class OperationsDispatcher<LocatedEntity>;
 template class OpQueEntry<LocatedEntity>;
@@ -463,9 +464,9 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 
 #ifndef STUB_Inheritance_getType
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
@@ -499,6 +500,7 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
     return 0;
 }
 #include "stubs/server/stubEntityBuilder.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 
 
 SpawnEntity::SpawnEntity(LocatedEntity *)

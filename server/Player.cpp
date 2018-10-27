@@ -58,5 +58,13 @@ int Player::characterError(const Operation & op,
         return -1;
     }
 
+    const std::string & name = ent->getName();
+    if (name.compare(0,5,"admin") == 0) {
+        error(op, "Entity to be created cannot start with admin", res, getId());
+        return -1;
+    }
+
     return 0;
 }
+
+Player::~Player() = default;

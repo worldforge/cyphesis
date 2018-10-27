@@ -23,3 +23,8 @@ int integerIdCheck(const std::string & id)
     }
     return 0;
 }
+
+long newId(std::string & id)
+{
+    return 1;
+}

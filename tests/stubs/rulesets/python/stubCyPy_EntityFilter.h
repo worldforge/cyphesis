@@ -33,22 +33,6 @@
   }
 #endif //STUB_CyPy_Filter_init_type
 
-#ifndef STUB_CyPy_Filter_match_entity
-//#define STUB_CyPy_Filter_match_entity
-  Py::Boolean CyPy_Filter::match_entity(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Boolean*>(nullptr);
-  }
-#endif //STUB_CyPy_Filter_match_entity
-
-#ifndef STUB_CyPy_Filter_search_contains
-//#define STUB_CyPy_Filter_search_contains
-  Py::List CyPy_Filter::search_contains(const Py::Tuple& args)
-  {
-    return *static_cast<Py::List*>(nullptr);
-  }
-#endif //STUB_CyPy_Filter_search_contains
-
 
 #ifndef STUB_CyPy_EntityFilter_CyPy_EntityFilter
 //#define STUB_CyPy_EntityFilter_CyPy_EntityFilter
@@ -58,14 +42,6 @@
     
   }
 #endif //STUB_CyPy_EntityFilter_CyPy_EntityFilter
-
-#ifndef STUB_CyPy_EntityFilter_get_filter
-//#define STUB_CyPy_EntityFilter_get_filter
-  Py::Object CyPy_EntityFilter::get_filter(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_EntityFilter_get_filter
 
 
 #endif

@@ -24,7 +24,7 @@
 #include <iostream>
 #include <unordered_map>
 
-class OperationsListener;
+struct OperationsListener;
 
 /// \brief This is the base class from which all in-game objects inherit.
 ///

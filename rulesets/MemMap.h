@@ -134,7 +134,7 @@ class MemMap {
     const std::map<std::string, std::map<std::string, Atlas::Message::Element>>& getEntityRelatedMemory() const;
 
     EntityVector findByType(const std::string & what);
-    EntityVector findByLocation(const Location & where,
+    EntityVector findByLocation(const EntityLocation & where,
                                 WFMath::CoordType radius,
                                 const std::string & what);
 

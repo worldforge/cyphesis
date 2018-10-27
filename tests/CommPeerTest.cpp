@@ -160,12 +160,6 @@ int main()
 
 #include <Atlas/Net/Stream.h>
 
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
 int CommSocket::flush()
 {
     return 0;
@@ -175,33 +169,8 @@ void log(LogLevel, const std::string & msg)
 {
 }
 #include "stubs/server/stubServerRouting.h"
-
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubLink.h"
 
 Peer::Peer(CommSocket & client,
            ServerRouting & svr,

@@ -181,19 +181,6 @@ int main()
         assert(stub_baseworld_receieved_op == -1);
     }
 
-    // Send a non Delete operation to an ephemeral entity
-    {
-        Entity e("2", 2);
-        e.addFlags(entity_ephem);
-
-        TestExternalMind em(e);
-
-        stub_baseworld_receieved_op = -1;
-        OpVector res;
-        em.operation(Atlas::Objects::Operation::RootOperation(), res);
-        assert(stub_baseworld_receieved_op == Atlas::Objects::Operation::DELETE_NO);
-    }
-
     // Send a random operation to a connected mind
     {
         Entity e("2", 2);
@@ -230,63 +217,6 @@ int main()
         assert(stub_link_send_count == 1);
     }
 
-    // Send a Sight(Set) of hungry operation to a connected mind
-    {
-        Entity e("2", 2);
-
-        TestExternalMind em(e);
-
-        em.linkUp(new Connection(*(CommSocket*)0,
-                                 *(ServerRouting*)0,
-                                 "addr", "4", 4));
-
-        stub_link_send_op = -1;
-        stub_link_send_count = 0;
-
-        // A sight(set) of a starving entity
-        Atlas::Objects::Root arg;
-        arg->setAttr("status", 0.05);
-        arg->setId(e.getId());
-        Atlas::Objects::Operation::Set set;
-        set->setArgs1(arg);
-        Atlas::Objects::Operation::Sight op;
-        op->setArgs1(set);
-
-        // It should trigger an extra Sight(Imaginary)
-        OpVector res;
-        em.operation(op, res);
-        assert(stub_link_send_op == Atlas::Objects::Operation::SIGHT_NO);
-        assert(stub_link_send_count > 1);
-    }
-
-    // Send a Sight(Set) of starving operation to a connected mind
-    {
-        Entity e("2", 2);
-
-        TestExternalMind em(e);
-
-        em.linkUp(new Connection(*(CommSocket*)0,
-                                 *(ServerRouting*)0,
-                                 "addr", "4", 4));
-
-        stub_link_send_op = -1;
-        stub_link_send_count = 0;
-
-        // A sight(set) of a starving entity
-        Atlas::Objects::Root arg;
-        arg->setAttr("status", 0.005);
-        arg->setId(e.getId());
-        Atlas::Objects::Operation::Set set;
-        set->setArgs1(arg);
-        Atlas::Objects::Operation::Sight op;
-        op->setArgs1(set);
-
-        // It should trigger an extra Sight(Imaginary)
-        OpVector res;
-        em.operation(op, res);
-        assert(stub_link_send_op == Atlas::Objects::Operation::SIGHT_NO);
-        assert(stub_link_send_count > 1);
-    }
 
     return 0;
 }
@@ -301,7 +231,7 @@ using Atlas::Message::MapType;
 
 #include "stubs/server/stubConnection.h"
 #include "stubs/common/stubInheritance.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubTypeNode.h"
 
 #define STUB_Entity_destroy

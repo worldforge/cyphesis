@@ -173,7 +173,7 @@ void WorldRouterintegration::setup()
     }
     {
         auto decl = composeDeclaration("character", "thing", {});
-        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Character>());
+        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
     }
 }
 
@@ -444,6 +444,7 @@ int IdProperty::get(Atlas::Message::Element& val) const
 #include "stubs/rulesets/stubTask.h"
 #include "stubs/rulesets/stubAtlasProperties.h"
 #include "stubs/rulesets/stubStatusProperty.h"
+#include "stubs/rulesets/stubPlantedOnProperty.h"
 
 #define STUB_ExternalMind_linkUp
 
@@ -562,22 +563,7 @@ template class Property<int>;
 template class Property<double>;
 template class Property<std::string>;
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(MapType & omap) const
-{
-}
-
-void Router::addToEntity(const RootEntity & ent) const
-{
-}
+#include "stubs/common/stubRouter.h"
 
 long integerId(const std::string & id)
 {
@@ -640,9 +626,9 @@ Inheritance & Inheritance::instance()
     return *m_instance;
 }
 
-const TypeNode * Inheritance::getType(const std::string & parent)
+const TypeNode * Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }

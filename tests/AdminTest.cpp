@@ -65,7 +65,7 @@ std::ostream & operator<<(std::ostream & os,
 }
 
 std::ostream & operator<<(std::ostream & os,
-                          const EntityDict::const_iterator &)
+                          const std::map<long, LocatedEntity *>::const_iterator &)
 {
     os << "[iterator]";
     return os;
@@ -83,8 +83,17 @@ class TestObject : public ConnectableRouter
   public:
     explicit TestObject(const std::string & id, long intId);
 
-    virtual void externalOperation(const Operation &, Link &);
-    virtual void operation(const Operation &, OpVector &);
+        void externalOperation(const Operation &, Link &) override;
+
+        void operation(const Operation &, OpVector &) override;
+        void setConnection(Connection* connection) override {
+
+        }
+
+        Connection* getConnection() const override
+        {
+            return nullptr;
+        }
 };
 
 TestObject::TestObject(const std::string & id, long intId) : ConnectableRouter(id, intId)
@@ -263,9 +272,6 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_null);
     ADD_TEST(Admintest::test_getType);
     ADD_TEST(Admintest::test_addToMessage);
-    ADD_TEST(Admintest::test_addToMessage_tree);
-    ADD_TEST(Admintest::test_addToEntity);
-    ADD_TEST(Admintest::test_addToEntity_tree);
     ADD_TEST(Admintest::test_opDispatched);
     ADD_TEST(Admintest::test_opDispatched_unconnected);
     ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
@@ -334,7 +340,7 @@ void Admintest::setup()
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
                                  compose("%1", m_id_counter), m_id_counter++,
                                  compose("%1", m_id_counter), m_id_counter++);
-    m_connection = new Connection(*(CommSocket*)0, *m_server,
+    m_connection = new Connection(*(CommSocket*) nullptr, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   compose("%1", m_id_counter), m_id_counter++);
     m_account = new Admin(m_connection,
@@ -371,62 +377,6 @@ void Admintest::test_addToMessage()
 
     m_account->addToMessage(data);
 
-    ASSERT_NOT_EQUAL(data.find("character_types"), data.end());
-    ASSERT_EQUAL(data["character_types"], ListType());
-}
-
-void Admintest::test_addToMessage_tree()
-{
-    Inheritance::instance().addChild(atlasClass("character", "root"));
-    Inheritance::instance().addChild(atlasClass("human", "character"));
-    Inheritance::instance().addChild(atlasClass("settler", "human"));
-    Inheritance::instance().addChild(atlasClass("goblin", "character"));
-
-    MapType data;
-
-    m_account->addToMessage(data);
-
-    ListType expected_character_types;
-    expected_character_types.push_back("character");
-    expected_character_types.push_back("human");
-    expected_character_types.push_back("settler");
-    expected_character_types.push_back("goblin");
-
-    // FIXME How do we know this order is consistent
-    ASSERT_NOT_EQUAL(data.find("character_types"), data.end());
-    ASSERT_EQUAL(data["character_types"], expected_character_types);
-}
-
-void Admintest::test_addToEntity_tree()
-{
-    Anonymous data;
-
-    m_account->addToEntity(data);
-
-    ASSERT_TRUE(data->hasAttr("character_types"));
-    ASSERT_EQUAL(data->getAttr("character_types"), ListType());
-}
-
-void Admintest::test_addToEntity()
-{
-    Inheritance::instance().addChild(atlasClass("character", "root"));
-    Inheritance::instance().addChild(atlasClass("human", "character"));
-    Inheritance::instance().addChild(atlasClass("settler", "human"));
-    Inheritance::instance().addChild(atlasClass("goblin", "character"));
-
-    Anonymous data;
-
-    m_account->addToEntity(data);
-
-    ListType expected_character_types;
-    expected_character_types.push_back("character");
-    expected_character_types.push_back("human");
-    expected_character_types.push_back("settler");
-    expected_character_types.push_back("goblin");
-
-    ASSERT_TRUE(data->hasAttr("character_types"));
-    ASSERT_EQUAL(data->getAttr("character_types"),
-                 expected_character_types);
 }
 
 void Admintest::test_opDispatched()
@@ -1182,8 +1132,9 @@ void Admintest::test_createObject_class_no_id()
     OpVector res;
 
     arg->setObjtype("class");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1206,8 +1157,9 @@ void Admintest::test_createObject_class_exists()
 
     arg->setObjtype("class");
     arg->setId("character");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1228,8 +1180,9 @@ void Admintest::test_createObject_class_parent_absent()
 
     arg->setObjtype("class");
     arg->setId("character");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1250,8 +1203,9 @@ void Admintest::test_createObject_class_fail()
 
     arg->setObjtype("class");
     arg->setId("character");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1272,8 +1226,9 @@ void Admintest::test_createObject_class_succeed()
 
     arg->setObjtype("class");
     arg->setId("character");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1292,8 +1247,9 @@ void Admintest::test_createObject_juncture_id_fail()
     OpVector res;
 
     arg->setObjtype("obj");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1310,8 +1266,9 @@ void Admintest::test_createObject_juncture()
     OpVector res;
 
     arg->setObjtype("obj");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1330,8 +1287,9 @@ void Admintest::test_createObject_juncture_serialno()
     OpVector res;
 
     arg->setObjtype("obj");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1350,8 +1308,9 @@ void Admintest::test_createObject_fallthrough()
     OpVector res;
 
     arg->setObjtype("obj");
+    arg->setParent(parent);
 
-    m_account->createObject(parent, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 0u);
 
@@ -1387,8 +1346,7 @@ int main()
 #include <cstdio>
 
 #define STUB_Account_createObject
-void Account::createObject(const std::string & type_str,
-                           const Root & arg,
+void Account::createObject(const Root & arg,
                            const Operation & op,
                            OpVector & res)
 {
@@ -1427,16 +1385,7 @@ void Account::SetOperation(const Operation &, OpVector &)
 #include "stubs/server/stubArchetypeRuleHandler.h"
 #include "stubs/server/stubOpRuleHandler.h"
 #include "stubs/server/stubPropertyRuleHandler.h"
-
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 
 #define STUB_Ruleset_modifyRule
 int Ruleset::modifyRule(const std::string & class_name,
@@ -1456,34 +1405,7 @@ int Ruleset::installRule(const std::string & class_name,
 }
 
 #include "stubs/server/stubRuleset.h"
-
-Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectableRouter(id, iid, c),
-          m_address(0),
-          m_peer(nullptr),
-          m_connectRef(0)
-{
-}
-
-Juncture::~Juncture()
-{
-}
-
-void Juncture::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Juncture::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::addToMessage(MapType & omap) const
-{
-}
-
-void Juncture::addToEntity(const RootEntity & ent) const
-{
-}
+#include "stubs/server/stubJuncture.h"
 
 #define STUB_ServerRouting_addObject
 void ServerRouting::addObject(ConnectableRouter * obj)
@@ -1514,28 +1436,15 @@ void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setId(getId());
 }
 #include "stubs/rulesets/stubEntity.h"
-
-
 #include "stubs/rulesets/stubLocatedEntity.h"
 
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
+#define STUB_Link_send
 void Link::send(const Operation & op) const
 {
     Admintest::set_Link_sent_called();
 }
+#include "stubs/common/stubLink.h"
 
-void Link::disconnect()
-{
-}
 
 
 #define STUB_Inheritance_Inheritance
@@ -1553,9 +1462,9 @@ Inheritance::Inheritance()
 }
 
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
@@ -1563,20 +1472,20 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 }
 
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility v)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return noClass;
     }
-    return I->second->description();
+    return I->second->description(v);
 }
 
 
 #define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return false;
     }
@@ -1590,15 +1499,15 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
     const std::string & parent = obj->getParent();
     assert(atlasObjects.find(child) == atlasObjects.end());
 
-    TypeNodeDict::iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     assert(I != atlasObjects.end());
 
     Element children(ListType(1, child));
-    if (I->second->description()->copyAttr("children", children) == 0) {
+    if (I->second->description(Visibility::PRIVATE)->copyAttr("children", children) == 0) {
         assert(children.isList());
         children.asList().push_back(child);
     }
-    I->second->description()->setAttr("children", children);
+    I->second->description(Visibility::PRIVATE)->setAttr("children", children);
 
     TypeNode * type = new TypeNode(child, obj);
     type->setParent(I->second);
@@ -1620,18 +1529,10 @@ Root atlasClass(const std::string & name, const std::string & parent)
     return r;
 }
 
-TypeNode::TypeNode(const std::string & name,
-                   const Atlas::Objects::Root & d) : m_name(name),
-                                                     m_description(d),
-                                                     m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
+#include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rulesets/stubAdminMind.h"
+#include "stubs/rulesets/stubExternalMind.h"
 
 
 Router::Router(const std::string & id, long intId) : m_id(id),

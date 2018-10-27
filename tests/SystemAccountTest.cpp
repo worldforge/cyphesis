@@ -146,14 +146,7 @@ Admin::~Admin()
 #include "stubs/server/stubAdmin.h"
 #include "stubs/server/stubConnection.h"
 
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"

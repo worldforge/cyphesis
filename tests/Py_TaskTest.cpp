@@ -31,6 +31,7 @@
 
 #include "rulesets/Python_API.h"
 #include "rulesets/Task.h"
+#include "rulesets/Entity.h"
 
 #include <cassert>
 #include <rulesets/python/CyPy_Task.h>
@@ -54,7 +55,6 @@ int main()
     expect_python_error("Task()", PyExc_IndexError);
     expect_python_error("Task(1)", PyExc_TypeError);
     expect_python_error("Task('1')", PyExc_TypeError);
-    run_python_string("from server import Character");
     run_python_string("c=server.entity");
     run_python_string("t=Task(server.usageInstance)");
     run_python_string("Task(t)");
@@ -89,7 +89,6 @@ int main()
 
     // Tasks do not permit wrappers of core server objects
     // to be stored directly.
-    expect_python_error("t.foo = Character('2')", PyExc_TypeError);
     run_python_string("import server");
     expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 

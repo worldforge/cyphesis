@@ -200,6 +200,7 @@ wf_generate_stubs(navigation)
 wf_generate_stubs(physics)
 wf_generate_stubs(rulesets)
 wf_generate_stubs(server)
+wf_generate_stubs(client)
 
 
 # Add a "check" target, which builds and runs the tests.

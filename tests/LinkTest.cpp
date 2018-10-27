@@ -224,36 +224,8 @@ int main()
 
 // stubs
 
-#include "common/Router.h"
+#include "stubs/common/stubRouter.h"
 
-Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::buildError(const Operation & op,
-                        const std::string & errstring,
-                        const Operation & e,
-                        const std::string & to) const
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
 
 int CommSocket::flush()
 {

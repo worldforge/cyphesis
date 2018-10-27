@@ -35,21 +35,22 @@ using Atlas::Objects::Operation::RootOperation;
 class TestBaseClient : public BaseClient
 {
   public:
-    TestBaseClient() : BaseClient() { }
+    TestBaseClient(boost::asio::io_service& io_service) : BaseClient(io_service) { }
 
     virtual void idle() { }
 };
 
 int main()
 {
+    boost::asio::io_service io_service;
     {
-        BaseClient * bc = new TestBaseClient;
+        BaseClient * bc = new TestBaseClient{io_service};
 
         delete bc;
     }
 
     {
-        BaseClient * bc = new TestBaseClient;
+        BaseClient * bc = new TestBaseClient{io_service};
 
         bc->createAccount("8e7e4452-f666-11df-8027-00269e5444b3", "84abee0c-f666-11df-8f7e-00269e5444b3");
 
@@ -57,7 +58,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient;
+        BaseClient * bc = new TestBaseClient{io_service};
 
         bc->createSystemAccount();
 
@@ -65,7 +66,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient;
+        BaseClient * bc = new TestBaseClient{io_service};
 
         bc->createCharacter("9e7f4004-f666-11df-a327-00269e5444b3");
 
@@ -73,7 +74,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient;
+        BaseClient * bc = new TestBaseClient{io_service};
 
         bc->logout();
 
@@ -81,7 +82,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient;
+        BaseClient * bc = new TestBaseClient{io_service};
 
         bc->handleNet();
 
@@ -100,91 +101,18 @@ int main()
 #include <cstdlib>
 
 #include "stubs/rulesets/stubBaseMind.h"
+#include "stubs/client/stubCreatorClient.h"
 
-CreatorClient::CreatorClient(const std::string & id, long intId,
-                             ClientConnection &c) :
-               CharacterClient(id, intId, c)
-{
-}
-
-ClientConnection::ClientConnection()
-{
-}
-
-ClientConnection::~ClientConnection()
-{
-}
-
-void ClientConnection::operation(const RootOperation & op)
-{
-}
-
-int ClientConnection::wait()
-{
-    return 0;
-}
-
+#define STUB_ClientConnection_pop
 RootOperation ClientConnection::pop()
 {
     return RootOperation(nullptr);
 }
 
-CharacterClient::CharacterClient(const std::string & id, long intId,
-                                 ClientConnection & c) :
-                 BaseMind(id, intId), m_connection(c)
-{
-}
-
+#include "stubs/client/stubClientConnection.h"
+#include "stubs/client/stubCharacterClient.h"
 #include "stubs/rulesets/stubMemMap.h"
-
-AtlasStreamClient::AtlasStreamClient() : m_io_work(m_io_service), reply_flag(false), error_flag(false),
-                                         serialNo(512), m_currentTask(0)
-{
-}
-
-AtlasStreamClient::~AtlasStreamClient()
-{
-}
-
-void AtlasStreamClient::objectArrived(const Root & obj)
-{
-}
-
-void AtlasStreamClient::operation(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::infoArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::appearanceArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::disappearanceArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::sightArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::soundArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::errorArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::loginSuccess(const Root & arg)
-{
-}
-
-void AtlasStreamClient::send(const RootOperation & op)
-{
-}
+#include "stubs/common/stubAtlasStreamClient.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {
@@ -210,24 +138,7 @@ long integerId(const std::string & id)
 
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubLocation.h"
 
 void WorldTime::initTimeInfo()

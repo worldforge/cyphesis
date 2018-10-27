@@ -48,7 +48,7 @@ class Account : public ConnectableRouter {
     Connection * m_connection;
 
     /// \brief A store of Character entities belonging to this account
-    std::map<long, LocatedEntity *> m_charactersDict;
+    std::map<long, Ref<LocatedEntity>> m_charactersDict;
     /// \brief The username of this account
     std::string m_username;
     /// \brief The password used to authenticate this account
@@ -77,26 +77,23 @@ class Account : public ConnectableRouter {
                               const Operation &,
                               OpVector &);
 
-    int filterTasks(const Atlas::Message::ListType & tasks,
-                    const Atlas::Objects::Entity::RootEntity &) const;
-
     /// \brief Creates a new entity for a character.
     virtual Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &);
 
     void processExternalOperation(const Operation & op, OpVector& res);
 
-    virtual ExternalMind* createMind(LocatedEntity* entity) const;
+    virtual ExternalMind* createMind(const Ref<LocatedEntity>& entity) const;
 
   public:
     /// \brief Connect and add a character to this account
-    int connectCharacter(LocatedEntity *entity, OpVector& res);
+    int connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res);
 
     Account(Connection * conn, const std::string & username,
                                const std::string & passwd,
                                const std::string & id, long intId);
 
-    ~Account() override = default;
+    ~Account() override;
 
     const std::string & username() const {
         return m_username;
@@ -133,10 +130,10 @@ class Account : public ConnectableRouter {
     virtual void OtherOperation(const Operation &, OpVector &);
     virtual void PossessOperation(const Operation &, OpVector &);
 
-    void addCharacter(LocatedEntity *);
+    void addCharacter(const Ref<LocatedEntity>&);
 
     /// \brief Read only accessor for the Character dictionary
-    const std::map<long, LocatedEntity *>& getCharacters() const {
+    const std::map<long, Ref<LocatedEntity>>& getCharacters() const {
         return m_charactersDict;
     }
 

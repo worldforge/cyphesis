@@ -41,12 +41,13 @@ using Atlas::Objects::Operation::RootOperation;
 
 class ClientConnectiontest : public Cyphesis::TestBase
 {
-    ClientConnection * cc;
+    boost::asio::io_service io_service;
+    ClientConnection * cc{};
   public:
     ClientConnectiontest();
 
-    void setup();
-    void teardown();
+    void setup() override;
+    void teardown() override;
 
     void test_sequence();
 };
@@ -58,7 +59,7 @@ ClientConnectiontest::ClientConnectiontest()
 
 void ClientConnectiontest::setup()
 {
-    cc = new ClientConnection();
+    cc = new ClientConnection(io_service);
 }
 
 void ClientConnectiontest::teardown()
@@ -110,114 +111,9 @@ int main()
 }
 
 // stubs
-
-#include "common/AtlasStreamClient.h"
-
-void AtlasStreamClient::output(const Element & item, size_t depth) const
-{
-}
-
-void AtlasStreamClient::output(const Root & ent) const
-{
-}
-
-void AtlasStreamClient::objectArrived(const Root & obj)
-{
-}
-
-void AtlasStreamClient::operation(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::infoArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::appearanceArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::disappearanceArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::sightArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::soundArrived(const RootOperation & op)
-{
-}
-
-void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root & arg)
-{
-}
-
-/// \brief Called when an Error operation arrives
-///
-/// @param op Operation to be processed
-void AtlasStreamClient::errorArrived(const RootOperation & op)
-{
-}
-
-AtlasStreamClient::AtlasStreamClient() :  m_io_work(m_io_service), reply_flag(false), error_flag(false),
-                                         serialNo(512), m_currentTask(0),
-                                         m_spacing(2)
-{
-}
-
-AtlasStreamClient::~AtlasStreamClient()
-{
-}
-
-void AtlasStreamClient::send(const RootOperation & op)
-{
-}
-
-int AtlasStreamClient::connect(const std::string & host, unsigned short port)
-{
-    return 0;
-}
-
-int AtlasStreamClient::connectLocal(const std::string & filename)
-{
-    return 0;
-}
-
-int AtlasStreamClient::cleanDisconnect()
-{
-    return 0;
-}
-
-int AtlasStreamClient::login(const std::string & username,
-                             const std::string & password)
-{
-    return 0;
-}
-
-int AtlasStreamClient::create(const std::string & type,
-                              const std::string & username,
-                              const std::string & password)
-{
-    return 0;
-}
-
-int AtlasStreamClient::waitForLoginResponse()
-{
-    return 0;
-}
-
+#define STUB_AtlasStreamClient_poll
 int AtlasStreamClient::poll(int timeOut, int msec)
 {
     return -1;
 }
-
-int AtlasStreamClient::runTask(ClientTask * task, const std::string & arg)
-{
-    return 0;
-}
-
-int AtlasStreamClient::endTask()
-{
-    return 0;
-}
+#include "stubs/common/stubAtlasStreamClient.h"

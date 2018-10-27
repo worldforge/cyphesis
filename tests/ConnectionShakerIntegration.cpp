@@ -156,56 +156,29 @@ void ExternalMind::linkUp(Link * c)
 #include "stubs/common/stubOperationsDispatcher.h"
 
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-void Router::clientError(const Operation & op,
-                         const std::string & errstring,
-                         OpVector & res,
-                         const std::string & to) const
-{
-}
+#include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 
 
 #ifndef STUB_Inheritance_getClass
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility)
 {
-    return noClass;}
+    return noClass;
+}
 #endif //STUB_Inheritance_getClass
 
 #ifndef STUB_Inheritance_getType
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;}
+    return I->second;
+}
 #endif //STUB_Inheritance_getType
 
 #include "stubs/common/stubInheritance.h"

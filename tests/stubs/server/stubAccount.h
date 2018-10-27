@@ -39,14 +39,6 @@
   }
 #endif //STUB_Account_createObject
 
-#ifndef STUB_Account_filterTasks
-//#define STUB_Account_filterTasks
-  int Account::filterTasks(const Atlas::Message::ListType & tasks, const Atlas::Objects::Entity::RootEntity &) const
-  {
-    return 0;
-  }
-#endif //STUB_Account_filterTasks
-
 #ifndef STUB_Account_createCharacterEntity
 //#define STUB_Account_createCharacterEntity
   Ref<LocatedEntity> Account::createCharacterEntity(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
@@ -65,7 +57,7 @@
 
 #ifndef STUB_Account_createMind
 //#define STUB_Account_createMind
-  ExternalMind* Account::createMind(LocatedEntity* entity) const
+  ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const
   {
     return nullptr;
   }
@@ -73,7 +65,7 @@
 
 #ifndef STUB_Account_connectCharacter
 //#define STUB_Account_connectCharacter
-  int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
+  int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
   {
     return 0;
   }
@@ -88,6 +80,14 @@
     
   }
 #endif //STUB_Account_Account
+
+#ifndef STUB_Account_Account_DTOR
+//#define STUB_Account_Account_DTOR
+   Account::~Account()
+  {
+    
+  }
+#endif //STUB_Account_Account_DTOR
 
 #ifndef STUB_Account_getType
 //#define STUB_Account_getType
@@ -219,7 +219,7 @@
 
 #ifndef STUB_Account_addCharacter
 //#define STUB_Account_addCharacter
-  void Account::addCharacter(LocatedEntity *)
+  void Account::addCharacter(const Ref<LocatedEntity>&)
   {
     
   }

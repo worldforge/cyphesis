@@ -59,11 +59,20 @@ if(PostgreSQL_FOUND)
         CommPSQLSocket.cpp)
 endif(PostgreSQL_FOUND)
 
-add_executable(cyphesis
+add_library(server
     ${cyphesis_files})
+target_compile_definitions(server PRIVATE -DPOSTGRES_FOUND=${PostgreSQL_FOUND})
 
-target_compile_definitions(cyphesis PRIVATE -DPOSTGRES_FOUND=${PostgreSQL_FOUND})
+if(PostgreSQL_FOUND)
+    target_link_libraries(server ${PostgreSQL_LIBRARIES})
+    target_include_directories(server PUBLIC ${PostgreSQL_INCLUDE_DIRS})
+endif(PostgreSQL_FOUND)
+
+add_executable(cyphesis
+    server.cpp)
+
 target_link_libraries(cyphesis
+    server
     scriptpython
     navigation
     DetourTileCache

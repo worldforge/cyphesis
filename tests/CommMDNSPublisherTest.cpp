@@ -54,34 +54,13 @@ int main()
 #include "common/Shaker.h"
 #include "stubs/server/stubServerRouting.h"
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                     m_intId(intId)
-{
-}
+#include "stubs/common/stubRouter.h"
 
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
 
 double BaseWorld::getTime() const
 {
     return .0;
-}
-
-
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
 }
 
 int CommSocket::flush()

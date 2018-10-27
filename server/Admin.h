@@ -61,7 +61,10 @@ class Admin : public Account {
 
     void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
-    //void LogoutOperation(const Operation &, OpVector &) override;
+    /**
+     * Allow admin clients to logout other accounts.
+     */
+    void LogoutOperation(const Operation &, OpVector &) override;
     void GetOperation(const Operation &, OpVector &) override;
     void SetOperation(const Operation &, OpVector &) override;
     void OtherOperation(const Operation &, OpVector &) override;

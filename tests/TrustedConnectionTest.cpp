@@ -188,13 +188,6 @@ int UPDATE_NO = -1;
 } } }
 
 
-
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
 int CommSocket::flush()
 {
     return 0;
@@ -204,95 +197,31 @@ int CommSocket::flush()
 #include "stubs/server/stubPlayer.h"
 #include "stubs/server/stubSystemAccount.h"
 #include "stubs/server/stubAccount.h"
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubConnection.h"
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubLobby.h"
 
-
-
-ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_link(0), m_entity(e)
-{
-}
-
-void ExternalMind::externalOperation(const Operation &, Link &)
-{
-}
-
-void ExternalMind::operation(const Operation & op, OpVector & res)
-{
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
+#define STUB_ExternalMind_connectionId
 const std::string & ExternalMind::connectionId()
 {
     assert(m_link != 0);
     return m_link->getId();
 }
 
+#define STUB_ExternalMind_linkUp
 void ExternalMind::linkUp(Link * c)
 {
     m_link = c;
 }
 
+#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rulesets/stubExternalProperty.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-void Link::disconnect()
-{
-}
-
+#include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubLocation.h"
@@ -303,7 +232,7 @@ void Link::disconnect()
 
 #ifndef STUB_Inheritance_getClass
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility)
 {
     return noClass;
 }
@@ -312,9 +241,9 @@ const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
 
 #ifndef STUB_Inheritance_getType
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }

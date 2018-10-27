@@ -30,6 +30,7 @@
 #include "common/CommAsioClient_impl.h"
 #include "server/CommPeer.h"
 #include "rulesets/ExternalMind.h"
+#include "rulesets/Entity.h"
 
 #include "rulesets/BaseWorld.h"
 #include "common/CommSocket.h"
@@ -39,6 +40,7 @@
 
 #include <cassert>
 #include <string>
+#include <rulesets/MindsProperty.h>
 
 class TestCommSocket : public CommSocket
 {
@@ -234,50 +236,54 @@ int main()
         assert(ret != 0);
     }
 
-    // Character (no mind)
+    // Entity (no mind)
     {
         TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Ref<Character> e(new Character("3", 3));
+        Ref<Entity> e(new Entity("3", 3));
         int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
     }
 
-    // Character (externl mind, unconnected)
+    // Entity (external mind, unconnected)
     {
         TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Ref<Character> e(new Character("3", 3));
-        e->m_externalMind = new ExternalMind(*e);
+        Ref<Entity> e(new Entity("3", 3));
+        auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
+        mindsProp->addMind(new ExternalMind("1", 1, *e));
         int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
     }
 
-    // Character (externl mind, connected)
+    // Entity (external mind, connected)
     {
         TestCommSocket client;
         Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         p->setAuthState(PEER_AUTHENTICATED);
-        
-        Ref<Character> e(new Character("3", 3));
-        ExternalMind * mind = new ExternalMind(*e);
+
+
+        Ref<Entity> e(new Entity("3", 3));
+        ExternalMind * mind = new ExternalMind("1", 1, *e);
         mind->linkUp((Link*)23);
-        e->m_externalMind = mind;
+        auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
+        mindsProp->addMind(mind);
+
         int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
-        assert(stub_CommClient_sent_op->getArgs().size() == 2);
+        assert(stub_CommClient_sent_op->getArgs().size() == 1);
     }
 
     // No arg
@@ -386,10 +392,11 @@ int main()
         
         p->setAuthState(PEER_AUTHENTICATED);
         
-        Ref<Character> e(new Character("23", 23));
-        ExternalMind * mind = new ExternalMind(*e);
+        Ref<Entity> e(new Entity("23", 23));
+        ExternalMind * mind = new ExternalMind("1", 1, *e);
         mind->linkUp((Link*)23);
-        e->m_externalMind = mind;
+        auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
+        mindsProp->addMind(mind);
         int ret = p->teleportEntity(e.get());
         assert(ret == 0);
 
@@ -478,58 +485,32 @@ CommPeer::~CommPeer()
 {
 }
 
-CommSocket::CommSocket(boost::asio::io_service& io_service) : m_io_service(io_service) { }
-
-CommSocket::~CommSocket()
-{
-}
-
 int CommSocket::flush()
 {
     return 0;
 }
 
-ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_link(0), m_entity(e)
-{
-}
-
-void ExternalMind::externalOperation(const Operation &, Link &)
-{
-}
-
-void ExternalMind::operation(const Operation & op, OpVector & res)
-{
-}
-
+#define STUB_ExternalMind_linkUp
 void ExternalMind::linkUp(Link * c)
 {
     m_link = c;
 }
 
+#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rulesets/stubMindsProperty.h"
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
+#include "stubs/common/stubProperty.h"
 
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
 
-Link::~Link()
-{
-}
-
+#define STUB_Link_send
 void Link::send(const Operation & op) const
 {
     stub_CommClient_sent_op = op;
 }
-
-void Link::disconnect()
-{
-}
-
+#include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubLocation.h"

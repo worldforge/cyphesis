@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
 
 using Atlas::Objects::Entity::RootEntity;
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubIdProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
@@ -108,10 +108,13 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/common/stubVariable.h"
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rulesets/stubPlantedOnProperty.h"
 
 
 
 #include "stubs/common/stubRouter.h"
+#include "stubs/common/stubLink.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/common/stubPropertyManager.h"

@@ -124,12 +124,8 @@ void ParserTest::test_ComparisonOperators()
     types["thing"] = nullptr;
     delete thingType;
 
-    try { //Should throw an exception for nonexisting type
-        pred = (ComparePredicate*)ConstructPredicate(
-                "types.nonexistant = entity.type");
-        assert(false);
-    } catch (std::invalid_argument &e) {
-    }
+     //Should not throw an exception for nonexisting type
+     ConstructPredicate("types.nonexistant = entity.type");
 }
 
 void ParserTest::test_LogicalOperators()
@@ -226,13 +222,13 @@ int main(int argc, char ** argv)
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
 #include "stubs/rulesets/stubAtlasProperties.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
 
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
     auto I = types.find(parent);
     if (I == types.end()) {

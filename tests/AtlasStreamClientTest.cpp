@@ -34,6 +34,10 @@
 
 class TestAtlasStreamClient : public AtlasStreamClient {
   public:
+
+    explicit TestAtlasStreamClient(boost::asio::io_service& io_service):
+        AtlasStreamClient(io_service) {}
+
     void test_objectArrived(const Atlas::Objects::Root & op) {
         objectArrived(op);
     }
@@ -46,7 +50,7 @@ class TestAtlasStreamClient : public AtlasStreamClient {
         output(item, depth);
     }
 
-    ClientTask * test_currentTask() { return m_currentTask; }
+    std::shared_ptr<ClientTask> test_currentTask() { return m_currentTask; }
 };
 
 class TestClientTask : public ClientTask {
@@ -64,13 +68,14 @@ class TestClientTask : public ClientTask {
 
 int main()
 {
+    boost::asio::io_service io_service;
     {
-        AtlasStreamClient * asc = new AtlasStreamClient;
+        AtlasStreamClient * asc = new AtlasStreamClient{io_service};
 
         delete asc;
     }
 
-    TestAtlasStreamClient * asc = new TestAtlasStreamClient;
+    TestAtlasStreamClient * asc = new TestAtlasStreamClient{io_service};
 
     {
         Atlas::Objects::Root obj;
@@ -87,12 +92,12 @@ int main()
     asc->test_objectArrived(op);
     asc->test_operation(op);
 
-    TestClientTask * tct = new TestClientTask();
+    auto tct = std::make_shared<TestClientTask>();
     // Test starting a task
     asc->runTask(tct, "foo");
     assert(asc->test_currentTask() == tct);
     // Try and start it again will busy, as one is running
-    asc->runTask(new TestClientTask(), "foo");
+    asc->runTask(std::make_shared<TestClientTask>(), "foo");
     assert(asc->test_currentTask() == tct);
     
     asc->endTask();
@@ -100,7 +105,7 @@ int main()
     asc->endTask();
     assert(asc->test_currentTask() == 0);
 
-    tct = new TestClientTask();
+    tct.reset(new TestClientTask());
     asc->runTask(tct, "foo");
     // Pass in an operation while a task is running.
     asc->test_operation(op);
@@ -109,7 +114,7 @@ int main()
     asc->test_operation(op);
     assert(asc->test_currentTask() == 0);
 
-    tct = new TestClientTask();
+    tct.reset(new TestClientTask());
     asc->runTask(tct, "foo");
     assert(asc->test_currentTask() == tct);
     // Pass in an operation while a task is running.

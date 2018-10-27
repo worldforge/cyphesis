@@ -38,11 +38,6 @@ class RuleHandler {
                        const Atlas::Objects::Root & desc,
                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) = 0;
 
-    static int getScriptDetails(const Atlas::Message::MapType &,
-                                const std::string &,
-                                const std::string &,
-                                std::string &,
-                                std::string &);
 };
 
 #endif // SERVER_RULE_HANDLER_H

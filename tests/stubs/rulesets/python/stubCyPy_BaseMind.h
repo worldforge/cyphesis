@@ -97,5 +97,21 @@
   }
 #endif //STUB_CyPy_BaseMind_setSpeed
 
+#ifndef STUB_CyPy_BaseMind_matchEntity
+//#define STUB_CyPy_BaseMind_matchEntity
+  Py::Object CyPy_BaseMind::matchEntity(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_matchEntity
+
+#ifndef STUB_CyPy_BaseMind_matchEntities
+//#define STUB_CyPy_BaseMind_matchEntities
+  Py::Object CyPy_BaseMind::matchEntities(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_matchEntities
+
 
 #endif

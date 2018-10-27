@@ -58,7 +58,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind(*(LocatedEntity*)0);
+        ExternalMind * e = new ExternalMind("1", 1, *(LocatedEntity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         Element elem;
@@ -86,7 +86,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind(*(LocatedEntity*)0);
+        ExternalMind * e = new ExternalMind("1", 1,*(LocatedEntity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         MapType map;
@@ -113,7 +113,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind(*(LocatedEntity*)0);
+        ExternalMind * e = new ExternalMind("1", 1,*(LocatedEntity*)0);
         ExternalProperty * ep = new ExternalProperty(e);
 
         RootEntity ent;
@@ -139,32 +139,7 @@ int main()
 
 // stubs
 
-ExternalMind::ExternalMind(LocatedEntity & e) : Router("", -1L),
-                                                m_link(0), m_entity(e)
-{
-}
 
-void ExternalMind::externalOperation(const Operation &, Link &)
-{
-}
+#include "stubs/rulesets/stubExternalMind.h"
 
-void ExternalMind::operation(const Operation & op, OpVector & res)
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/common/stubRouter.h"

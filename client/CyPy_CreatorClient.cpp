@@ -136,9 +136,16 @@ Py::Object CyPy_CreatorClient::getattro(const Py::String& name)
 //            return Py::None();
 //        }
 //    }
-//    if (nameStr == "map") {
-//        return CyPy_MemMap::wrap(m_value->getMap());
-//    }
+    if (nameStr == "map") {
+        return CyPy_MemMap::wrap(m_value->getMap());
+    }
+    if (nameStr == "entity") {
+        if (m_value->getEntity()) {
+            return CyPy_LocatedEntity::wrap(m_value->getEntity());
+        } else {
+            return Py::None();
+        }
+    }
 //    if (nameStr == "location") {
 //        return CyPy_Location::wrap(m_value->m_location);
 //    }
@@ -149,6 +156,12 @@ Py::Object CyPy_CreatorClient::getattro(const Py::String& name)
 //    if (m_value->getAttr(nameStr, attr) == 0) {
 //        return CyPy_Element::wrap(std::move(attr));
 //    }
+
+    auto I = m_dict.find(nameStr);
+    if (I != m_dict.end()) {
+        return I->second;
+    }
+
     return PythonExtensionBase::getattro(name);
 }
 
@@ -160,9 +173,8 @@ int CyPy_CreatorClient::setattro(const Py::String& name, const Py::Object& attr)
         throw Py::AttributeError("map attribute forbidden");
     }
 
-    return PythonExtensionBase::setattro(name, attr);
+    m_dict[nameStr] = attr;
 
-//    m_value->setAttr(nameStr, CyPy_Element::asElement(attr));
-//    return 0;
+    return 0;
 }
 

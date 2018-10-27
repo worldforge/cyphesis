@@ -67,9 +67,9 @@
 
 #ifndef STUB_AwareMind_getSteering
 //#define STUB_AwareMind_getSteering
-  Steering& AwareMind::getSteering()
+  Steering* AwareMind::getSteering()
   {
-    return *static_cast<Steering*>(nullptr);
+    return nullptr;
   }
 #endif //STUB_AwareMind_getSteering
 

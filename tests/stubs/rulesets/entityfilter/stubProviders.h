@@ -159,6 +159,36 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
+#ifndef STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
+//#define STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
+   DynamicTypeNodeProvider::DynamicTypeNodeProvider(Consumer<TypeNode>* consumer, const std::string& type)
+    : ConsumingProviderBase(consumer, type)
+  {
+    
+  }
+#endif //STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
+
+#ifndef STUB_DynamicTypeNodeProvider_value
+//#define STUB_DynamicTypeNodeProvider_value
+  void DynamicTypeNodeProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+  {
+    
+  }
+#endif //STUB_DynamicTypeNodeProvider_value
+
+#ifndef STUB_DynamicTypeNodeProvider_getType
+//#define STUB_DynamicTypeNodeProvider_getType
+  const std::type_info* DynamicTypeNodeProvider::getType() const
+  {
+    return nullptr;
+  }
+#endif //STUB_DynamicTypeNodeProvider_getType
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
 #ifndef STUB_FixedTypeNodeProvider_FixedTypeNodeProvider
 //#define STUB_FixedTypeNodeProvider_FixedTypeNodeProvider
    FixedTypeNodeProvider::FixedTypeNodeProvider(Consumer<TypeNode>* consumer, const TypeNode& type)
@@ -637,13 +667,13 @@ namespace EntityFilter {
   }
 #endif //STUB_ProviderFactory_createGetEntityFunctionProvider
 
-#ifndef STUB_ProviderFactory_createFixedTypeNodeProvider
-//#define STUB_ProviderFactory_createFixedTypeNodeProvider
-  FixedTypeNodeProvider* ProviderFactory::createFixedTypeNodeProvider(SegmentsList segments) const
+#ifndef STUB_ProviderFactory_createDynamicTypeNodeProvider
+//#define STUB_ProviderFactory_createDynamicTypeNodeProvider
+  DynamicTypeNodeProvider* ProviderFactory::createDynamicTypeNodeProvider(SegmentsList segments) const
   {
     return nullptr;
   }
-#endif //STUB_ProviderFactory_createFixedTypeNodeProvider
+#endif //STUB_ProviderFactory_createDynamicTypeNodeProvider
 
 #ifndef STUB_ProviderFactory_createEntityProvider
 //#define STUB_ProviderFactory_createEntityProvider

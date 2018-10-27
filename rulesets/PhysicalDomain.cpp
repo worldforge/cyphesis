@@ -2015,7 +2015,7 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath:
     if (hadChange) {
 
         //Only check for resting entities if the entity has been moved; not if the velocity has changed.
-        if (pos.isValid()) {
+        if (pos.isValid() || orientation.isValid()) {
             transformedEntities.insert(entry->entity);
             transformRestingEntities(entry, entry->entity->m_location.m_pos - oldPos, rotationChange, transformedEntities);
         }

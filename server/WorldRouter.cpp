@@ -238,7 +238,7 @@ int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
         log(ERROR, "No name on spawn point");
         return -1;
     }
-    SpawnEntity * new_spawn = new SpawnEntity(ent);
+    auto new_spawn = new SpawnEntity(ent);
     if (new_spawn->setup(data) != 0) {
         delete new_spawn;
         log(ERROR, "Error setting up spawn point");

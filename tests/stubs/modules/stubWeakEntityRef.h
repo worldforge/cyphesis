@@ -26,8 +26,7 @@
 #ifndef STUB_WeakEntityRef_WeakEntityRef
 //#define STUB_WeakEntityRef_WeakEntityRef
    WeakEntityRef::WeakEntityRef(const Ref<LocatedEntity>&)
-    : sigc::trackable(???)
-    , m_inner(nullptr)
+    : m_inner(nullptr),operator(nullptr)
   {
     
   }
@@ -36,18 +35,24 @@
 #ifndef STUB_WeakEntityRef_WeakEntityRef
 //#define STUB_WeakEntityRef_WeakEntityRef
    WeakEntityRef::WeakEntityRef(LocatedEntity*)
-    : sigc::trackable(LocatedEntity)
-    , m_inner(nullptr)
+    : m_inner(nullptr),operator(nullptr)
   {
     
   }
 #endif //STUB_WeakEntityRef_WeakEntityRef
 
+#ifndef STUB_WeakEntityRef_WeakEntityRef_DTOR
+//#define STUB_WeakEntityRef_WeakEntityRef_DTOR
+   WeakEntityRef::~WeakEntityRef()
+  {
+    
+  }
+#endif //STUB_WeakEntityRef_WeakEntityRef_DTOR
+
 #ifndef STUB_WeakEntityRef_WeakEntityRef
 //#define STUB_WeakEntityRef_WeakEntityRef
    WeakEntityRef::WeakEntityRef(const WeakEntityRef& ref)
-    : sigc::trackable(ref)
-    , m_inner(nullptr)
+    : m_inner(nullptr),operator(nullptr)
   {
     
   }

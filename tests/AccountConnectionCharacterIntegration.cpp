@@ -31,6 +31,8 @@
 #include "server/ServerRouting.h"
 
 #include "rulesets/ExternalMind.h"
+#include "rulesets/Entity.h"
+#include "rulesets/MindsProperty.h"
 
 #include "common/const.h"
 #include "common/log.h"
@@ -44,6 +46,7 @@
 
 #include <cassert>
 #include <server/Persistence.h>
+#include <common/Monitors.h>
 
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
@@ -61,7 +64,7 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     ServerRouting * m_server;
     Connection * m_connection;
     Account * m_account;
-    Character * m_character;
+    Ref<Entity> m_character;
     TypeNode * m_characterType;
     std::unique_ptr<TestWorld> m_world;
   public:
@@ -76,22 +79,9 @@ class AccountConnectionCharacterintegration : public Cyphesis::TestBase
     void test_unsubscribe();
     void test_unsubscribe_other();
 
-    static void logEvent_logged(LogEvent le);
-    static void Link_send_sent(const Operation & op);
 };
 
 LogEvent AccountConnectionCharacterintegration::m_logEvent_logged = NONE;
-Operation AccountConnectionCharacterintegration::m_Link_send_sent(0);
-
-void AccountConnectionCharacterintegration::logEvent_logged(LogEvent le)
-{
-    m_logEvent_logged = le;
-}
-
-void AccountConnectionCharacterintegration::Link_send_sent(const Operation & op)
-{
-    m_Link_send_sent = op;
-}
 
 AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
     m_id_counter(0L),
@@ -99,6 +89,8 @@ AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
     m_character(0),
     m_characterType(0)
 {
+    new Monitors();
+
     ADD_TEST(AccountConnectionCharacterintegration::test_subscribe);
     ADD_TEST(AccountConnectionCharacterintegration::test_connect_existing);
     ADD_TEST(AccountConnectionCharacterintegration::test_unsubscribe);
@@ -108,8 +100,6 @@ AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
 void AccountConnectionCharacterintegration::setup()
 {
     m_persistence = new Persistence(m_database);
-
-    m_Link_send_sent = 0;
 
     Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
@@ -128,7 +118,7 @@ void AccountConnectionCharacterintegration::setup()
                            "fred",
                            "25846125-f1bb-4963-852e-856a8be45515",
                            compose("%1", m_id_counter), m_id_counter++);
-    m_character = new Character(compose("%1", m_id_counter), m_id_counter++);
+    m_character = new Entity(compose("%1", m_id_counter), m_id_counter++);
     m_characterType = new TypeNode("test_avatar");
     m_character->setType(m_characterType);
 
@@ -137,7 +127,7 @@ void AccountConnectionCharacterintegration::setup()
 void AccountConnectionCharacterintegration::teardown()
 {
     delete m_connection;
-    delete m_character;
+    m_character = nullptr;
     delete m_characterType;
     delete m_server;
     delete m_persistence;
@@ -145,28 +135,31 @@ void AccountConnectionCharacterintegration::teardown()
 
 void AccountConnectionCharacterintegration::test_subscribe()
 {
-    // Inject an external op through the connection which is from
-    // the Character. This should result in the Character being set up
-    // for IG with an external mind linked back to the Connection.
 
-    // Initial state is that the account and character objects already
-    // belong to the connection
-    m_connection->m_objects[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()] = m_character;
+    //Test Possess instead
 
-    ASSERT_NULL(m_character->m_externalMind)
-
-    RootOperation op;
-    op->setFrom(m_character->getId());
-
-    m_connection->externalOperation(op, *m_connection);
-
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
-                 Atlas::Objects::Operation::INFO_NO);
-    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
+//    // Inject an external op through the connection which is from
+//    // the Character. This should result in the Character being set up
+//    // for IG with an external mind linked back to the Connection.
+//
+//    // Initial state is that the account and character objects already
+//    // belong to the connection
+//    m_connection->m_objects[m_account->getIntId()] = m_account;
+//    m_connection->m_objects[m_character->getIntId()] = m_character;
+//
+//    ASSERT_NULL(m_character->m_externalMind)
+//
+//    RootOperation op;
+//    op->setFrom(m_character->getId());
+//
+//    m_connection->externalOperation(op, *m_connection);
+//
+//    ASSERT_NOT_NULL(m_character->m_externalMind)
+//    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
+//    ASSERT_TRUE(m_Link_send_sent.isValid());
+//    ASSERT_EQUAL(m_Link_send_sent->getClassNo(),
+//                 Atlas::Objects::Operation::INFO_NO);
+//    ASSERT_EQUAL(m_logEvent_logged, TAKE_CHAR);
 }
 
 void AccountConnectionCharacterintegration::test_connect_existing()
@@ -181,42 +174,47 @@ void AccountConnectionCharacterintegration::test_connect_existing()
 
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) ==
                 m_connection->m_objects.end())
-    
-    ASSERT_NULL(m_character->m_externalMind)
 
-    m_account->connectCharacter(m_character);
+    ASSERT_NULL(m_character->getPropertyClassFixed<MindsProperty>())
 
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
+    OpVector res;
+    m_account->connectCharacter(m_character, res);
+
+    ASSERT_NOT_NULL(m_character->getPropertyClassFixed<MindsProperty>())
+    auto mind = dynamic_cast<ExternalMind*>(m_character->getPropertyClassFixed<MindsProperty>()->getMinds().front());
+    ASSERT_TRUE(mind->isLinkedTo(m_connection))
+//    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+//                m_connection->m_objects.end())
 }
 
 void AccountConnectionCharacterintegration::test_unsubscribe()
 {
-    // Initial state is that the account already belongs to the connection,
-    // and the character is linked up.
-
-    m_connection->m_objects[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()] = m_character;
-    m_character->linkExternal(m_connection);
-
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(m_connection))
-
-    m_connection->disconnectObject(
-          m_connection->m_objects.find(m_character->getIntId()),
-          "test_disconnect_event"
-    );
-
-    ASSERT_EQUAL(m_logEvent_logged, DROP_CHAR);
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(!m_character->m_externalMind->isLinked())
-    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
+//    // Initial state is that the account already belongs to the connection,
+//    // and the character is linked up.
+//
+//    m_connection->m_objects[m_account->getIntId()] = m_account;
+//    m_connection->m_connectableRouters[m_account->getIntId()] = m_account;
+//    m_connection->m_objects[m_character->getIntId()] = m_character.get();
+//
+//    auto mind = new ExternalMind("6", 6, *m_character);
+//    m_character->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
+//    mind->linkUp(m_connection);
+//
+//    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+//                m_connection->m_objects.end())
+//    ASSERT_NOT_NULL(mind)
+//    ASSERT_TRUE(mind->isLinkedTo(m_connection))
+//
+//    m_connection->disconnectObject(
+//          m_connection->m_connectableRouters.find(m_account->getIntId())->second,
+//          "test_disconnect_event"
+//    );
+//
+//    //ASSERT_EQUAL(m_logEvent_logged, DROP_CHAR);
+//    ASSERT_TRUE(!mind->isLinked())
+//    ASSERT_TRUE(!mind->isLinkedTo(m_connection))
+//    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
+//                m_connection->m_objects.end())
 }
 
 void AccountConnectionCharacterintegration::test_unsubscribe_other()
@@ -225,7 +223,8 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     // and the character is linked up to another connection
 
     m_connection->m_objects[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()] = m_character;
+    m_connection->m_connectableRouters[m_account->getIntId()] = m_account;
+    m_connection->m_objects[m_character->getIntId()] = m_character.get();
 
     Connection * other_connection =
           new Connection(*(CommSocket*)0,
@@ -233,25 +232,26 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
                          "242eedae-6a2e-4c5b-9901-711b14d7e851",
                          compose("%1", m_id_counter), m_id_counter++);
 
-    m_character->linkExternal(other_connection);
+
+    auto mind = new ExternalMind("6", 6, *m_character);
+    m_character->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
+    mind->linkUp(other_connection);
 
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinked())
-    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(other_connection))
+    ASSERT_TRUE(mind->isLinked())
+    ASSERT_TRUE(!mind->isLinkedTo(m_connection))
+    ASSERT_TRUE(mind->isLinkedTo(other_connection))
 
     m_connection->disconnectObject(
-          m_connection->m_objects.find(m_character->getIntId()),
-          "test_disconnect_event"
+        m_connection->m_connectableRouters.find(m_account->getIntId())->second,
+        "test_disconnect_event"
     );
 
-    ASSERT_NOT_EQUAL(m_logEvent_logged, DROP_CHAR);
-    ASSERT_NOT_NULL(m_character->m_externalMind)
-    ASSERT_TRUE(m_character->m_externalMind->isLinked())
-    ASSERT_TRUE(!m_character->m_externalMind->isLinkedTo(m_connection))
-    ASSERT_TRUE(m_character->m_externalMind->isLinkedTo(other_connection))
+    //ASSERT_NOT_EQUAL(m_logEvent_logged, DROP_CHAR);
+    ASSERT_TRUE(mind->isLinked())
+    ASSERT_TRUE(!mind->isLinkedTo(m_connection))
+    ASSERT_TRUE(mind->isLinkedTo(other_connection))
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())
 }
@@ -293,352 +293,12 @@ using Atlas::Objects::Entity::RootEntity;
 
 bool restricted_flag;
 
-#include "stubs/rulesets/stubProxyMind.h"
-#include "stubs/rulesets/stubBaseMind.h"
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubPropelProperty.h"
-#include "stubs/rulesets/stubPedestrian.h"
-#include "stubs/rulesets/stubMovement.h"
+
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
-#include "stubs/common/stubOperationsDispatcher.h"
-#include "stubs/common/stubDatabase.h"
-#include "stubs/modules/stubWorldTime.h"
-#include "stubs/modules/stubDateTime.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/physics/stubVector3D.h"
-
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int GOAL_INFO_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-int THINK_NO = -1;
-int COMMUNE_NO = -1;
-} } }
-
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
-int CommSocket::flush()
-{
-    return 0;
-}
-
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPlayer.h"
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubPersistence.h"
-
-Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Router(id, intId),
-       m_server(s)
-{
-}
-
-Lobby::~Lobby()
-{
-}
-
-void Lobby::delAccount(Account * ac)
-{
-}
-
-void Lobby::addToMessage(MapType & omap) const
-{
-}
-
-void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Lobby::addAccount(Account * ac)
-{
-}
-
-void Lobby::externalOperation(const Operation &, Link &)
-{
-}
-
-void Lobby::operation(const Operation & op, OpVector & res)
-{
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubEntityProperty.h"
-#include "stubs/rulesets/stubTask.h"
-
-#include "stubs/rulesets/stubTasksProperty.h"
-#define STUB_SoftProperty_get
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-#include "stubs/common/stubProperty.h"
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-StatusProperty * StatusProperty::copy() const
-{
-    return 0;
-}
-
-void StatusProperty::apply(LocatedEntity * owner)
-{
-}
-
-void BBoxProperty::apply(LocatedEntity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return -1;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
-{
-}
-
-BBoxProperty * BBoxProperty::copy() const
-{
-    return 0;
-}
-
-#include "stubs/common/stubPropertyManager.h"
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-    AccountConnectionCharacterintegration::Link_send_sent(op);
-}
-
-void Link::send(const OpVector & ops) const
-{
-}
-
-void Link::sendError(const Operation & op,
-                     const std::string &,
-                     const std::string &) const
-{
-}
-
-void Link::disconnect()
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-void Router::clientError(const Operation & op,
-                         const std::string & errstring,
-                         OpVector & res,
-                         const std::string & to) const
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubUsagesProperty.h"
-#include "stubs/rulesets/entityfilter/stubFilter.h"
-
-#define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
-{
-    return noClass;
-}
-
-
-#define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
-{
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return 0;
-    }
-    return I->second;}
-
-
-#include "stubs/common/stubInheritance.h"
-#include "stubs/modules/stubWeakEntityRef.h"
-
-
-template<class V>
-const Quaternion quaternionFromTo(const V & from, const V & to)
-{
-    return Quaternion(1.f, 0.f, 0.f, 0.f);
-}
-
-template
-const Quaternion quaternionFromTo<Vector3D>(const Vector3D &, const Vector3D&);
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-    AccountConnectionCharacterintegration::logEvent_logged(lev);
-}
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
-
-static long idGenerator = 0;
-
-long newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
-
-
-Shaker::Shaker()
-{
-}
-
-std::string Shaker::generateSalt(size_t length)
-{
-    return "";
-}
-
-void hash_password(const std::string & pwd, const std::string & salt,
-                   std::string & hash )
-{
-}
-
-int check_password(const std::string & pwd, const std::string & hash)
-{
-    return 0;
-}
-
-bool database_flag = false;
+#include "stubs/server/stubLobby.h"

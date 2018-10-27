@@ -81,7 +81,7 @@ BaseMindtest::BaseMindtest()
 
 void BaseMindtest::setup()
 {
-    bm = new BaseMind("1", 1);
+    bm = new BaseMind("1", "2");
 }
 
 void BaseMindtest::teardown()
@@ -284,7 +284,7 @@ int main()
 #include "common/log.h"
 #include "common/TypeNode.h"
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubInheritance.h"
 #include "stubs/rulesets/stubMemEntity.h"
@@ -307,6 +307,8 @@ void WorldTime::initTimeInfo()
 }
 
 #include "stubs/common/stubTypeNode.h"
+#include "stubs/rulesets/stubTypeResolver.h"
+#include "stubs/rulesets/stubSimpleTypeStore.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

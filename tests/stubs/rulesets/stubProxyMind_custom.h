@@ -2,7 +2,7 @@
 #ifndef STUB_ProxyMind_ProxyMind
 #define STUB_ProxyMind_ProxyMind
 ProxyMind::ProxyMind(const std::string & id, long intId, LocatedEntity& ownerEntity)
-    : BaseMind(id, intId), m_ownerEntity(ownerEntity)
+    : m_ownerEntity(ownerEntity)
 {
 
 }

@@ -39,19 +39,6 @@
 #include "common/PropertyFactory_impl.h"
 #include "common/TypeNode.h"
 
-#include "stubs/common/stubRouter.h"
-#include "stubs/common/stubCustom.h"
-#include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
-
-#include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/common/stubProperty.h"
-#include "stubs/common/stubMonitors.h"
-#include "stubs/common/stubVariable.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubDomainProperty.h"
-
 #include <cstdlib>
 
 #include <cassert>
@@ -310,11 +297,20 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubcustom.h"
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/rulesets/stubLocation.h"
+
+#include "stubs/rulesets/stubDomain.h"
+#include "stubs/common/stubProperty.h"
+#include "stubs/common/stubMonitors.h"
+#include "stubs/common/stubVariable.h"
+#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rulesets/stubAtlasProperties.h"
 #include "stubs/rulesets/stubBaseWorld.h"
-
-
-
 #include "stubs/rulesets/stubScript.h"
+#include "stubs/common/stubLink.h"
 
 PropertyKit::~PropertyKit()
 {

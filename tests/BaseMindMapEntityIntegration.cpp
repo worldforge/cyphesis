@@ -41,6 +41,7 @@ class BaseMindMapEntityintegration : public Cyphesis::TestBase
 {
   protected:
     Ref<BaseMind> m_mind;
+    TypeNode* m_type;
   public:
     BaseMindMapEntityintegration();
 
@@ -69,12 +70,15 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
 
 void BaseMindMapEntityintegration::setup()
 {
-    m_mind = new BaseMind("1", 1);
+    m_mind = new BaseMind("1", "2");
+    m_type = new TypeNode("type");
 }
 
 void BaseMindMapEntityintegration::teardown()
 {
     m_mind = nullptr;
+    delete m_type;
+    m_type = nullptr;
 }
 
 void BaseMindMapEntityintegration::test_MemMapdel_top()
@@ -187,12 +191,12 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
     e2->m_contains = new LocatedEntitySet;
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
-    m_mind->m_map.m_entities[2] = e2;
+    m_mind->m_map.m_entities[1] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
-    m_mind->m_map.m_entities[3] = e3;
+    m_mind->m_map.m_entities[2] = e3;
 
-    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
     ASSERT_FALSE(e3->m_location.m_parent);
 
     Anonymous data;
@@ -215,15 +219,15 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
     e2->m_contains = new LocatedEntitySet;
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
-    m_mind->m_map.m_entities[2] = e2;
+    m_mind->m_map.m_entities[1] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->m_contains = new LocatedEntitySet;
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
-    m_mind->m_map.m_entities[3] = e3;
+    m_mind->m_map.m_entities[2] = e3;
 
-    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
 
     Anonymous data;
     data->setLoc(tlve->getId());
@@ -276,25 +280,25 @@ void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_hav
 void BaseMindMapEntityintegration::test_MemMapcheck()
 {
     Ref<MemEntity> tlve = new MemEntity("0", 0);
-    tlve->setType(MemMap::m_entity_type);
+    tlve->setType(m_type);
     tlve->m_contains = new LocatedEntitySet;
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
-    e2->setType(MemMap::m_entity_type);
+    e2->setType(m_type);
     e2->m_contains = new LocatedEntitySet;
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
-    m_mind->m_map.m_entities[2] = e2;
+    m_mind->m_map.m_entities[1] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
-    e3->setType(MemMap::m_entity_type);
+    e3->setType(m_type);
     e3->m_contains = new LocatedEntitySet;
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
-    m_mind->m_map.m_entities[3] = e3;
+    m_mind->m_map.m_entities[2] = e3;
 
-    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 4u);
+    ASSERT_EQUAL(m_mind->m_map.m_entities.size(), 3u);
 
     m_mind->m_map.m_checkIterator = m_mind->m_map.m_entities.find(3);
     e3->setVisible(false);
@@ -332,7 +336,7 @@ int main()
 #include "common/log.h"
 #include "common/TypeNode.h"
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
 
@@ -368,25 +372,12 @@ void LocatedEntity::setType(const TypeNode* t) {
 }
 
 #include "stubs/rulesets/stubLocatedEntity.h"
-
-Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#include "stubs/common/stubRouter.h"
 #include "stubs/common/stubInheritance.h"
 #include "stubs/rulesets/stubScript.h"
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/rulesets/stubTypeResolver.h"
+#include "stubs/rulesets/stubSimpleTypeStore.h"
 
 
 DateTime::DateTime(int t)
@@ -398,10 +389,6 @@ void DateTime::update(int t)
 }
 
 void WorldTime::initTimeInfo()
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
 {
 }
 

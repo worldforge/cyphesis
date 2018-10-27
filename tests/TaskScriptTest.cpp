@@ -567,29 +567,7 @@ void LocatedEntity::merge(const Atlas::Message::MapType & ent)
 {
 }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
+#include "stubs/common/stubRouter.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

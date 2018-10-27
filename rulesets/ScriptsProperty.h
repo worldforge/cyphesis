@@ -36,6 +36,12 @@ public:
      */
     void applyScripts(LocatedEntity * ) const;
 
+    static int getScriptDetails(const Atlas::Message::MapType &,
+                                const std::string &,
+                                const std::string &,
+                                std::string &,
+                                std::string &);
+
 protected:
 
     std::vector<std::shared_ptr<ScriptKit<LocatedEntity>>> m_scripts;

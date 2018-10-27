@@ -73,12 +73,14 @@ namespace EntityFilter {
 
     void DynamicTypeNodeProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
     {
-        auto type = context.type_lookup_fn(m_type);
+        if (context.type_lookup_fn) {
+            auto type = context.type_lookup_fn(m_type);
 
-        if (m_consumer && type) {
-            m_consumer->value(value, *type);
-        } else {
-            value = (void*)type;
+            if (m_consumer && type) {
+                m_consumer->value(value, *type);
+            } else {
+                value = (void*) type;
+            }
         }
     }
 

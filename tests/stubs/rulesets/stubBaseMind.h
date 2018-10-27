@@ -32,6 +32,14 @@
   }
 #endif //STUB_BaseMind_init
 
+#ifndef STUB_BaseMind_getTypeStore
+//#define STUB_BaseMind_getTypeStore
+  const TypeStore& BaseMind::getTypeStore() const
+  {
+    return *static_cast<const TypeStore*>(nullptr);
+  }
+#endif //STUB_BaseMind_getTypeStore
+
 #ifndef STUB_BaseMind_sightCreateOperation
 //#define STUB_BaseMind_sightCreateOperation
   void BaseMind::sightCreateOperation(const Operation &, OpVector &)

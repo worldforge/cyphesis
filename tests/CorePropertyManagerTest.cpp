@@ -253,7 +253,9 @@ int main()
 #include "stubs/rulesets/stubLocatedEntity.h"
 
 #include "stubs/common/stubProperty.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
+#include "stubs/common/stubLink.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 #include "stubs/rulesets/stubImmortalProperty.h"
 #include "stubs/rulesets/stubRespawningProperty.h"
 #include "stubs/rulesets/stubSpawnerProperty.h"
@@ -262,7 +264,6 @@ int main()
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/rulesets/stubBiomassProperty.h"
 #include "stubs/rulesets/stubBurnSpeedProperty.h"
-#include "stubs/rulesets/stubContainsProperty.h"
 #include "stubs/rulesets/stubDecaysProperty.h"
 #include "stubs/rulesets/stubStatusProperty.h"
 #include "stubs/rulesets/stubTasksProperty.h"
@@ -284,16 +285,10 @@ int main()
 #include "stubs/rulesets/stubPerceptionSightProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
 #include "stubs/rulesets/stubScriptsProperty.h"
+#include "stubs/rulesets/stubMindsProperty.h"
 #include "stubs/server/stubAccount.h"
 #include "stubs/server/stubArithmeticBuilder.h"
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
+#include "stubs/server/stubConnectableRouter.h"
 
 
 #define STUB_EntityFactory_newEntity
@@ -303,8 +298,6 @@ Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intI
     return new Entity(id, intId);
 }
 
-class Creator;
-class Plant;
 class Stackable;
 class World;
 
@@ -315,52 +308,12 @@ Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id, long 
     return 0;
 }
 
-template <>
-Ref<LocatedEntity> EntityFactory<Character>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
-{
-    return new Character(id, intId);
-}
+
 
 template class EntityFactory<Thing>;
-template class EntityFactory<Character>;
-template class EntityFactory<Creator>;
-template class EntityFactory<Plant>;
 template class EntityFactory<Stackable>;
 template class EntityFactory<World>;
 
-Juncture::~Juncture()
-{
-}
-
-void Juncture::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Juncture::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::addToMessage(MapType & omap) const
-{
-}
-
-void Juncture::addToEntity(const RootEntity & ent) const
-{
-}
-
-void Juncture::LoginOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::OtherOperation(const Operation & op, OpVector & res)
-{
-}
-
-int Juncture::teleportEntity(const LocatedEntity * ent)
-{
-    return 0;
-}
 
 #include "stubs/server/stubPersistence.h"
 #include "stubs/server/stubPlayer.h"
@@ -376,106 +329,10 @@ int Juncture::teleportEntity(const LocatedEntity * ent)
 #include "stubs/rulesets/stubTask.h"
 #include "stubs/rulesets/stubUsagesProperty.h"
 #include "stubs/rulesets/entityfilter/stubFilter.h"
-
-CalendarProperty::CalendarProperty()
-{
-}
-
-int CalendarProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void CalendarProperty::set(const Element & ent)
-{
-}
-
-CalendarProperty * CalendarProperty::copy() const
-{
-    return 0;
-}
-
-
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    e = m_data;
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-IdProperty * IdProperty::copy() const
-{
-    return 0;
-}
-
-AreaProperty::AreaProperty()
-{
-}
-
-AreaProperty::~AreaProperty()
-{
-}
-
-void AreaProperty::set(const Atlas::Message::Element & ent)
-{
-}
-
-AreaProperty * AreaProperty::copy() const
-{
-    return 0;
-}
-
-void AreaProperty::apply(LocatedEntity * owner)
-{
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
+#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/rulesets/stubCalendarProperty.h"
+#include "stubs/rulesets/stubAreaProperty.h"
+#include "stubs/rulesets/stubExternalProperty.h"
 
 
 
@@ -508,73 +365,13 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
 {
     return OPERATION_IGNORED;
 }
-
-LineProperty::LineProperty()
-{
-}
-
-int LineProperty::get(Element & ent) const
-{
-    return 0;
-}
-
-void LineProperty::set(const Element & ent)
-{
-}
-
-void LineProperty::add(const std::string & s, MapType & ent) const
-{
-}
-
-LineProperty * LineProperty::copy() const
-{
-    return 0;
-}
-
-void MindProperty::set(const Element & val)
-{
-}
-
-MindProperty * MindProperty::copy() const
-{
-    return 0;
-}
-
-void MindProperty::apply(LocatedEntity * ent)
-{
-}
-
+#include "stubs/rulesets/stubLineProperty.h"
+#include "stubs/rulesets/stubMindProperty.h"
+#include "stubs/rulesets/stubAttachmentsProperty.h"
+#include "stubs/rulesets/stubPlantedOnProperty.h"
+#include "stubs/rulesets/stubAdminProperty.h"
 #include "stubs/rulesets/stubVisibilityProperty.h"
-
-StatisticsProperty::StatisticsProperty() : m_script(0)
-{
-}
-
-StatisticsProperty::~StatisticsProperty()
-{
-}
-
-void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
-{
-}
-
-void StatisticsProperty::apply(LocatedEntity * ent)
-{
-}
-
-int StatisticsProperty::get(Element & val) const
-{
-    return 0;
-}
-
-void StatisticsProperty::set(const Element & ent)
-{
-}
-
-StatisticsProperty * StatisticsProperty::copy() const
-{
-    return 0;
-}
+#include "stubs/rulesets/stubStatisticsProperty.h"
 
 #include "stubs/rulesets/stubTransientProperty.h"
 #include "stubs/rulesets/stubLocation.h"
@@ -588,14 +385,10 @@ bool_config_register::bool_config_register(bool & var,
 {
 }
 
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
 
 #include "stubs/common/stubEntityKit.h"
 #include "stubs/server/stubEntityFactory.h"
+#include "stubs/server/stubJuncture.h"
 
 
 Root atlasType(const std::string & name,
@@ -606,7 +399,7 @@ Root atlasType(const std::string & name,
 }
 
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility)
 {
     return noClass;
 }
@@ -626,23 +419,7 @@ TypeNode * Inheritance::addChild(const Root & obj)
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubShaker.h"
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#define STUB_Router_error
 void Router::error(const Operation & op,
                    const std::string & errstring,
                    OpVector & res,
@@ -650,16 +427,9 @@ void Router::error(const Operation & op,
 {
     res.push_back(Atlas::Objects::Operation::Error());
 }
+#include "stubs/common/stubRouter.h"
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-bool TypeNode::isTypeOf(const std::string & base_type) const
-{
-    return false;
-}
-
+#include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/server/stubBuildid.h"
 

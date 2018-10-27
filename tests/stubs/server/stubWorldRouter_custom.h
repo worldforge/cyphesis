@@ -3,7 +3,7 @@
 #define STUB_WorldRouter_WorldRouter
 WorldRouter::WorldRouter(const SystemTime & systemTime, Ref<LocatedEntity> baseEntity)
     : BaseWorld(),
-      m_operationsDispatcher([&](const Operation & op, Ref<LocatedEntity > from){}, [&]()->double {return getTime();}), m_entityCount(1)
+      m_operationsDispatcher([&](const Operation & op, Ref<LocatedEntity> from){}, [&]()->double {return getTime();}), m_entityCount(1)
 {
 
 }

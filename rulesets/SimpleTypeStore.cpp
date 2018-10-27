@@ -82,12 +82,4 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
     return result.first->second.get();
 }
 
-SimpleTypeStore::SimpleTypeStore()
-{
-//    Atlas::Objects::Entity::Anonymous root_desc;
-//
-//    root_desc->setObjtype("meta");
-//    root_desc->setId("root");
-//
-//    m_types["root"] = std::make_unique<TypeNode>("root", root_desc);
-}
+SimpleTypeStore::SimpleTypeStore() = default;

@@ -441,9 +441,9 @@ Inheritance::Inheritance() : noClass(0)
 
 #ifndef STUB_Inheritance_getType
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
@@ -462,7 +462,7 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
                                      child, parent) << std::endl;
         return 0;
     }
-    TypeNodeDict::iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         std::cerr << String::compose("Installing type \"%1\" "
                                      "which has unknown parent \"%2\".",
@@ -470,11 +470,11 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
         return 0;
     }
     Element children(ListType(1, child));
-    if (I->second->description()->copyAttr("children", children) == 0) {
+    if (I->second->description(Visibility::PRIVATE)->copyAttr("children", children) == 0) {
         assert(children.isList());
         children.asList().push_back(child);
     }
-    I->second->description()->setAttr("children", children);
+    I->second->description(Visibility::PRIVATE)->setAttr("children", children);
 
     TypeNode * type = new TypeNode(child, obj);
     type->setParent(I->second);
@@ -487,7 +487,7 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 #include "stubs/common/stubInheritance.h"
 
 
-void installStandardObjects(Inheritance& i)
+void installStandardObjects(TypeStore& i)
 {
 
     i.addChild(atlasClass("root_entity", "root"));
@@ -499,26 +499,14 @@ void installStandardObjects(Inheritance& i)
     i.addChild(atlasClass("game_entity", "root_entity"));
 }
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
 
-TypeNode::TypeNode(const std::string & name,
-                   const Atlas::Objects::Root & d) : m_name(name),
-                                                     m_description(d),
-                                                     m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
+#define STUB_TypeNode_injectProperty
 void TypeNode::injectProperty(const std::string& name,
                               PropertyBase* p)
 {
     m_defaults[name] = p;
 }
+#include "stubs/common/stubTypeNode.h"
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {

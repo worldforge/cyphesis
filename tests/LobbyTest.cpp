@@ -120,7 +120,7 @@ void Lobbytest::test_delAccount()
 
     assert(m_lobby->getAccounts().size() == 1);
 
-    m_lobby->delAccount(tac);
+    m_lobby->removeAccount(tac);
 
     assert(m_lobby->getAccounts().size() == 0);
 }
@@ -129,7 +129,7 @@ void Lobbytest::test_delAccount_empty()
 {
     assert(m_lobby->getAccounts().size() == 0);
 
-    m_lobby->delAccount(new TestAccount());
+    m_lobby->removeAccount(new TestAccount());
 
     assert(m_lobby->getAccounts().size() == 0);
 }
@@ -145,9 +145,9 @@ void Lobbytest::test_addAccount_connected()
 {
     Account * tac = new TestAccount();
 
-    tac->m_connection = new Connection(*(CommSocket*)0,
+    tac->setConnection(new Connection(*(CommSocket*)0,
                                        *(ServerRouting*)0,
-                                       "foo", "3", 3);
+                                       "foo", "3", 3));
 
     m_lobby->addAccount(tac);
 
@@ -160,9 +160,9 @@ void Lobbytest::test_operation_connected()
 {
     Account * tac = new TestAccount();
 
-    tac->m_connection = new Connection(*(CommSocket*)0,
+    tac->setConnection(new Connection(*(CommSocket*)0,
                                        *(ServerRouting*)0,
-                                       "foo", "3", 3);
+                                       "foo", "3", 3));
 
     m_lobby->addAccount(tac);
 
@@ -176,9 +176,9 @@ void Lobbytest::test_operation_connected_other()
 {
     Account * tac = new TestAccount();
 
-    tac->m_connection = new Connection(*(CommSocket*)0,
+    tac->setConnection(new Connection(*(CommSocket*)0,
                                        *(ServerRouting*)0,
-                                       "foo", "3", 3);
+                                       "foo", "3", 3));
 
     m_lobby->addAccount(tac);
 
@@ -228,107 +228,11 @@ int main()
 
 #include "common/log.h"
 #include "stubs/server/stubAccount.h"
+#include "stubs/server/stubConnectableRouter.h"
+#include "stubs/server/stubConnection.h"
+#include "stubs/common/stubLink.h"
+#include "stubs/common/stubRouter.h"
 
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-void Link::disconnect()
-{
-}
-
-Connection::Connection(CommSocket & client,
-                       ServerRouting & svr,
-                       const std::string & addr,
-                       const std::string & id, long iid) :
-            Link(client, id, iid), m_obsolete(false),
-                                                m_server(svr)
-{
-}
-
-Account * Connection::newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & passwd,
-                                 const std::string & id, long intId)
-{
-    return 0;
-}
-
-int Connection::verifyCredentials(const Account &,
-                                  const Atlas::Objects::Root &) const
-{
-    return 0;
-}
-
-
-Connection::~Connection()
-{
-}
-
-void Connection::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Connection::operation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LoginOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::GetOperation(const Operation &, OpVector &)
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
 
 void log(LogLevel lvl, const std::string & msg)
 {

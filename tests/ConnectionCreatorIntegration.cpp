@@ -43,27 +43,63 @@
 #include <cassert>
 #include <rulesets/Entity.h>
 #include <common/TypeNode.h>
+#include <rulesets/AdminMind.h>
+#include <rulesets/MindsProperty.h>
+#include <common/Monitors.h>
+#include <common/Think.h>
+#include <common/CommSocket.h>
+
+#include <Atlas/Objects/Decoder.h>
+#include <Atlas/Objects/Encoder.h>
 
 
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
 
+class StubSocket : public CommSocket
+{
+    public:
+        explicit StubSocket(boost::asio::io_service& io_service) : CommSocket(io_service)
+        {
+        }
+
+        void disconnect() override
+        {
+        }
+
+        int flush() override
+        {
+            return 0;
+        }
+
+};
+
+
+struct TestDecoder : public Atlas::Objects::ObjectsDecoder {
+    Atlas::Objects::Root m_obj;
+
+    void objectArrived(const Atlas::Objects::Root & obj) override
+    {
+       m_obj = obj;
+    }
+};
+
 class ConnectionCreatorintegration : public Cyphesis::TestBase
 {
   protected:
     long m_id_counter;
-    static LogEvent m_logEvent_logged;
-    static Operation m_Link_send_sent;
-    static Operation m_BaseWorld_message_called;
-    static Ref<LocatedEntity> m_BaseWorld_message_called_from;
-    static Operation m_Entity_callOperation_called;
 
+    StubSocket* m_commSocket;
     ServerRouting * m_server;
     Connection * m_connection;
-    Ref<Creator> m_creator;
+    Ref<Entity> m_creator;
     TypeNode * m_creatorType;
     std::unique_ptr<TestWorld> m_world;
   public:
+
+    static Operation m_BaseWorld_message_called;
+    static Ref<LocatedEntity> m_BaseWorld_message_called_from;
+
     ConnectionCreatorintegration();
 
     void setup();
@@ -75,27 +111,11 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     void test_external_op_puppet();
     void test_external_op_puppet_nonexistant();
 
-    static void logEvent_logged(LogEvent le);
-    static void Link_send_sent(const Operation & op);
     static void BaseWorld_message_called(const Operation & op, LocatedEntity &);
-    static void Entity_callOperation_called(const Operation & op);
 };
 
-LogEvent ConnectionCreatorintegration::m_logEvent_logged = NONE;
-Operation ConnectionCreatorintegration::m_Link_send_sent(0);
 Operation ConnectionCreatorintegration::m_BaseWorld_message_called(0);
 Ref<LocatedEntity> ConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
-Operation ConnectionCreatorintegration::m_Entity_callOperation_called(0);
-
-void ConnectionCreatorintegration::logEvent_logged(LogEvent le)
-{
-    m_logEvent_logged = le;
-}
-
-void ConnectionCreatorintegration::Link_send_sent(const Operation & op)
-{
-    m_Link_send_sent = op;
-}
 
 void ConnectionCreatorintegration::BaseWorld_message_called(
       const Operation & op,
@@ -105,18 +125,15 @@ void ConnectionCreatorintegration::BaseWorld_message_called(
     m_BaseWorld_message_called_from = &ent;
 }
 
-void ConnectionCreatorintegration::Entity_callOperation_called(
-      const Operation & op)
-{
-    m_Entity_callOperation_called = op;
-}
-
 ConnectionCreatorintegration::ConnectionCreatorintegration() :
     m_id_counter(0L),
     m_connection(0),
     m_creator(0),
     m_creatorType(0)
 {
+
+    new Monitors();
+
     ADD_TEST(ConnectionCreatorintegration::test_external_op);
     ADD_TEST(ConnectionCreatorintegration::test_external_op_override);
     ADD_TEST(ConnectionCreatorintegration::test_external_op_puppet);
@@ -125,10 +142,9 @@ ConnectionCreatorintegration::ConnectionCreatorintegration() :
 
 void ConnectionCreatorintegration::setup()
 {
-    m_Link_send_sent = 0;
+    boost::asio::io_service io_service;
     m_BaseWorld_message_called = 0;
     m_BaseWorld_message_called_from = 0;
-    m_Entity_callOperation_called = 0;
 
     Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
@@ -142,13 +158,15 @@ void ConnectionCreatorintegration::setup()
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  compose("%1", m_id_counter), m_id_counter++,
                                  compose("%1", m_id_counter), m_id_counter++);
-    m_connection = new Connection(*(CommSocket*)0,
+    m_commSocket = new StubSocket(io_service);
+    m_connection = new Connection(*m_commSocket,
                                   *m_server,
                                   "25251955-7e8c-4043-8a5e-adfb8a1e76f7",
                                   compose("%1", m_id_counter), m_id_counter++);
-    m_creator = new Creator(compose("%1", m_id_counter), m_id_counter++);
+    m_creator = new Entity(compose("%1", m_id_counter), m_id_counter++);
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
+    BaseWorld::instance().addEntity(m_creator);
 
     m_connection->addObject(m_creator.get());
 
@@ -162,6 +180,7 @@ void ConnectionCreatorintegration::teardown()
     m_creator = nullptr;
     delete m_creatorType;
     delete m_server;
+    delete m_commSocket;
 }
 
 void ConnectionCreatorintegration::test_external_op()
@@ -170,11 +189,13 @@ void ConnectionCreatorintegration::test_external_op()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    m_creator->m_externalMind = new ExternalMind(*m_creator);
-    m_creator->m_externalMind->linkUp(m_connection);
+    auto mind = new AdminMind("1", 1, *m_creator);
+    m_connection->addObject(mind);
+    mind->linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(m_creator->getId());
+    op->setFrom(mind->getId());
 
     m_connection->externalOperation(op, *m_connection);
 
@@ -195,22 +216,24 @@ void ConnectionCreatorintegration::test_external_op_override()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    m_creator->m_externalMind = new ExternalMind(*m_creator);
-    m_creator->m_externalMind->linkUp(m_connection);
+    auto mind = new AdminMind("1", 1, *m_creator);
+    m_connection->addObject(mind);
+    mind->linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(m_creator->getId());
+    op->setFrom(mind->getId());
     op->setTo(m_creator->getId());
 
     m_connection->externalOperation(op, *m_connection);
 
     // The operation should have been passed to Entity::callOperation for
     // dispatch, completely unfiltered.
-    ASSERT_TRUE(m_Entity_callOperation_called.isValid());
-    ASSERT_EQUAL(m_Entity_callOperation_called->getClassNo(),
+    ASSERT_TRUE(m_BaseWorld_message_called.isValid());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getClassNo(),
                  Atlas::Objects::Operation::TALK_NO);
-    ASSERT_TRUE(!m_Entity_callOperation_called->isDefaultTo());
-    ASSERT_EQUAL(m_Entity_callOperation_called->getTo(), m_creator->getId());
+    ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
+    ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), m_creator->getId());
 }
 
 void ConnectionCreatorintegration::test_external_op_puppet()
@@ -219,15 +242,17 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    m_creator->m_externalMind = new ExternalMind(*m_creator);
-    m_creator->m_externalMind->linkUp(m_connection);
+    auto mind = new AdminMind("1", 1, *m_creator);
+    m_connection->addObject(mind);
+    mind->linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
 
-    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(m_creator->getId());
+    op->setFrom(mind->getId());
     op->setTo(other->getId());
 
     m_connection->externalOperation(op, *m_connection);
@@ -240,7 +265,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     ASSERT_TRUE(!m_BaseWorld_message_called->isDefaultTo());
     ASSERT_EQUAL(m_BaseWorld_message_called->getTo(), other->getId());
     ASSERT_TRUE(m_BaseWorld_message_called_from);
-    ASSERT_EQUAL(m_BaseWorld_message_called_from.get(), other.get());
+    ASSERT_EQUAL(m_BaseWorld_message_called_from.get(), m_creator.get());
 }
 
 void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
@@ -249,26 +274,32 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    m_creator->m_externalMind = new ExternalMind(*m_creator);
-    m_creator->m_externalMind->linkUp(m_connection);
+    auto mind = new AdminMind("1", 1, *m_creator);
+    m_connection->addObject(mind);
+    mind->linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
 
     Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(m_creator->getId());
+    op->setFrom(mind->getId());
     op->setTo(compose("%1", m_id_counter++));
 
+
+    TestDecoder decoder{};
+    decoder.streamBegin();
+    Atlas::Objects::ObjectsEncoder encoder(decoder);
+    m_connection->setEncoder(&encoder);
     m_connection->externalOperation(op, *m_connection);
 
-    // Operation should be via world dispatch, as if it was from the Entity
-    // we are puppeting.
-    ASSERT_TRUE(m_Link_send_sent.isValid());
-    ASSERT_EQUAL(m_Link_send_sent->getParent(),
+    // Should result in Unseen
+    ASSERT_TRUE(decoder.m_obj.isValid());
+    ASSERT_EQUAL(decoder.m_obj->getParent(),
                  "unseen");
-    ASSERT_TRUE(!m_Link_send_sent->isDefaultTo());
-    ASSERT_EQUAL(m_Link_send_sent->getTo(), m_creator->getId());
+    ASSERT_TRUE(!Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->isDefaultTo());
+    ASSERT_EQUAL(Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->getTo(), mind->getId());
 }
 
 int main()
@@ -306,407 +337,12 @@ using Atlas::Objects::Entity::RootEntity;
 
 bool restricted_flag;
 
-
-#include "stubs/rulesets/stubProxyMind.h"
-#include "stubs/rulesets/stubBaseMind.h"
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubPedestrian.h"
-#include "stubs/rulesets/stubMovement.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
-#include "stubs/common/stubOperationsDispatcher.h"
-#include "stubs/modules/stubDateTime.h"
-#include "stubs/modules/stubWorldTime.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/physics/stubVector3D.h"
-
-namespace Atlas { namespace Objects { namespace Operation {
-int ACTUATE_NO = -1;
-int ATTACK_NO = -1;
-int EAT_NO = -1;
-int GOAL_INFO_NO = -1;
-int NOURISH_NO = -1;
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int THOUGHT_NO = -1;
-int UNSEEN_NO = -1;
-int UPDATE_NO = -1;
-int RELAY_NO = -1;
-int THINK_NO = -1;
-int COMMUNE_NO = -1;
-} } }
-
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
-int CommSocket::flush()
-{
-    return 0;
-}
 
 #include "stubs/server/stubPlayer.h"
 #include "stubs/server/stubAccount.h"
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 
-
-Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Router(id, intId),
-       m_server(s)
-{
-}
-
-Lobby::~Lobby()
-{
-}
-
-void Lobby::delAccount(Account * ac)
-{
-}
-
-void Lobby::addToMessage(MapType & omap) const
-{
-}
-
-void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Lobby::addAccount(Account * ac)
-{
-}
-
-void Lobby::externalOperation(const Operation &, Link &)
-{
-}
-
-void Lobby::operation(const Operation & op, OpVector & res)
-{
-}
-
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
-
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
-
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
-#include "stubs/rulesets/stubThing.h"
-
-#define STUB_Entity_destroy
-void Entity::destroy()
-{
-    destroyed.emit();
-}
-
-#define STUB_Entity_callOperation
-void Entity::callOperation(const Operation & op, OpVector & res)
-{
-    ConnectionCreatorintegration::Entity_callOperation_called(op);
-}
-
-#define STUB_Entity_setProperty
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
-{
-    return m_properties[name] = prop;
-}
-
-#define STUB_Entity_sendWorld
-void Entity::sendWorld(const Operation & op)
-{
-    BaseWorld::instance().message(op, *this);
-}
-
-
-#define STUB_Entity_setType
-void Entity::setType(const TypeNode* t) {
-    m_type = t;
-}
-
-#include "stubs/rulesets/stubEntity.h"
-
-
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/common/stubVariable.h"
-#include "stubs/common/stubMonitors.h"
-#include "stubs/rulesets/stubEntityProperty.h"
-#include "stubs/rulesets/stubTask.h"
-
-#include "stubs/rulesets/stubTasksProperty.h"
-#include "stubs/rulesets/stubUsagesProperty.h"
-#include "stubs/rulesets/entityfilter/stubFilter.h"
-
-#define STUB_SoftProperty_get
-int SoftProperty::get(Atlas::Message::Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-#include "stubs/common/stubProperty.h"
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
-StatusProperty * StatusProperty::copy() const
-{
-    return 0;
-}
-
-void StatusProperty::apply(LocatedEntity * owner)
-{
-}
-
-void BBoxProperty::apply(LocatedEntity * ent)
-{
-}
-
-int BBoxProperty::get(Element & val) const
-{
-    return -1;
-}
-
-void BBoxProperty::set(const Element & val)
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
-{
-}
-
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
-{
-}
-
-BBoxProperty * BBoxProperty::copy() const
-{
-    return 0;
-}
-
-#include "stubs/common/stubPropertyManager.h"
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const OpVector& opVector) const
-{
-}
-
-void Link::send(const Operation & op) const
-{
-    ConnectionCreatorintegration::Link_send_sent(op);
-}
-
-void Link::sendError(const Operation & op,
-                     const std::string &,
-                     const std::string &) const
-{
-}
-
-void Link::disconnect()
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
-
-void Router::clientError(const Operation & op,
-                         const std::string & errstring,
-                         OpVector & res,
-                         const std::string & to) const
-{
-}
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
-#ifndef STUB_BaseWorld_getEntity
-#define STUB_BaseWorld_getEntity
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
-{
-    return getEntity(integerId(id));
-}
-
-Ref<LocatedEntity> BaseWorld::getEntity(long id) const
-{
-    auto I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second);
-        return I->second;
-    } else {
-        return nullptr;
-    }
-}
-#endif //STUB_BaseWorld_getEntity
-
-#include "stubs/rulesets/stubBaseWorld.h"
-
-
-#ifndef STUB_Inheritance_getClass
-#define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
-{
-    return noClass;
-}
-#endif //STUB_Inheritance_getClass
-
-
-#ifndef STUB_Inheritance_getType
-#define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
-{
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return 0;
-    }
-    return I->second;}
-#endif //STUB_Inheritance_getType
-
-#include "stubs/common/stubInheritance.h"
-#include "stubs/modules/stubWeakEntityRef.h"
-
-template<class V>
-const Quaternion quaternionFromTo(const V & from, const V & to)
-{
-    return Quaternion(1.f, 0.f, 0.f, 0.f);
-}
-
-template
-const Quaternion quaternionFromTo<Vector3D>(const Vector3D &, const Vector3D&);
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-    ConnectionCreatorintegration::logEvent_logged(lev);
-}
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
-
-static long idGenerator = 0;
-
-long newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
-
-Shaker::Shaker()
-{
-}
-
-std::string Shaker::generateSalt(size_t length)
-{
-    return "";
-}
-
-void hash_password(const std::string & pwd, const std::string & salt,
-                   std::string & hash )
-{
-}
-
-int check_password(const std::string & pwd, const std::string & hash)
-{
-    return 0;
-}

@@ -109,7 +109,7 @@ int main()
 #include "physics/Vector3D.h"
 
 #include "rulesets/DomainProperty.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"

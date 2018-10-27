@@ -36,6 +36,8 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
+#include <rulesets/AttachmentsProperty.h>
+#include <rulesets/PlantedOnProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -349,9 +351,10 @@ void ThingIntegration::test_visibility()
 
         t2->domain = new InventoryDomain(*t2);
         t2->addFlags(entity_domain);
-        auto entityProp = new EntityProperty();
-        entityProp->data() = WeakEntityRef(t3);
-        t2->setProperty("right_hand_wield", entityProp);
+
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = t2;
+        t3->setProperty(PlantedOnProperty::property_name, plantedOnProp);
 
         Operation sightOp;
         OpVector res;
@@ -423,9 +426,9 @@ void ThingIntegration::test_visibility()
         t3->addChild(*t4);
         t3->addChild(*t6);
 
-        auto entityProp = new EntityProperty();
-        entityProp->data() = WeakEntityRef(t4);
-        t3->setProperty("right_hand_wield", entityProp);
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = t3;
+        t4->setProperty(PlantedOnProperty::property_name, plantedOnProp);
 
         Operation sightOp;
         OpVector res;
@@ -479,6 +482,8 @@ void ThingIntegration::test_visibility()
         Ref<ThingExt> creator = new ThingExt("creator", 10);
         creator->m_location.m_pos = WFMath::Point<3>::ZERO();
         creator->m_location.setBBox(bbox);
+        creator->addFlags(entity_admin);
+
         Ref<ThingExt> t3 = new ThingExt("3", 3);
         t3->m_location.m_pos = WFMath::Point<3>::ZERO();
         t3->m_location.setBBox(bbox);
@@ -497,9 +502,10 @@ void ThingIntegration::test_visibility()
         t2->addChild(*t4);
         t2->addChild(*t5);
 
-        auto entityProp = new EntityProperty();
-        entityProp->data() = WeakEntityRef(t4);
-        t2->setProperty("right_hand_wield", entityProp);
+        auto plantedOnProp = new PlantedOnProperty();
+        plantedOnProp->data().entity = t2;
+        t4->setProperty(PlantedOnProperty::property_name, plantedOnProp);
+
 
         Operation sightOp;
         OpVector res;

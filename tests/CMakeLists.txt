@@ -134,7 +134,7 @@ wf_add_test(TerrainContextTest.cpp ${PROJECT_SOURCE_DIR}/modules/TerrainContext.
 set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp EntityExerciser.cpp)
 
 wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
-wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp)
+wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
 wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Stackable.cpp)
 wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp)
 wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/World.cpp)
@@ -219,7 +219,6 @@ wf_add_test(MemMapTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/MemMap.cpp)
 wf_add_test(MovementTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Movement.cpp)
 wf_add_test(PedestrianTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Pedestrian.cpp ${PROJECT_SOURCE_DIR}/rulesets/Movement.cpp)
 wf_add_test(ExternalMindTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
-wf_add_test(MindFactoryTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/MindFactory.cpp)
 wf_add_test(PythonContextTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonContext.cpp)
 wf_add_test(ArithmeticScriptTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ArithmeticScript.cpp)
 wf_add_test(PythonArithmeticScriptTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonArithmeticScript.cpp)
@@ -233,6 +232,8 @@ wf_add_test(TerrainModTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslat
 wf_add_test(TerrainEffectorPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp)
 wf_add_test(GeometryPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
+wf_add_test(ScriptsPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ScriptsProperty.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
+
 #Python ruleset tests
 
 wf_add_test(Python_APITest.cpp python_testers.cpp)
@@ -474,7 +475,6 @@ wf_add_test(TeleportStateTest.cpp ${PROJECT_SOURCE_DIR}/server/TeleportState.cpp
 wf_add_test(PendingTeleportTest.cpp ${PROJECT_SOURCE_DIR}/server/PendingPossession.cpp)
 wf_add_test(JunctureTest.cpp ${PROJECT_SOURCE_DIR}/server/Juncture.cpp)
 wf_add_test(ConnectableRouterTest.cpp)
-wf_add_test(RuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp)
 wf_add_test(OpRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/OpRuleHandler.cpp)
 wf_add_test(EntityRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp)
@@ -514,50 +514,18 @@ target_link_libraries(RulesetIntegration common pycxx)
 #Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 wf_add_test(ConnectionShakerIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Connection.cpp
     ${PROJECT_SOURCE_DIR}/common/Shaker.cpp)
-wf_add_test(ConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
-    ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
-wf_add_test(ConnectionCreatorIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
-    ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
-wf_add_test(TrustedConnectionCreatorIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
-    ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
-wf_add_test(AccountConnectionCharacterIntegration.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp
+wf_add_test(ConnectionCreatorIntegration.cpp
+    ${PROJECT_SOURCE_DIR}/server/Connection.cpp)
+target_link_libraries(ConnectionCreatorIntegration rulesetentity rulesetbase modules physics common pycxx)
+wf_add_test(TrustedConnectionCreatorIntegration.cpp
+    ${PROJECT_SOURCE_DIR}/server/Connection.cpp)
+target_link_libraries(TrustedConnectionCreatorIntegration rulesetentity rulesetbase modules physics common pycxx)
+wf_add_test(AccountConnectionCharacterIntegration.cpp
     ${PROJECT_SOURCE_DIR}/server/Account.cpp
-    ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
-wf_add_test(AccountIntegration.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
-    ${PROJECT_SOURCE_DIR}/server/EntityFactory.cpp
-    ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
-    ${PROJECT_SOURCE_DIR}/server/CorePropertyManager.cpp
-    ${PROJECT_SOURCE_DIR}/server/ServerRouting.cpp
-    ${PROJECT_SOURCE_DIR}/server/Lobby.cpp
-    ${PROJECT_SOURCE_DIR}/server/Account.cpp
-    ${PROJECT_SOURCE_DIR}/server/Connection.cpp
-    ${PROJECT_SOURCE_DIR}/server/PossessionAuthenticator.cpp
-    ${PROJECT_SOURCE_DIR}/server/PendingPossession.cpp
-    ${PROJECT_SOURCE_DIR}/server/WorldRouter.cpp
-    ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/World.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/EntityLocation
-    ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
-    ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Location.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/EntityLocation.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BaseWorld.cpp
-    ${PROJECT_SOURCE_DIR}/common/const.cpp
-    ${PROJECT_SOURCE_DIR}/common/id.cpp
-    ${PROJECT_SOURCE_DIR}/common/Link.cpp
-    ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp
-    ${PROJECT_SOURCE_DIR}/common/Router.cpp)
-target_link_libraries(AccountIntegration modules physics pycxx)
+    ${PROJECT_SOURCE_DIR}/server/Connection.cpp)
+target_link_libraries(AccountConnectionCharacterIntegration rulesetentity rulesetbase modules physics common pycxx)
+wf_add_test(AccountIntegration.cpp)
+target_link_libraries(AccountIntegration server ${PYTHON_TESTS_LIBS})
 
 wf_add_test(EntityFactoryTypeNodeIntegration.cpp TestPropertyManager.cpp ${PROJECT_SOURCE_DIR}/server/EntityFactory.cpp
     ${PROJECT_SOURCE_DIR}/common/EntityKit.cpp

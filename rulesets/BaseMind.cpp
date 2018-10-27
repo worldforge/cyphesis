@@ -173,7 +173,7 @@ void BaseMind::SoundOperation(const Operation& op, OpVector& res)
         std::string event_name("sound_");
         event_name += op2->getParent();
 
-        if (m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
+        if (!m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
             callSoundOperation(op2, res);
         }
     }
@@ -203,7 +203,7 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
             log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParent()));
         }
 
-        if (m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
+        if (!m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
             callSightOperation(op2, res);
         }
     } else /* if (op2->getObjtype() == "object") */ {

@@ -129,12 +129,14 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
 #include "common/TypeNode.h"
 
 #include "rulesets/DomainProperty.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
+#include "stubs/common/stubLink.h"
+#include "stubs/common/stubRouter.h"
 
 #define STUB_TypeNode_TypeNode
 TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
@@ -161,23 +163,6 @@ void TypeNode::injectProperty(const std::string& name,
 
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
 }
 

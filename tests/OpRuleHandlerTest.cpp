@@ -126,17 +126,6 @@ int main()
 #include "common/Inheritance.h"
 #include "common/log.h"
 
-
-int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
-                                  const std::string & class_name,
-                                  const std::string & context,
-                                  std::string & script_package,
-                                  std::string & script_class)
-{
-    return 0;
-}
-
-
 #ifndef STUB_Inheritance_addChild
 #define STUB_Inheritance_addChild
 TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)

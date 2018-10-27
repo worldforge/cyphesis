@@ -33,7 +33,7 @@ class Player : public Account {
     Player(Connection * conn, const std::string & username,
                               const std::string & passwd,
                               const std::string & id, long intId);
-    ~Player() override = default;
+    ~Player() override;
 
     const char * getType() const override;
 

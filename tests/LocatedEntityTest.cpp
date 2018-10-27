@@ -363,23 +363,7 @@ int TICK_NO = -1;
 int RELAY_NO = -1;
 } } }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/rulesets/stubLocation.h"
 

@@ -111,7 +111,7 @@ int main()
 #include "physics/Vector3D.h"
 
 #include "rulesets/DomainProperty.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"
@@ -125,22 +125,6 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
@@ -167,60 +151,10 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/rulesets/stubLocation.h"
+#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/common/stubLink.h"
+#include "stubs/common/stubRouter.h"
 
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-IdProperty * IdProperty::copy() const
-{
-    return 0;
-}
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
 
 PropertyKit::~PropertyKit()
 {

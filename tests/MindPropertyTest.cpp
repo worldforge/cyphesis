@@ -24,6 +24,7 @@
 #endif
 
 #include <Python.h>
+#include <server/ExternalMindsManager.h>
 
 #include "PropertyCoverage.h"
 
@@ -32,6 +33,7 @@
 
 int main()
 {
+    ExternalMindsManager mindsManager;
     MindProperty * ap = new MindProperty;
 
     PropertyChecker<MindProperty> pc(ap);

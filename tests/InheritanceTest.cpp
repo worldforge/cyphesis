@@ -69,7 +69,7 @@ static void descendTree(const Root & type, Inheritance & i, int & count)
         assert(e.isString());
         const std::string & es = e.asString();
         assert(!es.empty());
-        const Root & child = i.getClass(es);
+        const Root & child = i.getClass(es, Visibility::PRIVATE);
         descendTree(child, i, count);
     }
 
@@ -170,7 +170,7 @@ void Inheritancetest::test_getClass()
 {
     Inheritance & i = Inheritance::instance();
 
-    const Root & rt = i.getClass("root");
+    const Root & rt = i.getClass("root", Visibility::PRIVATE);
 
     ASSERT_EQUAL(rt->getId(), "root");
     ASSERT_TRUE(rt->getParent().empty());
@@ -180,7 +180,7 @@ void Inheritancetest::test_tree()
 {
     Inheritance & i = Inheritance::instance();
 
-    const Root & rt = i.getClass("root");
+    const Root & rt = i.getClass("root", Visibility::PRIVATE);
 
     // Make sure the type tree is coherent, and contains a decent
     // number of types.
@@ -349,7 +349,7 @@ void Inheritancetest::test_flush()
     // Make sure the type for root can no longer be retrieved
     const TypeNode * no_root_node = i.getType("root");
     assert(no_root_node == 0);
-    const Root & non_root = i.getClass("root");
+    const Root & non_root = i.getClass("root", Visibility::PRIVATE);
     assert(i.getAllObjects().empty());
     assert(!non_root.isValid());
 
@@ -374,23 +374,19 @@ int main()
 }
 
 // stubs
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
-
+#define STUB_TypeNode_TypeNode
 TypeNode::TypeNode(const std::string & name,
                    const Atlas::Objects::Root & d) : m_name(name),
-                                                     m_description(d),
+                                                     m_privateDescription(d),
+                                                     m_protectedDescription(d),
+                                                     m_publicDescription(d),
                                                      m_parent(0)
 {
 }
 
-TypeNode::~TypeNode()
-{
-}
-
+#define STUB_TypeNode_isTypeOf
 bool TypeNode::isTypeOf(const std::string & base_type) const
 {
     const TypeNode * node = this;
@@ -414,6 +410,7 @@ bool TypeNode::isTypeOf(const TypeNode * base_type) const
     } while (node != 0);
     return false;
 }
+#include "stubs/common/stubTypeNode.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

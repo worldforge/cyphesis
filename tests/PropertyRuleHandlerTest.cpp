@@ -193,15 +193,6 @@ int main()
 #include "common/PropertyFactory_impl.h"
 
 
-int RuleHandler::getScriptDetails(const Atlas::Message::MapType & script,
-                                  const std::string & class_name,
-                                  const std::string & context,
-                                  std::string & script_package,
-                                  std::string & script_class)
-{
-    return 0;
-}
-
 PropertyKit::~PropertyKit()
 {
 }

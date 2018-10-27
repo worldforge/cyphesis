@@ -32,7 +32,7 @@
 
 
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

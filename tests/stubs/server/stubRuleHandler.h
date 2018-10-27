@@ -31,13 +31,5 @@
   }
 #endif //STUB_RuleHandler_update
 
-#ifndef STUB_RuleHandler_getScriptDetails
-//#define STUB_RuleHandler_getScriptDetails
-   int RuleHandler::getScriptDetails(const Atlas::Message::MapType &, const std::string &, const std::string &, std::string &, std::string &)
-  {
-    return 0;
-  }
-#endif //STUB_RuleHandler_getScriptDetails
-
 
 #endif

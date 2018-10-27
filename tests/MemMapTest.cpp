@@ -30,7 +30,6 @@
 #include "rulesets/MemEntity.h"
 #include "rulesets/Script.h"
 
-#include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/TypeNode.h"
 
@@ -41,14 +40,39 @@
 #include <cstdlib>
 
 #include <cassert>
+#include <rulesets/SimpleTypeStore.h>
+#include <rulesets/TypeResolver.h>
 
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
+
+struct TestTypeStore : public TypeStore
+{
+    std::map<std::string, TypeNode*> m_types;
+    virtual const TypeNode* getType(const std::string& parent) const
+    {
+        auto I = m_types.find(parent);
+        if (I != m_types.end()) {
+            return I->second;
+        }
+        return nullptr;
+    }
+
+    virtual TypeNode* addChild(const Atlas::Objects::Root& obj)
+    {
+        auto type = new TypeNode(obj->getId());
+        type->setDescription(obj);
+        m_types[obj->getId()] = type;
+        return type;
+    }
+};
 
 class MemMaptest : public Cyphesis::TestBase
 {
   private:
     TypeNode * m_sampleType;
+    TypeStore* m_typeStore;
+    TypeResolver* m_typeResolver;
     MemMap * m_memMap;
 
     static std::string m_Script_hook_called;
@@ -78,7 +102,6 @@ class MemMaptest : public Cyphesis::TestBase
 
     static void Script_hook_called(const std::string &, LocatedEntity *);
 
-        Inheritance* inheritance;
 };
 
 std::string MemMaptest::m_Script_hook_called;
@@ -124,21 +147,29 @@ MemMaptest::MemMaptest()
 
 void MemMaptest::setup()
 {
-    inheritance = new Inheritance();
     m_Script_hook_called = "";
-    m_Script_hook_called_with = 0;
+    m_Script_hook_called_with = nullptr;
+
+
+
+    m_typeStore = new TestTypeStore();
+    m_typeResolver = new TypeResolver(*m_typeStore);
 
     Root type_desc;
     type_desc->setId("sample_type");
-    m_sampleType = Inheritance::instance().addChild(type_desc);
 
-    m_memMap = new MemMap();
+    m_sampleType = m_typeStore->addChild(type_desc);
+
+
+    m_memMap = new MemMap(*m_typeResolver);
 }
 
 void MemMaptest::teardown()
 {
     delete m_memMap;
-    delete inheritance;
+    delete m_typeResolver;
+    delete m_typeStore;
+    delete m_sampleType;
 }
 
 void MemMaptest::test_addId()
@@ -163,7 +194,7 @@ void MemMaptest::test_addEntity()
     ASSERT_FALSE(m_memMap->get(new_id));
 
     MemEntity * ent = new MemEntity(new_id, 3);
-    ent->setType(MemMap::m_entity_type);
+    ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
 
     ASSERT_TRUE(m_memMap->get(new_id));
@@ -178,7 +209,7 @@ void MemMaptest::test_addEntity_script()
     ASSERT_FALSE(m_memMap->get(new_id));
 
     MemEntity * ent = new MemEntity(new_id, 3);
-    ent->setType(MemMap::m_entity_type);
+    ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
 
     ASSERT_TRUE(m_memMap->get(new_id));
@@ -197,7 +228,7 @@ void MemMaptest::test_addEntity_script_hook()
     ASSERT_FALSE(m_memMap->get(new_id));
 
     MemEntity * ent = new MemEntity(new_id, 3);
-    ent->setType(MemMap::m_entity_type);
+    ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
 
     ASSERT_TRUE(m_memMap->get(new_id));
@@ -212,7 +243,7 @@ void MemMaptest::test_readEntity()
     Anonymous data;
 
     MemEntity * ent = new MemEntity(new_id, 3);
-    ent->setType(MemMap::m_entity_type);
+    ent->setType(m_sampleType);
 
     m_memMap->readEntity(ent, data, 0);
 }
@@ -225,11 +256,9 @@ void MemMaptest::test_readEntity_type()
     data->setParent("sample_type");
 
     MemEntity * ent = new MemEntity(new_id, 3);
-    ent->setType(MemMap::m_entity_type);
 
     m_memMap->readEntity(ent, data, 0);
 
-    ASSERT_NOT_EQUAL(ent->getType(), MemMap::m_entity_type);
     ASSERT_EQUAL(ent->getType(), m_sampleType);
 }
 
@@ -241,12 +270,10 @@ void MemMaptest::test_readEntity_type_nonexist()
     data->setParent("non_sample_type");
 
     MemEntity * ent = new MemEntity(new_id, 3);
-    ent->setType(MemMap::m_entity_type);
 
     m_memMap->readEntity(ent, data, 0);
 
-    ASSERT_EQUAL(ent->getType(), MemMap::m_entity_type);
-    ASSERT_NOT_EQUAL(ent->getType(), m_sampleType);
+    ASSERT_NULL(ent->getType());
 }
 
 void MemMaptest::test_addEntityMemory(){
@@ -351,7 +378,7 @@ void MemMaptest::test_findByLoc_results()
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
-    Location find_here(tlve);
+    EntityLocation find_here(tlve);
 
     EntityVector res = m_memMap->findByLocation(find_here,
                                                 5.f,
@@ -448,43 +475,27 @@ int main()
 #include "stubs/rulesets/stubMemEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
+#include "stubs/common/stubTypeNode.h"
 #include "stubs/rulesets/stubLocation.h"
 
 
-
-#ifndef STUB_Inheritance_addChild
-#define STUB_Inheritance_addChild
-TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
+#define STUB_TypeResolver_requestType
+const TypeNode* TypeResolver::requestType(const std::string& id, OpVector& res)
 {
-    const std::string & child = obj->getId();
-
-    TypeNode * type = new TypeNode(child);
-
-    atlasObjects[child] = type;
-
-    return type;}
-#endif //STUB_Inheritance_addChild
-
-#ifndef STUB_Inheritance_getType
-#define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
-{
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return 0;
-    }
-    return I->second;
+    return m_typeStore.getType(id);
 }
-#endif //STUB_Inheritance_getType
 
-#include "stubs/common/stubInheritance.h"
+#define STUB_TypeResolver_getTypeStore
+const TypeStore& TypeResolver::getTypeStore() const
+{
+    return m_typeStore;
+}
+
+#include "stubs/rulesets/stubTypeResolver.h"
+
+
 #include "stubs/rulesets/stubScript.h"
 
-
-
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
 
 float squareDistance(const Point3D & u, const Point3D & v)
 {

@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubTypeNode.h"
 
 #include "rulesets/TerrainProperty.h"

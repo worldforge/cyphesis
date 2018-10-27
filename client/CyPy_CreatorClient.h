@@ -66,6 +66,10 @@ class CyPy_CreatorClient : public WrapperBase<Ref<CreatorClient>, CyPy_CreatorCl
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_CreatorClient, delete_);
 
+
+    protected:
+
+        std::map<std::string, Py::Object> m_dict;
 };
 
 

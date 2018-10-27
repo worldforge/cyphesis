@@ -20,15 +20,17 @@
 #define MODULES_WEAK_ENTITY_REF_H
 
 #include "Ref.h"
-#include <sigc++/trackable.h>
+#include <sigc++/connection.h>
 #include <sigc++/signal.h>
 
 class LocatedEntity;
 
-class WeakEntityRef : public sigc::trackable
+class WeakEntityRef
 {
   private:
     LocatedEntity * m_inner;
+
+    sigc::connection m_connection;
 
     void onEntityDeleted();
 
@@ -41,11 +43,14 @@ class WeakEntityRef : public sigc::trackable
     explicit WeakEntityRef(const Ref<LocatedEntity>&);
     explicit WeakEntityRef(LocatedEntity*);
 
-    virtual ~WeakEntityRef() = default;
+    ~WeakEntityRef();
 
     WeakEntityRef(const WeakEntityRef& ref);
 
     WeakEntityRef& operator=(const WeakEntityRef& ref);
+
+    WeakEntityRef& operator=(LocatedEntity* ref);
+    WeakEntityRef& operator=(const Ref<LocatedEntity>& ref);
 
     constexpr LocatedEntity& operator*() const noexcept
     {

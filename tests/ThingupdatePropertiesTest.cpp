@@ -139,7 +139,8 @@ int main()
 #include "common/const.h"
 #include "common/log.h"
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/common/stubRouter.h"
@@ -148,6 +149,7 @@ int main()
 #include "stubs/rulesets/stubPropelProperty.h"
 #include "stubs/rulesets/stubDomainProperty.h"
 #include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rulesets/stubPlantedOnProperty.h"
 
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()

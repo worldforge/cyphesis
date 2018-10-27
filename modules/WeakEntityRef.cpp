@@ -23,7 +23,9 @@
 void WeakEntityRef::setup()
 {
     if (m_inner) {
-        m_inner->destroyed.connect(sigc::mem_fun(this, &WeakEntityRef::onEntityDeleted));
+        m_connection = m_inner->destroyed.connect(sigc::mem_fun(this, &WeakEntityRef::onEntityDeleted));
+    } else {
+        m_connection.disconnect();
     }
 }
 
@@ -58,4 +60,23 @@ void WeakEntityRef::onEntityDeleted()
 {
     m_inner = nullptr;
     Changed();
+}
+
+WeakEntityRef& WeakEntityRef::operator=(LocatedEntity* ref)
+{
+    m_inner = ref;
+    setup();
+    return *this;
+}
+
+WeakEntityRef& WeakEntityRef::operator=(const Ref<LocatedEntity>& ref)
+{
+    m_inner = ref.get();
+    setup();
+    return *this;
+}
+
+WeakEntityRef::~WeakEntityRef()
+{
+    m_connection.disconnect();
 }

@@ -50,7 +50,7 @@
 #include <chrono>
 #include <rulesets/VisibilityProperty.h>
 
-#include "stubs/common/stubLog.h"
+#include "stubs/common/stublog.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

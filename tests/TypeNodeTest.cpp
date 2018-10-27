@@ -51,3 +51,4 @@ int main()
 // stub functions
 
 #include "stubs/common/stubPropertyManager.h"
+#include "stubs/common/stublog.h"

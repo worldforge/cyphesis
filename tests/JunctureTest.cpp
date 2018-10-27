@@ -473,12 +473,6 @@ void CommPeer::connect(boost::asio::ip::basic_endpoint<boost::asio::ip::tcp> con
 {
 }
 
-CommSocket::CommSocket(boost::asio::io_service& svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
 int CommSocket::flush()
 {
     return 0;
@@ -526,89 +520,9 @@ void Peer::cleanTeleports()
 {
 }
 
-Connection::Connection(CommSocket & client,
-                       ServerRouting & svr,
-                       const std::string & addr,
-                       const std::string & id, long iid) :
-            Link(client, id, iid), m_obsolete(false),
-                                                m_server(svr)
-{
-}
-
-Account * Connection::newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & passwd,
-                                 const std::string & id, long intId)
-{
-    return 0;
-}
-
-int Connection::verifyCredentials(const Account &,
-                                  const Atlas::Objects::Root &) const
-{
-    return 0;
-}
-
-
-Connection::~Connection()
-{
-}
-
-void Connection::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Connection::operation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LoginOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::GetOperation(const Operation &, OpVector &)
-{
-}
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
+#include "stubs/server/stubConnection.h"
+#include "stubs/server/stubConnectableRouter.h"
+#include "stubs/common/stubRouter.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

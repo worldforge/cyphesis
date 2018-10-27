@@ -25,7 +25,7 @@
 
 #include "TestBase.h"
 #include "TestWorld.h"
-
+#include "rulesets/Entity.h"
 #include "server/ServerAccount.h"
 
 #include "server/Connection.h"
@@ -181,7 +181,7 @@ void ServerAccounttest::test_createObject_not_obj()
 
     arg->setObjtype("foo");
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
 
@@ -198,7 +198,7 @@ void ServerAccounttest::test_createObject_non_entity()
     RootOperation op;
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_TRUE(res.empty());
 }
@@ -212,7 +212,7 @@ void ServerAccounttest::test_createObject_failed()
     RootOperation op;
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
 
@@ -225,14 +225,14 @@ void ServerAccounttest::test_createObject_failed()
 void ServerAccounttest::test_createObject_success()
 {
     long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
 
     std::string type_str("unimportant_string");
     RootEntity arg;
     RootOperation op;
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
 
     ASSERT_EQUAL(res.size(), 1u);
@@ -248,7 +248,7 @@ void ServerAccounttest::test_createObject_success()
 void ServerAccounttest::test_createObject_success_refo()
 {
     long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
 
     std::string type_str("unimportant_string");
     RootEntity arg;
@@ -256,7 +256,7 @@ void ServerAccounttest::test_createObject_success_refo()
     op->setSerialno(44295);
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
 
@@ -273,7 +273,7 @@ void ServerAccounttest::test_createObject_success_refo()
 void ServerAccounttest::test_createObject_no_possess()
 {
     long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
 
     std::string type_str("unimportant_string");
     RootEntity arg;
@@ -283,7 +283,7 @@ void ServerAccounttest::test_createObject_no_possess()
     op->modifyArgs().push_back(arg2);
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     // FIXME No error to the client!
     ASSERT_TRUE(res.empty());
@@ -294,7 +294,7 @@ void ServerAccounttest::test_createObject_no_possess()
 void ServerAccounttest::test_createObject_possess_non_string()
 {
     long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
 
     std::string type_str("unimportant_string");
     RootEntity arg;
@@ -305,7 +305,7 @@ void ServerAccounttest::test_createObject_possess_non_string()
     op->modifyArgs().push_back(arg2);
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
     // FIXME No error to the client!
     ASSERT_TRUE(res.empty());
@@ -316,7 +316,7 @@ void ServerAccounttest::test_createObject_possess_non_string()
 void ServerAccounttest::test_createObject_success_possess()
 {
     long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Character(compose("%1", cid), cid);
+    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
 
     std::string type_str("unimportant_string");
     RootEntity arg;
@@ -327,7 +327,7 @@ void ServerAccounttest::test_createObject_success_possess()
     op->modifyArgs().push_back(arg2);
     OpVector res;
 
-    m_account->createObject(type_str, arg, op, res);
+    m_account->createObject(arg, op, res);
 
 
     ASSERT_EQUAL(res.size(), 1u);
@@ -347,7 +347,7 @@ void ServerAccounttest::test_addNewEntity_failed()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    auto e = m_account->addNewEntity(type_str, arg, arg);
+    auto e = m_account->addNewEntity(arg, arg);
 
     ASSERT_FALSE(e);
 }
@@ -355,13 +355,13 @@ void ServerAccounttest::test_addNewEntity_failed()
 void ServerAccounttest::test_addNewEntity_success()
 {
     long cid = m_id_counter++;
-    Ref<Entity>  c = new Character(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
     TestWorld_addNewEntity_ret_value = c;
 
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    auto e = m_account->addNewEntity(type_str, arg, arg);
+    auto e = m_account->addNewEntity(arg, arg);
 
     ASSERT_EQUAL(c.get(), e.get());
 
@@ -375,7 +375,7 @@ void ServerAccounttest::test_addNewEntity_unconnected()
     std::string type_str("unimportant_string");
     RootEntity arg;
 
-    auto e = m_account->addNewEntity(type_str, arg, arg);
+    auto e = m_account->addNewEntity(arg, arg);
 
     ASSERT_FALSE(e);
 }
@@ -401,15 +401,7 @@ int main()
 
 #include "stubs/server/stubAccount.h"
 #include "stubs/server/stubConnection.h"
-
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
@@ -419,25 +411,7 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 #include "stubs/common/stubLink.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 
-
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#define STUB_Router_error
 void Router::error(const Operation & op,
                    const std::string & errstring,
                    OpVector & res,
@@ -445,6 +419,7 @@ void Router::error(const Operation & op,
 {
     res.push_back(Atlas::Objects::Operation::Error());
 }
+#include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubLocation.h"
 
 

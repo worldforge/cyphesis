@@ -39,5 +39,13 @@
   }
 #endif //STUB_ScriptsProperty_applyScripts
 
+#ifndef STUB_ScriptsProperty_getScriptDetails
+//#define STUB_ScriptsProperty_getScriptDetails
+   int ScriptsProperty::getScriptDetails(const Atlas::Message::MapType &, const std::string &, const std::string &, std::string &, std::string &)
+  {
+    return 0;
+  }
+#endif //STUB_ScriptsProperty_getScriptDetails
+
 
 #endif

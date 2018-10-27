@@ -53,6 +53,12 @@ class TestRouter : public ConnectableRouter
 
     void externalOperation(const Operation &, Link &) override { }
     void operation(const Operation &, OpVector &) override { }
+
+    void setConnection(Connection* connection) override {}
+
+    Connection* getConnection() const override {
+        return nullptr;
+    }
 };
 
 class TestAccount : public Account {
@@ -262,16 +268,7 @@ int main()
 #include <cstdlib>
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubAccount.h"
-
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 
 #define STUB_Persistence_getAccount
 Account * Persistence::getAccount(const std::string & name)
@@ -326,22 +323,7 @@ bool_config_register::bool_config_register(bool & var,
 {
 }
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
+#include "stubs/common/stubRouter.h"
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity

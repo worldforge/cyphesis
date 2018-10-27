@@ -96,6 +96,14 @@
   }
 #endif //STUB_Admin_addToEntity
 
+#ifndef STUB_Admin_LogoutOperation
+//#define STUB_Admin_LogoutOperation
+  void Admin::LogoutOperation(const Operation &, OpVector &)
+  {
+    
+  }
+#endif //STUB_Admin_LogoutOperation
+
 #ifndef STUB_Admin_GetOperation
 //#define STUB_Admin_GetOperation
   void Admin::GetOperation(const Operation &, OpVector &)

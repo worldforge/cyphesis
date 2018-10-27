@@ -38,6 +38,7 @@
 #include "common/TypeNode.h"
 #include "common/CommSocket.h"
 #include "DatabaseNull.h"
+#include "rulesets/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -61,8 +62,6 @@ using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::smart_dynamic_cast;
 
-static const char * test_valid_character_type = "37702ce7a151";
-
 class SpawningTestWorld : public TestWorld {
   public:
     SpawningTestWorld(Ref<Entity> gw) : TestWorld(gw) { }
@@ -79,7 +78,7 @@ class SpawningTestWorld : public TestWorld {
         std::string id;
         long intId = newId(id);
 
-        Ref<Entity>  e = new Character(id, intId);
+        Ref<Entity>  e = new Entity(id, intId);
 
         e->setType(new TypeNode(t));
         return addEntity(e);
@@ -202,10 +201,10 @@ void AccountConnectionintegration::test_account_creation()
         ASSERT_NOT_NULL(account_router_ptr);
 
         // Check the account has been logged into the lobby
-        const AccountDict & lobby_dict = m_server->m_lobby.getAccounts();
-        AccountDict::const_iterator I = lobby_dict.find(account_id);
+        const auto & lobby_dict = m_server->m_lobby.getAccounts();
+        auto I = lobby_dict.find(account_id);
         ASSERT_TRUE(I != lobby_dict.end());
-        Account * account_ptr = I->second;
+        auto account_ptr = I->second;
         ASSERT_EQUAL(account_router_ptr, account_ptr);
 
         // Basic login as now been established by account creation
@@ -225,28 +224,6 @@ void AccountConnectionintegration::test_account_creation()
         const Operation & error_reply = test_sent_ops.front();
         ASSERT_EQUAL(error_reply->getClassNo(),
                      Atlas::Objects::Operation::ERROR_NO);
-
-        Player::playableTypes.insert(test_valid_character_type);
-
-        Anonymous character_arg;
-        character_arg->setParent(test_valid_character_type);
-        character_arg->setName("938862f2-4db2-4e8e-b944-7b0935e569db");
-
-        Create character_op;
-        character_op->setArgs1(character_arg);
-        character_op->setFrom(account_id);
-
-        test_sent_ops.clear();
-        m_connection->externalOperation(character_op, *m_connection);
-        // FIXME the above went through Account::externalOperation, so there
-        // is no reply in res. The reply has gone directly to the Link::send
-        // method. Add a way of checking, once there are better stubs.
-        ASSERT_TRUE(!test_sent_ops.empty());
-        ASSERT_EQUAL(test_sent_ops.size(), 2u);
-
-        const Operation & create_reply = test_sent_ops.front();
-        ASSERT_EQUAL(create_reply->getClassNo(),
-                     Atlas::Objects::Operation::INFO_NO);
 
 
         // TODO Character creation etc?
@@ -293,105 +270,33 @@ const char * const CYPHESIS = "cyphesisAccountConnectionintegration";
 int timeoffset = 0;
 std::string instance(CYPHESIS);
 
-CommSocket::CommSocket(boost::asio::io_service & svr) : m_io_service(svr) { }
-
-CommSocket::~CommSocket()
-{
-}
-
 int CommSocket::flush()
 {
     return 0;
 }
 
-ExternalMind::ExternalMind(LocatedEntity & e) : Router(e.getId(), e.getIntId()),
-                                         m_link(0), m_entity(e)
-{
-}
 
-void ExternalMind::externalOperation(const Operation & op, Link &)
-{
-}
-
-void ExternalMind::operation(const Operation & op, OpVector & res)
-{
-}
-
+#define STUB_ExternalMind_connectionId
 const std::string & ExternalMind::connectionId()
 {
     assert(m_link != 0);
     return m_link->getId();
 }
 
+#define STUB_ExternalMind_linkUp
 void ExternalMind::linkUp(Link * c)
 {
     m_link = c;
 }
 
-ExternalProperty::ExternalProperty(ExternalMind * & data) : m_data(data)
-{
-}
+#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rulesets/stubExternalProperty.h"
+#include "stubs/rulesets/stubMindsProperty.h"
+#include "stubs/rulesets/stubAdminMind.h"
 
-int ExternalProperty::get(Atlas::Message::Element & val) const
-{
-    return 0;
-}
+#include "stubs/server/stubJuncture.h"
 
-void ExternalProperty::set(const Atlas::Message::Element & val)
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         Atlas::Message::MapType & map) const
-{
-}
-
-void ExternalProperty::add(const std::string & s,
-                         const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ExternalProperty * ExternalProperty::copy() const
-{
-    return 0;
-}
-
-Juncture::Juncture(Connection * c,
-                   const std::string & id, long iid) :
-          ConnectableRouter(id, iid, c),
-                                                       m_peer(0)
-{
-}
-
-Juncture::~Juncture()
-{
-}
-
-void Juncture::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Juncture::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::addToMessage(MapType & omap) const
-{
-}
-
-void Juncture::addToEntity(const RootEntity & ent) const
-{
-}
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
+#define STUB_Link_send
 void Link::send(const OpVector& opVector) const
 {
     for (const auto& op : opVector) {
@@ -404,16 +309,8 @@ void Link::send(const Operation & op) const
     test_sent_ops.push_back(op);
 }
 
-void Link::sendError(const Operation & op,
-                     const std::string &,
-                     const std::string &) const
-{
-}
 
-void Link::disconnect()
-{
-}
-
+#include "stubs/common/stubLink.h"
 #include "server/PropertyRuleHandler.h"
 #include "server/ArchetypeRuleHandler.h"
 #include "server/EntityRuleHandler.h"

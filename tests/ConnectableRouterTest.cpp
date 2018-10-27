@@ -33,12 +33,16 @@ class TestConnectableRouter : public ConnectableRouter {
 
     virtual void externalOperation(const Operation&, Link &) { }
     virtual void operation(const Operation&, OpVector&) { }
+
+        virtual void setConnection(Connection* connection) {}
+
+        virtual Connection* getConnection() const {return nullptr;}
 };
 
 int main()
 {
     {
-        TestConnectableRouter * cr = new TestConnectableRouter;
+        TestConnectableRouter * cr = new TestConnectableRouter{};
 
         delete cr;
     }
@@ -47,19 +51,5 @@ int main()
 
 // stubs
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
+#include "stubs/common/stubRouter.h"
 
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}

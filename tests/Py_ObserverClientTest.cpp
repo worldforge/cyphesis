@@ -28,6 +28,8 @@
 #include "python_testers.h"
 
 #include "client/Python_ClientAPI.h"
+#include "client/ObserverClient.h"
+#include "client/CyPy_ObserverClient.h"
 
 #include "rulesets/Python_API.h"
 
@@ -41,13 +43,20 @@ static bool stub_wait_fail = false;
 
 int main()
 {
+    boost::asio::io_service io_service;
+
     init_python_api("230dabbb-d676-4d43-8a03-4623c02503b5");
     extend_client_python_api();
+
+    auto client = new ObserverClient(io_service);
+
+    Py::Module module("server");
+    module.setAttr("testclient", CyPy_ObserverClient::wrap(client));
 
     run_python_string("import atlas");
     run_python_string("import server");
     run_python_string("import types");
-    run_python_string("o=server.ObserverClient()");
+    run_python_string("o=server.testclient");
     run_python_string("o.setup()");
     expect_python_error("o.setup('bob')", PyExc_IndexError);
     run_python_string("o.setup('bob', 'jim')");
@@ -82,9 +91,6 @@ int main()
     run_python_string("o.server = 'foo'");
     expect_python_error("o.server = 23", PyExc_TypeError);
 
-    run_python_string("o == server.ObserverClient()");
-    
-
     shutdown_python_api();
     return 0;
 }
@@ -98,112 +104,34 @@ int main()
 
 using Atlas::Objects::Entity::RootEntity;
 
-CharacterClient::CharacterClient(const std::string & id, long intId,
-                                 ClientConnection & c) :
-                 BaseMind(id, intId), m_connection(c)
-{
-}
+#include "stubs/client/stubCharacterClient.h"
+#include "stubs/client/stubCreatorClient.h"
 
-Ref<LocatedEntity> CharacterClient::look(const std::string & id)
-{
-    return 0;
-}
-
-Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & ent)
-{
-    return 0;
-}
-
-void CharacterClient::send(const Operation & op)
-{
-}
-
-CreatorClient::CreatorClient(const std::string & id, long intId,
-                             ClientConnection &c) :
-               CharacterClient(id, intId, c)
-{
-}
-
-Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
-{
-    return 0;
-}
-
-void CreatorClient::sendSet(const std::string & id,
-                            const RootEntity & entity)
-{
-}
-
-void CreatorClient::del(const std::string & id)
-{
-}
-
-ObserverClient::ObserverClient()
-{
-}
-
-ObserverClient::~ObserverClient()
-{
-}
-
-int ObserverClient::setup(const std::string & account,
-                          const std::string & password,
-                          const std::string & avatar)
+#define STUB_ObserverClient_setup
+int ObserverClient::setup(const std::string & account , const std::string & password , const std::string & avatar )
 {
     if (stub_setup_fail) {
         return -1;
     }
     return 0;
 }
+#include "stubs/client/stubObserverClient.h"
 
-int ObserverClient::teardown()
-{
-    return 0;
-}
-
-void ObserverClient::idle()
-{
-}
-
-BaseClient::BaseClient() : m_character(0)
-{
-}
-
-BaseClient::~BaseClient()
-{
-}
-
-Atlas::Objects::Root BaseClient::createSystemAccount()
-{
-    return Atlas::Objects::Operation::Info();
-}
-
-Atlas::Objects::Root BaseClient::createAccount(const std::string & name,
-                                               const std::string & password)
-{
-    return Atlas::Objects::Operation::Info();
-}
-
-void BaseClient::send(const Operation & op)
-{
-}
-
+#define STUB_BaseClient_createCharacter
 CreatorClient * BaseClient::createCharacter(const std::string & type)
 {
     if (stub_createCharacter_fail) {
         return 0;
     }
-    return new CreatorClient("1", 1, *new ClientConnection);
+    return new CreatorClient("1", "2", m_connection);
 }
+#include "stubs/client/stubBaseClient.h"
 
-ClientConnection::ClientConnection()
-{
-}
 
-ClientConnection::~ClientConnection()
-{
-}
 
+
+
+#define STUB_ClientConnection_wait
 int ClientConnection::wait()
 {
     if (stub_wait_fail) {
@@ -212,6 +140,7 @@ int ClientConnection::wait()
     return 0;
 }
 
+#define STUB_ClientConnection_sendAndWaitReply
 int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 {
     if (stub_send_wait_fail) {
@@ -223,6 +152,4 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
     return 0;
 }
 
-void ClientConnection::operation(const Operation & op)
-{
-}
+#include "stubs/client/stubClientConnection.h"

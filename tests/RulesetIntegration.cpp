@@ -191,7 +191,7 @@ void Rulesetintegration::test_sequence()
         assert(custom_type_factory->m_type ==
                Inheritance::instance().getType("custom_type"));
 
-        const Root & check_class = Inheritance::instance().getClass("custom_type");
+        const Root & check_class = Inheritance::instance().getClass("custom_type", Visibility::PRIVATE);
         assert(check_class.isValid());
         assert(check_class->getId() == "custom_type");
         assert(check_class->getParent() == "thing");
@@ -657,16 +657,7 @@ int main()
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubScriptsProperty.h"
 #include "stubs/common/stubMonitors.h"
-
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubConnection.h"
 
 CorePropertyManager::CorePropertyManager()
@@ -722,91 +713,9 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intI
 
 class World;
 
-Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectableRouter(id, iid, c),
-          m_address(0),
-          m_peer(0),
-          m_connectRef(0)
-{
-}
-
-Juncture::~Juncture()
-{
-}
-
-void Juncture::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Juncture::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::addToMessage(MapType & omap) const
-{
-}
-
-void Juncture::addToEntity(const RootEntity & ent) const
-{
-}
-
-std::set<std::string> Player::playableTypes;
-
-Player::Player(Connection * conn,
-               const std::string & username,
-               const std::string & passwd,
-               const std::string & id,
-               long intId) :
-        Account(conn, username, passwd, id, intId)
-{
-}
-
-const char * Player::getType() const
-{
-    return "player";
-}
-
-void Player::addToMessage(MapType & omap) const
-{
-}
-
-void Player::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-int Player::characterError(const Operation & op,
-                           const Root & ent, OpVector & res) const
-{
-    return 0;
-}
-
-ServerAccount::ServerAccount(Connection * conn,
-             const std::string & username,
-             const std::string & passwd,
-             const std::string & id,
-             long intId) :
-       Account(conn, username, passwd, id, intId)
-{
-}
-
-const char * ServerAccount::getType() const
-{
-    return "server";
-}
-
-int ServerAccount::characterError(const Operation & op,
-                                  const Root & ent,
-                                  OpVector & res) const
-{
-    return -1;
-}
-
-void ServerAccount::createObject(const std::string & type_str,
-                                 const Root & arg,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-}
+#include "stubs/server/stubJuncture.h"
+#include "stubs/server/stubPlayer.h"
+#include "stubs/server/stubServerAccount.h"
 
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/rulesets/stubEntity.h"

@@ -53,6 +53,7 @@
 
 #include <rulesets/TerrainModProperty.h>
 #include <rulesets/EntityProperty.h>
+#include <rulesets/PlantedOnProperty.h>
 #include "stubs/common/stubMonitors.h"
 
 using Atlas::Message::Element;
@@ -487,9 +488,9 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             OpVector res;
             domain.tick(0, res);
 
-            ASSERT_TRUE(planted1->getPropertyClass<EntityProperty>("planted_on"));
-            ASSERT_TRUE(planted1->getPropertyClass<EntityProperty>("planted_on")->data());
-            ASSERT_EQUAL(rootEntity.getIntId(), planted1->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
+            ASSERT_TRUE(planted1->getPropertyClass<PlantedOnProperty>("planted_on"));
+            ASSERT_TRUE(planted1->getPropertyClass<PlantedOnProperty>("planted_on")->data().entity);
+            ASSERT_EQUAL(rootEntity.getIntId(), planted1->getPropertyClass<PlantedOnProperty>("planted_on")->data().entity->getIntId());
             ASSERT_FUZZY_EQUAL(10, planted1->m_location.m_pos.y(), 0.1);
             {
                 auto* planted1RigidBody = domain.test_getRigidBody(planted1->getIntId());
@@ -519,9 +520,9 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
 
             domain.tick(0, res);
 
-            ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on"));
-            ASSERT_TRUE(planted2->getPropertyClass<EntityProperty>("planted_on")->data());
-            ASSERT_EQUAL(planted1->getIntId(), planted2->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
+            ASSERT_TRUE(planted2->getPropertyClass<PlantedOnProperty>("planted_on"));
+            ASSERT_TRUE(planted2->getPropertyClass<PlantedOnProperty>("planted_on")->data().entity);
+            ASSERT_EQUAL(planted1->getIntId(), planted2->getPropertyClass<PlantedOnProperty>("planted_on")->data().entity->getIntId());
             ASSERT_FUZZY_EQUAL(11, planted2->m_location.m_pos.y(), 0.1);
             {
                 auto* planted2RigidBody = domain.test_getRigidBody(planted2->getIntId());
@@ -543,8 +544,8 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             }
             plantedOn->m_location.setBBox({{-1, 0, -1},
                                            {1,  1, 1}});
-            EntityProperty* plantedOnProperty = new EntityProperty();
-            plantedOnProperty->data() = WeakEntityRef(planted1.get());
+            auto plantedOnProperty = new PlantedOnProperty();
+            plantedOnProperty->data().entity = WeakEntityRef(planted1.get());
             plantedOn->setProperty("planted_on", plantedOnProperty);
 
             GeometryProperty* geometryProperty = new GeometryProperty();
@@ -554,9 +555,9 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             domain.addEntity(*plantedOn);
 
 
-            ASSERT_TRUE(plantedOn->getPropertyClass<EntityProperty>("planted_on"));
-            ASSERT_TRUE(plantedOn->getPropertyClass<EntityProperty>("planted_on")->data());
-            ASSERT_EQUAL(planted1->getIntId(), plantedOn->getPropertyClass<EntityProperty>("planted_on")->data()->getIntId());
+            ASSERT_TRUE(plantedOn->getPropertyClass<PlantedOnProperty>("planted_on"));
+            ASSERT_TRUE(plantedOn->getPropertyClass<PlantedOnProperty>("planted_on")->data().entity);
+            ASSERT_EQUAL(planted1->getIntId(), plantedOn->getPropertyClass<PlantedOnProperty>("planted_on")->data().entity->getIntId());
             ASSERT_FUZZY_EQUAL_FN(plantedOn->m_location.m_pos.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
             {
                 auto* plantedOnRigidBody = domain.test_getRigidBody(plantedOn->getIntId());
@@ -751,11 +752,11 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     id = newId();
     ModeProperty* plantedProp = new ModeProperty();
     plantedProp->set("planted");
-    EntityProperty* plantedOnProp = new EntityProperty();
-    plantedOnProp->data() = WeakEntityRef(lake);
+    auto plantedOnProp = new PlantedOnProperty();
+    plantedOnProp->data().entity = WeakEntityRef(lake);
     Entity* floatingEntity = new Entity("floatingEntity", id);
     floatingEntity->setProperty(ModeProperty::property_name, plantedProp);
-    floatingEntity->setProperty("planted_on", plantedOnProp);
+    floatingEntity->setProperty(PlantedOnProperty::property_name, plantedOnProp);
 
     floatingEntity->setType(rockType);
     floatingEntity->m_location.m_pos = WFMath::Point<3>(5, 20, 1);

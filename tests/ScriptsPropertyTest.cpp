@@ -22,8 +22,8 @@
 #ifndef DEBUG
 #define DEBUG
 #endif
-
-#include "server/RuleHandler.h"
+#include <cassert>
+#include "rulesets/ScriptsProperty.h"
 
 using Atlas::Message::MapType;
 
@@ -32,7 +32,7 @@ int main()
     {
         std::string p, c;
 
-        int ret = RuleHandler::getScriptDetails(MapType(),
+        int ret = ScriptsProperty::getScriptDetails(MapType(),
               "7d7a418d-52b0-4961-96cb-6030c4f8666a", "RuleHandlertest", p, c);
         assert(ret == -1);
 
@@ -45,7 +45,7 @@ int main()
 
         MapType script;
         script["name"] = 0x48f9;
-        int ret = RuleHandler::getScriptDetails(script,
+        int ret = ScriptsProperty::getScriptDetails(script,
               "", "RuleHandlertest", p, c);
         assert(ret == -1);
 
@@ -58,7 +58,7 @@ int main()
 
         MapType script;
         script["name"] = "foo.bar";
-        int ret = RuleHandler::getScriptDetails(script,
+        int ret = ScriptsProperty::getScriptDetails(script,
               "", "RuleHandlertest", p, c);
         assert(ret == -1);
 
@@ -72,7 +72,7 @@ int main()
         MapType script;
         script["name"] = "foo.bar";
         script["language"] = 0x8c39;
-        int ret = RuleHandler::getScriptDetails(script,
+        int ret = ScriptsProperty::getScriptDetails(script,
               "", "RuleHandlertest", p, c);
         assert(ret == -1);
 
@@ -86,7 +86,7 @@ int main()
         MapType script;
         script["name"] = "foo.bar";
         script["language"] = "ruby"; // not python
-        int ret = RuleHandler::getScriptDetails(script,
+        int ret = ScriptsProperty::getScriptDetails(script,
               "", "RuleHandlertest", p, c);
         assert(ret == -1);
 
@@ -100,7 +100,7 @@ int main()
         MapType script;
         script["name"] = "foo.bar";
         script["language"] = "python";
-        int ret = RuleHandler::getScriptDetails(script,
+        int ret = ScriptsProperty::getScriptDetails(script,
               "", "RuleHandlertest", p, c);
         assert(ret == 0);
 
@@ -114,7 +114,7 @@ int main()
         MapType script;
         script["name"] = "foo";
         script["language"] = "python";
-        int ret = RuleHandler::getScriptDetails(script,
+        int ret = ScriptsProperty::getScriptDetails(script,
               "", "RuleHandlertest", p, c);
         assert(ret == -1);
 
@@ -126,8 +126,9 @@ int main()
 
 // stubs
 
-#include "common/log.h"
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rulesets/stubPythonScriptFactory.h"
+template class PythonScriptFactory<LocatedEntity>;
+

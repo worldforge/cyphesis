@@ -103,6 +103,9 @@ void Account::characterDestroyed(long id)
 void Account::setConnection(Connection* connection) {
     if (!connection) {
         for (auto& entry : m_minds) {
+            if (m_connection) {
+                m_connection->removeObject(entry.second->getIntId());
+            }
             auto& entity = entry.second->getEntity();
             auto prop = entity.modPropertyClassFixed<MindsProperty>();
             if (prop) {
@@ -127,7 +130,7 @@ Connection* Account::getConnection() const
     return m_connection;
 }
 
-ExternalMind* Account::createMind(LocatedEntity* entity) const {
+ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const {
     std::string strId;
 
     auto id = newId(strId);
@@ -139,7 +142,7 @@ ExternalMind* Account::createMind(LocatedEntity* entity) const {
 ///
 /// \brief chr The character to connect to this account
 /// \return Returns 0 on success and -1 on failure.
-int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
+int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 {
     //Create an external mind and hook it up with the entity
     auto mind = createMind(entity);
@@ -153,9 +156,7 @@ int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
     mindInfo->setArgs1(mindEntity);
     res.push_back(mindInfo);
 
-    m_charactersDict[entity->getIntId()] = entity;
     m_minds.emplace(entity->getIntId(), mind);
-    entity->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), entity->getIntId()));
 
     auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
     mindsProp->addMind(mind);
@@ -193,7 +194,7 @@ int Account::connectCharacter(LocatedEntity *entity, OpVector& res)
 /// \brief Add a Character to those that belong to this Account
 ///
 /// @param chr Character object to be adddded
-void Account::addCharacter(LocatedEntity * chr)
+void Account::addCharacter(const Ref<LocatedEntity>& chr)
 {
     m_charactersDict[chr->getIntId()] = chr;
     chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
@@ -216,6 +217,8 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
     if (!chr) {
         return nullptr;
     }
+
+    addCharacter(chr);
 
     // Inform the client of the newly created character
     Sight sight;
@@ -401,7 +404,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setId(getId());
 }
 
-void Account::externalOperation(const Operation & op, Link &)
+void Account::externalOperation(const Operation & op, Link & link)
 {
     //External operations must come from a connection.
     assert(m_connection != nullptr);
@@ -718,3 +721,5 @@ void Account::OtherOperation(const Operation & op, OpVector & res)
     std::string parent = op->getParent().empty() ? "-" : op->getParent();
     error(op, String::compose("Unknown operation %1 in Account %2 (%3)", parent, getId(), m_username), res);
 }
+
+Account::~Account() = default;

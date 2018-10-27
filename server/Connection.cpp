@@ -122,12 +122,14 @@ Account * Connection::addNewAccount(const std::string & type,
 /// \brief Remove an object from this connection.
 ///
 /// The object being removed may be a player, or another type of object such
-/// as an avatar. If it is an player or other account, a pointer is returned.
+/// as an avatar.
 void Connection::disconnectObject(ConnectableRouter* router,
                                   const std::string & event)
 {
     m_server.m_lobby.removeAccount(router);
     router->setConnection(nullptr);
+    m_connectableRouters.erase(router->getIntId());
+    removeObject(router->getIntId());
 }
 
 void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
@@ -153,6 +155,7 @@ void Connection::addObject(Router * obj)
 }
 
 void Connection::addConnectableRouter(ConnectableRouter * obj) {
+    obj->setConnection(this);
     addObject(obj);
     m_connectableRouters[obj->getIntId()] = obj;
 }
@@ -283,7 +286,6 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     }
     // Connect everything up
     addConnectableRouter(account);
-    account->setConnection(this);
     m_server.m_lobby.addAccount(account);
     // Let the client know they have logged in
     Info info;
@@ -395,7 +397,6 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         return;
     }
     disconnectObject(I->second, "Logout");
-    m_connectableRouters.erase(I);
 
     Info info;
     info->setArgs1(op);

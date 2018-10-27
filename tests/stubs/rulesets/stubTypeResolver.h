@@ -7,6 +7,14 @@
 #include "rulesets/TypeResolver.h"
 #include "stubTypeResolver_custom.h"
 
+#ifndef STUB_TypeResolver_TypeResolver
+//#define STUB_TypeResolver_TypeResolver
+   TypeResolver::TypeResolver(TypeStore& typeStore)
+  {
+    
+  }
+#endif //STUB_TypeResolver_TypeResolver
+
 #ifndef STUB_TypeResolver_InfoOperation
 //#define STUB_TypeResolver_InfoOperation
   std::set<TypeNode*> TypeResolver::InfoOperation(const Operation& op, OpVector& res)
@@ -17,11 +25,19 @@
 
 #ifndef STUB_TypeResolver_requestType
 //#define STUB_TypeResolver_requestType
-  void TypeResolver::requestType(const std::string& id, OpVector& res)
+  const TypeNode* TypeResolver::requestType(const std::string& id, OpVector& res)
   {
-    
+    return nullptr;
   }
 #endif //STUB_TypeResolver_requestType
+
+#ifndef STUB_TypeResolver_getTypeStore
+//#define STUB_TypeResolver_getTypeStore
+  const TypeStore& TypeResolver::getTypeStore() const
+  {
+    return *static_cast<const TypeStore*>(nullptr);
+  }
+#endif //STUB_TypeResolver_getTypeStore
 
 #ifndef STUB_TypeResolver_processTypeData
 //#define STUB_TypeResolver_processTypeData

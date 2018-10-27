@@ -82,7 +82,7 @@ int main()
     assert(CyPy_LocatedEntity::check(wrap_e_again));
     assert(wrap_e == wrap_e_again);
 
-    Ref<Character> c = new Character("2", 2);
+    Ref<Entity> c = new Entity("2", 2);
     auto wrap_c = CyPy_LocatedEntity::wrap(c);
     assert(CyPy_LocatedEntity::check(wrap_c));
 
@@ -130,60 +130,6 @@ int main()
     expect_python_error("print(t.foo_operation)", PyExc_AttributeError);
     run_python_string("print(t.location)");
     run_python_string("print(t.contains)");
-
-    expect_python_error("Character()", PyExc_IndexError);
-    expect_python_error("Character('s')", PyExc_TypeError);
-    expect_python_error("Character(1)", PyExc_TypeError);
-    expect_python_error("Character(Thing('1'))", PyExc_TypeError);
-    run_python_string("c=Character('1')");
-    run_python_string("Character(c)");
-    run_python_string("c.as_entity()");
-    run_python_string("c.send_world(Operation('get'))");
-    expect_python_error("c.start_task()", PyExc_IndexError);
-    expect_python_error("c.start_task(Task(server.usage_instance))", PyExc_IndexError);
-    expect_python_error("c.start_task(1,Operation('cut'),Oplist())",
-                        PyExc_IndexError);
-    expect_python_error("c.start_task(Task(server.usage_instance),1,Oplist())", PyExc_IndexError);
-    expect_python_error("c.start_task(Task(server.usage_instance),Operation('cut'),1)",
-                        PyExc_IndexError);
-    run_python_string("c.start_task('cut', Task(server.usage_instance))");
-    expect_python_error("c.mind2body(1)", PyExc_TypeError);
-    run_python_string("c.mind2body(Operation('update'))");
-    run_python_string("c.mind2body(Operation('get'))");
-    expect_python_error("print(c.type)", PyExc_AttributeError);
-    expect_python_error("print(c.foo_operation)", PyExc_AttributeError);
-    run_python_string("print(c.location)");
-    run_python_string("print(c.contains)");
-
-    expect_python_error("Mind()", PyExc_IndexError);
-    expect_python_error("Mind('s')", PyExc_TypeError);
-    expect_python_error("Mind(1)", PyExc_TypeError);
-    run_python_string("m=Mind('1')");
-    run_python_string("m=Mind('1')");
-    run_python_string("m_ent = m.as_entity()");
-    run_python_string("assert(m_ent.id == '1')");
-    expect_python_error("m.send_world(Operation('get'))", PyExc_AttributeError);
-    run_python_string("m==Thing('2')");
-    expect_python_error("print(m.foo_operation)", PyExc_AttributeError);
-    run_python_string("print(m.location)");
-    run_python_string("print(m.contains)");
-    run_python_string("m.type");
-    expect_python_error("m.map=1", PyExc_AttributeError);
-    run_python_string("m.props.string_attr='foo'");
-    run_python_string("assert(m.props.string_attr == 'foo')");
-    run_python_string("m.props.int_attr=23");
-    run_python_string("assert(m.props.int_attr == 23)");
-    run_python_string("m.props.float_attr=17.23");
-    run_python_string("m.props.float_attr>1.3");
-    run_python_string("m.props.float_attr>1");
-    run_python_string("m.props.float_attr<100.3");
-    run_python_string("m.props.float_attr<100");
-//    expect_python_error("m.map_attr={'1': 2}", PyExc_AttributeError);
-//    expect_python_error("m.map_attr", PyExc_AttributeError);
-//    expect_python_error("m.list_attr=[1,2]", PyExc_AttributeError);
-//    expect_python_error("m.list_attr", PyExc_AttributeError);
-//    expect_python_error("m.non_atlas=set([1,2])", PyExc_AttributeError);
-//    expect_python_error("m.non_atlas", PyExc_AttributeError);
 
 
     shutdown_python_api();

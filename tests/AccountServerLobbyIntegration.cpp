@@ -221,18 +221,7 @@ int main()
 
 std::string assets_directory("");
 
-void Connection::addEntity(LocatedEntity * ent)
-{
-}
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 #include "stubs/rulesets/stubThing.h"
@@ -243,116 +232,28 @@ ConnectableRouter::ConnectableRouter(const std::string & id,
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubBuildid.h"
 
+#include "stubs/server/stubConnection.h"
 
-Connection::Connection(CommSocket & client,
-                       ServerRouting & svr,
-                       const std::string & addr,
-                       const std::string & id, long iid) :
-            Link(client, id, iid), m_obsolete(false),
-                                                m_server(svr)
+#define STUB_Link_send
+void Link::send(const Operation & op) const
 {
-}
-
-Account * Connection::newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & passwd,
-                                 const std::string & id, long intId)
-{
-    return 0;
-}
-
-int Connection::verifyCredentials(const Account &,
-                                  const Atlas::Objects::Root &) const
-{
-    return 0;
-}
-
-Connection::~Connection()
-{
-}
-
-void Connection::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Connection::operation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LoginOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::LogoutOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::CreateOperation(const Operation &, OpVector &)
-{
-}
-
-void Connection::GetOperation(const Operation &, OpVector &)
-{
-}
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
+    ++test_send_count;
 }
 
 void Link::send(const OpVector& opVector) const
 {
 }
 
-void Link::send(const Operation & op) const
-{
-    ++test_send_count;
-}
-
-void Link::disconnect()
-{
-}
-
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
-{
-}
+#include "stubs/common/stubLink.h"
 
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
+#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rulesets/stubMindsProperty.h"
+#include "stubs/common/stubProperty.h"
+#include "stubs/common/stubRouter.h"
+#include "stubs/common/stubcustom.h"
+#include "stubs/common/stubid.h"
 
 void logEvent(LogEvent lev, const std::string & msg)
 {

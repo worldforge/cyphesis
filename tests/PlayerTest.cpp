@@ -92,31 +92,25 @@ class Playertest : public Cyphesis::TestBase
 
     static long newId();
 
-    void setup();
-    void teardown();
+    void setup() override;
+    void teardown() override;
 
     void test_getType();
-    void test_addToMessage();
-    void test_addToEntity();
     void test_characterError_no_name();
     void test_characterError_admin_name();
-    void test_characterError_not_playable();
     void test_characterError_playable();
 
 };
 
 long Playertest::m_id_counter = 0L;
 
-Playertest::Playertest() : m_server(0),
-                         m_connection(0),
-                         m_account(0)
+Playertest::Playertest() : m_server(nullptr),
+                         m_connection(nullptr),
+                         m_account(nullptr)
 {
     ADD_TEST(Playertest::test_getType);
-    ADD_TEST(Playertest::test_addToMessage);
-    ADD_TEST(Playertest::test_addToEntity);
     ADD_TEST(Playertest::test_characterError_no_name);
     ADD_TEST(Playertest::test_characterError_admin_name);
-    ADD_TEST(Playertest::test_characterError_not_playable);
     ADD_TEST(Playertest::test_characterError_playable);
 }
 
@@ -160,34 +154,8 @@ void Playertest::test_getType()
     ASSERT_EQUAL(std::string("player"), type);
 }
 
-void Playertest::test_addToMessage()
-{
-    Player::playableTypes.insert("settler");
-
-    MapType data;
-
-    m_account->addToMessage(data);
-
-    ASSERT_TRUE(data.find("character_types") != data.end());
-    ASSERT_EQUAL(data["character_types"], ListType(1, "settler"));
-}
-
-void Playertest::test_addToEntity()
-{
-    Player::playableTypes.insert("settler");
-
-    Anonymous data;
-
-    m_account->addToEntity(data);
-
-    ASSERT_TRUE(data->hasAttr("character_types"));
-    ASSERT_EQUAL(data->getAttr("character_types"), ListType(1, "settler"));
-}
-
 void Playertest::test_characterError_no_name()
 {
-    Player::playableTypes.insert("settler");
-
     Atlas::Objects::Operation::Create op;
     Anonymous description;
     description->setParent("settler");
@@ -203,7 +171,6 @@ void Playertest::test_characterError_no_name()
 
 void Playertest::test_characterError_admin_name()
 {
-    Player::playableTypes.insert("settler");
 
     Atlas::Objects::Operation::Create op;
     Anonymous description;
@@ -219,27 +186,8 @@ void Playertest::test_characterError_admin_name()
                  Atlas::Objects::Operation::ERROR_NO);
 }
 
-void Playertest::test_characterError_not_playable()
-{
-    Player::playableTypes.insert("settler");
-
-    Atlas::Objects::Operation::Create op;
-    Anonymous description;
-    description->setName("dfdd84f5-4708-4b6d-b418-f825d779efc0");
-    description->setParent("goblin");
-    OpVector res;
-
-    int result = m_account->characterError(op, description, res);
-
-    ASSERT_NOT_EQUAL(result, 0);
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
-}
-
 void Playertest::test_characterError_playable()
 {
-    Player::playableTypes.insert("settler");
 
     Atlas::Objects::Operation::Create op;
     Anonymous description;
@@ -289,44 +237,9 @@ int main()
 #include "stubs/server/stubArchetypeRuleHandler.h"
 #include "stubs/server/stubOpRuleHandler.h"
 #include "stubs/server/stubPropertyRuleHandler.h"
-
-ConnectableRouter::ConnectableRouter(const std::string & id,
-                                 long iid,
-                                 Connection *c) :
-                 Router(id, iid),
-                 m_connection(c)
-{
-}
-
+#include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubRuleset.h"
-
-Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectableRouter(id, iid, c),
-          m_address(0),
-          m_peer(0),
-          m_connectRef(0)
-{
-}
-
-Juncture::~Juncture()
-{
-}
-
-void Juncture::externalOperation(const Operation & op, Link &)
-{
-}
-
-void Juncture::operation(const Operation & op, OpVector & res)
-{
-}
-
-void Juncture::addToMessage(MapType & omap) const
-{
-}
-
-void Juncture::addToEntity(const RootEntity & ent) const
-{
-}
+#include "stubs/server/stubJuncture.h"
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 
@@ -334,35 +247,19 @@ void Juncture::addToEntity(const RootEntity & ent) const
 #include "stubs/rulesets/stubThing.h"
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"
-
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid), m_encoder(0), m_commSocket(socket)
-{
-}
-
-Link::~Link()
-{
-}
-
-void Link::send(const Operation & op) const
-{
-}
-
-void Link::disconnect()
-{
-}
+#include "stubs/common/stubLink.h"
 
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility)
 {
     return noClass;
 }
 
 
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
+const TypeNode* Inheritance::getType(const std::string & parent) const
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
@@ -372,7 +269,7 @@ const TypeNode* Inheritance::getType(const std::string & parent)
 #define STUB_Inheritance_hasClass
 bool Inheritance::hasClass(const std::string & parent)
 {
-    TypeNodeDict::const_iterator I = atlasObjects.find(parent);
+    auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return false;
     }
@@ -381,23 +278,7 @@ bool Inheritance::hasClass(const std::string & parent)
 
 #include "stubs/common/stubInheritance.h"
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#define STUB_Router_clientError
 void Router::clientError(const Operation & op,
                          const std::string & errstring,
                          OpVector & res,
@@ -406,6 +287,7 @@ void Router::clientError(const Operation & op,
     res.push_back(Atlas::Objects::Operation::Error());
 }
 
+#define STUB_Router_error
 void Router::error(const Operation & op,
                    const std::string & errstring,
                    OpVector & res,
@@ -413,6 +295,8 @@ void Router::error(const Operation & op,
 {
     res.push_back(Atlas::Objects::Operation::Error());
 }
+
+#include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
 

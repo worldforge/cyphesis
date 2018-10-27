@@ -73,7 +73,10 @@ class DatabaseNull : public Database
 
     public:
 
-        std::function<long()> idGeneratorFn = []() -> long { return 0L; };
+        long id = 1;
+        std::function<long()> idGeneratorFn = [&]() -> long {
+            return id++;
+        };
 
         int initConnection() override
         {

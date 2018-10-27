@@ -1,3 +1,5 @@
+#include <memory>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2012 Alistair Riddoch
 //
@@ -70,7 +72,7 @@ DatabaseResult Database::selectSimpleRowBy(const std::string& name,
                                            const std::string& column,
                                            const std::string& value)
 {
-    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+    return DatabaseResult(std::make_unique<DatabaseNullResultWorker>());
 }
 
 
@@ -80,22 +82,7 @@ const char * const CYPHESIS = "cyphesis";
 
 std::string instance("deeds");
 
-Router::Router(const std::string & id, long intId) : m_id(id), m_intId(intId)
-{
-}
-
-Router::~Router()
-{
-}
-
-void Router::addToMessage(Atlas::Message::MapType & omap) const
-{
-}
-
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
+#include "stubs/common/stubRouter.h"
 #include "stubs/server/stubAccount.h"
 
 ServerAccount::ServerAccount(Connection * conn,
@@ -125,27 +112,8 @@ void ServerAccount::createObject(const Root & arg,
 {
 }
 
-Player::Player(Connection * conn,
-               const std::string & username,
-               const std::string & passwd,
-               const std::string & id,
-               long intId) :
-        Account(conn, username, passwd, id, intId)
-{
-}
-
-const char * Player::getType() const
-{
-    return "player";
-}
-
-
-int Player::characterError(const Operation & op,
-                           const Root & ent, OpVector & res) const
-{
-    return 0;
-}
 #include "stubs/server/stubAdmin.h"
+#include "stubs/server/stubPlayer.h"
 
 
 Shaker::Shaker() {}

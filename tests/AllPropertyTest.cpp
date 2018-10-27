@@ -166,21 +166,8 @@ int main()
 
 #include "stubs/rulesets/stubBaseWorld.h"
 
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
-{
-}
 
-TypeNode::TypeNode(const std::string & name,
-                   const Atlas::Objects::Root & d) : m_name(name),
-                                                     m_description(d),
-                                                     m_parent(0)
-{
-}
-
-TypeNode::~TypeNode()
-{
-}
-
+#define STUB_TypeNode_isTypeOf
 bool TypeNode::isTypeOf(const std::string & base_type) const
 {
     const TypeNode * node = this;
@@ -204,6 +191,7 @@ bool TypeNode::isTypeOf(const TypeNode * base_type) const
     } while (node != 0);
     return false;
 }
+#include "stubs/common/stubTypeNode.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -63,6 +63,7 @@ int main()
 
 #include "common/log.h"
 #include "stubs/rulesets/stubLocation.h"
+#include "stubs/common/stubLink.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -90,9 +90,9 @@ PropertyExerciser::PropertyExerciser()
     string_values.push_back("pwu3dc5012cw*/-+3+Q£%$\"q%2");
 
     // Add all the standard class names to the string values list
-    const TypeNodeDict & allTypes = Inheritance::instance().getAllObjects();
-    TypeNodeDict::const_iterator J = allTypes.begin();
-    TypeNodeDict::const_iterator Jend = allTypes.end();
+    auto& allTypes = Inheritance::instance().getAllObjects();
+    auto J = allTypes.begin();
+    auto Jend = allTypes.end();
     for (; J != Jend; ++J) {
         string_values.push_back(J->first);
     }

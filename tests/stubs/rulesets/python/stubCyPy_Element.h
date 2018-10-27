@@ -81,6 +81,70 @@
   }
 #endif //STUB_CyPy_Element_mapping_ass_subscript
 
+#ifndef STUB_CyPy_Element_sequence_length
+//#define STUB_CyPy_Element_sequence_length
+  PyCxx_ssize_t CyPy_Element::sequence_length()
+  {
+    return *static_cast<PyCxx_ssize_t*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequence_length
+
+#ifndef STUB_CyPy_Element_sequence_concat
+//#define STUB_CyPy_Element_sequence_concat
+  Py::Object CyPy_Element::sequence_concat(const Py::Object&)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequence_concat
+
+#ifndef STUB_CyPy_Element_sequence_repeat
+//#define STUB_CyPy_Element_sequence_repeat
+  Py::Object CyPy_Element::sequence_repeat(Py_ssize_t)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequence_repeat
+
+#ifndef STUB_CyPy_Element_sequence_item
+//#define STUB_CyPy_Element_sequence_item
+  Py::Object CyPy_Element::sequence_item(Py_ssize_t)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequence_item
+
+#ifndef STUB_CyPy_Element_sequence_ass_item
+//#define STUB_CyPy_Element_sequence_ass_item
+  int CyPy_Element::sequence_ass_item(Py_ssize_t, const Py::Object&)
+  {
+    return 0;
+  }
+#endif //STUB_CyPy_Element_sequence_ass_item
+
+#ifndef STUB_CyPy_Element_sequence_inplace_concat
+//#define STUB_CyPy_Element_sequence_inplace_concat
+  Py::Object CyPy_Element::sequence_inplace_concat(const Py::Object&)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequence_inplace_concat
+
+#ifndef STUB_CyPy_Element_sequence_inplace_repeat
+//#define STUB_CyPy_Element_sequence_inplace_repeat
+  Py::Object CyPy_Element::sequence_inplace_repeat(Py_ssize_t)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequence_inplace_repeat
+
+#ifndef STUB_CyPy_Element_sequence_contains
+//#define STUB_CyPy_Element_sequence_contains
+  int CyPy_Element::sequence_contains(const Py::Object&)
+  {
+    return 0;
+  }
+#endif //STUB_CyPy_Element_sequence_contains
+
 #ifndef STUB_CyPy_Element_iter
 //#define STUB_CyPy_Element_iter
   Py::Object CyPy_Element::iter()
@@ -107,7 +171,7 @@
 
 #ifndef STUB_CyPy_Element_asPyObject
 //#define STUB_CyPy_Element_asPyObject
-   Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj)
+   Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj, bool useNativePythonType)
   {
     return *static_cast< Py::Object*>(nullptr);
   }
@@ -123,7 +187,7 @@
 
 #ifndef STUB_CyPy_Element_mapAsPyObject
 //#define STUB_CyPy_Element_mapAsPyObject
-   Py::Object CyPy_Element::mapAsPyObject(const Atlas::Message::MapType& map)
+   Py::Object CyPy_Element::mapAsPyObject(const Atlas::Message::MapType& map, bool useNativePythonType)
   {
     return *static_cast< Py::Object*>(nullptr);
   }
@@ -131,7 +195,7 @@
 
 #ifndef STUB_CyPy_Element_listAsPyObject
 //#define STUB_CyPy_Element_listAsPyObject
-   Py::Object CyPy_Element::listAsPyObject(const Atlas::Message::ListType& list)
+   Py::Object CyPy_Element::listAsPyObject(const Atlas::Message::ListType& list, bool useNativePythonType)
   {
     return *static_cast< Py::Object*>(nullptr);
   }
@@ -160,6 +224,14 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_Element_rich_compare
+
+#ifndef STUB_CyPy_Element_checkIsList
+//#define STUB_CyPy_Element_checkIsList
+  void CyPy_Element::checkIsList()
+  {
+    
+  }
+#endif //STUB_CyPy_Element_checkIsList
 
 
 #endif

@@ -762,7 +762,7 @@ ContainsProperty* ContainsProperty::copy() const
 }
 
 
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 
 #include "stubs/rulesets/stubBaseWorld.h"

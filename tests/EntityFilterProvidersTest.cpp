@@ -83,8 +83,6 @@ class ProvidersTest : public Cyphesis::TestBase {
         ///\In particular, cases of checking for parent type
         void test_InstanceOf();
 
-        Inheritance* m_inheritance;
-
         std::map<std::string, Ref<LocatedEntity>> m_entities;
 
         Ref<LocatedEntity> find_entity(const std::string& id)
@@ -96,9 +94,25 @@ class ProvidersTest : public Cyphesis::TestBase {
             return nullptr;
         }
 
+        TypeNode* find_type(const std::string& id)
+        {
+            auto I = types.find(id);
+            if (I != types.end()) {
+                return I->second;
+            }
+            return nullptr;
+        }
+
         void add_entity(Ref<LocatedEntity> entity)
         {
             m_entities.emplace(entity->getId(), entity);
+        }
+
+        QueryContext prepare_context(QueryContext context)
+        {
+            context.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+            context.type_lookup_fn = [&](const std::string& id) { return find_type(id); };
+            return context;
         }
 };
 
@@ -109,27 +123,27 @@ void ProvidersTest::test_EntityProperty()
 
     auto provider = CreateProvider( { "entity" });
 
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Ptr() == m_b1.get());
 
     //entity.type
     provider = CreateProvider( { "entity", "type" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Ptr() == m_barrelType);
 
     //entity.id
     provider = CreateProvider( { "entity", "id" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Int() == 1);
 
     //entity.mass
     provider = CreateProvider( { "entity", "mass" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Int() == 30);
 
     //entity.burn_speed
     provider = CreateProvider( { "entity", "burn_speed" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Float() == 0.3);
 }
 
@@ -138,27 +152,27 @@ void ProvidersTest::test_BBoxProviders()
     Atlas::Message::Element value;
     //entity.bbox.volume
     auto provider = CreateProvider( { "entity", "bbox", "volume" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Float() == 48.0);
 
     //entity.bbox.height
     provider = CreateProvider( { "entity", "bbox", "height" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Float() == 6.0);
 
     //entity.bbox.width
     provider = CreateProvider( { "entity", "bbox", "width" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Float() == 2.0);
 
     //entity.bbox.depth
     provider = CreateProvider( { "entity", "bbox", "depth" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Float() == 4.0);
 
     //entity.bbox.area
     provider = CreateProvider( { "entity", "bbox", "area" });
-    provider->value(value, QueryContext { *m_b1 });
+    provider->value(value, prepare_context( { *m_b1 }));
     assert(value.Float() == 8.0);
 }
 
@@ -171,7 +185,7 @@ void ProvidersTest::test_GetEntityProviders()
     Atlas::Message::Element value;
     QueryContext queryContext{*m_ch1};
     queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
-    queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+    queryContext.type_lookup_fn = [&](const std::string& id) { return find_type(id); };
 
     getEntityProvider.value(value, queryContext);
 
@@ -215,53 +229,53 @@ void ProvidersTest::test_ComparePredicates()
     //entity.bbox.volume = 48
     ComparePredicate compPred2(lhs_provider2, new FixedElementProvider(48.0f),
                                ComparePredicate::Comparator::EQUALS);
-    assert(compPred2.isMatch(QueryContext { *m_b1 }));
+    assert(compPred2.isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume = 1
     ComparePredicate compPred3(lhs_provider2, new FixedElementProvider(1.0f),
                                ComparePredicate::Comparator::EQUALS);
-    assert(!compPred3.isMatch(QueryContext { *m_b1 }));
+    assert(!compPred3.isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume != 1
     ComparePredicate compPred4(lhs_provider2, new FixedElementProvider(1.0f),
                                ComparePredicate::Comparator::NOT_EQUALS);
-    assert(compPred4.isMatch(QueryContext { *m_b1 }));
+    assert(compPred4.isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume > 0
     ComparePredicate compPred5(lhs_provider2, new FixedElementProvider(0.0f),
                                ComparePredicate::Comparator::GREATER);
-    assert(compPred5.isMatch(QueryContext { *m_b1 }));
+    assert(compPred5.isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume >= 1
     ComparePredicate compPred6(lhs_provider2, new FixedElementProvider(1.0f),
                                ComparePredicate::Comparator::GREATER_EQUAL);
-    assert(compPred6.isMatch(QueryContext { *m_b1 }));
+    assert(compPred6.isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume < 5
     ComparePredicate compPred7(lhs_provider2, new FixedElementProvider(5.0f),
                                ComparePredicate::Comparator::LESS);
-    assert(!compPred7.isMatch(QueryContext { *m_b1 }));
+    assert(!compPred7.isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume <= 48
     ComparePredicate compPred8(lhs_provider2, new FixedElementProvider(48.0f),
                                ComparePredicate::Comparator::LESS_EQUAL);
-    assert(compPred8.isMatch(QueryContext { *m_b1 }));
+    assert(compPred8.isMatch(prepare_context( { *m_b1 })));
 
     //entity.type = types.barrel && entity.bbox.volume = 48
     AndPredicate andPred1(&compPred1, &compPred2);
-    assert(andPred1.isMatch(QueryContext { *m_b1 }));
+    assert(andPred1.isMatch(prepare_context( { *m_b1 })));
 
     //entity.type = types.barrel && entity.bbox.volume = 1
     AndPredicate andPred2(&compPred1, &compPred3);
-    assert(!andPred2.isMatch(QueryContext { *m_b1 }));
+    assert(!andPred2.isMatch(prepare_context( { *m_b1 })));
 
     //entity.type = types.barrel || entity.bbox.volume = 1
     OrPredicate orPred1(&compPred1, &compPred3);
-    assert(orPred1.isMatch(QueryContext { *m_b1 }));
+    assert(orPred1.isMatch(prepare_context( { *m_b1 })));
 
     //not entity.type = types.barrel
     NotPredicate notPred1(&compPred1);
-    assert(orPred1.isMatch((QueryContext { *m_b1 })));
+    assert(orPred1.isMatch((prepare_context( { *m_b1 }))));
 }
 
 void ProvidersTest::test_ListComparators()
@@ -273,22 +287,22 @@ void ProvidersTest::test_ListComparators()
     //entity.float_list contains 20.0
     ComparePredicate compPred9(lhs_provider3, new FixedElementProvider(20.0),
                                ComparePredicate::Comparator::CONTAINS);
-    assert(compPred9.isMatch(QueryContext { *m_b1 }));
+    assert(compPred9.isMatch(prepare_context( { *m_b1 })));
 
     //20.0 in entity.float_list
     ComparePredicate compPred13(new FixedElementProvider(20.0), lhs_provider3,
                                 ComparePredicate::Comparator::IN);
-    assert(compPred13.isMatch(QueryContext { *m_b1 }));
+    assert(compPred13.isMatch(prepare_context( { *m_b1 })));
 
     //entity.float_list contains 100.0
     ComparePredicate compPred10(lhs_provider3, new FixedElementProvider(100.0),
                                 ComparePredicate::Comparator::CONTAINS);
-    assert(!compPred10.isMatch(QueryContext { *m_b1 }));
+    assert(!compPred10.isMatch(prepare_context( { *m_b1 })));
 
     //100.0 in entity.float_list
     ComparePredicate compPred14(new FixedElementProvider(100.0), lhs_provider3,
                                 ComparePredicate::Comparator::IN);
-    assert(!compPred14.isMatch(QueryContext { *m_b1 }));
+    assert(!compPred14.isMatch(prepare_context( { *m_b1 })));
 
     //entity.string_list
     auto lhs_provider4 = CreateProvider( { "entity", "string_list" });
@@ -296,13 +310,13 @@ void ProvidersTest::test_ListComparators()
     //entity.string_list contains "foo"
     ComparePredicate compPred11(lhs_provider4, new FixedElementProvider("foo"),
                                 ComparePredicate::Comparator::CONTAINS);
-    assert(compPred11.isMatch(QueryContext { *m_b1 }));
+    assert(compPred11.isMatch(prepare_context( { *m_b1 })));
 
     //entity.string_list contains "foobar"
     ComparePredicate compPred12(lhs_provider4,
                                 new FixedElementProvider("foobar"),
                                 ComparePredicate::Comparator::CONTAINS);
-    assert(!compPred12.isMatch(QueryContext { *m_b1 }));
+    assert(!compPred12.isMatch(prepare_context( { *m_b1 })));
 }
 
 void ProvidersTest::test_ContainsRecursive()
@@ -322,7 +336,7 @@ void ProvidersTest::test_ContainsRecursive()
     //Check that container has something with mass 30 inside
     ContainsRecursiveFunctionProvider contains_recursive(lhs_provider2,
                                                          &compPred17);
-    contains_recursive.value(value, QueryContext { *m_b1 });
+    contains_recursive.value(value, prepare_context( { *m_b1 }));
     ASSERT_EQUAL(value.Int(), 1);
 
     contains_recursive.value(value, QueryContext { *m_b2 });
@@ -343,13 +357,13 @@ void ProvidersTest::test_ContainsRecursive()
                                                           &compPred18);
 
     //Should be true for both barrels since character is in b2, while b2 is in b1
-    contains_recursive2.value(value, QueryContext { *m_b1 });
+    contains_recursive2.value(value, prepare_context( { *m_b1 }));
     ASSERT_EQUAL(1, value.Int());
 
-    contains_recursive2.value(value, QueryContext { *m_b2 });
+    contains_recursive2.value(value, prepare_context( { *m_b2 }));
     ASSERT_EQUAL(value.Int(), 1);
 
-    contains_recursive2.value(value, QueryContext { *m_ch1 });
+    contains_recursive2.value(value, prepare_context( { *m_ch1 }));
     ASSERT_EQUAL(value.Int(), 0);
 }
 
@@ -367,15 +381,15 @@ void ProvidersTest::test_InstanceOf()
 
     ComparePredicate compPred1(lhs_provider1, rhs_provider1,
                                ComparePredicate::Comparator::INSTANCE_OF);
-    ASSERT_TRUE(compPred1.isMatch(QueryContext { *m_b1 }));
+    ASSERT_TRUE(compPred1.isMatch(prepare_context( { *m_b1 })));
     ASSERT_TRUE(!compPred1.isMatch(QueryContext { thingEntity }));
 
     auto rhs_provider2 = CreateProvider( { "types", "thing" });
 
     ComparePredicate compPred2(lhs_provider1, rhs_provider2,
                                ComparePredicate::Comparator::INSTANCE_OF);
-    ASSERT_TRUE(compPred2.isMatch(QueryContext { *m_b1 }));
-    ASSERT_TRUE(compPred2.isMatch(QueryContext { thingEntity }));
+    ASSERT_TRUE(compPred2.isMatch(prepare_context( { *m_b1 })));
+    ASSERT_TRUE(compPred2.isMatch(prepare_context( { thingEntity })));
 }
 
 ProvidersTest::ProvidersTest()
@@ -392,7 +406,6 @@ ProvidersTest::ProvidersTest()
 
 void ProvidersTest::setup()
 {
-    m_inheritance = new Inheritance();
     //Thing is a parent type for all types except character
     m_thingType = new TypeNode("thing");
     types["thing"] = m_thingType;
@@ -494,7 +507,6 @@ void ProvidersTest::setup()
 
 void ProvidersTest::teardown()
 {
-    delete m_inheritance;
     delete m_barrelType;
     delete m_characterType;
     delete m_clothType;
@@ -535,22 +547,10 @@ int main()
 #include "stubs/rulesets/stubDensityProperty.h"
 #include "stubs/rulesets/stubScaleProperty.h"
 #include "stubs/rulesets/stubAtlasProperties.h"
-#include "stubs/common/stubCustom.h"
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubLocation.h"
-
-#define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent)
-{
-    auto I = types.find(parent);
-    if (I == types.end()) {
-        return 0;
-    }
-    return I->second;
-}
-
-#include "stubs/common/stubInheritance.h"
 
 
 void log(LogLevel lvl, const std::string & msg)

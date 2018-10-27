@@ -374,7 +374,7 @@ EntityVector MemMap::findByType(const std::string& what)
     return res;
 }
 
-EntityVector MemMap::findByLocation(const Location& loc,
+EntityVector MemMap::findByLocation(const EntityLocation& loc,
                                     WFMath::CoordType radius,
                                     const std::string& what)
 {
@@ -403,7 +403,10 @@ EntityVector MemMap::findByLocation(const Location& loc,
             log(ERROR, "Weird entity in memory");
             continue;
         }
-        if (!item->isVisible() || item->getType()->name() != what) {
+        if (!item->isVisible()) {
+            continue;
+        }
+        if (item->getType()->name() != what) {
             continue;
         }
         if (squareDistance(loc.pos(), item->m_location.pos()) < square_range) {
