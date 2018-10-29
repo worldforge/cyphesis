@@ -100,7 +100,7 @@ static void addTypeToList(const Root & type, ListType & typeList)
     }
 }
 
-ExternalMind* Admin::createMind(LocatedEntity* entity) const {
+ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const {
     std::string strId;
 
     auto id = newId(strId);
