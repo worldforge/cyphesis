@@ -68,7 +68,7 @@ class BaseClient {
 
     /// \brief Connect to a remote server using a network socket
     int connect(const std::string & server, int port) {
-        return m_connection.connect(server, port);
+        return m_connection.connect(server, static_cast<unsigned short>(port));
     }
 
     /// \brief Send an operation to the server

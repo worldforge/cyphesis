@@ -29,15 +29,117 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+using Atlas::Message::MapType;
 
 int main()
 {
-    Script test_script;
-    OpVector res;
-    Atlas::Objects::Operation::Get op;
+    {
+        Script test_script;
+        OpVector res;
+        Atlas::Objects::Operation::Get op;
 
-    bool ret = test_script.operation("op", op, res);
-    assert(!ret);
+        bool ret = test_script.operation("op", op, res);
+        assert(!ret);
 
-    test_script.hook("function", 0);
+        test_script.hook("function", nullptr);
+
+    }
+
+
+
+
+    {
+        std::string p, c;
+
+        int ret = Script::getScriptDetails(MapType(),
+                                                    "7d7a418d-52b0-4961-96cb-6030c4f8666a", "RuleHandlertest", p, c);
+        assert(ret == -1);
+
+        assert(p.empty());
+        assert(c.empty());
+    }
+
+    {
+        std::string p, c;
+
+        MapType script;
+        script["name"] = 0x48f9;
+        int ret = Script::getScriptDetails(script,
+                                                    "", "RuleHandlertest", p, c);
+        assert(ret == -1);
+
+        assert(p.empty());
+        assert(c.empty());
+    }
+
+    {
+        std::string p, c;
+
+        MapType script;
+        script["name"] = "foo.bar";
+        int ret = Script::getScriptDetails(script,
+                                                    "", "RuleHandlertest", p, c);
+        assert(ret == -1);
+
+        assert(p.empty());
+        assert(c.empty());
+    }
+
+    {
+        std::string p, c;
+
+        MapType script;
+        script["name"] = "foo.bar";
+        script["language"] = 0x8c39;
+        int ret = Script::getScriptDetails(script,
+                                                    "", "RuleHandlertest", p, c);
+        assert(ret == -1);
+
+        assert(p.empty());
+        assert(c.empty());
+    }
+
+    {
+        std::string p, c;
+
+        MapType script;
+        script["name"] = "foo.bar";
+        script["language"] = "ruby"; // not python
+        int ret = Script::getScriptDetails(script,
+                                                    "", "RuleHandlertest", p, c);
+        assert(ret == -1);
+
+        assert(p.empty());
+        assert(c.empty());
+    }
+
+    {
+        std::string p, c;
+
+        MapType script;
+        script["name"] = "foo.bar";
+        script["language"] = "python";
+        int ret = Script::getScriptDetails(script,
+                                                    "", "RuleHandlertest", p, c);
+        assert(ret == 0);
+
+        assert(p == "foo");
+        assert(c == "bar");
+    }
+
+    {
+        std::string p, c;
+
+        MapType script;
+        script["name"] = "foo";
+        script["language"] = "python";
+        int ret = Script::getScriptDetails(script,
+                                                    "", "RuleHandlertest", p, c);
+        assert(ret == -1);
+
+        assert(p.empty());
+        assert(c.empty());
+    }
 }
+
+#include "stubs/common/stublog.h"

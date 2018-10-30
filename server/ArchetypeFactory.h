@@ -66,7 +66,7 @@ class ArchetypeFactory: public EntityKit
                 Atlas::Message::MapType unresolvedAttributes;
         };
 
-        explicit ArchetypeFactory(ArchetypeFactory & o);
+        ArchetypeFactory(ArchetypeFactory & o);
 
         Ref<LocatedEntity> createEntity(const std::string & id, long intId,
                 EntityCreation& entityCreation, LocatedEntity* location,

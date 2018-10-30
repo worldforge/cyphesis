@@ -41,17 +41,14 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-ArchetypeFactory::ArchetypeFactory()
-{
-}
+ArchetypeFactory::ArchetypeFactory() = default;
 
 ArchetypeFactory::ArchetypeFactory(ArchetypeFactory & o)
+    : EntityKit(o)
 {
 }
 
-ArchetypeFactory::~ArchetypeFactory()
-{
-}
+ArchetypeFactory::~ArchetypeFactory() = default;
 
 Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
         std::map<std::string, EntityCreation>& entities)

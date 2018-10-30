@@ -25,11 +25,9 @@
 class IHeightProvider
 {
 public:
-	virtual ~IHeightProvider()
-	{
-	}
+	virtual ~IHeightProvider() = default;
 
-    /**
+        /**
      * @brief Performs a fast copy of the raw height data for the supplied area.
      * @param xMin Minimum x coord of the area.
      * @param xMax Maximum x coord of the area.

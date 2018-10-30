@@ -395,22 +395,13 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include <Atlas/Objects/Operation.h>
 #include "stubs/rulesets/stubScriptsProperty.h"
 
-CorePropertyManager::CorePropertyManager()
-{
-}
-
-PropertyBase* CorePropertyManager::addProperty(const std::string& name,
-                                               int type)
+#define STUB_CorePropertyManager_addProperty
+PropertyBase* CorePropertyManager::addProperty(const std::string & name, int type)
 {
     return new Property<float>();
 }
 
-int CorePropertyManager::installFactory(const std::string& type_name,
-                                        const Atlas::Objects::Root& type_desc,
-                                        PropertyKit* factory)
-{
-    return 0;
-}
+#include "stubs/server/stubCorePropertyManager.h"
 
 
 #define STUB_ArchetypeFactory_newEntity

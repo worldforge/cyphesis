@@ -55,10 +55,7 @@ class WorldTime {
     }
     double seconds() { return m_time.seconds(); }
     void update(int secs) { m_time.update(secs); }
-    //explicit WorldTime(char * date_time);
     std::string operator[](const std::string & name);
-    //std::string & __repr__();
-    //std::string & __str__();
     bool operator==(const WorldTime & other) const;
     bool operator==(const std::string & when) const;
 };

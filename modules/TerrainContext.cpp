@@ -18,14 +18,10 @@
 
 #include "modules/TerrainContext.h"
 
-TerrainContext::TerrainContext()
-{
-}
+TerrainContext::TerrainContext() = default;
 
 TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
 {
 }
 
-TerrainContext::~TerrainContext()
-{
-}
+TerrainContext::~TerrainContext() = default;

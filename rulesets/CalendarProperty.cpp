@@ -22,8 +22,6 @@
 
 #include "common/debug.h"
 
-static const bool debug_flag = false;
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;

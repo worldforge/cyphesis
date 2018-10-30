@@ -70,7 +70,7 @@ class Entitytest : public Cyphesis::TestBase
     {
       public:
         virtual void install(LocatedEntity *, const std::string &);
-        virtual void apply(LocatedEntity *);
+        void apply(LocatedEntity *) override;
         virtual TestProperty * copy() const;
     };
 
@@ -311,11 +311,6 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/common/stubLink.h"
-
-PropertyKit::~PropertyKit()
-{
-}
-
 #include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)

@@ -25,10 +25,14 @@ class JunctureContext : public IdContext
 {
   public:
     JunctureContext(Interactive &, const std::string & id);
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
-    virtual std::string repr() const;
-    virtual bool checkContextCommand(const struct command *);
+
+    bool accept(const Atlas::Objects::Operation::RootOperation&) const override;
+
+    int dispatch(const Atlas::Objects::Operation::RootOperation&) override;
+
+    std::string repr() const override;
+
+    bool checkContextCommand(const struct command *) override;
 };
 
 #endif // TOOLS_JUNCTURE_CONTEXT_H

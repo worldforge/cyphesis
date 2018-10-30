@@ -33,7 +33,7 @@ class SystemTime {
         return m_timeVal.tv_usec;
     }
     void update() {
-        gettimeofday(&m_timeVal, 0);
+        gettimeofday(&m_timeVal, nullptr);
     }
 };
 

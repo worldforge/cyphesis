@@ -26,12 +26,13 @@ class ConnectionContext : public ObjectContext
   protected:
     long m_refNo;
   public:
-    ConnectionContext(Interactive &);
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
-    virtual std::string repr() const;
-    virtual bool checkContextCommand(const struct command *);
-    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
+    explicit ConnectionContext(Interactive &);
+
+    bool accept(const Atlas::Objects::Operation::RootOperation&) const override;
+    int dispatch(const Atlas::Objects::Operation::RootOperation&) override;
+    std::string repr() const override;
+    bool checkContextCommand(const struct command *) override;
+    void setFromContext(const Atlas::Objects::Operation::RootOperation&) override;
 };
 
 #endif // TOOLS_CONNECTION_CONTEXT_H

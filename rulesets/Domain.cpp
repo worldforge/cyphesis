@@ -25,9 +25,7 @@ Domain::Domain(LocatedEntity& entity) : m_entity(entity)
 {
 }
 
-Domain::~Domain()
-{
-}
+Domain::~Domain() = default;
 
 
 

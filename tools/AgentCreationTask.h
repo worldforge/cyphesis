@@ -36,12 +36,13 @@ class AgentCreationTask: public ClientTask
          */
         AgentCreationTask(const std::string& account_id,
                 const std::string& agent_type);
-        virtual ~AgentCreationTask();
+
+        ~AgentCreationTask() override;
 
         /// \brief Set up the task processing user arguments
-        virtual void setup(const std::string & arg, OpVector &);
+        void setup(const std::string & arg, OpVector &) override;
         /// \brief Handle an operation from the server
-        virtual void operation(const Operation &, OpVector &);
+        void operation(const Operation &, OpVector &) override;
 
         boost::optional<std::string> m_agent_id;
         boost::optional<std::string> m_mind_id;

@@ -49,12 +49,13 @@ class World : public Thing {
 
 public:
     explicit World(const std::string & id, long intId);
-    virtual ~World();
 
-    virtual void LookOperation(const Operation &, OpVector &);
-    virtual void DeleteOperation(const Operation &, OpVector &);
-    virtual void MoveOperation(const Operation &, OpVector &);
-    virtual void RelayOperation(const Operation & op, OpVector & res);
+    ~World() override;
+
+    void LookOperation(const Operation &, OpVector &) override;
+    void DeleteOperation(const Operation &, OpVector &) override;
+    void MoveOperation(const Operation &, OpVector &) override;
+    void RelayOperation(const Operation & op, OpVector & res) override;
 
     /// \brief Relays an operation to an in game entity.
     ///

@@ -26,12 +26,12 @@
 class WaitForDeletionTask: public ClientTask
 {
     public:
-        WaitForDeletionTask(const std::string& entityId);
+        explicit WaitForDeletionTask(const std::string& entityId);
 
         /// \brief Set up the task processing user arguments
-        virtual void setup(const std::string & arg, OpVector &);
+        void setup(const std::string & arg, OpVector &) override;
         /// \brief Handle an operation from the server
-        virtual void operation(const Operation &, OpVector &);
+        void operation(const Operation &, OpVector &) override;
 
     protected:
 

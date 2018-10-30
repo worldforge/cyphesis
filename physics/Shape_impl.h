@@ -92,7 +92,7 @@ WFMath::Polygon<2> MathShape<ShapeT, dim>::outline(WFMath::CoordType precision) 
 {
     int n = m_shape.numCorners();
     WFMath::Polygon<2> shape_outline;
-    for (int i = 0; i < n; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         shape_outline.addCorner(i, getCorner(i));
     }
     return shape_outline;
@@ -125,10 +125,7 @@ template<template <int> class ShapeT, int dim>
 bool MathShape<ShapeT, dim>::equal(const Shape & other) const
 {
     auto rhs = dynamic_cast<const MathShape<ShapeT, dim> *>(&other);
-    if (rhs != nullptr && WFMath::Equal(this->m_shape, rhs->m_shape)) {
-        return true;
-    }
-    return false;
+    return rhs != nullptr && WFMath::Equal(this->m_shape, rhs->m_shape);
 }
 
 template<template <int> class ShapeT, int dim>

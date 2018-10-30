@@ -49,9 +49,7 @@ Database::Database() : m_queryInProgress(false)
 {
 }
 
-Database::~Database()
-{
-}
+Database::~Database() = default;
 
 
 int Database::createInstanceDatabase()

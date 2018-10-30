@@ -56,14 +56,6 @@
   }
 #endif //STUB_WorldRouter_idle
 
-#ifndef STUB_WorldRouter_secondsUntilNextOp
-//#define STUB_WorldRouter_secondsUntilNextOp
-  double WorldRouter::secondsUntilNextOp() const
-  {
-    return 0;
-  }
-#endif //STUB_WorldRouter_secondsUntilNextOp
-
 #ifndef STUB_WorldRouter_addEntity
 //#define STUB_WorldRouter_addEntity
   Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& obj)

@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2012 Alistair Riddoch
 //
@@ -27,9 +29,9 @@ class IdContext : public ObjectContext
     const std::string m_id;
     long m_refNo;
   public:
-    explicit IdContext(Interactive & i, const std::string & id) :
-          ObjectContext(i), m_id(id), m_refNo(0L) { }
-    virtual void setFromContext(const Atlas::Objects::Operation::RootOperation&);
+    explicit IdContext(Interactive & i, std::string id) :
+          ObjectContext(i), m_id(std::move(id)), m_refNo(0L) { }
+    void setFromContext(const Atlas::Objects::Operation::RootOperation&) override;
 };
 
 #endif // TOOLS_ID_CONTEXT_H

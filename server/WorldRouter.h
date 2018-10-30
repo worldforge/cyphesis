@@ -29,7 +29,6 @@
 
 class Spawn;
 
-typedef std::set<LocatedEntity *> EntitySet;
 typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
@@ -67,11 +66,6 @@ class WorldRouter : public BaseWorld {
 
     bool idle() override;
 
-    /**
-     * Gets the number of seconds until the next operation needs to be dispatched.
-     * @return Seconds.
-     */
-    double secondsUntilNextOp() const;
     Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& obj) override;
     Ref<LocatedEntity> addNewEntity(const std::string & type,
                                  const Atlas::Objects::Entity::RootEntity &) override;

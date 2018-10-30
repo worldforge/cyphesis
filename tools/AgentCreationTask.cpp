@@ -39,9 +39,7 @@ AgentCreationTask::AgentCreationTask(const std::string& account_id,
 {
 }
 
-AgentCreationTask::~AgentCreationTask()
-{
-}
+AgentCreationTask::~AgentCreationTask() = default;
 
 void AgentCreationTask::setup(const std::string& arg, OpVector& res)
 {

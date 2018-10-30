@@ -27,16 +27,16 @@
 
 #include <sstream>
 
-static const bool debug_flag = false;
-
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-AreaProperty::AreaProperty(const AreaProperty & other) : m_layer(other.m_layer),
-                                                         m_shape(0)
+AreaProperty::AreaProperty(const AreaProperty& other)
+    : TerrainEffectorProperty(other),
+      m_layer(other.m_layer),
+      m_shape(nullptr)
 {
-    if (other.m_shape != 0) {
+    if (other.m_shape != nullptr) {
         m_shape = other.m_shape->copy();
     }
 }
@@ -44,7 +44,9 @@ AreaProperty::AreaProperty(const AreaProperty & other) : m_layer(other.m_layer),
 /// \brief AreaProperty constructor
 ///
 /// @param flags Flags used to persist this property
-AreaProperty::AreaProperty() : m_layer(0), m_shape(0)
+AreaProperty::AreaProperty() :
+    m_layer(0),
+    m_shape(nullptr)
 {
 }
 
@@ -55,14 +57,14 @@ AreaProperty::~AreaProperty()
 
 void AreaProperty::apply(LocatedEntity * owner)
 {
-    if (m_shape == 0) {
+    if (!m_shape) {
         log(ERROR, "Terrain area has no shape to apply");
         return;
     }
 
     const TerrainProperty * terrain = getTerrain(owner);
 
-    if (terrain == 0) {
+    if (!terrain) {
         log(ERROR, "Terrain area could not find terrain");
         return;
     }
@@ -85,18 +87,18 @@ void AreaProperty::set(const Element & ent)
         return;
     }
     Shape * shape = Shape::newFromAtlas(I->second.Map());
-    if (shape == 0) {
+    if (!shape) {
         return;
     }
     delete m_shape;
     m_shape = dynamic_cast<Form<2> *>(shape);
-    if (m_shape == 0) {
+    if (!m_shape) {
         return;
     }
 
     I = m_data.find("layer");
     if (I != Iend && I->second.isInt()) {
-        m_layer = I->second.Int();
+        m_layer = static_cast<int>(I->second.Int());
     } else {
         m_layer = 0;
     }

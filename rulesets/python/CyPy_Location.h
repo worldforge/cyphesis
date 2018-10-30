@@ -37,7 +37,7 @@ class CyPy_Location : public WrapperBase<Location, CyPy_Location>
 
         Py::Object repr() override;
 
-        virtual Py::Object number_subtract(const Py::Object&);
+        Py::Object number_subtract(const Py::Object&) override;
 
     private:
 

@@ -20,10 +20,7 @@
 
 static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
                                     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-Shaker::Shaker()
-{
-	
-}
+Shaker::Shaker() = default;
 
 /// \brief Generates salt by using 
 /// a Random Number Generator of type WFMath::MTRand
@@ -34,7 +31,7 @@ std::string Shaker::generateSalt(size_t length)
 	
     for (size_t i = 0; i < length; ++i) 
     {
-        unsigned char b = rng.randInt() & 0xff;
+        auto b = static_cast<unsigned char>(rng.randInt() & 0xff);
         salt.push_back(hex_table[b & 0xf]);
         salt.push_back(hex_table[(b & 0xf0) >> 4]);
     }

@@ -28,9 +28,7 @@ using Atlas::Message::MapType;
 template<>
 Monitors* Singleton<Monitors>::ms_Singleton = nullptr;
 
-Monitors::Monitors()
-{
-}
+Monitors::Monitors() = default;
 
 Monitors::~Monitors()
 {
@@ -112,10 +110,10 @@ void Monitors::sendNumerics(std::ostream & io)
 
 int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
 {
-    MonitorDict::const_iterator J = m_variableMonitors.find(key);
+    auto J = m_variableMonitors.find(key);
     if ( J != m_variableMonitors.end() )
     {
-	J->second->send(out_stream);
+	    J->second->send(out_stream);
         return 0;
     }
 

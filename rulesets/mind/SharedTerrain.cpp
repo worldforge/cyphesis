@@ -40,7 +40,7 @@ std::vector<SharedTerrain::BasePointDefinition> SharedTerrain::setBasePoints(con
             changedPoints.push_back(basepointDef);
         }
     }
-    return std::move(changedPoints);
+    return changedPoints;
 }
 
 void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vector<float>& heights) const
@@ -48,10 +48,10 @@ void SharedTerrain::blitHeights(int xMin, int xMax, int yMin, int yMax, std::vec
     int segmentResolution = m_terrain->getResolution();
     int xSize = xMax - xMin;
 
-    int segmentXMin = std::lround(floor(xMin / (double)segmentResolution));
-    int segmentXMax = std::lround(floor(xMax / (double)segmentResolution));
-    int segmentYMin = std::lround(floor(yMin / (double)segmentResolution));
-    int segmentYMax = std::lround(floor(yMax / (double)segmentResolution));
+    int segmentXMin = static_cast<int>(std::lround(floor(xMin / (double)segmentResolution)));
+    int segmentXMax = static_cast<int>(std::lround(floor(xMax / (double)segmentResolution)));
+    int segmentYMin = static_cast<int>(std::lround(floor(yMin / (double)segmentResolution)));
+    int segmentYMax = static_cast<int>(std::lround(floor(yMax / (double)segmentResolution)));
 
     for (int segmentX = segmentXMin; segmentX <= segmentXMax; ++segmentX) {
         for (int segmentY = segmentYMin; segmentY <= segmentYMax; ++segmentY) {

@@ -91,7 +91,7 @@ class Ruleset : public Singleton<Ruleset>{
     void processChangedRules();
   public:
     explicit Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service);
-    ~Ruleset();
+    ~Ruleset() override;
 
     void loadRules(const std::string &);
 

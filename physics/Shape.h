@@ -74,7 +74,7 @@ class Form<2> : public Shape {
     virtual WFMath::Point<2> highCorner() const = 0;
     virtual bool intersect(const WFMath::Point<2> &) const = 0;
 
-    virtual Form<2> * copy() const = 0;
+    Form<2> * copy() const override = 0;
 };
 
 template <>
@@ -86,7 +86,7 @@ class Form<3> : public Shape {
     virtual WFMath::Point<3> highCorner() const = 0;
     virtual bool intersect(const WFMath::Point<3> &) const = 0;
 
-    virtual Form<2> * copy() const = 0;
+    Form<2> * copy() const override = 0;
 };
 
 typedef Form<2> Area;
@@ -103,7 +103,8 @@ class MathShape : public Form<dim> {
     const char * getType() const;
   public:
     MathShape();
-    MathShape(const ShapeT<dim> &);
+
+    explicit MathShape(const ShapeT<dim> &);
 
     virtual size_t size() const;
     virtual bool isValid() const;
@@ -132,9 +133,7 @@ class MathShape : public Form<dim> {
 
 
 template<template <int> class ShapeT, int dim>
-inline MathShape<ShapeT, dim>::MathShape()
-{
-}
+inline MathShape<ShapeT, dim>::MathShape() = default;
 
 template<template <int> class ShapeT, int dim>
 inline MathShape<ShapeT, dim>::MathShape(const ShapeT<dim> & s) : m_shape(s)

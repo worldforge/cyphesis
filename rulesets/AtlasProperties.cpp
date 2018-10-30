@@ -83,9 +83,8 @@ int ContainsProperty::get(Element & e) const
     // addToMessage() if we have to do this here?
     e = ListType();
     ListType & contlist = e.List();
-    LocatedEntitySet::const_iterator Iend = m_data.end();
-    for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
-        contlist.push_back((*I)->getId());
+    for (auto& entry : m_data) {
+        contlist.push_back(entry->getId());
     }
     return 0;
 }
@@ -98,11 +97,10 @@ void ContainsProperty::set(const Element & e)
 
 void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
 {
-    std::list<std::string> & contains = ent->modifyContains();
+    auto& contains = ent->modifyContains();
     contains.clear();
-    LocatedEntitySet::const_iterator Iend = m_data.end();
-    for (LocatedEntitySet::const_iterator I = m_data.begin(); I != Iend; ++I) {
-        contains.push_back((*I)->getId());
+    for (auto& entry : m_data) {
+        contains.push_back(entry->getId());
     }
 }
 

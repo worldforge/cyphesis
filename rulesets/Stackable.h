@@ -38,10 +38,12 @@ class Stackable : public Thing {
   public:
 
     explicit Stackable(const std::string & id, long intId);
-    virtual ~Stackable();
 
-    virtual void CombineOperation(const Operation &, OpVector &);
-    virtual void DivideOperation(const Operation &, OpVector &);
+    ~Stackable() override;
+
+    void CombineOperation(const Operation &, OpVector &) override;
+
+    void DivideOperation(const Operation &, OpVector &) override;
 };
 
 #endif // RULESETS_STACKABLE_H

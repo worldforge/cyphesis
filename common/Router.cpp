@@ -29,9 +29,7 @@ Router::Router(const std::string & id, long intId) : m_id(id),
 {
 }
 
-Router::~Router()
-{
-}
+Router::~Router() = default;
 
 void Router::buildError(const Operation & op,
                         const std::string & errstring,

@@ -24,20 +24,20 @@
 
 class DateTime {
   protected:
-    unsigned int m_second;
-    unsigned int m_minute;
-    unsigned int m_hour;
-    unsigned int m_day;
-    unsigned int m_month;
-    unsigned int m_year;
+    int m_second;
+    int m_minute;
+    int m_hour;
+    int m_day;
+    int m_month;
+    int m_year;
 
-    static unsigned int m_spm; // seconds per minute
-    static unsigned int m_mph; // minutes per hour
-    static unsigned int m_hpd; // hours per day
-    static unsigned int m_dpm; // days per month
-    static unsigned int m_mpy; // months per year
+    static int m_spm; // seconds per minute
+    static int m_mph; // minutes per hour
+    static int m_hpd; // hours per day
+    static int m_dpm; // days per month
+    static int m_mpy; // months per year
 
-    void set(unsigned int);
+    void set(int);
   public:
     explicit DateTime(char *);
     explicit DateTime(int);
@@ -45,8 +45,8 @@ class DateTime {
 
     bool isValid() const;
 
-    static void define(unsigned int spm, unsigned int mph, unsigned int hpd,
-                       unsigned int dpm, unsigned int mpy) {
+    static void define(int spm, int mph, int hpd,
+                       int dpm, int mpy) {
         m_spm = spm; m_mph = mph; m_hpd = hpd; m_dpm = dpm; m_mpy = mpy;
     }
 
@@ -61,11 +61,11 @@ class DateTime {
     int month() const { return m_month; }
     int year() const { return m_year; }
 
-    static unsigned int spm() { return m_spm; }
-    static unsigned int mph() { return m_mph; }
-    static unsigned int hpd() { return m_hpd; }
-    static unsigned int dpm() { return m_dpm; }
-    static unsigned int mpy() { return m_mpy; }
+    static int spm() { return m_spm; }
+    static int mph() { return m_mph; }
+    static int hpd() { return m_hpd; }
+    static int dpm() { return m_dpm; }
+    static int mpy() { return m_mpy; }
 
     bool operator==( const DateTime & ) const;
 };

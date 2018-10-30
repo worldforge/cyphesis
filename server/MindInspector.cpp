@@ -35,9 +35,7 @@ MindInspector::MindInspector() :
 {
 }
 
-MindInspector::~MindInspector()
-{
-}
+MindInspector::~MindInspector() = default;
 
 void MindInspector::queryEntityForThoughts(const std::string& entityId)
 {

@@ -45,29 +45,6 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
-#ifndef STUB_CompareWithPredicate_CompareWithPredicate
-//#define STUB_CompareWithPredicate_CompareWithPredicate
-   CompareWithPredicate::CompareWithPredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, const Consumer<QueryContext>* with, Comparator comparator)
-    : Predicate(lhs, rhs, with, comparator)
-    , m_lhs(nullptr),m_rhs(nullptr),m_with(nullptr)
-  {
-    
-  }
-#endif //STUB_CompareWithPredicate_CompareWithPredicate
-
-#ifndef STUB_CompareWithPredicate_isMatch
-//#define STUB_CompareWithPredicate_isMatch
-  bool CompareWithPredicate::isMatch(const QueryContext& context) const
-  {
-    return false;
-  }
-#endif //STUB_CompareWithPredicate_isMatch
-
-
-}  // namespace EntityFilter
-
-namespace EntityFilter {
-
 #ifndef STUB_AndPredicate_AndPredicate
 //#define STUB_AndPredicate_AndPredicate
    AndPredicate::AndPredicate(const Predicate* lhs, const Predicate* rhs)

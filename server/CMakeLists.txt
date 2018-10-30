@@ -29,7 +29,6 @@ set(cyphesis_files
     StorageManager.cpp
     CorePropertyManager.cpp
     Ruleset.cpp
-    RuleHandler.cpp
     EntityRuleHandler.cpp
     ArchetypeRuleHandler.cpp
     ArchetypeFactory.cpp

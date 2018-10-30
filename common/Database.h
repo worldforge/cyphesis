@@ -90,7 +90,6 @@ class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
 
 class DatabaseResult;
 
-typedef std::vector<std::string> StringVector;
 typedef std::set<std::string> TableSet;
 
 /// \brief Class to provide interface to Database connection
@@ -104,10 +103,6 @@ class Database : public Singleton<Database>
         bool m_queryInProgress;
 
         Decoder m_d;
-        ObjectDecoder m_od;
-
-        // bool command(const std::string & cmd);
-
 
     public:
         typedef enum

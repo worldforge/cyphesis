@@ -35,7 +35,8 @@ class QuaternionProperty: public PropertyBase
         explicit QuaternionProperty() = default;
 
         QuaternionProperty(const QuaternionProperty& rhs);
-        virtual ~QuaternionProperty() = default;
+
+        ~QuaternionProperty() override = default;
 
         int get(Atlas::Message::Element & val) const override;
 

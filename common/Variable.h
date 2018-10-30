@@ -41,11 +41,11 @@ class Variable : public VariableBase {
   protected:
     const T & m_variable;
   public:
-    Variable(const T & variable);
+    explicit Variable(const T & variable);
 
-    virtual ~Variable();
-    virtual void send(std::ostream &);
-    virtual bool isNumeric() const;
+    ~Variable() override;
+    void send(std::ostream &) override;
+    bool isNumeric() const override;
 };
 
 #endif // COMMON_VARIABLE_H

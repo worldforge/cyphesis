@@ -1,3 +1,7 @@
+#include <memory>
+
+#include <memory>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2018 Erik Ogenvik
 //
@@ -98,7 +102,7 @@ int DatabaseSQLite::initConnection()
 
     try {
         boost::filesystem::create_directories(db_path.parent_path());
-        m_database.reset(new database(db_path.c_str()));
+        m_database = std::make_unique<database>(db_path.c_str());
     } catch (const database_error& e) {
         log(WARNING, "Error when opening SQLite database.");
         return -1;
@@ -177,7 +181,7 @@ DatabaseResult DatabaseSQLite::runSimpleSelectQuery(const std::string& query)
     debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
     std::unique_ptr<sqlite3pp::query> query_instance(new sqlite3pp::query(*m_database, query.c_str()));
 
-    return DatabaseResult(std::unique_ptr<DatabaseResultWorkerSqlite>(new DatabaseResultWorkerSqlite(std::move(query_instance))));
+    return DatabaseResult(std::make_unique<DatabaseResultWorkerSqlite>(std::move(query_instance)));
 }
 
 int DatabaseSQLite::runCommandQuery(const std::string& query)
@@ -438,10 +442,10 @@ bool DatabaseResultWorkerSqlite::error() const
 
 DatabaseResult::const_iterator DatabaseResultWorkerSqlite::begin() const
 {
-    return DatabaseResult::const_iterator(std::unique_ptr<const_iterator_worker_sqlite>(new const_iterator_worker_sqlite{*this, m_res->begin()}), *this);
+    return DatabaseResult::const_iterator(std::make_unique<const_iterator_worker_sqlite>(*this, m_res->begin()), *this);
 }
 
 DatabaseResult::const_iterator DatabaseResultWorkerSqlite::end() const
 {
-    return DatabaseResult::const_iterator(std::unique_ptr<const_iterator_worker_sqlite>(new const_iterator_worker_sqlite{*this, m_res->end()}), *this);
+    return DatabaseResult::const_iterator(std::make_unique<const_iterator_worker_sqlite>(*this, m_res->end()), *this);
 }

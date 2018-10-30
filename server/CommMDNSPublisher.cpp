@@ -142,7 +142,7 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
 {
     debug(std::cout << "avahi_watch_new " << fd << " " << callback
                     << std::endl << std::flush;);
-    CommMDNSPublisher * cmp = static_cast<CommMDNSPublisher*>(api->userdata);
+    auto* cmp = static_cast<CommMDNSPublisher*>(api->userdata);
     if (cmp->m_avahiFd != -1) {
         log(ERROR, "Avahi asked for multiple fds. Unable to comply.");
     } else {
@@ -156,7 +156,7 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
         log(WARNING, "Avahi watcher requires unsupported events.");
     }
 
-    AvahiWatch * aw = new AvahiWatch;
+    auto* aw = new AvahiWatch;
     aw->m_publisher = cmp;
     aw->m_requiredEvent = event;
     aw->m_callback = callback;

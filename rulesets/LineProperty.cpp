@@ -25,16 +25,12 @@
 
 #include <sstream>
 
-static const bool debug_flag = false;
-
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-LineProperty::LineProperty()
-{
-}
+LineProperty::LineProperty() = default;
 
 int LineProperty::get(Element & ent) const
 {

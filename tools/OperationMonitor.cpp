@@ -22,9 +22,7 @@
 
 #include <iostream>
 
-OperationMonitor::~OperationMonitor()
-{
-}
+OperationMonitor::~OperationMonitor() = default;
 
 void OperationMonitor::setup(const std::string & arg, OpVector &)
 {

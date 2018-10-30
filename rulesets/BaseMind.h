@@ -24,7 +24,7 @@
 #include "modules/WorldTime.h"
 
 class SimpleTypeStore;
-class TypeStore;
+struct TypeStore;
 
 /// \brief This is core class for representing the mind of an AI entity.
 ///

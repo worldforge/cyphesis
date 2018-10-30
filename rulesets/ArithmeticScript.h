@@ -26,7 +26,7 @@
 /// This base class allows scripts to override attribute requests
 class ArithmeticScript {
   public:
-    virtual ~ArithmeticScript();
+    virtual ~ArithmeticScript() = default;
 
     /// \brief Retrieve a named value from the arithmetic model
     ///

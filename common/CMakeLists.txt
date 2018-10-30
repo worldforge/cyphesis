@@ -19,21 +19,16 @@ add_library(common
     Inheritance.cpp
     Inheritance.h
     Property.cpp
-    PropertyFactory.cpp
     PropertyManager.cpp
-    OperationRouter.cpp
     Router.cpp
-    ../rulesets/BaseWorld.cpp
     AtlasFileLoader.cpp
     Monitors.cpp
     Variable.cpp
     AtlasStreamClient.cpp
     ClientTask.cpp
-    SystemTime.cpp
     EntityKit.cpp
     ScriptKit.h
     Link.cpp
-    atlas_helpers.cpp
     Shaker.cpp
     OperationsDispatcher.cpp
     RuleTraversalTask.cpp
@@ -81,7 +76,8 @@ add_library(common
     MainLoop.cpp
     MainLoop.h
     CommAsioClient_impl.h
-    TypeStore.h)
+    TypeStore.h
+    Hit.h)
 
 target_link_libraries(common ${GCRYPT_LIBRARIES})
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})

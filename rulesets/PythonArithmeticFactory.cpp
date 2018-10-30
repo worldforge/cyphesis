@@ -34,9 +34,7 @@ PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
 }
 
 
-PythonArithmeticFactory::~PythonArithmeticFactory()
-{
-}
+PythonArithmeticFactory::~PythonArithmeticFactory() = default;
 
 int PythonArithmeticFactory::setup()
 {

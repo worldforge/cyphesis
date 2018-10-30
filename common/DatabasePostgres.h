@@ -1,3 +1,5 @@
+#include <memory>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2018 Erik Ogenvik
 //
@@ -202,12 +204,12 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
 
     DatabaseResult::const_iterator begin() const override
     {
-        return DatabaseResult::const_iterator(std::unique_ptr<const_iterator_worker_postgres>(new const_iterator_worker_postgres{*this, 0}), *this);
+        return DatabaseResult::const_iterator(std::make_unique<const_iterator_worker_postgres>(*this, 0), *this);
     }
 
     DatabaseResult::const_iterator end() const override
     {
-        return DatabaseResult::const_iterator(std::unique_ptr<const_iterator_worker_postgres>(new const_iterator_worker_postgres{*this, -1}), *this);
+        return DatabaseResult::const_iterator(std::make_unique<const_iterator_worker_postgres>(*this, -1), *this);
     }
 
 };

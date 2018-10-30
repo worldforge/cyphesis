@@ -41,9 +41,7 @@ EntityFactoryBase::EntityFactoryBase()
 {
 
 }
-EntityFactoryBase::~EntityFactoryBase()
-{
-}
+EntityFactoryBase::~EntityFactoryBase() = default;
 
 
 template <>

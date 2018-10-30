@@ -48,16 +48,14 @@ Stackable::Stackable(const std::string & id, long intId) :
     // m_properties["num"] = new Property<int>(m_num, 0);
 }
 
-Stackable::~Stackable()
-{
-}
+Stackable::~Stackable() = default;
 
 void Stackable::CombineOperation(const Operation & op, OpVector & res)
 {
     int old_num = m_num;
     const std::vector<Root> & args = op->getArgs();
-    std::vector<Root>::const_iterator Iend = args.end();
-    for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
+    auto Iend = args.end();
+    for (auto I = args.begin(); I != Iend; ++I) {
         const Root & arg = *I;
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "Combine op arg has no ID", res, getId());
@@ -73,7 +71,7 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
             // FIXME Send an Unseen op?
             continue;
         }
-        Stackable * obj = dynamic_cast<Stackable *>(ent.get());
+        auto* obj = dynamic_cast<Stackable *>(ent.get());
         if (obj == nullptr) { continue; }
         if (obj->m_type != m_type) { continue; }
         m_num = m_num + obj->m_num;
@@ -109,8 +107,8 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
 {
     int old_num = m_num;
     const std::vector<Root> & args = op->getArgs();
-    std::vector<Root>::const_iterator Iend = args.end();
-    for (std::vector<Root>::const_iterator I = args.begin(); I != Iend; ++I) {
+    auto Iend = args.end();
+    for (auto I = args.begin(); I != Iend; ++I) {
         const Root & arg = *I;
         if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             if (arg->getId() != getId()) {
@@ -121,7 +119,7 @@ void Stackable::DivideOperation(const Operation & op, OpVector & res)
         int new_num = 1;
         Element num_attr;
         if (arg->copyAttr("num", num_attr) != 0 && num_attr.isInt()) {
-            new_num = num_attr.asInt();
+            new_num = static_cast<int>(num_attr.asInt());
         }
         if (m_num <= new_num) {
             log(ERROR, "Attempt to divide entity into a chunk larger than the original");

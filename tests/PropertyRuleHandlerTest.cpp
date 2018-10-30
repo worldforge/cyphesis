@@ -44,7 +44,7 @@ class TestPropertyManager : public PropertyManager
   public:
 
         TestPropertyManager() {
-            m_propertyFactories["int"] = new PropertyFactory<Property<int>>;
+            m_propertyFactories["int"] = std::make_unique<PropertyFactory<Property<int>>>();
         }
     virtual PropertyBase * addProperty(const std::string & name,
                                        int type);
@@ -156,7 +156,7 @@ void PropertyRuleHandlertest::test_install_exists()
 
     PropertyManager::instance().installFactory("existing_int_type",
           Root(),
-          new PropertyFactory<Property<int>>);
+          std::make_unique<PropertyFactory<Property<int>>>());
 
     Anonymous description;
     description->setObjtype("type");
@@ -191,13 +191,6 @@ int main()
 #include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/PropertyFactory_impl.h"
-
-
-PropertyKit::~PropertyKit()
-{
-}
-
-
 #ifndef STUB_PropertyManager_getPropertyFactory
 #define STUB_PropertyManager_getPropertyFactory
 PropertyKit* PropertyManager::getPropertyFactory(const std::string & name) const
@@ -205,7 +198,7 @@ PropertyKit* PropertyManager::getPropertyFactory(const std::string & name) const
     auto I = m_propertyFactories.find(name);
     if (I != m_propertyFactories.end()) {
         assert(I->second != 0);
-        return I->second;
+        return I->second.get();
     }
     return 0;
 }

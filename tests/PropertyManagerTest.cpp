@@ -99,7 +99,7 @@ void PropertyManagertest::test_interface()
 void PropertyManagertest::test_installFactory()
 {
     m_pm->installFactory("test_property_factory",
-                         new TestPropertyFactory);
+                         std::make_unique<TestPropertyFactory>());
 
     ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory") !=
                 m_pm->m_propertyFactories.end());
@@ -109,25 +109,25 @@ void PropertyManagertest::test_installFactory()
 void PropertyManagertest::test_installFactory_duplicate()
 {
     PropertyKit * first = new TestPropertyFactory;
-    m_pm->installFactory("test_property_factory2", first);
+    m_pm->installFactory("test_property_factory2", std::unique_ptr<PropertyKit>(first));
 
     ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory2") !=
                 m_pm->m_propertyFactories.end());
     ASSERT_EQUAL(
-          m_pm->m_propertyFactories.find("test_property_factory2")->second,
+          m_pm->m_propertyFactories.find("test_property_factory2")->second.get(),
           first
     );
     ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
 
     m_pm->installFactory("test_property_factory2",
-                         new TestPropertyFactory);
+                         std::make_unique<TestPropertyFactory>());
 
     // Exactly the same tests as above. The second call should not have
     // installed something else, or affected what is there.
     ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory2") !=
                 m_pm->m_propertyFactories.end());
     ASSERT_EQUAL(
-          m_pm->m_propertyFactories.find("test_property_factory2")->second,
+          m_pm->m_propertyFactories.find("test_property_factory2")->second.get(),
           first
     );
     ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
@@ -136,18 +136,18 @@ void PropertyManagertest::test_installFactory_duplicate()
 void PropertyManagertest::test_getPropertyFactory()
 {
     PropertyKit * first = new TestPropertyFactory;
-    m_pm->installFactory("test_property_factory3", first);
+    m_pm->installFactory("test_property_factory3", std::unique_ptr<PropertyKit>(first));
 
     ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory3") !=
                 m_pm->m_propertyFactories.end());
     ASSERT_EQUAL(
-          m_pm->m_propertyFactories.find("test_property_factory3")->second,
+          m_pm->m_propertyFactories.find("test_property_factory3")->second.get(),
           first
     );
     ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
 
     m_pm->installFactory("test_property_factory3",
-                         new TestPropertyFactory);
+                         std::make_unique<TestPropertyFactory>());
 
     PropertyKit * factory = m_pm->getPropertyFactory("test_property_factory3");
 
@@ -158,18 +158,18 @@ void PropertyManagertest::test_getPropertyFactory()
 void PropertyManagertest::test_getPropertyFactory_nonexist()
 {
     PropertyKit * first = new TestPropertyFactory;
-    m_pm->installFactory("test_property_factory4", first);
+    m_pm->installFactory("test_property_factory4", std::unique_ptr<PropertyKit>(first));
 
     ASSERT_TRUE(m_pm->m_propertyFactories.find("test_property_factory4") !=
                 m_pm->m_propertyFactories.end());
     ASSERT_EQUAL(
-          m_pm->m_propertyFactories.find("test_property_factory4")->second,
+          m_pm->m_propertyFactories.find("test_property_factory4")->second.get(),
           first
     );
     ASSERT_EQUAL(m_pm->m_propertyFactories.size(), 1u);
 
     m_pm->installFactory("test_property_factory4",
-                         new TestPropertyFactory);
+                         std::make_unique<TestPropertyFactory>());
 
     PropertyKit * factory = m_pm->getPropertyFactory("non_existent_factory");
 
@@ -185,6 +185,3 @@ int main()
 
 // stubs
 
-PropertyKit::~PropertyKit()
-{
-}

@@ -50,7 +50,7 @@ int PossessionAuthenticator::addPossession(const std::string & entity_id,
     if (isPending(entity_id)) {
         return -1;
     }
-    PendingPossession * pt = new PendingPossession(entity_id, possess_key);
+    auto pt = new PendingPossession(entity_id, possess_key);
     m_possessions.insert(std::make_pair(entity_id, pt));
     debug(std::cout << String::compose("Added possession auth entry for %1,%2",
                               entity_id, possess_key) << std::endl;);

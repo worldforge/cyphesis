@@ -29,10 +29,14 @@ class AccountContext : public IdContext
     AccountContext(Interactive &,
                    const std::string & id,
                    const std::string & u);
-    virtual bool accept(const Atlas::Objects::Operation::RootOperation&) const;
-    virtual int dispatch(const Atlas::Objects::Operation::RootOperation&);
-    virtual std::string repr() const;
-    virtual bool checkContextCommand(const struct command *);
+
+    bool accept(const Atlas::Objects::Operation::RootOperation&) const override;
+
+    int dispatch(const Atlas::Objects::Operation::RootOperation&) override;
+
+    std::string repr() const override;
+
+    bool checkContextCommand(const struct command *) override;
 };
 
 #endif // TOOLS_ACCOUNT_CONTEXT_H

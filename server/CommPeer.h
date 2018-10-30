@@ -29,7 +29,8 @@ class CommPeer : public CommAsioClient<boost::asio::ip::tcp> {
   public:
     CommPeer(const std::string & name,
             boost::asio::io_service& io_service);
-    virtual ~CommPeer();
+
+    ~CommPeer() override;
 
     void connect(const std::string &, int);
     void connect(const boost::asio::ip::tcp::endpoint&);

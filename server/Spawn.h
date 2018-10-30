@@ -42,9 +42,9 @@ namespace Atlas {
  */
 class Spawn {
   public:
-    virtual ~Spawn(){}
+    virtual ~Spawn() = default;
 
-    /**
+        /**
      * \brief Fills the supplied entity with information used for creating a new entity.
      *
      * \param type The name of the spawn type.

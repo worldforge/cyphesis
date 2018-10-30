@@ -65,7 +65,4 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
     return 0;
 }
 
-ArithmeticKit::~ArithmeticKit()
-{
-}
 #include "stubs/rulesets/stubPythonClass.h"

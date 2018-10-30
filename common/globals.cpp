@@ -1,3 +1,7 @@
+#include <utility>
+
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000-2004 Alistair Riddoch
 //
@@ -185,7 +189,7 @@ class Option {
     const std::string m_value;
     const std::string m_description;
 
-    Option(const std::string & val, const std::string & descr);
+    Option(std::string val, std::string descr);
   public:
     virtual ~Option() = 0;
 
@@ -209,9 +213,9 @@ class DumbOption : public Option {
     const std::string m_default;
   public:
     DumbOption(const std::string & val, const std::string & descr,
-               const std::string & deflt);
+               std::string deflt);
 
-    virtual ~DumbOption() { }
+    ~DumbOption() override = default;
 
     void read(varconf::Variable var) override { }
 
@@ -241,19 +245,17 @@ class StaticOption : public Option {
     
 };
 
-Option::Option(const std::string & val, const std::string & descr) :
-        m_value(val), m_description(descr)
+Option::Option(std::string val, std::string descr) :
+        m_value(std::move(val)), m_description(std::move(descr))
 {
 }
 
-Option::~Option()
-{
-}
+Option::~Option() = default;
 
 DumbOption::DumbOption(const std::string & val,
                        const std::string & descr,
-                       const std::string & deflt) :
-            Option(val, descr), m_default(deflt)
+                       std::string deflt) :
+            Option(val, descr), m_default(std::move(deflt))
 {
 }
 
@@ -305,9 +307,9 @@ class UnixSockOption : public StaticOption<std::string>
                    const char * format) :
         StaticOption<std::string>(val, descr, data), m_format(format) { }
 
-    virtual void missing();
+    void missing() override;
 
-    virtual void postProcess();
+    void postProcess() override;
 };
 
 void UnixSockOption::missing()
@@ -337,7 +339,7 @@ class Options {
     explicit Options();
   public:
     static Options * instance() {
-        if (m_instance == 0) {
+        if (m_instance == nullptr) {
             m_instance = new Options;
         }
         return m_instance;
@@ -357,29 +359,29 @@ class Options {
                    Option *);
 };
 
-Options * Options::m_instance = 0;
+Options * Options::m_instance = nullptr;
 
 Options::Options()
 {
     const usage_data * ud = &usage[0];
-    for (; ud->section != 0; ++ud) {
+    for (; ud->section != nullptr; ++ud) {
         m_sectionMap[ud->section].insert(std::make_pair(ud->option,
               std::unique_ptr<Option>(new DumbOption(ud->value, ud->description, ud->dflt))));
     }
 }
 
 int Options::check_config(varconf::Config & config,
-                          int usage_groups) const
+                          int) const
 {
-    SectionMap::const_iterator I = m_sectionMap.begin();
-    SectionMap::const_iterator Iend = m_sectionMap.end();
+    auto I = m_sectionMap.begin();
+    auto Iend = m_sectionMap.end();
     for (; I != Iend; ++I) {
         const std::string & section_name = I->first;
         const OptionMap & section_help = I->second;
         const varconf::sec_map & section = config.getSection(section_name);
 
-        varconf::sec_map::const_iterator J = section.begin();
-        varconf::sec_map::const_iterator Jend = section.end();
+        auto J = section.begin();
+        auto Jend = section.end();
         for (; J != Jend; ++J) {
             const std::string & option_name = J->first;
             if (section_help.find(J->first) == section_help.end() &&
@@ -543,8 +545,8 @@ int loadConfig(int argc, char ** argv, int usage)
 
     Options * options = Options::instance();
 
-    SectionMap::const_iterator I = options->sectionMap().begin();
-    SectionMap::const_iterator Iend = options->sectionMap().end();
+    auto I = options->sectionMap().begin();
+    auto Iend = options->sectionMap().end();
     OptionMap::const_iterator J;
     OptionMap::const_iterator Jend;
     for (; I != Iend; ++I) {
@@ -664,7 +666,7 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
     std::map<std::string, int> default_commands_flags;
 
     const usage_data * ud = &usage[0];
-    for (; ud->section != 0; ++ud) {
+    for (; ud->section != nullptr; ++ud) {
         std::stringstream ss;
         ss << ud->section << ":" << ud->option;
         default_commands_flags[ss.str()] = ud->flags;
@@ -683,7 +685,7 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
 
 
     std::cout << "Usage: " << prgname << " [options]";
-    if (extras != 0) {
+    if (extras != nullptr) {
         std::cout << " " << extras;
     }
     std::cout << std::endl;
@@ -693,8 +695,8 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
 
     Options * options = Options::instance();
 
-    SectionMap::const_iterator I = options->sectionMap().begin();
-    SectionMap::const_iterator Iend = options->sectionMap().end();
+    auto I = options->sectionMap().begin();
+    auto Iend = options->sectionMap().end();
     OptionMap::const_iterator J;
     OptionMap::const_iterator Jend;
     for (; I != Iend; ++I) {
@@ -719,18 +721,18 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
         Jend = I->second.end();
         for (; J != Jend; ++J) {
             if (isAllowed(I->first, J->first)) {
-                if (I->first.size() != 0) {
+                if (!I->first.empty()) {
                     std::cout << "  --" << I->first << ":" << J->first;
                 } else {
                     std::cout << "  --" << J->first;
                 }
                 const Option * opt = J->second.get();
-                if (opt->value().size() != 0) {
+                if (!opt->value().empty()) {
                     std::cout << "=" << opt->value();
                 }
                 if (opt->size() != 0) {
                     size_t len = I->first.size() + 1 + J->first.size();
-                    if (opt->value().size() != 0) {
+                    if (!opt->value().empty()) {
                         len += (opt->value().size() + 1);
                     }
                     std::cout << std::string(column_width - len + 2, ' ')

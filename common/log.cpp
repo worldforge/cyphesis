@@ -43,7 +43,7 @@ static void logDate(std::ostream & log_stream)
 
 #ifdef HAVE_LOCALTIME_R
 
-    struct tm local_time_buffer;
+    struct tm local_time_buffer{};
 
     local_time = &local_time_buffer;
 

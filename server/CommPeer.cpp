@@ -38,9 +38,7 @@ CommPeer::CommPeer(const std::string & name,
 {
 }
 
-CommPeer::~CommPeer()
-{
-}
+CommPeer::~CommPeer() = default;
 
 /// \brief Connect to a remote peer on a specific port
 ///

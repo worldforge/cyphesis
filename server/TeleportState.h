@@ -35,7 +35,7 @@ class TeleportState
     boost::posix_time::ptime m_teleportTime;  /// \brief The time the teleport took place
 
   public:
-    TeleportState(boost::posix_time::ptime time);
+    explicit TeleportState(boost::posix_time::ptime time);
     
     void setRequested();
     void setCreated();

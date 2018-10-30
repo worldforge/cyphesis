@@ -44,9 +44,9 @@ class InnerTranslatorImpl: public TerrainModTranslator::InnerTranslator
 {
 public:
 	InnerTranslatorImpl(const ShapeT<2>& shape, const Atlas::Message::MapType& data);
-	virtual ~InnerTranslatorImpl() = default;
+	~InnerTranslatorImpl() override = default;
 
-	virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
+    Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) override;
 
 	const ShapeT<2> mShape;
 };
@@ -59,9 +59,9 @@ class InnerTranslatorSlope: public TerrainModTranslator::InnerTranslator
 {
 public:
 	InnerTranslatorSlope(const ShapeT<2>& shape, const Atlas::Message::MapType& data, float dx, float dy);
-	virtual ~InnerTranslatorSlope() = default;
+	~InnerTranslatorSlope() override = default;
 
-	virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
+	Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) override;
 
 	const ShapeT<2> mShape;
 	float mDx;
@@ -142,18 +142,18 @@ TerrainModTranslator::InnerTranslator::InnerTranslator(const Atlas::Message::Map
 float TerrainModTranslator::parsePosition(const WFMath::Point<3> & pos, const MapType& modElement)
 {
 	///If the height is specified use that, else check for a height offset. If none is found, use the default height of the entity position
-	MapType::const_iterator I = modElement.find("height");
+    auto I = modElement.find("height");
 	if (I != modElement.end()) {
 		const Element& modHeightElem = I->second;
 		if (modHeightElem.isNum()) {
-			return modHeightElem.asNum();
+			return static_cast<float>(modHeightElem.asNum());
 		}
 	} else {
 		I = modElement.find("heightoffset");
 		if (I != modElement.end()) {
 			const Element& modHeightElem = I->second;
 			if (modHeightElem.isNum()) {
-				float heightoffset = modHeightElem.asNum();
+				auto heightoffset = static_cast<float>(modHeightElem.asNum());
 				return pos.y() + heightoffset;
 			}
 		}
@@ -168,7 +168,7 @@ TerrainModTranslator::TerrainModTranslator(const Atlas::Message::MapType& data) 
 		mInnerTranslator(nullptr)
 {
 
-	MapType::const_iterator I = data.find("type");
+    auto I = data.find("type");
 	if (I == data.end() || !I->second.isString()) {
 		return;
 	}
@@ -220,7 +220,7 @@ TerrainModTranslator::InnerTranslator* TerrainModTranslator::buildTranslator(con
 
 	if (typeName == "slopemod") {
 
-		MapType::const_iterator I = modElement.find("slopes");
+        auto I = modElement.find("slopes");
 		if (I == modElement.end()) {
 			log(WARNING, "SlopeTerrainMod defined without slopes");
 			return nullptr;
@@ -235,8 +235,8 @@ TerrainModTranslator::InnerTranslator* TerrainModTranslator::buildTranslator(con
 		    log(WARNING, "SlopeTerrainMod defined without slopes");
 			return nullptr;
 		}
-		const float dx = slopes[0].asNum();
-		const float dy = slopes[1].asNum();
+		const auto dx = static_cast<const float>(slopes[0].asNum());
+		const auto dy = static_cast<const float>(slopes[1].asNum());
 
 		return new InnerTranslatorSlope<Shape>(shape, modElement, dx, dy);
 //		return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);

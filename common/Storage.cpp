@@ -122,19 +122,19 @@ int Storage::getAccount(const std::string & username,
     }
     auto result = dr.begin();
     const char * c = result.column("id");
-    if (c == 0) {
+    if (!c) {
         return -1;
     }
     std::string id = c;
 
     c = result.column("password");
-    if (c == 0) {
+    if (!c) {
         return -1;
     }
     std::string password = c;
 
     c = result.column("type");
-    if (c == 0) {
+    if (!c) {
         return -1;
     }
     std::string type = c;

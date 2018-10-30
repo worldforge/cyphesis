@@ -31,9 +31,7 @@ ObserverClient::ObserverClient(boost::asio::io_service& io_service)
 {
 }
 
-ObserverClient::~ObserverClient()
-{
-}
+ObserverClient::~ObserverClient() = default;
 
 int ObserverClient::setup(const std::string & account,
                           const std::string & password,

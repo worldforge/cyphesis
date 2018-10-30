@@ -7,14 +7,6 @@
 #include "common/PropertyFactory.h"
 #include "stubPropertyFactory_custom.h"
 
-#ifndef STUB_PropertyKit_PropertyKit_DTOR
-//#define STUB_PropertyKit_PropertyKit_DTOR
-   PropertyKit::~PropertyKit()
-  {
-    
-  }
-#endif //STUB_PropertyKit_PropertyKit_DTOR
-
 #ifndef STUB_PropertyKit_newProperty
 //#define STUB_PropertyKit_newProperty
   PropertyBase* PropertyKit::newProperty()

@@ -9,7 +9,7 @@
 
 #ifndef STUB_DateTime_set
 //#define STUB_DateTime_set
-  void DateTime::set(unsigned int)
+  void DateTime::set(int)
   {
     
   }

@@ -47,10 +47,8 @@ void output_element(std::ostream & out, const Element & item, size_t depth)
         case Element::TYPE_LIST:
             {
                 out << "[ ";
-                ListType::const_iterator I = item.List().begin();
-                ListType::const_iterator Iend = item.List().end();
-                for(; I != Iend; ++I) {
-                    output_element(out, *I, depth + 1);
+                for(auto& entry : item.List()) {
+                    output_element(out, entry, depth + 1);
                     out << " ";
                 }
                 out << "]";
@@ -59,11 +57,9 @@ void output_element(std::ostream & out, const Element & item, size_t depth)
         case Element::TYPE_MAP:
             {
                 out << "{" << std::endl;
-                MapType::const_iterator I = item.Map().begin();
-                MapType::const_iterator Iend = item.Map().end();
-                for(; I != Iend; ++I) {
-                    out << std::string((depth + 1) * 4, ' ') << I->first << ": ";
-                    output_element(out, I->second, depth + 1);
+                for(auto& entry : item.Map()) {
+                    out << std::string((depth + 1) * 4, ' ') << entry.first << ": ";
+                    output_element(out, entry.second, depth + 1);
                     out << std::endl;
                 }
                 out << std::string(depth * 4, ' ') << "}";
@@ -71,7 +67,7 @@ void output_element(std::ostream & out, const Element & item, size_t depth)
             }
             break;
         default:
-            out << "(\?\?\?)";
+            out << R"((???))";
             break;
     }
 }

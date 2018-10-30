@@ -48,12 +48,12 @@ class RuleTraversalTask : public ClientTask
          */
         RuleTraversalTask(const std::string& accountId,
                 std::function<bool(const Atlas::Objects::Root&)>& visitor);
-        virtual ~RuleTraversalTask();
+        ~RuleTraversalTask() override;
 
         /// \brief Set up the task processing user arguments
-        virtual void setup(const std::string & arg, OpVector &);
+        void setup(const std::string & arg, OpVector &) override;
         /// \brief Handle an operation from the server
-        virtual void operation(const Operation &, OpVector &);
+        void operation(const Operation &, OpVector &) override;
 
     private:
 

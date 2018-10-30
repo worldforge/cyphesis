@@ -7,14 +7,6 @@
 #include "rulesets/ArithmeticScript.h"
 #include "stubArithmeticScript_custom.h"
 
-#ifndef STUB_ArithmeticScript_ArithmeticScript_DTOR
-//#define STUB_ArithmeticScript_ArithmeticScript_DTOR
-   ArithmeticScript::~ArithmeticScript()
-  {
-    
-  }
-#endif //STUB_ArithmeticScript_ArithmeticScript_DTOR
-
 #ifndef STUB_ArithmeticScript_attribute
 //#define STUB_ArithmeticScript_attribute
   int ArithmeticScript::attribute(const std::string & name, float & val)

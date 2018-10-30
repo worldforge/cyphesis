@@ -72,7 +72,7 @@ int main(int argc, char ** argv)
 
     if (optind == (argc - 1)) {
         std::string arg(argv[optind]);
-        std::string::size_type pos = arg.rfind(".");
+        std::string::size_type pos = arg.rfind('.');
         if (pos == std::string::npos) {
             // std::cout << "function " << arg << std::endl << std::flush;
             function = arg;

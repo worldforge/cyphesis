@@ -36,10 +36,7 @@ bool ConnectionContext::accept(const RootOperation& op) const
 {
     debug(std::cout << "Checking connection context to see if it matches"
               << std::endl << std::flush;);
-    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
-        return true;
-    }
-    return false;
+    return m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo;
 }
 
 int ConnectionContext::dispatch(const RootOperation & op)

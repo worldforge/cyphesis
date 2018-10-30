@@ -76,11 +76,6 @@ void WorldTime::initTimeInfo()
 }
 
 
-//WorldTime::WorldTime(char * date_time="1-1-1 0:0:0")
-//{
-    //// time=DateTime(date_time);
-//}
-
 std::string WorldTime::operator[](const std::string & name)
 {
     if (name == "season") {
@@ -101,8 +96,8 @@ bool WorldTime::operator==(const std::string & when) const
 {
     debug(std::cout << "Checking whether it is " << when << " when the date is "
                     << m_time << std::endl << std::flush;);
-            
-    TimeInfo::const_iterator I = m_timeInfo.find(when);
+
+    auto I = m_timeInfo.find(when);
     if (I == m_timeInfo.end()) {
         return false;
     }
@@ -114,8 +109,8 @@ bool WorldTime::operator==(const std::string & when) const
     } else {
         return false;
     }
-    std::list<int>::const_iterator J = I->second.first.begin();
-    std::list<int>::const_iterator Jend = I->second.first.end();
+    auto J = I->second.first.begin();
+    auto Jend = I->second.first.end();
     for (; J != Jend; ++J) {
         if (check == *J) {
             return true;

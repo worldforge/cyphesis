@@ -100,7 +100,7 @@ PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::stri
     factory->m_flags = PropertyBase::flagsForPropertyName(type_name);
     installFactory(type_name,
                    atlasType(type_name, parent),
-                   factory);
+                   std::unique_ptr<PropertyFactory<PropertyT>>(factory));
     return factory;
 }
 
@@ -294,14 +294,14 @@ CorePropertyManager::CorePropertyManager()
 
 int CorePropertyManager::installFactory(const std::string & type_name,
                                         const Root & type_desc,
-                                        PropertyKit * factory)
+                                        std::unique_ptr<PropertyKit> factory)
 {
     Inheritance & i = Inheritance::instance();
     if (i.addChild(type_desc) == nullptr) {
         return -1;
     }
 
-    PropertyManager::installFactory(type_name, factory);
+    PropertyManager::installFactory(type_name, std::move(factory));
 
     return 0;
 }

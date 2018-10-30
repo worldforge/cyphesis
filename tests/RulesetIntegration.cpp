@@ -660,22 +660,13 @@ int main()
 #include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubConnection.h"
 
-CorePropertyManager::CorePropertyManager()
-{
-}
-
-PropertyBase * CorePropertyManager::addProperty(const std::string & name,
-                                                int type)
+#define STUB_CorePropertyManager_addProperty
+PropertyBase* CorePropertyManager::addProperty(const std::string & name, int type)
 {
     return new SoftProperty;
 }
 
-int CorePropertyManager::installFactory(const std::string & type_name,
-                                        const Atlas::Objects::Root & type_desc,
-                                        PropertyKit * factory)
-{
-    return 0;
-}
+#include "stubs/server/stubCorePropertyManager.h"
 #include "stubs/rulesets/stubPlant.h"
 
 Stackable::Stackable(const std::string& id, long idInt)

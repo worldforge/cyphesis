@@ -20,6 +20,7 @@
 #define COMMON_TYPES_H
 
 #include <vector>
+#include <string>
 
 typedef std::vector<std::string> IdList;
 

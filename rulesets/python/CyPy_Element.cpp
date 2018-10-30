@@ -445,11 +445,13 @@ int CyPy_Element::sequence_contains(const Py::Object& object)
 Py::Object CyPy_Element::sequence_inplace_repeat(Py_ssize_t)
 {
 //TODO: implement
+    return self();
 }
 
 Py::Object CyPy_Element::sequence_inplace_concat(const Py::Object&)
 {
 //TODO: implement
+    return self();
 }
 
 int CyPy_Element::sequence_ass_item(Py_ssize_t index, const Py::Object& object)
@@ -467,7 +469,7 @@ Py::Object CyPy_Element::sequence_item(Py_ssize_t index)
 {
     checkIsList();
     if (index < m_value.List().size()) {
-        return wrap(m_value.List().at(index));
+        return wrap(m_value.List().at(static_cast<unsigned long>(index)));
     }
     return Py::None();
 }

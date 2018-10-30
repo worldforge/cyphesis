@@ -243,9 +243,6 @@ int main()
 
 #include "common/log.h"
 
-ObjectContext::~ObjectContext()
-{
-}
 
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = 1000;

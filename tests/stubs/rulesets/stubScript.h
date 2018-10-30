@@ -23,5 +23,13 @@
   }
 #endif //STUB_Script_hook
 
+#ifndef STUB_Script_getScriptDetails
+//#define STUB_Script_getScriptDetails
+   int Script::getScriptDetails(const Atlas::Message::MapType &, const std::string &, const std::string &, std::string &, std::string &)
+  {
+    return 0;
+  }
+#endif //STUB_Script_getScriptDetails
+
 
 #endif

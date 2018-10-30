@@ -28,7 +28,7 @@ class OperationMonitor : public ClientTask {
     int op_count;
     SystemTime start_time;
   public:
-    virtual ~OperationMonitor();
+    ~OperationMonitor() override;
 
     int count() {
         return op_count;
@@ -38,8 +38,8 @@ class OperationMonitor : public ClientTask {
         return start_time.seconds();
     }
 
-    virtual void setup(const std::string & arg, OpVector &);
-    virtual void operation(const Operation & op, OpVector &);
+    void setup(const std::string & arg, OpVector &) override;
+    void operation(const Operation & op, OpVector &) override;
 };
 
 #endif // TOOLS_OPERATION_MONITOR_H

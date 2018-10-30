@@ -32,13 +32,5 @@
   }
 #endif //STUB_AdminMind_addToEntity
 
-#ifndef STUB_AdminMind_adminLookOperation
-//#define STUB_AdminMind_adminLookOperation
-  void AdminMind::adminLookOperation(const Operation & op, OpVector & res)
-  {
-    
-  }
-#endif //STUB_AdminMind_adminLookOperation
-
 
 #endif

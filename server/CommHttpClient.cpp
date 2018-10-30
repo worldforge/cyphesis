@@ -26,9 +26,7 @@ CommHttpClient::CommHttpClient(const std::string & name,
 {
 }
 
-CommHttpClient::~CommHttpClient()
-{
-}
+CommHttpClient::~CommHttpClient() = default;
 
 void CommHttpClient::serveRequest()
 {

@@ -33,7 +33,7 @@ class TerrainContext : public Mercator::Effector::Context
 
     explicit TerrainContext(LocatedEntity*);
 
-    virtual ~TerrainContext();
+    ~TerrainContext() override;
 
     WeakEntityRef & entity() { return m_entity; }
 };

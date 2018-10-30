@@ -142,7 +142,7 @@ struct InputGeometry
 class AwarenessContext: public rcContext
 {
     protected:
-        virtual void doLog(const rcLogCategory category, const char* msg, const int len)
+        void doLog(const rcLogCategory category, const char* msg, const int len) override
         {
             if (category == RC_LOG_PROGRESS) {
                 ::log(INFO, String::compose("Recast: %1", msg));
@@ -1044,7 +1044,7 @@ void Awareness::findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WF
     }
 }
 
-int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, TileCacheData* tiles, const int maxTiles)
+int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, int tx, int ty, TileCacheData* tiles, int maxTiles)
 {
     std::vector<float> vertsVector;
     std::vector<int> trisVector;
@@ -1255,7 +1255,7 @@ void Awareness::processTiles(const WFMath::AxisBox<2>& area,
     }
 }
 
-void Awareness::processTile(const int tx, const int ty,
+void Awareness::processTile(int tx, int ty,
         const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
     dtCompressedTileRef tilesRefs[MAX_LAYERS];

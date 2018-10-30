@@ -64,7 +64,8 @@ class Peer : public Link {
 
     Peer(CommSocket & client, ServerRouting & svr,
          const std::string & addr, int port, const std::string & id, long iid);
-    virtual ~Peer();
+
+    ~Peer() override;
 
     void setAuthState(PeerAuthState state);
     PeerAuthState getAuthState();

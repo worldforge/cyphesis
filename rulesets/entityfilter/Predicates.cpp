@@ -172,7 +172,6 @@ namespace EntityFilter {
                 return false;
             }
         }
-        return false;
     }
 
     AndPredicate::AndPredicate(const Predicate* lhs, const Predicate* rhs) :

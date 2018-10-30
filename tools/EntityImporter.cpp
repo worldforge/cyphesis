@@ -43,7 +43,8 @@ using Atlas::Message::Element;
 
 class ObjectDecoder : public Atlas::Objects::ObjectsDecoder {
   private:
-    virtual void objectArrived(const Atlas::Objects::Root & obj) {
+    void objectArrived(const Atlas::Objects::Root & obj) override
+    {
         m_check = true;
         m_obj = obj;
     }

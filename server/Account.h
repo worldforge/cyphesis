@@ -132,11 +132,6 @@ class Account : public ConnectableRouter {
 
     void addCharacter(const Ref<LocatedEntity>&);
 
-    /// \brief Read only accessor for the Character dictionary
-    const std::map<long, Ref<LocatedEntity>>& getCharacters() const {
-        return m_charactersDict;
-    }
-
     void setConnection(Connection* connection) override;
 
     Connection* getConnection() const override;

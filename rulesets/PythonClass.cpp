@@ -33,14 +33,11 @@ PythonClass::PythonClass(const std::string & package,
                          const std::string & type) :
     m_package(package),
     m_type(type),
-//    m_base(base),
     m_module(nullptr)
 {
 }
 
-PythonClass::~PythonClass()
-{
-}
+PythonClass::~PythonClass() = default;
 
 int PythonClass::load()
 {

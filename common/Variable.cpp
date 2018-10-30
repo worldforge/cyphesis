@@ -20,9 +20,7 @@
 
 #include <iostream>
 
-VariableBase::~VariableBase()
-{
-}
+VariableBase::~VariableBase() = default;
 
 template <typename T>
 Variable<T>::Variable(const T & variable) : m_variable(variable)
@@ -30,9 +28,7 @@ Variable<T>::Variable(const T & variable) : m_variable(variable)
 }
 
 template <typename T>
-Variable<T>::~Variable()
-{
-}
+Variable<T>::~Variable() = default;
 
 template <typename T>
 void Variable<T>::send(std::ostream & o)

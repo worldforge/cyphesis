@@ -25,7 +25,7 @@ class LocatedEntity;
 /// \brief Base class for for factories for creating arithmetic scripts
 class ArithmeticKit {
   public:
-    virtual ~ArithmeticKit();
+    virtual ~ArithmeticKit() = default;
 
     /// \brief Create a new arithmetic model object
     ///

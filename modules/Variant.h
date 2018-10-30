@@ -55,6 +55,12 @@ namespace detail {
     };
 }
 
+/**
+ * Allows composing a variant from lambdas.
+ * @tparam Fs
+ * @param fs
+ * @return
+ */
 template<class...Fs>
 auto compose(Fs&& ...fs)
 {

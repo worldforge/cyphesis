@@ -6,6 +6,7 @@ add_library(rulesetbase
     Location.cpp
     EntityLocation.cpp
     EntityProperty.cpp
+    BaseWorld.cpp
     )
 
 add_library(rulesetentity
@@ -38,8 +39,6 @@ add_library(rulesetentity
     BurnSpeedProperty.cpp
     DecaysProperty.cpp
     Task.cpp
-    ArithmeticScript.cpp
-    ArithmeticFactory.cpp
     SuspendedProperty.cpp
     SpawnerProperty.cpp
     ImmortalProperty.cpp
@@ -117,7 +116,7 @@ add_library(scriptpython
     python/CyPy_Quaternion.cpp python/CyPy_Quaternion.h
     python/CyPy_Axisbox.cpp python/CyPy_Axisbox.h
     python/CyPy_Physics.cpp python/CyPy_Physics.h
-    python/CoordHelper.cpp python/CoordHelper.h
+    python/CoordHelper.h
     python/WrapperBase.cpp python/WrapperBase.h
     python/CyPy_Server.cpp python/CyPy_Server.h
     python/CyPy_MemMap.cpp python/CyPy_MemMap.h

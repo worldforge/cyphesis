@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Message/Element.h>
 
 typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 
@@ -62,6 +63,13 @@ class Script {
     /// @param function name of the function to call in the script
     /// @param entity which has triggered this hook
     virtual void hook(const std::string & function, LocatedEntity * entity);
+
+    static int getScriptDetails(const Atlas::Message::MapType &,
+                                const std::string &,
+                                const std::string &,
+                                std::string &,
+                                std::string &);
+
 };
 
 #endif // RULESETS_SCRIPT_H

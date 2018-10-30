@@ -22,18 +22,18 @@
 
 // date_pat=re.compile("^|[-:]|\s+");
 
-// unsigned int DateTime::m_spm = 60; // seconds per minute
+// int DateTime::m_spm = 60; // seconds per minute
 
 // Acorn 1/3 time hardcoded for now. This means we keep 24 hours per
 // day, and seconds are still the same length. Clocks would still look
 // same too.
-unsigned int DateTime::m_spm = SPM; // seconds per minute
-unsigned int DateTime::m_mph = MPH; // minutes per hour
-unsigned int DateTime::m_hpd = HPD; // hours per day
-unsigned int DateTime::m_dpm = DPM; // days per month
-unsigned int DateTime::m_mpy = MPY; // months per year
+int DateTime::m_spm = SPM; // seconds per minute
+int DateTime::m_mph = MPH; // minutes per hour
+int DateTime::m_hpd = HPD; // hours per day
+int DateTime::m_dpm = DPM; // days per month
+int DateTime::m_mpy = MPY; // months per year
 
-inline void DateTime::set(unsigned int t)
+inline void DateTime::set(int t)
 {
     m_second = t % m_spm;
     t /= m_spm;
@@ -54,14 +54,13 @@ DateTime::DateTime(char * date_time) :
 {
     // Wouldnt it be better do make date_time a std::string directly ?
     std::string date( date_time );
-    if( date.length() == 19 )
-    {
-        m_year = atoi( date.substr( 0, 4 ).c_str() );
-	m_month = atoi( date.substr( 5, 2 ).c_str() );
-	m_day = atoi( date.substr( 8, 2 ).c_str() );
-	m_hour = atoi( date.substr( 11, 2 ).c_str() );
-	m_minute = atoi( date.substr( 14, 2 ).c_str() );
-	m_second = atoi( date.substr( 17, 2 ).c_str() );
+    if( date.length() == 19 ) {
+        m_year      = std::stoi(date.substr(0, 4));
+        m_month     = std::stoi(date.substr(5, 2));
+        m_day       = std::stoi(date.substr(8, 2));
+        m_hour      = std::stoi(date.substr(11, 2));
+        m_minute    = std::stoi(date.substr(14, 2));
+        m_second    = std::stoi(date.substr(17, 2));
     }
 }
 

@@ -189,11 +189,6 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/rulesets/stubLocation.h"
 #include "stubs/rulesets/stubAtlasProperties.h"
-
-ArithmeticScript::~ArithmeticScript()
-{
-}
-
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"

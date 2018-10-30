@@ -117,15 +117,6 @@ int main()
 // stubs
 
 #include "stubs/rulesets/python/stubCyPy_LocatedEntity.h"
-
-ArithmeticKit::~ArithmeticKit()
-{
-}
-
-ArithmeticScript::~ArithmeticScript()
-{
-}
-
 #include "stubs/rulesets/stubPythonArithmeticScript.h"
 
 #include "stubs/rulesets/stubScript.h"

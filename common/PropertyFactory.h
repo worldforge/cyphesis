@@ -26,7 +26,7 @@ class PropertyBase;
 /// \brief Kit interface for factories to create Property objects.
 class PropertyKit {
   public:
-    virtual ~PropertyKit();
+    virtual ~PropertyKit() = default;
 
     /// \brief Create a new Property instance
     virtual PropertyBase * newProperty() = 0;
@@ -41,8 +41,8 @@ class PropertyFactory : public PropertyKit {
   public:
     std::uint32_t m_flags;
     PropertyFactory() : m_flags(0) {}
-    virtual PropertyBase * newProperty();
-    virtual PropertyFactory<T> * duplicateFactory() const;
+    PropertyBase * newProperty() override;
+    PropertyFactory<T> * duplicateFactory() const override;
 };
 
 #endif // COMMON_PROPERTY_FACTORY_H

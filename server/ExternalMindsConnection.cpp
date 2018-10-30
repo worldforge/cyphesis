@@ -26,9 +26,7 @@ ExternalMindsConnection::ExternalMindsConnection(Link* link, const std::string& 
 {
 }
 
-ExternalMindsConnection::~ExternalMindsConnection()
-{
-}
+ExternalMindsConnection::~ExternalMindsConnection() = default;
 
 
 Link* ExternalMindsConnection::getLink() const

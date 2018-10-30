@@ -51,7 +51,6 @@ static const bool debug_flag = false;
 
 class PeerAddress {
   public:
-//    boost::asio::ip::tcp::resolver::iterator tcp_address a;
     boost::asio::ip::tcp::resolver::iterator i;
 };
 

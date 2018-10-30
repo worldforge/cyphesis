@@ -25,9 +25,7 @@ IdleConnector::IdleConnector(boost::asio::io_service & io_service) :  m_timer(io
     idle();
 }
 
-IdleConnector::~IdleConnector()
-{
-}
+IdleConnector::~IdleConnector() = default;
 
 void IdleConnector::idle()
 {

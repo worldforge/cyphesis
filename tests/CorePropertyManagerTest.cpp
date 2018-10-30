@@ -171,7 +171,7 @@ void CorePropertyManagertest::test_installFactory()
     int ret = m_propertyManager->installFactory(
           "new_named_type",
           Root(),
-          new PropertyFactory<MinimalProperty>
+          std::make_unique<PropertyFactory<MinimalProperty>>()
     );
 
     ASSERT_EQUAL(ret, 0);
@@ -334,11 +334,6 @@ template class EntityFactory<World>;
 #include "stubs/rulesets/stubAreaProperty.h"
 #include "stubs/rulesets/stubExternalProperty.h"
 
-
-
-PropertyKit::~PropertyKit()
-{
-}
 
 template <class T>
 PropertyBase * PropertyFactory<T>::newProperty()

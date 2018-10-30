@@ -57,11 +57,9 @@ extern "C" {
 #undef ERROR
 #endif
 
-static const bool debug_flag = false;
-
 unsigned int security_init()
 {
-    gcry_check_version(0);
+    gcry_check_version(nullptr);
 
     return 0;
 }
@@ -70,7 +68,7 @@ static int security_new_key(const std::string & key_filename)
 {
     FILE * key_file = ::fopen(key_filename.c_str(), "wx");
 
-    if (key_file == 0) {
+    if (key_file == nullptr) {
         log(CRITICAL, String::compose("Unable to open file %1 to store server"
                                       " identity", key_filename));
         return -1;
@@ -80,7 +78,7 @@ static int security_new_key(const std::string & key_filename)
 
     gcry_sexp_t key_parameters, key;
 
-    gcry_error_t ret = gcry_sexp_build(&key_parameters, 0,
+    gcry_error_t ret = gcry_sexp_build(&key_parameters, nullptr,
                                        "(genkey(dsa(nbits %d)))", 1024);
 
     if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
@@ -103,7 +101,7 @@ static int security_new_key(const std::string & key_filename)
         return -1;
     }
 
-    size_t ktxtlen = gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, 0, 0);
+    size_t ktxtlen = gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, nullptr, 0);
     char * key_text = new char[ktxtlen];
     gcry_sexp_sprint(key, GCRYSEXP_FMT_CANON, key_text, ktxtlen);
 
@@ -123,7 +121,7 @@ static int security_load_key(const std::string & key_filename, size_t len)
 {
     FILE * key_file = ::fopen(key_filename.c_str(), "r");
 
-    if (key_file == 0) {
+    if (key_file == nullptr) {
         log(CRITICAL, String::compose("Unable to open file %1 to read server"
                                       " identity", key_filename));
         perror("ARSE!");
@@ -163,7 +161,7 @@ unsigned int security_setup()
 {
     std::string key_filename;
     char * home = getenv("HOME");
-    if (home == 0) {
+    if (home == nullptr) {
         std::cout << "No home" << std::endl << std::flush;
         key_filename = String::compose("%1/tmp/cyphesis_%2_id_dsa",
                                        var_directory, instance);
@@ -175,14 +173,14 @@ unsigned int security_setup()
 
     std::cout << "KEY: " << key_filename << std::endl << std::flush;
 
-    struct stat key_stat;
+    struct stat key_stat{};
 
     if (::stat(key_filename.c_str(), &key_stat) != 0) {
         std::cout << "not yet" << std::endl << std::flush;
         security_new_key(key_filename);
     } else {
         std::cout << "loading" << std::endl << std::flush;
-        security_load_key(key_filename, key_stat.st_size);
+        security_load_key(key_filename, static_cast<size_t>(key_stat.st_size));
     }
 
     return SECURITY_OKAY;
@@ -204,7 +202,7 @@ extern "C" void shutdown_on_signal(int signo)
     exit_flag = true;
 
 #if defined(HAVE_SIGACTION)
-    struct sigaction action;
+    struct sigaction action{};
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
@@ -226,7 +224,7 @@ extern "C" void soft_shutdown_on_signal(int signo)
     }
 
 #if defined(HAVE_SIGACTION)
-    struct sigaction action;
+    struct sigaction action{};
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     action.sa_handler = SIG_IGN;
@@ -276,7 +274,7 @@ extern "C" void rotate_logs(int)
 void interactive_signals()
 {
 #if defined(HAVE_SIGACTION)
-    struct sigaction action;
+    struct sigaction action{};
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
@@ -337,7 +335,7 @@ void interactive_signals()
 void daemon_signals()
 {
 #if defined(HAVE_SIGACTION)
-    struct sigaction action;
+    struct sigaction action{};
 
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
@@ -432,7 +430,7 @@ int daemonise()
 
             // Install handler for SIGUSR1
 #if defined(HAVE_SIGACTION)
-            struct sigaction action;
+            struct sigaction action{};
             sigemptyset(&action.sa_mask);
             action.sa_flags = 0;
             action.sa_handler = soft_shutdown_on_signal;
@@ -499,8 +497,8 @@ void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash)
 {
     unsigned int digest_length = gcry_md_get_algo_dlen(hash_algorithm);
-    unsigned char * buf = new unsigned char[digest_length];
-    assert(buf != 0);
+    auto* buf = new unsigned char[digest_length];
+    assert(buf != nullptr);
 
     std::string passwd_and_salt = pwd + salt;
 
@@ -522,7 +520,6 @@ void hash_password(const std::string & pwd, const std::string & salt,
         hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);
     }
     delete [] buf;
-    return;
 }
 
 void encrypt_password(const std::string & pwd, std::string & hash)
@@ -532,7 +529,7 @@ void encrypt_password(const std::string & pwd, std::string & hash)
 
     // Generate 8 bytes of salt
     for (int i = 0; i < hash_salt_size; ++i) {
-        unsigned char b = rng.randInt() & 0xff;
+        auto b = static_cast<unsigned char>(rng.randInt() & 0xff);
         salt.push_back(hex_table[b & 0xf]);
         salt.push_back(hex_table[(b & 0xf0) >> 4]);
     }
@@ -568,7 +565,7 @@ int check_password(const std::string & pwd, const std::string & hash)
 
 int getfiletime(const std::string & filename, time_t & t)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     int ret = ::stat(filename.c_str(), &sbuf);
 

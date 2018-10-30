@@ -31,13 +31,16 @@ class ExternalProperty : public PropertyBase {
   public:
     explicit ExternalProperty(ExternalMind * & data);
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & val,
-                     Atlas::Message::MapType & map) const;
-    virtual void add(const std::string & val,
-                     const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual ExternalProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override;
+    void set(const Atlas::Message::Element & val) override;
+
+    void add(const std::string & val,
+                 Atlas::Message::MapType & map) const override;
+
+    void add(const std::string & val,
+                 const Atlas::Objects::Entity::RootEntity & ent) const override;
+
+    ExternalProperty * copy() const override;
 };
 
 #endif // RULESETS_EXTERNAL_PROPERTY_H

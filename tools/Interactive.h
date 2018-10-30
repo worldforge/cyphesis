@@ -47,19 +47,17 @@ class Interactive : public AdminClient,
     std::weak_ptr<ObjectContext> m_currentContext;
 
   protected:
-    virtual void operation(const Operation &);
-
-    virtual void appearanceArrived(const Operation &);
-    virtual void disappearanceArrived(const Operation &);
-    virtual void infoArrived(const Operation &);
-    virtual void errorArrived(const Operation &);
-    virtual void soundArrived(const Operation &);
-
-    virtual void loginSuccess(const Atlas::Objects::Root & arg);
+    void operation(const Operation &) override;
+    void appearanceArrived(const Operation &) override;
+    void disappearanceArrived(const Operation &) override;
+    void infoArrived(const Operation &) override;
+    void errorArrived(const Operation &) override;
+    void soundArrived(const Operation &) override;
+    void loginSuccess(const Atlas::Objects::Root & arg) override;
 
   public:
-    Interactive(boost::asio::io_service& io_service);
-    ~Interactive();
+    explicit Interactive(boost::asio::io_service& io_service);
+    ~Interactive() override;
 
     int setup();
     void exec(const std::string & cmd, const std::string & arg);

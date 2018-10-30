@@ -32,8 +32,6 @@
 #include <windows.h>
 #endif // HAVE_WINDOWS_H
 
-static const bool debug_flag = false;
-
 void getinstallprefix()
 {
 #ifdef HAVE_WINDOWS_H

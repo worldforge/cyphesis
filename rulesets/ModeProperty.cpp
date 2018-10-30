@@ -37,10 +37,10 @@ void ModeProperty::apply(LocatedEntity *entity)
 
     if (m_data == "planted") {
         //See if there's a rotation we should apply
-        const QuaternionProperty* plantedRotation = entity->getPropertyClass<QuaternionProperty>("planted_rotation");
+        const auto* plantedRotation = entity->getPropertyClass<QuaternionProperty>("planted_rotation");
         if (plantedRotation && plantedRotation->data().isValid()) {
             //Check that the rotation is applied already, otherwise apply it.
-            QuaternionProperty* activeRotationProp = entity->requirePropertyClass<QuaternionProperty>("active_rotation");
+            auto* activeRotationProp = entity->requirePropertyClass<QuaternionProperty>("active_rotation");
             if (activeRotationProp->data() != plantedRotation->data()) {
                 WFMath::Quaternion currentOrientation = entity->m_location.orientation();
 
@@ -74,7 +74,7 @@ void ModeProperty::apply(LocatedEntity *entity)
         }
     } else {
         if (entity->hasAttr("active_rotation")) {
-            QuaternionProperty* activeRotationProp = entity->modPropertyClass<QuaternionProperty>("active_rotation");
+            auto* activeRotationProp = entity->modPropertyClass<QuaternionProperty>("active_rotation");
             if (activeRotationProp->data().isValid()) {
                 WFMath::Quaternion currentOrientation = entity->m_location.orientation();
 

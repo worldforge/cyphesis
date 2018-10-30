@@ -36,8 +36,9 @@ using Atlas::Message::FloatType;
 /// script must not be. The script is re-instantiated when apply is called
 /// on the enity instance.
 StatisticsProperty::StatisticsProperty(const StatisticsProperty & other) :
+    PropertyBase(other),
     m_data(other.m_data),
-    m_script(0)
+    m_script(nullptr)
 {
 }
 
@@ -45,7 +46,7 @@ StatisticsProperty::StatisticsProperty(const StatisticsProperty & other) :
 ///
 /// @param data variable that holds the Property value
 /// @param flags flags to indicate how this property is stored
-StatisticsProperty::StatisticsProperty() : m_script(0)
+StatisticsProperty::StatisticsProperty() : m_script(nullptr)
 {
 }
 
@@ -60,22 +61,22 @@ void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
 
 void StatisticsProperty::apply(LocatedEntity * ent)
 {
-    if (m_script == 0) {
-        LocatedEntity * instance = 0;
+    if (m_script == nullptr) {
+        LocatedEntity * instance = nullptr;
         if (hasFlags(flag_class)) {
         } else {
             instance = ent;
         }
 
         m_script = BaseWorld::instance().newArithmetic("statistics", instance);
-        if (m_script == 0) {
+        if (m_script == nullptr) {
             return;
         }
     }
     std::map<std::string, double>::const_iterator I = m_data.begin();
     std::map<std::string, double>::const_iterator Iend = m_data.end();
     for (; I != Iend; ++I) {
-        m_script->set(I->first, I->second);
+        m_script->set(I->first, static_cast<const float&>(I->second));
     }
 }
 
@@ -84,8 +85,8 @@ int StatisticsProperty::get(Element & val) const
     val = MapType();
     MapType & val_map = val.Map();
 
-    std::map<std::string, double>::const_iterator I = m_data.begin();
-    std::map<std::string, double>::const_iterator Iend = m_data.end();
+    auto I = m_data.begin();
+    auto Iend = m_data.end();
     for (; I != Iend; ++I) {
         val_map[I->first] = I->second;
     }
@@ -99,8 +100,8 @@ void StatisticsProperty::set(const Element & ent)
         return;
     }
     const MapType & smap = ent.Map();
-    MapType::const_iterator I = smap.begin();
-    MapType::const_iterator Iend = smap.end();
+    auto I = smap.begin();
+    auto Iend = smap.end();
     for (; I != Iend; ++I) {
         if (!I->second.isNum()) {
             log(WARNING, "Non numeric stat");

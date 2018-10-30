@@ -39,17 +39,20 @@ class StatisticsProperty : public PropertyBase {
     static constexpr const char* property_atlastype = "map";
 
     explicit StatisticsProperty();
-    virtual ~StatisticsProperty();
+
+    ~StatisticsProperty() override;
 
     ArithmeticScript * script() { return m_script; }
     const ArithmeticScript * script() const { return m_script; }
 
-    virtual void install(LocatedEntity *, const std::string &);
-    virtual void apply(LocatedEntity *);
+    void install(LocatedEntity *, const std::string &) override;
+    void apply(LocatedEntity *) override;
 
-    virtual int get(Atlas::Message::Element &) const;
-    virtual void set(const Atlas::Message::Element &);
-    virtual StatisticsProperty * copy() const;
+    int get(Atlas::Message::Element &) const override;
+
+    void set(const Atlas::Message::Element &) override;
+
+    StatisticsProperty * copy() const override;
 
     bool getStat(const std::string & name, double & val) const;
 };

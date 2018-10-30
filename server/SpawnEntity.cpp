@@ -127,8 +127,8 @@ int SpawnEntity::placeInSpawn(Location& location) const
 {
 
     location.m_parent = m_ent->m_location.m_parent;
-    const AreaProperty * ap = m_ent->getPropertyClassFixed<AreaProperty>();
-    if (ap != 0 && ap->shape()) {
+    const auto* ap = m_ent->getPropertyClassFixed<AreaProperty>();
+    if (ap && ap->shape()) {
         // FIXME orientation ignored
         const Area * spawn_area = ap->shape();
         WFMath::AxisBox<2> spawn_box = spawn_area->footprint();

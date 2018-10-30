@@ -41,9 +41,7 @@ EntityTraversalTask::EntityTraversalTask(const std::string& accountId,
 {
 }
 
-EntityTraversalTask::~EntityTraversalTask()
-{
-}
+EntityTraversalTask::~EntityTraversalTask() = default;
 
 void EntityTraversalTask::setup(const std::string & arg, OpVector & res)
 {

@@ -181,11 +181,6 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "stubs/rulesets/stubBaseWorld.h"
 #include "stubs/rulesets/stubScript.h"
 #include "stubs/rulesets/stubAtlasProperties.h"
-
-PropertyKit::~PropertyKit()
-{
-}
-
 #include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)

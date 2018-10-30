@@ -52,7 +52,7 @@ class EntityBuilder : public Singleton<EntityBuilder> {
 
   public:
     explicit EntityBuilder();
-    ~EntityBuilder();
+    ~EntityBuilder() override;
 
     int installFactory(const std::string & class_name,
                        const Atlas::Objects::Root & class_desc,

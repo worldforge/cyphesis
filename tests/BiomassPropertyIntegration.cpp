@@ -204,10 +204,6 @@ ContainsProperty * ContainsProperty::copy() const
     return 0;
 }
 
-PropertyKit::~PropertyKit()
-{
-}
-
 long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);

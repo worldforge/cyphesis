@@ -84,7 +84,8 @@ protected:
 	class InnerTranslator
 	{
 	public:
-		InnerTranslator(const Atlas::Message::MapType &);
+        explicit InnerTranslator(const Atlas::Message::MapType &);
+        virtual ~InnerTranslator() = default;
 		virtual Mercator::TerrainMod* createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
 	protected:
 		const Atlas::Message::MapType mData;

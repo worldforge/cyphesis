@@ -26,9 +26,8 @@ template<typename List_T>
 void objectListAsMessage(const List_T & l, Atlas::Message::ListType & ol)
 {
     ol.clear();
-    typename List_T::const_iterator Iend = l.end();
-    for (typename List_T::const_iterator I = l.begin(); I != Iend; ++I) {
-        ol.push_back(I->toAtlas());
+    for (auto& entry : l) {
+        ol.push_back(entry.toAtlas());
     }
 }
 
@@ -37,11 +36,10 @@ inline int objectListFromMessage(const Atlas::Message::ListType & l,
                                  List_T & ol)
 {
     ol.clear();
-    
-    Atlas::Message::ListType::const_iterator Iend = l.end();
-    for (Atlas::Message::ListType::const_iterator I = l.begin(); I != Iend; ++I) {
+
+    for (auto& entry : l) {
         try {
-            ol.push_back(T(I->asList()));
+            ol.push_back(T(entry.asList()));
         }
         catch (const Atlas::Message::WrongTypeException&) {
             return -1;

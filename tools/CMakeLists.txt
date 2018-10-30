@@ -9,8 +9,7 @@ add_executable(cycmd
         EntityImporterBase.cpp
         EntityImporter.cpp
         AdminClient.cpp
-        ObjectContext.cpp
-        IdContext.cpp
+    IdContext.cpp
         AccountContext.cpp
         AvatarContext.cpp
         ConnectionContext.cpp

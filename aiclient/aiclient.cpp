@@ -1,5 +1,4 @@
 // Cyphesis Online RPG Server and AI Engine
-#include <rulesets/mind/AwareMindFactory.h>
 // Copyright (C) 2001 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
@@ -16,10 +15,10 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-#include <Python.h>
 #include "PossessionClient.h"
 #include "rulesets/Python_API.h"
 #include "rulesets/PythonScriptFactory.h"
+#include "rulesets/mind/AwareMindFactory.h"
 
 #include "common/sockets.h"
 #include "common/SystemTime.h"

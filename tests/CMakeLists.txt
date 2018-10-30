@@ -84,7 +84,7 @@ wf_add_test(StorageTest.cpp ${PROJECT_SOURCE_DIR}/common/Storage.cpp)
 wf_add_test(debugTest.cpp ${PROJECT_SOURCE_DIR}/common/debug.cpp)
 wf_add_test(globalsTest.cpp ${PROJECT_SOURCE_DIR}/common/globals.cpp)
 target_compile_definitions(globalsTest PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}" -DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}" -DSYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}" -DLOCALSTATEDIR="${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
-wf_add_test(OperationRouterTest.cpp ${PROJECT_SOURCE_DIR}/common/OperationRouter.cpp)
+wf_add_test(OperationRouterTest.cpp)
 wf_add_test(RouterTest.cpp ${PROJECT_SOURCE_DIR}/common/Router.cpp)
 wf_add_test(client_socketTest.cpp ${PROJECT_SOURCE_DIR}/common/client_socket.cpp)
 wf_add_test(customTest.cpp ${PROJECT_SOURCE_DIR}/common/custom.cpp)
@@ -94,17 +94,16 @@ wf_add_test(serialnoTest.cpp)
 wf_add_test(newidTest.cpp ${PROJECT_SOURCE_DIR}/common/newid.cpp)
 wf_add_test(TypeNodeTest.cpp ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(FormattedXMLWriterTest.cpp ${PROJECT_SOURCE_DIR}/common/FormattedXMLWriter.cpp)
-wf_add_test(PropertyFactoryTest.cpp ${PROJECT_SOURCE_DIR}/common/PropertyFactory.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
+wf_add_test(PropertyFactoryTest.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(PropertyManagerTest.cpp ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp)
 wf_add_test(VariableTest.cpp ${PROJECT_SOURCE_DIR}/common/Variable.cpp)
 wf_add_test(AtlasStreamClientTest.cpp ${PROJECT_SOURCE_DIR}/common/AtlasStreamClient.cpp)
 wf_add_test(ClientTaskTest.cpp ${PROJECT_SOURCE_DIR}/common/ClientTask.cpp)
 wf_add_test(utilsTest.cpp ${PROJECT_SOURCE_DIR}/common/utils.cpp)
-wf_add_test(SystemTimeTest.cpp ${PROJECT_SOURCE_DIR}/common/SystemTime.cpp)
+wf_add_test(SystemTimeTest.cpp)
 wf_add_test(ShakerTest.cpp ${PROJECT_SOURCE_DIR}/common/Shaker.cpp)
 wf_add_test(ScriptKitTest.cpp)
 wf_add_test(EntityKitTest.cpp ${PROJECT_SOURCE_DIR}/common/EntityKit.cpp)
-wf_add_test(atlas_helpersTest.cpp ${PROJECT_SOURCE_DIR}/common/atlas_helpers.cpp)
 wf_add_test(LinkTest.cpp ${PROJECT_SOURCE_DIR}/common/Link.cpp)
 wf_add_test(CommSocketTest.cpp)
 wf_add_test(composeTest.cpp)
@@ -220,11 +219,11 @@ wf_add_test(MovementTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Movement.cpp)
 wf_add_test(PedestrianTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Pedestrian.cpp ${PROJECT_SOURCE_DIR}/rulesets/Movement.cpp)
 wf_add_test(ExternalMindTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
 wf_add_test(PythonContextTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonContext.cpp)
-wf_add_test(ArithmeticScriptTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ArithmeticScript.cpp)
+wf_add_test(ArithmeticScriptTest.cpp)
 wf_add_test(PythonArithmeticScriptTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonArithmeticScript.cpp)
 target_link_libraries(PythonArithmeticScriptTest pycxx)
 
-wf_add_test(ArithmeticFactoryTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ArithmeticFactory.cpp)
+wf_add_test(ArithmeticFactoryTest.cpp)
 wf_add_test(PythonArithmeticFactoryTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonArithmeticFactory.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/PythonClass.cpp)
 target_link_libraries(PythonArithmeticFactoryTest pycxx)
@@ -232,7 +231,6 @@ wf_add_test(TerrainModTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslat
 wf_add_test(TerrainEffectorPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp)
 wf_add_test(GeometryPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(ScriptsPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ScriptsProperty.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 
 #Python ruleset tests
 
@@ -476,8 +474,7 @@ wf_add_test(PendingTeleportTest.cpp ${PROJECT_SOURCE_DIR}/server/PendingPossessi
 wf_add_test(JunctureTest.cpp ${PROJECT_SOURCE_DIR}/server/Juncture.cpp)
 wf_add_test(ConnectableRouterTest.cpp)
 wf_add_test(OpRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/OpRuleHandler.cpp)
-wf_add_test(EntityRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
-    ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp)
+wf_add_test(EntityRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp)
 target_link_libraries(EntityRuleHandlerTest pycxx)
 
 wf_add_test(PropertyRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/PropertyRuleHandler.cpp)
@@ -492,14 +489,14 @@ wf_add_test(WorldRouterIntegration.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.
     ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
     ${PROJECT_SOURCE_DIR}/server/EntityFactory.cpp
     ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
-    ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp
     ${PROJECT_SOURCE_DIR}/server/ArithmeticBuilder.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
     ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/World.cpp)
+    ${PROJECT_SOURCE_DIR}/rulesets/World.cpp
+    ${PROJECT_SOURCE_DIR}/rulesets/BaseWorld.cpp)
 target_link_libraries(WorldRouterIntegration modules physics common pycxx)
 wf_add_test(RulesetIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Ruleset.cpp
     ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
@@ -508,8 +505,8 @@ wf_add_test(RulesetIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Ruleset.cpp
     ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/ArchetypeRuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/PropertyRuleHandler.cpp
-    ${PROJECT_SOURCE_DIR}/server/RuleHandler.cpp
-    ${PROJECT_SOURCE_DIR}/server/Persistence.cpp)
+    ${PROJECT_SOURCE_DIR}/server/Persistence.cpp
+    ${PROJECT_SOURCE_DIR}/rulesets/BaseWorld.cpp)
 target_link_libraries(RulesetIntegration common pycxx)
 #Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 wf_add_test(ConnectionShakerIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Connection.cpp

@@ -48,7 +48,7 @@ void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::er
             default:
                 break;
         }
-        this_.async_wait(std::bind(interactiveSignalsHandler, std::ref(this_), std::placeholders::_1, std::placeholders::_2));
+        this_.async_wait([&this_](boost::system::error_code error, int signal_number){interactiveSignalsHandler(this_, error, signal_number);});
     }
 }
 
@@ -69,7 +69,7 @@ void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_c
             default:
                 break;
         }
-        this_.async_wait(std::bind(daemonSignalsHandler, std::ref(this_), std::placeholders::_1, std::placeholders::_2));
+        this_.async_wait([&this_](boost::system::error_code error, int signal_number){daemonSignalsHandler(this_, error, signal_number);});
     }
 }
 
@@ -84,11 +84,11 @@ void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsH
         signalSet.add(SIGHUP);
         signalSet.add(SIGQUIT);
 
-        signalSet.async_wait(std::bind(interactiveSignalsHandler, std::ref(signalSet), std::placeholders::_1, std::placeholders::_2));
+        signalSet.async_wait([&signalSet](boost::system::error_code error, int signal_number){interactiveSignalsHandler(signalSet, error, signal_number);});
     } else {
         signalSet.add(SIGTERM);
 
-        signalSet.async_wait(std::bind(daemonSignalsHandler, std::ref(signalSet), std::placeholders::_1, std::placeholders::_2));
+        signalSet.async_wait([&signalSet](boost::system::error_code error, int signal_number){daemonSignalsHandler(signalSet, error, signal_number);});
     }
 
 

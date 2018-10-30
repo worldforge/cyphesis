@@ -19,11 +19,13 @@
 #ifndef COMMON_PROPERTY_MANAGER_H
 #define COMMON_PROPERTY_MANAGER_H
 
+#include "Singleton.h"
+
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <map>
 #include <string>
-#include "Singleton.h"
+#include <memory>
 
 class PropertyBase;
 class PropertyKit;
@@ -34,12 +36,12 @@ typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
 class PropertyManager : public Singleton<PropertyManager> {
   protected:
     // Data structure for factories and the like?
-    std::map<std::string, PropertyKit *> m_propertyFactories;
+    std::map<std::string, std::unique_ptr<PropertyKit>> m_propertyFactories;
 
-    PropertyManager() = default;
+    PropertyManager();
 
     void installFactory(const std::string &,
-                        PropertyKit *);
+                        std::unique_ptr<PropertyKit>);
   public:
     ~PropertyManager() override;
 
@@ -51,7 +53,7 @@ class PropertyManager : public Singleton<PropertyManager> {
 
     virtual int installFactory(const std::string & type_name,
                                const Atlas::Objects::Root & type_desc,
-                               PropertyKit * factory);
+                               std::unique_ptr<PropertyKit> factory);
 
     PropertyKit * getPropertyFactory(const std::string &) const;
 

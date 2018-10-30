@@ -33,10 +33,12 @@ class Flusher : public ClientTask {
     std::string type;
   public:
     explicit Flusher(const std::shared_ptr<ObjectContext> & context);
-    virtual ~Flusher();
 
-    virtual void setup(const std::string & arg, OpVector & ret);
-    virtual void operation(const Operation & op, OpVector & res);
+    ~Flusher() override;
+
+    void setup(const std::string & arg, OpVector & ret) override;
+
+    void operation(const Operation & op, OpVector & res) override;
 };
 
 #endif // TOOLS_FLUSHER_H

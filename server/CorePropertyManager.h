@@ -47,9 +47,9 @@ class CorePropertyManager : public PropertyManager {
 
     PropertyBase * addProperty(const std::string & name, int type) override;
 
-    int installFactory(const std::string & type_name,
-                               const Atlas::Objects::Root & type_desc,
-                               PropertyKit * factory) override;
+    int installFactory(const std::string& type_name,
+                       const Atlas::Objects::Root& type_desc,
+                       std::unique_ptr<PropertyKit> factory) override;
 
     friend class CorePropertyManagertest;
 };

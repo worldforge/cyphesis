@@ -27,14 +27,10 @@ EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
 }
 
 template <class T>
-EntityFactory<T>::EntityFactory()
-{
-}
+EntityFactory<T>::EntityFactory() = default;
 
 template <class T>
-EntityFactory<T>::~EntityFactory()
-{
-}
+EntityFactory<T>::~EntityFactory() = default;
 
 template <class T>
 Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId,

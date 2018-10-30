@@ -53,7 +53,7 @@ class NameProperty : public Property<std::string> {
   public:
     explicit NameProperty(unsigned int flags);
 
-    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
+    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
 };
 
 class LocatedEntity;
@@ -68,10 +68,11 @@ class ContainsProperty : public PropertyBase {
   public:
     explicit ContainsProperty(LocatedEntitySet & data);
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
-    virtual ContainsProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override;
+    void set(const Atlas::Message::Element & val) override;
+    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+
+    ContainsProperty * copy() const override;
 };
 
 #endif // RULESETS_ATLAS_PROPERTIES_H

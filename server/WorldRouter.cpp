@@ -517,10 +517,6 @@ bool WorldRouter::idle()
 }
 
 
-double WorldRouter::secondsUntilNextOp() const {
-    return m_operationsDispatcher.secondsUntilNextOp();
-}
-
 /// Find an entity of the given name. This is provided to allow administrators
 /// to perform certain admin tasks. It finds and returns the first instance
 /// with the name provided in the game world.

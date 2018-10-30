@@ -39,7 +39,6 @@ namespace Atlas
 {
 class Bridge;
 class Codec;
-class Encoder;
 namespace Objects
 {
 

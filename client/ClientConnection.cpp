@@ -35,9 +35,7 @@ ClientConnection::ClientConnection(boost::asio::io_service& io_service)
 {
 }
 
-ClientConnection::~ClientConnection()
-{
-}
+ClientConnection::~ClientConnection() = default;
 
 void ClientConnection::operation(const RootOperation & op)
 {

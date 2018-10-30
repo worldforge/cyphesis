@@ -34,10 +34,12 @@ class LineProperty : public PropertyBase {
     static constexpr const char* property_atlastype = "list";
     explicit LineProperty();
 
-    virtual int get(Atlas::Message::Element & val) const;
-    virtual void set(const Atlas::Message::Element & val);
-    virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
-    virtual LineProperty * copy() const;
+    int get(Atlas::Message::Element & val) const override;
+    void set(const Atlas::Message::Element & val) override;
+
+    void add(const std::string & key, Atlas::Message::MapType & map) const override;
+
+    LineProperty * copy() const override;
 };
 
 #endif // RULESETS_LINE_PROPERTY_H

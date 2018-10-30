@@ -31,8 +31,8 @@ class ObserverClient : public BaseClient {
   protected:
     std::string m_server;
   public:
-    ObserverClient(boost::asio::io_service& io_service);
-    virtual ~ObserverClient();
+    explicit ObserverClient(boost::asio::io_service& io_service);
+    ~ObserverClient() override;
 
     void setServer(const std::string & server) {
         m_server = server;
@@ -42,7 +42,7 @@ class ObserverClient : public BaseClient {
               const std::string & password = "",
               const std::string & avatar = "creator");
     int teardown();
-    void idle();
+    void idle() override;
 };
 
 #endif // CLIENT_OBSERVER_CLIENT_H

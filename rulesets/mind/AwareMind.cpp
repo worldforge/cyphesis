@@ -293,8 +293,11 @@ void AwareMind::parseTerrain(const Atlas::Message::Element& terrainElement)
                             continue;
                         }
 
-                        pointDefs.emplace_back(
-                                SharedTerrain::BasePointDefinition { (int)pointsList[0].asNum(), (int)pointsList[1].asNum(), Mercator::BasePoint(pointsList[2].asNum()) });
+                        pointDefs.emplace_back(SharedTerrain::BasePointDefinition{
+                            (int) pointsList[0].asNum(),
+                            (int) pointsList[1].asNum(),
+                            Mercator::BasePoint(static_cast<float>(pointsList[2].asNum()))
+                        });
                     }
                 }
             }

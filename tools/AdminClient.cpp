@@ -53,9 +53,7 @@ AdminClient::AdminClient(boost::asio::io_service& io_service)
 {
 }
 
-AdminClient::~AdminClient()
-{
-}
+AdminClient::~AdminClient() = default;
 
 /// \brief Read login credentials from standard input
 void AdminClient::getLogin()

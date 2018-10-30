@@ -7,9 +7,18 @@
 #include "common/PropertyManager.h"
 #include "stubPropertyManager_custom.h"
 
+#ifndef STUB_PropertyManager_PropertyManager
+//#define STUB_PropertyManager_PropertyManager
+   PropertyManager::PropertyManager()
+    : Singleton()
+  {
+    
+  }
+#endif //STUB_PropertyManager_PropertyManager
+
 #ifndef STUB_PropertyManager_installFactory
 //#define STUB_PropertyManager_installFactory
-  void PropertyManager::installFactory(const std::string &, PropertyKit *)
+  void PropertyManager::installFactory(const std::string &, std::unique_ptr<PropertyKit>)
   {
     
   }
@@ -33,7 +42,7 @@
 
 #ifndef STUB_PropertyManager_installFactory
 //#define STUB_PropertyManager_installFactory
-  int PropertyManager::installFactory(const std::string & type_name, const Atlas::Objects::Root & type_desc, PropertyKit * factory)
+  int PropertyManager::installFactory(const std::string & type_name, const Atlas::Objects::Root & type_desc, std::unique_ptr<PropertyKit> factory)
   {
     return 0;
   }

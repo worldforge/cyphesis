@@ -35,11 +35,7 @@ PendingPossession::PendingPossession(const std::string &id, const std::string &k
 bool PendingPossession::validate(const std::string &entity_id,
                                const std::string &possess_key) const
 {
-    if(m_entity_id == entity_id && m_possess_key == possess_key) {
-        return true;
-    } else {
-        return false;
-    }
+    return m_entity_id == entity_id && m_possess_key == possess_key;
 }
 
 /// \brief Set this possession as validated

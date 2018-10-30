@@ -168,7 +168,7 @@ public:
 	 * @param ty Y index.
 	 * @param processor A processing callback.
 	 */
-	void processTile(const int tx, const int ty, const TileProcessor& processor) const;
+	void processTile(int tx, int ty, const TileProcessor& processor) const;
 
 	/**
 	 * @brief Process the tiles within the specified area.
@@ -449,7 +449,7 @@ protected:
 	 * @param maxTiles The maximum number of tile layers to create.
 	 * @return The number of tile layers that were created.
 	 */
-	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, TileCacheData* tiles, const int maxTiles);
+	int rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, int tx, int ty, TileCacheData* tiles, int maxTiles);
 
 	/**
 	 * @brief Applies the supplied processor on the supplied tiles.

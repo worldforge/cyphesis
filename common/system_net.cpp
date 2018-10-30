@@ -39,8 +39,6 @@ extern "C" {
 #ifdef HAVE_SYS_UN_H
 #endif // HAVE_SYS_UN_H
 
-static const bool debug_flag = false;
-
 const std::string get_hostname()
 {
 #ifndef HAVE_UNAME
@@ -51,7 +49,7 @@ const std::string get_hostname()
     }
     return std::string(hostname_buf);
 #else // HAVE_UNAME
-    struct utsname host_ident;
+    struct utsname host_ident{};
     if (uname(&host_ident) != 0) {
         return "UNKNOWN";
     }

@@ -79,7 +79,7 @@ Mercator::TerrainMod * TerrainModProperty::parseModData(const WFMath::Point<3>& 
 
 int TerrainModProperty::getAttr(const std::string & name, Element & val) const
 {
-    MapType::const_iterator I = m_data.find(name);
+    auto I = m_data.find(name);
     if (I != m_data.end()) {
         val = I->second;
         return 0;

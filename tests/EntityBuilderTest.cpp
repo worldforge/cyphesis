@@ -606,25 +606,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rulesets/stubBaseWorld.h"
-
-
-CorePropertyManager::CorePropertyManager()
-{
-}
-
-PropertyBase * CorePropertyManager::addProperty(const std::string & name,
-                                                int type)
-{
-    return 0;
-}
-
-int CorePropertyManager::installFactory(const std::string & type_name,
-                                        const Root & type_desc,
-                                        PropertyKit * factory)
-{
-    return 0;
-}
-
+#include "stubs/server/stubCorePropertyManager.h"
 #include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)

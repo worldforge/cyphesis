@@ -68,7 +68,7 @@
 
 #ifndef STUB_Awareness_processTile
 //#define STUB_Awareness_processTile
-  void Awareness::processTile(const int tx, const int ty, const TileProcessor& processor) const
+  void Awareness::processTile(int tx, int ty, const TileProcessor& processor) const
   {
     
   }
@@ -228,7 +228,7 @@
 
 #ifndef STUB_Awareness_rasterizeTileLayers
 //#define STUB_Awareness_rasterizeTileLayers
-  int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, const int tx, const int ty, TileCacheData* tiles, const int maxTiles)
+  int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, int tx, int ty, TileCacheData* tiles, int maxTiles)
   {
     return 0;
   }

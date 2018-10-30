@@ -11,8 +11,8 @@
 class DumbSkill : public Skill {
   public:
     DumbSkill(Entity & e) : Skill(e) { }
-    virtual oplist action(const std::string & skill,
-            const Atlas::Objects::Operation::RootOperation & op);
+    oplist action(const std::string & skill,
+            const Atlas::Objects::Operation::RootOperation & op) override;
 };
 
 #endif // SKILLS_DUMB_SKILL_H

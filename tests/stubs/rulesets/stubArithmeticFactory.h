@@ -7,14 +7,6 @@
 #include "rulesets/ArithmeticFactory.h"
 #include "stubArithmeticFactory_custom.h"
 
-#ifndef STUB_ArithmeticKit_ArithmeticKit_DTOR
-//#define STUB_ArithmeticKit_ArithmeticKit_DTOR
-   ArithmeticKit::~ArithmeticKit()
-  {
-    
-  }
-#endif //STUB_ArithmeticKit_ArithmeticKit_DTOR
-
 #ifndef STUB_ArithmeticKit_newScript
 //#define STUB_ArithmeticKit_newScript
   ArithmeticScript* ArithmeticKit::newScript(LocatedEntity * owner)

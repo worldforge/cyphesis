@@ -42,9 +42,7 @@ Flusher::Flusher(const shared_ptr<ObjectContext> & c) : m_context(c)
 {
 }
 
-Flusher::~Flusher()
-{
-}
+Flusher::~Flusher() = default;
 
 void Flusher::setup(const std::string & arg, OpVector & ret)
 {

@@ -26,37 +26,32 @@ using Atlas::Objects::Root;
 
 template<> PropertyManager* Singleton<PropertyManager>::ms_Singleton = nullptr;
 
-PropertyManager::~PropertyManager()
-{
-    std::map<std::string, PropertyKit *>::const_iterator I = m_propertyFactories.begin();
-    std::map<std::string, PropertyKit *>::const_iterator Iend = m_propertyFactories.end();
-    for (; I != Iend; ++I) {
-        assert(I->second != 0);
-        delete I->second;
-    }
-}
+PropertyManager::PropertyManager() = default;
+
+PropertyManager::~PropertyManager() = default;
 
 PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) const
 {
     auto I = m_propertyFactories.find(name);
     if (I != m_propertyFactories.end()) {
-        assert(I->second != 0);
-        return I->second;
+        assert(I->second);
+        return I->second.get();
     }
     return nullptr;
 }
 
 void PropertyManager::installFactory(const std::string & name,
-                                     PropertyKit * factory)
+                                     std::unique_ptr<PropertyKit> factory)
 {
-    m_propertyFactories.insert(std::make_pair(name, factory));
+    m_propertyFactories.insert(std::make_pair(name, std::move(factory)));
 }
 
 int PropertyManager::installFactory(const std::string & type_name,
                                     const Root & type_desc,
-                                    PropertyKit * factory)
+                                    std::unique_ptr<PropertyKit> factory)
 {
-    installFactory(type_name, factory);
+    installFactory(type_name, std::move(factory));
 
     return 0;
 }
+

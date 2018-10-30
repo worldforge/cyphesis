@@ -49,7 +49,7 @@
 
 #ifndef STUB_Admin_createMind
 //#define STUB_Admin_createMind
-  ExternalMind* Admin::createMind(LocatedEntity* entity) const
+  ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const
   {
     return nullptr;
   }

@@ -36,19 +36,22 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 
-RuleTraversalTask::RuleTraversalTask(const std::string& accountId, std::function<bool(const Atlas::Objects::Root&)>& visitor) :
-        mAccountId(accountId), mVisitor(visitor), mSerial(0)
+RuleTraversalTask::RuleTraversalTask(const std::string& accountId, std::function<bool(const Atlas::Objects::Root&)>& visitor)
+    :
+    mAccountId(accountId),
+    mVisitor(visitor),
+    mSerial(0)
 {
 }
 
 RuleTraversalTask::~RuleTraversalTask() = default;
 
-void RuleTraversalTask::setup(const std::string & arg, OpVector & res)
+void RuleTraversalTask::setup(const std::string& arg, OpVector& res)
 {
     getRule(arg, res);
 }
 
-void RuleTraversalTask::operation(const Operation & op, OpVector & res)
+void RuleTraversalTask::operation(const Operation& op, OpVector& res)
 {
     if (!op->isDefaultRefno() && op->getRefno() == mSerial) {
         if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
@@ -58,7 +61,9 @@ void RuleTraversalTask::operation(const Operation & op, OpVector & res)
                     bool result = mVisitor(arg);
                     if (result) {
                         Element childrenElement;
-                        if (arg->copyAttr("children", childrenElement) == 0 && childrenElement.isList() && !childrenElement.List().empty()) {
+                        if (arg->copyAttr("children", childrenElement) == 0
+                            && childrenElement.isList()
+                            && !childrenElement.List().empty()) {
                             const ListType& childrenList = childrenElement.asList();
                             mStack.emplace_back();
                             for (auto& childElement : childrenList) {
@@ -91,7 +96,7 @@ void RuleTraversalTask::operation(const Operation & op, OpVector & res)
     }
 }
 
-void RuleTraversalTask::getRule(const std::string & id, OpVector & res)
+void RuleTraversalTask::getRule(const std::string& id, OpVector& res)
 {
     Get get;
     Anonymous arg;

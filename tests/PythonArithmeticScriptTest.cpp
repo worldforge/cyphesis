@@ -155,10 +155,6 @@ PyObject * Get_PyClass(PyObject * module,
     return py_class;
 }
 
-ArithmeticScript::~ArithmeticScript()
-{
-}
-
 void log(LogLevel lvl, const std::string & msg)
 {
 }
