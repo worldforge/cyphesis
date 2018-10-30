@@ -35,9 +35,9 @@
 #include "physics/Convert.h"
 
 #include "common/debug.h"
-#include "common/Unseen.h"
+#include "common/operations/Unseen.h"
 #include "common/TypeNode.h"
-#include "common/Update.h"
+#include "common/operations/Update.h"
 #include "BaseWorld.h"
 #include "EntityProperty.h"
 #include "PerceptionSightProperty.h"

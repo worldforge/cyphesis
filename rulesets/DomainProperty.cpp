@@ -27,7 +27,7 @@
 #include "LocatedEntity.h"
 
 #include "common/const.h"
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <rulesets/BaseWorld.h>

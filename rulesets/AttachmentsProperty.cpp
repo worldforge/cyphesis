@@ -20,7 +20,7 @@
 
 #include "AttachmentsProperty.h"
 #include "BaseWorld.h"
-#include "common/Update.h"
+#include "common/operations/Update.h"
 #include "LocatedEntity.h"
 #include "PlantedOnProperty.h"
 #include <Atlas/Objects/Operation.h>

@@ -41,7 +41,7 @@
 
 #include <sigc++/adaptors/bind.h>
 #include <rulesets/MindsProperty.h>
-#include <common/Update.h>
+#include <common/operations/Update.h>
 
 
 using Atlas::Message::Element;

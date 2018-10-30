@@ -28,15 +28,15 @@
 #include "common/op_switch.h"
 #include "common/custom.h"
 
-#include "common/Actuate.h"
-#include "common/Attack.h"
-#include "common/Eat.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
-#include "common/Unseen.h"
-#include "common/Update.h"
-#include "common/Think.h"
-#include "common/Thought.h"
+#include "common/operations/Actuate.h"
+#include "common/operations/Attack.h"
+#include "common/operations/Eat.h"
+#include "common/operations/Setup.h"
+#include "common/operations/Tick.h"
+#include "common/operations/Unseen.h"
+#include "common/operations/Update.h"
+#include "common/operations/Think.h"
+#include "common/operations/Thought.h"
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Anonymous.h>

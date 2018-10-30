@@ -23,7 +23,7 @@
 #include "LocatedEntity.h"
 #include "Script.h"
 
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "UsagesProperty.h"
 #include "ScriptUtils.h"
 

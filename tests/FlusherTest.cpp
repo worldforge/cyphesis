@@ -28,8 +28,8 @@
 #include "tools/ObjectContext.h"
 
 #include "common/compose.hpp"
-#include "common/Tick.h"
-#include "common/Unseen.h"
+#include "common/operations/Tick.h"
+#include "common/operations/Unseen.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

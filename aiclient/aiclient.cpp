@@ -32,7 +32,7 @@
 #include "common/CommAsioClient_impl.h"
 #include "common/AssetsManager.h"
 #include "common/FileSystemObserver.h"
-#include "common/Think.h"
+#include "common/operations/Think.h"
 #include "common/globals.h"
 
 #include <sys/prctl.h>

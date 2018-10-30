@@ -20,7 +20,7 @@
 #include "Script.h"
 
 #include "common/custom.h"
-#include "common/Think.h"
+#include "common/operations/Think.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/Operation.h>

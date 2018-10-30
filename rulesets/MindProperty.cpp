@@ -22,7 +22,7 @@
 
 #include "rulesets/BaseMind.h"
 
-#include "common/Setup.h"
+#include "common/operations/Setup.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

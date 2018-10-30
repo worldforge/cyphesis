@@ -26,10 +26,10 @@
 #include "rulesets/BaseWorld.h"
 
 #include "common/Link.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
-#include "common/Unseen.h"
-#include "common/Update.h"
+#include "common/operations/Setup.h"
+#include "common/operations/Tick.h"
+#include "common/operations/Unseen.h"
+#include "common/operations/Update.h"
 #include "common/custom.h"
 
 #include <Atlas/Objects/Operation.h>

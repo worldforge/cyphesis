@@ -25,7 +25,7 @@
 
 #include "OperationExerciser.h"
 
-#include "common/Unseen.h"
+#include "common/operations/Unseen.h"
 #include "common/random.h"
 
 int main()

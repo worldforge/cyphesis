@@ -34,8 +34,8 @@
 #include "common/id.h"
 #include "common/Variable.h"
 #include "common/custom.h"
-#include "common/Think.h"
-#include "common/Commune.h"
+#include "common/operations/Think.h"
+#include "common/operations/Commune.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

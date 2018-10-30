@@ -35,7 +35,7 @@
 #include "common/Monitors.h"
 #include "common/SystemTime.h"
 #include "common/Variable.h"
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "server/Connection.h"
 #include "ServerRouting.h"
 #include "Account.h"
@@ -44,7 +44,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <algorithm>
-#include <common/Change.h>
+#include <common/operations/Change.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

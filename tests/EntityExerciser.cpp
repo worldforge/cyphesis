@@ -29,16 +29,16 @@
 #include "common/TypeNode.h"
 #include "common/Property.h"
 
-#include "common/Add.h"
-#include "common/Burn.h"
-#include "common/Connect.h"
-#include "common/Eat.h"
-#include "common/Monitor.h"
-#include "common/Nourish.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
-#include "common/Unseen.h"
-#include "common/Update.h"
+#include "common/operations/Add.h"
+#include "common/operations/Burn.h"
+#include "common/operations/Connect.h"
+#include "common/operations/Eat.h"
+#include "common/operations/Monitor.h"
+#include "common/operations/Nourish.h"
+#include "common/operations/Setup.h"
+#include "common/operations/Tick.h"
+#include "common/operations/Unseen.h"
+#include "common/operations/Update.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

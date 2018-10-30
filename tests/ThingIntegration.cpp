@@ -32,7 +32,7 @@
 #include "rulesets/EntityProperty.h"
 
 #include "common/Inheritance.h"
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

@@ -22,7 +22,7 @@
 #include "SpawnerProperty.h"
 #include "LocatedEntity.h"
 
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "common/TypeNode.h"
 #include "common/const.h"
 #include "BaseWorld.h"

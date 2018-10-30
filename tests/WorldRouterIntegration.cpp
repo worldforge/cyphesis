@@ -42,7 +42,7 @@
 #include "common/log.h"
 #include "common/Monitors.h"
 #include "common/SystemTime.h"
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "common/Variable.h"
 
 #include <Atlas/Objects/Anonymous.h>

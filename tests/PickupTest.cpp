@@ -25,7 +25,7 @@
 
 #include "OperationExerciser.h"
 
-#include "common/Pickup.h"
+#include "common/operations/Pickup.h"
 #include "common/random.h"
 
 int main()

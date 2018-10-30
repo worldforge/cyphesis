@@ -25,8 +25,8 @@
 
 #include "rulesets/BaseWorld.h"
 #include "common/custom.h"
-#include "common/Commune.h"
-#include "common/Think.h"
+#include "common/operations/Commune.h"
+#include "common/operations/Think.h"
 
 #include <Atlas/Objects/Operation.h>
 

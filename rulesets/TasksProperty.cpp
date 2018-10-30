@@ -16,7 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <common/Tick.h>
+#include <common/operations/Tick.h>
 #include "TasksProperty.h"
 
 #include "LocatedEntity.h"
@@ -24,7 +24,7 @@
 
 #include "common/debug.h"
 #include "common/TypeNode.h"
-#include "common/Update.h"
+#include "common/operations/Update.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

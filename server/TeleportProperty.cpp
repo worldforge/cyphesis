@@ -25,7 +25,7 @@
 
 #include "rulesets/BaseWorld.h"
 #include "common/debug.h"
-#include "common/Teleport.h"
+#include "common/operations/Teleport.h"
 
 #include <iostream>
 

@@ -24,7 +24,7 @@
 #include "common/debug.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"
-#include "common/Nourish.h"
+#include "common/operations/Nourish.h"
 
 #include "modules/TerrainContext.h"
 

@@ -25,7 +25,7 @@
 
 #include "OperationExerciser.h"
 
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "common/random.h"
 
 int main()

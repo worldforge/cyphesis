@@ -29,7 +29,7 @@
 
 #include "rulesets/BaseWorld.h"
 #include "common/TypeNode.h"
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "common/custom.h"
 #include "common/PropertyManager.h"
 

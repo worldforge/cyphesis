@@ -31,11 +31,11 @@
 #include "common/OperationRouter.h"
 #include "common/TypeNode.h"
 
-#include "common/Eat.h"
-#include "common/Burn.h"
-#include "common/Nourish.h"
-#include "common/Setup.h"
-#include "common/Tick.h"
+#include "common/operations/Eat.h"
+#include "common/operations/Burn.h"
+#include "common/operations/Nourish.h"
+#include "common/operations/Setup.h"
+#include "common/operations/Tick.h"
 
 #include <Atlas/Objects/Operation.h>
 

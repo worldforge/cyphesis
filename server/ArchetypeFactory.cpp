@@ -24,7 +24,7 @@
 #include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/id.h"
-#include "common/Think.h"
+#include "common/operations/Think.h"
 
 #include <Atlas/Objects/Operation.h>
 

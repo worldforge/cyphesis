@@ -29,9 +29,9 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <modules/Variant.h>
-#include "common/Think.h"
-#include "common/Thought.h"
-#include "common/Relay.h"
+#include "common/operations/Think.h"
+#include "common/operations/Thought.h"
+#include "common/operations/Relay.h"
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;

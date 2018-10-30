@@ -46,7 +46,7 @@
 #include <rulesets/AdminMind.h>
 #include <rulesets/MindsProperty.h>
 #include <common/Monitors.h>
-#include <common/Think.h>
+#include <common/operations/Think.h>
 #include <common/CommSocket.h>
 
 #include <Atlas/Objects/Decoder.h>

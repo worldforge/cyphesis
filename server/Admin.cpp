@@ -33,8 +33,8 @@
 #include "common/custom.h"
 #include "common/Inheritance.h"
 
-#include "common/Connect.h"
-#include "common/Monitor.h"
+#include "common/operations/Connect.h"
+#include "common/operations/Monitor.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

@@ -25,7 +25,7 @@
 #include "PossessionAccount.h"
 
 
-#include "common/Possess.h"
+#include "common/operations/Possess.h"
 #include "common/id.h"
 #include "common/custom.h"
 #include "common/SystemTime.h"

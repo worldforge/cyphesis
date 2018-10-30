@@ -23,7 +23,7 @@
 #include "Peer.h"
 #include "ServerRouting.h"
 
-#include "common/Connect.h"
+#include "common/operations/Connect.h"
 
 #include "common/compose.hpp"
 #include "common/debug.h"

@@ -29,14 +29,14 @@
 #include "tools/AccountContext.h"
 #include "tools/ConnectionContext.h"
 
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
 #include <Atlas/Objects/Entity.h>
 
-#include "common/Monitor.h"
-#include "common/Connect.h"
+#include "common/operations/Monitor.h"
+#include "common/operations/Connect.h"
 #include "common/compose.hpp"
 #include "common/utils.h"
 

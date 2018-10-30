@@ -38,7 +38,7 @@
 #include "common/compose.hpp"
 #include "common/debug.h"
 #include "common/Inheritance.h"
-#include "common/Monitor.h"
+#include "common/operations/Monitor.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

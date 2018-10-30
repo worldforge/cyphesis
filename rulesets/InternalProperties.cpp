@@ -20,8 +20,8 @@
 
 #include "rulesets/LocatedEntity.h"
 
-#include "common/Setup.h"
-#include "common/Tick.h"
+#include "common/operations/Setup.h"
+#include "common/operations/Tick.h"
 
 #include <iostream>
 

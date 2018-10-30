@@ -21,8 +21,8 @@
 
 #include "common/debug.h"
 
-#include "common/Eat.h"
-#include "common/Nourish.h"
+#include "common/operations/Eat.h"
+#include "common/operations/Nourish.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

@@ -29,13 +29,13 @@
 #include "common/TypeNode.h"
 #include "common/custom.h"
 
-#include "common/Eat.h"
-#include "common/Nourish.h"
+#include "common/operations/Eat.h"
+#include "common/operations/Nourish.h"
 #include "WorldTimeProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <common/Relay.h>
+#include <common/operations/Relay.h>
 
 static const bool debug_flag = false;
 

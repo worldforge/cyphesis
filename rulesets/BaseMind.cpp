@@ -29,7 +29,7 @@
 #include "common/op_switch.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
-#include "common/Setup.h"
+#include "common/operations/Setup.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>

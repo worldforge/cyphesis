@@ -63,9 +63,9 @@
 #include "rulesets/AttachmentsProperty.h"
 #include "rulesets/AdminProperty.h"
 
-#include "common/Eat.h"
-#include "common/Burn.h"
-#include "common/Teleport.h"
+#include "common/operations/Eat.h"
+#include "common/operations/Burn.h"
+#include "common/operations/Teleport.h"
 
 #include "common/types.h"
 #include "common/Inheritance.h"

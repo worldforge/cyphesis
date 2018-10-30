@@ -25,7 +25,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 
 #include <wfmath/atlasconv.h>
 

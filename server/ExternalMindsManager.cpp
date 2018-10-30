@@ -23,7 +23,7 @@
 #include "PossessionAuthenticator.h"
 
 #include "common/Link.h"
-#include "common/Possess.h"
+#include "common/operations/Possess.h"
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/debug.h"

@@ -25,7 +25,7 @@
 
 #include "common/TypeNode.h"
 #include "common/debug.h"
-#include "common/Unseen.h"
+#include "common/operations/Unseen.h"
 #include "PlantedOnProperty.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -34,7 +34,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <rulesets/BaseWorld.h>
-#include <common/Update.h>
+#include <common/operations/Update.h>
 
 static const bool debug_flag = true;
 

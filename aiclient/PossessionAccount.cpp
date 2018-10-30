@@ -26,14 +26,14 @@
 #include "rulesets/BaseMind.h"
 #include <rulesets/Python_API.h>
 
-#include "common/Possess.h"
+#include "common/operations/Possess.h"
 #include "common/id.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"
 #include "common/ScriptKit.h"
-#include "common/Setup.h"
+#include "common/operations/Setup.h"
 #include "common/debug.h"
-#include <common/Think.h>
+#include <common/operations/Think.h>
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>

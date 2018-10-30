@@ -33,51 +33,51 @@ add_library(common
     OperationsDispatcher.cpp
     RuleTraversalTask.cpp
     AtlasQuery.h
-    Actuate.h
-    Add.h
-    Affect.h
-    Attack.h
-    Burn.h
-    Commune.h
+    operations/Actuate.h
+    operations/Add.h
+    operations/Affect.h
+    operations/Attack.h
+    operations/Burn.h
+    operations/Commune.h
     compose.hpp
-    Connect.h
-    Drop.h
-    Eat.h
-    Monitor.h
+    operations/Connect.h
+    operations/Drop.h
+    operations/Eat.h
+    operations/Monitor.h
     nls.h
-    Nourish.h
+    operations/Nourish.h
     op_switch.h
-    Pickup.h
-    Possess.h
+    operations/Pickup.h
+    operations/Possess.h
     Property_impl.h
     PropertyFactory_impl.h
     PropertyInstanceState.h
     random.h
-    Setup.h
+    operations/Setup.h
     sockets.h
-    Teleport.h
-    Think.h
-    Tick.h
+    operations/Teleport.h
+    operations/Think.h
+    operations/Tick.h
     type_utils_impl.h
     types.h
-    Unseen.h
-    Update.h
+    operations/Unseen.h
+    operations/Update.h
     FileSystemObserver.cpp
     FileSystemObserver.h
     AssetsManager.cpp
     AssetsManager.h
     Singleton.h
-    Change.h
+    operations/Change.h
     RepeatedTask.cpp
     RepeatedTask.h
-    Thought.h
-    Relay.h
+    operations/Thought.h
+    operations/Relay.h
     Visibility.h
     MainLoop.cpp
     MainLoop.h
     CommAsioClient_impl.h
     TypeStore.h
-    Hit.h)
+    operations/Hit.h)
 
 target_link_libraries(common ${GCRYPT_LIBRARIES})
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})

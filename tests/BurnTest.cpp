@@ -25,7 +25,7 @@
 
 #include "OperationExerciser.h"
 
-#include "common/Burn.h"
+#include "common/operations/Burn.h"
 #include "common/random.h"
 
 int main()

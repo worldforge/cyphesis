@@ -20,7 +20,7 @@
 #endif
 
 #include "LocatedEntity.h"
-#include "common/Update.h"
+#include "common/operations/Update.h"
 #include "VoidDomain.h"
 #include "EntityProperty.h"
 #include "PlantedOnProperty.h"

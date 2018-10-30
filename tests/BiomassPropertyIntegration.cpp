@@ -28,7 +28,7 @@
 #include "rulesets/Entity.h"
 #include "rulesets/BiomassProperty.h"
 
-#include "common/Eat.h"
+#include "common/operations/Eat.h"
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory_impl.h"
 

@@ -28,7 +28,7 @@
 
 #include "common/id.h"
 #include "common/debug.h"
-#include "common/Update.h"
+#include "common/operations/Update.h"
 #include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"

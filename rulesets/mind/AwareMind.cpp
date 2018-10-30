@@ -31,7 +31,7 @@
 #include "navigation/Steering.h"
 
 #include "common/SystemTime.h"
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "common/debug.h"
 #include "AwareMind.h"
 

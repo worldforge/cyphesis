@@ -31,7 +31,7 @@
 #include "rulesets/PythonScriptFactory.h"
 #include "rulesets/Script.h"
 
-#include "common/Tick.h"
+#include "common/operations/Tick.h"
 #include "rulesets/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>

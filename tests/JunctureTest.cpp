@@ -31,7 +31,7 @@
 #include "server/ServerRouting.h"
 #include "common/CommAsioClient_impl.h"
 
-#include "common/Connect.h"
+#include "common/operations/Connect.h"
 #include "common/CommSocket.h"
 
 #include <Atlas/Objects/Operation.h>

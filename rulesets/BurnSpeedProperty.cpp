@@ -23,9 +23,9 @@
 
 #include "common/debug.h"
 
-#include "common/Burn.h"
-#include "common/Nourish.h"
-#include "common/Update.h"
+#include "common/operations/Burn.h"
+#include "common/operations/Nourish.h"
+#include "common/operations/Update.h"
 
 #include <Atlas/Objects/Anonymous.h>
 

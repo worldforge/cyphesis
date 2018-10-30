@@ -27,7 +27,7 @@
 
 #include "rulesets/BaseMind.h"
 
-#include "common/Unseen.h"
+#include "common/operations/Unseen.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
