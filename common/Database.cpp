@@ -266,14 +266,12 @@ int Database::insertProperties(const std::string & id,
 {
     int first = 1;
     std::string query("INSERT INTO properties VALUES ");
-    auto I = tuples.begin();
-    auto Iend = tuples.end();
-    for (; I != Iend; ++I) {
+    for (auto& tuple : tuples) {
         if (first) {
-            query += compose("(%1, '%2', '%3')", id, I->first, I->second);
+            query += compose("(%1, '%2', '%3')", id, tuple.first, tuple.second);
             first = 0;
         } else {
-            query += compose(", (%1, '%2', '%3')", id, I->first, I->second);
+            query += compose(", (%1, '%2', '%3')", id, tuple.first, tuple.second);
         }
     }
     return scheduleCommand(query);

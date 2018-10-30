@@ -35,6 +35,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/algorithm/string.hpp>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -129,6 +130,9 @@ int DatabaseSQLite::encodeObject(const MapType& o,
     codec.streamEnd();
 
     data = str.str();
+
+    //Escape ' characters by doubling them.
+    boost::algorithm::replace_all(data, "'", "''");
 
     return 0;
 }

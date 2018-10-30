@@ -285,8 +285,8 @@ void StorageManager::restoreThoughts(LocatedEntity * ent)
     const DatabaseResult res = db->selectThoughts(ent->getId());
     Atlas::Message::ListType thoughts_data;
 
-    DatabaseResult::const_iterator I = res.begin();
-    DatabaseResult::const_iterator Iend = res.end();
+    auto I = res.begin();
+    auto Iend = res.end();
     for (; I != Iend; ++I) {
         const std::string thought = I.column("thought");
         if (thought.empty()) {
@@ -356,14 +356,12 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     ++m_insertEntityCount;
     KeyValues property_tuples;
     const PropertyDict & properties = ent->getProperties();
-    auto I = properties.begin();
-    auto Iend = properties.end();
-    for (; I != Iend; ++I) {
-        PropertyBase * prop = I->second;
+    for (auto& entry : properties) {
+        PropertyBase * prop = entry.second;
         if (prop->hasFlags(per_ephem)) {
             continue;
         }
-        encodeProperty(prop, property_tuples[I->first]);
+        encodeProperty(prop, property_tuples[entry.first]);
         prop->addFlags(per_clean | per_seen);
     }
     if (!property_tuples.empty()) {
