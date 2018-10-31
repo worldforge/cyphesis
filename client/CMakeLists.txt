@@ -14,15 +14,16 @@ add_executable(cyclient
 target_link_libraries(cyclient ${PYTHON_LIBRARIES})
 
 target_link_libraries(cyclient
-    scriptpython
     navigation
     DetourTileCache
     Detour
     Recast
-    rulesetmind
-    rulesetentity
+    rulesmind_python
+    rulesmind
+    entityfilter_python
     entityfilter
-    rulesetbase
+    rulesbase_python
+    rulesbase
     modules
     common
     physics

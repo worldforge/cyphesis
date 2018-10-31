@@ -26,7 +26,7 @@
 #include "allOperations.h"
 #include "TestBase.h"
 
-#include "rulesets/Thing.h"
+#include "rules/Thing.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -133,9 +133,9 @@ int main()
 
 // stubs
 
-#include "rulesets/Domain.h"
+#include "rules/Domain.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 

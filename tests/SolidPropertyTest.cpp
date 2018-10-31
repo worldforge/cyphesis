@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/SolidProperty.h"
+#include "rules/SolidProperty.h"
 
 int main()
 {

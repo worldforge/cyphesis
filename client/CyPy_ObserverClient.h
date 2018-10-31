@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_CYPY_OBSERVERCLIENT_H
 #define CYPHESIS_CYPY_OBSERVERCLIENT_H
 
-#include "rulesets/python/WrapperBase.h"
+#include "rules/python/WrapperBase.h"
 #include "ObserverClient.h"
 
 class CyPy_ObserverClient : public WrapperBase<ObserverClient*, CyPy_ObserverClient>

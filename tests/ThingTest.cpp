@@ -26,9 +26,9 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Thing.h"
+#include "rules/Thing.h"
 
-#include "rulesets/Domain.h"
+#include "rules/Domain.h"
 
 #include "common/const.h"
 #include "common/id.h"

@@ -22,9 +22,9 @@
 #include "EntityBuilder.h"
 #include "SpawnEntity.h"
 
-#include "rulesets/World.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Task.h"
+#include "rules/simulation/World.h"
+#include "rules/Domain.h"
+#include "rules/simulation/Task.h"
 
 #include "common/id.h"
 #include "common/debug.h"

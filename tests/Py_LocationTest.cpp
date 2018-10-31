@@ -31,8 +31,8 @@
 
 #include "TestWorld.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/Python_API.h"
+#include "rules/simulation/Entity.h"
+#include "rules/Python_API.h"
 
 #include <cassert>
 

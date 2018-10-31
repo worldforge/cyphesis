@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rulesets/ExternalProperty.h"
+#include "rules/ExternalProperty.h"
 
-#include "rulesets/ExternalMind.h"
+#include "rules/ExternalMind.h"
 
 #include "common/Router.h"
 

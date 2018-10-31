@@ -20,7 +20,7 @@
 #define OPERATIONSDISPATCHER_IMPL_H_
 
 #include "OperationsDispatcher.h"
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 #include "const.h"
 #include "debug.h"
 #include "Monitors.h"

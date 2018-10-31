@@ -32,8 +32,8 @@
 #include "server/SpawnEntity.h"
 #include "server/EntityFactory.h"
 
-#include "rulesets/Domain.h"
-#include "rulesets/World.h"
+#include "rules/Domain.h"
+#include "rules/World.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -329,23 +329,23 @@ int main()
 #include "server/ArchetypeFactory.h"
 #include "server/CorePropertyManager.h"
 
-#include "rulesets/AreaProperty.h"
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/BBoxProperty.h"
-#include "rulesets/CalendarProperty.h"
-#include "rulesets/EntityProperty.h"
-#include "rulesets/ExternalProperty.h"
-#include "rulesets/StatusProperty.h"
-#include "rulesets/TasksProperty.h"
-#include "rulesets/TerrainProperty.h"
-#include "rulesets/DomainProperty.h"
+#include "rules/AreaProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/BBoxProperty.h"
+#include "rules/CalendarProperty.h"
+#include "rules/simulation/EntityProperty.h"
+#include "rules/ExternalProperty.h"
+#include "rules/StatusProperty.h"
+#include "rules/TasksProperty.h"
+#include "rules/TerrainProperty.h"
+#include "rules/DomainProperty.h"
 
-#include "rulesets/Stackable.h"
-#include "rulesets/ExternalMind.h"
-#include "rulesets/PythonArithmeticFactory.h"
-#include "rulesets/Task.h"
+#include "rules/Stackable.h"
+#include "rules/ExternalMind.h"
+#include "rules/PythonArithmeticFactory.h"
+#include "rules/Task.h"
 
-#include "rulesets/PythonScriptFactory.h"
+#include "rules/PythonScriptFactory.h"
 
 #define STUB_PythonScriptFactory_PythonScriptFactory
 

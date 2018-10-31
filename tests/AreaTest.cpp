@@ -26,7 +26,7 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Area.h"
+#include "rules/Area.h"
 
 #include <cassert>
 

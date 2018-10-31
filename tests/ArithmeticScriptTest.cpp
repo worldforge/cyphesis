@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rulesets/ArithmeticScript.h"
+#include "rules/ArithmeticScript.h"
 
 #include <cassert>
 

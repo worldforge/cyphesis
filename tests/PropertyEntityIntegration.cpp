@@ -26,7 +26,7 @@
 #include "TestBase.h"
 #include "TestWorld.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/Property.h"
 #include "common/PropertyManager.h"
@@ -279,10 +279,10 @@ int main()
 
 // stubs
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/DomainProperty.h"
-#include "rulesets/Script.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/DomainProperty.h"
+#include "rules/Script.h"
 
 #include "common/id.h"
 

@@ -29,10 +29,10 @@
 
 #include "common/CommAsioClient_impl.h"
 #include "server/CommPeer.h"
-#include "rulesets/ExternalMind.h"
-#include "rulesets/Entity.h"
+#include "rules/ExternalMind.h"
+#include "rules/simulation/Entity.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/CommSocket.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -40,7 +40,7 @@
 
 #include <cassert>
 #include <string>
-#include <rulesets/MindsProperty.h>
+#include <rules/ai/MindsProperty.h>
 
 class TestCommSocket : public CommSocket
 {
@@ -442,7 +442,7 @@ int main()
 
 #include "server/TeleportState.h"
 
-#include "rulesets/Script.h"
+#include "rules/Script.h"
 
 #include "common/id.h"
 #include "common/log.h"

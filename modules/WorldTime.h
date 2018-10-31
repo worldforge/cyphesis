@@ -24,8 +24,6 @@
 #include <list>
 #include <map>
 
-// timedata time2type(const std::string & t);
-
 class WorldTime {
   private:
     typedef std::list<int> Range;
@@ -53,13 +51,11 @@ class WorldTime {
     WorldTime() : m_time(0) {
         initTimeInfo();
     }
-    double seconds() { return m_time.seconds(); }
+    double seconds() const { return m_time.seconds(); }
     void update(int secs) { m_time.update(secs); }
-    std::string operator[](const std::string & name);
+    std::string operator[](const std::string & name) const;
     bool operator==(const WorldTime & other) const;
     bool operator==(const std::string & when) const;
 };
-
-const std::string seconds2string(double seconds);
 
 #endif // MODULES_WORLD_TIME_H

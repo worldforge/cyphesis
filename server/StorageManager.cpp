@@ -22,9 +22,9 @@
 #include "EntityBuilder.h"
 #include "MindInspector.h"
 
-#include "rulesets/LocatedEntity.h"
-#include "rulesets/MindProperty.h"
-#include "rulesets/Domain.h"
+#include "rules/LocatedEntity.h"
+#include "rules/simulation/MindProperty.h"
+#include "rules/Domain.h"
 
 #include "common/Database.h"
 #include "common/TypeNode.h"

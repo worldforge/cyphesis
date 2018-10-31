@@ -28,8 +28,8 @@
 #include "allOperations.h"
 #include "TestWorld.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Script.h"
+#include "rules/Python_API.h"
+#include "rules/Script.h"
 
 #include "modules/WeakEntityRef.h"
 

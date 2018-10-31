@@ -29,8 +29,8 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Python_Script_Utils.h"
+#include "rules/Python_API.h"
+#include "rules/Python_Script_Utils.h"
 
 #include "stubs/navigation/stubAwareness.h"
 #include "stubs/navigation/stubSteering.h"

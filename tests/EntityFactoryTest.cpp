@@ -27,8 +27,8 @@
 
 #include "server/EntityFactory.h"
 
-#include "rulesets/Stackable.h"
-#include "rulesets/World.h"
+#include "rules/Stackable.h"
+#include "rules/World.h"
 
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"

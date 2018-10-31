@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/LineProperty.h"
+#include "rules/LineProperty.h"
 
 using Atlas::Message::ListType;
 

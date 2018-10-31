@@ -27,12 +27,12 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
-#include "rulesets/DomainProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
+#include "rules/DomainProperty.h"
 
 #include "common/id.h"
 #include "common/Property_impl.h"

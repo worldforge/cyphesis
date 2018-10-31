@@ -18,16 +18,16 @@
 
 #include "Admin.h"
 
-#include "rulesets/AdminMind.h"
+#include "rules/simulation/AdminMind.h"
 #include "ServerRouting.h"
 #include "Connection.h"
 #include "Ruleset.h"
 #include "Juncture.h"
 
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/id.h"
 #include "common/debug.h"
 #include "common/custom.h"

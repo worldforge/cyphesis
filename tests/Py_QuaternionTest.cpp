@@ -27,7 +27,7 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
+#include "rules/Python_API.h"
 
 #include <cassert>
 

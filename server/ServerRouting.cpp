@@ -22,7 +22,7 @@
 #include "Lobby.h"
 #include "Persistence.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/compose.hpp"
 #include "common/const.h"
 #include "common/debug.h"

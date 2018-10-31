@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rulesets/MindFactory.h"
+#include "rules/ai/MindFactory.h"
 
-#include "rulesets/BaseMind.h"
+#include "rules/simulation/BaseMind.h"
 
 #include <cassert>
 

@@ -29,7 +29,7 @@
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/compose.hpp"
 #include "common/debug.h"
@@ -39,16 +39,16 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
-#include <rulesets/PhysicalDomain.h>
+#include <rules/PhysicalDomain.h>
 #include <common/TypeNode.h>
-#include <rulesets/ModeProperty.h>
-#include <rulesets/TerrainProperty.h>
+#include <rules/ModeProperty.h>
+#include <rules/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
-#include <rulesets/PropelProperty.h>
-#include <rulesets/AngularFactorProperty.h>
+#include <rules/PropelProperty.h>
+#include <rules/AngularFactorProperty.h>
 #include <chrono>
-#include <rulesets/VisibilityProperty.h>
+#include <rules/VisibilityProperty.h>
 
 #include "stubs/common/stublog.h"
 

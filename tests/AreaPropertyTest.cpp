@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/AreaProperty.h"
+#include "rules/AreaProperty.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rulesets/Movement.h"
+#include "rules/Movement.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/const.h"
 

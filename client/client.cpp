@@ -19,7 +19,7 @@
 #include "client/ClientPropertyManager.h"
 #include "client/Python_ClientAPI.h"
 
-#include "rulesets/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include "common/globals.h"
 #include "common/log.h"
@@ -27,6 +27,11 @@
 #include <varconf/config.h>
 
 #include <cassert>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/entityfilter/python/CyPy_EntityFilter.h>
+#include <rules/python/CyPy_Rules.h>
 
 static void usage(const char * prgname)
 {
@@ -89,7 +94,13 @@ int main(int argc, char ** argv)
     bool interactive = global_conf->findItem("", "interactive");
     int status = 0;
 
-    init_python_api(ruleset_name, false);
+    init_python_api({&CyPy_Physics::init,
+                     &CyPy_Rules::init,
+                     &CyPy_EntityFilter::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Common::init},
+                    ruleset_name, false);
+
     extend_client_python_api();
     new ClientPropertyManager();
 

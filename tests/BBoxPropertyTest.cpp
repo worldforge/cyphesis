@@ -25,8 +25,8 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/BBoxProperty.h"
-#include "rulesets/Location.h"
+#include "rules/BBoxProperty.h"
+#include "rules/Location.h"
 
 using Atlas::Message::ListType;
 

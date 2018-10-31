@@ -27,7 +27,7 @@
 #include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubQuaternionProperty.h"
 
-#include "rulesets/ModeProperty.h"
+#include "rules/ModeProperty.h"
 
 int main()
 {

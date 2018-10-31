@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/BiomassProperty.h"
+#include "rules/BiomassProperty.h"
 
 int main()
 {

@@ -26,7 +26,7 @@
 #include "PropertyCoverage.h"
 #include "stubs/common/stubcustom.h"
 
-#include "rulesets/SuspendedProperty.h"
+#include "rules/SuspendedProperty.h"
 
 int main()
 {

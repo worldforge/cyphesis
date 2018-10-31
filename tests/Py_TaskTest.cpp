@@ -29,14 +29,14 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Task.h"
-#include "rulesets/Entity.h"
+#include "rules/Python_API.h"
+#include "rules/Task.h"
+#include "rules/simulation/Entity.h"
 
 #include <cassert>
-#include <rulesets/python/CyPy_Task.h>
-#include <rulesets/python/CyPy_UsageInstance.h>
-#include <rulesets/python/CyPy_LocatedEntity.h>
+#include <rules/python/CyPy_Task.h>
+#include <rules/python/CyPy_UsageInstance.h>
+#include <rules/python/CyPy_LocatedEntity.h>
 
 
 int main()

@@ -23,13 +23,13 @@
 #define DEBUG
 #endif
 
-#include "rulesets/Pedestrian.h"
+#include "rules/Pedestrian.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/Domain.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/Domain.h"
+#include "rules/TerrainProperty.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>

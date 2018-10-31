@@ -8,19 +8,19 @@
 //TODO: Check for unnecessary includes/links
 #include "TestBase.h"
 
-#include "rulesets/entityfilter/Filter.h"
+#include "rules/entityfilter/Filter.h"
 
-#include "rulesets/entityfilter/Providers.h"
+#include "rules/entityfilter/Providers.h"
 
-#include "rulesets/entityfilter/ParserDefinitions.h"
+#include "rules/entityfilter/ParserDefinitions.h"
 
-#include "rulesets/EntityProperty.h"
-#include "rulesets/Domain.h"
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/BBoxProperty.h"
-#include "rulesets/PlantedOnProperty.h"
-#include "rulesets/BaseWorld.h"
-#include "rulesets/Entity.h"
+#include "rules/simulation/EntityProperty.h"
+#include "rules/Domain.h"
+#include "rules/AtlasProperties.h"
+#include "rules/BBoxProperty.h"
+#include "rules/PlantedOnProperty.h"
+#include "rules/BaseWorld.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/Property.h"
 #include "common/log.h"

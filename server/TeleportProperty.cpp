@@ -21,9 +21,9 @@
 #include "server/Juncture.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/debug.h"
 #include "common/operations/Teleport.h"
 

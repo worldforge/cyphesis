@@ -27,13 +27,13 @@
 
 #include "python_testers.h"
 
-#include "rulesets/PythonArithmeticScript.h"
+#include "rules/PythonArithmeticScript.h"
 
 #include "common/compose.hpp"
 #include "common/log.h"
 
 #include <cassert>
-#include <rulesets/Python_Script_Utils.h>
+#include <rules/Python_Script_Utils.h>
 #include <external/pycxx/CXX/Extensions.hxx>
 
 Py::Object Get_PyClass(const Py::Module& module,

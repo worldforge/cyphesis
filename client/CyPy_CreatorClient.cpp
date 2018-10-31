@@ -18,13 +18,13 @@
 
 #include "CyPy_CreatorClient.h"
 
-#include "rulesets/python/CyPy_Element.h"
-#include "rulesets/python/CyPy_RootEntity.h"
-#include "rulesets/python/CyPy_LocatedEntity.h"
-#include "rulesets/python/CyPy_Operation.h"
-#include "rulesets/python/CyPy_MemMap.h"
-#include "rulesets/python/CyPy_WorldTime.h"
-#include "rulesets/python/CyPy_Location.h"
+#include "rules/python/CyPy_Element.h"
+#include "rules/python/CyPy_RootEntity.h"
+#include "rules/python/CyPy_LocatedEntity.h"
+#include "rules/python/CyPy_Operation.h"
+#include "rules/ai/python/CyPy_MemMap.h"
+#include "rules/python/CyPy_WorldTime.h"
+#include "rules/python/CyPy_Location.h"
 
 #include "common/TypeNode.h"
 
@@ -150,7 +150,7 @@ Py::Object CyPy_CreatorClient::getattro(const Py::String& name)
 //        return CyPy_Location::wrap(m_value->m_location);
 //    }
     if (nameStr == "time") {
-        return CyPy_WorldTime::wrap(WorldTimeWrapper{m_value});
+        return CyPy_WorldTime::wrap(m_value->getTime());
     }
 //    Atlas::Message::Element attr;
 //    if (m_value->getAttr(nameStr, attr) == 0) {

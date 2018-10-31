@@ -25,10 +25,10 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/TerrainModProperty.h"
-#include "rulesets/TerrainProperty.h"
-#include "rulesets/DomainProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/TerrainModProperty.h"
+#include "rules/TerrainProperty.h"
+#include "rules/DomainProperty.h"
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"

@@ -29,8 +29,8 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/python/CyPy_RootEntity.h"
+#include "rules/Python_API.h"
+#include "rules/python/CyPy_RootEntity.h"
 
 #include <cassert>
 

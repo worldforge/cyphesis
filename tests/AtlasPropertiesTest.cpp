@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rulesets/AtlasProperties.h"
+#include "rules/AtlasProperties.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "PropertyCoverage.h"
 

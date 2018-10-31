@@ -29,12 +29,12 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
+#include "rules/Python_API.h"
 
 #include <cassert>
-#include <rulesets/python/CyPy_MemMap.h>
-#include <rulesets/SimpleTypeStore.h>
-#include <rulesets/TypeResolver.h>
+#include <rules/python/CyPy_MemMap.h>
+#include <rules/SimpleTypeStore.h>
+#include <rules/TypeResolver.h>
 #include <Atlas/Objects/RootOperation.h>
 
 int main()

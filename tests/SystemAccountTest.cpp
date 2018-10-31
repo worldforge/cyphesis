@@ -31,7 +31,7 @@
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/CommSocket.h"
 #include "common/compose.hpp"

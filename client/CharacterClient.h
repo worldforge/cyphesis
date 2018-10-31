@@ -19,7 +19,7 @@
 #ifndef CLIENT_CHARACTER_CLIENT_H
 #define CLIENT_CHARACTER_CLIENT_H
 
-#include "rulesets/BaseMind.h"
+#include "rules/ai/BaseMind.h"
 
 class ClientConnection;
 

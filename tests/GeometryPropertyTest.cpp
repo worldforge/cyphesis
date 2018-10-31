@@ -31,7 +31,7 @@
 #include "stubs/rulesets/stubBBoxProperty.h"
 #include "stubs/common/stubTypeNode.h"
 
-#include "rulesets/GeometryProperty.h"
+#include "rules/GeometryProperty.h"
 
 int main()
 {

@@ -26,7 +26,7 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Food.h"
+#include "rules/Food.h"
 
 #include <cassert>
 

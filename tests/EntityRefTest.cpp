@@ -25,7 +25,7 @@
 
 #include "modules/WeakEntityRef.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/rulesets/stubLocation.h"

@@ -25,13 +25,13 @@
 
 #include "TestBase.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/TerrainModProperty.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/TerrainModProperty.h"
+#include "rules/TerrainProperty.h"
 
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory_impl.h"
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include "stubs/rulesets/stubLocation.h"
 
@@ -130,18 +130,18 @@ int main()
 
 // stubs
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/PropertyManager.h"
 
 #include "physics/Vector3D.h"
 
-#include "rulesets/DomainProperty.h"
+#include "rules/DomainProperty.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"

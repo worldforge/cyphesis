@@ -24,7 +24,7 @@
 #endif
 
 #include "TestBase.h"
-#include "rulesets/OgreMeshDeserializer.h"
+#include "rules/OgreMeshDeserializer.h"
 
 class OgreMeshDeserializerTest : public Cyphesis::TestBase
 {

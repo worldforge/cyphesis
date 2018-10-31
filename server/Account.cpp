@@ -21,13 +21,13 @@
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "Lobby.h"
-#include "rulesets/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 #include "Persistence.h"
 #include "PossessionAuthenticator.h"
 #include "common/custom.h"
 
-#include "rulesets/BaseWorld.h"
-#include "rulesets/LocatedEntity.h"
+#include "rules/simulation/BaseWorld.h"
+#include "rules/LocatedEntity.h"
 
 #include "common/id.h"
 #include "common/debug.h"
@@ -40,7 +40,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <sigc++/adaptors/bind.h>
-#include <rulesets/MindsProperty.h>
+#include <rules/simulation/MindsProperty.h>
 #include <common/operations/Update.h>
 
 

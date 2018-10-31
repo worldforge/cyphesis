@@ -32,14 +32,14 @@
 #include "TestWorld.h"
 #include "TestPropertyManager.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Entity.h"
+#include "rules/Python_API.h"
+#include "rules/simulation/Entity.h"
 
 #include <cassert>
 #include <common/Inheritance.h>
-#include <rulesets/Python_Script_Utils.h>
-#include <rulesets/python/CyPy_LocatedEntity.h>
-#include <rulesets/python/CyPy_UsageInstance.h>
+#include <rules/Python_Script_Utils.h>
+#include <rules/python/CyPy_LocatedEntity.h>
+#include <rules/python/CyPy_UsageInstance.h>
 #include <Atlas/Objects/Operation.h>
 
 #include "stubs/common/stubMonitors.h"

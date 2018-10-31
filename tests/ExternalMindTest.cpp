@@ -23,13 +23,13 @@
 #define DEBUG
 #endif
 
-#include "rulesets/ExternalMind.h"
+#include "rules/ExternalMind.h"
 
 #include "server/Connection.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -223,7 +223,7 @@ int main()
 
 // stubs
 
-#include "rulesets/Script.h"
+#include "rules/Script.h"
 
 #include "common/log.h"
 

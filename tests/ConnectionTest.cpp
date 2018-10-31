@@ -29,10 +29,10 @@
 #include "server/Connection.h"
 
 #include "server/Account.h"
-#include "rulesets/ExternalMind.h"
-#include "rulesets/ExternalProperty.h"
-#include "rulesets/MindsProperty.h"
-#include "rulesets/Entity.h"
+#include "rules/ExternalMind.h"
+#include "rules/ExternalProperty.h"
+#include "rules/ai/MindsProperty.h"
+#include "rules/simulation/Entity.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
 #include "server/ServerRouting.h"
@@ -562,7 +562,7 @@ int main()
 
 // Stubs
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 bool restricted_flag;
 

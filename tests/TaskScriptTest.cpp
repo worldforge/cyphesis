@@ -23,10 +23,10 @@
 #define DEBUG
 #endif
 
-#include "rulesets/Task.h"
-#include "rulesets/Entity.h"
-#include "rulesets/Character.h"
-#include "rulesets/Script.h"
+#include "rules/Task.h"
+#include "rules/Entity.h"
+#include "rules/Character.h"
+#include "rules/Script.h"
 
 #include "common/log.h"
 

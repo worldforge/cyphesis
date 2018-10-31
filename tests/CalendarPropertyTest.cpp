@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/CalendarProperty.h"
+#include "rules/CalendarProperty.h"
 
 int main()
 {

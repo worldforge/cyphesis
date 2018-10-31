@@ -17,8 +17,8 @@
 
 #include "SpawnEntity.h"
 
-#include "rulesets/LocatedEntity.h"
-#include "rulesets/AreaProperty.h"
+#include "rules/LocatedEntity.h"
+#include "rules/simulation/AreaProperty.h"
 
 #include "common/random.h"
 

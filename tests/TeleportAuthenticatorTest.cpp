@@ -29,11 +29,11 @@
 
 #include "server/PendingPossession.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include <Atlas/Objects/Operation.h>
 

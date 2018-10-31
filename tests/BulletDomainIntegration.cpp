@@ -20,9 +20,9 @@
 #include "config.h"
 #endif
 
-#include "rulesets/PhysicalDomain.h"
+#include "rules/PhysicalDomain.h"
 
-#include "rulesets/TerrainProperty.h"
+#include "rules/TerrainProperty.h"
 
 #include <bullet/btBulletDynamicsCommon.h>.h"
 

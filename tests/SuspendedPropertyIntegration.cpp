@@ -24,10 +24,10 @@
 #include "TestBase.h"
 #include "TestWorld.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/SuspendedProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/SuspendedProperty.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/TypeNode.h"
 #include "common/operations/Tick.h"
 #include "common/custom.h"

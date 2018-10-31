@@ -84,7 +84,7 @@ bool DateTime::isValid() const
            ( m_month  < m_mpy );
 }
 
-int DateTime::seconds()
+int DateTime::seconds() const
 {
     return m_second+
            m_minute*m_spm+

@@ -29,12 +29,12 @@
 
 #include "client/Python_ClientAPI.h"
 
-#include "rulesets/Python_API.h"
+#include "rules/Python_API.h"
 
 #include <cassert>
 #include <client/CyPy_CreatorClient.h>
 #include <client/ClientConnection.h>
-#include <rulesets/Entity.h>
+#include <rules/simulation/Entity.h>
 #include "external/pycxx/CXX/Objects.hxx"
 
 static bool stub_make_fail = false;
@@ -110,7 +110,7 @@ int main()
 #include "client/ObserverClient.h"
 #include "client/CreatorClient.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/id.h"
 

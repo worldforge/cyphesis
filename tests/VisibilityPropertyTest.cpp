@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/VisibilityProperty.h"
+#include "rules/VisibilityProperty.h"
 
 int main()
 {
@@ -47,5 +47,5 @@ int main()
 
 
 
-#include "rulesets/Location.h"
+#include "rules/Location.h"
 

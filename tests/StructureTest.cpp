@@ -26,7 +26,7 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Structure.h"
+#include "rules/Structure.h"
 
 #include "common/TypeNode.h"
 

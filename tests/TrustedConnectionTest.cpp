@@ -28,12 +28,12 @@
 #include "server/TrustedConnection.h"
 
 #include "server/Account.h"
-#include "rulesets/ExternalMind.h"
-#include "rulesets/ExternalProperty.h"
+#include "rules/ExternalMind.h"
+#include "rules/ExternalProperty.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
 #include "server/ServerRouting.h"
-#include "rulesets/Task.h"
+#include "rules/Task.h"
 #include "server/WorldRouter.h"
 #include "server/SystemAccount.h"
 

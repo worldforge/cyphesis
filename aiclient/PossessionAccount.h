@@ -19,7 +19,7 @@
 #define AICLIENT_POSSESSIONACCOUNT_H_
 
 #include "common/Router.h"
-#include "rulesets/BaseMind.h"
+#include "rules/ai/BaseMind.h"
 
 #include <memory>
 #include <unordered_set>

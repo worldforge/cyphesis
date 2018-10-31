@@ -27,15 +27,15 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
-#include "rulesets/ExternalMind.h"
-#include "rulesets/LocatedEntity.h"
+#include "rules/simulation/ExternalMind.h"
+#include "rules/LocatedEntity.h"
 
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/MersenneTwister.h>
 
 #include <sigc++/bind.h>
-#include <rulesets/MindsProperty.h>
+#include <rules/simulation/MindsProperty.h>
 
 #include <iostream>
 

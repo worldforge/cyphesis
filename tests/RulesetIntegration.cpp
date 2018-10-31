@@ -26,8 +26,8 @@
 #include "TestBase.h"
 #include "TestWorld.h"
 
-#include "rulesets/World.h"
-#include "rulesets/Python_API.h"
+#include "rules/World.h"
+#include "rules/Python_API.h"
 
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
@@ -649,9 +649,9 @@ int main()
 #include "server/ServerRouting.h"
 #include "server/Account.h"
 
-#include "rulesets/PythonScriptFactory.h"
-#include "rulesets/Task.h"
-#include "rulesets/Stackable.h"
+#include "rules/PythonScriptFactory.h"
+#include "rules/Task.h"
+#include "rules/Stackable.h"
 
 #include "stubs/server/stubAdmin.h"
 #include "stubs/rulesets/stubLocation.h"

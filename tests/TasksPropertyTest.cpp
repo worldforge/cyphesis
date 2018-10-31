@@ -26,9 +26,9 @@
 #include "PropertyCoverage.h"
 #include "TestWorld.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/TasksProperty.h"
-#include "rulesets/Task.h"
+#include "rules/simulation/Entity.h"
+#include "rules/TasksProperty.h"
+#include "rules/Task.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>

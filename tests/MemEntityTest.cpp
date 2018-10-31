@@ -23,10 +23,10 @@
 #define DEBUG
 #endif
 
-#include "rulesets/MemEntity.h"
-#include "rulesets/BBoxProperty.h"
-#include "rulesets/SolidProperty.h"
-#include "rulesets/InternalProperties.h"
+#include "rules/ai/MemEntity.h"
+#include "rules/BBoxProperty.h"
+#include "rules/SolidProperty.h"
+#include "rules/InternalProperties.h"
 #include "common/Property_impl.h"
 
 #include <cassert>

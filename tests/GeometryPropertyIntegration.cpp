@@ -29,8 +29,8 @@
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/GeometryProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/GeometryProperty.h"
 
 #include "common/debug.h"
 

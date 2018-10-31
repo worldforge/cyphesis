@@ -21,10 +21,10 @@
 #include "EntityFactory.h"
 #include "ArchetypeFactory.h"
 
-#include "rulesets/LocatedEntity.h"
-#include "rulesets/Task.h"
+#include "rules/LocatedEntity.h"
+#include "rules/simulation/Task.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
@@ -33,8 +33,8 @@
 #include "common/Variable.h"
 
 #include <Atlas/Objects/RootOperation.h>
-#include <rulesets/Python_API.h>
-#include <rulesets/ScriptsProperty.h>
+#include <rules/python/Python_API.h>
+#include <rules/python/ScriptsProperty.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;

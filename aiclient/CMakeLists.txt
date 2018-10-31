@@ -8,18 +8,19 @@ add_executable(cyaiclient
 
 
 target_link_libraries(cyaiclient
-    scriptpython
-    navigation
-    DetourTileCache
-    Detour
-    Recast
-    rulesetmind
-    rulesetentity
+    rulesmind_python
+    rulesmind
+    entityfilter_python
     entityfilter
-    rulesetbase
+    rulesbase_python
+    rulesbase
+    navigation
     modules
     common
     physics
+    DetourTileCache
+    Detour
+    Recast
     )
 
 install(TARGETS cyaiclient DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})

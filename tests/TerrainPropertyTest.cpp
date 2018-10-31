@@ -28,7 +28,7 @@
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubTypeNode.h"
 
-#include "rulesets/TerrainProperty.h"
+#include "rules/TerrainProperty.h"
 
 #include <Mercator/Terrain.h>
 

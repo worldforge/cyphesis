@@ -14,7 +14,7 @@ from types import *
 
 from physics import Vector3D
 
-import server
+import ai
 
 from mind.Memory import Memory
 from mind.Knowledge import Knowledge
@@ -37,7 +37,7 @@ def get_dict_func(self, func_str, func_undefined):
     return func
 
 
-class NPCMind(server.Mind):
+class NPCMind(ai.Mind):
     """Mind class for most mobile entities in the game.
 
     An NPCMind object is associated with all NPC and similar entities on a
@@ -207,7 +207,7 @@ class NPCMind(server.Mind):
         if len(args) != 0:
             if args[0].name == "think":
                 # It's a "thinking" op, which is the base of the AI behaviour.
-                # At regular intervals the AI needs to assess its goals; this is done through "thinkning" ops.
+                # At regular intervals the AI needs to assess its goals; this is done through "thinking" ops.
                 op_tick = Operation("tick")
                 # just copy the args from the previous tick
                 op_tick.set_args(args)

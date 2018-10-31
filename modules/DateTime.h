@@ -50,7 +50,7 @@ class DateTime {
         m_spm = spm; m_mph = mph; m_hpd = hpd; m_dpm = dpm; m_mpy = mpy;
     }
 
-    int seconds();
+    int seconds() const;
     void update(int);
     std::string asString();
 

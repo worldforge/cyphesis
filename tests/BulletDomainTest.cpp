@@ -16,9 +16,9 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include "rulesets/BulletDomain.h"
+#include "rules/BulletDomain.h"
 
-#include "rulesets/TerrainProperty.h"
+#include "rules/TerrainProperty.h"
 
 #ifdef HAVE_BULLET
 #include "btBulletCollisionCommon.h"

@@ -137,7 +137,7 @@ int main()
 #include "server/EntityFactory.h"
 #include "server/Player.h"
 
-#include "rulesets/PythonScriptFactory.h"
+#include "rules/PythonScriptFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"

@@ -26,7 +26,7 @@
 #include "PropertyCoverage.h"
 #include "TestWorld.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/log.h"
 

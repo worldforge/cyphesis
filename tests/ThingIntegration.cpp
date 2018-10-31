@@ -24,20 +24,20 @@
 
 #include "TestBase.h"
 
-#include "rulesets/Domain.h"
-#include "rulesets/Thing.h"
-#include "rulesets/VoidDomain.h"
-#include "rulesets/PhysicalDomain.h"
-#include "rulesets/InventoryDomain.h"
-#include "rulesets/EntityProperty.h"
+#include "rules/Domain.h"
+#include "rules/Thing.h"
+#include "rules/VoidDomain.h"
+#include "rules/PhysicalDomain.h"
+#include "rules/InventoryDomain.h"
+#include "rules/simulation/EntityProperty.h"
 
 #include "common/Inheritance.h"
 #include "common/operations/Tick.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <rulesets/AttachmentsProperty.h>
-#include <rulesets/PlantedOnProperty.h>
+#include <rules/AttachmentsProperty.h>
+#include <rules/PlantedOnProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

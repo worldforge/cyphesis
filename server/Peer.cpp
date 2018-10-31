@@ -21,20 +21,20 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "TeleportState.h"
-#include "rulesets/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/CommSocket.h"
 #include "common/log.h"
 #include "common/compose.hpp"
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <chrono>
-#include <rulesets/MindsProperty.h>
+#include <rules/simulation/MindsProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;

@@ -27,15 +27,15 @@
 #include "allOperations.h"
 #include "TestWorld.h"
 
-#include "rulesets/World.h"
+#include "rules/World.h"
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/BBoxProperty.h"
-#include "rulesets/CalendarProperty.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
-#include "rulesets/StatusProperty.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/BBoxProperty.h"
+#include "rules/CalendarProperty.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
+#include "rules/StatusProperty.h"
+#include "rules/TerrainProperty.h"
 
 #include "common/id.h"
 #include "common/Inheritance.h"

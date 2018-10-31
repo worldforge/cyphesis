@@ -27,7 +27,7 @@
 
 #include "server/Account.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "DatabaseNull.h"

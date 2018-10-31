@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rulesets/Script.h"
+#include "rules/Script.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>

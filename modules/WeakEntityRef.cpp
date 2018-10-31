@@ -18,7 +18,7 @@
 
 #include "WeakEntityRef.h"
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
 void WeakEntityRef::setup()
 {

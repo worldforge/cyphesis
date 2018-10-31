@@ -25,7 +25,7 @@
 
 #include "server/ArithmeticBuilder.h"
 
-#include "rulesets/PythonArithmeticFactory.h"
+#include "rules/PythonArithmeticFactory.h"
 
 #include <cassert>
 

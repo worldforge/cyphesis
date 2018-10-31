@@ -25,7 +25,7 @@
 
 #include "TestBase.h"
 
-#include "rulesets/BaseMind.h"
+#include "rules/ai/BaseMind.h"
 
 #include "common/operations/Unseen.h"
 
@@ -278,7 +278,7 @@ int main()
 
 // stubs
 
-#include "rulesets/Script.h"
+#include "rules/Script.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"

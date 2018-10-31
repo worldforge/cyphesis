@@ -23,10 +23,10 @@
 #define DEBUG
 #endif
 
-#include "rulesets/EntityProperty.h"
+#include "rules/simulation/EntityProperty.h"
 
-#include "rulesets/Task.h"
-#include "rulesets/Entity.h"
+#include "rules/Task.h"
+#include "rules/simulation/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/RootOperation.h>
@@ -219,7 +219,7 @@ int main()
 
 // stubs
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include "stubs/rulesets/stubEntity.h"
 #include "stubs/rulesets/stubLocatedEntity.h"

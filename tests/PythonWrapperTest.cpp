@@ -26,18 +26,18 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/Python_API.h"
-#include "rulesets/PythonScriptFactory.h"
-#include "rulesets/Script.h"
+#include "rules/simulation/Entity.h"
+#include "rules/Python_API.h"
+#include "rules/PythonScriptFactory.h"
+#include "rules/Script.h"
 
 #include "common/operations/Tick.h"
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 
 #include <cassert>
-#include <rulesets/PythonWrapper.h>
+#include <rules/PythonWrapper.h>
 #include "external/pycxx/CXX/Extensions.hxx"
 
 #include "TestWorld.h"

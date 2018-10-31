@@ -25,17 +25,17 @@
 
 #include "PropertyExerciser.h"
 
-#include "rulesets/AreaProperty.h"
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/CalendarProperty.h"
-#include "rulesets/EntityProperty.h"
-#include "rulesets/LineProperty.h"
-#include "rulesets/StatisticsProperty.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/AreaProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/CalendarProperty.h"
+#include "rules/simulation/EntityProperty.h"
+#include "rules/LineProperty.h"
+#include "rules/StatisticsProperty.h"
+#include "rules/TerrainProperty.h"
 
-#include "rulesets/ArithmeticFactory.h"
+#include "rules/ArithmeticFactory.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/log.h"
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"

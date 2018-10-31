@@ -29,7 +29,7 @@
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/debug.h"
 
@@ -37,23 +37,23 @@
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/atlasconv.h>
 
-#include <rulesets/PhysicalDomain.h>
+#include <rules/PhysicalDomain.h>
 #include "physics/Convert.h"
-#include <rulesets/TerrainProperty.h>
+#include <rules/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
-#include <rulesets/PropelProperty.h>
-#include <rulesets/AngularFactorProperty.h>
-#include <rulesets/VisibilityProperty.h>
-#include <rulesets/GeometryProperty.h>
-#include "rulesets/PhysicalWorld.h"
-#include "rulesets/BBoxProperty.h"
+#include <rules/PropelProperty.h>
+#include <rules/AngularFactorProperty.h>
+#include <rules/VisibilityProperty.h>
+#include <rules/GeometryProperty.h>
+#include "rules/PhysicalWorld.h"
+#include "rules/BBoxProperty.h"
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
-#include <rulesets/TerrainModProperty.h>
-#include <rulesets/EntityProperty.h>
-#include <rulesets/PlantedOnProperty.h>
+#include <rules/TerrainModProperty.h>
+#include <rules/simulation/EntityProperty.h>
+#include <rules/PlantedOnProperty.h>
 #include "stubs/common/stubMonitors.h"
 
 using Atlas::Message::Element;

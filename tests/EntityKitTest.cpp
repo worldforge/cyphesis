@@ -29,7 +29,7 @@
 
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 #include <Atlas/Message/Element.h>
 
 #include <cassert>

@@ -16,9 +16,14 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "PossessionClient.h"
-#include "rulesets/Python_API.h"
-#include "rulesets/PythonScriptFactory.h"
-#include "rulesets/mind/AwareMindFactory.h"
+#include "rules/python/Python_API.h"
+#include "rules/python/PythonScriptFactory.h"
+#include "rules/ai/AwareMindFactory.h"
+#include "rules/python/CyPy_Atlas.h"
+#include "rules/python/CyPy_Common.h"
+#include "rules/python/CyPy_Physics.h"
+#include "rules/ai/python/CyPy_Ai.h"
+#include "rules/entityfilter/python/CyPy_EntityFilter.h"
 
 #include "common/sockets.h"
 #include "common/SystemTime.h"
@@ -36,6 +41,8 @@
 #include "common/globals.h"
 
 #include <sys/prctl.h>
+#include <rules/python/CyPy_Rules.h>
+
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -128,7 +135,14 @@ int main(int argc, char** argv)
         AssetsManager assets_manager(file_system_observer);
         assets_manager.init();
 
-        init_python_api(ruleset_name, false);
+
+        init_python_api({&CyPy_Mind::init,
+                         &CyPy_Rules::init,
+                         &CyPy_Physics::init,
+                         &CyPy_EntityFilter::init,
+                         &CyPy_Atlas::init,
+                         &CyPy_Common::init},
+                        ruleset_name, false);
         observe_python_directories(io_service, assets_manager);
 
 

@@ -26,10 +26,10 @@
 #include "EntityExerciser.h"
 #include "TestBase.h"
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Script.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Script.h"
 
 #include <cassert>
 

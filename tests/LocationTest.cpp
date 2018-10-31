@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rulesets/Location.h"
+#include "rules/Location.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/log.h"
 

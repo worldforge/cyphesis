@@ -31,8 +31,8 @@
 #include "server/EntityBuilder.h"
 #include "server/SpawnEntity.h"
 
-#include "rulesets/Domain.h"
-#include "rulesets/World.h"
+#include "rules/Domain.h"
+#include "rules/World.h"
 
 #include "common/const.h"
 #include "common/globals.h"

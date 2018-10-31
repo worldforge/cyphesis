@@ -28,8 +28,8 @@
 #include "server/WorldRouter.h"
 #include "server/MindInspector.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/MindProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/ai/MindProperty.h"
 
 #include "common/SystemTime.h"
 #include "DatabaseNull.h"
@@ -189,10 +189,10 @@ int main()
 #include "server/CorePropertyManager.h"
 #include "server/EntityBuilder.h"
 
-#include "rulesets/Script.h"
+#include "rules/Script.h"
 
 #include "modules/WeakEntityRef.h"
-#include "rulesets/Location.h"
+#include "rules/Location.h"
 
 #include "common/const.h"
 #include "common/Database.h"

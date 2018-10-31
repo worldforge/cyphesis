@@ -31,7 +31,7 @@
 #include "server/ServerRouting.h"
 
 #include "common/CommSocket.h"
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include <cassert>
 

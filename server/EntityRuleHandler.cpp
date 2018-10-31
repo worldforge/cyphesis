@@ -22,7 +22,7 @@
 #include "EntityFactory.h"
 #include "Player.h"
 
-#include "rulesets/PythonScriptFactory.h"
+#include "rules/python/PythonScriptFactory.h"
 
 #include "common/log.h"
 #include "common/debug.h"

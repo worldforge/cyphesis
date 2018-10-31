@@ -29,21 +29,21 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Py_Thing.h"
-#include "rulesets/Py_Property.h"
-#include "rulesets/Entity.h"
-#include "rulesets/TerrainModProperty.h"
+#include "rules/Python_API.h"
+#include "rules/Py_Thing.h"
+#include "rules/Py_Property.h"
+#include "rules/Entity.h"
+#include "rules/TerrainModProperty.h"
 
 #include "physics/Shape.h"
 
 #include <wfmath/polygon.h>
 
 #include <cassert>
-#include <rulesets/Py_Property.h>
+#include <rules/Py_Property.h>
 
 #include "external/pycxx/CXX/Extensions.hxx"
-#include "rulesets/python/CyPy_Entity.h"
+#include "rules/python/CyPy_Entity.h"
 
 
 class TestProp : public Py::ExtensionModule<TestProp>

@@ -27,8 +27,8 @@
 
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
-#include "rulesets/ExternalMind.h"
-#include "rulesets/ExternalProperty.h"
+#include "rules/ExternalMind.h"
+#include "rules/ExternalProperty.h"
 
 #include "common/CommSocket.h"
 #include "common/Shaker.h"

@@ -72,15 +72,18 @@ add_executable(cyphesis
 
 target_link_libraries(cyphesis
     server
-    scriptpython
     navigation
     DetourTileCache
     Detour
     Recast
-    rulesetmind
-    rulesetentity
+    rulesmind_python
+    rulesmind
+    rulessimulation_python
+    rulessimulation
+    entityfilter_python
     entityfilter
-    rulesetbase
+    rulesbase_python
+    rulesbase
     modules
     common
     db

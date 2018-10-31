@@ -17,9 +17,9 @@
 
 #include "PossessionAuthenticator.h"
 #include "PendingPossession.h"
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/debug.h"

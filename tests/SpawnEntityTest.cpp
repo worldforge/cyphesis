@@ -25,12 +25,12 @@
 
 #include "TestBase.h"
 
-#include "rulesets/Location.h"
+#include "rules/Location.h"
 #include "common/log.h"
 
 #include "server/SpawnEntity.h"
 
-#include "rulesets/AreaProperty.h"
+#include "rules/AreaProperty.h"
 
 #include "physics/Vector3D.h"
 

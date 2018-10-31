@@ -39,9 +39,9 @@
 #include "TrustedConnection.h"
 #include "HttpCache.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/LocatedEntity.h"
-#include "rulesets/World.h"
+#include "rules/python/Python_API.h"
+#include "rules/LocatedEntity.h"
+#include "rules/simulation/World.h"
 
 #if POSTGRES_FOUND
 #include "common/DatabasePostgres.h"
@@ -66,6 +66,12 @@
 #include <common/DatabaseSQLite.h>
 #include <common/RepeatedTask.h>
 #include <common/MainLoop.h>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/entityfilter/python/CyPy_EntityFilter.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Rules.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -220,7 +226,13 @@ int main(int argc, char ** argv)
     assets_manager->init();
 
     // Start up the Python subsystem.
-    init_python_api(ruleset_name);
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Physics::init,
+                     &CyPy_EntityFilter::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Common::init},
+                         ruleset_name);
     observe_python_directories(*io_service, *assets_manager);
 
     Inheritance* inheritance = new Inheritance();
@@ -239,7 +251,7 @@ int main(int argc, char ** argv)
 
     WorldRouter * world = new WorldRouter(time, baseEntity);
 
-    register_baseworld_with_python(world);
+    CyPy_Server::registerWorld(world);
 
 
     auto possessionAuthenticator = new PossessionAuthenticator();

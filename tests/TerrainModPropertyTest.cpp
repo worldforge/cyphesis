@@ -26,9 +26,9 @@
 #include "PropertyCoverage.h"
 
 #include "common/TypeNode.h"
-#include "rulesets/Entity.h"
-#include "rulesets/TerrainModProperty.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/TerrainModProperty.h"
+#include "rules/TerrainProperty.h"
 
 
 #include "stubs/common/stubTypeNode.h"
@@ -134,7 +134,7 @@ int main()
 // stubs
 
 #include "TestWorld.h"
-#include "rulesets/TerrainModTranslator.h"
+#include "rules/TerrainModTranslator.h"
 
 #include "modules/TerrainContext.h"
 

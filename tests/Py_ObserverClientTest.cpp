@@ -31,7 +31,7 @@
 #include "client/ObserverClient.h"
 #include "client/CyPy_ObserverClient.h"
 
-#include "rulesets/Python_API.h"
+#include "rules/Python_API.h"
 
 #include <cassert>
 

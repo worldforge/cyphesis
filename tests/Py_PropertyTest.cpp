@@ -29,12 +29,12 @@
 
 #include "TestWorld.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Entity.h"
-#include "rulesets/LineProperty.h"
-#include "rulesets/StatisticsProperty.h"
-#include "rulesets/TerrainProperty.h"
-#include "rulesets/python/CyPy_Entity.h"
+#include "rules/Python_API.h"
+#include "rules/simulation/Entity.h"
+#include "rules/LineProperty.h"
+#include "rules/StatisticsProperty.h"
+#include "rules/TerrainProperty.h"
+#include "rules/python/CyPy_Entity.h"
 
 #include "external/pycxx/CXX/Extensions.hxx"
 

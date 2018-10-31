@@ -18,8 +18,8 @@
 
 #include "EntityFactory_impl.h"
 
-#include "rulesets/Stackable.h"
-#include "rulesets/World.h"
+#include "rules/simulation/Stackable.h"
+#include "rules/simulation/World.h"
 
 #include "common/debug.h"
 #include "common/ScriptKit.h"

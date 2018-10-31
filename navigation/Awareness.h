@@ -21,7 +21,7 @@
 
 #include "external/RecastDetour/Recast/Include/Recast.h"
 
-#include "rulesets/Location.h"
+#include "rules/Location.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/rotbox.h>

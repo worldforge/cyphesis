@@ -25,11 +25,11 @@
 
 #include "TestBase.h"
 
-#include "rulesets/ArithmeticScript.h"
-#include "rulesets/Entity.h"
-#include "rulesets/StatisticsProperty.h"
+#include "rules/ArithmeticScript.h"
+#include "rules/simulation/Entity.h"
+#include "rules/StatisticsProperty.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/TypeNode.h"
 
 class TestArithmeticScript : public ArithmeticScript
@@ -138,14 +138,14 @@ int main()
 
 #include "stubs/common/stubProperty.h"
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
 
 #include "common/log.h"
 #include "common/PropertyManager.h"
 
-#include "rulesets/DomainProperty.h"
+#include "rules/DomainProperty.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"

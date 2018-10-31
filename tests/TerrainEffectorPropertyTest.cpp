@@ -25,9 +25,9 @@
 
 #include "TestBase.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/TerrainEffectorProperty.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/TerrainEffectorProperty.h"
+#include "rules/TerrainProperty.h"
 
 #include "stubs/rulesets/stubTerrainProperty.h"
 

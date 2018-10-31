@@ -22,9 +22,9 @@
 #include "Connection.h"
 #include "PossessionAuthenticator.h"
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/debug.h"
 
 #include <Atlas/Objects/SmartPtr.h>

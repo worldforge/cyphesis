@@ -28,8 +28,8 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/MindProperty.h"
-#include "rulesets/MindFactory.h"
+#include "rules/ai/MindProperty.h"
+#include "rules/ai/MindFactory.h"
 
 int main()
 {
@@ -49,8 +49,8 @@ int main()
 // stubs
 
 #include "TestWorld.h"
-#include "rulesets/BaseMind.h"
-#include "rulesets/PythonScriptFactory.h"
+#include "rules/ai/BaseMind.h"
+#include "rules/PythonScriptFactory.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"

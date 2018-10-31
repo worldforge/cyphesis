@@ -24,7 +24,7 @@
 #include "ExternalMindsConnection.h"
 #include "ExternalMindsManager.h"
 
-#include "rulesets/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 
 #include "common/id.h"
 #include "common/debug.h"

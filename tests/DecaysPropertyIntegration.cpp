@@ -25,12 +25,12 @@
 
 #include "TestBase.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/DecaysProperty.h"
+#include "rules/simulation/Entity.h"
+#include "rules/DecaysProperty.h"
 
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory_impl.h"
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -100,17 +100,17 @@ int main()
 
 // stubs
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/id.h"
 #include "common/PropertyManager.h"
 
 #include "physics/Vector3D.h"
 
-#include "rulesets/DomainProperty.h"
+#include "rules/DomainProperty.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"

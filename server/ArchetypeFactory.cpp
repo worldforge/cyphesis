@@ -19,7 +19,7 @@
 #include "EntityBuilder.h"
 #include "WorldRouter.h"
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 
 #include "common/debug.h"
 #include "common/TypeNode.h"

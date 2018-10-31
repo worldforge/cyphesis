@@ -22,9 +22,9 @@
 #include "PossessionAccount.h"
 #include "PossessionClient.h"
 
-#include "rulesets/MindFactory.h"
-#include "rulesets/BaseMind.h"
-#include <rulesets/Python_API.h>
+#include "rules/ai/MindFactory.h"
+#include "rules/ai/BaseMind.h"
+#include <rules/python/Python_API.h>
 
 #include "common/operations/Possess.h"
 #include "common/id.h"

@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rulesets/TerrainModTranslator.h"
+#include "rules/TerrainModTranslator.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubLocation.h"
 

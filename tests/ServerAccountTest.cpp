@@ -25,7 +25,7 @@
 
 #include "TestBase.h"
 #include "TestWorld.h"
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 #include "server/ServerAccount.h"
 
 #include "server/Connection.h"

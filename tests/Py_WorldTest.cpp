@@ -29,13 +29,13 @@
 
 #include "TestWorld.h"
 
-#include "rulesets/Python_API.h"
+#include "rules/Python_API.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include <cassert>
-#include "rulesets/World.h"
-#include "rulesets/python/CyPy_World.h"
+#include "rules/World.h"
+#include "rules/python/CyPy_World.h"
 
 int main()
 {

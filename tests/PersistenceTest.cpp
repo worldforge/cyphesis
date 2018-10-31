@@ -25,7 +25,7 @@
 #define DEBUG
 #endif
 
-#include "rulesets/LocatedEntity.h"
+#include "rules/LocatedEntity.h"
 #include "server/Persistence.h"
 #include "DatabaseNull.h"
 

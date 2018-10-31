@@ -25,10 +25,10 @@
 
 #include "TestBase.h"
 
-#include "rulesets/Task.h"
+#include "rules/Task.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/Script.h"
+#include "rules/simulation/Entity.h"
+#include "rules/Script.h"
 
 #include <Atlas/Objects/Generic.h>
 #include <Atlas/Objects/RootEntity.h>

@@ -18,7 +18,7 @@
 
 #include "ArithmeticBuilder.h"
 
-#include "rulesets/PythonArithmeticFactory.h"
+#include "rules/python/PythonArithmeticFactory.h"
 
 template<>
 ArithmeticBuilder* Singleton<ArithmeticBuilder>::ms_Singleton = nullptr;

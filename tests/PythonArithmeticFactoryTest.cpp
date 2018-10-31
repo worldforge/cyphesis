@@ -27,11 +27,11 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Entity.h"
-#include "rulesets/PythonArithmeticFactory.h"
-#include "rulesets/PythonArithmeticScript.h"
-#include "rulesets/Python_API.h"
-#include "rulesets/Script.h"
+#include "rules/simulation/Entity.h"
+#include "rules/PythonArithmeticFactory.h"
+#include "rules/PythonArithmeticScript.h"
+#include "rules/Python_API.h"
+#include "rules/Script.h"
 
 #include "common/log.h"
 #include "common/compose.hpp"

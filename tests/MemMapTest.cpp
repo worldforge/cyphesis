@@ -25,10 +25,10 @@
 
 #include "TestBase.h"
 
-#include "rulesets/MemMap.h"
+#include "rules/ai/MemMap.h"
 
-#include "rulesets/MemEntity.h"
-#include "rulesets/Script.h"
+#include "rules/ai/MemEntity.h"
+#include "rules/Script.h"
 
 #include "common/log.h"
 #include "common/TypeNode.h"
@@ -40,8 +40,8 @@
 #include <cstdlib>
 
 #include <cassert>
-#include <rulesets/SimpleTypeStore.h>
-#include <rulesets/TypeResolver.h>
+#include <rules/SimpleTypeStore.h>
+#include <rules/TypeResolver.h>
 
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;

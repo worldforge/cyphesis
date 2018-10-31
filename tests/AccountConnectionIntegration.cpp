@@ -38,7 +38,7 @@
 #include "common/TypeNode.h"
 #include "common/CommSocket.h"
 #include "DatabaseNull.h"
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -243,8 +243,8 @@ int main()
 
 
 
-#include "rulesets/ExternalMind.h"
-#include "rulesets/ExternalProperty.h"
+#include "rules/ExternalMind.h"
+#include "rules/ExternalProperty.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
 #include "server/Ruleset.h"

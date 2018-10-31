@@ -31,10 +31,10 @@
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
 
-#include "rulesets/Thing.h"
-#include "rulesets/Entity.h"
-#include "rulesets/Script.h"
-#include "rulesets/Task.h"
+#include "rules/Thing.h"
+#include "rules/simulation/Entity.h"
+#include "rules/Script.h"
+#include "rules/Task.h"
 
 #include "common/compose.hpp"
 #include "common/id.h"

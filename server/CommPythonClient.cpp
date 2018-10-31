@@ -18,7 +18,7 @@
 
 #include "CommPythonClient.h"
 
-#include "rulesets/PythonContext.h"
+#include "rules/python/PythonContext.h"
 
 #include <iostream>
 

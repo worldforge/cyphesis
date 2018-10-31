@@ -68,7 +68,7 @@
 
 #include "common/debug.h"
 
-#include "rulesets/MemEntity.h"
+#include "rules/ai/MemEntity.h"
 
 #include <wfmath/wfmath.h>
 

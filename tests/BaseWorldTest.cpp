@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/log.h"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -39,7 +39,7 @@ static void test_function(Atlas::Objects::Operation::RootOperation)
 }
 
 #include "TestWorld.h"
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 class MyTestWorld : public TestWorld {
   public:

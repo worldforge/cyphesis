@@ -29,14 +29,14 @@
 
 #include "python_testers.h"
 
-#include "rulesets/Python_API.h"
-#include "rulesets/Entity.h"
-#include "rulesets/TerrainProperty.h"
+#include "rules/Python_API.h"
+#include "rules/simulation/Entity.h"
+#include "rules/TerrainProperty.h"
 
 #include <cassert>
 
 #include "external/pycxx/CXX/Extensions.hxx"
-#include "rulesets/python/CyPy_Entity.h"
+#include "rules/python/CyPy_Entity.h"
 
 
 class TestProp : public Py::ExtensionModule<TestProp>

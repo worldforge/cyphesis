@@ -7,27 +7,27 @@
 
 #include "TestBase.h"
 
-#include "rulesets/entityfilter/Filter.h"
-#include "rulesets/entityfilter/ParserDefinitions.h"
-#include "rulesets/entityfilter/Providers.h"
+#include "rules/entityfilter/Filter.h"
+#include "rules/entityfilter/ParserDefinitions.h"
+#include "rules/entityfilter/Providers.h"
 
-#include "rulesets/EntityProperty.h"
-#include "rulesets/Domain.h"
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/BBoxProperty.h"
+#include "rules/simulation/EntityProperty.h"
+#include "rules/Domain.h"
+#include "rules/AtlasProperties.h"
+#include "rules/BBoxProperty.h"
 #include "common/Property.h"
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/log.h"
 #include "common/Inheritance.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 #include "common/TypeNode.h"
 
 #include <wfmath/point.h>
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
-#include <rulesets/PlantedOnProperty.h>
+#include <rules/PlantedOnProperty.h>
 
 using namespace EntityFilter;
 using Atlas::Message::Element;

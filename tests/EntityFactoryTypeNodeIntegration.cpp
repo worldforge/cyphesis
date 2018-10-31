@@ -27,7 +27,7 @@
 
 #include "TestPropertyManager.h"
 
-#include "rulesets/Thing.h"
+#include "rules/Thing.h"
 
 #include "common/TypeNode.h"
 
@@ -89,9 +89,9 @@ int main()
 
 // stubs
 
-#include "rulesets/PythonScriptFactory.h"
+#include "rules/PythonScriptFactory.h"
 
-#include "rulesets/Stackable.h"
+#include "rules/Stackable.h"
 
 Stackable::Stackable(const std::string & id, long intId) :
            Thing(id, intId), m_num(1)

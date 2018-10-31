@@ -26,13 +26,13 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rulesets/Stackable.h"
+#include "rules/Stackable.h"
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/BBoxProperty.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
-#include "rulesets/StatusProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/BBoxProperty.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
+#include "rules/StatusProperty.h"
 
 #include "common/id.h"
 #include "common/log.h"

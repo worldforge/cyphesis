@@ -76,7 +76,7 @@ void WorldTime::initTimeInfo()
 }
 
 
-std::string WorldTime::operator[](const std::string & name)
+std::string WorldTime::operator[](const std::string & name) const
 {
     if (name == "season") {
         SeasonInfo::const_iterator I = m_monthToSeason.find(m_time.month());

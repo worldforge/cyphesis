@@ -21,9 +21,9 @@
 
 #include "MindInspector.h"
 
-#include "rulesets/World.h"
+#include "rules/simulation/World.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/custom.h"
 #include "common/operations/Commune.h"
 #include "common/operations/Think.h"

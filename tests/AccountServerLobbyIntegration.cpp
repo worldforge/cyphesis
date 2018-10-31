@@ -31,7 +31,7 @@
 #include "server/Lobby.h"
 #include "server/ServerRouting.h"
 
-#include "rulesets/Entity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/compose.hpp"
 #include "DatabaseNull.h"

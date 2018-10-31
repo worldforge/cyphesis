@@ -54,7 +54,7 @@ endmacro()
 #### Common tests #####
 wf_add_test(TestBaseTest.cpp)
 wf_add_test(RefTest.cpp)
-wf_add_test(OgreMeshDeserializerTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/OgreMeshDeserializer.cpp)
+wf_add_test(OgreMeshDeserializerTest.cpp ../rules/simulation/OgreMeshDeserializer.cpp)
 wf_add_test(logTest.cpp ${PROJECT_SOURCE_DIR}/common/log.cpp)
 wf_add_test(InheritanceTest.cpp ${PROJECT_SOURCE_DIR}/common/Inheritance.cpp ${PROJECT_SOURCE_DIR}/common/custom.cpp)
 wf_add_test(PropertyTest.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
@@ -78,7 +78,7 @@ wf_add_test(TickTest.cpp)
 wf_add_test(UnseenTest.cpp)
 wf_add_test(UpdateTest.cpp)
 wf_add_test(AtlasFileLoaderTest.cpp ${PROJECT_SOURCE_DIR}/common/AtlasFileLoader.cpp)
-wf_add_test(BaseWorldTest.cpp ../rulesets/BaseWorld.cpp)
+wf_add_test(BaseWorldTest.cpp ../rules/simulation/BaseWorld.cpp)
 wf_add_test(idTest.cpp ${PROJECT_SOURCE_DIR}/common/id.cpp)
 wf_add_test(StorageTest.cpp ${PROJECT_SOURCE_DIR}/common/Storage.cpp)
 wf_add_test(debugTest.cpp ${PROJECT_SOURCE_DIR}/common/debug.cpp)
@@ -122,7 +122,7 @@ wf_add_test(CourseTest.cpp ${PROJECT_SOURCE_DIR}/physics/Course.cpp)
 # MODULE_TESTS
 
 wf_add_test(DateTimeTest.cpp ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp)
-wf_add_test(LocationTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Location.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityLocation.cpp)
+wf_add_test(LocationTest.cpp ../rules/Location.cpp ../rules/EntityLocation.cpp)
 target_link_libraries(LocationTest physics)
 wf_add_test(WorldTimeTest.cpp ${PROJECT_SOURCE_DIR}/modules/WorldTime.cpp ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp)
 wf_add_test(EntityRefTest.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp)
@@ -132,22 +132,22 @@ wf_add_test(TerrainContextTest.cpp ${PROJECT_SOURCE_DIR}/modules/TerrainContext.
 
 set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp EntityExerciser.cpp)
 
-wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
-wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
-wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Stackable.cpp)
-wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp)
-wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ${PROJECT_SOURCE_DIR}/rulesets/World.cpp)
-wf_add_test(ThingupdatePropertiesTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(TaskTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Task.cpp)
-wf_add_test(EntityPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ${PROJECT_SOURCE_DIR}/rulesets/AreaProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/AtlasProperties.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/CalendarProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LineProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/StatisticsProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp
+wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ../rules/LocatedEntity.cpp)
+wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ../rules/simulation/Entity.cpp ../rules/LocatedEntity.cpp)
+wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ../rules/simulation/Stackable.cpp)
+wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ../rules/simulation/Thing.cpp)
+wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ../rules/simulation/World.cpp)
+wf_add_test(ThingupdatePropertiesTest.cpp ../rules/simulation/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
+wf_add_test(TaskTest.cpp ../rules/simulation/Task.cpp)
+wf_add_test(EntityPropertyTest.cpp ../rules/simulation/EntityProperty.cpp ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)
+wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ../rules/simulation/AreaProperty.cpp
+    ../rules/AtlasProperties.cpp
+    ../rules/simulation/CalendarProperty.cpp
+    ../rules/simulation/EntityProperty.cpp
+    ../rules/simulation/LineProperty.cpp
+    ../rules/simulation/StatisticsProperty.cpp
+    ../rules/simulation/TerrainProperty.cpp
+    ../rules/simulation/TerrainEffectorProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
     ${PROJECT_SOURCE_DIR}/modules/TerrainContext.cpp
@@ -157,79 +157,79 @@ wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ${PROJECT_SOURCE_DIR}/rule
     ${PROJECT_SOURCE_DIR}/common/operations.cpp
     ${PROJECT_SOURCE_DIR}/physics/Shape.cpp
     ${PROJECT_SOURCE_DIR}/physics/Course.cpp)
-wf_add_test(ScriptTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Script.cpp)
-wf_add_test(AreaPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/AreaProperty.cpp
+wf_add_test(ScriptTest.cpp ../rules/Script.cpp)
+wf_add_test(AreaPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/AreaProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BBoxPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
+wf_add_test(BBoxPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(CalendarPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/CalendarProperty.cpp
+wf_add_test(CalendarPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/CalendarProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(LinePropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/LineProperty.cpp
+wf_add_test(LinePropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/LineProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(MindPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/MindProperty.cpp
+wf_add_test(MindPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/MindProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 target_link_libraries(MindPropertyTest pycxx)
 
-wf_add_test(ModePropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/ModeProperty.cpp
+wf_add_test(ModePropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/ModeProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(SolidPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/SolidProperty.cpp
+wf_add_test(SolidPropertyTest.cpp PropertyCoverage.cpp ../rules/SolidProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(StatisticsPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/StatisticsProperty.cpp
+wf_add_test(StatisticsPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/StatisticsProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(StatusPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/StatusProperty.cpp
+wf_add_test(StatusPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/StatusProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(SuspendedPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/SuspendedProperty.cpp
+wf_add_test(SuspendedPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/SuspendedProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(TerrainModPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
+wf_add_test(TerrainModPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/TerrainModProperty.cpp
+    ../rules/simulation/TerrainProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(PythonClassTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonClass.cpp)
+wf_add_test(PythonClassTest.cpp python_testers.cpp ../rules/python/PythonClass.cpp)
 target_link_libraries(PythonClassTest pycxx)
-wf_add_test(TerrainPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
+wf_add_test(TerrainPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/TerrainProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(TransientPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/TransientProperty.cpp
+wf_add_test(TransientPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/TransientProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(TasksPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/TasksProperty.cpp
+wf_add_test(TasksPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/TasksProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(InternalPropertiesTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/InternalProperties.cpp
+wf_add_test(InternalPropertiesTest.cpp PropertyCoverage.cpp ../rules/simulation/InternalProperties.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(EntityPropertiesTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperties.cpp
+wf_add_test(EntityPropertiesTest.cpp PropertyCoverage.cpp ../rules/EntityProperties.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(AtlasPropertiesTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/AtlasProperties.cpp
+wf_add_test(AtlasPropertiesTest.cpp PropertyCoverage.cpp ../rules/AtlasProperties.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(SpawnPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/SpawnProperty.cpp
+wf_add_test(SpawnPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/SpawnProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(SpawnerPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/SpawnerProperty.cpp
+wf_add_test(SpawnerPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/SpawnerProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(VisibilityPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/VisibilityProperty.cpp
+wf_add_test(VisibilityPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/VisibilityProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(ExternalPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ExternalProperty.cpp
+wf_add_test(ExternalPropertyTest.cpp ../rules/simulation/ExternalProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BurnSpeedPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/BurnSpeedProperty.cpp
+wf_add_test(BurnSpeedPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/BurnSpeedProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BiomassPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/BiomassProperty.cpp
+wf_add_test(BiomassPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/BiomassProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(DecaysPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/DecaysProperty.cpp
+wf_add_test(DecaysPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/DecaysProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BaseMindTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/BaseMind.cpp ${PROJECT_SOURCE_DIR}/rulesets/MemMap.cpp)
-wf_add_test(MemEntityTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/MemEntity.cpp)
-wf_add_test(MemMapTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/MemMap.cpp)
-wf_add_test(MovementTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Movement.cpp)
-wf_add_test(PedestrianTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/Pedestrian.cpp ${PROJECT_SOURCE_DIR}/rulesets/Movement.cpp)
-wf_add_test(ExternalMindTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/ExternalMind.cpp)
-wf_add_test(PythonContextTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonContext.cpp)
+wf_add_test(BaseMindTest.cpp ../rules/ai/BaseMind.cpp ../rules/ai/MemMap.cpp)
+wf_add_test(MemEntityTest.cpp ../rules/ai/MemEntity.cpp)
+wf_add_test(MemMapTest.cpp ../rules/ai/MemMap.cpp)
+wf_add_test(MovementTest.cpp ../rules/simulation/Movement.cpp)
+wf_add_test(PedestrianTest.cpp ../rules/simulation/Pedestrian.cpp ../rules/simulation/Movement.cpp)
+wf_add_test(ExternalMindTest.cpp ../rules/simulation/ExternalMind.cpp)
+wf_add_test(PythonContextTest.cpp ../rules/python/PythonContext.cpp)
 wf_add_test(ArithmeticScriptTest.cpp)
-wf_add_test(PythonArithmeticScriptTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonArithmeticScript.cpp)
+wf_add_test(PythonArithmeticScriptTest.cpp python_testers.cpp ../rules/python/PythonArithmeticScript.cpp)
 target_link_libraries(PythonArithmeticScriptTest pycxx)
 
 wf_add_test(ArithmeticFactoryTest.cpp)
-wf_add_test(PythonArithmeticFactoryTest.cpp python_testers.cpp ${PROJECT_SOURCE_DIR}/rulesets/PythonArithmeticFactory.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/PythonClass.cpp)
+wf_add_test(PythonArithmeticFactoryTest.cpp python_testers.cpp ../rules/python/PythonArithmeticFactory.cpp
+    ../rules/python/PythonClass.cpp)
 target_link_libraries(PythonArithmeticFactoryTest pycxx)
-wf_add_test(TerrainModTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslator.cpp)
-wf_add_test(TerrainEffectorPropertyTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp)
-wf_add_test(GeometryPropertyTest.cpp PropertyCoverage.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp
+wf_add_test(TerrainModTest.cpp ../rules/simulation/TerrainModTranslator.cpp)
+wf_add_test(TerrainEffectorPropertyTest.cpp ../rules/simulation/TerrainEffectorProperty.cpp)
+wf_add_test(GeometryPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/GeometryProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 
 #Python ruleset tests
@@ -300,11 +300,11 @@ target_link_libraries(PythonWrapperTest ${PYTHON_TESTS_LIBS})
 #Entity filter tests
 
 wf_add_test(EntityFilterTest.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/PlantedOnProperty.cpp
+    ../rules/simulation/EntityProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/simulation/BBoxProperty.cpp
+    ../rules/LocatedEntity.cpp
+    ../rules/simulation/PlantedOnProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
@@ -313,21 +313,21 @@ target_link_libraries(EntityFilterTest entityfilter)
 target_compile_definitions(EntityFilterTest PRIVATE -DBOOST_SPIRIT_DEBUG)
 
 wf_add_test(EntityFilterParserTest.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+    ../rules/simulation/EntityProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/simulation/BBoxProperty.cpp
+    ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
     ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp)
 target_link_libraries(EntityFilterParserTest entityfilter)
 
-wf_add_test(EntityFilterProvidersTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/EntityProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/PlantedOnProperty.cpp
+wf_add_test(EntityFilterProvidersTest.cpp ../rules/simulation/EntityProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/simulation/BBoxProperty.cpp
+    ../rules/LocatedEntity.cpp
+    ../rules/simulation/PlantedOnProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
@@ -337,24 +337,24 @@ target_link_libraries(EntityFilterProvidersTest entityfilter)
 
 # RULESETS_INTEGRATION
 
-wf_add_test(GeometryPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/GeometryProperty.cpp)
+wf_add_test(GeometryPropertyIntegration.cpp ../rules/simulation/GeometryProperty.cpp)
 target_link_libraries(GeometryPropertyIntegration rulesetentity rulesetbase physics modules common)
 
-wf_add_benchmark(PhysicalDomainBenchmark.cpp ${PROJECT_SOURCE_DIR}/rulesets/PhysicalDomain.cpp)
+wf_add_benchmark(PhysicalDomainBenchmark.cpp ../rules/simulation/PhysicalDomain.cpp)
 target_link_libraries(PhysicalDomainBenchmark rulesetentity rulesetbase physics modules common)
 
-wf_add_test(PhysicalDomainIntegrationTest.cpp ${PROJECT_SOURCE_DIR}/rulesets/PhysicalDomain.cpp)
+wf_add_test(PhysicalDomainIntegrationTest.cpp ../rules/simulation/PhysicalDomain.cpp)
 target_link_libraries(PhysicalDomainIntegrationTest rulesetentity rulesetbase physics modules common)
 
-wf_add_test(TerrainPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/TerrainModProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslator.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/AtlasProperties.cpp
-    ../rulesets/BaseWorld.cpp
+wf_add_test(TerrainPropertyIntegration.cpp ../rules/simulation/TerrainModProperty.cpp
+    ../rules/simulation/TerrainEffectorProperty.cpp
+    ../rules/simulation/TerrainProperty.cpp
+    ../rules/simulation/TerrainModTranslator.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp
+    ../rules/Domain.cpp
+    ../rules/AtlasProperties.cpp
+    ../rules/simulation/BaseWorld.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/PropertyManager.cpp
     ${PROJECT_SOURCE_DIR}/common/Router.cpp
@@ -363,50 +363,50 @@ wf_add_test(TerrainPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Terrai
 
 target_link_libraries(TerrainPropertyIntegration modules physics)
 
-wf_add_test(PropertyEntityIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+wf_add_test(PropertyEntityIntegration.cpp ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
-wf_add_test(DecaysPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/DecaysProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+wf_add_test(DecaysPropertyIntegration.cpp ../rules/simulation/Entity.cpp
+    ../rules/simulation/DecaysProperty.cpp
+    ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
-wf_add_test(BiomassPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BiomassProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+wf_add_test(BiomassPropertyIntegration.cpp ../rules/simulation/Entity.cpp
+    ../rules/simulation/BiomassProperty.cpp
+    ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
-wf_add_test(TerrainModPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainEffectorProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainModProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainModTranslator.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/TerrainProperty.cpp
+wf_add_test(TerrainModPropertyIntegration.cpp ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp
+    ../rules/simulation/TerrainEffectorProperty.cpp
+    ../rules/simulation/TerrainModProperty.cpp
+    ../rules/simulation/TerrainModTranslator.cpp
+    ../rules/simulation/TerrainProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/modules/TerrainContext.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
-wf_add_test(StatisticsPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/StatisticsProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
-wf_add_test(BaseMindMapEntityIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/BaseMind.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/MemEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/MemMap.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BBoxProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/SolidProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/InternalProperties.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Location.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/EntityLocation.cpp
+wf_add_test(StatisticsPropertyIntegration.cpp ../rules/simulation/StatisticsProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp)
+wf_add_test(BaseMindMapEntityIntegration.cpp ../rules/ai/BaseMind.cpp
+    ../rules/ai/MemEntity.cpp
+    ../rules/ai/MemMap.cpp
+    ../rules/simulation/BBoxProperty.cpp
+    ../rules/SolidProperty.cpp
+    ../rules/simulation/InternalProperties.cpp
+    ../rules/Location.cpp
+    ../rules/EntityLocation.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(AreaPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/AreaProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+wf_add_test(AreaPropertyIntegration.cpp ../rules/simulation/AreaProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/physics/Course.cpp
     ${PROJECT_SOURCE_DIR}/physics/Shape.cpp)
-wf_add_test(SuspendedPropertyIntegration.cpp ${PROJECT_SOURCE_DIR}/rulesets/SuspendedProperty.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp)
+wf_add_test(SuspendedPropertyIntegration.cpp ../rules/simulation/SuspendedProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp)
 target_link_libraries(SuspendedPropertyIntegration common)
 wf_add_test(ThingIntegration.cpp)
 target_link_libraries(ThingIntegration rulesetentity rulesetbase modules common physics)
@@ -437,9 +437,9 @@ wf_add_test(ClientConnectionIntegration.cpp ${PROJECT_SOURCE_DIR}/client/ClientC
 
 wf_add_test(RulesetTest.cpp ${PROJECT_SOURCE_DIR}/server/Ruleset.cpp)
 wf_add_test(EntityBuilderTest.cpp ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp)
-wf_add_test(PropertyFlagTest.cpp TestPropertyManager.cpp ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
+wf_add_test(PropertyFlagTest.cpp TestPropertyManager.cpp ../rules/simulation/Thing.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(AccountTest.cpp ${PROJECT_SOURCE_DIR}/server/Account.cpp
     ${PROJECT_SOURCE_DIR}/common/debug.cpp)
@@ -491,12 +491,12 @@ wf_add_test(WorldRouterIntegration.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.
     ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp
     ${PROJECT_SOURCE_DIR}/server/ArithmeticBuilder.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Domain.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Entity.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/Thing.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/World.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BaseWorld.cpp)
+    ../rules/Domain.cpp
+    ../rules/LocatedEntity.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/simulation/Thing.cpp
+    ../rules/simulation/World.cpp
+    ../rules/simulation/BaseWorld.cpp)
 target_link_libraries(WorldRouterIntegration modules physics common pycxx)
 wf_add_test(RulesetIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Ruleset.cpp
     ${PROJECT_SOURCE_DIR}/server/EntityBuilder.cpp
@@ -506,7 +506,7 @@ wf_add_test(RulesetIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Ruleset.cpp
     ${PROJECT_SOURCE_DIR}/server/ArchetypeRuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/PropertyRuleHandler.cpp
     ${PROJECT_SOURCE_DIR}/server/Persistence.cpp
-    ${PROJECT_SOURCE_DIR}/rulesets/BaseWorld.cpp)
+    ../rules/simulation/BaseWorld.cpp)
 target_link_libraries(RulesetIntegration common pycxx)
 #Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 wf_add_test(ConnectionShakerIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Connection.cpp
@@ -537,7 +537,7 @@ wf_add_test(AccountConnectionIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Accoun
     ${PROJECT_SOURCE_DIR}/server/ServerAccount.cpp
     ${PROJECT_SOURCE_DIR}/server/ServerRouting.cpp
     ${PROJECT_SOURCE_DIR}/server/SystemAccount.cpp
-    ../rulesets/BaseWorld.cpp
+    ../rules/simulation/BaseWorld.cpp
     ${PROJECT_SOURCE_DIR}/common/Inheritance.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/Router.cpp

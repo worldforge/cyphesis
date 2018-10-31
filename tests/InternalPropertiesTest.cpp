@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rulesets/InternalProperties.h"
+#include "rules/InternalProperties.h"
 
 void test_SetupProperty()
 {

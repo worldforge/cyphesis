@@ -25,8 +25,8 @@
 
 #include "TestBase.h"
 
-#include "rulesets/AreaProperty.h"
-#include "rulesets/Entity.h"
+#include "rules/AreaProperty.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/TypeNode.h"
 
@@ -119,16 +119,16 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
 
 // stubs
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/Script.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/Script.h"
 
-#include "rulesets/BaseWorld.h"
+#include "rules/BaseWorld.h"
 #include "common/log.h"
 #include "common/PropertyManager.h"
 #include "common/TypeNode.h"
 
-#include "rulesets/DomainProperty.h"
+#include "rules/DomainProperty.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/rulesets/stubDomain.h"
 #include "stubs/rulesets/stubDomainProperty.h"

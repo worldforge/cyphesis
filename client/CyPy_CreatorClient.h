@@ -21,7 +21,7 @@
 
 
 #include "CreatorClient.h"
-#include "rulesets/python/WrapperBase.h"
+#include "rules/python/WrapperBase.h"
 
 class CyPy_CreatorClient : public WrapperBase<Ref<CreatorClient>, CyPy_CreatorClient>
 {

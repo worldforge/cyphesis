@@ -28,8 +28,8 @@
 
 #include "common/Property.h"
 
-#include "rulesets/World.h"
-#include "rulesets/Python_API.h"
+#include "rules/World.h"
+#include "rules/Python_API.h"
 
 #include "server/EntityBuilder.h"
 
@@ -91,9 +91,9 @@ int main(int argc, char ** argv)
 
 
 
-#include "rulesets/AtlasProperties.h"
-#include "rulesets/Domain.h"
-#include "rulesets/DomainProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/Domain.h"
+#include "rules/DomainProperty.h"
 
 #include "common/const.h"
 #include "common/log.h"
