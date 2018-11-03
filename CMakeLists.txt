@@ -225,7 +225,7 @@ add_subdirectory(data)
 add_subdirectory(tools)
 add_subdirectory(man)
 #Only build tests if the "check" target is used.
-#add_subdirectory(tests EXCLUDE_FROM_ALL)
+add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 configure_file(Doxyfile.in Doxyfile @ONLY)
 configure_file(Doxyfile-python.in Doxyfile-python @ONLY)

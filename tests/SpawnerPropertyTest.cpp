@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/SpawnerProperty.h"
+#include "rules/simulation/SpawnerProperty.h"
 #include "common/Inheritance.h"
 
 int main()

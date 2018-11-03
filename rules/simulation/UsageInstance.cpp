@@ -32,7 +32,7 @@ using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-
+std::function<Py::Object(UsageInstance&& usageInstance)> UsageInstance::scriptCreator;
 
 std::pair<bool, std::string> UsageInstance::isValid() const
 {

@@ -31,9 +31,11 @@
 #include "client/ObserverClient.h"
 #include "client/CyPy_ObserverClient.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Atlas.h>
 
 static bool stub_setup_fail = false;
 static bool stub_createCharacter_fail = false;
@@ -45,7 +47,7 @@ int main()
 {
     boost::asio::io_service io_service;
 
-    init_python_api("230dabbb-d676-4d43-8a03-4623c02503b5");
+    init_python_api({&CyPy_Server::init, &CyPy_Atlas::init}, "230dabbb-d676-4d43-8a03-4623c02503b5");
     extend_client_python_api();
 
     auto client = new ObserverClient(io_service);

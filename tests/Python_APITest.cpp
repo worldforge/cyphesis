@@ -29,20 +29,27 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
-#include "rules/Python_Script_Utils.h"
+#include "rules/python/Python_API.h"
+#include "rules/python/Python_Script_Utils.h"
 
 #include "stubs/navigation/stubAwareness.h"
 #include "stubs/navigation/stubSteering.h"
 
 #include <cassert>
-
+#include <rules/python/CyPy_Rules.h>
+#include "rules/python/CyPy_Atlas.h"
+#include "rules/python/CyPy_Physics.h"
+#include "rules/python/CyPy_Common.h"
 
 
 int main()
 {
 
-    init_python_api("1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
+    init_python_api({&CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init,
+                     &CyPy_Rules::init},
+                    "1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
 
     auto amod = Get_PyModule("notamodule");
     assert(amod.isNull());
@@ -70,13 +77,13 @@ int main()
     run_python_string("log.debug('foo')");
     run_python_string("log.thinking('foo')");
 
-    run_python_string("import atlas");
+    run_python_string("import rules");
 
-    run_python_string("l=atlas.Location()");
-    run_python_string("atlas.isLocation(l)");
-    run_python_string("atlas.isLocation(1)");
-    run_python_string("l1=atlas.Location()");
-    run_python_string("l2=atlas.Location()");
+    run_python_string("l=rules.Location()");
+    run_python_string("rules.isLocation(l)");
+    run_python_string("rules.isLocation(1)");
+    run_python_string("l1=rules.Location()");
+    run_python_string("l2=rules.Location()");
 
     run_python_string("import physics");
     expect_python_error("physics.distance_to()", PyExc_IndexError);

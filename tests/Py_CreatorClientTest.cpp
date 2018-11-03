@@ -29,12 +29,18 @@
 
 #include "client/Python_ClientAPI.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
 #include <client/CyPy_CreatorClient.h>
 #include <client/ClientConnection.h>
 #include <rules/simulation/Entity.h>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/ai/python/CyPy_Ai.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Rules.h>
 #include "external/pycxx/CXX/Objects.hxx"
 
 static bool stub_make_fail = false;
@@ -45,7 +51,12 @@ int main()
 {
     boost::asio::io_service io_service;
 
-    init_python_api("602fe3c3-e6c4-4c9a-b0ac-9f0a034042ba");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init,
+                     &CyPy_Ai::init}, "602fe3c3-e6c4-4c9a-b0ac-9f0a034042ba");
     extend_client_python_api();
 
     auto client = new CreatorClient("1", "2", *new ClientConnection(io_service));
@@ -57,6 +68,8 @@ int main()
     module.setAttr("testclient", CyPy_CreatorClient::wrap(client));
 
     run_python_string("import server");
+    run_python_string("import ai");
+    run_python_string("import rules");
     run_python_string("import atlas");
     expect_python_error("server.CreatorClient(1)", PyExc_RuntimeError);
     expect_python_error("server.CreatorClient(\"one\")", PyExc_RuntimeError);
@@ -91,8 +104,8 @@ int main()
     expect_python_error("c.delete()", PyExc_IndexError);
     run_python_string("assert c == server.testclient");
 
-    run_python_string("assert type(c.map) == server.MemMap");
-    run_python_string("assert type(c.entity.location) == atlas.Location");
+    run_python_string("assert type(c.map) == ai.MemMap");
+    run_python_string("assert type(c.entity.location) == rules.Location");
     run_python_string("assert type(c.time) == server.WorldTime");
     expect_python_error("c.foo", PyExc_AttributeError);
     expect_python_error("c.foo_operation", PyExc_AttributeError);

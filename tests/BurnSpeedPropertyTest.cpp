@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/BurnSpeedProperty.h"
+#include "rules/simulation/BurnSpeedProperty.h"
 
 int main()
 {
@@ -45,7 +45,7 @@ int main()
 
 // stubs
 
-#include "rules/StatusProperty.h"
+#include "rules/simulation/StatusProperty.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
 int BURN_NO = -1;

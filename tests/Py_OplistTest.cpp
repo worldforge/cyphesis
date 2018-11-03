@@ -29,14 +29,15 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Atlas.h>
 
 
 int main()
 {
-    init_python_api("3803b66a-022e-420e-8e63-30e0c32aaf87");
+    init_python_api({&CyPy_Atlas::init}, "3803b66a-022e-420e-8e63-30e0c32aaf87");
 
     run_python_string("from atlas import Oplist");
     run_python_string("from atlas import Operation");

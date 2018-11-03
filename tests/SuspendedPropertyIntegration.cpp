@@ -25,9 +25,9 @@
 #include "TestWorld.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/SuspendedProperty.h"
+#include "rules/simulation/SuspendedProperty.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/TypeNode.h"
 #include "common/operations/Tick.h"
 #include "common/custom.h"
@@ -176,13 +176,12 @@ int main()
 // stubs
 
 //#include "Property_stub_impl.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubIdProperty.h"
-#include "stubs/rulesets/stubContainsProperty.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
+#include "stubs/rules/stubAtlasProperties.h"
 
 
 long integerId(const std::string & id)
@@ -223,7 +222,7 @@ void BaseWorld::setIsSuspended(bool suspended)
 #endif //STUB_BaseWorld_setIsSuspended
 
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
 

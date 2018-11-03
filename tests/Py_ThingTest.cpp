@@ -32,15 +32,20 @@
 #include "TestWorld.h"
 #include "TestPropertyManager.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 #include "rules/simulation/Entity.h"
 
 #include <cassert>
 #include <common/Inheritance.h>
-#include <rules/Python_Script_Utils.h>
+#include <rules/python/Python_Script_Utils.h>
 #include <rules/python/CyPy_LocatedEntity.h>
-#include <rules/python/CyPy_UsageInstance.h>
+#include <rules/simulation/python/CyPy_UsageInstance.h>
 #include <Atlas/Objects/Operation.h>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Rules.h>
 
 #include "stubs/common/stubMonitors.h"
 
@@ -51,7 +56,12 @@ int main()
 
     new TestPropertyManager;
 
-    init_python_api("993bbe09-5751-41fe-8a18-17995c713c2e");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init},
+                    "993bbe09-5751-41fe-8a18-17995c713c2e");
 
     run_python_string("from server import *");
     run_python_string("from atlas import Operation");

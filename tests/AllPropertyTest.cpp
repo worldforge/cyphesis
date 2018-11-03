@@ -25,22 +25,22 @@
 
 #include "PropertyExerciser.h"
 
-#include "rules/AreaProperty.h"
+#include "rules/simulation/AreaProperty.h"
 #include "rules/AtlasProperties.h"
-#include "rules/CalendarProperty.h"
+#include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/LineProperty.h"
-#include "rules/StatisticsProperty.h"
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/LineProperty.h"
+#include "rules/simulation/StatisticsProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
-#include "rules/ArithmeticFactory.h"
+#include "rules/simulation/ArithmeticFactory.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/log.h"
 #include "common/Property_impl.h"
 #include "common/TypeNode.h"
 
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 #include <Mercator/Terrain.h>
 
@@ -164,7 +164,7 @@ int main()
 
 // stubs
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
 #define STUB_TypeNode_isTypeOf

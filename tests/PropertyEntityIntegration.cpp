@@ -281,7 +281,7 @@ int main()
 
 #include "rules/AtlasProperties.h"
 #include "rules/Domain.h"
-#include "rules/DomainProperty.h"
+#include "rules/simulation/DomainProperty.h"
 #include "rules/Script.h"
 
 #include "common/id.h"
@@ -292,8 +292,8 @@ int main()
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rules/stubDomain.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -322,12 +322,12 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"

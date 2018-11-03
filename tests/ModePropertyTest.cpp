@@ -25,9 +25,9 @@
 
 #include "PropertyCoverage.h"
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubQuaternionProperty.h"
+#include "stubs/rules/stubQuaternionProperty.h"
 
-#include "rules/ModeProperty.h"
+#include "rules/simulation/ModeProperty.h"
 
 int main()
 {

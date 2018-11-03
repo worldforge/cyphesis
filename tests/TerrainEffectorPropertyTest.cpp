@@ -26,10 +26,10 @@
 #include "TestBase.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/TerrainEffectorProperty.h"
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/TerrainEffectorProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
-#include "stubs/rulesets/stubTerrainProperty.h"
+#include "stubs/rules/simulation/stubTerrainProperty.h"
 
 class TerrainEffectorPropertytest : public Cyphesis::TestBase
 {
@@ -134,9 +134,9 @@ PropertyBase * Entity::setProperty(const std::string & name,
     return m_properties[name] = prop;
 }
 
-#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubProperty.h"

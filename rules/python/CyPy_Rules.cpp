@@ -22,13 +22,14 @@
 #include "CyPy_Location.h"
 #include "CyPy_EntityLocation.h"
 
-CyPy_Rules::CyPy_Rules() : ExtensionModule("atlas")
+CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
 {
     CyPy_Props::init_type();
     CyPy_WorldTime::init_type();
     CyPy_Location::init_type();
     CyPy_EntityLocation::init_type();
 
+    add_varargs_method("isLocation", &CyPy_Rules::is_location, "");
 
     initialize("Rules");
 
@@ -36,10 +37,15 @@ CyPy_Rules::CyPy_Rules() : ExtensionModule("atlas")
 
     d["Location"] = CyPy_Location::type();
     d["EntityLocation"] = CyPy_EntityLocation::type();
+    d["WorldTime"] = CyPy_WorldTime::type();
 
 }
 
-
+Py::Object CyPy_Rules::is_location(const Py::Tuple& args)
+{
+    args.verify_length(1, 1);
+    return Py::Boolean(CyPy_Location::check(args[0]));
+}
 
 std::string CyPy_Rules::init()
 {

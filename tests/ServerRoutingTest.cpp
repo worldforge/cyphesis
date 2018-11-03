@@ -27,7 +27,7 @@
 
 #include "server/Account.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "DatabaseNull.h"
@@ -344,7 +344,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
 static long idGenerator = 0;

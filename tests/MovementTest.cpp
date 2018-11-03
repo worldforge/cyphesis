@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rules/Movement.h"
+#include "rules/simulation/Movement.h"
 
 #include "rules/simulation/Entity.h"
 
@@ -65,4 +65,4 @@ int main()
     return 0;
 }
 
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"

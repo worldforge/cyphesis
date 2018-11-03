@@ -18,14 +18,14 @@
 
 #include "rules/BulletDomain.h"
 
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
 #ifdef HAVE_BULLET
 #include "btBulletCollisionCommon.h"
 #endif // HAVE_BULLET
 
-#include "stubs/rulesets/stubTerrainProperty.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/simulation/stubTerrainProperty.h"
+#include "stubs/rules/stubDomain.h"
 
 #include <cassert>
 

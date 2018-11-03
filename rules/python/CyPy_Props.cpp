@@ -47,39 +47,17 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
 
-//    if (nameStr == "bbox") {
-//        auto bboxProperty = m_value->getPropertyClassFixed<BBoxProperty>();
-//        if (bboxProperty) {
-//            return CyPy_Axisbox::wrap(bboxProperty->data());
-//        }
-//        return Py::None();
-//    }
-
     auto prop = m_value->getProperty(nameStr);
     if (prop) {
-//        if (nameStr == "terrain") {
-//            return CyPy_TerrainProperty::wrap(m_value);
-//        } else {
-
-
-            //Check if it's a special prop
-//        if (dynamic_cast<const StatisticsProperty*>(prop) || dynamic_cast<const TerrainProperty*>(prop)
-//            || dynamic_cast<const TerrainModProperty*>(prop)) {
-//            PyObject* ret = Property_asPyObject(prop, locatedEntity);
-//            if (ret) {
-//                return ret;
-//            }
-//        } else {
-            Atlas::Message::Element element;
-            // If this property is not set with a value, return none.
-            if (prop->get(element) == 0) {
-                if (element.isNone()) {
-                    return Py::None();
-                } else {
-                    return CyPy_Element::wrap(element);
-                }
+        Atlas::Message::Element element;
+        // If this property is not set with a value, return none.
+        if (prop->get(element) == 0) {
+            if (element.isNone()) {
+                return Py::None();
+            } else {
+                return CyPy_Element::wrap(element);
             }
-//        }
+        }
     }
     return Py::None();
 }
@@ -87,7 +65,6 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
 int CyPy_Props::setattro(const Py::String& name, const Py::Object& attr)
 {
     auto nameStr = name.as_string();
-
 
     Atlas::Message::Element obj = CyPy_Element::asElement(attr);
     m_value->setAttr(name, obj);

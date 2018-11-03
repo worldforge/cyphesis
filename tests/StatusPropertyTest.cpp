@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/StatusProperty.h"
+#include "rules/simulation/StatusProperty.h"
 
 int main()
 {

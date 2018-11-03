@@ -48,20 +48,4 @@ class TickProperty : public Property<double> {
     void apply(LocatedEntity *) override;
 };
 
-/// \brief Class to handle whether or not an entity is simple for collisions.
-/// \ingroup PropertyClasses
-class SimpleProperty : public BoolProperty {
-  public:
-    static constexpr const char* property_name = "simple";
-
-    /// \brief Constructor
-    ///
-    /// @param owner the owner of the property.
-    explicit SimpleProperty() = default;
-
-    SimpleProperty * copy() const override;
-
-    void apply(LocatedEntity *) override;
-};
-
 #endif // RULESETS_INTERNAL_PROPERTIES_H

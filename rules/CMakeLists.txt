@@ -10,7 +10,8 @@ add_library(rulesbase
     SimpleTypeStore.cpp
     SolidProperty.cpp
     Domain.cpp
-    )
+    SimpleProperty.cpp
+    SimpleProperty.h)
 add_subdirectory(python)
 add_subdirectory(entityfilter)
 add_subdirectory(ai)

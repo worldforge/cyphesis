@@ -29,17 +29,25 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
-
+#include "rules/python/Python_API.h"
+#include "rules/python/CyPy_Atlas.h"
 #include <cassert>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Rules.h>
 
 int main()
 {
 
-    init_python_api("3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
+    init_python_api({&CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init,
+                     &CyPy_Rules::init},
+                    "3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
 
 
     run_python_string("from atlas import *");
+    run_python_string("from rules import *");
     run_python_string("o=Operation('get')");
     // This should fail, but the error throwing has been disabled to
     // allow cooler stuff to be done from the client.

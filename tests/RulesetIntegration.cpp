@@ -26,8 +26,8 @@
 #include "TestBase.h"
 #include "TestWorld.h"
 
-#include "rules/World.h"
-#include "rules/Python_API.h"
+#include "rules/simulation/World.h"
+#include "rules/python/Python_API.h"
 
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
@@ -649,13 +649,13 @@ int main()
 #include "server/ServerRouting.h"
 #include "server/Account.h"
 
-#include "rules/PythonScriptFactory.h"
-#include "rules/Task.h"
-#include "rules/Stackable.h"
+#include "rules/python/PythonScriptFactory.h"
+#include "rules/simulation/Task.h"
+#include "rules/simulation/Stackable.h"
 
 #include "stubs/server/stubAdmin.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubScriptsProperty.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/python/stubScriptsProperty.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubConnection.h"
@@ -667,7 +667,6 @@ PropertyBase* CorePropertyManager::addProperty(const std::string & name, int typ
 }
 
 #include "stubs/server/stubCorePropertyManager.h"
-#include "stubs/rulesets/stubPlant.h"
 
 Stackable::Stackable(const std::string& id, long idInt)
 :Thing::Thing(id, idInt)
@@ -709,9 +708,9 @@ class World;
 #include "stubs/server/stubServerAccount.h"
 
 #include "stubs/server/stubServerRouting.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubWorld.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubWorld.h"
 
 #define STUB_LocatedEntity_getAttr
 int LocatedEntity::getAttr(const std::string & name,
@@ -736,7 +735,7 @@ void LocatedEntity::setType(const TypeNode* t) {
     m_type = t;
 }
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 PythonClass::PythonClass(const std::string & package,
                          const std::string & type) : m_package(package),
@@ -797,7 +796,7 @@ int PythonScriptFactory<T>::refreshClass()
 }
 
 template class PythonScriptFactory<LocatedEntity>;
-#include "stubs/rulesets/stubTask.h"
+#include "stubs/rules/simulation/stubTask.h"
 
 
 sigc::signal<void> python_reload_scripts;

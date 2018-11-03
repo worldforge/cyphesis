@@ -42,12 +42,12 @@ int main()
 
 // stubs
 
-#include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubBaseMind.h"
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/ai/stubMemMap.h"
+#include "stubs/rules/ai/stubBaseMind.h"
+#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 void WorldTime::initTimeInfo()
 {

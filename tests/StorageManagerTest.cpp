@@ -29,7 +29,7 @@
 #include "server/MindInspector.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/ai/MindProperty.h"
+#include "rules/simulation/MindProperty.h"
 
 #include "common/SystemTime.h"
 #include "DatabaseNull.h"
@@ -204,10 +204,10 @@ int main()
 #include "common/Variable.h"
 
 #include "stubs/server/stubWorldRouter.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -220,7 +220,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
 #include "stubs/server/stubEntityBuilder.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 
 #define STUB_Database_selectEntities
@@ -246,7 +246,7 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
 
 #include "stubs/common/stubPropertyManager.h"
 
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 #include "stubs/modules/stubWeakEntityRef.h"
 
 

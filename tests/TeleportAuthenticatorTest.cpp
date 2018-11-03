@@ -29,7 +29,7 @@
 
 #include "server/PendingPossession.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 
@@ -225,7 +225,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 PendingPossession::PendingPossession(const std::string &id, const std::string &key)
                                             :   m_entity_id(id),
                                                 m_possess_key(key),
@@ -248,8 +248,8 @@ void PendingPossession::setValidated()
     m_valid = true;
 }
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubRouter.h"
 

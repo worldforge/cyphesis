@@ -29,17 +29,18 @@
 
 #include "TestWorld.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include "rules/simulation/Entity.h"
 
 #include <cassert>
-#include "rules/World.h"
-#include "rules/python/CyPy_World.h"
+#include <rules/simulation/python/CyPy_Server.h>
+#include "rules/simulation/World.h"
+#include "rules/simulation/python/CyPy_World.h"
 
 int main()
 {
-    init_python_api("cb44c6cc-64fa-46c4-83d1-f43c6a2bb56c");
+    init_python_api({&CyPy_Server::init}, "cb44c6cc-64fa-46c4-83d1-f43c6a2bb56c");
 
     Ref<World> wrld(new World("0", 0));
     TestWorld tw(wrld);

@@ -76,8 +76,8 @@ target_link_libraries(cyphesis
     DetourTileCache
     Detour
     Recast
-    rulesmind_python
-    rulesmind
+    rulesai_python
+    rulesai
     rulessimulation_python
     rulessimulation
     entityfilter_python
@@ -126,9 +126,9 @@ install(TARGETS cyphesis DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 #        Detour
 #        Recast
 #        rulesetmind
-#        rulesetentity
+#        rulessimulation
 #        entityfilter
-#        rulesetbase
+#        rulesbase
 #        modules
 #        common
 #        physics

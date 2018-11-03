@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rules/ExternalProperty.h"
+#include "rules/simulation/ExternalProperty.h"
 
-#include "rules/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 
 #include "common/Router.h"
 
@@ -140,6 +140,6 @@ int main()
 // stubs
 
 
-#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
 
 #include "stubs/common/stubRouter.h"

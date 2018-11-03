@@ -28,7 +28,7 @@
 #include "allOperations.h"
 #include "TestWorld.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 #include "rules/Script.h"
 
 #include "modules/WeakEntityRef.h"
@@ -39,18 +39,18 @@
 #include "common/TypeNode.h"
 
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/stubDomain.h"
 
 #include <cstdlib>
 
@@ -142,8 +142,8 @@ int main(int argc, char ** argv)
 
 // stubs
 
-#include "stubs/rulesets/stubPedestrian.h"
-#include "stubs/rulesets/stubMovement.h"
+#include "stubs/rules/simulation/stubPedestrian.h"
+#include "stubs/rules/simulation/stubMovement.h"
 
 #define STUB_Character_externalOperation
 void Character::externalOperation(const Operation & op, Link &)

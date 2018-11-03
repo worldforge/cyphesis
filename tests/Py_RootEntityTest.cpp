@@ -29,20 +29,28 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 #include "rules/python/CyPy_RootEntity.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Rules.h>
 
 
 int main()
 {
-    init_python_api("c67ce8e7-d195-4806-b8e4-d905e7c9d928");
+    init_python_api({&CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init,
+                     &CyPy_Rules::init,}
+                     ,"c67ce8e7-d195-4806-b8e4-d905e7c9d928");
 
 
 
     run_python_string("from atlas import Entity");
-    run_python_string("from atlas import Location");
+    run_python_string("from rules import Location");
 
     auto ent = (Py::PythonClassObject<CyPy_RootEntity>)(CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity()));
     assert(ent.getCxxObject() != 0);

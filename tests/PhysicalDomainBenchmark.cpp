@@ -42,13 +42,13 @@
 #include <rules/PhysicalDomain.h>
 #include <common/TypeNode.h>
 #include <rules/ModeProperty.h>
-#include <rules/TerrainProperty.h>
+#include <rules/simulation/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
 #include <rules/PropelProperty.h>
 #include <rules/AngularFactorProperty.h>
 #include <chrono>
-#include <rules/VisibilityProperty.h>
+#include <rules/simulation/VisibilityProperty.h>
 
 #include "stubs/common/stublog.h"
 

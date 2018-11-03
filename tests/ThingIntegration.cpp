@@ -25,10 +25,10 @@
 #include "TestBase.h"
 
 #include "rules/Domain.h"
-#include "rules/Thing.h"
-#include "rules/VoidDomain.h"
-#include "rules/PhysicalDomain.h"
-#include "rules/InventoryDomain.h"
+#include "rules/simulation/Thing.h"
+#include "rules/simulation/VoidDomain.h"
+#include "rules/simulation/PhysicalDomain.h"
+#include "rules/simulation/InventoryDomain.h"
 #include "rules/simulation/EntityProperty.h"
 
 #include "common/Inheritance.h"
@@ -36,8 +36,8 @@
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <rules/AttachmentsProperty.h>
-#include <rules/PlantedOnProperty.h>
+#include <rules/simulation/AttachmentsProperty.h>
+#include <rules/simulation/PlantedOnProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

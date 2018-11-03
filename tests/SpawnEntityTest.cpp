@@ -30,7 +30,7 @@
 
 #include "server/SpawnEntity.h"
 
-#include "rules/AreaProperty.h"
+#include "rules/simulation/AreaProperty.h"
 
 #include "physics/Vector3D.h"
 
@@ -153,7 +153,7 @@ void AreaProperty::apply(LocatedEntity * owner)
 {
 }
 
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 void log(LogLevel, const std::string & msg)
 {

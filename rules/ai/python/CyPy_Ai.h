@@ -22,10 +22,10 @@
 #include "external/pycxx/CXX/Extensions.hxx"
 
 
-class CyPy_Mind : public Py::ExtensionModule<CyPy_Mind>
+class CyPy_Ai : public Py::ExtensionModule<CyPy_Ai>
 {
     public:
-        CyPy_Mind();
+        CyPy_Ai();
 
         static std::string init();
 };

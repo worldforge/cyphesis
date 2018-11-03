@@ -15,9 +15,9 @@
 #include "rules/simulation/EntityProperty.h"
 #include "rules/Domain.h"
 #include "rules/AtlasProperties.h"
-#include "rules/BBoxProperty.h"
+#include "rules/simulation/BBoxProperty.h"
 #include "common/Property.h"
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/log.h"
 #include "common/Inheritance.h"
 
@@ -218,14 +218,14 @@ int main(int argc, char ** argv)
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubLink.h"
-#include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubDensityProperty.h"
-#include "stubs/rulesets/stubScaleProperty.h"
-#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
+#include "stubs/rules/simulation/stubDensityProperty.h"
+#include "stubs/rules/simulation/stubScaleProperty.h"
+#include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
 
 #define STUB_Inheritance_getType
 const TypeNode* Inheritance::getType(const std::string & parent) const

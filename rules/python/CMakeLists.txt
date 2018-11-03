@@ -10,7 +10,6 @@ add_library(rulesbase_python
     CoordHelper.h
     WrapperBase.cpp
     ScriptsProperty.cpp
-    ScriptUtils.cpp
     CyPy_LocatedEntity.cpp
     CyPy_Common.cpp
     CyPy_Atlas.cpp

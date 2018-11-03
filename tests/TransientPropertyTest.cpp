@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/TransientProperty.h"
+#include "rules/simulation/TransientProperty.h"
 
 int main()
 {

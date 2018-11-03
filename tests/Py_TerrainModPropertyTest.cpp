@@ -29,11 +29,11 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 #include "rules/Py_Thing.h"
 #include "rules/Py_Property.h"
 #include "rules/Entity.h"
-#include "rules/TerrainModProperty.h"
+#include "rules/simulation/TerrainModProperty.h"
 
 #include "physics/Shape.h"
 
@@ -43,7 +43,7 @@
 #include <rules/Py_Property.h>
 
 #include "external/pycxx/CXX/Extensions.hxx"
-#include "rules/python/CyPy_Entity.h"
+#include "rules/simulation/python/CyPy_Entity.h"
 
 
 class TestProp : public Py::ExtensionModule<TestProp>

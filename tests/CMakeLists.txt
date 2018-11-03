@@ -18,11 +18,14 @@ if (SEGFAULT_LIBRARY)
 endif (SEGFAULT_LIBRARY)
 
 set(PYTHON_TESTS_LIBS
-    scriptpython
+    rulesai_python
+    rulessimulation_python
+    entityfilter_python
+    rulesbase_python
+    rulesai
+    rulessimulation
     entityfilter
-    rulesetmind
-    rulesetentity
-    rulesetbase
+    rulesbase
     stubnavigation
     modules
     physics
@@ -115,7 +118,7 @@ wf_add_test(BBoxTest.cpp ${PROJECT_SOURCE_DIR}/physics/BBox.cpp ${PROJECT_SOURCE
 wf_add_test(Vector3DTest.cpp ${PROJECT_SOURCE_DIR}/physics/Vector3D.cpp)
 wf_add_test(QuaternionTest.cpp ${PROJECT_SOURCE_DIR}/physics/Quaternion.cpp)
 wf_add_test(transformTest.cpp)
-wf_add_test(distanceTest.cpp ${PROJECT_SOURCE_DIR}/physics/Vector3D ${PROJECT_SOURCE_DIR}/rulesets/Location ${PROJECT_SOURCE_DIR}/rulesets/EntityLocation)
+wf_add_test(distanceTest.cpp ${PROJECT_SOURCE_DIR}/physics/Vector3D ${PROJECT_SOURCE_DIR}/rules/Location ${PROJECT_SOURCE_DIR}/rules/EntityLocation)
 wf_add_test(ShapeTest.cpp ${PROJECT_SOURCE_DIR}/physics/Shape.cpp ${PROJECT_SOURCE_DIR}/physics/Course.cpp)
 wf_add_test(CourseTest.cpp ${PROJECT_SOURCE_DIR}/physics/Course.cpp)
 
@@ -338,13 +341,13 @@ target_link_libraries(EntityFilterProvidersTest entityfilter)
 # RULESETS_INTEGRATION
 
 wf_add_test(GeometryPropertyIntegration.cpp ../rules/simulation/GeometryProperty.cpp)
-target_link_libraries(GeometryPropertyIntegration rulesetentity rulesetbase physics modules common)
+target_link_libraries(GeometryPropertyIntegration rulessimulation rulesbase physics modules common)
 
 wf_add_benchmark(PhysicalDomainBenchmark.cpp ../rules/simulation/PhysicalDomain.cpp)
-target_link_libraries(PhysicalDomainBenchmark rulesetentity rulesetbase physics modules common)
+target_link_libraries(PhysicalDomainBenchmark rulessimulation rulesbase physics modules common)
 
 wf_add_test(PhysicalDomainIntegrationTest.cpp ../rules/simulation/PhysicalDomain.cpp)
-target_link_libraries(PhysicalDomainIntegrationTest rulesetentity rulesetbase physics modules common)
+target_link_libraries(PhysicalDomainIntegrationTest rulessimulation rulesbase physics modules common)
 
 wf_add_test(TerrainPropertyIntegration.cpp ../rules/simulation/TerrainModProperty.cpp
     ../rules/simulation/TerrainEffectorProperty.cpp
@@ -395,6 +398,7 @@ wf_add_test(BaseMindMapEntityIntegration.cpp ../rules/ai/BaseMind.cpp
     ../rules/ai/MemMap.cpp
     ../rules/simulation/BBoxProperty.cpp
     ../rules/SolidProperty.cpp
+    ../rules/SimpleProperty.cpp
     ../rules/simulation/InternalProperties.cpp
     ../rules/Location.cpp
     ../rules/EntityLocation.cpp
@@ -409,7 +413,7 @@ wf_add_test(SuspendedPropertyIntegration.cpp ../rules/simulation/SuspendedProper
     ../rules/LocatedEntity.cpp)
 target_link_libraries(SuspendedPropertyIntegration common)
 wf_add_test(ThingIntegration.cpp)
-target_link_libraries(ThingIntegration rulesetentity rulesetbase modules common physics)
+target_link_libraries(ThingIntegration rulessimulation rulesbase modules common physics)
 
 
 # CLIENT_TESTS
@@ -457,6 +461,8 @@ wf_add_test(WorldRouterTest.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.cpp)
 wf_add_test(PeerTest.cpp ${PROJECT_SOURCE_DIR}/server/Peer.cpp)
 wf_add_test(LobbyTest.cpp ${PROJECT_SOURCE_DIR}/server/Lobby.cpp)
 wf_add_test(SpawnTest.cpp)
+wf_add_test(SimplePropertyTest.cpp PropertyCoverage.cpp ../rules/SimpleProperty.cpp
+    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(SpawnEntityTest.cpp ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp)
 wf_add_test(ArithmeticBuilderTest.cpp ${PROJECT_SOURCE_DIR}/server/ArithmeticBuilder.cpp)
 target_link_libraries(ArithmeticBuilderTest pycxx)
@@ -513,14 +519,14 @@ wf_add_test(ConnectionShakerIntegration.cpp ${PROJECT_SOURCE_DIR}/server/Connect
     ${PROJECT_SOURCE_DIR}/common/Shaker.cpp)
 wf_add_test(ConnectionCreatorIntegration.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp)
-target_link_libraries(ConnectionCreatorIntegration rulesetentity rulesetbase modules physics common pycxx)
+target_link_libraries(ConnectionCreatorIntegration rulessimulation rulesbase modules physics common pycxx)
 wf_add_test(TrustedConnectionCreatorIntegration.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp)
-target_link_libraries(TrustedConnectionCreatorIntegration rulesetentity rulesetbase modules physics common pycxx)
+target_link_libraries(TrustedConnectionCreatorIntegration rulessimulation rulesbase modules physics common pycxx)
 wf_add_test(AccountConnectionCharacterIntegration.cpp
     ${PROJECT_SOURCE_DIR}/server/Account.cpp
     ${PROJECT_SOURCE_DIR}/server/Connection.cpp)
-target_link_libraries(AccountConnectionCharacterIntegration rulesetentity rulesetbase modules physics common pycxx)
+target_link_libraries(AccountConnectionCharacterIntegration rulessimulation rulesbase modules physics common pycxx)
 wf_add_test(AccountIntegration.cpp)
 target_link_libraries(AccountIntegration server ${PYTHON_TESTS_LIBS})
 
@@ -565,4 +571,4 @@ wf_add_test(OperationMonitorTest.cpp ${PROJECT_SOURCE_DIR}/tools/OperationMonito
 
 # PYTHON_TESTS
 #wf_add_test(python_class.cpp)
-#target_link_libraries(python_class scriptpython rulesetentity rulesetmind rulesetbase modules physics common)
+#target_link_libraries(python_class scriptpython rulessimulation rulesetmind rulesbase modules physics common)

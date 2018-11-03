@@ -17,9 +17,9 @@
 #include "rules/simulation/EntityProperty.h"
 #include "rules/Domain.h"
 #include "rules/AtlasProperties.h"
-#include "rules/BBoxProperty.h"
-#include "rules/PlantedOnProperty.h"
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BBoxProperty.h"
+#include "rules/simulation/PlantedOnProperty.h"
+#include "rules/simulation/BaseWorld.h"
 #include "rules/simulation/Entity.h"
 
 #include "common/Property.h"
@@ -732,42 +732,18 @@ int main()
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubLink.h"
-#include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubIdProperty.h"
-#include "stubs/rulesets/stubDensityProperty.h"
-#include "stubs/rulesets/stubScaleProperty.h"
-
-ContainsProperty::ContainsProperty(LocatedEntitySet& data) :
-    PropertyBase(per_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element& e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element& e)
-{
-}
-
-void ContainsProperty::add(const std::string& s,
-                           const Atlas::Objects::Entity::RootEntity& ent) const
-{
-}
-
-ContainsProperty* ContainsProperty::copy() const
-{
-    return 0;
-}
+#include "stubs/rules/simulation/stubDomainProperty.h"
+#include "stubs/rules/stubAtlasProperties.h"
+#include "stubs/rules/simulation/stubDensityProperty.h"
+#include "stubs/rules/simulation/stubScaleProperty.h"
 
 
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/stubDomain.h"
 
 #define STUB_Inheritance_getType
 

@@ -29,10 +29,10 @@
 
 #include "common/CommAsioClient_impl.h"
 #include "server/CommPeer.h"
-#include "rules/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 #include "rules/simulation/Entity.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/CommSocket.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -40,7 +40,7 @@
 
 #include <cassert>
 #include <string>
-#include <rules/ai/MindsProperty.h>
+#include <rules/simulation/MindsProperty.h>
 
 class TestCommSocket : public CommSocket
 {
@@ -496,11 +496,11 @@ void ExternalMind::linkUp(Link * c)
     m_link = c;
 }
 
-#include "stubs/rulesets/stubExternalMind.h"
-#include "stubs/rulesets/stubMindsProperty.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/simulation/stubMindsProperty.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubProperty.h"
 
@@ -511,9 +511,9 @@ void Link::send(const Operation & op) const
     stub_CommClient_sent_op = op;
 }
 #include "stubs/common/stubLink.h"
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 
 #ifndef STUB_BaseWorld_getEntity
@@ -535,7 +535,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

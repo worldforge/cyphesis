@@ -8,8 +8,8 @@ add_executable(cyaiclient
 
 
 target_link_libraries(cyaiclient
-    rulesmind_python
-    rulesmind
+    rulesai_python
+    rulesai
     entityfilter_python
     entityfilter
     rulesbase_python

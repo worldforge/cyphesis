@@ -17,7 +17,7 @@
 
 #ifndef STUB_WorldTime_operator_INDEX
 //#define STUB_WorldTime_operator_INDEX
-  std::string WorldTime::operator[](const std::string & name)
+  std::string WorldTime::operator[](const std::string & name) const
   {
     return "";
   }

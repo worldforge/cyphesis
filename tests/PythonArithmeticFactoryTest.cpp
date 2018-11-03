@@ -28,9 +28,9 @@
 #include "python_testers.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/PythonArithmeticFactory.h"
-#include "rules/PythonArithmeticScript.h"
-#include "rules/Python_API.h"
+#include "rules/python/PythonArithmeticFactory.h"
+#include "rules/python/PythonArithmeticScript.h"
+#include "rules/python/Python_API.h"
 #include "rules/Script.h"
 
 #include "common/log.h"
@@ -116,12 +116,12 @@ int main()
 
 // stubs
 
-#include "stubs/rulesets/python/stubCyPy_LocatedEntity.h"
-#include "stubs/rulesets/stubPythonArithmeticScript.h"
+#include "stubs/rules/python/stubCyPy_LocatedEntity.h"
+#include "stubs/rules/python/stubPythonArithmeticScript.h"
 
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubEntity.h"
 
 
 #define STUB_LocatedEntity_makeContainer
@@ -155,7 +155,7 @@ void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
     onContainered(oldLoc);
 }
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 #include "stubs/common/stubRouter.h"
 

@@ -27,13 +27,15 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Atlas.h>
 
 int main()
 {
-    init_python_api("25810437-5054-4316-911d-a3fdf8ba103f");
+    init_python_api({&CyPy_Physics::init, &CyPy_Atlas::init}, "25810437-5054-4316-911d-a3fdf8ba103f");
 
     run_python_string("from physics import Vector3D");
     run_python_string("from atlas import Message");

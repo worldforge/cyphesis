@@ -25,7 +25,7 @@
 
 #include "TestBase.h"
 
-#include "rules/Task.h"
+#include "rules/simulation/Task.h"
 
 #include "rules/simulation/Entity.h"
 #include "rules/Script.h"
@@ -215,11 +215,11 @@ int main()
 #include "common/log.h"
 
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubScriptUtils.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubScriptUtils.h"
 
 #define STUB_Script_operation
 HandlerResult Script::operation(const std::string & opname,
@@ -228,7 +228,7 @@ HandlerResult Script::operation(const std::string & opname,
 {
     return Tasktest::get_Script_operation_ret();
 }
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -27,8 +27,8 @@
 #include "TestWorld.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/TasksProperty.h"
-#include "rules/Task.h"
+#include "rules/simulation/TasksProperty.h"
+#include "rules/simulation/Task.h"
 
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -80,7 +80,7 @@ void Task::initTask(const std::string& id, OpVector & res)
     this->m_obsolete = true;
 }
 
-#include "stubs/rulesets/stubTask.h"
+#include "stubs/rules/simulation/stubTask.h"
 
 #include "stubs/common/stubcustom.h"
 

@@ -29,15 +29,19 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 #include "rules/simulation/Entity.h"
-#include "rules/TerrainProperty.h"
-
-#include <cassert>
+#include "rules/simulation/TerrainProperty.h"
+#include "rules/simulation/python/CyPy_Server.h"
+#include "rules/simulation/python/CyPy_Entity.h"
 
 #include "external/pycxx/CXX/Extensions.hxx"
-#include "rules/python/CyPy_Entity.h"
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Rules.h>
 
+#include <cassert>
 
 class TestProp : public Py::ExtensionModule<TestProp>
 {
@@ -69,7 +73,12 @@ int main()
         auto module = new TestProp();
         return module->module().ptr();
     });
-    init_python_api("bac81904-0516-4dd0-b9d8-32e879339b96");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init},
+                    "bac81904-0516-4dd0-b9d8-32e879339b96");
 
     run_python_string("from server import *");
     run_python_string("import testprop");

@@ -27,8 +27,8 @@
 
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
-#include "rules/ExternalMind.h"
-#include "rules/ExternalProperty.h"
+#include "rules/simulation/ExternalMind.h"
+#include "rules/simulation/ExternalProperty.h"
 
 #include "common/CommSocket.h"
 #include "common/Shaker.h"
@@ -146,18 +146,18 @@ void ExternalMind::linkUp(Link * c)
     m_link = c;
 }
 
-#include "stubs/rulesets/stubExternalMind.h"
-#include "stubs/rulesets/stubExternalProperty.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/simulation/stubExternalProperty.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
 
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
 
 

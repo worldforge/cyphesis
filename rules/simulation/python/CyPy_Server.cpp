@@ -24,12 +24,14 @@
 #include "rules/python/CyPy_WorldTime.h"
 #include "CyPy_TerrainProperty.h"
 #include "CyPy_UsageInstance.h"
+#include "CyPy_EntityProps.h"
 
 
 CyPy_Server::CyPy_Server() : ExtensionModule("server")
 {
 
     CyPy_Entity::init_type();
+    CyPy_EntityProps::init_type();
     CyPy_Task::init_type();
     CyPy_World::init_type();
 

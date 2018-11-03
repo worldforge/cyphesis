@@ -136,7 +136,7 @@ int main(int argc, char** argv)
         assets_manager.init();
 
 
-        init_python_api({&CyPy_Mind::init,
+        init_python_api({&CyPy_Ai::init,
                          &CyPy_Rules::init,
                          &CyPy_Physics::init,
                          &CyPy_EntityFilter::init,

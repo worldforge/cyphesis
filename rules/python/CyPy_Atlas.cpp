@@ -32,8 +32,6 @@ CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
     CyPy_Oplist::init_type();
     CyPy_RootEntity::init_type();
 
-    add_varargs_method("isLocation", &CyPy_Atlas::is_location, "");
-
 
     initialize("Atlas");
 
@@ -43,13 +41,6 @@ CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
     d["Operation"] = CyPy_Operation::type();
     d["Oplist"] = CyPy_Oplist::type();
     d["Entity"] = CyPy_RootEntity::type();
-}
-
-
-Py::Object CyPy_Atlas::is_location(const Py::Tuple& args)
-{
-    args.verify_length(1, 1);
-    return Py::Boolean(CyPy_Location::check(args[0]));
 }
 
 std::string CyPy_Atlas::init()

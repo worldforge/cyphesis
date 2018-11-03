@@ -22,11 +22,11 @@
 
 #include "rules/PhysicalDomain.h"
 
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
 #include <bullet/btBulletDynamicsCommon.h>.h"
 
-#include "stubs/rulesets/stubTerrainProperty.h"
+#include "stubs/rules/simulation/stubTerrainProperty.h"
 #include "stubs/common/stubTypeNode.h"
 
 #include <cassert>

@@ -24,9 +24,9 @@
 class CyPy_Rules: public Py::ExtensionModule<CyPy_Rules>
 {
     public:
-    public:
         CyPy_Rules();
 
+        Py::Object is_location(const Py::Tuple& args);
 
         static std::string init();
 };

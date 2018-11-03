@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/DecaysProperty.h"
+#include "rules/simulation/DecaysProperty.h"
 
 int main()
 {

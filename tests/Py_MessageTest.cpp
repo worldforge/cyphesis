@@ -29,18 +29,26 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Rules.h>
+#include <rules/python/CyPy_Common.h>
 
 int main()
 {
-    init_python_api("16799987-a321-43a2-aa66-f7bc8ed8e9b2");
+    init_python_api({&CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init},
+                    "16799987-a321-43a2-aa66-f7bc8ed8e9b2");
 
     run_python_string("from atlas import Message");
     run_python_string("from atlas import Operation");
     run_python_string("from atlas import Oplist");
-    run_python_string("from atlas import Location");
+    run_python_string("from rules import Location");
     run_python_string("from physics import Vector3D");
     run_python_string("Message()");
     run_python_string("Message(1)");

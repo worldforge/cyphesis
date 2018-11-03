@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/VisibilityProperty.h"
+#include "rules/simulation/VisibilityProperty.h"
 
 int main()
 {

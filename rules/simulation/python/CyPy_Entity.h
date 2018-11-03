@@ -39,6 +39,10 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         static Py::Object mod_property(const Ref<Entity>& entity, const Py::Tuple& args);
 
+        Py::Object getattro(const Py::String&) override;
+
+        int setattro(const Py::String& name, const Py::Object& attr) override;
+
     protected:
 
         Py::Object send_world(const Py::Tuple& args);

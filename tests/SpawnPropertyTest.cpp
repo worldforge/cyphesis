@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/SpawnProperty.h"
+#include "rules/simulation/SpawnProperty.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

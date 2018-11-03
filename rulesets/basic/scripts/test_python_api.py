@@ -60,13 +60,13 @@ def default(mapeditor):
     a = 1
     if atlas.isLocation(a):
         raise AssertionError("atlas.isLocation returned true on an integer")
-    location = atlas.Location()
+    location = rules.Location()
     if not atlas.isLocation(location):
         raise AasertionError("atlas.isLocation returned false on a Location")
 
     # FIXME No current way to create an entity
-    # location=atlas.Location('23')
-    # location=atlas.Location('42', Vector3D(1,0,0))
+    # location=rules.Location('23')
+    # location=rules.Location('42', Vector3D(1,0,0))
 
     print("Test entity")
     entity = atlas.Entity()

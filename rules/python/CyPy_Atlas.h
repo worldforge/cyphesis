@@ -27,8 +27,6 @@ class CyPy_Atlas : public Py::ExtensionModule<CyPy_Atlas>
     public:
         CyPy_Atlas();
 
-        Py::Object is_location(const Py::Tuple& args);
-
         static std::string init();
 
 };

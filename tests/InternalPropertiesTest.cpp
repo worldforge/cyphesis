@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/InternalProperties.h"
+#include "rules/simulation/InternalProperties.h"
 
 void test_SetupProperty()
 {
@@ -49,22 +49,11 @@ void test_TickProperty()
     pc.basicCoverage();
 }
 
-void test_SimpleProperty()
-{
-    SimpleProperty * ap = new SimpleProperty;
-
-    PropertyChecker<SimpleProperty> pc(ap);
-
-    pc.testDataAppend(0);
-
-    pc.basicCoverage();
-}
 
 int main()
 {
     test_SetupProperty();
     test_TickProperty();
-    test_SimpleProperty();
     return 0;
 }
 

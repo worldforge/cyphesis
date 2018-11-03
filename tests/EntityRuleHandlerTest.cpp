@@ -137,7 +137,7 @@ int main()
 #include "server/EntityFactory.h"
 #include "server/Player.h"
 
-#include "rules/PythonScriptFactory.h"
+#include "rules/python/PythonScriptFactory.h"
 
 #include "common/Inheritance.h"
 #include "common/log.h"
@@ -178,7 +178,7 @@ int PythonScriptFactory<T>::refreshClass()
     return 0;
 }
 
-#include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rules/python/stubPythonClass.h"
 
 
 #ifndef STUB_Inheritance_addChild

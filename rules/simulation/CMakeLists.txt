@@ -57,6 +57,7 @@ add_library(rulessimulation
     AttachmentsProperty.cpp
     MindProperty.cpp
     EntityProperty.cpp
+    ScriptUtils.cpp
     )
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})

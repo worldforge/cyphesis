@@ -287,12 +287,12 @@ int main()
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubInheritance.h"
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/stubLocation.h"
 
 DateTime::DateTime(int t)
 {
@@ -307,8 +307,8 @@ void WorldTime::initTimeInfo()
 }
 
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubTypeResolver.h"
-#include "stubs/rulesets/stubSimpleTypeStore.h"
+#include "stubs/rules/ai/stubTypeResolver.h"
+#include "stubs/rules/stubSimpleTypeStore.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

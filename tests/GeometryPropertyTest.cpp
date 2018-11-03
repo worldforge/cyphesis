@@ -26,12 +26,12 @@
 #include "PropertyCoverage.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubglobals.h"
-#include "stubs/rulesets/stubQuaternionProperty.h"
-#include "stubs/rulesets/stubOgreMeshDeserializer.h"
-#include "stubs/rulesets/stubBBoxProperty.h"
+#include "stubs/rules/stubQuaternionProperty.h"
+#include "stubs/rules/simulation/stubOgreMeshDeserializer.h"
+#include "stubs/rules/simulation/stubBBoxProperty.h"
 #include "stubs/common/stubTypeNode.h"
 
-#include "rules/GeometryProperty.h"
+#include "rules/simulation/GeometryProperty.h"
 
 int main()
 {

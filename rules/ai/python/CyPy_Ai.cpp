@@ -21,7 +21,7 @@
 #include "CyPy_MemMap.h"
 #include "CyPy_MemEntity.h"
 
-CyPy_Mind::CyPy_Mind() : ExtensionModule("ai")
+CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
 {
 
     CyPy_BaseMind::init_type();
@@ -39,10 +39,10 @@ CyPy_Mind::CyPy_Mind() : ExtensionModule("ai")
 }
 
 
-std::string CyPy_Mind::init()
+std::string CyPy_Ai::init()
 {
     PyImport_AppendInittab("ai", []() {
-        static auto server = new CyPy_Mind();
+        static auto server = new CyPy_Ai();
         return server->module().ptr();
     });
     return "ai";

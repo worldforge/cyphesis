@@ -405,11 +405,11 @@ int main()
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubLink.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 #define STUB_Router_error
 void Router::error(const Operation & op,
@@ -420,7 +420,7 @@ void Router::error(const Operation & op,
     res.push_back(Atlas::Objects::Operation::Error());
 }
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 
 void logEvent(LogEvent lev, const std::string & msg)

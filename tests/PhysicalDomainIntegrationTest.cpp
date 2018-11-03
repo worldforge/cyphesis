@@ -37,23 +37,23 @@
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/atlasconv.h>
 
-#include <rules/PhysicalDomain.h>
+#include <rules/simulation/PhysicalDomain.h>
 #include "physics/Convert.h"
-#include <rules/TerrainProperty.h>
+#include <rules/simulation/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
-#include <rules/PropelProperty.h>
-#include <rules/AngularFactorProperty.h>
-#include <rules/VisibilityProperty.h>
-#include <rules/GeometryProperty.h>
-#include "rules/PhysicalWorld.h"
-#include "rules/BBoxProperty.h"
+#include <rules/simulation/PropelProperty.h>
+#include <rules/simulation/AngularFactorProperty.h>
+#include <rules/simulation/VisibilityProperty.h>
+#include <rules/simulation/GeometryProperty.h>
+#include "rules/simulation/PhysicalWorld.h"
+#include "rules/simulation/BBoxProperty.h"
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 
-#include <rules/TerrainModProperty.h>
+#include <rules/simulation/TerrainModProperty.h>
 #include <rules/simulation/EntityProperty.h>
-#include <rules/PlantedOnProperty.h>
+#include <rules/simulation/PlantedOnProperty.h>
 #include "stubs/common/stubMonitors.h"
 
 using Atlas::Message::Element;

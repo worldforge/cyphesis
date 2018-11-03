@@ -49,7 +49,7 @@
 
 #ifndef STUB_DateTime_seconds
 //#define STUB_DateTime_seconds
-  int DateTime::seconds()
+  int DateTime::seconds() const
   {
     return 0;
   }

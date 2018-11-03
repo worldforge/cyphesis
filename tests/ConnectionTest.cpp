@@ -29,9 +29,9 @@
 #include "server/Connection.h"
 
 #include "server/Account.h"
-#include "rules/ExternalMind.h"
-#include "rules/ExternalProperty.h"
-#include "rules/ai/MindsProperty.h"
+#include "rules/simulation/ExternalMind.h"
+#include "rules/simulation/ExternalProperty.h"
+#include "rules/simulation/MindsProperty.h"
 #include "rules/simulation/Entity.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
@@ -562,7 +562,7 @@ int main()
 
 // Stubs
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 
 bool restricted_flag;
 
@@ -603,12 +603,12 @@ void ExternalMind::linkUp(Link * c)
 {
     m_link = c;
 }
-#include "stubs/rulesets/stubExternalMind.h"
-#include "stubs/rulesets/stubExternalProperty.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubMindsProperty.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/simulation/stubExternalProperty.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubMindsProperty.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubid.h"
 
@@ -633,9 +633,9 @@ void Router::clientError(const Operation & op,
 #include "stubs/common/stubRouter.h"
 
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 

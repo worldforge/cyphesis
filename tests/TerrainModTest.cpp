@@ -23,9 +23,9 @@
 #define DEBUG
 #endif
 
-#include "rules/TerrainModTranslator.h"
+#include "rules/simulation/TerrainModTranslator.h"
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 #include <wfmath/quaternion.h>
 

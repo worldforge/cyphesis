@@ -27,15 +27,15 @@
 #include "allOperations.h"
 #include "TestWorld.h"
 
-#include "rules/World.h"
+#include "rules/simulation/World.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/BBoxProperty.h"
-#include "rules/CalendarProperty.h"
+#include "rules/simulation/BBoxProperty.h"
+#include "rules/simulation/CalendarProperty.h"
 #include "rules/Domain.h"
 #include "rules/Script.h"
-#include "rules/StatusProperty.h"
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/StatusProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
 #include "common/id.h"
 #include "common/Inheritance.h"
@@ -47,18 +47,17 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubIdProperty.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubStatusProperty.h"
-#include "stubs/rulesets/stubBBoxProperty.h"
-#include "stubs/rulesets/stubTerrainProperty.h"
-#include "stubs/rulesets/stubCalendarProperty.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/simulation/stubStatusProperty.h"
+#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/simulation/stubTerrainProperty.h"
+#include "stubs/rules/simulation/stubCalendarProperty.h"
+#include "stubs/rules/stubDomain.h"
 
 
 #include <cstdlib>
@@ -123,8 +122,8 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubWorldTimeProperty.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubWorldTimeProperty.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

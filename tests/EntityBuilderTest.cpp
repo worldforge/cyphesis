@@ -31,10 +31,10 @@
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
 
-#include "rules/Thing.h"
+#include "rules/simulation/Thing.h"
 #include "rules/simulation/Entity.h"
 #include "rules/Script.h"
-#include "rules/Task.h"
+#include "rules/simulation/Task.h"
 
 #include "common/compose.hpp"
 #include "common/id.h"
@@ -46,8 +46,8 @@
 #include "common/Variable.h"
 #include "common/ScriptKit.h"
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 
@@ -366,7 +366,7 @@ ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 
 
 #include "stubs/server/stubArchetypeFactory.h"
-#include "stubs/rulesets/stubScriptsProperty.h"
+#include "stubs/rules/python/stubScriptsProperty.h"
 
 
 class World;
@@ -417,7 +417,7 @@ void LocatedEntity::merge(const MapType & ent)
 
 }
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {
@@ -584,8 +584,8 @@ template class Property<std::string>;
 template class Property<Atlas::Message::ListType>;
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubTask.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/simulation/stubTask.h"
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
 Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
@@ -605,7 +605,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/server/stubCorePropertyManager.h"
 #include "stubs/common/stubPropertyManager.h"
 

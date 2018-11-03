@@ -41,7 +41,7 @@
 
 #include <cassert>
 #include <rules/SimpleTypeStore.h>
-#include <rules/TypeResolver.h>
+#include <rules/ai/TypeResolver.h>
 
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
@@ -472,11 +472,11 @@ int main()
 
 // stubs
 
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 
 #define STUB_TypeResolver_requestType
@@ -491,10 +491,10 @@ const TypeStore& TypeResolver::getTypeStore() const
     return m_typeStore;
 }
 
-#include "stubs/rulesets/stubTypeResolver.h"
+#include "stubs/rules/ai/stubTypeResolver.h"
 
 
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 
 
 float squareDistance(const Point3D & u, const Point3D & v)

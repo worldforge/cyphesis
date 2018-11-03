@@ -26,7 +26,7 @@
 #include "allOperations.h"
 #include "TestBase.h"
 
-#include "rules/Thing.h"
+#include "rules/simulation/Thing.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -135,21 +135,21 @@ int main()
 
 #include "rules/Domain.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/const.h"
 #include "common/log.h"
 
 #include "stubs/common/stubcustom.h"
 #include "stubs/modules/stubWeakEntityRef.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubDomain.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubPropelProperty.h"
-#include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubEntityProperty.h"
-#include "stubs/rulesets/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubPropelProperty.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
+#include "stubs/rules/simulation/stubEntityProperty.h"
+#include "stubs/rules/simulation/stubPlantedOnProperty.h"
 
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()
@@ -191,7 +191,7 @@ void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op
 }
 
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

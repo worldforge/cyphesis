@@ -26,14 +26,14 @@
 #include "TestBase.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/TerrainModProperty.h"
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/TerrainModProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
 #include "common/OperationRouter.h"
 #include "common/PropertyFactory_impl.h"
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -134,17 +134,17 @@ int main()
 #include "rules/Domain.h"
 #include "rules/Script.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/id.h"
 #include "common/log.h"
 #include "common/PropertyManager.h"
 
 #include "physics/Vector3D.h"
 
-#include "rules/DomainProperty.h"
+#include "rules/simulation/DomainProperty.h"
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rules/stubDomain.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 
@@ -178,9 +178,9 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/common/stubLink.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubAtlasProperties.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)

@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include <rules/SimpleProperty.h>
 #include "MemEntity.h"
 #include "../SolidProperty.h"
 
@@ -82,8 +83,8 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
 //    } else
     if (name == "solid") {
         prop = new SolidProperty();
-//    } else if (name == SimpleProperty::property_name) {
-//        prop = new SimpleProperty();
+    } else if (name == SimpleProperty::property_name) {
+        prop = new SimpleProperty();
     } else {
         prop = new SoftProperty(attr);
     }

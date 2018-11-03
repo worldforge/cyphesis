@@ -21,20 +21,15 @@
 
 #include "rules/entityfilter/Providers.h"
 
-#include "rules/python/CyPy_LocatedEntity.h"
-#include "rules/python/CyPy_Operation.h"
-#include "rules/python/CyPy_Oplist.h"
 #include "common/debug.h"
 #include "common/AtlasQuery.h"
-#include "rules/python/ScriptUtils.h"
+#include "ScriptUtils.h"
 #include "rules/simulation/PlantedOnProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
-#include <rules/python/CyPy_Point3D.h>
-#include <rules/python/CyPy_EntityLocation.h>
 #include <rules/simulation/python/CyPy_UsageInstance.h>
 
 static const bool debug_flag = false;
@@ -326,7 +321,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                     }
 
                     try {
-                        auto ret = Py::Callable(functionObject).apply(Py::TupleN(CyPy_UsageInstance::wrap(std::move(usageInstance))));
+                        auto ret = Py::Callable(functionObject).apply(Py::TupleN(UsageInstance::scriptCreator(std::move(usageInstance))));
                         return ScriptUtils::processScriptResult(usage.handler, ret, res, e);
                     } catch (const Py::BaseException& py_ex) {
                         log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));

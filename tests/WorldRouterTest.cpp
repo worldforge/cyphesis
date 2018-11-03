@@ -32,7 +32,7 @@
 #include "server/SpawnEntity.h"
 
 #include "rules/Domain.h"
-#include "rules/World.h"
+#include "rules/simulation/World.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -299,10 +299,10 @@ int TICK_NO = -1;
 int CHANGE_NO = -1;
 }}}
 
-#include "stubs/rulesets/stubWorld.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/simulation/stubWorld.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubDomain.h"
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/common/stubTypeNode.h"
 
@@ -329,7 +329,7 @@ void LocatedEntity::makeContainer()
 }
 
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubLink.h"
@@ -360,7 +360,7 @@ float squareDistance(const Point3D & u, const Point3D & v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 static bool distanceFromAncestor(const Location & self,
                                  const Location & other, Point3D & c)
@@ -458,7 +458,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
 
@@ -476,7 +476,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 #include "stubs/common/stubInheritance.h"
 
 
-#include "stubs/rulesets/stubTask.h"
+#include "stubs/rules/simulation/stubTask.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"

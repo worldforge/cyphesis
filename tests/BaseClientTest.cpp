@@ -100,7 +100,7 @@ int main()
 
 #include <cstdlib>
 
-#include "stubs/rulesets/stubBaseMind.h"
+#include "stubs/rules/ai/stubBaseMind.h"
 #include "stubs/client/stubCreatorClient.h"
 
 #define STUB_ClientConnection_pop
@@ -111,7 +111,7 @@ RootOperation ClientConnection::pop()
 
 #include "stubs/client/stubClientConnection.h"
 #include "stubs/client/stubCharacterClient.h"
-#include "stubs/rulesets/stubMemMap.h"
+#include "stubs/rules/ai/stubMemMap.h"
 #include "stubs/common/stubAtlasStreamClient.h"
 
 void log(LogLevel lvl, const std::string & msg)
@@ -136,10 +136,10 @@ long integerId(const std::string & id)
 
 
 
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 void WorldTime::initTimeInfo()
 {

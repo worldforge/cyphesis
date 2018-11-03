@@ -30,8 +30,8 @@
 #include "common/log.h"
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 // RelPos to self: (0,0,0)
 // RelPos ent -> tlve: (-1,-1,0)

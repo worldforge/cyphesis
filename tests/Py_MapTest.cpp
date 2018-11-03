@@ -29,18 +29,30 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
-#include <rules/python/CyPy_MemMap.h>
+#include <rules/ai/python/CyPy_MemMap.h>
 #include <rules/SimpleTypeStore.h>
-#include <rules/TypeResolver.h>
+#include <rules/ai/TypeResolver.h>
 #include <Atlas/Objects/RootOperation.h>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Rules.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/ai/python/CyPy_Ai.h>
 
 int main()
 {
 
-    init_python_api("93b8eac3-9ab9-40f7-b419-d740c18c09e4");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init,
+                     &CyPy_Ai::init}
+                     , "93b8eac3-9ab9-40f7-b419-d740c18c09e4");
 
     SimpleTypeStore typeStore{};
     TypeResolver typeResolver{typeStore};
@@ -53,7 +65,7 @@ int main()
     module.setAttr("testmap", map);
 
     run_python_string("import server");
-    run_python_string("from atlas import Location");
+    run_python_string("from rules import Location");
     run_python_string("from atlas import Entity");
     run_python_string("from atlas import Message");
     run_python_string("m=server.testmap");

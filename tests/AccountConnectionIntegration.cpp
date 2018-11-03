@@ -243,8 +243,8 @@ int main()
 
 
 
-#include "rules/ExternalMind.h"
-#include "rules/ExternalProperty.h"
+#include "rules/simulation/ExternalMind.h"
+#include "rules/simulation/ExternalProperty.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
 #include "server/Ruleset.h"
@@ -289,10 +289,10 @@ void ExternalMind::linkUp(Link * c)
     m_link = c;
 }
 
-#include "stubs/rulesets/stubExternalMind.h"
-#include "stubs/rulesets/stubExternalProperty.h"
-#include "stubs/rulesets/stubMindsProperty.h"
-#include "stubs/rulesets/stubAdminMind.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/simulation/stubExternalProperty.h"
+#include "stubs/rules/simulation/stubMindsProperty.h"
+#include "stubs/rules/simulation/stubAdminMind.h"
 
 #include "stubs/server/stubJuncture.h"
 
@@ -329,15 +329,15 @@ void logEvent(LogEvent lev, const std::string & msg)
 {
 }
 
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubPropertyManager.h"
 
 long integerId(const std::string & id)

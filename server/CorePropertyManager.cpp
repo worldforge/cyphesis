@@ -54,6 +54,7 @@
 #include "rules/simulation/GeometryProperty.h"
 #include "rules/QuaternionProperty.h"
 #include "rules/Vector3Property.h"
+#include "rules/SimpleProperty.h"
 #include "rules/simulation/PerceptionSightProperty.h"
 #include "rules/simulation/ScaleProperty.h"
 #include "rules/python/ScriptsProperty.h"

@@ -18,6 +18,7 @@
 
 #include "CyPy_Entity.h"
 #include "CyPy_Task.h"
+#include "CyPy_EntityProps.h"
 #include "rules/simulation/TasksProperty.h"
 #include "rules/python/CyPy_Operation.h"
 #include "rules/python/CyPy_Oplist.h"
@@ -149,4 +150,20 @@ Py::Object CyPy_Entity::mod_property(const Ref<Entity>& entity, const Py::Tuple&
         throw Py::RuntimeError(String::compose("Could not create property '%1'.", name));
     }
     return CyPy_Element::asPyObject(value, false);
+}
+
+Py::Object CyPy_Entity::getattro(const Py::String& name)
+{
+    if (name.as_string() == "props") {
+        return CyPy_EntityProps::wrap(this->m_value);
+    }
+    return CyPy_LocatedEntityBase::getattro(name);
+}
+
+int CyPy_Entity::setattro(const Py::String& name, const Py::Object& attr)
+{
+    if (name.as_string() == "props") {
+        throw Py::AttributeError("Can not set 'props'.");
+    }
+    return CyPy_LocatedEntityBase::setattro(name, attr);
 }

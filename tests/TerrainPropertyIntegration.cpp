@@ -26,14 +26,14 @@
 #include "PropertyCoverage.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/TerrainModProperty.h"
-#include "rules/TerrainProperty.h"
-#include "rules/DomainProperty.h"
+#include "rules/simulation/TerrainModProperty.h"
+#include "rules/simulation/TerrainProperty.h"
+#include "rules/simulation/DomainProperty.h"
 
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -62,7 +62,7 @@ int main()
 // stubs
 
 #include "common/log.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubLink.h"
 
 void log(LogLevel lvl, const std::string & msg)

@@ -1377,7 +1377,7 @@ void Account::SetOperation(const Operation &, OpVector &)
 
 
 #include "stubs/server/stubConnection.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 #include "stubs/server/stubRuleHandler.h"
 
@@ -1428,15 +1428,15 @@ ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 
 
 #include "stubs/server/stubPersistence.h"
-#include "stubs/rulesets/stubThing.h"
+#include "stubs/rules/simulation/stubThing.h"
 
 #define STUB_Entity_addToEntity
 void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 {
     ent->setId(getId());
 }
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 #define STUB_Link_send
 void Link::send(const Operation & op) const
@@ -1530,9 +1530,9 @@ Root atlasClass(const std::string & name, const std::string & parent)
 }
 
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubAdminMind.h"
-#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubAdminMind.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
 
 
 Router::Router(const std::string & id, long intId) : m_id(id),

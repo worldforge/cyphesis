@@ -244,9 +244,9 @@ int main()
 #include "stubs/server/stubPossessionAuthenticator.h"
 
 #include "stubs/server/stubPersistence.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubLink.h"
 
 #define STUB_Inheritance_getClass
@@ -297,8 +297,8 @@ void Router::error(const Operation & op,
 }
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
 
 long newId(std::string & id)
 {

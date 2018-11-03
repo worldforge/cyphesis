@@ -25,7 +25,7 @@
 
 #include "rules/simulation/EntityProperty.h"
 
-#include "rules/Task.h"
+#include "rules/simulation/Task.h"
 #include "rules/simulation/Entity.h"
 
 #include <Atlas/Objects/Anonymous.h>
@@ -219,10 +219,10 @@ int main()
 
 // stubs
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"

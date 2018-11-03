@@ -24,9 +24,7 @@
 #endif
 
 #include "rules/ai/MemEntity.h"
-#include "rules/BBoxProperty.h"
 #include "rules/SolidProperty.h"
-#include "rules/InternalProperties.h"
 #include "common/Property_impl.h"
 
 #include <cassert>
@@ -43,10 +41,11 @@ int main()
 // stubs
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubBBoxProperty.h"
-#include "stubs/rulesets/stubSolidProperty.h"
-#include "stubs/rulesets/stubInternalProperties.h"
+#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubSolidProperty.h"
+#include "stubs/rules/simulation/stubInternalProperties.h"
+#include "stubs/rules/stubSimpleProperty.h"

@@ -26,13 +26,13 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rules/Stackable.h"
+#include "rules/simulation/Stackable.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/BBoxProperty.h"
+#include "rules/simulation/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/Script.h"
-#include "rules/StatusProperty.h"
+#include "rules/simulation/StatusProperty.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -43,17 +43,16 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubIdProperty.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubStatusProperty.h"
-#include "stubs/rulesets/stubBBoxProperty.h"
-#include "stubs/rulesets/stubDomain.h"
+#include "stubs/rules/simulation/stubStatusProperty.h"
+#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubDomain.h"
 
 
 #include <cstdlib>
@@ -118,7 +117,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
 void log(LogLevel lvl, const std::string & msg)

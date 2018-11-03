@@ -27,11 +27,11 @@
 #include "allOperations.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/AreaProperty.h"
-#include "rules/BBoxProperty.h"
+#include "rules/simulation/AreaProperty.h"
+#include "rules/simulation/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/Script.h"
-#include "rules/StatusProperty.h"
+#include "rules/simulation/StatusProperty.h"
 
 #include "common/id.h"
 #include "common/log.h"
@@ -41,9 +41,9 @@
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
 
 #define STUB_LocatedEntity_getAttr
 int LocatedEntity::getAttr(const std::string & name,
@@ -60,18 +60,18 @@ int LocatedEntity::getAttrType(const std::string & name,
     return -1;
 }
 
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubIdProperty.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/stubIdProperty.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubStatusProperty.h"
-#include "stubs/rulesets/stubBBoxProperty.h"
-#include "stubs/rulesets/stubAreaProperty.h"
-#include "stubs/rulesets/stubTerrainEffectorProperty.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubVector3Property.h"
-#include "stubs/rulesets/stubBiomassProperty.h"
+#include "stubs/rules/stubContainsProperty.h"
+#include "stubs/rules/simulation/stubStatusProperty.h"
+#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/simulation/stubAreaProperty.h"
+#include "stubs/rules/stubTerrainEffectorProperty.h"
+#include "stubs/rules/stubDomain.h"
+#include "stubs/rules/stubVector3Property.h"
+#include "stubs/rules/stubBiomassProperty.h"
 
 
 
@@ -107,7 +107,7 @@ int main()
 
 // stubs
 
-#include "stubs/rulesets/stubScaleProperty.h"
+#include "stubs/rules/simulation/stubScaleProperty.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
@@ -137,10 +137,10 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 
 
 void log(LogLevel lvl, const std::string & msg)

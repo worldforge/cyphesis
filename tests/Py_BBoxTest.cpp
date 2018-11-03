@@ -27,13 +27,19 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Common.h>
 
 int main()
 {
-    init_python_api("2a83ab2f-928f-457d-bcf7-34d3686e49c1");
+    init_python_api({&CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init},
+                    "2a83ab2f-928f-457d-bcf7-34d3686e49c1");
 
     run_python_string("from physics import BBox");
     run_python_string("b=BBox()");

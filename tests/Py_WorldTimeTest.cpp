@@ -29,15 +29,25 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Rules.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Common.h>
 
 int main()
 {
-    init_python_api("cc4b05b9-4ff9-4127-85b0-300298d16c3c");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init},
+                    "cc4b05b9-4ff9-4127-85b0-300298d16c3c");
 
-    run_python_string("from server import WorldTime");
+    run_python_string("from rules import WorldTime");
     expect_python_error("WorldTime()", PyExc_IndexError);
     run_python_string("WorldTime(23)");
     run_python_string("WorldTime(23.1)");

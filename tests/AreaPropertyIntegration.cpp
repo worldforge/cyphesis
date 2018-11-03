@@ -25,7 +25,7 @@
 
 #include "TestBase.h"
 
-#include "rules/AreaProperty.h"
+#include "rules/simulation/AreaProperty.h"
 #include "rules/simulation/Entity.h"
 
 #include "common/TypeNode.h"
@@ -123,15 +123,15 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
 #include "rules/Domain.h"
 #include "rules/Script.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/log.h"
 #include "common/PropertyManager.h"
 #include "common/TypeNode.h"
 
-#include "rules/DomainProperty.h"
+#include "rules/simulation/DomainProperty.h"
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rules/stubDomain.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubProperty.h"
@@ -166,10 +166,10 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 {
 }
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/stubLocation.h"
 
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),

@@ -27,13 +27,14 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Physics.h>
 
 int main()
 {
-    init_python_api("8f09b488-fd8f-4c57-a92b-97b84bcecbd3");
+    init_python_api({&CyPy_Physics::init}, "8f09b488-fd8f-4c57-a92b-97b84bcecbd3");
 
     run_python_string("from physics import Quaternion");
     run_python_string("q=Quaternion()");

@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rules/Task.h"
+#include "rules/simulation/Task.h"
 #include "rules/Entity.h"
 #include "rules/Character.h"
 #include "rules/Script.h"
@@ -169,7 +169,7 @@ bool Script::operation(const std::string & opname,
 void Script::hook(const std::string & function, LocatedEntity * entity)
 {
 }
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 
 Character::Character(const std::string & id, long intId) :

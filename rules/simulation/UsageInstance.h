@@ -19,10 +19,12 @@
 #ifndef CYPHESIS_USAGEINSTANCE_H
 #define CYPHESIS_USAGEINSTANCE_H
 
-#include "common/Property.h"
 #include "rules/entityfilter/Filter.h"
-#include "modules/Ref.h"
 #include "rules/EntityLocation.h"
+#include "modules/Ref.h"
+#include "common/Property.h"
+#include "external/pycxx/CXX/Objects.hxx"
+
 #include <Atlas/Objects/RootOperation.h>
 
 #include <boost/variant.hpp>
@@ -63,6 +65,9 @@ struct Usage
 class UsageInstance
 {
     public:
+
+        static std::function<Py::Object(UsageInstance&& usageInstance)> scriptCreator;
+
 
         typedef boost::variant<EntityLocation, WFMath::Point<3>, WFMath::Vector<3>> UsageArg;
         Usage definition;

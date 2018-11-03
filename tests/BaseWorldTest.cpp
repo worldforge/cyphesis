@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 #include "common/log.h"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -179,7 +179,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 int timeoffset = 0;
 
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubRouter.h"

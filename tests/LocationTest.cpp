@@ -30,8 +30,8 @@
 #include "common/log.h"
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/SmartPtr.h>

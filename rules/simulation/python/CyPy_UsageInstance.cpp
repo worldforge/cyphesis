@@ -48,6 +48,10 @@ void CyPy_UsageInstance::init_type()
     PYCXX_ADD_VARARGS_METHOD(get_arg, getArg, "");
 
     behaviors().readyType();
+
+    UsageInstance::scriptCreator = [](UsageInstance&& usageInstance){
+        return wrap(std::move(usageInstance));
+    };
 }
 
 Py::Object CyPy_UsageInstance::getattro(const Py::String& name)

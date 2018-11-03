@@ -28,12 +28,12 @@
 #include "server/TrustedConnection.h"
 
 #include "server/Account.h"
-#include "rules/ExternalMind.h"
-#include "rules/ExternalProperty.h"
+#include "rules/simulation/ExternalMind.h"
+#include "rules/simulation/ExternalProperty.h"
 #include "server/Lobby.h"
 #include "server/Player.h"
 #include "server/ServerRouting.h"
-#include "rules/Task.h"
+#include "rules/simulation/Task.h"
 #include "server/WorldRouter.h"
 #include "server/SystemAccount.h"
 
@@ -215,19 +215,19 @@ void ExternalMind::linkUp(Link * c)
     m_link = c;
 }
 
-#include "stubs/rulesets/stubExternalMind.h"
-#include "stubs/rulesets/stubExternalProperty.h"
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/simulation/stubExternalProperty.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "common/Property_impl.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 
 #ifndef STUB_Inheritance_getClass

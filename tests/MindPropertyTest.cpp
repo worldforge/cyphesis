@@ -28,7 +28,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/ai/MindProperty.h"
+#include "rules/simulation/MindProperty.h"
 #include "rules/ai/MindFactory.h"
 
 int main()
@@ -50,7 +50,7 @@ int main()
 
 #include "TestWorld.h"
 #include "rules/ai/BaseMind.h"
-#include "rules/PythonScriptFactory.h"
+#include "rules/python/PythonScriptFactory.h"
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
@@ -59,7 +59,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 int SETUP_NO = -1;
 } } }
 
-#include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rules/python/stubPythonClass.h"
 
 MindKit::MindKit() : m_scriptFactory(0)
 {

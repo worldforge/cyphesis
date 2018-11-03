@@ -27,7 +27,7 @@
 
 #include "TestPropertyManager.h"
 
-#include "rules/Thing.h"
+#include "rules/simulation/Thing.h"
 
 #include "common/TypeNode.h"
 
@@ -89,9 +89,9 @@ int main()
 
 // stubs
 
-#include "rules/PythonScriptFactory.h"
+#include "rules/python/PythonScriptFactory.h"
 
-#include "rules/Stackable.h"
+#include "rules/simulation/Stackable.h"
 
 Stackable::Stackable(const std::string & id, long intId) :
            Thing(id, intId), m_num(1)
@@ -110,14 +110,11 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
 void Stackable::DivideOperation(const Operation & op, OpVector & res)
 {
 }
-#include "stubs/rulesets/stubPlant.h"
-
-
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -24,17 +24,22 @@
 #endif
 
 #include <Python.h>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Rules.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/python/CyPy_Common.h>
 
 #include "python_testers.h"
 
 #include "TestWorld.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 #include "rules/simulation/Entity.h"
-#include "rules/LineProperty.h"
-#include "rules/StatisticsProperty.h"
-#include "rules/TerrainProperty.h"
-#include "rules/python/CyPy_Entity.h"
+#include "rules/simulation/LineProperty.h"
+#include "rules/simulation/StatisticsProperty.h"
+#include "rules/simulation/TerrainProperty.h"
+#include "rules/simulation/python/CyPy_Entity.h"
 
 #include "external/pycxx/CXX/Extensions.hxx"
 
@@ -79,7 +84,12 @@ int main()
         auto module = new TestProp();
         return module->module().ptr();
     });
-    init_python_api("b513b7b1-b0d8-4495-b3f0-54c2ef3f27f6");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Common::init},
+                    "b513b7b1-b0d8-4495-b3f0-54c2ef3f27f6");
 
 
     Ref<Entity> wrld(new Entity("0", 0));

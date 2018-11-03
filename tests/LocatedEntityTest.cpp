@@ -351,7 +351,7 @@ int SoftProperty::get(Atlas::Message::Element & val) const
 }
 
 
-#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubTypeNode.h"
 
@@ -364,8 +364,8 @@ int RELAY_NO = -1;
 } } }
 
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubScript.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubScript.h"
+#include "stubs/rules/stubLocation.h"
 
 IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
                                                    m_data(data)

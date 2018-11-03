@@ -26,7 +26,7 @@
 #include "IGEntityExerciser.h"
 #include "allOperations.h"
 
-#include "rules/Thing.h"
+#include "rules/simulation/Thing.h"
 
 #include "rules/Domain.h"
 
@@ -41,10 +41,10 @@
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubPropertyManager.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubPropelProperty.h"
+#include "stubs/rules/stubDomain.h"
+#include "stubs/rules/simulation/stubPropelProperty.h"
 #include "TestDomain.h"
 
 
@@ -82,8 +82,8 @@ int main()
 
 
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubEntityProperty.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/simulation/stubEntityProperty.h"
 
 
 #define STUB_LocatedEntity_isVisibleForOtherEntity
@@ -131,7 +131,7 @@ void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op
     res.push_back(copy);
 }
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
@@ -162,8 +162,8 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubPlantedOnProperty.h"
 #include "stubs/modules/stubWeakEntityRef.h"
 
 void log(LogLevel lvl, const std::string & msg)

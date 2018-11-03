@@ -28,8 +28,8 @@
 
 #include "common/Property.h"
 
-#include "rules/World.h"
-#include "rules/Python_API.h"
+#include "rules/simulation/World.h"
+#include "rules/python/Python_API.h"
 
 #include "server/EntityBuilder.h"
 
@@ -93,7 +93,7 @@ int main(int argc, char ** argv)
 
 #include "rules/AtlasProperties.h"
 #include "rules/Domain.h"
-#include "rules/DomainProperty.h"
+#include "rules/simulation/DomainProperty.h"
 
 #include "common/const.h"
 #include "common/log.h"
@@ -101,22 +101,21 @@ int main(int argc, char ** argv)
 using Atlas::Objects::Entity::RootEntity;
 
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubContainsProperty.h"
-#include "stubs/rulesets/stubIdProperty.h"
-#include "stubs/rulesets/stubDomainProperty.h"
+#include "stubs/rules/stubAtlasProperties.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubVariable.h"
-#include "stubs/rulesets/stubPropelProperty.h"
-#include "stubs/rulesets/stubEntityProperty.h"
-#include "stubs/rulesets/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubPropelProperty.h"
+#include "stubs/rules/simulation/stubEntityProperty.h"
+#include "stubs/rules/simulation/stubPlantedOnProperty.h"
 
 
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/modules/stubWeakEntityRef.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/common/stubTypeNode.h"
 

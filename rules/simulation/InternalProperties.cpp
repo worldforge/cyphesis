@@ -55,13 +55,3 @@ void TickProperty::apply(LocatedEntity * ent)
     }
     ent->sendWorld(t);
 }
-
-SimpleProperty * SimpleProperty::copy() const
-{
-    return new SimpleProperty(*this);
-}
-
-void SimpleProperty::apply(LocatedEntity * owner)
-{
-    owner->m_location.setSimple(isTrue());
-}

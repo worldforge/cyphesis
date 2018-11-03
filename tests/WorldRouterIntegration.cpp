@@ -33,7 +33,7 @@
 #include "server/EntityFactory.h"
 
 #include "rules/Domain.h"
-#include "rules/World.h"
+#include "rules/simulation/World.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -329,23 +329,23 @@ int main()
 #include "server/ArchetypeFactory.h"
 #include "server/CorePropertyManager.h"
 
-#include "rules/AreaProperty.h"
+#include "rules/simulation/AreaProperty.h"
 #include "rules/AtlasProperties.h"
-#include "rules/BBoxProperty.h"
-#include "rules/CalendarProperty.h"
+#include "rules/simulation/BBoxProperty.h"
+#include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/ExternalProperty.h"
-#include "rules/StatusProperty.h"
-#include "rules/TasksProperty.h"
-#include "rules/TerrainProperty.h"
-#include "rules/DomainProperty.h"
+#include "rules/simulation/ExternalProperty.h"
+#include "rules/simulation/StatusProperty.h"
+#include "rules/simulation/TasksProperty.h"
+#include "rules/simulation/TerrainProperty.h"
+#include "rules/simulation/DomainProperty.h"
 
-#include "rules/Stackable.h"
-#include "rules/ExternalMind.h"
-#include "rules/PythonArithmeticFactory.h"
-#include "rules/Task.h"
+#include "rules/simulation/Stackable.h"
+#include "rules/simulation/ExternalMind.h"
+#include "rules/python/PythonArithmeticFactory.h"
+#include "rules/simulation/Task.h"
 
-#include "rules/PythonScriptFactory.h"
+#include "rules/python/PythonScriptFactory.h"
 
 #define STUB_PythonScriptFactory_PythonScriptFactory
 
@@ -362,21 +362,21 @@ int PythonScriptFactory<LocatedEntity>::setup()
     return load();
 }
 
-#include "stubs/rulesets/stubBBoxProperty.h"
-#include "stubs/rulesets/stubTasksProperty.h"
-#include "stubs/rulesets/stubTerrainProperty.h"
-#include "stubs/rulesets/stubDomainProperty.h"
-#include "stubs/rulesets/stubProxyMind.h"
-#include "stubs/rulesets/stubBaseMind.h"
-#include "stubs/rulesets/stubMemEntity.h"
-#include "stubs/rulesets/stubMemMap.h"
-#include "stubs/rulesets/stubPropelProperty.h"
-#include "stubs/rulesets/stubPythonClass.h"
-#include "stubs/rulesets/stubPedestrian.h"
-#include "stubs/rulesets/stubMovement.h"
-#include "stubs/rulesets/stubLocation.h"
-#include "stubs/rulesets/stubUsagesProperty.h"
-#include "stubs/rulesets/entityfilter/stubFilter.h"
+#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/simulation/stubTasksProperty.h"
+#include "stubs/rules/simulation/stubTerrainProperty.h"
+#include "stubs/rules/simulation/stubDomainProperty.h"
+#include "stubs/rules/simulation/stubProxyMind.h"
+#include "stubs/rules/ai/stubBaseMind.h"
+#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/ai/stubMemMap.h"
+#include "stubs/rules/simulation/stubPropelProperty.h"
+#include "stubs/rules/python/stubPythonClass.h"
+#include "stubs/rules/simulation/stubPedestrian.h"
+#include "stubs/rules/simulation/stubMovement.h"
+#include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubUsagesProperty.h"
+#include "stubs/rules/entityfilter/stubFilter.h"
 
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/common/stubScriptKit.h"
@@ -387,13 +387,13 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/server/stubServerRouting.h"
-#include "stubs/rulesets/stubEntityProperty.h"
-#include "stubs/rulesets/stubPythonScriptFactory.h"
+#include "stubs/rules/simulation/stubEntityProperty.h"
+#include "stubs/rules/python/stubPythonScriptFactory.h"
 
 #include "stubs/common/stubMonitors.h"
 
 #include <Atlas/Objects/Operation.h>
-#include "stubs/rulesets/stubScriptsProperty.h"
+#include "stubs/rules/python/stubScriptsProperty.h"
 
 #define STUB_CorePropertyManager_addProperty
 PropertyBase* CorePropertyManager::addProperty(const std::string & name, int type)
@@ -412,17 +412,16 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId
 }
 
 #include "stubs/server/stubArchetypeFactory.h"
-#include "stubs/rulesets/stubPlant.h"
 
 
 class World;
 
 
-#include "stubs/rulesets/stubStackable.h"
-#include "stubs/rulesets/stubAreaProperty.h"
-#include "stubs/rulesets/stubCalendarProperty.h"
-#include "stubs/rulesets/stubExternalProperty.h"
-#include "stubs/rulesets/stubWorldTimeProperty.h"
+#include "stubs/rules/simulation/stubStackable.h"
+#include "stubs/rules/simulation/stubAreaProperty.h"
+#include "stubs/rules/simulation/stubCalendarProperty.h"
+#include "stubs/rules/simulation/stubExternalProperty.h"
+#include "stubs/rules/simulation/stubWorldTimeProperty.h"
 
 #define STUB_IdProperty_get
 
@@ -432,10 +431,10 @@ int IdProperty::get(Atlas::Message::Element& val) const
     return 0;
 }
 
-#include "stubs/rulesets/stubTask.h"
-#include "stubs/rulesets/stubAtlasProperties.h"
-#include "stubs/rulesets/stubStatusProperty.h"
-#include "stubs/rulesets/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubTask.h"
+#include "stubs/rules/stubAtlasProperties.h"
+#include "stubs/rules/simulation/stubStatusProperty.h"
+#include "stubs/rules/simulation/stubPlantedOnProperty.h"
 
 #define STUB_ExternalMind_linkUp
 
@@ -444,10 +443,10 @@ void ExternalMind::linkUp(Link* c)
     m_link = c;
 }
 
-#include "stubs/rulesets/stubExternalMind.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
 
-#include "stubs/rulesets/stubArithmeticFactory.h"
-#include "stubs/rulesets/stubPythonArithmeticFactory.h"
+#include "stubs/rules/simulation/stubArithmeticFactory.h"
+#include "stubs/rules/python/stubPythonArithmeticFactory.h"
 
 sigc::signal<void> python_reload_scripts;
 
@@ -601,7 +600,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 }
 #endif //STUB_BaseWorld_getEntity
 
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 Inheritance * Inheritance::m_instance = nullptr;
 

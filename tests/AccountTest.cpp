@@ -1444,7 +1444,7 @@ void Lobby::operation(const Operation & op, OpVector & res)
     Accounttest::set_Lobby_operation_called(op->getClassNo());
 }
 
-#include "stubs/rulesets/stubThing.h"
+#include "stubs/rules/simulation/stubThing.h"
 #include "stubs/common/stubVariable.h"
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubid.h"
@@ -1456,8 +1456,8 @@ void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setId(getId());
 }
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubDatabase.h"
 
 #define STUB_Link_send
@@ -1473,9 +1473,9 @@ void Link::send(const OpVector & ops) const
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubProperty.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubExternalMind.h"
-#include "stubs/rulesets/stubMindsProperty.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/simulation/stubMindsProperty.h"
 
 
 #define STUB_Router_error
@@ -1497,7 +1497,7 @@ void Router::clientError(const Operation & op,
 }
 #include "stubs/common/stubRouter.h"
 
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 
 void logEvent(LogEvent lev, const std::string & msg)

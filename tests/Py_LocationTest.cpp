@@ -32,30 +32,44 @@
 #include "TestWorld.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/python/CyPy_Atlas.h>
+#include <rules/simulation/python/CyPy_Server.h>
+#include <rules/python/CyPy_Physics.h>
+#include <rules/python/CyPy_Common.h>
+#include <rules/python/CyPy_Rules.h>
+#include <rules/ai/python/CyPy_Ai.h>
 
 int main()
 {
-    init_python_api("21b996b0-9dc3-4749-bd8c-24908f372ddc");
+    init_python_api({&CyPy_Server::init,
+                     &CyPy_Rules::init,
+                     &CyPy_Atlas::init,
+                     &CyPy_Physics::init,
+                     &CyPy_Ai::init,
+                     &CyPy_Common::init},
+                    "21b996b0-9dc3-4749-bd8c-24908f372ddc");
 
     Ref<Entity> wrld(new Entity("0", 0));
     TestWorld tw(wrld);
 
     run_python_string("import atlas");
     run_python_string("import server");
+    run_python_string("import rules");
+    run_python_string("import ai");
     run_python_string("from physics import Point3D");
-    expect_python_error("atlas.Location(set([1,1]))", PyExc_TypeError);
-    expect_python_error("atlas.Location(1,1,1)", PyExc_TypeError);
-    run_python_string("atlas.Location(server.Thing('1'))");
-    //run_python_string("atlas.Location(server.World())");
-    run_python_string("atlas.Location(server.MemEntity('1'))");
-    expect_python_error("atlas.Location(server.Thing('1'), 1)",
+    expect_python_error("rules.Location(set([1,1]))", PyExc_TypeError);
+    expect_python_error("rules.Location(1,1,1)", PyExc_TypeError);
+    run_python_string("rules.Location(server.Thing('1'))");
+    //run_python_string("rules.Location(server.World())");
+    run_python_string("rules.Location(ai.MemEntity('1'))");
+    expect_python_error("rules.Location(server.Thing('1'), 1)",
                         PyExc_TypeError);
-    run_python_string("atlas.Location(server.Thing('1'), Point3D(0,0,0))");
-    run_python_string("atlas.Location(atlas.EntityLocation(server.Thing('1'), Point3D(0,0,0)))");
-    run_python_string("l=atlas.Location()");
+    run_python_string("rules.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("rules.Location(rules.EntityLocation(server.Thing('1'), Point3D(0,0,0)))");
+    run_python_string("l=rules.Location()");
     run_python_string("l1=l.copy()");
     run_python_string("l.parent");
     run_python_string("l.pos");
@@ -87,11 +101,11 @@ int main()
     run_python_string("l.parent=server.Thing('1')");
     expect_python_error("l.other=Vector3D(0,0,0)", PyExc_AttributeError);
     run_python_string("print(repr(l))");
-    run_python_string("l2=atlas.Location(server.Thing('1'), Point3D(0,0,0))");
+    run_python_string("l2=rules.Location(server.Thing('1'), Point3D(0,0,0))");
     run_python_string("l.parent");
     run_python_string("common_parent = server.Thing('1')");
-    run_python_string("atlas.Location(common_parent, Point3D(0,0,0)) - atlas.Location(common_parent, Point3D(1,0,0))");
-    expect_python_error("atlas.Location(common_parent, Point3D(0,0,0)) - Point3D(1,0,0)", PyExc_TypeError);
+    run_python_string("rules.Location(common_parent, Point3D(0,0,0)) - rules.Location(common_parent, Point3D(1,0,0))");
+    expect_python_error("rules.Location(common_parent, Point3D(0,0,0)) - Point3D(1,0,0)", PyExc_TypeError);
 
     shutdown_python_api();
     return 0;

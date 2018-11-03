@@ -11,13 +11,14 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
+#include "rules/python/Python_API.h"
 
 #include <cassert>
+#include <rules/entityfilter/python/CyPy_EntityFilter.h>
 
 int main()
 {
-    init_python_api("");
+    init_python_api({&CyPy_EntityFilter::init}, "");
 
     run_python_string("import entity_filter");
 

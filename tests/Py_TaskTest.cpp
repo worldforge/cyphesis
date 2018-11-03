@@ -29,19 +29,20 @@
 
 #include "python_testers.h"
 
-#include "rules/Python_API.h"
-#include "rules/Task.h"
+#include "rules/python/Python_API.h"
+#include "rules/simulation/Task.h"
 #include "rules/simulation/Entity.h"
 
 #include <cassert>
-#include <rules/python/CyPy_Task.h>
-#include <rules/python/CyPy_UsageInstance.h>
+#include <rules/simulation/python/CyPy_Task.h>
+#include <rules/simulation/python/CyPy_UsageInstance.h>
 #include <rules/python/CyPy_LocatedEntity.h>
+#include <rules/simulation/python/CyPy_Server.h>
 
 
 int main()
 {
-    init_python_api("6715c02a-cc63-497b-988d-453579eae35d");
+    init_python_api({&CyPy_Server::init}, "6715c02a-cc63-497b-988d-453579eae35d");
 
     Ref<Entity> entity(new Entity("", 1));
     UsageInstance usageInstance;

@@ -27,7 +27,7 @@
 
 #include "python_testers.h"
 
-#include "rules/PythonClass.h"
+#include "rules/python/PythonClass.h"
 #include "external/pycxx/CXX/Extensions.hxx"
 #include <cassert>
 
@@ -167,7 +167,7 @@ int main()
 
 #include "common/log.h"
 
-#include "rules/Python_Script_Utils.h"
+#include "rules/python/Python_Script_Utils.h"
 
 void log(LogLevel lvl, const std::string& msg)
 {

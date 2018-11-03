@@ -19,10 +19,10 @@
 #ifndef TESTS_TEST_WORLD_H
 #define TESTS_TEST_WORLD_H
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 
 #include "rules/LocatedEntity.h"
-#include "rules/Task.h"
+#include "rules/simulation/Task.h"
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/RootOperation.h>

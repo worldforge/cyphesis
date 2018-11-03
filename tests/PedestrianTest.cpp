@@ -23,13 +23,13 @@
 #define DEBUG
 #endif
 
-#include "rules/Pedestrian.h"
+#include "rules/simulation/Pedestrian.h"
 
 #include "rules/simulation/Entity.h"
 #include "rules/Domain.h"
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -80,12 +80,12 @@ int main()
 
 // stubs
 
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubDomain.h"
-#include "stubs/rulesets/stubBaseWorld.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubDomain.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/rules/stubLocation.h"
 
 
 float squareDistance(const Point3D & u, const Point3D & v)

@@ -25,7 +25,7 @@
 
 #include <Python.h>
 
-#include "rules/PythonContext.h"
+#include "rules/python/PythonContext.h"
 
 #include <cassert>
 

@@ -27,8 +27,8 @@
 
 #include "server/EntityFactory.h"
 
-#include "rules/Stackable.h"
-#include "rules/World.h"
+#include "rules/simulation/Stackable.h"
+#include "rules/simulation/World.h"
 
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
@@ -146,17 +146,16 @@ void Stackable::CombineOperation(const Operation & op, OpVector & res)
 void Stackable::DivideOperation(const Operation & op, OpVector & res)
 {
 }
-#include "stubs/rulesets/stubPlant.h"
 
 
-#include "stubs/rulesets/stubThing.h"
-#include "stubs/rulesets/stubEntity.h"
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/simulation/stubThing.h"
+#include "stubs/rules/simulation/stubEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubProperty.h"
 #include "common/Property_impl.h"
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

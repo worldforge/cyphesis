@@ -337,8 +337,8 @@ int main()
 #include "common/TypeNode.h"
 
 #include "stubs/common/stubcustom.h"
-#include "stubs/rulesets/stubDensityProperty.h"
-#include "stubs/rulesets/stubScaleProperty.h"
+#include "stubs/rules/simulation/stubDensityProperty.h"
+#include "stubs/rules/simulation/stubScaleProperty.h"
 
 
 #define STUB_LocatedEntity_LocatedEntity_DTOR
@@ -371,13 +371,13 @@ void LocatedEntity::setType(const TypeNode* t) {
     m_type = t;
 }
 
-#include "stubs/rulesets/stubLocatedEntity.h"
+#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubInheritance.h"
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubScript.h"
 #include "stubs/common/stubTypeNode.h"
-#include "stubs/rulesets/stubTypeResolver.h"
-#include "stubs/rulesets/stubSimpleTypeStore.h"
+#include "stubs/rules/ai/stubTypeResolver.h"
+#include "stubs/rules/stubSimpleTypeStore.h"
 
 
 DateTime::DateTime(int t)

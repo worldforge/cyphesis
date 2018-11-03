@@ -23,13 +23,13 @@
 #define DEBUG
 #endif
 
-#include "rules/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 
 #include "server/Connection.h"
 
 #include "rules/simulation/Entity.h"
 
-#include "rules/BaseWorld.h"
+#include "rules/simulation/BaseWorld.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -247,14 +247,14 @@ void Entity::sendWorld(const Operation & op)
 }
 
 
-#include "stubs/rulesets/stubEntity.h"
+#include "stubs/rules/simulation/stubEntity.h"
 
 
 
-#include "stubs/rulesets/stubLocatedEntity.h"
-#include "stubs/rulesets/stubScript.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/stubScript.h"
 
-#include "stubs/rulesets/stubLocation.h"
+#include "stubs/rules/stubLocation.h"
 
 #define STUB_Link_send
 void Link::send(const Operation & op) const
@@ -266,7 +266,7 @@ void Link::send(const Operation & op) const
 
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"
-#include "stubs/rulesets/stubBaseWorld.h"
+#include "stubs/rules/simulation/stubBaseWorld.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

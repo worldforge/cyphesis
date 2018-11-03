@@ -18,8 +18,8 @@ target_link_libraries(cyclient
     DetourTileCache
     Detour
     Recast
-    rulesmind_python
-    rulesmind
+    rulesai_python
+    rulesai
     entityfilter_python
     entityfilter
     rulesbase_python

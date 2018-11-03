@@ -25,8 +25,8 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/ArithmeticFactory.h"
-#include "rules/StatisticsProperty.h"
+#include "rules/simulation/ArithmeticFactory.h"
+#include "rules/simulation/StatisticsProperty.h"
 
 #include "common/globals.h"
 

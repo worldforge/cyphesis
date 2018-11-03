@@ -30,7 +30,7 @@
 #include "server/ServerRouting.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/GeometryProperty.h"
+#include "rules/simulation/GeometryProperty.h"
 
 #include "common/debug.h"
 

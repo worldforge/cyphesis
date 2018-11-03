@@ -25,7 +25,7 @@
 
 #include "common/operations/Tick.h"
 #include "rules/simulation/UsagesProperty.h"
-#include "rules/python/ScriptUtils.h"
+#include "ScriptUtils.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <external/pycxx/CXX/Objects.hxx>

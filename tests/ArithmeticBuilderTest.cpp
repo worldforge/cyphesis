@@ -25,7 +25,7 @@
 
 #include "server/ArithmeticBuilder.h"
 
-#include "rules/PythonArithmeticFactory.h"
+#include "rules/python/PythonArithmeticFactory.h"
 
 #include <cassert>
 
@@ -65,4 +65,4 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
     return 0;
 }
 
-#include "stubs/rulesets/stubPythonClass.h"
+#include "stubs/rules/python/stubPythonClass.h"

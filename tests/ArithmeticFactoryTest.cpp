@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rules/ArithmeticFactory.h"
+#include "rules/simulation/ArithmeticFactory.h"
 #include "rules/simulation/Entity.h"
 
 #include <cassert>

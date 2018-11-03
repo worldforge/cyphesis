@@ -29,7 +29,7 @@
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 
-#include "rules/ExternalMind.h"
+#include "rules/simulation/ExternalMind.h"
 
 #include "common/const.h"
 #include "common/log.h"
@@ -43,8 +43,8 @@
 #include <cassert>
 #include <rules/simulation/Entity.h>
 #include <common/TypeNode.h>
-#include <rules/AdminMind.h>
-#include <rules/ai/MindsProperty.h>
+#include <rules/simulation/AdminMind.h>
+#include <rules/simulation/MindsProperty.h>
 #include <common/Monitors.h>
 #include <common/operations/Think.h>
 #include <common/CommSocket.h>
@@ -315,14 +315,14 @@ int main()
 #include "server/Player.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/BBoxProperty.h"
+#include "rules/simulation/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/ExternalProperty.h"
+#include "rules/simulation/ExternalProperty.h"
 #include "rules/Script.h"
-#include "rules/StatusProperty.h"
-#include "rules/Task.h"
-#include "rules/TasksProperty.h"
+#include "rules/simulation/StatusProperty.h"
+#include "rules/simulation/Task.h"
+#include "rules/simulation/TasksProperty.h"
 
 #include "common/CommSocket.h"
 #include "common/id.h"

@@ -27,8 +27,8 @@
 
 #include "common/TypeNode.h"
 #include "rules/simulation/Entity.h"
-#include "rules/TerrainModProperty.h"
-#include "rules/TerrainProperty.h"
+#include "rules/simulation/TerrainModProperty.h"
+#include "rules/simulation/TerrainProperty.h"
 
 
 #include "stubs/common/stubTypeNode.h"
@@ -134,7 +134,7 @@ int main()
 // stubs
 
 #include "TestWorld.h"
-#include "rules/TerrainModTranslator.h"
+#include "rules/simulation/TerrainModTranslator.h"
 
 #include "modules/TerrainContext.h"
 
