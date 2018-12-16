@@ -8,6 +8,7 @@ from physics import Point3D
 from physics import Vector3D
 
 import server
+from rules import Location
 
 
 class Dragging(server.Task):

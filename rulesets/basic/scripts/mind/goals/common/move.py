@@ -3,6 +3,7 @@
 
 from .common import const
 from physics import *
+from rules import Location
 
 from physics import Vector3D
 from physics import Point3D

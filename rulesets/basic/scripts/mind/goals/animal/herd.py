@@ -7,6 +7,7 @@ from common import const
 
 from physics import Vector3D
 from physics import Point3D
+from rules import Location
 
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 

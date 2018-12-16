@@ -11,6 +11,7 @@ from common import const
 import server
 
 from random import *
+from rules import Location
 
 
 class Raise(server.Task):

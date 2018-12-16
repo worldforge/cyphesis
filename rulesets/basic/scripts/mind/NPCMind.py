@@ -11,6 +11,7 @@ from physics import *
 from physics import Quaternion
 from common import const
 from types import *
+from rules import Location
 
 from physics import Vector3D
 

@@ -7,6 +7,7 @@ from physics import Quaternion
 from physics import Vector3D
 
 import server
+from rules import Location
 
 
 class Reap(server.Task):

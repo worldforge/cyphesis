@@ -3,6 +3,7 @@
 # Al Riddoch - Added transport_something() goal
 
 from physics import *
+from rules import Location
 from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *

@@ -10,6 +10,7 @@ from physics import Vector3D
 
 import server
 import weakref
+from rules import Location
 
 
 class Pioneeringconstruction(server.Task):

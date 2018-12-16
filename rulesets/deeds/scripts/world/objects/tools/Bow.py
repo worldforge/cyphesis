@@ -5,6 +5,7 @@
 from atlas import *
 
 from physics import Vector3D
+from rules import Location
 
 import server
 

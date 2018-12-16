@@ -9,6 +9,7 @@ from mind.goals.common.move import move_me
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
 from physics import Point3D
+from rules import Location
 
 
 # class sell_things(add_unique_goal_by_perception):

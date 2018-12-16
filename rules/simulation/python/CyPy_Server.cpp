@@ -21,7 +21,6 @@
 #include "CyPy_Entity.h"
 #include "CyPy_Task.h"
 #include "CyPy_World.h"
-#include "rules/python/CyPy_WorldTime.h"
 #include "CyPy_TerrainProperty.h"
 #include "CyPy_UsageInstance.h"
 #include "CyPy_EntityProps.h"
@@ -45,7 +44,6 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
     Py::Dict d(moduleDictionary());
     d["Thing"] = CyPy_Entity::type();
     d["Task"] = CyPy_Task::type();
-    d["WorldTime"] = CyPy_WorldTime::type();
 
     d["OPERATION_IGNORED"] = Py::Long(OPERATION_IGNORED);
     d["OPERATION_HANDLED"] = Py::Long(OPERATION_HANDLED);

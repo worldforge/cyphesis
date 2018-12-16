@@ -9,6 +9,7 @@ import sys
 import weakref
 
 import server
+from rules import Location
 
 
 class Heaping(server.Task):

@@ -7,6 +7,7 @@ from physics import Point3D
 from physics import BBox
 
 import server
+from rules import Location
 
 
 class Torch(server.Thing):

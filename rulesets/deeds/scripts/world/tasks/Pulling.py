@@ -10,6 +10,7 @@ from physics import Point3D
 from random import *
 
 import server
+from rules import Location
 
 
 class Pulling(server.Task):

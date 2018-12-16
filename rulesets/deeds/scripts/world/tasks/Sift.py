@@ -9,6 +9,7 @@ from physics import Vector3D
 
 import math
 import server
+from rules import Location
 
 
 class Sift(server.Task):

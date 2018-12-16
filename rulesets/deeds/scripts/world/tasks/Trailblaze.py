@@ -9,6 +9,7 @@ from physics import Vector3D
 from random import *
 
 import server
+from rules import Location
 
 
 class Trailblaze(server.Task):

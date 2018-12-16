@@ -21,7 +21,7 @@ class Thing(object):
   ## Thing constructor
   def __init__(self):
     self.type = "thing"
-    self.location = physics.Location()
+    self.location = rules.Location()
 
   ## Create an Atlas represenation of this entity
   ##

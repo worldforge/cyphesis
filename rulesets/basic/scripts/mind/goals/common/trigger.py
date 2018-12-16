@@ -4,6 +4,7 @@
 from atlas import *
 from physics import *
 from physics import Vector3D
+from rules import Location
 
 from random import *
 
