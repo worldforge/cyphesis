@@ -67,7 +67,8 @@ int main()
     run_python_string("import server");
     run_python_string("from rules import Location");
     run_python_string("from atlas import Entity");
-    run_python_string("from atlas import Message");
+    run_python_string("from atlas import ElementMap");
+    run_python_string("from atlas import ElementList");
     run_python_string("m=server.testmap");
     expect_python_error("m.find_by_location()", PyExc_IndexError);
     run_python_string("l=Location()");
@@ -81,15 +82,15 @@ int main()
     expect_python_error("m.add()", PyExc_IndexError);
     expect_python_error("m.add('2')", PyExc_IndexError);
     expect_python_error("m.add('2', 1.2)", PyExc_TypeError);
-    expect_python_error("m.add(Message())", PyExc_IndexError);
-    expect_python_error("m.add(Message(), 1.2)", PyExc_TypeError);
-    expect_python_error("m.add(Message({'objtype': 'op', 'parent': 'get'}), 1.2)",
+    expect_python_error("m.add([])", PyExc_IndexError);
+    expect_python_error("m.add(ElementList(), 1.2)", PyExc_TypeError);
+    expect_python_error("m.add({'objtype': 'op', 'parent': 'get'}, 1.2)",
                         PyExc_TypeError);
-    expect_python_error("m.add(Message({}), 1.2)", PyExc_TypeError);
-    expect_python_error("m.add(Message({'parent': 'get'}), 1.2)",
+    expect_python_error("m.add({}, 1.2)", PyExc_TypeError);
+    expect_python_error("m.add({'parent': 'get'}, 1.2)",
                         PyExc_TypeError);
-    run_python_string("m.add(Message({'id': '2'}), 1.2)");
-    run_python_string("m.add(Message({'id': '2'}), 1.2)");
+    run_python_string("m.add({'id': '2'}, 1.2)");
+    run_python_string("m.add({'id': '2'}, 1.2)");
     expect_python_error("m.add(Entity())", PyExc_IndexError);
     expect_python_error("m.add(Entity('1', type='oak'))", PyExc_IndexError);
     run_python_string("m.add(Entity('1', type='thing'), 1.1)");

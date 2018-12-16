@@ -72,20 +72,14 @@ CyPy_Operation::CyPy_Operation(Py::PythonClassInstance* self, Atlas::Objects::Op
 
 void CyPy_Operation::addToArgs(std::vector<Root>& args, const Py::Object& arg)
 {
-    if (CyPy_Element::check(arg)) {
-        Py::PythonClassObject<CyPy_Element> obj(arg);
-        auto& o = obj.getCxxObject()->m_value;
-        if (o.isMap()) {
-            args.push_back(Atlas::Objects::Factories::instance()->createObject(o.asMap()));
-        } else {
-            throw Py::TypeError("Operation arg is not a map");
-        }
+    if (arg.isDict()) {
+        args.push_back(Atlas::Objects::Factories::instance()->createObject(CyPy_Element::dictAsElement(Py::Dict(arg))));
+    } else if (CyPy_ElementMap::check(arg)) {
+        args.push_back(Atlas::Objects::Factories::instance()->createObject(CyPy_ElementMap::value(arg)));
     } else if (CyPy_Operation::check(arg)) {
-        Py::PythonClassObject<CyPy_Operation> obj(arg);
-        args.push_back(obj.getCxxObject()->m_value);
+        args.push_back(CyPy_Operation::value(arg));
     } else if (CyPy_RootEntity::check(arg)) {
-        Py::PythonClassObject<CyPy_RootEntity> obj(arg);
-        args.push_back(obj.getCxxObject()->m_value);
+        args.push_back(CyPy_RootEntity::value(arg));
     } else {
         throw Py::TypeError("Operation arg is of unknown type");
     }
@@ -126,77 +120,49 @@ void CyPy_Operation::init_type()
 Py::Object CyPy_Operation::setSerialno(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isLong()) {
-        throw Py::TypeError("Must submit long.");
-    }
-    m_value->setSerialno(Py::Long(arg));
+    m_value->setSerialno(verifyLong(args.front()));
     return Py::None();
 }
 
 Py::Object CyPy_Operation::setRefno(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isLong()) {
-        throw Py::TypeError("Must submit long.");
-    }
-    m_value->setRefno(Py::Long(args.front()));
+    m_value->setRefno(verifyLong(args.front()));
     return Py::None();
 }
 
 Py::Object CyPy_Operation::setFrom(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isString()) {
-        throw Py::TypeError("Must submit string.");
-    }
-    m_value->setFrom(Py::String(args.front()).as_string());
+    m_value->setFrom(verifyString(args.front()));
     return Py::None();
 }
 
 Py::Object CyPy_Operation::setTo(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isString()) {
-        throw Py::TypeError("Must submit string.");
-    }
-    m_value->setTo(Py::String(args.front()).as_string());
+    m_value->setTo(verifyString(args.front()));
     return Py::None();
 }
 
 Py::Object CyPy_Operation::setSeconds(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isNumeric()) {
-        throw Py::TypeError("Must submit numeric.");
-    }
-    m_value->setSeconds(Py::Float(args.front()));
+    m_value->setSeconds(verifyFloat(args.front()));
     return Py::None();
 }
 
 Py::Object CyPy_Operation::setFutureSeconds(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isNumeric()) {
-        throw Py::TypeError("Must submit numeric.");
-    }
-    m_value->setFutureSeconds(Py::Float(args.front()));
+    m_value->setFutureSeconds(verifyFloat(args.front()));
     return Py::None();
 }
 
 Py::Object CyPy_Operation::setName(const Py::Tuple& args)
 {
     args.verify_length(1);
-    auto arg = args.front();
-    if (!arg.isString()) {
-        throw Py::TypeError("Must submit string.");
-    }
-    m_value->setName(Py::String(args.front()).as_string());
+    m_value->setName(verifyString(args.front()));
     return Py::None();
 }
 
@@ -205,20 +171,18 @@ Py::Object CyPy_Operation::setArgs(const Py::Tuple& args)
     args.verify_length(1);
     auto arg = args.front();
     if (!arg.isSequence()) {
-        throw Py::TypeError("Must submit list.");
+        throw Py::TypeError("Must submit sequence.");
     }
-    Py::Sequence argsAsList(args.front());
+    Py::Sequence argsAsSequence(args.front());
     std::vector<Root> argslist;
 
-    for (auto item : argsAsList) {
+    for (auto item : argsAsSequence) {
         if (CyPy_Operation::check(item)) {
             argslist.push_back(CyPy_Operation::value(item));
-        } else if (CyPy_Element::check(item)) {
-            auto& e = CyPy_Element::value(item);
-            if (!e.isMap()) {
-                throw Py::TypeError("args contains non map");
-            }
-            argslist.push_back(Factories::instance()->createObject(e.Map()));
+        } else if (item.isDict()) {
+            argslist.push_back(Factories::instance()->createObject(CyPy_Element::dictAsElement(Py::Dict(item))));
+        } else if (CyPy_ElementMap::check(item)) {
+            argslist.push_back(Factories::instance()->createObject(CyPy_ElementMap::value(item)));
         } else if (CyPy_RootEntity::check(item)) {
             argslist.push_back(CyPy_RootEntity::value(item));
         } else {
@@ -375,22 +339,41 @@ int CyPy_Operation::setattro(const Py::String& name, const Py::Object& attr)
     if (nameStr == "from_") {
         if (attr.isString()) {
             m_value->setFrom(attr.as_string());
+            return 0;
         } else if (attr.hasAttr("id") && attr.getAttr("id").isString()) {
             m_value->setFrom(attr.getAttr("id").as_string());
-        } else {
-            throw Py::TypeError("from_ is neither a string nor an object with an 'id' attribute");
+            return 0;
+        } else if (attr.isDict()) {
+            Py::Dict dict(attr);
+            if (dict.hasKey("id")) {
+                auto value = dict.getItem("id");
+                if (value.isString()) {
+                    m_value->setFrom(value.as_string());
+                    return 0;
+                }
+            }
         }
-        return 0;
+        throw Py::TypeError("from_ is neither a string nor an object with an 'id' attribute");
     }
     if (nameStr == "to") {
         if (attr.isString()) {
             m_value->setTo(attr.as_string());
+            return 0;
         } else if (attr.hasAttr("id") && attr.getAttr("id").isString()) {
             m_value->setTo(attr.getAttr("id").as_string());
-        } else {
-            throw Py::TypeError("to is neither a string nor an object with an 'id' attribute");
+            return 0;
+        } else if (attr.isDict()) {
+            Py::Dict dict(attr);
+            if (dict.hasKey("id")) {
+                auto value = dict.getItem("id");
+                if (value.isString()) {
+                    m_value->setTo(value.as_string());
+                    return 0;
+                }
+            }
         }
-        return 0;
+        throw Py::TypeError("to is neither a string nor an object with an 'id' attribute");
+
     }
     if (nameStr == "future_seconds") {
         m_value->setFutureSeconds(verifyFloat(attr));

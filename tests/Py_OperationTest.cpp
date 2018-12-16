@@ -56,13 +56,13 @@ int main()
     // expect_python_error("o=Operation('not_valid')");
     run_python_string("o=Operation('not_valid')");
     run_python_string("o=Operation('get', to='1', from_='1')");
-    expect_python_error("o=Operation('get', from_=Message({'nonid': '1'}))",
+    expect_python_error("o=Operation('get', from_={'nonid': '1'})",
                         PyExc_TypeError);
-    expect_python_error("o=Operation('get', from_=Message({'id': 1}))",
+    expect_python_error("o=Operation('get', from_={'id': 1})",
                         PyExc_TypeError);
-    expect_python_error("o=Operation('get', to=Message({'nonid': '1'}))",
+    expect_python_error("o=Operation('get', to={'nonid': '1'})",
                         PyExc_TypeError);
-    expect_python_error("o=Operation('get', to=Message({'id': 1}))",
+    expect_python_error("o=Operation('get', to={'id': 1})",
                         PyExc_TypeError);
     run_python_string("e=Entity('1')");
     run_python_string("o=Operation('get', to=e, from_=e)");
@@ -71,8 +71,8 @@ int main()
     expect_python_error("o=Operation('get', Location(), to='1', from_='1')",
                         PyExc_TypeError);
     run_python_string("o=Operation('get', Entity(), Entity(), Entity(), to='1', from_='1')");
-    expect_python_error("Operation('get', Message('1'))", PyExc_TypeError);
-    run_python_string("Operation('get', Message({'objtype': 'obj', 'parent': 'thing'}))");
+    expect_python_error("Operation('get', '1')", PyExc_TypeError);
+    run_python_string("Operation('get', {'objtype': 'obj', 'parent': 'thing'})");
     expect_python_error("o=Operation()", PyExc_TypeError);
     expect_python_error("o=Operation(1)", PyExc_TypeError);
     run_python_string("o=Operation('get')");
@@ -96,8 +96,8 @@ int main()
     expect_python_error("o.set_args([1])", PyExc_TypeError);
     run_python_string("o.set_args([Operation('get')])");
     run_python_string("o.set_args([Entity(parent=\"oak\")])");
-    run_python_string("o.set_args([Message({'parent': 'root'})])");
-    expect_python_error("o.set_args([Message('1')])", PyExc_TypeError);
+    run_python_string("o.set_args([{'parent': 'root'}])");
+    expect_python_error("o.set_args(['1'])", PyExc_TypeError);
     run_python_string("import types");
     run_python_string("assert type(o.get_serialno()) == int");
     run_python_string("assert type(o.get_refno()) == int");
@@ -108,10 +108,9 @@ int main()
     run_python_string("assert type(o.get_args()) == list");
     run_python_string("assert type(o.get_name()) == str");
     run_python_string("assert len(o) == 1");
-    run_python_string("o.set_args([Operation('get'), Entity(parent=\"oak\"), Message({'parent': 'root', 'objtype': 'obj'})])");
+    run_python_string("o.set_args([Operation('get'), Entity(parent=\"oak\"), {'parent': 'root', 'objtype': 'obj'}])");
     run_python_string("assert type(o[0]) == Operation");
     run_python_string("assert type(o[1]) == Entity");
-    run_python_string("assert type(o[2]) == Message");
     expect_python_error("o[3]", PyExc_IndexError);
     run_python_string("assert o + None == o");
     expect_python_error("o + 1", PyExc_TypeError);
@@ -122,12 +121,12 @@ int main()
     run_python_string("assert type(o.id) == str");
     run_python_string("o.from_='1'");
     expect_python_error("o.from_=1", PyExc_TypeError);
-    expect_python_error("o.from_=Message({'id': 1})", PyExc_TypeError);
-    run_python_string("o.from_=Message({'id': '1'})");
+    expect_python_error("o.from_={'id': 1}", PyExc_TypeError);
+    run_python_string("o.from_={'id': '1'}");
     run_python_string("o.to='1'");
     expect_python_error("o.to=1", PyExc_TypeError);
-    expect_python_error("o.to=Message({'id': 1})", PyExc_TypeError);
-    run_python_string("o.to=Message({'id': '1'})");
+    expect_python_error("o.to={'id': 1}", PyExc_TypeError);
+    run_python_string("o.to={'id': '1'}");
     expect_python_error("o.other=1", PyExc_AttributeError);
 
     shutdown_python_api();

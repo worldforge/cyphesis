@@ -48,9 +48,9 @@ int main()
     run_python_string("b=BBox([1.0,1.0,1.0])");
     run_python_string("b=BBox([1,1,1])");
     expect_python_error("b=BBox(['1','1','1'])", PyExc_TypeError);
-    run_python_string("from atlas import Message");
-    run_python_string("b=BBox([Message(1),Message(1),Message(1)])");
-    expect_python_error("b=BBox([Message('1'),Message('1'),Message('1')])",
+    run_python_string("from atlas import ElementList");
+    run_python_string("b=BBox(ElementList(1,1,1))");
+    expect_python_error("b=BBox(ElementList('1', '1','1'))",
                         PyExc_TypeError);
     expect_python_error("b=BBox(1)", PyExc_TypeError);
     expect_python_error("b=BBox(1,1)", PyExc_TypeError);

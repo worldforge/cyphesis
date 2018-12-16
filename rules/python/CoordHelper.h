@@ -19,10 +19,11 @@
 #ifndef CYPHESIS_COORDHELPER_H
 #define CYPHESIS_COORDHELPER_H
 
-#include <wfmath/vector.h>
 #include "external/pycxx/CXX/Objects.hxx"
 #include "external/pycxx/CXX/Extensions.hxx"
 #include "CyPy_Element.h"
+#include <wfmath/vector.h>
+#include <wfmath/atlasconv.h>
 
 struct CoordHelper
 {
@@ -63,7 +64,7 @@ Py::Object CoordHelper::getattro(T& self, const Py::String& name)
     if (nameStr == "x") { return Py::Float(self.m_value.x()); }
     if (nameStr == "y") { return Py::Float(self.m_value.y()); }
     if (nameStr == "z") { return Py::Float(self.m_value.z()); }
-    return Py::asObject( PyObject_GenericGetAttr( self.selfPtr(), name.ptr() ) );
+    return Py::asObject(PyObject_GenericGetAttr(self.selfPtr(), name.ptr()));
 }
 
 template<typename T>
@@ -170,23 +171,19 @@ void CoordHelper::init(TValue& value, const Py::Tuple& args)
             break;
         case 1: {
             auto arg = args.front();
-            if (!arg.isList()) {
-                throw Py::TypeError("Coords from single value must be a list");
+            if (!arg.isSequence()) {
+                throw Py::TypeError("Coords from single value must be a sequence");
             }
-            Py::List list(arg);
-            if (list.size() != 3) {
-                throw Py::ValueError("Coords from a list must be 3 long");
+            Py::Sequence sequence(arg);
+            if (sequence.size() != 3) {
+                throw Py::ValueError("Coords from a sequence must be 3 long");
             }
             for (int i = 0; i < 3; i++) {
-                auto item = list[i];
+                auto item = sequence[i];
                 if (item.isNumeric()) {
                     value[i] = Py::Float(item).as_double();
-                } else if (CyPy_Element::check(item)) {
-                    auto& element = CyPy_Element::value(item);
-                    if (!element.isNum()) {
-                        throw Py::TypeError("Coords must take list of floats, or ints");
-                    }
-                    value[i] = element.asNum();
+                } else if (CyPy_ElementList::check(item)) {
+                    value.fromAtlas(CyPy_ElementList::value(item));
                 } else {
                     throw Py::TypeError("Coords must take list of floats, or ints");
                 }
@@ -201,12 +198,8 @@ void CoordHelper::init(TValue& value, const Py::Tuple& args)
 
                 if (item.isNumeric()) {
                     value[i] = Py::Float(item).as_double();
-                } else if (CyPy_Element::check(item)) {
-                    auto& element = CyPy_Element::value(item);
-                    if (!element.isNum()) {
-                        throw Py::TypeError("Coords must take list of floats, or ints");
-                    }
-                    value[i] = element.asNum();
+                } else if (CyPy_ElementList::check(item)) {
+                    value.fromAtlas(CyPy_ElementList::value(item));
                 } else {
                     throw Py::TypeError("Coords must take list of floats, or ints");
                 }

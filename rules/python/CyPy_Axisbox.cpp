@@ -32,25 +32,19 @@ CyPy_Axisbox::CyPy_Axisbox(Py::PythonClassInstance* self, Py::Tuple& args, Py::D
             break;
         case 1: {
             auto arg = args.front();
-            if (!arg.isList()) {
-                throw Py::TypeError("BBox() from single value must a list 3 or 6 long");
+            if (!arg.isSequence()) {
+                throw Py::TypeError("BBox() from single value must a sequence 3 or 6 long");
             }
-            Py::List list(arg);
-            auto list_size = list.size();
+            Py::Sequence sequence(arg);
+            auto list_size = sequence.size();
             if (list_size != 3 && list_size != 6) {
-                throw Py::ValueError("BBox() from single value must a list 3 or 6 long");
+                throw Py::ValueError("BBox() from single value must a sequence 3 or 6 long");
             }
             val.resize(list_size);
             for (int i = 0; i < list_size; i++) {
-                Py::Object item = list.getItem(i);
+                Py::Object item = sequence.getItem(i);
                 if (item.isNumeric()) {
                     val[i] = Py::Float(item).as_double();
-                } else if (CyPy_Element::check(item)) {
-                    auto& element = CyPy_Element::value(item);
-                    if (!element.isNum()) {
-                        throw Py::TypeError("BBox() must take list of floats, or ints");
-                    }
-                    val[i] = element.asNum();
                 } else {
                     throw Py::TypeError("BBox() must take list of floats, or ints");
                 }
@@ -64,12 +58,6 @@ CyPy_Axisbox::CyPy_Axisbox(Py::PythonClassInstance* self, Py::Tuple& args, Py::D
                 Py::Object item = args.getItem(i);
                 if (item.isNumeric()) {
                     val[i] = Py::Float(item).as_double();
-                } else if (CyPy_Element::check(item)) {
-                    auto& element = CyPy_Element::value(item);
-                    if (!element.isNum()) {
-                        throw Py::TypeError("BBox() must take list of floats, or ints");
-                    }
-                    val[i] = element.asNum();
                 } else {
                     throw Py::TypeError("BBox() must take list of floats, or ints");
                 }

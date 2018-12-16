@@ -121,13 +121,10 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
     args.verify_length(2);
 
     double time = verifyNumeric(args[1]);
-    if (CyPy_Element::check(args[0])) {
-        auto& element = CyPy_Element::value(args[0]);
-        if (!element.isMap()) {
-            throw Py::TypeError("arg is a Message that is not a map");
-        }
+    if (args[0].isDict()) {
+        auto element = CyPy_Element::dictAsElement(Py::Dict(args[0]));
         try {
-            Root obj = Factories::instance()->createObject(element.Map());
+            Root obj = Factories::instance()->createObject(element);
 
             RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
             if (!ent.isValid()) {

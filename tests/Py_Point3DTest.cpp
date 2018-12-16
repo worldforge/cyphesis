@@ -38,15 +38,14 @@ int main()
     init_python_api({&CyPy_Atlas::init, &CyPy_Physics::init},"df4d61a3-b435-47b7-862d-63bb27681219");
 
     run_python_string("from physics import Point3D");
-    run_python_string("from atlas import Message");
-    run_python_string("Point3D([Message(1), Message(0), Message(0)])");
-    expect_python_error("Point3D([Message('1'), Message(0), Message(0)])",
+    run_python_string("Point3D([1, 0, 0])");
+    expect_python_error("Point3D(['1', 0, 0])",
                         PyExc_TypeError);
     run_python_string("p=Point3D(1,0,0)");
     run_python_string("p1=Point3D(0,1,0)");
     run_python_string("p2=Point3D(0,1,0)");
     run_python_string("print(Point3D())");
-    expect_python_error("print(Point3D('1'))", PyExc_TypeError);
+    expect_python_error("print(Point3D('1'))", PyExc_ValueError);
     expect_python_error("print(Point3D([1]))", PyExc_ValueError);
     run_python_string("print(Point3D([1,0,0]))");
     run_python_string("print(Point3D([1.1,0.0,0.0]))");

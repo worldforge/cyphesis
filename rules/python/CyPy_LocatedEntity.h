@@ -61,6 +61,75 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
         Py::Object client_error(const Py::Tuple& args);
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, client_error);
+
+
+        Py::Object get_prop_num(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_num);
+
+        Py::Object has_prop_num(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_num);
+
+
+        Py::Object get_prop_float(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_float);
+
+        Py::Object has_prop_float(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_float);
+
+
+        Py::Object get_prop_int(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_int);
+
+        Py::Object has_prop_int(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_int);
+
+
+        Py::Object get_prop_string(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_string);
+
+        Py::Object has_prop_string(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_string);
+
+
+        Py::Object get_prop_bool(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_bool);
+
+        Py::Object has_prop_bool(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_bool);
+
+
+        Py::Object get_prop_list(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_list);
+
+        Py::Object has_prop_list(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_list);
+
+
+        Py::Object get_prop_map(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_prop_map);
+
+        Py::Object has_prop_map(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, has_prop_map);
+
+        Py::Object getPropertyFromFirstArg(const Py::Tuple& args, const std::function<Py::Object(const Atlas::Message::Element&, Py::Object)>& checkFn) const;
+
+        Py::Object hasPropertyFromFirstArg(const Py::Tuple& args, const std::function<bool(const Atlas::Message::Element&)>& checkFn) const;
+
+
 };
 
 struct LocatedEntityScriptProvider {

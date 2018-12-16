@@ -38,18 +38,16 @@ int main()
     init_python_api({&CyPy_Physics::init, &CyPy_Atlas::init}, "25810437-5054-4316-911d-a3fdf8ba103f");
 
     run_python_string("from physics import Vector3D");
-    run_python_string("from atlas import Message");
+    run_python_string("from atlas import ElementList");
+    run_python_string("from atlas import ElementMap");
     run_python_string("v=Vector3D(1,0,0)");
     run_python_string("v1=Vector3D(0,1,0)");
     run_python_string("v2=Vector3D(0,1,0)");
     run_python_string("Vector3D()");
-    expect_python_error("Vector3D('1')", PyExc_TypeError);
+    expect_python_error("Vector3D('1')", PyExc_ValueError);
     expect_python_error("Vector3D([1])", PyExc_ValueError);
     run_python_string("Vector3D([1,0,0])");
     run_python_string("Vector3D([1.1,0.0,0.0])");
-    run_python_string("Vector3D([Message(1.0),0,0])");
-    run_python_string("Vector3D([Message(1),0,0])");
-    expect_python_error("Vector3D([Message('1'),0,0])", PyExc_TypeError);
     expect_python_error("Vector3D(['1','1','1'])", PyExc_TypeError);
     expect_python_error("Vector3D(1.1)", PyExc_TypeError);
     run_python_string("Vector3D(1.1,0.0,0.0)");

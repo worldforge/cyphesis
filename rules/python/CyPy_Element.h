@@ -25,26 +25,17 @@
 
 #include <Atlas/Message/Element.h>
 
-class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
-{
+class CyPy_ElementList : public WrapperBase<Atlas::Message::ListType, CyPy_ElementList> {
     public:
-        CyPy_Element(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_ElementList(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element element);
+        CyPy_ElementList(Py::PythonClassInstance* self, Atlas::Message::ListType element);
 
         static void init_type();
 
-        static Py::Object wrap(Atlas::Message::Element value);
-
         Py::Object repr() override;
 
-        Py::Object getattro(const Py::String&) override;
-
-        int setattro(const Py::String& name, const Py::Object& attr) override;
-
-        Py::Object mapping_subscript(const Py::Object&) override;
-
-        int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
+        Py::Object rich_compare(const Py::Object& other, int op) override;
 
         PyCxx_ssize_t sequence_length() override;
 
@@ -63,18 +54,44 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
         int sequence_contains(const Py::Object&) override;
 
         Py::Object iter() override;
+};
 
-        Py::Object get_name();
+class CyPy_ElementMap : public WrapperBase<Atlas::Message::MapType, CyPy_ElementMap> {
+    public:
+        CyPy_ElementMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Element, get_name);
+        CyPy_ElementMap(Py::PythonClassInstance* self, Atlas::Message::MapType element);
 
-        Py::Object pythonize();
+        static void init_type();
 
-        PYCXX_NOARGS_METHOD_DECL(CyPy_Element, pythonize);
+        Py::Object repr() override;
+
+        Py::Object rich_compare(const Py::Object& other, int op) override;
+
+        Py::Object mapping_subscript(const Py::Object&) override;
+
+        int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
+
+        Py::Object getattro(const Py::String&) override;
+
+        int setattro(const Py::String& name, const Py::Object& attr) override;
+
+};
+
+class CyPy_Element
+{
+    public:
+
+        static Py::Object wrap(Atlas::Message::Element value);
+
 
         static Py::Object asPyObject(const Atlas::Message::Element& obj, bool useNativePythonType);
 
         static Atlas::Message::Element asElement(const Py::Object& o);
+
+        static Atlas::Message::ListType listAsElement(const Py::List& list);
+
+        static Atlas::Message::MapType dictAsElement(const Py::Dict& dict);
 
     protected:
 
@@ -83,13 +100,7 @@ class CyPy_Element : public WrapperBase<Atlas::Message::Element, CyPy_Element>
 
         static Py::Object listAsPyObject(const Atlas::Message::ListType& list, bool useNativePythonType);
 
-        static Atlas::Message::ListType listAsElement(const Py::List& list);
 
-        static Atlas::Message::MapType dictAsElement(const Py::Dict& dict);
-
-        Py::Object rich_compare(const Py::Object& other, int op) override;
-
-        void checkIsList();
 };
 
 
