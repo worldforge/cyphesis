@@ -88,7 +88,7 @@ void CyPy_BaseMind::init_type()
     PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
 
 
-    PYCXX_ADD_VARARGS_METHOD(ma, matchEntity, "");
+    PYCXX_ADD_VARARGS_METHOD(match_entity, matchEntity, "");
     PYCXX_ADD_VARARGS_METHOD(match_entities, matchEntities, "");
 
     //behaviors().type_object()->tp_base = base;

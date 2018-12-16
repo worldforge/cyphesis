@@ -40,7 +40,7 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
     assert(obj.isValid());
     const std::string& child = obj->getId();
     std::string parent;
-    if (obj->isDefaultParent()) {
+    if (!obj->isDefaultParent()) {
         parent = obj->getParent();
     }
     auto I = m_types.find(child);
@@ -74,9 +74,10 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
         }
         description->setAttr("children", children);
         I->second->setDescription(description);
+
+        type->setParent(I->second.get());
     }
 
-    type->setParent(I->second.get());
 
     auto result = m_types.insert(std::make_pair(child, std::move(type)));
     return result.first->second.get();

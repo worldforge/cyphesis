@@ -48,7 +48,7 @@ TypeNode::TypeNode(const std::string& name,
 
 TypeNode::~TypeNode()
 {
-    for (auto entry: m_defaults) {
+    for (const auto& entry: m_defaults) {
         delete entry.second;
     }
 }
@@ -129,7 +129,7 @@ void TypeNode::injectProperty(const std::string& name,
 
 void TypeNode::addProperties(const MapType& attributes)
 {
-    for (auto entry : attributes) {
+    for (const auto& entry : attributes) {
         PropertyBase* p = PropertyManager::instance().addProperty(entry.first,
                                                                   entry.second.getType());
         assert(p != nullptr);

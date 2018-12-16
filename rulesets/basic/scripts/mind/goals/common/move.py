@@ -555,7 +555,7 @@ class pursuit(Goal):
         lst_of_what = me.mem.recall_place(me.entity.location, self.range, self.filter)
         if not lst_of_what or len(lst_of_what) == 0: return
         dist_vect = distance_to(me.entity.location, lst_of_what[0].location).unit_vector()
-        multiply = const.base_velocity * self.direction * const.basic_tick
+        multiply = 1.0 * self.direction * const.basic_tick
         loc = Location(me.entity.location.parent)
         loc.pos = me.entity.location.pos + (dist_vect * multiply)
         ent = Entity(me.entity.id, location=loc)
