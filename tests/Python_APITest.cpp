@@ -48,8 +48,7 @@ int main()
     init_python_api({&CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,
-                     &CyPy_Rules::init},
-                    "1a6c913e-79b2-4fc8-9467-ee6c39d0f674");
+                     &CyPy_Rules::init});
 
     auto amod = Get_PyModule("notamodule");
     assert(amod.isNull());

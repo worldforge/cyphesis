@@ -42,8 +42,7 @@ int main()
     init_python_api({&CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,
-                     &CyPy_Rules::init},
-                    "3622159a-de3c-42e6-858c-f6bd7cf8e7b1");
+                     &CyPy_Rules::init});
 
 
     run_python_string("from atlas import *");

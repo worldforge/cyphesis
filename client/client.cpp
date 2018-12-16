@@ -94,12 +94,19 @@ int main(int argc, char ** argv)
     bool interactive = global_conf->findItem("", "interactive");
     int status = 0;
 
+    std::vector<std::string> python_directories;
+    // Add the path to the non-ruleset specific code.
+    python_directories.push_back(share_directory + "/cyphesis/scripts");
+    python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
+    // Add the path to the ruleset specific code.
+    python_directories.push_back(share_directory + "/cyphesis/rulesets/" + ruleset_name + "/scripts");
+
     init_python_api({&CyPy_Physics::init,
                      &CyPy_Rules::init,
                      &CyPy_EntityFilter::init,
                      &CyPy_Atlas::init,
                      &CyPy_Common::init},
-                    ruleset_name, false);
+                    python_directories, false);
 
     extend_client_python_api();
     new ClientPropertyManager();

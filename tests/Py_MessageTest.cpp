@@ -71,8 +71,7 @@ int main()
     init_python_api({&CyPy_Rules::init,
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "16799987-a321-43a2-aa66-f7bc8ed8e9b2");
+                     &CyPy_Common::init});
 
     assert(CyPy_Element::asElement(Py::Long(4)) == Element(4));
     assert(CyPy_Element::asElement(Py::Long(4)) != Element(4.0));

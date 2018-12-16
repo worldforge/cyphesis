@@ -35,7 +35,7 @@
 
 int main()
 {
-    init_python_api({&CyPy_Atlas::init, &CyPy_Physics::init},"df4d61a3-b435-47b7-862d-63bb27681219");
+    init_python_api({&CyPy_Atlas::init, &CyPy_Physics::init});
 
     run_python_string("from physics import Point3D");
     run_python_string("Point3D([1, 0, 0])");

@@ -167,14 +167,14 @@ Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
     assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
     ++m_entityCount;
-    assert(ent->m_location.isValid());
 
     if (!ent->m_location.isValid()) {
         log(ERROR, String::compose("Entity %1 of type %2 added to world with invalid location!", ent->getId(), ent->getType()->name()));
         debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl
                         << std::flush;);
         ent->m_location.m_parent = &getDefaultLocation();
-        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
+//        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
+        ent->m_location.m_pos = Point3D::ZERO();
         debug(std::cout << "loc set with loc " << ent->m_location.m_parent->getId()
                         << std::endl << std::flush;);
     }

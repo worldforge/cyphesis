@@ -139,13 +139,18 @@ int main(int argc, char** argv)
         assets_manager.init();
 
 
+        std::vector<std::string> python_directories;
+        // Add the path to the non-ruleset specific code.
+        python_directories.push_back(share_directory + "/cyphesis/scripts");
+        python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
+
         init_python_api({&CyPy_Ai::init,
                          &CyPy_Rules::init,
                          &CyPy_Physics::init,
                          &CyPy_EntityFilter::init,
                          &CyPy_Atlas::init,
                          &CyPy_Common::init},
-                        ruleset_name, false);
+                        std::move(python_directories), false);
         observe_python_directories(io_service, assets_manager);
 
 

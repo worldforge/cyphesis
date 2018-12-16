@@ -38,8 +38,7 @@ int main()
 {
     init_python_api({&CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "2a83ab2f-928f-457d-bcf7-34d3686e49c1");
+                     &CyPy_Common::init});
 
     run_python_string("from physics import BBox");
     run_python_string("b=BBox()");

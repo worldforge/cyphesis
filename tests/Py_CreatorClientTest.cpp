@@ -56,7 +56,7 @@ int main()
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,
-                     &CyPy_Ai::init}, "602fe3c3-e6c4-4c9a-b0ac-9f0a034042ba");
+                     &CyPy_Ai::init});
     extend_client_python_api();
 
     auto client = new CreatorClient("1", "2", *new ClientConnection(io_service));
@@ -106,7 +106,7 @@ int main()
 
     run_python_string("assert type(c.map) == ai.MemMap");
     run_python_string("assert type(c.entity.location) == rules.Location");
-    run_python_string("assert type(c.time) == server.WorldTime");
+    run_python_string("assert type(c.time) == rules.WorldTime");
     expect_python_error("c.foo", PyExc_AttributeError);
     expect_python_error("c.foo_operation", PyExc_AttributeError);
     run_python_string("c.foo = 1");

@@ -40,7 +40,7 @@
 
 int main()
 {
-    init_python_api({&CyPy_Server::init}, "cb44c6cc-64fa-46c4-83d1-f43c6a2bb56c");
+    init_python_api({&CyPy_Server::init});
 
     Ref<World> wrld(new World("0", 0));
     TestWorld tw(wrld);

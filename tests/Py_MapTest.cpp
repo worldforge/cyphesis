@@ -51,8 +51,7 @@ int main()
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,
-                     &CyPy_Ai::init}
-                     , "93b8eac3-9ab9-40f7-b419-d740c18c09e4");
+                     &CyPy_Ai::init});
 
     SimpleTypeStore typeStore{};
     TypeResolver typeResolver{typeStore};

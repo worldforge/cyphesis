@@ -244,8 +244,10 @@ void observe_python_directories(boost::asio::io_service& io_service, AssetsManag
     }
 }
 
-void init_python_api(std::vector<std::function<std::string()>> initFunctions, const std::string& ruleset, bool log_stdout)
+void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories, bool log_stdout)
 {
+
+    python_directories = std::move(scriptDirectories);
 
     std::vector<std::string> modules;
     for (auto& function : initFunctions) {
@@ -280,12 +282,6 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, co
     if (!sys_path.isNull()) {
         if (sys_path.isList()) {
             Py::List paths(sys_path);
-
-            // Add the path to the non-ruleset specific code.
-            python_directories.push_back(share_directory + "/cyphesis/scripts");
-            python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
-            // Add the path to the ruleset specific code.
-            python_directories.push_back(share_directory + "/cyphesis/rulesets/" + ruleset + "/scripts");
 
             for (auto& path : python_directories) {
                 paths.append(Py::String(path));

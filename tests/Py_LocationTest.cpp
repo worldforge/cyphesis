@@ -49,8 +49,7 @@ int main()
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Ai::init,
-                     &CyPy_Common::init},
-                    "21b996b0-9dc3-4749-bd8c-24908f372ddc");
+                     &CyPy_Common::init});
 
     Ref<Entity> wrld(new Entity("0", 0));
     TestWorld tw(wrld);

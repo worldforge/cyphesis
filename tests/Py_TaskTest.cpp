@@ -42,7 +42,7 @@
 
 int main()
 {
-    init_python_api({&CyPy_Server::init}, "6715c02a-cc63-497b-988d-453579eae35d");
+    init_python_api({&CyPy_Server::init});
 
     Ref<Entity> entity(new Entity("", 1));
     UsageInstance usageInstance;

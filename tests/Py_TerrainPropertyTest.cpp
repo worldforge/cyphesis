@@ -77,8 +77,7 @@ int main()
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "bac81904-0516-4dd0-b9d8-32e879339b96");
+                     &CyPy_Common::init});
 
     run_python_string("from server import *");
     run_python_string("import testprop");

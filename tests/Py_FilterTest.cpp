@@ -18,7 +18,7 @@
 
 int main()
 {
-    init_python_api({&CyPy_EntityFilter::init}, "");
+    init_python_api({&CyPy_EntityFilter::init});
 
     run_python_string("import entity_filter");
 

@@ -44,8 +44,7 @@ int main()
     init_python_api({&CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,
-                     &CyPy_Rules::init,}
-                     ,"c67ce8e7-d195-4806-b8e4-d905e7c9d928");
+                     &CyPy_Rules::init});
 
 
 

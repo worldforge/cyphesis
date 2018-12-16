@@ -60,8 +60,7 @@ int main()
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "993bbe09-5751-41fe-8a18-17995c713c2e");
+                     &CyPy_Common::init});
 
     run_python_string("from server import *");
     run_python_string("from atlas import Operation");

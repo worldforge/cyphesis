@@ -16,7 +16,9 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #ifdef HAVE_CONFIG_H
+
 #include "config.h"
+
 #endif
 
 #include "CommHttpClient.h"
@@ -77,28 +79,25 @@ using String::compose;
 using namespace boost::asio;
 
 class TrustedConnection;
+
 class Peer;
 
 static const bool debug_flag = false;
 
 INT_OPTION(http_port_num, 6780, CYPHESIS, "httpport",
-        "Network listen port for http connection to the server")
-;
+           "Network listen port for http connection to the server");
 
 BOOL_OPTION(useMetaserver, true, CYPHESIS, "usemetaserver",
-        "Flag to control registration with the metaserver")
-;
+            "Flag to control registration with the metaserver");
 
 STRING_OPTION(mserver, "metaserver.worldforge.org", CYPHESIS, "metaserver",
-        "Hostname to use as the metaserver")
-;
+              "Hostname to use as the metaserver");
 
 INT_OPTION(ai_clients, 1, CYPHESIS, "aiclients",
-        "Number of AI clients to spawn.")
-;
+           "Number of AI clients to spawn.");
 
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
     if (security_init() != 0) {
         log(CRITICAL, "Security initialization Error. Exiting.");
@@ -119,8 +118,8 @@ int main(int argc, char ** argv)
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             std::cout << argv[0] << " (cyphesis) " << consts::version
-                    << " (Cyphesis build: " << consts::buildId << ")"
-                    << std::endl << std::flush;
+                      << " (Cyphesis build: " << consts::buildId << ")"
+                      << std::endl << std::flush;
 
             return 0;
         } else if (config_status == CONFIG_HELP) {
@@ -174,7 +173,7 @@ int main(int argc, char ** argv)
     readConfigItem(instance, "database", databaseBackend);
 
     Database* database;
-    CommPSQLSocket * dbsocket = nullptr;
+    CommPSQLSocket* dbsocket = nullptr;
     RepeatedTask* dbvacuumTask = nullptr;
     if (databaseBackend == "postgres") {
 #if POSTGRES_FOUND
@@ -187,7 +186,7 @@ int main(int argc, char ** argv)
     } else {
         auto sqliteDatabase = new DatabaseSQLite();
         database = sqliteDatabase;
-        dbvacuumTask = new RepeatedTask(*io_service, boost::posix_time::seconds(25 * 60), [=]() {sqliteDatabase->runMaintainance();});
+        dbvacuumTask = new RepeatedTask(*io_service, boost::posix_time::seconds(25 * 60), [=]() { sqliteDatabase->runMaintainance(); });
     }
 
     auto persistence = new Persistence(*database);
@@ -219,11 +218,17 @@ int main(int argc, char ** argv)
     readConfigItem(instance, "nice", nice);
 
 
-
     FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
 
     AssetsManager* assets_manager = new AssetsManager(*file_system_observer);
     assets_manager->init();
+
+    std::vector<std::string> python_directories;
+    // Add the path to the non-ruleset specific code.
+    python_directories.push_back(share_directory + "/cyphesis/scripts");
+    python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
+    // Add the path to the ruleset specific code.
+    python_directories.push_back(share_directory + "/cyphesis/rulesets/" + ruleset_name + "/scripts");
 
     // Start up the Python subsystem.
     init_python_api({&CyPy_Server::init,
@@ -232,7 +237,7 @@ int main(int argc, char ** argv)
                      &CyPy_EntityFilter::init,
                      &CyPy_Atlas::init,
                      &CyPy_Common::init},
-                         ruleset_name);
+                    python_directories);
     observe_python_directories(*io_service, *assets_manager);
 
     Inheritance* inheritance = new Inheritance();
@@ -249,7 +254,7 @@ int main(int argc, char ** argv)
     Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
     baseEntity->setType(Inheritance::instance().getType("world"));
 
-    WorldRouter * world = new WorldRouter(time, baseEntity);
+    WorldRouter* world = new WorldRouter(time, baseEntity);
 
     CyPy_Server::registerWorld(world);
 
@@ -265,15 +270,15 @@ int main(int argc, char ** argv)
     long int_id, lobby_int_id;
 
     if (((int_id = newId(server_id)) < 0)
-            || ((lobby_int_id = newId(lobby_id)) < 0)) {
+        || ((lobby_int_id = newId(lobby_id)) < 0)) {
         log(CRITICAL, "Unable to get server IDs from Database");
         return EXIT_DATABASE_ERROR;
     }
 
     // Create the core server object, which stores central data,
     // and track objects
-    ServerRouting * server = new ServerRouting(*world, ruleset_name,
-            server_name, server_id, int_id, lobby_id, lobby_int_id);
+    ServerRouting* server = new ServerRouting(*world, ruleset_name,
+                                              server_name, server_id, int_id, lobby_id, lobby_int_id);
 
     std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
         std::string connection_id;
@@ -299,39 +304,39 @@ int main(int argc, char ** argv)
         }
         if (client_port_num < dynamic_port_end) {
             log(ERROR,
-                    String::compose("Could not find free client listen "
-                            "socket in range %1-%2. Init failed.",
-                            dynamic_port_start, dynamic_port_end));
+                String::compose("Could not find free client listen "
+                                "socket in range %1-%2. Init failed.",
+                                dynamic_port_start, dynamic_port_end));
             log(INFO,
-                    String::compose("To allocate 8 more ports please run:"
-                            "\n\n    cyconfig "
-                            "--cyphesis:dynamic_port_end=%1\n\n",
-                            dynamic_port_end + 8));
+                String::compose("To allocate 8 more ports please run:"
+                                "\n\n    cyconfig "
+                                "--cyphesis:dynamic_port_end=%1\n\n",
+                                dynamic_port_end + 8));
             return EXIT_PORT_ERROR;
         }
         log(INFO, String::compose("Auto configuring new instance \"%1\" "
-                "to use port %2.", instance, client_port_num));
+                                  "to use port %2.", instance, client_port_num));
         global_conf->setItem(instance, "tcpport", client_port_num,
-                varconf::USER);
+                             varconf::USER);
         global_conf->setItem(CYPHESIS, "dynamic_port_start",
-                client_port_num + 1, varconf::USER);
+                             client_port_num + 1, varconf::USER);
     } else {
         try {
             tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
-                    "on port %1. Init failed. The most common reason for this "
-                    "is that you're already running an instance of Cyphesis.",
-                    client_port_num));
+                                       "on port %1. Init failed. The most common reason for this "
+                                       "is that you're already running an instance of Cyphesis.",
+                                       client_port_num));
             return EXIT_SOCKET_ERROR;
         }
     }
 
     remove(python_socket_name.c_str());
     std::function<void(CommPythonClient&)> pythonStarter =
-            [&](CommPythonClient& client) {
-                client.startAccept();
-            };
+        [&](CommPythonClient& client) {
+            client.startAccept();
+        };
     auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonStarter, server->getName(), *io_service,
                                                                                          local::stream_protocol::endpoint(python_socket_name));
 
@@ -361,7 +366,7 @@ int main(int argc, char ** argv)
     log(INFO, " /monitors : various monitored values, suitable for time series systems");
     log(INFO, " /monitors/numerics : only numerical values, suitable for time series system that only operates on numerical data");
 
-    CommMetaClient * cmc(nullptr);
+    CommMetaClient* cmc(nullptr);
     if (useMetaserver) {
         cmc = new CommMetaClient(*io_service);
         if (cmc->setup(mserver) != 0) {
@@ -371,7 +376,7 @@ int main(int argc, char ** argv)
         }
     }
 
-    CommMDNSPublisher * cmdns = nullptr;
+    CommMDNSPublisher* cmdns = nullptr;
 #if defined(HAVE_AVAHI)
 
     cmdns = new CommMDNSPublisher(*io_service, *server);
@@ -443,10 +448,10 @@ int main(int argc, char ** argv)
                 //already written the importer tool; we might also do it in-process, but that would
                 //require some rewriting of code).
                 log(INFO,
-                        compose("Trying to import world from %1.", importPath));
+                    compose("Trying to import world from %1.", importPath));
                 std::stringstream ss;
                 ss << bin_directory <<
-                "/cyimport --resume \"" << importPath + "\"";
+                   "/cyimport --resume \"" << importPath + "\"";
                 std::string command = ss.str();
                 std::thread importer([=]() {
                     int result = std::system(command.c_str());
@@ -460,8 +465,8 @@ int main(int argc, char ** argv)
             }
         } else {
             log(NOTICE,
-                    compose("Not importing as \"%1\" could not be found",
-                            importPath));
+                compose("Not importing as \"%1\" could not be found",
+                        importPath));
             file.close();
         }
     }
@@ -478,7 +483,7 @@ int main(int argc, char ** argv)
     };
 
 
-    auto softExitPoll = [&](){
+    auto softExitPoll = [&]() {
         if (store->numberOfOutstandingThoughtRequests() == 0) {
             log(NOTICE, "All entity thoughts were persisted.");
             return true;

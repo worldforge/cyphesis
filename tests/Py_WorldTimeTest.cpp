@@ -44,8 +44,7 @@ int main()
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "cc4b05b9-4ff9-4127-85b0-300298d16c3c");
+                     &CyPy_Common::init});
 
     run_python_string("from rules import WorldTime");
     expect_python_error("WorldTime()", PyExc_IndexError);

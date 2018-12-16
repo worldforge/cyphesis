@@ -88,8 +88,7 @@ int main()
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "b513b7b1-b0d8-4495-b3f0-54c2ef3f27f6");
+                     &CyPy_Common::init});
 
 
     Ref<Entity> wrld(new Entity("0", 0));

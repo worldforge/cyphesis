@@ -29,7 +29,7 @@ class BaseWorld;
 
 extern sigc::signal<void> python_reload_scripts;
 
-void init_python_api(std::vector<std::function<std::string()>> initFunctions, const std::string & ruleset, bool log_stdout = true);
+void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories = {}, bool log_stdout = true);
 void shutdown_python_api();
 
 /**

@@ -68,6 +68,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         if (!thing.m_location.pos().isValid()) {
 //            // If no position coords were provided, put it somewhere near origin
 //            thing.m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
+            thing.m_location.m_pos = WFMath::Point<3>::ZERO();
         }
         if (thing.m_location.velocity().isValid()) {
             if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {

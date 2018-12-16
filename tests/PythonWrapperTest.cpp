@@ -64,8 +64,7 @@ int main()
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,
                      &CyPy_Physics::init,
-                     &CyPy_Common::init},
-                    "9fb5e26d-5631-479c-bdfc-cdb3c14b5428");
+                     &CyPy_Common::init});
 
     run_python_string("import server");
     run_python_string("import testmod");
