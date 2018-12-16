@@ -23,12 +23,14 @@
 #include "CyPy_RootEntity.h"
 #include "CyPy_Location.h"
 #include "CyPy_EntityLocation.h"
+#include "CyPy_Root.h"
 
 CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
 {
 
     CyPy_ElementMap::init_type();
     CyPy_ElementList::init_type();
+    CyPy_Root::init_type();
     CyPy_Operation::init_type();
     CyPy_Oplist::init_type();
     CyPy_RootEntity::init_type();
@@ -39,6 +41,7 @@ CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
     Py::Dict d(moduleDictionary());
 
     d["Operation"] = CyPy_Operation::type();
+    d["Root"] = CyPy_Root::type();
     d["Oplist"] = CyPy_Oplist::type();
     d["Entity"] = CyPy_RootEntity::type();
     d["ElementList"] = CyPy_ElementList::type();

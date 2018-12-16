@@ -16,20 +16,17 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <Atlas/Objects/Anonymous.h>
-#include "CyPy_RootEntity.h"
+#include "CyPy_Root.h"
 #include "CyPy_Element.h"
-#include "CyPy_Location.h"
+#include <Atlas/Objects/Root.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Entity::Anonymous;
 
-CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+CyPy_Root::CyPy_Root(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
 {
-    m_value = Anonymous();
+    m_value = Root();
     if (args.size() == 1) {
         m_value->setId(verifyString(args.front()));
     }
@@ -37,14 +34,7 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
         for (auto key : kwds.keys()) {
             auto keyStr = key.str().as_string();
             auto value = kwds.getItem(key);
-            if (keyStr == "location") {
-                if (!CyPy_Location::check(value)) {
-                    throw Py::TypeError("location must be a Location object");
-                }
-                CyPy_Location::value(value).addToEntity(m_value);
-            } else if (keyStr == "pos") {
-                m_value->setPos(sequence_asVector(value));
-            } else if (keyStr == "parent") {
+            if (keyStr == "parent") {
                 m_value->setParent(verifyString(value));
             } else if (keyStr == "type") {
                 m_value->setObjtype(verifyString(value));
@@ -55,15 +45,15 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
     }
 }
 
-CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity value)
+CyPy_Root::CyPy_Root(Py::PythonClassInstance* self, Atlas::Objects::Root value)
     : WrapperBase(self, std::move(value))
 {
 
 }
 
-void CyPy_RootEntity::init_type()
+void CyPy_Root::init_type()
 {
-    behaviors().name("RootEntity");
+    behaviors().name("Root");
     behaviors().doc("");
 
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
@@ -71,30 +61,13 @@ void CyPy_RootEntity::init_type()
     behaviors().readyType();
 }
 
-std::vector<double> CyPy_RootEntity::sequence_asVector(const Py::Object& o)
-{
-    std::vector<double> vector;
-    if (o.isList() || o.isTuple()) {
-        Py::Sequence list(o);
-        for (auto entry : list) {
-            if (!entry.isNumeric()) {
-                throw Py::TypeError("Vector must have numeric values.");
-            }
-            vector.push_back(Py::Float(entry).as_double());
-        }
-    } else {
-        throw Py::TypeError("Object is not a sequence.");
-    }
-    return vector;
-}
-
-Py::Object CyPy_RootEntity::get_name()
+Py::Object CyPy_Root::get_name()
 {
     return Py::String(m_value->getName());
 }
 
 
-Py::Object CyPy_RootEntity::getattro(const Py::String& name)
+Py::Object CyPy_Root::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
     if (nameStr == "name") {
@@ -114,7 +87,7 @@ Py::Object CyPy_RootEntity::getattro(const Py::String& name)
     return PythonExtensionBase::getattro(name);
 }
 
-int CyPy_RootEntity::setattro(const Py::String& name, const Py::Object& attr)
+int CyPy_Root::setattro(const Py::String& name, const Py::Object& attr)
 {
     auto nameStr = name.as_string();
 

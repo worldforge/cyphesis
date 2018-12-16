@@ -19,7 +19,7 @@
 #include "CyPy_Operation.h"
 #include "CyPy_Element.h"
 #include "CyPy_RootEntity.h"
-#include "rules/entityfilter/python/CyPy_EntityFilter.h"
+#include "CyPy_Root.h"
 #include "CyPy_Oplist.h"
 #include <Atlas/Objects/Generic.h>
 #include <Atlas/Objects/Entity.h>
@@ -271,6 +271,10 @@ Py::Object CyPy_Operation::sequence_item(Py_ssize_t item)
     RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(arg);
     if (ent) {
         return CyPy_RootEntity::wrap(std::move(ent));
+    }
+    Root root = Atlas::Objects::smart_dynamic_cast<Root>(arg);
+    if (root) {
+        return CyPy_Root::wrap(std::move(root));
     }
     //log(WARNING, "Non operation or entity being returned as arg of operation");
     return CyPy_Element::wrap(arg->asMessage());
