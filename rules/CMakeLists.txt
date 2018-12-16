@@ -11,7 +11,8 @@ add_library(rulesbase
     SolidProperty.cpp
     Domain.cpp
     SimpleProperty.cpp
-    SimpleProperty.h)
+    BBoxProperty.cpp
+    ScaleProperty.cpp)
 add_subdirectory(python)
 add_subdirectory(entityfilter)
 add_subdirectory(ai)

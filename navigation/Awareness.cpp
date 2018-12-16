@@ -156,9 +156,24 @@ class AwarenessContext: public rcContext
 };
 
 Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float agentHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize) :
-        mHeightProvider(heightProvider), mDomainEntity(domainEntity), mTalloc(nullptr), mTcomp(nullptr), mTmproc(nullptr), mAgentRadius(agentRadius), mBaseTileAmount(128), mDesiredTilesAmount(128), mCtx(
-                new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()), mFilter(nullptr), mActiveTileList(nullptr), mObserverCount(0)
+        mHeightProvider(heightProvider),
+        mDomainEntity(domainEntity),
+        mTalloc(nullptr),
+        mTcomp(nullptr),
+        mTmproc(nullptr),
+        mAgentRadius(agentRadius),
+        mBaseTileAmount(128),
+        mDesiredTilesAmount(128),
+        mCtx(new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()),
+        mFilter(nullptr),
+        mActiveTileList(nullptr),
+        mObserverCount(0)
 {
+    auto validExtent = extent;
+    if (!extent.isValid()) {
+        ::log(WARNING, "No valid extent, will default to small area");
+        validExtent = {{-100, -100, -100}, {100, 100, 100}};
+    }
     debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius);
     try {
         mActiveTileList = new MRUList<std::pair<int, int>>();
@@ -174,8 +189,8 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         // Area flags for polys to consider in search, and their cost
         mFilter->setAreaCost(POLYAREA_GROUND, 1.0f);
 
-        const WFMath::Point<3>& lower = extent.lowCorner();
-        const WFMath::Point<3>& upper = extent.highCorner();
+        const WFMath::Point<3>& lower = validExtent.lowCorner();
+        const WFMath::Point<3>& upper = validExtent.highCorner();
 
         mCfg.bmin[0] = lower.x();
         mCfg.bmin[1] = std::min(-500.f, lower.y());
@@ -222,7 +237,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         //	m_cfg.detailSampleMaxError = m_cfg.m_cellHeight * m_detailSampleMaxError;
 
         // Tile cache params.
-        dtTileCacheParams tcparams;
+        dtTileCacheParams tcparams{};
         memset(&tcparams, 0, sizeof(tcparams));
         rcVcopy(tcparams.orig, mCfg.bmin);
         tcparams.cs = mCfg.cs;
@@ -256,7 +271,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
             throw std::runtime_error("buildTiledNavigation: Could not allocate navmesh.");
         }
 
-        dtNavMeshParams params;
+        dtNavMeshParams params{};
         memset(&params, 0, sizeof(params));
         rcVcopy(params.orig, mCfg.bmin);
         params.tileWidth = tileSize * cellsize;

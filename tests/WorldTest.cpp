@@ -30,7 +30,7 @@
 #include "rules/simulation/World.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/Domain.h"
 #include "rules/Script.h"
@@ -54,7 +54,7 @@
 #include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/rules/simulation/stubStatusProperty.h"
-#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubBBoxProperty.h"
 #include "stubs/rules/simulation/stubTerrainProperty.h"
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/stubDomain.h"

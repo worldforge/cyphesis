@@ -15,7 +15,6 @@ add_library(rulessimulation
     TerrainModTranslator.cpp
     CalendarProperty.cpp
     StatusProperty.cpp
-    BBoxProperty.cpp
     TransientProperty.cpp
     InternalProperties.cpp
     StatisticsProperty.cpp
@@ -46,7 +45,6 @@ add_library(rulessimulation
     PhysicalWorld.cpp
     OgreMeshDeserializer.cpp
     PerceptionSightProperty.cpp
-    ScaleProperty.cpp
     UsagesProperty.cpp
     WorldTimeProperty.cpp
     UsageInstance.cpp
@@ -58,7 +56,7 @@ add_library(rulessimulation
     MindProperty.cpp
     EntityProperty.cpp
     ScriptUtils.cpp
-    )
+    ServerBBoxProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

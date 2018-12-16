@@ -39,6 +39,7 @@
 #include "common/FileSystemObserver.h"
 #include "common/operations/Think.h"
 #include "common/globals.h"
+#include "AiClientPropertyManager.h"
 
 #include <sys/prctl.h>
 #include <rules/python/CyPy_Rules.h>
@@ -131,6 +132,8 @@ int main(int argc, char** argv)
 
     {
         FileSystemObserver file_system_observer(io_service);
+
+        AiClientPropertyManager propertyManager{};
 
         AssetsManager assets_manager(file_system_observer);
         assets_manager.init();

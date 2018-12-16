@@ -17,6 +17,8 @@
 
 
 #include <rules/SimpleProperty.h>
+#include <rules/BBoxProperty.h>
+#include <rules/ScaleProperty.h>
 #include "MemEntity.h"
 #include "../SolidProperty.h"
 
@@ -78,11 +80,12 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
     //Note that we can't use the PropertyManager for this, since it's a singleton for the whole
     //system. If MemEntity was completely decoupled from Entity it would be possible though.
     PropertyBase* prop;
-//    if (name == BBoxProperty::property_name) {
-//        prop = new BBoxProperty();
-//    } else
-    if (name == "solid") {
+    if (name == BBoxProperty::property_name) {
+        prop = new BBoxProperty();
+    } else if (name == SolidProperty::property_name) {
         prop = new SolidProperty();
+    } else if (name == ScaleProperty::property_name) {
+        prop = new ScaleProperty();
     } else if (name == SimpleProperty::property_name) {
         prop = new SimpleProperty();
     } else {

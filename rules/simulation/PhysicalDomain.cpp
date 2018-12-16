@@ -41,9 +41,9 @@
 #include "rules/simulation/BaseWorld.h"
 #include "EntityProperty.h"
 #include "PerceptionSightProperty.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/SolidProperty.h"
-#include "ScaleProperty.h"
+#include "rules/ScaleProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>

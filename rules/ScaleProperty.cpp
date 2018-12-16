@@ -17,7 +17,7 @@
  */
 
 #include "ScaleProperty.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 
 #include "rules/LocatedEntity.h"
 #include <wfmath/atlasconv.h>

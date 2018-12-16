@@ -331,7 +331,7 @@ int main()
 
 #include "rules/simulation/AreaProperty.h"
 #include "rules/AtlasProperties.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/ExternalProperty.h"
@@ -362,7 +362,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
     return load();
 }
 
-#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubBBoxProperty.h"
 #include "stubs/rules/simulation/stubTasksProperty.h"
 #include "stubs/rules/simulation/stubTerrainProperty.h"
 #include "stubs/rules/simulation/stubDomainProperty.h"

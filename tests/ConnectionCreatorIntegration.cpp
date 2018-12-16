@@ -315,7 +315,7 @@ int main()
 #include "server/Player.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/ExternalProperty.h"

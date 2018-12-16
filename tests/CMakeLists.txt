@@ -163,7 +163,7 @@ wf_add_test(AllPropertyTest.cpp PropertyExerciser.cpp ../rules/simulation/AreaPr
 wf_add_test(ScriptTest.cpp ../rules/Script.cpp)
 wf_add_test(AreaPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/AreaProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BBoxPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/BBoxProperty.cpp
+wf_add_test(BBoxPropertyTest.cpp PropertyCoverage.cpp ../rules/BBoxProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(CalendarPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/CalendarProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/DateTime.cpp
@@ -305,7 +305,7 @@ target_link_libraries(PythonWrapperTest ${PYTHON_TESTS_LIBS})
 wf_add_test(EntityFilterTest.cpp
     ../rules/simulation/EntityProperty.cpp
     ../rules/simulation/Entity.cpp
-    ../rules/simulation/BBoxProperty.cpp
+    ../rules/BBoxProperty.cpp
     ../rules/LocatedEntity.cpp
     ../rules/simulation/PlantedOnProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
@@ -318,7 +318,7 @@ target_compile_definitions(EntityFilterTest PRIVATE -DBOOST_SPIRIT_DEBUG)
 wf_add_test(EntityFilterParserTest.cpp
     ../rules/simulation/EntityProperty.cpp
     ../rules/simulation/Entity.cpp
-    ../rules/simulation/BBoxProperty.cpp
+    ../rules/BBoxProperty.cpp
     ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
@@ -328,7 +328,7 @@ target_link_libraries(EntityFilterParserTest entityfilter)
 
 wf_add_test(EntityFilterProvidersTest.cpp ../rules/simulation/EntityProperty.cpp
     ../rules/simulation/Entity.cpp
-    ../rules/simulation/BBoxProperty.cpp
+    ../rules/BBoxProperty.cpp
     ../rules/LocatedEntity.cpp
     ../rules/simulation/PlantedOnProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
@@ -396,7 +396,7 @@ wf_add_test(StatisticsPropertyIntegration.cpp ../rules/simulation/StatisticsProp
 wf_add_test(BaseMindMapEntityIntegration.cpp ../rules/ai/BaseMind.cpp
     ../rules/ai/MemEntity.cpp
     ../rules/ai/MemMap.cpp
-    ../rules/simulation/BBoxProperty.cpp
+    ../rules/BBoxProperty.cpp
     ../rules/SolidProperty.cpp
     ../rules/SimpleProperty.cpp
     ../rules/simulation/InternalProperties.cpp

@@ -17,7 +17,7 @@
 #include "rules/simulation/EntityProperty.h"
 #include "rules/Domain.h"
 #include "rules/AtlasProperties.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/simulation/PlantedOnProperty.h"
 #include "rules/simulation/BaseWorld.h"
 #include "rules/simulation/Entity.h"
@@ -735,7 +735,7 @@ int main()
 #include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/rules/simulation/stubDensityProperty.h"
-#include "stubs/rules/simulation/stubScaleProperty.h"
+#include "stubs/rules/stubScaleProperty.h"
 
 
 #include "stubs/common/stubcustom.h"

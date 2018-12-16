@@ -117,6 +117,150 @@
   }
 #endif //STUB_CyPy_LocatedEntityBase_client_error
 
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_num
+//#define STUB_CyPy_LocatedEntityBase_get_prop_num
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_num(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_num
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_num
+//#define STUB_CyPy_LocatedEntityBase_has_prop_num
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_num(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_num
+
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_float
+//#define STUB_CyPy_LocatedEntityBase_get_prop_float
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_float(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_float
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_float
+//#define STUB_CyPy_LocatedEntityBase_has_prop_float
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_float(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_float
+
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_int
+//#define STUB_CyPy_LocatedEntityBase_get_prop_int
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_int(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_int
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_int
+//#define STUB_CyPy_LocatedEntityBase_has_prop_int
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_int(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_int
+
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_string
+//#define STUB_CyPy_LocatedEntityBase_get_prop_string
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_string(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_string
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_string
+//#define STUB_CyPy_LocatedEntityBase_has_prop_string
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_string(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_string
+
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_bool
+//#define STUB_CyPy_LocatedEntityBase_get_prop_bool
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_bool(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_bool
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_bool
+//#define STUB_CyPy_LocatedEntityBase_has_prop_bool
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_bool(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_bool
+
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_list
+//#define STUB_CyPy_LocatedEntityBase_get_prop_list
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_list(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_list
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_list
+//#define STUB_CyPy_LocatedEntityBase_has_prop_list
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_list(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_list
+
+#ifndef STUB_CyPy_LocatedEntityBase_get_prop_map
+//#define STUB_CyPy_LocatedEntityBase_get_prop_map
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::get_prop_map(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_get_prop_map
+
+#ifndef STUB_CyPy_LocatedEntityBase_has_prop_map
+//#define STUB_CyPy_LocatedEntityBase_has_prop_map
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::has_prop_map(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_has_prop_map
+
+#ifndef STUB_CyPy_LocatedEntityBase_getPropertyFromFirstArg
+//#define STUB_CyPy_LocatedEntityBase_getPropertyFromFirstArg
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::getPropertyFromFirstArg(const Py::Tuple& args, const std::function<Py::Object(const Atlas::Message::Element&, Py::Object)>& checkFn) const
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_getPropertyFromFirstArg
+
+#ifndef STUB_CyPy_LocatedEntityBase_hasPropertyFromFirstArg
+//#define STUB_CyPy_LocatedEntityBase_hasPropertyFromFirstArg
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::hasPropertyFromFirstArg(const Py::Tuple& args, const std::function<bool(const Atlas::Message::Element&)>& checkFn) const
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_hasPropertyFromFirstArg
+
 
 
 #ifndef STUB_CyPy_LocatedEntity_check

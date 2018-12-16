@@ -19,7 +19,6 @@
 #include "BBoxProperty.h"
 
 #include "rules/LocatedEntity.h"
-#include "DensityProperty.h"
 #include "ScaleProperty.h"
 
 #include <wfmath/atlasconv.h>
@@ -93,9 +92,6 @@ void BBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
         entity->m_location.setBBox(m_data);
     }
 
-    auto densityProp = entity->getPropertyClassFixed<DensityProperty>();
-    if (densityProp) {
-        densityProp->updateMass(entity);
-    }
+
 
 }

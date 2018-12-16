@@ -338,7 +338,7 @@ int main()
 
 #include "stubs/common/stubcustom.h"
 #include "stubs/rules/simulation/stubDensityProperty.h"
-#include "stubs/rules/simulation/stubScaleProperty.h"
+#include "stubs/rules/stubScaleProperty.h"
 
 
 #define STUB_LocatedEntity_LocatedEntity_DTOR

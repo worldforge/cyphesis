@@ -47,7 +47,7 @@
 #include <rules/simulation/VisibilityProperty.h>
 #include <rules/simulation/GeometryProperty.h>
 #include "rules/simulation/PhysicalWorld.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 

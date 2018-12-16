@@ -50,6 +50,8 @@
 
 struct FastLZCompressor: public dtTileCacheCompressor
 {
+    virtual ~FastLZCompressor() = default;
+
     int maxCompressedSize(const int bufferSize) override
 	{
 		return (int)(bufferSize * 1.05f);

@@ -29,7 +29,7 @@
 #include "rules/simulation/Stackable.h"
 
 #include "rules/AtlasProperties.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/Script.h"
 #include "rules/simulation/StatusProperty.h"
@@ -51,7 +51,7 @@
 #include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/rules/simulation/stubStatusProperty.h"
-#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubBBoxProperty.h"
 #include "stubs/rules/stubDomain.h"
 
 

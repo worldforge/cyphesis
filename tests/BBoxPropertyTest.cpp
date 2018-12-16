@@ -25,7 +25,7 @@
 
 #include "PropertyCoverage.h"
 
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/Location.h"
 
 using Atlas::Message::ListType;
@@ -51,4 +51,4 @@ int main()
 
 #include "TestWorld.h"
 #include "stubs/rules/simulation/stubDensityProperty.h"
-#include "stubs/rules/simulation/stubScaleProperty.h"
+#include "stubs/rules/stubScaleProperty.h"

@@ -17,7 +17,7 @@
 
 #include "GeometryProperty.h"
 #include "OgreMeshDeserializer.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "physics/Convert.h"
 #include "common/log.h"
 #include "common/globals.h"

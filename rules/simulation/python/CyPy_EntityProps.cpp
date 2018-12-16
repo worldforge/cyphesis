@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rules/simulation/BBoxProperty.h>
+#include <rules/BBoxProperty.h>
 #include <rules/python/CyPy_Axisbox.h>
 #include <rules/python/CyPy_Element.h>
 #include "CyPy_EntityProps.h"

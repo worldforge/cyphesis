@@ -426,7 +426,7 @@ int main()
 
 #include "rules/simulation/AreaProperty.h"
 #include "rules/AtlasProperties.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/simulation/BiomassProperty.h"
 #include "rules/simulation/BurnSpeedProperty.h"
 #include "rules/simulation/DecaysProperty.h"
@@ -453,7 +453,7 @@ int main()
 #include "rules/simulation/DomainProperty.h"
 #include "rules/simulation/LimboProperty.h"
 #include "rules/simulation/Stackable.h"
-#include "stubs/rules/simulation/stubScaleProperty.h"
+#include "stubs/rules/stubScaleProperty.h"
 
 #include "common/const.h"
 #include "common/globals.h"

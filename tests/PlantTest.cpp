@@ -28,7 +28,7 @@
 
 #include "rules/AtlasProperties.h"
 #include "rules/simulation/AreaProperty.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/Script.h"
 #include "rules/simulation/StatusProperty.h"
@@ -66,7 +66,7 @@ int LocatedEntity::getAttrType(const std::string & name,
 #include "stubs/common/stubPropertyManager.h"
 #include "stubs/rules/stubContainsProperty.h"
 #include "stubs/rules/simulation/stubStatusProperty.h"
-#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubBBoxProperty.h"
 #include "stubs/rules/simulation/stubAreaProperty.h"
 #include "stubs/rules/stubTerrainEffectorProperty.h"
 #include "stubs/rules/stubDomain.h"
@@ -107,7 +107,7 @@ int main()
 
 // stubs
 
-#include "stubs/rules/simulation/stubScaleProperty.h"
+#include "stubs/rules/stubScaleProperty.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

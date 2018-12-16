@@ -29,7 +29,7 @@
 #include "rules/simulation/TerrainModProperty.h"
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
-#include "rules/simulation/BBoxProperty.h"
+#include "rules/simulation/ServerBBoxProperty.h"
 #include "rules/simulation/BiomassProperty.h"
 #include "rules/simulation/BurnSpeedProperty.h"
 #include "rules/simulation/DecaysProperty.h"
@@ -56,7 +56,7 @@
 #include "rules/Vector3Property.h"
 #include "rules/SimpleProperty.h"
 #include "rules/simulation/PerceptionSightProperty.h"
-#include "rules/simulation/ScaleProperty.h"
+#include "rules/ScaleProperty.h"
 #include "rules/python/ScriptsProperty.h"
 #include "rules/simulation/UsagesProperty.h"
 #include "rules/simulation/MindsProperty.h"
@@ -142,7 +142,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<BurnSpeedProperty>();
     installProperty<TransientProperty>();
     installProperty<Property<double>>("mass");
-    installProperty<BBoxProperty>();
+    installProperty<ServerBBoxProperty>();
     installProperty<MindProperty>();
     installProperty<SetupProperty>();
     installProperty<TickProperty>();

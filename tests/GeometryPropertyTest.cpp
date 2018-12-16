@@ -28,7 +28,7 @@
 #include "stubs/common/stubglobals.h"
 #include "stubs/rules/stubQuaternionProperty.h"
 #include "stubs/rules/simulation/stubOgreMeshDeserializer.h"
-#include "stubs/rules/simulation/stubBBoxProperty.h"
+#include "stubs/rules/stubBBoxProperty.h"
 #include "stubs/common/stubTypeNode.h"
 
 #include "rules/simulation/GeometryProperty.h"
