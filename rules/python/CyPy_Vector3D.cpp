@@ -213,7 +213,11 @@ Py::Object CyPy_Vector3D::rich_compare(const Py::Object& other, int type)
 
 PyCxx_ssize_t CyPy_Vector3D::sequence_length()
 {
-    return 3;
+    if (m_value.isValid()) {
+        return 3;
+    } else {
+        return 0;
+    }
 }
 
 Py::Object CyPy_Vector3D::sequence_item(Py_ssize_t pos)
