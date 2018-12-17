@@ -83,6 +83,7 @@ class NPCMind(ai.Mind):
         self.map.delete_hooks_append("delete_map")
         self.goal_id_counter = 0
         self.add_property_callback('_goals', 'goals_updated')
+        self.add_property_callback('_knowledge', 'knowledge_updated')
 
     def goals_updated(self, entity):
         self.print_debug('Goals updated.')
@@ -112,6 +113,39 @@ class NPCMind(ai.Mind):
                     except:
                         self.print_debug('Error when creating goal from data\n {}'.format(str(goal_element)))
                         raise
+
+    def knowledge_updated(self, entity):
+        self.print_debug('Knowledge updated.')
+        if entity.has_prop_map('_knowledge'):
+            knowledge = entity.get_prop_map('_knowledge')
+            for key, knowledge_element in knowledge.items():
+                (predicate, subject) = key.split(':')
+                object = knowledge_element
+
+                if predicate == 'location':
+                    #If it's just a string it's a reference to an entity id (with zero position).
+                    if isinstance(object, str):
+                        entity_id_string = object
+                        # A prefix of "$eid:" denotes an entity id; it should be stripped first.
+                        if entity_id_string.startswith("$eid:"):
+                            entity_id_string = entity_id_string[5:]
+                        where = self.map.get_add(entity_id_string)
+                        object = Location(where)
+                    else:
+                        if len(object) == 3:
+                            loc = self.entity.location.copy()
+                            loc.pos = Vector3D(object)
+                            object = loc
+                        elif len(object == 4):
+                            entity_id_string = object[0]
+                            # A prefix of "$eid:" denotes an entity id; it should be stripped first.
+                            if entity_id_string.startswith("$eid:"):
+                                entity_id_string = entity_id_string[5:]
+                            where = self.map.get_add(entity_id_string)
+                            object = Location(where, Vector3D(object[:3]))
+
+                self.add_knowledge(predicate, subject, object)
+
 
     def print_debug(self, message):
         """Prints a debug message using 'print', prepending the message with a description of the entity."""
@@ -402,7 +436,7 @@ class NPCMind(ai.Mind):
                         if object_val.parent is None:
                             location = object_val.position
                         else:
-                            location = ("$eid:" + object_val.parent.id, object_val.position)
+                            location = ("$eid:" + object_val.parent.id, object_val.pos)
                         goal_object = str(location)
                     else:
                         goal_object = str(d[key])
@@ -475,7 +509,7 @@ class NPCMind(ai.Mind):
                     # If only coords are supplied, it's handled as a location within the same parent space as ourselves
                     if (len(locdata) == 3):
                         loc = self.entity.location.copy()
-                        loc.position = Vector3D(list(locdata))
+                        loc.pos = Vector3D(list(locdata))
                     elif (len(locdata) == 2):
                         entity_id_string = locdata[0]
                         # A prefix of "$eid:" denotes an entity id; it should be stripped first.
@@ -554,7 +588,7 @@ class NPCMind(ai.Mind):
             # CHEAT!: remove eval
             xyz = list(eval(object))
             loc = self.entity.location.copy()
-            loc.position = Vector3D(xyz)
+            loc.pos = Vector3D(xyz)
             self.add_knowledge(predicate, subject, loc)
         else:
             self.add_knowledge(predicate, subject, object)
@@ -669,8 +703,8 @@ class NPCMind(ai.Mind):
         dynamic goals."""
 
         talk_entity = op[0]
-        if interlinguish.convert_english_to_interlinguish(self, talk_entity):
-            say = talk_entity.interlinguish
+        say = interlinguish.convert_english_to_interlinguish(self, talk_entity)
+        if say:
             verb = interlinguish.get_verb(say)
             operation_method = self.find_op_method(verb, "interlinguish_",
                                                    self.interlinguish_undefined_operation)

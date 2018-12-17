@@ -302,7 +302,7 @@ def convert_english_to_interlinguish(me, say_entity):
     try:
         say = say_entity.say
     except AttributeError:
-        return 0
+        return None
     if hasattr(me, 'name'):
         name_begin = me.name + ", "
         if say[:len(name_begin)] == name_begin:
@@ -311,19 +311,16 @@ def convert_english_to_interlinguish(me, say_entity):
     if match:
         sub = word2node.get(str.lower(match.group(1)))
         obj = word2node.get(match.group(2))
-        if not sub or not obj: return 0
+        if not sub or not obj: return None
         res = importance(sub, '>', obj)
-        say_entity.interlinguish = res[1]
-        return 1
+        return res[1]
     res = match_verb_subject_object_string(say)
     if res:
-        say_entity.interlinguish = res[1]
-        return 1
+        return res[1]
     res = match_desire(say)
     if res:
-        say_entity.interlinguish = res[1]
-        return 1
-    return 0
+        return res[1]
+    return None
 
 
 def get_verb(interlinguish):
