@@ -91,6 +91,8 @@ class CyPy_Element
 
         static Atlas::Message::ListType listAsElement(const Py::List& list);
 
+        static Atlas::Message::ListType sequenceAsElement(const Py::Sequence& list);
+
         static Atlas::Message::MapType dictAsElement(const Py::Dict& dict);
 
     protected:

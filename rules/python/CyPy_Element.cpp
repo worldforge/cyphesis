@@ -27,6 +27,7 @@
 #include "CyPy_Oplist.h"
 #include "CyPy_Location.h"
 #include "CyPy_RootEntity.h"
+#include "CyPy_Root.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -487,6 +488,15 @@ ListType CyPy_Element::listAsElement(const Py::List& list)
     return res;
 }
 
+ListType CyPy_Element::sequenceAsElement(const Py::Sequence& sequence)
+{
+    ListType res;
+    for (auto& entry : sequence) {
+        res.push_back(asElement(entry));
+    }
+    return res;
+}
+
 MapType CyPy_Element::dictAsElement(const Py::Dict& dict)
 {
     MapType map;
@@ -498,12 +508,6 @@ MapType CyPy_Element::dictAsElement(const Py::Dict& dict)
 
 Element CyPy_Element::asElement(const Py::Object& o)
 {
-//    if (CyPy_ElementList::check(o)) {
-//        return CyPy_ElementList::value(o);
-//    }
-//    if (CyPy_ElementMap::check(o)) {
-//        return CyPy_ElementMap::value(o);
-//    }
     if (o.isLong()) {
         return Py::Long(o).as_long();
     }
@@ -513,11 +517,20 @@ Element CyPy_Element::asElement(const Py::Object& o)
     if (o.isString()) {
         return o.as_string();
     }
+    if (CyPy_ElementList::check(o)) {
+        return CyPy_ElementList::value(o);
+    }
+    if (CyPy_ElementMap::check(o)) {
+        return CyPy_ElementMap::value(o);
+    }
     if (CyPy_Operation::check(o)) {
         return CyPy_Operation::value(o)->asMessage();
     }
     if (CyPy_RootEntity::check(o)) {
         return CyPy_RootEntity::value(o)->asMessage();
+    }
+    if (CyPy_Root::check(o)) {
+        return CyPy_Root::value(o)->asMessage();
     }
     if (CyPy_Oplist::check(o)) {
         auto& oplist = CyPy_Oplist::value(o);
@@ -539,12 +552,7 @@ Element CyPy_Element::asElement(const Py::Object& o)
         return dictAsElement(Py::Dict(o));
     }
     if (o.isSequence()) {
-        Py::Sequence seq(o);
-        ListType list;
-        for (const auto& entry : seq) {
-            list.push_back(asElement(entry));
-        }
-        return list;
+        return sequenceAsElement(Py::Sequence(o));
     }
     if (o.isNone()) {
         return Element();
