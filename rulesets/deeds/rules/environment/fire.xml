@@ -26,6 +26,10 @@
                         <string name="language">python</string>
                         <string name="name">world.objects.elements.Fire.Fire</string>
                     </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
+                    </map>
                 </list>
             </map>
         </map>
