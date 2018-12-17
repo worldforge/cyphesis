@@ -76,6 +76,10 @@ class CyPy_ElementMap : public WrapperBase<Atlas::Message::MapType, CyPy_Element
 
         int setattro(const Py::String& name, const Py::Object& attr) override;
 
+        Py::Object items();
+
+        PYCXX_NOARGS_METHOD_DECL(CyPy_ElementMap, items);
+
 };
 
 class CyPy_Element

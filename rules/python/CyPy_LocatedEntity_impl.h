@@ -211,7 +211,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::hasPropertyFromFirstArg
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_num(const Py::Tuple& args)
 {
-    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) {
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
         if (element.isInt()) {
             return Py::Long(element.Int());
         } else if (element.isFloat()) {
@@ -234,7 +234,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_num(const Py::
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_float(const Py::Tuple& args)
 {
-    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) {
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
         if (element.isFloat()) {
             return Py::Float(element.Float());
         } else {
@@ -255,7 +255,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_float(const Py
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_int(const Py::Tuple& args)
 {
-    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) {
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
         if (element.isInt()) {
             return Py::Long(element.Int());
         } else {
@@ -268,7 +268,7 @@ template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_int(const Py::Tuple& args)
 {
     return this->hasPropertyFromFirstArg(args, [](const Atlas::Message::Element& element) {
-        return element.isFloat();
+        return element.isInt();
     });
 }
 
@@ -276,7 +276,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_int(const Py::
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_string(const Py::Tuple& args)
 {
-    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) {
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
         if (element.isString()) {
             return Py::String(element.String());
         } else {
@@ -297,7 +297,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_string(const P
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_bool(const Py::Tuple& args)
 {
-    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) {
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
         if (element.isInt()) {
             return Py::Boolean(element.Int() != 0);
         } else {
@@ -313,13 +313,13 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_bool(const Py:
 }
 
 
-
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_map(const Py::Tuple& args)
 {
-    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) {
-        if (element.isString()) {
-            return Py::Dict(element.Map());
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
+        if (element.isMap()) {
+            return CyPy_ElementMap::wrap(element.Map());
+//            return Py::Dict(element.Map());
         } else {
             return defaultValue;
         }
@@ -330,7 +330,29 @@ template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_map(const Py::Tuple& args)
 {
     return this->hasPropertyFromFirstArg(args, [](const Atlas::Message::Element& element) {
-        return element.isString();
+        return element.isMap();
+    });
+}
+
+
+template<typename TValue, typename TPythonClass>
+Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_prop_list(const Py::Tuple& args)
+{
+    return this->getPropertyFromFirstArg(args, [](const Atlas::Message::Element& element, Py::Object defaultValue) -> Py::Object {
+        if (element.isList()) {
+            return CyPy_ElementList::wrap(element.List());
+//            return Py::Dict(element.Map());
+        } else {
+            return defaultValue;
+        }
+    });
+}
+
+template<typename TValue, typename TPythonClass>
+Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::has_prop_list(const Py::Tuple& args)
+{
+    return this->hasPropertyFromFirstArg(args, [](const Atlas::Message::Element& element) {
+        return element.isList();
     });
 }
 

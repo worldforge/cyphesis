@@ -41,7 +41,7 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
 {
     //The owning element. Reference count is incremented at construction and decremented at destruction.
     CyPy_ElementList* m_element;
-    Atlas::Message::ListType::const_iterator iter;
+    Atlas::Message::ListType::const_iterator iterator;
 
     CyPy_ListElementIterator(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
         : PythonClass(self, args, kwds), m_element(nullptr)
@@ -53,7 +53,7 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
     CyPy_ListElementIterator(Py::PythonClassInstance* self, CyPy_ElementList* value)
         : PythonClass(self),
           m_element(value),
-          iter(m_element->m_value.begin())
+          iterator(m_element->m_value.begin())
     {
         m_element->self().increment_reference_count();
     }
@@ -63,12 +63,17 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
         m_element->self().decrement_reference_count();
     }
 
-    PyObject* iternext()
+    Py::Object iter() override
     {
-        if (iter != m_element->m_value.end()) {
-            auto wrapper = CyPy_Element::wrap(*iter);
+        return self();
+    }
+
+    PyObject* iternext() override
+    {
+        if (iterator != m_element->m_value.end()) {
+            auto wrapper = CyPy_Element::wrap(*iterator);
             wrapper.increment_reference_count();
-            *(iter)++;
+            *(iterator)++;
             return wrapper.ptr();
         } else {
             return nullptr;
@@ -79,7 +84,7 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
     {
         behaviors().name("Element list iterator");
         behaviors().doc("");
-        behaviors().supportIter(Py::PythonType::support_iter_iternext);
+        behaviors().supportIter(Py::PythonType::support_iter_iter|Py::PythonType::support_iter_iternext);
 
         behaviors().readyType();
 
@@ -91,6 +96,73 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
         auto obj = extension_object_new(type_object(), nullptr, nullptr);
         reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_ListElementIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
         return Py::PythonClassObject<CyPy_ListElementIterator>(obj);
+    }
+
+
+};
+
+struct CyPy_MapElementIterator : Py::PythonClass<CyPy_MapElementIterator>
+{
+    //The owning element. Reference count is incremented at construction and decremented at destruction.
+    CyPy_ElementMap* m_element;
+    Atlas::Message::MapType::const_iterator iterator;
+
+    CyPy_MapElementIterator(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+        : PythonClass(self, args, kwds), m_element(nullptr)
+    {
+        throw Py::RuntimeError("Can not instantiate directly.");
+    }
+
+
+    CyPy_MapElementIterator(Py::PythonClassInstance* self, CyPy_ElementMap* value)
+        : PythonClass(self),
+          m_element(value),
+          iterator(m_element->m_value.begin())
+    {
+        m_element->self().increment_reference_count();
+    }
+
+    ~CyPy_MapElementIterator() override
+    {
+        m_element->self().decrement_reference_count();
+    }
+
+    Py::Object iter() override
+    {
+        return self();
+    }
+
+
+    PyObject* iternext() override
+    {
+        if (iterator != m_element->m_value.end()) {
+            auto wrapper = CyPy_Element::wrap(iterator->second);
+            auto key = Py::String(iterator->first);
+
+            Py::TupleN tuple(key, wrapper);
+            tuple.increment_reference_count();
+
+            *(iterator)++;
+            return tuple.ptr();
+        } else {
+            return nullptr;
+        }
+    }
+
+    static void init_type()
+    {
+        behaviors().name("Element map iterator");
+        behaviors().doc("");
+        behaviors().supportIter(Py::PythonType::support_iter_iter | Py::PythonType::support_iter_iternext);
+
+        behaviors().readyType();
+    }
+
+    static Py::PythonClassObject<CyPy_MapElementIterator> wrap(CyPy_ElementMap* value)
+    {
+        auto obj = extension_object_new(type_object(), nullptr, nullptr);
+        reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_MapElementIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
+        return Py::PythonClassObject<CyPy_MapElementIterator>(obj);
     }
 
 
@@ -255,7 +327,12 @@ void CyPy_ElementMap::init_type()
     behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
                                    | Py::PythonType::support_mapping_subscript);
 
+    PYCXX_ADD_NOARGS_METHOD(items, items, "");
+
     behaviors().readyType();
+
+    CyPy_MapElementIterator::init_type();
+
 }
 
 
@@ -318,60 +395,10 @@ int CyPy_ElementMap::mapping_ass_subscript(const Py::Object& key, const Py::Obje
     return 0;
 }
 
-//
-//CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds) :
-//    WrapperBase(self, args, kwds)
-//{
-//    if (args.size() > 1) {
-//        throw Py::TypeError("Must take max one argument.");
-//    }
-//    if (args.size()) {
-//        m_value = asElement(args.front());
-//    }
-//}
-//
-//CyPy_Element::CyPy_Element(Py::PythonClassInstance* self, Atlas::Message::Element element)
-//    : WrapperBase(self, std::move(element))
-//{
-//}
-//
-//void CyPy_Element::init_type()
-//{
-//    behaviors().name("Element");
-//    behaviors().doc("");
-//
-//    behaviors().supportRepr();
-//    behaviors().supportRichCompare();
-//
-//    behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
-//                                   | Py::PythonType::support_mapping_subscript);
-//    behaviors().supportIter(Py::PythonType::support_iter_iter);
-//    behaviors().supportSequenceType(Py::PythonType::support_sequence_length
-//                                    | Py::PythonType::support_sequence_contains
-//                                    | Py::PythonType::support_sequence_item
-//                                    | Py::PythonType::support_sequence_ass_item
-//                                    | Py::PythonType::support_sequence_repeat
-//                                    | Py::PythonType::support_sequence_slice
-//                                    | Py::PythonType::support_sequence_inplace_concat
-//                                    | Py::PythonType::support_sequence_inplace_repeat);
-//
-//    PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
-//    PYCXX_ADD_NOARGS_METHOD(pythonize, pythonize, "");
-//
-//    behaviors().readyType();
-//
-//    CyPy_ListElementIterator::init_type();
-//}
-//
-//Py::Object CyPy_Element::get_name()
-//{
-//    return Py::String("obj");
-//}
-//
-//Py::Object CyPy_Element::pythonize()
-//{
-//    return asPyObject(m_value, true);
-//}
+Py::Object CyPy_ElementMap::items()
+{
+    return CyPy_MapElementIterator::wrap(this);
+}
 
 Py::Object CyPy_Element::mapAsPyObject(const MapType& map, bool useNativePythonType)
 {
@@ -418,66 +445,6 @@ Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj, bool use
     return Py::None();
 }
 
-//Py::Object CyPy_Element::repr()
-//{
-//    if (m_value.isString()) {
-//        return Py::String(m_value.String());
-//    }
-//    return Py::String(String::compose("<%1 object at %2>(%3)", type_object()->tp_name, this, debug_tostring(m_value)));
-//}
-
-//
-//Py::Object CyPy_Element::rich_compare(const Py::Object& other, int op)
-//{
-//    if (m_value.isFloat()) {
-//        if (op == Py_GT && other.isNumeric()) {
-//            return Py::Boolean(m_value.Float() > Py::Float(other));
-//        } else if (op == Py_GE && other.isNumeric()) {
-//            return Py::Boolean(m_value.Float() >= Py::Float(other));
-//        } else if (op == Py_LT && other.isNumeric()) {
-//            return Py::Boolean(m_value.Float() < Py::Float(other));
-//        } else if (op == Py_LE && other.isNumeric()) {
-//            return Py::Boolean(m_value.Float() <= Py::Float(other));
-//        }
-//    } else if (m_value.isInt()) {
-//        if (op == Py_GT && other.isNumeric()) {
-//            return Py::Boolean(m_value.Int() > Py::Long(other));
-//        } else if (op == Py_GE && other.isNumeric()) {
-//            return Py::Boolean(m_value.Int() >= Py::Long(other));
-//        } else if (op == Py_LT && other.isNumeric()) {
-//            return Py::Boolean(m_value.Int() < Py::Long(other));
-//        } else if (op == Py_LE && other.isNumeric()) {
-//            return Py::Boolean(m_value.Int() <= Py::Long(other));
-//        }
-//    }
-//
-//
-//    bool equal = false;
-//    if ((op != Py_EQ) && (op != Py_NE)) {
-//        throw Py::NotImplementedError("MessageElement object can only be check for == or !=, or <, <=, > and >= for ints and floats.");
-//    }
-//    if (m_value.isString()) {
-//        if (other.isString() &&
-//            m_value.asString() == Py::String(other).as_string()) {
-//            equal = true;
-//        }
-//    } else if (m_value.isInt()) {
-//        if (other.isLong() &&
-//            m_value.asInt() == Py::Long(other).as_long()) {
-//            equal = true;
-//        }
-//    } else if (m_value.isFloat()) {
-//        if (other.isFloat()
-//            && m_value.asFloat() == Py::Float(other).as_double()) {
-//            equal = true;
-//        }
-//    }
-//
-//    if ((equal && op == Py_EQ) || (!equal && op == Py_NE)) {
-//        return Py::True();
-//    }
-//    return Py::False();
-//}
 
 ListType CyPy_Element::listAsElement(const Py::List& list)
 {
@@ -576,14 +543,3 @@ Py::Object CyPy_Element::wrap(Atlas::Message::Element value)
         return CyPy_ElementMap::wrap(value.Map());
     }
 }
-
-
-
-//
-//void CyPy_Element::checkIsList()
-//{
-//    if (!m_value.isList()) {
-//        throw Py::RuntimeError("Element is not of List type.");
-//    }
-//
-//}
