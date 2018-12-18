@@ -7,7 +7,7 @@ from mind.goals.common.misc_goal import keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal
 import entity_filter
-from atlas import *
+from atlas import Operation, Entity
 
 
 class keep_livestock(keep):

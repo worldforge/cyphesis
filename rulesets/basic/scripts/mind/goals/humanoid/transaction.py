@@ -10,6 +10,7 @@ from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
 from physics import Point3D
 from rules import Location
+from atlas import Operation, Entity
 
 
 # class sell_things(add_unique_goal_by_perception):

@@ -75,7 +75,6 @@ class NPCMind(ai.Mind):
         self.transfers = []
         self.trigger_goals = {}
         self.jitter = random.uniform(-0.1, 0.1)
-        # ???self.debug=debug(self.name+".mind.log")
         self.message_queue = None
         # This is going to be really tricky
         self.map.add_hooks_append("add_map")
@@ -89,7 +88,9 @@ class NPCMind(ai.Mind):
         self.print_debug('Goals updated.')
         # For now just clear and recreate all goals when _goals changes. We would probably rather only recreate those that have changed though.
         goals = entity.props._goals
-        self.goals.clear()
+        # First clear all goals
+        while len(self.goals):
+            self.remove_goal(self.goals[0])
         if goals:
             for goal_element in goals:
                 if hasattr(goal_element, 'class'):
@@ -110,6 +111,8 @@ class NPCMind(ai.Mind):
 
                         if instance:
                             self.insert_goal(instance)
+                        else:
+                            self.print_debug('Could not create goal from data\n {}'.format(str(goal_element)))
                     except:
                         self.print_debug('Error when creating goal from data\n {}'.format(str(goal_element)))
                         raise
@@ -123,7 +126,7 @@ class NPCMind(ai.Mind):
                 object = knowledge_element
 
                 if predicate == 'location':
-                    #If it's just a string it's a reference to an entity id (with zero position).
+                    # If it's just a string it's a reference to an entity id (with zero position).
                     if isinstance(object, str):
                         entity_id_string = object
                         # A prefix of "$eid:" denotes an entity id; it should be stripped first.
@@ -196,7 +199,6 @@ class NPCMind(ai.Mind):
         # print "Map update",obj
         foo_lst = self.things.get('Foo', [])
         for foo in foo_lst[:]:  # us copy in loop, because it might get modified
-            print("Oh MY GOD! We have a Foo thing!")
             if foo.id == obj.id:
                 self.remove_thing(foo)
                 self.add_thing(obj)
@@ -225,13 +227,7 @@ class NPCMind(ai.Mind):
         move_tick_op.set_args([Entity(name="move")])
         move_tick_op.set_future_seconds(0.2)
 
-        # Setup a tick operation for periodical persistence of thoughts to the server
-        send_thoughts_tick_op = Operation("tick")
-        think_tick_op.set_to(self.id)
-        send_thoughts_tick_op.set_args([Entity(name="persistthoughts")])
-        send_thoughts_tick_op.set_future_seconds(5)
-
-        return Operation("look") + think_tick_op + move_tick_op + send_thoughts_tick_op
+        return Operation("look") + think_tick_op + move_tick_op
 
     def tick_operation(self, op):
         """periodically reassess situation
@@ -258,17 +254,6 @@ class NPCMind(ai.Mind):
                     result = self.message_queue + result
                     self.message_queue = None
                 return op_tick + result
-            elif args[0].name == "persistthoughts":
-                # It's a periodic tick for sending thoughts to the server (so that they can be persisted)
-                # TODO: only send thoughts when they have changed.
-                op_tick = Operation("tick")
-                # just copy the args from the previous tick
-                op_tick.set_args(args)
-                # Persist the thoughts to the server at 30 second intervals.
-                op_tick.set_future_seconds(30)
-                op_tick.set_to(self.id)
-                result = self.commune_all_thoughts(op, "persistthoughts")
-                return op_tick + result
 
     ########## Sight operations
     def sight_create_operation(self, op):
@@ -289,6 +274,7 @@ class NPCMind(ai.Mind):
             self.add_thing(obj)
             if op.to != self.id:
                 self.transfers.append((op.from_, obj.id))
+            # TODO: remove this, we should do bartering in a different way
             if obj.type[0] == "coin" and op.from_ != self.id:
                 self.money_transfers.append([op.from_, 1])
                 return Operation("imaginary", Entity(description="accepts"))
@@ -344,23 +330,12 @@ class NPCMind(ai.Mind):
 
         # It's important that the order of the goals is retained
         for goal in self.goals:
-            goal_string = ""
             if hasattr(goal, "str"):
                 goal_string = goal.str
             else:
                 goal_string = goal.__class__.__name__
 
             thoughts.append(Entity(goal=goal_string, id=goal_string))
-
-        for (trigger, goallist) in sorted(self.trigger_goals.items()):
-            for goal in goallist:
-                goal_string = ""
-                if hasattr(goal, "str"):
-                    goal_string = goal.str
-                else:
-                    goal_string = goal.__class__.__name__
-
-                thoughts.append(Entity(goal=goal_string, id=goal_string))
 
         set_op.set_args(thoughts)
         think_op.set_args([set_op])
@@ -369,23 +344,10 @@ class NPCMind(ai.Mind):
         res = res + think_op
         return res
 
-    def find_goal(self, definition):
-        """Searches for a goal, with the specified id"""
-        # Goals are either stored in "self.goals" or "self.trigger_goals", so we need
-        # to check both
-        for goal in self.goals:
-            if goal.str == definition:
-                return goal
-        for (trigger, goallist) in sorted(self.trigger_goals.items()):
-            for goal in goallist:
-                if goal.str == definition:
-                    return goal
-        return None
-
     def think_look_operation(self, op):
         """Sends back information about goals. This is mainly to be used for debugging minds.
         If no arguments are specified all goals will be reported, else a match will be done
-        using 'id'.
+        using 'index'.
         The information will be sent back as a Think operation wrapping an Info operation.
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name.
@@ -396,16 +358,13 @@ class NPCMind(ai.Mind):
 
         if not op.get_args():
             # get all goals
-            for goal in self.goals:
-                goal_infos.append(Entity(id=goal.str, report=goal.report()))
-            for (trigger, goallist) in sorted(self.trigger_goals.items()):
-                for goal in goallist:
-                    goal_infos.append(Entity(id=goal.str, report=goal.report()))
+            for (index, goal) in enumerate(self.goals):
+                goal_infos.append(Entity(index=index, report=goal.report()))
         else:
             for arg in op.get_args():
-                goal = self.find_goal(arg.id)
+                goal = self.goals[arg.index]
                 if goal and goal is not None:
-                    goal_infos.append(Entity(id=goal.str, report=goal.report()))
+                    goal_infos.append(Entity(index=arg.index, report=goal.report()))
 
         goal_info_op.set_args(goal_infos)
         think_op.set_refno(op.get_serialno())
@@ -465,62 +424,6 @@ class NPCMind(ai.Mind):
         res = res + think_op
         return res
 
-    def think_set_operation(self, op):
-        """Sets a new thought, or updates an existing one
-        
-        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
-
-        # If the Set op has the name "peristthoughts" it's a Set op sent to ourselves meant for the server
-        # (so it can persist the thoughts in the database). We should ignore it.
-        if op.get_name() == "persistthoughts":
-            return
-
-        args = op.get_args()
-        for thought in args:
-            # Check if there's a 'predicate' set; if so handle it as knowledge.
-            # Else check if it's things that we know we own or ought to own.
-            if hasattr(thought, "predicate") == False:
-                if hasattr(thought, "things"):
-                    things = thought.things
-                    for (id, thinglist) in list(things.items()):
-                        # We can't iterate directly over the list, as it's of type atlas.Message; we must first "pythonize" it.
-                        # This should be reworked into a better way.
-                        thinglist = thinglist.pythonize()
-                        for thingId in thinglist:
-                            thingId = str(thingId)
-                            thing = self.map.get(thingId)
-                            if thing and thing.type[0]:
-                                self.add_thing(thing)
-                            else:
-                                self.pending_things.append(thingId)
-                elif hasattr(thought, "pending_things"):
-                    for id in thought.pending_things:
-                        self.pending_things.append(str(id))
-
-            else:
-                subject = thought.subject
-                predicate = thought.predicate
-                object = thought.object
-
-                # Handle locations.
-                if len(object) > 0 and object[0] == '(':
-                    # CHEAT!: remove eval
-                    locdata = eval(object)
-                    # If only coords are supplied, it's handled as a location within the same parent space as ourselves
-                    if (len(locdata) == 3):
-                        loc = self.entity.location.copy()
-                        loc.pos = Vector3D(list(locdata))
-                    elif (len(locdata) == 2):
-                        entity_id_string = locdata[0]
-                        # A prefix of "$eid:" denotes an entity id; it should be stripped first.
-                        if entity_id_string.startswith("$eid:"):
-                            entity_id_string = entity_id_string[5:]
-                        where = self.map.get_add(entity_id_string)
-                        coords = Point3D(list(locdata[1]))
-                        loc = Location(where, coords)
-                    self.add_knowledge(predicate, subject, loc)
-                else:
-                    self.add_knowledge(predicate, subject, object)
 
     ########## Talk operations
     def admin_sound(self, op):
@@ -845,76 +748,27 @@ class NPCMind(ai.Mind):
         dictlist.remove_value(self.things, thing)
 
     ########## goals
-    def add_goal(self, str_goal):
-        """add goal..."""
-        print('Adding goal: ' + str_goal)
-        try:
-            goal = self.create_goal(str_goal)
-        except BaseException as e:
-            print(("Error when adding goal: " + str(e)))
-            return
 
-        self.insert_goal(goal)
-        return goal
-
-    def insert_goal(self, goal, id=None):
-        if not id:
-            self.goal_id_counter = self.goal_id_counter + 1
-            id = str(self.goal_id_counter)
-
-        goal.id = id
+    def insert_goal(self, goal):
+        # If it's a dynamic goal we need to add it to the trigger_goals
         if hasattr(goal, "trigger"):
             dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
-            return
-        for i in range(len(self.goals) - 1, -1, -1):
-            if self.cmp_goal_importance(self.goals[i], goal):
-                self.goals.insert(i + 1, goal)
-                return
-        self.goals.insert(0, goal)
-
-    def update_goal(self, goal, str_goal):
-        try:
-            new_goal = self.create_goal(goal.key, str_goal)
-        except BaseException as e:
-            print(("Error when updating goal: " + str(e)))
-            return
-
-        new_goal.id = goal.id
-        # We need to handle the case where a goal which had a trigger is replaced by one
-        # that hasn't, and the opposite
-        if hasattr(goal, "trigger"):
-            dictlist.remove_value(self.trigger_goals, goal)
-            self.insert_goal(new_goal, goal.id)
-        else:
-            if hasattr(new_goal, "trigger"):
-                self.goals.remove(goal)
-                self.insert_goal(new_goal, goal.id)
-            else:
-                index = self.goals.index(goal)
-                self.goals[index] = new_goal
-
-    def create_goal(self, str_goal):
-        # CHEAT!: remove eval (this and later)
-        goal = eval("mind.goals." + str_goal)
-        if const.debug_thinking:
-            goal.debug = 1
-        goal.str = str_goal
-        return goal
+        self.goals.append(goal)
 
     def remove_goal(self, goal):
         """Removes a goal."""
         self.print_debug('Removing goal')
         if hasattr(goal, "trigger"):
             dictlist.remove_value(self.trigger_goals, goal)
-        else:
-            self.goals.remove(goal)
+        self.goals.remove(goal)
 
     def fulfill_goals(self, time):
         "see if all goals are fulfilled: if not try to fulfill them"
         for g in self.goals[:]:
+            if g is None:
+                continue
             if g.irrelevant:
-                self.print_debug('Removing irrelevant goal')
-                self.goals.remove(g)
+                # Irrelevant goals should be kept, to match what's in _goals.
                 continue
             # Don't process goals which have had three errors in them.
             # The idea is to allow for some leeway in goal processing, but to punish repeat offenders.

@@ -11,8 +11,10 @@ from common import log
 ## \brief Base class for all goals
 ## \ingroup PythonGoals
 class Goal:
-    def __init__(self, desc="some goal", fulfilled=None, subgoals=[],
+    def __init__(self, desc="some goal", fulfilled=None, subgoals=None,
                  validity=None, time=None, debug=0):
+        if subgoals is None:
+            subgoals = []
         self.desc = desc
         # mind sets these:
         # self.str
@@ -20,7 +22,7 @@ class Goal:
         if fulfilled:
             self.fulfilled = fulfilled
         else:
-            self.fulfilled = lambda me: 0  # false
+            self.fulfilled = lambda me: False
 
         # If no validity function is supplied the goal is always considered valid
         if validity:
@@ -35,17 +37,19 @@ class Goal:
         self.vars = []
         # keeps track of whether the goal is fulfilled or not
         # this is mainly of use for inspection and diagnosis
-        self.is_fulfilled = 0
+        self.is_fulfilled = False
         # any subgoal/function/method can set this and
         # it's checked at start of check_goal_rec
         # and NPCMind.py fulfill_goals uses it too to remove goals from list
-        self.irrelevant = 0
+        self.irrelevant = False
         # Tracks the number of errors this goal (or any of its subgoals) has produced.
         # This is used by NPC code to remove troublesome goals from the processing
         self.errors = 0
         # If an error has occurred, the description of the last one is stored here.
         # This is mainly of use for debugging.
         self.lastError = ""
+
+        self.lastProcessedGoals = None
 
     def __repr__(self):
         return self.info()
@@ -73,7 +77,7 @@ class Goal:
         if len(debugInfo) != 0:
             # Keep a copy of the debug info for the "report" method.
             self.lastProcessedGoals = debugInfo
-        if res != None:
+        if res is not None:
             info_ent = Entity(op=res, description=debugInfo)
             return res + Operation("goal_info", info_ent)
 
@@ -99,7 +103,7 @@ class Goal:
         debugInfo = debugInfo + "." + self.info()
         # Iterate over all subgoals, but break if any goal returns an operation
         for sg in self.subgoals:
-            if sg == None:
+            if sg is None:
                 continue
             if type(sg) == FunctionType or type(sg) == MethodType:
                 if self.debug:
@@ -108,17 +112,21 @@ class Goal:
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: aft function: " + repr(sg) + " " + repr(res))
                 debugInfo = debugInfo + "." + sg.__name__ + "()"
-                if res != None:
+                if res is not None:
                     # If the function generated an op, stop iterating here and return
                     return res, debugInfo
             else:
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: bef sg: " + sg.desc)
+                # If the subgoal is irrelevant, remove it
+                if sg.irrelevant:
+                    self.subgoals.remove(sg)
+                    continue
                 res, debugInfo = sg.check_goal_rec(me, time, depth + 1, debugInfo)
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: aft sg: " + sg.desc + ", Result: " + str(res))
                 # If the subgoal generated an op, stop iterating here and return
-                if res != None:
+                if res is not None:
                     return res, debugInfo
         return res, debugInfo
 
@@ -126,27 +134,24 @@ class Goal:
         """provides extended information about the goal,
         as well as all subgoals"""
         name = self.__class__.__name__
-        map = {}
-        map["name"] = name
-        map["description"] = self.desc
-        map["fulfilled"] = self.is_fulfilled
-        if hasattr(self, "lastProcessedGoals"):
-            map["lastProcessedGoals"] = self.lastProcessedGoals
+        report = {"name": name, "description": self.desc, "fulfilled": self.is_fulfilled}
+        if self.lastProcessedGoals:
+            report["lastProcessedGoals"] = self.lastProcessedGoals
 
         subgoals = []
         for sg in self.subgoals:
             if type(sg) != FunctionType and type(sg) != MethodType and sg is not None:
                 subgoals.append(sg.report())
         if len(subgoals) > 0:
-            map["subgoals"] = subgoals
+            report["subgoals"] = subgoals
 
         if len(self.vars) > 0:
             variables = {}
             for v in self.vars:
                 variables[v] = str(getattr(self, v))
-            map["variables"] = variables
+            report["variables"] = variables
 
         if self.errors > 0:
-            map["errors"] = self.errors
-            map["lastError"] = self.lastError
-        return map
+            report["errors"] = self.errors
+            report["lastError"] = self.lastError
+        return report

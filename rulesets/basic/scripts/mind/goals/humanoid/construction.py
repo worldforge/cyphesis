@@ -1,6 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
+from atlas import Operation, Entity
 from physics import *
 import entity_filter
 from mind.goals.common.misc_goal import *
