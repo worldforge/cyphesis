@@ -38,6 +38,9 @@ template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value)
     : WrapperBase<TValue, TPythonClass>::WrapperBase(self, std::move(value))
 {
+        if (!this->m_value) {
+            log(WARNING, "Created a Python Entity wrapper with null entity, this should not happen.");
+        }
 }
 
 
