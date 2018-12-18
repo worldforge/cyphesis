@@ -326,6 +326,7 @@ void CyPy_ElementMap::init_type()
 
     behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
                                    | Py::PythonType::support_mapping_subscript);
+    behaviors().supportSequenceType(Py::PythonType::support_sequence_contains);
 
     PYCXX_ADD_NOARGS_METHOD(items, items, "");
 
@@ -398,6 +399,15 @@ int CyPy_ElementMap::mapping_ass_subscript(const Py::Object& key, const Py::Obje
 Py::Object CyPy_ElementMap::items()
 {
     return CyPy_MapElementIterator::wrap(this);
+}
+
+int CyPy_ElementMap::sequence_contains(const Py::Object& key)
+{
+    auto keyStr = verifyString(key);
+    if (m_value.find(keyStr) != m_value.end()) {
+        return 1;
+    }
+    return 0;
 }
 
 Py::Object CyPy_Element::mapAsPyObject(const MapType& map, bool useNativePythonType)
