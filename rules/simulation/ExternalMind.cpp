@@ -97,7 +97,7 @@ void ExternalMind::externalOperation(const Operation& op, Link& link)
 {
     //Any operations coming from the mind with a refno is a response to a previously Relayed op, and need to be handled.
     if (!op->isDefaultRefno()) {
-        externalRelayedOperation(op, link);
+        externalRelayedOperation(op);
     } else {
         if (op->getClassNo() == Atlas::Objects::Operation::GET_NO) {
             OpVector res;
@@ -225,7 +225,7 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
     }
 }
 
-void ExternalMind::externalRelayedOperation(const Operation& op, Link& link)
+void ExternalMind::externalRelayedOperation(const Operation& op)
 {
     //We received an op with a refno from the mind, it's a response to a previously relayed op.
     auto I = m_relays.find(op->getRefno());
@@ -239,7 +239,9 @@ void ExternalMind::externalRelayedOperation(const Operation& op, Link& link)
             relayOp->setRefno(origOp->getSerialno()); //Set refno to match serial no.
             relayOp->setId(relay.from_id);
             relayOp->setArgs1(op);
+            m_entity.sendWorld(relayOp);
         }
+        m_relays.erase(I);
     }
 
 }

@@ -72,7 +72,7 @@ class ExternalMind : public Router
         void purgeEntity(const LocatedEntity& ent, bool forceDelete = false);
 
         void RelayOperation(const Operation& op, OpVector& res);
-        void externalRelayedOperation(const Operation& op, Link& link);
+        void externalRelayedOperation(const Operation& op);
 
     public:
 
