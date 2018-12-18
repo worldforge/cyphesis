@@ -20,7 +20,8 @@ class Knowledge:
         else:
             if what not in self.knowings:
                 return None
-            return self.knowings[what][key]
+            # Return None if value does not exist.
+            return self.knowings[what].get(key)
 
     def __str__(self):
         s = "<know: " + str(self.knowings)

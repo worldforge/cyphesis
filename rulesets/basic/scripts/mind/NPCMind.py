@@ -121,6 +121,7 @@ class NPCMind(ai.Mind):
         self.print_debug('Knowledge updated.')
         if entity.has_prop_map('_knowledge'):
             knowledge = entity.get_prop_map('_knowledge')
+
             for key, knowledge_element in knowledge.items():
                 (predicate, subject) = key.split(':')
                 object = knowledge_element
@@ -139,7 +140,7 @@ class NPCMind(ai.Mind):
                             loc = self.entity.location.copy()
                             loc.pos = Vector3D(object)
                             object = loc
-                        elif len(object == 4):
+                        elif len(object) == 4:
                             entity_id_string = object[0]
                             # A prefix of "$eid:" denotes an entity id; it should be stripped first.
                             if entity_id_string.startswith("$eid:"):
@@ -148,6 +149,12 @@ class NPCMind(ai.Mind):
                             object = Location(where, Vector3D(object[:3]))
 
                 self.add_knowledge(predicate, subject, object)
+
+            # Check if there's an "origin" location, if not add one.
+            if not self.get_knowledge("location", "origin"):
+                # TODO: store in server
+                self.print_debug('Adding origin location.')
+                self.add_knowledge("location", "origin", self.entity.location.copy())
 
 
     def print_debug(self, message):
