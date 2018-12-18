@@ -24,22 +24,17 @@ class add_unique_goal(DynamicGoal):
            and finally we execute goal"""
         if not self.check_event(me, original_op, op):
             return
-        goal = self.find_goal(me, self.goal_class)
-        if not goal:
+        if len(self.subgoals) == 0:
             goal = self.make_goal_instance(me, self.goal_class, original_op, op)
             if goal:
                 self.add_goal(me, goal)
-        if goal:
-            return goal.check_goal(me, me.time)
-
-    def find_goal(self, me, goal_class):
-        for goal in me.goals:
-            if goal.__class__ == goal_class:
-                return goal
+        if len(self.subgoals) != 0:
+            return self.subgoals[0].check_goal(me, me.time)
 
     def add_goal(self, me, goal):
-        """add goal into mind"""
-        me.insert_goal(goal)
+        # """add goal into mind"""
+        # me.insert_goal(goal)
+        self.subgoals.append(goal)
 
     def make_goal_instance(self, me, goal_class, original_op, op):
         # override this!
