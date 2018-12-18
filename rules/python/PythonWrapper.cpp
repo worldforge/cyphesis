@@ -84,7 +84,7 @@ void PythonWrapper::hook(const std::string& function,
     try {
         auto ret = m_wrapper.callMemberFunction(function, Py::TupleN(wrapper));
     } catch (const Py::BaseException& py_ex) {
-        log(ERROR, "Could not call hook function " + function + " on " + wrapper.type().as_string());
+        log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, wrapper.type().as_string(), entity->describeEntity()));
         if (PyErr_Occurred()) {
             PyErr_Print();
         }
