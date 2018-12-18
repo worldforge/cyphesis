@@ -208,7 +208,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         }
 
 
-        auto* prop = ent->modProperty(name);
+        auto* prop = ent->modProperty(name, val);
         if (!prop) {
             prop = PropertyManager::instance().addProperty(name, val.getType());
             prop->install(ent, name);
