@@ -19,6 +19,22 @@
                     <string>buzzard</string>
                 </list>
             </map>
+            <map name="_goals">
+                <list name="default">
+                    <map>
+                        <string name="class">mind.goals.common.move.roam</string>
+                        <map name="params">
+                            <float name="radius">30</float>
+                            <list name="locations">
+                                <string>origin</string>
+                            </list>
+                        </map>
+                    </map>
+                    <map>
+                        <string name="class">mind.goals.common.misc_goal.Peck</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">chicken</string>
         <string name="objtype">class</string>

@@ -464,7 +464,7 @@ class forage(feed):
 
 ############################ PECK ###########################################
 
-class peck(feed):
+class Peck(feed):
     """Peck at food in a given location."""
 
     def __init__(self):
