@@ -57,6 +57,9 @@ class MemEntity : public LocatedEntity {
     PropertyBase * setAttr(const std::string & name, const Atlas::Message::Element & attr) override;
 
     void destroy() override;
+
+    const PropertyBase * getProperty(const std::string & name) const override;
+
 };
 
 #endif // RULESETS_MEM_ENTITY_H

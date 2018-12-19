@@ -24,6 +24,7 @@
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/Entity.h>
+#include <common/Property.h>
 
 const TypeNode* SimpleTypeStore::getType(const std::string& parent) const
 {
@@ -56,6 +57,9 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
         return nullptr;
     }
     auto type = std::make_unique<TypeNode>(child, obj);
+
+    readAttributesIntoType(*type, obj);
+
     if (!parent.empty()) {
         I = m_types.find(parent);
         if (I == Iend) {
@@ -81,6 +85,32 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
 
     auto result = m_types.insert(std::make_pair(child, std::move(type)));
     return result.first->second.get();
+}
+
+void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj) {
+    // Store the default attribute for entities create by this rule.
+    if (obj->hasAttr("attributes")) {
+        auto attributesElement = obj->getAttr("attributes");
+        if (attributesElement.isMap()) {
+
+            Atlas::Message::MapType attributes;
+
+            auto& attrs = attributesElement.Map();
+            auto Kend = attrs.end();
+            for (auto K = attrs.begin(); K != Kend; ++K) {
+                if (!K->second.isMap()) {
+                    continue;
+                }
+                auto& attr = K->second.asMap();
+                auto L = attr.find("default");
+                if (L != attr.end()) {
+                    attributes.emplace(K->first, L->second);
+                }
+            }
+            type.addProperties(attributes);
+        }
+    }
+
 }
 
 SimpleTypeStore::SimpleTypeStore() = default;

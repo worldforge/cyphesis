@@ -21,7 +21,10 @@
 #include "rules/BBoxProperty.h"
 #include "common/PropertyFactory.h"
 #include "common/PropertyFactory_impl.h"
-
+using Atlas::Message::Element;
+using Atlas::Message::ListType;
+using Atlas::Message::MapType;
+using Atlas::Objects::Root;
 AiClientPropertyManager::AiClientPropertyManager()
 {
     PropertyManager::installFactory(BBoxProperty::property_atlastype, std::make_unique<PropertyFactory<BBoxProperty>>());
@@ -30,11 +33,24 @@ AiClientPropertyManager::AiClientPropertyManager()
 PropertyBase* AiClientPropertyManager::addProperty(const std::string& name,
                                                    int type)
 {
-    assert(!name.empty());
-    assert(name != "objtype");
     PropertyBase* p = nullptr;
     auto I = m_propertyFactories.find(name);
-    if (I != m_propertyFactories.end()) {
+    if (I == m_propertyFactories.end()) {
+        switch (type) {
+            case Element::TYPE_INT:
+                p = new Property<int>;
+                break;
+            case Element::TYPE_FLOAT:
+                p = new Property<double>;
+                break;
+            case Element::TYPE_STRING:
+                p = new Property<std::string>;
+                break;
+            default:
+                p = new SoftProperty;
+                break;
+        }
+    } else {
         p = I->second->newProperty();
     }
     return p;

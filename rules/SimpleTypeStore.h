@@ -36,6 +36,8 @@ class SimpleTypeStore : public TypeStore
 
         std::map<std::string, std::unique_ptr<TypeNode>> m_types;
 
+        void readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj);
+
 };
 
 

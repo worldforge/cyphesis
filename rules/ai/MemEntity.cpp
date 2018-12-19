@@ -21,7 +21,7 @@
 #include <rules/ScaleProperty.h>
 #include "MemEntity.h"
 #include "../SolidProperty.h"
-
+#include "common/TypeNode.h"
 
 static const bool debug_flag = false;
 
@@ -37,6 +37,21 @@ void MemEntity::externalOperation(const Operation & op, Link &)
 
 void MemEntity::operation(const Operation &, OpVector &)
 {
+}
+
+const PropertyBase * MemEntity::getProperty(const std::string & name) const
+{
+    auto I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second;
+    }
+    if (m_type != nullptr) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return I->second;
+        }
+    }
+    return nullptr;
 }
 
 void MemEntity::destroy()

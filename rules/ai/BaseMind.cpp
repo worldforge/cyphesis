@@ -55,6 +55,7 @@ BaseMind::BaseMind(const std::string& mindId, const std::string& entityId) :
     m_time(new WorldTime()),
     m_serialNoCounter(0)
 {
+    m_typeResolver->m_typeProviderId = mindId;
 }
 
 BaseMind::~BaseMind() = default;
