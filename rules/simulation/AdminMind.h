@@ -36,6 +36,8 @@ class AdminMind : public ExternalMind
 
         void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
 
+        void GetOperation(const Operation& smartPtr, OpVector& res) override;
+
 };
 
 

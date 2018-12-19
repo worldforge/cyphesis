@@ -36,6 +36,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
+#include <common/Inheritance.h>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Delete;
@@ -122,3 +123,27 @@ void AdminMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
     ent->setAttr("admin", 1);
 }
 
+void AdminMind::GetOperation(const Operation& op, OpVector& res)
+{
+    if (!op->getArgs().empty()) {
+        auto arg = op->getArgs().front();
+
+        if (!arg->isDefaultId()) {
+            auto id = arg->getId();
+
+            const Root& o = Inheritance::instance().getClass(id, Visibility::PRIVATE);
+            if (!o.isValid()) {
+                clientError(op, String::compose("Unknown type definition for \"%1\" "
+                                                "requested", id), res);
+                return;
+            }
+            Atlas::Objects::Operation::Info info;
+            info->setArgs1(o);
+            if (!op->isDefaultSerialno()) {
+                info->setRefno(op->getSerialno());
+            }
+
+            res.push_back(info);
+        }
+    }
+}
