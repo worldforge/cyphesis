@@ -24,15 +24,15 @@
 #include "MemEntity.h"
 #include "../../modules/Ref.h"
 
-#include "../../../../../opt/x86_64_debug/include/Atlas-C++-0.7/Atlas/Objects/ObjectsFwd.h"
-#include "../../../../../opt/x86_64_debug/include/Atlas-C++-0.7/Atlas/Message/Element.h"
+#include <Atlas/Objects/ObjectsFwd.h>
+#include <Atlas/Message/Element.h>
 
-#include "../../../../../opt/x86_64_debug/include/wfmath-1.0/wfmath/const.h"
+#include <wfmath/const.h>
 
-#include "../../../../../../../usr/include/c++/8/list"
-#include "../../../../../../../usr/include/c++/8/map"
-#include "../../../../../../../usr/include/c++/8/string"
-#include "../../../../../../../usr/include/boost/optional.hpp"
+#include <list>
+#include <map>
+#include <string>
+#include <boost/optional.hpp>
 #include "../../common/TypeStore.h"
 
 class LocatedEntity;
