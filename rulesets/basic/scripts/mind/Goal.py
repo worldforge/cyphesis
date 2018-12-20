@@ -4,6 +4,7 @@
 from types import *
 from atlas import *
 from common import log
+import importlib
 
 
 ## \defgroup PythonGoals Goal Classes
@@ -155,3 +156,33 @@ class Goal:
             report["errors"] = self.errors
             report["lastError"] = self.lastError
         return report
+
+
+def goal_create(goal_element):
+    if goal_element is None:
+        return None
+
+    if hasattr(goal_element, 'class'):
+        goal_class = goal_element['class']
+        splits = goal_class.split('.')
+        module_name = '.'.join(splits[0:-1])
+        class_name = splits[-1]
+
+        module = importlib.import_module(module_name)
+        class_ = getattr(module, class_name)
+        params = {}
+        if hasattr(goal_element, 'params'):
+            params = goal_element['params']
+
+        print('Creating an instance of {}'.format(goal_class))
+        try:
+            instance = class_(**params)
+
+            if instance:
+                return instance
+            else:
+                print('Could not create goal from data\n {}'.format(str(goal_element)))
+        except:
+            print('Error when creating goal from data\n {}'.format(str(goal_element)))
+            raise
+    return None

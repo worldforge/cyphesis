@@ -4,9 +4,10 @@
 import random
 import sys
 import traceback
-import importlib
 
 from atlas import *
+from mind.Goal import goal_create
+
 from physics import *
 from physics import Quaternion
 from common import const
@@ -84,6 +85,14 @@ class NPCMind(ai.Mind):
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
 
+        # Check if there's an "origin" location, if not add one.
+        if not self.get_knowledge("location", "origin"):
+            # TODO: store in server
+            self.print_debug('Adding origin location.')
+            self.add_knowledge("location", "origin", self.entity.location.copy())
+
+
+
     def goals_updated(self, entity):
         self.print_debug('Goals updated.')
         # For now just clear and recreate all goals when _goals changes. We would probably rather only recreate those that have changed though.
@@ -93,29 +102,8 @@ class NPCMind(ai.Mind):
             self.remove_goal(self.goals[0])
         if goals:
             for goal_element in goals:
-                if hasattr(goal_element, 'class'):
-                    goal_class = goal_element['class']
-                    splits = goal_class.split('.')
-                    module_name = '.'.join(splits[0:-1])
-                    class_name = splits[-1]
-
-                    module = importlib.import_module(module_name)
-                    class_ = getattr(module, class_name)
-                    params = {}
-                    if hasattr(goal_element, 'params'):
-                        params = goal_element['params']
-
-                    self.print_debug('Creating an instance of {}'.format(goal_class))
-                    try:
-                        instance = class_(**params)
-
-                        if instance:
-                            self.insert_goal(instance)
-                        else:
-                            self.print_debug('Could not create goal from data\n {}'.format(str(goal_element)))
-                    except:
-                        self.print_debug('Error when creating goal from data\n {}'.format(str(goal_element)))
-                        raise
+                goal = goal_create(goal_element)
+                self.insert_goal(goal)
 
     def knowledge_updated(self, entity):
         self.print_debug('Knowledge updated.')
@@ -150,11 +138,6 @@ class NPCMind(ai.Mind):
 
                 self.add_knowledge(predicate, subject, object)
 
-            # Check if there's an "origin" location, if not add one.
-            if not self.get_knowledge("location", "origin"):
-                # TODO: store in server
-                self.print_debug('Adding origin location.')
-                self.add_knowledge("location", "origin", self.entity.location.copy())
 
 
     def print_debug(self, message):

@@ -10,7 +10,7 @@ from physics import Point3D
 
 import entity_filter
 
-from mind.Goal import Goal
+from mind.Goal import Goal, goal_create
 from mind.goals.common.common import *
 from mind.goals.common.misc_goal import *
 from random import *
@@ -697,7 +697,7 @@ class roam(Goal):
         Goal.__init__(self, "roam randomly", false,
                       [self.check_move_valid,
                        move_me(None),
-                       extragoal,
+                       goal_create(extragoal),
                        self.do_roaming])
         self.list = locations
         self.radius = radius
@@ -720,6 +720,10 @@ class roam(Goal):
         # me.print_debug("setting new target")
         waypointName = self.list[randint(0, self.count - 1)]
         waypoint = me.get_knowledge("location", waypointName)
+
+        if not waypoint:
+            me.print_debug("Could not location with name '%s'." % waypointName)
+            return
 
         loc = me.entity.location.copy()
         loc.pos = Point3D([c + uniform(-self.radius, self.radius) for c in waypoint.pos])
