@@ -23,12 +23,9 @@
 #define DEBUG
 #endif
 
-#include <Python.h>
-
 #include "server/EntityRuleHandler.h"
 
 #include "server/EntityBuilder.h"
-#include "server/CorePropertyManager.h"
 
 #include "common/TypeNode.h"
 
@@ -40,7 +37,7 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 
-static TypeNode * stub_addChild_result = 0;
+static TypeNode * stub_addChild_result = nullptr;
 
 int main()
 {
@@ -211,6 +208,8 @@ void log(LogLevel lvl, const std::string & msg)
 
 #include "stubs/common/stubEntityKit.h"
 #include "stubs/server/stubEntityFactory.h"
+#include "stubs/server/stubCorePropertyManager.h"
+#include "stubs/common/stubPropertyManager.h"
 
 class Thing;
 class Character;

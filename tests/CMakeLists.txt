@@ -481,7 +481,6 @@ wf_add_test(JunctureTest.cpp ${PROJECT_SOURCE_DIR}/server/Juncture.cpp)
 wf_add_test(ConnectableRouterTest.cpp)
 wf_add_test(OpRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/OpRuleHandler.cpp)
 wf_add_test(EntityRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/EntityRuleHandler.cpp)
-target_link_libraries(EntityRuleHandlerTest pycxx)
 
 wf_add_test(PropertyRuleHandlerTest.cpp ${PROJECT_SOURCE_DIR}/server/PropertyRuleHandler.cpp)
 wf_add_test(IdleConnectorTest.cpp ${PROJECT_SOURCE_DIR}/server/IdleConnector.cpp)
