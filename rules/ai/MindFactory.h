@@ -19,7 +19,7 @@
 #ifndef RULESETS_MIND_FACTORY_H
 #define RULESETS_MIND_FACTORY_H
 
-#include "../../../../../../../usr/include/c++/8/string"
+#include <string>
 
 class BaseMind;
 

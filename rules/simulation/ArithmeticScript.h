@@ -19,7 +19,7 @@
 #ifndef RULESETS_ARITHMETIC_SCRIPT_H
 #define RULESETS_ARITHMETIC_SCRIPT_H
 
-#include "../../../../../../../usr/include/c++/8/string"
+#include <string>
 
 /// \brief Base class for script objects which handle statistics for entities.
 ///
