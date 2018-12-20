@@ -53,7 +53,8 @@ BaseMind::BaseMind(const std::string& mindId, const std::string& entityId) :
     m_typeResolver(new TypeResolver(*m_typeStore)),
     m_map(*m_typeResolver),
     m_time(new WorldTime()),
-    m_serialNoCounter(0)
+    m_serialNoCounter(0),
+    m_scriptFactory(nullptr)
 {
     m_typeResolver->m_typeProviderId = mindId;
 }
@@ -319,6 +320,12 @@ void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
 void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
 {
     m_ownEntity = std::move(ownEntity);
+
+    if (m_scriptFactory) {
+        m_scriptFactory->addScript(this);
+    }
+
+
     m_ownEntity->propertyApplied.connect([&](const std::string& name, const PropertyBase&) {
         if (m_script) {
             auto I = m_propertyScriptCallbacks.find(name);

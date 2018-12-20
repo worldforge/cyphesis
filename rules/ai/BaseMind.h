@@ -22,6 +22,7 @@
 #include "MemMap.h"
 
 #include "modules/WorldTime.h"
+#include "common/ScriptKit.h"
 
 class SimpleTypeStore;
 struct TypeStore;
@@ -63,6 +64,8 @@ class BaseMind : public Router, public ReferenceCounted {
     BaseMind(const std::string & mindId, const std::string & entityId);
 
     ~BaseMind() override;
+
+    ScriptKit<BaseMind>* m_scriptFactory;
 
     void init(OpVector& res);
 
