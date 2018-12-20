@@ -32,5 +32,13 @@
   }
 #endif //STUB_AdminMind_addToEntity
 
+#ifndef STUB_AdminMind_GetOperation
+//#define STUB_AdminMind_GetOperation
+  void AdminMind::GetOperation(const Operation& smartPtr, OpVector& res)
+  {
+    
+  }
+#endif //STUB_AdminMind_GetOperation
+
 
 #endif

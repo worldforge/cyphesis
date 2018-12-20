@@ -32,5 +32,13 @@
   }
 #endif //STUB_SimpleTypeStore_addChild
 
+#ifndef STUB_SimpleTypeStore_readAttributesIntoType
+//#define STUB_SimpleTypeStore_readAttributesIntoType
+  void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj)
+  {
+    
+  }
+#endif //STUB_SimpleTypeStore_readAttributesIntoType
+
 
 #endif

@@ -172,6 +172,14 @@
   }
 #endif //STUB_CyPy_ElementMap_mapping_subscript
 
+#ifndef STUB_CyPy_ElementMap_sequence_contains
+//#define STUB_CyPy_ElementMap_sequence_contains
+  int CyPy_ElementMap::sequence_contains(const Py::Object&)
+  {
+    return 0;
+  }
+#endif //STUB_CyPy_ElementMap_sequence_contains
+
 #ifndef STUB_CyPy_ElementMap_mapping_ass_subscript
 //#define STUB_CyPy_ElementMap_mapping_ass_subscript
   int CyPy_ElementMap::mapping_ass_subscript(const Py::Object&, const Py::Object&)
@@ -195,6 +203,14 @@
     return 0;
   }
 #endif //STUB_CyPy_ElementMap_setattro
+
+#ifndef STUB_CyPy_ElementMap_items
+//#define STUB_CyPy_ElementMap_items
+  Py::Object CyPy_ElementMap::items()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_ElementMap_items
 
 
 #ifndef STUB_CyPy_Element_wrap
@@ -228,6 +244,14 @@
     return *static_cast< Atlas::Message::ListType*>(nullptr);
   }
 #endif //STUB_CyPy_Element_listAsElement
+
+#ifndef STUB_CyPy_Element_sequenceAsElement
+//#define STUB_CyPy_Element_sequenceAsElement
+   Atlas::Message::ListType CyPy_Element::sequenceAsElement(const Py::Sequence& list)
+  {
+    return *static_cast< Atlas::Message::ListType*>(nullptr);
+  }
+#endif //STUB_CyPy_Element_sequenceAsElement
 
 #ifndef STUB_CyPy_Element_dictAsElement
 //#define STUB_CyPy_Element_dictAsElement

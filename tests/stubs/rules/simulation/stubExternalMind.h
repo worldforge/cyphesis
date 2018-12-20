@@ -33,7 +33,7 @@
 
 #ifndef STUB_ExternalMind_externalRelayedOperation
 //#define STUB_ExternalMind_externalRelayedOperation
-  void ExternalMind::externalRelayedOperation(const Operation& op, Link& link)
+  void ExternalMind::externalRelayedOperation(const Operation& op)
   {
     
   }

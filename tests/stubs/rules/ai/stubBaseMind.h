@@ -11,6 +11,7 @@
 //#define STUB_BaseMind_BaseMind
    BaseMind::BaseMind(const std::string & mindId, const std::string & entityId)
     : Router(mindId, entityId)
+    , m_scriptFactory(nullptr)
   {
     
   }

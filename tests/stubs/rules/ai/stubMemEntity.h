@@ -48,5 +48,13 @@
   }
 #endif //STUB_MemEntity_destroy
 
+#ifndef STUB_MemEntity_getProperty
+//#define STUB_MemEntity_getProperty
+  const PropertyBase* MemEntity::getProperty(const std::string & name) const
+  {
+    return nullptr;
+  }
+#endif //STUB_MemEntity_getProperty
+
 
 #endif
