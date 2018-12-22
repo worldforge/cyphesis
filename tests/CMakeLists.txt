@@ -39,7 +39,7 @@ macro(wf_add_test TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx)
+    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES})
 
 endmacro()
 
@@ -49,7 +49,7 @@ macro(wf_add_benchmark TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(benchmark ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx)
+    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES})
 
 endmacro()
 
