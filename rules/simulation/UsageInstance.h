@@ -30,6 +30,7 @@
 #include <boost/variant.hpp>
 
 #include <memory>
+#include <functional>
 
 struct UsageParameter
 {
