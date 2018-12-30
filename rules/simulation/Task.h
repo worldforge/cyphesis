@@ -28,7 +28,7 @@
 #include <string>
 
 #include <cassert>
-#include <boost/core/noncopyable.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
 
 class LocatedEntity;
