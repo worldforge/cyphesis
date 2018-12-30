@@ -76,7 +76,7 @@ void BaseClient::externalOperation(const Operation& op, Link& link)
         if (op->isDefaultTo() && !op->isDefaultRefno()) {
             auto I = m_callbacks.find(op->getRefno());
             if (I != m_callbacks.end()) {
-                I->second.timeout.cancel();
+                I->second.timeout->cancel();
                 I->second.callback(op, res);
                 m_callbacks.erase(I);
             }
@@ -213,9 +213,13 @@ void BaseClient::sendWithCallback(Operation op, std::function<void(const Operati
     auto serialno = m_serialNo++;
     op->setSerialno(serialno);
 
-    boost::asio::steady_timer timer(m_commSocket.m_io_service);
-    timer.expires_after(duration);
-    timer.async_wait([&, serialno](boost::system::error_code ec) {
+    auto timer = std::make_unique<boost::asio::steady_timer>(m_commSocket.m_io_service);
+#if BOOST_VERSION >= 106600
+    timer->expires_after(duration);
+#else
+    timer->expires_from_now(duration);
+#endif
+    timer->async_wait([&, serialno](boost::system::error_code ec) {
         if (!ec) {
             log(WARNING, String::compose("Timeout on operation with serial no %1.", serialno));
             auto I = m_callbacks.find(serialno);

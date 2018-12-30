@@ -80,7 +80,11 @@ static void connectToServer(boost::asio::io_service& io_service, AwareMindFactor
         } else {
             //If we couldn't connect we'll wait five seconds and try again.
             auto timer = std::make_shared<boost::asio::steady_timer>(io_service);
+#if BOOST_VERSION >= 106600
             timer->expires_after(std::chrono::seconds(5));
+#else
+            timer->expires_from_now(std::chrono::seconds(5));
+#endif
             timer->async_wait([&io_service, &mindFactory, timer](boost::system::error_code ec) {
                 if (!ec) {
                     connectToServer(io_service, mindFactory);

@@ -43,7 +43,7 @@ class BaseClient : public Link
         struct CallbackEntry
         {
             std::function<void(const Operation&, OpVector&)> callback;
-            boost::asio::steady_timer timeout;
+            std::unique_ptr<boost::asio::steady_timer> timeout;
             std::function<void()> timeoutCallback;
         };
 
