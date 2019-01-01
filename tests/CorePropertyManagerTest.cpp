@@ -98,8 +98,8 @@ void CorePropertyManagertest::setup()
 {
     m_inheritance = new Inheritance();
     m_propertyManager = new CorePropertyManager;
-    m_propertyManager->m_propertyFactories.insert(
-        std::make_pair("named_type", new PropertyFactory<MinimalProperty>)
+    m_propertyManager->m_propertyFactories.emplace(
+        std::string("named_type"), std::make_unique<PropertyFactory<MinimalProperty>>()
     );
    
 }
