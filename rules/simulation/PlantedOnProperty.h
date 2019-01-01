@@ -50,7 +50,7 @@ class PlantedOnProperty : public PropertyBase
              * Returns true if either "entity" or "attachment" is set.
              * @return
              */
-            constexpr explicit operator bool() const
+            explicit operator bool() const
             {
                 return (entity || attachment);
             }

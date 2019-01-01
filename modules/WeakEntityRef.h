@@ -52,41 +52,41 @@ class WeakEntityRef
     WeakEntityRef& operator=(LocatedEntity* ref);
     WeakEntityRef& operator=(const Ref<LocatedEntity>& ref);
 
-    constexpr LocatedEntity& operator*() const noexcept
+    LocatedEntity& operator*() const noexcept
     {
         return *m_inner;
     }
 
-    constexpr LocatedEntity* operator->() const noexcept
+    LocatedEntity* operator->() const noexcept
     {
         return m_inner;
     }
 
-    constexpr LocatedEntity* get() const noexcept
+    LocatedEntity* get() const noexcept
     {
         return m_inner;
     }
 
-    constexpr bool operator==(const WeakEntityRef& e) const noexcept
+    bool operator==(const WeakEntityRef& e) const noexcept
     {
         return (m_inner == e.m_inner);
     }
 
-    constexpr bool operator==(const LocatedEntity* e) const noexcept
+    bool operator==(const LocatedEntity* e) const noexcept
     {
         return (m_inner == e);
     }
 
-    constexpr bool operator<(const WeakEntityRef& e) const noexcept
+    bool operator<(const WeakEntityRef& e) const noexcept
     {
         return (m_inner < e.m_inner);
     }
 
-    constexpr bool operator!() const noexcept {
+    bool operator!() const noexcept {
         return this->m_inner == nullptr;
     }
 
-    constexpr explicit operator bool () const noexcept
+    explicit operator bool () const noexcept
     {
         return !this->operator!();
     }
