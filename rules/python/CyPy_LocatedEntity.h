@@ -135,7 +135,7 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 struct LocatedEntityScriptProvider {
     std::function<boost::optional<Py::Object>(const Ref<LocatedEntity>& locatedEntity)> wrapFn;
     std::function<bool(PyObject*)> checkFn;
-    std::function<boost::optional<Ref<LocatedEntity>>(const Py::Object&)> valueFn;
+    std::function<Ref<LocatedEntity>*(const Py::Object&)> valueFn;
 
 };
 

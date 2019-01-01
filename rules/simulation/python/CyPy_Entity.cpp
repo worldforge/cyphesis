@@ -77,11 +77,12 @@ void CyPy_Entity::init_type()
         },
         [](PyObject* obj) -> bool {
             return CyPy_Entity::check(obj);
-        }, [](const Py::Object& object) -> boost::optional<Ref<LocatedEntity>> {
+        }, [](const Py::Object& object) -> Ref<LocatedEntity>* {
             if (check(object)) {
-                return boost::optional<Ref<LocatedEntity>>(WrapperBase<Ref<Entity>, CyPy_Entity>::value(object));
+                //This cast should work.
+                return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<Entity>, CyPy_Entity>::value(object));
             }
-            return boost::none;
+            return nullptr;
         }
     };
     CyPy_LocatedEntity::entityPythonProviders.emplace_back(std::move(provider));
