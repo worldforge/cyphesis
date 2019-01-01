@@ -253,7 +253,7 @@ Py::Object CyPy_Operation::get_name()
 
 PyCxx_ssize_t CyPy_Operation::sequence_length()
 {
-    return Py::Long(m_value->getArgs().size());
+    return Py::Long(static_cast<unsigned long>(m_value->getArgs().size()));
 }
 
 Py::Object CyPy_Operation::sequence_item(Py_ssize_t item)
