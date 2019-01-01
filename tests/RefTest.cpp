@@ -19,6 +19,8 @@
 #include "modules/Ref.h"
 #include "TestBase.h"
 
+#include <set>
+
 struct RefTest : public Cyphesis::TestBase
 {
     struct RefCounted
