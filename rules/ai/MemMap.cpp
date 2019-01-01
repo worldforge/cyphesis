@@ -156,6 +156,7 @@ Ref<MemEntity> MemMap::newEntity(const std::string& id, long int_id,
 
 MemMap::MemMap(TypeResolver& typeResolver)
     : m_checkIterator(m_entities.begin()),
+      m_script(nullptr),
       m_listener(nullptr),
       m_typeResolver(typeResolver)
 {

@@ -97,9 +97,9 @@
 
 #ifndef STUB_Location_asEntity
 //#define STUB_Location_asEntity
-  const Atlas::Objects::Root Location::asEntity() const
+  Atlas::Objects::Root Location::asEntity() const
   {
-    return *static_cast<const Atlas::Objects::Root*>(nullptr);
+    return *static_cast<Atlas::Objects::Root*>(nullptr);
   }
 #endif //STUB_Location_asEntity
 

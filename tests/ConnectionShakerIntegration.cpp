@@ -95,8 +95,8 @@ void ConnectionShakerintegration::setup()
 
 void ConnectionShakerintegration::teardown()
 {
-    delete m_server;
     delete m_connection;
+    delete m_server;
 }
 
 int main()

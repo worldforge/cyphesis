@@ -507,12 +507,20 @@ void ProvidersTest::setup()
 
 void ProvidersTest::teardown()
 {
+    m_b1 = nullptr;
+    m_b2 = nullptr;
+
+    m_ch1 = nullptr;
+    m_glovesEntity = nullptr;
+    m_cloth = nullptr;
+
+    m_entities.clear();
+
     delete m_barrelType;
     delete m_characterType;
     delete m_clothType;
     delete m_thingType;
 
-    m_entities.clear();
 }
 
 Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<

@@ -1,3 +1,5 @@
+#include <memory>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2012 Alistair Riddoch
 //
@@ -143,13 +145,10 @@ ConnectionCreatorintegration::ConnectionCreatorintegration() :
 void ConnectionCreatorintegration::setup()
 {
     boost::asio::io_service io_service;
-    m_BaseWorld_message_called = 0;
-    m_BaseWorld_message_called_from = 0;
 
     Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_world.reset();
-    m_world.reset(new TestWorld(gw));
+    m_world = std::make_unique<TestWorld>(gw);
     TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
         ConnectionCreatorintegration::BaseWorld_message_called(op, ent);
     };
@@ -170,12 +169,17 @@ void ConnectionCreatorintegration::setup()
 
     m_connection->addObject(m_creator.get());
 
-    m_BaseWorld_message_called = 0;
-    m_BaseWorld_message_called_from = 0;
 }
 
 void ConnectionCreatorintegration::teardown()
 {
+    m_BaseWorld_message_called = nullptr;
+    m_BaseWorld_message_called_from = nullptr;
+
+    m_creator = nullptr;
+
+    m_world.reset();
+
     delete m_connection;
     m_creator = nullptr;
     delete m_creatorType;

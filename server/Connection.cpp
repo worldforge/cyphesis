@@ -76,7 +76,9 @@ Connection::~Connection()
         ExternalMindsManager::instance().removeConnection(routerId);
     }
 
-    for (auto& entry : m_connectableRouters) {
+    //Make a copy to iterate over, since disconnectObject will alter m_connectableRouters
+    auto routers(m_connectableRouters);
+    for (auto& entry : routers) {
         disconnectObject(entry.second, "Disconnect");
     }
 

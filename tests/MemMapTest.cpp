@@ -193,7 +193,7 @@ void MemMaptest::test_addEntity()
     const std::string new_id("3");
     ASSERT_FALSE(m_memMap->get(new_id));
 
-    MemEntity * ent = new MemEntity(new_id, 3);
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
 
@@ -208,7 +208,7 @@ void MemMaptest::test_addEntity_script()
     const std::string new_id("3");
     ASSERT_FALSE(m_memMap->get(new_id));
 
-    MemEntity * ent = new MemEntity(new_id, 3);
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
 
@@ -227,7 +227,7 @@ void MemMaptest::test_addEntity_script_hook()
 
     ASSERT_FALSE(m_memMap->get(new_id));
 
-    MemEntity * ent = new MemEntity(new_id, 3);
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
 
@@ -242,7 +242,7 @@ void MemMaptest::test_readEntity()
 
     Anonymous data;
 
-    MemEntity * ent = new MemEntity(new_id, 3);
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
 
     m_memMap->readEntity(ent, data, 0);
@@ -255,7 +255,7 @@ void MemMaptest::test_readEntity_type()
     Anonymous data;
     data->setParent("sample_type");
 
-    MemEntity * ent = new MemEntity(new_id, 3);
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
 
     m_memMap->readEntity(ent, data, 0);
 
@@ -269,7 +269,7 @@ void MemMaptest::test_readEntity_type_nonexist()
     Anonymous data;
     data->setParent("non_sample_type");
 
-    MemEntity * ent = new MemEntity(new_id, 3);
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
 
     m_memMap->readEntity(ent, data, 0);
 
@@ -324,12 +324,12 @@ void MemMaptest::test_getEntityRelatedMemory(){
 
 void MemMaptest::test_findByLoc()
 {
-    MemEntity * tlve = new MemEntity("3", 3);
+    Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     m_memMap->m_entities[3] = tlve;
     tlve->m_contains = new LocatedEntitySet;
 
-    MemEntity * e4 = new MemEntity("4", 4);
+    Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
@@ -337,7 +337,7 @@ void MemMaptest::test_findByLoc()
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
-    MemEntity * e5 = new MemEntity("5", 5);
+    Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
@@ -357,12 +357,12 @@ void MemMaptest::test_findByLoc()
 
 void MemMaptest::test_findByLoc_results()
 {
-    MemEntity * tlve = new MemEntity("3", 3);
+    Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     m_memMap->m_entities[3] = tlve;
     tlve->m_contains = new LocatedEntitySet;
 
-    MemEntity * e4 = new MemEntity("4", 4);
+    Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
@@ -370,7 +370,7 @@ void MemMaptest::test_findByLoc_results()
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
-    MemEntity * e5 = new MemEntity("5", 5);
+    Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
@@ -390,12 +390,12 @@ void MemMaptest::test_findByLoc_results()
 
 void MemMaptest::test_findByLoc_invalid()
 {
-    MemEntity * tlve = new MemEntity("3", 3);
+    Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     m_memMap->m_entities[3] = tlve;
     tlve->m_contains = new LocatedEntitySet;
 
-    MemEntity * e4 = new MemEntity("4", 4);
+    Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
@@ -403,7 +403,7 @@ void MemMaptest::test_findByLoc_invalid()
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
-    MemEntity * e5 = new MemEntity("5", 5);
+    Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
@@ -423,13 +423,13 @@ void MemMaptest::test_findByLoc_invalid()
 
 void MemMaptest::test_findByLoc_consistency_check()
 {
-    MemEntity * tlve = new MemEntity("3", 3);
+    Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     tlve->setType(m_sampleType);
     m_memMap->m_entities[3] = tlve;
     tlve->m_contains = new LocatedEntitySet;
 
-    MemEntity * e4 = new MemEntity("4", 4);
+    Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
     m_memMap->m_entities[4] = tlve;
@@ -437,7 +437,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
-    MemEntity * e5 = new MemEntity("5", 5);
+    Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     m_memMap->m_entities[5] = tlve;
@@ -450,7 +450,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     // DEBUG/NDEBUG. In debug build, the check in findByLoc will fail
     // resulting in early return. In ndebug build, it will return empty
     // by a longer path, as e3_dup contains no other entities.
-    MemEntity * e3_dup = new MemEntity("3", 3);
+    Ref<MemEntity> e3_dup = new MemEntity("3", 3);
     e3_dup->setType(m_sampleType);
     e3_dup->m_contains = new LocatedEntitySet;
 

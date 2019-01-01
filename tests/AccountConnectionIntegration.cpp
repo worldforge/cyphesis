@@ -111,6 +111,8 @@ class AccountConnectionintegration : public Cyphesis::TestBase {
     BaseWorld * m_world;
     ServerRouting * m_server;
     Connection * m_connection;
+
+    TestCommSocket m_commSocket;
   public:
     AccountConnectionintegration();
 
@@ -137,7 +139,7 @@ void AccountConnectionintegration::setup()
                                  "testrules",
                                  "testname",
                                  "1", 1, "2", 2);
-    m_connection = new Connection(*new TestCommSocket(),
+    m_connection = new Connection(m_commSocket,
                                   *m_server,
                                   "test_addr",
                                   "3", 3);
@@ -145,10 +147,12 @@ void AccountConnectionintegration::setup()
 
 void AccountConnectionintegration::teardown()
 {
-    delete m_connection;
-    delete m_server;
+    m_tlve = nullptr;
+
     delete m_world;
+    delete m_connection;
     delete m_persistence;
+    delete m_server;
 }
 
 static OpVector test_sent_ops;

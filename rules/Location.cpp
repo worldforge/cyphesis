@@ -216,7 +216,7 @@ void Location::modifyBBox()
     m_radius = std::sqrt(m_squareRadius);
 }
 
-const Atlas::Objects::Root Location::asEntity() const
+Atlas::Objects::Root Location::asEntity() const
 {
     Anonymous ret;
     addToEntity(ret);
