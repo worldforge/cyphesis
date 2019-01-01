@@ -468,7 +468,7 @@ int &_Py_InteractiveFlag()              { return Py_InteractiveFlag; }
 int &_Py_OptimizeFlag()                 { return Py_OptimizeFlag; }
 int &_Py_NoSiteFlag()                   { return Py_NoSiteFlag; }
 int &_Py_VerboseFlag()                  { return Py_VerboseFlag; }
-char *__Py_PackageContext()             { return _Py_PackageContext; }
+const char *__Py_PackageContext()       { return _Py_PackageContext; }
 
 //
 //    Needed to keep the abstactions for delayload interface
