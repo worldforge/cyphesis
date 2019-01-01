@@ -98,11 +98,11 @@ public:
 	MetaServerPacket(const std::array<char,MAX_PACKET_BYTES>& pl, std::size_t bytes = 0 );
 	~MetaServerPacket();
 
-	const NetMsgType getPacketType() const { return m_packetType; }
+	NetMsgType getPacketType() const { return m_packetType; }
 	void setPacketType(const NetMsgType& nmt);
 
 	const std::string getAddressStr() const { return m_AddressStr; }
-	const uint32_t getAddressInt() const { return m_AddressInt; }
+	uint32_t getAddressInt() const { return m_AddressInt; }
 	const std::string getAddress() const { return m_AddressStr; }
 	void setAddress(const std::string& address);
 
@@ -127,7 +127,6 @@ public:
 	uint32_t getIntData(unsigned int offset) const;
 
 	uint32_t	IpAsciiToNet(const char *buffer);
-	std::string IpNetToAscii(uint32_t address);
 
 	std::array<char,MAX_PACKET_BYTES> getBuffer() const { return m_packetPayload; }
 	void setBuffer( std::array<char,MAX_PACKET_BYTES>& pl, std::size_t bytes = 0 )

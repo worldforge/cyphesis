@@ -188,7 +188,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
     }
 
     /// \brief Accessor for sequence number
-    const int getSeq() const { return m_seq; }
+    int getSeq() const { return m_seq; }
     /// \brief Accessor for entity type property
     const TypeNode * getType() const { return m_type; }
     /// \brief Accessor for properies

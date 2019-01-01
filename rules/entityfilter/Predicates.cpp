@@ -171,6 +171,9 @@ namespace EntityFilter {
                 }
                 return false;
             }
+            default:
+                log(ERROR, "Could not recognize comparator.");
+                return false;
         }
     }
 

@@ -506,7 +506,7 @@ void GeometryProperty::buildCompoundCreator()
         if (I != m_data.end() && I->second.isList()) {
             auto shapes = I->second.List();
 #if BT_BULLET_VERSION > 283
-            auto compoundShape = new btCompoundShape(true, static_cast<const int>(shapes.size()));
+            auto compoundShape = new btCompoundShape(true, static_cast<int>(shapes.size()));
 #else
             auto compoundShape = new btCompoundShape(true);
 #endif

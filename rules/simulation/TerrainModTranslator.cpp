@@ -235,8 +235,8 @@ TerrainModTranslator::InnerTranslator* TerrainModTranslator::buildTranslator(con
 		    log(WARNING, "SlopeTerrainMod defined without slopes");
 			return nullptr;
 		}
-		const auto dx = static_cast<const float>(slopes[0].asNum());
-		const auto dy = static_cast<const float>(slopes[1].asNum());
+		const auto dx = static_cast<float>(slopes[0].asNum());
+        const auto dy = static_cast<float>(slopes[1].asNum());
 
 		return new InnerTranslatorSlope<Shape>(shape, modElement, dx, dy);
 //		return createInstance<Mercator::SlopeTerrainMod>(shape, pos, modElement, 0, 0);

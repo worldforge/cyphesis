@@ -123,7 +123,7 @@ class Task : public boost::noncopyable{
     }
 
     /// \brief Accessor to determine if this Task is obsolete
-    const bool obsolete() { return m_obsolete; }
+    bool obsolete() { return m_obsolete; }
 
     /// \brief Accessor for name of this task
     std::string & name() { return m_name; }
