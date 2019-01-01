@@ -27,6 +27,7 @@
 
 #include "server/TrustedConnection.h"
 
+#include "rules/LocatedEntity.h"
 #include "server/Account.h"
 #include "rules/simulation/ExternalMind.h"
 #include "rules/simulation/ExternalProperty.h"

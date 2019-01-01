@@ -23,6 +23,8 @@
 #define DEBUG
 #endif
 
+#include "rules/LocatedEntity.h"
+
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
 
