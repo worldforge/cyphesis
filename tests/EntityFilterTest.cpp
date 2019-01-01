@@ -207,6 +207,16 @@ struct EntityFilterTest : public Cyphesis::TestBase
         delete m_inheritance;
         //    Clean up
 
+        m_b1 = nullptr;
+        m_b2 = nullptr;
+        m_b3 = nullptr;
+        m_bl1 = nullptr;
+        m_bootsEntity = nullptr;
+        m_ch1 = nullptr;
+        m_cloth = nullptr;
+        m_glovesEntity = nullptr;
+        m_leather = nullptr;
+
         delete m_barrelType;
         delete m_boulderType;
         delete m_glovesType;
