@@ -124,6 +124,7 @@ void Entitytest::setup()
 
 void Entitytest::teardown()
 {
+    m_entity = nullptr;
     delete m_type;
     delete m_pm;
 }
