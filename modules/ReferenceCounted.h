@@ -42,10 +42,10 @@ class ReferenceCounted
         /// \brief Decrement the reference count on this instance
         void decRef()
         {
+            assert(m_refCount > 0);
             if (--m_refCount == 0) {
                 delete this;
             }
-            assert(m_refCount >= 0);
         }
 
         /// \brief Check the reference count on this instance
