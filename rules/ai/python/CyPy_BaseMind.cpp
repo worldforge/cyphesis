@@ -217,7 +217,7 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
             throw Py::TypeError("Not an AwareMind");
         }
         if (awareMind->getSteering()) {
-            return Py::Long(awareMind->getSteering()->unawareAreaCount());
+            return Py::Long(static_cast<unsigned long>(awareMind->getSteering()->unawareAreaCount()));
         }
         return Py::Long(0);
     }
