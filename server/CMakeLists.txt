@@ -48,7 +48,6 @@ set(cyphesis_files
     CommPeer.cpp
     CommPythonClient.cpp
     server.cpp
-    MindInspector.cpp
     ExternalMindsConnection.cpp
     ExternalMindsManager.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)

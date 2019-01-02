@@ -56,6 +56,15 @@
   }
 #endif //STUB_Ref_Ref_DTOR
 
+#ifndef STUB_Ref_reset
+//#define STUB_Ref_reset
+  template <typename T>
+  void constexpr Ref<T>::reset(T* ptr )
+  {
+    return *static_cast<void constexpr*>(nullptr);
+  }
+#endif //STUB_Ref_reset
+
 #ifndef STUB_Ref_*
 //#define STUB_Ref_*
   template <typename T>

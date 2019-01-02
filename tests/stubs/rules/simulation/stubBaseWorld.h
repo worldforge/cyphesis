@@ -17,6 +17,14 @@
   }
 #endif //STUB_BaseWorld_BaseWorld
 
+#ifndef STUB_BaseWorld_shutdown
+//#define STUB_BaseWorld_shutdown
+  void BaseWorld::shutdown()
+  {
+    
+  }
+#endif //STUB_BaseWorld_shutdown
+
 #ifndef STUB_BaseWorld_getEntity
 //#define STUB_BaseWorld_getEntity
   Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const

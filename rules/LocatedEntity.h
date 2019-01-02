@@ -129,7 +129,6 @@ class LocatedEntity : public Router, public ReferenceCounted {
     /// Class of which this is an instance
     const TypeNode * m_type;
 
-    void clearProperties();
 
     /**
      * Collects all observers of the child, i.e. all entities that are currently observing it.
@@ -159,6 +158,8 @@ class LocatedEntity : public Router, public ReferenceCounted {
 
     explicit LocatedEntity(const std::string & id, long intId);
     ~LocatedEntity() override;
+
+    void clearProperties();
 
     /// \brief Check if this entity is flagged as perceptive
     bool isPerceptive() const { return m_flags.hasFlags(entity_perceptive); }

@@ -63,6 +63,8 @@ class Ref
 
         constexpr Ref& operator=(const Ref&);
 
+        constexpr void reset(T* ptr = nullptr);
+
         /**
          * This operator allows us to assign a Ref for a subclass to this.
          *
@@ -221,15 +223,22 @@ Ref<T>::~Ref()
 template<typename T>
 constexpr Ref<T>& Ref<T>::operator=(T* rhs)
 {
-    if (rhs) {
-        rhs->incRef();
+    reset(rhs);
+    return *this;
+}
+
+template<typename T>
+constexpr void Ref<T>::reset(T* ptr)
+{
+    if (ptr) {
+        ptr->incRef();
     }
     if (this->m_inner) {
         this->m_inner->decRef();
     }
-    this->m_inner = rhs;
-    return *this;
+    this->m_inner = ptr;
 }
+
 
 
 template<typename T>

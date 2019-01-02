@@ -76,6 +76,11 @@ class BaseWorld : public Singleton<BaseWorld> {
 
     ~BaseWorld() override = default;
 
+    /**
+     * Shuts down the simulation and frees up all entities.
+     */
+    virtual void shutdown();
+
     Ref<LocatedEntity> getEntity(const std::string & id) const;
 
     Ref<LocatedEntity> getEntity(long id) const;

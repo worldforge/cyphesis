@@ -21,9 +21,12 @@
 #include "common/id.h"
 #include "common/log.h"
 #include "common/SystemTime.h"
+#include "common/debug.h"
+#include "rules/Script.h"
 #include "rules/LocatedEntity.h"
 
 #include <cassert>
+static const bool debug_flag = false;
 
 template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
 
@@ -35,6 +38,24 @@ BaseWorld::BaseWorld() :
     m_defaultLocation(nullptr),
     m_limboLocation(nullptr)
 {
+}
+
+void BaseWorld::shutdown()
+{
+    debug(std::cout << "Flushing world with " << m_eobjects.size()
+                    << " entities" << std::endl << std::flush;);
+    //Make sure that no entity references are retained.
+    for (const auto& entry : m_eobjects) {
+        entry.second->m_location.m_parent = nullptr;
+        if (entry.second->m_contains) {
+            entry.second->m_contains->clear();
+        }
+        entry.second->clearProperties();
+        //Set the type to null so we won't clear properties again in the destructor.
+        entry.second->setType(nullptr);
+    }
+
+    m_eobjects.clear();
 }
 
 

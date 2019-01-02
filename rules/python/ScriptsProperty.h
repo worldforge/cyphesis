@@ -31,6 +31,8 @@ public:
 
     void apply(LocatedEntity *) override;
 
+    void remove(LocatedEntity *, const std::string & name) override;
+
     /**
      * Applies the scripts to the entity.
      */

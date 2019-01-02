@@ -47,6 +47,14 @@
   }
 #endif //STUB_MemMap_addId
 
+#ifndef STUB_MemMap_applyTypePropertiesToEntity
+//#define STUB_MemMap_applyTypePropertiesToEntity
+  void MemMap::applyTypePropertiesToEntity(const Ref<MemEntity>& entity)
+  {
+    
+  }
+#endif //STUB_MemMap_applyTypePropertiesToEntity
+
 #ifndef STUB_MemMap_MemMap
 //#define STUB_MemMap_MemMap
    MemMap::MemMap(TypeResolver& typeResolver)

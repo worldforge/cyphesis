@@ -218,9 +218,9 @@ int main(int argc, char** argv)
     readConfigItem(instance, "nice", nice);
 
 
-    FileSystemObserver* file_system_observer = new FileSystemObserver(*io_service);
+    auto file_system_observer = new FileSystemObserver(*io_service);
 
-    AssetsManager* assets_manager = new AssetsManager(*file_system_observer);
+    auto assets_manager = new AssetsManager(*file_system_observer);
     assets_manager->init();
 
     std::vector<std::string> python_directories;
@@ -240,7 +240,7 @@ int main(int argc, char** argv)
                     python_directories);
     observe_python_directories(*io_service, *assets_manager);
 
-    Inheritance* inheritance = new Inheritance();
+    auto inheritance = new Inheritance();
 
     SystemTime time{};
     time.update();
@@ -248,7 +248,7 @@ int main(int argc, char** argv)
     auto entityBuilder = new EntityBuilder();
     auto arithmenticBuilder = new ArithmeticBuilder();
 
-    Ruleset* ruleset = new Ruleset(entityBuilder, *io_service);
+    auto ruleset = new Ruleset(entityBuilder, *io_service);
     ruleset->loadRules(ruleset_name);
 
     Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
@@ -277,7 +277,7 @@ int main(int argc, char** argv)
 
     // Create the core server object, which stores central data,
     // and track objects
-    ServerRouting* server = new ServerRouting(*world, ruleset_name,
+    auto server = new ServerRouting(*world, ruleset_name,
                                               server_name, server_id, int_id, lobby_id, lobby_int_id);
 
     std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
@@ -472,30 +472,15 @@ int main(int argc, char** argv)
     }
 
     auto softExitStart = [&]() {
-        size_t requestNumber = store->requestMinds(world->getEntities());
-        log(INFO, String::compose("Soft exit requested, persisting %1 minds.", requestNumber));
-
-        //Set a deadline for five seconds.
-        boost::posix_time::seconds duration(5);
-        log(NOTICE, String::compose("Deadline for mind persistence set to %1 seconds.", duration.ticks()));
-
-        return duration;
+        return boost::posix_time::seconds(1);
     };
 
 
     auto softExitPoll = [&]() {
-        if (store->numberOfOutstandingThoughtRequests() == 0) {
-            log(NOTICE, "All entity thoughts were persisted.");
-            return true;
-        }
-        return false;
+        return true;
     };
 
     auto softExitTimeout = [&]() {
-        log(WARNING, String::compose("Waiting for persisting thoughts timed out. This might "
-                                     "lead to lost entity thoughts. %1 thoughts outstanding.",
-                                     store->numberOfOutstandingThoughtRequests()));
-
     };
 
     MainLoop::run(daemon_flag, *io_service, world->getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
@@ -559,6 +544,9 @@ int main(int argc, char** argv)
 
     delete possessionAuthenticator;
 
+    //Clear out reference
+    baseEntity.reset();
+    world->shutdown();
     delete world;
 
     delete ruleset;
@@ -574,11 +562,6 @@ int main(int argc, char** argv)
 
     delete inheritance;
 
-    // Shutdown the Python interpreter. This frees lots of memory, and if
-    // the malloc heap is in any way corrupt, a segfault is likely to
-    // occur at this point. Previous occasions where pointers have been
-    // deleted twice elsewhere in the code, have resulted in a segfault
-    // at this point. AlRiddoch 10th November 2001
     shutdown_python_api();
 
     delete global_conf;

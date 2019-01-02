@@ -66,8 +66,15 @@ void ScriptsProperty::reloadAllScriptFactories() {
     for (auto& entry : sScriptFactories) {
         entry.second->refreshClass();
     }
-
 }
+
+void ScriptsProperty::remove(LocatedEntity *entity, const std::string & name) {
+    for (auto script : entity->m_scripts) {
+        delete script;
+    }
+    entity->m_scripts.clear();
+}
+
 
 
 

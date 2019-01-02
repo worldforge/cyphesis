@@ -64,6 +64,8 @@ class WorldRouter : public BaseWorld {
 
     ~WorldRouter() override;
 
+    void shutdown() override;
+
     bool idle() override;
 
     Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& obj) override;

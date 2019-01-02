@@ -19,7 +19,7 @@
 
 #ifndef STUB_AwareMindFactory_newMind
 //#define STUB_AwareMindFactory_newMind
-  BaseMind* AwareMindFactory::newMind(const std::string & mind_id, const std::string & entity_id) const
+  BaseMind* AwareMindFactory::newMind(const std::string& mind_id, const std::string& entity_id) const
   {
     return nullptr;
   }

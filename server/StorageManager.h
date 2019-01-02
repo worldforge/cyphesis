@@ -35,7 +35,6 @@
 class Entity;
 class WorldRouter;
 class PropertyBase;
-class MindInspector;
 
 /// \brief StorageManager represents the subsystem which stores world storage
 ///
@@ -54,14 +53,6 @@ class StorageManager : public sigc::trackable {
 
     /// \brief Queue of IDs of entities that are destroyed
     Idstore m_destroyedEntities;
-
-    /// \brief Handles inspection of minds.
-    MindInspector* m_mindInspector;
-
-    /// \brief Keeps track of outstanding requests for thoughts.
-    ///
-    /// Value stored is entity id.
-    std::set<std::string> m_outstandingThoughtRequests;
 
     std::deque<Persistence::AddCharacterData> m_addedCharacters;
 
@@ -94,19 +85,9 @@ class StorageManager : public sigc::trackable {
     void encodeProperty(PropertyBase *, std::string &);
     void restorePropertiesRecursively(LocatedEntity *);
 
-    void restoreThoughts(LocatedEntity *);
-    /// \brief Requests thoughts from the entity, if it has a mind.
-    ///
-    /// \return True if a thoughts query was sent.
-    bool storeThoughts(LocatedEntity *);
-
     void insertEntity(LocatedEntity *);
     void updateEntity(LocatedEntity *);
-    void updateEntityThoughts(LocatedEntity *);
     void restoreChildren(LocatedEntity *);
-
-    /// \brief Callback for m_mindInspector when thoughts arrive.
-    void thoughtsReceived(const std::string& entityId, const Operation& thoughts);
 
     bool persistance_characterAdded(const Persistence::AddCharacterData& data);
     bool persistance_characterDeleted(const std::string& entityId);
@@ -123,18 +104,6 @@ class StorageManager : public sigc::trackable {
     ///
     /// It's expected that the storage manager attempts to persist entity state.
     int shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEntity>>& entites);
-
-    /// \brief Request thoughts from the supplied entities.
-    ///
-    /// The method will take care of only requesting thoughts from entities
-    /// with external minds.
-    /// \param entities A list of entities. Only those entities that have
-    /// external minds will be queried.
-    /// \return The number of requests sent.
-    size_t requestMinds(const std::map<long, Ref<LocatedEntity>>& entites);
-
-    /// \brief Gets the number of outstanding thought requests.
-    size_t numberOfOutstandingThoughtRequests() const;
 
 };
 

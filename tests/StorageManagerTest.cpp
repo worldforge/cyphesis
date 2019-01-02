@@ -26,7 +26,6 @@
 #include "server/StorageManager.h"
 
 #include "server/WorldRouter.h"
-#include "server/MindInspector.h"
 
 #include "rules/simulation/Entity.h"
 #include "rules/simulation/MindProperty.h"
@@ -283,24 +282,6 @@ template class Variable<std::string>;
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubOperationsDispatcher.h"
 
-
-MindInspector::MindInspector() :
-        m_serial(0)
-{
-}
-
-MindInspector::~MindInspector()
-{
-}
-
-void MindInspector::queryEntityForThoughts(const std::string& entityId)
-{
-}
-
-void MindInspector::relayResponseReceived(const Operation& op,
-        const std::string& entityId)
-{
-}
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {

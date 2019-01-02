@@ -124,21 +124,24 @@ WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity)
 /// the server, clears the operation queue
 WorldRouter::~WorldRouter()
 {
-    { 
-        debug(std::cout << "Flushing world with " << m_eobjects.size()
-                        << " entities" << std::endl << std::flush;);
-    }
+    m_operationsDispatcher.clearQueues();
+    m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
 
+    for (const auto& entry : m_spawns) {
+        delete entry.second.first;
+    }
+    m_spawns.clear();
+
+}
+
+void WorldRouter::shutdown()
+{
     //Make sure to clear the queues first so that there's nothing referencing entities
     //in them.
     m_operationsDispatcher.clearQueues();
     m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
-
-    m_eobjects.clear();
-    for (auto entry : m_spawns) {
-        delete entry.second.first;
-    }
-    m_spawns.clear();
+    m_baseEntity = nullptr;
+    BaseWorld::shutdown();
 }
 
 bool WorldRouter::isQueueDirty() const

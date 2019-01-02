@@ -20,7 +20,6 @@
 
 #include "WorldRouter.h"
 #include "EntityBuilder.h"
-#include "MindInspector.h"
 
 #include "rules/LocatedEntity.h"
 #include "rules/simulation/MindProperty.h"
@@ -56,7 +55,6 @@ typedef Database::KeyValues KeyValues;
 static const bool debug_flag = false;
 
 StorageManager:: StorageManager(WorldRouter & world) :
-        m_mindInspector(nullptr),
       m_insertEntityCount(0), m_updateEntityCount(0),
       m_insertPropertyCount(0), m_updatePropertyCount(0),
       m_insertQps(0), m_updateQps(0),
@@ -64,8 +62,6 @@ StorageManager:: StorageManager(WorldRouter & world) :
       m_insertQpsAvg(0), m_updateQpsAvg(0),
       m_insertQpsIndex(0), m_updateQpsIndex(0)
 {
-    m_mindInspector = new MindInspector();
-    m_mindInspector->ThoughtsReceived.connect(sigc::mem_fun(*this, &StorageManager::thoughtsReceived));
 
     world.inserted.connect(sigc::mem_fun(this,
           &StorageManager::entityInserted));
@@ -98,10 +94,7 @@ StorageManager:: StorageManager(WorldRouter & world) :
     Persistence::instance().characterDeleted.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterDeleted));
 }
 
-StorageManager::~StorageManager()
-{
-    delete m_mindInspector;
-}
+StorageManager::~StorageManager() = default;
 
 /// \brief Called when a new Entity is inserted in the world
 void StorageManager::entityInserted(LocatedEntity * ent)
@@ -275,68 +268,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         ent->m_location.m_parent->sendWorld(sight);
     }
 
-    restoreThoughts(ent);
-
 }
-
-void StorageManager::restoreThoughts(LocatedEntity * ent)
-{
-    Database * db = Database::instancePtr();
-    const DatabaseResult res = db->selectThoughts(ent->getId());
-    Atlas::Message::ListType thoughts_data;
-
-    auto I = res.begin();
-    auto Iend = res.end();
-    for (; I != Iend; ++I) {
-        const std::string thought = I.column("thought");
-        if (thought.empty()) {
-            log(ERROR,
-                    compose("No thought column in property row for %1",
-                            ent->getId()));
-            continue;
-        }
-        MapType thought_data;
-        db->decodeMessage(thought, thought_data);
-        thoughts_data.push_back(thought_data);
-    }
-
-    if (!thoughts_data.empty()) {
-        OpVector opRes;
-
-        Atlas::Objects::Operation::Think thoughtOp;
-        Atlas::Objects::Operation::Set setOp;
-        setOp->setArgsAsList(thoughts_data);
-        //Make the thought come from the entity itself
-        thoughtOp->setArgs1(setOp);
-        thoughtOp->setTo(ent->getId());
-        thoughtOp->setFrom(ent->getId());
-
-        ent->sendWorld(thoughtOp);
-    }
-}
-
-bool StorageManager::storeThoughts(LocatedEntity * ent)
-{
-    if (!m_mindInspector) {
-        return false;
-    }
-
-    if (ent->hasFlags(entity_ephem)) {
-        // This entity is not persisted.
-        return false;
-    }
-    //Check if the entity has a mind. Perhaps do this in another way than using dynamic cast?
-    auto mindProperty = ent->getPropertyClassFixed<MindProperty>();
-    if (mindProperty) {
-        if (mindProperty->isMindEnabled()) {
-            m_mindInspector->queryEntityForThoughts(ent->getId());
-            m_outstandingThoughtRequests.insert(ent->getId());
-            return true;
-        }
-    }
-    return false;
-}
-
 
 void StorageManager::insertEntity(LocatedEntity * ent)
 {
@@ -372,23 +304,6 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     ent->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
     ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) {entityUpdated(ent);});
-}
-
-void StorageManager::updateEntityThoughts(LocatedEntity * ent)
-{
-    Database * db = Database::instancePtr();
-    auto thoughts = ent->getThoughts();
-    std::vector<std::string> thoughtsList;
-    for (auto& thoughtOp : thoughts) {
-        Atlas::Message::MapType map;
-        thoughtOp->addToMessage(map);
-        std::string value;
-        db->encodeObject(map, value);
-        thoughtsList.push_back(value);
-    }
-    db->replaceThoughts(ent->getId(), thoughtsList);
-
-    ent->removeFlags(entity_dirty_thoughts);
 }
 
 void StorageManager::updateEntity(LocatedEntity * ent)
@@ -536,7 +451,6 @@ void StorageManager::tick()
             }
             if (ent->hasFlags(entity_dirty_thoughts)) {
                 debug( std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush; );
-                updateEntityThoughts(ent.get());
                 ++updates;
             }
             ent->removeFlags(entity_queued);
@@ -581,46 +495,6 @@ void StorageManager::tick()
                     << std::endl << std::flush;});
 }
 
-void StorageManager::thoughtsReceived(const std::string& entityId, const Operation& op)
-{
-    m_outstandingThoughtRequests.erase(entityId);
-    //Note that the received operation originated from an external mind, so we must
-    // treat it as unsafe.
-    if (op->getClassNo() == Atlas::Objects::Operation::THINK_NO) {
-        if (op->getArgs().empty()) {
-            return;
-        }
-        auto arg = op->getArgs().front();
-
-        if (arg->getClassNo() != Atlas::Objects::Operation::SET_NO) {
-            log(WARNING, "Got thought op where the first argument wasn't a Set op.");
-        } else {
-            auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(arg);
-            Database * db = Database::instancePtr();
-            std::vector<std::string> thoughtsList;
-            Atlas::Message::ListType thoughts = setOp->getArgsAsList();
-            for (auto& thoughtElement : thoughts) {
-                if (thoughtElement.isMap()) {
-                    std::string value;
-                    db->encodeObject(thoughtElement.asMap(), value);
-                    thoughtsList.push_back(value);
-                }
-            }
-            db->replaceThoughts(entityId, thoughtsList);
-        }
-
-    } else if (op->getClassNo()
-            == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
-        //A RootOperation indicates that the relay timed out; we'll just ignore it
-    } else {
-        log(WARNING,
-                String::compose(
-                        "Got response to a thoughts Get request from mind %1 with an operation of type %2. This could signal a malicious client.",
-                        op->getFrom(), op->getParent()));
-    }
-
-}
-
 int StorageManager::initWorld(const Ref<LocatedEntity>& ent)
 {
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent.get()));
@@ -662,22 +536,5 @@ int StorageManager::shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEn
         }
     }
     return 0;
-}
-
-size_t StorageManager::requestMinds(const std::map<long, Ref<LocatedEntity>>& entites)
-{
-    size_t requests = 0;
-    for (auto& pair : entites) {
-        if (storeThoughts(pair.second.get())) {
-            requests++;
-        }
-    }
-    return requests;
-}
-
-
-size_t StorageManager::numberOfOutstandingThoughtRequests() const
-{
-    return m_outstandingThoughtRequests.size();
 }
 

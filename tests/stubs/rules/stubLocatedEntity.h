@@ -15,14 +15,6 @@
   }
 #endif //STUB_LocatedEntity_immutables
 
-#ifndef STUB_LocatedEntity_clearProperties
-//#define STUB_LocatedEntity_clearProperties
-  void LocatedEntity::clearProperties()
-  {
-    
-  }
-#endif //STUB_LocatedEntity_clearProperties
-
 #ifndef STUB_LocatedEntity_collectObserversForChild
 //#define STUB_LocatedEntity_collectObserversForChild
   void LocatedEntity::collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const
@@ -48,6 +40,14 @@
     
   }
 #endif //STUB_LocatedEntity_LocatedEntity_DTOR
+
+#ifndef STUB_LocatedEntity_clearProperties
+//#define STUB_LocatedEntity_clearProperties
+  void LocatedEntity::clearProperties()
+  {
+    
+  }
+#endif //STUB_LocatedEntity_clearProperties
 
 #ifndef STUB_LocatedEntity_setType
 //#define STUB_LocatedEntity_setType

@@ -48,6 +48,14 @@
   }
 #endif //STUB_WorldRouter_WorldRouter_DTOR
 
+#ifndef STUB_WorldRouter_shutdown
+//#define STUB_WorldRouter_shutdown
+  void WorldRouter::shutdown()
+  {
+    
+  }
+#endif //STUB_WorldRouter_shutdown
+
 #ifndef STUB_WorldRouter_idle
 //#define STUB_WorldRouter_idle
   bool WorldRouter::idle()

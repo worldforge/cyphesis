@@ -39,22 +39,6 @@
   }
 #endif //STUB_StorageManager_restorePropertiesRecursively
 
-#ifndef STUB_StorageManager_restoreThoughts
-//#define STUB_StorageManager_restoreThoughts
-  void StorageManager::restoreThoughts(LocatedEntity *)
-  {
-    
-  }
-#endif //STUB_StorageManager_restoreThoughts
-
-#ifndef STUB_StorageManager_storeThoughts
-//#define STUB_StorageManager_storeThoughts
-  bool StorageManager::storeThoughts(LocatedEntity *)
-  {
-    return false;
-  }
-#endif //STUB_StorageManager_storeThoughts
-
 #ifndef STUB_StorageManager_insertEntity
 //#define STUB_StorageManager_insertEntity
   void StorageManager::insertEntity(LocatedEntity *)
@@ -71,14 +55,6 @@
   }
 #endif //STUB_StorageManager_updateEntity
 
-#ifndef STUB_StorageManager_updateEntityThoughts
-//#define STUB_StorageManager_updateEntityThoughts
-  void StorageManager::updateEntityThoughts(LocatedEntity *)
-  {
-    
-  }
-#endif //STUB_StorageManager_updateEntityThoughts
-
 #ifndef STUB_StorageManager_restoreChildren
 //#define STUB_StorageManager_restoreChildren
   void StorageManager::restoreChildren(LocatedEntity *)
@@ -86,14 +62,6 @@
     
   }
 #endif //STUB_StorageManager_restoreChildren
-
-#ifndef STUB_StorageManager_thoughtsReceived
-//#define STUB_StorageManager_thoughtsReceived
-  void StorageManager::thoughtsReceived(const std::string& entityId, const Operation& thoughts)
-  {
-    
-  }
-#endif //STUB_StorageManager_thoughtsReceived
 
 #ifndef STUB_StorageManager_persistance_characterAdded
 //#define STUB_StorageManager_persistance_characterAdded
@@ -115,7 +83,6 @@
 //#define STUB_StorageManager_StorageManager
    StorageManager::StorageManager(WorldRouter &)
     : sigc::trackable(WorldRouter)
-    , m_mindInspector(nullptr)
   {
     
   }
@@ -160,22 +127,6 @@
     return 0;
   }
 #endif //STUB_StorageManager_shutdown
-
-#ifndef STUB_StorageManager_requestMinds
-//#define STUB_StorageManager_requestMinds
-  size_t StorageManager::requestMinds(const std::map<long, Ref<LocatedEntity>>& entites)
-  {
-    return 0;
-  }
-#endif //STUB_StorageManager_requestMinds
-
-#ifndef STUB_StorageManager_numberOfOutstandingThoughtRequests
-//#define STUB_StorageManager_numberOfOutstandingThoughtRequests
-  size_t StorageManager::numberOfOutstandingThoughtRequests() const
-  {
-    return 0;
-  }
-#endif //STUB_StorageManager_numberOfOutstandingThoughtRequests
 
 
 #endif
