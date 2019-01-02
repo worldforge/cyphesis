@@ -34,181 +34,58 @@ When a client that wants to act like an AI client is connected it needs to infor
 
 As soon as an entity with a mind is created the server will look for any registered "possessive" clients, i.e. client that can handle the mind of the entity. If any such is registered, one will be selected (currently the last registered one) and a Possess op will be sent to the client. This op will contain both the id of the entity, as well as a secret key. The client then extracts the entity id along with the key and uses these to take possession of the entity. This is done using the regular method for taking control of a character, i.e. through a Look op, albeit with the possession key attached.
 
-Once the ai client has taken possession of the entity, the server will send all of the stored thoughts. This is done using the Thoughts protocol.
-
 From this moment on the AI client then acts as any other client.
+
+## AI properties
+
+The AI is controlled by a couple of different properties on the entity. These are described below.
+
+### _goals property
+
+The "_goals" property defined which goals are used for the entity. It's a list where each entry is a map. The goals are created in sequence, and checked in sequence (so that earlier goals gets checked first).
+Each map entry has a "class" string property which defines the Python class to use for the goal. In addition there can also be a "params" map property containing various parameters. These parameters needs to match the named parameters of the Python class' constructor.
+
+For example, here's a definition for a goal which makes the entity welcome all new entities that are human.
+```xml
+<list name="_goals">
+    <map>
+        <string name="class">mind.goals.humanoid.mason.welcome</string>
+        <map name="params">
+            <string name="message">Welcome traveller to the island of Braga! You look tired and hungry. Come closer and let me introduce this place.</string>
+            <string name="what">entity instance_of types.human</string>
+        </map>
+    </map>
+</list>
+```
+
+### _knowledge property
+
+The "_knowledge" property contains various things the entity "knows". It's a map where each key is in the format of "<predicate>:<subject>". The AI currently understands the predicates
+
+* about: a string describing something
+* location: a list of either three floats, or an addition string (to hold an id of an entity)
+
+An example of two bits of knowledge, with the first being an "about" referring to "this place", and the second being a "location" by the name of "w1". 
+
+```xml
+<map name="_knowledge">
+   <string name="about:this place">This is the main docks of this small island. Most visitors arrive here by boat.</string>
+   <list name="location:w1">
+       <float>0</float>
+       <float>0</float>
+       <float>0</float>
+   </list>
+</map> 
+```
 
 ## Thoughts protocol
 
-Whenever the server or any external authoring client needs to interact with the mind of an entity the Thoughts protocol is used. This is a simple protocol which allows for editing and inspection of thoughts.
-At the base is the Thought op, which wraps other ops. The usage is very much similar to the standard protocol for setting and inspecting entity protocol.
+Whenever the server or any external authoring client needs to interact with the mind of an entity the Thoughts protocol is used. This is a simple protocol which allows for inspection of thoughts.
+At the base is the Thought op, which wraps other ops.
 To interact with the mind of an entity a Thoughts op must be sent both to and from the entity. This means that if an external client needs to do this the Relay mechanism must be used to "fake" that the op is coming from the entity itself.
 The inner operation, which the Thoughts operation wraps, determines the action. These actions are supported:
 
-* Set: insert or update a thought
-* Delete: delete one or many thoughts
 * Look: inspect a specific thought/goal
-* Get: get one or many thoughts
-
-### Set
-A Set op is used to insert or update a thought. Each argument element represents on thought. If an argument element has an "id" set it will update an existing op with the same id, or create a new one. An argument element without "id" will just add a new thought. The following will set two thoughts, where the first one is a goal with the identifier "goal1" and the second one is a standard knowledge entry.
-
-Outgoing
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"args": [
-		{
-			"parent": "set",
-			"objtype": "op",
-			"args": [
-				{
-					"id": "goal1",
-					"goal": "do_something()",
-				},
-				{
-					"predicate": "about",
-					"subject": "village",
-					"object": "This is the village."
-				} 
-			]
-		}
-	]
-}
-</pre>
-
-### Get
-A Get op is used to get thoughts.
-An empty Get op will return all thoughts, both knowledge and goals.
-The thoughts will be returned as a Set op. The idea here is that this should be idempotent; if the Set op is then sent back to the AI client it should restore the thought. As such, it can be used for persistence.
-
-Outgoing
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"objtype": "op",
-	"args": [
-		{
-			"parent": "get"
-		}
-	]
-}
-</pre>
-Incoming
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"objtype": "op",
-	"args": [
-		{
-			"parent": "set",
-			"objtype": "op",
-			"args": [
-				{
-					"id": "goal1",
-					"goal": "do_something()",
-				},
-				{
-					"predicate": "about",
-					"subject": "village",
-					"object": "This is the village."
-				} 
-			]
-		}
-	]
-}
-</pre>
-
-Alternatively thoughts can also be filtered. This is done by submitting an argument to the Get operation. Currently a match will only be done on the existence of keys in the element, but its expected that this should be extended with regexp search on the value (which currently are ignored).
-
-Outgoing
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"objtype": "op",
-	"args": [
-		{
-			"parent": "get"
-			"objtype": "op",
-			"args": [
-				{
-					"goal": "this text is currently ignored",
-				} 
-			]
-		}
-	]
-}
-</pre>
-Incoming
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"objtype": "op",
-	"args": [
-		{
-			"parent": "set",
-			"objtype": "op",
-			"args": [
-				{
-					"id": "goal1",
-					"goal": "do_something()"
-				}
-			]
-		}
-	]
-}
-</pre>
-
-### Delete
-A Delete op is used to delete thoughts.
-An empty Delete op will delete all thoughts, both knowledge and goals.
-A delete op with arguments will delete matching thoughts, per argument.
-
-Outgoing to delete all
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"objtype": "op",
-	"args": [
-		{
-			"parent": "delete"
-		}
-	]
-}
-</pre>
-
-
-Outgoing to delete single
-<pre>
-{
-	"parent": "thought",
-	"to": "1",
-	"from": "1",
-	"objtype": "op",
-	"args": [
-		{
-			"parent": "delete",
-			"args": [
-				{
-					"id": "goal1"
-				}
-			]
-		}
-	]
-}
-</pre>
 
 ### Look
 A Look op is used to inspect thoughts. This is meant to be used by world authors and those that are interested in observing the world.
@@ -217,7 +94,7 @@ Each thought to be inspected is supplied as an args element.
 For each thought a "report" is returned in an Info op.
 
 Outgoing
-<pre>
+```
 {
 	"parent": "thought",
 	"to": "1",
@@ -234,9 +111,9 @@ Outgoing
 		}
 	]
 }
-</pre>
+```
 Incoming
-<pre>
+```
 {
 	"parent": "thought",
 	"to": "1",
@@ -250,7 +127,7 @@ Incoming
 				{
 					"id": "goal1",
 					"report": {
-						"description": "a description of the goal"
+						"description": "a description of the goal",
 						"fulfilled": 1,
 						"variables": {
 							"a var": "a value"
@@ -261,4 +138,4 @@ Incoming
 		}
 	]
 }
-</pre>
+```
