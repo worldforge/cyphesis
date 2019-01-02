@@ -31,7 +31,7 @@ static const bool debug_flag = false;
 
 
 AwarenessStoreProvider::AwarenessStoreProvider(IHeightProvider& heightProvider)
-: m_heightProvider(heightProvider)
+    : m_heightProvider(heightProvider)
 {
 }
 

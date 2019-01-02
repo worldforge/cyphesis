@@ -376,7 +376,6 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
             for (auto& entity : resolved) {
 
                 log(INFO, String::compose("Resolved entity %1.", entity->getId()));
-                entity->setType(type);
 
                 auto J = m_pendingEntitiesOperations.find(entity->getId());
                 if (J != m_pendingEntitiesOperations.end()) {

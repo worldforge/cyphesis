@@ -89,7 +89,9 @@ class MemMap {
     void addContents(const Atlas::Objects::Entity::RootEntity &);
     Ref<MemEntity> addId(const std::string &, long);
 
-  public:
+    void applyTypePropertiesToEntity(const Ref<MemEntity>& entity);
+
+    public:
 
     explicit MemMap(TypeResolver& typeResolver);
 

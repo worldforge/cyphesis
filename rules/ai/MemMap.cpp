@@ -81,16 +81,7 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
 void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
-    if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-        auto& parent = ent->getParent();
-        auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
 
-        if (type) {
-            entity->setType(type);
-        } else {
-            m_unresolvedEntities[parent].insert(entity);
-        }
-    }
     entity->merge(ent->asMessage());
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         auto old_loc = entity->m_location.m_parent;
@@ -112,7 +103,33 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
         entity->m_location.readFromEntity(ent);
         entity->m_location.update(timestamp);
     }
+
+    if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+        auto& parent = ent->getParent();
+        auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
+
+        if (type) {
+            entity->setType(type);
+            applyTypePropertiesToEntity(entity);
+        } else {
+            m_unresolvedEntities[parent].insert(entity);
+        }
+    }
+
     addContents(ent);
+}
+
+void MemMap::applyTypePropertiesToEntity(const Ref<MemEntity>& entity) {
+    for (auto& propIter : entity->getType()->defaults()) {
+        // The property will have been applied if it has an overridden
+        // value, so we only apply if the value is still default.
+        if (entity->getProperties().find(propIter.first) == entity->getProperties().end()) {
+            PropertyBase * prop = propIter.second;
+            prop->install(entity.get(), propIter.first);
+            prop->apply(entity.get());
+            entity->propertyApplied(propIter.first, *prop);
+        }
+    }
 }
 
 void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
@@ -279,14 +296,11 @@ Ref<MemEntity> MemMap::getAdd(const std::string& id)
 void MemMap::addContents(const RootEntity& ent)
 // Iterate over the contains attribute of a message, looking at all the contents
 {
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::CONTAINS_FLAG)) {
-        return;
-    }
-    const std::list<std::string>& contlist = ent->getContains();
-    auto Jend = contlist.end();
-    auto J = contlist.begin();
-    for (; J != Jend; ++J) {
-        getAdd(*J);
+    if (!ent->isDefaultContains()) {
+        auto& contlist = ent->getContains();
+        for (auto& child : contlist) {
+            getAdd(child);
+        }
     }
 }
 
@@ -470,6 +484,7 @@ std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeN
         for (auto& entity : I->second) {
             log(INFO, String::compose("Resolved entity %1.", entity->getId()));
             entity->setType(typeNode);
+            applyTypePropertiesToEntity(entity);
 
             if (m_script) {
                 debug_print(this);

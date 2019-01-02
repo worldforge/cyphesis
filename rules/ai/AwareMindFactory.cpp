@@ -24,12 +24,13 @@
 
 
 AwareMindFactory::AwareMindFactory()
-: mSharedTerrain(new SharedTerrain()), mAwarenessStoreProvider(new AwarenessStoreProvider(*mSharedTerrain))
+    : mSharedTerrain(new SharedTerrain()),
+      mAwarenessStoreProvider(new AwarenessStoreProvider(*mSharedTerrain))
 {
 
 }
 
-BaseMind * AwareMindFactory::newMind(const std::string & mind_id, const std::string & entity_id) const
+BaseMind* AwareMindFactory::newMind(const std::string& mind_id, const std::string& entity_id) const
 {
     return new AwareMind(mind_id, entity_id, *mSharedTerrain, *mAwarenessStoreProvider);
 }

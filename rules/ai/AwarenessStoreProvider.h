@@ -16,7 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 #ifndef RULESETS_MIND_AWARENESSSTOREPROVIDER_H_
-
 #define RULESETS_MIND_AWARENESSSTOREPROVIDER_H_
 
 #include "AwarenessStore.h"
@@ -27,12 +26,14 @@
 #include <memory>
 
 class TypeNode;
+
 class IHeightProvider;
 
 class AwarenessStoreProvider
 {
     public:
         explicit AwarenessStoreProvider(IHeightProvider& heightProvider);
+
         virtual ~AwarenessStoreProvider() = default;
 
         AwarenessStore& getStore(const TypeNode* type, int tileSize = 64);

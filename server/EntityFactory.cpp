@@ -83,23 +83,27 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             thing.m_location.m_velocity.setValid(false);
         }
 
-        MapType attrs = attributes->asMessage();
+        auto attrs = attributes->asMessage();
+        //First make sure that all properties are installed, since Entity::setAttr won't install props if they exist in the type.
+        for (auto& propIter : m_type->defaults()) {
+            PropertyBase * prop = propIter.second;
+            prop->install(&thing, propIter.first);
+        }
+
         // Apply the attribute values
         thing.merge(attrs);
         // Then set up the default class properties
         for (auto& propIter : m_type->defaults()) {
-            PropertyBase * prop = propIter.second;
-            // If a property is in the class it won't have been installed
-            // as setAttr() checks
-            prop->install(&thing, propIter.first);
             // The property will have been applied if it has an overridden
-            // value, so we only apply it the value is still default.
+            // value, so we only apply if the value is still default.
             if (attrs.find(propIter.first) == attrs.end()) {
+                PropertyBase * prop = propIter.second;
                 prop->apply(&thing);
                 thing.propertyApplied(propIter.first, *prop);
             }
         }
     }
+
 }
 
 void EntityFactoryBase::addProperties()

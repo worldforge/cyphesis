@@ -67,7 +67,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
          *
          * This is used to correctly calculate position of entities when handling steering.
          *
-         * The value is calculated by substracting the timestamp received from the server from the current local time.
+         * The value is calculated by subtracting the timestamp received from the server from the current local time.
          */
         double mServerTimeDiff;
 

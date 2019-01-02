@@ -43,12 +43,12 @@
 
 static const bool debug_flag = true;
 
-AwareMind::AwareMind(const std::string & mind_id, const std::string & entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(mind_id, entity_id),
-        mSharedTerrain(sharedTerrain),
-        mAwarenessStoreProvider(awarenessStoreProvider),
-        mAwarenessStore(nullptr),
-        mServerTimeDiff(0)
+AwareMind::AwareMind(const std::string& mind_id, const std::string& entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
+    BaseMind(mind_id, entity_id),
+    mSharedTerrain(sharedTerrain),
+    mAwarenessStoreProvider(awarenessStoreProvider),
+    mAwarenessStore(nullptr),
+    mServerTimeDiff(0)
 {
     m_map.setListener(this);
 }
@@ -68,7 +68,7 @@ AwareMind::~AwareMind()
     }
 }
 
-void AwareMind::operation(const Operation & op, OpVector & res)
+void AwareMind::operation(const Operation& op, OpVector& res)
 {
 
     //If it's a "move" tick we'll process it here and won't send it on to the mind.
@@ -104,7 +104,7 @@ double AwareMind::getCurrentServerTime() const
     return getCurrentLocalTime() - mServerTimeDiff;
 }
 
-void AwareMind::processMoveTick(const Operation & op, OpVector & res)
+void AwareMind::processMoveTick(const Operation& op, OpVector& res)
 {
     //Default to checking movement every 0.2 seconds, unless steering tells us otherwise
     double futureTick = 0.2;
@@ -211,7 +211,7 @@ void AwareMind::requestAwareness(const MemEntity& entity)
     mAwareness->addEntity(*m_ownEntity, *m_ownEntity, true);
     auto& entities = m_map.getEntities();
     //Add all existing known entities that have the same parent entity as ourselves.
-    for (auto entry : entities) {
+    for (const auto& entry : entities) {
         if (entry.first != getIntId()) {
             if (entry.second->m_location.m_parent == m_ownEntity->m_location.m_parent) {
                 mAwareness->addEntity(*m_ownEntity, *entry.second, false);
@@ -221,12 +221,17 @@ void AwareMind::requestAwareness(const MemEntity& entity)
     mSteering->setAwareness(mAwareness.get());
 }
 
-void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation)
+void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
 {
     if (mAwareness) {
-        //Update the awareness if location, position, velocity, orientation or bbox has changed
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG) || ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
-                || ent->hasAttr("orientation") || ent->hasAttr("bbox")) {
+        //Update the awareness if location, position, velocity, orientation, scale or bbox has changed
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)
+            || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)
+            || ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
+            || ent->hasAttr("orientation")
+            || ent->hasAttr("bbox")
+            || ent->hasAttr("scale")) {
+
             if (oldLocation == entity.m_location.m_parent.get()) {
                 //Location wasn't changed
                 if (entity.m_location.m_parent == m_ownEntity->m_location.m_parent) {

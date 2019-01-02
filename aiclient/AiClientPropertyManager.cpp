@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rules/ScaleProperty.h>
 #include "AiClientPropertyManager.h"
 
 #include "rules/BBoxProperty.h"
@@ -27,7 +28,8 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 AiClientPropertyManager::AiClientPropertyManager()
 {
-    PropertyManager::installFactory(BBoxProperty::property_atlastype, std::make_unique<PropertyFactory<BBoxProperty>>());
+    PropertyManager::installFactory(BBoxProperty::property_name, std::make_unique<PropertyFactory<BBoxProperty>>());
+    PropertyManager::installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
 }
 
 PropertyBase* AiClientPropertyManager::addProperty(const std::string& name,

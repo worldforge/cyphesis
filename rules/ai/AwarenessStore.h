@@ -25,7 +25,9 @@
 #include <memory>
 
 class IHeightProvider;
+
 class Awareness;
+
 class LocatedEntity;
 
 
@@ -33,6 +35,7 @@ class AwarenessStore
 {
     public:
         AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize = 64);
+
         virtual ~AwarenessStore() = default;
 
         std::shared_ptr<Awareness> requestAwareness(const LocatedEntity& domainEntity);
