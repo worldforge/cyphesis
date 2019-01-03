@@ -61,20 +61,6 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
     m_entities[entity->getIntId()] = entity;
     m_checkIterator = m_entities.find(next);
 
-    //Only signal if the type has been resolved, otherwise this will happen later when the entity obtains a type
-    if (entity->getType()) {
-        if (m_script) {
-            debug_print(this);
-            for (auto& hook : m_addHooks) {
-                m_script->hook(hook, entity.get());
-            }
-        }
-
-        if (m_listener) {
-            m_listener->entityAdded(*entity);
-        }
-    }
-
     return entity;
 }
 
@@ -109,8 +95,23 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
         auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
 
         if (type) {
-            entity->setType(type);
-            applyTypePropertiesToEntity(entity);
+            if (entity->getType() != type) {
+                entity->setType(type);
+                applyTypePropertiesToEntity(entity);
+
+                if (entity->getType()) {
+                    if (m_script) {
+                        debug_print(this);
+                        for (auto& hook : m_addHooks) {
+                            m_script->hook(hook, entity.get());
+                        }
+                    }
+
+                    if (m_listener) {
+                        m_listener->entityAdded(*entity);
+                    }
+                }
+            }
         } else {
             m_unresolvedEntities[parent].insert(entity);
         }

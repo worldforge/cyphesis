@@ -88,7 +88,8 @@ class MemMaptest : public Cyphesis::TestBase
     void test_del();
     void test_addEntity();
     void test_addEntity_script();
-    void test_addEntity_script_hook();
+    void test_addEntity_no_script_hook();
+    void test_readEntity_script_hook();
     void test_readEntity();
     void test_readEntity_type();
     void test_readEntity_type_nonexist();
@@ -132,7 +133,8 @@ MemMaptest::MemMaptest()
     ADD_TEST(MemMaptest::test_del);
     ADD_TEST(MemMaptest::test_addEntity);
     ADD_TEST(MemMaptest::test_addEntity_script);
-    ADD_TEST(MemMaptest::test_addEntity_script_hook);
+    ADD_TEST(MemMaptest::test_addEntity_no_script_hook);
+    ADD_TEST(MemMaptest::test_readEntity_script_hook);
     ADD_TEST(MemMaptest::test_readEntity);
     ADD_TEST(MemMaptest::test_readEntity_type);
     ADD_TEST(MemMaptest::test_readEntity_type_nonexist);
@@ -216,7 +218,7 @@ void MemMaptest::test_addEntity_script()
     ASSERT_NULL(m_Script_hook_called_with);
 }
 
-void MemMaptest::test_addEntity_script_hook()
+void MemMaptest::test_addEntity_no_script_hook()
 {
     const std::string new_id("3");
     const std::string test_add_hook_name("test_add_hook");
@@ -230,6 +232,29 @@ void MemMaptest::test_addEntity_script_hook()
     Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
     m_memMap->addEntity(ent);
+
+    ASSERT_TRUE(m_memMap->get(new_id));
+    ASSERT_NULL(m_Script_hook_called_with);
+    ASSERT_EQUAL(m_Script_hook_called, "");
+}
+
+void MemMaptest::test_readEntity_script_hook()
+{
+    const std::string new_id("3");
+    const std::string test_add_hook_name("test_add_hook");
+
+    auto script = new TestScript;
+    m_memMap->setScript(script);
+    m_memMap->m_addHooks.push_back(test_add_hook_name);
+
+    ASSERT_FALSE(m_memMap->get(new_id));
+
+    Ref<MemEntity> ent = new MemEntity(new_id, 3);
+    m_memMap->addEntity(ent);
+
+    Anonymous data;
+    data->setParent("sample_type");
+    m_memMap->readEntity(ent, data, 0);
 
     ASSERT_TRUE(m_memMap->get(new_id));
     ASSERT_NOT_NULL(m_Script_hook_called_with);
