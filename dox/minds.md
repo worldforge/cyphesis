@@ -78,6 +78,36 @@ An example of two bits of knowledge, with the first being an "about" referring t
 </map> 
 ```
 
+### Relations
+
+To handle relations between different entities a system is in place using the two related concepts of "disposition" and "threat". Together these two determines whether an entity should be ignored, fought or fleed from.
+
+#### disposition
+
+"Disposition" determines how well a character likes another entity. It's a float value, where > 0 means that the character is in favour. It it's < -1 it means that the character hates the entity, and will either fight of flee from it (depending on the "threat" value).
+
+#### threat
+
+"Threat" determines how the character should behave when the disposition for an entity is < -1 (i.e. it's an "enemy"). For entities that have a positive threat it means that the character should try to flee from them. For negative values the character should instead attack.
+
+#### _relations property
+
+The "_relations" property defines the rules for how these values are computed per entity. It's a list containing "rules" entries. Each entry is a map, containing a required string with the key "filter" which defines an Entity Filter.
+In addition there can be float attributes for both "disposition" and "threat".
+
+When a new entity is encountered all rules are checked in order, and the total sum for disposition and threat is calculated by adding up all matching entries.
+An example of a rule which makes the character flee from adversaries.
+
+```xml
+<list name="_relations">
+    <map>
+        <string name="filter">entity.type=types.wolf|types.goblin|types.bear|types.skeleton|types.lych</string>
+        <float name="disposition">-10</float>
+        <float name="threat">10</float>
+    </map>
+</list>
+```  
+
 ## Thoughts protocol
 
 Whenever the server or any external authoring client needs to interact with the mind of an entity the Thoughts protocol is used. This is a simple protocol which allows for inspection of thoughts.
