@@ -118,7 +118,7 @@ Py::Object CyPy_UsageInstance::getArg(const UsageInstance& usageInstance, const 
     }
 
     auto& vector = I->second;
-    if (index >= vector.size()) {
+    if (static_cast<unsigned long>(index) >= vector.size()) {
         return Py::None();
     }
 
