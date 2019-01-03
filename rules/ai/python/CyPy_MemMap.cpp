@@ -29,24 +29,16 @@ using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds), m_owned(true)
+    : WrapperBase(self, args, kwds)
 {
     throw Py::TypeError("MemMap() can't be instanced from Python.");
 }
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value)
-    : WrapperBase(self, value), m_owned(false)
+    : WrapperBase(self, value)
 {
 
 }
-
-CyPy_MemMap::~CyPy_MemMap()
-{
-    if (m_owned) {
-        delete m_value;
-    }
-}
-
 void CyPy_MemMap::init_type()
 {
     behaviors().name("MemMap");
@@ -210,9 +202,7 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
     Py::List list;
 
     for (auto& entry : m_value->getEntities()) {
-        EntityFilter::QueryContext queryContext{*entry.second};
-        queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
-        queryContext.type_lookup_fn = [&](const std::string& id) { return m_value->getTypeStore().getType(id); };
+        EntityFilter::QueryContext queryContext = createFilterContext(entry.second.get(), m_value);
 
         if (filter->match(queryContext)) {
             list.append(CyPy_MemEntity::wrap(entry.second.get()));
@@ -240,9 +230,7 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
     Py::List list;
     if (location.m_parent && location.m_parent->m_contains) {
         for (const auto& entry : *location.m_parent->m_contains) {
-            EntityFilter::QueryContext queryContext{*entry};
-            queryContext.entity_lookup_fn = [&](const std::string& id) { return m_value->get(id);};
-            queryContext.type_lookup_fn = [&](const std::string& id) { return m_value->getTypeStore().getType(id); };
+            EntityFilter::QueryContext queryContext = createFilterContext(entry.get(), m_value);
 
             if (entry->isVisible() && filter->match(queryContext)) {
                 if (squareDistance(location.pos(), entry->m_location.pos()) < square_range) {
@@ -280,6 +268,26 @@ Py::Object CyPy_MemMap::recall_entity_memory(const Py::Tuple& args)
         return Py::None();
     }
     return CyPy_Element::wrap(element_val);
+}
+
+EntityFilter::QueryContext CyPy_MemMap::createFilterContext(LocatedEntity* entity, MemMap* memMap)
+{
+    EntityFilter::QueryContext queryContext{*entity};
+    queryContext.type_lookup_fn = [memMap](const std::string& id) -> const TypeNode* {
+        return memMap->getTypeStore().getType(id);
+    };
+    queryContext.entity_lookup_fn = [memMap](const std::string& id) -> Ref<LocatedEntity> {
+        return memMap->get(id);
+    };
+    queryContext.memory_lookup_fn = [memMap](const std::string& id) -> const Atlas::Message::MapType& {
+        auto I = memMap->getEntityRelatedMemory().find(id);
+        if (I != memMap->getEntityRelatedMemory().end()) {
+            return I->second;
+        }
+        static Atlas::Message::MapType empty;
+        return empty;
+    };
+    return queryContext;
 }
 
 

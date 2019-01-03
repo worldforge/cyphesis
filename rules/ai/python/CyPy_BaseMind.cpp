@@ -103,13 +103,8 @@ Py::Object CyPy_BaseMind::matchEntity(const Py::Tuple& args)
     auto& filter = verifyObject<CyPy_Filter>(args.getItem(0));
     auto& entity = verifyObject<CyPy_LocatedEntity>(args.getItem(1));
 
-    EntityFilter::QueryContext queryContext{*entity, m_value->getEntity().get()};
-    queryContext.type_lookup_fn = [&](const std::string& id) -> const TypeNode* {
-        return m_value->getTypeStore().getType(id);
-    };
-    queryContext.entity_lookup_fn = [&](const std::string& id) -> Ref<LocatedEntity> {
-        return m_value->getMap()->get(id);
-    };
+    EntityFilter::QueryContext queryContext = CyPy_MemMap::createFilterContext(entity.get(), m_value->getMap());
+    queryContext.actor = m_value->getEntity().get();
 
     return Py::Boolean(filter->match(queryContext));
 }
@@ -123,13 +118,9 @@ Py::Object CyPy_BaseMind::matchEntities(const Py::Tuple& args)
     Py::List list;
 
     for (auto entity : entities) {
-        EntityFilter::QueryContext queryContext{*verifyObject<CyPy_LocatedEntity>(entity), m_value->getEntity().get()};
-        queryContext.type_lookup_fn = [&](const std::string& id) -> const TypeNode* {
-            return m_value->getTypeStore().getType(id);
-        };
-        queryContext.entity_lookup_fn = [&](const std::string& id) -> Ref<LocatedEntity> {
-            return m_value->getMap()->get(id);
-        };
+        EntityFilter::QueryContext queryContext = CyPy_MemMap::createFilterContext(verifyObject<CyPy_LocatedEntity>(entity).get(), m_value->getMap());
+        queryContext.actor = m_value->getEntity().get();
+
         if (filter->match(queryContext)) {
             list.append(entity);
         }

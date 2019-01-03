@@ -64,7 +64,7 @@ namespace EntityFilter {
         /**
          * A memory, using when filters are attached to Minds.
          */
-        std::map<std::string, Atlas::Message::Element> memory;
+        std::function<const Atlas::Message::MapType&(const std::string&)> memory_lookup_fn;
 
         //This field can be used by client code to specify entity for "self.*" query
         LocatedEntity* self_entity = nullptr;
@@ -466,16 +466,7 @@ namespace EntityFilter {
             MapProvider* createMapProvider(SegmentsList segments) const;
 
             TypeNodeProvider* createTypeNodeProvider(SegmentsList segments) const;
-    };
 
-    class MindProviderFactory : public ProviderFactory
-    {
-        public:
-            ~MindProviderFactory() override = default;
-
-            Consumer<QueryContext>* createProviders(SegmentsList segments) const override;
-
-        protected:
             MemoryProvider* createMemoryProvider(SegmentsList segments) const;
     };
 

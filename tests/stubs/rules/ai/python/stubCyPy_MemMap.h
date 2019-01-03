@@ -25,14 +25,6 @@
   }
 #endif //STUB_CyPy_MemMap_CyPy_MemMap
 
-#ifndef STUB_CyPy_MemMap_CyPy_MemMap_DTOR
-//#define STUB_CyPy_MemMap_CyPy_MemMap_DTOR
-   CyPy_MemMap::~CyPy_MemMap()
-  {
-    
-  }
-#endif //STUB_CyPy_MemMap_CyPy_MemMap_DTOR
-
 #ifndef STUB_CyPy_MemMap_init_type
 //#define STUB_CyPy_MemMap_init_type
    void CyPy_MemMap::init_type()
@@ -144,6 +136,14 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_MemMap_recall_entity_memory
+
+#ifndef STUB_CyPy_MemMap_createFilterContext
+//#define STUB_CyPy_MemMap_createFilterContext
+   EntityFilter::QueryContext CyPy_MemMap::createFilterContext(LocatedEntity* entity, MemMap* memMap)
+  {
+    return *static_cast< EntityFilter::QueryContext*>(nullptr);
+  }
+#endif //STUB_CyPy_MemMap_createFilterContext
 
 
 #endif

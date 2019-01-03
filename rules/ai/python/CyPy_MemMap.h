@@ -19,6 +19,7 @@
 #ifndef CYPHESIS_CYPY_MEMMAP_H
 #define CYPHESIS_CYPY_MEMMAP_H
 
+#include "rules/entityfilter/Providers.h"
 #include "../MemMap.h"
 #include "rules/python/WrapperBase.h"
 
@@ -29,7 +30,7 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
 
         CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value);
 
-        ~CyPy_MemMap();
+        ~CyPy_MemMap() = default;
 
         static void init_type();
 
@@ -72,8 +73,7 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
         Py::Object recall_entity_memory(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, recall_entity_memory);
 
-    protected:
-        bool m_owned;
+        static EntityFilter::QueryContext createFilterContext(LocatedEntity* entity, MemMap* memMap);
 
 };
 

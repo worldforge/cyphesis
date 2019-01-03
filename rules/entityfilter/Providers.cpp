@@ -99,16 +99,16 @@ namespace EntityFilter {
 
     void MemoryProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
     {
-        if (m_consumer) {
-            auto& ent = context.entity;
-            auto& mem = context.memory;
-            const auto& iter = mem.find(ent.getId());
-            if (iter != mem.end()) {
-                m_consumer->value(value, iter->second);
+        if (context.memory_lookup_fn) {
+            const Atlas::Message::MapType& memory = context.memory_lookup_fn(context.entity.getId());
+
+            if (m_consumer) {
+                m_consumer->value(value, memory);
                 return;
+            } else {
+                value = memory;
             }
         }
-        value = Atlas::Message::Element();
     }
 
     EntityProvider::EntityProvider(Consumer<LocatedEntity>* consumer)
@@ -401,9 +401,21 @@ namespace EntityFilter {
                 return createEntityProvider<ToolProvider>(std::move(segments));
             } else if (first_attribute == "child") {
                 return createEntityProvider<ChildProvider>(std::move(segments));
+            } else if (first_attribute == "memory") {
+                return createMemoryProvider(std::move(segments));
             }
         }
         return nullptr;
+    }
+
+
+    MemoryProvider* ProviderFactory::createMemoryProvider(SegmentsList segments) const
+    {
+        if (segments.empty()) {
+            return nullptr;
+        }
+        segments.pop_front();
+        return new MemoryProvider(createMapProvider(std::move(segments)));
     }
 
     Consumer<QueryContext>* ProviderFactory::createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const
@@ -539,29 +551,6 @@ namespace EntityFilter {
         auto attr = segment.attribute;
 
         return new TypeNodeProvider(attr);
-    }
-
-    Consumer<QueryContext>* MindProviderFactory::createProviders(SegmentsList segments) const
-    {
-
-        if (!segments.empty()) {
-            auto& first_attribute = segments.front().attribute;
-            if (first_attribute == "memory") {
-                return createMemoryProvider(std::move(segments));
-            } else {
-                return ProviderFactory::createProviders(std::move(segments));
-            }
-        }
-        return nullptr;
-    }
-
-    MemoryProvider* MindProviderFactory::createMemoryProvider(SegmentsList segments) const
-    {
-        if (segments.empty()) {
-            return nullptr;
-        }
-        segments.pop_front();
-        return new MemoryProvider(createMapProvider(std::move(segments)));
     }
 
 

@@ -693,26 +693,13 @@ namespace EntityFilter {
   }
 #endif //STUB_ProviderFactory_createTypeNodeProvider
 
-
-}  // namespace EntityFilter
-
-namespace EntityFilter {
-
-#ifndef STUB_MindProviderFactory_createProviders
-//#define STUB_MindProviderFactory_createProviders
-  Consumer<QueryContext>* MindProviderFactory::createProviders(SegmentsList segments) const
+#ifndef STUB_ProviderFactory_createMemoryProvider
+//#define STUB_ProviderFactory_createMemoryProvider
+  MemoryProvider* ProviderFactory::createMemoryProvider(SegmentsList segments) const
   {
     return nullptr;
   }
-#endif //STUB_MindProviderFactory_createProviders
-
-#ifndef STUB_MindProviderFactory_createMemoryProvider
-//#define STUB_MindProviderFactory_createMemoryProvider
-  MemoryProvider* MindProviderFactory::createMemoryProvider(SegmentsList segments) const
-  {
-    return nullptr;
-  }
-#endif //STUB_MindProviderFactory_createMemoryProvider
+#endif //STUB_ProviderFactory_createMemoryProvider
 
 
 }  // namespace EntityFilter

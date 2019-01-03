@@ -29,7 +29,7 @@ CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
 {
     args.verify_length(1);
     auto filterString = verifyString(args.front());
-    EntityFilter::MindProviderFactory factory;
+    EntityFilter::ProviderFactory factory;
     try {
         m_value.reset(new EntityFilter::Filter(filterString, factory));
     } catch (const std::exception& e) {

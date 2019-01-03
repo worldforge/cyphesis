@@ -146,33 +146,62 @@ struct EntityFilterTest : public Cyphesis::TestBase
     TypeNode* m_glovesType;
     TypeNode* m_bootsType;
 
+    std::map<std::string, Atlas::Message::MapType> m_memory;
+
+
+    QueryContext makeContext(const Ref<Entity>& entity)
+    {
+        QueryContext queryContext{*entity};
+        queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
+        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+        queryContext.memory_lookup_fn = [&](const std::string& id) -> const Atlas::Message::MapType& {
+            auto I = m_memory.find(id);
+            if (I != m_memory.end()) {
+                return I->second;
+            }
+            static Atlas::Message::MapType empty;
+            return empty;
+        };
+        return queryContext;
+    }
+
     //\brief a tester function for entity filter. Accepts a query and lists of entities that
     // are supposed to pass or fail the test for a given query
     void TestQuery(const std::string& query,
-                                     std::initializer_list<Ref<Entity>> entitiesToPass,
-                                     std::initializer_list<Ref<Entity>> entitiesToFail)
+                   std::initializer_list<Ref<Entity>> entitiesToPass,
+                   std::initializer_list<Ref<Entity>> entitiesToFail)
     {
-        EntityFilter::ProviderFactory factory;
+        TestQuery(query, entitiesToPass, entitiesToFail, EntityFilter::ProviderFactory());
+    }
+
+    void TestQuery(const std::string& query,
+                   std::initializer_list<Ref<Entity>> entitiesToPass,
+                   std::initializer_list<Ref<Entity>> entitiesToFail,
+                   const EntityFilter::ProviderFactory& factory)
+    {
         EntityFilter::Filter f(query, factory);
         for (const auto& entity : entitiesToPass) {
-            QueryContext queryContext{*entity};
-            queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
-            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+            QueryContext queryContext = makeContext(entity);
             assert(f.match(queryContext));
         }
         for (const auto& entity : entitiesToFail) {
-            QueryContext queryContext{*entity};
-            queryContext.entity_lookup_fn = [&](const std::string& id) { return find_entity(id); };
-            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+            QueryContext queryContext = makeContext(entity);
             assert(!f.match(queryContext));
         }
     }
 
     void TestContextQuery(const std::string& query,
-                                            std::initializer_list<QueryContext> contextsToPass,
-                                            std::initializer_list<QueryContext> contextsToFail)
+                          std::initializer_list<QueryContext> contextsToPass,
+                          std::initializer_list<QueryContext> contextsToFail)
     {
-        EntityFilter::ProviderFactory factory;
+        TestContextQuery(query, contextsToPass, contextsToFail, EntityFilter::ProviderFactory());
+    }
+
+    void TestContextQuery(const std::string& query,
+                          std::initializer_list<QueryContext> contextsToPass,
+                          std::initializer_list<QueryContext> contextsToFail,
+                          const EntityFilter::ProviderFactory& factory)
+    {
         EntityFilter::Filter f(query, factory);
         for (auto& context : contextsToPass) {
             assert(f.match(context));
@@ -225,6 +254,10 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
     }
 
+    void test_Memory()
+    {
+        TestQuery("memory.disposition = 25", {m_b1}, {m_bl1});
+    }
 
     void test_Types()
     {
@@ -563,12 +596,9 @@ struct EntityFilterTest : public Cyphesis::TestBase
         m_bl1->setProperty("string_list", list_prop2);
 
 // Create an entity-related memory map
-        std::map<std::string, Element> entity_memory_map;
-        entity_memory_map.insert(std::make_pair("disposition", Element(25)));
-        Element memory_map_element(entity_memory_map);
+        Atlas::Message::MapType entity_memory_map{{"disposition", 25}};
 
-        std::map<std::string, Element> memory;
-        memory.insert(std::make_pair("1", memory_map_element));
+        m_memory.emplace("1", entity_memory_map);
 
 //b1 contains bl1 which contains b3
         m_b1_container = new LocatedEntitySet;
@@ -661,6 +691,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
     EntityFilterTest()
     {
+        ADD_TEST(EntityFilterTest::test_Memory);
         ADD_TEST(EntityFilterTest::test_Types);
         ADD_TEST(EntityFilterTest::test_CanReach);
         ADD_TEST(EntityFilterTest::test_SoftProperty);
@@ -700,26 +731,6 @@ int main()
      lhs_provider5->value(value, qc);
      assert(value == Element(30));
 
-     //MindProviderFactory tests
-     MindProviderFactory mind_factory;
-
-     //memory.disposition
-     segments.clear();
-     segments.push_back( { "", "memory" });
-     segments.push_back( { ".", "disposition" });
-     provider = mind_factory.createProviders(segments);
-     provider->value(value, QueryContext { b1, memory });
-     assert(value.Int() == 25);
-
-     //entity.memory
-     segments.clear();
-     segments.push_back( { "", "memory" });
-     segments.push_back( { ".", "disposition" });
-     lhs_provider5 = mind_factory.createProviders(segments);
-
-     ComparePredicate compPred15(lhs_provider5, new FixedElementProvider(25),
-     ComparePredicate::Comparator::EQUALS);
-     assert(compPred15.isMatch(QueryContext { b1, memory }));
 
      //entity.type.name
      segments.clear();
