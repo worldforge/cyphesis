@@ -531,7 +531,7 @@ class search(Goal):
 class pursuit(Goal):
     """avoid or hunt something at range"""
 
-    def __init__(self, desc, what, range, direction):
+    def __init__(self, desc="pursue something", what="", range=0, direction=-1):
         Goal.__init__(self, "pursue something", self.not_visible, [self.run])
 
         if isinstance(what, str):
@@ -568,7 +568,7 @@ class avoid(pursuit):
     """avoid something at range"""
 
     def __init__(self, what='', range=0):
-        pursuit.__init__(self, "avoid something", what, range, -1)
+        pursuit.__init__(self, desc="avoid something", what=what, range=range, direction=-1)
 
 
 ################################ HUNT ################################

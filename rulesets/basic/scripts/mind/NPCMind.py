@@ -5,7 +5,7 @@ import random
 import sys
 import traceback
 
-from atlas import *
+from atlas import Operation, Entity, Oplist
 from mind.Goal import goal_create
 
 from physics import *
@@ -26,6 +26,7 @@ from common import log, const
 from . import dictlist
 import mind.goals
 import mind.goals.common
+import entity_filter
 
 reverse_cmp = {'>': '<'}
 
@@ -84,6 +85,9 @@ class NPCMind(ai.Mind):
         self.goal_id_counter = 0
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
+        self.add_property_callback('_relations', 'relations_updated')
+        self.relation_rules = []
+        self.entities = {}
 
         # Check if there's an "origin" location, if not add one.
         if not self.get_knowledge("location", "origin"):
@@ -138,6 +142,31 @@ class NPCMind(ai.Mind):
 
                 self.add_knowledge(predicate, subject, object)
 
+    def relations_updated(self, entity):
+        self.print_debug('Relations updated.')
+        self.relation_rules.clear()
+        if entity.has_prop_list('_relations'):
+            relations = entity.get_prop_list('_relations')
+            for relation_element in relations:
+                if "filter" in relation_element:
+                    rule = {"filter": entity_filter.Filter(relation_element.filter)}
+                    if "disposition" in relation_element:
+                        rule["disposition"] = relation_element.disposition
+                    else:
+                        rule["disposition"] = 0
+
+                    if "threat" in relation_element:
+                        rule["threat"] = relation_element.threat
+                    else:
+                        rule["threat"] = 0
+
+                    self.relation_rules.append(rule)
+
+            # update relations for existing entities
+            for (_, entity) in self.entities.items():
+                self.update_relation_for_entity(entity)
+
+
 
 
     def print_debug(self, message):
@@ -175,12 +204,30 @@ class NPCMind(ai.Mind):
             return self.entity.id in addressElement
         return True
 
+    def update_relation_for_entity(self, entity):
+        disposition = 0
+        threat = 0
+        for rule in self.relation_rules:
+            if self.match_entity(rule["filter"], entity):
+                if "disposition" in rule:
+                    disposition += rule["disposition"]
+                if "threat" in rule:
+                    threat += rule["threat"]
+
+        #self.print_debug("Disposition %s, threat %s for entity %s" % (disposition, threat, entity.describe_entity()))
+
+        self.map.add_entity_memory(entity.id, "disposition", disposition)
+        self.map.add_entity_memory(entity.id, "threat", threat)
+
     ########## Map updates
     def add_map(self, obj):
         """Hook called by underlying map code when an entity is added."""
         # print "Map add",obj
-        print('See entity ' + str(obj))
-        pass
+        self.print_debug('See entity ' + str(obj))
+        self.entities[obj.id] = obj
+
+        self.update_relation_for_entity(obj)
+
 
     def update_map(self, obj):
         """Hook called by underlying map code when an entity is updated.
@@ -196,6 +243,7 @@ class NPCMind(ai.Mind):
     def delete_map(self, obj):
         """Hook called by underlying map code when an entity is deleted."""
         # print "Map delete",obj
+        self.entities.pop(obj.id)
         self.remove_thing(obj)
 
     ########## Operations
