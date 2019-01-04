@@ -54,7 +54,7 @@ int python_client_script(const std::string & package,
     Py::Dict kwds;
     Py::Tuple args;
     for (auto& entry : keywords) {
-        kwds.setAttr(entry.first, Py::String(entry.second));
+        kwds.setItem(entry.first, Py::String(entry.second));
     }
     try {
         auto ret = callable.apply(args, kwds);
