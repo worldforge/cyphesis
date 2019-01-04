@@ -92,7 +92,11 @@ struct LogWriter : public WrapperBase<LogLevel, LogWriter>
         for (p = m_message.find_first_of('\n');
              p != std::string::npos;
              p = m_message.find_first_of('\n', n)) {
-            log(lvl, m_message.substr(n, p - n));
+            if (s_pythonLogPrefixFn) {
+                log(lvl, s_pythonLogPrefixFn() + m_message.substr(n, p - n));
+            } else {
+                log(lvl, m_message.substr(n, p - n));
+            }
             n = p + 1;
         }
         if (m_message.size() > n) {
@@ -191,6 +195,8 @@ Py::Object Create_PyScript(const Py::Object& wrapper, const Py::Callable& py_cla
 }
 
 sigc::signal<void> python_reload_scripts;
+std::function<std::string()> s_pythonLogPrefixFn;
+
 std::vector<std::string> python_directories;
 
 std::map<boost::filesystem::path, std::string> changedPaths;

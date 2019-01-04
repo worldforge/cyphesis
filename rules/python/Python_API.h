@@ -27,7 +27,15 @@
 class AssetsManager;
 class BaseWorld;
 
+/**
+ * Emitted when python scripts needs reloading.
+ */
 extern sigc::signal<void> python_reload_scripts;
+
+/**
+ * An optional function which will be called before anything is written to the log.
+ */
+extern std::function<std::string()> s_pythonLogPrefixFn;
 
 void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories = {}, bool log_stdout = true);
 void shutdown_python_api();

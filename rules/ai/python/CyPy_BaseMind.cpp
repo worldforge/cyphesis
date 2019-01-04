@@ -284,9 +284,9 @@ Py::Object CyPy_BaseMind::addPropertyCallback(const Py::Tuple& args)
 Py::Object CyPy_BaseMind::str()
 {
     if (m_value->getEntity()) {
-        return Py::String(String::compose("BaseMind with id %1 for entity %2", m_value->getId(), m_value->getEntity()->describeEntity()));
+        return Py::String(String::compose("BaseMind %1, entity %2", m_value->getId(), m_value->getEntity()->describeEntity()));
     }
-    return Py::String(String::compose("BaseMind with id %1", m_value->getId()));
+    return Py::String(String::compose("BaseMind %1", m_value->getId()));
 }
 
 Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)

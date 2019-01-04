@@ -154,7 +154,7 @@ int main(int argc, char** argv)
                          &CyPy_EntityFilter::init,
                          &CyPy_Atlas::init,
                          &CyPy_Common::init},
-                        std::move(python_directories), false);
+                        std::move(python_directories), true);
         observe_python_directories(io_service, assets_manager);
 
 

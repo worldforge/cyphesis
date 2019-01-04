@@ -19,7 +19,6 @@
 #ifndef RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
 #define RULESETS_PYTHON_SCRIPT_FACTORY_IMPL_H
 
-#include <rules/ai/python/CyPy_BaseMind.h>
 #include "rules/python/CyPy_LocatedEntity.h"
 #include "rules/simulation/python/CyPy_Task.h"
 #include "PythonScriptFactory.h"

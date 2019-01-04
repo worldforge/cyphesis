@@ -26,8 +26,28 @@
 #include "common/operations/Tick.h"
 #include "common/debug.h"
 #include "common/log.h"
+#include "Python_API.h"
 
 static const bool debug_flag = false;
+
+/**
+ * Registers and unregisters the supplied log injection function.
+ * Use this to wrap calls into Python so that informative messages are
+ * prepended to any log output.
+ */
+struct LogGuard
+{
+
+    explicit LogGuard(const std::function<std::string()>& logFn)
+    {
+        s_pythonLogPrefixFn = logFn;
+    }
+
+    ~LogGuard()
+    {
+        s_pythonLogPrefixFn = nullptr;
+    }
+};
 
 /// \brief PythonWrapper constructor
 PythonWrapper::PythonWrapper(const Py::Object& wrapper)
@@ -39,8 +59,8 @@ PythonWrapper::~PythonWrapper() = default;
 
 
 HandlerResult PythonWrapper::operation(const std::string& op_type,
-                                            const Operation& op,
-                                            OpVector& res)
+                                       const Operation& op,
+                                       OpVector& res)
 {
     assert(!m_wrapper.isNull());
     std::string op_name = op_type + "_operation";
@@ -51,6 +71,9 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
     }
 
     try {
+        LogGuard logGuard([this]() {
+            return String::compose("%1: ", this->m_wrapper.str());
+        });
         auto ret = m_wrapper.callMemberFunction(op_name, Py::TupleN(CyPy_Operation::wrap(op)));
 
         debug_print("Called python method " << op_name);
@@ -74,7 +97,7 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
 }
 
 void PythonWrapper::hook(const std::string& function,
-                              LocatedEntity* entity)
+                         LocatedEntity* entity)
 {
     auto wrapper = CyPy_LocatedEntity::wrap(entity);
     if (wrapper.isNull()) {
@@ -82,6 +105,9 @@ void PythonWrapper::hook(const std::string& function,
     }
 
     try {
+        LogGuard logGuard([this]() {
+            return String::compose("%1: ", this->m_wrapper.str());
+        });
         auto ret = m_wrapper.callMemberFunction(function, Py::TupleN(wrapper));
     } catch (const Py::BaseException& py_ex) {
         log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, wrapper.type().as_string(), entity->describeEntity()));
@@ -91,7 +117,6 @@ void PythonWrapper::hook(const std::string& function,
     }
 
 }
-
 
 
 HandlerResult PythonWrapper::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res)
