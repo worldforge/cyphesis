@@ -1,5 +1,6 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
+import math
 
 from .common import const
 from physics import *
@@ -27,7 +28,7 @@ class move_me(Goal):
 
     def __init__(self, location, radius=0.5, speed=0.2):
         Goal.__init__(self, "move me to certain place",
-                      self.am_I_at_loc,
+                      self.am_i_at_loc,
                       [self.move_to_loc],
                       self.is_reachable)
         self.location = location
@@ -37,31 +38,28 @@ class move_me(Goal):
         self.squared_radius = radius * radius
 
     def get_location_instance(self, me):
-        location_ = self.location
-        if type(location_) == LambdaType:
+        if type(self.location) == LambdaType or type(self.location) == FunctionType or type(self.location) == MethodType:
             # print "Lambda location"
-            location_ = location_(me)
-        if type(location_) == str:
+            return self.location(me)
+        if type(self.location) == str:
             # print "String location"
-            location_ = me.get_knowledge("location", location_)
-        if not location_:
-            # print "Unknown location"
-            return None
-        return location_
+            return me.get_knowledge("location", self.location)
+        return self.location
 
-    def am_I_at_loc(self, me):
+    def am_i_at_loc(self, me):
         location = self.get_location_instance(me)
         if me.entity.location is None:
-            return 1
+            return True
         if not location:
             # print "No location"
-            return 1
-        if square_horizontal_distance(me.entity.location, location) <= self.squared_radius:
-            # print "We are there"
-            return 1
+            return True
+        square_distance = square_horizontal_distance(me.entity.location, location)
+        if square_distance <= self.squared_radius:
+            me.print_debug("We are there, distance %s" % math.sqrt(square_distance))
+            return True
         else:
-            # print "We are not there"
-            return 0
+            me.print_debug("We are not there, distance %s" % math.sqrt(square_distance))
+            return False
 
     def move_to_loc(self, me):
         location = self.get_location_instance(me)
@@ -78,7 +76,7 @@ class move_me(Goal):
         # This can be because we haven't mapped all areas yet; if so one should check with
         # me.unawareTilesCount
         if refreshResult < 0:
-            # print "Could not find any path"
+            me.print_debug("Could not find any path, result %s" % refreshResult)
             return
 
         return Operation("operation")
@@ -87,6 +85,11 @@ class move_me(Goal):
     unaware tiles."""
 
     def is_reachable(self, me):
+        location = self.get_location_instance(me)
+        if not location:
+            #We have no location, so no valid goal
+            return False
+
         pathResult = me.pathResult
 
         # me.print_debug("pathResult " + str(pathResult))
@@ -95,7 +98,7 @@ class move_me(Goal):
 
             if me.unawareTilesCount == 0:
                 return False
-        elif pathResult == 0 and not self.am_I_at_loc(me):
+        elif pathResult == 0 and not self.am_i_at_loc(me):
             # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
             return False
 
@@ -180,7 +183,7 @@ class move_me_place(move_me):
 
     def __init__(self, what):
         Goal.__init__(self, "move me to a place where I can get something",
-                      self.am_I_at_loc,
+                      self.am_i_at_loc,
                       [self.move_to_loc])
         self.what = what
         self.vars = ["what"]
@@ -311,48 +314,69 @@ class move_me_to_possession(Goal):
 class move_me_to_focus(Goal):
     """Move me to something I am interested in."""
 
-    def __init__(self, what, distance=2):
-        Goal.__init__(self, "move me to this thing",
-                      self.am_i_at_it,
-                      [self.move_me_to_it])
-        if type(what) == list:
-            self.what = what
-        else:
-            self.what = [what]
-        # How close we need to get to the thing.
-        self.distance = distance
-        self.vars = ["what", "distance"]
+    def __init__(self, what="", radius=0.5, speed=0.2):
+        Goal.__init__(self, "move me to the current focus for '%s'" % what,
+                      None,
+                      [move_me(location=self.get_location, radius=radius, speed=speed)])
+        self.what = what
+        self.vars = ["what"]
 
-    def am_i_at_it(self, me):
-        for what in self.what:
-            id = me.get_knowledge('focus', what)
-            if id == None: continue
-            thing = me.map.get(id)
-            if thing == None:
-                me.remove_knowledge('focus', what)
-                continue
+    def get_location(self, me):
+        id = me.get_knowledge('focus', self.what)
+        if id is None:
+            return None
+        thing = me.map.get(id)
+        if thing is None:
+            me.remove_knowledge('focus', self.what)
+            return None
+        return thing.location
 
-            # Only move to the edge of the entity, since else we'll just collide with it.
-            # TODO: Make this check better, taking into account the real collision volume, rotated and all.
-            bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
-            # TODO: Add a check for solid and non solid entities.
-            # When moving to a non solid entity, we should try to get at its center.
-            if square_horizontal_distance(me.entity.location, thing.location) < ((self.distance * self.distance) + bbox_size):
-                return 1
-        return 0
 
-    def move_me_to_it(self, me):
-        for what in self.what:
-            id = me.get_knowledge('focus', what)
-            if id == None: continue
-            thing = me.map.get(id)
-            if thing == None:
-                me.remove_knowledge('focus', what)
-                return
-            target = thing.location.copy()
-            if target.parent.id == me.entity.location.parent.id:
-                target.velocity = me.entity.location.pos.unit_vector_to(target.pos)
-                return Operation("move", Entity(me.entity.id, location=target))
+# class move_me_to_focus(Goal):
+#     """Move me to something I am interested in."""
+#
+#     def __init__(self, what, distance=2):
+#         Goal.__init__(self, "move me to this thing",
+#                       self.am_i_at_it,
+#                       [self.move_me_to_it])
+#         if type(what) == list:
+#             self.what = what
+#         else:
+#             self.what = [what]
+#         # How close we need to get to the thing.
+#         self.distance = distance
+#         self.vars = ["what", "distance"]
+#
+#     def am_i_at_it(self, me):
+#         for what in self.what:
+#             id = me.get_knowledge('focus', what)
+#             if id == None: continue
+#             thing = me.map.get(id)
+#             if thing == None:
+#                 me.remove_knowledge('focus', what)
+#                 continue
+#
+#             # Only move to the edge of the entity, since else we'll just collide with it.
+#             # TODO: Make this check better, taking into account the real collision volume, rotated and all.
+#             bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
+#             # TODO: Add a check for solid and non solid entities.
+#             # When moving to a non solid entity, we should try to get at its center.
+#             if square_horizontal_distance(me.entity.location, thing.location) < ((self.distance * self.distance) + bbox_size):
+#                 return 1
+#         return 0
+#
+#     def move_me_to_it(self, me):
+#         for what in self.what:
+#             id = me.get_knowledge('focus', what)
+#             if id == None: continue
+#             thing = me.map.get(id)
+#             if thing == None:
+#                 me.remove_knowledge('focus', what)
+#                 return
+#             target = thing.location.copy()
+#             if target.parent.id == me.entity.location.parent.id:
+#                 target.velocity = me.entity.location.pos.unit_vector_to(target.pos)
+#                 return Operation("move", Entity(me.entity.id, location=target))
 
 
 class move_me_near_focus(Goal):
@@ -531,8 +555,11 @@ class search(Goal):
 class pursuit(Goal):
     """avoid or hunt something at range"""
 
-    def __init__(self, desc="pursue something", what="", range=0, direction=-1):
-        Goal.__init__(self, "pursue something", self.not_visible, [self.run])
+    def __init__(self, desc="pursue something", what="", range=0, direction=1):
+        Goal.__init__(self,
+                      "pursue something",
+                      self.not_visible,
+                      [self.run])
 
         if isinstance(what, str):
             self.what = what
@@ -580,25 +607,26 @@ class hunt(pursuit):
         pursuit.__init__(self, "hunt something", what, range, 1)
 
 
-class hunt_for(pursuit):
+class hunt_for(Goal):
     """hunt something at range"""
 
-    def __init__(self, what, range, proximity=5):
+    def __init__(self, what="", range=0, proximity=5):
         Goal.__init__(self, "hunt for something",
                       self.in_range,
-                      [self.run])
+                      [pursuit(what=what, range=range)])
         self.what = what
         self.range = range
         self.proximity = proximity
         self.square_proximity = proximity * proximity
-        self.direction = 1
-        self.vars = ["what", "range", "direction"]
+        self.vars = ["what", "range", "proximity"]
 
     def in_range(self, me):
         id = me.get_knowledge('focus', self.what)
-        if id == None: return
+        if id is None:
+            return
         thing = me.map.get(id)
-        if thing == None: return
+        if thing is None:
+            return
         square_dist = square_distance(me.entity.location, thing.location)
         return square_dist < self.square_proximity
 

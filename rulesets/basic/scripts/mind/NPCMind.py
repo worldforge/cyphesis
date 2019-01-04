@@ -171,7 +171,7 @@ class NPCMind(ai.Mind):
 
     def print_debug(self, message):
         """Prints a debug message using 'print', prepending the message with a description of the entity."""
-        print(str(self) + ": " + str(message))
+        print(str(message))
 
     def find_op_method(self, op_id, prefix="", undefined_op_method=None):
         """find right operation to invoke"""
@@ -243,6 +243,7 @@ class NPCMind(ai.Mind):
     def delete_map(self, obj):
         """Hook called by underlying map code when an entity is deleted."""
         # print "Map delete",obj
+        self.print_debug("Removing entity %s" % obj.id)
         self.entities.pop(obj.id)
         self.remove_thing(obj)
 
