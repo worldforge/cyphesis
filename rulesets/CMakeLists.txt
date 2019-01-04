@@ -1,5 +1,4 @@
 install(FILES
-    basic/scripts/world/probability.py
     basic/scripts/editor.py
     DESTINATION ${CMAKE_INSTALL_DATADIR}/cyphesis/scripts/cyphesis)
 install(DIRECTORY

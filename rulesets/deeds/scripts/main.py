@@ -7,7 +7,6 @@ from random import *
 from mind.panlingua import interlinguish
 
 il = interlinguish
-from cyphesis import probability
 from cyphesis.editor import editor, create_editor
 from physics import Quaternion
 from physics import Vector3D

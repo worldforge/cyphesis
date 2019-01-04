@@ -7,12 +7,12 @@ from random import *
 from mind.panlingua import interlinguish
 
 il = interlinguish
-from cyphesis import probability
 from cyphesis.editor import editor
 from physics import Quaternion
 from physics import Vector3D
 import time
 from math import *
+from common import log, const
 
 from define_world import *
 
@@ -66,7 +66,7 @@ def test_butcher(host='', account='', password='', **args):
     m = create_editor(host, account, password)
 
     butcher = m.make('merchant', name='Ulad Bargan', desc='the butcher',
-                     pos=(3, 3, 0), age=probability.fertility_age)
+                     pos=(3, 3, 0), age=const.basic_tick * 30)
     cleaver = m.make('cleaver', place='market', pos=(3, 2.5, settlement_height))
     m.own(butcher, cleaver)
     m.learn(butcher, (il.trade, "trade('pig', 'cleaver', 'cut', 'ham', 'market')"))
