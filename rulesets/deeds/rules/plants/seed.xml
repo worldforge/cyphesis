@@ -17,10 +17,6 @@
                 <list name="default">
                     <map>
                         <string name="language">python</string>
-                        <string name="name">world.objects.plants.seeds.Seed.Seed</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
                         <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
                     </map>
                 </list>
