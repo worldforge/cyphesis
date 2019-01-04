@@ -31,6 +31,7 @@
 
 #include <wfmath/atlasconv.h>
 #include <rules/simulation/python/CyPy_UsageInstance.h>
+#include <rules/python/Python_API.h>
 
 static const bool debug_flag = false;
 using Atlas::Message::Element;
@@ -312,8 +313,9 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 if (lastSeparatorPos != std::string::npos) {
                     auto moduleName = usage.handler.substr(0, lastSeparatorPos);
                     auto functionName = usage.handler.substr(lastSeparatorPos + 1);
+                    //Py::Module module(moduleName);
                     Py::Module module(PyImport_Import(Py::String(moduleName).ptr()));
-                    PyImport_ReloadModule(module.ptr());
+                    //PyImport_ReloadModule(module.ptr());
                     auto functionObject = module.getDict()[functionName];
                     if (!functionObject.isCallable()) {
                         actor->error(op, String::compose("Could not find Python function %1", usage.handler), res, actor->getId());
@@ -321,6 +323,10 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                     }
 
                     try {
+
+                        PythonLogGuard logGuard([functionName, actor]() {
+                            return String::compose("Usage '%1', entity %2: ", functionName, actor->describeEntity());
+                        });
                         auto ret = Py::Callable(functionObject).apply(Py::TupleN(UsageInstance::scriptCreator(std::move(usageInstance))));
                         return ScriptUtils::processScriptResult(usage.handler, ret, res, e);
                     } catch (const Py::BaseException& py_ex) {

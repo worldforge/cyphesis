@@ -87,7 +87,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
                 case UsageParameter::Type::ENTITY: {
 
                     auto visitor = compose(
-                        [&](const EntityLocation& value) {
+                        [&](const EntityLocation& value) -> void {
                             if (value.m_parent && !value.m_parent->isDestroyed()) {
                                 if (param.second.constraint) {
                                     EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
@@ -107,7 +107,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
                 }
                 case UsageParameter::Type::ENTITYLOCATION: {
                     auto visitor = compose(
-                        [&](const EntityLocation& value) {
+                        [&](const EntityLocation& value) -> void {
                             if (value.isValid() && !value.m_parent->isDestroyed()) {
                                 if (param.second.constraint) {
                                     EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};

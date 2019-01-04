@@ -30,25 +30,6 @@
 
 static const bool debug_flag = false;
 
-/**
- * Registers and unregisters the supplied log injection function.
- * Use this to wrap calls into Python so that informative messages are
- * prepended to any log output.
- */
-struct LogGuard
-{
-
-    explicit LogGuard(const std::function<std::string()>& logFn)
-    {
-        s_pythonLogPrefixFn = logFn;
-    }
-
-    ~LogGuard()
-    {
-        s_pythonLogPrefixFn = nullptr;
-    }
-};
-
 /// \brief PythonWrapper constructor
 PythonWrapper::PythonWrapper(const Py::Object& wrapper)
     : m_wrapper(wrapper)
@@ -71,7 +52,7 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
     }
 
     try {
-        LogGuard logGuard([this]() {
+        PythonLogGuard logGuard([this]() {
             return String::compose("%1: ", this->m_wrapper.str());
         });
         auto ret = m_wrapper.callMemberFunction(op_name, Py::TupleN(CyPy_Operation::wrap(op)));
@@ -105,7 +86,7 @@ void PythonWrapper::hook(const std::string& function,
     }
 
     try {
-        LogGuard logGuard([this]() {
+        PythonLogGuard logGuard([this]() {
             return String::compose("%1: ", this->m_wrapper.str());
         });
         auto ret = m_wrapper.callMemberFunction(function, Py::TupleN(wrapper));
