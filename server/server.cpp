@@ -226,7 +226,6 @@ int main(int argc, char** argv)
     std::vector<std::string> python_directories;
     // Add the path to the non-ruleset specific code.
     python_directories.push_back(share_directory + "/cyphesis/scripts");
-    python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
     // Add the path to the ruleset specific code.
     python_directories.push_back(share_directory + "/cyphesis/rulesets/" + ruleset_name + "/scripts");
 
