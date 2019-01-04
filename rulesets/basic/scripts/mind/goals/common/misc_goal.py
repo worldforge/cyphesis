@@ -613,14 +613,14 @@ class Fight(Goal):
     def fight(self, me):
         id = me.get_knowledge('focus', self.what)
         if id is None:
-            me.print_debug("No focus target")
+            print("No focus target")
             return
         enemy = me.map.get(id)
         if enemy is None:
-            me.print_debug("No target")
+            print("No target")
             me.remove_knowledge('focus', self.what)
             return
-        me.print_debug("Punching")
+        print("Punching")
         return Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
 #        return Operation("use", Entity(ammo.id), Entity(enemy.id), to=weapon)
 

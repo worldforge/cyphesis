@@ -55,10 +55,10 @@ class move_me(Goal):
             return True
         square_distance = square_horizontal_distance(me.entity.location, location)
         if square_distance <= self.squared_radius:
-            me.print_debug("We are there, distance %s" % math.sqrt(square_distance))
+            print("We are there, distance %s" % math.sqrt(square_distance))
             return True
         else:
-            me.print_debug("We are not there, distance %s" % math.sqrt(square_distance))
+            print("We are not there, distance %s" % math.sqrt(square_distance))
             return False
 
     def move_to_loc(self, me):
@@ -76,7 +76,7 @@ class move_me(Goal):
         # This can be because we haven't mapped all areas yet; if so one should check with
         # me.unawareTilesCount
         if refreshResult < 0:
-            me.print_debug("Could not find any path, result %s" % refreshResult)
+            print("Could not find any path, result %s" % refreshResult)
             return
 
         return Operation("operation")
@@ -92,9 +92,9 @@ class move_me(Goal):
 
         pathResult = me.pathResult
 
-        # me.print_debug("pathResult " + str(pathResult))
+        # print("pathResult " + str(pathResult))
         if pathResult < 0 and pathResult > -7:
-            # me.print_debug("unawareTilesCount " + str(me.unawareTilesCount))
+            # print("unawareTilesCount " + str(me.unawareTilesCount))
 
             if me.unawareTilesCount == 0:
                 return False
@@ -163,9 +163,9 @@ class move_me_area(Goal):
     def is_reachable(self, me):
         pathResult = me.pathResult
 
-        # me.print_debug("pathResult " + str(pathResult))
+        # print("pathResult " + str(pathResult))
         if pathResult < 0 and pathResult > -7:
-            # me.print_debug("unawareTilesCount " + str(me.unawareTilesCount))
+            # print("unawareTilesCount " + str(me.unawareTilesCount))
 
             if me.unawareTilesCount == 0:
                 return False
@@ -745,12 +745,12 @@ class roam(Goal):
             self.set_new_target(me, move_me_goal)
 
     def set_new_target(self, me, move_me_goal):
-        # me.print_debug("setting new target")
+        # print("setting new target")
         waypointName = self.list[randint(0, self.count - 1)]
         waypoint = me.get_knowledge("location", waypointName)
 
         if not waypoint:
-            me.print_debug("Could not location with name '%s'." % waypointName)
+            print("Could not location with name '%s'." % waypointName)
             return
 
         loc = me.entity.location.copy()

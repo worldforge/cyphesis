@@ -65,7 +65,7 @@ class NPCMind(ai.Mind):
         # FIXME: this shouldn't be needed
         self.mind = cppthing
 
-        self.print_debug('init')
+        print('init')
 
         self.knowledge = Knowledge()
         self.mem = Memory(map=self.map)
@@ -92,13 +92,11 @@ class NPCMind(ai.Mind):
         # Check if there's an "origin" location, if not add one.
         if not self.get_knowledge("location", "origin"):
             # TODO: store in server
-            self.print_debug('Adding origin location.')
+            print('Adding origin location.')
             self.add_knowledge("location", "origin", self.entity.location.copy())
 
-
-
     def goals_updated(self, entity):
-        self.print_debug('Goals updated.')
+        print('Goals updated.')
         # For now just clear and recreate all goals when _goals changes. We would probably rather only recreate those that have changed though.
         goals = entity.props._goals
         # First clear all goals
@@ -110,7 +108,7 @@ class NPCMind(ai.Mind):
                 self.insert_goal(goal)
 
     def knowledge_updated(self, entity):
-        self.print_debug('Knowledge updated.')
+        print('Knowledge updated.')
         if entity.has_prop_map('_knowledge'):
             knowledge = entity.get_prop_map('_knowledge')
 
@@ -143,7 +141,7 @@ class NPCMind(ai.Mind):
                 self.add_knowledge(predicate, subject, object)
 
     def relations_updated(self, entity):
-        self.print_debug('Relations updated.')
+        print('Relations updated.')
         self.relation_rules.clear()
         if entity.has_prop_list('_relations'):
             relations = entity.get_prop_list('_relations')
@@ -165,13 +163,6 @@ class NPCMind(ai.Mind):
             # update relations for existing entities
             for (_, entity) in self.entities.items():
                 self.update_relation_for_entity(entity)
-
-
-
-
-    def print_debug(self, message):
-        """Prints a debug message using 'print', prepending the message with a description of the entity."""
-        print(str(message))
 
     def find_op_method(self, op_id, prefix="", undefined_op_method=None):
         """find right operation to invoke"""
@@ -214,7 +205,7 @@ class NPCMind(ai.Mind):
                 if "threat" in rule:
                     threat += rule["threat"]
 
-        #self.print_debug("Disposition %s, threat %s for entity %s" % (disposition, threat, entity.describe_entity()))
+        #print("Disposition %s, threat %s for entity %s" % (disposition, threat, entity.describe_entity()))
 
         self.map.add_entity_memory(entity.id, "disposition", disposition)
         self.map.add_entity_memory(entity.id, "threat", threat)
@@ -223,7 +214,7 @@ class NPCMind(ai.Mind):
     def add_map(self, obj):
         """Hook called by underlying map code when an entity is added."""
         # print "Map add",obj
-        self.print_debug('See entity ' + str(obj))
+        print('See entity ' + str(obj))
         self.entities[obj.id] = obj
 
         self.update_relation_for_entity(obj)
@@ -243,7 +234,7 @@ class NPCMind(ai.Mind):
     def delete_map(self, obj):
         """Hook called by underlying map code when an entity is deleted."""
         # print "Map delete",obj
-        self.print_debug("Removing entity %s" % obj.id)
+        print("Removing entity %s" % obj.id)
         self.entities.pop(obj.id)
         self.remove_thing(obj)
 
@@ -351,7 +342,7 @@ class NPCMind(ai.Mind):
         think_op = Operation("think")
         path = []
         my_path = self.path
-        # self.print_debug("path size: " + str(len(my_path)))
+        # print("path size: " + str(len(my_path)))
         for point in my_path:
             path.append([point.x, point.y, point.z])
 
@@ -796,7 +787,7 @@ class NPCMind(ai.Mind):
 
     def remove_goal(self, goal):
         """Removes a goal."""
-        self.print_debug('Removing goal')
+        print('Removing goal')
         if hasattr(goal, "trigger"):
             dictlist.remove_value(self.trigger_goals, goal)
         self.goals.remove(goal)

@@ -1,4 +1,4 @@
-from atlas import *
+from atlas import Operation, Entity
 import server
 
 
@@ -11,14 +11,14 @@ class Hittable(server.Thing):
     def hit_operation(self, op):
         arg = op[0]
         if arg:
-            statusDecrease = 0.1
+            status_decrease = 0.1
             if hasattr(arg, 'damage'):
-                statusDecrease = arg.damage / 100.0
+                status_decrease = arg.damage / 100.0
             # Check if there's a modifier for the specific type of hit.
             if hasattr(arg, 'hit_type') and self.props["__modifier_hit_type_" + arg.hit_type]:
-                statusDecrease = statusDecrease * self.props["__modifier_hit_type_" + arg.hit_type]
+                status_decrease = status_decrease * self.props["__modifier_hit_type_" + arg.hit_type]
 
-            new_status = self.props.status - statusDecrease
-            return (server.OPERATION_BLOCKED, Operation("set", Entity(self.id, status=new_status), to=self.id))
+            new_status = self.props.status - status_decrease
+            return server.OPERATION_BLOCKED, Operation("set", Entity(self.id, status=new_status), to=self.id)
 
         return server.OPERATION_IGNORED
