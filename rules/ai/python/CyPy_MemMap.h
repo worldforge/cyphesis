@@ -49,6 +49,9 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
         Py::Object get(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, get);
 
+        Py::Object get_all();
+        PYCXX_NOARGS_METHOD_DECL(CyPy_MemMap, get_all);
+
         Py::Object get_add(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, get_add);
 

@@ -65,9 +65,9 @@ class MemMap {
 
     MemEntityDict::iterator m_checkIterator;
     std::list<std::string> m_additionsById;
-    std::vector<std::string> m_addHooks;
-    std::vector<std::string> m_updateHooks;
-    std::vector<std::string> m_deleteHooks;
+    std::set<std::string> m_addHooks;
+    std::set<std::string> m_updateHooks;
+    std::set<std::string> m_deleteHooks;
     Script* m_script;
 
     MapListener* m_listener;
@@ -143,9 +143,9 @@ class MemMap {
     void check(const double &);
     void flush();
 
-    std::vector<std::string> & getAddHooks() { return m_addHooks; }
-    std::vector<std::string> & getUpdateHooks() { return m_updateHooks; }
-    std::vector<std::string> & getDeleteHooks() { return m_deleteHooks; }
+    std::set<std::string> & getAddHooks() { return m_addHooks; }
+    std::set<std::string> & getUpdateHooks() { return m_updateHooks; }
+    std::set<std::string> & getDeleteHooks() { return m_deleteHooks; }
 
     void setListener(MapListener* listener);
 

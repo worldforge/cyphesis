@@ -78,16 +78,21 @@ class NPCMind(ai.Mind):
         self.trigger_goals = {}
         self.jitter = random.uniform(-0.1, 0.1)
         self.message_queue = None
-        # This is going to be really tricky
+        self.goal_id_counter = 0
+        self.relation_rules = []
+        self.entities = {}
+
+        # Fill up any existing entities
+        existing_entities = self.map.get_all()
+        for entity in existing_entities:
+            self.entities[entity.id] = entity
+
         self.map.add_hooks_append("add_map")
         self.map.update_hooks_append("update_map")
         self.map.delete_hooks_append("delete_map")
-        self.goal_id_counter = 0
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
         self.add_property_callback('_relations', 'relations_updated')
-        self.relation_rules = []
-        self.entities = {}
 
         # Check if there's an "origin" location, if not add one.
         if not self.get_knowledge("location", "origin"):
@@ -166,6 +171,7 @@ class NPCMind(ai.Mind):
 
     def find_op_method(self, op_id, prefix="", undefined_op_method=None):
         """find right operation to invoke"""
+
         if not undefined_op_method: undefined_op_method = self.undefined_op_method
         return get_dict_func(self, prefix + op_id + "_operation", undefined_op_method)
 
@@ -205,7 +211,7 @@ class NPCMind(ai.Mind):
                 if "threat" in rule:
                     threat += rule["threat"]
 
-        #print("Disposition %s, threat %s for entity %s" % (disposition, threat, entity.describe_entity()))
+        # print("Disposition %s, threat %s for entity %s" % (disposition, threat, entity.describe_entity()))
 
         self.map.add_entity_memory(entity.id, "disposition", disposition)
         self.map.add_entity_memory(entity.id, "threat", threat)
@@ -218,7 +224,6 @@ class NPCMind(ai.Mind):
         self.entities[obj.id] = obj
 
         self.update_relation_for_entity(obj)
-
 
     def update_map(self, obj):
         """Hook called by underlying map code when an entity is updated.
@@ -453,7 +458,6 @@ class NPCMind(ai.Mind):
         res = Oplist()
         res = res + think_op
         return res
-
 
     ########## Talk operations
     def admin_sound(self, op):

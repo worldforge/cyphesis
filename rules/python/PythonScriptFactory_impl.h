@@ -25,6 +25,7 @@
 
 #include "PythonWrapper.h"
 #include "Python_Script_Utils.h"
+#include "Python_API.h"
 
 /// \brief PythonScriptFactory constructor
 ///
@@ -58,6 +59,10 @@ Py::Object PythonScriptFactory<T>::createScript(T* entity) const
         return Py::Null();
     }
     try {
+        PythonLogGuard logGuard([wrapper]() {
+            return String::compose("%1: ", wrapper.str());
+        });
+
         return this->m_class->apply(Py::TupleN(wrapper));
     } catch (...) {
         log(ERROR, String::compose("Error when creating script '%1.%2'.", this->m_package, this->m_type));

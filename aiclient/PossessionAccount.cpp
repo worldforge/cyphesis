@@ -33,11 +33,11 @@
 #include "common/ScriptKit.h"
 #include "common/operations/Setup.h"
 #include "common/debug.h"
-#include <common/operations/Think.h>
+#include "common/operations/Think.h"
+#include "common/Inheritance.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
-#include <common/Inheritance.h>
 
 
 static const bool debug_flag = false;
@@ -63,19 +63,7 @@ PossessionAccount::PossessionAccount(const std::string& id, long intId, const Mi
     m_python_connection = python_reload_scripts.connect([&]() {
         for (auto& entry : m_minds) {
             auto entity = entry.second;
-            //First store all thoughts
-            Atlas::Objects::Operation::Think think;
-            think->setArgs1(Atlas::Objects::Operation::Get());
-            OpVector res;
-            entity->operation(think, res);
-
             m_mindFactory.m_scriptFactory->addScript(entity.get());
-
-            //After updating the script restore all thoughts
-            OpVector ignoresRes;
-            for (auto& op : res) {
-                entity->operation(op, ignoresRes);
-            }
         }
 
     });
