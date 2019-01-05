@@ -241,8 +241,7 @@ static const Location* distanceFromAncestor(const Location & self,
     if (other.orientation().isValid()) {
         c = c.toParentCoords(other.m_pos, other.orientation());
     } else {
-        static const Quaternion identity((Quaternion::Identity()));
-        c = c.toParentCoords(other.m_pos, identity);
+        c = c.toParentCoords(other.m_pos, Quaternion::IDENTITY());
     }
 
     return distanceFromAncestor(self, other.m_parent->m_location, c);
@@ -264,8 +263,7 @@ static const Location* distanceToAncestor(const Location & self,
             if (self.orientation().isValid()) {
                 c = c.toLocalCoords(self.m_pos, self.orientation());
             } else {
-                static const Quaternion identity(1, 0, 0, 0);
-                c = c.toLocalCoords(self.m_pos, identity);
+                c = c.toLocalCoords(self.m_pos, Quaternion::IDENTITY());
             }
             return ancestor;
         }

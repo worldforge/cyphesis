@@ -288,8 +288,7 @@ void Entity::destroy()
                     child.m_velocity.rotate(m_location.orientation());
                 }
             } else {
-                static const Quaternion identity(1, 0, 0, 0);
-                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), identity);
+                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), Quaternion::IDENTITY());
             }
             m_location.m_parent->addChild(*entity);
         }
