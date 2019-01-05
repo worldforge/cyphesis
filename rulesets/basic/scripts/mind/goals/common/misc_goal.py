@@ -588,42 +588,6 @@ class hunt(Goal):
         return Operation("shoot", Entity(ammo.id), Entity(enemy.id), to=weapon)
 
 
-class Fight(Goal):
-    """Fight enemies in range"""
-    def __init__(self, what="", range=30):
-        Goal.__init__(self, "fight something",
-                      self.none_in_range,
-                      [spot_something(what=what, range=range),
-                       move_me_to_focus(what=what, radius=2),
-#                       hunt_for(what=what, range=range, proximity=3),
-                       self.fight])
-        self.what = what
-        self.filter = entity_filter.Filter(what)
-        self.range = range
-        self.square_range = range * range
-        self.vars = ["what", "range"]
-
-    def none_in_range(self, me):
-        thing_all = me.map.find_by_filter(self.filter)
-        for thing in thing_all:
-            if square_distance(me.entity.location, thing.location) < self.square_range:
-                return 0
-        return 1
-
-    def fight(self, me):
-        id = me.get_knowledge('focus', self.what)
-        if id is None:
-            print("No focus target")
-            return
-        enemy = me.map.get(id)
-        if enemy is None:
-            print("No target")
-            me.remove_knowledge('focus', self.what)
-            return
-        print("Punching")
-        return Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
-#        return Operation("use", Entity(ammo.id), Entity(enemy.id), to=weapon)
-
 ##################### DEFEND (SPOT SOMETHING, THEN KILL IT) ###################
 
 class defend(Goal):
