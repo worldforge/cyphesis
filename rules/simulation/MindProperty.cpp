@@ -78,7 +78,10 @@ MindProperty * MindProperty::copy() const
 
 void MindProperty::apply(LocatedEntity * ent)
 {
-    ExternalMindsManager::instance().requestPossession(ent);
+    //Only request possession if there's a value. This allows player controlled entities to be exempted.
+    if (!m_data.empty()) {
+        ExternalMindsManager::instance().requestPossession(ent);
+    }
 }
 
 bool MindProperty::isMindEnabled() const
