@@ -55,14 +55,14 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
         Py::Object get_add(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, get_add);
 
-        Py::Object add_hooks_append(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, add_hooks_append);
+        Py::Object add_hook_set(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, add_hook_set);
 
-        Py::Object update_hooks_append(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, update_hooks_append);
+        Py::Object update_hook_set(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, update_hook_set);
 
-        Py::Object delete_hooks_append(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, delete_hooks_append);
+        Py::Object delete_hook_set(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, delete_hook_set);
 
         Py::Object find_by_filter(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, find_by_filter);

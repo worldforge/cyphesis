@@ -102,8 +102,8 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
                 if (entity->getType()) {
                     if (m_script) {
                         debug_print(this);
-                        for (auto& hook : m_addHooks) {
-                            m_script->hook(hook, entity.get());
+                        if (!m_addHook.empty()) {
+                            m_script->hook(m_addHook, entity.get());
                         }
                     }
 
@@ -146,10 +146,8 @@ void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, d
     //Only signal for those entities that have resolved types.
     if (entity->getType()) {
         if (m_script) {
-            auto K = m_updateHooks.begin();
-            auto Kend = m_updateHooks.end();
-            for (; K != Kend; ++K) {
-                m_script->hook(*K, entity.get());
+            if (!m_updateHook.empty()) {
+                m_script->hook(m_updateHook, entity.get());
             }
         }
         if (m_listener) {
@@ -236,8 +234,8 @@ void MemMap::del(const std::string& id)
         //Only signal for those entities that have resolved types.
         if (ent->getType()) {
             if (m_script) {
-                for (auto& hook : m_deleteHooks) {
-                    m_script->hook(hook, ent.get());
+                if (!m_deleteHook.empty()) {
+                    m_script->hook(m_deleteHook, ent.get());
                 }
             }
 
@@ -489,8 +487,8 @@ std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeN
 
             if (m_script) {
                 debug_print(this);
-                for (auto& hook : m_addHooks) {
-                    m_script->hook(hook, entity.get());
+                if (!m_addHook.empty()) {
+                    m_script->hook(m_addHook, entity.get());
                 }
             }
 

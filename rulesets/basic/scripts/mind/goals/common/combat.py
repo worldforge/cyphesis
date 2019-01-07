@@ -5,8 +5,8 @@ from atlas import Operation, Entity, Oplist
 from physics import square_distance
 from rules import Location
 from mind.Goal import Goal
-from mind.goals.common.move import avoid
-from mind.goals.common.misc_goal import spot_something, move_me_to_focus
+from mind.goals.common.move import avoid, move_me_to_focus
+from mind.goals.common.misc_goal import spot_something
 import entity_filter
 
 import time

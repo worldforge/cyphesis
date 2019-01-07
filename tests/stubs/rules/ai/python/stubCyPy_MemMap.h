@@ -73,6 +73,14 @@
   }
 #endif //STUB_CyPy_MemMap_get
 
+#ifndef STUB_CyPy_MemMap_get_all
+//#define STUB_CyPy_MemMap_get_all
+  Py::Object CyPy_MemMap::get_all()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_MemMap_get_all
+
 #ifndef STUB_CyPy_MemMap_get_add
 //#define STUB_CyPy_MemMap_get_add
   Py::Object CyPy_MemMap::get_add(const Py::Tuple& args)
@@ -81,29 +89,29 @@
   }
 #endif //STUB_CyPy_MemMap_get_add
 
-#ifndef STUB_CyPy_MemMap_add_hooks_append
-//#define STUB_CyPy_MemMap_add_hooks_append
-  Py::Object CyPy_MemMap::add_hooks_append(const Py::Tuple& args)
+#ifndef STUB_CyPy_MemMap_add_hook_set
+//#define STUB_CyPy_MemMap_add_hook_set
+  Py::Object CyPy_MemMap::add_hook_set(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
-#endif //STUB_CyPy_MemMap_add_hooks_append
+#endif //STUB_CyPy_MemMap_add_hook_set
 
-#ifndef STUB_CyPy_MemMap_update_hooks_append
-//#define STUB_CyPy_MemMap_update_hooks_append
-  Py::Object CyPy_MemMap::update_hooks_append(const Py::Tuple& args)
+#ifndef STUB_CyPy_MemMap_update_hook_set
+//#define STUB_CyPy_MemMap_update_hook_set
+  Py::Object CyPy_MemMap::update_hook_set(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
-#endif //STUB_CyPy_MemMap_update_hooks_append
+#endif //STUB_CyPy_MemMap_update_hook_set
 
-#ifndef STUB_CyPy_MemMap_delete_hooks_append
-//#define STUB_CyPy_MemMap_delete_hooks_append
-  Py::Object CyPy_MemMap::delete_hooks_append(const Py::Tuple& args)
+#ifndef STUB_CyPy_MemMap_delete_hook_set
+//#define STUB_CyPy_MemMap_delete_hook_set
+  Py::Object CyPy_MemMap::delete_hook_set(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
-#endif //STUB_CyPy_MemMap_delete_hooks_append
+#endif //STUB_CyPy_MemMap_delete_hook_set
 
 #ifndef STUB_CyPy_MemMap_find_by_filter
 //#define STUB_CyPy_MemMap_find_by_filter

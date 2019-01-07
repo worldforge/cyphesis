@@ -225,7 +225,7 @@ void MemMaptest::test_addEntity_no_script_hook()
 
     auto script = new TestScript;
     m_memMap->setScript(script);
-    m_memMap->m_addHooks.push_back(test_add_hook_name);
+    m_memMap->m_addHook = test_add_hook_name;
 
     ASSERT_FALSE(m_memMap->get(new_id));
 
@@ -245,7 +245,7 @@ void MemMaptest::test_readEntity_script_hook()
 
     auto script = new TestScript;
     m_memMap->setScript(script);
-    m_memMap->m_addHooks.push_back(test_add_hook_name);
+    m_memMap->m_addHook = test_add_hook_name;
 
     ASSERT_FALSE(m_memMap->get(new_id));
 

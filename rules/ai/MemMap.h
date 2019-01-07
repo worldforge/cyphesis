@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000,2001 Alistair Riddoch
 //
@@ -65,9 +67,9 @@ class MemMap {
 
     MemEntityDict::iterator m_checkIterator;
     std::list<std::string> m_additionsById;
-    std::set<std::string> m_addHooks;
-    std::set<std::string> m_updateHooks;
-    std::set<std::string> m_deleteHooks;
+    std::string m_addHook;
+    std::string m_updateHook;
+    std::string m_deleteHook;
     Script* m_script;
 
     MapListener* m_listener;
@@ -143,9 +145,9 @@ class MemMap {
     void check(const double &);
     void flush();
 
-    std::set<std::string> & getAddHooks() { return m_addHooks; }
-    std::set<std::string> & getUpdateHooks() { return m_updateHooks; }
-    std::set<std::string> & getDeleteHooks() { return m_deleteHooks; }
+    void setAddHook(std::string hook) { m_addHook = std::move(hook); }
+    void setUpdateHook(std::string hook) { m_updateHook = std::move(hook); }
+    void setDeleteHook(std::string hook) { m_deleteHook = std::move(hook); }
 
     void setListener(MapListener* listener);
 

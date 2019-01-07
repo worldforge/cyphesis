@@ -87,9 +87,9 @@ class NPCMind(ai.Mind):
         for entity in existing_entities:
             self.entities[entity.id] = entity
 
-        self.map.add_hooks_append("add_map")
-        self.map.update_hooks_append("update_map")
-        self.map.delete_hooks_append("delete_map")
+        self.map.add_hook_set("add_map")
+        self.map.update_hook_set("update_map")
+        self.map.delete_hook_set("delete_map")
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
         self.add_property_callback('_relations', 'relations_updated')

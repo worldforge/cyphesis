@@ -61,11 +61,11 @@ void CyPy_MemMap::init_type()
 
     PYCXX_ADD_VARARGS_METHOD(get_add, get_add, "");
 
-    PYCXX_ADD_VARARGS_METHOD(add_hooks_append, add_hooks_append, "");
+    PYCXX_ADD_VARARGS_METHOD(add_hook_set, add_hook_set, "");
 
-    PYCXX_ADD_VARARGS_METHOD(update_hooks_append, update_hooks_append, "");
+    PYCXX_ADD_VARARGS_METHOD(update_hook_set, update_hook_set, "");
 
-    PYCXX_ADD_VARARGS_METHOD(delete_hooks_append, delete_hooks_append, "");
+    PYCXX_ADD_VARARGS_METHOD(delete_hook_set, delete_hook_set, "");
 
     PYCXX_ADD_VARARGS_METHOD(find_by_filter, find_by_filter, "");
 
@@ -186,24 +186,24 @@ Py::Object CyPy_MemMap::get_all()
 }
 
 
-Py::Object CyPy_MemMap::add_hooks_append(const Py::Tuple& args)
+Py::Object CyPy_MemMap::add_hook_set(const Py::Tuple& args)
 {
     args.verify_length(1);
-    m_value->getAddHooks().insert(verifyString(args[0]));
+    m_value->setAddHook(verifyString(args[0]));
     return Py::None();
 }
 
-Py::Object CyPy_MemMap::update_hooks_append(const Py::Tuple& args)
+Py::Object CyPy_MemMap::update_hook_set(const Py::Tuple& args)
 {
     args.verify_length(1);
-    m_value->getUpdateHooks().insert(verifyString(args[0]));
+    m_value->setUpdateHook(verifyString(args[0]));
     return Py::None();
 }
 
-Py::Object CyPy_MemMap::delete_hooks_append(const Py::Tuple& args)
+Py::Object CyPy_MemMap::delete_hook_set(const Py::Tuple& args)
 {
     args.verify_length(1);
-    m_value->getDeleteHooks().insert(verifyString(args[0]));
+    m_value->setDeleteHook(verifyString(args[0]));
     return Py::None();
 }
 
