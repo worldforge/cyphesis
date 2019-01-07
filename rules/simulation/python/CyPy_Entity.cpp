@@ -60,6 +60,22 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
     PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
+    PYCXX_ADD_VARARGS_METHOD(get_prop_num, get_prop_num, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_num, has_prop_num, "");
+    PYCXX_ADD_VARARGS_METHOD(get_prop_float, get_prop_float, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_float, has_prop_float, "");
+    PYCXX_ADD_VARARGS_METHOD(get_prop_int, get_prop_int, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_int, has_prop_int, "");
+    PYCXX_ADD_VARARGS_METHOD(get_prop_string, get_prop_string, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_string, has_prop_string, "");
+    PYCXX_ADD_VARARGS_METHOD(get_prop_bool, get_prop_bool, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_bool, has_prop_bool, "");
+    PYCXX_ADD_VARARGS_METHOD(get_prop_list, get_prop_list, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_list, has_prop_list, "");
+    PYCXX_ADD_VARARGS_METHOD(get_prop_map, get_prop_map, "");
+    PYCXX_ADD_VARARGS_METHOD(has_prop_map, has_prop_map, "");
+
+
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
     PYCXX_ADD_VARARGS_METHOD(mod_property, mod_property, "");
     PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
