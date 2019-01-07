@@ -1,6 +1,6 @@
 import sys
 
-from atlas import *
+from atlas import Operation, Entity, Oplist
 from physics import Vector3D
 import server
 from world.utils.Ticks import *
@@ -52,13 +52,15 @@ class FruitPlant(server.Thing):
                     res.append(Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self))
 
     def handle_fruiting(self, res):
-        if not self.props.fruits_max:
+        if not self.has_prop_int("fruits_max"):
             print('FruitPlant script on entity without any fruits_max.', file=sys.stderr)
         else:
-            # The tree will drop fruits if it's at least fruiting_min_scale large (if there's no "scale" it's 1.0)
-            if not self.props.scale or self.props.scale[1] > self.props.fruiting_min_scale:
-                if not self.props.fruits or self.props.fruits < self.props.fruits_max:
-                    if self.props.fruit_name and self.props.fruit_chance:
-                        if random.uniform(0, 100) < self.props.fruit_chance:
-                            # TODO: use 'modify' op
-                            res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)
+            fruits_max = self.get_prop_int("fruits_max")
+            if fruits_max:
+                # The tree will drop fruits if it's at least fruiting_min_scale large (if there's no "scale" it's 1.0)
+                if not self.props.scale or self.props.scale[1] > self.props.fruiting_min_scale:
+                    if not self.props.fruits or self.props.fruits < fruits_max:
+                        if self.props.fruit_name and self.props.fruit_chance:
+                            if random.uniform(0, 100) < self.props.fruit_chance:
+                                # TODO: use 'modify' op
+                                res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)

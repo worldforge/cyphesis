@@ -1,6 +1,6 @@
 import random
 
-from atlas import *
+from atlas import Operation, Entity
 
 
 # Contains helper functions for handling ticks in entity scripts.
@@ -13,6 +13,9 @@ def init_ticks(self, interval, jitter=0):
 
 
 def verify_tick(self, op, res, interval, jitter=0):
+    """Checks that the tick contained in the op is valid, i.e. is the next one for us.
+        If so, a new tick op is added to res, and True is returned.
+    """
     if len(op) > 0:
         arg = op[0]
 

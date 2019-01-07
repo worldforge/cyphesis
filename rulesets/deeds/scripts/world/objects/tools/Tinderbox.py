@@ -2,7 +2,7 @@
 # Copyright (C) 2005 Al Riddoch (See the file COPYING for details).
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import *
+from atlas import Operation, Entity
 from world.utils import Usage
 from rules import Location
 
@@ -13,6 +13,6 @@ def ignite(instance):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
     target = instance.get_arg("targets", 0)
     if instance.actor.can_reach(target):
-        return (server.OPERATION_BLOCKED, Operation("create", Entity(parent='fire', status=0.05, location=Location(target.entity), pos=[0,0,0]), to=target.entity))
+        return server.OPERATION_BLOCKED, Operation("create", Entity(parent='fire', status=0.05, location=Location(target.entity), pos=[0, 0, 0]), to=target.entity)
     else:
-        return (server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"))
+        return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")

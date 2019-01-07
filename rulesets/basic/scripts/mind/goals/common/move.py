@@ -55,10 +55,10 @@ class move_me(Goal):
             return True
         square_distance = square_horizontal_distance(me.entity.location, location)
         if square_distance <= self.squared_radius:
-            print("We are there, distance %s" % math.sqrt(square_distance))
+            #print("We are there, distance %s" % math.sqrt(square_distance))
             return True
         else:
-            print("We are not there, distance %s" % math.sqrt(square_distance))
+            #print("We are not there, distance %s" % math.sqrt(square_distance))
             return False
 
     def move_to_loc(self, me):

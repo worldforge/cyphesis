@@ -29,6 +29,9 @@
             <map name="_nutrients_max_factor">
                 <float name="default">0.1</float>
             </map>
+            <map name="fruits_max">
+                <int name="default">0</int>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
