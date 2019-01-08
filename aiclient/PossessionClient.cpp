@@ -28,13 +28,14 @@
 #include "common/operations/Possess.h"
 #include "common/id.h"
 #include "common/custom.h"
-#include "common/SystemTime.h"
 #include "common/Inheritance.h"
 
 #include "common/debug.h"
+#include "common/CommSocket.h"
 
 #include <Atlas/Objects/Entity.h>
-#include <common/CommSocket.h>
+
+#include <chrono>
 
 static const bool debug_flag = false;
 
@@ -114,6 +115,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
                 log(WARNING, String::compose("Resulting op of type '%1' is set to the mind with id '%2', which can't be found.", resOp->getParent(), resOp->getTo()));
             }
         } else {
+            log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
             res.push_back(resOp);
         }
     }
@@ -124,9 +126,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
 
 double PossessionClient::getTime() const
 {
-    SystemTime time{};
-    time.update();
-    return (double) (time.seconds()) + (double) time.microseconds() / 1000000.;
+    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() / 1000000.0;
 }
 
 

@@ -20,12 +20,12 @@
 
 #include "common/id.h"
 #include "common/log.h"
-#include "common/SystemTime.h"
 #include "common/debug.h"
 #include "rules/Script.h"
 #include "rules/LocatedEntity.h"
 
 #include <cassert>
+
 static const bool debug_flag = false;
 
 template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
@@ -34,6 +34,7 @@ template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
 ///
 /// Protected as BaseWorld is a base class.
 BaseWorld::BaseWorld() :
+    m_initTime(std::chrono::steady_clock::now()),
     m_isSuspended(false),
     m_defaultLocation(nullptr),
     m_limboLocation(nullptr)
@@ -63,7 +64,7 @@ void BaseWorld::shutdown()
 ///
 /// @param id string ID of Entity to be retrieved.
 /// @return pointer to Entity retrieved, or zero if it was not found.
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string& id) const
 {
     return getEntity(integerId(id));
 }
@@ -110,9 +111,9 @@ void BaseWorld::setIsSuspended(bool suspended)
     }
 }
 
-double BaseWorld::getTime() const {
-    SystemTime time{};
-    time.update();
-    return (double)(time.seconds() + timeoffset - m_initTime) + (double)time.microseconds()/1000000.;
+double BaseWorld::getTime() const
+{
+    auto diff = (std::chrono::steady_clock::now() - m_initTime);
+    return std::chrono::duration_cast<std::chrono::microseconds>(diff).count() / 1000000.0;
 }
 

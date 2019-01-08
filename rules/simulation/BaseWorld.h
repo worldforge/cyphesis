@@ -31,9 +31,10 @@
 #include <ctime>
 #include <boost/noncopyable.hpp>
 
+#include <chrono>
+
 class ArithmeticScript;
 class LocatedEntity;
-class SystemTime;
 class Location;
 
 typedef std::map<long, Ref<LocatedEntity>> EntityRefDict;
@@ -47,7 +48,7 @@ class BaseWorld : public Singleton<BaseWorld> {
 
   protected:
     /// The system time when the server was started.
-    std::time_t m_initTime;
+    std::chrono::time_point<std::chrono::steady_clock> m_initTime;
 
     /// \brief Dictionary of all the objects in the world.
     ///

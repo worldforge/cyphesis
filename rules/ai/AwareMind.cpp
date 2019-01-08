@@ -29,7 +29,6 @@
 #include "navigation/Awareness.h"
 #include "navigation/Steering.h"
 
-#include "common/SystemTime.h"
 #include "common/operations/Tick.h"
 #include "common/debug.h"
 #include "AwareMind.h"
@@ -40,6 +39,7 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
+#include <chrono>
 
 static const bool debug_flag = true;
 
@@ -94,9 +94,7 @@ void AwareMind::operation(const Operation& op, OpVector& res)
 
 double AwareMind::getCurrentLocalTime() const
 {
-    SystemTime time{};
-    time.update();
-    return (time.seconds() + (time.microseconds() * 0.000001));
+    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() / 1000000.0;
 }
 
 double AwareMind::getCurrentServerTime() const

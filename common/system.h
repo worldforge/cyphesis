@@ -57,8 +57,6 @@ void hash_password(const std::string & pwd, const std::string & salt,
 void encrypt_password(const std::string & pwd, std::string & hash);
 int check_password(const std::string & pwd, const std::string & hash);
 
-int getfiletime(const std::string & filename, time_t & t);
-
 void getinstallprefix();
 
 #ifdef _WIN32

@@ -26,7 +26,6 @@
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 
 #include "common/sockets.h"
-#include "common/SystemTime.h"
 #include "common/system.h"
 #include "common/RuleTraversalTask.h"
 
@@ -159,9 +158,6 @@ int main(int argc, char** argv)
 
 
         run_user_scripts("cyaiclient");
-
-        SystemTime time{};
-        time.update();
 
 
         //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?

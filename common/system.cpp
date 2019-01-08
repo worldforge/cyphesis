@@ -563,20 +563,7 @@ int check_password(const std::string & pwd, const std::string & hash)
     return hash == new_hash ? 0 : -1;
 }
 
-int getfiletime(const std::string & filename, time_t & t)
-{
-    struct stat sbuf{};
 
-    int ret = ::stat(filename.c_str(), &sbuf);
-
-    if (ret != 0) {
-        return -1;
-    }
-
-    t = sbuf.st_mtime;
-
-    return 0;
-}
 #ifndef HAVE_GETTIMEOFDAY
 
 int gettimeofday(struct timeval * tv, struct timezone * tz)
