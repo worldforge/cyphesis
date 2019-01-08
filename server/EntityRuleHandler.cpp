@@ -239,8 +239,8 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
         auto Kend = attrs.end();
         for (auto K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
-                log(ERROR, compose("Attribute description in rule %1 is not a "
-                                   "map.", class_name));
+                log(ERROR, compose("Attribute '%1' in rule '%2' is not a "
+                                   "map.", K->first, class_name));
                 continue;
             }
             const MapType & attr = K->second.asMap();

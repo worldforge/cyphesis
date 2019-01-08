@@ -371,12 +371,12 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
         auto resolvedTypes = m_typeResolver->InfoOperation(op, res);
         //For any resolved types, find any unresolved entities, set their type and put any pending operations in "res".
         for (auto& type : resolvedTypes) {
-            log(INFO, String::compose("Resolved type '%1'.", type->name()));
+            log(INFO, String::compose("%1: Resolved type '%2'.", getId(), type->name()));
 
             auto resolved = m_map.resolveEntitiesForType(type);
             for (auto& entity : resolved) {
 
-                log(INFO, String::compose("Resolved entity %1.", entity->getId()));
+                log(INFO, String::compose("%1: Resolved entity %2.", getId(), entity->getId()));
 
                 auto J = m_pendingEntitiesOperations.find(entity->getId());
                 if (J != m_pendingEntitiesOperations.end()) {
@@ -386,13 +386,12 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
 
                 //If we have resolved our own entity we should do some house keeping
                 if (entity->getId() == m_entityId) {
-                    log(INFO, String::compose("Resolved own entity for %1.", entity->describeEntity()));
+                    log(INFO, String::compose("%1: Resolved own entity for %2.", getId(), entity->describeEntity()));
                     setOwnEntity(res, entity);
                 }
             }
         }
     }
-
 }
 
 void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string scriptMethod)

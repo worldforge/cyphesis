@@ -185,6 +185,8 @@ void Connection::externalOperation(const Operation & op, Link & link)
 {
     debug(std::cout << "Connection::externalOperation"
                     << std::endl << std::flush;);
+    //log(INFO, String::compose("externalOperation in %1", getId()));
+
     if (op->isDefaultFrom()) {
         debug(std::cout << "deliver locally" << std::endl << std::flush;);
         OpVector reply;
