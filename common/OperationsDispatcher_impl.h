@@ -29,15 +29,15 @@
 
 static const bool opdispatcher_debug_flag = false;
 
-template <typename T>
+template<typename T>
 OperationsDispatcher<T>::~OperationsDispatcher()
 {
     clearQueues();
 }
 
 
-template <typename T>
-void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T> & oqe)
+template<typename T>
+void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T>& oqe)
 {
     //Set the time of when this op is dispatched. That way, other components in the system can
     //always use the seconds set on the op to know the current time.
@@ -45,7 +45,7 @@ void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T> & oqe)
     try {
         m_operationProcessor(oqe.op, std::move(oqe.from));
     }
-    catch (const std::exception & ex) {
+    catch (const std::exception& ex) {
         log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
                                    "thrown while processing operation "
                                    "sent to \"%1\" from \"%2\": %3",
@@ -60,7 +60,7 @@ void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T> & oqe)
 }
 
 
-template <typename T>
+template<typename T>
 bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
 {
     int op_count = 0;
@@ -73,6 +73,15 @@ bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
         auto opQueueEntry = m_operationQueue.top();
         //Pop it before we dispatch it, since dispatching might alter the queue.
         m_operationQueue.pop();
+
+        if (m_time_diff_report > 0) {
+            //Check if there's too large a difference in time
+            auto timeDiff = realtime - opQueueEntry->getSeconds();
+            if (timeDiff > m_time_diff_report) {
+                log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4. Ops in queue: %5",
+                                             opQueueEntry->getParent(), opQueueEntry->getFrom(), opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
+            }
+        }
         dispatchOperation(opQueueEntry);
 
         opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
@@ -86,25 +95,25 @@ bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
 }
 
 
-template <typename T>
+template<typename T>
 bool OperationsDispatcher<T>::isQueueDirty() const
 {
     return m_operation_queues_dirty;
 }
 
-template <typename T>
+template<typename T>
 void OperationsDispatcher<T>::markQueueAsClean()
 {
     m_operation_queues_dirty = false;
 }
 
-template <typename T>
+template<typename T>
 double OperationsDispatcher<T>::getTime() const
 {
     return m_timeProviderFn();
 }
 
-template <typename T>
+template<typename T>
 double OperationsDispatcher<T>::secondsUntilNextOp() const
 {
     if (m_operationQueue.empty()) {
@@ -115,16 +124,15 @@ double OperationsDispatcher<T>::secondsUntilNextOp() const
 }
 
 
-
-template <typename T>
-OpQueEntry<T>::OpQueEntry(Operation o, T & f) :
+template<typename T>
+OpQueEntry<T>::OpQueEntry(Operation o, T& f) :
     op(std::move(o)),
     from(&f)
 {
 }
 
-template <typename T>
-OpQueEntry<T>::OpQueEntry(const OpQueEntry & o) :
+template<typename T>
+OpQueEntry<T>::OpQueEntry(const OpQueEntry& o) :
     op(o.op),
     from(o.from)
 {
@@ -133,26 +141,26 @@ OpQueEntry<T>::OpQueEntry(const OpQueEntry & o) :
 template<typename T>
 OpQueEntry<T>::OpQueEntry(OpQueEntry&& o) noexcept
     : op(std::move(o.op)),
-    from(std::move(o.from))
+      from(std::move(o.from))
 {
 
 }
 
-template <typename T>
+template<typename T>
 OpQueEntry<T>::~OpQueEntry() = default;
 
 
-
-template <typename T>
-OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation &, Ref<T>)> & operationProcessor,
-                                           const std::function<double()> & timeProviderFn)
-    : m_operationProcessor(operationProcessor),
-      m_timeProviderFn(timeProviderFn),
-      m_operation_queues_dirty(false)
+template<typename T>
+OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor,
+                                              const std::function<double()>& timeProviderFn)
+    :       m_time_diff_report(0),
+            m_operationProcessor(operationProcessor),
+            m_timeProviderFn(timeProviderFn),
+            m_operation_queues_dirty(false)
 {
 }
 
-template <typename T>
+template<typename T>
 void OperationsDispatcher<T>::clearQueues()
 {
     m_operationQueue = std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>();
@@ -165,7 +173,7 @@ void OperationsDispatcher<T>::clearQueues()
 /// queue. The From attribute of the operation is set to the id of
 /// the entity that is responsible for adding the operation to the
 /// queue.
-template <typename T>
+template<typename T>
 void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
 {
     assert(op.isValid());

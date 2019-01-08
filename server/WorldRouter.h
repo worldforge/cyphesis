@@ -60,7 +60,7 @@ class WorldRouter : public BaseWorld {
                    Ref<LocatedEntity>);
     void resumeWorld() override;
   public:
-    explicit WorldRouter(const SystemTime & systemTime, Ref<LocatedEntity> baseEntity);
+    explicit WorldRouter(Ref<LocatedEntity> baseEntity);
 
     ~WorldRouter() override;
 
@@ -94,19 +94,6 @@ class WorldRouter : public BaseWorld {
     Ref<LocatedEntity> findByName(const std::string & name) override;
     Ref<LocatedEntity> findByType(const std::string & type) override;
 
-    /**
-     * @brief Checks if the operation queues have been marked as dirty.
-     *
-     * This means that something has been added to them.
-     * @return True if the queues are dirty.
-     */
-    bool isQueueDirty() const;
-
-    /**
-     * @brief Marks all queues as clean.
-     */
-    void markQueueAsClean();
-
     /// \brief Signal that a new Entity has been inserted.
     sigc::signal<void, LocatedEntity *> inserted;
 
@@ -115,7 +102,7 @@ class WorldRouter : public BaseWorld {
 
     LocatedEntity& getDefaultLocation() const override;
 
-        OperationsHandler& getOperationsHandler();
+    OperationsDispatcher<LocatedEntity>& getOperationsHandler();
 };
 
 #endif // SERVER_WORLD_ROUTER_H

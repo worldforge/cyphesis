@@ -54,7 +54,6 @@
 #include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/sockets.h"
-#include "common/SystemTime.h"
 #include "common/Monitors.h"
 #include "ExternalMindsManager.h"
 
@@ -241,9 +240,6 @@ int main(int argc, char** argv)
 
     auto inheritance = new Inheritance();
 
-    SystemTime time{};
-    time.update();
-
     auto entityBuilder = new EntityBuilder();
     auto arithmenticBuilder = new ArithmeticBuilder();
 
@@ -253,10 +249,9 @@ int main(int argc, char** argv)
     Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
     baseEntity->setType(Inheritance::instance().getType("world"));
 
-    WorldRouter* world = new WorldRouter(time, baseEntity);
+    WorldRouter* world = new WorldRouter(baseEntity);
 
     CyPy_Server::registerWorld(world);
-
 
     auto possessionAuthenticator = new PossessionAuthenticator();
 
@@ -481,6 +476,10 @@ int main(int argc, char** argv)
 
     auto softExitTimeout = [&]() {
     };
+
+
+    //Report to log when time diff between when an operation should have d
+    world->getOperationsHandler().m_time_diff_report = 0.2f;
 
     MainLoop::run(daemon_flag, *io_service, world->getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
 

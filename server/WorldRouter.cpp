@@ -33,7 +33,6 @@
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
-#include "common/SystemTime.h"
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
 #include "server/Connection.h"
@@ -55,15 +54,13 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
-WorldRouter::WorldRouter(const SystemTime & time, Ref<LocatedEntity> baseEntity) :
+WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity) :
       BaseWorld(),
       m_operationsDispatcher([&](const Operation & op, Ref<LocatedEntity> from){this->operation(op, std::move(from));}, [&]()->double {return getTime();}),
       m_entityCount(1),
       m_baseEntity(std::move(baseEntity))
           
 {
-    m_initTime = time.seconds();
-
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
 
@@ -143,18 +140,6 @@ void WorldRouter::shutdown()
     m_baseEntity = nullptr;
     BaseWorld::shutdown();
 }
-
-bool WorldRouter::isQueueDirty() const
-{
-    return m_operationsDispatcher.isQueueDirty();
-}
-
-void WorldRouter::markQueueAsClean()
-{
-    m_operationsDispatcher.markQueueAsClean();
-}
-
-
 
 /// \brief Add a new entity to the world.
 ///
@@ -276,7 +261,7 @@ int WorldRouter::removeSpawnPoint(LocatedEntity * ent)
 
 int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
 {
-    for (auto entry : m_spawns) {
+    for (const auto& entry : m_spawns) {
         MapType spawn;
         spawn.insert(std::make_pair("name", entry.first));
         entry.second.first->addToMessage(spawn);
@@ -565,7 +550,7 @@ LocatedEntity& WorldRouter::getDefaultLocation() const
     return *m_baseEntity;
 }
 
-OperationsHandler& WorldRouter::getOperationsHandler()
+OperationsDispatcher<LocatedEntity>& WorldRouter::getOperationsHandler()
 {
     return m_operationsDispatcher;
 }

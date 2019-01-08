@@ -166,6 +166,12 @@ class OperationsDispatcher : public OperationsHandler
          * @param The located entity it belongs to.
          */
         void addOperationToQueue(Operation, Ref<T>);
+
+        /**
+         * If set to >
+         */
+        float m_time_diff_report;
+
     protected:
 
         std::function<void(const Operation&, Ref<T>)> m_operationProcessor;
@@ -175,6 +181,7 @@ class OperationsDispatcher : public OperationsHandler
         std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>> > m_operationQueue;
         /// Keeps track of if the operation queues are dirty.
         bool m_operation_queues_dirty;
+
 
         /**
          * @brief Dispatches the operation contained in the OpQueueEntry.
