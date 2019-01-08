@@ -58,6 +58,11 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         int flush() override;
 
+        /**
+         * Controls how many ops should be emitted per call to dispatch.
+         */
+        int mMaxOpsPerDispatch;
+
     protected:
         typename ProtocolT::socket mSocket;
 

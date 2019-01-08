@@ -48,6 +48,7 @@ template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string& name,
                                           boost::asio::io_service& io_service) :
     CommSocket(io_service),
+    mMaxOpsPerDispatch(1),
     mSocket(io_service),
     mWriteBuffer(new boost::asio::streambuf()),
     mSendBuffer(new boost::asio::streambuf()),
@@ -159,7 +160,7 @@ void CommAsioClient<ProtocolT>::write()
                                              std::stringstream ss;
                                              log_level level = WARNING;
                                              if (ec == boost::asio::error::eof) {
-                                                 ss << "Client hung up unexpectedly.";
+                                                 ss << "Connection hung up unexpectedly.";
                                                  level = INFO;
                                              } else {
                                                  ss << "Error when reading from socket: (" << ec << ") " << ec.message();
@@ -318,13 +319,23 @@ int CommAsioClient<ProtocolT>::operation(
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::dispatch()
 {
-    auto Iend = m_opQueue.end();
-    for (auto I = m_opQueue.begin(); I != Iend; ++I) {
-        if (operation(*I) != 0) {
-            return;
-        }
+
+    if (!m_opQueue.empty()) {
+        auto self(this->shared_from_this());
+        m_io_service.post([this, self](){
+            int i = 0;
+            while (!m_opQueue.empty() && i < mMaxOpsPerDispatch) {
+                auto op = m_opQueue.front();
+                m_opQueue.pop_front();
+                operation(op);
+                ++i;
+            }
+            if (!m_opQueue.empty()) {
+                dispatch();
+            }
+
+        });
     }
-    m_opQueue.clear();
 }
 
 template<class ProtocolT>
