@@ -55,7 +55,7 @@ static void logDate(std::ostream & log_stream)
     local_time = localtime(&now);
 #endif // HAVE_LOCALTIME_R
 
-    char buf[256];
+    char buf[32];
 #ifndef _WIN32
     size_t count = strftime(buf, sizeof(buf) / sizeof(char), "%FT%T", local_time);
 #else
