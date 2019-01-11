@@ -652,6 +652,9 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
 
         auto& observed = bulletEntry->observedByThis;
 
+
+        std::vector<Atlas::Objects::Root> appearArgs;
+        std::vector<Atlas::Objects::Root> disappearArgs;
         //See which entities became visible, and which sight was lost of.
         for (BulletEntry* viewedEntry : callback.m_entries) {
             if (viewedEntry == bulletEntry) {
@@ -664,16 +667,19 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             } else {
                 //Send Appear
                 // debug_print(" appear: " << viewedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
-                Appearance appear;
                 Anonymous that_ent;
                 that_ent->setId(viewedEntry->entity->getId());
                 that_ent->setStamp(viewedEntry->entity->getSeq());
-                appear->setArgs1(that_ent);
-                appear->setTo(bulletEntry->entity->getId());
-                res.push_back(appear);
+                appearArgs.push_back(that_ent);
 
                 viewedEntry->observingThis.insert(bulletEntry);
             }
+        }
+        if (!appearArgs.empty()) {
+            Appearance appear;
+            appear->setTo(bulletEntry->entity->getId());
+            appear->setArgs(appearArgs);
+            res.push_back(appear);
         }
 
         for (BulletEntry* disappearedEntry : observed) {
@@ -682,16 +688,22 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             }
             //Send disappearence
             //debug_print(" disappear: " << disappearedEntry->entity->describeEntity() << " for " << bulletEntry->entity->describeEntity());
-            Disappearance disappear;
             Anonymous that_ent;
             that_ent->setId(disappearedEntry->entity->getId());
             that_ent->setStamp(disappearedEntry->entity->getSeq());
-            disappear->setArgs1(that_ent);
-            disappear->setTo(bulletEntry->entity->getId());
-            res.push_back(disappear);
+
+            disappearArgs.push_back(that_ent);
 
             disappearedEntry->observingThis.erase(bulletEntry);
         }
+
+        if (!disappearArgs.empty()) {
+            Disappearance disappear;
+            disappear->setTo(bulletEntry->entity->getId());
+            disappear->setArgs(disappearArgs);
+            res.push_back(disappear);
+        }
+
 
         bulletEntry->observedByThis = std::move(callback.m_entries);
         //Make sure ourselves is in the list
