@@ -35,7 +35,6 @@ add_library(rulessimulation
     LimboProperty.cpp
     PhysicalDomain.cpp
     VoidDomain.cpp
-    ProxyMind.cpp
     InventoryDomain.cpp
     ModeProperty.cpp
     PropelProperty.cpp
