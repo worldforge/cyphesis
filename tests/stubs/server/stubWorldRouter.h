@@ -33,8 +33,8 @@
 
 #ifndef STUB_WorldRouter_WorldRouter
 //#define STUB_WorldRouter_WorldRouter
-   WorldRouter::WorldRouter(const SystemTime & systemTime, Ref<LocatedEntity> baseEntity)
-    : BaseWorld(systemTime, baseEntity)
+   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity)
+    : BaseWorld(baseEntity)
   {
     
   }
@@ -176,22 +176,6 @@
   }
 #endif //STUB_WorldRouter_findByType
 
-#ifndef STUB_WorldRouter_isQueueDirty
-//#define STUB_WorldRouter_isQueueDirty
-  bool WorldRouter::isQueueDirty() const
-  {
-    return false;
-  }
-#endif //STUB_WorldRouter_isQueueDirty
-
-#ifndef STUB_WorldRouter_markQueueAsClean
-//#define STUB_WorldRouter_markQueueAsClean
-  void WorldRouter::markQueueAsClean()
-  {
-    
-  }
-#endif //STUB_WorldRouter_markQueueAsClean
-
 #ifndef STUB_WorldRouter_getDefaultLocation
 //#define STUB_WorldRouter_getDefaultLocation
   LocatedEntity& WorldRouter::getDefaultLocation() const
@@ -202,9 +186,9 @@
 
 #ifndef STUB_WorldRouter_getOperationsHandler
 //#define STUB_WorldRouter_getOperationsHandler
-  OperationsHandler& WorldRouter::getOperationsHandler()
+  OperationsDispatcher<LocatedEntity>& WorldRouter::getOperationsHandler()
   {
-    return *static_cast<OperationsHandler*>(nullptr);
+    return *static_cast<OperationsDispatcher<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_WorldRouter_getOperationsHandler
 

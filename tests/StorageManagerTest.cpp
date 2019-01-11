@@ -80,15 +80,13 @@ int main()
     Ref<LocatedEntity> le = new Entity("", 0);
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         StorageManager store(world);
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         StorageManager store(world);
 
@@ -96,8 +94,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         StorageManager store(world);
 
@@ -105,8 +102,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         StorageManager store(world);
 
@@ -114,8 +110,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 
@@ -123,8 +118,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 
@@ -132,8 +126,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 
@@ -143,8 +136,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 
@@ -152,8 +144,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 
@@ -161,8 +152,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 
@@ -170,8 +160,7 @@ int main()
     }
 
     {
-        SystemTime time;
-        WorldRouter world(time, le);
+        WorldRouter world(le);
 
         TestStorageManager store(world);
 

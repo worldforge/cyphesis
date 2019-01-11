@@ -105,7 +105,7 @@ void WorldRoutertest::setup()
 {
     m_rootEntity = new Entity("", 0);
     m_inheritance = new Inheritance();
-    test_world = new WorldRouter(SystemTime(), m_rootEntity);
+    test_world = new WorldRouter(m_rootEntity);
     m_eb = new EntityBuilder();
 }
 
@@ -307,7 +307,7 @@ int CHANGE_NO = -1;
 #include "stubs/common/stubTypeNode.h"
 
 template class OperationsDispatcher<LocatedEntity>;
-template class OpQueEntry<LocatedEntity>;
+template struct OpQueEntry<LocatedEntity>;
 
 #define STUB_LocatedEntity_LocatedEntity_DTOR
 // Deletions and reference count decrements are required to ensure map

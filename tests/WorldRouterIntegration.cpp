@@ -77,7 +77,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
     void test_creationAndDeletion() {
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(SystemTime(), base));
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base));
 
             auto ent1 = test_world->addNewEntity("thing", Anonymous());
 
@@ -91,7 +91,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(SystemTime(), base));
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base));
 
             auto ent1 = test_world->addNewEntity("thing", Anonymous());
 
@@ -186,7 +186,7 @@ void WorldRouterintegration::teardown()
 void WorldRouterintegration::test_sequence()
 {
     Ref<Entity> base = new Entity("", 0);
-    WorldRouter* test_world = new WorldRouter(SystemTime(), base);
+    WorldRouter* test_world = new WorldRouter(base);
 
     auto ent1 = test_world->addNewEntity("__no_such_type__",
                                                    Anonymous());
@@ -366,7 +366,6 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/rules/simulation/stubTasksProperty.h"
 #include "stubs/rules/simulation/stubTerrainProperty.h"
 #include "stubs/rules/simulation/stubDomainProperty.h"
-#include "stubs/rules/simulation/stubProxyMind.h"
 #include "stubs/rules/ai/stubBaseMind.h"
 #include "stubs/rules/ai/stubMemEntity.h"
 #include "stubs/rules/ai/stubMemMap.h"

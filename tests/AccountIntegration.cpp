@@ -108,7 +108,6 @@ class Accountintegration : public Cyphesis::TestBase
     DatabaseNull m_database;
     Persistence* m_persistence;
 
-    SystemTime * m_time;
     WorldRouter * m_world;
 
     ServerRouting * m_server;
@@ -183,11 +182,10 @@ void Accountintegration::setup()
     m_rootEntity = new Entity("", 0);
     m_persistence = new Persistence(m_database);
     m_inheritance = new Inheritance();
-    m_time = new SystemTime;
     m_eb = new EntityBuilder();
     auto entityRuleHandler = new EntityRuleHandler(m_eb);
 
-    m_world = new WorldRouter(*m_time, m_rootEntity);
+    m_world = new WorldRouter(m_rootEntity);
 
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
                          "1", 1, "2", 2);
