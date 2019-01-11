@@ -247,26 +247,16 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
         }
     }
 
-    //We must send a sight op to the entity informing it of itself before we send any thoughts.
-    //Else the mind won't have any information about itself.
-    {
-        Atlas::Objects::Operation::Sight sight;
-        sight->setTo(ent->getId());
-        Atlas::Objects::Entity::Anonymous args;
-        ent->addToEntity(args);
-        sight->setArgs1(args);
-        ent->sendWorld(sight);
-    }
-    //We should also send a sight op to the parent entity which owns the entity.
-    //TODO: should this really be necessary or should we rely on other Sight functionality?
-    if (ent->m_location.m_parent) {
-        Atlas::Objects::Operation::Sight sight;
-        sight->setTo(ent->m_location.m_parent->getId());
-        Atlas::Objects::Entity::Anonymous args;
-        ent->addToEntity(args);
-        sight->setArgs1(args);
-        ent->m_location.m_parent->sendWorld(sight);
-    }
+//    //We should also send a sight op to the parent entity which owns the entity.
+//    //TODO: should this really be necessary or should we rely on other Sight functionality?
+//    if (ent->m_location.m_parent) {
+//        Atlas::Objects::Operation::Sight sight;
+//        sight->setTo(ent->m_location.m_parent->getId());
+//        Atlas::Objects::Entity::Anonymous args;
+//        ent->addToEntity(args);
+//        sight->setArgs1(args);
+//        ent->m_location.m_parent->sendWorld(sight);
+//    }
 
 }
 
