@@ -51,8 +51,6 @@ using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Operation::Look;
-using Atlas::Objects::Operation::Appearance;
-using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;

@@ -53,7 +53,6 @@ using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Pickup;
-using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;

@@ -150,28 +150,24 @@ void WorldRouter::shutdown()
 /// class. Send a Setup op to the entity.
 Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
 {
-    debug(std::cout << "WorldRouter::addEntity(" << ent->getIntId() << ")" << std::endl
-                    << std::flush;);
+    debug_print("WorldRouter::addEntity(" << ent->describeEntity() << ")");
     assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
     ++m_entityCount;
 
     if (!ent->m_location.isValid()) {
-        log(ERROR, String::compose("Entity %1 of type %2 added to world with invalid location!", ent->getId(), ent->getType()->name()));
-        debug(std::cout << "set loc " << &getDefaultLocation()  << std::endl
-                        << std::flush;);
+        log(ERROR, String::compose("Entity %1 added to world with invalid location!", ent->describeEntity()));
+        debug_print("set loc " << &getDefaultLocation());
         ent->m_location.m_parent = &getDefaultLocation();
 //        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         ent->m_location.m_pos = Point3D::ZERO();
-        debug(std::cout << "loc set with loc " << ent->m_location.m_parent->getId()
-                        << std::endl << std::flush;);
+        debug_print("loc set with loc " << ent->m_location.m_parent->getId());
     }
     ent->m_location.update(getTime());
 
     ent->m_location.m_parent->addChild(*ent);
 
-    debug(std::cout << "Entity loc " << ent->m_location << std::endl
-                    << std::flush;);
+    debug_print("Entity loc " << ent->m_location);
 
     if (ent->m_contains != nullptr) {
         for (auto& child : *ent->m_contains) {

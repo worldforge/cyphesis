@@ -259,18 +259,17 @@ void BaseMind::ThinkOperation(const Operation& op, OpVector& res)
 void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
 {
     if (!isAwake()) { return; }
-    const std::vector<Root>& args = op->getArgs();
-    auto Iend = args.end();
-    for (auto I = args.begin(); I != Iend; ++I) {
-        if (!(*I)->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+    auto& args = op->getArgs();
+    for (auto& arg : args) {
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             log(ERROR, "BaseMind: Appearance op does not have ID");
             continue;
         }
-        const std::string& id = (*I)->getId();
+        const std::string& id = arg->getId();
         auto me = m_map.getAdd(id);
         if (me) {
-            if ((*I)->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
-                if ((int) (*I)->getStamp() != me->getSeq()) {
+            if (arg->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
+                if ((int) arg->getStamp() != me->getSeq()) {
                     Look l;
                     Anonymous m;
                     m->setId(id);
@@ -289,8 +288,8 @@ void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
 void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
 {
     if (!isAwake()) { return; }
-    const std::vector<Root>& args = op->getArgs();
-    for (const auto& arg : args) {
+    auto& args = op->getArgs();
+    for (auto& arg : args) {
         const std::string& id = arg->getId();
         if (id.empty()) { continue; }
         auto me = m_map.get(id);
@@ -303,12 +302,12 @@ void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
 
 void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root>& args = op->getArgs();
+    auto& args = op->getArgs();
     if (args.empty()) {
         debug(std::cout << " no args!" << std::endl << std::flush;);
         return;
     }
-    const Root& arg = args.front();
+    auto& arg = args.front();
     if (arg->isDefaultId()) {
         log(ERROR, "BaseMind: Unseen op has no arg ID");
         return;
