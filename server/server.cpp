@@ -478,7 +478,9 @@ int main(int argc, char** argv)
     };
 
 
-    //Report to log when time diff between when an operation should have d
+    //Initially there are a couple of pent up operations we need to run to get up to speed. 10000 is a suitable large number.
+    world->getOperationsHandler().idle(10000);
+    //Report to log when time diff between when an operation should have been handled and when it actually was
     world->getOperationsHandler().m_time_diff_report = 0.2f;
 
     MainLoop::run(daemon_flag, *io_service, world->getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
