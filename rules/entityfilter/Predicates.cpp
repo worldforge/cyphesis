@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Predicates.h"
 
 #include "common/TypeNode.h"
@@ -5,11 +7,14 @@
 #include <algorithm>
 
 namespace EntityFilter {
-    ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs,
-                                       const Consumer<QueryContext>* rhs,
+    ComparePredicate::ComparePredicate(std::shared_ptr<Consumer<QueryContext>> lhs,
+                                       std::shared_ptr<Consumer<QueryContext>> rhs,
                                        Comparator comparator,
-                                       const Consumer<QueryContext>* with) :
-        m_lhs(lhs), m_rhs(rhs), m_comparator(comparator), m_with(with)
+                                       std::shared_ptr<Consumer<QueryContext>> with) :
+        m_lhs(std::move(lhs)),
+        m_rhs(std::move(rhs)),
+        m_comparator(comparator),
+        m_with(std::move(with))
     {
         //make sure rhs and lhs exist
         if (!m_lhs) {
@@ -148,8 +153,7 @@ namespace EntityFilter {
                 }
                 return false;
             }
-            case Comparator::CAN_REACH:
-            {
+            case Comparator::CAN_REACH: {
                 Atlas::Message::Element left, right;
                 m_lhs->value(left, context);
                 auto leftEntity = static_cast<const LocatedEntity*>(left.Ptr());
@@ -177,8 +181,9 @@ namespace EntityFilter {
         }
     }
 
-    AndPredicate::AndPredicate(const Predicate* lhs, const Predicate* rhs) :
-        m_lhs(lhs), m_rhs(rhs)
+    AndPredicate::AndPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs) :
+        m_lhs(std::move(lhs)),
+        m_rhs(std::move(rhs))
     {
     }
 
@@ -188,8 +193,9 @@ namespace EntityFilter {
 
     }
 
-    OrPredicate::OrPredicate(const Predicate* lhs, const Predicate* rhs) :
-        m_lhs(lhs), m_rhs(rhs)
+    OrPredicate::OrPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs) :
+        m_lhs(std::move(lhs)),
+        m_rhs(std::move(rhs))
     {
     }
 
@@ -199,8 +205,8 @@ namespace EntityFilter {
 
     }
 
-    NotPredicate::NotPredicate(const Predicate* pred) :
-        m_pred(pred)
+    NotPredicate::NotPredicate(std::shared_ptr<Predicate> pred) :
+        m_pred(std::move(pred))
     {
     }
 
@@ -209,8 +215,8 @@ namespace EntityFilter {
         return !m_pred->isMatch(context);
     }
 
-    BoolPredicate::BoolPredicate(const Consumer<QueryContext>* consumer) :
-        m_consumer(consumer)
+    BoolPredicate::BoolPredicate(std::shared_ptr<Consumer<QueryContext>> consumer) :
+        m_consumer(std::move(consumer))
     {
     }
 

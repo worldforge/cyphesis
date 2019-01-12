@@ -219,4 +219,5 @@ int main(int argc, char** argv)
 
         log(INFO, "Shutting down.");
     }
+    shutdown_python_api();
 }

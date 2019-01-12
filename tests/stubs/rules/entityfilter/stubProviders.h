@@ -53,8 +53,7 @@ namespace EntityFilter {
 #ifndef STUB_ProviderBase_ProviderBase
 //#define STUB_ProviderBase_ProviderBase
   template <typename T>
-   ProviderBase<T>::ProviderBase(Consumer<T>* consumer)
-    : m_consumer(nullptr)
+   ProviderBase<T>::ProviderBase(std::shared_ptr<Consumer<T>> consumer)
   {
     
   }
@@ -77,7 +76,7 @@ namespace EntityFilter {
 #ifndef STUB_ConsumingProviderBase_ConsumingProviderBase
 //#define STUB_ConsumingProviderBase_ConsumingProviderBase
   template <typename TProviding,typename TConsuming>
-   ConsumingProviderBase<TProviding,TConsuming>::ConsumingProviderBase(Consumer<TProviding>* consumer)
+   ConsumingProviderBase<TProviding,TConsuming>::ConsumingProviderBase(std::shared_ptr<Consumer<TProviding>> consumer)
     : ProviderBase(consumer)
   {
     
@@ -101,7 +100,7 @@ namespace EntityFilter {
 #ifndef STUB_NamedAttributeProviderBase_NamedAttributeProviderBase
 //#define STUB_NamedAttributeProviderBase_NamedAttributeProviderBase
   template <typename T>
-   NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, std::string attribute_name)
+   NamedAttributeProviderBase<T>::NamedAttributeProviderBase(std::shared_ptr<Consumer<T>> consumer, std::string attribute_name)
     : ProviderBase(consumer, attribute_name)
   {
     
@@ -116,7 +115,7 @@ namespace EntityFilter {
 #ifndef STUB_ConsumingNamedAttributeProviderBase_ConsumingNamedAttributeProviderBase
 //#define STUB_ConsumingNamedAttributeProviderBase_ConsumingNamedAttributeProviderBase
   template <typename TProviding,typename TConsuming>
-   ConsumingNamedAttributeProviderBase<TProviding,TConsuming>::ConsumingNamedAttributeProviderBase(Consumer<TProviding>* consumer, const std::string& attribute_name)
+   ConsumingNamedAttributeProviderBase<TProviding,TConsuming>::ConsumingNamedAttributeProviderBase(std::shared_ptr<Consumer<TProviding>> consumer, const std::string& attribute_name)
     : NamedAttributeProviderBase(consumer, attribute_name)
   {
     
@@ -161,7 +160,7 @@ namespace EntityFilter {
 
 #ifndef STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
 //#define STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
-   DynamicTypeNodeProvider::DynamicTypeNodeProvider(Consumer<TypeNode>* consumer, const std::string& type)
+   DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const std::string& type)
     : ConsumingProviderBase(consumer, type)
   {
     
@@ -191,7 +190,7 @@ namespace EntityFilter {
 
 #ifndef STUB_FixedTypeNodeProvider_FixedTypeNodeProvider
 //#define STUB_FixedTypeNodeProvider_FixedTypeNodeProvider
-   FixedTypeNodeProvider::FixedTypeNodeProvider(Consumer<TypeNode>* consumer, const TypeNode& type)
+   FixedTypeNodeProvider::FixedTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const TypeNode& type)
     : ConsumingProviderBase(consumer, type)
   {
     
@@ -221,7 +220,7 @@ namespace EntityFilter {
 
 #ifndef STUB_MemoryProvider_MemoryProvider
 //#define STUB_MemoryProvider_MemoryProvider
-   MemoryProvider::MemoryProvider(Consumer<Atlas::Message::Element>* consumer)
+   MemoryProvider::MemoryProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer)
     : ConsumingProviderBase(consumer)
   {
     
@@ -243,7 +242,7 @@ namespace EntityFilter {
 
 #ifndef STUB_EntityProvider_EntityProvider
 //#define STUB_EntityProvider_EntityProvider
-   EntityProvider::EntityProvider(Consumer<LocatedEntity>* consumer)
+   EntityProvider::EntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
     : ConsumingProviderBase(consumer)
   {
     
@@ -273,7 +272,7 @@ namespace EntityFilter {
 
 #ifndef STUB_ActorProvider_ActorProvider
 //#define STUB_ActorProvider_ActorProvider
-   ActorProvider::ActorProvider(Consumer<LocatedEntity>* consumer)
+   ActorProvider::ActorProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
     : EntityProvider(consumer)
   {
     
@@ -295,7 +294,7 @@ namespace EntityFilter {
 
 #ifndef STUB_ToolProvider_ToolProvider
 //#define STUB_ToolProvider_ToolProvider
-   ToolProvider::ToolProvider(Consumer<LocatedEntity>* consumer)
+   ToolProvider::ToolProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
     : EntityProvider(consumer)
   {
     
@@ -317,7 +316,7 @@ namespace EntityFilter {
 
 #ifndef STUB_ChildProvider_ChildProvider
 //#define STUB_ChildProvider_ChildProvider
-   ChildProvider::ChildProvider(Consumer<LocatedEntity>* consumer)
+   ChildProvider::ChildProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
     : EntityProvider(consumer)
   {
     
@@ -339,7 +338,7 @@ namespace EntityFilter {
 
 #ifndef STUB_SelfEntityProvider_SelfEntityProvider
 //#define STUB_SelfEntityProvider_SelfEntityProvider
-   SelfEntityProvider::SelfEntityProvider(Consumer<LocatedEntity>* consumer)
+   SelfEntityProvider::SelfEntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
     : ConsumingProviderBase(consumer)
   {
     
@@ -369,7 +368,7 @@ namespace EntityFilter {
 
 #ifndef STUB_EntityTypeProvider_EntityTypeProvider
 //#define STUB_EntityTypeProvider_EntityTypeProvider
-   EntityTypeProvider::EntityTypeProvider(Consumer<TypeNode>* consumer)
+   EntityTypeProvider::EntityTypeProvider(std::shared_ptr<Consumer<TypeNode>> consumer)
     : ConsumingProviderBase(consumer)
   {
     
@@ -434,7 +433,7 @@ namespace EntityFilter {
 
 #ifndef STUB_BBoxProvider_BBoxProvider
 //#define STUB_BBoxProvider_BBoxProvider
-   BBoxProvider::BBoxProvider(Consumer<Atlas::Message::Element>* consumer, Measurement measurement)
+   BBoxProvider::BBoxProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, Measurement measurement)
     : ConsumingProviderBase(consumer, measurement)
   {
     
@@ -457,7 +456,7 @@ namespace EntityFilter {
 #ifndef STUB_PropertyProvider_PropertyProvider
 //#define STUB_PropertyProvider_PropertyProvider
   template <typename TProperty>
-   PropertyProvider<TProperty>::PropertyProvider(Consumer<TProperty>* consumer, const std::string& attribute_name)
+   PropertyProvider<TProperty>::PropertyProvider(std::shared_ptr<Consumer<TProperty>> consumer, const std::string& attribute_name)
     : ConsumingNamedAttributeProviderBase(consumer, attribute_name)
   {
     
@@ -480,7 +479,7 @@ namespace EntityFilter {
 
 #ifndef STUB_SoftPropertyProvider_SoftPropertyProvider
 //#define STUB_SoftPropertyProvider_SoftPropertyProvider
-   SoftPropertyProvider::SoftPropertyProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name)
+   SoftPropertyProvider::SoftPropertyProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, const std::string& attribute_name)
     : ConsumingNamedAttributeProviderBase(consumer, attribute_name)
   {
     
@@ -502,7 +501,7 @@ namespace EntityFilter {
 
 #ifndef STUB_MapProvider_MapProvider
 //#define STUB_MapProvider_MapProvider
-   MapProvider::MapProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name)
+   MapProvider::MapProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, const std::string& attribute_name)
     : ConsumingNamedAttributeProviderBase(consumer, attribute_name)
   {
     
@@ -545,9 +544,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ContainsRecursiveFunctionProvider_ContainsRecursiveFunctionProvider
 //#define STUB_ContainsRecursiveFunctionProvider_ContainsRecursiveFunctionProvider
-   ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container, Predicate* condition)
+   ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container, std::shared_ptr<Predicate> condition)
     : Consumer(container, condition)
-    , m_condition(nullptr),m_consumer(nullptr)
   {
     
   }
@@ -576,9 +574,8 @@ namespace EntityFilter {
 
 #ifndef STUB_GetEntityFunctionProvider_GetEntityFunctionProvider
 //#define STUB_GetEntityFunctionProvider_GetEntityFunctionProvider
-   GetEntityFunctionProvider::GetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, Consumer<LocatedEntity>* consumer)
+   GetEntityFunctionProvider::GetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider, std::shared_ptr<Consumer<LocatedEntity>> consumer)
     : ConsumingProviderBase(entity_provider, consumer)
-    , m_entity_provider(nullptr)
   {
     
   }
@@ -607,97 +604,97 @@ namespace EntityFilter {
 
 #ifndef STUB_ProviderFactory_createProviders
 //#define STUB_ProviderFactory_createProviders
-  Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) const
+  std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createProviders(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<Consumer<QueryContext>>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createProviders
 
 #ifndef STUB_ProviderFactory_createProvider
 //#define STUB_ProviderFactory_createProvider
-  Consumer<QueryContext>* ProviderFactory::createProvider(Segment segment) const
+  std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createProvider(Segment segment) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<Consumer<QueryContext>>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createProvider
 
 #ifndef STUB_ProviderFactory_createSimpleGetEntityFunctionProvider
 //#define STUB_ProviderFactory_createSimpleGetEntityFunctionProvider
-  Consumer<QueryContext>* ProviderFactory::createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const
+  std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createSimpleGetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<Consumer<QueryContext>>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createSimpleGetEntityFunctionProvider
 
 #ifndef STUB_ProviderFactory_createGetEntityFunctionProvider
 //#define STUB_ProviderFactory_createGetEntityFunctionProvider
-  Consumer<QueryContext>* ProviderFactory::createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const
+  std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createGetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider, SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<Consumer<QueryContext>>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createGetEntityFunctionProvider
 
 #ifndef STUB_ProviderFactory_createDynamicTypeNodeProvider
 //#define STUB_ProviderFactory_createDynamicTypeNodeProvider
-  DynamicTypeNodeProvider* ProviderFactory::createDynamicTypeNodeProvider(SegmentsList segments) const
+  std::shared_ptr<DynamicTypeNodeProvider> ProviderFactory::createDynamicTypeNodeProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<DynamicTypeNodeProvider>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createDynamicTypeNodeProvider
 
 #ifndef STUB_ProviderFactory_createEntityProvider
 //#define STUB_ProviderFactory_createEntityProvider
-  T* ProviderFactory::createEntityProvider(SegmentsList segments) const
+  std::shared_ptr<T> ProviderFactory::createEntityProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<T>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createEntityProvider
 
 #ifndef STUB_ProviderFactory_createSelfEntityProvider
 //#define STUB_ProviderFactory_createSelfEntityProvider
-  SelfEntityProvider* ProviderFactory::createSelfEntityProvider(SegmentsList segments) const
+  std::shared_ptr<SelfEntityProvider> ProviderFactory::createSelfEntityProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<SelfEntityProvider>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createSelfEntityProvider
 
 #ifndef STUB_ProviderFactory_createBBoxProvider
 //#define STUB_ProviderFactory_createBBoxProvider
-  BBoxProvider* ProviderFactory::createBBoxProvider(SegmentsList segments) const
+  std::shared_ptr<BBoxProvider> ProviderFactory::createBBoxProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<BBoxProvider>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createBBoxProvider
 
 #ifndef STUB_ProviderFactory_createPropertyProvider
 //#define STUB_ProviderFactory_createPropertyProvider
-  Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList segments) const
+  std::shared_ptr<Consumer<LocatedEntity>> ProviderFactory::createPropertyProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<Consumer<LocatedEntity>>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createPropertyProvider
 
 #ifndef STUB_ProviderFactory_createMapProvider
 //#define STUB_ProviderFactory_createMapProvider
-  MapProvider* ProviderFactory::createMapProvider(SegmentsList segments) const
+  std::shared_ptr<MapProvider> ProviderFactory::createMapProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<MapProvider>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createMapProvider
 
 #ifndef STUB_ProviderFactory_createTypeNodeProvider
 //#define STUB_ProviderFactory_createTypeNodeProvider
-  TypeNodeProvider* ProviderFactory::createTypeNodeProvider(SegmentsList segments) const
+  std::shared_ptr<TypeNodeProvider> ProviderFactory::createTypeNodeProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<TypeNodeProvider>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createTypeNodeProvider
 
 #ifndef STUB_ProviderFactory_createMemoryProvider
 //#define STUB_ProviderFactory_createMemoryProvider
-  MemoryProvider* ProviderFactory::createMemoryProvider(SegmentsList segments) const
+  std::shared_ptr<MemoryProvider> ProviderFactory::createMemoryProvider(SegmentsList segments) const
   {
-    return nullptr;
+    return *static_cast<std::shared_ptr<MemoryProvider>*>(nullptr);
   }
 #endif //STUB_ProviderFactory_createMemoryProvider
 

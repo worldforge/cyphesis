@@ -56,7 +56,7 @@ class PossessionClient: public BaseClient
 
         std::function<void()> m_reconnectFn;
 
-        PossessionAccount* m_account;
+        std::unique_ptr<PossessionAccount> m_account;
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
 

@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <utility>
+
 /*
  Copyright (C) 2014 Erik Ogenvik
 
@@ -41,8 +43,8 @@ namespace EntityFilter {
         value = m_element;
     }
 
-    FixedTypeNodeProvider::FixedTypeNodeProvider(Consumer<TypeNode>* consumer, const TypeNode& type)
-        : ConsumingProviderBase<TypeNode, QueryContext>(consumer), m_type(type)
+    FixedTypeNodeProvider::FixedTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const TypeNode& type)
+        : ConsumingProviderBase<TypeNode, QueryContext>(std::move(consumer)), m_type(type)
     {
     }
 
@@ -64,8 +66,8 @@ namespace EntityFilter {
         }
     }
 
-    DynamicTypeNodeProvider::DynamicTypeNodeProvider(Consumer<TypeNode>* consumer, const std::string& type)
-        : ConsumingProviderBase<TypeNode, QueryContext>(consumer), m_type(type)
+    DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const std::string& type)
+        : ConsumingProviderBase<TypeNode, QueryContext>(std::move(consumer)), m_type(type)
     {
     }
 
@@ -91,8 +93,8 @@ namespace EntityFilter {
         }
     }
 
-    MemoryProvider::MemoryProvider(Consumer<Atlas::Message::Element>* consumer)
-        : ConsumingProviderBase<Atlas::Message::Element, QueryContext>(consumer)
+    MemoryProvider::MemoryProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer)
+        : ConsumingProviderBase<Atlas::Message::Element, QueryContext>(std::move(consumer))
     {
 
     }
@@ -111,8 +113,8 @@ namespace EntityFilter {
         }
     }
 
-    EntityProvider::EntityProvider(Consumer<LocatedEntity>* consumer)
-        : ConsumingProviderBase<LocatedEntity, QueryContext>(consumer)
+    EntityProvider::EntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
+        : ConsumingProviderBase<LocatedEntity, QueryContext>(std::move(consumer))
     {
     }
 
@@ -134,8 +136,8 @@ namespace EntityFilter {
         }
     }
 
-    ActorProvider::ActorProvider(Consumer<LocatedEntity>* consumer)
-        : EntityProvider(consumer)
+    ActorProvider::ActorProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
+        : EntityProvider(std::move(consumer))
     {
     }
 
@@ -148,8 +150,8 @@ namespace EntityFilter {
         }
     }
 
-    ToolProvider::ToolProvider(Consumer<LocatedEntity>* consumer)
-        : EntityProvider(consumer)
+    ToolProvider::ToolProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
+        : EntityProvider(std::move(consumer))
     {
     }
 
@@ -162,8 +164,8 @@ namespace EntityFilter {
         }
     }
 
-    ChildProvider::ChildProvider(Consumer<LocatedEntity>* consumer)
-        : EntityProvider(consumer)
+    ChildProvider::ChildProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
+        : EntityProvider(std::move(consumer))
     {
     }
 
@@ -176,8 +178,8 @@ namespace EntityFilter {
         }
     }
 
-    SelfEntityProvider::SelfEntityProvider(Consumer<LocatedEntity>* consumer) :
-        ConsumingProviderBase<LocatedEntity, QueryContext>(consumer)
+    SelfEntityProvider::SelfEntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer) :
+        ConsumingProviderBase<LocatedEntity, QueryContext>(std::move(consumer))
     {
     }
 
@@ -202,8 +204,8 @@ namespace EntityFilter {
         }
     }
 
-    EntityTypeProvider::EntityTypeProvider(Consumer<TypeNode>* consumer)
-        : ConsumingProviderBase<TypeNode, LocatedEntity>(consumer)
+    EntityTypeProvider::EntityTypeProvider(std::shared_ptr<Consumer<TypeNode>> consumer)
+        : ConsumingProviderBase<TypeNode, LocatedEntity>(std::move(consumer))
     {
 
     }
@@ -249,8 +251,8 @@ namespace EntityFilter {
         }
     }
 
-    BBoxProvider::BBoxProvider(Consumer<Atlas::Message::Element>* consumer, Measurement measurement)
-        : ConsumingProviderBase<Atlas::Message::Element, LocatedEntity>(consumer), m_measurement(measurement)
+    BBoxProvider::BBoxProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, Measurement measurement)
+        : ConsumingProviderBase<Atlas::Message::Element, LocatedEntity>(std::move(consumer)), m_measurement(measurement)
     {
 
     }
@@ -282,8 +284,8 @@ namespace EntityFilter {
     }
 
 
-    SoftPropertyProvider::SoftPropertyProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name) :
-        ConsumingNamedAttributeProviderBase<Atlas::Message::Element, LocatedEntity>(consumer, attribute_name)
+    SoftPropertyProvider::SoftPropertyProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, const std::string& attribute_name) :
+        ConsumingNamedAttributeProviderBase<Atlas::Message::Element, LocatedEntity>(std::move(consumer), attribute_name)
     {
     }
 
@@ -302,8 +304,8 @@ namespace EntityFilter {
         }
     }
 
-    MapProvider::MapProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name) :
-        ConsumingNamedAttributeProviderBase<Atlas::Message::Element, Atlas::Message::Element>(consumer, attribute_name)
+    MapProvider::MapProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, const std::string& attribute_name) :
+        ConsumingNamedAttributeProviderBase<Atlas::Message::Element, Atlas::Message::Element>(std::move(consumer), attribute_name)
     {
     }
 
@@ -337,9 +339,9 @@ namespace EntityFilter {
         return &typeid(const LocatedEntitySet*);
     }
 
-    ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container,
-                                                                         Predicate* condition) :
-        m_condition(condition), m_consumer(container)
+    ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container,
+                                                                         std::shared_ptr<Predicate> condition) :
+        m_condition(std::move(condition)), m_consumer(std::move(container))
     {
         if (m_consumer->getType() != &typeid(const LocatedEntitySet*)) {
             throw std::invalid_argument(
@@ -379,12 +381,12 @@ namespace EntityFilter {
         return false;
     }
 
-    Consumer<QueryContext>* ProviderFactory::createProvider(Segment segment) const
+    std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createProvider(Segment segment) const
     {
         return createProviders(SegmentsList{std::move(segment)});
     }
 
-    Consumer<QueryContext>* ProviderFactory::createProviders(SegmentsList segments) const
+    std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createProviders(SegmentsList segments) const
     {
         if (!segments.empty()) {
             auto front = segments.front();
@@ -409,29 +411,29 @@ namespace EntityFilter {
     }
 
 
-    MemoryProvider* ProviderFactory::createMemoryProvider(SegmentsList segments) const
+    std::shared_ptr<MemoryProvider> ProviderFactory::createMemoryProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
         }
         segments.pop_front();
-        return new MemoryProvider(createMapProvider(std::move(segments)));
+        return std::make_shared<MemoryProvider>(createMapProvider(std::move(segments)));
     }
 
-    Consumer<QueryContext>* ProviderFactory::createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const
+    std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createGetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider, SegmentsList segments) const
     {
         if (segments.empty()) {
-            return new GetEntityFunctionProvider(entity_provider, nullptr);
+            return std::make_shared<GetEntityFunctionProvider>(std::move(entity_provider), nullptr);
         }
-        return new GetEntityFunctionProvider(entity_provider, createPropertyProvider(std::move(segments)));
+        return std::make_shared<GetEntityFunctionProvider>(std::move(entity_provider), createPropertyProvider(std::move(segments)));
     }
 
-    Consumer<QueryContext>* ProviderFactory::createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const
+    std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createSimpleGetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider) const
     {
-        return new GetEntityFunctionProvider(entity_provider, nullptr);
+        return std::make_shared<GetEntityFunctionProvider>(std::move(entity_provider), nullptr);
     }
 
-    DynamicTypeNodeProvider* ProviderFactory::createDynamicTypeNodeProvider(SegmentsList segments) const
+    std::shared_ptr<DynamicTypeNodeProvider> ProviderFactory::createDynamicTypeNodeProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
@@ -443,32 +445,32 @@ namespace EntityFilter {
         }
         auto type = segments.front().attribute;
         segments.pop_front();
-        return new DynamicTypeNodeProvider(createTypeNodeProvider(std::move(segments)), type);
+        return std::make_shared<DynamicTypeNodeProvider>(createTypeNodeProvider(std::move(segments)), type);
     }
 
     template<typename T>
-    T* ProviderFactory::createEntityProvider(SegmentsList segments) const
+    std::shared_ptr<T> ProviderFactory::createEntityProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
         }
         segments.pop_front();
         if (segments.empty()) {
-            return new T(nullptr);
+            return std::make_shared<T>(nullptr);
         }
-        return new T(createPropertyProvider(std::move(segments)));
+        return std::make_shared<T>(createPropertyProvider(std::move(segments)));
     }
 
-    SelfEntityProvider* ProviderFactory::createSelfEntityProvider(SegmentsList segments) const
+    std::shared_ptr<SelfEntityProvider> ProviderFactory::createSelfEntityProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
         }
         segments.pop_front();
-        return new SelfEntityProvider(createPropertyProvider(std::move(segments)));
+        return std::make_shared<SelfEntityProvider>(createPropertyProvider(std::move(segments)));
     }
 
-    Consumer<LocatedEntity>* ProviderFactory::createPropertyProvider(SegmentsList segments) const
+    std::shared_ptr<Consumer<LocatedEntity>> ProviderFactory::createPropertyProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
@@ -480,24 +482,24 @@ namespace EntityFilter {
         segments.pop_front();
 
         if (segment.delimiter == ":") {
-            return new SoftPropertyProvider(createMapProvider(std::move(segments)), attr);
+            return std::make_shared<SoftPropertyProvider>(createMapProvider(std::move(segments)), attr);
         } else {
 
             if (attr == "type") {
-                return new EntityTypeProvider(createTypeNodeProvider(std::move(segments)));
+                return std::make_shared<EntityTypeProvider>(createTypeNodeProvider(std::move(segments)));
             } else if (attr == "id") {
-                return new EntityIdProvider();
+                return std::make_shared<EntityIdProvider>();
             } else if (attr == "bbox") {
                 return createBBoxProvider(std::move(segments));
             } else if (attr == "contains") {
-                return new ContainsProvider();
+                return std::make_shared<ContainsProvider>();
             } else {
-                return new SoftPropertyProvider(createMapProvider(std::move(segments)), attr);
+                return std::make_shared<SoftPropertyProvider>(createMapProvider(std::move(segments)), attr);
             }
         }
     }
 
-    BBoxProvider* ProviderFactory::createBBoxProvider(SegmentsList segments) const
+    std::shared_ptr<BBoxProvider> ProviderFactory::createBBoxProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
@@ -523,11 +525,11 @@ namespace EntityFilter {
 
         segments.pop_front();
 
-        return new BBoxProvider(createMapProvider(std::move(segments)), measurement_extractor());
+        return std::make_shared<BBoxProvider>(createMapProvider(std::move(segments)), measurement_extractor());
 
     }
 
-    MapProvider* ProviderFactory::createMapProvider(SegmentsList segments) const
+    std::shared_ptr<MapProvider> ProviderFactory::createMapProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
@@ -538,10 +540,10 @@ namespace EntityFilter {
 
         segments.pop_front();
 
-        return new MapProvider(createMapProvider(std::move(segments)), attr);
+        return std::make_shared<MapProvider>(createMapProvider(std::move(segments)), attr);
     }
 
-    TypeNodeProvider* ProviderFactory::createTypeNodeProvider(SegmentsList segments) const
+    std::shared_ptr<TypeNodeProvider> ProviderFactory::createTypeNodeProvider(SegmentsList segments) const
     {
         if (segments.empty()) {
             return nullptr;
@@ -550,13 +552,13 @@ namespace EntityFilter {
         auto& segment = segments.front();
         auto attr = segment.attribute;
 
-        return new TypeNodeProvider(attr);
+        return std::make_shared<TypeNodeProvider>(attr);
     }
 
 
-    GetEntityFunctionProvider::GetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, Consumer<LocatedEntity>* consumer)
-        : ConsumingProviderBase(consumer),
-          m_entity_provider(entity_provider)
+    GetEntityFunctionProvider::GetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider, std::shared_ptr<Consumer<LocatedEntity>> consumer)
+        : ConsumingProviderBase(std::move(consumer)),
+          m_entity_provider(std::move(entity_provider))
     {
 
     }

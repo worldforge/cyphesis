@@ -2,6 +2,7 @@
 #define RULESETS_FILTER_H_
 
 #include <string>
+#include <memory>
 
 class LocatedEntity;
 ///\brief This class is used to search entities in NPC's memory
@@ -24,7 +25,7 @@ class Filter {
         bool match(const QueryContext& context);
     private:
         //The top predicate node used for testing
-        Predicate* m_predicate;
+        std::shared_ptr<Predicate> m_predicate;
 };
 }
 #endif

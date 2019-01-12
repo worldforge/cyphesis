@@ -57,7 +57,7 @@ class ProvidersTest : public Cyphesis::TestBase {
         ///\A helper to create providers. Accepts a list of tokens and assumes that
         ///the delimiter for all but first token is "." (a dot)
         /// for example, to make entity.type provider, use {"Entity", "type"} argument
-        Consumer<QueryContext>* CreateProvider(std::initializer_list<std::string> tokens);
+        std::shared_ptr<Consumer<QueryContext>> CreateProvider(std::initializer_list<std::string> tokens);
     public:
         ProvidersTest();
 
@@ -220,61 +220,61 @@ void ProvidersTest::test_ComparePredicates()
     auto lhs_provider1 = CreateProvider( { "entity", "type" });
     auto rhs_provider1 = CreateProvider( { "types", "barrel" });
 
-    ComparePredicate compPred1(lhs_provider1, rhs_provider1,
+    auto compPred1 = std::make_shared<ComparePredicate>(lhs_provider1, rhs_provider1,
                                ComparePredicate::Comparator::EQUALS);
 
     //entity.bbox.volume
     auto lhs_provider2 = CreateProvider( { "entity", "bbox", "volume" });
 
     //entity.bbox.volume = 48
-    ComparePredicate compPred2(lhs_provider2, new FixedElementProvider(48.0f),
+    auto compPred2 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(48.0f),
                                ComparePredicate::Comparator::EQUALS);
-    assert(compPred2.isMatch(prepare_context( { *m_b1 })));
+    assert(compPred2->isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume = 1
-    ComparePredicate compPred3(lhs_provider2, new FixedElementProvider(1.0f),
+    auto compPred3 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(1.0f),
                                ComparePredicate::Comparator::EQUALS);
-    assert(!compPred3.isMatch(prepare_context( { *m_b1 })));
+    assert(!compPred3->isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume != 1
-    ComparePredicate compPred4(lhs_provider2, new FixedElementProvider(1.0f),
+    auto compPred4 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(1.0f),
                                ComparePredicate::Comparator::NOT_EQUALS);
-    assert(compPred4.isMatch(prepare_context( { *m_b1 })));
+    assert(compPred4->isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume > 0
-    ComparePredicate compPred5(lhs_provider2, new FixedElementProvider(0.0f),
+    auto compPred5 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(0.0f),
                                ComparePredicate::Comparator::GREATER);
-    assert(compPred5.isMatch(prepare_context( { *m_b1 })));
+    assert(compPred5->isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume >= 1
-    ComparePredicate compPred6(lhs_provider2, new FixedElementProvider(1.0f),
+    auto compPred6 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(1.0f),
                                ComparePredicate::Comparator::GREATER_EQUAL);
-    assert(compPred6.isMatch(prepare_context( { *m_b1 })));
+    assert(compPred6->isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume < 5
-    ComparePredicate compPred7(lhs_provider2, new FixedElementProvider(5.0f),
+    auto compPred7 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(5.0f),
                                ComparePredicate::Comparator::LESS);
-    assert(!compPred7.isMatch(prepare_context( { *m_b1 })));
+    assert(!compPred7->isMatch(prepare_context( { *m_b1 })));
 
     //entity.bbox.volume <= 48
-    ComparePredicate compPred8(lhs_provider2, new FixedElementProvider(48.0f),
+    auto compPred8 = std::make_shared<ComparePredicate>(lhs_provider2, std::make_shared<FixedElementProvider>(48.0f),
                                ComparePredicate::Comparator::LESS_EQUAL);
-    assert(compPred8.isMatch(prepare_context( { *m_b1 })));
+    assert(compPred8->isMatch(prepare_context( { *m_b1 })));
 
     //entity.type = types.barrel && entity.bbox.volume = 48
-    AndPredicate andPred1(&compPred1, &compPred2);
+    AndPredicate andPred1(compPred1, compPred2);
     assert(andPred1.isMatch(prepare_context( { *m_b1 })));
 
     //entity.type = types.barrel && entity.bbox.volume = 1
-    AndPredicate andPred2(&compPred1, &compPred3);
+    AndPredicate andPred2(compPred1, compPred3);
     assert(!andPred2.isMatch(prepare_context( { *m_b1 })));
 
     //entity.type = types.barrel || entity.bbox.volume = 1
-    OrPredicate orPred1(&compPred1, &compPred3);
+    OrPredicate orPred1(compPred1, compPred3);
     assert(orPred1.isMatch(prepare_context( { *m_b1 })));
 
     //not entity.type = types.barrel
-    NotPredicate notPred1(&compPred1);
+    NotPredicate notPred1(compPred1);
     assert(orPred1.isMatch((prepare_context( { *m_b1 }))));
 }
 
@@ -285,22 +285,22 @@ void ProvidersTest::test_ListComparators()
     auto lhs_provider3 = CreateProvider( { "entity", "float_list" });
 
     //entity.float_list contains 20.0
-    ComparePredicate compPred9(lhs_provider3, new FixedElementProvider(20.0),
+    ComparePredicate compPred9(lhs_provider3, std::make_shared<FixedElementProvider>(20.0),
                                ComparePredicate::Comparator::CONTAINS);
     assert(compPred9.isMatch(prepare_context( { *m_b1 })));
 
     //20.0 in entity.float_list
-    ComparePredicate compPred13(new FixedElementProvider(20.0), lhs_provider3,
+    ComparePredicate compPred13(std::make_shared<FixedElementProvider>(20.0), lhs_provider3,
                                 ComparePredicate::Comparator::IN);
     assert(compPred13.isMatch(prepare_context( { *m_b1 })));
 
     //entity.float_list contains 100.0
-    ComparePredicate compPred10(lhs_provider3, new FixedElementProvider(100.0),
+    ComparePredicate compPred10(lhs_provider3, std::make_shared<FixedElementProvider>(100.0),
                                 ComparePredicate::Comparator::CONTAINS);
     assert(!compPred10.isMatch(prepare_context( { *m_b1 })));
 
     //100.0 in entity.float_list
-    ComparePredicate compPred14(new FixedElementProvider(100.0), lhs_provider3,
+    ComparePredicate compPred14(std::make_shared<FixedElementProvider>(100.0), lhs_provider3,
                                 ComparePredicate::Comparator::IN);
     assert(!compPred14.isMatch(prepare_context( { *m_b1 })));
 
@@ -308,13 +308,13 @@ void ProvidersTest::test_ListComparators()
     auto lhs_provider4 = CreateProvider( { "entity", "string_list" });
 
     //entity.string_list contains "foo"
-    ComparePredicate compPred11(lhs_provider4, new FixedElementProvider("foo"),
+    ComparePredicate compPred11(lhs_provider4, std::make_shared<FixedElementProvider>("foo"),
                                 ComparePredicate::Comparator::CONTAINS);
     assert(compPred11.isMatch(prepare_context( { *m_b1 })));
 
     //entity.string_list contains "foobar"
     ComparePredicate compPred12(lhs_provider4,
-                                new FixedElementProvider("foobar"),
+                                std::make_shared<FixedElementProvider>("foobar"),
                                 ComparePredicate::Comparator::CONTAINS);
     assert(!compPred12.isMatch(prepare_context( { *m_b1 })));
 }
@@ -329,13 +329,13 @@ void ProvidersTest::test_ContainsRecursive()
     auto lhs_provider2 = CreateProvider( { "entity", "contains" });
 
     //entity.mass = 30
-    ComparePredicate compPred17(lhs_provider1, new FixedElementProvider(20),
+    auto compPred17 = std::make_shared<ComparePredicate>(lhs_provider1, std::make_shared<FixedElementProvider>(20),
                                 ComparePredicate::Comparator::EQUALS);
 
     //contains_recursive(entity.contains, entity.mass = 30)
     //Check that container has something with mass 30 inside
     ContainsRecursiveFunctionProvider contains_recursive(lhs_provider2,
-                                                         &compPred17);
+                                                         compPred17);
     contains_recursive.value(value, prepare_context( { *m_b1 }));
     ASSERT_EQUAL(value.Int(), 1);
 
@@ -348,13 +348,13 @@ void ProvidersTest::test_ContainsRecursive()
     auto rhs_provider1 = CreateProvider( { "types", "character" });
 
     //entity.type = types.character
-    ComparePredicate compPred18(lhs_provider3, rhs_provider1,
+    auto compPred18 = std::make_shared<ComparePredicate>(lhs_provider3, rhs_provider1,
                                 ComparePredicate::Comparator::EQUALS);
 
     //contains_recursive(entity.contains, entity.type = types.character)
     //Check that the container has a character inside
     ContainsRecursiveFunctionProvider contains_recursive2(lhs_provider2,
-                                                          &compPred18);
+                                                          compPred18);
 
     //Should be true for both barrels since character is in b2, while b2 is in b1
     contains_recursive2.value(value, prepare_context( { *m_b1 }));
@@ -523,7 +523,7 @@ void ProvidersTest::teardown()
 
 }
 
-Consumer<QueryContext>* ProvidersTest::CreateProvider(std::initializer_list<
+std::shared_ptr<Consumer<QueryContext>> ProvidersTest::CreateProvider(std::initializer_list<
         std::string> tokens)
 {
     ProviderFactory::SegmentsList segments;

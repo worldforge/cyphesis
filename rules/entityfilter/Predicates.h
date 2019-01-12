@@ -3,74 +3,87 @@
 
 #include "Providers.h"
 
-namespace EntityFilter{
+#include <memory>
 
-struct QueryContext;
+namespace EntityFilter {
 
-template<class T>
-class Consumer;
+    class QueryContext;
 
-class Predicate {
-    public:
-        virtual ~Predicate() = default;
+    template<class T>
+    class Consumer;
 
-        virtual bool isMatch(const QueryContext& context) const = 0;
-};
+    class Predicate
+    {
+        public:
+            virtual ~Predicate() = default;
+
+            virtual bool isMatch(const QueryContext& context) const = 0;
+    };
 
 
-class ComparePredicate : public Predicate {
-    public:
+    class ComparePredicate : public Predicate
+    {
+        public:
 
-        enum class Comparator {
-            EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, CAN_REACH
-        };
-        ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator, const Consumer<QueryContext>* with=nullptr);
+            enum class Comparator
+            {
+                    EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, CAN_REACH
+            };
 
-        bool isMatch(const QueryContext& context) const override;
+            ComparePredicate(std::shared_ptr<Consumer<QueryContext>> lhs,
+                             std::shared_ptr<Consumer<QueryContext>> rhs,
+                             Comparator comparator,
+                             std::shared_ptr<Consumer<QueryContext>> with = nullptr);
 
-        const Consumer<QueryContext>* m_lhs;
-        const Consumer<QueryContext>* m_rhs;
-        const Comparator m_comparator;
-        const Consumer<QueryContext>* m_with;
-};
+            bool isMatch(const QueryContext& context) const override;
 
-class AndPredicate : public Predicate {
-    public:
-        AndPredicate(const Predicate* lhs, const Predicate* rhs);
+            std::shared_ptr<Consumer<QueryContext>> m_lhs;
+            std::shared_ptr<Consumer<QueryContext>> m_rhs;
+            const Comparator m_comparator;
+            std::shared_ptr<Consumer<QueryContext>> m_with;
+    };
 
-        bool isMatch(const QueryContext& context) const override;
+    class AndPredicate : public Predicate
+    {
+        public:
+            AndPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs);
 
-        const Predicate* m_lhs;
-        const Predicate* m_rhs;
-};
+            bool isMatch(const QueryContext& context) const override;
 
-class OrPredicate : public Predicate {
-    public:
-        OrPredicate(const Predicate* lhs, const Predicate* rhs);
+            std::shared_ptr<Predicate> m_lhs;
+            std::shared_ptr<Predicate> m_rhs;
+    };
 
-        bool isMatch(const QueryContext& context) const override;
+    class OrPredicate : public Predicate
+    {
+        public:
+            OrPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs);
 
-        const Predicate* m_lhs;
-        const Predicate* m_rhs;
-};
+            bool isMatch(const QueryContext& context) const override;
 
-class NotPredicate : public Predicate {
-    public:
-        explicit NotPredicate(const Predicate* pred);
+            std::shared_ptr<Predicate> m_lhs;
+            std::shared_ptr<Predicate> m_rhs;
+    };
 
-        bool isMatch(const QueryContext& context) const override;
+    class NotPredicate : public Predicate
+    {
+        public:
+            explicit NotPredicate(std::shared_ptr<Predicate> pred);
 
-        const Predicate* m_pred;
-};
+            bool isMatch(const QueryContext& context) const override;
 
-class BoolPredicate : public Predicate {
-    public:
-        explicit BoolPredicate(const Consumer<QueryContext>* consumer);
+            const std::shared_ptr<Predicate> m_pred;
+    };
 
-        bool isMatch(const QueryContext& context) const override;
+    class BoolPredicate : public Predicate
+    {
+        public:
+            explicit BoolPredicate(std::shared_ptr<Consumer<QueryContext>> consumer);
 
-        const Consumer<QueryContext>* m_consumer;
-};
+            bool isMatch(const QueryContext& context) const override;
+
+            const std::shared_ptr<Consumer<QueryContext>> m_consumer;
+    };
 
 }
 

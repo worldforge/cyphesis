@@ -25,9 +25,7 @@ Filter::Filter(const std::string &what, const ProviderFactory& factory)
     }
 }
 
-Filter::~Filter(){
-    delete m_predicate;
-}
+Filter::~Filter() = default;
 
 bool Filter::match(const QueryContext& context){
 

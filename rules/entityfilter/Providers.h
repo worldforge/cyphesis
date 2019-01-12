@@ -92,7 +92,7 @@ namespace EntityFilter {
 
 
     template<typename T>
-    class Consumer : public TypedProvider
+    class Consumer : public TypedProvider, public std::enable_shared_from_this<Consumer<T>>
     {
         public:
             ~Consumer() override = default;
@@ -113,31 +113,28 @@ namespace EntityFilter {
     class ProviderBase
     {
         public:
-            explicit ProviderBase(Consumer<T>* consumer);
+            explicit ProviderBase(std::shared_ptr<Consumer<T>> consumer);
 
             virtual ~ProviderBase();
 
         protected:
-            Consumer<T>* m_consumer;
+            std::shared_ptr<Consumer<T>> m_consumer;
     };
 
     template<typename T>
-    inline ProviderBase<T>::ProviderBase(Consumer<T>* consumer)
-        : m_consumer(consumer)
+    inline ProviderBase<T>::ProviderBase(std::shared_ptr<Consumer<T>> consumer)
+        : m_consumer(std::move(consumer))
     {
     }
 
     template<typename T>
-    inline ProviderBase<T>::~ProviderBase()
-    {
-        delete m_consumer;
-    }
+    inline ProviderBase<T>::~ProviderBase() = default;
 
     template<typename TProviding, typename TConsuming>
     class ConsumingProviderBase : public ProviderBase<TProviding>, public Consumer<TConsuming>
     {
         public:
-            explicit ConsumingProviderBase(Consumer<TProviding>* consumer);
+            explicit ConsumingProviderBase(std::shared_ptr<Consumer<TProviding>> consumer);
 
             ~ConsumingProviderBase() override = default;;
 
@@ -145,7 +142,7 @@ namespace EntityFilter {
     };
 
     template<typename TProviding, typename TConsuming>
-    inline ConsumingProviderBase<TProviding, TConsuming>::ConsumingProviderBase(Consumer<TProviding>* consumer)
+    inline ConsumingProviderBase<TProviding, TConsuming>::ConsumingProviderBase(std::shared_ptr<Consumer<TProviding>> consumer)
         : ProviderBase<TProviding>(consumer)
     {
     }
@@ -164,14 +161,14 @@ namespace EntityFilter {
     class NamedAttributeProviderBase : public ProviderBase<T>
     {
         public:
-            NamedAttributeProviderBase(Consumer<T>* consumer, std::string attribute_name);
+            NamedAttributeProviderBase(std::shared_ptr<Consumer<T>> consumer, std::string attribute_name);
 
         protected:
             const std::string m_attribute_name;
     };
 
     template<typename T>
-    inline NamedAttributeProviderBase<T>::NamedAttributeProviderBase(Consumer<T>* consumer, std::string attribute_name)
+    inline NamedAttributeProviderBase<T>::NamedAttributeProviderBase(std::shared_ptr<Consumer<T>> consumer, std::string attribute_name)
         : ProviderBase<T>(consumer), m_attribute_name(std::move(attribute_name))
     {
     }
@@ -180,7 +177,7 @@ namespace EntityFilter {
     class ConsumingNamedAttributeProviderBase : public NamedAttributeProviderBase<TProviding>, public Consumer<TConsuming>
     {
         public:
-            ConsumingNamedAttributeProviderBase(Consumer<TProviding>* consumer, const std::string& attribute_name);
+            ConsumingNamedAttributeProviderBase(std::shared_ptr<Consumer<TProviding>> consumer, const std::string& attribute_name);
 
             ~ConsumingNamedAttributeProviderBase() override = default;;
 
@@ -188,8 +185,8 @@ namespace EntityFilter {
     };
 
     template<typename TProviding, typename TConsuming>
-    inline ConsumingNamedAttributeProviderBase<TProviding, TConsuming>::ConsumingNamedAttributeProviderBase(Consumer<TProviding>* consumer, const std::string& attribute_name)
-        : NamedAttributeProviderBase<TProviding>(consumer, attribute_name)
+    inline ConsumingNamedAttributeProviderBase<TProviding, TConsuming>::ConsumingNamedAttributeProviderBase(std::shared_ptr<Consumer<TProviding>> consumer, const std::string& attribute_name)
+        : NamedAttributeProviderBase<TProviding>(std::move(consumer), attribute_name)
     {
     }
 
@@ -216,7 +213,7 @@ namespace EntityFilter {
     class DynamicTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext>
     {
         public:
-            DynamicTypeNodeProvider(Consumer<TypeNode>* consumer, const std::string& type);
+            DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const std::string& type);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -228,7 +225,7 @@ namespace EntityFilter {
     class FixedTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext>
     {
         public:
-            FixedTypeNodeProvider(Consumer<TypeNode>* consumer, const TypeNode& type);
+            FixedTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const TypeNode& type);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -240,7 +237,7 @@ namespace EntityFilter {
     class MemoryProvider : public ConsumingProviderBase<Atlas::Message::Element, QueryContext>
     {
         public:
-            explicit MemoryProvider(Consumer<Atlas::Message::Element>* consumer);
+            explicit MemoryProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext&) const override;
     };
@@ -248,7 +245,7 @@ namespace EntityFilter {
     class EntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
     {
         public:
-            explicit EntityProvider(Consumer<LocatedEntity>* consumer);
+            explicit EntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -258,7 +255,7 @@ namespace EntityFilter {
     class ActorProvider : public EntityProvider
     {
         public:
-            explicit ActorProvider(Consumer<LocatedEntity>* consumer);
+            explicit ActorProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -267,7 +264,7 @@ namespace EntityFilter {
     class ToolProvider : public EntityProvider
     {
         public:
-            explicit ToolProvider(Consumer<LocatedEntity>* consumer);
+            explicit ToolProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -276,7 +273,7 @@ namespace EntityFilter {
     class ChildProvider : public EntityProvider
     {
         public:
-            explicit ChildProvider(Consumer<LocatedEntity>* consumer);
+            explicit ChildProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -285,7 +282,7 @@ namespace EntityFilter {
     class SelfEntityProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
     {
         public:
-            explicit SelfEntityProvider(Consumer<LocatedEntity>* consumer);
+            explicit SelfEntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -295,7 +292,7 @@ namespace EntityFilter {
     class EntityTypeProvider : public ConsumingProviderBase<TypeNode, LocatedEntity>
     {
         public:
-            explicit EntityTypeProvider(Consumer<TypeNode>* consumer);
+            explicit EntityTypeProvider(std::shared_ptr<Consumer<TypeNode>> consumer);
 
             void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
 
@@ -327,7 +324,7 @@ namespace EntityFilter {
                     HEIGHT, WIDTH, DEPTH, VOLUME, AREA
             };
 
-            BBoxProvider(Consumer<Atlas::Message::Element>* consumer, Measurement measurement);
+            BBoxProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, Measurement measurement);
 
             void value(Atlas::Message::Element& value, const LocatedEntity& prop) const override;
 
@@ -339,7 +336,7 @@ namespace EntityFilter {
     class PropertyProvider : public ConsumingNamedAttributeProviderBase<TProperty, LocatedEntity>
     {
         public:
-            PropertyProvider(Consumer<TProperty>* consumer, const std::string& attribute_name);
+            PropertyProvider(std::shared_ptr<Consumer<TProperty>> consumer, const std::string& attribute_name);
 
             virtual ~PropertyProvider() = default;
 
@@ -347,7 +344,7 @@ namespace EntityFilter {
     };
 
     template<typename TProperty>
-    inline PropertyProvider<TProperty>::PropertyProvider(Consumer<TProperty>* consumer, const std::string& attribute_name)
+    inline PropertyProvider<TProperty>::PropertyProvider(std::shared_ptr<Consumer<TProperty>> consumer, const std::string& attribute_name)
         : ConsumingNamedAttributeProviderBase<TProperty, LocatedEntity>(consumer, attribute_name)
     {
     }
@@ -371,7 +368,7 @@ namespace EntityFilter {
     class SoftPropertyProvider : public ConsumingNamedAttributeProviderBase<Atlas::Message::Element, LocatedEntity>
     {
         public:
-            SoftPropertyProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name);
+            SoftPropertyProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, const std::string& attribute_name);
 
             void value(Atlas::Message::Element& value, const LocatedEntity& entity) const override;
     };
@@ -379,7 +376,7 @@ namespace EntityFilter {
     class MapProvider : public ConsumingNamedAttributeProviderBase<Atlas::Message::Element, Atlas::Message::Element>
     {
         public:
-            MapProvider(Consumer<Atlas::Message::Element>* consumer, const std::string& attribute_name);
+            MapProvider(std::shared_ptr<Consumer<Atlas::Message::Element>> consumer, const std::string& attribute_name);
 
             void value(Atlas::Message::Element& value, const Atlas::Message::Element& parent_element) const override;
     };
@@ -399,17 +396,17 @@ namespace EntityFilter {
     class ContainsRecursiveFunctionProvider : public Consumer<QueryContext>
     {
         public:
-            ContainsRecursiveFunctionProvider(Consumer<QueryContext>* container,
-                                              Predicate* condition);
+            ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container,
+                                              std::shared_ptr<Predicate> condition);
 
             void value(Atlas::Message::Element& value,
                        const QueryContext& context) const override;
 
         private:
             ///\brief Condition used to match entities within the container
-            Predicate* m_condition;
+            std::shared_ptr<Predicate> m_condition;
             ///\brief A Consumer which must return LocatedEntitySet* i.e. entity.contains
-            Consumer<QueryContext>* m_consumer;
+            std::shared_ptr<Consumer<QueryContext>> m_consumer;
 
             bool checkContainer(LocatedEntitySet* container,
                                 const QueryContext& context) const;
@@ -419,14 +416,14 @@ namespace EntityFilter {
     class GetEntityFunctionProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
     {
         public:
-            explicit GetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, Consumer<LocatedEntity>* consumer);
+            explicit GetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider, std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
             const std::type_info* getType() const override;
 
         private:
-            Consumer<QueryContext>* m_entity_provider;
+            std::shared_ptr<Consumer<QueryContext>> m_entity_provider;
     };
 
 
@@ -442,32 +439,32 @@ namespace EntityFilter {
 
             virtual ~ProviderFactory() = default;
 
-            virtual Consumer<QueryContext>* createProviders(SegmentsList segments) const;
+            virtual std::shared_ptr<Consumer<QueryContext>> createProviders(SegmentsList segments) const;
 
-            virtual Consumer<QueryContext>* createProvider(Segment segment) const;
+            virtual std::shared_ptr<Consumer<QueryContext>> createProvider(Segment segment) const;
 
-            virtual Consumer<QueryContext>* createSimpleGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider) const;
+            virtual std::shared_ptr<Consumer<QueryContext>> createSimpleGetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider) const;
 
-            virtual Consumer<QueryContext>* createGetEntityFunctionProvider(Consumer<QueryContext>* entity_provider, SegmentsList segments) const;
+            virtual std::shared_ptr<Consumer<QueryContext>> createGetEntityFunctionProvider(std::shared_ptr<Consumer<QueryContext>> entity_provider, SegmentsList segments) const;
 
         protected:
 
-            DynamicTypeNodeProvider* createDynamicTypeNodeProvider(SegmentsList segments) const;
+            std::shared_ptr<DynamicTypeNodeProvider> createDynamicTypeNodeProvider(SegmentsList segments) const;
 
             template<typename T>
-            T* createEntityProvider(SegmentsList segments) const;
+            std::shared_ptr<T> createEntityProvider(SegmentsList segments) const;
 
-            SelfEntityProvider* createSelfEntityProvider(SegmentsList segments) const;
+            std::shared_ptr<SelfEntityProvider> createSelfEntityProvider(SegmentsList segments) const;
 
-            BBoxProvider* createBBoxProvider(SegmentsList segments) const;
+            std::shared_ptr<BBoxProvider> createBBoxProvider(SegmentsList segments) const;
 
-            Consumer<LocatedEntity>* createPropertyProvider(SegmentsList segments) const;
+            std::shared_ptr<Consumer<LocatedEntity>> createPropertyProvider(SegmentsList segments) const;
 
-            MapProvider* createMapProvider(SegmentsList segments) const;
+            std::shared_ptr<MapProvider> createMapProvider(SegmentsList segments) const;
 
-            TypeNodeProvider* createTypeNodeProvider(SegmentsList segments) const;
+            std::shared_ptr<TypeNodeProvider> createTypeNodeProvider(SegmentsList segments) const;
 
-            MemoryProvider* createMemoryProvider(SegmentsList segments) const;
+            std::shared_ptr<MemoryProvider> createMemoryProvider(SegmentsList segments) const;
     };
 
 }

@@ -24,9 +24,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ComparePredicate_ComparePredicate
 //#define STUB_ComparePredicate_ComparePredicate
-   ComparePredicate::ComparePredicate(const Consumer<QueryContext>* lhs, const Consumer<QueryContext>* rhs, Comparator comparator, const Consumer<QueryContext>* with)
+   ComparePredicate::ComparePredicate(std::shared_ptr<Consumer<QueryContext>> lhs, std::shared_ptr<Consumer<QueryContext>> rhs, Comparator comparator, std::shared_ptr<Consumer<QueryContext>> with )
     : Predicate(lhs, rhs, comparator, with)
-    , m_lhs(nullptr),m_rhs(nullptr),m_with(nullptr)
   {
     
   }
@@ -47,9 +46,8 @@ namespace EntityFilter {
 
 #ifndef STUB_AndPredicate_AndPredicate
 //#define STUB_AndPredicate_AndPredicate
-   AndPredicate::AndPredicate(const Predicate* lhs, const Predicate* rhs)
+   AndPredicate::AndPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs)
     : Predicate(lhs, rhs)
-    , m_lhs(nullptr),m_rhs(nullptr)
   {
     
   }
@@ -70,9 +68,8 @@ namespace EntityFilter {
 
 #ifndef STUB_OrPredicate_OrPredicate
 //#define STUB_OrPredicate_OrPredicate
-   OrPredicate::OrPredicate(const Predicate* lhs, const Predicate* rhs)
+   OrPredicate::OrPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs)
     : Predicate(lhs, rhs)
-    , m_lhs(nullptr),m_rhs(nullptr)
   {
     
   }
@@ -93,9 +90,8 @@ namespace EntityFilter {
 
 #ifndef STUB_NotPredicate_NotPredicate
 //#define STUB_NotPredicate_NotPredicate
-   NotPredicate::NotPredicate(const Predicate* pred)
+   NotPredicate::NotPredicate(std::shared_ptr<Predicate> pred)
     : Predicate(pred)
-    , m_pred(nullptr)
   {
     
   }
@@ -116,9 +112,8 @@ namespace EntityFilter {
 
 #ifndef STUB_BoolPredicate_BoolPredicate
 //#define STUB_BoolPredicate_BoolPredicate
-   BoolPredicate::BoolPredicate(const Consumer<QueryContext>* consumer)
+   BoolPredicate::BoolPredicate(std::shared_ptr<Consumer<QueryContext>> consumer)
     : Predicate(consumer)
-    , m_consumer(nullptr)
   {
     
   }

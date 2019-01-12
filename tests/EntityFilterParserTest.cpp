@@ -39,7 +39,7 @@ using namespace boost::spirit;
 class ParserTest : public Cyphesis::TestBase {
     private:
         //A helper function to build a predicate for a given query
-        Predicate* ConstructPredicate(const std::string &query);
+        std::shared_ptr<Predicate> ConstructPredicate(const std::string &query);
     public:
         ParserTest();
 
@@ -72,55 +72,44 @@ void ParserTest::teardown()
 
 void ParserTest::test_ComparisonOperators()
 {
-    ComparePredicate *pred;
+    std::shared_ptr<Predicate> pred;
 
-    pred = (ComparePredicate*)ConstructPredicate("1 = 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::EQUALS);
-    delete pred;
+    pred = ConstructPredicate("1 = 2");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::EQUALS);
 
-    pred = (ComparePredicate*)ConstructPredicate("1 != 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::NOT_EQUALS);
-    delete pred;
+    pred = ConstructPredicate("1 != 2");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::NOT_EQUALS);
 
-    pred = (ComparePredicate*)ConstructPredicate("1 > 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::GREATER);
-    delete pred;
+    pred = ConstructPredicate("1 > 2");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::GREATER);
 
-    pred = (ComparePredicate*)ConstructPredicate("1 < 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::LESS);
-    delete pred;
+    pred = ConstructPredicate("1 < 2");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::LESS);
 
-    pred = (ComparePredicate*)ConstructPredicate("1 <= 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::LESS_EQUAL);
-    delete pred;
+    pred = ConstructPredicate("1 <= 2");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::LESS_EQUAL);
 
-    pred = (ComparePredicate*)ConstructPredicate("1 >= 2");
-    assert(pred->m_comparator == ComparePredicate::Comparator::GREATER_EQUAL);
-    delete pred;
+    pred = ConstructPredicate("1 >= 2");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::GREATER_EQUAL);
 
-    pred = (ComparePredicate*)ConstructPredicate("entity.container contains 1");
-    assert(pred->m_comparator == ComparePredicate::Comparator::CONTAINS);
-    delete pred;
+    pred = ConstructPredicate("entity.container contains 1");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::CONTAINS);
 
-    pred = (ComparePredicate*)ConstructPredicate("1 in entity.container");
-    assert(pred->m_comparator == ComparePredicate::Comparator::IN);
-    delete pred;
+    pred = ConstructPredicate("1 in entity.container");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::IN);
 
-    pred = (ComparePredicate*)ConstructPredicate("entity can_reach entity");
-    assert(pred->m_comparator == ComparePredicate::Comparator::CAN_REACH);
-    delete pred;
+    pred = ConstructPredicate("entity can_reach entity");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::CAN_REACH);
 
-    pred = (ComparePredicate*)ConstructPredicate("entity can_reach entity with entity");
-    assert(pred->m_comparator == ComparePredicate::Comparator::CAN_REACH);
-    delete pred;
+    pred = ConstructPredicate("entity can_reach entity with entity");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::CAN_REACH);
 
     //Instance_of can only be created for existing types
     TypeNode* thingType = new TypeNode("thing");
     types["thing"] = thingType;
-    pred = (ComparePredicate*)ConstructPredicate(
+    pred = ConstructPredicate(
             "types.thing = entity.type");
-    assert(pred->m_comparator == ComparePredicate::Comparator::EQUALS);
-    delete pred;
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::EQUALS);
     types["thing"] = nullptr;
     delete thingType;
 
@@ -130,15 +119,13 @@ void ParserTest::test_ComparisonOperators()
 
 void ParserTest::test_LogicalOperators()
 {
-    Predicate *pred;
+    std::shared_ptr<Predicate> pred;
 
     pred = ConstructPredicate("1 = 2 or 3 = 4");
     assert(typeid(*pred) == typeid(OrPredicate));
-    delete pred;
 
     pred = ConstructPredicate("1 = 2 and 3 = 4");
     assert(typeid(*pred) == typeid(AndPredicate));
-    delete pred;
 
     pred = ConstructPredicate("!5 = 6");
     assert(typeid(*pred) == typeid(NotPredicate));
@@ -153,46 +140,43 @@ void ParserTest::test_LogicalOperators()
 
 void ParserTest::test_Literals()
 {
-    ComparePredicate *pred;
+    std::shared_ptr<Predicate> pred;
     using Atlas::Message::Element;
 
     //Test int and single quote string
-    pred = (ComparePredicate*)ConstructPredicate("1 = '1'");
-    FixedElementProvider *lhs = (FixedElementProvider *)pred->m_lhs;
-    FixedElementProvider *rhs = (FixedElementProvider *)pred->m_rhs;
+    pred = ConstructPredicate("1 = '1'");
+    FixedElementProvider *lhs = (FixedElementProvider *)static_cast<ComparePredicate*>(pred.get())->m_lhs.get();
+    FixedElementProvider *rhs = (FixedElementProvider *)static_cast<ComparePredicate*>(pred.get())->m_rhs.get();
 
     ASSERT_TRUE(lhs->m_element == Element(1));
     ASSERT_TRUE(rhs->m_element == Element("1"));
-    delete pred;
 
     //Test double and bool
-    pred = (ComparePredicate*)ConstructPredicate("1.25 = true");
-    lhs = (FixedElementProvider *)pred->m_lhs;
-    rhs = (FixedElementProvider *)pred->m_rhs;
+    pred = ConstructPredicate("1.25 = true");
+    lhs = (FixedElementProvider *)static_cast<ComparePredicate*>(pred.get())->m_lhs.get();
+    rhs = (FixedElementProvider *)static_cast<ComparePredicate*>(pred.get())->m_rhs.get();
 
     ASSERT_TRUE(lhs->m_element == Element(1.25));
     ASSERT_TRUE(rhs->m_element == Element(true));
-    delete pred;
 
     //Test list and double quoted string
-    pred = (ComparePredicate*)ConstructPredicate("[1, 2, 3] = '\"literal\"'");
-    lhs = (FixedElementProvider *)pred->m_lhs;
-    rhs = (FixedElementProvider *)pred->m_rhs;
+    pred = ConstructPredicate("[1, 2, 3] = '\"literal\"'");
+    lhs = (FixedElementProvider *)static_cast<ComparePredicate*>(pred.get())->m_lhs.get();
+    rhs = (FixedElementProvider *)static_cast<ComparePredicate*>(pred.get())->m_rhs.get();
 
     ASSERT_TRUE(lhs->m_element == Element(std::vector<Element> { 1, 2, 3 }));
     ASSERT_TRUE(rhs->m_element == Element("\"literal\""));
-    delete pred;
 
 }
 
-Predicate* ParserTest::ConstructPredicate(const std::string &query)
+std::shared_ptr<Predicate> ParserTest::ConstructPredicate(const std::string &query)
 {
     auto iter_begin = query.begin();
     auto iter_end = query.end();
     ProviderFactory factory{};
     parser::query_parser<std::string::const_iterator> grammar(factory);
 
-    Predicate* pred;
+    std::shared_ptr<Predicate> pred;
 
     bool parse_success = qi::phrase_parse(iter_begin, iter_end, grammar,
                                           boost::spirit::ascii::space, pred);
@@ -232,7 +216,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 {
     auto I = types.find(parent);
     if (I == types.end()) {
-        return 0;
+        return nullptr;
     }
     return I->second;
 }

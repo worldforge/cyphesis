@@ -23,6 +23,23 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 namespace EntityFilter {
     namespace parser {
+
+        // this solution for lazy make shared comes from the SO forum, user sehe.
+        // https://stackoverflow.com/questions/21516201/how-to-create-boost-phoenix-make-shared
+        //    post found using google search terms `phoenix construct shared_ptr`
+        // changed from boost::shared_ptr to std::shared_ptr
+        namespace {
+            template <typename T> struct make_shared_f {
+                template <typename... A> struct result { typedef std::shared_ptr<T> type; };
+
+                template <typename... A> typename result<A...>::type operator()(A &&... a) const {
+                    return std::make_shared<T>(std::forward<A>(a)...);
+                }
+            };
+
+            template <typename T> using make_shared_ = boost::phoenix::function<make_shared_f<T> >;
+        }
+
         namespace qi = boost::spirit::qi;
         namespace ascii = boost::spirit::ascii;
         //Parser definitions
@@ -49,8 +66,8 @@ namespace EntityFilter {
         };
 
         template<typename Iterator>
-        struct query_parser : qi::grammar<Iterator, Predicate * (),
-            ascii::space_type, qi::locals<Predicate*>>
+        struct query_parser : qi::grammar<Iterator, std::shared_ptr<Predicate> (),
+            ascii::space_type, qi::locals<std::shared_ptr<Predicate>>>
         {
             query_parser(const ProviderFactory& factory) :
                 query_parser::base_type(parenthesised_predicate_g),
@@ -125,31 +142,31 @@ namespace EntityFilter {
                 consumer_g =
                     //If parsing a list, stuff everything in a vector of elements then create FixedElementProvider
                     ("[" >> qi::real_parser<double, qi::strict_real_policies<double>>()[push_back(_a, _1)] % "," >> "]")
-                    [_val = new_<FixedElementProvider>(_a)] |
+                    [_val = make_shared_<FixedElementProvider>()(_a)] |
 
-                    ("[" >> int_[push_back(_a, _1)] % "," >> "]")[_val = new_<FixedElementProvider>(_a)] |
+                    ("[" >> int_[push_back(_a, _1)] % "," >> "]")[_val = make_shared_<FixedElementProvider>()(_a)] |
 
-                    ("[" >> quoted_string_g[push_back(_a, _1)] >> "]")[_val = new_<FixedElementProvider>(_a)] |
+                    ("[" >> quoted_string_g[push_back(_a, _1)] >> "]")[_val = make_shared_<FixedElementProvider>()(_a)] |
 
                     ("[" >> (no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]])
-                    [push_back(_a, _b)] >> "]")[_val = new_<FixedElementProvider>(_a)] |
+                    [push_back(_a, _b)] >> "]")[_val = make_shared_<FixedElementProvider>()(_a)] |
 
                     qi::real_parser<double, qi::strict_real_policies<double>>()
-                    [_val = new_<FixedElementProvider>(_1)] |
+                    [_val = make_shared_<FixedElementProvider>()(_1)] |
 
-                    int_[_val = new_<FixedElementProvider>(_1)] |
+                    int_[_val = make_shared_<FixedElementProvider>()(_1)] |
 
-                    quoted_string_g[_val = new_<FixedElementProvider>(_1)] |
+                    quoted_string_g[_val = make_shared_<FixedElementProvider>()(_1)] |
 
                     no_case[qi::string("true")[_b = true] | qi::string("false")[_b = false]]
-                    [_val = new_<FixedElementProvider>(_b)] |
+                    [_val = make_shared_<FixedElementProvider>()(_b)] |
 
-                    no_case[qi::string("none")][_val = new_<FixedElementProvider>(Atlas::Message::Element())] |
+                    no_case[qi::string("none")][_val = make_shared_<FixedElementProvider>()(Atlas::Message::Element())] |
 
                     //contains_recursive function takes a consumer (contains_recursive is itself a consumer),
                     //and a predicate as arguments.
                     (no_case[qi::lit("contains_recursive")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
-                    [_val = new_<ContainsRecursiveFunctionProvider>(_1, _2)] |
+                    [_val = make_shared_<ContainsRecursiveFunctionProvider>()(_1, _2)] |
 
                     //allows the "get_entity" function which is used to extract an entity from any property
                     //which follows the "entity ref protocol", i.e. returns a map with a "$eid" entry.
@@ -170,44 +187,44 @@ namespace EntityFilter {
                 comparer_predicate_g =
                     //Try to match a normal case, but save LHS and comparator into local variables
                     (consumer_g[_b = _1] >> no_case[comparators][_d = _1] >> consumer_g >> no_case[qi::string("with")] >> consumer_g)
-                    [_c = new_<ComparePredicate>(_1, _3, _d, _5)]
+                    [_c = make_shared_<ComparePredicate>()(_1, _3, _d, _5)]
                         //Then try to match a list case
                         //Syntax example: entity.type instance_of types.bear|types.tiger
                         //is interpreted as entity.type instance_of types.bear || entity.type instance_of types.tiger
-                        >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1, _d))])
+                        >> *("|" >> consumer_g[_c = make_shared_<OrPredicate>()(_c, make_shared_<ComparePredicate>()(_b, _1, _d))])
                         >> qi::eps[_val = _c]
                     |
                     (consumer_g[_b = _1] >> no_case[comparators][_d = _1] >> consumer_g)
-                    [_c = new_<ComparePredicate>(_1, _3, _d)]
+                    [_c = make_shared_<ComparePredicate>()(_1, _3, _d)]
                         //Then try to match a list case
                         //Syntax example: entity.type instance_of types.bear|types.tiger
                         //is interpreted as entity.type instance_of types.bear || entity.type instance_of types.tiger
-                        >> *("|" >> consumer_g[_c = new_<OrPredicate>(_c, new_<ComparePredicate>(_b, _1, _d))])
+                        >> *("|" >> consumer_g[_c = make_shared_<OrPredicate>()(_c, make_shared_<ComparePredicate>()(_b, _1, _d))])
                         >> qi::eps[_val = _c];
                 comparer_predicate_g.name("comparer predicate");
 
                 //Construct a predicate with logical operators
                 predicate_g =
                     //Try unary not on a comparer since it not has highest precedence
-                    (no_case["not"] | "!") >> comparer_predicate_g[_val = new_<NotPredicate>(_1)] |
+                    (no_case["not"] | "!") >> comparer_predicate_g[_val = make_shared_<NotPredicate>()(_1)] |
                     //Try unary not on a logical predicate
-                    (no_case["not"] | "!") >> predicate_g[_val = new_<NotPredicate>(_1)] |
+                    (no_case["not"] | "!") >> predicate_g[_val = make_shared_<NotPredicate>()(_1)] |
                     //Try binary operators (or, and)
                     comparer_predicate_g[_a = _1] >>
-                                                  ((("&&" | no_case["and"]) >> predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
-                                                   (("||" | no_case["or"]) >> predicate_g[_val = new_<OrPredicate>(_a, _1)]) |
+                                                  ((("&&" | no_case["and"]) >> predicate_g[_val = make_shared_<AndPredicate>()(_a, _1)]) |
+                                                   (("||" | no_case["or"]) >> predicate_g[_val = make_shared_<OrPredicate>()(_a, _1)]) |
                                                    qi::eps[_val = _a]) |
                     //Collect parentheses
                     "(" >> predicate_g[_val = _1] >> ")"
                     |
                     //A single predicate should be evaluated as if boolean
-                    consumer_g[_val = new_<BoolPredicate>(_1)];
+                    consumer_g[_val = make_shared_<BoolPredicate>()(_1)];
                 predicate_g.name("predicate");
 
                 //Another level that constructs predicates after parentheses were consumed
                 parenthesised_predicate_g = predicate_g[_a = _1] >>
-                                                                 ((("&&" | no_case["and"]) >> parenthesised_predicate_g[_val = new_<AndPredicate>(_a, _1)]) |
-                                                                  (("||" | no_case["or"]) >> parenthesised_predicate_g[_val = new_<OrPredicate>(_a, _1)]) |
+                                                                 ((("&&" | no_case["and"]) >> parenthesised_predicate_g[_val = make_shared_<AndPredicate>()(_a, _1)]) |
+                                                                  (("||" | no_case["or"]) >> parenthesised_predicate_g[_val = make_shared_<OrPredicate>()(_a, _1)]) |
                                                                   qi::eps[_val = _a]) |
                                             "(" >> parenthesised_predicate_g[_val = _1] >> ")";
 
@@ -223,10 +240,10 @@ namespace EntityFilter {
             qi::rule<Iterator, std::string(), ascii::space_type> quoted_string_g;
             qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> segmented_expr_g;
             qi::rule<Iterator, ProviderFactory::SegmentsList(), ascii::space_type> delimited_segmented_expr_g;
-            qi::rule<Iterator, Consumer < QueryContext>*(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type> consumer_g;
-            qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*, Consumer < QueryContext>*, Predicate*, ComparePredicate::Comparator>> comparer_predicate_g;
-            qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*>> predicate_g;
-            qi::rule<Iterator, Predicate * (), ascii::space_type, qi::locals<Predicate*>> parenthesised_predicate_g;
+            qi::rule<Iterator, std::shared_ptr<Consumer < QueryContext>>(), qi::locals<std::vector<Atlas::Message::Element>, bool>, ascii::space_type> consumer_g;
+            qi::rule<Iterator, std::shared_ptr<Predicate > (), ascii::space_type, qi::locals<std::shared_ptr<Predicate>, std::shared_ptr<Consumer < QueryContext>>, std::shared_ptr<Predicate>, ComparePredicate::Comparator>> comparer_predicate_g;
+            qi::rule<Iterator, std::shared_ptr<Predicate> (), ascii::space_type, qi::locals<std::shared_ptr<Predicate>>> predicate_g;
+            qi::rule<Iterator, std::shared_ptr<Predicate> (), ascii::space_type, qi::locals<std::shared_ptr<Predicate>>> parenthesised_predicate_g;
 
             //An instance of comparators symbol table
             comparators_ comparators;
