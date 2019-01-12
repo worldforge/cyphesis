@@ -103,6 +103,7 @@ void ExternalMind::externalOperation(const Operation& op, Link& link)
             OpVector res;
             GetOperation(op, res);
             for (auto& resOp : res) {
+                resOp->setTo(getId());
                 link.send(resOp);
             }
         } else {
