@@ -18,7 +18,6 @@ class Goal:
             subgoals = []
         self.desc = desc
         # mind sets these:
-        # self.str
         # self.key
         if fulfilled:
             self.fulfilled = fulfilled
@@ -55,6 +54,9 @@ class Goal:
     def __repr__(self):
         return self.info()
 
+    def __str__(self):
+        return self.info()
+
     def info(self):
         name = self.__class__.__name__
         if name == "Goal":
@@ -71,38 +73,36 @@ class Goal:
         return self.validity(me)
 
     def check_goal(self, me, time):
-        "executes goal, see top of file"
+        "executes goal. Any response that's not None causes the goal checking code to stop after this goal"
         if self.debug:
-            log.thinking("GOAL desc: " + self.str)
-        res, debugInfo = self.check_goal_rec(me, time, 0, "")
-        if len(debugInfo) != 0:
+            log.thinking("GOAL desc: " + str(self))
+        res, debug_info = self.check_goal_rec(me, time, 0, "")
+        if len(debug_info) != 0:
             # Keep a copy of the debug info for the "report" method.
-            self.lastProcessedGoals = debugInfo
-        if res is not None:
-            info_ent = Entity(op=res, description=debugInfo)
-            return res + Operation("goal_info", info_ent)
+            self.lastProcessedGoals = debug_info
+        return res
 
-    def check_goal_rec(self, me, time, depth, debugInfo):
+    def check_goal_rec(self, me, time, depth, debug_info):
         """check (sub)goal recursively. 
         
-        This is done by iterating over all subgoals, breaking if any subgoal returns an operation."""
+        This is done by iterating over all sub goals, breaking if any sub goal returns an operation."""
         res = None
-        if self.irrelevant: return res, debugInfo
+        if self.irrelevant: return res, debug_info
         # is it right time range?
-        if self.time and not time.is_now(self.time): return res, debugInfo
+        if self.time and not time.is_now(self.time): return res, debug_info
         if self.debug:
             log.thinking("\t" * depth + "GOAL: bef fulfilled: " + self.desc + " " + repr(self.fulfilled))
         if self.fulfilled(me):
             self.is_fulfilled = 1
             if self.debug:
                 log.thinking("\t" * depth + "GOAL: is fulfilled: " + self.desc + " " + repr(self.fulfilled))
-            return res, debugInfo
+            return res, debug_info
         else:
             if self.debug:
                 log.thinking("\t" * depth + "GOAL: is not fulfilled: " + self.desc + " " + repr(self.fulfilled))
             self.is_fulfilled = 0
-        debugInfo = debugInfo + "." + self.info()
-        # Iterate over all subgoals, but break if any goal returns an operation
+        debug_info = debug_info + "." + self.info()
+        # Iterate over all sub goals, but break if any goal returns an operation
         for sg in self.subgoals:
             if sg is None:
                 continue
@@ -112,10 +112,10 @@ class Goal:
                 res = sg(me)
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: aft function: " + repr(sg) + " " + repr(res))
-                debugInfo = debugInfo + "." + sg.__name__ + "()"
+                debug_info = debug_info + "." + sg.__name__ + "()"
                 if res is not None:
                     # If the function generated an op, stop iterating here and return
-                    return res, debugInfo
+                    return res, debug_info
             else:
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: bef sg: " + sg.desc)
@@ -123,13 +123,13 @@ class Goal:
                 if sg.irrelevant:
                     self.subgoals.remove(sg)
                     continue
-                res, debugInfo = sg.check_goal_rec(me, time, depth + 1, debugInfo)
+                res, debug_info = sg.check_goal_rec(me, time, depth + 1, debug_info)
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: aft sg: " + sg.desc + ", Result: " + str(res))
                 # If the subgoal generated an op, stop iterating here and return
                 if res is not None:
-                    return res, debugInfo
-        return res, debugInfo
+                    return res, debug_info
+        return res, debug_info
 
     def report(self):
         """provides extended information about the goal,

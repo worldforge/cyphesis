@@ -79,7 +79,8 @@ class move_me(Goal):
             print("Could not find any path, result %s" % refreshResult)
             return
 
-        return Operation("operation")
+        # Return True to signal that this goal is complete now.
+        return True
 
     """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
     unaware tiles."""

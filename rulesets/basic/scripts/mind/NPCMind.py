@@ -810,7 +810,10 @@ class NPCMind(ai.Mind):
                 continue
             try:
                 res = g.check_goal(self, time)
-                if res: return res
+                if res:
+                    if res is Operation or res is Oplist:
+                        return res
+                    return
             except:
                 stacktrace = traceback.format_exc()
                 g.errors += 1
@@ -847,7 +850,7 @@ class NPCMind(ai.Mind):
         for im in list(importances.keys()):
             cmp = importances[im]
             if cmp == '>':
-                s, i = il.importance(im[0], cmp, im[1])
+                s, i = interlinguish.importance(im[0], cmp, im[1])
                 es = Entity(say=s, interlinguish=i)
                 res.append(Operation('say', es, to=child))
         return res
