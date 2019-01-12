@@ -59,9 +59,6 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                     entity_id = arg->getId();
                 }
 
-
-                //std::set<const LocatedEntity*> prevObserving, newObserving;
-
                 //Check if something already is attached, and detach it if so
 
                 std::string attached_prop_name = std::string("attached_") + attachment_name.String();
@@ -80,8 +77,6 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                         return OPERATION_BLOCKED;
                     }
                 }
-                //Get the entities currently observing the attached entity
-                // existing_entity->collectObservers(prevObserving);
 
                 auto resetExistingEntityPlantedOn = [&]() {
                     if (existing_entity) {
