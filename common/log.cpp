@@ -176,8 +176,8 @@ void log(LogLevel lvl, const std::string & msg)
     {
 #endif // HAVE_SYSLOG
 
-        logDate(std::cerr);
-        std::cerr << " " << lvl << " " << msg << std::endl << std::flush;
+        logDate(std::cout);
+        std::cout << " " << lvl << " " << msg << std::endl;
     }
 }
 
@@ -245,7 +245,7 @@ void logEvent(LogEvent lev, const std::string & msg)
 
     logDate(event_log);
     event_log << " " << instance << " " << type << " " << msg
-              << std::endl << std::flush;
+              << std::endl;
 }
 
 void logSysError(LogLevel lvl)

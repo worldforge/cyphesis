@@ -20,16 +20,15 @@
 #define CYPHESIS_MAINLOOP_H
 
 #include <boost/asio/io_service.hpp>
-#include <boost/date_time/posix_time/posix_time_config.hpp>
 
-class OperationsHandler;
+struct OperationsHandler;
 
 class MainLoop
 {
     public:
 
         struct Callbacks {
-            std::function<boost::posix_time::time_duration()> softExitStart;
+            std::function<std::chrono::steady_clock::duration()> softExitStart;
             std::function<bool()> softExitPoll;
             std::function<void()> softExitTimeout;
         };

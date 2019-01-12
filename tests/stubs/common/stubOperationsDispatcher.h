@@ -52,13 +52,13 @@
   }
 #endif //STUB_OperationsHandler_idle
 
-#ifndef STUB_OperationsHandler_secondsUntilNextOp
-//#define STUB_OperationsHandler_secondsUntilNextOp
-  double OperationsHandler::secondsUntilNextOp() const
+#ifndef STUB_OperationsHandler_timeUntilNextOp
+//#define STUB_OperationsHandler_timeUntilNextOp
+  std::chrono::microseconds OperationsHandler::timeUntilNextOp() const
   {
-    return 0;
+    return *static_cast<std::chrono::microseconds*>(nullptr);
   }
-#endif //STUB_OperationsHandler_secondsUntilNextOp
+#endif //STUB_OperationsHandler_timeUntilNextOp
 
 #ifndef STUB_OperationsHandler_isQueueDirty
 //#define STUB_OperationsHandler_isQueueDirty
@@ -83,6 +83,14 @@
     
   }
 #endif //STUB_OperationsHandler_clearQueues
+
+#ifndef STUB_OperationsHandler_getQueueSize
+//#define STUB_OperationsHandler_getQueueSize
+  size_t OperationsHandler::getQueueSize() const
+  {
+    return 0;
+  }
+#endif //STUB_OperationsHandler_getQueueSize
 
 
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
@@ -113,14 +121,14 @@
   }
 #endif //STUB_OperationsDispatcher_idle
 
-#ifndef STUB_OperationsDispatcher_secondsUntilNextOp
-//#define STUB_OperationsDispatcher_secondsUntilNextOp
+#ifndef STUB_OperationsDispatcher_timeUntilNextOp
+//#define STUB_OperationsDispatcher_timeUntilNextOp
   template <typename T>
-  double OperationsDispatcher<T>::secondsUntilNextOp() const
+  std::chrono::microseconds OperationsDispatcher<T>::timeUntilNextOp() const
   {
-    return 0;
+    return *static_cast<std::chrono::microseconds*>(nullptr);
   }
-#endif //STUB_OperationsDispatcher_secondsUntilNextOp
+#endif //STUB_OperationsDispatcher_timeUntilNextOp
 
 #ifndef STUB_OperationsDispatcher_isQueueDirty
 //#define STUB_OperationsDispatcher_isQueueDirty
@@ -157,6 +165,15 @@
     
   }
 #endif //STUB_OperationsDispatcher_addOperationToQueue
+
+#ifndef STUB_OperationsDispatcher_getQueueSize
+//#define STUB_OperationsDispatcher_getQueueSize
+  template <typename T>
+  size_t OperationsDispatcher<T>::getQueueSize() const
+  {
+    return 0;
+  }
+#endif //STUB_OperationsDispatcher_getQueueSize
 
 #ifndef STUB_OperationsDispatcher_dispatchOperation
 //#define STUB_OperationsDispatcher_dispatchOperation

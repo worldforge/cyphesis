@@ -26,6 +26,8 @@
 #include "Monitors.h"
 
 #include <iostream>
+#include <cstdint>
+#include <stdint-gcc.h>
 
 static const bool opdispatcher_debug_flag = false;
 
@@ -114,13 +116,14 @@ double OperationsDispatcher<T>::getTime() const
 }
 
 template<typename T>
-double OperationsDispatcher<T>::secondsUntilNextOp() const
+std::chrono::microseconds OperationsDispatcher<T>::timeUntilNextOp() const
 {
     if (m_operationQueue.empty()) {
         //600 is a fairly large number of seconds
-        return 600.0;
+        return std::chrono::seconds(600);
     }
-    return m_operationQueue.top()->getSeconds() - getTime();
+    auto milliseconds = static_cast<std::uint64_t>((m_operationQueue.top()->getSeconds() - getTime()) * 1000000.0);
+    return std::chrono::microseconds(milliseconds);
 }
 
 
@@ -197,6 +200,13 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
         std::cout << "}" << std::endl << std::flush;
     }
 }
+
+template<typename T>
+size_t OperationsDispatcher<T>::getQueueSize() const
+{
+    return m_operationQueue.size();
+}
+
 
 
 #endif /* OPERATIONSDISPATCHER_IMPL_H_ */

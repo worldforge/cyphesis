@@ -24,7 +24,7 @@
 #include "compose.hpp"
 #include "log.h"
 #include <boost/asio/signal_set.hpp>
-#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
 {
@@ -98,42 +98,36 @@ void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsH
     //Make sure that the io_service never runs out of work.
     boost::asio::io_service::work work(io_service);
     //This timer is used to wake the io_service when next op needs to be handled.
-    boost::asio::deadline_timer nextOpTimer(io_service);
+    boost::asio::steady_timer nextOpTimer(io_service);
     //This timer will set a deadline for any mind persistence during soft exits.
-    boost::asio::deadline_timer softExitTimer(io_service);
+    boost::asio::steady_timer softExitTimer(io_service);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
         try {
             bool busy = operationsHandler.idle(10);
             operationsHandler.markQueueAsClean();
-            //If the world is busy we should just poll.
-            if (busy) {
-                io_service.poll();
-            } else {
+            //Even if the world is busy we should interleave with a poll, to make sure we always do some IO.
+            io_service.poll_one();
+            if (!busy) {
                 //If it's not busy however we should run until we get a task.
                 //We will either get an io task, or we will be triggered by the timer
                 //which is set to expire when the next op should be dispatched.
-                double secondsUntilNextOp = operationsHandler.secondsUntilNextOp();
-                if (secondsUntilNextOp <= 0.0) {
-                    io_service.poll();
-                } else {
-                    bool nextOpTimeExpired = false;
-                    boost::posix_time::microseconds waitTime((int64_t)(secondsUntilNextOp * 1000000L));
-                    nextOpTimer.expires_from_now(waitTime);
-                    nextOpTimer.async_wait([&](boost::system::error_code ec) {
-                        if (ec != boost::asio::error::operation_aborted) {
-                            nextOpTimeExpired = true;
-                        }
-                    });
-                    //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
-                    //any new operation) or the timer has expired.
-                    do {
-                        io_service.run_one();
-                    } while (!operationsHandler.isQueueDirty() && !nextOpTimeExpired &&
-                             !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
-                    nextOpTimer.cancel();
-                }
+                auto timeUntilNextOp = operationsHandler.timeUntilNextOp();
+                bool nextOpTimeExpired = false;
+                nextOpTimer.expires_from_now(timeUntilNextOp);
+                nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
+                    if (ec != boost::asio::error::operation_aborted) {
+                        nextOpTimeExpired = true;
+                    }
+                });
+                //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
+                //any new operation) or the timer has expired.
+                do {
+                    io_service.run_one();
+                } while (!operationsHandler.isQueueDirty() && !nextOpTimeExpired &&
+                         !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
+                nextOpTimer.cancel();
             }
             if (soft_exit_in_progress) {
                 //If we're in soft exit mode and either the deadline has been exceeded

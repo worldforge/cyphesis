@@ -466,7 +466,7 @@ int main(int argc, char** argv)
     }
 
     auto softExitStart = [&]() {
-        return boost::posix_time::seconds(1);
+        return std::chrono::seconds(1);
     };
 
 

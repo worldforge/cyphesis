@@ -115,7 +115,7 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
                 log(WARNING, String::compose("Resulting op of type '%1' is set to the mind with id '%2', which can't be found.", resOp->getParent(), resOp->getTo()));
             }
         } else {
-            log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
+            //log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
             res.push_back(resOp);
         }
     }
@@ -139,7 +139,7 @@ const std::unordered_map<std::string, Ref<BaseMind>>& PossessionClient::getMinds
 void PossessionClient::scheduleDispatch()
 {
     m_dispatcherTimer.cancel();
-    std::chrono::microseconds waitTime((int64_t) (m_operationsDispatcher.secondsUntilNextOp() * 1000000L));
+    auto waitTime = m_operationsDispatcher.timeUntilNextOp();
     m_dispatcherTimer.expires_from_now(waitTime);
 
     m_dispatcherTimer.async_wait([&](boost::system::error_code ec) {

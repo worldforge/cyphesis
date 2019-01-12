@@ -30,6 +30,8 @@
 #include <functional>
 #include "modules/Ref.h"
 
+#include <chrono>
+
 /// \brief Type to hold an operation and the Entity it is from   for efficiency
 /// when broadcasting.
 template <typename T>
@@ -84,10 +86,10 @@ struct OperationsHandler {
     virtual bool idle(int numberOfOpsToProcess) = 0;
 
     /**
-     * Gets the number of seconds until the next operation needs to be dispatched.
+     * Gets time until the next operation needs to be dispatched.
      * @return Seconds.
      */
-    virtual double secondsUntilNextOp() const = 0;
+    virtual std::chrono::microseconds timeUntilNextOp() const = 0;
 
     /**
      * @brief Checks if the operation queues have been marked as dirty.
@@ -106,6 +108,8 @@ struct OperationsHandler {
      * @brief Removes all operations from the queues.
      */
     virtual void clearQueues() = 0;
+
+    virtual size_t getQueueSize() const = 0;
 };
 /// \brief Handles dispatching of operations at suitable time.
 ///
@@ -137,7 +141,7 @@ class OperationsDispatcher : public OperationsHandler
          * Gets the number of seconds until the next operation needs to be dispatched.
          * @return Seconds.
          */
-        double secondsUntilNextOp() const override;
+        std::chrono::microseconds timeUntilNextOp() const override;
 
         /**
          * @brief Checks if the operation queues have been marked as dirty.
@@ -166,6 +170,9 @@ class OperationsDispatcher : public OperationsHandler
          * @param The located entity it belongs to.
          */
         void addOperationToQueue(Operation, Ref<T>);
+
+        size_t getQueueSize() const override;
+
 
         /**
          * If set to >
