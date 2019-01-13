@@ -84,12 +84,12 @@ void CyPy_Entity::init_type()
     behaviors().readyType();
 
     LocatedEntityScriptProvider provider{
-        [](const Ref<LocatedEntity>& locatedEntity) -> boost::optional<Py::Object> {
+        [](const Ref<LocatedEntity>& locatedEntity) -> Py::Object {
             auto memEntity = dynamic_cast<Entity*>(locatedEntity.get());
             if (memEntity) {
                 return WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(memEntity);
             }
-            return boost::none;
+            return Py::None();
         },
         [](PyObject* obj) -> bool {
             return CyPy_Entity::check(obj);

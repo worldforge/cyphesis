@@ -25,17 +25,29 @@ Py::Object wrapLocatedEntity(Ref<LocatedEntity> le)
 {
     //If there's already a script entity use that (as a cache mechanism)
     if (!le->m_scriptEntity.empty()) {
-        return boost::any_cast<Py::Object>(le->m_scriptEntity);
-    } else {
-        for (auto& provider : CyPy_LocatedEntity::entityPythonProviders) {
-            auto wrapped = provider.wrapFn(le);
-            if (wrapped) {
-                le->m_scriptEntity = boost::any(*wrapped);
-                return *wrapped;
+        auto wrapper = boost::any_cast<Py::Object>(le->m_scriptEntity);
+        if (!wrapper.isNone()) {
+            return wrapper;
+
+            auto object = PyWeakref_GetObject(wrapper.ptr());
+            if (object) {
+                return Py::Object(object);
             }
         }
-        throw Py::TypeError(String::compose("Tried to wrap located entity '%1' but could not find any wrapper provider.", le->describeEntity()));
+       // return boost::any_cast<Py::Object>(le->m_scriptEntity);
     }
+    for (auto& provider : CyPy_LocatedEntity::entityPythonProviders) {
+        auto wrapped = provider.wrapFn(le);
+        if (!wrapped.isNone()) {
+
+//            auto weakPtr = PyWeakref_NewRef(wrapped.ptr(), nullptr);
+//            le->m_scriptEntity = boost::any(Py::Object(weakPtr, true));
+
+            return wrapped;
+        }
+    }
+    throw Py::TypeError(String::compose("Tried to wrap located entity '%1' but could not find any wrapper provider.", le->describeEntity()));
+
 }
 
 
