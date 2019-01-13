@@ -20,6 +20,7 @@
 #define CYPHESIS_WRAPPERBASE_H
 
 #include <common/compose.hpp>
+#include <common/log.h>
 #include "external/pycxx/CXX/Extensions.hxx"
 
 template<typename TValue, typename TPythonClass>
@@ -29,7 +30,7 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
 
         typedef TValue value_type;
 
-        WrapperBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        WrapperBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds);
 
         static Py::Object wrap(TValue value);
 
@@ -69,7 +70,9 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
             //an C++ instance even if a subclass forgets to call __init__ on the superclass.
             try {
                 o->m_pycxx_object = new TPythonClass(o, args, kwds);
-            } catch (Py::BaseException&) {
+            } catch (const Py::BaseException& e) {
+                log(WARNING, String::compose("Error when creating Python class %1.", subtype->tp_name));
+                subtype->tp_free(o);
                 return nullptr;
             }
 
@@ -94,7 +97,7 @@ class WrapperBase : public Py::PythonClass<TPythonClass>
 
 
 template<typename TValue, typename TPythonClass>
-WrapperBase<TValue, TPythonClass>::WrapperBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+WrapperBase<TValue, TPythonClass>::WrapperBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
     : Py::PythonClass<TPythonClass>::PythonClass(self, args, kwds)
 {}
 
@@ -109,7 +112,7 @@ Py::Object WrapperBase<TValue, TPythonClass>::wrap(TValue value)
     //Use the base class extension_object_new since it will only allocate memory and won't create the C++ instance
     auto obj = Py::PythonClass<TPythonClass>::extension_object_new(Py::PythonClass<TPythonClass>::type_object(), nullptr, nullptr);
     reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new TPythonClass(reinterpret_cast<Py::PythonClassInstance*>(obj), std::move(value));
-    return Py::PythonClassObject<TPythonClass>(obj);
+    return Py::PythonClassObject<TPythonClass>(obj, true);
 }
 
 
