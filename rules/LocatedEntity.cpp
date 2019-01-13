@@ -60,6 +60,7 @@ LocatedEntity::LocatedEntity(const std::string& id, long intId) :
 
 LocatedEntity::~LocatedEntity()
 {
+    m_scriptEntity.clear();
     clearProperties();
 
     for (auto script : m_scripts) {
@@ -229,6 +230,7 @@ void LocatedEntity::onUpdated()
 /// \brief Called when the entity needs to be removed from its context
 void LocatedEntity::destroy()
 {
+    m_scriptEntity.clear();
     for (auto script : m_scripts) {
         delete script;
     }
