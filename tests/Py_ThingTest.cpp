@@ -73,6 +73,22 @@ int main()
     Py::Module serverModule("server");
     serverModule.setAttr("usage_instance", CyPy_UsageInstance::wrap(usageInstance));
 
+    //Check that reference handling is correct.
+    {
+        Ref<Entity> entity = new Entity("2", 2);
+        assert(entity->checkRef() == 1);
+        {
+            auto wrap1 = CyPy_LocatedEntity::wrap(entity);
+            assert(entity->checkRef() == 2);
+            {
+                auto wrap2 = CyPy_LocatedEntity::wrap(entity);
+                assert(entity->checkRef() == 3);
+            }
+            assert(entity->checkRef() == 2);
+        }
+        assert(entity->checkRef() == 1);
+    }
+
     Ref<Entity> e = new Entity("1", 1);
 
     SoftProperty* prop = new SoftProperty();
