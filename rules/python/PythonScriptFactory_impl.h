@@ -77,7 +77,7 @@ template <class T>
 int PythonScriptFactory<T>::addScript(T * entity) const
 {
     auto script = createScript(entity);
-    if (!script.isNone()) {
+    if (!script.isNone() && !script.isNull()) {
         auto scriptInstance = new PythonWrapper(script);
         entity->setScript(scriptInstance);
     }
