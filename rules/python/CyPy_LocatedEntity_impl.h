@@ -29,7 +29,7 @@
 #include "common/Inheritance.h"
 
 template<typename TValue, typename TPythonClass>
-CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
     : WrapperBase<TValue, TPythonClass>::WrapperBase(self, args, kwds)
 {
 }

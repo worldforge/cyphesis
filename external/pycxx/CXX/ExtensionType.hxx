@@ -193,7 +193,7 @@ namespace Py
     : public PythonExtensionBase
     {
     protected:
-        explicit PythonClass( PythonClassInstance *self, Tuple &/*args*/, Dict &/*kwds*/ )
+        explicit PythonClass( PythonClassInstance *self, const Tuple &/*args*/, const Dict &/*kwds*/ )
         : PythonExtensionBase()
         , m_class_instance( self )
         {
@@ -374,8 +374,8 @@ namespace Py
     {
     public:
 
-        explicit PythonClassObject( PyObject *pyob )
-        : Object( pyob )
+        explicit PythonClassObject( PyObject *pyob, bool owned = false  )
+        : Object( pyob, owned )
         {
             validate();
         }

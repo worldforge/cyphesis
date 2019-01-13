@@ -10,7 +10,7 @@
 #ifndef STUB_CyPy_LocatedEntityBase_CyPy_LocatedEntityBase
 //#define STUB_CyPy_LocatedEntityBase_CyPy_LocatedEntityBase
   template <typename TValue,typename TPythonClass>
-   CyPy_LocatedEntityBase<TValue,TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+   CyPy_LocatedEntityBase<TValue,TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
   {
     

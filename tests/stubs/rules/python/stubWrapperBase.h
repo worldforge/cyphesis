@@ -10,7 +10,7 @@
 #ifndef STUB_WrapperBase_WrapperBase
 //#define STUB_WrapperBase_WrapperBase
   template <typename TValue,typename TPythonClass>
-   WrapperBase<TValue,TPythonClass>::WrapperBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+   WrapperBase<TValue,TPythonClass>::WrapperBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
     : Py::PythonClass(self, args, kwds)
   {
     

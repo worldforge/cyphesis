@@ -28,7 +28,7 @@ template<typename TValue, typename TPythonClass>
 class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 {
     public:
-        CyPy_LocatedEntityBase(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_LocatedEntityBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds);
 
         ~CyPy_LocatedEntityBase() override;
 
@@ -44,6 +44,8 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
 
 
     protected:
+
+
         CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value);
 
         Py::Object as_entity();
