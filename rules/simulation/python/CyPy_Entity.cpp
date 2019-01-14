@@ -24,7 +24,7 @@
 #include "rules/python/CyPy_Oplist.h"
 #include "common/id.h"
 
-CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
@@ -43,6 +43,13 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dic
     } else {
         throw Py::TypeError("Entity() requires string ID or Entity");
     }
+}
+
+
+CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Ref<Entity> value)
+    : CyPy_LocatedEntityBase(self, std::move(value))
+
+{
 }
 
 CyPy_Entity::~CyPy_Entity() = default;
@@ -87,7 +94,7 @@ void CyPy_Entity::init_type()
         [](const Ref<LocatedEntity>& locatedEntity) -> Py::Object {
             auto memEntity = dynamic_cast<Entity*>(locatedEntity.get());
             if (memEntity) {
-                return WrapperBase<Ref<Entity>, CyPy_Entity>::wrap(memEntity);
+                return WrapperBase<Ref<Entity>, CyPy_Entity, Py::PythonClassInstanceWeak>::wrap(memEntity);
             }
             return Py::None();
         },
@@ -96,7 +103,7 @@ void CyPy_Entity::init_type()
         }, [](const Py::Object& object) -> Ref<LocatedEntity>* {
             if (check(object)) {
                 //This cast should work.
-                return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<Entity>, CyPy_Entity>::value(object));
+                return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<Entity>, CyPy_Entity, Py::PythonClassInstanceWeak>::value(object));
             }
             return nullptr;
         }
@@ -104,12 +111,6 @@ void CyPy_Entity::init_type()
     CyPy_LocatedEntity::entityPythonProviders.emplace_back(std::move(provider));
 }
 
-
-CyPy_Entity::CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value)
-    : CyPy_LocatedEntityBase(self, std::move(value))
-{
-
-}
 
 Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
 {

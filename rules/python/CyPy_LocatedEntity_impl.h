@@ -29,14 +29,14 @@
 #include "common/Inheritance.h"
 
 template<typename TValue, typename TPythonClass>
-CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
-    : WrapperBase<TValue, TPythonClass>::WrapperBase(self, args, kwds)
+CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, const Py::Tuple& args, const Py::Dict& kwds)
+    : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>::WrapperBase(self, args, kwds)
 {
 }
 
 template<typename TValue, typename TPythonClass>
-CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value)
-    : WrapperBase<TValue, TPythonClass>::WrapperBase(self, std::move(value))
+CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, TValue value)
+    : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>::WrapperBase(self, std::move(value))
 {
         if (!this->m_value) {
             log(WARNING, "Created a Python Entity wrapper with null entity, this should not happen.");

@@ -27,21 +27,19 @@ Py::Object wrapLocatedEntity(Ref<LocatedEntity> le)
     if (!le->m_scriptEntity.empty()) {
         auto wrapper = boost::any_cast<Py::Object>(le->m_scriptEntity);
         if (!wrapper.isNone()) {
-            return wrapper;
-
             auto object = PyWeakref_GetObject(wrapper.ptr());
             if (object) {
                 return Py::Object(object);
             }
         }
-       // return boost::any_cast<Py::Object>(le->m_scriptEntity);
+        throw Py::TypeError(String::compose("Entity had cached script entity, but an object could not be extracted from it.", le->describeEntity()));
     }
     for (auto& provider : CyPy_LocatedEntity::entityPythonProviders) {
         auto wrapped = provider.wrapFn(le);
         if (!wrapped.isNone()) {
 
-//            auto weakPtr = PyWeakref_NewRef(wrapped.ptr(), nullptr);
-//            le->m_scriptEntity = boost::any(Py::Object(weakPtr, true));
+            auto weakPtr = PyWeakref_NewRef(wrapped.ptr(), nullptr);
+            le->m_scriptEntity = boost::any(Py::Object(weakPtr, true));
 
             return wrapped;
         }

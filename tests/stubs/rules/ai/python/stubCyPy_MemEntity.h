@@ -9,7 +9,7 @@
 
 #ifndef STUB_CyPy_MemEntity_CyPy_MemEntity
 //#define STUB_CyPy_MemEntity_CyPy_MemEntity
-   CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+   CyPy_MemEntity::CyPy_MemEntity(Py::PythonWeakReferenceableClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
   {
     
@@ -18,7 +18,7 @@
 
 #ifndef STUB_CyPy_MemEntity_CyPy_MemEntity
 //#define STUB_CyPy_MemEntity_CyPy_MemEntity
-   CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Ref<MemEntity> value)
+   CyPy_MemEntity::CyPy_MemEntity(Py::PythonWeakReferenceableClassInstance* self, Ref<MemEntity> value)
     : CyPy_LocatedEntityBase(self, value)
   {
     

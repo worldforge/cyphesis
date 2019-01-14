@@ -191,7 +191,7 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     auto nameStr = name.as_string();
     if (nameStr == "entity") {
         if (m_value->getEntity()) {
-            return WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(m_value->getEntity());
+            return WrapperBase<Ref<MemEntity>, CyPy_MemEntity, Py::PythonClassInstanceWeak>::wrap(m_value->getEntity());
         }
         return Py::None();
     }

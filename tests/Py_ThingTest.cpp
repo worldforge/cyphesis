@@ -81,8 +81,10 @@ int main()
             auto wrap1 = CyPy_LocatedEntity::wrap(entity);
             assert(entity->checkRef() == 2);
             {
+                //Since the Python object is cached another call to "wrap" should _not_ increase the count,
+                // since no new Python object is creatd.
                 auto wrap2 = CyPy_LocatedEntity::wrap(entity);
-                assert(entity->checkRef() == 3);
+                assert(entity->checkRef() == 2);
             }
             assert(entity->checkRef() == 2);
         }

@@ -25,9 +25,9 @@
 class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 {
     public:
-        CyPy_Entity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
+        CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py::Dict& kwds);
 
-        CyPy_Entity(Py::PythonClassInstance* self, Ref<Entity> value);
+        CyPy_Entity(Py::PythonClassInstanceWeak* self, Ref<Entity> value);
 
         ~CyPy_Entity() override;
 

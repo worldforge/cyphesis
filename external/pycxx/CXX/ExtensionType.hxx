@@ -109,7 +109,44 @@ namespace Py
     {
         PyObject_HEAD
         PythonExtensionBase *m_pycxx_object;
+
+        static void initType(PythonType* p) {}
+        static void dealloc(PyObject* _self, PythonClassInstance* self) {}
+        static void init(PyObject* _self, PythonClassInstance* self) {}
+        static void _new(PythonClassInstance* o) {}
+
+
     };
+
+
+    //Allows for weak references. This struct must look just like PythonClassInstance data wise,
+    //to allow for it to be reinterpret_casted to PythonClassInstance.
+    struct PythonClassInstanceWeak
+    {
+        PyObject_HEAD
+        PythonExtensionBase *m_pycxx_object;
+        PyObject * m_weakreflist;
+
+        static void initType(PythonType* p){
+            p->type_object()->tp_weaklistoffset = offsetof(PythonClassInstanceWeak, m_weakreflist);
+        }
+        static void dealloc(PyObject* _self, PythonClassInstanceWeak* self) {
+            if (self->m_weakreflist != nullptr) {
+                PyObject_ClearWeakRefs(_self);
+            }
+        }
+        static void init(PyObject* _self, PythonClassInstanceWeak* self) {
+            self->m_weakreflist = nullptr;
+        }
+        static void _new(PythonClassInstanceWeak* o) {
+            o->m_weakreflist = nullptr;
+        }
+
+    };
+
+    //Check that both are Standard Layout, so that both can be reinterpret_casted to PythonClassInstance (without inheriting).
+    static_assert(std::is_standard_layout<PythonClassInstance>(), "PythonClassInstance must be standard layout.");
+    static_assert(std::is_standard_layout<PythonClassInstanceWeak>(), "PythonClassInstanceWeak must be standard layout.");
 
     class ExtensionClassMethodsTable
     {
@@ -189,24 +226,27 @@ namespace Py
         int m_methods_size;
     };
 
-    template<TEMPLATE_TYPENAME T> class PythonClass
+    template<TEMPLATE_TYPENAME T, TEMPLATE_TYPENAME TClassInstance = PythonClassInstance> class PythonClass
     : public PythonExtensionBase
     {
+        public:
+            typedef TClassInstance ClassInstance;
+
     protected:
-        explicit PythonClass( PythonClassInstance *self, const Tuple &/*args*/, const Dict &/*kwds*/ )
+
+        explicit PythonClass( TClassInstance *self, const Tuple &/*args*/, const Dict &/*kwds*/ )
         : PythonExtensionBase()
         , m_class_instance( self )
         {
         }
 
-        explicit PythonClass( PythonClassInstance *self)
+        explicit PythonClass( TClassInstance *self)
             : PythonExtensionBase()
             , m_class_instance( self )
         {
         }
 
-        virtual ~PythonClass()
-        {} 
+        virtual ~PythonClass() = default;
 
         static ExtensionClassMethodsTable &methodTable()
         {
@@ -231,7 +271,8 @@ namespace Py
 #else
                 const char *default_name = "unknown";
 #endif
-                p = new PythonType( sizeof( PythonClassInstance ), 0, default_name );
+                p = new PythonType( sizeof( TClassInstance ), 0, default_name );
+                TClassInstance::initType(p);
                 p->set_tp_new( extension_object_new );
                 p->set_tp_init( extension_object_init );
                 p->set_tp_dealloc( extension_object_deallocator );
@@ -252,11 +293,12 @@ namespace Py
 #ifdef PYCXX_DEBUG
             std::cout << "extension_object_new()" << std::endl;
 #endif
-            PythonClassInstance *o = reinterpret_cast<PythonClassInstance *>( subtype->tp_alloc( subtype, 0 ) );
+            auto *o = reinterpret_cast<TClassInstance *>( subtype->tp_alloc( subtype, 0 ) );
             if( o == NULL )
                 return NULL;
 
             o->m_pycxx_object = NULL;
+            TClassInstance::_new(o);
 
             PyObject *self = reinterpret_cast<PyObject *>( o );
 #ifdef PYCXX_DEBUG
@@ -274,7 +316,7 @@ namespace Py
                 if( kwds_ != NULL )
                     kwds = kwds_;
 
-                PythonClassInstance *self = reinterpret_cast<PythonClassInstance *>( _self );
+                auto*self = reinterpret_cast<TClassInstance *>( _self );
 #ifdef PYCXX_DEBUG
                 std::cout << "extension_object_init( self=0x" << std::hex << reinterpret_cast< unsigned long >( self ) << std::dec << " )" << std::endl;
                 std::cout << "    self->m_pycxx_object=0x" << std::hex << reinterpret_cast< unsigned long >( self->m_pycxx_object ) << std::dec << std::endl;
@@ -283,6 +325,7 @@ namespace Py
                 if( self->m_pycxx_object == NULL )
                 {
                     self->m_pycxx_object = new T( self, args, kwds );
+                    TClassInstance::init(_self, self);
 #ifdef PYCXX_DEBUG
                     std::cout << "    self->m_pycxx_object=0x" << std::hex << reinterpret_cast< unsigned long >( self->m_pycxx_object ) << std::dec << std::endl;
 #endif
@@ -304,11 +347,12 @@ namespace Py
 
         static void extension_object_deallocator( PyObject *_self )
         {
-            PythonClassInstance *self = reinterpret_cast< PythonClassInstance * >( _self );
+            TClassInstance *self = reinterpret_cast< TClassInstance * >( _self );
 #ifdef PYCXX_DEBUG
             std::cout << "extension_object_deallocator( self=0x" << std::hex << reinterpret_cast< unsigned long >( self ) << std::dec << " )" << std::endl;
             std::cout << "    self->m_pycxx_object=0x" << std::hex << reinterpret_cast< unsigned long >( self->m_pycxx_object ) << std::dec << std::endl;
 #endif
+            TClassInstance::dealloc(_self, self);
             delete self->m_pycxx_object;
             _self->ob_type->tp_free( _self );
         }
@@ -356,7 +400,7 @@ namespace Py
 
     protected:
     private:
-        PythonClassInstance *m_class_instance;
+            TClassInstance *m_class_instance;
 
     private:
         //

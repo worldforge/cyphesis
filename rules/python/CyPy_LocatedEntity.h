@@ -25,10 +25,10 @@
 #include "WrapperBase.h"
 
 template<typename TValue, typename TPythonClass>
-class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
+class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>
 {
     public:
-        CyPy_LocatedEntityBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds);
+        CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, const Py::Tuple& args, const Py::Dict& kwds);
 
         ~CyPy_LocatedEntityBase() override;
 
@@ -46,7 +46,7 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass>
     protected:
 
 
-        CyPy_LocatedEntityBase(Py::PythonClassInstance* self, TValue value);
+        CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, TValue value);
 
         Py::Object as_entity();
 

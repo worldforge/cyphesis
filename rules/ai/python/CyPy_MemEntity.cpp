@@ -19,7 +19,7 @@
 #include "CyPy_MemEntity.h"
 #include "common/id.h"
 
-CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
@@ -79,7 +79,7 @@ void CyPy_MemEntity::init_type()
         [](const Ref<LocatedEntity>& locatedEntity) -> Py::Object {
             auto memEntity = dynamic_cast<MemEntity*>(locatedEntity.get());
             if (memEntity) {
-                return WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::wrap(memEntity);
+                return WrapperBase<Ref<MemEntity>, CyPy_MemEntity, Py::PythonClassInstanceWeak>::wrap(memEntity);
             }
             return Py::None();
         },
@@ -88,7 +88,7 @@ void CyPy_MemEntity::init_type()
         }, [](const Py::Object& object) -> Ref<LocatedEntity>* {
             if (check(object)) {
                 //This cast should work.
-                return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<MemEntity>, CyPy_MemEntity>::value(object));
+                return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<MemEntity>, CyPy_MemEntity, Py::PythonClassInstanceWeak>::value(object));
             }
             return nullptr;
         }
@@ -97,7 +97,7 @@ void CyPy_MemEntity::init_type()
 }
 
 
-CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstance* self, Ref<MemEntity> value)
+CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstanceWeak* self, Ref<MemEntity> value)
     : CyPy_LocatedEntityBase(self, std::move(value))
 {
 

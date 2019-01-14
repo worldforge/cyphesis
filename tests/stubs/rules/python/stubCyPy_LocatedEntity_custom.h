@@ -2,8 +2,8 @@
 #ifndef STUB_CyPy_LocatedEntityBase_CyPy_LocatedEntityBase
 #define STUB_CyPy_LocatedEntityBase_CyPy_LocatedEntityBase
 template <typename TValue,typename TPythonClass>
-CyPy_LocatedEntityBase<TValue,TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
-    : WrapperBase<TValue, TPythonClass>(self, args, kwds)
+CyPy_LocatedEntityBase<TValue,TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, const Py::Tuple& args, const Py::Dict& kwds)
+    : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>(self, args, kwds)
 {
 
 }
