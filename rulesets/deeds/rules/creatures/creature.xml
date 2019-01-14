@@ -55,6 +55,12 @@
             <map name="_nutrients_max_factor">
                 <float name="default">0.1</float>
             </map>
+            <map name="_goals">
+                <list name="default">
+                    <!-- Standard is that all creatures know how to fight or fly. -->
+                    <string name="class">mind.goals.common.combat.FightOrFlight</string>
+                </list>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
