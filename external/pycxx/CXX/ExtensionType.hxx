@@ -38,6 +38,8 @@
 #ifndef __CXX_ExtensionClass__h
 #define __CXX_ExtensionClass__h
 
+#include <cstddef>
+
 #define PYCXX_NOARGS_METHOD_NAME( NAME ) _callNoArgsMethod__##NAME
 #define PYCXX_VARARGS_METHOD_NAME( NAME ) _callVarArgsMethod__##NAME
 #define PYCXX_KEYWORDS_METHOD_NAME( NAME ) _callKeywordsMethod__##NAME
