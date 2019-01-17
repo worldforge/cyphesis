@@ -243,6 +243,7 @@ void MemMap::del(const std::string& id)
                 m_listener->entityDeleted(*ent);
             }
         }
+        ent->destroy();
     }
 
     m_unresolvedEntities.erase(id);
