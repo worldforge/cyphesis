@@ -44,6 +44,10 @@
 
 #include <basedir.h>
 
+//Uncomment, or provide in build flags, if you want to have Python use C Malloc instead of its own allocator.
+//This makes everything slower, but helps with Valgrind.
+//#define PYTHON_MALLOC
+
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
@@ -250,6 +254,37 @@ void observe_python_directories(boost::asio::io_service& io_service, AssetsManag
     }
 }
 
+
+#ifdef PYTHON_MALLOC
+
+static void* Python_Malloc(void* ctx, size_t size)
+{
+    return malloc(size ? size : 1);
+}
+
+static void* Python_Realloc(void* ctx, void* ptr, size_t size)
+{
+    if (size == 0) {
+        size = 1;
+    }
+    return realloc(ptr, size ? size : 1);
+}
+
+static void* Python_Calloc(void* ctx, size_t nelem, size_t elsize)
+{
+    if (nelem == 0 || elsize == 0) {
+        nelem = 1;
+        elsize = 1;
+    }
+    return calloc(nelem, elsize);
+}
+
+static void Python_Free(void*, void* ptr)
+{
+    free(ptr);
+}
+#endif
+
 void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories, bool log_stdout)
 {
 
@@ -259,6 +294,13 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
     for (auto& function : initFunctions) {
         modules.emplace_back(function());
     }
+
+#ifdef PYTHON_MALLOC
+    PyMemAllocatorEx alloc = {NULL, Python_Malloc, Python_Calloc, Python_Realloc, Python_Free};
+    PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &alloc);
+    PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &alloc);
+    PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &alloc);
+#endif
 
     Py_InitializeEx(0);
 
