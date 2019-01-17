@@ -29,10 +29,12 @@ Py::Object wrapLocatedEntity(Ref<LocatedEntity> le)
         if (!wrapper.isNone()) {
             auto object = PyWeakref_GetObject(wrapper.ptr());
             if (object) {
-                return Py::Object(object);
+                Py::Object pythonObj(object);
+                if (!pythonObj.isNone()) {
+                    return pythonObj;
+                }
             }
         }
-        throw Py::TypeError(String::compose("Entity had cached script entity, but an object could not be extracted from it.", le->describeEntity()));
     }
     for (auto& provider : CyPy_LocatedEntity::entityPythonProviders) {
         auto wrapped = provider.wrapFn(le);

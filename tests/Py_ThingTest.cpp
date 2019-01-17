@@ -40,8 +40,9 @@
 #include <rules/python/Python_Script_Utils.h>
 #include <rules/python/CyPy_LocatedEntity.h>
 #include <rules/simulation/python/CyPy_UsageInstance.h>
-#include <Atlas/Objects/Operation.h>
 #include <rules/simulation/python/CyPy_Server.h>
+#include <rules/simulation/python/CyPy_Entity.h>
+#include <Atlas/Objects/Operation.h>
 #include <rules/python/CyPy_Atlas.h>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
@@ -79,12 +80,14 @@ int main()
         assert(entity->checkRef() == 1);
         {
             auto wrap1 = CyPy_LocatedEntity::wrap(entity);
+            assert(CyPy_Entity::check(wrap1));
             assert(entity->checkRef() == 2);
             {
                 //Since the Python object is cached another call to "wrap" should _not_ increase the count,
                 // since no new Python object is creatd.
                 auto wrap2 = CyPy_LocatedEntity::wrap(entity);
                 assert(entity->checkRef() == 2);
+                assert(CyPy_Entity::check(wrap2));
             }
             assert(entity->checkRef() == 2);
         }
