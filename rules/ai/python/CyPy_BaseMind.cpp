@@ -29,6 +29,7 @@
 
 
 #include "navigation/Steering.h"
+#include "navigation/Awareness.h"
 
 #include "common/id.h"
 
@@ -83,6 +84,7 @@ void CyPy_BaseMind::init_type()
     //TODO: split into a CyPy_Steering class
     PYCXX_ADD_VARARGS_METHOD(set_destination, setDestination, "");
     PYCXX_ADD_VARARGS_METHOD(set_speed, setSpeed, "");
+    PYCXX_ADD_VARARGS_METHOD(query_destination, queryDestination, "");
 
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
     PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
@@ -300,6 +302,26 @@ Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)
         awareMind->getSteering()->setDesiredSpeed(verifyFloat(args[0]));
     }
     return Py::None();
+}
+
+Py::Object CyPy_BaseMind::queryDestination(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    if (!awareMind) {
+        throw Py::TypeError("Not an AwareMind");
+    }
+
+    auto& entityLocation = verifyObject<CyPy_EntityLocation>(args[0]);
+
+    auto steering = awareMind->getSteering();
+    if (!steering) {
+        return Py::None();
+    }
+
+    auto result = steering->queryDestination(entityLocation, awareMind->getCurrentServerTime());
+
+    return Py::Long(result);
 }
 
 template<>

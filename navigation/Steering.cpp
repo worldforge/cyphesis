@@ -37,6 +37,7 @@ Steering::Steering(MemEntity& avatar) :
         mAvatar(avatar),
         mDestinationEntityId(-1),
         mDestinationRadius(1.0),
+        mPathPosition(0),
         mSteeringEnabled(false),
         mUpdateNeeded(false),
         mPadding(16),
@@ -71,6 +72,56 @@ void Steering::setAwareness(Awareness* awareness)
     }
 }
 
+
+int Steering::queryDestination(const EntityLocation& destination, double currentServerTimestamp)
+{
+    if (mAwareness) {
+
+        auto currentAvatarPos = getCurrentAvatarPosition(currentServerTimestamp);
+
+        WFMath::Point<3> finalPosition = WFMath::Point<3>::ZERO();
+        if (destination.m_pos.isValid()) {
+            finalPosition = destination.m_pos;
+        }
+        //TODO: handle other entities as destinations
+        if (destination.m_parent) {
+            updatePosition(currentServerTimestamp, mAvatar.getIntId(), currentAvatarPos);
+        }
+        std::vector<WFMath::Point<3>> path;
+        auto pathFindResult = mAwareness->findPath(currentAvatarPos, finalPosition, mDestinationRadius, path);
+        return pathFindResult;
+
+
+//
+//        float distanceAvatarDestination = WFMath::Distance(currentAvatarPos, finalPosition);
+//
+//        float finalRadius = radius;
+//
+//        //Check if the destination is too far away. If so we should adjust it closer, and increase the radius.
+//        //This depends on the AI updating the destination at regular intervals.
+//        if (distanceAvatarDestination > (mAwareness->getTileSizeInMeters() * 10)) {
+//            WFMath::Vector<3> vector = finalPosition - currentAvatarPos;
+//
+//            finalPosition = currentAvatarPos + (vector.normalize() * mAwareness->getTileSizeInMeters() * 10);
+//            finalRadius = (radius * 10.f);
+//        }
+//
+//        //Only update if destination or radius has changed, or if the current tile of the avatar isn't known.
+//        if (mViewDestination != finalPosition || mDestinationRadius != finalRadius
+//            || !mAwareness->isPositionAware(currentAvatarPos.x(), currentAvatarPos.z())) {
+//            mViewDestination = finalPosition;
+//            mDestinationRadius = finalRadius;
+//            mUpdateNeeded = true;
+//
+//            setAwarenessArea();
+//            mAvatarPositionLastUpdate = currentAvatarPos;
+//        }
+    }
+    return -10;
+}
+
+
+
 void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
 {
     if (mAwareness) {
@@ -80,7 +131,7 @@ void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelat
         auto currentAvatarPos = getCurrentAvatarPosition(currentServerTimestamp);
 
         WFMath::Point<3> finalPosition = entityRelativePosition;
-        updateDestination(currentServerTimestamp, entityId, finalPosition);
+        updatePosition(currentServerTimestamp, entityId, finalPosition);
 
         float distanceAvatarDestination = WFMath::Distance(currentAvatarPos, finalPosition);
 
@@ -154,7 +205,7 @@ int Steering::getPathResult() const
     return mPathResult;
 }
 
-void Steering::updateDestination(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos) {
+void Steering::updatePosition(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos) const {
     if (mAwareness && mAvatar.m_location.m_parent) {
         if (entityId != mAvatar.m_location.m_parent->getIntId()) {
             mAwareness->projectPosition(mDestinationEntityId, pos, currentServerTimestamp);
@@ -166,6 +217,7 @@ void Steering::updateDestination(double currentServerTimestamp, long entityId, W
 int Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
 {
     mPath.clear();
+    mPathPosition = 0;
     if (!mAwareness) {
         mPathResult = -7;
         return mPathResult;
@@ -191,7 +243,7 @@ int Steering::updatePath(double currentTimestamp)
         currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
     }
 
-    updateDestination(currentTimestamp, mDestinationEntityId, mViewDestination);
+    updatePosition(currentTimestamp, mDestinationEntityId, mViewDestination);
 
     return updatePath(currentEntityPos);
 }
@@ -217,7 +269,8 @@ void Steering::stopSteering()
     mLastSentVelocity = WFMath::Vector<2>();
 
     //reset path
-    mPath = std::list<WFMath::Point<3>>();
+    mPath.clear();
+    mPathPosition = 0;
     mPathResult = 0;
     EventPathUpdated();
 
@@ -228,7 +281,7 @@ bool Steering::isEnabled() const
     return mSteeringEnabled;
 }
 
-const std::list<WFMath::Point<3>>& Steering::getPath() const
+const std::vector<WFMath::Point<3>>& Steering::getPath() const
 {
     return mPath;
 }
@@ -250,8 +303,8 @@ SteeringResult Steering::update(double currentTimestamp)
         auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
 
         //if (mUpdateNeeded) {
-            updateDestination(currentTimestamp, mDestinationEntityId, mViewDestination);
-            updatePath(currentEntityPos);
+        updatePosition(currentTimestamp, mDestinationEntityId, mViewDestination);
+        updatePath(currentEntityPos);
         //}
         if (!mPath.empty()) {
             const auto& finalDestination = mPath.back();
@@ -269,10 +322,10 @@ SteeringResult Steering::update(double currentTimestamp)
             } else {
                 //We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
 
-                WFMath::Point<2> nextWaypoint(mPath.front().x(), mPath.front().z());
-                while (WFMath::Distance(nextWaypoint, entityPosition) < mAvatarHorizRadius && mPath.size() > 1) {
-                    mPath.pop_front();
-                    nextWaypoint = WFMath::Point<2>(mPath.front().x(), mPath.front().z());
+                WFMath::Point<2> nextWaypoint(mPath[mPathPosition].x(), mPath[mPathPosition].z());
+                while (WFMath::Distance(nextWaypoint, entityPosition) < mAvatarHorizRadius && mPathPosition < mPath.size() - 1) {
+                    mPathPosition++;
+                    nextWaypoint = WFMath::Point<2>(mPath[mPathPosition].x(), mPath[mPathPosition].z());
                 }
 
                 WFMath::Vector<2> distance = nextWaypoint - entityPosition;
@@ -282,7 +335,7 @@ SteeringResult Steering::update(double currentTimestamp)
 
                 result.timeToNextWaypoint = distance.mag() / mMaxSpeed;
 
-                if (mPath.size() == 1) {
+                if (mPathPosition == mPath.size() - 1) {
                     //if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
                     //otherwise, if there's too much lag, we might end up overshooting our destination and will have to double back
                     destination = nextWaypoint;

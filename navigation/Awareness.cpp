@@ -385,7 +385,7 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
 
     //Only process those entities that aren't owned by another actor, of if that's the case if the entity is ourself
     if (!I->second->isActorOwned || I->first == observer.getIntId()) {
-        processEntityMovementChange(*I->second.get(), entity);
+        processEntityMovementChange(*I->second, entity);
     }
 }
 
@@ -407,7 +407,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
                 } else {
                     std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
 
-                    buildEntityAreas(*entityEntry.get(), areas);
+                    buildEntityAreas(*entityEntry, areas);
 
                     for (auto& entry : areas) {
                         markTilesAsDirty(entry.second.boundingBox());
@@ -729,7 +729,7 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
     tileMaxZIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
 }
 
-int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::list<WFMath::Point<3>>& path) const
+int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::vector<WFMath::Point<3>>& path) const
 {
 
     float pStartPos[] { start.x(), start.y(), start.z() };
@@ -774,14 +774,15 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
         return -6; // couldn't find a path
 
 // At this point we have our path.
+    path.resize(nVertCount);
     for (int nVert = 0; nVert < nVertCount; nVert++) {
-        path.emplace_back(StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]);
+        path[nVert] = {StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]};
     }
 
     return nVertCount;
 }
 
-bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
+bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp) const
 {
     auto entityI = mObservedEntities.find(entityId);
     if (entityI != mObservedEntities.end()) {
@@ -838,10 +839,10 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
         highCorner.y() = mCfg.bmax[2];
     }
 
-    int tileMinXIndex = (lowCorner.x() - mCfg.bmin[0]) / tilesize;
-    int tileMaxXIndex = (highCorner.x() - mCfg.bmin[0]) / tilesize;
-    int tileMinZIndex = (lowCorner.y() - mCfg.bmin[2]) / tilesize;
-    int tileMaxZIndex = (highCorner.y() - mCfg.bmin[2]) / tilesize;
+    int tileMinXIndex = static_cast<int>((lowCorner.x() - mCfg.bmin[0]) / tilesize);
+    int tileMaxXIndex = static_cast<int>((highCorner.x() - mCfg.bmin[0]) / tilesize);
+    int tileMinZIndex = static_cast<int>((lowCorner.y() - mCfg.bmin[2]) / tilesize);
+    int tileMaxZIndex = static_cast<int>((highCorner.y() - mCfg.bmin[2]) / tilesize);
 
 //Now mark tiles
     const float tcs = mCfg.tileSize * mCfg.cs;
@@ -986,7 +987,7 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
     for (int j = 0; j < ntiles; ++j) {
         TileCacheData* tile = &tiles[j];
 
-        dtTileCacheLayerHeader* header = (dtTileCacheLayerHeader*)tile->data;
+        auto* header = (dtTileCacheLayerHeader*)tile->data;
         dtTileRef tileRef = mTileCache->getTileRef(mTileCache->getTileAt(header->tx, header->ty, header->tlayer));
         if (tileRef) {
             mTileCache->removeTile(tileRef, nullptr, nullptr);
@@ -1023,7 +1024,7 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
         if (pos.isValid() && orientation.isValid()) {
 
             WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-            double theta = atan2(xVec.z(), xVec.x()); // rotation about Y
+            auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
 
             WFMath::RotMatrix<2> rm;
             rm.rotation(theta);
@@ -1070,7 +1071,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 // Tile bounds.
     const float tcs = mCfg.tileSize * mCfg.cs;
 
-    rcConfig tcfg;
+    rcConfig tcfg{};
     memcpy(&tcfg, &mCfg, sizeof(tcfg));
 
     tcfg.bmin[0] = mCfg.bmin[0] + tx * tcs;
@@ -1085,10 +1086,10 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
     tcfg.bmax[2] += tcfg.borderSize * tcfg.cs;
 
 //First define all vertices. Get one extra vertex in each direction so that there's no cutoff at the tile's edges.
-    int heightsXMin = std::floor(tcfg.bmin[0]) - 1;
-    int heightsXMax = std::ceil(tcfg.bmax[0]) + 1;
-    int heightsYMin = std::floor(tcfg.bmin[2]) - 1;
-    int heightsYMax = std::ceil(tcfg.bmax[2]) + 1;
+    int heightsXMin = static_cast<int>(std::floor(tcfg.bmin[0]) - 1);
+    int heightsXMax = static_cast<int>(std::ceil(tcfg.bmax[0]) + 1);
+    int heightsYMin = static_cast<int>(std::floor(tcfg.bmin[2]) - 1);
+    int heightsYMax = static_cast<int>(std::ceil(tcfg.bmax[2]) + 1);
     int sizeX = heightsXMax - heightsXMin;
     int sizeY = heightsYMax - heightsYMin;
 
@@ -1177,25 +1178,25 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 
 // Mark areas.
     for (auto& rotbox : entityAreas) {
-        float verts[3 * 4];
+        float areaVerts[3 * 4];
 
-        verts[0] = rotbox.getCorner(1).x();
-        verts[1] = 0;
-        verts[2] = rotbox.getCorner(1).y();
+        areaVerts[0] = rotbox.getCorner(1).x();
+        areaVerts[1] = 0;
+        areaVerts[2] = rotbox.getCorner(1).y();
 
-        verts[3] = rotbox.getCorner(3).x();
-        verts[4] = 0;
-        verts[5] = rotbox.getCorner(3).y();
+        areaVerts[3] = rotbox.getCorner(3).x();
+        areaVerts[4] = 0;
+        areaVerts[5] = rotbox.getCorner(3).y();
 
-        verts[6] = rotbox.getCorner(2).x();
-        verts[7] = 0;
-        verts[8] = rotbox.getCorner(2).y();
+        areaVerts[6] = rotbox.getCorner(2).x();
+        areaVerts[7] = 0;
+        areaVerts[8] = rotbox.getCorner(2).y();
 
-        verts[9] = rotbox.getCorner(0).x();
-        verts[10] = 0;
-        verts[11] = rotbox.getCorner(0).y();
+        areaVerts[9] = rotbox.getCorner(0).x();
+        areaVerts[10] = 0;
+        areaVerts[11] = rotbox.getCorner(0).y();
 
-        rcMarkConvexPolyArea(mCtx, verts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
+        rcMarkConvexPolyArea(mCtx, areaVerts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
     }
 
     rc.lset = rcAllocHeightfieldLayerSet();
@@ -1214,7 +1215,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         const rcHeightfieldLayer* layer = &rc.lset->layers[i];
 
         // Store header
-        dtTileCacheLayerHeader header;
+        dtTileCacheLayerHeader header{};
         header.magic = DT_TILECACHE_MAGIC;
         header.version = DT_TILECACHE_VERSION;
 
@@ -1245,7 +1246,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
     int n = 0;
     for (int i = 0; i < rcMin(rc.ntiles, maxTiles); ++i) {
         tiles[n++] = rc.tiles[i];
-        rc.tiles[i].data = 0;
+        rc.tiles[i].data = nullptr;
         rc.tiles[i].dataSize = 0;
     }
 
@@ -1262,7 +1263,7 @@ void Awareness::processTiles(const WFMath::AxisBox<2>& area,
     int ntiles;
     dtStatus status = mTileCache->queryTiles(bmin, bmax, tilesRefs, &ntiles, 256);
     if (status == DT_SUCCESS) {
-        std::vector<const dtCompressedTile*> tiles(ntiles);
+        std::vector<const dtCompressedTile*> tiles(static_cast<unsigned long>(ntiles));
         for (int i = 0; i < ntiles; ++i) {
             tiles[i] = mTileCache->getTileByRef(tilesRefs[i]);
         }
@@ -1276,7 +1277,7 @@ void Awareness::processTile(int tx, int ty,
     dtCompressedTileRef tilesRefs[MAX_LAYERS];
     const int ntiles = mTileCache->getTilesAt(tx, ty, tilesRefs, MAX_LAYERS);
 
-    std::vector<const dtCompressedTile*> tiles(ntiles);
+    std::vector<const dtCompressedTile*> tiles(static_cast<unsigned long>(ntiles));
     for (int i = 0; i < ntiles; ++i) {
         tiles[i] = mTileCache->getTileByRef(tilesRefs[i]);
     }
@@ -1288,7 +1289,7 @@ void Awareness::processAllTiles(
         const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
     int ntiles = mTileCache->getTileCount();
-    std::vector<const dtCompressedTile*> tiles(ntiles);
+    std::vector<const dtCompressedTile*> tiles(static_cast<unsigned long>(ntiles));
     for (int i = 0; i < ntiles; ++i) {
         tiles[i] = mTileCache->getTile(i);
     }
@@ -1302,8 +1303,8 @@ void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles,
 {
     struct TileCacheBuildContext
     {
-            inline TileCacheBuildContext(struct dtTileCacheAlloc* a) :
-                    layer(0), lcset(0), lmesh(0), alloc(a)
+            inline explicit TileCacheBuildContext(struct dtTileCacheAlloc* a) :
+                    layer(nullptr), lcset(nullptr), lmesh(nullptr), alloc(a)
             {
             }
             inline ~TileCacheBuildContext()
@@ -1313,11 +1314,11 @@ void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles,
             void purge()
             {
                 dtFreeTileCacheLayer(alloc, layer);
-                layer = 0;
+                layer = nullptr;
                 dtFreeTileCacheContourSet(alloc, lcset);
-                lcset = 0;
+                lcset = nullptr;
                 dtFreeTileCachePolyMesh(alloc, lmesh);
-                lmesh = 0;
+                lmesh = nullptr;
             }
             struct dtTileCacheLayer* layer;
             struct dtTileCacheContourSet* lcset;

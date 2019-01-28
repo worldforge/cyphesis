@@ -178,6 +178,12 @@ Steering* AwareMind::getSteering()
     return mSteering.get();
 }
 
+const std::shared_ptr<Awareness>& AwareMind::getAwareness() const
+{
+    return mAwareness;
+}
+
+
 void AwareMind::entityAdded(const MemEntity& entity)
 {
     if (m_ownEntity) {

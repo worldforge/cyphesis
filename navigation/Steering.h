@@ -23,7 +23,7 @@
 #include <wfmath/vector.h>
 #include <wfmath/axisbox.h>
 
-#include <list>
+#include <vector>
 
 #include <sigc++/trackable.h>
 #include <sigc++/signal.h>
@@ -61,6 +61,9 @@ struct SteeringResult {
         boost::optional<double> timeToNextWaypoint;
 };
 
+
+class EntityLocation;
+
 /**
  * @brief Handles steering of an avatar, with path finding and obstacle avoidance.
  *
@@ -73,6 +76,8 @@ public:
 	virtual ~Steering() = default;
 
 	void setAwareness(Awareness* awareness);
+
+	int queryDestination(const EntityLocation& destination, double currentServerTimestamp);
 
 	/**
 	 * @brief Sets a new destination, in view position.
@@ -129,7 +134,7 @@ public:
 	 * @brief Gets the current path.
 	 * @return The current path.
 	 */
-	const std::list<WFMath::Point<3>>& getPath() const;
+	const std::vector<WFMath::Point<3>>& getPath() const;
 
 	/**
 	 * @brief Returns true if we've just sent a movement update to the server and thus expect an update in return.
@@ -157,8 +162,6 @@ public:
 	size_t unawareAreaCount() const;
 
 	int getPathResult() const;
-
-	void removeEntity(MemEntity& entity);
 
 	/**
 	 * @brief Emitted when the path has been updated.
@@ -195,9 +198,14 @@ private:
 
 	/**
 	 * @brief The calculated path to the destination.
-	 * The waypoints is in order, with the next on in the beginning of the list.
+	 * The waypoints is in order.
 	 */
-	std::list<WFMath::Point<3>> mPath;
+	std::vector<WFMath::Point<3>> mPath;
+
+	/**
+	 * The current active position in the mPath.
+	 */
+	size_t mPathPosition;
 
 	/**
 	 * @brief True if steering currently is enabled.
@@ -284,7 +292,7 @@ private:
 	 */
 	void moveToPoint(const WFMath::Point<3>& point);
 
-	void updateDestination(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos);
+	void updatePosition(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos) const;
 
 };
 

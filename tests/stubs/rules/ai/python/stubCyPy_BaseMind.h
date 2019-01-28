@@ -113,5 +113,13 @@
   }
 #endif //STUB_CyPy_BaseMind_matchEntities
 
+#ifndef STUB_CyPy_BaseMind_queryDestination
+//#define STUB_CyPy_BaseMind_queryDestination
+  Py::Object CyPy_BaseMind::queryDestination(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_queryDestination
+
 
 #endif

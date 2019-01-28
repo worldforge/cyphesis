@@ -58,7 +58,12 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 
         Py::Object matchEntities(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntities);
+
+        Py::Object queryDestination(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, queryDestination);
+
 };
+
 
 
 #endif //CYPHESIS_CYPY_BASEMIND_H

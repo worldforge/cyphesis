@@ -73,6 +73,14 @@
   }
 #endif //STUB_AwareMind_getSteering
 
+#ifndef STUB_AwareMind_getAwareness
+//#define STUB_AwareMind_getAwareness
+  const std::shared_ptr<Awareness>& AwareMind::getAwareness() const
+  {
+    return *static_cast<const std::shared_ptr<Awareness>*>(nullptr);
+  }
+#endif //STUB_AwareMind_getAwareness
+
 #ifndef STUB_AwareMind_getServerTimeDiff
 //#define STUB_AwareMind_getServerTimeDiff
   double AwareMind::getServerTimeDiff() const

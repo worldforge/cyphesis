@@ -60,7 +60,7 @@
 
 #ifndef STUB_Awareness_findPath
 //#define STUB_Awareness_findPath
-  int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::list<WFMath::Point<3>>& path) const
+  int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::vector<WFMath::Point<3>>& path) const
   {
     return 0;
   }
@@ -188,7 +188,7 @@
 
 #ifndef STUB_Awareness_projectPosition
 //#define STUB_Awareness_projectPosition
-  bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp)
+  bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp) const
   {
     return false;
   }

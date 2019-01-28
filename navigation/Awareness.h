@@ -88,7 +88,7 @@ struct EntityConnections
 };
 
 struct EntityEntry {
-        int entityId;
+        long entityId;
         int numberOfObservers;
 
         Location location;
@@ -160,7 +160,7 @@ public:
 	 * @param path The waypoints of the path will be stored here.
 	 * @return The number of waypoints in the path. 0 if no path could be found. A negative values means that something went wrong.
 	 */
-	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::list<WFMath::Point<3>>& path) const;
+	int findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::vector<WFMath::Point<3>>& path) const;
 
 	/**
 	 * @brief Process the tile at the specified index.
@@ -273,7 +273,7 @@ public:
      * @param currentServerTimestamp The current server time stamp, to calculate new positions for moving entities.
      * @return True if entity could be found.
      */
-    bool projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp);
+    bool projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp) const;
 
 protected:
 

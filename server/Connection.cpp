@@ -46,7 +46,6 @@
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
-using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 

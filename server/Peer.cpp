@@ -42,7 +42,6 @@ using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Logout;
-using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Entity::Anonymous;
 
 /// \brief Constructor

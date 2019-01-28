@@ -26,6 +26,14 @@
   }
 #endif //STUB_Steering_setAwareness
 
+#ifndef STUB_Steering_queryDestination
+//#define STUB_Steering_queryDestination
+  int Steering::queryDestination(const EntityLocation& destination, double currentServerTimestamp)
+  {
+    return 0;
+  }
+#endif //STUB_Steering_queryDestination
+
 #ifndef STUB_Steering_setDestination
 //#define STUB_Steering_setDestination
   void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
@@ -92,9 +100,9 @@
 
 #ifndef STUB_Steering_getPath
 //#define STUB_Steering_getPath
-  const std::list<WFMath::Point<3>>& Steering::getPath() const
+  const std::vector<WFMath::Point<3>>& Steering::getPath() const
   {
-    static std::list<WFMath::Point<3>> instance; return instance;
+    static std::vector<WFMath::Point<3>> instance; return instance;
   }
 #endif //STUB_Steering_getPath
 
@@ -146,14 +154,6 @@
   }
 #endif //STUB_Steering_getPathResult
 
-#ifndef STUB_Steering_removeEntity
-//#define STUB_Steering_removeEntity
-  void Steering::removeEntity(MemEntity& entity)
-  {
-    
-  }
-#endif //STUB_Steering_removeEntity
-
 #ifndef STUB_Steering_setAwarenessArea
 //#define STUB_Steering_setAwarenessArea
   void Steering::setAwarenessArea()
@@ -186,13 +186,13 @@
   }
 #endif //STUB_Steering_moveToPoint
 
-#ifndef STUB_Steering_updateDestination
-//#define STUB_Steering_updateDestination
-  void Steering::updateDestination(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos)
+#ifndef STUB_Steering_updatePosition
+//#define STUB_Steering_updatePosition
+  void Steering::updatePosition(double currentServerTimestamp, long entityId, WFMath::Point<3>& pos) const
   {
     
   }
-#endif //STUB_Steering_updateDestination
+#endif //STUB_Steering_updatePosition
 
 
 #endif

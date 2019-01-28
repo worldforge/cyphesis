@@ -47,6 +47,8 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         Steering* getSteering();
 
+        const std::shared_ptr<Awareness>& getAwareness() const;
+
         double getServerTimeDiff() const;
 
         double getCurrentLocalTime() const;
