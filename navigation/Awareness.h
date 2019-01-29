@@ -337,7 +337,7 @@ protected:
 	 */
 	dtNavMesh* mNavMesh;
 	dtNavMeshQuery* mNavQuery;
-	dtQueryFilter* mFilter;
+	std::unique_ptr<dtQueryFilter> mFilter;
 	dtObstacleAvoidanceQuery* mObstacleAvoidanceQuery;
 	dtObstacleAvoidanceParams* mObstacleAvoidanceParams;
 
@@ -407,7 +407,7 @@ protected:
 	 * Whenever a tile is added to the awareness area it has it's priority increased within this list.
 	 * This makes sure that those tiles that are at the back of the list always are the least used ones.
 	 */
-	MRUList<std::pair<int, int>>* mActiveTileList;
+	std::unique_ptr<MRUList<std::pair<int, int>>> mActiveTileList;
 
 	/**
 	 * @brief The number of active observers.

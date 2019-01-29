@@ -230,6 +230,18 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
 
         return list;
     }
+    if (nameStr == "current_path_index") {
+        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
+        if (!awareMind) {
+            throw Py::TypeError("Not an AwareMind");
+        }
+        Py::List list;
+        if (awareMind->getSteering()) {
+            return Py::Long(static_cast<long>(awareMind->getSteering()->getCurrentPathIndex()));
+        }
+
+        return Py::Long(0);
+    }
 
     if (nameStr == "pathResult") {
         auto awareMind = dynamic_cast<AwareMind*>(m_value.get());

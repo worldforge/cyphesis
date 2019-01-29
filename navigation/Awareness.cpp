@@ -106,9 +106,9 @@ class MRUList
 {
     public:
 
-        void insert(const TItem& item)
+        void insert(TItem item)
         {
-            auto p = mItems.push_front(item);
+            auto p = mItems.push_front(std::move(item));
 
             if (!p.second) {
                 mItems.relocate(mItems.begin(), p.first);
@@ -117,7 +117,7 @@ class MRUList
 
         TItem pop_back()
         {
-            TItem back = mItems.back();
+            TItem back = std::move(mItems.back());
             mItems.pop_back();
             return back;
         }
@@ -165,8 +165,8 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         mBaseTileAmount(128),
         mDesiredTilesAmount(128),
         mCtx(new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()),
-        mFilter(nullptr),
-        mActiveTileList(nullptr),
+        mFilter(new dtQueryFilter()),
+        mActiveTileList(new MRUList<std::pair<int, int>>()),
         mObserverCount(0)
 {
     auto validExtent = extent;
@@ -176,14 +176,11 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
     }
     debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius);
     try {
-        mActiveTileList = new MRUList<std::pair<int, int>>();
-
         mTalloc = new LinearAllocator(128000);
         mTcomp = new FastLZCompressor;
         mTmproc = new MeshProcess;
 
         // Setup the default query filter
-        mFilter = new dtQueryFilter();
         mFilter->setIncludeFlags(0xFFFF); // Include all
         mFilter->setExcludeFlags(0); // Exclude none
         // Area flags for polys to consider in search, and their cost
@@ -310,7 +307,6 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
 
         dtFreeNavMesh(mNavMesh);
         dtFreeNavMeshQuery(mNavQuery);
-        delete mFilter;
 
         dtFreeTileCache(mTileCache);
 
@@ -319,7 +315,6 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         delete mTalloc;
 
         delete mCtx;
-        delete mActiveTileList;
         throw;
     }
 }
@@ -332,7 +327,6 @@ Awareness::~Awareness()
 
     dtFreeNavMesh(mNavMesh);
     dtFreeNavMeshQuery(mNavQuery);
-    delete mFilter;
 
     dtFreeTileCache(mTileCache);
 
@@ -341,7 +335,6 @@ Awareness::~Awareness()
     delete mTalloc;
 
     delete mCtx;
-    delete mActiveTileList;
 }
 
 void Awareness::addObserver() {
@@ -752,16 +745,16 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
     int nVertCount = 0;
 
 // find the start polygon
-    status = mNavQuery->findNearestPoly(pStartPos, startExtent, mFilter, &StartPoly, StartNearest);
+    status = mNavQuery->findNearestPoly(pStartPos, startExtent, mFilter.get(), &StartPoly, StartNearest);
     if ((status & DT_FAILURE) || StartPoly == 0)
         return -1; // couldn't find a polygon
 
 // find the end polygon
-    status = mNavQuery->findNearestPoly(pEndPos, endExtent, mFilter, &EndPoly, EndNearest);
+    status = mNavQuery->findNearestPoly(pEndPos, endExtent, mFilter.get(), &EndPoly, EndNearest);
     if ((status & DT_FAILURE) || EndPoly == 0)
         return -2; // couldn't find a polygon
 
-    status = mNavQuery->findPath(StartPoly, EndPoly, StartNearest, EndNearest, mFilter, PolyPath, &nPathCount, MAX_PATHPOLY);
+    status = mNavQuery->findPath(StartPoly, EndPoly, StartNearest, EndNearest, mFilter.get(), PolyPath, &nPathCount, MAX_PATHPOLY);
     if ((status & DT_FAILURE))
         return -3; // couldn't create a path
     if (nPathCount == 0)
@@ -774,7 +767,7 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
         return -6; // couldn't find a path
 
 // At this point we have our path.
-    path.resize(nVertCount);
+    path.resize(static_cast<unsigned long>(nVertCount));
     for (int nVert = 0; nVert < nVertCount; nVert++) {
         path[nVert] = {StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]};
     }
@@ -912,7 +905,7 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
                 }
                 newAwareAreaSet.insert(index);
 
-                mActiveTileList->insert(index);
+                mActiveTileList->insert(std::move(index));
             }
         }
     }

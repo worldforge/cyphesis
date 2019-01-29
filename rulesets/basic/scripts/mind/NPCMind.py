@@ -351,7 +351,7 @@ class NPCMind(ai.Mind):
         for point in my_path:
             path.append([point.x, point.y, point.z])
 
-        think_op.set_args([Entity(path=path)])
+        think_op.set_args([Entity(path=path, current_path_index=self.current_path_index)])
 
         res = Oplist()
         res = res + think_op

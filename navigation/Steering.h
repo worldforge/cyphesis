@@ -136,7 +136,9 @@ public:
 	 */
 	const std::vector<WFMath::Point<3>>& getPath() const;
 
-	/**
+	size_t getCurrentPathIndex() const;
+
+     /**
 	 * @brief Returns true if we've just sent a movement update to the server and thus expect an update in return.
 	 *
 	 * This is useful to know whether any movement update received from the server was instigated by us or not.
@@ -205,7 +207,7 @@ private:
 	/**
 	 * The current active position in the mPath.
 	 */
-	size_t mPathPosition;
+	size_t mCurrentPathIndex;
 
 	/**
 	 * @brief True if steering currently is enabled.
