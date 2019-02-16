@@ -177,33 +177,24 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
 {
     const std::vector<Root> & args = op->getArgs();
 
-    if (args.empty()) {
-        Account::LogoutOperation(op, res);
-        return;
+    //Check if arg points to another account, and log out that if so.
+    if (!args.empty()) {
+        const Root & arg = args.front();
+        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            const std::string & account_id = arg->getId();
+
+            if (account_id != getId() && m_connection != nullptr) {
+                Router * account = m_connection->m_server.getObject(account_id);
+                if (account) {
+                    log(INFO, String::compose("Admin account %1 is forcefully logging out account %2.", getId(), account_id));
+                    account->operation(op, res);
+                    return;
+                }
+            }
+        }
     }
 
-    const Root & arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        error(op, "No account id given on logout op", res, getId());
-        return;
-    }
-    const std::string & account_id = arg->getId();
-    if (account_id == getId()) {
-        Account::LogoutOperation(op, res);
-        return;
-    }
-
-    if (m_connection == nullptr) {
-        error(op,"Disconnected admin account handling explicit logout",res, getId());
-        return;
-    }
-
-    Router * account = m_connection->m_server.getObject(account_id);
-    if (!account) {
-        error(op, "Logout failed", res, getId());
-        return;
-    }
-    account->operation(op, res);
+    Account::LogoutOperation(op, res);
 }
 
 void Admin::GetOperation(const Operation & op, OpVector & res)
