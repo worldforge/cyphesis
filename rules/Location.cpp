@@ -127,12 +127,14 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
 }
 
-int Location::readFromMessage(const MapType & msg)
+bool Location::readFromMessage(const MapType & msg)
 {
+    bool had_data = false;
     try {
         auto I = msg.find("pos");
         auto Iend = msg.end();
         if (I != Iend) {
+            had_data = true;
             const Element & pos = I->second;
             if (pos.isList() && pos.List().size() == 3) {
                 m_pos.fromAtlas(pos);
@@ -140,8 +142,19 @@ int Location::readFromMessage(const MapType & msg)
                 log(ERROR, "Malformed POS data");
             }
         }
+        I = msg.find("velocity");
+        if (I != Iend) {
+            had_data = true;
+            const Element & velocity = I->second;
+            if (velocity.isList() && velocity.List().size() == 3) {
+                m_velocity.fromAtlas(velocity);
+            } else {
+                log(ERROR, "Malformed velocity data");
+            }
+        }
         I = msg.find("orientation");
         if (I != Iend) {
+            had_data = true;
             const Element & orientation = I->second;
             if (orientation.isList() && orientation.List().size() == 4) {
                 m_orientation.fromAtlas(orientation);
@@ -151,6 +164,7 @@ int Location::readFromMessage(const MapType & msg)
         }
         I = msg.find("angular");
         if (I != Iend) {
+            had_data = true;
             const Element & angular = I->second;
             if (angular.isList() && angular.List().size() == 3) {
                 m_angularVelocity.fromAtlas(angular);
@@ -158,28 +172,29 @@ int Location::readFromMessage(const MapType & msg)
                 log(ERROR, "Malformed angular velocity data");
             }
         }
-
-
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "Location::readFromMessage: Bad location data");
-        return -1;
     }
-    return 0;
+    return had_data;
 }
 
-int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
+bool Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
 {
+    bool had_data = false;
     debug( std::cout << "Location::readFromEntity" << std::endl << std::flush;);
     try {
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+            had_data = true;
             fromStdVector(m_pos, ent->getPos());
         }
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            had_data = true;
             fromStdVector(m_velocity, ent->getVelocity());
         }
         Element element;
         if (ent->copyAttr("orientation", element) == 0) {
+            had_data = true;
             if (element.isList() && element.List().size() == 4) {
                 m_orientation.fromAtlas(element);
             } else {
@@ -187,8 +202,10 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
             }
         }
         if (ent->copyAttr("angular", element) == 0) {
+            had_data = true;
             if (element.isList() && element.List().size() == 3 && element.List()[0].isNum() && element.List()[1].isNum() && element.List()[2].isNum()) {
-                m_angularVelocity = WFMath::Vector<3>(element.List()[0].asNum(), element.List()[1].asNum(), element.List()[2].asNum());
+                m_angularVelocity = WFMath::Vector<3>(static_cast<WFMath::CoordType>(element.List()[0].asNum()), static_cast<WFMath::CoordType>(element.List()[1].asNum()),
+                                                      static_cast<WFMath::CoordType>(element.List()[2].asNum()));
             } else {
                 log(ERROR, "Malformed angular velocity data.");
             }
@@ -196,9 +213,8 @@ int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
     }
     catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "Location::readFromEntity: Bad location data");
-        return -1;
     }
-    return 0;
+    return had_data;
 }
 
 void Location::modifyBBox()

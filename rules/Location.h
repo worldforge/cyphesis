@@ -115,8 +115,17 @@ class Location : public EntityLocation {
     void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
     Atlas::Objects::Root asEntity() const;
 
-    int readFromMessage(const Atlas::Message::MapType & ent);
-    int readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
+    /**
+     * Reads data from a map message.
+     * @return True if map contained location data.
+     */
+    bool readFromMessage(const Atlas::Message::MapType & message);
+    /**
+     * Reads data from an entity message.
+     * @return True if entity contained location data.
+     */
+    bool readFromEntity(const Atlas::Objects::Entity::RootEntity & ent);
+
     void modifyBBox();
 
     friend std::ostream & operator<<(std::ostream& s, Location& v);

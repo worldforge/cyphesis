@@ -444,15 +444,18 @@ int main()
         Atlas::Objects::Entity::Anonymous ent;
 
         testLoc.addToMessage(msg);
+        assert(msg.empty());
         testLoc.addToEntity(ent);
+        assert(ent->getAttrFlags() == 0);
 
         Ref<Entity> le1(new Entity("1", 1));
 
         testLoc.m_parent = le1;
-        testLoc.m_pos = Point3D(0,0,0);
+        testLoc.m_pos = Point3D(0,1,0);
         testLoc.m_velocity = Vector3D(1,0,0);
-        testLoc.m_orientation = Quaternion(1, 0, 0, 0);
+        testLoc.m_orientation = Quaternion(1, 0, 1, 0);
         testLoc.m_bBox = BBox(Point3D(-1,-1,-1), Point3D(1,1,1));
+        testLoc.m_angularVelocity = Vector3D(0,0,1);
 
         testLoc.addToMessage(msg);
         testLoc.addToEntity(ent);
@@ -464,8 +467,27 @@ int main()
 
             readLocFromMessage.readFromMessage(msg);
 
+            assert(readLocFromMessage.m_pos.isValid());
+            assert(readLocFromMessage.m_pos == WFMath::Point<3>(0,1,0));
+
+            assert(readLocFromMessage.m_velocity.isValid());
+            assert(readLocFromMessage.m_velocity == WFMath::Vector<3>(1,0,0));
+
+            assert(readLocFromMessage.m_orientation.isValid());
+            assert(readLocFromMessage.m_orientation == WFMath::Quaternion(1, 0, 1, 0));
+
+            assert(readLocFromMessage.m_angularVelocity.isValid());
+            assert(readLocFromMessage.m_angularVelocity == Vector3D(0,0,1));
+
+//            assert(readLocFromMessage.m_bBox.isValid());
+//            assert(readLocFromMessage.m_bBox == BBox(Point3D(-1,-1,-1), Point3D(1,1,1)));
+
+
             assert(msg["pos"].isList());
             assert(msg["pos"].asList().size() == 3);
+
+            assert(msg["velocity"].isList());
+            assert(msg["velocity"].asList().size() == 3);
 
             // Make the list too long
             msg["pos"].asList().push_back(1);
@@ -511,6 +533,21 @@ int main()
             Location readLocFromEntity;
 
             readLocFromEntity.readFromEntity(ent);
+
+            assert(readLocFromEntity.m_pos.isValid());
+            assert(readLocFromEntity.m_pos == WFMath::Point<3>(0,1,0));
+
+            assert(readLocFromEntity.m_velocity.isValid());
+            assert(readLocFromEntity.m_velocity == WFMath::Vector<3>(1,0,0));
+
+            assert(readLocFromEntity.m_orientation.isValid());
+            assert(readLocFromEntity.m_orientation == WFMath::Quaternion(1, 0, 1, 0));
+
+            assert(readLocFromEntity.m_angularVelocity.isValid());
+            assert(readLocFromEntity.m_angularVelocity == Vector3D(0,0,1));
+
+//            assert(readLocFromEntity.m_bBox.isValid());
+//            assert(readLocFromEntity.m_bBox == BBox(Point3D(-1,-1,-1), Point3D(1,1,1)));
 
             assert(!ent->isDefaultPos());
             assert(ent->getPos().size() == 3);

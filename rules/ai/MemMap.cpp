@@ -86,34 +86,40 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
             }
             entity->m_location.m_parent->m_contains->insert(entity);
         }
-        entity->m_location.readFromEntity(ent);
+    }
+    bool has_location_data = entity->m_location.readFromEntity(ent);
+    if (has_location_data) {
         entity->m_location.update(timestamp);
     }
 
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-        auto& parent = ent->getParent();
-        auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
+        if (!entity->getType()) {
+            auto& parent = ent->getParent();
+            auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
 
-        if (type) {
-            if (entity->getType() != type) {
-                entity->setType(type);
-                applyTypePropertiesToEntity(entity);
+            if (type) {
+                if (entity->getType() != type) {
+                    entity->setType(type);
+                    applyTypePropertiesToEntity(entity);
 
-                if (entity->getType()) {
-                    if (m_script) {
-                        debug_print(this);
-                        if (!m_addHook.empty()) {
-                            m_script->hook(m_addHook, entity.get());
+                    if (entity->getType()) {
+                        if (m_script) {
+                            debug_print(this);
+                            if (!m_addHook.empty()) {
+                                m_script->hook(m_addHook, entity.get());
+                            }
+                        }
+
+                        if (m_listener) {
+                            m_listener->entityAdded(*entity);
                         }
                     }
-
-                    if (m_listener) {
-                        m_listener->entityAdded(*entity);
-                    }
                 }
+            } else {
+                m_unresolvedEntities[parent].insert(entity);
             }
         } else {
-            m_unresolvedEntities[parent].insert(entity);
+            log(WARNING, String::compose("Got new type for entity %1 which already has a type.", entity->describeEntity()));
         }
     }
 
