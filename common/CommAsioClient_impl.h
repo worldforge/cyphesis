@@ -325,7 +325,7 @@ void CommAsioClient<ProtocolT>::dispatch()
         m_io_service.post([this, self](){
             int i = 0;
             while (!m_opQueue.empty() && i < mMaxOpsPerDispatch) {
-                auto op = m_opQueue.front();
+                auto op = std::move(m_opQueue.front());
                 m_opQueue.pop_front();
                 operation(op);
                 ++i;
