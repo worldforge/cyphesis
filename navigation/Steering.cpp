@@ -307,10 +307,10 @@ SteeringResult Steering::update(double currentTimestamp)
 
         auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
 
-        //if (mUpdateNeeded) {
-        updatePosition(currentTimestamp, mDestinationEntityId, mViewDestination);
-        updatePath(currentEntityPos);
-        //}
+        if (mUpdateNeeded) {
+            updatePosition(currentTimestamp, mDestinationEntityId, mViewDestination);
+            updatePath(currentEntityPos);
+        }
         if (!mPath.empty()) {
             const auto& finalDestination = mPath.back();
 
