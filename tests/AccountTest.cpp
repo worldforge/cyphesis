@@ -155,6 +155,7 @@ class Accounttest : public Cyphesis::TestBase
     void test_addNewCharacter_fail();
     void test_addNewCharacter_Entity();
     void test_addNewCharacter_unconnected();
+    void test_LogoutOperation_unknown();
     void test_LogoutOperation_no_serialno();
     void test_LogoutOperation_serialno();
     void test_LogoutOperation_unconnected();
@@ -287,6 +288,7 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_addNewCharacter_fail);
     ADD_TEST(Accounttest::test_addNewCharacter_Entity);
     ADD_TEST(Accounttest::test_addNewCharacter_unconnected);
+    ADD_TEST(Accounttest::test_LogoutOperation_unknown);
     ADD_TEST(Accounttest::test_LogoutOperation_no_serialno);
     ADD_TEST(Accounttest::test_LogoutOperation_serialno);
     ADD_TEST(Accounttest::test_LogoutOperation_unconnected);
@@ -528,6 +530,24 @@ void Accounttest::test_addNewCharacter_unconnected()
     TestWorld_addNewEntity_ret_value = 0;
 }
 
+void Accounttest::test_LogoutOperation_unknown()
+{
+    long cid = m_id_counter++;
+
+    Operation op;
+    OpVector res;
+
+    Anonymous arg;
+    arg->setId(String::compose("%1", cid));
+    op->setArgs1(arg);
+
+    m_account->LogoutOperation(op, res);
+
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
+}
+
 void Accounttest::test_LogoutOperation_no_serialno()
 {
     Link_send_sent.clear();
@@ -580,6 +600,9 @@ void Accounttest::test_LogoutOperation_unconnected()
     m_account->LogoutOperation(op, res);
 
     ASSERT_EQUAL(Link_send_sent.size(), 0u);
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
 }
 
 void Accounttest::test_getType()

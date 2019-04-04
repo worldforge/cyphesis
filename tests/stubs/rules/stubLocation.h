@@ -105,17 +105,17 @@
 
 #ifndef STUB_Location_readFromMessage
 //#define STUB_Location_readFromMessage
-  int Location::readFromMessage(const Atlas::Message::MapType & ent)
+  bool Location::readFromMessage(const Atlas::Message::MapType & message)
   {
-    return 0;
+    return false;
   }
 #endif //STUB_Location_readFromMessage
 
 #ifndef STUB_Location_readFromEntity
 //#define STUB_Location_readFromEntity
-  int Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
+  bool Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
   {
-    return 0;
+    return false;
   }
 #endif //STUB_Location_readFromEntity
 

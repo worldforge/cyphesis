@@ -266,13 +266,17 @@ Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity & ent,
 void Account::LogoutOperation(const Operation & op, OpVector & res)
 {
     if (m_connection == nullptr) {
-        log(ERROR, String::compose("Account::LogoutOperation on account %1 (%2) that doesn't seem to "
-                   "be connected.", getId(), m_username));
+        error(op, String::compose("Account::LogoutOperation on account %1 (%2) that doesn't seem to "
+                   "be connected.", getId(), m_username), res, getId());
         return;
     }
 
     if (!op->getArgs().empty()) {
         auto arg = op->getArgs().front();
+        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            error(op, "No id given on logout op", res, getId());
+            return;
+        }
         auto id = arg->getId();
         for (auto& entry : m_minds) {
             if (entry.second->getId() == id) {
@@ -293,9 +297,10 @@ void Account::LogoutOperation(const Operation & op, OpVector & res)
                 info->setTo(getId());
                 m_connection->send(info);
 
-                break;
+                return;
             }
         }
+        error(op, "Logout failed", res, getId());
     } else {
 
         Info info;

@@ -130,11 +130,11 @@ int main()
     run_python_string("assert(le_ent.id == '1')");
     run_python_string("le.send_world(Operation('get'))");
     run_python_string("le==Thing('2')");
-    expect_python_error("print(le.type)", PyExc_AttributeError);
+    run_python_string("le.type==''");
     expect_python_error("print(le.foo_operation)", PyExc_AttributeError);
     run_python_string("print(le.location)");
     run_python_string("print(le.contains)");
-    expect_python_error("le.type", PyExc_AttributeError);
+    run_python_string("le.type==''");
     expect_python_error("le.type='non_exist'", PyExc_ValueError);
     expect_python_error("le.type=1", PyExc_TypeError);
     run_python_string("le.type='game_entity'");
@@ -156,7 +156,7 @@ int main()
     run_python_string("t.as_entity()");
     run_python_string("t.send_world(Operation('get'))");
     expect_python_error("t.send_world('get')", PyExc_TypeError);
-    expect_python_error("print(t.type)", PyExc_AttributeError);
+    run_python_string("t.type==''");
     expect_python_error("print(t.foo_operation)", PyExc_AttributeError);
     run_python_string("print(t.location)");
     run_python_string("print(t.contains)");

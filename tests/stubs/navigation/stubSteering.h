@@ -106,6 +106,14 @@
   }
 #endif //STUB_Steering_getPath
 
+#ifndef STUB_Steering_getCurrentPathIndex
+//#define STUB_Steering_getCurrentPathIndex
+  size_t Steering::getCurrentPathIndex() const
+  {
+    return 0;
+  }
+#endif //STUB_Steering_getCurrentPathIndex
+
 #ifndef STUB_Steering_getIsExpectingServerMovement
 //#define STUB_Steering_getIsExpectingServerMovement
   bool Steering::getIsExpectingServerMovement() const

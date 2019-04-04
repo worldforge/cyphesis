@@ -48,6 +48,14 @@
   }
 #endif //STUB_CyPy_Physics_distance_to
 
+#ifndef STUB_CyPy_Physics_distance_between
+//#define STUB_CyPy_Physics_distance_between
+  Py::Object CyPy_Physics::distance_between(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Physics_distance_between
+
 #ifndef STUB_CyPy_Physics_init
 //#define STUB_CyPy_Physics_init
    std::string CyPy_Physics::init()

@@ -539,9 +539,8 @@ void Admintest::test_LogoutOperation_unknown()
 
     m_account->LogoutOperation(op, res);
 
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
+    //Should be handled by Account, which is mocked here.
+    ASSERT_EQUAL(res.size(), 0u);
 }
 
 void Admintest::test_LogoutOperation_known()
@@ -600,11 +599,9 @@ void Admintest::test_LogoutOperation_other_but_unconnected()
 
     m_account->LogoutOperation(op, res);
 
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
+    ASSERT_EQUAL(res.size(), 0u); //Handled by Account, which is mocked here.
 
-    ASSERT_NULL(Account_LogoutOperation_called);
+    ASSERT_NOT_NULL(Account_LogoutOperation_called);
 
     delete ac2;
 }

@@ -191,6 +191,9 @@ void Admin::LogoutOperation(const Operation & op, OpVector & res)
                     return;
                 }
             }
+        } else {
+            error(op, "No id given on logout op", res, getId());
+            return;
         }
     }
 
