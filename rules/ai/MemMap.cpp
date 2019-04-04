@@ -93,8 +93,8 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
     }
 
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
+        auto& parent = ent->getParent();
         if (!entity->getType()) {
-            auto& parent = ent->getParent();
             auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
 
             if (type) {
@@ -119,7 +119,9 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
                 m_unresolvedEntities[parent].insert(entity);
             }
         } else {
-            log(WARNING, String::compose("Got new type for entity %1 which already has a type.", entity->describeEntity()));
+            if (parent != entity->getType()->name()) {
+                log(WARNING, String::compose("Got new type for entity %1 which already has a type.", entity->describeEntity()));
+            }
         }
     }
 
