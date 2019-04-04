@@ -48,6 +48,10 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass, Py::Pyth
 
         CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, TValue value);
 
+        Py::Object get_child(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, get_child);
+
         Py::Object as_entity();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_LocatedEntityBase, as_entity);

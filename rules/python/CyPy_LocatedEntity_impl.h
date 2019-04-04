@@ -62,7 +62,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
 
     if (nameStr == "type") {
         if (!this->m_value->getType()) {
-            throw Py::AttributeError(name);
+            return Py::String("");
         }
         return Py::String(this->m_value->getType()->name());
     }
@@ -73,13 +73,11 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
     }
 
     if (nameStr == "contains") {
-        if (!this->m_value->m_contains) {
-            return Py::None();
-        }
-
         Py::List list;
-        for (auto& child : *this->m_value->m_contains) {
-            list.append(CyPy_LocatedEntity::wrap(child));
+        if (this->m_value->m_contains) {
+            for (auto& child : *this->m_value->m_contains) {
+                list.append(CyPy_LocatedEntity::wrap(child));
+            }
         }
         return list;
     }
@@ -134,6 +132,22 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::rich_compare(const Py::
     throw Py::NotImplementedError("Not implemented");
 
 }
+
+template<typename TValue, typename TPythonClass>
+Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::get_child(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto child_id = verifyString(args.front());
+    if (this->m_value->m_contains) {
+        for (auto& child : *this->m_value->m_contains) {
+            if (child_id == child->getId()) {
+                return CyPy_LocatedEntity::wrap(child);
+            }
+        }
+    }
+    return Py::None();
+}
+
 
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::as_entity()

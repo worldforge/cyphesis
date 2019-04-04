@@ -231,7 +231,7 @@ class NPCMind(ai.Mind):
         Fix ownership category for objects owned temporary under 'Foo' type."""
         # print "Map update",obj
         foo_lst = self.things.get('Foo', [])
-        for foo in foo_lst[:]:  # us copy in loop, because it might get modified
+        for foo in foo_lst[:]:  # use copy in loop, because it might get modified
             if foo.id == obj.id:
                 self.remove_thing(foo)
                 self.add_thing(obj)
@@ -707,7 +707,7 @@ class NPCMind(ai.Mind):
                 thought_value = repr(value)
         else:
             thought_value = value
-        desc = "%s knowledge about %s is %s" % (what, key, thought_value)
+        #desc = "%s knowledge about %s is %s" % (what, key, thought_value)
         #        ent = Entity(description=desc, what=what, key=key, value=thought_value)
         #        self.send(Operation("thought",ent))
         if what == "location":
@@ -743,13 +743,21 @@ class NPCMind(ai.Mind):
                     return cmp == '>'
         return 1
 
-    ########## things we own
     def thing_name(self, thing):
+        """Things we own"""
         if hasattr(thing, 'name'):
             return thing.name
         return thing.type[0]
 
     ########## things we own
+
+    def get_attached_entity(self, attachment_name):
+        attachment_value = self.entity.get_prop_map("attached_" + attachment_name)
+        if attachment_value:
+            entity_id = attachment_value["$eid"]
+            if entity_id:
+                return self.entity.get_child(entity_id)
+
     def add_thing(self, thing):
         """I own this thing"""
         # CHEAT!: this feature not yet supported
@@ -811,7 +819,7 @@ class NPCMind(ai.Mind):
             try:
                 res = g.check_goal(self, time)
                 if res:
-                    if res is Operation or res is Oplist:
+                    if isinstance(res, Operation) or isinstance(res, Oplist):
                         return res
                     return
             except:

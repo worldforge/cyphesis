@@ -2,7 +2,7 @@
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
 from atlas import Operation, Entity, Oplist
-from physics import square_distance
+from physics import square_distance, distance_between
 from rules import Location
 from mind.Goal import Goal
 from mind.goals.common.move import avoid, move_me_to_focus
@@ -23,9 +23,11 @@ class Fight(Goal):
         Goal.__init__(self, "fight something",
                       self.none_in_range,
                       [spot_something(what=what, range=range),
-                       move_me_to_focus(what=what, radius=2),
+                       self.equip_weapon,
+                       self.attack,
+                       move_me_to_focus(what=what, radius=0, speed=0.5),
                        #                       hunt_for(what=what, range=range, proximity=3),
-                       self.fight])
+                       ])
         self.what = what
         self.filter = entity_filter.Filter(what)
         self.range = range
@@ -39,18 +41,71 @@ class Fight(Goal):
                 return 0
         return 1
 
-    def fight(self, me):
-        id = me.get_knowledge('focus', self.what)
-        if id is None:
+    def equip_weapon(self, me):
+        # First check if we're holding a weapon
+        attached_current = me.get_attached_entity("hand_primary")
+        has_attached = False
+        if attached_current:
+            has_attached = True
+            # Check that the attached entity can be used to strike
+            usages = attached_current.get_prop_map("usages")
+            if usages and 'strike' in usages:
+                    return None
+        # Current tool isn't a weapon, or we have nothing attached, try to find one, and if not unequip so we can fight with our fists
+        for child in me.entity.contains:
+            usages = child.get_prop_map("usages")
+            if usages and 'strike' in usages:
+                return Operation("wield", Entity(child.id, attachment="hand_primary"))
+
+        # Couldn't find any weapon to wield, check if we should unwield the current tool so we can fight with our fists
+        if has_attached:
+            return Operation("wield", Entity(attachment="hand_primary"))
+
+        return None
+
+    def get_reach(self, me):
+
+        reach = 0
+        own_reach = me.entity.get_prop_float('reach')
+        if own_reach:
+            reach += own_reach
+
+        attached_current = me.get_attached_entity("hand_primary")
+        if attached_current:
+            attached_reach = attached_current.get_prop_float('reach')
+            if attached_reach:
+                reach += attached_reach
+
+        return reach
+
+    def attack(self, me):
+
+        target_id = me.get_knowledge('focus', self.what)
+        if target_id is None:
             print("No focus target")
             return
-        enemy = me.map.get(id)
+        enemy = me.map.get(target_id)
         if enemy is None:
             print("No target")
             me.remove_knowledge('focus', self.what)
             return
-        print("Punching")
-        return Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
+
+        # check that we can reach the target, and if so attack it
+        distance = distance_between(me.entity.location, enemy.location)
+        if distance is None:
+            print("Could not calculate distance.")
+            return
+        reach = self.get_reach(me)
+        if distance - reach <= 0:
+            attached_current = me.get_attached_entity("hand_primary")
+            if attached_current:
+                print("Striking")
+                return Operation("use", Operation("strike", Entity(attached_current.id, targets=[Entity(enemy.id)])))
+            else:
+                print("Punching")
+                return Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
+        else:
+            print("Out of reach. Reach is {} and distance is {}".format(reach, distance))
 
 
 class FightOrFlight(Goal):

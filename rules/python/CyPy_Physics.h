@@ -36,6 +36,8 @@ class CyPy_Physics : public Py::ExtensionModule<CyPy_Physics>
 
         Py::Object distance_to(const Py::Tuple& args);
 
+        Py::Object distance_between(const Py::Tuple& args);
+
         static std::string init();
 };
 

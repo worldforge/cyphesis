@@ -6,7 +6,7 @@ from mind.NPCMind import *
 
 # goals for minds
 
-def false(_): return 0
+def false(_): return False
 
 
-def true(_): return 1
+def true(_): return True

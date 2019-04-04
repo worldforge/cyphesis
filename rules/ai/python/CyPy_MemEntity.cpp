@@ -50,6 +50,7 @@ void CyPy_MemEntity::init_type()
     behaviors().supportRichCompare();
     behaviors().supportStr();
 
+    PYCXX_ADD_VARARGS_METHOD(get_child, get_child, "");
     PYCXX_ADD_NOARGS_METHOD(as_entity, as_entity, "");
     PYCXX_ADD_VARARGS_METHOD(can_reach, can_reach, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");

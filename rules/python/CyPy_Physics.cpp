@@ -31,6 +31,7 @@ CyPy_Physics::CyPy_Physics() : ExtensionModule("physics")
     CyPy_Axisbox::init_type();
 
 
+    add_varargs_method("distance_between", &CyPy_Physics::distance_between, "The scalar distance between the edges of two locations.");
     add_varargs_method("distance_to", &CyPy_Physics::distance_to, "");
     add_varargs_method("square_distance", &CyPy_Physics::square_distance, "");
     add_varargs_method("square_horizontal_distance", &CyPy_Physics::square_horizontal_distance, "");
@@ -60,6 +61,26 @@ Py::Object CyPy_Physics::distance_to(const Py::Tuple& args)
 
     return CyPy_Vector3D::wrap(distanceTo(firstLoc, secondLoc));
 }
+
+Py::Object CyPy_Physics::distance_between(const Py::Tuple& args)
+{
+    args.verify_length(2, 2);
+
+    if (!CyPy_Location::check(args[0]) || !CyPy_Location::check(args[1])) {
+        throw Py::TypeError("Arg Location required");
+    }
+
+    Location& firstLoc = Py::PythonClassObject<CyPy_Location>(args[0]).getCxxObject()->m_value;
+    Location& secondLoc = Py::PythonClassObject<CyPy_Location>(args[1]).getCxxObject()->m_value;
+
+    auto distVector = distanceTo(firstLoc, secondLoc);
+    if (distVector.isValid()) {
+        return Py::Float(std::max(0.f, distVector.mag() - firstLoc.radius() - secondLoc.radius()));
+    } else {
+        return Py::None();
+    }
+}
+
 
 Py::Object CyPy_Physics::square_distance(const Py::Tuple& args)
 {
