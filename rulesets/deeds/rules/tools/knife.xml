@@ -14,7 +14,7 @@
                 <float name="default">2000</float>
             </map>
             <map name="reach">
-                <float name="default">0.5</float>
+                <float name="default">0.2</float>
             </map>
             <map name="damage">
                 <float name="default">2</float>
