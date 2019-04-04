@@ -38,9 +38,9 @@
             <map name="mode">
                 <string name="default">free</string>
             </map>
-            <!-- Default to a reach of 3 meters (this applies to all creatures, even for worms) -->
+            <!-- Default to a reach of 1 meters (this applies to all creatures, even for worms) -->
             <map name="reach">
-                <float name="default">3</float>
+                <float name="default">1</float>
             </map>
             <!-- Characters are by default omnivores and handle both plants and meats.
             To limit put "_modifier_eat_type_meat=0" or "_modifier_eat_type_plant=0" on subclasses. -->
