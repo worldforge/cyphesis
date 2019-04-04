@@ -64,6 +64,12 @@
             <map name="perception_sight">
                 <float name="default">1.0</float>
             </map>
+            <map name="domain">
+                <string name="default">inventory</string>
+            </map>
+            <map name="reach">
+                <float name="default">3</float>
+            </map>
         </map>
         <string name="id">creator</string>
         <string name="objtype">class</string>
