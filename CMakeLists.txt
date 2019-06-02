@@ -65,7 +65,7 @@ link_directories(${SIGCPP_LIBRARY_DIRS})
 include_directories(${SIGCPP_INCLUDE_DIRS})
 link_libraries(${SIGCPP_LIBRARIES})
 
-find_package(PythonLibs 3 REQUIRED)
+find_package(PythonLibs 3.3 REQUIRED)
 link_directories(${PYTHON_LIBRARY_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
