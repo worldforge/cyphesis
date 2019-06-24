@@ -73,7 +73,7 @@ using Atlas::Objects::Operation::Move;
 class TestCommSocket : public CommSocket
 {
   public:
-    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
+    TestCommSocket() : CommSocket(*(boost::asio::io_context*)0)
     {
     }
 

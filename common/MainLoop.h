@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_MAINLOOP_H
 #define CYPHESIS_MAINLOOP_H
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <chrono>
 
 struct OperationsHandler;
@@ -34,7 +34,7 @@ class MainLoop
             std::function<void()> softExitTimeout;
         };
 
-        static void run(bool daemon, boost::asio::io_service& io_service, OperationsHandler& operationsHandler, const Callbacks& callbacks);
+        static void run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks);
 
 
 };

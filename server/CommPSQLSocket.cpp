@@ -35,12 +35,12 @@ const int CommPSQLSocket::reindexFreq = 30 * 60;
 /// \brief Constructor for PostgreSQL socket polling object.
 ///
 /// @param db Reference to the low level database management object.
-CommPSQLSocket::CommPSQLSocket(boost::asio::io_service& io_service, DatabasePostgres & db) :
-                               m_io_service(io_service),
-                               m_socket(new boost::asio::ip::tcp::socket(io_service)),
-                               m_vacuumTimer(io_service),
-                               m_reindexTimer(io_service),
-                               m_reconnectTimer(io_service),
+CommPSQLSocket::CommPSQLSocket(boost::asio::io_context& io_context, DatabasePostgres & db) :
+                               m_io_context(io_context),
+                               m_socket(new boost::asio::ip::tcp::socket(io_context)),
+                               m_vacuumTimer(io_context),
+                               m_reindexTimer(io_context),
+                               m_reconnectTimer(io_context),
                                m_db(db),
                                m_vacuumFull(false)
 {
@@ -76,7 +76,7 @@ void CommPSQLSocket::tryReConnect()
                 }
                 int fd = PQsocket(con);
                 if (fd >= 0) {
-                    m_socket = new boost::asio::ip::tcp::socket(m_io_service);
+                    m_socket = new boost::asio::ip::tcp::socket(m_io_context);
                     m_socket->assign(boost::asio::ip::tcp::v4(), fd);
                     do_read();
                     return;

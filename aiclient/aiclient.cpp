@@ -63,30 +63,30 @@ STRING_OPTION(account, "", "aiclient", "account", "Account name to use to authen
 
 STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenticate to the server");
 
-static void connectToServer(boost::asio::io_service& io_service, AwareMindFactory& mindFactory)
+static void connectToServer(boost::asio::io_context& io_context, AwareMindFactory& mindFactory)
 {
     if (exit_flag_soft || exit_flag) {
         return;
     }
-    auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_service);
+    auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_context);
 
-    commClient->getSocket().async_connect({client_socket_name}, [&io_service, &mindFactory, commClient](boost::system::error_code ec) {
+    commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
         if (!ec) {
             log(INFO, "Connection detected; creating possession client.");
             commClient->startConnect(new PossessionClient(*commClient, mindFactory, [&]() {
-                connectToServer(io_service, mindFactory);
+                connectToServer(io_context, mindFactory);
             }));
         } else {
             //If we couldn't connect we'll wait five seconds and try again.
-            auto timer = std::make_shared<boost::asio::steady_timer>(io_service);
+            auto timer = std::make_shared<boost::asio::steady_timer>(io_context);
 #if BOOST_VERSION >= 106600
             timer->expires_after(std::chrono::seconds(5));
 #else
             timer->expires_from_now(std::chrono::seconds(5));
 #endif
-            timer->async_wait([&io_service, &mindFactory, timer](boost::system::error_code ec) {
+            timer->async_wait([&io_context, &mindFactory, timer](boost::system::error_code ec) {
                 if (!ec) {
-                    connectToServer(io_service, mindFactory);
+                    connectToServer(io_context, mindFactory);
                 }
             });
         }
@@ -131,10 +131,10 @@ int main(int argc, char** argv)
 
     AwareMindFactory mindFactory;
 
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
 
     {
-        FileSystemObserver file_system_observer(io_service);
+        FileSystemObserver file_system_observer(io_context);
 
         AiClientPropertyManager propertyManager{};
 
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
                          &CyPy_Atlas::init,
                          &CyPy_Common::init},
                         std::move(python_directories), true);
-        observe_python_directories(io_service, assets_manager);
+        observe_python_directories(io_context, assets_manager);
 
 
         run_user_scripts("cyaiclient");
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
             }
         }
 
-        boost::asio::signal_set signalSet(io_service);
+        boost::asio::signal_set signalSet(io_context);
         //If we're not running as a daemon we should use the interactive signal handler.
         if (!daemon_flag) {
             signalSet.add(SIGINT);
@@ -196,7 +196,7 @@ int main(int argc, char** argv)
             if (!ec) {
                 exit_flag = true;
                 exit_flag_soft = true;
-                io_service.stop();
+                io_context.stop();
             }
         });
 
@@ -208,12 +208,12 @@ int main(int argc, char** argv)
         });
 
         log(INFO, "Trying to connect to server.");
-        connectToServer(io_service, mindFactory);
+        connectToServer(io_context, mindFactory);
 
-        /// \brief Use a "work" instance to make sure the io_service never runs out of work and is stopped.
-        boost::asio::io_service::work m_io_work(io_service);
+        /// \brief Use a "work" instance to make sure the io_context never runs out of work and is stopped.
+        boost::asio::io_context::work m_io_work(io_context);
 
-        io_service.run();
+        io_context.run();
 
         signalSet.clear();
 

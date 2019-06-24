@@ -1319,8 +1319,8 @@ void Admintest::test_createObject_fallthrough()
 
 int main()
 {
-    boost::asio::io_service io_service;
-    Ruleset ruleset(nullptr, io_service);
+    boost::asio::io_context io_context;
+    Ruleset ruleset(nullptr, io_context);
 
     Admintest t;
 

@@ -20,7 +20,7 @@
 #define CYPHESIS_REPEATEDTASK_H
 
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/deadline_timer.hpp>
 
 /**
@@ -29,7 +29,7 @@
 class RepeatedTask
 {
     public:
-        RepeatedTask(boost::asio::io_service& io_service, boost::posix_time::time_duration interval, std::function<void()> function);
+        RepeatedTask(boost::asio::io_context& io_context, boost::posix_time::time_duration interval, std::function<void()> function);
 
     private:
         boost::posix_time::time_duration mInterval;

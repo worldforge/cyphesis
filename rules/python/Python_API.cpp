@@ -228,11 +228,11 @@ void reloadChangedPaths()
     }
 }
 
-void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager)
+void observe_python_directories(boost::asio::io_context& io_context, AssetsManager& assetsManager)
 {
 
     for (auto& directory : python_directories) {
-        AssetsManager::instance().observeDirectory(directory, [=, &io_service](const boost::filesystem::path& path) {
+        AssetsManager::instance().observeDirectory(directory, [=, &io_context](const boost::filesystem::path& path) {
             //Trim the ".py" extension
             if (boost::ends_with(path.string(), ".py")) {
                 auto relative = path.string().substr(directory.length() + 1);
@@ -241,7 +241,7 @@ void observe_python_directories(boost::asio::io_service& io_service, AssetsManag
                 auto package = boost::replace_all_copy(relative, separator, ".");
                 changedPaths[path] = package;
 
-                auto timer = std::make_shared<boost::asio::steady_timer>(io_service);
+                auto timer = std::make_shared<boost::asio::steady_timer>(io_context);
                 timer->expires_from_now(std::chrono::milliseconds(20));
                 timer->async_wait([&, timer](const boost::system::error_code& ec) {
                     if (!ec) {

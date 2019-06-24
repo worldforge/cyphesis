@@ -33,11 +33,11 @@ class FileSystemObserverIntegrationTest : public Cyphesis::TestBase
         }
 
         void test_createAndShutdown() {
-            boost::asio::io_service io_service;
+            boost::asio::io_context io_context;
             {
-                FileSystemObserver fileSystemObserver(io_service);
+                FileSystemObserver fileSystemObserver(io_context);
             }
-            io_service.run();
+            io_context.run();
         }
 
         FileSystemObserverIntegrationTest() {

@@ -28,7 +28,7 @@ class CommAsioListener
 {
     public:
         CommAsioListener(std::function<void(ClientT&)> clientStarter,const std::string& serverName,
-                boost::asio::io_service& ioService,
+                boost::asio::io_context& ioService,
                 const typename ProtocolT::endpoint& endpoint);
         virtual ~CommAsioListener();
     protected:

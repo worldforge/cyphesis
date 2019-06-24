@@ -165,7 +165,7 @@ int main(int argc, char** argv)
     }
 
 
-    auto io_service = new boost::asio::io_service();
+    auto io_context = new boost::asio::io_context();
 
     // Initialise the persistence subsystem.
     std::string databaseBackend;
@@ -177,7 +177,7 @@ int main(int argc, char** argv)
     if (databaseBackend == "postgres") {
 #if POSTGRES_FOUND
         database = new DatabasePostgres();
-        dbsocket = new CommPSQLSocket(*io_service, *database);
+        dbsocket = new CommPSQLSocket(*io_context, *database);
 #else
         log(ERROR, "Database specified as 'postgres', but this server is not built with Postgres SQL support.");
         return -1;
@@ -185,7 +185,7 @@ int main(int argc, char** argv)
     } else {
         auto sqliteDatabase = new DatabaseSQLite();
         database = sqliteDatabase;
-        dbvacuumTask = new RepeatedTask(*io_service, boost::posix_time::seconds(25 * 60), [=]() { sqliteDatabase->runMaintainance(); });
+        dbvacuumTask = new RepeatedTask(*io_context, boost::posix_time::seconds(25 * 60), [=]() { sqliteDatabase->runMaintainance(); });
     }
 
     auto persistence = new Persistence(*database);
@@ -217,7 +217,7 @@ int main(int argc, char** argv)
     readConfigItem(instance, "nice", nice);
 
 
-    auto file_system_observer = new FileSystemObserver(*io_service);
+    auto file_system_observer = new FileSystemObserver(*io_context);
 
     auto assets_manager = new AssetsManager(*file_system_observer);
     assets_manager->init();
@@ -236,14 +236,14 @@ int main(int argc, char** argv)
                      &CyPy_Atlas::init,
                      &CyPy_Common::init},
                     python_directories);
-    observe_python_directories(*io_service, *assets_manager);
+    observe_python_directories(*io_context, *assets_manager);
 
     auto inheritance = new Inheritance();
 
     auto entityBuilder = new EntityBuilder();
     auto arithmenticBuilder = new ArithmeticBuilder();
 
-    auto ruleset = new Ruleset(entityBuilder, *io_service);
+    auto ruleset = new Ruleset(entityBuilder, *io_context);
     ruleset->loadRules(ruleset_name);
 
     Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
@@ -290,7 +290,7 @@ int main(int argc, char** argv)
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
-                tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service,
+                tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_context,
                                                ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
             } catch (const std::exception& e) {
                 break;
@@ -316,7 +316,7 @@ int main(int argc, char** argv)
                              client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_service, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
+            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_context, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
                                        "on port %1. Init failed. The most common reason for this "
@@ -331,7 +331,7 @@ int main(int argc, char** argv)
         [&](CommPythonClient& client) {
             client.startAccept();
         };
-    auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonStarter, server->getName(), *io_service,
+    auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonStarter, server->getName(), *io_context,
                                                                                          local::stream_protocol::endpoint(python_socket_name));
 
     remove(client_socket_name.c_str());
@@ -340,7 +340,7 @@ int main(int argc, char** argv)
         long c_iid = newId(connection_id);
         client.startAccept(new TrustedConnection(client, *server, "", connection_id, c_iid));
     };
-    auto localListener = new CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>(localStarter, server->getName(), *io_service,
+    auto localListener = new CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>(localStarter, server->getName(), *io_context,
                                                                                                               local::stream_protocol::endpoint(client_socket_name));
 
 
@@ -352,7 +352,7 @@ int main(int argc, char** argv)
         client.serveRequest();
     };
 
-    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter, server->getName(), *io_service,
+    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter, server->getName(), *io_context,
                                                                       ip::tcp::endpoint(ip::tcp::v6(), http_port_num));
 
     log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));
@@ -362,7 +362,7 @@ int main(int argc, char** argv)
 
     CommMetaClient* cmc(nullptr);
     if (useMetaserver) {
-        cmc = new CommMetaClient(*io_service);
+        cmc = new CommMetaClient(*io_context);
         if (cmc->setup(mserver) != 0) {
             log(ERROR, "Error creating metaserver comm channel.");
             delete cmc;
@@ -373,7 +373,7 @@ int main(int argc, char** argv)
     CommMDNSPublisher* cmdns = nullptr;
 #if defined(HAVE_AVAHI)
 
-    cmdns = new CommMDNSPublisher(*io_service, *server);
+    cmdns = new CommMDNSPublisher(*io_context, *server);
     if (cmdns->setup() != 0) {
         log(ERROR, "Unable to register service with MDNS daemon.");
         delete cmdns;
@@ -397,7 +397,7 @@ int main(int argc, char** argv)
 
     log(INFO, "Restored world.");
 
-    storage_idle = new IdleConnector(*io_service);
+    storage_idle = new IdleConnector(*io_context);
     storage_idle->idling.connect(
         sigc::mem_fun(store, &StorageManager::tick));
 
@@ -483,7 +483,7 @@ int main(int argc, char** argv)
     //Report to log when time diff between when an operation should have been handled and when it actually was
     world->getOperationsHandler().m_time_diff_report = 0.2f;
 
-    MainLoop::run(daemon_flag, *io_service, world->getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
+    MainLoop::run(daemon_flag, *io_context, world->getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
 
 
     //Actually, there's no way for the world to know that it's shutting down,
@@ -532,9 +532,9 @@ int main(int argc, char** argv)
     delete dbsocket;
 
     //Run any outstanding tasks before shutting down service.
-    io_service->run();
+    io_context->run();
 
-    delete io_service;
+    delete io_context;
 
     delete server;
 

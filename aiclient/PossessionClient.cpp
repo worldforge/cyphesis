@@ -52,7 +52,7 @@ PossessionClient::PossessionClient(CommSocket& commSocket, MindKit& mindFactory,
     m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
                            [&]() -> double { return getTime(); }),
     m_inheritance(new Inheritance()),
-    m_dispatcherTimer(commSocket.m_io_service)
+    m_dispatcherTimer(commSocket.m_io_context)
 {
 
 

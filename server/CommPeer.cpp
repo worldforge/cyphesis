@@ -33,8 +33,8 @@ using Atlas::Objects::Operation::Info;
 /// @param name The name of the peer instance.
 /// @param password Password to login with on peer
 CommPeer::CommPeer(const std::string & name,
-        boost::asio::io_service& io_service) :
-        CommAsioClient<boost::asio::ip::tcp>(name, io_service), m_auth_timer(io_service)
+        boost::asio::io_context& io_context) :
+        CommAsioClient<boost::asio::ip::tcp>(name, io_context), m_auth_timer(io_context)
 {
 }
 

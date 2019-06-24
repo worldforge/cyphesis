@@ -35,22 +35,22 @@ using Atlas::Objects::Operation::RootOperation;
 class TestBaseClient : public BaseClient
 {
   public:
-    TestBaseClient(boost::asio::io_service& io_service) : BaseClient(io_service) { }
+    TestBaseClient(boost::asio::io_context& io_context) : BaseClient(io_context) { }
 
     virtual void idle() { }
 };
 
 int main()
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     {
-        BaseClient * bc = new TestBaseClient{io_service};
+        BaseClient * bc = new TestBaseClient{io_context};
 
         delete bc;
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_service};
+        BaseClient * bc = new TestBaseClient{io_context};
 
         bc->createAccount("8e7e4452-f666-11df-8027-00269e5444b3", "84abee0c-f666-11df-8f7e-00269e5444b3");
 
@@ -58,7 +58,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_service};
+        BaseClient * bc = new TestBaseClient{io_context};
 
         bc->createSystemAccount();
 
@@ -66,7 +66,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_service};
+        BaseClient * bc = new TestBaseClient{io_context};
 
         bc->createCharacter("9e7f4004-f666-11df-a327-00269e5444b3");
 
@@ -74,7 +74,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_service};
+        BaseClient * bc = new TestBaseClient{io_context};
 
         bc->logout();
 
@@ -82,7 +82,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_service};
+        BaseClient * bc = new TestBaseClient{io_context};
 
         bc->handleNet();
 

@@ -9,8 +9,8 @@
 
 #ifndef STUB_ObserverClient_ObserverClient
 //#define STUB_ObserverClient_ObserverClient
-   ObserverClient::ObserverClient(boost::asio::io_service& io_service)
-    : BaseClient(io_service)
+   ObserverClient::ObserverClient(boost::asio::io_context& io_context)
+    : BaseClient(io_context)
   {
     
   }

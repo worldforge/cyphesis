@@ -53,8 +53,8 @@ using namespace boost::asio;
 static const bool debug_flag = false;
 
 
-StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
-    : m_io_service(io_service),
+StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_context& io_context, std::function<void()>& dispatcher)
+    : m_io_context(io_context),
       mDispatcher(dispatcher),
       m_ios(&mBuffer),
       m_codec(nullptr),
@@ -123,7 +123,7 @@ int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duratio
 {
     bool hasExpired = false;
     bool isCancelled = false;
-    deadline_timer timer(m_io_service);
+    deadline_timer timer(m_io_context);
     timer.expires_from_now(duration);
     timer.async_wait([&](boost::system::error_code ec){
         if (!ec) {
@@ -137,7 +137,7 @@ int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duratio
     //The reason for this loop is that when we cancel the timer we need to poll run handlers until the timer handler
     //has been run, since it references locally scoped variables.
     while (!hasExpired && !isCancelled && !exitCheckerFn()) {
-        m_io_service.run_one();
+        m_io_context.run_one();
         //Check if we didn't run the timer handler; if so we should cancel it and then keep on polling until
         //it's been run.
         if (!hasExpired && !isCancelled) {
@@ -159,8 +159,8 @@ bool StreamClientSocketBase::isConnected() const
 }
 
 
-TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
-: StreamClientSocketBase(io_service, dispatcher), m_socket(io_service)
+TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
+: StreamClientSocketBase(io_context, dispatcher), m_socket(io_context)
 {
     m_socket.connect(endpoint);
     m_is_connected = true;
@@ -217,8 +217,8 @@ size_t TcpStreamClientSocket::write()
 
 
 
-LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint)
-: StreamClientSocketBase(io_service, dispatcher), m_socket(io_service)
+LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint)
+: StreamClientSocketBase(io_context, dispatcher), m_socket(io_context)
 {
     m_socket.connect(endpoint);
     m_is_connected = true;
@@ -427,8 +427,8 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
     }
 }
 
-AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service) :
-    m_io_service(io_service),
+AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context) :
+    m_io_context(io_context),
     reply_flag(false),
     error_flag(false),
     serialNo(512),
@@ -466,7 +466,7 @@ int AtlasStreamClient::connect(const std::string & host, unsigned short port)
     m_socket.reset();
     try {
         std::function<void()> dispatcher = [&]{this->dispatch();};
-        m_socket = std::make_unique<TcpStreamClientSocket>(m_io_service, dispatcher, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
+        m_socket = std::make_unique<TcpStreamClientSocket>(m_io_context, dispatcher, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
     } catch (const std::exception& e) {
         return -1;
     }
@@ -480,7 +480,7 @@ int AtlasStreamClient::connectLocal(const std::string & filename)
 
     try {
         std::function<void()> dispatcher = [&]{this->dispatch();};
-        m_socket = std::make_unique<LocalStreamClientSocket>(m_io_service, dispatcher, local::stream_protocol::endpoint(filename));
+        m_socket = std::make_unique<LocalStreamClientSocket>(m_io_context, dispatcher, local::stream_protocol::endpoint(filename));
     } catch (const std::exception& e) {
         return -1;
     }

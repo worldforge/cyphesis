@@ -38,7 +38,7 @@ static void trigger()
 
 int main()
 {
-    boost::asio::io_service s;
+    boost::asio::io_context s;
     IdleConnector * ic = new IdleConnector(s);
 
     ic->idling.connect(sigc::ptr_fun(trigger));

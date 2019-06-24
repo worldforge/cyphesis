@@ -21,8 +21,8 @@
 static const bool debug_flag = false;
 
 CommHttpClient::CommHttpClient(const std::string & name,
-        boost::asio::io_service& io_service) :
-        mSocket(io_service), mStream(&mBuffer)
+        boost::asio::io_context& io_context) :
+        mSocket(io_context), mStream(&mBuffer)
 {
 }
 

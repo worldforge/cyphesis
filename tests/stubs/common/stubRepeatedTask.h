@@ -9,7 +9,7 @@
 
 #ifndef STUB_RepeatedTask_RepeatedTask
 //#define STUB_RepeatedTask_RepeatedTask
-   RepeatedTask::RepeatedTask(boost::asio::io_service& io_service, boost::posix_time::time_duration interval, std::function<void()> function)
+   RepeatedTask::RepeatedTask(boost::asio::io_context& io_context, boost::posix_time::time_duration interval, std::function<void()> function)
   {
     
   }

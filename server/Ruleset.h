@@ -28,7 +28,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <memory>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 
 class EntityBuilder;
 class EntityKit;
@@ -67,7 +67,7 @@ class Ruleset : public Singleton<Ruleset>{
 
     std::set<boost::filesystem::path> m_changedRules;
 
-    boost::asio::io_service& m_io_service;
+    boost::asio::io_context& m_io_context;
 
     void installItem(const std::string & class_name,
                      const Atlas::Objects::Root & class_desc,
@@ -90,7 +90,7 @@ class Ruleset : public Singleton<Ruleset>{
 
     void processChangedRules();
   public:
-    explicit Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service);
+    explicit Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context);
     ~Ruleset() override;
 
     void loadRules(const std::string &);

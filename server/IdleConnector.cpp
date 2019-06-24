@@ -20,7 +20,7 @@
 
 /// \brief Constructor for socket object.
 ///
-IdleConnector::IdleConnector(boost::asio::io_service & io_service) :  m_timer(io_service)
+IdleConnector::IdleConnector(boost::asio::io_context & io_context) :  m_timer(io_context)
 {
     idle();
 }

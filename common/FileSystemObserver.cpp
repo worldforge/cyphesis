@@ -25,7 +25,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/steady_timer.hpp>
 
-FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService)
+FileSystemObserver::FileSystemObserver(boost::asio::io_context& ioService)
     : m_ioService(ioService)
 {
     try {

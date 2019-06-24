@@ -33,7 +33,7 @@ class ServerRouting;
 /// \ingroup ServerSockets
 class CommMDNSPublisher {
   protected:
-    boost::asio::io_service& m_io_service;
+    boost::asio::io_context& m_io_context;
     boost::asio::ip::tcp::socket m_socket;
     boost::asio::deadline_timer m_timers_check_timer;
     // Avahi data
@@ -60,7 +60,7 @@ class CommMDNSPublisher {
     ///
     std::set<struct AvahiTimeout *> m_avahiTimeouts;
 
-    explicit CommMDNSPublisher(boost::asio::io_service& m_io_service, ServerRouting & s);
+    explicit CommMDNSPublisher(boost::asio::io_context& m_io_context, ServerRouting & s);
 
     virtual ~CommMDNSPublisher();
 

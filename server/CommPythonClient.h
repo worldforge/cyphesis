@@ -49,7 +49,7 @@ class CommPythonClient : public std::enable_shared_from_this<CommPythonClient> {
 
   public:
     CommPythonClient(const std::string & name,
-            boost::asio::io_service& io_service);
+            boost::asio::io_context& io_context);
     virtual ~CommPythonClient();
 
     void startAccept();

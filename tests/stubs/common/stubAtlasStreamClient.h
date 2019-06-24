@@ -9,7 +9,7 @@
 
 #ifndef STUB_StreamClientSocketBase_StreamClientSocketBase
 //#define STUB_StreamClientSocketBase_StreamClientSocketBase
-   StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher)
+   StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_context& io_context, std::function<void()>& dispatcher)
     : m_codec(nullptr),m_encoder(nullptr)
   {
     
@@ -107,8 +107,8 @@
 
 #ifndef STUB_TcpStreamClientSocket_TcpStreamClientSocket
 //#define STUB_TcpStreamClientSocket_TcpStreamClientSocket
-   TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
-    : StreamClientSocketBase(io_service, dispatcher, endpoint)
+   TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
+    : StreamClientSocketBase(io_context, dispatcher, endpoint)
   {
     
   }
@@ -141,8 +141,8 @@
 
 #ifndef STUB_LocalStreamClientSocket_LocalStreamClientSocket
 //#define STUB_LocalStreamClientSocket_LocalStreamClientSocket
-   LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint)
-    : StreamClientSocketBase(io_service, dispatcher, endpoint)
+   LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint)
+    : StreamClientSocketBase(io_context, dispatcher, endpoint)
   {
     
   }
@@ -263,8 +263,8 @@
 
 #ifndef STUB_AtlasStreamClient_AtlasStreamClient
 //#define STUB_AtlasStreamClient_AtlasStreamClient
-   AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service)
-    : Atlas::Objects::ObjectsDecoder(io_service)
+   AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context)
+    : Atlas::Objects::ObjectsDecoder(io_context)
   {
     
   }

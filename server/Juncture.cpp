@@ -121,7 +121,7 @@ void Juncture::onPeerReplied(const Operation & op)
 int Juncture::attemptConnect(const std::string & hostname, int port)
 {
     auto peer = std::make_shared<CommPeer>(m_connection->m_server.getName(),
-            m_connection->m_commSocket.m_io_service);
+            m_connection->m_commSocket.m_io_context);
     m_socket = std::weak_ptr<CommPeer>(peer);
 
     peer->connect(*m_address->i);
@@ -292,7 +292,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
     m_address = new PeerAddress;
 
-    boost::asio::ip::tcp::resolver resolver(m_connection->m_commSocket.m_io_service);
+    boost::asio::ip::tcp::resolver resolver(m_connection->m_commSocket.m_io_context);
     boost::asio::ip::tcp::resolver::query query(hostname, compose("%1", port));
 
     try {

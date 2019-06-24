@@ -73,10 +73,10 @@ void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_c
     }
 }
 
-void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsHandler& operationsHandler, const Callbacks& callbacks)
+void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks)
 {
 
-    boost::asio::signal_set signalSet(io_service);
+    boost::asio::signal_set signalSet(io_context);
     //If we're not running as a daemon we should use the interactive signal handler.
     if (!daemon) {
         signalSet.add(SIGINT);
@@ -95,12 +95,12 @@ void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsH
     bool soft_exit_in_progress = false;
 
 
-    //Make sure that the io_service never runs out of work.
-    boost::asio::io_service::work work(io_service);
-    //This timer is used to wake the io_service when next op needs to be handled.
-    boost::asio::steady_timer nextOpTimer(io_service);
+    //Make sure that the io_context never runs out of work.
+    boost::asio::io_context::work work(io_context);
+    //This timer is used to wake the io_context when next op needs to be handled.
+    boost::asio::steady_timer nextOpTimer(io_context);
     //This timer will set a deadline for any mind persistence during soft exits.
-    boost::asio::steady_timer softExitTimer(io_service);
+    boost::asio::steady_timer softExitTimer(io_context);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
@@ -108,7 +108,7 @@ void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsH
             bool busy = operationsHandler.idle(10);
             operationsHandler.markQueueAsClean();
             //Even if the world is busy we should interleave with a poll, to make sure we always do some IO.
-            io_service.poll_one();
+            io_context.poll_one();
             if (!busy) {
                 //If it's not busy however we should run until we get a task.
                 //We will either get an io task, or we will be triggered by the timer
@@ -124,7 +124,7 @@ void MainLoop::run(bool daemon, boost::asio::io_service& io_service, OperationsH
                 //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
                 //any new operation) or the timer has expired.
                 do {
-                    io_service.run_one();
+                    io_context.run_one();
                 } while (!operationsHandler.isQueueDirty() && !nextOpTimeExpired &&
                          !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
                 nextOpTimer.cancel();

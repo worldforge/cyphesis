@@ -160,8 +160,8 @@ static void help()
     std::cout << std::endl << std::flush;
 }
 
-Interactive::Interactive(boost::asio::io_service& io_service) :
-    AdminClient(io_service),
+Interactive::Interactive(boost::asio::io_context& io_context) :
+    AdminClient(io_context),
     m_server_flag(false),
     m_serverName("cyphesis"),
     m_prompt("cyphesis> ")

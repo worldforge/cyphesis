@@ -32,7 +32,7 @@ class DatabasePostgres;
 class CommPSQLSocket {
   protected:
 
-    boost::asio::io_service& m_io_service;
+    boost::asio::io_context& m_io_context;
     boost::asio::ip::tcp::socket* m_socket;
     boost::asio::deadline_timer m_vacuumTimer;
     boost::asio::deadline_timer m_reindexTimer;
@@ -59,7 +59,7 @@ class CommPSQLSocket {
     /// Interval between database reindex jobs.
     static const int reindexFreq;
 
-    CommPSQLSocket(boost::asio::io_service& io_service, DatabasePostgres & db);
+    CommPSQLSocket(boost::asio::io_context& io_context, DatabasePostgres & db);
     virtual ~CommPSQLSocket();
 };
 

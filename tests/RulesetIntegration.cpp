@@ -104,9 +104,9 @@ void Rulesetintegration::test_init()
 {
     assert(!Ruleset::hasInstance());
 
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     {
-        Ruleset ruleset(nullptr, io_service);
+        Ruleset ruleset(nullptr, io_context);
 
         assert(Ruleset::hasInstance());
 
@@ -141,8 +141,8 @@ void Rulesetintegration::test_sequence()
         // for testing
         EntityBuilder * test_eb = EntityBuilder::instancePtr();
         assert(test_eb == m_entity_builder);
-        boost::asio::io_service io_service;
-        Ruleset test_ruleset(test_eb, io_service);
+        boost::asio::io_context io_context;
+        Ruleset test_ruleset(test_eb, io_context);
 
 
         {

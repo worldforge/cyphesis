@@ -57,7 +57,7 @@ class CommMetaClient {
     void do_receive();
 
   public:
-    explicit CommMetaClient(boost::asio::io_service& ioService);
+    explicit CommMetaClient(boost::asio::io_context& ioService);
 
     virtual ~CommMetaClient();
 

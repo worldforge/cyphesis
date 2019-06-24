@@ -33,8 +33,8 @@
 
 #ifndef STUB_CommHttpClient_CommHttpClient
 //#define STUB_CommHttpClient_CommHttpClient
-   CommHttpClient::CommHttpClient(const std::string & name, boost::asio::io_service& io_service)
-    : std::enable_shared_from_this(name, io_service)
+   CommHttpClient::CommHttpClient(const std::string & name, boost::asio::io_context& io_context)
+    : std::enable_shared_from_this(name, io_context)
   {
     
   }

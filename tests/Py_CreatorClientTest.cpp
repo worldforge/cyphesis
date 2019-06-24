@@ -49,7 +49,7 @@ static bool stub_lookfor_fail = false;
 
 int main()
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
 
     init_python_api({&CyPy_Server::init,
                      &CyPy_Rules::init,
@@ -59,7 +59,7 @@ int main()
                      &CyPy_Ai::init});
     extend_client_python_api();
 
-    auto client = new CreatorClient("1", "2", *new ClientConnection(io_service));
+    auto client = new CreatorClient("1", "2", *new ClientConnection(io_context));
     Ref<MemEntity> entity = new MemEntity("1", 1);
     OpVector res;
     client->setOwnEntity(res, entity);

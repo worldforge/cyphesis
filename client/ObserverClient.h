@@ -31,7 +31,7 @@ class ObserverClient : public BaseClient {
   protected:
     std::string m_server;
   public:
-    explicit ObserverClient(boost::asio::io_service& io_service);
+    explicit ObserverClient(boost::asio::io_context& io_context);
     ~ObserverClient() override;
 
     void setServer(const std::string & server) {

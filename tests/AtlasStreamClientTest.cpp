@@ -35,8 +35,8 @@
 class TestAtlasStreamClient : public AtlasStreamClient {
   public:
 
-    explicit TestAtlasStreamClient(boost::asio::io_service& io_service):
-        AtlasStreamClient(io_service) {}
+    explicit TestAtlasStreamClient(boost::asio::io_context& io_context):
+        AtlasStreamClient(io_context) {}
 
     void test_objectArrived(const Atlas::Objects::Root & op) {
         objectArrived(op);
@@ -68,14 +68,14 @@ class TestClientTask : public ClientTask {
 
 int main()
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     {
-        AtlasStreamClient * asc = new AtlasStreamClient{io_service};
+        AtlasStreamClient * asc = new AtlasStreamClient{io_context};
 
         delete asc;
     }
 
-    TestAtlasStreamClient * asc = new TestAtlasStreamClient{io_service};
+    TestAtlasStreamClient * asc = new TestAtlasStreamClient{io_context};
 
     {
         Atlas::Objects::Root obj;

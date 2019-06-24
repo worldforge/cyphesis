@@ -42,7 +42,7 @@ class ClientTask;
 class StreamClientSocketBase
 {
     public:
-        StreamClientSocketBase(boost::asio::io_service& io_service, std::function<void()>& dispatcher);
+        StreamClientSocketBase(boost::asio::io_context& io_context, std::function<void()>& dispatcher);
         virtual ~StreamClientSocketBase();
 
         int negotiate(Atlas::Objects::ObjectsDecoder& decoder);
@@ -61,7 +61,7 @@ class StreamClientSocketBase
         {
             read_buffer_size = 16384
         };
-        boost::asio::io_service& m_io_service;
+        boost::asio::io_context& m_io_context;
         std::function<void()> mDispatcher;
 
         boost::asio::streambuf mBuffer;
@@ -78,7 +78,7 @@ class StreamClientSocketBase
 class TcpStreamClientSocket : public StreamClientSocketBase
 {
     public:
-        TcpStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint);
+        TcpStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint);
         size_t write() override;
    protected:
         boost::asio::ip::tcp::socket m_socket;
@@ -89,7 +89,7 @@ class TcpStreamClientSocket : public StreamClientSocketBase
 class LocalStreamClientSocket : public StreamClientSocketBase
 {
     public:
-        LocalStreamClientSocket(boost::asio::io_service& io_service, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint);
+        LocalStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint);
         size_t write() override;
     protected:
         boost::asio::local::stream_protocol::socket m_socket;
@@ -101,7 +101,7 @@ class LocalStreamClientSocket : public StreamClientSocketBase
 class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
 {
   protected:
-    boost::asio::io_service& m_io_service;
+    boost::asio::io_context& m_io_context;
 
     /// \brief Flag to indicate that a reply has been received from the server
     bool reply_flag;
@@ -146,7 +146,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     virtual void loginSuccess(const Atlas::Objects::Root & arg);
 
   public:
-     explicit AtlasStreamClient(boost::asio::io_service& io_service);
+     explicit AtlasStreamClient(boost::asio::io_context& io_context);
 
     ~AtlasStreamClient() override;
 

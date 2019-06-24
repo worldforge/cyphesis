@@ -43,7 +43,7 @@ class CommHttpClient: public std::enable_shared_from_this<CommHttpClient>
         void write();
     public:
         CommHttpClient(const std::string & name,
-                boost::asio::io_service& io_service);
+                boost::asio::io_context& io_context);
         virtual ~CommHttpClient();
         void serveRequest();
 

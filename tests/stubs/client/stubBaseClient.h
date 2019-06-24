@@ -9,7 +9,7 @@
 
 #ifndef STUB_BaseClient_BaseClient
 //#define STUB_BaseClient_BaseClient
-   BaseClient::BaseClient(boost::asio::io_service& io_service)
+   BaseClient::BaseClient(boost::asio::io_context& io_context)
     : m_character(nullptr)
   {
     

@@ -59,12 +59,12 @@ static const bool debug_flag = false;
 
 template<> Ruleset* Singleton<Ruleset>::ms_Singleton = nullptr;
 
-Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service) :
+Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context) :
       m_entityHandler(new EntityRuleHandler(eb)),
       m_opHandler(new OpRuleHandler(eb)),
       m_propertyHandler(new PropertyRuleHandler(eb)),
       m_archetypeHandler(new ArchetypeRuleHandler(eb)),
-      m_io_service(io_service)
+      m_io_context(io_context)
 {
 }
 
@@ -297,7 +297,7 @@ void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
         AssetsManager::instance().observeDirectory(directory, [&](const boost::filesystem::path& path) {
             m_changedRules.insert(path);
 
-            auto timer = std::make_shared<boost::asio::steady_timer>(m_io_service);
+            auto timer = std::make_shared<boost::asio::steady_timer>(m_io_context);
             timer->expires_from_now(std::chrono::milliseconds(20));
             timer->async_wait([&, timer](const boost::system::error_code& ec) {
                 if (!ec) {

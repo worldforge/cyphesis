@@ -74,7 +74,7 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    TestCommPeer(boost::asio::io_service & svr) : CommPeer("", svr)
+    TestCommPeer(boost::asio::io_context & svr) : CommPeer("", svr)
     {
     }
 
@@ -102,7 +102,7 @@ int main()
                          "1", 1,
                          "2", 2);
 
-    boost::asio::io_service comm_server;
+    boost::asio::io_context comm_server;
     {
         auto cs = std::make_shared<TestCommPeer>(comm_server);
 

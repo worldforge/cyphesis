@@ -9,7 +9,7 @@
 
 #ifndef STUB_FileSystemObserver_FileSystemObserver
 //#define STUB_FileSystemObserver_FileSystemObserver
-   FileSystemObserver::FileSystemObserver(boost::asio::io_service& ioService)
+   FileSystemObserver::FileSystemObserver(boost::asio::io_context& ioService)
   {
     
   }

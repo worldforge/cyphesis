@@ -21,7 +21,7 @@
 
 #include "external/dir_monitor/include/dir_monitor/dir_monitor.hpp"
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/filesystem/path.hpp>
 
 class FileSystemObserver
@@ -42,7 +42,7 @@ class FileSystemObserver
             const boost::filesystem::path& relativePath;
         };
 
-        explicit FileSystemObserver(boost::asio::io_service& ioService);
+        explicit FileSystemObserver(boost::asio::io_context& ioService);
 
         ~FileSystemObserver();
 
@@ -64,7 +64,7 @@ class FileSystemObserver
 
         std::map<boost::filesystem::path, std::function<void(const FileSystemEvent&)>> mCallBacks;
 
-        boost::asio::io_service& m_ioService;
+        boost::asio::io_context& m_ioService;
 
         std::map<boost::filesystem::path, std::pair<std::chrono::steady_clock::time_point, boost::asio::dir_monitor_event>> m_changedPaths;
 

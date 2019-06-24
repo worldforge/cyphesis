@@ -64,7 +64,7 @@ void TestLink::operation(const Operation&, OpVector&)
 class TestCommSocket : public CommSocket
 {
   public:
-    explicit TestCommSocket(boost::asio::io_service & svr);
+    explicit TestCommSocket(boost::asio::io_context & svr);
 
     virtual ~TestCommSocket();
 
@@ -73,7 +73,7 @@ class TestCommSocket : public CommSocket
 
 };
 
-TestCommSocket::TestCommSocket(boost::asio::io_service & svr) : CommSocket(svr)
+TestCommSocket::TestCommSocket(boost::asio::io_context & svr) : CommSocket(svr)
 {
 }
 
@@ -143,7 +143,7 @@ Linktest::Linktest()
 void Linktest::setup()
 {
     m_bridge = new Sink;
-    m_socket = new TestCommSocket(*(boost::asio::io_service*)0);
+    m_socket = new TestCommSocket(*(boost::asio::io_context*)0);
     m_link = new TestLink(*m_socket, "1", 1);
     m_encoder = 0;
 }

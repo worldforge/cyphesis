@@ -213,7 +213,7 @@ void BaseClient::sendWithCallback(Operation op, std::function<void(const Operati
     auto serialno = m_serialNo++;
     op->setSerialno(serialno);
 
-    auto timer = std::make_unique<boost::asio::steady_timer>(m_commSocket.m_io_service);
+    auto timer = std::make_unique<boost::asio::steady_timer>(m_commSocket.m_io_context);
 #if BOOST_VERSION >= 106600
     timer->expires_after(duration);
 #else

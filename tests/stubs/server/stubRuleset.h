@@ -58,8 +58,8 @@
 
 #ifndef STUB_Ruleset_Ruleset
 //#define STUB_Ruleset_Ruleset
-   Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_service& io_service)
-    : Singleton(eb, io_service)
+   Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context)
+    : Singleton(eb, io_context)
   {
     
   }

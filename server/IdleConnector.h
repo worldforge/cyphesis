@@ -29,7 +29,7 @@
 /// anything that needs calling.
 class IdleConnector  {
   public:
-    explicit IdleConnector(boost::asio::io_service & io_service);
+    explicit IdleConnector(boost::asio::io_context & io_context);
     virtual ~IdleConnector();
 
 

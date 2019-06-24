@@ -41,7 +41,7 @@ using Atlas::Objects::Operation::RootOperation;
 class ClientConnectionintegration : public Cyphesis::TestBase
 {
     ClientConnection * cc;
-    boost::asio::io_service m_io_service;
+    boost::asio::io_context m_io_context;
   public:
     ClientConnectionintegration();
 
@@ -58,7 +58,7 @@ ClientConnectionintegration::ClientConnectionintegration()
 
 void ClientConnectionintegration::setup()
 {
-    cc = new ClientConnection(m_io_service);
+    cc = new ClientConnection(m_io_context);
 }
 
 void ClientConnectionintegration::teardown()

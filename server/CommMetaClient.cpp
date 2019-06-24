@@ -43,7 +43,7 @@ static const bool debug_flag = false;
 /// \brief Constructor for metaserver communication socket object.
 ///
 /// @param svr Reference to the object that manages all socket communication.
-CommMetaClient::CommMetaClient(io_service& ioService) :
+CommMetaClient::CommMetaClient(io_context& ioService) :
         mSocket(ioService, ip::udp::endpoint(ip::udp::v4(), 0)), mKeepaliveTimer(
                 ioService), mResolver(ioService), mHasEndpoint(false), m_heartbeatTime(300)
 {

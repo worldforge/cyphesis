@@ -42,7 +42,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 {
     public:
         CommAsioClient(const std::string & name,
-                boost::asio::io_service& io_service);
+                boost::asio::io_context& io_context);
         ~CommAsioClient() override;
 
         typename ProtocolT::socket& getSocket();

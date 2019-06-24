@@ -35,7 +35,7 @@
 class TestAdminClient : public AdminClient
 {
   public:
-    explicit TestAdminClient(boost::asio::io_service& io_service) : AdminClient(io_service) {}
+    explicit TestAdminClient(boost::asio::io_context& io_context) : AdminClient(io_context) {}
 
     int test_checkRule(const std::string & id) {
         return checkRule(id);
@@ -52,20 +52,20 @@ std::queue<enum srvop> stub_poll_sequence;
 
 int main()
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     {
-        AdminClient ac(io_service);
+        AdminClient ac(io_context);
     }
 
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         ac.test_checkRule("test_this_rule");
     }
 
     // check rule
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         assert(stub_poll_sequence.empty());
         stub_poll_sequence.push(SRV_INFO);
@@ -75,7 +75,7 @@ int main()
 
     // new rule with no parent - fails
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         assert(stub_poll_sequence.empty());
@@ -87,7 +87,7 @@ int main()
 
     // new rule with non string parent - fails
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = 1;
@@ -100,7 +100,7 @@ int main()
 
     // new rule with empty parent - fails
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "";
@@ -113,7 +113,7 @@ int main()
 
     // new rule with parent - upload fails
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -128,7 +128,7 @@ int main()
 
     // new rule with parent - upload succeeds
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -143,7 +143,7 @@ int main()
 
     // new rule with parent - upload succeeds, and re-upload same should fail
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -165,7 +165,7 @@ int main()
 
     // new rule with parent - parent rule not uploaded yet
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -180,7 +180,7 @@ int main()
     // new rule with parent - parent rule not uploaded yet, and second
     //                         rule queueed on same parent
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -200,7 +200,7 @@ int main()
     // new rule with parent - parent rule not uploaded yet, and try same
     //                         rule twice
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -220,7 +220,7 @@ int main()
     // new rule with parent - parent rule not uploaded yet, and try same
     //                         rule twice
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule1;
         rule1["parent"] = "rule2";
@@ -247,7 +247,7 @@ int main()
 
     // Updating existing rule succeeds
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         assert(stub_poll_sequence.empty());
@@ -260,7 +260,7 @@ int main()
 
     // Updating existing rule fails
     {
-        TestAdminClient ac(io_service);
+        TestAdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         assert(stub_poll_sequence.empty());
@@ -274,19 +274,19 @@ int main()
     // FIXME cover a bunch more of uploadRule()
 
     {
-        AdminClient ac(io_service);
+        AdminClient ac(io_context);
 
         ac.login();
     }
 
     {
-        AdminClient ac(io_service);
+        AdminClient ac(io_context);
 
         ac.report();
     }
 
     {
-        AdminClient ac(io_service);
+        AdminClient ac(io_context);
 
         Atlas::Message::MapType rule;
         rule["parent"] = "new_rule";
@@ -352,8 +352,8 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
 {
 }
 
-AtlasStreamClient::AtlasStreamClient(boost::asio::io_service& io_service) :
-    m_io_service(io_service),
+AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context) :
+    m_io_context(io_context),
     reply_flag(false), error_flag(false),
     serialNo(512), m_currentTask(0)
 {

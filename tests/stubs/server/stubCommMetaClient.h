@@ -25,7 +25,7 @@
 
 #ifndef STUB_CommMetaClient_CommMetaClient
 //#define STUB_CommMetaClient_CommMetaClient
-   CommMetaClient::CommMetaClient(boost::asio::io_service& ioService)
+   CommMetaClient::CommMetaClient(boost::asio::io_context& ioService)
   {
     
   }

@@ -9,8 +9,8 @@
 
 #ifndef STUB_CommPeer_CommPeer
 //#define STUB_CommPeer_CommPeer
-   CommPeer::CommPeer(const std::string & name, boost::asio::io_service& io_service)
-    : CommAsioClient(name, io_service)
+   CommPeer::CommPeer(const std::string & name, boost::asio::io_context& io_context)
+    : CommAsioClient(name, io_context)
   {
     
   }

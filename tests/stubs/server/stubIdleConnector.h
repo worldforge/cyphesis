@@ -9,7 +9,7 @@
 
 #ifndef STUB_IdleConnector_IdleConnector
 //#define STUB_IdleConnector_IdleConnector
-   IdleConnector::IdleConnector(boost::asio::io_service & io_service)
+   IdleConnector::IdleConnector(boost::asio::io_context & io_context)
   {
     
   }

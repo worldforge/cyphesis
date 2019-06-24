@@ -19,7 +19,7 @@
 #ifndef COMMON_COMM_SOCKET_H
 #define COMMON_COMM_SOCKET_H
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 
 
 /// \defgroup ServerSockets Server Socket Classes
@@ -29,11 +29,11 @@
 /// parts of a WorldForge system using network sockets.
 /// \brief Constructor for socket object.
 ///
-/// @param io_service Reference to the object that manages all socket communication.
+/// @param io_context Reference to the object that manages all socket communication.
 class CommSocket {
   protected:
-    explicit CommSocket(boost::asio::io_service& io_service)
-    : m_io_service(io_service), m_active(true){
+    explicit CommSocket(boost::asio::io_context& io_context)
+    : m_io_context(io_context), m_active(true){
     }
 
   public:
@@ -42,7 +42,7 @@ class CommSocket {
     CommSocket & operator=(const CommSocket &) = delete;
 
     /// Reference to the main IO service.
-    boost::asio::io_service& m_io_service;
+    boost::asio::io_context& m_io_context;
 
     bool m_active;
 

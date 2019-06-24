@@ -42,7 +42,7 @@ using Atlas::Objects::Root;
 
 class ExposedRuleset : public Ruleset {
   public:
-    ExposedRuleset(EntityBuilder * eb, boost::asio::io_service& io_service) : Ruleset(eb, io_service) { }
+    ExposedRuleset(EntityBuilder * eb, boost::asio::io_context& io_context) : Ruleset(eb, io_context) { }
 
     void test_getRulesFromFiles(const std::string & ruleset,
                            std::map<std::string, Root> & rules) {
@@ -55,7 +55,7 @@ const std::string data_path = TESTDATADIR;
 
 int main(int argc, char ** argv)
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
     int ret;
 
     std::string ruleset("caaa1085-9ef4-4dc2-b1ad-3d1f15b31060");
@@ -64,7 +64,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance;
         EntityBuilder eb;
         {
-            Ruleset instance(&eb, io_service);
+            Ruleset instance(&eb, io_context);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -78,7 +78,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance;
         EntityBuilder eb;
         {
-            Ruleset instance(&eb, io_service);
+            Ruleset instance(&eb, io_context);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance;
         EntityBuilder eb;
         {
-            Ruleset instance(&eb, io_service);
+            Ruleset instance(&eb, io_context);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
         // for testing
         EntityBuilder eb;
         EntityBuilder * test_eb = &eb;
-        ExposedRuleset test_ruleset(test_eb, io_service);
+        ExposedRuleset test_ruleset(test_eb, io_context);
 
         // Attributes for test entities being created
         Anonymous attributes;

@@ -33,7 +33,7 @@
 
 #ifndef STUB_CommMDNSPublisher_CommMDNSPublisher
 //#define STUB_CommMDNSPublisher_CommMDNSPublisher
-   CommMDNSPublisher::CommMDNSPublisher(boost::asio::io_service& m_io_service, ServerRouting & s)
+   CommMDNSPublisher::CommMDNSPublisher(boost::asio::io_context& m_io_context, ServerRouting & s)
     : m_avahiClient(nullptr),m_avahiWatch(nullptr),m_group(nullptr)
   {
     

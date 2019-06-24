@@ -56,7 +56,7 @@ using String::compose;
 class StubSocket : public CommSocket
 {
     public:
-        explicit StubSocket(boost::asio::io_service& io_service) : CommSocket(io_service)
+        explicit StubSocket(boost::asio::io_context& io_context) : CommSocket(io_context)
         {
         }
 
@@ -137,7 +137,7 @@ TrustedConnectionCreatorintegration::TrustedConnectionCreatorintegration() :
 
 void TrustedConnectionCreatorintegration::setup()
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
 
     TestWorld::extension.messageFn = &TrustedConnectionCreatorintegration::BaseWorld_message_called;
 
@@ -149,7 +149,7 @@ void TrustedConnectionCreatorintegration::setup()
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  compose("%1", m_id_counter), m_id_counter++,
                                  compose("%1", m_id_counter), m_id_counter++);
-    m_commSocket = new StubSocket(io_service);
+    m_commSocket = new StubSocket(io_context);
     m_connection = new Connection(*m_commSocket,
                                   *m_server,
                                   "25251955-7e8c-4043-8a5e-adfb8a1e76f7",

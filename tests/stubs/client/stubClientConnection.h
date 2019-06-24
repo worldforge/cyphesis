@@ -17,8 +17,8 @@
 
 #ifndef STUB_ClientConnection_ClientConnection
 //#define STUB_ClientConnection_ClientConnection
-   ClientConnection::ClientConnection(boost::asio::io_service& io_service)
-    : AtlasStreamClient(io_service)
+   ClientConnection::ClientConnection(boost::asio::io_context& io_context)
+    : AtlasStreamClient(io_context)
   {
     
   }

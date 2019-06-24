@@ -46,15 +46,15 @@ static const bool comm_asio_client_debug_flag = false;
 
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(const std::string& name,
-                                          boost::asio::io_service& io_service) :
-    CommSocket(io_service),
+                                          boost::asio::io_context& io_context) :
+    CommSocket(io_context),
     mMaxOpsPerDispatch(1),
-    mSocket(io_service),
+    mSocket(io_context),
     mWriteBuffer(new boost::asio::streambuf()),
     mSendBuffer(new boost::asio::streambuf()),
     mInStream(&mReadBuffer),
     mOutStream(mWriteBuffer),
-    mNegotiateTimer(io_service, boost::posix_time::seconds(1)),
+    mNegotiateTimer(io_context, boost::posix_time::seconds(1)),
     mIsSending(false),
     mShouldSend(false),
     m_codec(nullptr),
@@ -322,7 +322,7 @@ void CommAsioClient<ProtocolT>::dispatch()
 
     if (!m_opQueue.empty()) {
         auto self(this->shared_from_this());
-        m_io_service.post([this, self](){
+        m_io_context.post([this, self](){
             int i = 0;
             while (!m_opQueue.empty() && i < mMaxOpsPerDispatch) {
                 auto op = std::move(m_opQueue.front());

@@ -22,7 +22,7 @@
 #include <string>
 #include <set>
 #include <sigc++/signal.h>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 
 class AssetsManager;
 class BaseWorld;
@@ -68,7 +68,7 @@ void shutdown_python_api();
  */
 void run_user_scripts(const std::string& prefix);
 
-void observe_python_directories(boost::asio::io_service& io_service, AssetsManager& assetsManager);
+void observe_python_directories(boost::asio::io_context& io_context, AssetsManager& assetsManager);
 
 
 #endif // RULESETS_PYTHON_API_H

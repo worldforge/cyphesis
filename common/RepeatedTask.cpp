@@ -18,9 +18,9 @@
 
 #include "RepeatedTask.h"
 
-RepeatedTask::RepeatedTask(boost::asio::io_service& io_service, boost::posix_time::time_duration interval, std::function<void()> function)
+RepeatedTask::RepeatedTask(boost::asio::io_context& io_context, boost::posix_time::time_duration interval, std::function<void()> function)
     : mInterval(std::move(interval)),
-      mTimer(io_service),
+      mTimer(io_context),
       mFunction(std::move(function))
 {
     mTimer.expires_from_now(mInterval);

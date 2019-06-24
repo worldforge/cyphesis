@@ -249,10 +249,10 @@ static void timeout_free(AvahiTimeout * at)
     delete at;
 }
 
-CommMDNSPublisher::CommMDNSPublisher(boost::asio::io_service& io_service,
-                                     ServerRouting & s) : m_io_service(io_service),
-                                                         m_socket(io_service),
-                                                         m_timers_check_timer(io_service),
+CommMDNSPublisher::CommMDNSPublisher(boost::asio::io_context& io_context,
+                                     ServerRouting & s) : m_io_context(io_context),
+                                                         m_socket(io_context),
+                                                         m_timers_check_timer(io_context),
                                                          m_avahiClient(0),
                                                          m_avahiError(0),
                                                          m_server(s),

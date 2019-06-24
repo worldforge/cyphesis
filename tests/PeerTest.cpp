@@ -45,7 +45,7 @@
 class TestCommSocket : public CommSocket
 {
   public:
-    TestCommSocket() : CommSocket(*(boost::asio::io_service*)0)
+    TestCommSocket() : CommSocket(*(boost::asio::io_context*)0)
     {
     }
 
@@ -476,8 +476,8 @@ void TeleportState::setKey(const std::string & key)
 
 
 CommPeer::CommPeer(const std::string & name,
-        boost::asio::io_service& io_service) :
-        CommAsioClient<boost::asio::ip::tcp>(name, io_service), m_auth_timer(io_service)
+        boost::asio::io_context& io_context) :
+        CommAsioClient<boost::asio::ip::tcp>(name, io_context), m_auth_timer(io_context)
 {
 }
 

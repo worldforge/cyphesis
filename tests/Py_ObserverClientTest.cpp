@@ -45,12 +45,12 @@ static bool stub_wait_fail = false;
 
 int main()
 {
-    boost::asio::io_service io_service;
+    boost::asio::io_context io_context;
 
     init_python_api({&CyPy_Server::init, &CyPy_Atlas::init});
     extend_client_python_api();
 
-    auto client = new ObserverClient(io_service);
+    auto client = new ObserverClient(io_context);
 
     Py::Module module("server");
     module.setAttr("testclient", CyPy_ObserverClient::wrap(client));
