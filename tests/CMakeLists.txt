@@ -413,7 +413,7 @@ wf_add_test(SuspendedPropertyIntegration.cpp ../rules/simulation/SuspendedProper
     ../rules/LocatedEntity.cpp)
 target_link_libraries(SuspendedPropertyIntegration common)
 wf_add_test(ThingIntegration.cpp)
-target_link_libraries(ThingIntegration rulessimulation rulesbase modules common physics)
+target_link_libraries(ThingIntegration rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
 
 
 # CLIENT_TESTS
