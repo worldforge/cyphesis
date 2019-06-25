@@ -138,7 +138,7 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
     }
 
     EntityKit* factory = I->second;
-    debug(std::cout << "[" << type << "]" << std::endl << std::flush;);
+    debug_print("[" << type << "]")
     return factory->newEntity(id, intId, attributes, &parentEntity);
 
 }

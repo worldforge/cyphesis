@@ -207,7 +207,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
         return;
     }
     const std::string & from = op->getFrom();
-    debug(std::cout << "send on to " << from << std::endl << std::flush;);
+    debug_print("send on to " << from)
     RouterMap::const_iterator I = m_objects.find(integerId(from));
     if (I == m_objects.end()) {
         sendError(op, String::compose("Client \"%1\" op from \"%2\" is from "
@@ -426,7 +426,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
             return;
         }
         const std::string & id = arg->getId();
-        debug(std::cout << "Get got for " << id << std::endl << std::flush;);
+        debug_print("Get got for " << id)
         Atlas::Objects::Root o = Inheritance::instance().getClass(id, Visibility::PUBLIC);
         if (!o.isValid()) {
             error(op, String::compose("Unknown type definition for \"%1\" "

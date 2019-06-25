@@ -182,7 +182,7 @@ DatabaseResult DatabaseSQLite::runSimpleSelectQuery(const std::string& query)
 {
     assert(m_database);
 
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug_print("QUERY: " << query)
     std::unique_ptr<sqlite3pp::query> query_instance(new sqlite3pp::query(*m_database, query.c_str()));
 
     return DatabaseResult(std::make_unique<DatabaseResultWorkerSqlite>(std::move(query_instance)));

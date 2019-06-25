@@ -39,7 +39,7 @@ ClientConnection::~ClientConnection() = default;
 
 void ClientConnection::operation(const RootOperation & op)
 {
-    debug(std::cout << "A " << op->getParent() << " op from server!" << std::endl << std::flush;);
+    debug_print("A " << op->getParent() << " op from server!")
 
     reply_flag = true;
     operationQueue.push_back(op);

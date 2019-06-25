@@ -47,7 +47,7 @@ void EntityProperty::set(const Atlas::Message::Element& val)
     if (val.isString()) {
         const std::string& id = val.String();
         if (m_data.get() == nullptr || m_data->getId() != id) {
-            debug(std::cout << "Assigning " << id << std::endl << std::flush;);
+            debug_print("Assigning " << id)
             if (id.empty()) {
                 m_data = WeakEntityRef(nullptr);
             } else {

@@ -414,7 +414,7 @@ bool Database::registerArrayTable(const std::string & name,
         }
     }
 
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug_print("QUERY: " << query)
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -458,7 +458,7 @@ const DatabaseResult Database::selectArrayRows(const std::string & name,
     query += " WHERE id = ";
     query += id;
 
-    debug(std::cout << "ARRAY QUERY: " << query << std::endl << std::flush;);
+    debug_print("ARRAY QUERY: " << query)
 
     return runSimpleSelectQuery(query);
 }
@@ -507,7 +507,7 @@ int Database::createArrayRow(const std::string & name,
     query << ")";
 
     std::string qstr = query.str();
-    debug(std::cout << "QUery: " << qstr << std::endl << std::flush;);
+    debug_print("QUery: " << qstr)
     return scheduleCommand(qstr);
 }
 
@@ -551,7 +551,7 @@ int Database::updateArrayRow(const std::string & name,
     }
     
     std::string qstr = query.str();
-    debug(std::cout << "QUery: " << qstr << std::endl << std::flush;);
+    debug_print("QUery: " << qstr)
     return scheduleCommand(qstr);
 }
 

@@ -182,7 +182,7 @@ Ref<LocatedEntity> ServerAccount::addNewEntity(const RootEntity & ent,
     }
     debug_print("Added")
     assert(chr->m_location.isValid());
-    debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
+    debug_print("Location set to: " << chr->m_location)
     return chr;
 }
 

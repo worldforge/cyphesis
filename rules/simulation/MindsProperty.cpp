@@ -352,7 +352,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
 //    }
     const std::string& other_id = arg->getId();
     if (other_id != ent->getId()) {
-        debug(std::cout << "Moving something else. " << other_id << std::endl << std::flush;);
+        debug_print("Moving something else. " << other_id)
         auto other = BaseWorld::instance().getEntity(other_id);
         if (!other) {
             Unseen u;
@@ -437,7 +437,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
         //Note that we still look for a propel attribute, since that can be used to determine the speed of movement.
         if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             fromStdVector(new_pos, arg->getPos());
-            debug(std::cout << "pos set to " << new_pos << std::endl << std::flush;);
+            debug_print("pos set to " << new_pos)
         }
 
         //First look for the "propel" attribute; if that's not there look for the legacy "velocity" attribute.
@@ -453,14 +453,14 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
         } else {
             if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
                 fromStdVector(new_propel, arg->getVelocity());
-                debug(std::cout << "propel set to " << new_propel << std::endl << std::flush;);
+                debug_print("propel set to " << new_propel)
             }
         }
 
         Element orientation_attr;
         if (arg->copyAttr("orientation", orientation_attr) == 0) {
             new_orientation.fromAtlas(orientation_attr);
-            debug(std::cout << "ori set to " << new_orientation << std::endl << std::flush;);
+            debug_print("ori set to " << new_orientation)
             if (!new_orientation.isValid()) {
                 log(ERROR, "Ignoring invalid orientation from client " + ent->describeEntity() + ".");
             }
@@ -473,7 +473,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
         return;
     }
 
-    debug(std::cout << ":" << new_loc << ":" << ent->m_location.m_parent->getId() << ":" << std::endl << std::flush;);
+    debug_print(":" << new_loc << ":" << ent->m_location.m_parent->getId() << ":")
     if (!new_loc.empty() && (new_loc != ent->m_location.m_parent->getId())) {
         debug_print("Changing loc")
         auto target_loc = BaseWorld::instance().getEntity(new_loc);
@@ -526,7 +526,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
     // direction is already a unit vector
 //    if (new_pos.isValid()) {
 //        m_movement.setTarget(new_pos);
-//        debug(std::cout << "Target" << new_pos << std::endl << std::flush;);
+//        debug_print("Target" << new_pos)
 //    }
     if (new_propel.isValid()) {
         auto mag = new_propel.mag();
@@ -686,7 +686,7 @@ void MindsProperty::mindTalkOperation(LocatedEntity* ent, const Operation& op, O
 /// @param res The filtered result is returned here.
 void MindsProperty::mindLookOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]" << std::endl << std::flush;);
+    debug_print("Got look up from mind from [" << op->getFrom() << "] to [" << op->getTo() << "]")
 
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
@@ -704,7 +704,7 @@ void MindsProperty::mindLookOperation(LocatedEntity* ent, const Operation& op, O
         }
         op->setTo(arg->getId());
     }
-    debug(std::cout << "  now to [" << op->getTo() << "]" << std::endl << std::flush;);
+    debug_print("  now to [" << op->getTo() << "]")
     res.push_back(op);
 }
 

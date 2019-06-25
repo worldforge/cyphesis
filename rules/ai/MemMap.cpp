@@ -217,7 +217,7 @@ Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
 void MemMap::del(const std::string& id)
 // Delete an entity from memory
 {
-    debug(std::cout << "MemMap::del(" << id << ")" << std::endl << std::flush;);
+    debug_print("MemMap::del(" << id << ")")
 
     long int_id = integerId(id);
 
@@ -281,7 +281,7 @@ Ref<MemEntity> MemMap::getAdd(const std::string& id)
 // Get an entity from memory, or add it if we haven't seen it yet
 // This could be implemented by calling get() for all but the the last line
 {
-    debug(std::cout << "MemMap::getAdd(" << id << ")" << std::endl << std::flush;);
+    debug_print("MemMap::getAdd(" << id << ")")
     if (id.empty()) {
         return nullptr;
     }
@@ -389,7 +389,7 @@ EntityVector MemMap::findByType(const std::string& what)
     auto Iend = m_entities.end();
     for (auto I = m_entities.begin(); I != Iend; ++I) {
         auto item = I->second;
-        debug(std::cout << "F" << what << ":" << item->getType() << ":" << item->getId() << std::endl << std::flush;);
+        debug_print("F" << what << ":" << item->getType() << ":" << item->getId())
         if (item->isVisible() && item->getType()->name() == what) {
             res.push_back(I->second.get());
         }

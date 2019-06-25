@@ -333,6 +333,6 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
         p = I->second->newProperty();
     }
     p->flags().addFlags(PropertyBase::flagsForPropertyName(name));
-    debug(std::cout << name << " property found. " << std::endl << std::flush;);
+    debug_print(name << " property found. ")
     return p;
 }

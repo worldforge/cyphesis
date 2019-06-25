@@ -289,7 +289,7 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     }
     auto port = port_attr.Int();
 
-    debug(std::cout << "Connecting to " << hostname << std::endl << std::flush;);
+    debug_print("Connecting to " << hostname)
     m_address = new PeerAddress;
 
     boost::asio::ip::tcp::resolver resolver(m_connection->m_commSocket.m_io_context);

@@ -137,7 +137,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 error(op, "Move op loc does not exist", res, getId());
                 return;
             }
-            debug(std::cout << "LOC: " << new_loc_id << std::endl << std::flush;);
+            debug_print("LOC: " << new_loc_id)
             auto test_loc = new_loc;
             for (; test_loc != nullptr; test_loc = test_loc->m_location.m_parent) {
                 if (test_loc == this) {

@@ -269,7 +269,7 @@ DatabaseResult DatabasePostgres::runSimpleSelectQuery(const std::string& query)
 {
     assert(m_connection != nullptr);
 
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug_print("QUERY: " << query)
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -288,7 +288,7 @@ DatabaseResult DatabasePostgres::runSimpleSelectQuery(const std::string& query)
     }
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         log(ERROR, "Error selecting row.");
-        debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+        debug_print("QUERY: " << query)
         reportError();
         PQclear(res);
         res = nullptr;
@@ -337,7 +337,7 @@ int DatabasePostgres::registerRelation(std::string& tablename,
     std::string query = compose("SELECT * FROM %1 WHERE source = 0 "
                                 "AND target = 0", tablename);
 
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug_print("QUERY: " << query)
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
@@ -439,7 +439,7 @@ int DatabasePostgres::registerSimpleTable(const std::string& name,
         }
     }
 
-    debug(std::cout << "QUERY: " << query << std::endl << std::flush;);
+    debug_print("QUERY: " << query)
     clearPendingQuery();
     int status = PQsendQuery(m_connection, query.c_str());
     if (!status) {
