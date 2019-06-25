@@ -429,7 +429,7 @@ void StorageManager::tick()
 
     while (!m_dirtyEntities.empty()) {
         if (Database::instance().queryQueueSize() > 200) {
-            debug(std::cout << "Too many" << std::endl << std::flush;);
+            debug_print("Too many")
             break;
         }
         const WeakEntityRef & ent = m_dirtyEntities.front();

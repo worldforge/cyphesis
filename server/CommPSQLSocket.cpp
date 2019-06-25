@@ -122,7 +122,7 @@ void CommPSQLSocket::do_read()
 
 int CommPSQLSocket::read()
 {
-    debug(std::cout << "CommPSQLSocket::read()" << std::endl << std::flush;);
+    debug_print("CommPSQLSocket::read()")
     PGconn * con = m_db.getConnection();
     assert(con != 0);
 
@@ -155,8 +155,8 @@ int CommPSQLSocket::read()
 
 void CommPSQLSocket::dispatch()
 {
-    debug(std::cout << "CommPSQLSocket::dispatch()"
-                    << std::endl << std::flush;);
+    debug_print("CommPSQLSocket::dispatch()"
+                   )
 
     if (m_db.queryInProgress()) {
         return;

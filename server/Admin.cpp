@@ -105,7 +105,7 @@ ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const {
 
     auto id = newId(strId);
 
-    return new AdminMind(strId, id, *entity);;
+    return new AdminMind(strId, id, *entity);
 }
 
 Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,
@@ -148,7 +148,7 @@ void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 /// This function is connected to the WorldRouter operation dispatch
 /// signal when monitoring is enabled, and relays all in-game operations
 /// to the client.
-void Admin::opDispatched(Operation op)
+void Admin::opDispatched(const Operation& op)
 {
     if (m_connection != nullptr) {
         m_connection->send(op);

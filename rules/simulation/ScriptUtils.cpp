@@ -60,7 +60,7 @@ HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, co
     };
 
     if (ret.isNone()) {
-        debug(std::cout << "Returned none" << std::endl << std::flush;);
+        debug_print("Returned none")
     } else {
         //Check if it's a tuple and process it.
         if (ret.isTuple()) {

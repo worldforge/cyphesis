@@ -424,10 +424,10 @@ bool Database::registerArrayTable(const std::string & name,
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Table does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Table does not yet exist"
+                       )
     } else {
-        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        debug_print("Table exists")
         allTables.insert(name);
         return true;
     }

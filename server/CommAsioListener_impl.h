@@ -1,3 +1,5 @@
+#include <utility>
+
 /*
  Copyright (C) 2014 Erik Ogenvik
 
@@ -25,9 +27,9 @@
 template<class ProtocolT, typename ClientT>
 CommAsioListener<ProtocolT, ClientT>::CommAsioListener(
     std::function<void(ClientT&)> clientStarter,
-    const std::string& serverName, boost::asio::io_context& ioService,
+    std::string serverName, boost::asio::io_context& ioService,
     const typename ProtocolT::endpoint& endpoint)
-    : mClientStarter(clientStarter), mServerName(serverName), mAcceptor(ioService, endpoint)
+    : mClientStarter(clientStarter), mServerName(std::move(serverName)), mAcceptor(ioService, endpoint)
 {
     startAccept();
 }

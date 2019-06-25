@@ -65,7 +65,7 @@ Connection::Connection(CommSocket & socket,
 
 Connection::~Connection()
 {
-    debug(std::cout << "destroy called" << std::endl << std::flush;);
+    debug_print("destroy called")
     
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
@@ -182,12 +182,12 @@ int Connection::verifyCredentials(const Account & account,
 
 void Connection::externalOperation(const Operation & op, Link & link)
 {
-    debug(std::cout << "Connection::externalOperation"
-                    << std::endl << std::flush;);
+    debug_print("Connection::externalOperation"
+                   )
     //log(INFO, String::compose("externalOperation in %1", getId()));
 
     if (op->isDefaultFrom()) {
-        debug(std::cout << "deliver locally" << std::endl << std::flush;);
+        debug_print("deliver locally")
         OpVector reply;
         long serialno = op->getSerialno();
         operation(op, reply);
@@ -220,7 +220,7 @@ void Connection::externalOperation(const Operation & op, Link & link)
 
 void Connection::operation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Connection::operation" << std::endl << std::flush;);
+    debug_print("Connection::operation")
     auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
@@ -246,7 +246,7 @@ void Connection::operation(const Operation & op, OpVector & res)
 
 void Connection::LoginOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got login op" << std::endl << std::flush;);
+    debug_print("Got login op")
     const std::vector<Root> & args = op->getArgs();
     if (args.empty()) {
         error(op, "Login has no argument", res);
@@ -295,7 +295,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     Anonymous info_arg;
     account->addToEntity(info_arg);
     info->setArgs1(info_arg);
-    debug(std::cout << "Good login" << std::endl << std::flush;);
+    debug_print("Good login")
     res.push_back(info);
 
     logEvent(LOGIN, String::compose("%1 %2 - Login account %3 (%4)",
@@ -305,7 +305,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
 
 void Connection::CreateOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Got create op" << std::endl << std::flush;);
+    debug_print("Got create op")
     if (!m_objects.empty()) {
         clientError(op, "This connection is already logged in", res);
         return;
@@ -357,7 +357,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     Anonymous info_arg;
     account->addToEntity(info_arg);
     info->setArgs1(info_arg);
-    debug(std::cout << "Good create" << std::endl << std::flush;);
+    debug_print("Good create")
     res.push_back(info);
 
     logEvent(LOGIN, String::compose("%1 %2 - Create account %3 (%4)",
@@ -418,7 +418,7 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         Anonymous info_arg;
         m_server.addToEntity(info_arg);
         info->setArgs1(info_arg);
-        debug(std::cout << "Replying to empty get" << std::endl << std::flush;);
+        debug_print("Replying to empty get")
     } else {
         const Root & arg = args.front();
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {

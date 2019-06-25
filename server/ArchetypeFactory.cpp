@@ -363,8 +363,8 @@ void ArchetypeFactory::addProperties()
     assert(m_type != nullptr);
     MapType attributes;
     ListType entities;
-    for (auto I : m_entities) {
-        entities.push_back(I.second);
+    for (const auto& item : m_entities) {
+        entities.push_back(item.second);
     }
     attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));
@@ -378,8 +378,8 @@ void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::Prop
 
     MapType attributes;
     ListType entities;
-    for (auto I : m_entities) {
-        entities.push_back(I.second);
+    for (const auto& item : m_entities) {
+        entities.push_back(item.second);
     }
     attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));

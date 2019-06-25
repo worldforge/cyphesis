@@ -53,7 +53,7 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string & class_name,
     if (parent_factory == nullptr) {
         debug(
                 std::cout << "class \"" << class_name
-                        << "\" has non existant parent \"" << parent
+                        << "\" has non existent parent \"" << parent
                         << "\". Waiting." << std::endl << std::flush
                 ;);
         dependent = parent;

@@ -131,7 +131,7 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, c
 Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attributes,
                                              LocatedEntity& parentEntity) const
 {
-    debug(std::cout << "EntityFactor::newEntity()" << std::endl << std::flush;);
+    debug_print("EntityFactor::newEntity()")
     auto I = m_entityFactories.find(type);
     if (I == m_entityFactories.end()) {
         return nullptr;

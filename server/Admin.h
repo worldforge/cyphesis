@@ -38,7 +38,7 @@ class Admin : public Account {
                           const Operation &,
                           OpVector &) override;
 
-    void opDispatched(Operation op);
+    void opDispatched(const Operation& op);
 
     /// \brief Sets an attribute on the admin instance itself.
     void setAttribute(const Atlas::Objects::Root& arg);

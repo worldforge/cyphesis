@@ -65,8 +65,8 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
 
     // Get the ID of the sender
     if (op->isDefaultFrom()) {
-        debug(std::cout << "ERROR: Operation with no entity to be teleported" 
-                        << std::endl << std::flush;);
+        debug_print("ERROR: Operation with no entity to be teleported"
+                       )
         return OPERATION_IGNORED;
     }
     log(INFO, String::compose("Teleport request sender has ID %1",

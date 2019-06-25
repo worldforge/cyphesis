@@ -27,7 +27,7 @@ template<typename ProtocolT, typename ClientT>
 class CommAsioListener
 {
     public:
-        CommAsioListener(std::function<void(ClientT&)> clientStarter,const std::string& serverName,
+        CommAsioListener(std::function<void(ClientT&)> clientStarter, std::string serverName,
                 boost::asio::io_context& ioService,
                 const typename ProtocolT::endpoint& endpoint);
         virtual ~CommAsioListener();

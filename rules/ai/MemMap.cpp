@@ -189,7 +189,7 @@ MemMap::MemMap(TypeResolver& typeResolver)
 
 void MemMap::sendLooks(OpVector& res)
 {
-    debug(std::cout << "MemMap::sendLooks" << std::endl << std::flush;);
+    debug_print("MemMap::sendLooks")
     auto I = m_additionsById.begin();
     auto Iend = m_additionsById.end();
     for (; I != Iend; ++I) {
@@ -208,7 +208,7 @@ Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
     assert(!id.empty());
     assert(m_entities.find(int_id) == m_entities.end());
 
-    debug(std::cout << "MemMap::add_id" << std::endl << std::flush;);
+    debug_print("MemMap::add_id")
     m_additionsById.push_back(id);
     Ref<MemEntity> entity = new MemEntity(id, int_id);
     return addEntity(entity);
@@ -260,7 +260,7 @@ void MemMap::del(const std::string& id)
 Ref<MemEntity> MemMap::get(const std::string& id) const
 // Get an entity from memory
 {
-    debug(std::cout << "MemMap::get" << std::endl << std::flush;);
+    debug_print("MemMap::get")
     if (id.empty()) {
         // This shouldn't really occur, and shouldn't be a problem
         log(ERROR, "MemMap::get queried for empty ID string.");
@@ -319,7 +319,7 @@ Ref<MemEntity> MemMap::updateAdd(const RootEntity& ent, const double& d)
 // entity is visible, as we may have received it because we can see the
 // creator.
 {
-    debug(std::cout << "MemMap::updateAdd" << std::endl << std::flush;);
+    debug_print("MemMap::updateAdd")
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         log(ERROR, "MemMap::updateAdd, Missing id in updated entity");
         return nullptr;

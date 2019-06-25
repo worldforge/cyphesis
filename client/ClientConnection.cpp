@@ -92,14 +92,14 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
             assert(input.isValid());
             if (input.isValid()) {
                 if (input->getRefno() == no) {
-                    debug(std::cout << "Got reply" << std::endl << std::flush;);
+                    debug_print("Got reply")
                     res.push_back(input);
                     return 0;
                 } else {
-                    debug(std::cout << "Not reply" << std::endl << std::flush;);
+                    debug_print("Not reply")
                 }
             } else {
-                debug(std::cout << "Not op" << std::endl << std::flush;);
+                debug_print("Not op")
             }
         } else if (wait() != 0) {
             return -1;

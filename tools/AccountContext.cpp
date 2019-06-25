@@ -42,8 +42,8 @@ AccountContext::AccountContext(Interactive & i,
 
 bool AccountContext::accept(const RootOperation& op) const
 {
-    debug(std::cout << "Checking account context to see if it matches"
-              << std::endl << std::flush;);
+    debug_print("Checking account context to see if it matches"
+             )
     if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         return true;
     }
@@ -52,8 +52,8 @@ bool AccountContext::accept(const RootOperation& op) const
 
 int AccountContext::dispatch(const RootOperation & op)
 {
-    debug(std::cout << "Dispatching with account context to see if it matches"
-              << std::endl << std::flush;);
+    debug_print("Dispatching with account context to see if it matches"
+             )
     if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO &&
         !op->getArgs().empty()) {
         std::cout << "Dispatching info"

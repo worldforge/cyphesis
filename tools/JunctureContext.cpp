@@ -33,8 +33,8 @@ JunctureContext::JunctureContext(Interactive & i,
 
 bool JunctureContext::accept(const RootOperation& op) const
 {
-    debug(std::cout << "Checking juncture context to see if it matches"
-              << std::endl << std::flush;);
+    debug_print("Checking juncture context to see if it matches"
+             )
     if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
         std::cout << "It does!"
                   << std::endl << std::flush;
@@ -46,8 +46,8 @@ bool JunctureContext::accept(const RootOperation& op) const
 
 int JunctureContext::dispatch(const RootOperation & op)
 {
-    debug(std::cout << "Juncture dispatch!"
-              << std::endl << std::flush;);
+    debug_print("Juncture dispatch!"
+             )
     // If we get an info op here, it can mean something succeeded, like
     // connection or login.
     return 0;

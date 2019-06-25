@@ -34,8 +34,8 @@ AvatarContext::AvatarContext(Interactive & i, const std::string & id) :
 
 bool AvatarContext::accept(const RootOperation& op) const
 {
-    debug(std::cout << "Checking avatar context to see if it matches"
-              << std::endl << std::flush;);
+    debug_print("Checking avatar context to see if it matches"
+             )
     return m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo;
 }
 

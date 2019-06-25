@@ -226,7 +226,7 @@ HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operatio
 /// @param res The filtered result is returned here.
 void MindsProperty::mindActuateOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "Got Actuate op from mind" << std::endl << std::flush;);
+    debug_print("Got Actuate op from mind")
 
     //Distance filtering etc. happens in ActuateOperation
     op->setTo(ent->getId());
@@ -252,7 +252,7 @@ void MindsProperty::mindSetupOperation(LocatedEntity* ent, const Operation& op, 
 /// @param res The filtered result is returned here.
 void MindsProperty::mindUseOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "Got Use op from mind" << std::endl << std::flush;);
+    debug_print("Got Use op from mind")
 
     //Make sure that the first contained arg is another Use operation,
     // which is then sent to the actual tool.
@@ -309,7 +309,7 @@ void MindsProperty::mindUpdateOperation(LocatedEntity* ent, const Operation& op,
 /// @param res The filtered result is returned here.
 void MindsProperty::mindWieldOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "Got Wield op from mind" << std::endl << std::flush;);
+    debug_print("Got Wield op from mind")
     op->setTo(ent->getId());
     res.push_back(op);
 }
@@ -328,7 +328,7 @@ void MindsProperty::mindTickOperation(LocatedEntity* ent, const Operation& op, O
 /// @param res The filtered result is returned here.
 void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "MindsProperty::mind_move_op" << std::endl << std::flush;);
+    debug_print("MindsProperty::mind_move_op")
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindMoveOperation: move op has no argument. " + ent->describeEntity());
@@ -427,7 +427,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
     if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         new_loc = arg->getLoc();
     } else {
-        debug(std::cout << "Parent not set" << std::endl << std::flush;);
+        debug_print("Parent not set")
     }
     Point3D new_pos;
     Vector3D new_propel;
@@ -475,7 +475,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
 
     debug(std::cout << ":" << new_loc << ":" << ent->m_location.m_parent->getId() << ":" << std::endl << std::flush;);
     if (!new_loc.empty() && (new_loc != ent->m_location.m_parent->getId())) {
-        debug(std::cout << "Changing loc" << std::endl << std::flush;);
+        debug_print("Changing loc")
         auto target_loc = BaseWorld::instance().getEntity(new_loc);
         if (!target_loc) {
             //TODO: what use case is this? Moving the entity to a null location?
@@ -585,7 +585,7 @@ void MindsProperty::mindSetOperation(LocatedEntity* ent, const Operation& op, Op
 /// @param res The filtered result is returned here.
 void MindsProperty::mindCombineOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "mindCombineOperation" << std::endl << std::flush;);
+    debug_print("mindCombineOperation")
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindCombineOperation: combine op has no argument. " + ent->describeEntity());
@@ -675,7 +675,7 @@ void MindsProperty::mindImaginaryOperation(LocatedEntity* ent, const Operation& 
 /// @param res The filtered result is returned here.
 void MindsProperty::mindTalkOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug(std::cout << "MindsProperty::mindTalkOperation" << std::endl << std::flush;);
+    debug_print("MindsProperty::mindTalkOperation")
     op->setTo(ent->getId());
     res.push_back(op);
 }

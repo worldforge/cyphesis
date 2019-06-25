@@ -34,15 +34,15 @@ ConnectionContext::ConnectionContext(Interactive & i) : ObjectContext(i),
 
 bool ConnectionContext::accept(const RootOperation& op) const
 {
-    debug(std::cout << "Checking connection context to see if it matches"
-              << std::endl << std::flush;);
+    debug_print("Checking connection context to see if it matches"
+             )
     return m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo;
 }
 
 int ConnectionContext::dispatch(const RootOperation & op)
 {
-    debug(std::cout << "Dispatching with account context to see if it matches"
-              << std::endl << std::flush;);
+    debug_print("Dispatching with account context to see if it matches"
+             )
     assert(m_refNo != 0L);
     m_refNo = 0L;
     return 0;

@@ -169,19 +169,19 @@ static AvahiWatch* watch_new(const AvahiPoll *api,
 
 static void watch_update(AvahiWatch *w, AvahiWatchEvent event)
 {
-    debug(std::cout << "avahi_watch_update" << std::endl << std::flush;);
+    debug_print("avahi_watch_update")
     w->m_requiredEvent = event;
 }
 
 static AvahiWatchEvent watch_get_events(AvahiWatch *w)
 {
-    debug(std::cout << "avahi_watch_get_events" << std::endl << std::flush;);
+    debug_print("avahi_watch_get_events")
     return w->m_events;
 }
 
 static void watch_free(AvahiWatch *w)
 {
-    debug(std::cout << "avahi_watch_free" << std::endl << std::flush;);
+    debug_print("avahi_watch_free")
     log(WARNING, "avahi watch_free handler called");
 }
 

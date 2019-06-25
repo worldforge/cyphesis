@@ -277,13 +277,13 @@ DatabaseResult DatabasePostgres::runSimpleSelectQuery(const std::string& query)
         reportError();
         return DatabaseResult(nullptr);
     }
-    debug(std::cout << "done" << std::endl << std::flush;);
+    debug_print("done")
     PGresult* res;
     if ((res = PQgetResult(m_connection)) == nullptr) {
         log(ERROR, "Error selecting.");
         reportError();
-        debug(std::cout << "Row query didn't work"
-                        << std::endl << std::flush;);
+        debug_print("Row query didn't work"
+                       )
         return DatabaseResult(nullptr);
     }
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
@@ -316,10 +316,10 @@ int DatabasePostgres::runCommandQuery(const std::string& query)
         log(ERROR, "Error running command query row.");
         log(NOTICE, query);
         reportError();
-        debug(std::cout << "Row query didn't work"
-                        << std::endl << std::flush;);
+        debug_print("Row query didn't work"
+                       )
     } else {
-        debug(std::cout << "Query worked" << std::endl << std::flush;);
+        debug_print("Query worked")
         return 0;
     }
     return -1;
@@ -347,10 +347,10 @@ int DatabasePostgres::registerRelation(std::string& tablename,
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Table does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Table does not yet exist"
+                       )
     } else {
-        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        debug_print("Table exists")
         allTables.insert(tablename);
         return 0;
     }
@@ -449,10 +449,10 @@ int DatabasePostgres::registerSimpleTable(const std::string& name,
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Table does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Table does not yet exist"
+                       )
     } else {
-        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        debug_print("Table exists")
         allTables.insert(name);
         return 0;
     }
@@ -480,10 +480,10 @@ int DatabasePostgres::registerEntityIdGenerator()
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Sequence does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Sequence does not yet exist"
+                       )
     } else {
-        debug(std::cout << "Sequence exists" << std::endl << std::flush;);
+        debug_print("Sequence exists")
         return 0;
     }
     return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq");
@@ -534,8 +534,8 @@ int DatabasePostgres::registerEntityTable(const std::map<std::string, int>& chun
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Table does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Table does not yet exist"
+                       )
     } else {
         allTables.insert("entities");
         // FIXME Flush out the whole state of the databases, to ensure they
@@ -543,7 +543,7 @@ int DatabasePostgres::registerEntityTable(const std::map<std::string, int>& chun
         // runCommandQuery("DELETE FROM properties");
         // runCommandQuery(compose("DELETE FROM entities WHERE id!=%1",
         // consts::rootWorldIntId));
-        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        debug_print("Table exists")
         return 0;
     }
     std::string query = compose("CREATE TABLE entities ("
@@ -582,11 +582,11 @@ int DatabasePostgres::registerPropertyTable()
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Table does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Table does not yet exist"
+                       )
     } else {
         allTables.insert("properties");
-        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        debug_print("Table exists")
         return 0;
     }
     allTables.insert("properties");
@@ -621,11 +621,11 @@ int DatabasePostgres::registerThoughtsTable()
     }
     if (!tuplesOk()) {
         debug(reportError(););
-        debug(std::cout << "Table does not yet exist"
-                        << std::endl << std::flush;);
+        debug_print("Table does not yet exist"
+                       )
     } else {
         allTables.insert("thoughts");
-        debug(std::cout << "Table exists" << std::endl << std::flush;);
+        debug_print("Table exists")
         return 0;
     }
     allTables.insert("properties");
@@ -654,7 +654,7 @@ void DatabasePostgres::queryResult(ExecStatusType status)
         return;
     }
     if (q.second == status) {
-        debug(std::cout << "Query status ok" << std::endl << std::flush;);
+        debug_print("Query status ok")
         // Mark this query as done
         q.second = PGRES_EMPTY_QUERY;
     } else {
@@ -676,7 +676,7 @@ void DatabasePostgres::queryComplete()
         log(ERROR, "Got database query complete when query was not done");
         return;
     }
-    debug(std::cout << "Query complete" << std::endl << std::flush;);
+    debug_print("Query complete")
     pendingQueries.pop_front();
     m_queryInProgress = false;
 }
@@ -692,7 +692,7 @@ int DatabasePostgres::launchNewQuery()
         return -1;
     }
     if (pendingQueries.empty()) {
-        debug(std::cout << "No queries to launch" << std::endl << std::flush;);
+        debug_print("No queries to launch")
         return -1;
     }
     debug(std::cout << pendingQueries.size() << " queries pending"
@@ -733,7 +733,7 @@ int DatabasePostgres::clearPendingQuery()
     }
 
     assert(!pendingQueries.empty());
-    debug(std::cout << "Clearing a pending query" << std::endl << std::flush;);
+    debug_print("Clearing a pending query")
 
     DatabaseQuery& q = pendingQueries.front();
     if (q.second == PGRES_COMMAND_OK) {

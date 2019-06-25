@@ -82,7 +82,7 @@ void BaseMind::sightCreateOperation(const Operation& op, OpVector& res)
 {
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush;);
+        debug_print(" no args!")
         return;
     }
     RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
@@ -101,10 +101,10 @@ void BaseMind::sightCreateOperation(const Operation& op, OpVector& res)
 /// @param res The result of the operation is returned here.
 void BaseMind::sightDeleteOperation(const Operation& op, OpVector& res)
 {
-    debug(std::cout << "Sight Delete operation" << std::endl << std::flush;);
+    debug_print("Sight Delete operation")
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush;);
+        debug_print(" no args!")
         return;
     }
     const Root& obj = args.front();
@@ -127,10 +127,10 @@ void BaseMind::sightDeleteOperation(const Operation& op, OpVector& res)
 /// @param res The result of the operation is returned here.
 void BaseMind::sightMoveOperation(const Operation& op, OpVector& res)
 {
-    debug(std::cout << "BaseMind::sightOperation(Sight, Move)" << std::endl << std::flush;);
+    debug_print("BaseMind::sightOperation(Sight, Move)")
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush;);
+        debug_print(" no args!")
         return;
     }
     RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
@@ -149,7 +149,7 @@ void BaseMind::sightSetOperation(const Operation& op, OpVector& res)
 {
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush;);
+        debug_print(" no args!")
         return;
     }
     RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
@@ -167,13 +167,13 @@ void BaseMind::SoundOperation(const Operation& op, OpVector& res)
     if (!isAwake()) { return; }
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush;);
+        debug_print(" no args!")
         return;
     }
     const Root& arg = args.front();
     Operation op2(Atlas::Objects::smart_dynamic_cast<Operation>(arg));
     if (op2.isValid()) {
-        debug(std::cout << " args is an op!" << std::endl << std::flush;);
+        debug_print(" args is an op!")
         std::string event_name("sound_");
         event_name += op2->getParent();
 
@@ -304,7 +304,7 @@ void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
 {
     auto& args = op->getArgs();
     if (args.empty()) {
-        debug(std::cout << " no args!" << std::endl << std::flush;);
+        debug_print(" no args!")
         return;
     }
     auto& arg = args.front();

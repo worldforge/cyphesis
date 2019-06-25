@@ -89,8 +89,8 @@ class Account : public ConnectableRouter {
     /// \brief Connect and add a character to this account
     int connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res);
 
-    Account(Connection * conn, const std::string & username,
-                               const std::string & passwd,
+    Account(Connection * conn, std::string username,
+                               std::string passwd,
                                const std::string & id, long intId);
 
     ~Account() override;

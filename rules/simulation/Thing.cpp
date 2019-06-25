@@ -101,7 +101,7 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
 
 void Thing::MoveOperation(const Operation& op, OpVector& res)
 {
-    debug(std::cout << "Thing::move_operation" << std::endl << std::flush;);
+    debug_print("Thing::move_operation")
 
     if (m_location.m_parent == nullptr) {
         log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
@@ -447,7 +447,7 @@ void Thing::SetOperation(const Operation& op, OpVector& res)
 /// @param res The result of the operation is returned here.
 void Thing::updateProperties(const Operation& op, OpVector& res)
 {
-    debug(std::cout << "Generating property update" << std::endl << std::flush;);
+    debug_print("Generating property update")
 
     Anonymous set_arg;
     Anonymous set_arg_protected;

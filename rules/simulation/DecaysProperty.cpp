@@ -60,7 +60,7 @@ HandlerResult DecaysProperty::del_handler(LocatedEntity * e,
                                           const Operation &,
                                           OpVector & res)
 {
-    debug(std::cout << "Delete HANDLER CALLED" << std::endl << std::flush;);
+    debug_print("Delete HANDLER CALLED")
     const std::string & type = data();
 
     Anonymous create_arg;

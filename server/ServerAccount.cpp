@@ -169,7 +169,7 @@ Ref<LocatedEntity> ServerAccount::addNewEntity(const RootEntity & ent,
         return nullptr;
     }
     BaseWorld & world = m_connection->m_server.m_world;
-    debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
+    debug_print("Account::Add_character")
     Ref<LocatedEntity> chr;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
@@ -180,7 +180,7 @@ Ref<LocatedEntity> ServerAccount::addNewEntity(const RootEntity & ent,
     if (!chr) {
         return nullptr;
     }
-    debug(std::cout << "Added" << std::endl << std::flush;);
+    debug_print("Added")
     assert(chr->m_location.isValid());
     debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
     return chr;

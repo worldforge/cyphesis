@@ -94,8 +94,8 @@ int Persistence::init()
     }
 
     if (!findAccount("admin")) {
-        debug(std::cout << "Bootstrapping admin account."
-                        << std::endl << std::flush;);
+        debug_print("Bootstrapping admin account."
+                       )
         std::string adminAccountId;
         long adminAccountIntId = m_db.newId(adminAccountId);
         if (adminAccountIntId < 0) {

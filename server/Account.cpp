@@ -1,3 +1,5 @@
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000-2005 Alistair Riddoch
 //
@@ -68,13 +70,13 @@ static const bool debug_flag = false;
 /// @param id String identifier for this account
 /// @param intId Integer identifier for this account
 Account::Account(Connection * conn,
-                 const std::string & uname,
-                 const std::string & passwd,
+                 std::string uname,
+                 std::string passwd,
                  const std::string & id,
                  long intId) :
          ConnectableRouter(id, intId),
          m_connection(conn),
-         m_username(uname), m_password(passwd)
+         m_username(std::move(uname)), m_password(std::move(passwd))
 {
 }
 
@@ -135,7 +137,7 @@ ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const {
 
     auto id = newId(strId);
 
-    return new ExternalMind(strId, id, *entity);;
+    return new ExternalMind(strId, id, *entity);
 }
 
 /// \brief Connect an existing character to this account
@@ -212,7 +214,7 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
     }
     //Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
     ent->setAttr("mind", Atlas::Message::Element());
-    debug(std::cout << "Account::Add_character" << std::endl << std::flush;);
+    debug_print("Account::Add_character")
     auto chr = createCharacterEntity(ent, arg);
     if (!chr) {
         return nullptr;
@@ -228,9 +230,8 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
     sight->setArgs1(sight_arg);
     res.push_back(sight);
 
-    debug(std::cout << "Added" << std::endl << std::flush;);
     assert(chr->m_location.isValid());
-    debug(std::cout << "Location set to: " << chr->m_location << std::endl << std::flush;);
+    debug_print("Location set to: " << chr->m_location)
 
     //Check if we also should possess the newly created character.
     Element possessElem;
@@ -499,8 +500,7 @@ void Account::createObject(const Root & arg,
         return;
     }
 
-    debug( std::cout << "Account creating a " << arg->getParent() << " object"
-                     << std::endl << std::flush; );
+    debug_print("Account creating a " << arg->getParent() << " object")
 
     Anonymous new_character;
     new_character->setParent(arg->getParent());
@@ -542,7 +542,7 @@ void Account::createObject(const Root & arg,
 
 void Account::SetOperation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Account::Operation(set)" << std::endl << std::flush;);
+    debug_print("Account::Operation(set)")
     //Nothing to set on account.
 
 }

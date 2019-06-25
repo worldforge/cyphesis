@@ -141,8 +141,8 @@ void TerrainProperty::set(const Element & ent)
         return;
     }
     const MapType & t = ent.asMap();
-    debug(std::cout << "TerrainProperty::setTerrain()"
-                    << std::endl << std::flush;);
+    debug_print("TerrainProperty::setTerrain()"
+                   )
 
     const Pointstore & base_points = m_data.getPoints();
 
@@ -469,14 +469,14 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
     Point3D from_pos = relativePos(e->m_location, from->m_location);
     auto material = getSurface(from_pos.x(), from_pos.z());
     if (!material) {
-        debug(std::cout << "no surface hit" << std::endl << std::flush;);
+        debug_print("no surface hit")
         return OPERATION_IGNORED;
     }
 
     const TypeNode * from_type = from->getType();
     if (from_type->isTypeOf("plant")) {
         if (*material == GRASS) {
-            debug(std::cout << "From grass" << std::endl << std::flush;);
+            debug_print("From grass")
             Nourish nourish;
             nourish->setTo(from_id);
             Anonymous nour_arg;
@@ -497,7 +497,7 @@ HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
     } else if (from_type->isTypeOf("character")) {
         log(NOTICE, "Eat coming from an animal.");
         if (*material == GRASS) {
-            debug(std::cout << "From grass" << std::endl << std::flush;);
+            debug_print("From grass")
         }
     }
 

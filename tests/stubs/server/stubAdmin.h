@@ -33,7 +33,7 @@
 
 #ifndef STUB_Admin_opDispatched
 //#define STUB_Admin_opDispatched
-  void Admin::opDispatched(Operation op)
+  void Admin::opDispatched(const Operation& op)
   {
     
   }
