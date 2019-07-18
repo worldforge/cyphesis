@@ -22,6 +22,7 @@
 #include "common/Property.h"
 
 /**
+ * TODO: Move all logic into scripts
  * \brief Specifies how fast an entity burns.
  * \ingroup PropertyClasses
  */
