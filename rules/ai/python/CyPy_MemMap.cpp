@@ -272,13 +272,17 @@ Py::Object CyPy_MemMap::add_entity_memory(const Py::Tuple& args)
 Py::Object CyPy_MemMap::recall_entity_memory(const Py::Tuple& args)
 {
 
-    args.verify_length(2);
+    args.verify_length(2, 3);
     auto id = verifyString(args[0]);
     auto memory_name = verifyString(args[1]);
 
     Atlas::Message::Element element_val;
     m_value->recallEntityMemory(id, memory_name, element_val);
     if (element_val.isNone()) {
+        //Check if a default value was specified as third parameter.
+        if (args.length() == 3) {
+            return args[2];
+        }
         return Py::None();
     }
     return CyPy_Element::wrap(element_val);
