@@ -57,6 +57,13 @@ class Goal:
     def __str__(self):
         return self.info()
 
+    def triggering_goals(self):
+        goals = []
+        for sub_goal in self.subgoals:
+            if hasattr(sub_goal, "triggering_goals"):
+                goals.extend(sub_goal.triggering_goals())
+        return goals
+
     def info(self):
         name = self.__class__.__name__
         if name == "Goal":

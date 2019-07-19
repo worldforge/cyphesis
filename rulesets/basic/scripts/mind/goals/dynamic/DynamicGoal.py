@@ -20,6 +20,9 @@ class DynamicGoal(Goal):
     def trigger(self):
         return self.trigger_data
 
+    def triggering_goals(self):
+        return [self]
+
     def event(self, me, original_op, op):
         """this is called when trigger even is received"""
         # redefine this

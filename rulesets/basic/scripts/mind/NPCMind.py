@@ -6,7 +6,7 @@ import sys
 import traceback
 
 from atlas import Operation, Entity, Oplist
-from mind.Goal import goal_create
+from mind.Goal import goal_create, Goal
 
 from physics import *
 from physics import Quaternion
@@ -75,6 +75,7 @@ class NPCMind(ai.Mind):
         self.goals = []
         self.money_transfers = []
         self.transfers = []
+        # A map containing lists of goals which are to be triggered
         self.trigger_goals = {}
         self.jitter = random.uniform(-0.1, 0.1)
         self.message_queue = None
@@ -151,19 +152,20 @@ class NPCMind(ai.Mind):
         if entity.has_prop_list('_relations'):
             relations = entity.get_prop_list('_relations')
             for relation_element in relations:
+                rule = {}
                 if "filter" in relation_element:
-                    rule = {"filter": entity_filter.Filter(relation_element.filter)}
-                    if "disposition" in relation_element:
-                        rule["disposition"] = relation_element.disposition
-                    else:
-                        rule["disposition"] = 0
+                    rule["filter"] = entity_filter.Filter(relation_element.filter)
+                if "disposition" in relation_element:
+                    rule["disposition"] = relation_element.disposition
+                else:
+                    rule["disposition"] = 0
 
-                    if "threat" in relation_element:
-                        rule["threat"] = relation_element.threat
-                    else:
-                        rule["threat"] = 0
+                if "threat" in relation_element:
+                    rule["threat"] = relation_element.threat
+                else:
+                    rule["threat"] = 0
 
-                    self.relation_rules.append(rule)
+                self.relation_rules.append(rule)
 
             # update relations for existing entities
             for (_, entity) in self.entities.items():
@@ -205,7 +207,8 @@ class NPCMind(ai.Mind):
         disposition = self.map.recall_entity_memory(entity.id, "disposition_base", 0)
         threat = self.map.recall_entity_memory(entity.id, "threat_base", 0)
         for rule in self.relation_rules:
-            if self.match_entity(rule["filter"], entity):
+            # If there's no 'filter' the rule applies to all entities
+            if "filter" not in rule or self.match_entity(rule["filter"], entity):
                 if "disposition" in rule:
                     disposition += rule["disposition"]
                 if "threat" in rule:
@@ -792,17 +795,24 @@ class NPCMind(ai.Mind):
     ########## goals
 
     def insert_goal(self, goal):
-        # If it's a dynamic goal we need to add it to the trigger_goals
-        if hasattr(goal, "trigger"):
-            print("Adding trigger goal: {}".format(str(goal)))
-            dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
+        # Collect all triggering goals and add them
+        if hasattr(goal, "triggering_goals"):
+            triggering_goals = goal.triggering_goals()
+            for g in triggering_goals:
+                print("Adding trigger goal: {}".format(str(g)))
+                dictlist.add_value(self.trigger_goals, g.trigger(), g)
+
         self.goals.append(goal)
 
     def remove_goal(self, goal):
         """Removes a goal."""
         print('Removing goal')
-        if hasattr(goal, "trigger"):
-            dictlist.remove_value(self.trigger_goals, goal)
+        if hasattr(goal, "triggering_goals"):
+            triggering_goals = goal.triggering_goals()
+            for g in triggering_goals:
+                print("Removing trigger goal: {}".format(str(g)))
+                dictlist.remove_value(self.trigger_goals,  g)
+
         self.goals.remove(goal)
 
     def fulfill_goals(self, time):
