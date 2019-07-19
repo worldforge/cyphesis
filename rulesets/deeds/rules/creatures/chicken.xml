@@ -19,8 +19,19 @@
                     <string>buzzard</string>
                 </list>
             </map>
+            <map name="_relations">
+                <list name="default">
+                    <map>
+                        <!-- By default all other entities are regarded as threats by a chicken. -->
+                        <float name="threat">10</float>
+                    </map>
+                </list>
+            </map>
             <map name="_goals">
                 <list name="default">
+                    <map>
+                        <string name="class">mind.goals.common.combat.FightOrFlight</string>
+                    </map>
                     <map>
                         <string name="class">mind.goals.common.move.roam</string>
                         <map name="params">

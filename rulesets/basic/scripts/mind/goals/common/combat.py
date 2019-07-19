@@ -115,7 +115,8 @@ class FightOrFlight(Goal):
 
     def __init__(self, range=30):
         Goal.__init__(self, desc="fight or flee from enemies",
-                      subgoals=[Fight(what="memory.disposition <= -1 && memory.threat < 0", range=range),
+                      subgoals=[KeepGrudge(),
+                                Fight(what="memory.disposition <= -1 && memory.threat <= 0", range=range),
                                 avoid(what="memory.disposition <= -1 && memory.threat > 0", range=range)])
 
 
@@ -127,23 +128,21 @@ class KeepGrudge(DynamicGoal):
 
     def event(self, me, original_op, op):
         print('Got sight of hit')
-        ent = op[0]
-        if ent:
-            from_id = ent["from"]
-            to_id = ent["to"]
-            if from_id and to_id:
-                # Check that it's not from ourselves
-                if from_id == me.entity.id:
-                    return
-                # Ignore it it's us being hit
-                if to_id != me.entity.id:
-                    return
+        from_id = op.from_
+        to_id = op.to
+        if from_id and to_id:
+            # Check that it's not from ourselves
+            if from_id == me.entity.id:
+                return
+            # Ignore it it's us being hit
+            if to_id != me.entity.id:
+                return
 
-                # Alter the base disposition for this entity
-                disposition_base = me.map.recall_entity_memory(from_id, "disposition_base", 0)
-                # Alter it slightly. Here we could check how much damage it did and alter it depending on that
-                me.map.add_entity_memory(from_id, "disposition_base", disposition_base - 0.4)
-                print("Updated base disposition to {}.".format(disposition_base - 0.4))
-                entity = me.entities[from_id]
-                if entity:
-                    me.update_relation_for_entity(entity)
+            # Alter the base disposition for this entity
+            disposition_base = me.map.recall_entity_memory(from_id, "disposition_base", 0)
+            # Alter it slightly. Here we could check how much damage it did and alter it depending on that
+            me.map.add_entity_memory(from_id, "disposition_base", disposition_base - 0.4)
+            print("Updated base disposition to {}.".format(disposition_base - 0.4))
+            entity = me.entities[from_id]
+            if entity:
+                me.update_relation_for_entity(entity)

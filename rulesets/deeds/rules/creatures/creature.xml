@@ -57,8 +57,10 @@
             </map>
             <map name="_goals">
                 <list name="default">
-                    <!-- Standard is that all creatures know how to fight or fly. -->
-                    <string name="class">mind.goals.common.combat.FightOrFlight</string>
+                    <map>
+                        <!-- Standard is that all creatures know how to fight or fly. -->
+                        <string name="class">mind.goals.common.combat.FightOrFlight</string>
+                    </map>
                 </list>
             </map>
             <map name="__scripts">
