@@ -56,6 +56,10 @@ void CyPy_Root::init_type()
     behaviors().name("Root");
     behaviors().doc("");
 
+    behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
+                                   | Py::PythonType::support_mapping_subscript);
+    behaviors().supportSequenceType(Py::PythonType::support_sequence_contains);
+
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
 
     behaviors().readyType();
@@ -96,5 +100,32 @@ int CyPy_Root::setattro(const Py::String& name, const Py::Object& attr)
     }
 
     m_value->setAttr(nameStr, CyPy_Element::asElement(attr));
+    return 0;
+}
+
+Py::Object CyPy_Root::mapping_subscript(const Py::Object& key)
+{
+    Element attr;
+    if (m_value->copyAttr(verifyString(key), attr) == 0) {
+        if (attr.isPtr()) {
+            return Py::Object((PyObject*) attr.Ptr());
+        }
+        return CyPy_Element::asPyObject(attr, false);
+    }
+    return Py::None();
+}
+
+int CyPy_Root::mapping_ass_subscript(const Py::Object& key, const Py::Object& value)
+{
+    m_value->setAttr(verifyString(key), CyPy_Element::asElement(value));
+    return 0;
+}
+
+int CyPy_Root::sequence_contains(const Py::Object& key)
+{
+    auto keyStr = verifyString(key);
+    if (m_value->hasAttr(keyStr)) {
+        return 1;
+    }
     return 0;
 }

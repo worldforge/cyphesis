@@ -35,9 +35,16 @@ class CyPy_RootEntity : public WrapperBase<Atlas::Objects::Entity::RootEntity, C
 
         static void init_type();
 
+        Py::Object mapping_subscript(const Py::Object&) override;
+
+        int sequence_contains(const Py::Object&) override;
+
+        int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
+
         Py::Object get_name();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_RootEntity, get_name)
+
 
     protected:
 

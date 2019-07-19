@@ -52,7 +52,7 @@ int main()
     run_python_string("from rules import Location");
 
     auto ent = (Py::PythonClassObject<CyPy_RootEntity>)(CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity()));
-    assert(ent.getCxxObject() != 0);
+    assert(ent.getCxxObject() != nullptr);
     assert(ent.getCxxObject()->m_value.isValid());
 
     run_python_string("Entity('1')");
@@ -81,6 +81,9 @@ int main()
     expect_python_error("e.name=1", PyExc_TypeError);
     run_python_string("e.foo='Bob'");
     run_python_string("e.bar=1");
+    run_python_string("e['bla']=1");
+    run_python_string("assert e['bla']==1");
+    run_python_string("assert 'bla' in e");
     run_python_string("e.baz=[1,2.0,'three']");
     run_python_string("e.qux={'mim': 23}");
     expect_python_error("e.ptr=set([1,2])", PyExc_TypeError);

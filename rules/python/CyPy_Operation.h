@@ -41,6 +41,12 @@ class CyPy_Operation : public WrapperBase<Atlas::Objects::Operation::RootOperati
 
         Py::Object number_add(const Py::Object&) override;
 
+        Py::Object mapping_subscript(const Py::Object&) override;
+
+        int sequence_contains(const Py::Object&) override;
+
+        int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
+
         Py::Object getattro(const Py::String& name) override;
 
         int setattro(const Py::String& name, const Py::Object& attr) override;

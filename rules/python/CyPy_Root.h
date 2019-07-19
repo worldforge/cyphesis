@@ -33,6 +33,12 @@ class CyPy_Root: public WrapperBase<Atlas::Objects::Root, CyPy_Root>
 
         static void init_type();
 
+        Py::Object mapping_subscript(const Py::Object&) override;
+
+        int sequence_contains(const Py::Object&) override;
+
+        int mapping_ass_subscript(const Py::Object&, const Py::Object&) override;
+
         Py::Object get_name();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Root, get_name)

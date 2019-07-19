@@ -92,7 +92,12 @@ void CyPy_Operation::init_type()
 
     behaviors().supportNumberType(Py::PythonType::support_number_add);
     behaviors().supportSequenceType(Py::PythonType::support_sequence_length
-                                    | Py::PythonType::support_sequence_item);
+                                    | Py::PythonType::support_sequence_item
+                                    | Py::PythonType::support_sequence_contains);
+
+    behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
+                                   | Py::PythonType::support_mapping_subscript);
+
 
 
     PYCXX_ADD_VARARGS_METHOD(set_serialno, setSerialno, "");
@@ -116,6 +121,36 @@ void CyPy_Operation::init_type()
     behaviors().readyType();
 }
 
+
+Py::Object CyPy_Operation::mapping_subscript(const Py::Object& key)
+{
+    if (key.isLong()) {
+        return sequence_item(Py::Long(key));
+    }
+    Element attr;
+    if (m_value->copyAttr(verifyString(key), attr) == 0) {
+        if (attr.isPtr()) {
+            return Py::Object((PyObject*) attr.Ptr());
+        }
+        return CyPy_Element::asPyObject(attr, false);
+    }
+    return Py::None();
+}
+
+int CyPy_Operation::mapping_ass_subscript(const Py::Object& key, const Py::Object& value)
+{
+    m_value->setAttr(verifyString(key), CyPy_Element::asElement(value));
+    return 0;
+}
+
+int CyPy_Operation::sequence_contains(const Py::Object& key)
+{
+    auto keyStr = verifyString(key);
+    if (m_value->hasAttr(keyStr)) {
+        return 1;
+    }
+    return 0;
+}
 
 Py::Object CyPy_Operation::setSerialno(const Py::Tuple& args)
 {

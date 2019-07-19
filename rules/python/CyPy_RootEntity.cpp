@@ -27,7 +27,7 @@ using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
 CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+        : WrapperBase(self, args, kwds)
 {
     m_value = Anonymous();
     if (args.size() == 1) {
@@ -56,7 +56,7 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
 }
 
 CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Atlas::Objects::Entity::RootEntity value)
-    : WrapperBase(self, std::move(value))
+        : WrapperBase(self, std::move(value))
 {
 
 }
@@ -65,6 +65,10 @@ void CyPy_RootEntity::init_type()
 {
     behaviors().name("RootEntity");
     behaviors().doc("");
+
+    behaviors().supportMappingType(Py::PythonType::support_mapping_ass_subscript
+                                   | Py::PythonType::support_mapping_subscript);
+    behaviors().supportSequenceType(Py::PythonType::support_sequence_contains);
 
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
 
@@ -93,7 +97,6 @@ Py::Object CyPy_RootEntity::get_name()
     return Py::String(m_value->getName());
 }
 
-
 Py::Object CyPy_RootEntity::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
@@ -101,6 +104,15 @@ Py::Object CyPy_RootEntity::getattro(const Py::String& name)
         return Py::String(m_value->getName());
     } else if (nameStr == "id") {
         return Py::String(m_value->getId());
+    } else if (nameStr == "from_") {
+        // "from" is protected in Python, so we'll use the "from_" version.
+        Element attr;
+        if (m_value->copyAttr("from", attr) == 0) {
+            if (attr.isPtr()) {
+                return Py::Object((PyObject*) attr.Ptr());
+            }
+            return CyPy_Element::asPyObject(attr, false);
+        }
     } else {
         Element attr;
         if (m_value->copyAttr(name, attr) == 0) {
@@ -123,5 +135,32 @@ int CyPy_RootEntity::setattro(const Py::String& name, const Py::Object& attr)
     }
 
     m_value->setAttr(nameStr, CyPy_Element::asElement(attr));
+    return 0;
+}
+
+Py::Object CyPy_RootEntity::mapping_subscript(const Py::Object& key)
+{
+    Element attr;
+    if (m_value->copyAttr(verifyString(key), attr) == 0) {
+        if (attr.isPtr()) {
+            return Py::Object((PyObject*) attr.Ptr());
+        }
+        return CyPy_Element::asPyObject(attr, false);
+    }
+    return Py::None();
+}
+
+int CyPy_RootEntity::mapping_ass_subscript(const Py::Object& key, const Py::Object& value)
+{
+    m_value->setAttr(verifyString(key), CyPy_Element::asElement(value));
+    return 0;
+}
+
+int CyPy_RootEntity::sequence_contains(const Py::Object& key)
+{
+    auto keyStr = verifyString(key);
+    if (m_value->hasAttr(keyStr)) {
+        return 1;
+    }
     return 0;
 }

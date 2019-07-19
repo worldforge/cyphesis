@@ -122,6 +122,9 @@ int main()
     expect_python_error("o.from_=1", PyExc_TypeError);
     expect_python_error("o.from_={'id': 1}", PyExc_TypeError);
     run_python_string("o.from_={'id': '1'}");
+    run_python_string("o['from']='ble'");
+    run_python_string("assert o['from']=='ble'");
+    run_python_string("assert 'from' in o");
     run_python_string("o.to='1'");
     expect_python_error("o.to=1", PyExc_TypeError);
     expect_python_error("o.to={'id': 1}", PyExc_TypeError);
