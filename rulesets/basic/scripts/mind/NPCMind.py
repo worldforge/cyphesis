@@ -202,8 +202,8 @@ class NPCMind(ai.Mind):
         return True
 
     def update_relation_for_entity(self, entity):
-        disposition = 0
-        threat = 0
+        disposition = self.map.recall_entity_memory(entity.id, "disposition_base", 0)
+        threat = self.map.recall_entity_memory(entity.id, "threat_base", 0)
         for rule in self.relation_rules:
             if self.match_entity(rule["filter"], entity):
                 if "disposition" in rule:
@@ -794,6 +794,7 @@ class NPCMind(ai.Mind):
     def insert_goal(self, goal):
         # If it's a dynamic goal we need to add it to the trigger_goals
         if hasattr(goal, "trigger"):
+            print("Adding trigger goal: {}".format(str(goal)))
             dictlist.add_value(self.trigger_goals, goal.trigger(), goal)
         self.goals.append(goal)
 

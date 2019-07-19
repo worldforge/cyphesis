@@ -46,7 +46,7 @@ class welcome(DynamicGoal):
 
         entity = me.map.update(first_op, op.get_seconds())
         if original_op.from_ == me.entity.id:
-            self.add_thing(entity)
+            me.add_thing(entity)
         if me.match_entity(self.filter, entity):
             return Operation("talk", Entity(say=self.message)) + me.face(entity)
 
@@ -74,8 +74,8 @@ class help(Goal):
 
     def give_help(self, me):
         # Check that the target hasn't disappeared
-        targetEntity = me.map.get(self.target)
-        if targetEntity == None:
+        target_entity = me.map.get(self.target)
+        if target_entity is None:
             self.irrelevant = 1
             return
 
@@ -85,7 +85,7 @@ class help(Goal):
             ent = Entity(say=message, responses=self.responses)
         else:
             ent = Entity(say=message)
-        return Operation("talk", ent) + me.face(targetEntity)
+        return Operation("talk", ent) + me.face(target_entity)
 
 
 class add_help(add_unique_goal):
