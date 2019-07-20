@@ -66,7 +66,8 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
 
     //Reset any planted_on properties when moving to this domain.
     if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {
-        if (prop->data()) {
+        //Check that we've moved from another entity.
+        if (prop->data() && (!prop->data().entity || prop->data().entity->getId() != m_entity.getId())) {
             entity.setAttr(PlantedOnProperty::property_name, Atlas::Message::Element());
             Atlas::Objects::Operation::Update update;
             update->setTo(entity.getId());
