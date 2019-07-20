@@ -467,15 +467,10 @@ void MemMap::check(const double& time)
 
 void MemMap::flush()
 {
-    debug(std::cout << "Flushing memory with " << m_entities.size()
-                    << " memories" << std::endl << std::flush;);
+    debug_print("Flushing memory with " << m_entities.size()
+                    << " entities and " << m_entityRelatedMemory.size() << " entity memories.");
     m_entities.clear();
-//    MemEntityDict::const_iterator Iend = m_entities.end();
-//    for (MemEntityDict::const_iterator I = m_entities.begin(); I != Iend; ++I) {
-//        // FIXME This is required until MemMap uses parent refcounting
-//        I->second->m_location.m_parent = 0;
-//        I->second->decRef();
-//    }
+    m_entityRelatedMemory.clear();
 }
 
 void MemMap::setListener(MapListener* listener)

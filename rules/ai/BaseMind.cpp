@@ -1,5 +1,7 @@
 #include <utility>
 
+#include <utility>
+
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2000,2001 Alistair Riddoch
 //
@@ -46,16 +48,16 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-BaseMind::BaseMind(const std::string& mindId, const std::string& entityId) :
-    Router(mindId, std::stol(mindId)),
-    m_entityId(entityId),
-    m_flags(0),
-    m_typeStore(new SimpleTypeStore()),
-    m_typeResolver(new TypeResolver(*m_typeStore)),
-    m_map(*m_typeResolver),
-    m_time(new WorldTime()),
-    m_serialNoCounter(0),
-    m_scriptFactory(nullptr)
+BaseMind::BaseMind(const std::string& mindId, std::string entityId) :
+        Router(mindId, std::stol(mindId)),
+        m_entityId(std::move(entityId)),
+        m_flags(0),
+        m_typeStore(new SimpleTypeStore()),
+        m_typeResolver(new TypeResolver(*m_typeStore)),
+        m_map(*m_typeResolver),
+        m_time(new WorldTime()),
+        m_serialNoCounter(0),
+        m_scriptFactory(nullptr)
 {
     m_typeResolver->m_typeProviderId = mindId;
 }
@@ -73,6 +75,12 @@ void BaseMind::init(OpVector& res)
     res.push_back(look);
 }
 
+void BaseMind::destroy()
+{
+    m_map.flush();
+    m_flags.addFlags(entity_destroyed);
+    setScript(nullptr);
+}
 
 /// \brief Process the Sight of a Create operation.
 ///
@@ -102,20 +110,24 @@ void BaseMind::sightCreateOperation(const Operation& op, OpVector& res)
 void BaseMind::sightDeleteOperation(const Operation& op, OpVector& res)
 {
     debug_print("Sight Delete operation")
-    const std::vector<Root>& args = op->getArgs();
+    auto& args = op->getArgs();
     if (args.empty()) {
         debug_print(" no args!")
         return;
     }
-    const Root& obj = args.front();
+    auto& obj = args.front();
     if (!obj.isValid()) {
         log(ERROR, "Sight Delete with invalid entity");
         return;
     }
-    const std::string& id = obj->getId();
+    auto& id = obj->getId();
     if (!id.empty()) {
-        m_map.del(obj->getId());
+        m_map.del(id);
         m_pendingEntitiesOperations.erase(obj->getId());
+        if (id == m_entityId) {
+            log(INFO, "Deleting own entity.");
+            destroy();
+        }
     } else {
         log(WARNING, "Sight Delete with no ID");
     }

@@ -54,9 +54,9 @@ using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
 PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client) :
-    Router(id, intId),
-    m_client(client),
-    m_mindFactory(mindFactory)
+        Router(id, intId),
+        m_client(client),
+        m_mindFactory(mindFactory)
 {
     assert(m_mindFactory.m_scriptFactory);
 
@@ -98,12 +98,25 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
         auto I = m_minds.find(op->getTo());
         if (I != m_minds.end()) {
             I->second->operation(op, res);
+
+            if (I->second->isDestroyed()) {
+                log(NOTICE, String::compose("Deleting mind %1.", I->second->getId()));
+                m_entitiesWithMinds.erase(I->second->getEntity()->getId());
+                m_minds.erase(I);
+            }
+
             return;
         }
 
         I = m_entitiesWithMinds.find(op->getTo());
         if (I != m_entitiesWithMinds.end()) {
             I->second->operation(op, res);
+            if (I->second->isDestroyed()) {
+                log(NOTICE, String::compose("Deleting mind %1.", I->second->getId()));
+                m_entitiesWithMinds.erase(I);
+                m_minds.erase(I->second->getId());
+            }
+
             return;
         }
 

@@ -33,7 +33,7 @@ class SharedTerrain;
 class AwareMind: public BaseMind, public MemMap::MapListener
 {
     public:
-        AwareMind(const std::string & mind_id, const std::string & entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
+        AwareMind(const std::string & mind_id, std::string entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
 
         ~AwareMind() override;
 

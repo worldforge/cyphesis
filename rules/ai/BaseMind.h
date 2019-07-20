@@ -61,13 +61,19 @@ class BaseMind : public Router, public ReferenceCounted {
 
 
     public:
-    BaseMind(const std::string & mindId, const std::string & entityId);
+    BaseMind(const std::string & mindId, std::string  entityId);
 
     ~BaseMind() override;
 
     ScriptKit<BaseMind>* m_scriptFactory;
 
     void init(OpVector& res);
+
+    /**
+     * Call this when the mind is destroyed and shouldn't receive any more ops.
+     * This will clear any references to it.
+     */
+    void destroy();
 
     /// \brief Accessor for the memory map of world entities
     MemMap * getMap() { return &m_map; }
