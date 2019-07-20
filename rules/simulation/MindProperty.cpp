@@ -35,7 +35,6 @@ MindProperty::MindProperty(const MindProperty & rhs) = default;
 
 void MindProperty::set(const Element & val)
 {
-    Property<Atlas::Message::MapType>::set(val);
     if (!val.isMap()) {
         m_language.clear();
         m_script.clear();
@@ -71,6 +70,20 @@ void MindProperty::set(const Element & val)
     }
 }
 
+int MindProperty::get(Atlas::Message::Element & val) const
+{
+    MapType map{};
+    if (!m_language.empty()) {
+        map.emplace("language", m_language);
+    }
+    if (!m_script.empty()) {
+        map.emplace("name", m_script);
+    }
+    val = map;
+    return 0;
+}
+
+
 MindProperty * MindProperty::copy() const
 {
     return new MindProperty(*this);
@@ -79,7 +92,7 @@ MindProperty * MindProperty::copy() const
 void MindProperty::apply(LocatedEntity * ent)
 {
     //Only request possession if there's a value. This allows player controlled entities to be exempted.
-    if (!m_data.empty()) {
+    if (isMindEnabled()) {
         ExternalMindsManager::instance().requestPossession(ent);
     }
 }

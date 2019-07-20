@@ -9,8 +9,8 @@
 
 #ifndef STUB_MindProperty_MindProperty
 //#define STUB_MindProperty_MindProperty
-   MindProperty::MindProperty(const MindProperty &)
-    : Property(MindProperty)
+   MindProperty::MindProperty(const MindProperty&)
+    : PropertyBase(MindProperty)
   {
     
   }
@@ -26,11 +26,19 @@
 
 #ifndef STUB_MindProperty_set
 //#define STUB_MindProperty_set
-  void MindProperty::set(const Atlas::Message::Element & val)
+  void MindProperty::set(const Atlas::Message::Element& val)
   {
     
   }
 #endif //STUB_MindProperty_set
+
+#ifndef STUB_MindProperty_get
+//#define STUB_MindProperty_get
+  int MindProperty::get(Atlas::Message::Element & val) const
+  {
+    return 0;
+  }
+#endif //STUB_MindProperty_get
 
 #ifndef STUB_MindProperty_copy
 //#define STUB_MindProperty_copy
@@ -42,7 +50,7 @@
 
 #ifndef STUB_MindProperty_apply
 //#define STUB_MindProperty_apply
-  void MindProperty::apply(LocatedEntity *)
+  void MindProperty::apply(LocatedEntity*)
   {
     
   }

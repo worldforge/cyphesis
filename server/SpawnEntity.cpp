@@ -60,7 +60,7 @@ int SpawnEntity::setup(const MapType & data)
 
 int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) const
 {
-    if (m_ent.get() == 0) {
+    if (!m_ent) {
         return -1;
     }
 
@@ -100,8 +100,8 @@ int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) c
     }
 
 
-    for (auto I : entityTemplate) {
-        dsc->setAttr(I.first, I.second);
+    for (const auto& entry : entityTemplate) {
+        dsc->setAttr(entry.first, entry.second);
     }
 
     Location new_loc;
@@ -115,8 +115,8 @@ int SpawnEntity::addToMessage(MapType & msg) const
 {
     if (!m_entities.empty()) {
         Atlas::Message::ListType keys(m_entities.size());
-        for (auto I : m_entities) {
-            keys.push_back(I.first);
+        for (const auto& entry : m_entities) {
+            keys.push_back(entry.first);
         }
         msg.insert(std::make_pair("character_types", keys));
     }

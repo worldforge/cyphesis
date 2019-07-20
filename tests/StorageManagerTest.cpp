@@ -349,23 +349,7 @@ Property<T> * Property<T>::copy() const
 
 template class Property<MapType>;
 
-
-bool MindProperty::isMindEnabled() const {
-    return false;
-}
-
-void MindProperty::set(const Element & val)
-{
-}
-
-MindProperty * MindProperty::copy() const
-{
-    return 0;
-}
-
-void MindProperty::apply(LocatedEntity * ent)
-{
-}
+#include "stubs/rules/simulation/stubMindProperty.h"
 
 
 long forceIntegerId(const std::string & id)
