@@ -40,6 +40,16 @@
                     </map>
                 </map>
             </map>
+            <map name="_relations">
+                <list name="default">
+                    <!-- Fight humans. -->
+                    <map>
+                        <string name="filter">entity.type=types.human</string>
+                        <float name="disposition">-10</float>
+                        <float name="threat">-10</float>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">spider</string>
         <string name="objtype">class</string>

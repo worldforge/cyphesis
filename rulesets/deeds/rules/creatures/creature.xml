@@ -81,6 +81,10 @@
                         <string name="language">python</string>
                         <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
                     </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Immortality.Immortality</string>
+                    </map>
                 </list>
             </map>
         </map>

@@ -45,7 +45,7 @@ void PropelProperty::set(const Element& val)
     try {
         mData.fromAtlas(val.asList());
     } catch (Atlas::Message::WrongTypeException&) {
-        log(ERROR, "BBoxProperty::set: Box bbox data");
+        log(ERROR, "PropelProperty::set: Data was not in format which could be parsed into 3d vector.");
     }
 }
 

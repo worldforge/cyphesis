@@ -61,8 +61,6 @@
                 <string name="parent">coin</string>
             </map>
         </list>
-        <list name="thoughts">
-        </list>
     </map>
 
     <map>
@@ -74,11 +72,12 @@
                 <string name="parent">human</string>
             </map>
         </list>
-        <list name="thoughts">
+        <list name="_relations">
+            <!-- Flee from dangerous animals. -->
             <map>
-                <string name="object">avoid([&apos;wolf&apos;,&apos;goblin&apos;,&apos;bear&apos;,&apos;skeleton&apos;,&apos;lych&apos;],30.0)</string>
-                <string name="predicate">goal</string>
-                <string name="subject">(&apos;avoid&apos;, &apos;#avoid_verb1&apos;)</string>
+                <string name="filter">entity.type=types.wolf|types.goblin|types.bear|types.skeleton|types.lych</string>
+                <float name="disposition">-10</float>
+                <float name="threat">10</float>
             </map>
         </list>
     </map>
@@ -174,8 +173,6 @@
                 <string name="id">coin6</string>
                 <string name="parent">coin</string>
             </map>
-        </list>
-        <list name="thoughts">
         </list>
     </map>
 
@@ -304,7 +301,13 @@
                 <string name="parent">coin</string>
             </map>
         </list>
-        <list name="thoughts">
+        <list name="_relations">
+            <!-- Fight dangerous animals. -->
+            <map>
+                <string name="filter">entity.type=types.wolf|types.goblin|types.bear|types.skeleton|types.lych</string>
+                <float name="disposition">-10</float>
+                <float name="threat">-10</float>
+            </map>
         </list>
     </map>
 

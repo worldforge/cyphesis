@@ -1,6 +1,13 @@
 <atlas>
     <map>
         <map name="attributes">
+            <map name="attachments">
+                <map name="default">
+                    <!-- Requirements for things wielded are that they are contained in the entity's inventory. -->
+                    <string name="hand_primary">contains_recursive(actor.contains, child = tool)</string>
+                    <string name="hand_secondary">contains_recursive(actor.contains, child = tool)</string>
+                </map>
+            </map>
             <map name="bbox">
                 <list name="default">
                     <float>-0.4</float>
@@ -42,6 +49,16 @@
                         <string name="description">Punch something with your fist.</string>
                     </map>
                 </map>
+            </map>
+            <map name="_relations">
+                <list name="default">
+                    <!-- Fight humans. -->
+                    <map>
+                        <string name="filter">entity.type=types.human</string>
+                        <float name="disposition">-10</float>
+                        <float name="threat">-10</float>
+                    </map>
+                </list>
             </map>
         </map>
         <string name="id">lych</string>

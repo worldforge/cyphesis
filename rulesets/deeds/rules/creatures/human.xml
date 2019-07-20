@@ -22,8 +22,10 @@
             </map>
             <map name="attachments">
                 <map name="default">
+                    <!-- Requirements for things wielded are that they are contained in the entity's inventory. -->
                     <string name="hand_primary">contains_recursive(actor.contains, child = tool)</string>
                     <string name="hand_secondary">contains_recursive(actor.contains, child = tool)</string>
+                    <!-- Requirements for things worn are that they are contained in the entity's inventory and have the appropriate "worn" property. -->
                     <string name="torso">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'torso'</string>
                     <string name="legs">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'legs'</string>
                     <string name="feet">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'feet'</string>
@@ -71,6 +73,7 @@
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.Unarmed.strike</string>
+                        <!-- Can only punch if there's nothing wielded in the primary hand. -->
                         <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
                         <string name="description">Punch something with your fist.</string>
                     </map>

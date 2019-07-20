@@ -39,7 +39,18 @@
                         <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
                     </map>
                 </map>
-            </map>        </map>
+            </map>
+            <map name="_relations">
+                <list name="default">
+                    <!-- Fight humans. -->
+                    <map>
+                        <string name="filter">entity.type=types.human</string>
+                        <float name="disposition">-10</float>
+                        <float name="threat">-10</float>
+                    </map>
+                </list>
+            </map>
+        </map>
         <string name="id">wolf</string>
         <string name="objtype">class</string>
         <string name="parent">mobile</string>
