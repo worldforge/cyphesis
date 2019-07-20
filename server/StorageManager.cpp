@@ -321,19 +321,28 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
     const PropertyDict & properties = ent->getProperties();
-    auto I = properties.begin();
-    auto Iend = properties.end();
-    for (; I != Iend; ++I) {
-        PropertyBase * prop = I->second;
+    for (const auto& property : properties) {
+        PropertyBase * prop = property.second;
         if (prop->hasFlags(per_mask)) {
             continue;
         }
+        Atlas::Message::Element element;
+        prop->get(element);
+        if (element.isNone()) {
+            //TODO: Add code for deleting a database row when the value is none.
+            Atlas::Message::MapType propMap;
+            prop->get(propMap["val"]);
+            Database::instance().encodeObject(propMap, upd_property_tuples[property.first]);
+        } else {
+            Atlas::Message::MapType propMap;
+            prop->get(propMap["val"]);
+            Database::instance().encodeObject(propMap, upd_property_tuples[property.first]);
+        }
+
         // FIXME check if this is new or just modded.
         if (prop->hasFlags(per_seen)) {
-            encodeProperty(prop, upd_property_tuples[I->first]);
             ++m_updatePropertyCount;
         } else {
-            encodeProperty(prop, new_property_tuples[I->first]);
             ++m_insertPropertyCount;
         }
         prop->addFlags(per_clean | per_seen);

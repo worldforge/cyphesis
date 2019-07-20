@@ -291,12 +291,10 @@ DatabaseResult Database::selectProperties(const std::string & id)
 int Database::updateProperties(const std::string & id,
                                const KeyValues & tuples)
 {
-    auto I = tuples.begin();
-    auto Iend = tuples.end();
-    for (; I != Iend; ++I) {
+    for (const auto& entry : tuples) {
         std::string query = compose("UPDATE properties SET value = '%3' WHERE"
                                     " id=%1 AND name='%2'",
-                                    id, I->first, I->second);
+                                    id, entry.first, entry.second);
         scheduleCommand(query);
     }
     return 0;
