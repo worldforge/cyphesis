@@ -347,8 +347,10 @@ Py::Object CyPy_Operation::getattro(const Py::String& name)
     if (nameStr == "to") {
         return Py::String(m_value->getTo());
     }
-    //Why should "id" return the parent?
     if (nameStr == "id") {
+        return Py::String(m_value->getId());
+    }
+    if (nameStr == "parent") {
         return Py::String(m_value->getParent());
     }
 
@@ -432,6 +434,10 @@ int CyPy_Operation::setattro(const Py::String& name, const Py::Object& attr)
     }
     if (nameStr == "args") {
         setArgs(Py::Tuple(attr));
+        return 0;
+    }
+    if (nameStr == "id") {
+        m_value->setId(verifyString(attr));
         return 0;
     }
 

@@ -29,7 +29,8 @@ def strike(instance):
             damage = 0
             if instance.tool.props.damage:
                 damage = instance.tool.props.damage
-            hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.id), to=target.entity)
+            print(instance.actor.id)
+            hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
             return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
         else:
             return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")

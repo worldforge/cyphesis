@@ -182,13 +182,13 @@ class NPCMind(ai.Mind):
         pass
 
     def get_op_name_and_sub(self, op):
-        event_name = op.id
+        event_name = op.parent
         sub_op = op
         # I am not quite sure why this is while, as it's only over true
         # for one iteration.
         while len(sub_op) and sub_op[0].get_name() == "op":
             sub_op = sub_op[0]
-            event_name = event_name + "_" + sub_op.id
+            event_name = event_name + "_" + sub_op.parent
         return event_name, sub_op
 
     def is_talk_op_addressed_to_me_or_none(self, op):

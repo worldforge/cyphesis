@@ -33,6 +33,30 @@
   }
 #endif //STUB_CyPy_RootEntity_init_type
 
+#ifndef STUB_CyPy_RootEntity_mapping_subscript
+//#define STUB_CyPy_RootEntity_mapping_subscript
+  Py::Object CyPy_RootEntity::mapping_subscript(const Py::Object&)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_RootEntity_mapping_subscript
+
+#ifndef STUB_CyPy_RootEntity_sequence_contains
+//#define STUB_CyPy_RootEntity_sequence_contains
+  int CyPy_RootEntity::sequence_contains(const Py::Object&)
+  {
+    return 0;
+  }
+#endif //STUB_CyPy_RootEntity_sequence_contains
+
+#ifndef STUB_CyPy_RootEntity_mapping_ass_subscript
+//#define STUB_CyPy_RootEntity_mapping_ass_subscript
+  int CyPy_RootEntity::mapping_ass_subscript(const Py::Object&, const Py::Object&)
+  {
+    return 0;
+  }
+#endif //STUB_CyPy_RootEntity_mapping_ass_subscript
+
 #ifndef STUB_CyPy_RootEntity_get_name
 //#define STUB_CyPy_RootEntity_get_name
   Py::Object CyPy_RootEntity::get_name()
