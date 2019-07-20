@@ -15,6 +15,10 @@ import time
 import types
 
 
+# A list of usages which we should look for in weapons.
+weapon_usages = ['strike', 'chop']
+
+
 class Fight(Goal):
     """Fight enemies in range"""
 
@@ -35,6 +39,7 @@ class Fight(Goal):
         self.range = range
         self.square_range = range * range
         self.vars = ["what", "range"]
+        self.weapon_usage = None
 
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
@@ -51,13 +56,19 @@ class Fight(Goal):
             has_attached = True
             # Check that the attached entity can be used to strike
             usages = attached_current.get_prop_map("usages")
-            if usages and 'strike' in usages:
-                    return None
+            if usages:
+                for usage, _ in usages.items():
+                    if usage in weapon_usages:
+                        self.weapon_usage = usage
+                        return None
         # Current tool isn't a weapon, or we have nothing attached, try to find one, and if not unequip so we can fight with our fists
         for child in me.entity.contains:
             usages = child.get_prop_map("usages")
-            if usages and 'strike' in usages:
-                return Operation("wield", Entity(child.id, attachment="hand_primary"))
+            if usages:
+                for usage, _ in usages.items():
+                    if usage in weapon_usages:
+                        self.weapon_usage = usage
+                        return Operation("wield", Entity(child.id, attachment="hand_primary"))
 
         # Couldn't find any weapon to wield, check if we should unwield the current tool so we can fight with our fists
         if has_attached:
@@ -65,7 +76,8 @@ class Fight(Goal):
 
         return None
 
-    def get_reach(self, me):
+    @staticmethod
+    def get_reach(me):
 
         reach = 0
         own_reach = me.entity.get_prop_float('reach')
@@ -99,13 +111,14 @@ class Fight(Goal):
             return
         reach = self.get_reach(me)
         if distance - reach <= 0:
+            move_to_face = me.face(enemy)
             attached_current = me.get_attached_entity("hand_primary")
             if attached_current:
-                print("Striking")
-                return Operation("use", Operation("strike", Entity(attached_current.id, targets=[Entity(enemy.id)])))
+                print("Hitting with a weapon")
+                return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id, targets=[Entity(enemy.id)])))
             else:
                 print("Punching")
-                return Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
+                return move_to_face + Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
         else:
             print("Out of reach. Reach is {} and distance is {}".format(reach, distance))
 
