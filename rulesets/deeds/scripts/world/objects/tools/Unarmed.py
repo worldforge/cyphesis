@@ -7,6 +7,8 @@ import server
 
 
 def strike(instance):
+    """Strike another entity with your fists."""
+
     # If there's a cooldown we need to mark the actor
     cooldown = getattr(instance.tool.props, "cooldown_" + instance.op.id)
     if cooldown and cooldown > 0.0:

@@ -11,7 +11,8 @@ from random import *
 
 import server
 
-
+# DEPRECATED
+# Combat is now done through an interplay between different traits and AI code.
 class Combat(server.Task):
     """A very simple combat system example."""
 

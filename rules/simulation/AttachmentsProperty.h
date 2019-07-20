@@ -28,7 +28,7 @@
 /**
  * Handles attachments on an entity.
  *
- * This entity defines the various attachments available, with optional Entity Filter constraints.
+ * This property defines the various attachments available, with optional Entity Filter constraints.
  * When entities are attached new "attached_*" soft properties are created with references to the
  * entities. The "planted_on" property of the attached entity is also updated.
  *

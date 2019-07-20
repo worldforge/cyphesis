@@ -18,6 +18,8 @@ class Hittable(server.Thing):
             if hasattr(arg, 'hit_type') and self.props["__modifier_hit_type_" + arg.hit_type]:
                 status_decrease = status_decrease * self.props["__modifier_hit_type_" + arg.hit_type]
 
+            print("Hit for {} damage".format(status_decrease))
+
             new_status = self.props.status - status_decrease
             return server.OPERATION_BLOCKED, Operation("set", Entity(self.id, status=new_status), to=self.id)
 

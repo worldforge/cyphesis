@@ -8,6 +8,8 @@ from world.utils import Usage
 
 
 def strike(instance):
+    """Strike another entity with a weapon."""
+
     # Check that we can reach the target with our weapon
     extra_reach = 0.0
     if instance.tool.props.reach:
