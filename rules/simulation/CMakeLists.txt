@@ -28,7 +28,6 @@ add_library(rulessimulation
     Task.cpp
     SuspendedProperty.cpp
     SpawnerProperty.cpp
-    ImmortalProperty.cpp
     RespawningProperty.cpp
     DefaultLocationProperty.cpp
     DomainProperty.cpp
