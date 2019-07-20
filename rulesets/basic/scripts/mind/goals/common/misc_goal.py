@@ -233,7 +233,7 @@ class spot_something(Goal):
     def do_I_have(self, me):
         something = me.get_knowledge('focus', self.what)
         if something:
-            if me.map.get(something) == None:
+            if me.map.get(something) is None:
                 me.remove_knowledge('focus', self.what)
             else:
                 # Update the time since we last knew about the thing, as we're still actively know about it
@@ -258,7 +258,7 @@ class spot_something(Goal):
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist < nearsqrdist and thing.location.parent.id == me.entity.location.parent.id:
+            if sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent and thing.location.parent.id == me.entity.location.parent.id:
                 if self.condition(thing):
                     nearest = thing
                     nearsqrdist = nearsqrdist

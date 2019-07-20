@@ -142,7 +142,7 @@ class KeepGrudge(DynamicGoal):
             disposition_base = me.map.recall_entity_memory(from_id, "disposition_base", 0)
             # Alter it slightly. Here we could check how much damage it did and alter it depending on that
             me.map.add_entity_memory(from_id, "disposition_base", disposition_base - 0.4)
-            print("Updated base disposition to {}.".format(disposition_base - 0.4))
-            entity = me.entities[from_id]
-            if entity:
+            print("Updated base disposition of entity {} to {}.".format(from_id, disposition_base - 0.4))
+            if from_id in me.entities:
+                entity = me.entities[from_id]
                 me.update_relation_for_entity(entity)
