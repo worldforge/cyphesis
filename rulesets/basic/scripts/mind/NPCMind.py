@@ -823,10 +823,6 @@ class NPCMind(ai.Mind):
             if g.irrelevant:
                 # Irrelevant goals should be kept, to match what's in _goals.
                 continue
-            # Don't process goals which have had three errors in them.
-            # The idea is to allow for some leeway in goal processing, but to punish repeat offenders.
-            if g.errors > 3:
-                continue
             try:
                 res = g.check_goal(self, time)
                 if res:
@@ -835,20 +831,21 @@ class NPCMind(ai.Mind):
                     return
             except:
                 stacktrace = traceback.format_exc()
+                # Keep track of the number of errors in this goal. This could be used for better logging in the future.
                 g.errors += 1
                 g.lastError = stacktrace
                 # If there's an error, print to the log, mark the goal, and continue with the next goal
                 # Some goals have a "str" attribute which represents the constructor; if so use that
                 if hasattr(g, "str"):
-                    goalstring = g.str
+                    goal_string = g.str
                 else:
-                    goalstring = g.__class__.__name__
+                    goal_string = g.__class__.__name__
                 if hasattr(self, "name"):
                     print("Error in NPC with id " + self.entity.id + " of type " + str(
-                        self.entity.type) + " and name '" + self.name + "' when checking goal " + goalstring + "\n" + stacktrace)
+                        self.entity.type) + " and name '" + self.name + "' when checking goal " + goal_string + "\n" + stacktrace)
                 else:
                     print("Error in NPC with id " + self.entity.id + " of type " + str(
-                        self.entity.type) + " when checking goal " + goalstring + "\n" + stacktrace)
+                        self.entity.type) + " when checking goal " + goal_string + "\n" + stacktrace)
                 continue
             # if res!=None: return res
 
