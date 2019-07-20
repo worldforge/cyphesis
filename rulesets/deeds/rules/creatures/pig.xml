@@ -17,6 +17,14 @@
             <map name="meat">
                 <string name="default">ham</string>
             </map>
+            <map name="_relations">
+                <list name="default">
+                    <map>
+                        <!-- By default all other entities are regarded as threats by a pig. -->
+                        <float name="threat">10</float>
+                    </map>
+                </list>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
