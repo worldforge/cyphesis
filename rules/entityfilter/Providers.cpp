@@ -1,7 +1,3 @@
-#include <utility>
-
-#include <utility>
-
 /*
  Copyright (C) 2014 Erik Ogenvik
 
@@ -20,9 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#endif
-
 #include "Providers.h"
 
 #include "common/TypeNode.h"
@@ -33,8 +26,8 @@
 namespace EntityFilter {
 
 
-    FixedElementProvider::FixedElementProvider(const Atlas::Message::Element& element)
-        : m_element(element)
+    FixedElementProvider::FixedElementProvider(Atlas::Message::Element  element)
+        : m_element(std::move(element))
     {
     }
 
@@ -66,8 +59,8 @@ namespace EntityFilter {
         }
     }
 
-    DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const std::string& type)
-        : ConsumingProviderBase<TypeNode, QueryContext>(std::move(consumer)), m_type(type)
+    DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string  type)
+        : ConsumingProviderBase<TypeNode, QueryContext>(std::move(consumer)), m_type(std::move(type))
     {
     }
 
@@ -133,6 +126,29 @@ namespace EntityFilter {
             return m_consumer->getType();
         } else {
             return &typeid(const LocatedEntity*);
+        }
+    }
+
+    EntityLocationProvider::EntityLocationProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
+            : ConsumingProviderBase<LocatedEntity, QueryContext>(std::move(consumer))
+    {
+    }
+
+    void EntityLocationProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+    {
+        if (m_consumer) {
+            m_consumer->value(value, context.entity);
+        } else {
+            value = (void*) (&context);
+        }
+    }
+
+    const std::type_info* EntityLocationProvider::getType() const
+    {
+        if (m_consumer) {
+            return m_consumer->getType();
+        } else {
+            return &typeid(const QueryContext*);
         }
     }
 
@@ -238,8 +254,8 @@ namespace EntityFilter {
         value = Atlas::Message::Element(entity.getIntId());
     }
 
-    TypeNodeProvider::TypeNodeProvider(const std::string& attribute_name)
-        : m_attribute_name(attribute_name)
+    TypeNodeProvider::TypeNodeProvider(std::string attribute_name)
+        : m_attribute_name(std::move(attribute_name))
     {
 
     }
@@ -405,6 +421,8 @@ namespace EntityFilter {
                 return createEntityProvider<ChildProvider>(std::move(segments));
             } else if (first_attribute == "memory") {
                 return createMemoryProvider(std::move(segments));
+            } else if (first_attribute == "entity_location") {
+                return createEntityProvider<EntityLocationProvider>(std::move(segments));
             }
         }
         return nullptr;

@@ -11,10 +11,10 @@ namespace EntityFilter {
                                        std::shared_ptr<Consumer<QueryContext>> rhs,
                                        Comparator comparator,
                                        std::shared_ptr<Consumer<QueryContext>> with) :
-        m_lhs(std::move(lhs)),
-        m_rhs(std::move(rhs)),
-        m_comparator(comparator),
-        m_with(std::move(with))
+            m_lhs(std::move(lhs)),
+            m_rhs(std::move(rhs)),
+            m_comparator(comparator),
+            m_with(std::move(with))
     {
         //make sure rhs and lhs exist
         if (!m_lhs) {
@@ -27,23 +27,23 @@ namespace EntityFilter {
             //make sure that left hand side returns an entity and right hand side a typenode
             if (m_lhs->getType() != &typeid(const LocatedEntity*)) {
                 throw std::invalid_argument(
-                    "When using the 'instanceof' comparator, left statement must return an entity. For example, 'entity instance_of types.world'.");
+                        "When using the 'instanceof' comparator, left statement must return an entity. For example, 'entity instance_of types.world'.");
             }
             if (m_rhs->getType() != &typeid(const TypeNode*)) {
                 throw std::invalid_argument(
-                    "When using the 'instanceof' comparator, right statement must return a TypeNode. For example, 'entity instance_of types.world'.");
+                        "When using the 'instanceof' comparator, right statement must return a TypeNode. For example, 'entity instance_of types.world'.");
             }
         } else if (m_comparator == Comparator::CAN_REACH) {
             //make sure that both sides return an entity
             if ((m_lhs->getType() != &typeid(const LocatedEntity*))
-                || (m_rhs->getType() != &typeid(const LocatedEntity*))) {
+                || ((m_rhs->getType() != &typeid(const LocatedEntity*)) && (m_rhs->getType() != &typeid(const QueryContext*)))) {
                 throw std::invalid_argument(
-                    "When using the 'can_reach' comparator, both sides must return an entity. For example, 'actor can_reach entity'.");
+                        "When using the 'can_reach' comparator, both sides must return an entity. For example, 'actor can_reach entity'.");
             }
             if (m_with) {
                 if (m_with->getType() != &typeid(const LocatedEntity*)) {
                     throw std::invalid_argument(
-                        "When using the 'can_reach ... with' comparator, all three inputs must return an entity. For example, 'actor can_reach entity with tool'.");
+                            "When using the 'can_reach ... with' comparator, all three inputs must return an entity. For example, 'actor can_reach entity with tool'.");
                 }
             }
         }
@@ -158,7 +158,17 @@ namespace EntityFilter {
                 m_lhs->value(left, context);
                 auto leftEntity = static_cast<const LocatedEntity*>(left.Ptr());
                 m_rhs->value(right, context);
-                auto rightEntity = static_cast<LocatedEntity*>(right.Ptr());
+
+                EntityLocation entityLocation;
+                if (m_rhs->getType() == &typeid(const QueryContext*)) {
+                    auto queryContext = *static_cast<QueryContext*>(right.Ptr());
+                    entityLocation.m_parent = &queryContext.entity;
+                    if (queryContext.pos) {
+                        entityLocation.m_pos = *queryContext.pos;
+                    }
+                } else {
+                    entityLocation.m_parent = static_cast<LocatedEntity*>(right.Ptr());
+                }
                 float extraReach = 0;
                 if (m_with) {
                     Atlas::Message::Element with;
@@ -170,8 +180,8 @@ namespace EntityFilter {
                     }
                 }
 
-                if (leftEntity && rightEntity) {
-                    return leftEntity->canReach({rightEntity, WFMath::Point<3>()}, extraReach);
+                if (leftEntity && entityLocation.m_parent) {
+                    return leftEntity->canReach(entityLocation, extraReach);
                 }
                 return false;
             }
@@ -182,8 +192,8 @@ namespace EntityFilter {
     }
 
     AndPredicate::AndPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs) :
-        m_lhs(std::move(lhs)),
-        m_rhs(std::move(rhs))
+            m_lhs(std::move(lhs)),
+            m_rhs(std::move(rhs))
     {
     }
 
@@ -194,8 +204,8 @@ namespace EntityFilter {
     }
 
     OrPredicate::OrPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs) :
-        m_lhs(std::move(lhs)),
-        m_rhs(std::move(rhs))
+            m_lhs(std::move(lhs)),
+            m_rhs(std::move(rhs))
     {
     }
 
@@ -206,7 +216,7 @@ namespace EntityFilter {
     }
 
     NotPredicate::NotPredicate(std::shared_ptr<Predicate> pred) :
-        m_pred(std::move(pred))
+            m_pred(std::move(pred))
     {
     }
 
@@ -216,7 +226,7 @@ namespace EntityFilter {
     }
 
     BoolPredicate::BoolPredicate(std::shared_ptr<Consumer<QueryContext>> consumer) :
-        m_consumer(std::move(consumer))
+            m_consumer(std::move(consumer))
     {
     }
 

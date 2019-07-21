@@ -262,7 +262,9 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
 
                 for (auto& argElement : element.List()) {
                     switch (param.second.type) {
-                        case UsageParameter::Type::ENTITY: {
+                        case UsageParameter::Type::ENTITY:
+                        case UsageParameter::Type::ENTITYLOCATION:
+                        {
                             if (!argElement.isMap()) {
                                 actor->clientError(op, String::compose("Inner argument in list of arguments for '%1' was not a map.", param.first), res, actor->getId());
                                 return OPERATION_IGNORED;
@@ -287,9 +289,6 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                                 argVector.emplace_back(EntityLocation(involved));
                             }
                         }
-                            break;
-                        case UsageParameter::Type::ENTITYLOCATION:
-                            argVector.emplace_back(WFMath::Point<3>(argElement));
                             break;
                         case UsageParameter::Type::POSITION:
                             argVector.emplace_back(WFMath::Point<3>(argElement));

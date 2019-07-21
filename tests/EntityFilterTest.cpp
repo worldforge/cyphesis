@@ -103,11 +103,12 @@ struct TestDomain : Domain
         if (reach > 0.f) {
             return false;
         }
-        //Only allow reaching if parent or child
-        if (reachingEntity.m_location.m_parent == &queriedEntity || queriedEntity.m_location.m_parent == &reachingEntity) {
-            return true;
+        //There's a special property "only_reachable_with_pos" which allows us to test that positions are used when entity_location is used.
+        if (queriedEntity.hasAttr("only_reachable_with_pos")) {
+            return positionOnQueriedEntity.isValid();
         }
-        return false;
+        //Only allow reaching if parent or child
+        return reachingEntity.m_location.m_parent == &queriedEntity || queriedEntity.m_location.m_parent == &reachingEntity;
     }
 };
 
@@ -134,6 +135,8 @@ struct EntityFilterTest : public Cyphesis::TestBase
     Ref<Entity> m_bootsEntity;
     Ref<Entity> m_cloth; //Cloth for gloves' outfit
     Ref<Entity> m_leather;
+
+    Ref<Entity> m_entityOnlyReachableWithPosition; //An entity which can only be reachable if position is speficied.
 
     std::map<std::string, Ref<LocatedEntity>> m_entities;
 
@@ -245,6 +248,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
         m_cloth = nullptr;
         m_glovesEntity = nullptr;
         m_leather = nullptr;
+        m_entityOnlyReachableWithPosition = nullptr;
 
         delete m_barrelType;
         delete m_boulderType;
@@ -302,6 +306,16 @@ struct EntityFilterTest : public Cyphesis::TestBase
             c.tool = m_bootsEntity.get();
             TestContextQuery("actor can_reach entity with tool", {c}, {});
             TestContextQuery("entity can_reach actor with tool", {c}, {});
+        }
+
+        //m_entityOnlyReachableWithPosition can only be reached if the position is sent along, which happens if we use "entity_location"
+        {
+            QueryContext c{*m_entityOnlyReachableWithPosition};
+            WFMath::Point<3> pos(1,1,1);
+            c.pos = &pos;
+            c.actor = m_bl1.get();
+            TestContextQuery("actor can_reach entity", {}, {c});
+            TestContextQuery("actor can_reach entity_location", {c}, {});
         }
     }
 
@@ -687,6 +701,15 @@ struct EntityFilterTest : public Cyphesis::TestBase
         m_bl1->setProperty("bbox", bbox2);
 
         m_cloth->setProperty("bbox", bbox1->copy());
+
+        //The m_entityOnlyReachableWithPosition is a child of b1
+        m_entityOnlyReachableWithPosition = new Entity("8", 8);
+        add_entity(m_entityOnlyReachableWithPosition);
+        m_entityOnlyReachableWithPosition->setProperty("only_reachable_with_pos", new SoftProperty(Element(1)));
+        m_entityOnlyReachableWithPosition->setType(m_barrelType);
+        m_b1->m_contains->emplace(m_entityOnlyReachableWithPosition);
+        m_entityOnlyReachableWithPosition->m_location.m_parent = m_b1;
+
     }
 
     EntityFilterTest()

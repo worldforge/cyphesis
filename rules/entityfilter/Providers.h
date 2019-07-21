@@ -72,6 +72,8 @@ namespace EntityFilter {
         std::function<Ref<LocatedEntity>(const std::string&)> entity_lookup_fn;
 
         std::function<const TypeNode*(const std::string&)> type_lookup_fn;
+
+        const WFMath::Point<3>* pos = nullptr;
     };
 
     class TypedProvider
@@ -203,7 +205,7 @@ namespace EntityFilter {
     class FixedElementProvider : public Consumer<QueryContext>
     {
         public:
-            explicit FixedElementProvider(const Atlas::Message::Element& element);
+            explicit FixedElementProvider(Atlas::Message::Element  element);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -213,7 +215,7 @@ namespace EntityFilter {
     class DynamicTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext>
     {
         public:
-            DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const std::string& type);
+            DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string  type);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -246,6 +248,16 @@ namespace EntityFilter {
     {
         public:
             explicit EntityProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
+
+            void value(Atlas::Message::Element& value, const QueryContext& context) const override;
+
+            const std::type_info* getType() const override;
+    };
+
+    class EntityLocationProvider : public ConsumingProviderBase<LocatedEntity, QueryContext>
+    {
+        public:
+            explicit EntityLocationProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -309,7 +321,7 @@ namespace EntityFilter {
     class TypeNodeProvider : public Consumer<TypeNode>
     {
         public:
-            explicit TypeNodeProvider(const std::string& attribute_name);
+            explicit TypeNodeProvider(std::string  attribute_name);
 
             void value(Atlas::Message::Element& value, const TypeNode& type) const override;
 
