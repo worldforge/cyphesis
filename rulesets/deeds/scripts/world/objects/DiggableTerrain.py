@@ -2,9 +2,6 @@
 # Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
 from atlas import Operation, Entity, Oplist
-from physics import Quaternion
-from physics import Point3D
-from physics import Vector3D
 from rules import Location
 
 import server
@@ -33,7 +30,7 @@ class DiggableTerrain(server.Thing):
             return
         material = DiggableTerrain.materials[surface]
 
-        chunk_loc = Location(self.location.parent, arg.pos)
+        chunk_loc = Location(self, arg.pos)
 
         print("Creating pile of {} at {}".format(material, chunk_loc))
         create_op = Operation("create",
