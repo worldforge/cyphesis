@@ -32,19 +32,51 @@
 #include <memory>
 #include <functional>
 
+/**
+ * This struct defines the requirements for a parameter.
+ */
 struct UsageParameter
 {
+    /**
+     * The type of parameter.
+     */
     enum class Type
     {
+            /**
+             * An entity reference is required.
+             */
             ENTITY,
+            /**
+             * An entity location is required. This means that there must both be an entity as well as a position.
+             */
             ENTITYLOCATION,
+            /**
+             * A position (i.e. a WFMath::Point<3>) is required.
+             */
             POSITION,
+            /**
+             * A direction (i.e. a WFMath::Vector<3>) is required.
+             */
             DIRECTION
     };
 
+    /**
+     * The type of this parameter.
+     */
     Type type;
+    /**
+     * An optional constraint.
+     */
     std::shared_ptr<EntityFilter::Filter> constraint;
+    /*
+     * The minimum number of entries required for this parameter.
+     * Defaults to 1.
+     */
     int min = 1;
+    /*
+     * The maximum number of entries required for this parameter.
+     * Defaults to 1.
+     */
     int max = 1;
 
 };

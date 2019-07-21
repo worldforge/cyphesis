@@ -524,11 +524,6 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
         return true;
     }
 
-    //Is the reacher a "creator"?
-    if (reachingEntity->getType()->isTypeOf("creator")) {
-        return true;
-    }
-
     double reachDistance = 0;
     auto reachProp = reachingEntity->getPropertyType<double>("reach");
     if (reachProp) {

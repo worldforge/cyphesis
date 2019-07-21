@@ -68,7 +68,7 @@
                 <string name="default">inventory</string>
             </map>
             <map name="reach">
-                <float name="default">3</float>
+                <float name="default">1000</float>
             </map>
         </map>
         <string name="id">creator</string>
