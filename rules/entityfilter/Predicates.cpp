@@ -36,7 +36,7 @@ namespace EntityFilter {
         } else if (m_comparator == Comparator::CAN_REACH) {
             //make sure that both sides return an entity
             if ((m_lhs->getType() != &typeid(const LocatedEntity*))
-                || ((m_rhs->getType() != &typeid(const LocatedEntity*)) && (m_rhs->getType() != &typeid(const QueryContext*)))) {
+                || ((m_rhs->getType() != &typeid(const LocatedEntity*)) && (m_rhs->getType() != &typeid(const QueryEntityLocation*)))) {
                 throw std::invalid_argument(
                         "When using the 'can_reach' comparator, both sides must return an entity. For example, 'actor can_reach entity'.");
             }
@@ -160,11 +160,11 @@ namespace EntityFilter {
                 m_rhs->value(right, context);
 
                 EntityLocation entityLocation;
-                if (m_rhs->getType() == &typeid(const QueryContext*)) {
-                    auto queryContext = *static_cast<QueryContext*>(right.Ptr());
-                    entityLocation.m_parent = &queryContext.entity;
-                    if (queryContext.pos) {
-                        entityLocation.m_pos = *queryContext.pos;
+                if (m_rhs->getType() == &typeid(const QueryEntityLocation*)) {
+                    auto queryEntityLocation = *static_cast<QueryEntityLocation*>(right.Ptr());
+                    entityLocation.m_parent = &queryEntityLocation.entity;
+                    if (queryEntityLocation.pos) {
+                        entityLocation.m_pos = *queryEntityLocation.pos;
                     }
                 } else {
                     entityLocation.m_parent = static_cast<LocatedEntity*>(right.Ptr());

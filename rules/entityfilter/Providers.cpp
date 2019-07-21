@@ -95,7 +95,7 @@ namespace EntityFilter {
     void MemoryProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
     {
         if (context.memory_lookup_fn) {
-            const Atlas::Message::MapType& memory = context.memory_lookup_fn(context.entity.getId());
+            const Atlas::Message::MapType& memory = context.memory_lookup_fn(context.entityLoc.entity.getId());
 
             if (m_consumer) {
                 m_consumer->value(value, memory);
@@ -114,9 +114,9 @@ namespace EntityFilter {
     void EntityProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
     {
         if (m_consumer) {
-            m_consumer->value(value, context.entity);
+            m_consumer->value(value, context.entityLoc.entity);
         } else {
-            value = (void*) (&context.entity);
+            value = (void*) (&context.entityLoc.entity);
         }
     }
 
@@ -137,9 +137,9 @@ namespace EntityFilter {
     void EntityLocationProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
     {
         if (m_consumer) {
-            m_consumer->value(value, context.entity);
+            m_consumer->value(value, context.entityLoc.entity);
         } else {
-            value = (void*) (&context);
+            value = (void*) (&context.entityLoc);
         }
     }
 
@@ -148,7 +148,7 @@ namespace EntityFilter {
         if (m_consumer) {
             return m_consumer->getType();
         } else {
-            return &typeid(const QueryContext*);
+            return &typeid(const QueryEntityLocation*);
         }
     }
 

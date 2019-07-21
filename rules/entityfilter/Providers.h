@@ -39,13 +39,30 @@ namespace EntityFilter {
 
     class Predicate;
 
+    /**
+     * A simple struct for storing both an entity and a position.
+     */
+    struct QueryEntityLocation
+    {
+        LocatedEntity& entity;
+
+        const WFMath::Point<3>* pos = nullptr;
+
+        QueryEntityLocation() = delete;
+
+        QueryEntityLocation(LocatedEntity& entity) : entity(entity)
+        {}
+
+        QueryEntityLocation(LocatedEntity& entity, const WFMath::Point<3>* pos) : entity(entity), pos(pos)
+        {}
+    };
+
     struct QueryContext
     {
         /**
-         * The main entity which the filter is applied on. This is required, all other parameters are optional.
+         * The main entity (with an optional position) which the filter is applied on. This is required, all other parameters are optional.
          */
-        LocatedEntity& entity;
-
+        QueryEntityLocation entityLoc;
         /**
          * Represents an actor, mainly used together with the "tool" field. The "actor" is the entity which uses the "tool".
          */
@@ -72,8 +89,6 @@ namespace EntityFilter {
         std::function<Ref<LocatedEntity>(const std::string&)> entity_lookup_fn;
 
         std::function<const TypeNode*(const std::string&)> type_lookup_fn;
-
-        const WFMath::Point<3>* pos = nullptr;
     };
 
     class TypedProvider
@@ -125,7 +140,7 @@ namespace EntityFilter {
 
     template<typename T>
     inline ProviderBase<T>::ProviderBase(std::shared_ptr<Consumer<T>> consumer)
-        : m_consumer(std::move(consumer))
+            : m_consumer(std::move(consumer))
     {
     }
 
@@ -145,7 +160,7 @@ namespace EntityFilter {
 
     template<typename TProviding, typename TConsuming>
     inline ConsumingProviderBase<TProviding, TConsuming>::ConsumingProviderBase(std::shared_ptr<Consumer<TProviding>> consumer)
-        : ProviderBase<TProviding>(consumer)
+            : ProviderBase<TProviding>(consumer)
     {
     }
 
@@ -171,7 +186,7 @@ namespace EntityFilter {
 
     template<typename T>
     inline NamedAttributeProviderBase<T>::NamedAttributeProviderBase(std::shared_ptr<Consumer<T>> consumer, std::string attribute_name)
-        : ProviderBase<T>(consumer), m_attribute_name(std::move(attribute_name))
+            : ProviderBase<T>(consumer), m_attribute_name(std::move(attribute_name))
     {
     }
 
@@ -188,7 +203,7 @@ namespace EntityFilter {
 
     template<typename TProviding, typename TConsuming>
     inline ConsumingNamedAttributeProviderBase<TProviding, TConsuming>::ConsumingNamedAttributeProviderBase(std::shared_ptr<Consumer<TProviding>> consumer, const std::string& attribute_name)
-        : NamedAttributeProviderBase<TProviding>(std::move(consumer), attribute_name)
+            : NamedAttributeProviderBase<TProviding>(std::move(consumer), attribute_name)
     {
     }
 
@@ -205,7 +220,7 @@ namespace EntityFilter {
     class FixedElementProvider : public Consumer<QueryContext>
     {
         public:
-            explicit FixedElementProvider(Atlas::Message::Element  element);
+            explicit FixedElementProvider(Atlas::Message::Element element);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -215,7 +230,7 @@ namespace EntityFilter {
     class DynamicTypeNodeProvider : public ConsumingProviderBase<TypeNode, QueryContext>
     {
         public:
-            DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string  type);
+            DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string type);
 
             void value(Atlas::Message::Element& value, const QueryContext& context) const override;
 
@@ -321,7 +336,7 @@ namespace EntityFilter {
     class TypeNodeProvider : public Consumer<TypeNode>
     {
         public:
-            explicit TypeNodeProvider(std::string  attribute_name);
+            explicit TypeNodeProvider(std::string attribute_name);
 
             void value(Atlas::Message::Element& value, const TypeNode& type) const override;
 
@@ -357,7 +372,7 @@ namespace EntityFilter {
 
     template<typename TProperty>
     inline PropertyProvider<TProperty>::PropertyProvider(std::shared_ptr<Consumer<TProperty>> consumer, const std::string& attribute_name)
-        : ConsumingNamedAttributeProviderBase<TProperty, LocatedEntity>(consumer, attribute_name)
+            : ConsumingNamedAttributeProviderBase<TProperty, LocatedEntity>(consumer, attribute_name)
     {
     }
 

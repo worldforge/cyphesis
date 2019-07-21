@@ -91,7 +91,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
                             if (value.m_parent && !value.m_parent->isDestroyed()) {
                                 if (param.second.constraint) {
                                     EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
-                                    queryContext.pos = &value.m_pos;
+                                    queryContext.entityLoc.pos = &value.m_pos;
                                     queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
                                     queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                                     is_valid = param.second.constraint->match(queryContext);
@@ -112,7 +112,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
                             if (value.isValid() && !value.m_parent->isDestroyed()) {
                                 if (param.second.constraint) {
                                     EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
-                                    queryContext.pos = &value.m_pos;
+                                    queryContext.entityLoc.pos = &value.m_pos;
                                     queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
                                     queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                                     is_valid = param.second.constraint->match(queryContext);

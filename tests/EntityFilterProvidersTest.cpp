@@ -191,13 +191,13 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
         }
 
-        //The "entity_location" provider currently works by returning the complete context.
+        //The "entity_location" provider currently works by returning an QueryEntityLocation
         void test_EntityLocationProvider() {
             Atlas::Message::Element value;
             auto provider = CreateProvider( { "entity_location" });
             auto context = prepare_context( { *m_b1 });
             provider->value(value,context );
-            assert(value.Ptr() == &context);
+            assert(value.Ptr() == &context.entityLoc);
         }
 
         ///\Test basic property providers (soft properties, type, id)

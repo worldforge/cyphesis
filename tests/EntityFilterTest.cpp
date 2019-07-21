@@ -312,7 +312,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
         {
             QueryContext c{*m_entityOnlyReachableWithPosition};
             WFMath::Point<3> pos(1,1,1);
-            c.pos = &pos;
+            c.entityLoc.pos = &pos;
             c.actor = m_bl1.get();
             TestContextQuery("actor can_reach entity", {}, {c});
             TestContextQuery("actor can_reach entity_location", {c}, {});
