@@ -1,7 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import *
+from atlas import Operation, Entity, Oplist
 from world.utils import Usage
 
 import server

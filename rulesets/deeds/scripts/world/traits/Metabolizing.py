@@ -41,5 +41,5 @@ class Metabolizing(server.Thing):
                             set_ent.status = status + (nutrient_consumed / mass_for_full_status)
                             res += Operation("set", set_ent, to=self)
 
-            return (server.OPERATION_BLOCKED, res)
+            return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED

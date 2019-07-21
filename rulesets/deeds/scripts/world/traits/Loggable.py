@@ -20,4 +20,4 @@ class Loggable(server.Thing):
         # Send through parent since this entity will be destroyed once the op is handled.
         self.location.parent.send_world(create)
 
-        return (server.OPERATION_HANDLED)
+        return server.OPERATION_HANDLED

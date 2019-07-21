@@ -30,6 +30,6 @@ class Nourishable(server.Thing):
                         nutrient_new = min(self.props._nutrients_max_factor * self.props.mass, nutrient_new)
 
                     if nutrient_new != nutrient:
-                        return (server.OPERATION_BLOCKED, Operation("set", Entity(self.id, _nutrients=nutrient_new), to=self))
+                        return server.OPERATION_BLOCKED, Operation("set", Entity(self.id, _nutrients=nutrient_new), to=self)
 
-        return (server.OPERATION_BLOCKED)
+        return server.OPERATION_BLOCKED

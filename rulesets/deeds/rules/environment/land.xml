@@ -11,6 +11,14 @@
             <map name="friction_roll">
                 <float name="default">0.1</float>
             </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.DiggableTerrain.DiggableTerrain</string>
+                    </map>
+                </list>
+            </map>
             <map name="terrain">
                 <int name="default">0</int>
                 <list name="surfaces">
