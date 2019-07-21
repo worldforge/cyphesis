@@ -19,25 +19,27 @@ class DiggableTerrain(server.Thing):
 
     def dig_operation(self, op):
 
-        surface = self.target().props.terrain.get_surface(self.pos)
-        if surface not in Dig.materials:
-            print("The surface couldn't be digged here.")
-            return
-
         arg = op[0]
         if not arg:
             return
 
+        if not arg.pos:
+            print('No pos supplied')
+            return
 
-        chunk_loc = Location(self.location.parent)
-        chunk_loc.velocity = Vector3D()
+        surface = self.props.terrain.get_surface(arg.pos[0], arg.pos[2])
+        if surface not in DiggableTerrain.materials:
+            print("The surface couldn't be digged here.")
+            return
+        material = DiggableTerrain.materials[surface]
 
-        chunk_loc.pos = arg.pos
+        chunk_loc = Location(self.location.parent, arg.pos)
 
+        print("Creating pile of {} at {}".format(material, chunk_loc))
         create_op = Operation("create",
-                           Entity(name=Dig.materials[surface],
-                                  type="pile",
-                                  material=Dig.materials[surface],
-                                  location=chunk_loc), to=self.id)
+                              Entity(name="Pile of {}".format(material),
+                                     parent="pile",
+                                     material=material,
+                                     location=chunk_loc), to=self.id)
 
         return create_op
