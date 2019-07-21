@@ -550,7 +550,7 @@ class NPCMind(ai.Mind):
         predicate = say[2].word
         object = say[3].word
         k = self.get_knowledge(predicate, object)
-        if k == None:
+        if k is None:
             pass
         # return Operation('talk',Entity(say="I know nothing about the "+predicate+" of "+object))
         else:
@@ -885,8 +885,8 @@ class NPCMind(ai.Mind):
         else:
             self.message_queue.append(op)
 
-    ########## turn to face other entity
     def face(self, other):
+        """turn to face other entity"""
         vector = distance_to(self.entity.location, other.location)
         vector.y = 0
         if vector.sqr_mag() < 0.1:

@@ -71,7 +71,7 @@ class Bisect(server.Task):
 
         # print "mid ", mid
 
-        # print "mod",self.target().location.position, new_bbox
+        # print "mod",self.target().location.pos, new_bbox
 
         set = Operation("set", Entity(self.target().id, bbox=new_bbox), to=self.target())
         res.append(set)
@@ -91,7 +91,7 @@ class Bisect(server.Task):
             pos_offset.rotate(self.target().location.orientation)
 
         # apply the offset to the new entity position
-        slice_loc.position = self.target().location.position + pos_offset
+        slice_loc.pos = self.target().location.pos + pos_offset
 
         slice_bbox = [self.target().location.bbox.low_corner.x,
                       self.target().location.bbox.low_corner.y,
@@ -104,7 +104,7 @@ class Bisect(server.Task):
         slice_bbox[cut_plane] = 0.0
         slice_bbox[cut_plane + 3] = mid
 
-        # print "new",slice_loc.position, slice_bbox
+        # print "new",slice_loc.pos, slice_bbox
 
         slice_loc.orientation = self.target().location.orientation
 

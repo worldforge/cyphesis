@@ -65,7 +65,7 @@ class Baking(server.Task):
         count = ecount + bcount
 
         chunk_loc = self.target().location.copy()
-        chunk_loc.position = self.target().location.position
+        chunk_loc.pos = self.target().location.pos
         chunk_loc.orientation = self.target().location.orientation
 
         # Select which structure to produce depending on the recipe present in inventory

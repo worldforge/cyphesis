@@ -1,7 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import *
+from atlas import Operation, Entity
 from world.utils import Usage
 
 import server
@@ -14,7 +14,7 @@ def sow(instance):
 
     instance.actor.send_world(Operation("sight", instance.op))
 
-    return (server.OPERATION_BLOCKED, instance.actor.start_task('cultivate', task))
+    return server.OPERATION_BLOCKED, instance.actor.start_task('cultivate', task)
 
 
 class Cultivate(server.Task):
@@ -38,10 +38,10 @@ class Cultivate(server.Task):
 
         new_loc = entity.location.copy()
         # Create a small instance of the type this target germinates, and destroy the seed.
-        create = Operation("create", Entity(parent=entity.props.germinates,
+        create_op = Operation("create", Entity(parent=entity.props.germinates,
                                             scale=[0.1],
                                             location=new_loc,
                                             mode="planted"), to=entity)
-        set = Operation("set", Entity(entity.id, status=-1), to=entity)
+        set_op = Operation("set", Entity(entity.id, status=-1), to=entity)
 
-        return (create, set)
+        return create_op, set_op

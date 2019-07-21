@@ -40,7 +40,7 @@ class Trenching(server.Task):
             return
 
         # FIXME We are overriding the position specified above?
-        self.pos = self.character.location.position
+        self.pos = self.character.location.pos
 
         old_rate = self.rate
         self.rate = 0.5 / 0.75
@@ -62,7 +62,7 @@ class Trenching(server.Task):
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
-        chunk_loc.position = self.pos
+        chunk_loc.pos = self.pos
 
         if not hasattr(self, 'terrain_mod'):
             mods = target.terrain.find_mods(self.pos)
@@ -78,7 +78,7 @@ class Trenching(server.Task):
                     return
                 self.surface = surface
 
-                y = self.character.location.position.y - 1.0
+                y = self.character.location.pos.y - 1.0
                 modmap = {
                     'height': y,
                     'shape': {

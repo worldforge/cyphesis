@@ -100,7 +100,7 @@ class Earthbarrier(server.Task):
             raise Earthbarrier.Obstructed("Another mod is in the way")
 
     def _create_initial_mod(self):
-        y = self.character.location.position.y + 1.0
+        y = self.character.location.pos.y + 1.0
         mod_path = Line([[self.pos.x, self.pos.z]])
         modmap = {
             'height': y,
@@ -119,7 +119,7 @@ class Earthbarrier(server.Task):
 
         mod_loc = Location(self.character.location.parent)
         mod_loc.velocity = Vector3D()
-        mod_loc.position = self.pos
+        mod_loc.pos = self.pos
 
         mod_create = Operation("create",
                                Entity(name="wall",

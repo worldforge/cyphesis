@@ -78,7 +78,7 @@ void CyPy_RootEntity::init_type()
 std::vector<double> CyPy_RootEntity::sequence_asVector(const Py::Object& o)
 {
     std::vector<double> vector;
-    if (o.isList() || o.isTuple()) {
+    if (o.isList() || o.isTuple() || o.isSequence()) {
         Py::Sequence list(o);
         for (auto entry : list) {
             if (!entry.isNumeric()) {

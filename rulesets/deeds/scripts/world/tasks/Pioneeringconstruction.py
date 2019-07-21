@@ -50,7 +50,7 @@ class Pioneeringconstruction(server.Task):
             return
 
         chunk_loc = Location(aframe())
-        chunk_loc.position = Point3D([0, 0, 0])
+        chunk_loc.pos = Point3D([0, 0, 0])
 
         count = self.lcount
         res = Oplist()
@@ -74,14 +74,14 @@ class Pioneeringconstruction(server.Task):
                 # right component
                 chunk_loc.orientation = Quaternion([.653, -0.27, -.27, .653])
                 offset = Vector3D(lumber_length, 0, 0)
-                chunk_loc.position = chunk_loc.position + offset
+                chunk_loc.pos = chunk_loc.pos + offset
             if count == 1:
                 # bottom component
-                chunk_loc.position = Point3D([0, 0, 0])  # self.pos
+                chunk_loc.pos = Point3D([0, 0, 0])  # self.pos
                 # .707 is sin(.5) which is needed for a 90 degree rotation
                 chunk_loc.orientation = Quaternion([.707, 0, .707, 0])
                 offset = Vector3D(-(1.5 * lumber_length), 0, (2.5 * lumber_length))
-                chunk_loc.position = chunk_loc.position + offset
+                chunk_loc.pos = chunk_loc.pos + offset
 
             move = Operation("move", Entity(tar.id, location=chunk_loc,
                                             mode="fixed"), to=tar)
@@ -116,7 +116,7 @@ class Pioneeringconstruction(server.Task):
         self.progress = 0
 
         chunk_loc = Location(self.character.location.parent)
-        chunk_loc.position = self.pos
+        chunk_loc.pos = self.pos
         lumberh = 0  # lumberheight
         lumberl = 0  # lumberlength
         res = Oplist()

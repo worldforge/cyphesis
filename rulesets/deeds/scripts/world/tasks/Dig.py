@@ -69,7 +69,7 @@ class Dig(server.Task):
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
-        chunk_loc.position = self.pos
+        chunk_loc.pos = self.pos
 
         create = Operation("create",
                            Entity(name=Dig.materials[surface],

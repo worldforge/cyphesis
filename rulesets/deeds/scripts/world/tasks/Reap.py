@@ -54,7 +54,7 @@ class Reap(server.Task):
             # print "Wasn't moving right speed"
             return self.next_tick(1.75)
 
-        surface = self.target().props.terrain.get_surface(self.character.location.position)
+        surface = self.target().props.terrain.get_surface(self.character.location.pos)
         if surface is not 2:
             # print "Not grass"
             return self.next_tick(1.75)
@@ -64,7 +64,7 @@ class Reap(server.Task):
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
-        chunk_loc.position = self.character.location.position
+        chunk_loc.pos = self.character.location.pos
 
         create = Operation("create",
                            Entity(name="grass",

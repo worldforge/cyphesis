@@ -1,4 +1,4 @@
-from atlas import *
+from atlas import Operation, Entity, Oplist
 import server
 from world.utils.Ticks import *
 
@@ -19,5 +19,5 @@ class PlantFeeding(server.Thing):
                 # (So a character won't get eaten if a plant is in it's inventory (which in normal cases would mean it's not "planted" though))
                 res += Operation("eat", Entity(eat_type='passive'), to=self.location.parent)
 
-            return (server.OPERATION_BLOCKED, res)
+            return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED

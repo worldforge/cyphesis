@@ -41,7 +41,7 @@ class Destroying(server.Task):
 
         res = Oplist()
         chunk_loc = self.target().location.copy()
-        chunk_loc.position = self.target().location.position
+        chunk_loc.pos = self.target().location.pos
         chunk_loc.orientation = self.target().location.orientation
         # Some entity do not have status defined. If not present we assume that the entity is unharmed 
         if hasattr(self.target().props, 'status'):

@@ -68,7 +68,7 @@ class Raise(server.Task):
 
         # print "NEW_ROT", rotation, rotation.is_valid()
         target_location = Location(self.target().location.parent,
-                                   self.target().location.position)
+                                   self.target().location.pos)
         target_location.orientation = rotation
         move = Operation("move", Entity(self.target().id,
                                         location=target_location), to=self.target())

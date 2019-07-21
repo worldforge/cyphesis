@@ -13,6 +13,24 @@
             <map name="density">
                 <float name="default">2000</float>
             </map>
+            <map name="cooldown">
+                <float name="default">5</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="dig">
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity &amp;&amp; actor can_reach entity with tool</string>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Shovel.dig</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
+                        <string name="description">Dig with shovel.</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">shovel</string>
         <string name="objtype">class</string>

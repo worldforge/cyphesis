@@ -74,7 +74,7 @@ class Slaughter(server.Task):
         if hasattr(target, 'meat'):
             meat_type = target.meat
 
-        chunk_loc.position = target.location.position
+        chunk_loc.pos = target.location.pos
 
         chunk_loc.orientation = target.location.orientation
 

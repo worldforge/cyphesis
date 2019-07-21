@@ -71,7 +71,7 @@ class Slice(server.Task):
         pos_offset = Vector3D(target.location.bbox.high_corner.x, 0, 0)
         pos_offset.rotate(target.location.orientation)
 
-        slice_loc.position = target.location.position + pos_offset
+        slice_loc.pos = target.location.pos + pos_offset
 
         slice_bbox = [0,
                       target.location.bbox.low_corner.y,

@@ -121,7 +121,7 @@ class Heaping(server.Task):
 
     def _create_initial_mod(self):
         print("no existing mod")
-        y = self.character.location.position.y + 1.0
+        y = self.character.location.pos.y + 1.0
         modmap = {'height': y,
                   'shape': Polygon([[-0.7, -0.7],
                                     [-1.0, 0.0],
@@ -137,7 +137,7 @@ class Heaping(server.Task):
 
         mod_loc = Location(self.character.location.parent)
         mod_loc.velocity = Vector3D()
-        mod_loc.position = self.pos
+        mod_loc.pos = self.pos
 
         mod_create = Operation("create",
                                Entity(name="motte",

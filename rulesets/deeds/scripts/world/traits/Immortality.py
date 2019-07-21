@@ -1,4 +1,3 @@
-from atlas import *
 import server
 
 

@@ -56,11 +56,11 @@ class Fishing(server.Task):
         float_loc = Location(self.character.location.parent)
         # This is <server.Entity object at 0xb161b90>
 
-        float_loc.position = self.pos
+        float_loc.pos = self.pos
 
         bait_vector = Vector3D(0, -0.5, - 0)
         bait_loc = float_loc.copy()
-        bait_loc.position = bait_loc.position + bait_vector
+        bait_loc.pos = bait_loc.pos + bait_vector
 
         res = Operation("create", Entity(name="bobber", parent="bobber", location=float_loc), to=self.target())
         res = res + Operation("move", Entity(bait.id, location=bait_loc), to=bait)

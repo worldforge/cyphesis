@@ -1,7 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import *
+from atlas import Operation, Entity
 
 import server
 
@@ -27,8 +27,8 @@ def strike(instance):
             if damage_attr:
                 damage = damage_attr
             hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
-            return (server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op))
+            return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
         else:
-            return (server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"))
+            return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")
     else:
         return server.OPERATION_BLOCKED

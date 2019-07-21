@@ -1,4 +1,4 @@
-from atlas import *
+from atlas import Operation, Entity, Oplist
 import server
 from world.utils.Ticks import *
 

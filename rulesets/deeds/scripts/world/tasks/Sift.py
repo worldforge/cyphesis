@@ -83,9 +83,9 @@ class Sift(server.Task):
             moisture = 10 * world.moisture
         else:
             moisture = 1
-        self_loc.position = self.pos
+        self_loc.pos = self.pos
 
-        quality = int(self.get_quality(self_loc.position, self.target(), moisture))
+        quality = int(self.get_quality(self_loc.pos, self.target(), moisture))
         print(quality)
         for i in range(int(quality / 2), quality):
             res = res + Operation("create", Entity(name="scrawny earthworm", parent="annelid", location=self_loc), to=self.character)

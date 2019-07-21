@@ -6,9 +6,11 @@ import server
 from world.utils.Ticks import *
 
 
-### When touched will drop fruits randomly, if there are fruits.
-### In addition there's a tick handler which randomly drops any fruits.
 class FruitPlant(server.Thing):
+    """
+    When touched will drop fruits randomly, if there are fruits.
+    In addition there's a tick handler which randomly drops any fruits.
+    """
     tick_interval = 60
     jitter = 20
 
@@ -20,14 +22,14 @@ class FruitPlant(server.Thing):
 
         newloc = self.location.copy()
         newloc.velocity = Vector3D()
-        newloc.position = newloc.position + Vector3D(random.uniform(-height, height), 0, random.uniform(-height, height))
+        newloc.pos = newloc.pos + Vector3D(random.uniform(-height, height), 0, random.uniform(-height, height))
 
         res.append(Operation("create", Entity(parent=parent, location=newloc), to=self))
 
     def touch_operation(self, op):
         res = Oplist()
         self.handle_drop_fruit(res)
-        return (server.OPERATION_BLOCKED, res)
+        return server.OPERATION_BLOCKED, res
 
     def tick_operation(self, op):
         res = Oplist()
@@ -38,7 +40,7 @@ class FruitPlant(server.Thing):
             # And then check if we should create any new fruits
             self.handle_fruiting(res)
 
-            return (server.OPERATION_BLOCKED, res)
+            return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED
 
     def handle_drop_fruit(self, res):

@@ -1,31 +1,27 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2005 Erik Hjortsberg (See the file COPYING for details).
 
-from atlas import *
-from common import log, const
+from atlas import Operation, Entity, Oplist
 from physics import Vector3D
 from random import *
 
 import server
 
-"""
-When digging at a grave, skeleton parts will be created. We might want to add some waiting period or some kind of capacity though.
-
-/erik
-"""
-
-
-def create_skeletonpart(self, op):
-    retops = Oplist()
-    newloc = self.location.copy()
-    newloc.velocity = Vector3D()
-    items = ['skull', 'ribcage', 'arm', 'pelvis', 'thigh', 'shin']
-    item = items[randint(0, 5)]
-    newloc.position = newloc.position + Vector3D(uniform(-1, 1), uniform(-1, 1), uniform(-1, 1))
-    retops += Operation("create", Entity(name=item, parent=item, location=newloc.copy()), to=self)
-    return retops
-
 
 class Gravestone(server.Thing):
+    """
+    When digging at a grave, skeleton parts will be created.
+    """
+
+    def create_skeletonpart(self):
+        retops = Oplist()
+        newloc = self.location.copy()
+        newloc.velocity = Vector3D()
+        items = ['femur', 'humerus', 'pelvis', 'ribcage', 'skull', 'tibia']
+        item = items[randint(0, 5)]
+        newloc.pos = newloc.pos + Vector3D(uniform(-1, 1), uniform(-1, 1), uniform(-1, 1))
+        retops += Operation("create", Entity(name=item, parent=item, location=newloc.copy()), to=self)
+        return retops
+
     def dig_operation(self, op):
-        return create_skeletonpart(self, op)
+        return self.create_skeletonpart()

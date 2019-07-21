@@ -30,7 +30,7 @@ class Dragging(server.Task):
     def tick_operation(self, op):
         """ Op handler for regular tick op """
         # print "Dragging.tick"
-        self.pos = self.character.location.position
+        self.pos = self.character.location.pos
         if self.target() is None:
             # print "Target is no more"
             self.irrelevant()
@@ -62,7 +62,7 @@ class Dragging(server.Task):
         chunk_loc = Location(self.character.location.parent)
         chunk_loc.velocity = Vector3D()
 
-        chunk_loc.position = self.pos
+        chunk_loc.pos = self.pos
         # Move the entity to user's position.
         res = res + Operation("move", Entity(self.target().id,
                                              location=chunk_loc), to=self.target())

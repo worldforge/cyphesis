@@ -51,7 +51,7 @@ class Twirling(server.Task):
 
         chunk_loc = target.location.copy()
 
-        chunk_loc.position = target.location.position
+        chunk_loc.pos = target.location.pos
 
         chunk_loc.orientation = target.location.orientation
         create = Operation("create",

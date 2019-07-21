@@ -54,6 +54,6 @@ class Spell(server.Task):
             return
 
         # Get the amount of magic power available to this spell from the zone
-        spell_power = self.zone.get_power(self.character.location.position)
+        spell_power = self.zone.get_power(self.character.location.pos)
 
         return self.next_tick(1.75)
