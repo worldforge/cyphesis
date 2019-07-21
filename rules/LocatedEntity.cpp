@@ -524,6 +524,11 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
         return true;
     }
 
+    //Is the reaching entity an admin?
+    if (reachingEntity->hasFlags(entity_admin)) {
+        return true;
+    }
+
     double reachDistance = 0;
     auto reachProp = reachingEntity->getPropertyType<double>("reach");
     if (reachProp) {

@@ -836,6 +836,7 @@ void ThingIntegration::test_reachability()
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);
         Ref<ThingExt> creator = new ThingExt("creator", 10);
+        creator->addFlags(entity_admin);
         creator->m_location.m_pos = WFMath::Point<3>::ZERO();
         creator->m_location.setBBox(bbox);
         Ref<ThingExt> t3 = new ThingExt("3", 3);
