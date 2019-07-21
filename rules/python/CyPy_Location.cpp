@@ -58,7 +58,7 @@ void CyPy_Location::init_type()
     PYCXX_ADD_NOARGS_METHOD(copy, copy, "");
 
     behaviors().supportNumberType(Py::PythonType::support_number_subtract);
-
+    behaviors().supportRepr();
     behaviors().readyType();
 
 }
