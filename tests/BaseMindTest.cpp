@@ -27,8 +27,6 @@
 
 #include "rules/ai/BaseMind.h"
 
-#include "common/operations/Unseen.h"
-
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/SmartPtr.h>

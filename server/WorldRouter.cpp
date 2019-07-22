@@ -43,7 +43,6 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <algorithm>
-#include <common/operations/Change.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

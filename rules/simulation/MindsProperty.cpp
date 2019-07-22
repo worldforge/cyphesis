@@ -29,11 +29,9 @@
 #include "common/custom.h"
 
 #include "common/operations/Actuate.h"
-#include "common/operations/Attack.h"
 #include "common/operations/Eat.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
-#include "common/operations/Unseen.h"
 #include "common/operations/Update.h"
 #include "common/operations/Think.h"
 #include "common/operations/Thought.h"

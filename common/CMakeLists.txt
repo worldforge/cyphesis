@@ -36,7 +36,6 @@ add_library(common
     operations/Actuate.h
     operations/Add.h
     operations/Affect.h
-    operations/Attack.h
     operations/Burn.h
     operations/Commune.h
     compose.hpp
@@ -60,14 +59,12 @@ add_library(common
     operations/Tick.h
     type_utils_impl.h
     types.h
-    operations/Unseen.h
     operations/Update.h
     FileSystemObserver.cpp
     FileSystemObserver.h
     AssetsManager.cpp
     AssetsManager.h
     Singleton.h
-    operations/Change.h
     RepeatedTask.cpp
     RepeatedTask.h
     operations/Thought.h

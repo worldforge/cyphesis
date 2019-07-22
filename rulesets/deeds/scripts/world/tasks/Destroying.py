@@ -12,6 +12,7 @@ import server
 class Destroying(server.Task):
     """A very simple Destroy system for destroying structures."""
 
+#TODO: update, as "attack" has been removed
     def attack_operation(self, op):
         """ The attack op is FROM the the character,
             TO the structure that is getting destroyed which we

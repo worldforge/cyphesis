@@ -53,22 +53,6 @@
 
   <map>
     <map name="activation">
-      <string name="operation">attack</string>
-      <string name="tool">sword</string>
-    </map>
-    <map name="attributes">
-    </map>
-    <string name="id">combat</string>
-    <string name="objtype">class</string>
-    <string name="parent">task</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.tasks.Combat.Combat</string>
-    </map>
-  </map>
-
-  <map>
-    <map name="activation">
       <string name="operation">sow</string>
       <string name="target">seed</string>
       <string name="tool">trowel</string>
@@ -101,23 +85,6 @@
     </map>
   </map>
  
-  <map>
-    <map name="activation">
-      <string name="operation">attack</string>
-      <string name="target">game_entity</string>
-      <string name="tool">hammer</string>
-    </map>
-    <map name="attributes">
-    </map>
-    <string name="id">destroying</string>
-    <string name="objtype">class</string>
-    <string name="parent">task</string>
-    <map name="script">
-      <string name="language">python</string>
-      <string name="name">world.tasks.Destroying.Destroying</string>
-    </map>
-  </map>
-
   <map>
     <map name="activation">
       <string name="operation">cut</string>

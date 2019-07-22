@@ -14,6 +14,11 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
 #ifndef STUB_TypedProvider_getType
 //#define STUB_TypedProvider_getType
   const std::type_info* TypedProvider::getType() const
@@ -138,7 +143,7 @@ namespace EntityFilter {
 
 #ifndef STUB_FixedElementProvider_FixedElementProvider
 //#define STUB_FixedElementProvider_FixedElementProvider
-   FixedElementProvider::FixedElementProvider(const Atlas::Message::Element& element)
+   FixedElementProvider::FixedElementProvider(Atlas::Message::Element element)
     : Consumer(element)
   {
     
@@ -160,7 +165,7 @@ namespace EntityFilter {
 
 #ifndef STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
 //#define STUB_DynamicTypeNodeProvider_DynamicTypeNodeProvider
-   DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, const std::string& type)
+   DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string type)
     : ConsumingProviderBase(consumer, type)
   {
     
@@ -264,6 +269,36 @@ namespace EntityFilter {
     return nullptr;
   }
 #endif //STUB_EntityProvider_getType
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
+#ifndef STUB_EntityLocationProvider_EntityLocationProvider
+//#define STUB_EntityLocationProvider_EntityLocationProvider
+   EntityLocationProvider::EntityLocationProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
+    : ConsumingProviderBase(consumer)
+  {
+    
+  }
+#endif //STUB_EntityLocationProvider_EntityLocationProvider
+
+#ifndef STUB_EntityLocationProvider_value
+//#define STUB_EntityLocationProvider_value
+  void EntityLocationProvider::value(Atlas::Message::Element& value, const QueryContext& context) const
+  {
+    
+  }
+#endif //STUB_EntityLocationProvider_value
+
+#ifndef STUB_EntityLocationProvider_getType
+//#define STUB_EntityLocationProvider_getType
+  const std::type_info* EntityLocationProvider::getType() const
+  {
+    return nullptr;
+  }
+#endif //STUB_EntityLocationProvider_getType
 
 
 }  // namespace EntityFilter
@@ -411,7 +446,7 @@ namespace EntityFilter {
 
 #ifndef STUB_TypeNodeProvider_TypeNodeProvider
 //#define STUB_TypeNodeProvider_TypeNodeProvider
-   TypeNodeProvider::TypeNodeProvider(const std::string& attribute_name)
+   TypeNodeProvider::TypeNodeProvider(std::string attribute_name)
     : Consumer(attribute_name)
   {
     

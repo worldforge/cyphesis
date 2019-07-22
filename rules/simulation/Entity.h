@@ -66,7 +66,6 @@ class Entity : public LocatedEntity {
 
     virtual void ActuateOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
-    virtual void AttackOperation(const Operation &, OpVector &);
     virtual void CombineOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);

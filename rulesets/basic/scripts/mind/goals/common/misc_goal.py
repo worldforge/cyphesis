@@ -591,33 +591,35 @@ class hunt(Goal):
 ##################### DEFEND (SPOT SOMETHING, THEN KILL IT) ###################
 
 class defend(Goal):
-    """Kill something if we see it."""
+    """Kill something if we see it.
+    DEPRECATED
+    """
 
-    def __init__(self, what, range):
-        Goal.__init__(self, "defend against something",
-                      self.none_in_sight,
-                      [spot_something(what),
-                       hunt_for(what, range),
-                       self.fight])
-        self.what = what
-        self.filter = entity_filter.Filter(what)
-        self.range = range
-        self.vars = ["what", "range"]
-
-    def none_in_sight(self, me):
-        target_id = me.get_knowledge('focus', self.what)
-        if target_id:
-            return 0
-        thing_all = me.map.find_by_filter(self.filter)
-        if thing_all and len(thing_all) > 0:
-            return 0
-        return 1
-
-    def fight(self, me):
-        target_id = me.get_knowledge('focus', self.what)
-        if not target_id:
-            return
-        return Operation("attack", Entity(target_id))
+    # def __init__(self, what, range):
+    #     Goal.__init__(self, "defend against something",
+    #                   self.none_in_sight,
+    #                   [spot_something(what),
+    #                    hunt_for(what, range),
+    #                    self.fight])
+    #     self.what = what
+    #     self.filter = entity_filter.Filter(what)
+    #     self.range = range
+    #     self.vars = ["what", "range"]
+    #
+    # def none_in_sight(self, me):
+    #     target_id = me.get_knowledge('focus', self.what)
+    #     if target_id:
+    #         return 0
+    #     thing_all = me.map.find_by_filter(self.filter)
+    #     if thing_all and len(thing_all) > 0:
+    #         return 0
+    #     return 1
+    #
+    # def fight(self, me):
+    #     target_id = me.get_knowledge('focus', self.what)
+    #     if not target_id:
+    #         return
+    #     return Operation("attack", Entity(target_id))
 
 
 ############################ BUY SOMETHING (AS TRADER) ########################

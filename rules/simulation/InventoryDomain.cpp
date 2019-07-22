@@ -25,7 +25,6 @@
 
 #include "common/TypeNode.h"
 #include "common/debug.h"
-#include "common/operations/Unseen.h"
 #include "PlantedOnProperty.h"
 
 #include <Atlas/Objects/Operation.h>

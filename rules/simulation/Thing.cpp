@@ -29,7 +29,6 @@
 #include "common/operations/Update.h"
 #include "common/operations/Pickup.h"
 #include "common/operations/Drop.h"
-#include "common/operations/Unseen.h"
 #include "common/TypeNode.h"
 #include "EntityProperty.h"
 #include "rules/simulation/PlantedOnProperty.h"

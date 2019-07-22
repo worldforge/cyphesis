@@ -35,7 +35,6 @@
 #include "physics/Convert.h"
 
 #include "common/debug.h"
-#include "common/operations/Unseen.h"
 #include "common/TypeNode.h"
 #include "common/operations/Update.h"
 #include "rules/simulation/BaseWorld.h"

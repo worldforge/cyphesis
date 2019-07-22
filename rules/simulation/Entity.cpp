@@ -30,7 +30,6 @@
 #include "common/PropertyManager.h"
 
 #include "common/operations/Actuate.h"
-#include "common/operations/Attack.h"
 #include "common/operations/Eat.h"
 #include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
@@ -327,11 +326,6 @@ void Entity::ActuateOperation(const Operation &, OpVector &)
 
 /// \brief Handle a appearance operation
 void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a attack operation
-void Entity::AttackOperation(const Operation &, OpVector &)
 {
 }
 

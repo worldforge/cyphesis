@@ -50,12 +50,6 @@ void installCustomOperations(TypeStore & i)
     i.addChild(atlasOpDefinition("tick", "root_operation"));
     Atlas::Objects::Operation::TICK_NO = atlas_factories->addFactory("tick", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
-    i.addChild(atlasOpDefinition("unseen", "perception"));
-    Atlas::Objects::Operation::UNSEEN_NO = atlas_factories->addFactory("unseen", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
-    i.addChild(atlasOpDefinition("attack", "action"));
-    Atlas::Objects::Operation::ATTACK_NO = atlas_factories->addFactory("attack", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
     i.addChild(atlasOpDefinition("pickup", "action"));
     Atlas::Objects::Operation::PICKUP_NO = atlas_factories->addFactory("pickup", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
@@ -89,13 +83,6 @@ void installCustomOperations(TypeStore & i)
 
     i.addChild(atlasOpDefinition("possess", "set"));
     Atlas::Objects::Operation::POSSESS_NO = atlas_factories->addFactory("possess", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
-    /**
-     * Used to signal that something has changed. Sent from the server to the clients.
-     * For example when a type changes.
-     */
-    i.addChild(atlasOpDefinition("change", "info"));
-    Atlas::Objects::Operation::CHANGE_NO = atlas_factories->addFactory("change", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     i.addChild(atlasOpDefinition("hit", "affect"));
     Atlas::Objects::Operation::HIT_NO = atlas_factories->addFactory("hit", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);

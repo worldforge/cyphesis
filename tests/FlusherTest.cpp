@@ -29,7 +29,6 @@
 
 #include "common/compose.hpp"
 #include "common/operations/Tick.h"
-#include "common/operations/Unseen.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -246,7 +245,6 @@ int main()
 
 namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = 1000;
-int UNSEEN_NO = 1001;
 } } }
 
 void log(LogLevel lvl, const std::string & msg)

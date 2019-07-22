@@ -37,7 +37,6 @@
 #include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
-#include "common/operations/Unseen.h"
 #include "common/operations/Update.h"
 
 #include <Atlas/Objects/Operation.h>

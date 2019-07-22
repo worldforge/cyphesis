@@ -96,14 +96,6 @@
   }
 #endif //STUB_Entity_AppearanceOperation
 
-#ifndef STUB_Entity_AttackOperation
-//#define STUB_Entity_AttackOperation
-  void Entity::AttackOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_AttackOperation
-
 #ifndef STUB_Entity_CombineOperation
 //#define STUB_Entity_CombineOperation
   void Entity::CombineOperation(const Operation &, OpVector &)
