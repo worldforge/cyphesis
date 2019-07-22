@@ -2,9 +2,9 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 # return Operation("create",Entity(name='wood',type=['lumber'],location=self.location.parent.location.copy()),to=self)
 
-from atlas import *
+from atlas import Operation, Entity, Oplist
 
-from physics import Vector3D
+from physics import Vector3D, Point3D
 from rules import Location
 
 import server

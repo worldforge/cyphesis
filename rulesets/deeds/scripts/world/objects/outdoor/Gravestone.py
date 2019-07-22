@@ -1,5 +1,5 @@
 # This file is distributed under the terms of the GNU General Public license.
-# Copyright (C) 2005 Erik Hjortsberg (See the file COPYING for details).
+# Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
 from atlas import Operation, Entity, Oplist
 from physics import Vector3D
@@ -12,16 +12,12 @@ class Gravestone(server.Thing):
     """
     When digging at a grave, skeleton parts will be created.
     """
+    items = ['femur', 'humerus', 'pelvis', 'ribcage', 'skull', 'tibia']
 
-    def create_skeletonpart(self):
-        retops = Oplist()
+    def sift_operation(self, op):
         newloc = self.location.copy()
         newloc.velocity = Vector3D()
-        items = ['femur', 'humerus', 'pelvis', 'ribcage', 'skull', 'tibia']
-        item = items[randint(0, 5)]
+        item = Gravestone.items[randint(0, 5)]
         newloc.pos = newloc.pos + Vector3D(uniform(-1, 1), uniform(-1, 1), uniform(-1, 1))
-        retops += Operation("create", Entity(name=item, parent=item, location=newloc.copy()), to=self)
-        return retops
-
-    def dig_operation(self, op):
-        return self.create_skeletonpart()
+        return Operation("create", Entity(name=item, parent=item, location=newloc.copy()), to=self) + \
+               Operation("imaginary", Entity(description="You dig up a bone from the grave."), to=op.id, from_=op.id)

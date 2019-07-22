@@ -26,7 +26,6 @@ class Cultivate(server.Task):
 
     def tick(self):
         target = self.get_arg("targets", 0)
-        entity = target.entity
 
         (valid, err) = self.usage.is_valid()
         if not valid:

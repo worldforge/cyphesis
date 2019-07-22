@@ -13,6 +13,24 @@
             <map name="density">
                 <float name="default">2000</float>
             </map>
+            <map name="cooldown">
+                <float name="default">5</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="sift">
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity_location</string>
+                                <string name="constraint">entity instance_of types.game_entity &amp;&amp; actor can_reach entity_location with tool</string>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.GenericTool.use</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
+                        <string name="description">Sift with sieve.</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">sieve</string>
         <string name="objtype">class</string>

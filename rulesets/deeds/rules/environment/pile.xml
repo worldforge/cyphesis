@@ -8,7 +8,7 @@
                 </map>
             </map>
             <map name="present">
-                <string name="default">dural/structures/ground_palisade/model/ground_palisade_a.mesh</string>
+                <string name="default">dural/structures/ground_palisade/pile.entitymap</string>
             </map>
             <map name="constituants">
                 <map name="default">
@@ -17,9 +17,16 @@
             <map name="density">
                 <float name="default">1000</float>
             </map>
-            <map name="operations">
+            <map name="__scripts">
                 <list name="default">
-                    <string>disperse</string>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.outdoor.Pile.Pile</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.ScaleDeletable.ScaleDeletable</string>
+                    </map>
                 </list>
             </map>
         </map>

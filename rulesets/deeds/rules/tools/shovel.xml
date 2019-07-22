@@ -25,7 +25,7 @@
                                 <string name="constraint">entity instance_of types.game_entity &amp;&amp; actor can_reach entity_location with tool</string>
                             </map>
                         </map>
-                        <string name="handler">world.objects.tools.Shovel.dig</string>
+                        <string name="handler">world.objects.tools.GenericTool.use</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
                         <string name="description">Dig with shovel.</string>
                     </map>
