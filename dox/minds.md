@@ -20,12 +20,6 @@ The main downside is that the protocols needed for letting outside minds communi
 The command line tool "cyaiclient" launches a new AI client and connects to a locally running Cyphesis server, over the local socket found at PREFIX/var/cyphesis_cyphesis.sock. Multiple clients can be connected at the same time, although currently only the last connected one will receive mind requests. When a client is disconnected the server will reassign the minds that were handled by that client to the latest connected client, if any such exists. This scheme is designed to make iterative development of ai clients easier.
 Cyphesis will by default create one AI client instance at startup, as a child process.
 
-### Proxy mind
-
-On the server side each entity with a mind also has an instance of ProxyMind attached to it. The purpose of the ProxyMind is to keep tabs on the state of the mind, both when an external AI client is attached as well as when it's completely detached. All thoughts are stored in the proxy mind.
-
-Any authoring client can interact with the proxy mind by inspecting its thoughts and altering them, even though they will in this state only be static. As soon as an AI client connects the stored thoughts will be sent to the client. The AI client will at regular intervals also send its current thoughts to the server, thus making sure they are persisted in the event of a crash or shutdown.
-
 ### AI client registration
 
 When a client that wants to act like an AI client is connected it needs to inform the server about this. This is done by setting the attribute "possessive" on the client itself. Once this is done the server will mark the client as a possession client and start to route mind requests to it.
