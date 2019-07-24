@@ -204,8 +204,6 @@ wf_add_test(VisibilityPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(ExternalPropertyTest.cpp ../rules/simulation/ExternalProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(DecaysPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/DecaysProperty.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(BaseMindTest.cpp ../rules/ai/BaseMind.cpp ../rules/ai/MemMap.cpp)
 wf_add_test(MemEntityTest.cpp ../rules/ai/MemEntity.cpp)
 wf_add_test(MemMapTest.cpp ../rules/ai/MemMap.cpp)
@@ -358,11 +356,6 @@ wf_add_test(TerrainPropertyIntegration.cpp ../rules/simulation/TerrainModPropert
 target_link_libraries(TerrainPropertyIntegration modules physics)
 
 wf_add_test(PropertyEntityIntegration.cpp ../rules/simulation/Entity.cpp
-    ../rules/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp
-    ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
-wf_add_test(DecaysPropertyIntegration.cpp ../rules/simulation/Entity.cpp
-    ../rules/simulation/DecaysProperty.cpp
     ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)

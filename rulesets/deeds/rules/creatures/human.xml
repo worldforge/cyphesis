@@ -32,8 +32,10 @@
                     <string name="head">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'head'</string>
                 </map>
             </map>
-            <map name="decays">
-                <string name="default">dead_human_skull</string>
+            <map name="_decays">
+                <list name="default">
+                    <string>dead_human_skull</string>
+                </list>
             </map>
             <!-- TODO: replace or otherwise handle -->
             <map name="guise">

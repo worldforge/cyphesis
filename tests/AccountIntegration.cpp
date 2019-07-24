@@ -425,7 +425,6 @@ int main()
 #include "rules/simulation/AreaProperty.h"
 #include "rules/AtlasProperties.h"
 #include "rules/BBoxProperty.h"
-#include "rules/simulation/DecaysProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/ExternalProperty.h"

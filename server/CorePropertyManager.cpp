@@ -30,7 +30,6 @@
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/ServerBBoxProperty.h"
-#include "rules/simulation/DecaysProperty.h"
 #include "rules/simulation/MindProperty.h"
 #include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/SpawnProperty.h"
@@ -129,7 +128,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<LineProperty>("points");
     //installProperty<Property<IdList> >("start_intersections", "list");
     //installProperty<Property<IdList> >("end_intersections", "list");
-    installProperty<DecaysProperty>();
     installProperty<SolidProperty>();
     installProperty<SimpleProperty>();
     installProperty<StatusProperty>();

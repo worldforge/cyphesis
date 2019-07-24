@@ -67,4 +67,11 @@
         <string name="parent">float</string>
         <string name="description">Used on flammable entities to determine how fast they burn.</string>
     </map>
+
+    <map>
+        <string name="id">_decays</string>
+        <string name="objtype">type</string>
+        <string name="parent">list</string>
+        <string name="description">A list of entities or archetypes which should be created when the entity is deleted. Handled by the DecaysInto trait.</string>
+    </map>
 </atlas>
