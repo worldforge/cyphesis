@@ -18,4 +18,4 @@ def eat(instance):
     if instance.tool.props._consumable_type:
         nourish_ent.eat_type = instance.tool.props._consumable_type
 
-    return (server.OPERATION_BLOCKED, Operation("nourish", nourish_ent, to=instance.actor), Operation("delete", Entity(instance.tool.id), to=instance.tool))
+    return server.OPERATION_BLOCKED, Operation("nourish", nourish_ent, to=instance.actor), Operation("delete", Entity(instance.tool.id), to=instance.tool)

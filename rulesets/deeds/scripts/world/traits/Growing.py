@@ -34,5 +34,5 @@ class Growing(server.Thing):
 
                     res += Operation("set", set_ent, to=self)
 
-            return (server.OPERATION_BLOCKED, res)
+            return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED

@@ -19,6 +19,14 @@
             <map name="material">
                 <string name="default">wood</string>
             </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Flammable.Flammable</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">lumber</string>
         <string name="objtype">class</string>
