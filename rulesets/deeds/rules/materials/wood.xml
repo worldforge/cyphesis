@@ -1,9 +1,6 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="burn_speed">
-                <float name="default">1</float>
-            </map>
             <map name="density">
                 <float name="default">500</float>
             </map>

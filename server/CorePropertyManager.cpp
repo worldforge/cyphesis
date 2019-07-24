@@ -30,8 +30,6 @@
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/ServerBBoxProperty.h"
-#include "rules/simulation/BiomassProperty.h"
-#include "rules/simulation/BurnSpeedProperty.h"
 #include "rules/simulation/DecaysProperty.h"
 #include "rules/simulation/MindProperty.h"
 #include "rules/simulation/InternalProperties.h"
@@ -137,8 +135,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<SolidProperty>();
     installProperty<SimpleProperty>();
     installProperty<StatusProperty>();
-    installProperty<BiomassProperty>();
-    installProperty<BurnSpeedProperty>();
     installProperty<TransientProperty>();
     installProperty<Property<double>>("mass");
     installProperty<ServerBBoxProperty>();

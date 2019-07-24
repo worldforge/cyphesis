@@ -17,11 +17,11 @@ class PlantFeeding(server.Thing):
         if Ticks.verify_tick(self, op, res, self.tick_interval):
             if self.props.mode and self.props.mode == 'planted' and self.location.parent and self.props.mass:
                 # If we're planted we should send an Eat op to our parent.
-                # A 'passive' eat op should be ignored by most entities except those with soil.
+                # A 'soil' eat op should be ignored by most entities except those with soil.
                 # (So a character won't get eaten if a plant is in it's inventory (which in normal cases would mean it's not "planted" though))
                 # Try to double mass each day
                 mass = (self.props.mass ** 0.5) / ((24 * 60 * 60) / PlantFeeding.tick_interval)
-                res += Operation("eat", Entity(eat_type='passive', pos=self.location.pos, mass=mass), to=self.location.parent)
+                res += Operation("eat", Entity(eat_type='soil', pos=self.location.pos, mass=mass), to=self.location.parent)
 
             return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED

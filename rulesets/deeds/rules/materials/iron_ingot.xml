@@ -10,9 +10,6 @@
             <map name="present">
                 <string name="default">dural/items/resources/iron_ingot/model/ingot_iron.mesh</string>
             </map>
-            <map name="burn_speed">
-                <float name="default">1</float>
-            </map>
             <map name="density">
                 <float name="default">7900</float>
             </map>

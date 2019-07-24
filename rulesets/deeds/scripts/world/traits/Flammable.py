@@ -6,11 +6,9 @@ import server
 class Flammable(server.Thing):
 
     def eat_operation(self, op):
-        print('got eat')
         if len(op) > 0:
             arg = op[0]
             if arg.eat_type == "fire":
-                print('is fire')
                 # Determine the burn speed, i.e. how much to remove of the status for each burn
                 burn_speed = 0.1
                 burn_speed_prop = self.props._burn_speed
@@ -23,8 +21,6 @@ class Flammable(server.Thing):
                 nourish_op = Operation("nourish", nourish_ent, to=op.from_)
 
                 status_prop = self.props.status
-
-                print("Entity burns")
 
                 if status_prop:
                     return server.OPERATION_BLOCKED, nourish_op, Operation("set", Entity(self.id, status=status_prop - burn_speed), to=self)

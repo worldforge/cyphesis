@@ -3,7 +3,7 @@ from physics import Vector3D
 import server
 
 
-# Plant nourishing entities are those that can sustain plants in them. When a "consume" op of type "passive" is received a "nourish" op is returned.
+# Plant nourishing entities are those that can sustain plants in them. When a "consume" op of type "soil" is received a "nourish" op is returned.
 # This would normally be placed on an entity representing "ground". In those cases, if it also has a "terrain" property a check if done against that to
 # make sure that the ground can sustain plants.
 class PlantNourishing(server.Thing):
@@ -11,7 +11,7 @@ class PlantNourishing(server.Thing):
     def eat_operation(self, op):
         if len(op) > 0:
             arg = op[0]
-            if arg.eat_type == "passive":
+            if arg.eat_type == "soil":
 
                 # The plant should specify how much mass it wants to absorb with each "bite"
                 mass_arg = arg.mass

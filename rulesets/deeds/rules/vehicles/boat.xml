@@ -10,9 +10,6 @@
             <map name="present">
                 <string name="default">dural/items/vehicle/goatboat/model/goat_boat.mesh</string>
             </map>
-            <map name="burn_speed">
-                <float name="default">0.1</float>
-            </map>
             <map name="density">
                 <float name="default">100</float>
             </map>

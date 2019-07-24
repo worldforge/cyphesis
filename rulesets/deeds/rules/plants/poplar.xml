@@ -8,9 +8,6 @@
                     <float>6</float>
                 </list>
             </map>
-            <map name="burn_speed">
-                <float name="default">0.025</float>
-            </map>
             <map name="height">
                 <float name="default">6</float>
             </map>

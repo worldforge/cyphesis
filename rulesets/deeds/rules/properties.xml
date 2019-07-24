@@ -29,6 +29,13 @@
     </map>
 
     <map>
+        <string name="id">_modifier_eat_type_soil</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">Used on plants, define how much of the mass is converted into food when nourishment is take from the parent.</string>
+    </map>
+
+    <map>
         <string name="id">consumable_type</string>
         <string name="objtype">type</string>
         <string name="parent">string</string>
@@ -54,4 +61,10 @@
         <string name="description">Used on consumers, to define the max amount of food mass their stomach can contains as a factor of their mass.</string>
     </map>
 
+    <map>
+        <string name="id">_burn_speed</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">Used on flammable entities to determine how fast they burn.</string>
+    </map>
 </atlas>

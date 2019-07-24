@@ -22,8 +22,6 @@ add_library(rulessimulation
     SpawnProperty.cpp
     VisibilityProperty.cpp
     ExternalProperty.cpp
-    BiomassProperty.cpp
-    BurnSpeedProperty.cpp
     DecaysProperty.cpp
     Task.cpp
     SuspendedProperty.cpp

@@ -22,7 +22,8 @@
                     <string name="type">cylinder-y</string>
                 </map>
             </map>
-            <map name="_modifier_eat_type_passive">
+            <!-- Normal plants can only eat "soil". There's of course the option to also add a subtype which can eat meat... -->
+            <map name="_modifier_eat_type_soil">
                 <float name="default">1</float>
             </map>
             <!-- The max amount of nutrients we can hold in our reserves, compared to our mass -->

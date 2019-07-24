@@ -207,10 +207,6 @@ wf_add_test(VisibilityPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(ExternalPropertyTest.cpp ../rules/simulation/ExternalProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BurnSpeedPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/BurnSpeedProperty.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
-wf_add_test(BiomassPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/BiomassProperty.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(DecaysPropertyTest.cpp PropertyCoverage.cpp ../rules/simulation/DecaysProperty.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(BaseMindTest.cpp ../rules/ai/BaseMind.cpp ../rules/ai/MemMap.cpp)
@@ -370,11 +366,6 @@ wf_add_test(PropertyEntityIntegration.cpp ../rules/simulation/Entity.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
 wf_add_test(DecaysPropertyIntegration.cpp ../rules/simulation/Entity.cpp
     ../rules/simulation/DecaysProperty.cpp
-    ../rules/LocatedEntity.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp
-    ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)
-wf_add_test(BiomassPropertyIntegration.cpp ../rules/simulation/Entity.cpp
-    ../rules/simulation/BiomassProperty.cpp
     ../rules/LocatedEntity.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp)

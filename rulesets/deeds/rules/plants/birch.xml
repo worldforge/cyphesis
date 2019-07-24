@@ -11,9 +11,6 @@
                     <float>0.2</float>
                 </list>
             </map>
-            <map name="burn_speed">
-                <float name="default">0.05</float>
-            </map>
             <map name="height">
                 <float name="default">6</float>
             </map>

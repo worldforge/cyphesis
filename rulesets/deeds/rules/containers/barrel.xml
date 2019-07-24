@@ -8,9 +8,6 @@
                     <string name="type">cylinder-y</string>
                 </map>
             </map>
-            <map name="burn_speed">
-                <float name="default">0.25</float>
-            </map>
             <map name="density">
                 <float name="default">50</float>
             </map>

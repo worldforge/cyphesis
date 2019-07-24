@@ -43,22 +43,6 @@
   }
 #endif //STUB_TerrainProperty_TerrainProperty_DTOR
 
-#ifndef STUB_TerrainProperty_install
-//#define STUB_TerrainProperty_install
-  void TerrainProperty::install(LocatedEntity *, const std::string &)
-  {
-    
-  }
-#endif //STUB_TerrainProperty_install
-
-#ifndef STUB_TerrainProperty_remove
-//#define STUB_TerrainProperty_remove
-  void TerrainProperty::remove(LocatedEntity *, const std::string &)
-  {
-    
-  }
-#endif //STUB_TerrainProperty_remove
-
 #ifndef STUB_TerrainProperty_get
 //#define STUB_TerrainProperty_get
   int TerrainProperty::get(Atlas::Message::Element &) const
@@ -82,14 +66,6 @@
     return nullptr;
   }
 #endif //STUB_TerrainProperty_copy
-
-#ifndef STUB_TerrainProperty_operation
-//#define STUB_TerrainProperty_operation
-  HandlerResult TerrainProperty::operation(LocatedEntity *, const Operation &, OpVector &)
-  {
-    return *static_cast<HandlerResult*>(nullptr);
-  }
-#endif //STUB_TerrainProperty_operation
 
 #ifndef STUB_TerrainProperty_apply
 //#define STUB_TerrainProperty_apply
@@ -162,14 +138,6 @@
     return *static_cast<boost::optional<std::vector<LocatedEntity*>>*>(nullptr);
   }
 #endif //STUB_TerrainProperty_findMods
-
-#ifndef STUB_TerrainProperty_eat_handler
-//#define STUB_TerrainProperty_eat_handler
-  HandlerResult TerrainProperty::eat_handler(LocatedEntity * e, const Operation & op, OpVector & res)
-  {
-    return *static_cast<HandlerResult*>(nullptr);
-  }
-#endif //STUB_TerrainProperty_eat_handler
 
 #ifndef STUB_TerrainProperty_getData
 //#define STUB_TerrainProperty_getData

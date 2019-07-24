@@ -69,8 +69,8 @@
             <map name="present">
                 <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
             </map>
-            <map name="burn_speed">
-                <float name="default">2</float>
+            <map name="_burn_speed">
+                <float name="default">0.2</float>
             </map>
             <map name="mass">
                 <float name="default">0.2</float>
@@ -113,8 +113,8 @@
                     <float>0.1</float>
                 </list>
             </map>
-            <map name="burn_speed">
-                <float name="default">1</float>
+            <map name="_burn_speed">
+                <float name="default">0.2</float>
             </map>
             <map name="density">
                 <float name="default">30</float>

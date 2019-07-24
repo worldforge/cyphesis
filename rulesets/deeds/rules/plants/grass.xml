@@ -14,9 +14,6 @@
             <map name="present">
                 <string name="default">dural/plants/grass/grass_clump/grass_clump.modeldef</string>
             </map>
-            <map name="burn_speed">
-                <float name="default">0.7</float>
-            </map>
             <map name="density">
                 <float name="default">200</float>
             </map>

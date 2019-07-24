@@ -10,9 +10,6 @@
             <map name="present">
                 <string name="default">dural/structures/building_elements/model/board_b.mesh</string>
             </map>
-            <map name="burn_speed">
-                <float name="default">0.6</float>
-            </map>
             <map name="density">
                 <float name="default">500</float>
             </map>

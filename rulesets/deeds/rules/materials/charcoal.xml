@@ -7,9 +7,6 @@
                     <string name="type">box</string>
                 </map>
             </map>
-            <map name="burn_speed">
-                <float name="default">1</float>
-            </map>
             <map name="density">
                 <float name="default">300</float>
             </map>
