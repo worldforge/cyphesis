@@ -15,13 +15,13 @@
   }
 #endif //STUB_StatusProperty_copy
 
-#ifndef STUB_StatusProperty_apply
-//#define STUB_StatusProperty_apply
-  void StatusProperty::apply(LocatedEntity *)
+#ifndef STUB_StatusProperty_set
+//#define STUB_StatusProperty_set
+  void StatusProperty::set(const Atlas::Message::Element&)
   {
     
   }
-#endif //STUB_StatusProperty_apply
+#endif //STUB_StatusProperty_set
 
 
 #endif

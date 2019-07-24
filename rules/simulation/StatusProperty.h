@@ -21,18 +21,20 @@
 
 #include "common/Property.h"
 
-/// \brief Keeps track of the status of an entity. When it reaches 0 the entity is destroyed.
+/// \brief Keeps track of the status of an entity. It cannot go below 0.
 /// \ingroup PropertyClasses
-class StatusProperty : public Property<double> {
-  public:
-    static constexpr const char* property_name = "status";
+class StatusProperty : public Property<double>
+{
+    public:
+        static constexpr const char* property_name = "status";
 
-    /// \brief Constructor
-    StatusProperty() = default;
+        /// \brief Constructor
+        StatusProperty() = default;
 
-        StatusProperty * copy() const override;
+        StatusProperty* copy() const override;
 
-        void apply(LocatedEntity *) override;
+        void set(const Atlas::Message::Element&) override;
+
 };
 
 #endif // RULESETS_STATUS_PROPERTY_H

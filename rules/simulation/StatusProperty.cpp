@@ -18,28 +18,13 @@
 
 #include "StatusProperty.h"
 
-#include "rules/LocatedEntity.h"
-
-#include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/Anonymous.h>
-
-using Atlas::Message::Element;
-using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Entity::Anonymous;
-
-StatusProperty * StatusProperty::copy() const
+StatusProperty* StatusProperty::copy() const
 {
     return new StatusProperty(*this);
 }
 
-void StatusProperty::apply(LocatedEntity * owner)
+void StatusProperty::set(const Atlas::Message::Element& e)
 {
-    if (m_data < 0) {
-//        Delete del;
-//        Anonymous delete_arg;
-//        delete_arg->setId(owner->getId());
-//        del->setArgs1(delete_arg);
-//        del->setTo(owner->getId());
-//        owner->sendWorld(del);
-    }
+    Property<double>::set(e);
+    m_data = std::max(m_data, 0.0);
 }
