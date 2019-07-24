@@ -71,7 +71,6 @@ class Entity : public LocatedEntity {
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void DisappearanceOperation(const Operation &, OpVector &);
     virtual void DivideOperation(const Operation &, OpVector &);
-    virtual void EatOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void ImaginaryOperation(const Operation &, OpVector &);
     virtual void InfoOperation(const Operation &, OpVector &);

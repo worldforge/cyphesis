@@ -29,7 +29,6 @@
 #include "common/TypeNode.h"
 #include "common/custom.h"
 
-#include "common/operations/Eat.h"
 #include "common/operations/Nourish.h"
 #include "WorldTimeProperty.h"
 

@@ -31,7 +31,6 @@ int BURN_NO = -1;
 int CONNECT_NO = -1;
 int DROP_NO = -1;
 int MONITOR_NO = -1;
-int EAT_NO = -1;
 int UPDATE_NO = -1;
 int NOURISH_NO = -1;
 int PICKUP_NO = -1;

@@ -8,16 +8,6 @@
 #include "stubSteering_custom.h"
 
 
-#ifndef STUB_Destination_isAtDestination
-//#define STUB_Destination_isAtDestination
-  bool Destination::isAtDestination()
-  {
-    return false;
-  }
-#endif //STUB_Destination_isAtDestination
-
-
-
 #ifndef STUB_Steering_Steering
 //#define STUB_Steering_Steering
    Steering::Steering(MemEntity& avatar)

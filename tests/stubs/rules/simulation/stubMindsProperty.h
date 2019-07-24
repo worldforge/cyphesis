@@ -184,14 +184,6 @@
   }
 #endif //STUB_MindsProperty_mindDivideOperation
 
-#ifndef STUB_MindsProperty_mindEatOperation
-//#define STUB_MindsProperty_mindEatOperation
-  void MindsProperty::mindEatOperation(LocatedEntity*, const Operation&, OpVector&) const
-  {
-    
-  }
-#endif //STUB_MindsProperty_mindEatOperation
-
 #ifndef STUB_MindsProperty_mindGoalInfoOperation
 //#define STUB_MindsProperty_mindGoalInfoOperation
   void MindsProperty::mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const

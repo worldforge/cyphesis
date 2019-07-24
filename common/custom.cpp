@@ -35,9 +35,6 @@ void installCustomOperations(TypeStore & i)
     i.addChild(atlasOpDefinition("connect", "set"));
     Atlas::Objects::Operation::CONNECT_NO = atlas_factories->addFactory("connect", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
-    i.addChild(atlasOpDefinition("eat", "action"));
-    Atlas::Objects::Operation::EAT_NO = atlas_factories->addFactory("eat", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
     i.addChild(atlasOpDefinition("monitor", "set"));
     Atlas::Objects::Operation::MONITOR_NO = atlas_factories->addFactory("monitor", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 

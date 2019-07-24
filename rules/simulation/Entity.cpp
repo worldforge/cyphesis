@@ -30,7 +30,6 @@
 #include "common/PropertyManager.h"
 
 #include "common/operations/Actuate.h"
-#include "common/operations/Eat.h"
 #include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
@@ -355,11 +354,6 @@ void Entity::DisappearanceOperation(const Operation &, OpVector &)
 
 /// \brief Handle a divide operation
 void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a eat operation
-void Entity::EatOperation(const Operation &, OpVector &)
 {
 }
 

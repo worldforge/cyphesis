@@ -22,7 +22,6 @@
 #include "common/operations/Add.h"
 #include "common/operations/Burn.h"
 #include "common/operations/Connect.h"
-#include "common/operations/Eat.h"
 #include "common/operations/Monitor.h"
 #include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"

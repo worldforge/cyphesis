@@ -29,7 +29,6 @@
 #include "common/custom.h"
 
 #include "common/operations/Actuate.h"
-#include "common/operations/Eat.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 #include "common/operations/Update.h"
@@ -706,37 +705,6 @@ void MindsProperty::mindLookOperation(LocatedEntity* ent, const Operation& op, O
     res.push_back(op);
 }
 
-/// \brief Filter a Eat operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindEatOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, ent->describeEntity() + " mindEatOperation: Op has no ARGS");
-        return;
-    }
-    const Root& arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, ent->describeEntity() + " mindEatOperation: Arg has no ID");
-        return;
-    }
-
-    auto target = BaseWorld::instance().getEntity(arg->getId());
-    if (!target) {
-        log(NOTICE, ent->describeEntity() + " mindEatOperation: Target does not exist");
-        return;
-    }
-
-    if (!ent->canReach({target, {}})) {
-        ent->clientError(op, "Target is too far away.", res, op->getFrom());
-        return;
-    }
-    op->setTo(arg->getId());
-    res.push_back(op);
-}
-
 /// \brief Filter a GoalInfo operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -882,8 +850,6 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
         default:
             if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
                 mindActuateOperation(ent, op, res);
-            } else if (op_no == Atlas::Objects::Operation::EAT_NO) {
-                mindEatOperation(ent, op, res);
             } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {
                 mindSetupOperation(ent, op, res);
             } else if (op_no == Atlas::Objects::Operation::TICK_NO) {

@@ -87,8 +87,6 @@ class MindsProperty : public PropertyBase
 
         void mindDivideOperation(LocatedEntity*, const Operation&, OpVector&) const;
 
-        void mindEatOperation(LocatedEntity*, const Operation&, OpVector&) const;
-
         void mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const;
 
         void mindImaginaryOperation(LocatedEntity*, const Operation&, OpVector&) const;

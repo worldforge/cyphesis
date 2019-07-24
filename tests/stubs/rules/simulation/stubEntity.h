@@ -136,14 +136,6 @@
   }
 #endif //STUB_Entity_DivideOperation
 
-#ifndef STUB_Entity_EatOperation
-//#define STUB_Entity_EatOperation
-  void Entity::EatOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_EatOperation
-
 #ifndef STUB_Entity_GetOperation
 //#define STUB_Entity_GetOperation
   void Entity::GetOperation(const Operation &, OpVector &)

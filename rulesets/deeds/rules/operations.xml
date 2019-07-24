@@ -156,4 +156,11 @@
         <string name="parent">action</string>
     </map>
 
+    <map>
+        <string name="id">eat</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">action</string>
+    </map>
+
+
 </atlas>

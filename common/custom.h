@@ -26,7 +26,6 @@ extern int ADD_NO;
 extern int BURN_NO;
 extern int CONNECT_NO;
 extern int DROP_NO;
-extern int EAT_NO;
 extern int GOAL_INFO_NO;
 extern int MONITOR_NO;
 extern int NOURISH_NO;

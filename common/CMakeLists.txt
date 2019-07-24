@@ -41,7 +41,6 @@ add_library(common
     compose.hpp
     operations/Connect.h
     operations/Drop.h
-    operations/Eat.h
     operations/Monitor.h
     nls.h
     operations/Nourish.h

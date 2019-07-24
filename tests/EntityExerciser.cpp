@@ -32,7 +32,6 @@
 #include "common/operations/Add.h"
 #include "common/operations/Burn.h"
 #include "common/operations/Connect.h"
-#include "common/operations/Eat.h"
 #include "common/operations/Monitor.h"
 #include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
@@ -185,10 +184,6 @@ void EntityExerciser::runOperations()
     }
     {
         Atlas::Objects::Operation::Divide op;
-        dispatchOp(op);
-    }
-    {
-        Atlas::Objects::Operation::Eat op;
         dispatchOp(op);
     }
     {

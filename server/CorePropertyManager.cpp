@@ -61,7 +61,6 @@
 #include "rules/simulation/AttachmentsProperty.h"
 #include "rules/simulation/AdminProperty.h"
 
-#include "common/operations/Eat.h"
 #include "common/operations/Burn.h"
 #include "common/operations/Teleport.h"
 

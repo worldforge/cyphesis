@@ -4,7 +4,6 @@ namespace Atlas { namespace Objects { namespace Operation {
             int ADD_NO = -1;
             int BURN_NO = -1;
             int CONNECT_NO = -1;
-            int EAT_NO = -1;
             int GOAL_INFO_NO = -1;
             int MONITOR_NO = -1;
             int NOURISH_NO = -1;

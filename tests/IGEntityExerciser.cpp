@@ -35,7 +35,6 @@
 #include "common/operations/Add.h"
 #include "common/operations/Burn.h"
 #include "common/operations/Connect.h"
-#include "common/operations/Eat.h"
 #include "common/operations/Monitor.h"
 #include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
@@ -152,14 +151,6 @@ void IGEntityExerciser::runOperations()
         this->dispatchOp(op);
         OpVector ov;
         this->m_ent->DivideOperation(op, ov);
-        this->flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Eat op;
-        this->dispatchOp(op);
-        OpVector ov;
-        op->setFrom(this->m_ent->getId());
-        this->m_ent->EatOperation(op, ov);
         this->flushOperations(ov);
     }
     {

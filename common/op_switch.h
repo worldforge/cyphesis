@@ -82,8 +82,6 @@
                 _prefix ## ThoughtOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::ACTUATE_NO) { \
                 _prefix ## ActuateOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::EAT_NO) { \
-                _prefix ## EatOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::NOURISH_NO) { \
                 _prefix ## NourishOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \

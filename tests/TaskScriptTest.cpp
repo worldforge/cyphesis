@@ -252,10 +252,6 @@ void Character::mindDivideOperation(const Operation &, OpVector &)
 {
 }
 
-void Character::mindEatOperation(const Operation &, OpVector &)
-{
-}
-
 void Character::mindGoalInfoOperation(const Operation &, OpVector &)
 {
 }
@@ -393,10 +389,6 @@ void Entity::DisappearanceOperation(const Operation &, OpVector &)
 }
 
 void Entity::DivideOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::EatOperation(const Operation &, OpVector &)
 {
 }
 
