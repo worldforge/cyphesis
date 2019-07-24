@@ -64,7 +64,6 @@ class Entity : public LocatedEntity {
     void addToMessage(Atlas::Message::MapType &) const override;
     void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
-    virtual void ActuateOperation(const Operation &, OpVector &);
     virtual void AppearanceOperation(const Operation &, OpVector &);
     virtual void CombineOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);
@@ -76,7 +75,6 @@ class Entity : public LocatedEntity {
     virtual void InfoOperation(const Operation &, OpVector &);
     virtual void LookOperation(const Operation &, OpVector &);
     virtual void MoveOperation(const Operation &, OpVector &);
-    virtual void NourishOperation(const Operation &, OpVector &);
     virtual void SetOperation(const Operation &, OpVector &);
     virtual void SightOperation(const Operation &, OpVector &);
     virtual void SoundOperation(const Operation &, OpVector &);

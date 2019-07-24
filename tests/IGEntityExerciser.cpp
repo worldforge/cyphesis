@@ -33,10 +33,8 @@
 #include "common/TypeNode.h"
 
 #include "common/operations/Add.h"
-#include "common/operations/Burn.h"
 #include "common/operations/Connect.h"
 #include "common/operations/Monitor.h"
-#include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 #include "common/operations/Update.h"
@@ -249,42 +247,6 @@ void IGEntityExerciser::runOperations()
 
         this->m_ent->addFlags(entity_perceptive);
         this->m_ent->MoveOperation(op, ov);
-        this->flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Nourish op;
-        this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent->NourishOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
-        this->flushOperations(ov);
-
-        Atlas::Objects::Root bad_arg;
-        op->setArgs1(bad_arg);
-        this->dispatchOp(op);
-        this->m_ent->NourishOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
-        this->flushOperations(ov);
-
-        Atlas::Objects::Entity::Anonymous nourish_arg;
-        op->setArgs1(nourish_arg);
-        this->dispatchOp(op);
-        this->m_ent->NourishOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
-        }
-        this->flushOperations(ov);
-
-        nourish_arg->setAttr("mass", 23);
-        this->dispatchOp(op);
-        this->m_ent->NourishOperation(op, ov);
-        if (!ov.empty()) {
-            assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
-        }
         this->flushOperations(ov);
     }
     {

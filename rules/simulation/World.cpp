@@ -29,7 +29,6 @@
 #include "common/TypeNode.h"
 #include "common/custom.h"
 
-#include "common/operations/Nourish.h"
 #include "WorldTimeProperty.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -44,7 +43,6 @@ using Atlas::Message::FloatType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Sight;
-using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;

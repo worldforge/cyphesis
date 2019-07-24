@@ -21,14 +21,11 @@
 
 #include "common/debug.h"
 
-#include "common/operations/Nourish.h"
-
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
 
 using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Set;
 
 static const bool debug_flag = false;

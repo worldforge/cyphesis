@@ -31,8 +31,6 @@
 #include "common/OperationRouter.h"
 #include "common/TypeNode.h"
 
-#include "common/operations/Burn.h"
-#include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 

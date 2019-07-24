@@ -80,10 +80,6 @@
         default: \
             if (_op_no == Atlas::Objects::Operation::THOUGHT_NO) { \
                 _prefix ## ThoughtOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::ACTUATE_NO) { \
-                _prefix ## ActuateOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::NOURISH_NO) { \
-                _prefix ## NourishOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
                 _prefix ## TickOperation(_op, _result); \
             } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \

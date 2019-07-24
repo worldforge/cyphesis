@@ -33,17 +33,14 @@ add_library(common
     OperationsDispatcher.cpp
     RuleTraversalTask.cpp
     AtlasQuery.h
-    operations/Actuate.h
     operations/Add.h
     operations/Affect.h
-    operations/Burn.h
     operations/Commune.h
     compose.hpp
     operations/Connect.h
     operations/Drop.h
     operations/Monitor.h
     nls.h
-    operations/Nourish.h
     op_switch.h
     operations/Pickup.h
     operations/Possess.h
@@ -73,7 +70,7 @@ add_library(common
     MainLoop.h
     CommAsioClient_impl.h
     TypeStore.h
-    operations/Hit.h)
+    )
 
 target_link_libraries(common ${GCRYPT_LIBRARIES})
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})

@@ -24,7 +24,6 @@
 #include "common/debug.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"
-#include "common/operations/Nourish.h"
 
 #include "modules/TerrainContext.h"
 
@@ -45,7 +44,6 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
-using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Entity::Anonymous;
 
 typedef Mercator::Terrain::Pointstore Pointstore;

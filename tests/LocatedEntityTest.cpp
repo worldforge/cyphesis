@@ -356,7 +356,6 @@ int SoftProperty::get(Atlas::Message::Element & val) const
 #include "stubs/common/stubTypeNode.h"
 
 namespace Atlas { namespace Objects { namespace Operation {
-int NOURISH_NO = -1;
 int SETUP_NO = -1;
 int TICK_NO = -1;
 int RELAY_NO = -1;

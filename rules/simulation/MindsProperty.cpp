@@ -28,7 +28,6 @@
 #include "common/op_switch.h"
 #include "common/custom.h"
 
-#include "common/operations/Actuate.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 #include "common/operations/Update.h"
@@ -216,19 +215,6 @@ HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operatio
     return OPERATION_BLOCKED;
 }
 
-
-/// \brief Filter an Actuate operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindActuateOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
-    debug_print("Got Actuate op from mind")
-
-    //Distance filtering etc. happens in ActuateOperation
-    op->setTo(ent->getId());
-    res.push_back(op);
-}
 
 /// \brief Filter a Setup operation coming from the mind
 ///
@@ -848,9 +834,7 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
             mindWieldOperation(ent, op, res);
             break;
         default:
-            if (op_no == Atlas::Objects::Operation::ACTUATE_NO) {
-                mindActuateOperation(ent, op, res);
-            } else if (op_no == Atlas::Objects::Operation::SETUP_NO) {
+            if (op_no == Atlas::Objects::Operation::SETUP_NO) {
                 mindSetupOperation(ent, op, res);
             } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
                 mindTickOperation(ent, op, res);

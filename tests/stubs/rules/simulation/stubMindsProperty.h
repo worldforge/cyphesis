@@ -144,14 +144,6 @@
   }
 #endif //STUB_MindsProperty_RelayOperation
 
-#ifndef STUB_MindsProperty_mindActuateOperation
-//#define STUB_MindsProperty_mindActuateOperation
-  void MindsProperty::mindActuateOperation(LocatedEntity*, const Operation&, OpVector&) const
-  {
-    
-  }
-#endif //STUB_MindsProperty_mindActuateOperation
-
 #ifndef STUB_MindsProperty_mindCombineOperation
 //#define STUB_MindsProperty_mindCombineOperation
   void MindsProperty::mindCombineOperation(LocatedEntity*, const Operation&, OpVector&) const

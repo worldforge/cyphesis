@@ -80,14 +80,6 @@
   }
 #endif //STUB_Entity_addToEntity
 
-#ifndef STUB_Entity_ActuateOperation
-//#define STUB_Entity_ActuateOperation
-  void Entity::ActuateOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_ActuateOperation
-
 #ifndef STUB_Entity_AppearanceOperation
 //#define STUB_Entity_AppearanceOperation
   void Entity::AppearanceOperation(const Operation &, OpVector &)
@@ -175,14 +167,6 @@
     
   }
 #endif //STUB_Entity_MoveOperation
-
-#ifndef STUB_Entity_NourishOperation
-//#define STUB_Entity_NourishOperation
-  void Entity::NourishOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_NourishOperation
 
 #ifndef STUB_Entity_SetOperation
 //#define STUB_Entity_SetOperation

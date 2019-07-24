@@ -29,17 +29,11 @@ void installCustomOperations(TypeStore & i)
     i.addChild(atlasOpDefinition("add", "set"));
     Atlas::Objects::Operation::ADD_NO = atlas_factories->addFactory("add", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
-    i.addChild(atlasOpDefinition("burn", "affect"));
-    Atlas::Objects::Operation::BURN_NO = atlas_factories->addFactory("burn", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
     i.addChild(atlasOpDefinition("connect", "set"));
     Atlas::Objects::Operation::CONNECT_NO = atlas_factories->addFactory("connect", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     i.addChild(atlasOpDefinition("monitor", "set"));
     Atlas::Objects::Operation::MONITOR_NO = atlas_factories->addFactory("monitor", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
-    i.addChild(atlasOpDefinition("nourish", "affect"));
-    Atlas::Objects::Operation::NOURISH_NO = atlas_factories->addFactory("nourish", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     i.addChild(atlasOpDefinition("setup", "root_operation"));
     Atlas::Objects::Operation::SETUP_NO = atlas_factories->addFactory("setup", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
@@ -55,9 +49,6 @@ void installCustomOperations(TypeStore & i)
 
     i.addChild(atlasOpDefinition("update", "tick"));
     Atlas::Objects::Operation::UPDATE_NO = atlas_factories->addFactory("update", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
-    i.addChild(atlasOpDefinition("actuate", "action"));
-    Atlas::Objects::Operation::ACTUATE_NO = atlas_factories->addFactory("actuate", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     i.addChild(atlasOpDefinition("thought", "communicate"));
     Atlas::Objects::Operation::THOUGHT_NO = atlas_factories->addFactory("thought", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
@@ -81,8 +72,6 @@ void installCustomOperations(TypeStore & i)
     i.addChild(atlasOpDefinition("possess", "set"));
     Atlas::Objects::Operation::POSSESS_NO = atlas_factories->addFactory("possess", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
-    i.addChild(atlasOpDefinition("hit", "affect"));
-    Atlas::Objects::Operation::HIT_NO = atlas_factories->addFactory("hit", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
 void installCustomEntities(TypeStore & i)

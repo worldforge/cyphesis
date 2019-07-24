@@ -21,14 +21,11 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-extern int ACTUATE_NO;
 extern int ADD_NO;
-extern int BURN_NO;
 extern int CONNECT_NO;
 extern int DROP_NO;
 extern int GOAL_INFO_NO;
 extern int MONITOR_NO;
-extern int NOURISH_NO;
 extern int PICKUP_NO;
 extern int SETUP_NO;
 extern int THOUGHT_NO;
@@ -39,7 +36,6 @@ extern int COMMUNE_NO;
 extern int THINK_NO;
 extern int RELAY_NO;
 extern int POSSESS_NO;
-extern int HIT_NO;
 
 } } }
 

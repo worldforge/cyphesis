@@ -29,8 +29,6 @@
 #include "common/Link.h"
 #include "common/PropertyManager.h"
 
-#include "common/operations/Actuate.h"
-#include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 #include "common/operations/Update.h"
@@ -318,11 +316,6 @@ void Entity::sendWorld(const Operation & op)
     BaseWorld::instance().message(op, *this);
 }
 
-/// \brief Handle a actuate operation
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
 /// \brief Handle a appearance operation
 void Entity::AppearanceOperation(const Operation &, OpVector &)
 {
@@ -379,11 +372,6 @@ void Entity::LookOperation(const Operation &, OpVector &)
 
 /// \brief Handle a move operation
 void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a nourish operation
-void Entity::NourishOperation(const Operation &, OpVector &)
 {
 }
 

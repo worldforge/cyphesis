@@ -24,8 +24,6 @@
 #include "rules/simulation/BaseWorld.h"
 #include "common/debug.h"
 
-#include "common/operations/Burn.h"
-#include "common/operations/Nourish.h"
 #include "common/operations/Update.h"
 #include "common/operations/Pickup.h"
 #include "common/operations/Drop.h"
@@ -50,7 +48,6 @@ using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Drop;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Operation::Nourish;
 using Atlas::Objects::Operation::Pickup;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Update;

@@ -20,10 +20,8 @@
 #define TESTS_ALL_OPERATIONS_H
 
 #include "common/operations/Add.h"
-#include "common/operations/Burn.h"
 #include "common/operations/Connect.h"
 #include "common/operations/Monitor.h"
-#include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 #include "common/operations/Update.h"

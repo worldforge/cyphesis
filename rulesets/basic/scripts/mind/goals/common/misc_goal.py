@@ -920,27 +920,27 @@ class hireling_transaction(transaction):
 
 ######################## ACTUATION (Operate device) #######################
 
-class activate_device(Goal):
-    """Look for something and activate it."""
-
-    def __init__(self, what):
-        Goal.__init__(self, "activate a thing",
-                      self.activated,
-                      [spot_something(what), self.activate_focus])
-        self.what = what
-        self.vars = ["what"]
-
-    def activated(self, me):
-        return False
-
-    def activate_focus(self, me):
-        print("Activating ", self.what)
-        something = me.get_knowledge('focus', self.what)
-        assert (something)
-        if me.map.get(something) == None:
-            me.remove_knowledge('focus', self.what)
-            return
-        return Operation('actuate', Operation('chop', Entity(something)))
+# class activate_device(Goal):
+#     """Look for something and activate it."""
+#
+#     def __init__(self, what):
+#         Goal.__init__(self, "activate a thing",
+#                       self.activated,
+#                       [spot_something(what), self.activate_focus])
+#         self.what = what
+#         self.vars = ["what"]
+#
+#     def activated(self, me):
+#         return False
+#
+#     def activate_focus(self, me):
+#         print("Activating ", self.what)
+#         something = me.get_knowledge('focus', self.what)
+#         assert (something)
+#         if me.map.get(something) == None:
+#             me.remove_knowledge('focus', self.what)
+#             return
+#         return Operation('actuate', Operation('chop', Entity(something)))
 
 
 class clear_focus(Goal):

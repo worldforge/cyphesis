@@ -440,6 +440,7 @@ def test_teleport(host='', account='', password='', **args):
 
     boat = m.make('boat', pos=(-1, -1, 0), linked=peer, actions=["teleport"])
 
+    #TODO: rewrite to "use" instead
     m.avatar.send(Operation("actuate", Operation("teleport", Entity(boat.id)), to=settler))
     settler = m.look(settler.id)
 

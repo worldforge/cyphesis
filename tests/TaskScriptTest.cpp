@@ -204,10 +204,6 @@ void Character::TalkOperation(const Operation & op, OpVector &)
 {
 }
 
-void Character::NourishOperation(const Operation & op, OpVector &)
-{
-}
-
 void Character::UseOperation(const Operation & op, OpVector &)
 {
 }
@@ -220,15 +216,7 @@ void Character::AttackOperation(const Operation & op, OpVector &)
 {
 }
 
-void Character::ActuateOperation(const Operation & op, OpVector &)
-{
-}
-
 void Character::RelayOperation(const Operation & op, OpVector &)
-{
-}
-
-void Character::mindActuateOperation(const Operation &, OpVector &)
 {
 }
 
@@ -360,10 +348,6 @@ void Entity::destroy()
     destroyed.emit();
 }
 
-void Entity::ActuateOperation(const Operation &, OpVector &)
-{
-}
-
 void Entity::AppearanceOperation(const Operation &, OpVector &)
 {
 }
@@ -409,10 +393,6 @@ void Entity::LookOperation(const Operation &, OpVector &)
 }
 
 void Entity::MoveOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::NourishOperation(const Operation &, OpVector &)
 {
 }
 

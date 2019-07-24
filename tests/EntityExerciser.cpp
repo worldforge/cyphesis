@@ -30,10 +30,8 @@
 #include "common/Property.h"
 
 #include "common/operations/Add.h"
-#include "common/operations/Burn.h"
 #include "common/operations/Connect.h"
 #include "common/operations/Monitor.h"
-#include "common/operations/Nourish.h"
 #include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
 #include "common/operations/Update.h"
@@ -200,10 +198,6 @@ void EntityExerciser::runOperations()
     }
     {
         Atlas::Objects::Operation::Move op;
-        dispatchOp(op);
-    }
-    {
-        Atlas::Objects::Operation::Nourish op;
         dispatchOp(op);
     }
     {
