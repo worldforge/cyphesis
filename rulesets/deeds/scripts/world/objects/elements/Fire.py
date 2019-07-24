@@ -42,10 +42,10 @@ class Fire(server.Thing):
 
     def nourish_operation(self, op):
         print("Flame is nourished")
-        status_prop = self.props.status
-        if not status_prop:
+        if self.has_prop_float('status'):
             print("Flammable entity without status prop")
             return server.OPERATION_IGNORED
+        status_prop = self.props.status
         if len(op) > 0:
             arg = op[0]
             if arg.eat_type == "fire":
@@ -56,8 +56,8 @@ class Fire(server.Thing):
     # CHEAT! make it more realistic (like spreading to things that burn near)
     def extinguish_operation(self, op):
         """If somebody tries to extinguish us, change status lower"""
-        status_prop = self.props.status
-        if not status_prop:
+        if self.has_prop_float('status'):
             print("Flammable entity without status prop")
             return server.OPERATION_IGNORED
+        status_prop = self.props.status
         return Operation("set", Entity(self.id, status=status_prop - 0.25), to=self)

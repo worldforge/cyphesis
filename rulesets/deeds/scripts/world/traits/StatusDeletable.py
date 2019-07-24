@@ -6,8 +6,7 @@ import server
 class StatusDeletable(server.Thing):
 
     def update_operation(self, op):
-        status_prop = self.props.status
-        if status_prop and status_prop <= 0:
+        if self.has_prop_float('status') and self.get_prop_float('status') <= 0:
             return server.OPERATION_HANDLED, Operation("delete", Entity(self.id), to=self)
 
         return server.OPERATION_HANDLED
