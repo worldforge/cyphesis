@@ -7,7 +7,7 @@ from world.utils import Usage
 import server
 
 
-def eat(instance):
+def consume(instance):
     # Delete ourselves, and send a Nourish to the eater
 
     nourish_ent = Entity()

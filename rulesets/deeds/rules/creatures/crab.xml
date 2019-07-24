@@ -20,8 +20,8 @@
             </map>
             <map name="usages">
                 <map name="default">
-                    <map name="eat">
-                        <string name="handler">world.objects.Consumable.eat</string>
+                    <map name="consume">
+                        <string name="handler">world.objects.Consumable.consume</string>
                         <string name="constraint">actor can_reach tool &amp;&amp; tool.props.status &lt;= 0</string>
                     </map>
                 </map>

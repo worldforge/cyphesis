@@ -17,7 +17,7 @@ class Fire(server.Thing):
         Ticks.init_ticks(self, self.tick_interval)
         if self.location.parent:
             print('initial burn')
-            self.send_world(Operation("eat", Entity(eat_type='fire'), to=self.location.parent))
+            self.send_world(Operation("consume", Entity(eat_type='fire'), to=self.location.parent))
         else:
             print('no parent')
 
@@ -28,9 +28,9 @@ class Fire(server.Thing):
             if status_prop:
                 if self.location.parent:
                     print("Flame eating into parent")
-                    # We should send an Eat op to our parent.
-                    # A 'fire' eat op should be ignored by most entities except those that are flammable.
-                    res += Operation("eat", Entity(eat_type='fire'), to=self.location.parent)
+                    # We should send an Consume op to our parent.
+                    # A 'fire' consume op should be ignored by most entities except those that are flammable.
+                    res += Operation("consume", Entity(eat_type='fire'), to=self.location.parent)
                     # Reduce status of fire
                     res += Operation("set", Entity(status=status_prop - 0.2), to=self)
 

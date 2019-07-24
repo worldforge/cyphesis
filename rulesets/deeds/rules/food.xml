@@ -22,8 +22,8 @@
             </map>
             <map name="usages">
                 <map name="default">
-                    <map name="eat">
-                        <string name="handler">world.objects.Consumable.eat</string>
+                    <map name="consume">
+                        <string name="handler">world.objects.Consumable.consume</string>
                         <string name="constraint">actor can_reach tool</string>
                     </map>
                 </map>
@@ -56,8 +56,8 @@
             </map>
             <map name="usages">
                 <map name="default">
-                    <map name="eat">
-                        <string name="handler">world.objects.Consumable.eat</string>
+                    <map name="consume">
+                        <string name="handler">world.objects.Consumable.consume</string>
                         <string name="constraint">actor can_reach tool</string>
                     </map>
                 </map>
@@ -133,8 +133,8 @@
             </map>
             <map name="usages">
                 <map name="default">
-                    <map name="eat">
-                        <string name="handler">world.objects.Consumable.eat</string>
+                    <map name="consume">
+                        <string name="handler">world.objects.Consumable.consume</string>
                         <string name="constraint">actor can_reach tool</string>
                     </map>
                 </map>

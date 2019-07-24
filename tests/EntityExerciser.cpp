@@ -136,7 +136,7 @@ void EntityExerciser::addAllOperations(std::set<std::string> & ops)
     ops.insert("cut");
     ops.insert("delete");
     ops.insert("divide");
-    ops.insert("eat");
+    ops.insert("consume");
     ops.insert("burn");
     ops.insert("get");
     ops.insert("imaginary");

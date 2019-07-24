@@ -156,14 +156,14 @@
         <string name="parent">action</string>
     </map>
 
-    <!-- Eat ops are sent from entities that needs to feed on other entities. -->
+    <!-- Consume ops are sent from entities that needs to feed on other entities. -->
     <map>
-        <string name="id">eat</string>
+        <string name="id">consume</string>
         <string name="objtype">op_definition</string>
         <string name="parent">action</string>
     </map>
 
-    <!-- Nourish operations are sent from things that have previously received an eat op.
+    <!-- Nourish operations are sent from things that have previously received an consume op.
     The op is sent back to the "eating" entity along with information about how much mass should be transferred. -->
     <map>
         <string name="id">nourish</string>

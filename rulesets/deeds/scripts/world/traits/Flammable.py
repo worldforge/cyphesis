@@ -2,7 +2,7 @@ from atlas import Operation, Entity, Oplist
 import server
 
 
-# Flammable entities can burn. When they receive an "eat" op of type "fire" they will lose some status and nourish the flame.
+# Flammable entities can burn. When they receive an "consume" op of type "fire" they will lose some status and nourish the flame.
 class Flammable(server.Thing):
 
     def eat_operation(self, op):

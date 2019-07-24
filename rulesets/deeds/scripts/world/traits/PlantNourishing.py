@@ -16,7 +16,7 @@ class PlantNourishing(server.Thing):
                 # The plant should specify how much mass it wants to absorb with each "bite"
                 mass_arg = arg.mass
                 if not mass_arg:
-                    print("Plant eat op without mass specified")
+                    print("Plant consume op without mass specified")
                     return server.OPERATION_BLOCKED
 
                 print("Mass {}".format(mass_arg))

@@ -22,7 +22,7 @@ class Nourishable(server.Thing):
                     if self.props["_modifier_eat_type_" + arg.eat_type]:
                         eat_factor = self.props["_modifier_eat_type_" + arg.eat_type]
 
-                print("eat factor {}".format(eat_factor))
+                print("consume factor {}".format(eat_factor))
                 if eat_factor != 0:
                     nutrient = 0
                     if self.props._nutrients:
