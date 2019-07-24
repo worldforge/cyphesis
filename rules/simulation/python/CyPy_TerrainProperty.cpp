@@ -33,10 +33,7 @@ CyPy_TerrainProperty::CyPy_TerrainProperty(Py::PythonClassInstance* self, Ref<Lo
 
 }
 
-CyPy_TerrainProperty::~CyPy_TerrainProperty()
-{
-
-}
+CyPy_TerrainProperty::~CyPy_TerrainProperty() = default;
 
 void CyPy_TerrainProperty::init_type()
 {
@@ -85,7 +82,7 @@ Py::Object CyPy_TerrainProperty::getNormal(const Py::Tuple& args)
     float h = 0;
     Vector3D normal(0,1,0);
     getTerrainProperty().getHeightAndNormal(verifyNumeric(args[0]), verifyNumeric(args[1]), h, normal);
-    return CyPy_Vector3D::wrap(std::move(normal));
+    return CyPy_Vector3D::wrap(normal);
 }
 
 Py::Object CyPy_TerrainProperty::findMods(const Py::Tuple& args)

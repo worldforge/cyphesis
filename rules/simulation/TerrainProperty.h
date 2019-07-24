@@ -66,14 +66,9 @@ class TerrainProperty : public PropertyBase {
 
     ~TerrainProperty() override;
 
-    void install(LocatedEntity *, const std::string &) override;
-    void remove(LocatedEntity *, const std::string &) override;
     int get(Atlas::Message::Element &) const override;
     void set(const Atlas::Message::Element &) override;
     TerrainProperty * copy() const override;
-    HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &) override;
     void apply(LocatedEntity* entity) override;
 
     // Applies a Mercator::TerrainMod to the terrain
@@ -94,10 +89,6 @@ class TerrainProperty : public PropertyBase {
     /// @param pos the x,y coordinates of a point on the terrain
     /// @param mods a reference to the list to be returned
     boost::optional<std::vector<LocatedEntity *>> findMods(float x, float z) const;
-
-    HandlerResult eat_handler(LocatedEntity * e,
-                              const Operation & op,
-                              OpVector & res);
 
     Mercator::Terrain& getData();
     Mercator::Terrain& getData() const;

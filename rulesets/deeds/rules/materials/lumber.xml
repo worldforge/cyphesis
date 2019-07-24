@@ -19,11 +19,18 @@
             <map name="material">
                 <string name="default">wood</string>
             </map>
+            <map name="status">
+                <float name="default">1</float>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Flammable.Flammable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
                     </map>
                 </list>
             </map>

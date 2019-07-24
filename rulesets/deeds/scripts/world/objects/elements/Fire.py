@@ -11,7 +11,7 @@ import server
 class Fire(server.Thing):
     """fire to burn things up"""
 
-    tick_interval = 5
+    tick_interval = 30
 
     def __init__(self, cpp):
         Ticks.init_ticks(self, self.tick_interval)

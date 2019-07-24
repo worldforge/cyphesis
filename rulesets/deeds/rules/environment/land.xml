@@ -17,6 +17,10 @@
                         <string name="language">python</string>
                         <string name="name">world.objects.DiggableTerrain.DiggableTerrain</string>
                     </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.PlantNourishing.PlantNourishing</string>
+                    </map>
                 </list>
             </map>
             <map name="terrain">

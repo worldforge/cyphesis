@@ -54,6 +54,7 @@ typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
 
 TerrainProperty::TerrainProperty(const TerrainProperty& rhs) :
+    PropertyBase(rhs),
     m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
     m_tileShader(nullptr)
 {
@@ -84,16 +85,6 @@ TerrainProperty::~TerrainProperty()
 {
     delete &m_data;
     delete m_tileShader;
-}
-
-void TerrainProperty::install(LocatedEntity *owner, const std::string &name)
-{
-    owner->installDelegate(Atlas::Objects::Operation::EAT_NO, name);
-}
-
-void TerrainProperty::remove(LocatedEntity *owner, const std::string & name)
-{
-    owner->removeDelegate(Atlas::Objects::Operation::EAT_NO, name);
 }
 
 int TerrainProperty::get(Element & ent) const
@@ -330,12 +321,6 @@ TerrainProperty * TerrainProperty::copy() const
     return new TerrainProperty(*this);
 }
 
-HandlerResult TerrainProperty::operation(LocatedEntity * e,
-        const Operation & op, OpVector & res)
-{
-    return eat_handler(e, op, res);
-}
-
 void TerrainProperty::addMod(long id, const Mercator::TerrainMod *mod) const
 {
     m_data.updateMod(id, mod);
@@ -451,57 +436,6 @@ boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(float x, 
         }
     }
     return ret;
-}
-
-HandlerResult TerrainProperty::eat_handler(LocatedEntity * e,
-        const Operation & op, OpVector & res)
-{
-    const std::string & from_id = op->getFrom();
-    auto from = BaseWorld::instance().getEntity(from_id);
-    if (!from) {
-        //The eating entity could have been destroyed in the interim.
-        debug_print(String::compose("Terrain got eat op from non-existent "
-                                   "entity %1.", from_id));
-        return OPERATION_IGNORED;
-    }
-
-
-    Point3D from_pos = relativePos(e->m_location, from->m_location);
-    auto material = getSurface(from_pos.x(), from_pos.z());
-    if (!material) {
-        debug_print("no surface hit")
-        return OPERATION_IGNORED;
-    }
-
-    const TypeNode * from_type = from->getType();
-    if (from_type->isTypeOf("plant")) {
-        if (*material == GRASS) {
-            debug_print("From grass")
-            Nourish nourish;
-            nourish->setTo(from_id);
-            Anonymous nour_arg;
-            nour_arg->setAttr("eat_type", "plant");
-            Element mass;
-            from->getAttr("mass", mass);
-            if (!mass.isFloat()) {
-                mass = 0.;
-            }
-            // FIXME to do this right we need to know how long since the
-            // last tick, so the from entity needs to tell us.
-            nour_arg->setAttr("mass",
-                              std::pow(mass.Float(), 0.5) /
-                                      (60.0 * 24.0));
-            nourish->setArgs1(nour_arg);
-            res.push_back(nourish);
-        }
-    } else if (from_type->isTypeOf("character")) {
-        log(NOTICE, "Eat coming from an animal.");
-        if (*material == GRASS) {
-            debug_print("From grass")
-        }
-    }
-
-    return OPERATION_HANDLED;
 }
 
 Mercator::Terrain& TerrainProperty::getData()

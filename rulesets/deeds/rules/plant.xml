@@ -22,7 +22,7 @@
                     <string name="type">cylinder-y</string>
                 </map>
             </map>
-            <map name="_modifier_eat_type_plant">
+            <map name="_modifier_eat_type_passive">
                 <float name="default">1</float>
             </map>
             <!-- The max amount of nutrients we can hold in our reserves, compared to our mass -->
