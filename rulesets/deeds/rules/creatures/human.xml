@@ -32,7 +32,7 @@
                     <string name="head">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'head'</string>
                 </map>
             </map>
-            <map name="_decays">
+            <map name="__decays">
                 <list name="default">
                     <string>dead_human_skull</string>
                 </list>

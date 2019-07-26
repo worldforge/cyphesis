@@ -27,7 +27,7 @@
             <map name="present">
                 <string name="default">dural/creatures/biped/goblin/goblin.entitymap</string>
             </map>
-            <map name="_decays">
+            <map name="__decays">
                 <list name="default">
                     <string>dead_goblin_skull</string>
                 </list>
