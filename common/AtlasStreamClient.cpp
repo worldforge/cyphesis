@@ -82,7 +82,10 @@ int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
       write();
       auto dataReceived = read_blocking();
-      conn.poll(dataReceived > 0);
+      if (dataReceived > 0) {
+          m_ios.peek();
+      }
+      conn.poll();
     }
 
     if (conn.getState() == Atlas::Net::StreamConnect::FAILED) {
@@ -175,7 +178,7 @@ void TcpStreamClientSocket::do_read()
                 {
                     mReadBuffer.commit(length);
                     this->m_ios.rdbuf(&mReadBuffer);
-                    m_codec->poll(true);
+                    m_codec->poll();
                     this->m_ios.rdbuf(&mBuffer);
                     mDispatcher();
                     this->do_read();
@@ -233,7 +236,7 @@ void LocalStreamClientSocket::do_read()
                 {
                     mReadBuffer.commit(length);
                     this->m_ios.rdbuf(&mReadBuffer);
-                    m_codec->poll(true);
+                    m_codec->poll();
                     this->m_ios.rdbuf(&mBuffer);
                     mDispatcher();
                     this->do_read();

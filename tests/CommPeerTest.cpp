@@ -52,21 +52,21 @@ class TestNegotiate : public Atlas::Negotiate
   public:
     Atlas::Negotiate::State m_state;
 
-    TestNegotiate(Atlas::Negotiate::State state) : m_state(state)
+    explicit TestNegotiate(Atlas::Negotiate::State state) : m_state(state)
     {
     }
 
-    virtual Atlas::Negotiate::State getState()
+    Atlas::Negotiate::State getState() override
     {
         return m_state;
     }
 
-    virtual Atlas::Codec * getCodec(Atlas::Bridge &)
+    Atlas::Codec * getCodec(Atlas::Bridge &) override
     {
         return 0;
     }
 
-    virtual void poll(bool can_get = true)
+    void poll() override
     {
     }
 };
@@ -74,15 +74,13 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    TestCommPeer(boost::asio::io_context & svr) : CommPeer("", svr)
+    explicit TestCommPeer(boost::asio::io_context & svr) : CommPeer("", svr)
     {
     }
 
     void test_setNegotiateState(Atlas::Negotiate::State state)
     {
-        if (m_negotiate != 0) {
-            delete m_negotiate;
-        }
+        delete m_negotiate;
         m_negotiate = new TestNegotiate(state);
     }
 

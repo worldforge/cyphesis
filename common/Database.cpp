@@ -96,7 +96,7 @@ int Database::decodeMessage(const std::string & data,
     // Clear the decoder
     m_d.get();
 
-    codec.poll(true);
+    codec.poll();
 
     if (!m_d.check()) {
         log(WARNING, "Database entry does not appear to be decodable");

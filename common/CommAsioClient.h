@@ -41,7 +41,7 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
         public std::enable_shared_from_this<CommAsioClient<ProtocolT> >
 {
     public:
-        CommAsioClient(const std::string & name,
+        CommAsioClient(std::string  name,
                 boost::asio::io_context& io_context);
         ~CommAsioClient() override;
 

@@ -40,12 +40,13 @@
 
 #include <sstream>
 #include <iostream>
+#include <utility>
 
 static const bool comm_asio_client_debug_flag = false;
 
 
 template<class ProtocolT>
-CommAsioClient<ProtocolT>::CommAsioClient(const std::string& name,
+CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
                                           boost::asio::io_context& io_context) :
     CommSocket(io_context),
     mMaxOpsPerDispatch(1),
@@ -61,7 +62,7 @@ CommAsioClient<ProtocolT>::CommAsioClient(const std::string& name,
     m_encoder(nullptr),
     m_negotiate(nullptr),
     m_link(nullptr),
-    mName(name)
+    mName(std::move(name))
 {
 }
 
@@ -98,7 +99,7 @@ void CommAsioClient<ProtocolT>::do_read()
                             [this, self](boost::system::error_code ec, std::size_t length) {
                                 if (!ec) {
                                     mReadBuffer.commit(length);
-                                    m_codec->poll(true);
+                                    m_codec->poll();
                                     this->dispatch();
                                     if (m_active) {
                                         //By calling do_read again we make sure that the instance
@@ -259,7 +260,7 @@ void CommAsioClient<ProtocolT>::startNegotiation()
         }
     });
 
-    m_negotiate->poll(false);
+    m_negotiate->poll();
 
     negotiate_write();
     negotiate_read();
@@ -269,7 +270,7 @@ template<class ProtocolT>
 int CommAsioClient<ProtocolT>::negotiate()
 {
     // poll and check if negotiation is complete
-    m_negotiate->poll(true);
+    m_negotiate->poll();
 
     if (m_negotiate->getState() == Atlas::Negotiate::IN_PROGRESS) {
         return 0;
