@@ -1,0 +1,51 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/containers/bottle/model/bottle.mesh</string>
+                    <string name="type">cylinder-y</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/containers/bottle/bottle.modeldef</string>
+            </map>
+            <map name="density">
+                <float name="default">2600</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="consume">
+                        <string name="name">Drink</string>
+                        <string name="handler">world.objects.Potion.consume</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
+            </map>
+            <map name="__effects"></map>
+        </map>
+        <string name="id">potion</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <string name="id">potion_health</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">potion</string>
+                <string name="name">Potion of health</string>
+                <string name="description">A reddish liquid. You can faintly make out what seems to be sparkles
+                    suspended within. Drinking it will make you feel much better.
+                </string>
+                <map name="__effects">
+                    <float name="status">1.0</float>
+                </map>
+                <string name="__message">You feel much better.</string>
+            </map>
+        </list>
+    </map>
+
+</atlas>
