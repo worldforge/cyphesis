@@ -34,8 +34,7 @@ add_library(common
     RuleTraversalTask.cpp
     AtlasQuery.h
     operations/Add.h
-    operations/Affect.h
-    operations/Commune.h
+        operations/Commune.h
     compose.hpp
     operations/Connect.h
     operations/Drop.h
