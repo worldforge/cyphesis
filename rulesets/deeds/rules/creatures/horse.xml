@@ -12,7 +12,7 @@
                 <string name="default">dural/creatures/quadruped_v2/horse.modeldef</string>
             </map>
             <!-- Herbivore -->
-            <map name="_modifier_eat_type_meat">
+            <map name="_modifier_consume_type_meat">
                 <float name="default">0</float>
             </map>
         </map>

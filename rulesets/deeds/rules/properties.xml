@@ -1,7 +1,7 @@
 <atlas>
 
     <map>
-        <string name="id">_eat_mass_conversion</string>
+        <string name="id">_consume_mass_conversion</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>
         <string name="description">Used on consumables, define how much of the mass is converted when being eaten.</string>
@@ -15,21 +15,21 @@
     </map>
 
     <map>
-        <string name="id">_modifier_eat_type_meat</string>
+        <string name="id">_modifier_consume_type_meat</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>
         <string name="description">Used on carnivores, define how much of the mass is converted into food when something is eaten.</string>
     </map>
 
     <map>
-        <string name="id">_modifier_eat_type_plant</string>
+        <string name="id">_modifier_consume_type_plant</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>
         <string name="description">Used on herbivores, define how much of the mass is converted into food when something is eaten.</string>
     </map>
 
     <map>
-        <string name="id">_modifier_eat_type_soil</string>
+        <string name="id">_modifier_consume_type_soil</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>
         <string name="description">Used on plants, define how much of the mass is converted into food when nourishment is take from the parent.</string>

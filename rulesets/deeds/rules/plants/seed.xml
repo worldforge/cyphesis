@@ -7,7 +7,7 @@
             <map name="density">
                 <float name="default">600</float>
             </map>
-            <map name="_eat_mass_conversion">
+            <map name="_consume_mass_conversion">
                 <float name="default">0.5</float>
             </map>
             <map name="consumable_type">

@@ -23,7 +23,7 @@
                 </map>
             </map>
             <!-- Normal plants can only consume "soil". There's of course the option to also add a subtype which can consume meat... -->
-            <map name="_modifier_eat_type_soil">
+            <map name="_modifier_consume_type_soil">
                 <float name="default">1</float>
             </map>
             <!-- The max amount of nutrients we can hold in our reserves, compared to our mass -->

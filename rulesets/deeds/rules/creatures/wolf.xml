@@ -15,7 +15,7 @@
                 <float name="default">1.2</float>
             </map>
             <!-- Carnivore -->
-            <map name="_modifier_eat_type_plant">
+            <map name="_modifier_consume_type_plant">
                 <float name="default">0</float>
             </map>
             <map name="damage_strike">

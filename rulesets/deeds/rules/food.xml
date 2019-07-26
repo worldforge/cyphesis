@@ -14,7 +14,7 @@
             <map name="density">
                 <float name="default">150</float>
             </map>
-            <map name="_eat_mass_conversion">
+            <map name="_consume_mass_conversion">
                 <float name="default">1.0</float>
             </map>
             <map name="consumable_type">
@@ -48,7 +48,7 @@
             <map name="density">
                 <float name="default">190</float>
             </map>
-            <map name="_eat_mass_conversion">
+            <map name="_consume_mass_conversion">
                 <float name="default">1.0</float>
             </map>
             <map name="consumable_type">
@@ -79,7 +79,7 @@
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_loaf_cut.mesh</string>
             </map>
-            <map name="_eat_mass_conversion">
+            <map name="_consume_mass_conversion">
                 <float name="default">1.0</float>
             </map>
             <map name="consumable_type">
@@ -102,7 +102,7 @@
             <map name="present">
                 <string name="default">dural/items/food/country_bread/model/bread_slice.mesh</string>
             </map>
-            <map name="_eat_mass_conversion">
+            <map name="_consume_mass_conversion">
                 <float name="default">1.0</float>
             </map>
             <map name="consumable_type">
@@ -125,7 +125,7 @@
             <map name="present">
                 <string name="default">dural/items/food/ham/ham.modeldef</string>
             </map>
-            <map name="_eat_mass_conversion">
+            <map name="_consume_mass_conversion">
                 <float name="default">1.0</float>
             </map>
             <map name="consumable_type">

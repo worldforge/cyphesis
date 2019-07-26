@@ -43,7 +43,7 @@
                 <float name="default">1</float>
             </map>
             <!-- Characters are by default omnivores and handle both plants and meats.
-            To limit put "_modifier_eat_type_meat=0" or "_modifier_eat_type_plant=0" on subclasses. -->
+            To limit put "_modifier_consume_type_meat=0" or "_modifier_consume_type_plant=0" on subclasses. -->
             <map name="_modifier_eat">
                 <float name="default">1</float>
             </map>

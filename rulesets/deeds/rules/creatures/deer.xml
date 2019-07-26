@@ -18,7 +18,7 @@
                 <string name="default">venison</string>
             </map>
             <!-- Herbivore -->
-            <map name="_modifier_eat_type_meat">
+            <map name="_modifier_consume_type_meat">
                 <float name="default">0</float>
             </map>
         </map>

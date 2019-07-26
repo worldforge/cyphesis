@@ -14,20 +14,20 @@ class Nourishable(server.Thing):
             if hasattr(arg, 'mass'):
                 print('mass {}'.format(arg.mass))
                 # Check if we can convert to nutrient through the _modifier_eat property.
-                # We also check if there are specific values for herbivores and omnivores (_modifier_eat_type_meat and _modifier_eat_type_plant)
-                eat_factor = 0
+                # We also check if there are specific values for herbivores and omnivores (_modifier_consume_type_meat and _modifier_consume_type_plant)
+                consume_factor = 0
                 if self.props._modifier_eat:
-                    eat_factor = self.props._modifier_eat
-                if hasattr(arg, 'eat_type'):
-                    if self.props["_modifier_eat_type_" + arg.eat_type]:
-                        eat_factor = self.props["_modifier_eat_type_" + arg.eat_type]
+                    consume_factor = self.props._modifier_eat
+                if hasattr(arg, 'consume_type'):
+                    if self.props["_modifier_consume_type_" + arg.consume_type]:
+                        consume_factor = self.props["_modifier_consume_type_" + arg.consume_type]
 
-                print("consume factor {}".format(eat_factor))
-                if eat_factor != 0:
+                print("consume factor {}".format(consume_factor))
+                if consume_factor != 0:
                     nutrient = 0
                     if self.props._nutrients:
                         nutrient = self.props._nutrients
-                    nutrient_new = nutrient + (arg.mass * eat_factor)
+                    nutrient_new = nutrient + (arg.mass * consume_factor)
                     # Check if there's a limit to the nutrient we can contain in our stomach
                     if self.props._nutrients_max_factor and self.props.mass:
                         nutrient_new = min(self.props._nutrients_max_factor * self.props.mass, nutrient_new)

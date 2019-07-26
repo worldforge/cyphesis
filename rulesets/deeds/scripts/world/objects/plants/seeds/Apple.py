@@ -9,7 +9,7 @@ from world.objects.plants.seeds.Seed import Seed
 class Apple(Seed):
     """An apple which can be eaten, and ferment as it ages."""
 
-    def eat_operation(self, op):
+    def consume_operation(self, op):
         ent = Entity(self.id, status=-1)
         res = Operation("set", ent, to=self)
         to_ = op.from_

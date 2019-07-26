@@ -8,10 +8,10 @@ import server
 # make sure that the ground can sustain plants.
 class PlantNourishing(server.Thing):
 
-    def eat_operation(self, op):
+    def consume_operation(self, op):
         if len(op) > 0:
             arg = op[0]
-            if arg.eat_type == "soil":
+            if arg.consume_type == "soil":
 
                 # The plant should specify how much mass it wants to absorb with each "bite"
                 mass_arg = arg.mass
@@ -22,7 +22,7 @@ class PlantNourishing(server.Thing):
                 print("Mass {}".format(mass_arg))
 
                 nourish_ent = Entity()
-                nourish_ent.eat_type = arg.eat_type
+                nourish_ent.consume_type = arg.consume_type
 
                 terrain_prop = self.props.terrain
                 # If there's a terrain prop, check that the surface has dirt, otherwise just return a nourish op
