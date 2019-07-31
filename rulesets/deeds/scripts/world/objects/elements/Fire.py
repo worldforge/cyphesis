@@ -25,7 +25,7 @@ class Fire(server.Thing):
         res = Oplist()
         if Ticks.verify_tick(self, op, res, self.tick_interval):
             status_prop = self.props.status
-            if status_prop:
+            if status_prop is not None:
                 if self.location.parent:
                     print("Flame eating into parent")
                     # We should send an Consume op to our parent.
@@ -35,29 +35,31 @@ class Fire(server.Thing):
                     res += Operation("set", Entity(status=status_prop - 0.2), to=self)
 
             else:
-                print("Flammable entity without status props.")
+                print("Fire entity without status props.")
 
             return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED
 
     def nourish_operation(self, op):
         print("Flame is nourished")
-        if self.has_prop_float('status'):
-            print("Flammable entity without status prop")
-            return server.OPERATION_IGNORED
+        if not self.has_prop_float('status'):
+            print("Fire entity without status prop")
+            return server.OPERATION_BLOCKED
         status_prop = self.props.status
         if len(op) > 0:
             arg = op[0]
             if arg.consume_type == "fire":
-                return server.OPERATION_BLOCKED, Operation("set", Entity(status=status_prop + 0.2), to=self)
+                new_status_prop = min(1, status_prop + 0.3)
+                return server.OPERATION_BLOCKED, Operation("set", Entity(status=new_status_prop), to=self)
 
-        return server.OPERATION_IGNORED
+        return server.OPERATION_BLOCKED
 
     # CHEAT! make it more realistic (like spreading to things that burn near)
     def extinguish_operation(self, op):
         """If somebody tries to extinguish us, change status lower"""
-        if self.has_prop_float('status'):
-            print("Flammable entity without status prop")
-            return server.OPERATION_IGNORED
         status_prop = self.props.status
-        return Operation("set", Entity(self.id, status=status_prop - 0.25), to=self)
+        if status_prop is not None:
+            return server.OPERATION_HANDLED, Operation("set", Entity(self.id, status=status_prop - 0.25), to=self)
+        else:
+            print("Fire entity without status prop")
+            return server.OPERATION_HANDLED
