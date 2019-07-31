@@ -7,6 +7,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="consume">
+                        <string name="name">Eat</string>
                         <string name="handler">world.objects.Consumable.consume</string>
                         <string name="constraint">actor can_reach tool</string>
                     </map>

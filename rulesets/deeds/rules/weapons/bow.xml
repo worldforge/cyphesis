@@ -28,6 +28,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="shoot">
+                        <string name="name">Shoot</string>
                         <map name="params">
                             <map name="direction">
                                 <string name="type">direction</string>
@@ -39,7 +40,7 @@
                         </map>
                         <string name="handler">world.objects.tools.Bow.shoot</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool</string>
-                        <string name="description">Strike an enemy with a wielded sword.</string>
+                        <string name="description">Fire an arrow with a bow.</string>
                     </map>
                 </map>
             </map>

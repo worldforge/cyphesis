@@ -48,6 +48,7 @@
             <map name="_usages">
                 <map name="default">
                     <map name="punch">
+                        <string name="name">Punch</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity</string>

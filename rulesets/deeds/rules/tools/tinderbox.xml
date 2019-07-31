@@ -24,6 +24,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="ignite">
+                        <string name="name">Ignite</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity</string>

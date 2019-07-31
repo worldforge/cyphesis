@@ -25,6 +25,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="chop">
+                        <string name="name">Chop</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity</string>

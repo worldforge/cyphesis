@@ -19,6 +19,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="sow">
+                        <string name="name">Plant</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity</string>

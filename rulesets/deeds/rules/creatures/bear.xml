@@ -23,6 +23,7 @@
             <map name="_usages">
                 <map name="default">
                     <map name="strike">
+                        <string name="name">Maul</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity</string>

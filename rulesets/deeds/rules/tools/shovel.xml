@@ -19,6 +19,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="dig">
+                        <string name="name">Dig</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity_location</string>

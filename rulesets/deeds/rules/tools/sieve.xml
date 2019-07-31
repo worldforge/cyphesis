@@ -19,6 +19,7 @@
             <map name="usages">
                 <map name="default">
                     <map name="sift">
+                        <string name="name">Sift</string>
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity_location</string>

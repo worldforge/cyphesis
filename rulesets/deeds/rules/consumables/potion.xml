@@ -22,7 +22,7 @@
                     </map>
                 </map>
             </map>
-            <map name="__effects"></map>
+            <map name="__effects"/>
         </map>
         <string name="id">potion</string>
         <string name="objtype">class</string>
