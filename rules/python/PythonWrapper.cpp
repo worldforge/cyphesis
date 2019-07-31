@@ -52,8 +52,8 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
     }
 
     try {
-        PythonLogGuard logGuard([this]() {
-            return String::compose("%1: ", this->m_wrapper.str());
+        PythonLogGuard logGuard([this, op_type]() {
+            return String::compose("%1, %2: ", this->m_wrapper.str(), op_type);
         });
         auto ret = m_wrapper.callMemberFunction(op_name, Py::TupleN(CyPy_Operation::wrap(op)));
 
