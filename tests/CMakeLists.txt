@@ -377,7 +377,6 @@ wf_add_test(BaseMindMapEntityIntegration.cpp ../rules/ai/BaseMind.cpp
     ../rules/ai/MemMap.cpp
     ../rules/BBoxProperty.cpp
     ../rules/SolidProperty.cpp
-    ../rules/SimpleProperty.cpp
     ../rules/simulation/InternalProperties.cpp
     ../rules/Location.cpp
     ../rules/EntityLocation.cpp
@@ -440,8 +439,6 @@ wf_add_test(WorldRouterTest.cpp ${PROJECT_SOURCE_DIR}/server/WorldRouter.cpp)
 wf_add_test(PeerTest.cpp ${PROJECT_SOURCE_DIR}/server/Peer.cpp)
 wf_add_test(LobbyTest.cpp ${PROJECT_SOURCE_DIR}/server/Lobby.cpp)
 wf_add_test(SpawnTest.cpp)
-wf_add_test(SimplePropertyTest.cpp PropertyCoverage.cpp ../rules/SimpleProperty.cpp
-    ${PROJECT_SOURCE_DIR}/common/Property.cpp)
 wf_add_test(SpawnEntityTest.cpp ${PROJECT_SOURCE_DIR}/server/SpawnEntity.cpp)
 wf_add_test(ArithmeticBuilderTest.cpp ${PROJECT_SOURCE_DIR}/server/ArithmeticBuilder.cpp)
 target_link_libraries(ArithmeticBuilderTest pycxx)

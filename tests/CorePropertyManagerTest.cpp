@@ -323,7 +323,6 @@ template class EntityFactory<World>;
 #include "stubs/rules/simulation/stubUsagesProperty.h"
 #include "stubs/rules/entityfilter/stubFilter.h"
 #include "stubs/rules/stubAtlasProperties.h"
-#include "stubs/rules/stubSimpleProperty.h"
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/simulation/stubAreaProperty.h"
 #include "stubs/rules/simulation/stubExternalProperty.h"

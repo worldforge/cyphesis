@@ -10,7 +10,6 @@ add_library(rulesbase
     SimpleTypeStore.cpp
     SolidProperty.cpp
     Domain.cpp
-    SimpleProperty.cpp
     BBoxProperty.cpp
     ScaleProperty.cpp)
 add_subdirectory(python)

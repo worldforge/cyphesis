@@ -37,19 +37,19 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Location::Location() :
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf) :
     EntityLocation(std::move(rf)),
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf, Point3D pos) :
     EntityLocation(std::move(rf), std::move(pos)),
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
@@ -57,26 +57,26 @@ Location::Location(Ref<LocatedEntity> rf,
                    Point3D pos,
                    Vector3D velocity) :
     EntityLocation(std::move(rf), std::move(pos)),
-    m_simple(true), m_solid(true),
+    m_solid(true),
     m_velocity(velocity)
 {
 }
 
 Location::Location(LocatedEntity * rf) :
     EntityLocation(rf),
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf, Point3D pos) :
     EntityLocation(rf, std::move(pos)),
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
 Location::Location(EntityLocation entityLocation) :
     EntityLocation(std::move(entityLocation)),
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
@@ -84,7 +84,7 @@ Location::Location(LocatedEntity * rf,
                    Point3D pos,
                    Vector3D velocity) :
     EntityLocation(rf, std::move(pos)),
-    m_simple(true), m_solid(true),
+    m_solid(true),
     m_velocity(velocity)
 {
 }

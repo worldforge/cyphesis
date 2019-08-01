@@ -16,7 +16,6 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <rules/SimpleProperty.h>
 #include <rules/BBoxProperty.h>
 #include <rules/ScaleProperty.h>
 #include "MemEntity.h"
@@ -101,8 +100,6 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
         prop = new SolidProperty();
     } else if (name == ScaleProperty::property_name) {
         prop = new ScaleProperty();
-    } else if (name == SimpleProperty::property_name) {
-        prop = new SimpleProperty();
     } else {
         prop = new SoftProperty(attr);
     }

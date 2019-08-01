@@ -10,7 +10,7 @@
 #ifndef STUB_CommAsioClient_CommAsioClient
 //#define STUB_CommAsioClient_CommAsioClient
   template <typename ProtocolT>
-   CommAsioClient<ProtocolT>::CommAsioClient(const std::string & name, boost::asio::io_context& io_context)
+   CommAsioClient<ProtocolT>::CommAsioClient(std::string  name, boost::asio::io_context& io_context)
     : Atlas::Objects::ObjectsDecoder(name, io_context)
     , mWriteBuffer(nullptr),mSendBuffer(nullptr),m_codec(nullptr),m_encoder(nullptr),m_negotiate(nullptr),m_link(nullptr)
   {

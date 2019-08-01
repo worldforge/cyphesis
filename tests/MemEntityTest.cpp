@@ -49,4 +49,3 @@ int main()
 #include "stubs/rules/stubScaleProperty.h"
 #include "stubs/rules/stubSolidProperty.h"
 #include "stubs/rules/simulation/stubInternalProperties.h"
-#include "stubs/rules/stubSimpleProperty.h"

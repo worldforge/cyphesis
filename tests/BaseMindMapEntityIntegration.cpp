@@ -254,7 +254,6 @@ void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_hav
     auto ent = m_mind->m_map.get("0");
     ASSERT_EQUAL("0", ent->getId());
     ASSERT_TRUE(ent->m_location.isSolid());
-    ASSERT_TRUE(ent->m_location.isSimple());
 
 
     BBox bbox2(WFMath::Point<3>(10,20,30), WFMath::Point<3>(40,50,60));
@@ -270,7 +269,6 @@ void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_hav
 
     ent = m_mind->m_map.get("0");
     ASSERT_TRUE(!ent->m_location.isSolid());
-    ASSERT_TRUE(!ent->m_location.isSimple());
 
 }
 

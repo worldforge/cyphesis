@@ -35,7 +35,6 @@ class LocatedEntity;
 
 class Location : public EntityLocation {
   protected:
-    bool m_simple;
     bool m_solid;
 
     double m_timeStamp;
@@ -79,16 +78,6 @@ class Location : public EntityLocation {
     const Vector3D & velocity() const { return m_velocity; }
     const Quaternion & orientation() const { return m_orientation; }
     const BBox & bBox() const { return m_bBox; }
-
-
-
-    bool isSimple() const {
-        return m_simple;
-    }
-
-    void setSimple(bool c = true) {
-        m_simple = c;
-    }
 
     bool isSolid() const {
         return m_solid;

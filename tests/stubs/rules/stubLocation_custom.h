@@ -7,28 +7,28 @@
 #define STUB_Location_Location
 
 Location::Location(Ref<LocatedEntity> rf, Point3D pos) :
-    EntityLocation(rf, pos), m_simple(true), m_solid(true)
+    EntityLocation(rf, pos), m_solid(true)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf):
-    EntityLocation(rf), m_simple(true), m_solid(true)
+    EntityLocation(rf), m_solid(true)
 {
 }
 
 
 Location::Location() :
-    m_simple(true), m_solid(true)
+    m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf, Point3D pos) :
-    EntityLocation(rf, pos), m_simple(true), m_solid(true)
+    EntityLocation(rf, pos), m_solid(true)
 {
 }
 
 Location::Location(LocatedEntity * rf):
-    EntityLocation(rf), m_simple(true), m_solid(true)
+    EntityLocation(rf), m_solid(true)
 {
 }
 #endif //STUB_Location_Location

@@ -19,7 +19,6 @@
 #include "CorePropertyManager.h"
 
 #include "server/Juncture.h"
-#include "server/ServerRouting.h"
 #include "server/TeleportProperty.h"
 
 #include "rules/simulation/LineProperty.h"
@@ -50,7 +49,6 @@
 #include "rules/simulation/GeometryProperty.h"
 #include "rules/QuaternionProperty.h"
 #include "rules/Vector3Property.h"
-#include "rules/SimpleProperty.h"
 #include "rules/simulation/PerceptionSightProperty.h"
 #include "rules/ScaleProperty.h"
 #include "rules/python/ScriptsProperty.h"
@@ -129,7 +127,6 @@ CorePropertyManager::CorePropertyManager()
     //installProperty<Property<IdList> >("start_intersections", "list");
     //installProperty<Property<IdList> >("end_intersections", "list");
     installProperty<SolidProperty>();
-    installProperty<SimpleProperty>();
     installProperty<StatusProperty>();
     installProperty<TransientProperty>();
     installProperty<Property<double>>("mass");
