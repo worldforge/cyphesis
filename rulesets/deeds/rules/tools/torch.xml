@@ -13,16 +13,33 @@
             <map name="density">
                 <float name="default">500</float>
             </map>
-            <map name="operations">
-                <list name="default">
-                    <string>ignite</string>
-                </list>
+            <map name="cooldown">
+                <float name="default">1</float>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="ignite">
+                        <!-- Only allow ignition if the torch contains a fire already -->
+                        <string name="name">Ignite</string>
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity</string>
+                                <int name="min">0</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Tinderbox.ignite</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool &amp;&amp; contains_recursive(tool.contains, child.type=types.fire)</string>
+                        <string name="description">Light a fire with a wielded torch, that is on fire.</string>
+                    </map>
+                </map>
             </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
                         <string name="language">python</string>
-                        <string name="name">world.objects.tools.Torch.Torch</string>
+                        <string name="name">world.traits.Flammable.Flammable</string>
                     </map>
                 </list>
             </map>

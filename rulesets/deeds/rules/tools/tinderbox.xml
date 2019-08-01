@@ -13,11 +13,6 @@
             <map name="density">
                 <float name="default">300</float>
             </map>
-            <map name="operations">
-                <list name="default">
-                    <string>ignite</string>
-                </list>
-            </map>
             <map name="cooldown">
                 <float name="default">1</float>
             </map>
