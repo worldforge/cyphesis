@@ -21,7 +21,7 @@
 #include "Domain.h"
 
 #include "Script.h"
-#include "rules/AtlasProperties.h"
+#include "AtlasProperties.h"
 
 #include "common/TypeNode.h"
 
@@ -275,12 +275,6 @@ void LocatedEntity::setScript(Script* scrpt)
 {
     m_scripts.push_back(scrpt);
 }
-
-std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
-{
-    return std::vector<Atlas::Objects::Root>();
-}
-
 
 /// \brief Make this entity a container
 ///

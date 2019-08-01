@@ -230,12 +230,6 @@ class LocatedEntity : public Router, public ReferenceCounted {
     void changeContainer(const Ref<LocatedEntity>&);
     void merge(const Atlas::Message::MapType &);
 
-    /**
-     * Gets all registered thoughts.
-     * @return All registered thoughts.
-     */
-    virtual std::vector<Atlas::Objects::Root> getThoughts() const;
-
     /// \brief Adds a child to this entity.
     virtual void addChild(LocatedEntity& childEntity);
     /// \brief Removes a child from this entity.

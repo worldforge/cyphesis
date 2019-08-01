@@ -209,14 +209,6 @@
   }
 #endif //STUB_LocatedEntity_merge
 
-#ifndef STUB_LocatedEntity_getThoughts
-//#define STUB_LocatedEntity_getThoughts
-  std::vector<Atlas::Objects::Root> LocatedEntity::getThoughts() const
-  {
-    return std::vector<Atlas::Objects::Root>();
-  }
-#endif //STUB_LocatedEntity_getThoughts
-
 #ifndef STUB_LocatedEntity_addChild
 //#define STUB_LocatedEntity_addChild
   void LocatedEntity::addChild(LocatedEntity& childEntity)
