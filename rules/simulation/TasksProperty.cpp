@@ -44,7 +44,7 @@ TasksProperty::TasksProperty()
 int TasksProperty::get(Atlas::Message::Element& val) const
 {
     MapType tasks;
-    for (auto entry : m_tasks) {
+    for (const auto& entry : m_tasks) {
         auto& task = entry.second;
         MapType taskMap;
         taskMap["name"] = task->name();
@@ -84,7 +84,7 @@ int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
     return 0;
 }
 
-int TasksProperty::startTask(std::string id, Ref<Task> task,
+int TasksProperty::startTask(const std::string& id, Ref<Task> task,
                              LocatedEntity* owner,
                              OpVector& res)
 {

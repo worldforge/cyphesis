@@ -54,7 +54,7 @@ class TasksProperty : public PropertyBase
 
         int updateTask(LocatedEntity* owner, OpVector& res);
 
-        int startTask(std::string id, Ref<Task> task,
+        int startTask(const std::string& id, Ref<Task> task,
                       LocatedEntity* owner,
                       OpVector& res);
 

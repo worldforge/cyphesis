@@ -44,6 +44,9 @@ class CyPy_TerrainProperty: public WrapperBase<Ref<LocatedEntity>, CyPy_TerrainP
         Py::Object getSurface(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_TerrainProperty, getSurface);
 
+        Py::Object getSurfaceName(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_TerrainProperty, getSurfaceName);
+
         Py::Object getNormal(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_TerrainProperty, getNormal);
 

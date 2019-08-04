@@ -49,8 +49,6 @@ using Atlas::Objects::Entity::Anonymous;
 typedef Mercator::Terrain::Pointstore Pointstore;
 typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 
-typedef enum { ROCK = 0, SAND = 1, GRASS = 2, SILT = 3, SNOW = 4} Surface;
-
 TerrainProperty::TerrainProperty(const TerrainProperty& rhs) :
     PropertyBase(rhs),
     m_data(*new Mercator::Terrain(Mercator::Terrain::SHADED)),
@@ -240,8 +238,10 @@ void TerrainProperty::apply(LocatedEntity* entity) {
 }
 
 Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList) {
+    m_surfaceNames.clear();
     if (!surfaceList.empty()) {
         auto* tileShader = new Mercator::TileShader();
+        int layer = 0;
         for (auto& surfaceElement : surfaceList) {
             if (!surfaceElement.isMap()) {
                 continue;
@@ -259,25 +259,7 @@ Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListT
                 log(WARNING, "Surface has no 'name'.");
                 continue;
             }
-            const std::string& name = nameI->second.String();
-
-
-            int layer;
-            if (name == "rock") {
-                layer = ROCK;
-            } else if (name == "sand") {
-                layer = SAND;
-            } else if (name == "grass") {
-                layer = GRASS;
-            } else if (name == "silt") {
-                layer = SILT;
-            } else if (name == "snow") {
-                layer = SNOW;
-            } else {
-                log(WARNING, String::compose("Could not recognize surface with layer with name '%1'", name));
-                continue;
-            }
-
+            m_surfaceNames.push_back(nameI->second.String());
 
 
             Mercator::Shader::Parameters shaderParams;
@@ -294,20 +276,25 @@ Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListT
             }
 
             auto& pattern = patternI->second.String();
+            Mercator::Shader* shader = nullptr;
             if (pattern == "fill") {
-                tileShader->addShader(new Mercator::FillShader(shaderParams), layer);
+                shader=new Mercator::FillShader(shaderParams);
             } else if (pattern == "band") {
-                tileShader->addShader(new Mercator::BandShader(shaderParams), layer);
+                shader=new Mercator::BandShader(shaderParams);
             } else if (pattern == "grass") {
-                tileShader->addShader(new Mercator::GrassShader(shaderParams), layer);
+                shader=new Mercator::GrassShader(shaderParams);
             } else if (pattern == "depth") {
-                tileShader->addShader(new Mercator::DepthShader(shaderParams), layer);
+                shader=new Mercator::DepthShader(shaderParams);
             } else if (pattern == "high") {
-                tileShader->addShader(new Mercator::HighShader(shaderParams), layer);
+                shader = new Mercator::HighShader(shaderParams);
+            }
+
+            if (shader) {
+                tileShader->addShader(shader, layer);
             } else {
                 log(WARNING, String::compose("Could not recognize surface with pattern '%1'", pattern));
-                continue;
             }
+            layer++;
         }
         return tileShader;
     }

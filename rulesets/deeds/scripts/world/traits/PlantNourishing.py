@@ -19,17 +19,14 @@ class PlantNourishing(server.Thing):
                     print("Plant consume op without mass specified")
                     return server.OPERATION_BLOCKED
 
-                print("Mass {}".format(mass_arg))
-
                 nourish_ent = Entity()
                 nourish_ent.consume_type = arg.consume_type
 
                 terrain_prop = self.props.terrain
                 # If there's a terrain prop, check that the surface has dirt, otherwise just return a nourish op
                 if terrain_prop:
-                    surface = terrain_prop.get_surface(arg.pos[0], arg.pos[2])
-                    # Surface with id "2" is dirt
-                    if surface != 2:
+                    material = terrain_prop.get_surface_name(arg.pos[0], arg.pos[2])
+                    if material != "grass":
                         # No earth here
                         return server.OPERATION_BLOCKED
                     else:

@@ -14,7 +14,7 @@ import server
 class Delve(server.Task):
     """ A task for cutting chunks of material from the terrain with a pickaxe."""
 
-    materials = {0: 'boulder', 4: 'ice'}
+    materials = {'rock': 'boulder', 'snow': 'ice'}
 
     def cut_operation(self, op):
         """ Op handler for cut op which activates this task """
@@ -67,13 +67,14 @@ class Delve(server.Task):
                 # There is no terrain mod where we are digging,
                 # so we check if it is rock, and if so create
                 # a quarry
-                surface = self.target().props.terrain.get_surface(self.pos)
+                surface = self.target().props.terrain.get_surface_name(self.pos)
                 # print "SURFACE %d at %s" % (surface, self.pos)
                 if surface not in Delve.materials:
                     print("Not rock")
                     self.irrelevant()
                     return
-                self.surface = surface
+                material = Delve.materials[surface]
+                self.material = material
 
                 y = self.character.location.pos.y + 1.0
                 modmap = {
@@ -109,8 +110,8 @@ class Delve(server.Task):
             # self.terrain_mod = "moddy_mod_mod"
 
         create = Operation("create",
-                           Entity(name=Delve.materials[self.surface],
-                                  type=Delve.materials[self.surface],
+                           Entity(name=self.material,
+                                  type=self.material,
                                   location=chunk_loc), to=self.target())
         res.append(create)
 

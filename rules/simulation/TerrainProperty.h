@@ -47,6 +47,8 @@ class TerrainProperty : public PropertyBase {
     /// \brief Collection of surface data, cos I don't care!
     Atlas::Message::ListType m_surfaces;
 
+    std::vector<std::string> m_surfaceNames;
+
     /// \brief Reference to variable storing the set of modified points
     PointSet m_modifiedTerrain;
     /// \brief Reference to variable storing the set of newly created points
@@ -92,6 +94,10 @@ class TerrainProperty : public PropertyBase {
 
     Mercator::Terrain& getData();
     Mercator::Terrain& getData() const;
+
+    const std::vector<std::string> getSurfaceNames() const {
+        return m_surfaceNames;
+    }
 
 };
 

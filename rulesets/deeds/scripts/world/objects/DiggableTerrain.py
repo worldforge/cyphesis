@@ -12,7 +12,7 @@ class DiggableTerrain(server.Thing):
     Applied on terrain which can be digged.
     """
 
-    materials = {1: 'sand', 2: 'earth'}
+    materials = {'sand': 'sand', 'grass': 'earth'}
 
     def dig_operation(self, op):
 
@@ -29,9 +29,9 @@ class DiggableTerrain(server.Thing):
             print('No terrain prop on diggable terrain entity')
             return server.OPERATION_IGNORED
 
-        surface = self.props.terrain.get_surface(arg.pos[0], arg.pos[2])
+        surface = self.props.terrain.get_surface_name(arg.pos[0], arg.pos[2])
         if surface not in DiggableTerrain.materials:
-            print("The surface couldn't be digged here.")
+            print("The surface couldn't be digged here. Material {}.".format(surface))
             return server.OPERATION_IGNORED
 
         material = DiggableTerrain.materials[surface]

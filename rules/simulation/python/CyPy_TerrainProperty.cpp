@@ -41,7 +41,14 @@ void CyPy_TerrainProperty::init_type()
     behaviors().doc("");
 
     PYCXX_ADD_VARARGS_METHOD(get_height, getHeight, "");
-    PYCXX_ADD_VARARGS_METHOD(get_surface, getSurface, "");
+    PYCXX_ADD_VARARGS_METHOD(get_surface, getSurface, R"(Gets the numerical index of the surface that's most prevalent at the location.
+Parameters:
+x : The x position
+y : The y position)");
+    PYCXX_ADD_VARARGS_METHOD(get_surface_name, getSurfaceName, R"(Gets the name of the surface that's most prevalent at the location.
+Parameters:
+x : The x position
+y : The y position)");
     PYCXX_ADD_VARARGS_METHOD(get_normal, getNormal, "");
     PYCXX_ADD_VARARGS_METHOD(find_mods, findMods, "");
 
@@ -72,6 +79,19 @@ Py::Object CyPy_TerrainProperty::getSurface(const Py::Tuple& args)
     auto surface = getTerrainProperty().getSurface(verifyNumeric(args[0]), verifyNumeric(args[1]));
     if (surface) {
         return  Py::Long(*surface);
+    }
+    return Py::None();
+}
+
+Py::Object CyPy_TerrainProperty::getSurfaceName(const Py::Tuple& args)
+{
+    args.verify_length(2);
+    auto surface = getTerrainProperty().getSurface(verifyNumeric(args[0]), verifyNumeric(args[1]));
+    if (surface) {
+        auto& surfaceNames = getTerrainProperty().getSurfaceNames();
+        if (*surface >= 0 && *surface < surfaceNames.size()) {
+            return Py::String(surfaceNames[*surface]);
+        }
     }
     return Py::None();
 }

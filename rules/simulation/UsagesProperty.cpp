@@ -106,10 +106,10 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
                                 parameter.constraint.reset(new EntityFilter::Filter(constraint, EntityFilter::ProviderFactory()));
                             });
                             AtlasQuery::find<long>(paramMap, "min", [&](const long& min) {
-                                parameter.min = min;
+                                parameter.min = static_cast<int>(min);
                             });
                             AtlasQuery::find<long>(paramMap, "max", [&](const long& max) {
-                                parameter.max = max;
+                                parameter.max = static_cast<int>(max);
                             });
 
                             usage.params.emplace(entry.first, std::move(parameter));
@@ -189,7 +189,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             return OPERATION_IGNORED;
         }
         auto op_type = argOp->getParent();
-        debug_print("Got op type " << op_type << " from arg");
+        debug_print("Got op type " << op_type << " from arg")
 
         auto obj = Atlas::Objects::Factories::instance()->createObject(op_type);
         if (!obj.isValid()) {
