@@ -19,6 +19,10 @@
                     </map>
                     <map>
                         <string name="language">python</string>
+                        <string name="name">world.objects.ExcavatableTerrain.ExcavatableTerrain</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
                         <string name="name">world.traits.PlantNourishing.PlantNourishing</string>
                     </map>
                 </list>

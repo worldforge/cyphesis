@@ -132,6 +132,14 @@
         <string name="parent">action</string>
     </map>
 
+    <!-- Excavate operations are used when some tool, like a pickaxe, is used to make holes in the ground. -->
+    <map>
+        <string name="id">excavate</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">action</string>
+    </map>
+
+
     <map>
         <string name="id">sift</string>
         <string name="objtype">op_definition</string>
