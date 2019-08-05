@@ -19,7 +19,10 @@
 #ifndef SERVER_COMM_MDNS_PUBLISHER_H
 #define SERVER_COMM_MDNS_PUBLISHER_H
 
-#include <boost/asio.hpp>
+#include "common/io_context.h"
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 #include <boost/asio/deadline_timer.hpp>
 
 #include <set>

@@ -16,23 +16,10 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_IO_CONTEXT_H
-#define CYPHESIS_IO_CONTEXT_H
+#ifndef CYPHESIS_ASIO_H
+#define CYPHESIS_ASIO_H
 
-/**
- * Boost version 1.66+ changed io_service to io_context. This is a shim.
- */
+#include "io_context.h"
+#include <boost/asio.hpp>
 
-#include <boost/version.hpp>
-#if BOOST_VERSION < 106600
-#include <boost/asio/io_service.hpp>
-namespace boost {
-namespace asio {
-typedef io_service io_context;
-}
-}
-#else
-#include <boost/asio/io_context.hpp>
-#endif
-
-#endif //CYPHESIS_IO_CONTEXT_H
+#endif //CYPHESIS_ASIO_H

@@ -19,7 +19,9 @@
 #ifndef COMMASIOLISTENER_H_
 #define COMMASIOLISTENER_H_
 
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 
 #include <functional>
 

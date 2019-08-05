@@ -7,7 +7,9 @@
 #pragma once
 
 #include "dir_monitor_impl.hpp"
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
@@ -204,7 +206,11 @@ public:
     template <typename Handler>
     void async_monitor(implementation_type &impl, Handler handler)
     {
+#if BOOST_VERSION < 106600
+        this->async_monitor_io_context_.post(monitor_operation<Handler>(impl, this->get_io_service(), handler));
+#else
         this->async_monitor_io_context_.post(monitor_operation<Handler>(impl, this->get_io_context(), handler));
+#endif
     }
 
 private:

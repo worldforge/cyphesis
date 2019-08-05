@@ -21,7 +21,9 @@
 
 #include "common/CommSocket.h"
 
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 #include <boost/asio/deadline_timer.hpp>
 
 class DatabasePostgres;

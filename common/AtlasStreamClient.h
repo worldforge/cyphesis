@@ -27,8 +27,7 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <boost/asio.hpp>
-
+#include "common/asio.h"
 #include <chrono>
 #include <functional>
 #include <list>

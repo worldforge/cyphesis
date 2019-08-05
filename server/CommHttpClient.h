@@ -18,7 +18,9 @@
 #ifndef SERVER_COMM_HTTP_CLIENT_H
 #define SERVER_COMM_HTTP_CLIENT_H
 
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 
 #include <list>
 #include <string>

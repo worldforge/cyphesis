@@ -8,7 +8,9 @@
 
 #include "dir_monitor_impl.hpp"
 #include "common/io_context.h"
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/system/error_code.hpp>
@@ -132,7 +134,11 @@ public:
     template <typename Handler>
     void async_monitor(implementation_type &impl, Handler handler)
     {
+#if BOOST_VERSION < 106600
+        this->async_monitor_io_context_.post(monitor_operation<Handler>(impl, this->get_io_service(), handler));
+#else
         this->async_monitor_io_context_.post(monitor_operation<Handler>(impl, this->get_io_context(), handler));
+#endif
     }
 
 private:

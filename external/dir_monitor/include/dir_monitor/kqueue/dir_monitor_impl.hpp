@@ -1,7 +1,7 @@
 //
 // Based on DirectoryWatcher.cpp, original license terms follow.
 //
-// $Id$
+// $Id: 77fd1aa43798b60184d03cd574fe5ff3f62ca30e $
 //
 // Library: Foundation
 // Package: Filesystem
@@ -41,7 +41,9 @@
 #include <string>
 #include <deque>
 
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>

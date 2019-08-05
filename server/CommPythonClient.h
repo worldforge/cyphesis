@@ -19,7 +19,9 @@
 #ifndef SERVER_COMM_PYTHON_CLIENT_H
 #define SERVER_COMM_PYTHON_CLIENT_H
 
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 #include <boost/array.hpp>
 
 #include <memory>

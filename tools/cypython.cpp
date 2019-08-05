@@ -39,7 +39,9 @@ extern "C" {
 #ifndef READLINE_CXX_SANE
 }
 #endif
-#include <boost/asio.hpp>
+#include "common/asio.h"
+#include "common/asio.h"
+#include "common/asio.h"
 
 #ifdef ERROR
 #undef ERROR
