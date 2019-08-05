@@ -43,7 +43,11 @@ CommAsioListener<ProtocolT, ClientT>::~CommAsioListener()
 template<class ProtocolT, typename ClientT>
 void CommAsioListener<ProtocolT, ClientT>::startAccept()
 {
+#if BOOST_VERSION < 106600
+    auto client = std::make_shared<ClientT>(mServerName, mAcceptor.get_io_service());
+#else
     auto client = std::make_shared<ClientT>(mServerName, mAcceptor.get_executor().context());
+#endif
     mAcceptor.async_accept(client->getSocket(),
                            [this, client](boost::system::error_code ec) {
                                if (!ec) {
