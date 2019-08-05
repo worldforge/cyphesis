@@ -66,7 +66,7 @@
 
 #ifndef STUB_TasksProperty_startTask
 //#define STUB_TasksProperty_startTask
-  int TasksProperty::startTask(std::string id, Ref<Task> task, LocatedEntity* owner, OpVector& res)
+  int TasksProperty::startTask(const std::string& id, Ref<Task> task, LocatedEntity* owner, OpVector& res)
   {
     return 0;
   }

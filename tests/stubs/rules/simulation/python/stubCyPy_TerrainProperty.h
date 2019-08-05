@@ -65,6 +65,14 @@
   }
 #endif //STUB_CyPy_TerrainProperty_getSurface
 
+#ifndef STUB_CyPy_TerrainProperty_getSurfaceName
+//#define STUB_CyPy_TerrainProperty_getSurfaceName
+  Py::Object CyPy_TerrainProperty::getSurfaceName(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_TerrainProperty_getSurfaceName
+
 #ifndef STUB_CyPy_TerrainProperty_getNormal
 //#define STUB_CyPy_TerrainProperty_getNormal
   Py::Object CyPy_TerrainProperty::getNormal(const Py::Tuple& args)
