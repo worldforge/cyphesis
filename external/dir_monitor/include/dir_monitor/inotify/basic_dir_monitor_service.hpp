@@ -7,6 +7,7 @@
 #pragma once
 
 #include "dir_monitor_impl.hpp"
+#include "common/io_context.h"
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
