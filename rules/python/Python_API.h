@@ -22,7 +22,7 @@
 #include <string>
 #include <set>
 #include <sigc++/signal.h>
-#include <boost/asio/io_context.hpp>
+#include "common/io_context.h"
 
 class AssetsManager;
 class BaseWorld;

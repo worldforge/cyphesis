@@ -28,7 +28,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <memory>
-#include <boost/asio/io_context.hpp>
+#include "common/io_context.h"
 
 class EntityBuilder;
 class EntityKit;

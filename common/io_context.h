@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Erik Ogenvik
+ Copyright (C) 2019 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,28 +16,23 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_MAINLOOP_H
-#define CYPHESIS_MAINLOOP_H
+#ifndef CYPHESIS_IO_CONTEXT_H
+#define CYPHESIS_IO_CONTEXT_H
 
-#include "common/io_context.h"
-#include <chrono>
+/**
+ * Boost version 1.66+ changed io_service to io_context. This is a shim.
+ */
 
-struct OperationsHandler;
+#include <boost/version.hpp>
+#if BOOST_VERSION < 106600
+#include <boost/asio/io_service.hpp>
+namespace boost {
+namespace asio {
+typedef io_context io_service;
+}
+}
+#else
+#include <boost/asio/io_context.hpp>
+#endif
 
-class MainLoop
-{
-    public:
-
-        struct Callbacks {
-            std::function<std::chrono::steady_clock::duration()> softExitStart;
-            std::function<bool()> softExitPoll;
-            std::function<void()> softExitTimeout;
-        };
-
-        static void run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks);
-
-
-};
-
-
-#endif //CYPHESIS_MAINLOOP_H
+#endif //CYPHESIS_IO_CONTEXT_H
