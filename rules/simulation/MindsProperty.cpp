@@ -246,34 +246,39 @@ void MindsProperty::mindUseOperation(LocatedEntity* ent, const Operation& op, Op
         return;
     }
 
-    //TODO: should we perhaps check that this only can be Action ops?
-    auto innerOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args.front());
-    if (!innerOp) {
-        log(ERROR, "mindUseOperation: Second arg is not an operation. " + ent->describeEntity());
-        return;
-    }
-
-    auto& innerArgs = innerOp->getArgs();
-    if (innerArgs.empty()) {
-        log(ERROR, "mindUseOperation: inner use op has no arguments. " + ent->describeEntity());
-        return;
-    }
-
-    auto toolEnt = smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(innerArgs.front());
-    if (!toolEnt) {
-        log(ERROR, "mindUseOperation: First inner arg is not an entity. " + ent->describeEntity());
-        return;
-    }
-    if (!toolEnt->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "mindMoveOperation: First inner arg has no ID. " + ent->describeEntity());
-        return;
-    }
-
-
     Atlas::Objects::Operation::Use useOp;
-    useOp->setTo(toolEnt->getId());
     useOp->setFrom(ent->getId());
-    useOp->setArgs1(innerOp);
+    auto firstArg = args.front();
+    if (firstArg->getObjtype() == "op") {
+        //TODO: should we perhaps check that this only can be Action ops?
+        auto innerOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(args.front());
+        if (!innerOp) {
+            log(ERROR, "mindUseOperation: Second arg is not an operation. " + ent->describeEntity());
+            return;
+        }
+
+        auto& innerArgs = innerOp->getArgs();
+        if (innerArgs.empty()) {
+            log(ERROR, "mindUseOperation: inner use op has no arguments. " + ent->describeEntity());
+            return;
+        }
+
+        auto toolEnt = smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(innerArgs.front());
+        if (!toolEnt) {
+            log(ERROR, "mindUseOperation: First inner arg is not an entity. " + ent->describeEntity());
+            return;
+        }
+        if (!toolEnt->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+            log(ERROR, "mindMoveOperation: First inner arg has no ID. " + ent->describeEntity());
+            return;
+        }
+
+        useOp->setTo(toolEnt->getId());
+        useOp->setArgs1(innerOp);
+    } else if (firstArg->getObjtype() == "task") {
+        useOp->setTo(ent->getId());
+        useOp->setArgs(op->getArgs());
+    }
 
     res.push_back(useOp);
 }

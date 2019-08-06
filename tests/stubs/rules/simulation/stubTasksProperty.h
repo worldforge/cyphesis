@@ -90,17 +90,17 @@
 
 #ifndef STUB_TasksProperty_TickOperation
 //#define STUB_TasksProperty_TickOperation
-  void TasksProperty::TickOperation(LocatedEntity* owner, const Operation& op, OpVector&)
+  HandlerResult TasksProperty::TickOperation(LocatedEntity* owner, const Operation& op, OpVector&)
   {
-    
+    return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_TasksProperty_TickOperation
 
 #ifndef STUB_TasksProperty_UseOperation
 //#define STUB_TasksProperty_UseOperation
-  void TasksProperty::UseOperation(LocatedEntity* owner, const Operation& op, OpVector&)
+  HandlerResult TasksProperty::UseOperation(LocatedEntity* owner, const Operation& op, OpVector&)
   {
-    
+    return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_TasksProperty_UseOperation
 

@@ -17,6 +17,7 @@
 
 
 #include <common/operations/Tick.h>
+#include <tests/allOperations.h>
 #include "TasksProperty.h"
 
 #include "rules/LocatedEntity.h"
@@ -25,6 +26,7 @@
 #include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/operations/Update.h"
+#include "BaseWorld.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -47,13 +49,20 @@ int TasksProperty::get(Atlas::Message::Element& val) const
     for (const auto& entry : m_tasks) {
         auto& task = entry.second;
         MapType taskMap;
-        taskMap["name"] = task->name();
+        taskMap.emplace("name", task->name());
         auto progress = task->progress();
         if (progress > 0) {
-            taskMap["progress"] = progress;
+            taskMap.emplace("progress", progress);
         }
         if (task->m_duration) {
-            taskMap["rate"] = 1.0f / *task->m_duration;
+            taskMap.emplace("rate", 1.0f / *task->m_duration);
+        }
+        if (!task->usages().empty()) {
+            MapType usagesMap;
+            for (auto& usage : task->usages()) {
+                usagesMap.emplace(usage.name, Atlas::Message::MapType());
+            }
+            taskMap.emplace("usages", std::move(usagesMap));
         }
         tasks.emplace(entry.first, std::move(taskMap));
     }
@@ -141,25 +150,25 @@ void TasksProperty::stopTask(const std::string& id, LocatedEntity* owner, OpVect
     updateTask(owner, res);
 }
 
-void TasksProperty::TickOperation(LocatedEntity* owner,
-                                  const Operation& op,
-                                  OpVector& res)
+HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
+                                           const Operation& op,
+                                           OpVector& res)
 {
 
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        return;
+        return OPERATION_BLOCKED;
     }
 
     const Root& arg = args.front();
 
     if (arg->isDefaultId()) {
-        return;
+        return OPERATION_BLOCKED;
     }
 
     auto taskI = m_tasks.find(arg->getId());
     if (taskI == m_tasks.end()) {
-        return;
+        return OPERATION_BLOCKED;
     }
 
     auto& id = taskI->first;
@@ -169,11 +178,11 @@ void TasksProperty::TickOperation(LocatedEntity* owner,
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
         if (serialno.asInt() != task->serialno()) {
             debug_print("Old tick");
-            return;
+            return OPERATION_BLOCKED;
         }
     } else {
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
-        return;
+        return OPERATION_BLOCKED;
     }
     task->tick(id, op, res);
     if (task->obsolete()) {
@@ -187,25 +196,107 @@ void TasksProperty::TickOperation(LocatedEntity* owner,
                                      "stalled", __func__,
                                      task->name()));
     }
+    return OPERATION_BLOCKED;
 }
 
-void TasksProperty::UseOperation(LocatedEntity* owner,
-                                 const Operation& op,
-                                 OpVector& res)
+HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
+                                          const Operation& op,
+                                          OpVector& res)
 {
+
+    if (!op->getArgs().empty()) {
+        auto& arg = op->getArgs().front();
+        if (arg->isDefaultObjtype() || arg->getObjtype() != "task") {
+            //This op is not for us
+            return OPERATION_IGNORED;
+        }
+
+        auto actor = BaseWorld::instance().getEntity(op->getFrom());
+        if (!actor) {
+            e->error(op, "Could not find 'from' entity.", res, e->getId());
+            return OPERATION_BLOCKED;
+        }
+
+        if (op->isDefaultFrom()) {
+            actor->error(op, "Top op has no 'from' attribute.", res, actor->getId());
+            return OPERATION_BLOCKED;
+        }
+
+        if (arg->isDefaultId()) {
+            actor->error(op, "Use arg for task has no id", res, actor->getId());
+            return OPERATION_BLOCKED;
+        }
+        auto taskId = arg->getId();
+
+        if (!arg->hasAttr("args")) {
+            actor->error(op, "Use arg for task has no args", res, actor->getId());
+            return OPERATION_BLOCKED;
+        }
+
+        auto argsElem = arg->getAttr("args");
+        if (!argsElem.isList()) {
+            actor->error(op, "Use arg for task has invalid args", res, actor->getId());
+            return OPERATION_BLOCKED;
+        }
+
+        auto innerArgs = Atlas::Objects::Factories::parseListOfObjects(argsElem.asList());
+
+        if (innerArgs.empty()) {
+            actor->error(op, "Use arg for task has empty args", res, actor->getId());
+            return OPERATION_BLOCKED;
+        }
+
+        auto innerArg = innerArgs.front();
+
+        if (innerArg->isDefaultId()) {
+            actor->error(op, "Use arg for task has arg without id", res, actor->getId());
+            return OPERATION_BLOCKED;
+        }
+
+        auto usage = innerArg->getId();
+
+
+        auto taskI = m_tasks.find(taskId);
+        if (taskI == m_tasks.end()) {
+            //Task doesn't exist anymore, just ignore.
+            return OPERATION_IGNORED;
+        }
+
+        auto& task = taskI->second;
+
+        //Call a script method named after the usage, with "_usage" as suffix.
+        task->callScriptFunction(usage + "_usage", res);
+
+        if (task->obsolete()) {
+            clearTask(taskId, e, res);
+        } else {
+            updateTask(e, res);
+        }
+
+        return OPERATION_BLOCKED;
+
+
+    }
+    //We couldn't find any suitable task.
+    return OPERATION_IGNORED;
+
 }
 
 HandlerResult TasksProperty::operation(LocatedEntity* owner,
                                        const Operation& op,
                                        OpVector& res)
 {
-    auto& args = op->getArgs();
-    if (!args.empty()) {
-        auto& arg = args.front();
-        if (arg->getName() == "task") {
-            TickOperation(owner, op, res);
-            return OPERATION_BLOCKED;
+    if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+        auto& args = op->getArgs();
+        if (!args.empty()) {
+            auto& arg = args.front();
+            if (arg->getName() == "task") {
+                TickOperation(owner, op, res);
+                return OPERATION_BLOCKED;
+            }
         }
+    } else if (op->getClassNo() == Atlas::Objects::Operation::USE_NO) {
+        return UseOperation(owner, op, res);
     }
 
     return OPERATION_IGNORED;
@@ -214,9 +305,11 @@ HandlerResult TasksProperty::operation(LocatedEntity* owner,
 void TasksProperty::install(LocatedEntity* owner, const std::string& name)
 {
     owner->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
+    owner->installDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
 
 void TasksProperty::remove(LocatedEntity* owner, const std::string& name)
 {
     owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
+    owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
 }

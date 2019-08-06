@@ -163,26 +163,24 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                                           const Operation& op, OpVector& res)
 {
 
-
-    auto actor = BaseWorld::instance().getEntity(op->getFrom());
-    if (!actor) {
-        e->error(op, "Could not find 'from' entity.", res, e->getId());
-        return OPERATION_IGNORED;
-    }
-
-    if (op->isDefaultFrom()) {
-        actor->error(op, "Top op has no 'from' attribute.", res, actor->getId());
-        return OPERATION_IGNORED;
-    }
-
     if (!op->getArgs().empty()) {
         auto& arg = op->getArgs().front();
         auto argOp = smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(arg);
         if (!argOp) {
-            actor->error(op, "First arg wasn't an operation.", res, actor->getId());
+            //This op is not for us
             return OPERATION_IGNORED;
         }
 
+        auto actor = BaseWorld::instance().getEntity(op->getFrom());
+        if (!actor) {
+            e->error(op, "Could not find 'from' entity.", res, e->getId());
+            return OPERATION_IGNORED;
+        }
+
+        if (op->isDefaultFrom()) {
+            actor->error(op, "Top op has no 'from' attribute.", res, actor->getId());
+            return OPERATION_IGNORED;
+        }
 
         if (!argOp->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
             actor->error(op, "Use arg op has malformed parent", res, actor->getId());

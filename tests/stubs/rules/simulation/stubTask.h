@@ -7,13 +7,6 @@
 #include "rules/simulation/Task.h"
 #include "stubTask_custom.h"
 
-#ifndef STUB_Task_callScriptFunction
-//#define STUB_Task_callScriptFunction
-  void Task::callScriptFunction(const std::string& function, OpVector& res)
-  {
-    
-  }
-#endif //STUB_Task_callScriptFunction
 
 #ifndef STUB_Task_Task
 //#define STUB_Task_Task
@@ -31,6 +24,14 @@
     
   }
 #endif //STUB_Task_Task_DTOR
+
+#ifndef STUB_Task_callScriptFunction
+//#define STUB_Task_callScriptFunction
+  void Task::callScriptFunction(const std::string& function, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Task_callScriptFunction
 
 #ifndef STUB_Task_irrelevant
 //#define STUB_Task_irrelevant

@@ -62,9 +62,9 @@ class TasksProperty : public PropertyBase
 
         void stopTask(const std::string& id, LocatedEntity* owner, OpVector& res);
 
-        void TickOperation(LocatedEntity* owner, const Operation& op, OpVector&);
+        HandlerResult TickOperation(LocatedEntity* owner, const Operation& op, OpVector&);
 
-        void UseOperation(LocatedEntity* owner, const Operation& op, OpVector&);
+        HandlerResult UseOperation(LocatedEntity* owner, const Operation& op, OpVector&);
 
         HandlerResult operation(LocatedEntity* owner,
                                 const Operation& op,

@@ -2,6 +2,8 @@
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
 from atlas import Operation, Entity
+
+from world.StoppableTask import StoppableTask
 from world.utils import Usage
 
 import server
@@ -19,7 +21,7 @@ def use(instance):
     return server.OPERATION_BLOCKED, instance.actor.start_task(usage_name, task)
 
 
-class Use(server.Task):
+class Use(StoppableTask):
     """ A generic tool usage class, for simple usages where we want to wait until sending the op to the target. """
 
     def setup(self):

@@ -150,6 +150,13 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "name") {
         return Py::String(m_value->name());
     }
+    if (nameStr == "usages") {
+        Py::List list;
+        for (auto& usage : m_value->usages()) {
+            list.append(Py::String(usage.name));
+        }
+        return list;
+    }
     Atlas::Message::Element val;
     if (m_value->getAttr(name, val) == 0) {
         if (val.isNone()) {
@@ -180,6 +187,17 @@ int CyPy_Task::setattro(const Py::String& name, const Py::Object& attr)
     }
     if (nameStr == "name") {
         m_value->name() = verifyString(attr);
+        return 0;
+    }
+    if (nameStr == "usages") {
+        auto list = verifyList(attr);
+
+        auto& usages = m_value->usages();
+        usages.resize(0);
+        usages.reserve(list.length());
+        for (auto item : list) {
+            usages.emplace_back(TaskUsage{verifyString(item)});
+        }
         return 0;
     }
 

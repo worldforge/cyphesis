@@ -30,17 +30,18 @@
 #include <cassert>
 #include <boost/noncopyable.hpp>
 #include <boost/optional.hpp>
+#include "modules/ReferenceCounted.h"
 
 class LocatedEntity;
 class Script;
 
+struct TaskUsage {
+    std::string name;
+};
+
 /// \brief Interface class for handling tasks which take a short while to
 /// complete
-class Task : public boost::noncopyable{
-  private:
-
-    /// \brief Count of references held by entities involved in this task
-    int m_refCount;
+class Task : public boost::noncopyable, public ReferenceCounted {
   protected:
 
     /// \brief Serial number of the tick due to arrive next at this task.
@@ -66,7 +67,10 @@ class Task : public boost::noncopyable{
     /// \brief The language script that will handle this task
     Py::Object m_script;
 
-    void callScriptFunction(const std::string& function, OpVector& res);
+    /**
+     * The usages that are attached to this task, which clients can invoke.
+     */
+    std::vector<TaskUsage> m_usages;
 
   public:
 
@@ -79,7 +83,9 @@ class Task : public boost::noncopyable{
     /// \brief Constructor
     explicit Task(UsageInstance usageInstance, const Py::Object& script);
 
-    ~Task();
+    ~Task() override;
+
+    void callScriptFunction(const std::string& function, OpVector& res);
 
     /// \brief Flag this task as obsolete
     void irrelevant();
@@ -98,19 +104,6 @@ class Task : public boost::noncopyable{
 
     /// \brief Create a new tick op for the next iteration of this task
     Operation nextTick(const std::string& id, const Operation& op);
-
-    /// \brief Increment the reference count on this task
-    void incRef() {
-        ++m_refCount;
-    }
-
-    /// \brief Decrement the reference count on this task
-    void decRef() {
-        if (--m_refCount < 1) {
-            assert(m_refCount == 0);
-            delete this;
-        }
-    }
 
     /// \brief Return the number of the next to arrive at this task
     int serialno() const {
@@ -133,6 +126,8 @@ class Task : public boost::noncopyable{
 
     /// \brief Accessor for rate of progress towards completion
     double & rate() { return m_rate; }
+
+    std::vector<TaskUsage>& usages() { return m_usages; }
 
     /// \brief Accessor for additional attributes
     int getAttr(const std::string & attr, Atlas::Message::Element & val) const;

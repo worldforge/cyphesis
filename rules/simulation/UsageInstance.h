@@ -103,13 +103,30 @@ class UsageInstance
 
 
         typedef boost::variant<EntityLocation, WFMath::Point<3>, WFMath::Vector<3>> UsageArg;
+
+        /**
+         * The usage definition.
+         */
         Usage definition;
 
+        /**
+         * The entity performing the usage.
+         */
         Ref<LocatedEntity> actor;
+
+        /**
+         * The entity containing the usage.
+         */
         Ref<LocatedEntity> tool;
 
+        /**
+         * Any arguments sent along.
+         */
         std::map<std::string, std::vector<UsageArg>> args;
 
+        /**
+         * The operation triggering the usage.
+         */
         Atlas::Objects::Operation::RootOperation op;
 
         std::pair<bool, std::string> isValid() const;
