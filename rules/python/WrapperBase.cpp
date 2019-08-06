@@ -54,7 +54,7 @@ float verifyFloat(const Py::Object& object, const std::string& message)
 
 Py::List verifyList(const Py::Object& object, const std::string& message)
 {
-    if (!object.isNumeric()) {
+    if (!object.isList()) {
         throw Py::TypeError(message + String::compose(" Got %2", object.type().as_string()));
     }
     return Py::List(object);
@@ -62,7 +62,7 @@ Py::List verifyList(const Py::Object& object, const std::string& message)
 
 Py::Dict verifyDict(const Py::Object& object, const std::string& message)
 {
-    if (!object.isNumeric()) {
+    if (!object.isDict()) {
         throw Py::TypeError(message + String::compose(" Got %2", object.type().as_string()));
     }
     return Py::Dict(object);
