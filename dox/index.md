@@ -9,6 +9,7 @@ Welcome to the Cyphesis documentation.
 * [Minds](@ref minds)
 * [Movement and sights](@ref movement_sights)
 * [Entities](@ref entities)
+* [Using entities and Tasks](@ref usage_and_tasks)
 
 # Introduction
 

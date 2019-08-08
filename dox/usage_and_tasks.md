@@ -162,3 +162,11 @@ The logic that drives Tasks is defined in Python scripts. These scripts must inh
 
 **usages** Gets or sets the task usages definitions as a list of strings.
 
+These methods are called from the simulation on the Task script instance:
+
+**setup()** Called when the task is first created.
+
+**tick()** Called at tick_interval.
+
+**completed()** Called after the task has been completed.
+

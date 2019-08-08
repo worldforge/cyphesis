@@ -58,11 +58,11 @@ int TasksProperty::get(Atlas::Message::Element& val) const
             taskMap.emplace("rate", 1.0f / *task->m_duration);
         }
         if (!task->usages().empty()) {
-            MapType usagesMap;
+            ListType usagesList;
             for (auto& usage : task->usages()) {
-                usagesMap.emplace(usage.name, Atlas::Message::MapType());
+                usagesList.emplace_back(Atlas::Message::MapType{{"name", usage.name}});
             }
-            taskMap.emplace("usages", std::move(usagesMap));
+            taskMap.emplace("usages", std::move(usagesList));
         }
         tasks.emplace(entry.first, std::move(taskMap));
     }

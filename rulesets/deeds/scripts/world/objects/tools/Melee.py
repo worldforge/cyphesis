@@ -5,6 +5,7 @@ from atlas import Operation, Entity
 
 import server
 from world.utils import Usage
+from world.StoppableTask import StoppableTask
 
 
 def strike(instance):
@@ -24,6 +25,13 @@ def strike(instance):
     # Melee weapons only handles one target
     target = instance.get_arg("targets", 0)
     if target:
+        cooldown_prop = instance.tool.props.cooldown
+        if cooldown_prop:
+            task = Melee(instance, tick_interval=cooldown_prop, name="Melee")
+            task_op = instance.actor.start_task('melee', task)
+        else:
+            task_op = None
+
         # Ignore pos
         if instance.actor.can_reach(target, extra_reach):
             damage = 0
@@ -31,8 +39,36 @@ def strike(instance):
                 damage = instance.tool.props.damage
             print(instance.actor.id)
             hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
-            return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
+            return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op), task_op
         else:
-            return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")
+            return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"), task_op
     else:
+        return server.OPERATION_BLOCKED
+
+
+class Melee(StoppableTask):
+
+    def tick(self):
+
+        (valid, err) = self.usage.is_valid()
+        if not valid:
+            return self.irrelevant(err)
+
+        self.usage.actor.send_world(Operation("sight", self.usage.op))
+
+        target = self.usage.get_arg("targets", 0)
+        if target:
+            # Take a swing
+            extra_reach = 0.0
+            if self.usage.tool.props.reach:
+                extra_reach = self.usage.tool.props.reach
+
+            if self.usage.actor.can_reach(target, extra_reach):
+                damage = 0
+                if self.usage.tool.props.damage:
+                    damage = self.usage.tool.props.damage
+                hit_op = Operation('hit', Entity(damage=damage, hit_type=self.usage.op.parent), to=target.entity, id=self.usage.actor.id)
+                return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
+            else:
+                return server.OPERATION_BLOCKED, self.usage.actor.client_error(self.usage.op, "Too far away")
         return server.OPERATION_BLOCKED

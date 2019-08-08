@@ -20,7 +20,7 @@
                 <float name="default">2</float>
             </map>
             <map name="cooldown">
-                <float name="default">0.3</float>
+                <float name="default">1.5</float>
             </map>
             <map name="usages">
                 <map name="default">

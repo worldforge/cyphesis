@@ -4,6 +4,7 @@
 from atlas import Operation, Entity
 
 import server
+from world.StoppableTask import StoppableTask
 
 
 def strike(instance):
@@ -21,14 +22,48 @@ def strike(instance):
     target = instance.get_arg("targets", 0)
     # Ignore pos
     if target:
+        if cooldown:
+            task = Fight(instance, tick_interval=cooldown, name="Fight")
+            task_op = instance.actor.start_task('melee', task)
+        else:
+            task_op = None
+
         if instance.actor.can_reach(target):
             damage = 0
             damage_attr = getattr(instance.actor.props, "damage_" + instance.op.parent)
             if damage_attr:
                 damage = damage_attr
             hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
-            return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
+            return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op), task_op
         else:
-            return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")
+            return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"), task_op
     else:
         return server.OPERATION_BLOCKED
+
+
+class Fight(StoppableTask):
+
+    def tick(self):
+
+        (valid, err) = self.usage.is_valid()
+        if not valid:
+            return self.irrelevant(err)
+
+        self.usage.actor.send_world(Operation("sight", self.usage.op))
+
+        target = self.usage.get_arg("targets", 0)
+        instance = self.usage
+
+        # Ignore pos
+        if target:
+            if instance.actor.can_reach(target):
+                damage = 0
+                damage_attr = getattr(instance.actor.props, "damage_" + instance.op.parent)
+                if damage_attr:
+                    damage = damage_attr
+                hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
+                return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
+            else:
+                return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")
+        else:
+            return server.OPERATION_BLOCKED

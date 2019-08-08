@@ -61,7 +61,7 @@
                 <float name="default">1</float>
             </map>
             <map name="cooldown_punch">
-                <float name="default">1</float>
+                <float name="default">1.5</float>
             </map>
             <map name="_usages">
                 <map name="default">
