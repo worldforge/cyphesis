@@ -1301,8 +1301,12 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                 //When changing shape dimensions we must first remove the object, do the change, and then add it back again.
 
                 //Note that we can't just call setLocalScaling since it doesn't seem to work well with mesh shapes.
-                m_dynamicsWorld->removeCollisionObject(bulletEntry->collisionObject);
-
+                auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
+                if (rigidBody) {
+                    m_dynamicsWorld->removeRigidBody(rigidBody);
+                } else {
+                    m_dynamicsWorld->removeCollisionObject(bulletEntry->collisionObject);
+                }
                 float mass = getMassForEntity(*bulletEntry->entity);
 
                 bulletEntry->collisionShape = createCollisionShapeForEntry(bulletEntry->entity, bbox, mass, bulletEntry->centerOfMassOffset);
@@ -1313,11 +1317,16 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                 short collisionGroup;
                 getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
 
-                m_dynamicsWorld->addCollisionObject(bulletEntry->collisionObject, collisionGroup, collisionMask);
+                if (rigidBody) {
+                    m_dynamicsWorld->addRigidBody(rigidBody);
+                } else {
+                    m_dynamicsWorld->addCollisionObject(bulletEntry->collisionObject, collisionGroup, collisionMask);
+                }
 
                 applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.pos());
 
                 m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject);
+
             }
         }
     } else if (name == "planted_offset" || name == "planted_scaled_offset") {
