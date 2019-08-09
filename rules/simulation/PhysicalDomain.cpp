@@ -1318,7 +1318,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                 getCollisionFlagsForEntity(*bulletEntry->entity, collisionGroup, collisionMask);
 
                 if (rigidBody) {
-                    m_dynamicsWorld->addRigidBody(rigidBody);
+                    m_dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
                 } else {
                     m_dynamicsWorld->addCollisionObject(bulletEntry->collisionObject, collisionGroup, collisionMask);
                 }

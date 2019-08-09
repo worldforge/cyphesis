@@ -268,8 +268,7 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
 
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 1.0f, 0.1f);
 
-    domain->removeEntity(*freeEntity);
-
+    //Make the bbox larger and test that it adjust itself against the terrain.
     bBoxProperty->data() = {{-1, 0, -1},
                             {1,  2, 1}};
     bBoxProperty->apply(plantedEntity);
@@ -283,6 +282,8 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
 
     ASSERT_TRUE(callback.hasHit());
     ASSERT_FUZZY_EQUAL(2.0f, callback.m_hitPointWorld.y(), 0.1f);
+
+    domain->removeEntity(*freeEntity);
 
     //Test again with the falling box
     freeEntity->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
