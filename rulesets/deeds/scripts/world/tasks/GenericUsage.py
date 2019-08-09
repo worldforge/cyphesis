@@ -1,0 +1,32 @@
+# This file is distributed under the terms of the GNU General Public license.
+# Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
+
+from atlas import Operation, Entity
+
+from world.StoppableTask import StoppableTask
+from world.utils import Usage
+
+import server
+
+
+def use(instance):
+    usage_name = instance.op.parent
+
+    task = GenericUsage(instance, duration=5, tick_interval=1, name=usage_name.capitalize())
+
+    instance.actor.send_world(Operation("sight", instance.op))
+
+    return server.OPERATION_BLOCKED, instance.actor.start_task(usage_name, task)
+
+
+class GenericUsage(StoppableTask):
+    """ A generic usage class, for simple usages where we want to wait until sending the op to the target. """
+
+    def tick(self):
+        (valid, err) = self.usage.is_valid()
+        if not valid:
+            return self.irrelevant(err)
+
+    def completed(self):
+        # Send the op to the entity
+        return Operation(self.op.parent, to=self.tool, id=self.actor.id)

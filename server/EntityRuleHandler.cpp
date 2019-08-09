@@ -22,8 +22,6 @@
 #include "EntityFactory.h"
 #include "Player.h"
 
-#include "rules/python/PythonScriptFactory.h"
-
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"

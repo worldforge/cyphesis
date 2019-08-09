@@ -26,11 +26,6 @@ class FruitPlant(server.Thing):
 
         res.append(Operation("create", Entity(parent=parent, location=newloc), to=self))
 
-    def touch_operation(self, op):
-        res = Oplist()
-        self.handle_drop_fruit(res)
-        return server.OPERATION_BLOCKED, res
-
     def tick_operation(self, op):
         res = Oplist()
         if verify_tick(self, op, res, self.tick_interval, self.jitter):
@@ -66,3 +61,14 @@ class FruitPlant(server.Thing):
                             if random.uniform(0, 100) < self.props.fruit_chance:
                                 # TODO: use 'modify' op
                                 res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)
+
+    def harvest_operation(self, op):
+        print('harvest')
+        res = Oplist()
+        if self.props.fruits and self.props.fruits > 0 and self.props.fruit_name:
+            res.append(Operation("create", Entity(parent=self.props.fruit_name, loc=op.id), to=self))
+            res.append(Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self))
+            res.append(Operation("imaginary", Entity(description="You harvest an acorn from the oak."), to=op.id, from_=op.id))
+        else:
+            res.append(Operation("imaginary", Entity(description="There aren't any acorns in this oak."), to=op.id, from_=op.id))
+        return server.OPERATION_BLOCKED, res

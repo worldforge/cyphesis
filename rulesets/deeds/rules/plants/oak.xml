@@ -80,6 +80,16 @@
             <map name="present">
                 <string name="default">dural/plants/trees/oak/oak_straight.modeldef</string>
             </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="harvest">
+                        <string name="name">Harvest</string>
+                        <string name="handler">world.tasks.GenericUsage.use</string>
+                        <string name="constraint">actor can_reach tool</string>
+                        <string name="description">Harvest acorns.</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">oak</string>
         <string name="objtype">class</string>
