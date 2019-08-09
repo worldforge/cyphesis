@@ -1,5 +1,3 @@
-#include <utility>
-
 // Cyphesis Online RPG Server and AI Engine
 // Copyright (C) 2004-2005 Alistair Riddoch
 //

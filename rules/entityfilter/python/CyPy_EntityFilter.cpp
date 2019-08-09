@@ -1,5 +1,3 @@
-#include <utility>
-
 /*
  Copyright (C) 2018 Erik Ogenvik
 

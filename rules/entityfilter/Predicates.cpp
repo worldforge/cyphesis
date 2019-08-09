@@ -1,5 +1,3 @@
-#include <utility>
-
 #include "Predicates.h"
 
 #include "common/TypeNode.h"

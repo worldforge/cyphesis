@@ -30,8 +30,6 @@
 #include <memory>
 #include <tuple>
 #include <type_traits>
-#include <utility>
-
 #include "sqlite3pp.h"
 
 namespace sqlite3pp

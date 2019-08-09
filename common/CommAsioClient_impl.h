@@ -40,8 +40,6 @@
 
 #include <sstream>
 #include <iostream>
-#include <utility>
-
 static const bool comm_asio_client_debug_flag = false;
 
 
