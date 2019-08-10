@@ -122,25 +122,26 @@ void AdminMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
 
 void AdminMind::GetOperation(const Operation& op, OpVector& res)
 {
-    if (!op->getArgs().empty()) {
-        auto arg = op->getArgs().front();
-
+    std::vector<Atlas::Objects::Root> rules;
+    for (auto& arg: op->getArgs()) {
         if (!arg->isDefaultId()) {
             auto id = arg->getId();
 
-            const Root& o = Inheritance::instance().getClass(id, Visibility::PRIVATE);
+            auto& o = Inheritance::instance().getClass(id, Visibility::PRIVATE);
             if (!o.isValid()) {
                 clientError(op, String::compose("Unknown type definition for \"%1\" "
                                                 "requested", id), res);
-                return;
+                continue;
             }
-            Atlas::Objects::Operation::Info info;
-            info->setArgs1(o);
-            if (!op->isDefaultSerialno()) {
-                info->setRefno(op->getSerialno());
-            }
-
-            res.push_back(info);
+            rules.emplace_back(o);
         }
     }
+    Atlas::Objects::Operation::Info info;
+    info->setArgs(std::move(rules));
+    if (!op->isDefaultSerialno()) {
+        info->setRefno(op->getSerialno());
+    }
+
+    res.push_back(info);
+
 }

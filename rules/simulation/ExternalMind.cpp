@@ -260,9 +260,8 @@ void ExternalMind::linkUp(Link* c)
 
 void ExternalMind::GetOperation(const Operation& op, OpVector& res)
 {
-    if (!op->getArgs().empty()) {
-        auto arg = op->getArgs().front();
-
+    std::vector<Atlas::Objects::Root> rules;
+    for (auto& arg: op->getArgs()) {
         if (!arg->isDefaultId()) {
             auto id = arg->getId();
             auto visibility = Visibility::PUBLIC;
@@ -271,19 +270,21 @@ void ExternalMind::GetOperation(const Operation& op, OpVector& res)
                 visibility = Visibility::PROTECTED;
             }
 
-            const Root& o = Inheritance::instance().getClass(id, visibility);
+            auto& o = Inheritance::instance().getClass(id, visibility);
             if (!o.isValid()) {
                 clientError(op, String::compose("Unknown type definition for \"%1\" "
                                                 "requested", id), res);
-                return;
+                continue;
             }
-            Atlas::Objects::Operation::Info info;
-            info->setArgs1(o);
-            if (!op->isDefaultSerialno()) {
-                info->setRefno(op->getSerialno());
-            }
-
-            res.push_back(info);
+            rules.emplace_back(o);
         }
     }
+    Atlas::Objects::Operation::Info info;
+    info->setArgs(std::move(rules));
+    if (!op->isDefaultSerialno()) {
+        info->setRefno(op->getSerialno());
+    }
+
+    res.push_back(info);
+
 }
