@@ -6,8 +6,7 @@ Cyphesis is the server for the [WorldForge](http://worldforge.org/ "The main Wor
 
 ## Installation
 
-If you intend to build this as a prerequisite for the Ember client or the Cyphesis server we strongly suggest that you 
-use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Ember.
+The easiest way to build the server is to use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool to compile Ember.
 This is script provided by the Worldforge project which will download and install all of the required libraries and 
 components used by Worldforge.
 
@@ -31,6 +30,10 @@ The test suite can be built and run using the ```check``` target. For example:
 ```
 make check
 ```
+
+### Documentation
+
+Documentation describing how the system works can be found [here](dox/index.md).
 
 ### API documentation
 
