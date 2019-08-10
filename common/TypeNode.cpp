@@ -27,20 +27,21 @@
 #include <boost/algorithm/string.hpp>
 
 #include <set>
+#include <utility>
 
 static const bool debug_flag = false;
 
 using Atlas::Message::MapType;
 
-TypeNode::TypeNode(const std::string& name)
-    : m_name(name),
+TypeNode::TypeNode(std::string name)
+    : m_name(std::move(name)),
       m_parent(nullptr)
 {
 }
 
-TypeNode::TypeNode(const std::string& name,
+TypeNode::TypeNode(std::string name,
                    const Atlas::Objects::Root& d)
-    : m_name(name),
+    : m_name(std::move(name)),
       m_parent(nullptr)
 {
     setDescription(d);
@@ -171,7 +172,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     for (auto& entry : m_defaults) {
         //Don't remove ephemeral attributes.
         if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(per_ephem)) {
-            debug(std::cout << entry.first << " removed" << std::endl;);
+            debug(std::cout << entry.first << " removed" << std::endl;)
             propertiesUpdate.removedProps.insert(entry.first);
         }
     }

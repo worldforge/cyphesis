@@ -21,6 +21,22 @@
 
 #include "common/EntityKit.h"
 
+enum class ClassAttributeType {
+    DEFAULT,
+    APPEND,
+    PREPEND,
+    SUBTRACT
+};
+
+struct ClassAttribute {
+    Atlas::Message::Element defaultValue;
+    Atlas::Message::Element append;
+    Atlas::Message::Element prepend;
+    Atlas::Message::Element subtract;
+
+    void combine(Atlas::Message::Element& existing) const;
+};
+
 class EntityFactoryBase : public EntityKit {
     protected:
 
@@ -30,7 +46,7 @@ class EntityFactoryBase : public EntityKit {
     public:
 
       /// Default attribute values for this class
-      Atlas::Message::MapType m_classAttributes;
+      std::map<std::string, ClassAttribute> m_classAttributes;
       /// Default attribute values for instances of this class, including
       /// defaults inherited from parent classes.
       Atlas::Message::MapType m_attributes;

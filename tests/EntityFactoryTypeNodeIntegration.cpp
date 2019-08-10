@@ -46,7 +46,7 @@ int main()
     assert(ek->m_type->defaults().empty());
 
     ek->m_attributes["test1"] = Atlas::Message::StringType("foo");
-    ek->m_classAttributes["test1"] = Atlas::Message::StringType("foo");
+    ek->m_classAttributes["test1"] = {Atlas::Message::StringType("foo")};
 
     assert(ek->m_type->defaults().empty());
 
@@ -63,7 +63,7 @@ int main()
     assert(subclass_ek->m_type->defaults().empty());
 
     subclass_ek->m_attributes["test2"] = Atlas::Message::StringType("bar");
-    subclass_ek->m_classAttributes["test2"] = Atlas::Message::StringType("bar");
+    subclass_ek->m_classAttributes["test2"] = {Atlas::Message::StringType("bar")};
 
     assert(subclass_ek->m_type->defaults().empty());
 
@@ -77,7 +77,7 @@ int main()
     assert(subclass_ek->m_type->defaults().size() == 2);
 
     subclass_ek->m_attributes["test1"] = Atlas::Message::StringType("bar");
-    subclass_ek->m_classAttributes["test1"] = Atlas::Message::StringType("bar");
+    subclass_ek->m_classAttributes["test1"] = {Atlas::Message::StringType("bar")};
 
     ek->updateProperties(changes);
 
@@ -92,24 +92,7 @@ int main()
 #include "rules/python/PythonScriptFactory.h"
 
 #include "rules/simulation/Stackable.h"
-
-Stackable::Stackable(const std::string & id, long intId) :
-           Thing(id, intId), m_num(1)
-{
-    // m_properties["num"] = new Property<int>(m_num, 0);
-}
-
-Stackable::~Stackable()
-{
-}
-
-void Stackable::CombineOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Stackable::DivideOperation(const Operation & op, OpVector & res)
-{
-}
+#include "stubs/rules/simulation/stubStackable.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/rules/simulation/stubThing.h"

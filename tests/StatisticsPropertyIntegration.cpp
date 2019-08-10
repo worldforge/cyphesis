@@ -153,7 +153,7 @@ int main()
 #include "stubs/common/stubMonitors.h"
 
 #define STUB_TypeNode_TypeNode
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+TypeNode::TypeNode(std::string name) : m_name(name), m_parent(0)
 {
 }
 

@@ -139,7 +139,7 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
 #include "stubs/common/stubRouter.h"
 
 #define STUB_TypeNode_TypeNode
-TypeNode::TypeNode(const std::string & name) : m_name(name), m_parent(0)
+TypeNode::TypeNode(std::string name) : m_name(name), m_parent(0)
 {
 }
 

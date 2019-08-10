@@ -7,6 +7,15 @@
 #include "server/EntityFactory.h"
 #include "stubEntityFactory_custom.h"
 
+#ifndef STUB_ClassAttribute_combine
+//#define STUB_ClassAttribute_combine
+  void ClassAttribute::combine(Atlas::Message::Element& existing) const
+  {
+    
+  }
+#endif //STUB_ClassAttribute_combine
+
+
 #ifndef STUB_EntityFactoryBase_initializeEntity
 //#define STUB_EntityFactoryBase_initializeEntity
   void EntityFactoryBase::initializeEntity(LocatedEntity& thing, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)

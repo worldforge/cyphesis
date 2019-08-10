@@ -62,9 +62,9 @@ class TypeNode
         };
 
 
-        explicit TypeNode(const std::string&);
+        explicit TypeNode(std::string name);
 
-        TypeNode(const std::string&, const Atlas::Objects::Root&);
+        TypeNode(std::string name, const Atlas::Objects::Root& description);
 
         ~TypeNode();
 

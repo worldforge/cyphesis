@@ -374,7 +374,7 @@ int main()
 #include "stubs/common/stubcustom.h"
 
 #define STUB_TypeNode_TypeNode
-TypeNode::TypeNode(const std::string & name,
+TypeNode::TypeNode(std::string name,
                    const Atlas::Objects::Root & d) : m_name(name),
                                                      m_privateDescription(d),
                                                      m_protectedDescription(d),

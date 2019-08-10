@@ -116,7 +116,7 @@ Inheritance::~Inheritance()
 
 void Inheritance::flush()
 {
-    for (auto entry : atlasObjects) {
+    for (const auto& entry : atlasObjects) {
         delete entry.second;
     }
     atlasObjects.clear();

@@ -1,15 +1,17 @@
+#include <utility>
+
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 
 #ifndef STUB_TypeNode_TypeNode
 #define STUB_TypeNode_TypeNode
-   TypeNode::TypeNode(const std::string& name)
-    : m_name(name), m_parent(nullptr)
+   TypeNode::TypeNode(std::string name)
+    : m_name(std::move(name)), m_parent(nullptr)
   {
 
   }
 
-   TypeNode::TypeNode(const std::string& name, const Atlas::Objects::Root& obj)
-       : m_name(name),
+   TypeNode::TypeNode(std::string name, const Atlas::Objects::Root& obj)
+       : m_name(std::move(name)),
        m_privateDescription(obj),
        m_protectedDescription(obj),
        m_publicDescription(obj),

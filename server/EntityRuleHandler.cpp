@@ -25,7 +25,6 @@
 #include "common/log.h"
 #include "common/debug.h"
 #include "common/compose.hpp"
-#include "common/Inheritance.h"
 
 #include <iostream>
 
@@ -189,8 +188,8 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
     }
     assert(factory != nullptr);
     
-    MapType backup_attributes = factory->m_attributes,
-            backup_class_attributes = factory->m_classAttributes;
+    MapType backup_attributes = factory->m_attributes;
+    auto backup_class_attributes = factory->m_classAttributes;
 
     // Copy the defaults from the parent. In populateEntityFactory this may be
     // overridden with the defaults for this class.
@@ -205,7 +204,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
                            class_name));
         factory->m_attributes = MapType();
     }
-    factory->m_classAttributes = MapType();
+    factory->m_classAttributes.clear();
 
     std::string dependent, reason;
     if (populateEntityFactory(class_name, factory,
@@ -242,15 +241,35 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
                 continue;
             }
             const MapType & attr = K->second.asMap();
-            Atlas::Message::Element defaultValue;
+            ClassAttribute classAttribute;
             auto L = attr.find("default");
             if (L != attr.end()) {
-                defaultValue = L->second;
+                classAttribute.defaultValue = L->second;
+            }
+            L = attr.find("append");
+            if (L != attr.end()) {
+                classAttribute.append = L->second;
+            }
+            L = attr.find("prepend");
+            if (L != attr.end()) {
+                classAttribute.prepend = L->second;
+            }
+            L = attr.find("subtract");
+            if (L != attr.end()) {
+                classAttribute.subtract = L->second;
+            }
+
+            // and merge it with the defaults inherited from the parent
+            auto existingI = factory->m_attributes.find(K->first);
+            if (existingI != factory->m_attributes.end()) {
+                classAttribute.combine(existingI->second);
+            } else {
+                Atlas::Message::Element value;
+                classAttribute.combine(value);
+                factory->m_attributes.emplace(K->first, std::move(value));
             }
             // Store this value in the defaults for this class
-            factory->m_classAttributes[K->first] = defaultValue;
-            // and merge it with the defaults inherited from the parent
-            factory->m_attributes[K->first] = defaultValue;
+            factory->m_classAttributes[K->first] = std::move(classAttribute);
         }
     }
 

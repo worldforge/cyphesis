@@ -9,7 +9,7 @@
 
 #ifndef STUB_TypeNode_TypeNode
 //#define STUB_TypeNode_TypeNode
-   TypeNode::TypeNode(const std::string&)
+   TypeNode::TypeNode(std::string name)
     : m_parent(nullptr)
   {
     
@@ -18,7 +18,7 @@
 
 #ifndef STUB_TypeNode_TypeNode
 //#define STUB_TypeNode_TypeNode
-   TypeNode::TypeNode(const std::string&, const Atlas::Objects::Root&)
+   TypeNode::TypeNode(std::string name, const Atlas::Objects::Root& description)
     : m_parent(nullptr)
   {
     
