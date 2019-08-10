@@ -24,8 +24,6 @@
 #include "compose.hpp"
 #include "log.h"
 
-#include <boost/algorithm/string.hpp>
-
 #include <set>
 #include <utility>
 
@@ -63,72 +61,50 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
     // Regular clients (protected and public) don't need to see children.
     // We want to allow for some mystery about the different kinds of entities in the world.
     m_protectedDescription->removeAttr("children");
+    m_protectedDescription->removeAttr("attributes");
     m_publicDescription = description.copy();
     m_publicDescription->removeAttr("children");
+    m_publicDescription->removeAttr("attributes");
     m_privateDescription->setAttr("access", "private");
     m_protectedDescription->setAttr("access", "protected");
     m_publicDescription->setAttr("access", "public");
 
-    Atlas::Message::Element attributesElement;
-    if (description->copyAttr("attributes", attributesElement) == 0 && attributesElement.isMap()) {
-        auto& attributes = attributesElement.Map();
-
-        auto protected_attributes = attributes;
-        auto public_attributes = attributes;
-        bool had_private_attributes = false;
-        bool had_protected_attributes = false;
-
-        for (auto& entry : attributes) {
-            if (boost::starts_with(entry.first, "__")) {
-                protected_attributes.erase(entry.first);
-                public_attributes.erase(entry.first);
-                had_private_attributes = true;
-            } else if (boost::starts_with(entry.first, "_")) {
-                public_attributes.erase(entry.first);
-                had_protected_attributes = true;
-            }
-        }
-
-        if (had_private_attributes) {
-            m_protectedDescription->setAttr("attributes", protected_attributes);
-            m_publicDescription->setAttr("attributes", public_attributes);
-        } else if (had_protected_attributes) {
-            m_publicDescription->setAttr("attributes", public_attributes);
-        }
-    }
 }
 
-void TypeNode::injectProperty(const std::string& name,
+TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                               PropertyBase* p)
 {
+    TypeNode::PropertiesUpdate update;
     auto existingI = m_defaults.find(name);
     if (existingI != m_defaults.end() && existingI->second != p) {
         delete existingI->second;
         m_defaults.erase(existingI);
+        update.changedProps.insert(name);
     } else {
         m_defaults.emplace(name, p);
+        update.newProps.insert(name);
     }
 
     auto add_attribute_fn = [&](Atlas::Objects::Root& description) {
-        Atlas::Message::Element attributesElement = Atlas::Message::MapType();
-        if (description->hasAttr("attributes")) {
-            attributesElement = description->getAttr("attributes");
+        Atlas::Message::Element propertiesElement = Atlas::Message::MapType();
+        if (description->hasAttr("properties")) {
+            propertiesElement = description->getAttr("properties");
         }
         Atlas::Message::Element propertyElement;
         p->get(propertyElement);
-        attributesElement.Map()[name] = Atlas::Message::MapType{
-            {"default", propertyElement}
-        };
-        description->setAttr("attributes", attributesElement);
+        propertiesElement.Map()[name] =  propertyElement;
+        description->setAttr("properties", std::move(propertiesElement));
     };
 
     add_attribute_fn(m_privateDescription);
-    if (!boost::starts_with(name, "__")) {
+    if (!p->hasFlags(vis_private)) {
         add_attribute_fn(m_protectedDescription);
     }
-    if (!boost::starts_with(name, "_")) {
+    if (!p->hasFlags(vis_non_public)) {
         add_attribute_fn(m_publicDescription);
     }
+
+    return update;
 
 }
 
@@ -150,26 +126,10 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
 
     PropertiesUpdate propertiesUpdate;
 
-    auto extractAttributesFn = [&](const  Atlas::Objects::Root& description, Atlas::Message::MapType& attributesMap){
-        if (description->hasAttr("attributes")) {
-            auto elem = description->getAttr("attributes");
-            if (elem.isMap()) {
-                attributesMap = std::move(elem.Map());
-            } else {
-                log(WARNING, String::compose("TypeNode '%1' had an 'attribute' element which wasn't a map.", m_name));
-            }
-        }
-    };
-
     //Update the description
     Atlas::Message::MapType attributesMapPrivate;
-    extractAttributesFn(m_privateDescription, attributesMapPrivate);
-
     Atlas::Message::MapType attributesMapProtected;
-    extractAttributesFn(m_protectedDescription, attributesMapProtected);
-
     Atlas::Message::MapType attributesMapPublic;
-    extractAttributesFn(m_publicDescription, attributesMapPublic);
 
     // Discover the default attributes which are no longer
     // present after the update.
@@ -205,16 +165,12 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             propertiesUpdate.newProps.emplace(entry.first);
             p->set(entry.second);
 
-            Atlas::Message::MapType map_entry{
-                {"default", entry.second}
-            };
-
-            attributesMapPrivate[entry.first] = map_entry;
-            if (!boost::starts_with(entry.first, "__")) {
-                attributesMapProtected[entry.first] = map_entry;
+            attributesMapPrivate[entry.first] = entry.second;
+            if (!p->hasFlags(vis_private)) {
+                attributesMapProtected[entry.first] = entry.second;
             }
-            if (!boost::starts_with(entry.first, "_")) {
-                attributesMapPublic[entry.first] = map_entry;
+            if (!p->hasFlags(vis_non_public)) {
+                attributesMapPublic[entry.first] = entry.second;
             }
         } else {
             Atlas::Message::Element oldVal;
@@ -223,24 +179,20 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             if (oldVal != entry.second) {
                 p->set(entry.second);
                 propertiesUpdate.changedProps.emplace(entry.first);
-                Atlas::Message::MapType map_entry{
-                    {"default", entry.second}
-                };
-
-                attributesMapPrivate[entry.first] = map_entry;
-                if (!boost::starts_with(entry.first, "__")) {
-                    attributesMapProtected[entry.first] = map_entry;
-                }
-                if (!boost::starts_with(entry.first, "_")) {
-                    attributesMapPublic[entry.first] = map_entry;
-                }
+            }
+            attributesMapPrivate[entry.first] = entry.second;
+            if (!p->hasFlags(vis_private)) {
+                attributesMapProtected[entry.first] = entry.second;
+            }
+            if (!p->hasFlags(vis_non_public)) {
+                attributesMapPublic[entry.first] = entry.second;
             }
         }
     }
 
-    m_privateDescription->setAttr("attributes", attributesMapPrivate);
-    m_protectedDescription->setAttr("attributes", attributesMapProtected);
-    m_publicDescription->setAttr("attributes", attributesMapPublic);
+    m_privateDescription->setAttr("properties", std::move(attributesMapPrivate));
+    m_protectedDescription->setAttr("properties", std::move(attributesMapProtected));
+    m_publicDescription->setAttr("properties", std::move(attributesMapPublic));
 
     return propertiesUpdate;
 }
@@ -294,4 +246,5 @@ const Atlas::Objects::Root& TypeNode::description(Visibility visibility) const
             return m_publicDescription;
     }
 }
+
 

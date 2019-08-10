@@ -18,7 +18,7 @@
 
 #ifndef STUB_EntityFactoryBase_initializeEntity
 //#define STUB_EntityFactoryBase_initializeEntity
-  void EntityFactoryBase::initializeEntity(LocatedEntity& thing, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+  void EntityFactoryBase::initializeEntity(LocatedEntity& thing, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
   {
     
   }
@@ -70,7 +70,7 @@
 #ifndef STUB_EntityFactory_EntityFactory
 //#define STUB_EntityFactory_EntityFactory
   template <typename T>
-   EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+   EntityFactory<T>::EntityFactory(EntityFactory<T>& o)
     : EntityFactoryBase(o)
   {
     
@@ -99,7 +99,7 @@
 #ifndef STUB_EntityFactory_newEntity
 //#define STUB_EntityFactory_newEntity
   template <typename T>
-  Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+  Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

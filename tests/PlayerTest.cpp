@@ -250,7 +250,7 @@ int main()
 #include "stubs/common/stubLink.h"
 
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility) const
 {
     return noClass;
 }

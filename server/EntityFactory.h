@@ -21,70 +21,110 @@
 
 #include "common/EntityKit.h"
 
-enum class ClassAttributeType {
-    DEFAULT,
-    APPEND,
-    PREPEND,
-    SUBTRACT
+enum class ClassAttributeType
+{
+        DEFAULT,
+        APPEND,
+        PREPEND,
+        SUBTRACT
 };
 
-struct ClassAttribute {
+
+/**
+ * An attribute of a class.
+ */
+struct ClassAttribute
+{
+    /**
+     * A default value will be directly applied.
+     */
     Atlas::Message::Element defaultValue;
+
+    /**
+     * This value will be appended.
+     * For numerical values it will result in an addition.
+     * For strings it will result in the value being added to the end of the existing string.
+     * For maps it will result in the values being inserted.
+     * For lists it will result in the values being added to the back of the list.
+     */
     Atlas::Message::Element append;
+
+    /**
+     * This value will be prepended.
+     * For numerical values it will result in an addition.
+     * For strings it will result in the value being added to the start of the existing string.
+     * For maps it will result in the values being inserted.
+     * For lists it will result in the values being added to the start of the list.
+     */
     Atlas::Message::Element prepend;
+
+    /**
+     * This value will be subtracted.
+     * For numerical values it will result in a subtraction.
+     * For strings nothing will happen, since it's not obvious how one subtracts one string from another.
+     * For maps it will result in the keys being removed (any values are ignored).
+     * For lists it will result in the values being removed to the start of the list.
+     */
     Atlas::Message::Element subtract;
 
+    /**
+     * Apply the values on an existing element.
+     * @param existing An existing element, which will be altered.
+     */
     void combine(Atlas::Message::Element& existing) const;
 };
 
-class EntityFactoryBase : public EntityKit {
+class EntityFactoryBase : public EntityKit
+{
     protected:
 
-      void initializeEntity(LocatedEntity& thing,
-              const Atlas::Objects::Entity::RootEntity & attributes,
-              LocatedEntity* location);
+        void initializeEntity(LocatedEntity& thing,
+                              const Atlas::Objects::Entity::RootEntity& attributes,
+                              LocatedEntity* location);
+
     public:
 
-      /// Default attribute values for this class
-      std::map<std::string, ClassAttribute> m_classAttributes;
-      /// Default attribute values for instances of this class, including
-      /// defaults inherited from parent classes.
-      Atlas::Message::MapType m_attributes;
-      /// Factory for class from which the class handled by this factory
-      /// inherits.
-      EntityFactoryBase * m_parent;
-      /// Set of factories for classes which inherit from the class handled
-      /// by this factory.
-      std::set<EntityFactoryBase *> m_children;
+        /// Default attribute values for this class
+        std::map<std::string, ClassAttribute> m_classAttributes;
+        /// Default attribute values for instances of this class, including
+        /// defaults inherited from parent classes.
+        Atlas::Message::MapType m_attributes;
+        /// Factory for class from which the class handled by this factory
+        /// inherits.
+        EntityFactoryBase* m_parent;
+        /// Set of factories for classes which inherit from the class handled
+        /// by this factory.
+        std::set<EntityFactoryBase*> m_children;
 
-      EntityFactoryBase();
+        EntityFactoryBase();
 
-      ~EntityFactoryBase() override;
+        ~EntityFactoryBase() override;
 
-      virtual EntityFactoryBase * duplicateFactory() = 0;
+        virtual EntityFactoryBase* duplicateFactory() = 0;
 
-      void addProperties() override;
+        void addProperties() override;
 
-      void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+        void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
 };
 
 /// \brief Concrete factory template for creating in-game entity objects.
-template <class T>
-class EntityFactory : public EntityFactoryBase {
-  protected:
-    EntityFactory(EntityFactory<T> & o);
+template<class T>
+class EntityFactory : public EntityFactoryBase
+{
+    protected:
+        EntityFactory(EntityFactory<T>& o);
 
-  public:
+    public:
 
-    EntityFactory();
+        EntityFactory();
 
-    ~EntityFactory() override;
+        ~EntityFactory() override;
 
-    Ref<LocatedEntity> newEntity(const std::string & id, long intId,
-                const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location) override;
+        Ref<LocatedEntity> newEntity(const std::string& id, long intId,
+                                     const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location) override;
 
-    EntityFactoryBase * duplicateFactory() override;
+        EntityFactoryBase* duplicateFactory() override;
 
 };
 

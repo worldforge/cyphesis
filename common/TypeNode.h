@@ -32,6 +32,8 @@ class PropertyBase;
 
 typedef std::map<std::string, PropertyBase*> PropertyDict;
 
+
+
 /// \brief Entry in the type hierarchy for in-game entity classes.
 class TypeNode
 {
@@ -45,9 +47,16 @@ class TypeNode
 
         /// \brief type description, complete
         Atlas::Objects::Root m_privateDescription;
-        /// \brief type description, with private fields (i.e. starting with "__") removed
+        /**
+         * \brief type description, with private fields (i.e. starting with "__") removed.
+         * Also "children" and "attributes" have been removed.
+         */
         Atlas::Objects::Root m_protectedDescription;
-        /// \brief type description, with protected fields (i.e. starting with "_") removed
+        /**
+         * \brief type description, with private fields (i.e. starting with "__") and
+         * protected fields (i.e. starting with "_") removed.
+         * Also "children" and "attributes" have been removed.
+         */
         Atlas::Objects::Root m_publicDescription;
 
         /// \brief parent node
@@ -69,7 +78,7 @@ class TypeNode
         ~TypeNode();
 
         /// \brief injects a new property and updated the m_description
-        void injectProperty(const std::string&, PropertyBase*);
+        TypeNode::PropertiesUpdate injectProperty(const std::string&, PropertyBase*);
 
         /// \brief add the class properties for this type from Atlas attributes
         void addProperties(const Atlas::Message::MapType& attributes);

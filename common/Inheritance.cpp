@@ -122,7 +122,7 @@ void Inheritance::flush()
     atlasObjects.clear();
 }
 
-const Root & Inheritance::getClass(const std::string & parent, Visibility visibility)
+const Root & Inheritance::getClass(const std::string & parent, Visibility visibility) const
 {
     auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {

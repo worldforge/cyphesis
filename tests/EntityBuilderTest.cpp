@@ -501,10 +501,11 @@ void installStandardObjects(TypeStore& i)
 
 
 #define STUB_TypeNode_injectProperty
-void TypeNode::injectProperty(const std::string& name,
-                              PropertyBase* p)
+TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
+                                                    PropertyBase* p)
 {
     m_defaults[name] = p;
+    return {};
 }
 #include "stubs/common/stubTypeNode.h"
 

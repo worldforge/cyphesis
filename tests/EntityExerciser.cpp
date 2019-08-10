@@ -285,8 +285,9 @@ void EntityExerciser::flushOperations(OpVector & ops)
 
 // stubs
 
-void TypeNode::injectProperty(const std::string& name,
+TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                               PropertyBase* p)
 {
     m_defaults[name] = p;
+    return {};
 }

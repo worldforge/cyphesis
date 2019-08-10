@@ -1469,7 +1469,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 }
 
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility v)
+const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility v) const
 {
     auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {

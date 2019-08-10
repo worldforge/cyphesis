@@ -478,6 +478,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
             bBoxProperty->data() = m_meshBounds;
             //Mark the property as ephemeral since it's calculated.
             bBoxProperty->addFlags(flag_class | per_ephem);
+            bBoxProperty->flags().addFlags(PropertyBase::flagsForPropertyName(BBoxProperty::property_name));
             bBoxProperty->install(typeNode, BBoxProperty::property_name);
         } else if (I->second->flags().hasFlags(per_ephem)) {
             bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);
@@ -489,9 +490,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
         }
 
         if (bBoxProperty) {
-            typeNode->injectProperty(BBoxProperty::property_name, bBoxProperty);
-            TypeNode::PropertiesUpdate update;
-            update.changedProps.insert(BBoxProperty::property_name);
+            auto update = typeNode->injectProperty(BBoxProperty::property_name, bBoxProperty);
 
             Inheritance::instance().typesUpdated({{typeNode, update}});
         }

@@ -51,7 +51,8 @@ class Inheritance : public Singleton<Inheritance>, public TypeStore {
         return atlasObjects;
     }
 
-    const Atlas::Objects::Root & getClass(const std::string & parent, Visibility visibility);
+    const Atlas::Objects::Root & getClass(const std::string & parent, Visibility visibility) const;
+
     int updateClass(const std::string & name,
                     const Atlas::Objects::Root & obj);
     const TypeNode * getType(const std::string & parent) const override;
