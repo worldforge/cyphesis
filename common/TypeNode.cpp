@@ -60,7 +60,11 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
     //We need to split out any private and protected attributes
     m_privateDescription = description;
     m_protectedDescription = description.copy();
+    // Regular clients (protected and public) don't need to see children.
+    // We want to allow for some mystery about the different kinds of entities in the world.
+    m_protectedDescription->removeAttr("children");
     m_publicDescription = description.copy();
+    m_publicDescription->removeAttr("children");
     m_privateDescription->setAttr("access", "private");
     m_protectedDescription->setAttr("access", "protected");
     m_publicDescription->setAttr("access", "public");
