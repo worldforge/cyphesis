@@ -55,12 +55,19 @@ class FruitPlant(server.Thing):
             fruits_max = self.get_prop_int("fruits_max")
             if fruits_max:
                 # The tree will drop fruits if it's at least fruiting_min_scale large (if there's no "scale" it's 1.0)
-                if not self.props.scale or self.props.scale[1] > self.props.fruiting_min_scale:
-                    if not self.props.fruits or self.props.fruits < fruits_max:
-                        if self.props.fruit_name and self.props.fruit_chance:
-                            if random.uniform(0, 100) < self.props.fruit_chance:
-                                # TODO: use 'modify' op
-                                res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)
+                scale = 0
+                scale_prop = self.props.scale
+                if scale_prop is not None:
+                    if len(scale_prop) == 1:
+                        scale = scale_prop[0]
+                    else:
+                        scale = scale_prop[1]  # we want the height
+                    if scale > self.props.fruiting_min_scale:
+                        if not self.props.fruits or self.props.fruits < fruits_max:
+                            if self.props.fruit_name and self.props.fruit_chance:
+                                if random.uniform(0, 100) < self.props.fruit_chance:
+                                    # TODO: use 'modify' op
+                                    res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)
 
     def harvest_operation(self, op):
         print('harvest')
