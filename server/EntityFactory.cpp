@@ -148,6 +148,58 @@ void ClassAttribute::combine(Atlas::Message::Element& existing) const
     if (!defaultValue.isNone()) {
         existing = defaultValue;
     }
+    if (!subtract.isNone()) {
+        switch (subtract.getType()) {
+            case Atlas::Message::Element::TYPE_INT:
+                if (existing.isNone() || existing.getType() != subtract.getType()) {
+                    existing = 0 - subtract.Int();
+                } else {
+                    existing = existing.Int() - subtract.Int();
+                }
+                break;
+            case Atlas::Message::Element::TYPE_FLOAT:
+                if (existing.isNone() || existing.getType() != subtract.getType()) {
+                    existing = 0 - subtract.Float();
+                } else {
+                    existing = existing.Float() - subtract.Float();
+                }
+                break;
+            case Atlas::Message::Element::TYPE_STRING:
+                //There's no one obvious way of subtracting one string from another, so we'll just skip this
+                break;
+            case Atlas::Message::Element::TYPE_MAP:
+                if (existing.isNone() || existing.getType() != subtract.getType()) {
+                    existing = Atlas::Message::MapType();
+                } else {
+                    //Only act on the map keys
+                    for (const auto& entry: subtract.Map()) {
+                        existing.Map().erase(entry.first);
+                    }
+                }
+                break;
+            case Atlas::Message::Element::TYPE_LIST: {
+                if (existing.isNone() || existing.getType() != subtract.getType()) {
+                    existing = Atlas::Message::ListType();
+                } else {
+                    for (auto& entry: subtract.List()) {
+                        Atlas::Message::ListType::iterator I;
+                        //Delete all instances from the list.
+                        while (true) {
+                            I = std::find(std::begin(existing.List()), std::end(existing.List()), entry);
+                            if (I != existing.List().end()) {
+                                existing.List().erase(I);
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
     if (!prepend.isNone()) {
         if (existing.isNone() || existing.getType() != prepend.getType()) {
             existing = prepend;
@@ -215,53 +267,6 @@ void ClassAttribute::combine(Atlas::Message::Element& existing) const
                     break;
             }
 
-        }
-    }
-    if (!subtract.isNone()) {
-        switch (subtract.getType()) {
-            case Atlas::Message::Element::TYPE_INT:
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = 0 - subtract.Int();
-                } else {
-                    existing = existing.Int() - subtract.Int();
-                }
-                break;
-            case Atlas::Message::Element::TYPE_FLOAT:
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = 0 - subtract.Float();
-                } else {
-                    existing = existing.Float() - subtract.Float();
-                }
-                break;
-            case Atlas::Message::Element::TYPE_STRING:
-                //There's no one obvious way of subtracting one string from another, so we'll just skip this
-                break;
-            case Atlas::Message::Element::TYPE_MAP:
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = Atlas::Message::MapType();
-                } else {
-                    //Only act on the map keys
-                    for (const auto& entry: subtract.Map()) {
-                        existing.Map().erase(entry.first);
-                    }
-                }
-                break;
-            case Atlas::Message::Element::TYPE_LIST: {
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = Atlas::Message::ListType();
-                } else {
-                    for (auto& entry: subtract.List()) {
-                        //Erase the first found entry
-                        auto I = std::find(std::begin(existing.List()), std::end(existing.List()), entry);
-                        if (I != existing.List().end()) {
-                            existing.List().erase(I);
-                        }
-                    }
-                }
-                break;
-            }
-            default:
-                break;
         }
     }
 }
