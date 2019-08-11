@@ -271,7 +271,7 @@ struct EntityFactorytest : public Cyphesis::TestBase
             tested.combine(existing);
             ASSERT_EQUAL(Atlas::Message::Element(Atlas::Message::MapType{{"foz", "baz"}}), existing)
 
-            existing = Atlas::Message::ListType{"foo", "bar"};
+            existing = Atlas::Message::ListType{"foo", "bar", "bar"};
             tested.subtract = Atlas::Message::ListType{"bar"};
             tested.combine(existing);
             ASSERT_EQUAL(Atlas::Message::Element(Atlas::Message::ListType{"foo"}), existing)
