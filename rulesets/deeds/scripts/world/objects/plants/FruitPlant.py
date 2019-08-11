@@ -39,7 +39,6 @@ class FruitPlant(server.Thing):
         return server.OPERATION_IGNORED
 
     def handle_drop_fruit(self, res):
-
         if self.props.fruits and self.props.fruits > 0:
             if self.props.fruit_name and self.props.fruit_chance:
                 # hard coded to 5% chance of dropping fruits
@@ -55,9 +54,9 @@ class FruitPlant(server.Thing):
             fruits_max = self.get_prop_int("fruits_max")
             if fruits_max:
                 # The tree will drop fruits if it's at least fruiting_min_scale large (if there's no "scale" it's 1.0)
-                scale = 0
                 scale_prop = self.props.scale
                 if scale_prop is not None:
+                    scale = 0
                     if len(scale_prop) == 1:
                         scale = scale_prop[0]
                     else:

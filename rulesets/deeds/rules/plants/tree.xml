@@ -18,7 +18,7 @@
                 <float name="default">40</float>
             </map>
             <map name="__scripts">
-                <list name="default">
+                <list name="append">
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Hittable.Hittable</string>
@@ -30,18 +30,6 @@
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Nourishable.Nourishable</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Growing.Growing</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.PlantFeeding.PlantFeeding</string>
                     </map>
                 </list>
             </map>

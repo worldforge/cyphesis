@@ -28,7 +28,7 @@
                 <string name="default">dural/creatures/biped/skeleton/skeleton.modeldef</string>
             </map>
             <map name="__scripts">
-                <list name="default">
+                <list name="append">
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.objects.undead.Skeleton.Skeleton</string>

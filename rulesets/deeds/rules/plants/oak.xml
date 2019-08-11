@@ -90,14 +90,6 @@
                     </map>
                 </map>
             </map>
-            <map name="__scripts">
-                <list name="append">
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.objects.plants.FruitPlant.FruitPlant</string>
-                    </map>
-                </list>
-            </map>
         </map>
         <string name="id">oak</string>
         <string name="objtype">class</string>
