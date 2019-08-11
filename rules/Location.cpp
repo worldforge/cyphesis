@@ -19,7 +19,6 @@
 #include "Location.h"
 #include "LocatedEntity.h"
 
-#include "common/const.h"
 #include "common/debug.h"
 
 #include <wfmath/atlasconv.h>
@@ -35,61 +34,85 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Location::Location() :
-    m_solid(true)
+    m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf) :
     EntityLocation(std::move(rf)),
-    m_solid(true)
+    m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0)
 {
 }
 
-Location::Location(Ref<LocatedEntity> rf, Point3D pos) :
-    EntityLocation(std::move(rf), std::move(pos)),
-    m_solid(true)
+Location::Location(Ref<LocatedEntity> rf, const Point3D& pos) :
+    EntityLocation(std::move(rf), pos),
+    m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf,
-                   Point3D pos,
+                   const Point3D& pos,
                    Vector3D velocity) :
-    EntityLocation(std::move(rf), std::move(pos)),
+    EntityLocation(std::move(rf), pos),
     m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0),
     m_velocity(velocity)
 {
 }
 
-Location::Location(LocatedEntity * rf) :
+Location::Location(LocatedEntity* rf) :
     EntityLocation(rf),
-    m_solid(true)
+    m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0)
 {
 }
 
-Location::Location(LocatedEntity * rf, Point3D pos) :
-    EntityLocation(rf, std::move(pos)),
-    m_solid(true)
+Location::Location(LocatedEntity* rf, const Point3D& pos) :
+    EntityLocation(rf, pos),
+    m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0)
 {
 }
 
 Location::Location(EntityLocation entityLocation) :
     EntityLocation(std::move(entityLocation)),
-    m_solid(true)
+    m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0)
 {
 }
 
-Location::Location(LocatedEntity * rf,
-                   Point3D pos,
+Location::Location(LocatedEntity* rf,
+                   const Point3D& pos,
                    Vector3D velocity) :
-    EntityLocation(rf, std::move(pos)),
+    EntityLocation(rf, pos),
     m_solid(true),
+    m_timeStamp(0),
+    m_radius(0),
+    m_squareRadius(0),
     m_velocity(velocity)
 {
 }
 
-void Location::addToMessage(MapType & omap) const
+void Location::addToMessage(MapType& omap) const
 {
-    if (m_parent!=nullptr) {
+    if (m_parent != nullptr) {
         omap["loc"] = m_parent->getId();
     }
     if (pos().isValid()) {
@@ -106,9 +129,9 @@ void Location::addToMessage(MapType & omap) const
     }
 }
 
-void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+void Location::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
 {
-    if (m_parent!=nullptr) {
+    if (m_parent != nullptr) {
         ent->setLoc(m_parent->getId());
     }
     if (pos().isValid()) {
@@ -125,7 +148,7 @@ void Location::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
 }
 
-bool Location::readFromMessage(const MapType & msg)
+bool Location::readFromMessage(const MapType& msg)
 {
     bool had_data = false;
     try {
@@ -133,7 +156,7 @@ bool Location::readFromMessage(const MapType & msg)
         auto Iend = msg.end();
         if (I != Iend) {
             had_data = true;
-            const Element & pos = I->second;
+            const Element& pos = I->second;
             if (pos.isList() && pos.List().size() == 3) {
                 m_pos.fromAtlas(pos);
             } else {
@@ -143,7 +166,7 @@ bool Location::readFromMessage(const MapType & msg)
         I = msg.find("velocity");
         if (I != Iend) {
             had_data = true;
-            const Element & velocity = I->second;
+            const Element& velocity = I->second;
             if (velocity.isList() && velocity.List().size() == 3) {
                 m_velocity.fromAtlas(velocity);
             } else {
@@ -153,7 +176,7 @@ bool Location::readFromMessage(const MapType & msg)
         I = msg.find("orientation");
         if (I != Iend) {
             had_data = true;
-            const Element & orientation = I->second;
+            const Element& orientation = I->second;
             if (orientation.isList() && orientation.List().size() == 4) {
                 m_orientation.fromAtlas(orientation);
             } else {
@@ -163,7 +186,7 @@ bool Location::readFromMessage(const MapType & msg)
         I = msg.find("angular");
         if (I != Iend) {
             had_data = true;
-            const Element & angular = I->second;
+            const Element& angular = I->second;
             if (angular.isList() && angular.List().size() == 3) {
                 m_angularVelocity.fromAtlas(angular);
             } else {
@@ -177,10 +200,10 @@ bool Location::readFromMessage(const MapType & msg)
     return had_data;
 }
 
-bool Location::readFromEntity(const Atlas::Objects::Entity::RootEntity & ent)
+bool Location::readFromEntity(const Atlas::Objects::Entity::RootEntity& ent)
 {
     bool had_data = false;
-    debug( std::cout << "Location::readFromEntity" << std::endl << std::flush;);
+    debug(std::cout << "Location::readFromEntity" << std::endl << std::flush;)
     try {
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             had_data = true;
@@ -222,10 +245,10 @@ void Location::modifyBBox()
     }
 
     m_squareRadius = std::max(square(m_bBox.lowCorner().x()) +
-                              square(m_bBox.lowCorner().y()) +  
+                              square(m_bBox.lowCorner().y()) +
                               square(m_bBox.lowCorner().z()),
-                              square(m_bBox.highCorner().x()) +  
-                              square(m_bBox.highCorner().y()) +  
+                              square(m_bBox.highCorner().x()) +
+                              square(m_bBox.highCorner().y()) +
                               square(m_bBox.highCorner().z()));
     m_radius = std::sqrt(m_squareRadius);
 }
@@ -237,8 +260,8 @@ Atlas::Objects::Root Location::asEntity() const
     return ret;
 }
 
-static const Location* distanceFromAncestor(const Location & self,
-                                 const Location & other, Point3D & c)
+static const Location* distanceFromAncestor(const Location& self,
+                                            const Location& other, Point3D& c)
 {
     if (&self == &other) {
         return &self;
@@ -261,8 +284,8 @@ static const Location* distanceFromAncestor(const Location & self,
     return distanceFromAncestor(self, other.m_parent->m_location, c);
 }
 
-static const Location* distanceToAncestor(const Location & self,
-                               const Location & other, Point3D & c)
+static const Location* distanceToAncestor(const Location& self,
+                                          const Location& other, Point3D& c)
 {
     c.setToOrigin();
     const Location* ancestor = distanceFromAncestor(self, other, c);
@@ -284,20 +307,20 @@ static const Location* distanceToAncestor(const Location & self,
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
     if (self.m_parent != nullptr) {
-        std::cerr << "Self("<< &self << ", loc:" << self.m_parent->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
+        std::cerr << "Self(" << &self << ", loc:" << self.m_parent->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Self has no location"
                   << std::endl << std::flush;
     }
     if (other.m_parent != nullptr) {
-        std::cerr << "Other("<< &other << ", loc:" << other.m_parent->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
+        std::cerr << "Other(" << &other << ", loc:" << other.m_parent->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
                   << std::endl << std::flush;
     } else {
         std::cerr << "Other has no location"
                   << std::endl << std::flush;
     }
-     
+
     return nullptr;
 }
 
@@ -312,9 +335,9 @@ static const Location* distanceToAncestor(const Location & self,
 /// both the scalar distance to another entity, and a direction vector
 /// that can be used to determine the direction for motion if it
 /// is necessary to head toward the other entity.
-const Vector3D distanceTo(const Location & self, const Location & other)
+const Vector3D distanceTo(const Location& self, const Location& other)
 {
-    static Point3D origin(0,0,0);
+    static Point3D origin(0, 0, 0);
     Point3D pos;
     distanceToAncestor(self, other, pos);
     Vector3D dist = pos - origin;
@@ -332,22 +355,22 @@ const Vector3D distanceTo(const Location & self, const Location & other)
 /// @return The position of other.
 /// The position calculated is relative to the entity who's location is given
 /// by self. The calculation is very similar to distanceTo() but an extra
-/// step is omited.
-const Point3D relativePos(const Location & self, const Location & other)
+/// step is omitted.
+const Point3D relativePos(const Location& self, const Location& other)
 {
     Point3D pos;
     distanceToAncestor(self, other, pos);
     return pos;
 }
 
-float squareDistance(const Location & self, const Location & other)
+float squareDistance(const Location& self, const Location& other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
     return sqrMag(dist);
 }
 
-float squareDistanceWithAncestor(const Location & self, const Location & other, const Location** ancestor)
+float squareDistanceWithAncestor(const Location& self, const Location& other, const Location** ancestor)
 {
     Point3D dist;
     *ancestor = distanceToAncestor(self, other, dist);
@@ -358,7 +381,7 @@ float squareDistanceWithAncestor(const Location & self, const Location & other, 
 }
 
 
-float squareHorizontalDistance(const Location & self, const Location & other)
+float squareHorizontalDistance(const Location& self, const Location& other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
@@ -366,7 +389,7 @@ float squareHorizontalDistance(const Location & self, const Location & other)
     return sqrMag(dist);
 }
 
-std::ostream & operator<<(std::ostream& s, Location& v)
+std::ostream& operator<<(std::ostream& s, Location& v)
 {
     s << "{";
     if (v.m_parent != nullptr) {

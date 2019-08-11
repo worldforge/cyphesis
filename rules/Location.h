@@ -57,16 +57,16 @@ class Location : public EntityLocation {
     Location();
     explicit Location(Ref<LocatedEntity> rf);
     explicit Location(Ref<LocatedEntity> rf,
-                      Point3D pos);
+                      const Point3D& pos);
     explicit Location(Ref<LocatedEntity> rf,
-                      Point3D pos,
+                      const Point3D& pos,
                       Vector3D velocity);
 
     explicit Location(LocatedEntity * rf);
     explicit Location(LocatedEntity * rf,
-                      Point3D pos);
+                      const Point3D& pos);
     explicit Location(LocatedEntity * rf,
-                      Point3D pos,
+                      const Point3D& pos,
                       Vector3D velocity);
 
     explicit Location(EntityLocation entityLocation);

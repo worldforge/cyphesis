@@ -27,7 +27,7 @@
 
 #ifndef STUB_Location_Location
 //#define STUB_Location_Location
-   Location::Location(Ref<LocatedEntity> rf, Point3D pos)
+   Location::Location(Ref<LocatedEntity> rf, const Point3D& pos)
     : EntityLocation(rf, pos)
   {
     
@@ -36,7 +36,7 @@
 
 #ifndef STUB_Location_Location
 //#define STUB_Location_Location
-   Location::Location(Ref<LocatedEntity> rf, Point3D pos, Vector3D velocity)
+   Location::Location(Ref<LocatedEntity> rf, const Point3D& pos, Vector3D velocity)
     : EntityLocation(rf, pos, velocity)
   {
     
@@ -54,7 +54,7 @@
 
 #ifndef STUB_Location_Location
 //#define STUB_Location_Location
-   Location::Location(LocatedEntity * rf, Point3D pos)
+   Location::Location(LocatedEntity * rf, const Point3D& pos)
     : EntityLocation(rf, pos)
   {
     
@@ -63,7 +63,7 @@
 
 #ifndef STUB_Location_Location
 //#define STUB_Location_Location
-   Location::Location(LocatedEntity * rf, Point3D pos, Vector3D velocity)
+   Location::Location(LocatedEntity * rf, const Point3D& pos, Vector3D velocity)
     : EntityLocation(rf, pos, velocity)
   {
     

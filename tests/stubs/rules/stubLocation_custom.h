@@ -6,7 +6,7 @@
 #ifndef STUB_Location_Location
 #define STUB_Location_Location
 
-Location::Location(Ref<LocatedEntity> rf, Point3D pos) :
+Location::Location(Ref<LocatedEntity> rf, const Point3D& pos) :
     EntityLocation(rf, pos), m_solid(true)
 {
 }
@@ -22,7 +22,7 @@ Location::Location() :
 {
 }
 
-Location::Location(LocatedEntity * rf, Point3D pos) :
+Location::Location(LocatedEntity * rf, const Point3D& pos) :
     EntityLocation(rf, pos), m_solid(true)
 {
 }
