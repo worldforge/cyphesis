@@ -24,6 +24,90 @@ These properties are meant to be used for internal and secret things, which woul
 
 Properties that starts with "_" (for example "_thoughts") are "protected". These can only be seen by the simulation, admin clients and the entity to which they belong. Typically these would be properties that should be hidden to other players.
 
+## Defining properties in types
+
+The properties available for a type is defined in an element named "attributes". The keys define the name of the property while the value is a map. This map in turn allows for a simple composition of properties, which is useful when having types in a inheritance tree.
+
+These various type of "composition" are allowed:
+
+* **default** The value will be used as it is, overwriting any other value in a parent type.
+
+* **append** The value will be appended to any existing value in a parent type. The result is slightly different depending on the property type.
+ 
+    For numerical values it will result in an addition.
+    For strings it will result in the value being added to the end of the existing string.
+    For maps it will result in the values being inserted.
+    For lists it will result in the values being added to the back of the list.  
+
+* **prepend** The value will be prepended to any existing value in a parent type. The result is slightly different depending on the property type.
+ 
+    For numerical values it will result in an addition.
+    For strings it will result in the value being added to the start of the existing string.
+    For maps it will result in the values being inserted.
+    For lists it will result in the values being added to the start of the list.
+     
+* **subtract** The value will be subtracted from any existing value in a parent type. The result is slightly different depending on the property type.
+    
+    For numerical values it will result in a subtraction.
+    For strings nothing will happen, since it's not obvious how one subtracts one string from another.
+    For maps it will result in the keys being removed (any values are ignored).
+    For lists it will result in the values being removed to the start of the list.
+    
+An example would be a parent type with a __scripts property, which is of list type.
+
+```xml
+<map>
+    <map name="attributes">
+        <map name="__scripts">
+            <list name="default">
+                <map>
+                    <string name="language">python</string>
+                    <string name="name">world.objects.A</string>
+                </map>
+            </list>
+        </map>
+    </map>
+    <string name="id">parent_type</string>
+    <string name="objtype">class</string>
+</map>
+```
+
+A child entity can define a __scripts property which appends to the existing property, as such:
+
+```xml
+<map>
+    <map name="attributes">
+        <map name="__scripts">
+            <list name="append">
+                <map>
+                    <string name="language">python</string>
+                    <string name="name">world.objects.B</string>
+                </map>
+            </list>
+        </map>
+    </map>
+    <string name="id">child_type</string>
+    <string name="objtype">class</string>
+    <string name="parent">parent_type</string>
+</map>
+```
+
+And instance of ```child_type``` would then get a __scripts property as such:
+
+```xml
+<list name="__scripts">
+    <map>
+        <string name="language">python</string>
+        <string name="name">world.objects.A</string>
+    </map>
+    <map>
+        <string name="language">python</string>
+        <string name="name">world.objects.B</string>
+    </map>
+</list>
+```
+
+
 ## Useful properties
 
 While the number of properties are large, there are a couple of base ones that are essential to have knowledge of.
@@ -41,13 +125,13 @@ However, you don't necessarily always want the collision shape to be a mesh. In 
 
 The "present" property is used by the client to determine how to visualize the entity. There are three levels of control available: "mesh", "modeldef" and "entitymap"
 
-* "mesh"
+* **mesh**
 When you only want to show mesh straight up you can just refer to the .mesh file directly.
 
-* "modeldef"
+* **modeldef**
 A "model definition" allows much more control than a single mesh. You can refer to multiple meshes, turn on submeshes and replace materials. You can also define lights and particle effects. Do this by referring to a ".modeldef" file.
 
-* "entitymap"
+* **entitymap**
 The most complex and powerful presentation is the "entity mapping". This is a rules engine which allows you to set up a series of rules with corresponding actions. These actions could be the showing of meshes or models, or more abstract things such as determining whether labels are shown or not. Use this when you need more control over complex behaviours, but keep in mind that the client presentation should play closely to the geometry as it's represented on the server.
 
 ### "speed_ground"
