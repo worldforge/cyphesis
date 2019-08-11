@@ -20,6 +20,9 @@
 #include "CyPy_Task.h"
 #include "CyPy_EntityProps.h"
 #include "rules/simulation/TasksProperty.h"
+#include "rules/entityfilter/python/CyPy_EntityFilter.h"
+#include "rules/entityfilter/Providers.h"
+#include "rules/simulation/BaseWorld.h"
 #include "rules/python/CyPy_Operation.h"
 #include "rules/python/CyPy_Oplist.h"
 #include "common/id.h"
@@ -48,7 +51,6 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py:
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Ref<Entity> value)
     : CyPy_LocatedEntityBase(self, std::move(value))
-
 {
 }
 
@@ -87,6 +89,7 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
     PYCXX_ADD_VARARGS_METHOD(mod_property, mod_property, "");
     PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
+    PYCXX_ADD_VARARGS_METHOD(find_in_contains, find_in_contains, "Returns a list of all contained entities that matches the supplied Entity Filter.");
 
 
     behaviors().readyType();
@@ -185,4 +188,26 @@ int CyPy_Entity::setattro(const Py::String& name, const Py::Object& attr)
         throw Py::AttributeError("Can not set 'props'.");
     }
     return CyPy_LocatedEntityBase::setattro(name, attr);
+}
+
+
+Py::Object CyPy_Entity::find_in_contains(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto& filter = verifyObject<CyPy_Filter>(args[0]);
+
+    Py::List list;
+
+    if (this->m_value->m_contains) {
+        for (auto& entry : *this->m_value->m_contains) {
+            EntityFilter::QueryContext queryContext{{*entry}};
+            queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+
+            if (filter->match(queryContext)) {
+                list.append(CyPy_Entity::wrap(entry.get()));
+            }
+        }
+    }
+    return list;
 }

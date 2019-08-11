@@ -56,6 +56,11 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
         Py::Object mod_property(const Py::Tuple& args);
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, mod_property);
+
+        Py::Object find_in_contains(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, find_in_contains);
+
 };
 
 #endif //CYPHESIS_CYPY_ENTITY_H
