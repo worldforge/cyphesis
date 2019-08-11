@@ -85,10 +85,6 @@
                         <string name="language">python</string>
                         <string name="name">world.traits.Immortality.Immortality</string>
                     </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.DecaysInto.DecaysInto</string>
-                    </map>
                 </list>
             </map>
         </map>

@@ -19,6 +19,14 @@
             <map name="_modifier_consume_type_meat">
                 <float name="default">0</float>
             </map>
+            <map name="_relations">
+                <list name="append">
+                    <map>
+                        <!-- By default all other entities are regarded as threats by a cow. -->
+                        <float name="threat">1</float>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">cow</string>
         <string name="objtype">class</string>

@@ -28,10 +28,7 @@
                 </list>
             </map>
             <map name="_goals">
-                <list name="default">
-                    <map>
-                        <string name="class">mind.goals.common.combat.FightOrFlight</string>
-                    </map>
+                <list name="append">
                     <map>
                         <string name="class">mind.goals.common.move.roam</string>
                         <map name="params">
