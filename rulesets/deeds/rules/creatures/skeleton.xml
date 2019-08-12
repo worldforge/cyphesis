@@ -4,8 +4,8 @@
             <map name="attachments">
                 <map name="default">
                     <!-- Requirements for things wielded are that they are contained in the entity's inventory. -->
-                    <string name="hand_primary">contains_recursive(actor.contains, child = tool)</string>
-                    <string name="hand_secondary">contains_recursive(actor.contains, child = tool)</string>
+                    <string name="hand_primary">contains(actor.contains, child = tool)</string>
+                    <string name="hand_secondary">contains(actor.contains, child = tool)</string>
                 </map>
             </map>
             <map name="bbox">

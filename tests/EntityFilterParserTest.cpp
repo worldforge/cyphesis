@@ -92,8 +92,8 @@ void ParserTest::test_ComparisonOperators()
     pred = ConstructPredicate("1 >= 2");
     assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::GREATER_EQUAL);
 
-    pred = ConstructPredicate("entity.container contains 1");
-    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::CONTAINS);
+    pred = ConstructPredicate("entity.container includes 1");
+    assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::INCLUDES);
 
     pred = ConstructPredicate("1 in entity.container");
     assert(static_cast<ComparePredicate*>(pred.get())->m_comparator == ComparePredicate::Comparator::IN);

@@ -59,7 +59,7 @@ namespace EntityFilter {
                     ("<=", ComparePredicate::Comparator::LESS_EQUAL)
                     ("instance_of", ComparePredicate::Comparator::INSTANCE_OF)
                     ("in", ComparePredicate::Comparator::IN)
-                    ("contains", ComparePredicate::Comparator::CONTAINS)
+                    ("includes", ComparePredicate::Comparator::INCLUDES)
                     ("can_reach", ComparePredicate::Comparator::CAN_REACH);;
             }
 
@@ -97,7 +97,7 @@ namespace EntityFilter {
                                    | qi::string(">=") | qi::string("==") | qi::string("!==")
                                    | char_("=") | char_(">") | char_("<")
                                    | qi::no_skip[+space >> no_case[qi::string("instance_of")] >> +space]
-                                   | qi::no_skip[+space >> no_case[qi::string("contains")] >> +space]
+                                   | qi::no_skip[+space >> no_case[qi::string("includes")] >> +space]
                                    | qi::no_skip[+space >> no_case[qi::string("in")] >> +space]
                                    | qi::no_skip[+space >> no_case[qi::string("can_reach")] >> +space];
                 comp_operator_g.name("comp operator");
@@ -166,7 +166,12 @@ namespace EntityFilter {
                     //contains_recursive function takes a consumer (contains_recursive is itself a consumer),
                     //and a predicate as arguments.
                     (no_case[qi::lit("contains_recursive")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
-                    [_val = make_shared_<ContainsRecursiveFunctionProvider>()(_1, _2)] |
+                    [_val = make_shared_<ContainsRecursiveFunctionProvider>()(_1, _2, true)] |
+
+                    //contains function takes a consumer (contains is itself a consumer),
+                    //and a predicate as arguments.
+                    (no_case[qi::lit("contains")] >> "(" >> consumer_g >> "," >> parenthesised_predicate_g >> ")")
+                    [_val = make_shared_<ContainsRecursiveFunctionProvider>()(_1, _2, false)] |
 
                     //allows the "get_entity" function which is used to extract an entity from any property
                     //which follows the "entity ref protocol", i.e. returns a map with a "$eid" entry.

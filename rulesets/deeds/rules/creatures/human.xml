@@ -23,13 +23,13 @@
             <map name="attachments">
                 <map name="default">
                     <!-- Requirements for things wielded are that they are contained in the entity's inventory. -->
-                    <string name="hand_primary">contains_recursive(actor.contains, child = tool)</string>
-                    <string name="hand_secondary">contains_recursive(actor.contains, child = tool)</string>
+                    <string name="hand_primary">contains(actor.contains, child = tool)</string>
+                    <string name="hand_secondary">contains(actor.contains, child = tool)</string>
                     <!-- Requirements for things worn are that they are contained in the entity's inventory and have the appropriate "worn" property. -->
-                    <string name="torso">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'torso'</string>
-                    <string name="legs">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'legs'</string>
-                    <string name="feet">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'feet'</string>
-                    <string name="head">contains_recursive(actor.contains, child = tool) &amp;&amp; tool.worn = 'head'</string>
+                    <string name="torso">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'torso'</string>
+                    <string name="legs">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'legs'</string>
+                    <string name="feet">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'feet'</string>
+                    <string name="head">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'head'</string>
                 </map>
             </map>
             <map name="__decays">

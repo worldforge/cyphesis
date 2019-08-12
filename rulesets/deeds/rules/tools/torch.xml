@@ -30,7 +30,7 @@
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.Tinderbox.ignite</string>
-                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool &amp;&amp; contains_recursive(tool.contains, child.type=types.fire)</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool &amp;&amp; contains(tool.contains, child.type=types.fire)</string>
                         <string name="description">Light a fire with a wielded torch, that is on fire.</string>
                     </map>
                 </map>

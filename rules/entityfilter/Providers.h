@@ -424,7 +424,8 @@ namespace EntityFilter {
     {
         public:
             ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container,
-                                              std::shared_ptr<Predicate> condition);
+                                              std::shared_ptr<Predicate> condition,
+                                              bool recursive);
 
             void value(Atlas::Message::Element& value,
                        const QueryContext& context) const override;
@@ -434,6 +435,8 @@ namespace EntityFilter {
             std::shared_ptr<Predicate> m_condition;
             ///\brief A Consumer which must return LocatedEntitySet* i.e. entity.contains
             std::shared_ptr<Consumer<QueryContext>> m_consumer;
+
+            bool m_recursive;
 
             bool checkContainer(LocatedEntitySet* container,
                                 const QueryContext& context) const;

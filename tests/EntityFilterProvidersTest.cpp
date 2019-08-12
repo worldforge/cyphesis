@@ -375,7 +375,7 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
             //entity.float_list contains 20.0
             ComparePredicate compPred9(lhs_provider3, std::make_shared<FixedElementProvider>(20.0),
-                                       ComparePredicate::Comparator::CONTAINS);
+                                       ComparePredicate::Comparator::INCLUDES);
             assert(compPred9.isMatch(prepare_context( { *m_b1 })));
 
             //20.0 in entity.float_list
@@ -385,7 +385,7 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
             //entity.float_list contains 100.0
             ComparePredicate compPred10(lhs_provider3, std::make_shared<FixedElementProvider>(100.0),
-                                        ComparePredicate::Comparator::CONTAINS);
+                                        ComparePredicate::Comparator::INCLUDES);
             assert(!compPred10.isMatch(prepare_context( { *m_b1 })));
 
             //100.0 in entity.float_list
@@ -398,13 +398,13 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
             //entity.string_list contains "foo"
             ComparePredicate compPred11(lhs_provider4, std::make_shared<FixedElementProvider>("foo"),
-                                        ComparePredicate::Comparator::CONTAINS);
+                                        ComparePredicate::Comparator::INCLUDES);
             assert(compPred11.isMatch(prepare_context( { *m_b1 })));
 
             //entity.string_list contains "foobar"
             ComparePredicate compPred12(lhs_provider4,
                                         std::make_shared<FixedElementProvider>("foobar"),
-                                        ComparePredicate::Comparator::CONTAINS);
+                                        ComparePredicate::Comparator::INCLUDES);
             assert(!compPred12.isMatch(prepare_context( { *m_b1 })));
         }
 
@@ -415,10 +415,10 @@ struct ProvidersTest : public Cyphesis::TestBase {
         {
             Element value;
 
-            //entity.mass
+            //child.mass
             auto lhs_provider1 = CreateProvider( { "child", "mass" });
             //entity.contains
-            auto lhs_provider2 = CreateProvider( { "entity", "contains" });
+            auto entity_contains_provider = CreateProvider({"entity", "contains" });
 
             //entity.mass = 30
             auto compPred17 = std::make_shared<ComparePredicate>(lhs_provider1, std::make_shared<FixedElementProvider>(20),
@@ -426,15 +426,16 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
             //contains_recursive(entity.contains, entity.mass = 30)
             //Check that container has something with mass 30 inside
-            ContainsRecursiveFunctionProvider contains_recursive(lhs_provider2,
-                                                                 compPred17);
+            ContainsRecursiveFunctionProvider contains_recursive(entity_contains_provider,
+                                                                 compPred17,
+                                                                 true);
             contains_recursive.value(value, prepare_context( { *m_b1 }));
             ASSERT_EQUAL(value.Int(), 1);
 
             contains_recursive.value(value, QueryContext { *m_b2 });
             ASSERT_EQUAL(value.Int(), 0);
 
-            //entity.type
+            //child.type
             auto lhs_provider3 = CreateProvider( { "child", "type" });
             //types.character
             auto rhs_provider1 = CreateProvider( { "types", "character" });
@@ -445,8 +446,9 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
             //contains_recursive(entity.contains, entity.type = types.character)
             //Check that the container has a character inside
-            ContainsRecursiveFunctionProvider contains_recursive2(lhs_provider2,
-                                                                  compPred18);
+            ContainsRecursiveFunctionProvider contains_recursive2(entity_contains_provider,
+                                                                  compPred18,
+                                                                  true);
 
             //Should be true for both barrels since character is in b2, while b2 is in b1
             contains_recursive2.value(value, prepare_context( { *m_b1 }));
@@ -457,6 +459,24 @@ struct ProvidersTest : public Cyphesis::TestBase {
 
             contains_recursive2.value(value, prepare_context( { *m_ch1 }));
             ASSERT_EQUAL(value.Int(), 0);
+
+            //Now check non-recursive version
+            //contains(entity.contains, entity.type = types.character)
+            //Check that the container has a character inside
+            ContainsRecursiveFunctionProvider contains_nonrecursive1(entity_contains_provider,
+                                                                  compPred18,
+                                                                  false);
+
+            //Should be true only for b2 since character is in b2, while b2 is in b1
+            contains_nonrecursive1.value(value, prepare_context( { *m_b1 }));
+            ASSERT_EQUAL(0, value.Int());
+
+            contains_nonrecursive1.value(value, prepare_context( { *m_b2 }));
+            ASSERT_EQUAL(value.Int(), 1);
+
+            contains_nonrecursive1.value(value, prepare_context( { *m_ch1 }));
+            ASSERT_EQUAL(value.Int(), 0);
+
         }
 
         ///\Test instance_of operator

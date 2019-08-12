@@ -27,7 +27,7 @@ namespace EntityFilter {
 
             enum class Comparator
             {
-                    EQUALS, NOT_EQUALS, INSTANCE_OF, IN, CONTAINS, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, CAN_REACH
+                    EQUALS, NOT_EQUALS, INSTANCE_OF, IN, INCLUDES, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, CAN_REACH
             };
 
             ComparePredicate(std::shared_ptr<Consumer<QueryContext>> lhs,

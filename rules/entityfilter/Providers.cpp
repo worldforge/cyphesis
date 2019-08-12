@@ -356,8 +356,11 @@ namespace EntityFilter {
     }
 
     ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container,
-                                                                         std::shared_ptr<Predicate> condition) :
-        m_condition(std::move(condition)), m_consumer(std::move(container))
+                                                                         std::shared_ptr<Predicate> condition,
+                                                                         bool recursive) :
+        m_condition(std::move(condition)),
+        m_consumer(std::move(container)),
+        m_recursive(recursive)
     {
         if (m_consumer->getType() != &typeid(const LocatedEntitySet*)) {
             throw std::invalid_argument(
@@ -387,7 +390,7 @@ namespace EntityFilter {
                 return true;
             } else {
                 //If an item we're looking at also contains other items - check them too using recursion
-                if (item->m_contains && !item->m_contains->empty()) {
+                if (m_recursive && item->m_contains && !item->m_contains->empty()) {
                     if (this->checkContainer(item->m_contains, context)) {
                         return true;
                     }

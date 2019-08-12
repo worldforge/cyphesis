@@ -27,7 +27,7 @@
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.FishingRod.fish</string>
-                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains_recursive(actor.contains, child instance_of types.annelid)</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains(actor.contains, child instance_of types.annelid)</string>
                         <string name="description">Fish with fishing rod, requires a worm in inventory.</string>
                     </map>
                 </map>

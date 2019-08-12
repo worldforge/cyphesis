@@ -343,13 +343,13 @@ struct EntityFilterTest : public Cyphesis::TestBase
         //test entity ID matching
         TestQuery("entity.id=1", {m_b1}, {m_b2});
 
-        //test list match using "contains" operator
+        //test list match using "includes" operator
 
-        TestQuery("entity.float_list contains 20.0", {m_bl1}, {});
+        TestQuery("entity.float_list includes 20.0", {m_bl1}, {});
 
-        TestQuery("entity.string_list contains 'foo'", {m_bl1}, {});
+        TestQuery("entity.string_list includes 'foo'", {m_bl1}, {});
 
-        TestQuery("entity.float_list contains 95.0", {}, {m_bl1});
+        TestQuery("entity.float_list includes 95.0", {}, {m_bl1});
 
         //test list match using "in" operator
         TestQuery("20.0 in entity.float_list", {m_bl1}, {});
@@ -561,6 +561,38 @@ struct EntityFilterTest : public Cyphesis::TestBase
         TestContextQuery(
             "contains_recursive(entity.contains, child = tool)",
             {{*m_b1, nullptr, m_bl1.get()}}, {});
+
+        //The cloth is a child of the gloves which is a child of the character. Should be found recursively.
+        TestQuery(
+            "contains_recursive(entity.contains, child.type = types.cloth)",
+            {m_ch1}, {});
+    }
+
+    //Test contains function
+    void test_Contains()
+    {
+        //Test contains function
+        TestQuery(
+            "contains(entity.contains, child.type=types.boulder)",
+            {m_b1}, {m_b2});
+
+        TestQuery(
+            "contains(entity.contains, child.type=types.barrel)",
+            {m_b1, m_bl1}, {m_b2});
+
+        TestQuery(
+            "contains(entity.contains, child.type=types.barrel or child.mass = 25) = true",
+            {m_b1, m_bl1}, {m_b2});
+
+
+        TestContextQuery(
+            "contains(entity.contains, child = tool)",
+            {{*m_b1, nullptr, m_bl1.get()}}, {});
+
+        //The cloth is a child of the gloves which is a child of the character. Should not be found since it's not recursive.
+        TestQuery(
+            "contains(entity.contains, child.type = types.cloth)",
+            {}, {m_ch1});
     }
 
     void setup()
@@ -673,11 +705,15 @@ struct EntityFilterTest : public Cyphesis::TestBase
             auto plantedOnProp = new PlantedOnProperty();
             plantedOnProp->data().entity = WeakEntityRef(m_glovesEntity.get());
             m_cloth->setProperty("planted_on", plantedOnProp);
+            m_glovesEntity->makeContainer();
+            m_glovesEntity->addChild(*m_cloth);
         }
 
         m_ch1 = new Entity("7", 7);
         add_entity(m_ch1);
         m_ch1->setType(m_characterType);
+        m_ch1->makeContainer();
+        m_ch1->addChild(*m_glovesEntity);
 
         //The m_glovesEntity entity is attached to the m_ch1 by the "hand_primary" attachment
         {
@@ -722,7 +758,9 @@ struct EntityFilterTest : public Cyphesis::TestBase
         ADD_TEST(EntityFilterTest::test_Parentheses);
         ADD_TEST(EntityFilterTest::test_Outfit);
         ADD_TEST(EntityFilterTest::test_BBox);
-        ADD_TEST(EntityFilterTest::test_ContainsRecursive);
+        ADD_TEST(EntityFilterTest::test_ContainsRecursive)
+        ADD_TEST(EntityFilterTest::test_Contains)
+
     }
 };
 

@@ -138,7 +138,7 @@ namespace EntityFilter {
                 }
                 return false;
             }
-            case Comparator::CONTAINS: {
+            case Comparator::INCLUDES: {
                 Atlas::Message::Element left, right;
                 m_lhs->value(left, context);
                 if (left.isList()) {
