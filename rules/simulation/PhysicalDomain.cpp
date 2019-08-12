@@ -2574,18 +2574,19 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
         return false;
     }
 
+    auto& queriedLocation = queriedEntity.m_location;
+    auto& reachingLocation = reachingEntity.m_location;
+    if (!reachingLocation.m_pos.isValid() || !queriedLocation.m_pos.isValid()) {
+        return false;
+    }
 
     auto reachingEntityI = m_entries.find(reachingEntity.getIntId());
     if (reachingEntityI != m_entries.end()) {
         auto reachingEntityEntry = reachingEntityI->second;
 
-        if (!reachingEntityEntry->entity->m_location.m_pos.isValid()) {
-            return false;
-        }
-
         //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
         btVector3 reachingEntityPos = reachingEntityEntry->collisionObject ? reachingEntityEntry->collisionObject->getWorldTransform().getOrigin()
-                                                                           : Convert::toBullet(reachingEntity.m_location.pos());
+                                                                           : Convert::toBullet(reachingLocation.pos());
         //If a contained entity tries to touch the domain entity we must check the optional position.
         if (&queriedEntity == &m_entity) {
             if (!positionOnQueriedEntity.isValid()) {
@@ -2593,7 +2594,7 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
             }
 
             auto distance = reachingEntityPos.distance(Convert::toBullet(positionOnQueriedEntity));
-            distance -= reachingEntity.m_location.radius();
+            distance -= reachingLocation.radius();
             return distance <= reach;
 
         } else {
@@ -2601,24 +2602,50 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
             auto queriedBulletEntryI = m_entries.find(queriedEntity.getIntId());
             if (queriedBulletEntryI != m_entries.end()) {
 
-                if (!queriedBulletEntryI->second->entity->m_location.m_pos.isValid()) {
-                    return false;
+                auto queriedBulletEntry = queriedBulletEntryI->second;
+                btVector3 queriedEntityPos;
+
+                if (positionOnQueriedEntity.isValid()) {
+                    //Adjust position on queried entity into parent coord system (to get a global pos)
+                    queriedEntityPos = Convert::toBullet(
+                        positionOnQueriedEntity.toParentCoords(queriedLocation.m_pos,
+                                                               queriedLocation.m_orientation.isValid() ? queriedLocation.m_orientation : WFMath::Quaternion::IDENTITY()));
+                } else {
+                    //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
+                    queriedEntityPos = queriedBulletEntry->collisionObject ? queriedBulletEntry->collisionObject->getWorldTransform().getOrigin()
+                                                                           : Convert::toBullet(queriedLocation.pos());
                 }
 
-                //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
-                btVector3 queriedEntityPos = queriedBulletEntryI->second->collisionObject ? queriedBulletEntryI->second->collisionObject->getWorldTransform().getOrigin()
-                    : Convert::toBullet(reachingEntity.m_location.pos());
-
-                //Note that we ignore the position.
-
-                //Start with the full distance.
-                auto distance = reachingEntityPos.distance(queriedEntityPos);
-
+                //Start with the simple case by checking if the centers are close
                 //We measure from the edge of one entity to the edge of another.
-                distance -= reachingEntity.m_location.radius();
-                distance -= queriedEntity.m_location.radius();
+                if (reachingEntityPos.distance(queriedEntityPos) - reachingLocation.radius() - queriedLocation.radius() <= reach) {
+                    return true;
+                }
 
-                return distance <= reach;
+
+                if (queriedBulletEntry->collisionObject) {
+                    //Check how we collide with the target.
+                    btCollisionWorld::ClosestRayResultCallback rayResultCallback(reachingEntityPos, queriedEntityPos);
+                    auto extendedQueriedPos = queriedEntityPos + ((queriedEntityPos - reachingEntityPos) * 0.1); //Extend a bit
+                    btCollisionWorld::rayTestSingle(btTransform(btQuaternion::getIdentity(), reachingEntityPos),
+                                                    btTransform(btQuaternion::getIdentity(), extendedQueriedPos),
+                                                    queriedBulletEntry->collisionObject,
+                                                    queriedBulletEntry->collisionShape.get(),
+                                                    queriedBulletEntry->collisionObject->getWorldTransform(),
+                                                    rayResultCallback);
+
+                    if (!rayResultCallback.hasHit()) {
+                        return false;
+                    }
+
+                    //Start with the full distance.
+                    auto distance = reachingEntityPos.distance(rayResultCallback.m_hitPointWorld);
+
+                    //We measure from the edge of one entity to the edge of another.
+                    distance -= reachingLocation.radius();
+
+                    return distance <= reach;
+                }
             }
         }
     }
