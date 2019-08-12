@@ -17,7 +17,7 @@ class Gravestone(server.Thing):
     def sift_operation(self, op):
         newloc = self.location.copy()
         newloc.velocity = Vector3D()
-        item = Gravestone.items[randint(0, 5)]
+        item = self.items[randint(0, len(self.items) - 1)]
         newloc.pos = newloc.pos + Vector3D(uniform(-1, 1), uniform(-1, 1), uniform(-1, 1))
         return Operation("create", Entity(name=item, parent=item, location=newloc.copy()), to=self) + \
                Operation("imaginary", Entity(description="You dig up a bone from the grave."), to=op.id, from_=op.id)

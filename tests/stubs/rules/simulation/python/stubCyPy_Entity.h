@@ -105,5 +105,13 @@
   }
 #endif //STUB_CyPy_Entity_mod_property
 
+#ifndef STUB_CyPy_Entity_find_in_contains
+//#define STUB_CyPy_Entity_find_in_contains
+  Py::Object CyPy_Entity::find_in_contains(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_find_in_contains
+
 
 #endif
