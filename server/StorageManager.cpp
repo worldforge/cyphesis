@@ -326,17 +326,18 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         if (prop->hasFlags(per_mask)) {
             continue;
         }
+        KeyValues& active_store = prop->hasFlags(per_seen) ? upd_property_tuples : new_property_tuples;
         Atlas::Message::Element element;
         prop->get(element);
         if (element.isNone()) {
             //TODO: Add code for deleting a database row when the value is none.
             Atlas::Message::MapType propMap;
             prop->get(propMap["val"]);
-            Database::instance().encodeObject(propMap, upd_property_tuples[property.first]);
+            Database::instance().encodeObject(propMap, active_store[property.first]);
         } else {
             Atlas::Message::MapType propMap;
             prop->get(propMap["val"]);
-            Database::instance().encodeObject(propMap, upd_property_tuples[property.first]);
+            Database::instance().encodeObject(propMap, active_store[property.first]);
         }
 
         // FIXME check if this is new or just modded.
@@ -414,7 +415,7 @@ void StorageManager::tick()
 
     while (!m_unstoredEntities.empty()) {
         const WeakEntityRef & ent = m_unstoredEntities.front();
-        if (ent) {
+        if (ent && !ent->isDestroyed()) {
             debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; );
             insertEntity(ent.get());
             ++inserts;
