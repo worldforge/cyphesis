@@ -103,6 +103,9 @@ class PropertyBase : public OperationsListener {
      * @return
      */
     static std::uint32_t flagsForPropertyName(const std::string& name);
+
+    bool operator==(const PropertyBase& rhs) const;
+    bool operator!=(const PropertyBase& rhs) const;
 };
 
 /// \brief Flag indicating data has been written to permanent store
@@ -180,7 +183,7 @@ class SoftProperty : public PropertyBase {
     Atlas::Message::Element m_data;
   public:
     SoftProperty() = default;
-    explicit SoftProperty(const Atlas::Message::Element & data);
+    explicit SoftProperty(Atlas::Message::Element  data);
 
     int get(Atlas::Message::Element & val) const override ;
     void set(const Atlas::Message::Element & val) override ;

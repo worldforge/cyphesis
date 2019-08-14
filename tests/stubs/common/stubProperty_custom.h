@@ -97,7 +97,7 @@ void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
 
 #ifndef STUB_SoftProperty_SoftProperty
 #define STUB_SoftProperty_SoftProperty
-SoftProperty::SoftProperty(const Atlas::Message::Element & data)
+SoftProperty::SoftProperty(Atlas::Message::Element data)
     : PropertyBase(0), m_data(data)
 {
 

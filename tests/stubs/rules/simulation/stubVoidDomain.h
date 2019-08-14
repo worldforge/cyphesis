@@ -16,14 +16,6 @@
   }
 #endif //STUB_VoidDomain_VoidDomain
 
-#ifndef STUB_VoidDomain_tick
-//#define STUB_VoidDomain_tick
-  void VoidDomain::tick(double t, OpVector& res)
-  {
-    
-  }
-#endif //STUB_VoidDomain_tick
-
 #ifndef STUB_VoidDomain_isEntityVisibleFor
 //#define STUB_VoidDomain_isEntityVisibleFor
   bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const

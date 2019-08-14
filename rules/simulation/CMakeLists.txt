@@ -51,7 +51,9 @@ add_library(rulessimulation
     MindProperty.cpp
     EntityProperty.cpp
     ScriptUtils.cpp
-    ServerBBoxProperty.cpp)
+    ServerBBoxProperty.cpp
+    StackableDomain.cpp
+    AmountProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

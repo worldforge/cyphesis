@@ -41,11 +41,6 @@ class TasksProperty : public PropertyBase
 
         void remove(LocatedEntity*, const std::string& name) override;
 
-        bool busy() const
-        {
-            return !m_tasks.empty();
-        }
-
         int get(Atlas::Message::Element& val) const override;
 
         void set(const Atlas::Message::Element& val) override;

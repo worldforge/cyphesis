@@ -34,9 +34,11 @@
 
 #include "physics/Convert.h"
 
+#include "common/const.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/operations/Update.h"
+#include "common/operations/Tick.h"
 #include "rules/simulation/BaseWorld.h"
 #include "EntityProperty.h"
 #include "PerceptionSightProperty.h"
@@ -413,6 +415,57 @@ PhysicalDomain::~PhysicalDomain()
     delete m_visibilityBroadphase;
     delete m_collisionConfiguration;
     m_propertyAppliedConnection.disconnect();
+}
+
+void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+{
+    entity->installDelegate(Atlas::Objects::Operation::TICK_NO, propertyName);
+    OpVector res;
+    double tickSize = 1.0 / 15.0;
+    tick(tickSize, res);
+    for (auto& op : res) {
+        entity->sendWorld(op);
+    }
+    scheduleTick(*entity, BaseWorld::instance().getTime());
+}
+
+void PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
+{
+    Atlas::Objects::Entity::Anonymous tick_arg;
+    tick_arg->setName("domain");
+    Atlas::Objects::Operation::Tick tickOp;
+    tickOp->setTo(entity.getId());
+    tickOp->setSeconds(timeNow + ((1.0 / 15.0) / consts::time_multiplier));
+    tickOp->setAttr("lastTick", timeNow);
+    tickOp->setArgs1(tick_arg);
+
+    entity.sendWorld(tickOp);
+}
+
+
+HandlerResult PhysicalDomain::operation(LocatedEntity* entity, const Operation& op, OpVector& res)
+{
+    return tick_handler(entity, op, res);
+}
+
+HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res)
+{
+    if (!op->getArgs().empty() && !op->getArgs().front()->isDefaultName() && op->getArgs().front()->getName() == "domain") {
+
+        double timeNow = op->getSeconds();
+        double tickSize = 1.0 / 15.0;
+        Atlas::Message::Element elem;
+        if (op->copyAttr("lastTick", elem) != 0 && elem.isFloat()) {
+            tickSize = timeNow - elem.Float();
+
+        }
+
+        tick(tickSize, res);
+        scheduleTick(*entity, timeNow);
+
+        return OPERATION_BLOCKED;
+    }
+    return OPERATION_IGNORED;
 }
 
 void PhysicalDomain::buildTerrainPages()

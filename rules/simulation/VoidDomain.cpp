@@ -30,10 +30,6 @@ VoidDomain::VoidDomain(LocatedEntity& entity)
 {
 }
 
-void VoidDomain::tick(double t, OpVector& res)
-{
-}
-
 bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
     //The entity to which the domain belongs can see its content, otherwise nothing can be seen.

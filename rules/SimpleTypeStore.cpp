@@ -52,7 +52,7 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
         if (I == m_types.end()) {
             log(ERROR, String::compose("Installing %1 \"%2\" "
                                        "which has unknown parent \"%3\".",
-                                       obj->getObjtype(), child, parent));;
+                                       obj->getObjtype(), child, parent));
             return nullptr;
         }
         parentNode = I->second.get();

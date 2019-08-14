@@ -30,8 +30,6 @@ class VoidDomain : public Domain
 
         ~VoidDomain() override = default;
 
-        void tick(double t, OpVector& res) override;
-
         bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
         void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;

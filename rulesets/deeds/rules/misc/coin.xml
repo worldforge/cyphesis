@@ -10,9 +10,12 @@
             <map name="material">
                 <string name="default">gold</string>
             </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
         </map>
         <string name="id">coin</string>
         <string name="objtype">class</string>
-        <string name="parent">stackable</string>
+        <string name="parent">thing</string>
     </map>
 </atlas>

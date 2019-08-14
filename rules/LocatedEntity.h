@@ -104,6 +104,11 @@ static const std::uint32_t entity_dirty_location = 1u << 11u;
  */
 static const std::uint32_t entity_admin = 1u << 12u;
 
+/**
+ * The entity is stackable.
+ */
+static const std::uint32_t entity_stacked = 1u << 13u;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///
@@ -222,6 +227,8 @@ class LocatedEntity : public Router, public ReferenceCounted {
 
     virtual Domain * getDomain();
     virtual const Domain * getDomain() const;
+
+    virtual void setDomain(Domain* domain);
 
     virtual void sendWorld(const Operation & op);
 
@@ -369,11 +376,6 @@ class LocatedEntity : public Router, public ReferenceCounted {
         PropertyT * sp = nullptr;
         if (p != nullptr) {
             sp = dynamic_cast<PropertyT *>(p);
-            //Assert that the stored property is of the correct type. If not,
-            //it needs to be installed into CorePropertyManager.
-            //We want to do this here, because allowing for properties to be
-            //installed of the wrong type brings instability to the system.
-            assert(sp);
         }
         if (sp == nullptr) {
             // If it is not of the right type, delete it and a new

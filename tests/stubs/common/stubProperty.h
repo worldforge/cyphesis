@@ -104,6 +104,14 @@
   }
 #endif //STUB_PropertyBase_flagsForPropertyName
 
+#ifndef STUB_PropertyBase_operator_EQUALS
+//#define STUB_PropertyBase_operator_EQUALS
+  bool PropertyBase::operator==(const PropertyBase& rhs) const
+  {
+    return false;
+  }
+#endif //STUB_PropertyBase_operator_EQUALS
+
 
 #ifndef STUB_Property_Property
 //#define STUB_Property_Property
@@ -163,7 +171,7 @@
 
 #ifndef STUB_SoftProperty_SoftProperty
 //#define STUB_SoftProperty_SoftProperty
-   SoftProperty::SoftProperty(const Atlas::Message::Element & data)
+   SoftProperty::SoftProperty(Atlas::Message::Element  data)
     : PropertyBase(data)
   {
     

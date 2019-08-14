@@ -323,6 +323,10 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             }
 
             changeContainer(new_loc);
+            //If the entity is stackable it might have been deleted as a result of changing container. If so bail out now.
+            if (isDestroyed()) {
+                return;
+            }
             processAppearDisappear(std::move(previousObserving), res);
         } else {
             if (updatedTransform) {
@@ -454,7 +458,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     bool hadProtectedChanges = false;
     bool hadPrivateChanges = false;
 
-    for (auto entry : m_properties) {
+    for (const auto& entry : m_properties) {
         PropertyBase* prop = entry.second;
         assert(prop != nullptr);
         if (prop->hasFlags(flag_unsent)) {

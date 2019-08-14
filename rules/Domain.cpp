@@ -18,15 +18,19 @@
 
 #include "Domain.h"
 
-
-static const bool debug_flag = false;
-
 Domain::Domain(LocatedEntity& entity) : m_entity(entity)
 {
 }
 
 Domain::~Domain() = default;
 
+void Domain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+{
+}
 
+HandlerResult Domain::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+{
+    return HandlerResult::OPERATION_IGNORED;
+}
 
 

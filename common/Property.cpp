@@ -19,12 +19,14 @@
 #include "Property_impl.h"
 #include "Property.h"
 
+#include <utility>
+
 
 /// \brief Classes that define properties on in world entities
 ///
 /// Property classes handle the values of Atlas attributes on in
 /// game entities, ensuring type safety, and encapsulating certain
-/// behavoirs related to the presence and value of the attribute.
+/// behaviors related to the presence and value of the attribute.
 /// A property instance can be associated with an Entity instance
 /// or a class, so it should not store any data specific to any of
 /// the Entity instances it has been applied to. When it is taking effect
@@ -85,6 +87,20 @@ HandlerResult PropertyBase::operation(LocatedEntity *,
     return OPERATION_IGNORED;
 }
 
+bool PropertyBase::operator==(const PropertyBase& rhs) const
+{
+    Atlas::Message::Element thisElement;
+    get(thisElement);
+    Atlas::Message::Element thatElement;
+    rhs.get(thatElement);
+    return thisElement == thatElement;
+}
+
+bool PropertyBase::operator!=(const PropertyBase& rhs) const
+{
+    return !operator==(rhs);
+}
+
 template<>
 void Property<int>::set(const Atlas::Message::Element & e)
 {
@@ -136,7 +152,6 @@ void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
 template<>
 void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
 {
-    // FIXME Merge data?
     if (e.isMap()) {
         this->m_data = e.Map();
     }
@@ -151,8 +166,8 @@ void Property<std::string>::add(const std::string & s,
     }
 }
 
-SoftProperty::SoftProperty(const Atlas::Message::Element & data) :
-              PropertyBase(0), m_data(data)
+SoftProperty::SoftProperty(Atlas::Message::Element data) :
+    PropertyBase(0), m_data(std::move(data))
 {
 }
 

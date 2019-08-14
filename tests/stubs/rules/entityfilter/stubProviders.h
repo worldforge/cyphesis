@@ -579,8 +579,8 @@ namespace EntityFilter {
 
 #ifndef STUB_ContainsRecursiveFunctionProvider_ContainsRecursiveFunctionProvider
 //#define STUB_ContainsRecursiveFunctionProvider_ContainsRecursiveFunctionProvider
-   ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container, std::shared_ptr<Predicate> condition)
-    : Consumer(container, condition)
+   ContainsRecursiveFunctionProvider::ContainsRecursiveFunctionProvider(std::shared_ptr<Consumer<QueryContext>> container, std::shared_ptr<Predicate> condition, bool recursive)
+    : Consumer(container, condition, recursive)
   {
     
   }

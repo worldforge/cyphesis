@@ -257,6 +257,12 @@ const Domain* LocatedEntity::getDomain() const
     return nullptr;
 }
 
+void LocatedEntity::setDomain(Domain* domain)
+{
+    //no-op
+}
+
+
 
 /// \brief Send an operation to the world for dispatch.
 ///

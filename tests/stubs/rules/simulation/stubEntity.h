@@ -11,6 +11,7 @@
 //#define STUB_Entity_Entity
    Entity::Entity(const std::string & id, long intId)
     : LocatedEntity(id, intId)
+    , m_domain(nullptr)
   {
     
   }
@@ -359,6 +360,14 @@
     return nullptr;
   }
 #endif //STUB_Entity_getDomain
+
+#ifndef STUB_Entity_setDomain
+//#define STUB_Entity_setDomain
+  void Entity::setDomain(Domain* domain)
+  {
+    
+  }
+#endif //STUB_Entity_setDomain
 
 #ifndef STUB_Entity_sendWorld
 //#define STUB_Entity_sendWorld

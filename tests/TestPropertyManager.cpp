@@ -61,7 +61,7 @@ PropertyBase * TestPropertyManager::addProperty(const std::string & name,
             p = new Property<std::string>;
             break;
           default:
-            p = new SoftProperty;
+            p = new SoftProperty();
             break;
         }
     } else {

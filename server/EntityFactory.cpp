@@ -98,9 +98,11 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             // The property will have been applied if it has an overridden
             // value, so we only apply if the value is still default.
             if (attrs.find(propIter.first) == attrs.end()) {
-                PropertyBase* prop = propIter.second;
-                prop->apply(&thing);
-                thing.propertyApplied(propIter.first, *prop);
+                auto prop = thing.modProperty(propIter.first);
+                if (prop) {
+                    prop->apply(&thing);
+                    thing.propertyApplied(propIter.first, *prop);
+                }
             }
         }
     }

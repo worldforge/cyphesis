@@ -76,8 +76,6 @@ class PhysicalDomain : public Domain
 
         ~PhysicalDomain() override;
 
-        void tick(double t, OpVector& res) override;
-
         bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
         void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;
@@ -96,6 +94,10 @@ class PhysicalDomain : public Domain
         void toggleChildPerception(LocatedEntity& entity) override;
 
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
+
+        void installDelegates(LocatedEntity* entity, const std::string& propertyName) override;
+
+        HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
 
     protected:
 
@@ -337,6 +339,12 @@ class PhysicalDomain : public Domain
         void applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
                             const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
                             std::set<LocatedEntity*>& transformedEntities, bool calculatePosition);
+
+        void scheduleTick(LocatedEntity& entity, double timeNow);
+
+        HandlerResult tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res);
+
+        void tick(double t, OpVector& res);
 
 
 };

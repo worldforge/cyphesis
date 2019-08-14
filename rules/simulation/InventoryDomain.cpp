@@ -16,23 +16,18 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#endif
-
 #include "InventoryDomain.h"
-#include "EntityProperty.h"
 #include "rules/LocatedEntity.h"
 
 #include "common/TypeNode.h"
 #include "common/debug.h"
 #include "PlantedOnProperty.h"
+#include "AmountProperty.h"
+#include "StackableDomain.h"
 
-#include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-#include <iostream>
 #include <unordered_set>
-#include <rules/simulation/BaseWorld.h>
 #include <common/operations/Update.h>
 
 static const bool debug_flag = true;
@@ -47,17 +42,37 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Unseen;
 
 InventoryDomain::InventoryDomain(LocatedEntity& entity) :
-        Domain(entity)
+    Domain(entity)
 {
     entity.makeContainer();
 }
 
-void InventoryDomain::tick(double t, OpVector& res)
-{
-}
-
 void InventoryDomain::addEntity(LocatedEntity& entity)
 {
+    if (entity.hasFlags(entity_stacked) && m_entity.m_contains) {
+        for (const auto& child : *m_entity.m_contains) {
+            if (child != &entity && child->getType() == entity.getType() && child->hasFlags(entity_stacked)) {
+                if (StackableDomain::checkEntitiesStackable(*child, entity)) {
+                    //Entity can be stacked.
+                    auto newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
+
+                    auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
+                    stackProp->data() += newEntityStackProp->data();
+                    stackProp->removeFlags(per_clean);
+                    child->applyProperty(AmountProperty::property_name, stackProp);
+
+                    newEntityStackProp->data() = 0;
+                    entity.applyProperty(AmountProperty::property_name, newEntityStackProp);
+
+                    Atlas::Objects::Operation::Update update;
+                    update->setTo(child->getId());
+                    child->sendWorld(update);
+                    return;
+                }
+            }
+        }
+    }
+
     entity.m_location.m_pos = WFMath::Point<3>::ZERO();
     entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
 //    entity.m_location.update(BaseWorld::instance().getTime());

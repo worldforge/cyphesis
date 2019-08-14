@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2016 Erik Ogenvik
+ Copyright (C) 2019 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,24 +15,32 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef INVENTORYDOMAIN_H_
-#define INVENTORYDOMAIN_H_
+
+#ifndef CYPHESIS_STACKABLEDOMAIN_H
+#define CYPHESIS_STACKABLEDOMAIN_H
 
 #include "rules/Domain.h"
 #include <set>
 #include <string>
 
 /**
- * @brief An inventory domain, typically attached to a character.
- * In this domain nothing can move. When viewed from the outside nothing can be seen, except for things that are attached to the entity.
- * Only the entity itself can reach things in the inventory.
+ * An entity with a StackableDomain is stackable.
+ *
+ * This works as such that when other entities that are of the same type are moved into them,
+ * as children, they are removed, and the "amount" property of the stackable entity is increased.
+ *
+ * Splitting a stack is done by issuing a Move op with an extra "amount" attribute. This will create
+ * a new entity, with the specified amount, while the existing entity will have its "amount" decreased.
+ *
+ * Deleting a stackable entity will decrease it's "amount" by one, or by a value specified in the "amount"
+ * attribute in the Delete ops first arg.
  */
-class InventoryDomain : public Domain
+class StackableDomain : public Domain
 {
     public:
-        explicit InventoryDomain(LocatedEntity& entity);
+        explicit StackableDomain(LocatedEntity& entity);
 
-        ~InventoryDomain() override = default;
+        ~StackableDomain() override = default;
 
         bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
@@ -46,6 +54,17 @@ class InventoryDomain : public Domain
 
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
 
+        void installDelegates(LocatedEntity* entity, const std::string& propertyName) override;
+
+        HandlerResult operation(LocatedEntity* entity, const Operation& op, OpVector& res) override;
+
+        static bool checkEntitiesStackable(const LocatedEntity& first, const LocatedEntity& second);
+
+    protected:
+        static std::vector<std::string> sIgnoredProps;
+
+        HandlerResult DeleteOperation(LocatedEntity* owner, const Operation& op, OpVector& res);
 };
 
-#endif /* INVENTORYDOMAIN_H_ */
+
+#endif //CYPHESIS_STACKABLEDOMAIN_H

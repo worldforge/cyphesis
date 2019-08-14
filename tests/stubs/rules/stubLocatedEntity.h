@@ -169,6 +169,14 @@
   }
 #endif //STUB_LocatedEntity_getDomain
 
+#ifndef STUB_LocatedEntity_setDomain
+//#define STUB_LocatedEntity_setDomain
+  void LocatedEntity::setDomain(Domain* domain)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_setDomain
+
 #ifndef STUB_LocatedEntity_sendWorld
 //#define STUB_LocatedEntity_sendWorld
   void LocatedEntity::sendWorld(const Operation & op)

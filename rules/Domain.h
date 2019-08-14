@@ -60,8 +60,6 @@ class Domain
 
         virtual ~Domain();
 
-        virtual void tick(double t, OpVector& res) = 0;
-
         /**
          * @brief Checks if the observing Entity can see the observed entity.
          *
@@ -156,6 +154,10 @@ class Domain
             return false;
         }
 
+
+        virtual void installDelegates(LocatedEntity* entity, const std::string& propertyName);
+
+        virtual HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res);
 
 };
 

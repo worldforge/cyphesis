@@ -46,8 +46,10 @@ class Entity : public LocatedEntity {
     /// per type.
     static std::unordered_map<const TypeNode*, std::unique_ptr<int>> s_monitorsMap;
 
+    Domain* m_domain;
 
-  public:
+
+    public:
     explicit Entity(const std::string & id, long intId);
     ~Entity() override;
 
@@ -109,6 +111,7 @@ class Entity : public LocatedEntity {
 
     Domain * getDomain() override ;
     const Domain * getDomain() const override ;
+    void setDomain(Domain* domain) override;
 
     void sendWorld(const Operation & op) override;
 

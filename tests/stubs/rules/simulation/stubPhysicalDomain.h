@@ -25,14 +25,6 @@
   }
 #endif //STUB_PhysicalDomain_PhysicalDomain_DTOR
 
-#ifndef STUB_PhysicalDomain_tick
-//#define STUB_PhysicalDomain_tick
-  void PhysicalDomain::tick(double t, OpVector& res)
-  {
-    
-  }
-#endif //STUB_PhysicalDomain_tick
-
 #ifndef STUB_PhysicalDomain_isEntityVisibleFor
 //#define STUB_PhysicalDomain_isEntityVisibleFor
   bool PhysicalDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -104,6 +96,22 @@
     return false;
   }
 #endif //STUB_PhysicalDomain_isEntityReachable
+
+#ifndef STUB_PhysicalDomain_installDelegates
+//#define STUB_PhysicalDomain_installDelegates
+  void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_installDelegates
+
+#ifndef STUB_PhysicalDomain_operation
+//#define STUB_PhysicalDomain_operation
+  HandlerResult PhysicalDomain::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_PhysicalDomain_operation
 
 #ifndef STUB_PhysicalDomain_createDomainBorders
 //#define STUB_PhysicalDomain_createDomainBorders
@@ -288,6 +296,30 @@
     
   }
 #endif //STUB_PhysicalDomain_applyTransformInternal
+
+#ifndef STUB_PhysicalDomain_scheduleTick
+//#define STUB_PhysicalDomain_scheduleTick
+  void PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_scheduleTick
+
+#ifndef STUB_PhysicalDomain_tick_handler
+//#define STUB_PhysicalDomain_tick_handler
+  HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_PhysicalDomain_tick_handler
+
+#ifndef STUB_PhysicalDomain_tick
+//#define STUB_PhysicalDomain_tick
+  void PhysicalDomain::tick(double t, OpVector& res)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_tick
 
 
 #endif

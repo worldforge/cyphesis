@@ -53,13 +53,10 @@ class DomainProperty: public Property<std::string> {
 
         void apply(LocatedEntity *) override;
 
-        Domain* getDomain(const LocatedEntity *) const;
-
         HandlerResult operation(LocatedEntity * e, const Operation & op, OpVector & res) override;
 
     private:
 
-        static PropertyInstanceState<Domain> sInstanceState;
 
         void scheduleTick(LocatedEntity& entity, double timeNow);
         HandlerResult tick_handler(LocatedEntity * e, const Operation & op, OpVector & res);

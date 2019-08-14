@@ -67,12 +67,15 @@ std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId)
+        LocatedEntity(id, intId),
+        m_domain(nullptr)
 {
 }
 
 Entity::~Entity()
 {
+    delete m_domain;
+
     if (m_type) {
         auto I = s_monitorsMap.find(m_type);
         if (I != s_monitorsMap.end()) {
@@ -113,9 +116,8 @@ void Entity::addChild(LocatedEntity& childEntity)
 
 void Entity::removeChild(LocatedEntity& childEntity)
 {
-    if (m_flags.hasFlags(entity_domain)) {
-        auto domain = getPropertyClass<DomainProperty>("domain")->getDomain(this);
-        domain->removeEntity(childEntity);
+    if (m_domain) {
+        m_domain->removeEntity(childEntity);
     }
     LocatedEntity::removeChild(childEntity);
 }
@@ -183,9 +185,9 @@ PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Messag
             I->second->remove(this, name);
             new_prop->removeFlags(flag_class);
             m_properties[name] = new_prop;
+            new_prop->install(this, name);
             new_prop->apply(this);
             propertyApplied(name, *new_prop);
-            new_prop->install(this, name);
             return new_prop;
         }
     }
@@ -296,20 +298,18 @@ void Entity::destroy()
 
 Domain * Entity::getDomain()
 {
-    if (m_flags.hasFlags(entity_domain)) {
-        return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    }
-    return nullptr;
+    return m_domain;
 }
 
 const Domain * Entity::getDomain() const
 {
-    if (m_flags.hasFlags(entity_domain)) {
-        return getPropertyClass<DomainProperty>("domain")->getDomain(this);
-    }
-    return nullptr;
+    return m_domain;
 }
 
+void Entity::setDomain(Domain* domain)
+{
+    m_domain = domain;
+}
 
 void Entity::sendWorld(const Operation & op)
 {

@@ -23,14 +23,6 @@
   }
 #endif //STUB_Domain_Domain_DTOR
 
-#ifndef STUB_Domain_tick
-//#define STUB_Domain_tick
-  void Domain::tick(double t, OpVector& res)
-  {
-    
-  }
-#endif //STUB_Domain_tick
-
 #ifndef STUB_Domain_isEntityVisibleFor
 //#define STUB_Domain_isEntityVisibleFor
   bool Domain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -62,6 +54,22 @@
     
   }
 #endif //STUB_Domain_getVisibleEntitiesFor
+
+#ifndef STUB_Domain_installDelegates
+//#define STUB_Domain_installDelegates
+  void Domain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+  {
+    
+  }
+#endif //STUB_Domain_installDelegates
+
+#ifndef STUB_Domain_operation
+//#define STUB_Domain_operation
+  HandlerResult Domain::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_Domain_operation
 
 
 #endif

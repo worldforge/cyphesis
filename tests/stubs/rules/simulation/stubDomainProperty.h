@@ -39,14 +39,6 @@
   }
 #endif //STUB_DomainProperty_apply
 
-#ifndef STUB_DomainProperty_getDomain
-//#define STUB_DomainProperty_getDomain
-  Domain* DomainProperty::getDomain(const LocatedEntity *) const
-  {
-    return nullptr;
-  }
-#endif //STUB_DomainProperty_getDomain
-
 #ifndef STUB_DomainProperty_operation
 //#define STUB_DomainProperty_operation
   HandlerResult DomainProperty::operation(LocatedEntity * e, const Operation & op, OpVector & res)

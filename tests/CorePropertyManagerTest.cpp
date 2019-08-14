@@ -282,6 +282,7 @@ int main()
 #include "stubs/server/stubAccount.h"
 #include "stubs/server/stubArithmeticBuilder.h"
 #include "stubs/server/stubConnectableRouter.h"
+#include "stubs/rules/simulation/stubAmountProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

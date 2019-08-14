@@ -69,6 +69,7 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
+#include <rules/simulation/AmountProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -279,6 +280,8 @@ CorePropertyManager::CorePropertyManager()
      * Goals for the minds.
      */
     installProperty<Property<Atlas::Message::ListType>>("_goals");
+
+    installProperty<AmountProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,
@@ -314,7 +317,7 @@ PropertyBase * CorePropertyManager::addProperty(const std::string & name,
             p = new Property<std::string>;
             break;
           default:
-            p = new SoftProperty;
+            p = new SoftProperty();
             break;
         }
     } else {

@@ -16,14 +16,6 @@
   }
 #endif //STUB_InventoryDomain_InventoryDomain
 
-#ifndef STUB_InventoryDomain_tick
-//#define STUB_InventoryDomain_tick
-  void InventoryDomain::tick(double t, OpVector& res)
-  {
-    
-  }
-#endif //STUB_InventoryDomain_tick
-
 #ifndef STUB_InventoryDomain_isEntityVisibleFor
 //#define STUB_InventoryDomain_isEntityVisibleFor
   bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
