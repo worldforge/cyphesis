@@ -55,23 +55,23 @@ static void exerciseProperty(PropertyBase * pb)
 int main()
 {
     // Assertions to verify the flags have the desired properties.
-    assert((per_clean | per_mask) == per_mask);
-    assert((per_ephem | per_mask) == per_mask);
-    assert((per_ephem | per_clean) == per_mask);
+    assert((persistence_clean | persistence_mask) == persistence_mask);
+    assert((persistence_ephem | persistence_mask) == persistence_mask);
+    assert((persistence_ephem | persistence_clean) == persistence_mask);
 
-    assert((per_clean & per_mask) == per_clean);
-    assert((per_ephem & per_mask) == per_ephem);
-    assert((per_ephem & per_clean) == 0);
+    assert((persistence_clean & persistence_mask) == persistence_clean);
+    assert((persistence_ephem & persistence_mask) == persistence_ephem);
+    assert((persistence_ephem & persistence_clean) == 0);
 
-    assert((vis_private | vis_non_public) == vis_non_public);
-    assert((vis_protected | vis_non_public) == vis_non_public);
-    assert((vis_protected | vis_private) == vis_non_public);
+    assert((visibility_private | visibility_non_public) == visibility_non_public);
+    assert((visibility_protected | visibility_non_public) == visibility_non_public);
+    assert((visibility_protected | visibility_private) == visibility_non_public);
 
-    assert((vis_private & vis_non_public) == vis_private);
-    assert((vis_protected & vis_non_public) == vis_protected);
-    assert((vis_protected & vis_private) == 0);
+    assert((visibility_private & visibility_non_public) == visibility_private);
+    assert((visibility_protected & visibility_non_public) == visibility_protected);
+    assert((visibility_protected & visibility_private) == 0);
 
-    assert((vis_non_public & per_mask) == 0);
+    assert((visibility_non_public & persistence_mask) == 0);
 
     Element val;
 

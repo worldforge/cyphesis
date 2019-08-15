@@ -51,7 +51,7 @@ void DensityProperty::updateMass(LocatedEntity *entity) const
         if (massProp->data() != mass) {
             massProp->set(mass);
             massProp->apply(entity);
-            massProp->removeFlags(per_clean);
+            massProp->removeFlags(persistence_clean);
             massProp->addFlags(flag_unsent);
             entity->propertyApplied("mass", *massProp);
         }

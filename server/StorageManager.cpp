@@ -211,7 +211,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
         prop->set(val);
-        prop->addFlags(per_clean | per_seen);
+        prop->addFlags(persistence_clean | persistence_seen);
         prop->apply(ent);
         ent->propertyApplied(name, *prop);
         instanceProperties.insert(name);
@@ -280,11 +280,11 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     const PropertyDict & properties = ent->getProperties();
     for (auto& entry : properties) {
         PropertyBase * prop = entry.second;
-        if (prop->hasFlags(per_ephem)) {
+        if (prop->hasFlags(persistence_ephem)) {
             continue;
         }
         encodeProperty(prop, property_tuples[entry.first]);
-        prop->addFlags(per_clean | per_seen);
+        prop->addFlags(persistence_clean | persistence_seen);
     }
     if (!property_tuples.empty()) {
         Database::instance().insertProperties(ent->getId(), property_tuples);
@@ -323,10 +323,10 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     const PropertyDict & properties = ent->getProperties();
     for (const auto& property : properties) {
         PropertyBase * prop = property.second;
-        if (prop->hasFlags(per_mask)) {
+        if (prop->hasFlags(persistence_mask)) {
             continue;
         }
-        KeyValues& active_store = prop->hasFlags(per_seen) ? upd_property_tuples : new_property_tuples;
+        KeyValues& active_store = prop->hasFlags(persistence_seen) ? upd_property_tuples : new_property_tuples;
         Atlas::Message::Element element;
         prop->get(element);
         if (element.isNone()) {
@@ -341,12 +341,12 @@ void StorageManager::updateEntity(LocatedEntity * ent)
         }
 
         // FIXME check if this is new or just modded.
-        if (prop->hasFlags(per_seen)) {
+        if (prop->hasFlags(persistence_seen)) {
             ++m_updatePropertyCount;
         } else {
             ++m_insertPropertyCount;
         }
-        prop->addFlags(per_clean | per_seen);
+        prop->addFlags(persistence_clean | persistence_seen);
     }
     if (!new_property_tuples.empty()) {
         Database::instance().insertProperties(ent->getId(),

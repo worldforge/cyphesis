@@ -99,6 +99,8 @@ class PhysicalDomain : public Domain
 
         HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
 
+        void tick(double t, OpVector& res);
+
     protected:
 
         friend class SteppingCallback;
@@ -343,9 +345,6 @@ class PhysicalDomain : public Domain
         void scheduleTick(LocatedEntity& entity, double timeNow);
 
         HandlerResult tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res);
-
-        void tick(double t, OpVector& res);
-
 
 };
 

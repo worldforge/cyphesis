@@ -58,7 +58,7 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
 
                     auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
                     stackProp->data() += newEntityStackProp->data();
-                    stackProp->removeFlags(per_clean);
+                    stackProp->removeFlags(persistence_clean);
                     child->applyProperty(AmountProperty::property_name, stackProp);
 
                     newEntityStackProp->data() = 0;

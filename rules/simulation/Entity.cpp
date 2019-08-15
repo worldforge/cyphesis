@@ -131,7 +131,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     if (I != m_properties.end()) {
         prop = I->second;
         // Mark it as unclean
-        prop->removeFlags(per_clean);
+        prop->removeFlags(persistence_clean);
     } else {
         PropertyDict::const_iterator J;
         if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {

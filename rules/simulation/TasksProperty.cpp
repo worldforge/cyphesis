@@ -39,7 +39,7 @@ static const bool debug_flag = false;
 static const std::string SERIALNO = "serialno";
 
 TasksProperty::TasksProperty()
-    : PropertyBase(per_ephem)
+    : PropertyBase(persistence_ephem)
 {
 }
 

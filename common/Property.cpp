@@ -245,9 +245,9 @@ template <> const std::string Property<Atlas::Message::MapType>::property_atlast
 std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
 {
     if (name.size() > 1 && name[0] == '_' && name[1] == '_') {
-        return vis_private;
+        return visibility_private;
     } else if (!name.empty() && name[0] == '_') {
-        return vis_protected;
+        return visibility_protected;
     }
     return 0;
 }

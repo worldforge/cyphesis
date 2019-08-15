@@ -97,10 +97,10 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
     };
 
     add_attribute_fn(m_privateDescription);
-    if (!p->hasFlags(vis_private)) {
+    if (!p->hasFlags(visibility_private)) {
         add_attribute_fn(m_protectedDescription);
     }
-    if (!p->hasFlags(vis_non_public)) {
+    if (!p->hasFlags(visibility_non_public)) {
         add_attribute_fn(m_publicDescription);
     }
 
@@ -135,7 +135,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     // present after the update.
     for (auto& entry : m_defaults) {
         //Don't remove ephemeral attributes.
-        if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(per_ephem)) {
+        if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(persistence_ephem)) {
             debug(std::cout << entry.first << " removed" << std::endl;)
             propertiesUpdate.removedProps.insert(entry.first);
         }
@@ -166,10 +166,10 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             p->set(entry.second);
 
             attributesMapPrivate[entry.first] = entry.second;
-            if (!p->hasFlags(vis_private)) {
+            if (!p->hasFlags(visibility_private)) {
                 attributesMapProtected[entry.first] = entry.second;
             }
-            if (!p->hasFlags(vis_non_public)) {
+            if (!p->hasFlags(visibility_non_public)) {
                 attributesMapPublic[entry.first] = entry.second;
             }
         } else {
@@ -181,10 +181,10 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
                 propertiesUpdate.changedProps.emplace(entry.first);
             }
             attributesMapPrivate[entry.first] = entry.second;
-            if (!p->hasFlags(vis_private)) {
+            if (!p->hasFlags(visibility_private)) {
                 attributesMapProtected[entry.first] = entry.second;
             }
-            if (!p->hasFlags(vis_non_public)) {
+            if (!p->hasFlags(visibility_non_public)) {
                 attributesMapPublic[entry.first] = entry.second;
             }
         }

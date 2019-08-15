@@ -464,17 +464,17 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         if (prop->hasFlags(flag_unsent)) {
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
-            if (entry.second->hasFlags(vis_private)) {
+            if (entry.second->hasFlags(visibility_private)) {
                 prop->add(entry.first, set_arg_private);
                 hadPrivateChanges = true;
-            } else if (entry.second->hasFlags(vis_protected)) {
+            } else if (entry.second->hasFlags(visibility_protected)) {
                 prop->add(entry.first, set_arg_protected);
                 hadProtectedChanges = true;
             } else {
                 prop->add(entry.first, set_arg);
                 hadPublicChanges = true;
             }
-            prop->removeFlags(flag_unsent | per_clean);
+            prop->removeFlags(flag_unsent | persistence_clean);
             hadChanges = true;
         }
     }
@@ -595,14 +595,14 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     } else if (observingEntity.getIntId() == getIntId()) {
         //Our own entity can see both public and protected, but not private properties.
         for (auto& entry : m_properties) {
-            if (!entry.second->hasFlags(vis_private)) {
+            if (!entry.second->hasFlags(visibility_private)) {
                 entry.second->add(entry.first, sarg);
             }
         }
     } else {
         //Other entities can only see public properties.
         for (auto& entry : m_properties) {
-            if (!entry.second->hasFlags(vis_non_public)) {
+            if (!entry.second->hasFlags(visibility_non_public)) {
                 entry.second->add(entry.first, sarg);
             }
         }

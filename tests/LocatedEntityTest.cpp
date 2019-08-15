@@ -365,7 +365,7 @@ int RELAY_NO = -1;
 #include "stubs/rules/stubScript.h"
 #include "stubs/rules/stubLocation.h"
 
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+IdProperty::IdProperty(const std::string & data) : PropertyBase(persistence_ephem),
                                                    m_data(data)
 {
 }
@@ -397,7 +397,7 @@ IdProperty * IdProperty::copy() const
 
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
+    PropertyBase(persistence_ephem), m_data(data)
 {
 }
 

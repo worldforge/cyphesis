@@ -27,7 +27,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-PropelProperty::PropelProperty() : PropertyBase(per_ephem)
+PropelProperty::PropelProperty() : PropertyBase(persistence_ephem)
 {
 }
 

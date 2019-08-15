@@ -69,9 +69,7 @@ struct TestDomain : Domain
 {
     explicit TestDomain(LocatedEntity& e) : Domain(e)
     {}
-
-    void tick(double t, OpVector& res) override
-    {}
+    
 
     bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override
     {

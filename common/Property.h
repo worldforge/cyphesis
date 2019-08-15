@@ -110,28 +110,28 @@ class PropertyBase : public OperationsListener {
 
 /// \brief Flag indicating data has been written to permanent store
 /// \ingroup PropertyFlags
-static const std::uint32_t per_clean = 1u << 0u;
+static const std::uint32_t persistence_clean = 1u << 0u;
 /// \brief Flag indicating data should never be persisted
 /// \ingroup PropertyFlags
-static const std::uint32_t per_ephem = 1u << 1u;
+static const std::uint32_t persistence_ephem = 1u << 1u;
 /// \brief Flag indicating data has been stored initially
 /// \ingroup PropertyFlags
-static const std::uint32_t per_seen = 1u << 2u;
+static const std::uint32_t persistence_seen = 1u << 2u;
 
 /// \brief Flag mask indicating data should not be written to store
 /// \ingroup PropertyFlags
-static const std::uint32_t per_mask = per_clean | per_ephem;
+static const std::uint32_t persistence_mask = persistence_clean | persistence_ephem;
 
 /// \brief Flag indicating property is "private", i.e. only available to the simulation.
 /// \ingroup PropertyFlags
-static const std::uint32_t vis_private = 1u << 3u;
+static const std::uint32_t visibility_private = 1u << 3u;
 /// \brief Flag indicating property is "protected", i.e. only available to the entity itself.
 /// \ingroup PropertyFlags
-static const std::uint32_t vis_protected = 1u << 4u;
+static const std::uint32_t visibility_protected = 1u << 4u;
 
 /// \brief Flag mask indicating property is private or protected.
 /// \ingroup PropertyFlags
-static const std::uint32_t vis_non_public = vis_private | vis_protected;
+static const std::uint32_t visibility_non_public = visibility_private | visibility_protected;
 
 /// \brief Flag set to indicate this is a class property, and has no instance
 /// \ingroup PropertyFlags

@@ -58,7 +58,7 @@ void ModeProperty::apply(LocatedEntity *entity)
 
                 activeRotationProp->data() = plantedRotation->data();
                 activeRotationProp->apply(entity);
-                activeRotationProp->removeFlags(per_clean);
+                activeRotationProp->removeFlags(persistence_clean);
                 activeRotationProp->addFlags(flag_unsent);
 
                 Atlas::Objects::Entity::Anonymous move_arg;
@@ -85,7 +85,7 @@ void ModeProperty::apply(LocatedEntity *entity)
 
                 activeRotationProp->data() = WFMath::Quaternion::Identity();
                 activeRotationProp->apply(entity);
-                activeRotationProp->removeFlags(per_clean);
+                activeRotationProp->removeFlags(persistence_clean);
                 activeRotationProp->addFlags(flag_unsent);
 
                 Atlas::Objects::Entity::Anonymous move_arg;

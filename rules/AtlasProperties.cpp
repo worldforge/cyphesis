@@ -32,7 +32,7 @@ using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-IdProperty::IdProperty(const std::string & data) : PropertyBase(per_ephem),
+IdProperty::IdProperty(const std::string & data) : PropertyBase(persistence_ephem),
                                                    m_data(data)
 {
 }
@@ -73,7 +73,7 @@ void NameProperty::add(const std::string & s, const RootEntity & ent) const
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-      PropertyBase(per_ephem), m_data(data)
+    PropertyBase(persistence_ephem), m_data(data)
 {
 }
 
