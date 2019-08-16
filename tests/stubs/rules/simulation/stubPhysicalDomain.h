@@ -249,13 +249,13 @@
   }
 #endif //STUB_PhysicalDomain_processDirtyTerrainAreas
 
-#ifndef STUB_PhysicalDomain_applyVelocity
-//#define STUB_PhysicalDomain_applyVelocity
-  void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity)
+#ifndef STUB_PhysicalDomain_applyPropel
+//#define STUB_PhysicalDomain_applyPropel
+  void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel)
   {
     
   }
-#endif //STUB_PhysicalDomain_applyVelocity
+#endif //STUB_PhysicalDomain_applyPropel
 
 #ifndef STUB_PhysicalDomain_calculatePositionForEntity
 //#define STUB_PhysicalDomain_calculatePositionForEntity
@@ -299,7 +299,7 @@
 
 #ifndef STUB_PhysicalDomain_applyTransformInternal
 //#define STUB_PhysicalDomain_applyTransformInternal
-  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
   {
     
   }

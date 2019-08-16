@@ -310,7 +310,7 @@ class PhysicalDomain : public Domain
 
         void processDirtyTerrainAreas();
 
-        void applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity);
+        void applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel);
 
         void calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry* entry, WFMath::Point<3>& pos);
 
@@ -339,7 +339,7 @@ class PhysicalDomain : public Domain
         void plantOnEntity(BulletEntry* plantedEntry, BulletEntry* entryPlantedOn);
 
         void applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
-                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel,
                             std::set<LocatedEntity*>& transformedEntities, bool calculatePosition);
 
         void scheduleTick(LocatedEntity& entity, double timeNow);

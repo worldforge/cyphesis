@@ -48,10 +48,29 @@ class Domain
 
     public:
 
+        /**
+         * A struct containing a collection of transformation that might be carried out on an entity contained in a Domain.
+         * Each domain can handle these requests at it's own discretion.
+         */
         struct TransformData {
+            /**
+             * The new orientation.
+             */
             const WFMath::Quaternion& orientation;
+
+            /**
+             * The new position.
+             */
             const WFMath::Point<3>& pos;
-            const WFMath::Vector<3>& velocity;
+
+            /**
+             * A new propelling value. This means that the entity is being propelled by itself (standard case would be a character walking).
+             */
+            const WFMath::Vector<3>& propel;
+
+            /**
+             * An entity onto which the entity should be planted.
+             */
             LocatedEntity* plantedOnEntity;
             boost::optional<std::string> plantedOnAttachPoint;
         };

@@ -30,6 +30,7 @@
 #include "common/TypeNode.h"
 #include "EntityProperty.h"
 #include "rules/simulation/PlantedOnProperty.h"
+#include "ModeProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -153,22 +154,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
     const Location old_loc = m_location;
 
-
-    std::string mode;
-
-    //TODO: use ModeProperty
-    if (hasAttr("mode")) {
-        Element mode_attr;
-        getAttr("mode", mode_attr);
-        if (mode_attr.isString()) {
-            mode = mode_attr.String();
-        } else {
-            log(ERROR, String::compose("Mode on entity is a \"%1\" in "
-                                           "Thing::MoveOperation",
-                                       Element::typeName(mode_attr.getType())));
-        }
-    }
-
     // Move ops often include a mode change, so we handle it here, even
     // though it is not a special attribute for efficiency. Otherwise
     // an additional Set op would be required.
@@ -179,7 +164,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         } else {
             // Update the mode
             setAttr("mode", attr_mode);
-            mode = attr_mode.String();
         }
     }
 
@@ -209,7 +193,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
     if (domain) {
 
-        WFMath::Vector<3> newVelocity;
+        WFMath::Vector<3> newPropel;
         WFMath::Point<3> newPos;
         WFMath::Quaternion newOrientation;
 
@@ -232,14 +216,14 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         if (ent->copyAttr("propel", attr_propel) == 0) {
             auto propelProp = requirePropertyClassFixed<PropelProperty>();
             try {
-                newVelocity.fromAtlas(attr_propel);
-                if (!newVelocity.isEqualTo(propelProp->data())) {
-                    propelProp->data() = newVelocity;
+                newPropel.fromAtlas(attr_propel);
+                if (!newPropel.isEqualTo(propelProp->data())) {
+                    propelProp->data() = newPropel;
                     // Velocity is not persistent so has no flag
                     updatedTransform = true;
                 } else {
-                    //Velocity wasn't changed, so we can make newVelocity invalid and it won't be applied.
-                    newVelocity.setValid(false);
+                    //Velocity wasn't changed, so we can make newPropel invalid and it won't be applied.
+                    newPropel.setValid(false);
                 }
             } catch (...) {
                 //just ignore malformed data
@@ -249,15 +233,15 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 //        else {
 //            if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
 //                // Update velocity
-//                if (fromStdVector(newVelocity, ent->getVelocity()) == 0) {
+//                if (fromStdVector(newPropel, ent->getVelocity()) == 0) {
 //                    auto propelProp = requirePropertyClassFixed<PropelProperty>();
-//                    if (!newVelocity.isEqualTo(propelProp->data())) {
-//                        propelProp->data() = newVelocity;
+//                    if (!newPropel.isEqualTo(propelProp->data())) {
+//                        propelProp->data() = newPropel;
 //                        // Velocity is not persistent so has no flag
 //                        updatedTransform = true;
 //                    } else {
-//                        //Velocity wasn't changed, so we can make newVelocity invalid and it won't be applied.
-//                        newVelocity.setValid(false);
+//                        //Velocity wasn't changed, so we can make newPropel invalid and it won't be applied.
+//                        newPropel.setValid(false);
 //                    }
 //                }
 //            }
@@ -325,7 +309,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             processAppearDisappear(std::move(previousObserving), res);
         } else {
             if (updatedTransform) {
-                Domain::TransformData transformData{newOrientation, newPos, newVelocity, plantedOn.entity.get(), plantedOn.attachment};
+                Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOn.entity.get(), plantedOn.attachment};
                 domain->applyTransform(*this, transformData, transformedEntities);
             }
         }

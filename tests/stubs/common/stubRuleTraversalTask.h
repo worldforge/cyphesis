@@ -9,7 +9,7 @@
 
 #ifndef STUB_RuleTraversalTask_RuleTraversalTask
 //#define STUB_RuleTraversalTask_RuleTraversalTask
-   RuleTraversalTask::RuleTraversalTask(const std::string& accountId, std::function<bool(const Atlas::Objects::Root&)>& visitor)
+   RuleTraversalTask::RuleTraversalTask(std::string accountId, std::function<bool(const Atlas::Objects::Root&)>& visitor)
     : ClientTask(accountId, visitor)
   {
     

@@ -57,7 +57,6 @@
 
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
-#include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 #include <sigc++/bind.h>
@@ -1009,7 +1008,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
             auto propelProp = entity.getPropertyClassFixed<PropelProperty>();
             if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
-                applyVelocity(*entry, propelProp->data());
+                applyPropel(*entry, propelProp->data());
             }
 
             auto stepFactorProp = entity.getPropertyType<double>("step_factor");
@@ -1888,7 +1887,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     m_dirtyEntries.insert(entry);
 }
 
-void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& velocity)
+void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel)
 {
     /**
      * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
@@ -1927,21 +1926,21 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
         }
     };
 
-    if (velocity.isValid()) {
+    if (propel.isValid()) {
         if (entry.collisionObject) {
             auto rigidBody = btRigidBody::upcast(entry.collisionObject);
             if (rigidBody) {
                 LocatedEntity* entity = entry.entity;
 
-                debug_print("PhysicalDomain::applyVelocity " << entity->describeEntity() << " " << velocity << " " << velocity.mag());
+                debug_print("PhysicalDomain::applyPropel " << entity->describeEntity() << " " << propel << " " << propel.mag());
 
-                btVector3 btVelocity = Convert::toBullet(velocity);
+                btVector3 btPropel = Convert::toBullet(propel);
 
                 //TODO: add support for flying and swimming
-                if (!btVelocity.isZero()) {
+                if (!btPropel.isZero()) {
 
                     //Check if we're trying to jump
-                    if (btVelocity.m_floats[1] > 0) {
+                    if (btPropel.m_floats[1] > 0) {
                         auto jumpSpeedProp = entity->getPropertyType<double>("speed_jump");
                         if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
 
@@ -1951,14 +1950,14 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                             if (isGrounded) {
                                 //If the entity is grounded, allow it to jump by setting the vertical velocity.
                                 btVector3 newVelocity = rigidBody->getLinearVelocity();
-                                newVelocity.m_floats[1] = static_cast<btScalar>(btVelocity.m_floats[1] * jumpSpeedProp->data());
+                                newVelocity.m_floats[1] = static_cast<btScalar>(btPropel.m_floats[1] * jumpSpeedProp->data());
                                 rigidBody->setLinearVelocity(newVelocity);
                                 //We'll mark the entity as actively jumping here, and rely on the post-tick callback to reset it when it's not jumping anymore.
                                 entry.isJumping = true;
                             }
                         }
                     }
-                    btVelocity.m_floats[1] = 0; //Don't allow vertical velocity to be set for the continuous velocity.
+                    btPropel.m_floats[1] = 0; //Don't allow vertical velocity to be set for the continuous velocity.
 
 
                     auto K = m_propellingEntries.find(entity->getIntId());
@@ -1966,12 +1965,12 @@ void PhysicalDomain::applyVelocity(BulletEntry& entry, const WFMath::Vector<3>& 
                         const Property<double>* stepFactorProp = entity->getPropertyType<double>("step_factor");
                         if (stepFactorProp && entity->m_location.bBox().isValid()) {
                             float height = entity->m_location.bBox().upperBound(1) - entity->m_location.bBox().lowerBound(1);
-                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btVelocity, height * (float) stepFactorProp->data()}));
+                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, height * (float) stepFactorProp->data()}));
                         } else {
-                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btVelocity, 0}));
+                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0}));
                         }
                     } else {
-                        K->second.velocity = btVelocity;
+                        K->second.velocity = btPropel;
                     }
                 } else {
                     btVector3 bodyVelocity = rigidBody->getLinearVelocity();
@@ -2014,11 +2013,11 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const TransformData& 
     }
     plantOnEntity(entry, entryPlantedOn);
 
-    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.velocity, transformedEntities, true);
+    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.propel, transformedEntities, true);
 }
 
 void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
-                                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& velocity,
+                                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel,
                                             std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
 {
 
@@ -2028,7 +2027,7 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath:
     assert(I != m_entries.end());
     bool hadChange = false;
     BulletEntry* entry = I->second;
-    applyVelocity(*entry, velocity);
+    applyPropel(*entry, propel);
     btRigidBody* rigidBody = nullptr;
     if (entry->collisionObject) {
         rigidBody = btRigidBody::upcast(entry->collisionObject);
