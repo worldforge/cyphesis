@@ -10,12 +10,7 @@
                 <list name="contains">
                     <string>pants</string>
                     <string>knife</string>
-                    <string>coin1</string>
-                    <string>coin2</string>
-                    <string>coin3</string>
-                    <string>coin4</string>
-                    <string>coin5</string>
-                    <string>coin6</string>
+                    <string>coins</string>
                 </list>
                 <map name="outfit">
                     <map name="legs">
@@ -37,28 +32,9 @@
                 <string name="parent">knife</string>
             </map>
             <map>
-                <string name="id">coin1</string>
+                <string name="id">coins</string>
                 <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin2</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin3</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin4</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin5</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin6</string>
-                <string name="parent">coin</string>
+                <int name="amount">10</int>
             </map>
         </list>
     </map>
@@ -96,12 +72,7 @@
                     <string>cloak</string>
                     <string>boots</string>
                     <string>hat</string>
-                    <string>coin1</string>
-                    <string>coin2</string>
-                    <string>coin3</string>
-                    <string>coin4</string>
-                    <string>coin5</string>
-                    <string>coin6</string>
+                    <string>coins</string>
                 </list>
                 <map name="outfit">
                     <map name="back">
@@ -150,28 +121,9 @@
                 <string name="style">fine</string>
             </map>
             <map>
-                <string name="id">coin1</string>
+                <string name="id">coins</string>
                 <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin2</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin3</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin4</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin5</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin6</string>
-                <string name="parent">coin</string>
+                <int name="amount">20</int>
             </map>
         </list>
     </map>
@@ -190,18 +142,8 @@
                     <string>hat</string>
                     <string>sword</string>
                     <string>bow</string>
-                    <string>arrow1</string>
-                    <string>arrow2</string>
-                    <string>arrow3</string>
-                    <string>arrow4</string>
-                    <string>arrow5</string>
-                    <string>arrow6</string>
-                    <string>coin1</string>
-                    <string>coin2</string>
-                    <string>coin3</string>
-                    <string>coin4</string>
-                    <string>coin5</string>
-                    <string>coin6</string>
+                    <string>arrows</string>
+                    <string>coins</string>
                 </list>
                 <map name="outfit">
                     <map name="body">
@@ -253,52 +195,14 @@
                 <string name="parent">bow</string>
             </map>
             <map>
-                <string name="id">arrow1</string>
+                <string name="id">arrows</string>
                 <string name="parent">arrow</string>
+                <int name="amount">20</int>
             </map>
             <map>
-                <string name="id">arrow2</string>
-                <string name="parent">arrow</string>
-            </map>
-            <map>
-                <string name="id">arrow3</string>
-                <string name="parent">arrow</string>
-            </map>
-            <map>
-                <string name="id">arrow4</string>
-                <string name="parent">arrow</string>
-            </map>
-            <map>
-                <string name="id">arrow5</string>
-                <string name="parent">arrow</string>
-            </map>
-            <map>
-                <string name="id">arrow6</string>
-                <string name="parent">arrow</string>
-            </map>
-            <map>
-                <string name="id">coin1</string>
+                <string name="id">coins</string>
                 <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin2</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin3</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin4</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin5</string>
-                <string name="parent">coin</string>
-            </map>
-            <map>
-                <string name="id">coin6</string>
-                <string name="parent">coin</string>
+                <int name="amount">10</int>
             </map>
         </list>
         <list name="_relations">

@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">500</float>
             </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
         </map>
         <string name="id">arrow</string>
         <string name="objtype">class</string>
@@ -33,7 +36,7 @@
         </map>
         <string name="id">arrow_b</string>
         <string name="objtype">class</string>
-        <string name="parent">thing</string>
+        <string name="parent">arrow</string>
     </map>
 
     <map>
@@ -50,6 +53,6 @@
         </map>
         <string name="id">arrow_c</string>
         <string name="objtype">class</string>
-        <string name="parent">thing</string>
+        <string name="parent">arrow</string>
     </map>
 </atlas>

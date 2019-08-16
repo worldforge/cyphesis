@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">2600</float>
             </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
             <map name="usages">
                 <map name="default">
                     <map name="consume">
