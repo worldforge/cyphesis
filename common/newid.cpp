@@ -18,8 +18,6 @@
 
 #include "common/Database.h"
 
-#include <assert.h>
-
 long newId(std::string & id)
 {
     return Database::instance().newId(id);

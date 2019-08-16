@@ -196,7 +196,7 @@ namespace StringPrivate
 	  } while (i + n < fmt.length() && is_number(fmt[i + n]));
 
 	  spec_no /= 10;
-	  output_list::iterator pos = output.end();
+	  auto pos = output.end();
 	  --pos;		// safe since we have just inserted a string>
 	
 	  specs.insert(specification_map::value_type(spec_no, pos));
@@ -221,9 +221,8 @@ namespace StringPrivate
     // assemble string
     std::string str;
   
-    for (output_list::const_iterator i = output.begin(), end = output.end();
-	 i != end; ++i)
-      str += *i;
+    for (const auto & i : output)
+      str += i;
   
     return str;
   }

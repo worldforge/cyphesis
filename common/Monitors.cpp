@@ -64,7 +64,7 @@ static std::ostream & operator<<(std::ostream & s, const Element & e)
         break;
       default:
         break;
-    };
+    }
     return s;
 }
 

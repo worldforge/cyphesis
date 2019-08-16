@@ -66,7 +66,7 @@ const char * FormattedXMLWriter::typeToStr(Element::Type t) const
         case Element::TYPE_NONE:
         default:
             return "NONE";
-    };
+    }
 }
 
 void FormattedXMLWriter::outputValue(const Element & e)
@@ -103,13 +103,13 @@ void FormattedXMLWriter::outputValue(const Element & e)
         default:
             m_stream << e.Int();
             break;
-    };
+    }
 }
 
 void FormattedXMLWriter::outputMap(const MapType & o)
 {
     auto Iend = o.end();
-    for (MapType::const_iterator I = o.begin(); I != Iend; ++I) {
+    for (auto I = o.begin(); I != Iend; ++I) {
         for (int i = 0; i < m_indent; ++i) {
             m_stream << " ";
         }
@@ -124,8 +124,8 @@ void FormattedXMLWriter::outputMap(const MapType & o)
 
 void FormattedXMLWriter::outputList(const ListType & o)
 {
-    ListType::const_iterator Iend = o.end();
-    for(ListType::const_iterator I = o.begin(); I != Iend; ++I) {
+    auto Iend = o.end();
+    for(auto I = o.begin(); I != Iend; ++I) {
         for(int i = 0; i < m_indent; ++i) {
             m_stream << " ";
         }

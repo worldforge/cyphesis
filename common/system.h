@@ -38,7 +38,7 @@
 
 #include <string>
 
-const std::string get_hostname();
+std::string get_hostname();
 
 unsigned int security_init();
 unsigned int security_check();

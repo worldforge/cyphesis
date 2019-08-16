@@ -25,6 +25,8 @@
 
 #include <Atlas/Objects/Operation.h>
 
+#include <utility>
+
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::Anonymous;
@@ -36,9 +38,9 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 
-RuleTraversalTask::RuleTraversalTask(const std::string& accountId, std::function<bool(const Atlas::Objects::Root&)>& visitor)
+RuleTraversalTask::RuleTraversalTask(std::string accountId, std::function<bool(const Atlas::Objects::Root&)>& visitor)
     :
-    mAccountId(accountId),
+    mAccountId(std::move(accountId)),
     mVisitor(visitor),
     mSerial(0)
 {

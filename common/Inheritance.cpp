@@ -95,7 +95,7 @@ Inheritance::Inheritance() : noClass(nullptr)
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
-    TypeNode * root = new TypeNode("root", root_desc);
+    auto root = new TypeNode("root", root_desc);
 
     atlasObjects["root"] = root;
 

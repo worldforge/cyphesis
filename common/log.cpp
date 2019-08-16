@@ -139,7 +139,7 @@ std::ostream & operator<<(std::ostream & s, LogLevel lvl)
         default:
             s << "UNKNOWN";
             break;
-    };
+    }
     return s;
 }
 
@@ -169,7 +169,7 @@ void log(LogLevel lvl, const std::string & msg)
             default:
                 type = LOG_CRIT;
                 break;
-        };
+        }
         syslog(type, "%s", msg.c_str());
     } else {
 #else // HAVE_SYSLOG
@@ -241,7 +241,7 @@ void logEvent(LogEvent lev, const std::string & msg)
         default:
             type = "UNKNOWN";
             break;
-    };
+    }
 
     logDate(event_log);
     event_log << " " << instance << " " << type << " " << msg

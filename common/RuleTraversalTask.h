@@ -46,7 +46,7 @@ class RuleTraversalTask : public ClientTask
          * \param accountId An account id.
          * \param visitor A visitor function.
          */
-        RuleTraversalTask(const std::string& accountId,
+        RuleTraversalTask(std::string accountId,
                 std::function<bool(const Atlas::Objects::Root&)>& visitor);
         ~RuleTraversalTask() override;
 

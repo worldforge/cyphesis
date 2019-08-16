@@ -39,7 +39,7 @@ extern "C" {
 #ifdef HAVE_SYS_UN_H
 #endif // HAVE_SYS_UN_H
 
-const std::string get_hostname()
+std::string get_hostname()
 {
 #ifndef HAVE_UNAME
     char hostname_buf[256];

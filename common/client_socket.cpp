@@ -25,10 +25,10 @@ static const char * DEFAULT_SLAVE_SOCKET = "cyslave.sock";
 
 UNIXSOCK_OPTION(client_socket_name, DEFAULT_CLIENT_SOCKET, CYPHESIS,
                 "unixport", "Local listen socket for admin connections",
-                "cyphesis_%1.sock");
+                "cyphesis_%1.sock")
 UNIXSOCK_OPTION(python_socket_name, DEFAULT_PYTHON_SOCKET, CYPHESIS,
                 "pythonport", "Local listen socket for python connections",
-                "cypython_%1.sock");
+                "cypython_%1.sock")
 UNIXSOCK_OPTION(slave_socket_name, DEFAULT_SLAVE_SOCKET, "slave", "unixport",
                 "Local listen socket for admin connections to the slave server",
-                "cyslave_%1.sock");
+                "cyslave_%1.sock")

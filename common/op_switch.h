@@ -72,13 +72,13 @@
         case OP_INVALID: \
             break; \
         default: \
-            if (_op_no == Atlas::Objects::Operation::THOUGHT_NO) { \
+            if ((_op_no) == Atlas::Objects::Operation::THOUGHT_NO) { \
                 _prefix ## ThoughtOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::TICK_NO) { \
                 _prefix ## TickOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::UPDATE_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::UPDATE_NO) { \
                 _prefix ## UpdateOperation(_op, _result); \
-            } else if (_op_no == Atlas::Objects::Operation::RELAY_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::RELAY_NO) { \
                 _prefix ## RelayOperation(_op, _result); \
             } else { \
                 /* ERROR */ \
@@ -109,19 +109,19 @@
         case OP_INVALID: \
             break; \
         default: \
-            if (_op_no == Atlas::Objects::Operation::SETUP_NO) { \
+            if ((_op_no) == Atlas::Objects::Operation::SETUP_NO) { \
                 return _prefix ## SetupOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::TICK_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::TICK_NO) { \
                 return _prefix ## TickOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::UNSEEN_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::UNSEEN_NO) { \
                 return _prefix ## UnseenOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::THOUGHT_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::THOUGHT_NO) { \
                 return _prefix ## ThoughtOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::THINK_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::THINK_NO) { \
                 return _prefix ## ThinkOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::COMMUNE_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::COMMUNE_NO) { \
                 return _prefix ## CommuneOperation(_op); \
-            } else if (_op_no == Atlas::Objects::Operation::RELAY_NO) { \
+            } else if ((_op_no) == Atlas::Objects::Operation::RELAY_NO) { \
                 return _prefix ## RelayOperation(_op); \
             } \
             break; \
