@@ -169,19 +169,11 @@ void EntityExerciser::runOperations()
         dispatchOp(op);
     }
     {
-        Atlas::Objects::Operation::Combine op;
-        dispatchOp(op);
-    }
-    {
         Atlas::Objects::Operation::Create op;
         dispatchOp(op);
     }
     {
         Atlas::Objects::Operation::Delete op;
-        dispatchOp(op);
-    }
-    {
-        Atlas::Objects::Operation::Divide op;
         dispatchOp(op);
     }
     {

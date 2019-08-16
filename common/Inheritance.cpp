@@ -22,8 +22,6 @@
 #include "TypeNode.h"
 #include "compose.hpp"
 
-#include <Atlas/Objects/Operation.h>
-
 #include <Atlas/Objects/Entity.h>
 
 using Atlas::Message::Element;
@@ -35,10 +33,8 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Affect;
-using Atlas::Objects::Operation::Combine;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Divide;
 using Atlas::Objects::Operation::Imaginary;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Move;
@@ -182,7 +178,7 @@ TypeNode * Inheritance::addChild(const Root & obj)
     if (I == Iend) {
         log(ERROR, String::compose("Installing %1 \"%2\" "
                                    "which has unknown parent \"%3\".",
-                                   obj->getObjtype(), child, parent));;
+                                   obj->getObjtype(), child, parent));
         return nullptr;
     }
     Element children(ListType(1, child));

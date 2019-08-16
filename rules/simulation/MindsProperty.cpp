@@ -567,34 +567,6 @@ void MindsProperty::mindSetOperation(LocatedEntity* ent, const Operation& op, Op
     res.push_back(op);
 }
 
-/// \brief Filter a Combine operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindCombineOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
-    debug_print("mindCombineOperation")
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindCombineOperation: combine op has no argument. " + ent->describeEntity());
-        return;
-    }
-    auto I = args.begin();
-    const Root& arg1 = *I;
-    op->setTo(arg1->getId());
-    auto Iend = args.end();
-    for (; I != Iend; ++I) {
-        const Root& arg = *I;
-        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            ent->error(op, "MindsProperty::mindCombineOp No ID.", res, ent->getId());
-            return;
-        }
-        // FIXME Check item to be combined is in inventory
-        // and then also check stackable and the same type.
-    }
-    res.push_back(op);
-}
-
 /// \brief Filter a Create operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -612,38 +584,6 @@ void MindsProperty::mindCreateOperation(LocatedEntity* ent, const Operation& op,
 void MindsProperty::mindDeleteOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
     op->setTo(ent->getId());
-    res.push_back(op);
-}
-
-/// \brief Filter a Divide operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindDivideOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        log(ERROR, "mindDivideOperation: op has no argument. " + ent->describeEntity());
-        return;
-    }
-    auto I = args.begin();
-    const Root& arg1 = *I;
-    if (!arg1->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        ent->error(op, "MindsProperty::mindDivideOp arg 1 has no ID.", res, ent->getId());
-        return;
-    }
-    // FIXME Check entity to be divided is in inventory
-    op->setTo(arg1->getId());
-    ++I;
-    auto Iend = args.end();
-    for (; I != Iend; ++I) {
-        const Root& arg = *I;
-        if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-            ent->error(op, "MindsProperty::mindDivideOp arg has ID.", res, ent->getId());
-            return;
-        }
-        // Check the same type?
-    }
     res.push_back(op);
 }
 
@@ -802,17 +742,11 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
     }
     auto op_no = op->getClassNo();
     switch (op_no) {
-        case Atlas::Objects::Operation::COMBINE_NO:
-            mindCombineOperation(ent, op, res);
-            break;
         case Atlas::Objects::Operation::CREATE_NO:
             mindCreateOperation(ent, op, res);
             break;
         case Atlas::Objects::Operation::DELETE_NO:
             mindDeleteOperation(ent, op, res);
-            break;
-        case Atlas::Objects::Operation::DIVIDE_NO:
-            mindDivideOperation(ent, op, res);
             break;
         case Atlas::Objects::Operation::IMAGINARY_NO:
             mindImaginaryOperation(ent, op, res);

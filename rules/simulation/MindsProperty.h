@@ -77,13 +77,9 @@ class MindsProperty : public PropertyBase
         HandlerResult RelayOperation(LocatedEntity* ent, const Operation& op, OpVector& res);
 
 
-        void mindCombineOperation(LocatedEntity*, const Operation&, OpVector&) const;
-
         void mindCreateOperation(LocatedEntity*, const Operation&, OpVector&) const;
 
         void mindDeleteOperation(LocatedEntity*, const Operation&, OpVector&) const;
-
-        void mindDivideOperation(LocatedEntity*, const Operation&, OpVector&) const;
 
         void mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const;
 

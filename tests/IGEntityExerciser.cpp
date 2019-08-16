@@ -88,13 +88,6 @@ void IGEntityExerciser::runOperations()
         this->dispatchOp(op);
     }
     {
-        Atlas::Objects::Operation::Combine op;
-        this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent->CombineOperation(op, ov);
-        this->flushOperations(ov);
-    }
-    {
         Atlas::Objects::Operation::Create op;
         this->dispatchOp(op);
         OpVector ov;
@@ -142,13 +135,6 @@ void IGEntityExerciser::runOperations()
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::SIGHT_NO);
         }
-        this->flushOperations(ov);
-    }
-    {
-        Atlas::Objects::Operation::Divide op;
-        this->dispatchOp(op);
-        OpVector ov;
-        this->m_ent->DivideOperation(op, ov);
         this->flushOperations(ov);
     }
     {

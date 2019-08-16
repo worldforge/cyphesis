@@ -24,9 +24,6 @@
         case Atlas::Objects::Operation::APPEARANCE_NO: \
             _prefix ## AppearanceOperation(_op, _result); \
             break; \
-        case Atlas::Objects::Operation::COMBINE_NO: \
-            _prefix ## CombineOperation(_op, _result); \
-            break; \
         case Atlas::Objects::Operation::CREATE_NO: \
             _prefix ## CreateOperation(_op, _result); \
             break; \
@@ -35,9 +32,6 @@
             break; \
         case Atlas::Objects::Operation::DISAPPEARANCE_NO: \
             _prefix ## DisappearanceOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::DIVIDE_NO: \
-            _prefix ## DivideOperation(_op, _result); \
             break; \
         case Atlas::Objects::Operation::GET_NO: \
             _prefix ## GetOperation(_op, _result); \

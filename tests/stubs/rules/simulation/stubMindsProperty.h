@@ -144,14 +144,6 @@
   }
 #endif //STUB_MindsProperty_RelayOperation
 
-#ifndef STUB_MindsProperty_mindCombineOperation
-//#define STUB_MindsProperty_mindCombineOperation
-  void MindsProperty::mindCombineOperation(LocatedEntity*, const Operation&, OpVector&) const
-  {
-    
-  }
-#endif //STUB_MindsProperty_mindCombineOperation
-
 #ifndef STUB_MindsProperty_mindCreateOperation
 //#define STUB_MindsProperty_mindCreateOperation
   void MindsProperty::mindCreateOperation(LocatedEntity*, const Operation&, OpVector&) const
@@ -167,14 +159,6 @@
     
   }
 #endif //STUB_MindsProperty_mindDeleteOperation
-
-#ifndef STUB_MindsProperty_mindDivideOperation
-//#define STUB_MindsProperty_mindDivideOperation
-  void MindsProperty::mindDivideOperation(LocatedEntity*, const Operation&, OpVector&) const
-  {
-    
-  }
-#endif //STUB_MindsProperty_mindDivideOperation
 
 #ifndef STUB_MindsProperty_mindGoalInfoOperation
 //#define STUB_MindsProperty_mindGoalInfoOperation
