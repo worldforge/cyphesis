@@ -132,7 +132,6 @@ set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp EntityExerciser
 
 wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ../rules/LocatedEntity.cpp)
 wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ../rules/simulation/Entity.cpp ../rules/LocatedEntity.cpp)
-wf_add_test(StackableTest.cpp ${ENTITYEXERCISE} ../rules/simulation/Stackable.cpp)
 wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ../rules/simulation/Thing.cpp)
 wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ../rules/simulation/World.cpp)
 wf_add_test(ThingupdatePropertiesTest.cpp ../rules/simulation/Thing.cpp ${PROJECT_SOURCE_DIR}/common/Property.cpp)

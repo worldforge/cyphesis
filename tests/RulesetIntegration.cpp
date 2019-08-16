@@ -641,7 +641,6 @@ int main()
 
 #include "rules/python/PythonScriptFactory.h"
 #include "rules/simulation/Task.h"
-#include "rules/simulation/Stackable.h"
 
 #include "stubs/server/stubAdmin.h"
 #include "stubs/rules/stubLocation.h"
@@ -658,7 +657,6 @@ PropertyBase* CorePropertyManager::addProperty(const std::string& name, int type
 }
 
 #include "stubs/server/stubCorePropertyManager.h"
-#include "stubs/rules/simulation/stubStackable.h"
 
 
 #define STUB_ArchetypeFactory_duplicateFactory

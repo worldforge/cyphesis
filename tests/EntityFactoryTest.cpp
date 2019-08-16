@@ -27,7 +27,6 @@
 
 #include "server/EntityFactory.h"
 
-#include "rules/simulation/Stackable.h"
 #include "rules/simulation/World.h"
 
 #include "common/ScriptKit.h"
@@ -356,7 +355,6 @@ int main()
 
 // stubs
 
-#include "stubs/rules/simulation/stubStackable.h"
 #include "stubs/rules/simulation/stubThing.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"

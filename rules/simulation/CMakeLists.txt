@@ -3,7 +3,6 @@ add_library(rulessimulation
     Entity.cpp
     Thing.cpp
     World.cpp
-    Stackable.cpp
     ExternalMind.cpp
     Movement.cpp
     Pedestrian.cpp

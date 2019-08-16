@@ -18,7 +18,6 @@
 
 #include "EntityFactory_impl.h"
 
-#include "rules/simulation/Stackable.h"
 #include "rules/simulation/World.h"
 
 #include "common/debug.h"
@@ -136,9 +135,6 @@ void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::Pro
 
 template
 class EntityFactory<Thing>;
-
-template
-class EntityFactory<Stackable>;
 
 template
 class EntityFactory<World>;

@@ -340,7 +340,6 @@ int main()
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/DomainProperty.h"
 
-#include "rules/simulation/Stackable.h"
 #include "rules/simulation/ExternalMind.h"
 #include "rules/python/PythonArithmeticFactory.h"
 #include "rules/simulation/Task.h"
@@ -416,7 +415,6 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId
 class World;
 
 
-#include "stubs/rules/simulation/stubStackable.h"
 #include "stubs/rules/simulation/stubAreaProperty.h"
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/simulation/stubExternalProperty.h"

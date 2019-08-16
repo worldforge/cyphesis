@@ -446,7 +446,6 @@ int main()
 #include "rules/simulation/DefaultLocationProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/simulation/LimboProperty.h"
-#include "rules/simulation/Stackable.h"
 #include "stubs/rules/stubScaleProperty.h"
 
 #include "common/const.h"

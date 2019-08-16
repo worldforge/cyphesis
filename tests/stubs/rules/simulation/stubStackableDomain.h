@@ -96,5 +96,13 @@
   }
 #endif //STUB_StackableDomain_DeleteOperation
 
+#ifndef STUB_StackableDomain_MoveOperation
+//#define STUB_StackableDomain_MoveOperation
+  HandlerResult StackableDomain::MoveOperation(LocatedEntity* owner, const Operation& op, OpVector& res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_StackableDomain_MoveOperation
+
 
 #endif

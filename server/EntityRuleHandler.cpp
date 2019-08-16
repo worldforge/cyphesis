@@ -39,17 +39,12 @@ using String::compose;
 
 class Entity;
 
-class Stackable;
-
 class Thing;
 
 class World;
 
 extern template
 class EntityFactory<Thing>;
-
-extern template
-class EntityFactory<Stackable>;
 
 extern template
 class EntityFactory<World>;
@@ -68,11 +63,6 @@ EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
     };
     mFactories["thing"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
         auto factory = new EntityFactory<Thing>();
-        factory->m_parent = parent;
-        return factory;
-    };
-    mFactories["stackable"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
-        auto factory = new EntityFactory<Stackable>();
         factory->m_parent = parent;
         return factory;
     };
@@ -97,7 +87,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
         } else {
             debug(std::cout << "class \"" << class_name
                             << "\" has non existent parent \"" << parent
-                            << "\". Waiting." << std::endl << std::flush;);
+                            << "\". Waiting." << std::endl << std::flush;)
             dependent = parent;
             reason = compose("Entity rule \"%1\" has parent 'game_entity' and requires a "
                              "pre-defined entity factory, which could not be found.", class_name);
@@ -109,7 +99,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
         if (parent_factory == nullptr) {
             debug(std::cout << "class \"" << class_name
                             << "\" has non existent parent \"" << parent
-                            << "\". Waiting." << std::endl << std::flush;);
+                            << "\". Waiting." << std::endl << std::flush;)
             dependent = parent;
             reason = compose("Entity rule \"%1\" has parent \"%2\" which does "
                              "not exist.", class_name, parent);
@@ -155,7 +145,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
     }
 
     debug(std::cout << "INSTALLING " << class_name << ":" << parent
-                    << std::endl << std::flush;);
+                    << std::endl << std::flush;)
 
     // Install the factory in place.
     if (m_builder->installFactory(class_name, class_desc, factory) != 0) {

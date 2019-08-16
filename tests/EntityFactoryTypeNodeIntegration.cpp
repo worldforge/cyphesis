@@ -91,8 +91,6 @@ int main()
 
 #include "rules/python/PythonScriptFactory.h"
 
-#include "rules/simulation/Stackable.h"
-#include "stubs/rules/simulation/stubStackable.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/rules/simulation/stubThing.h"

@@ -113,6 +113,14 @@
   }
 #endif //STUB_PhysicalDomain_operation
 
+#ifndef STUB_PhysicalDomain_tick
+//#define STUB_PhysicalDomain_tick
+  void PhysicalDomain::tick(double t, OpVector& res)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_tick
+
 #ifndef STUB_PhysicalDomain_createDomainBorders
 //#define STUB_PhysicalDomain_createDomainBorders
   void PhysicalDomain::createDomainBorders()
@@ -312,14 +320,6 @@
     return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_PhysicalDomain_tick_handler
-
-#ifndef STUB_PhysicalDomain_tick
-//#define STUB_PhysicalDomain_tick
-  void PhysicalDomain::tick(double t, OpVector& res)
-  {
-    
-  }
-#endif //STUB_PhysicalDomain_tick
 
 
 #endif
