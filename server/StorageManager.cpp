@@ -242,7 +242,9 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 
     //Now restore all properties of the child entities.
     if (ent->m_contains) {
-        for (auto& childEntity : *ent->m_contains) {
+        //It might be that the contains field gets altered by restoring of children, so we need to operate on a copy.
+        auto contains = *ent->m_contains;
+        for (auto& childEntity : contains) {
             restorePropertiesRecursively(childEntity.get());
         }
     }
