@@ -140,17 +140,17 @@ TValue& WrapperBase<TValue, TPythonClass, TClassInstance>::value(const Py::Objec
 //    throw Py::NotImplementedError("Objects can only be checked for == or !=");
 //}
 
-std::string verifyString(const Py::Object& object, const std::string& message = "Must be string");
+std::string verifyString(const Py::Object& object, const std::string& message = "Must be string.");
 
-float verifyNumeric(const Py::Object& object, const std::string& message = "Must be numeric");
+float verifyNumeric(const Py::Object& object, const std::string& message = "Must be numeric.");
 
-long verifyLong(const Py::Object& object, const std::string& message = "Must be long");
+long verifyLong(const Py::Object& object, const std::string& message = "Must be long.");
 
-float verifyFloat(const Py::Object& object, const std::string& message = "Must be float");
+float verifyFloat(const Py::Object& object, const std::string& message = "Must be float.");
 
-Py::List verifyList(const Py::Object& object, const std::string& message = "Must be list");
+Py::List verifyList(const Py::Object& object, const std::string& message = "Must be list.");
 
-Py::Dict verifyDict(const Py::Object& object, const std::string& message = "Must be dict");
+Py::Dict verifyDict(const Py::Object& object, const std::string& message = "Must be dict.");
 
 template<typename T>
 typename T::value_type& verifyObject(const Py::Object& object, const std::string& message = "")
