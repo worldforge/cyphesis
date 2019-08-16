@@ -95,7 +95,7 @@ class TerrainProperty : public PropertyBase {
     Mercator::Terrain& getData();
     Mercator::Terrain& getData() const;
 
-    const std::vector<std::string> getSurfaceNames() const {
+    const std::vector<std::string>& getSurfaceNames() const {
         return m_surfaceNames;
     }
 

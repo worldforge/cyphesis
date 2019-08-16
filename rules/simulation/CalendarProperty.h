@@ -26,6 +26,10 @@
 class CalendarProperty : public PropertyBase
 {
     public:
+
+        static constexpr const char* property_name = "calendar";
+        static constexpr const char* property_atlastype = "map";
+
         CalendarProperty();
 
         int get(Atlas::Message::Element&) const override;

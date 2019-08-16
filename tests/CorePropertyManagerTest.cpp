@@ -235,16 +235,6 @@ int main()
 #include "rules/simulation/LimboProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/python/ScriptsProperty.h"
-//void Entity::destroy()
-//{
-//    destroyed.emit();
-//}
-//
-//void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-//{
-//    ent->setId(getId());
-//}
-
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 
@@ -283,6 +273,8 @@ int main()
 #include "stubs/server/stubArithmeticBuilder.h"
 #include "stubs/server/stubConnectableRouter.h"
 #include "stubs/rules/simulation/stubAmountProperty.h"
+#include "stubs/rules/simulation/stubCalendarProperty.h"
+#include "stubs/rules/simulation/stubWorldTimeProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

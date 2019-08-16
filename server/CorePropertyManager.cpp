@@ -70,6 +70,8 @@
 
 #include <iostream>
 #include <rules/simulation/AmountProperty.h>
+#include "rules/simulation/CalendarProperty.h"
+#include "rules/simulation/WorldTimeProperty.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -153,6 +155,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
     installProperty<AdminProperty>();
+    installProperty<CalendarProperty>();
+    installProperty<WorldTimeProperty>();
     /**
      * Friction is used by the physics system. 0 is no friction, 1 is full friction.
      * This is for "sliding", see "friction-roll" and "friction-spin".

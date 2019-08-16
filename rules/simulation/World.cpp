@@ -50,14 +50,8 @@ using Atlas::Objects::smart_dynamic_cast;
 /// \brief Constructor for the World entity
 World::World(const std::string & id, long intId) : Thing(id, intId), m_serialNumber(0)
 {
-    auto calProp = new CalendarProperty();
-    calProp->install(this, "calendar");
-    m_properties["calendar"] = calProp;
-
-    auto worldTimeProp = new WorldTimeProperty();
-    worldTimeProp->install(this, "time");
-    m_properties["time"] = worldTimeProp;
-
+    requirePropertyClassFixed<CalendarProperty>();
+    requirePropertyClassFixed<WorldTimeProperty>();
 }
 
 World::~World() = default;
