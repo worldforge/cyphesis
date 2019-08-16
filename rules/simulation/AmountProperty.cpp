@@ -29,7 +29,7 @@ AmountProperty* AmountProperty::copy() const
 
 void AmountProperty::apply(LocatedEntity* entity)
 {
-    if (data() == 0) {
+    if (data() <= 0) {
         Atlas::Objects::Operation::Delete del;
         del->setTo(entity->getId());
         del->setFrom(entity->getId());

@@ -64,6 +64,7 @@ class StackableDomain : public Domain
         static std::vector<std::string> sIgnoredProps;
 
         HandlerResult DeleteOperation(LocatedEntity* owner, const Operation& op, OpVector& res);
+        HandlerResult MoveOperation(LocatedEntity* owner, const Operation& op, OpVector& res);
 };
 
 

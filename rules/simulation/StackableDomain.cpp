@@ -21,6 +21,7 @@
 #include "rules/LocatedEntity.h"
 
 #include "common/TypeNode.h"
+#include "rules/simulation/BaseWorld.h"
 #include "PlantedOnProperty.h"
 #include "AmountProperty.h"
 
@@ -40,8 +41,9 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Unseen;
+using Atlas::Objects::smart_dynamic_cast;
 
-std::vector<std::string> StackableDomain::sIgnoredProps = {"pos", "orientation", "planted_on", "stack", "id", "stamp"};
+std::vector<std::string> StackableDomain::sIgnoredProps = {"pos", "orientation", "planted_on", "amount", "id", "stamp", "mode"};
 
 
 StackableDomain::StackableDomain(LocatedEntity& entity) :
@@ -92,6 +94,7 @@ void StackableDomain::addEntity(LocatedEntity& entity)
 void StackableDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
 {
     entity->installDelegate(Atlas::Objects::Operation::DELETE_NO, propertyName);
+    entity->installDelegate(Atlas::Objects::Operation::MOVE_NO, propertyName);
 }
 
 
@@ -100,6 +103,8 @@ HandlerResult StackableDomain::operation(LocatedEntity* entity, const Operation&
     switch (op->getClassNo()) {
         case Atlas::Objects::Operation::DELETE_NO:
             return DeleteOperation(entity, op, res);
+        case Atlas::Objects::Operation::MOVE_NO:
+            return MoveOperation(entity, op, res);
         default:
             return OPERATION_IGNORED;
     }
@@ -118,6 +123,10 @@ HandlerResult StackableDomain::DeleteOperation(LocatedEntity* owner, const Opera
         }
     }
 
+    if (amount < 0) {
+        return OPERATION_BLOCKED;
+    }
+
 
     auto amountProperty = owner->requirePropertyClassFixed<AmountProperty>(1);
 
@@ -129,11 +138,93 @@ HandlerResult StackableDomain::DeleteOperation(LocatedEntity* owner, const Opera
         update->setTo(owner->getId());
 
         res.emplace_back(std::move(update));
-        return OPERATION_HANDLED;
+        return OPERATION_BLOCKED;
     }
     return OPERATION_IGNORED;
 }
 
+HandlerResult StackableDomain::MoveOperation(LocatedEntity* owner, const Operation& op, OpVector& res)
+{
+    // Check the validity of the operation.
+    const std::vector<Root>& args = op->getArgs();
+    if (args.empty()) {
+        return OPERATION_IGNORED;
+    }
+    RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
+    if (!ent.isValid() || ent->isDefaultId()) {
+        return OPERATION_IGNORED;
+    }
+    if (owner->getId() != ent->getId()) {
+        return OPERATION_IGNORED;
+    }
+
+    auto amountProperty = owner->requirePropertyClassFixed<AmountProperty>(1);
+
+    //By default move one, unless another value is specified in "amount" in the first arg of the op.
+    int amount = 1;
+
+    Atlas::Message::Element amountElem;
+    if (ent->copyAttr("amount", amountElem) == 0 && amountElem.isInt()) {
+        amount = amountElem.Int();
+    }
+
+    amount = std::max(0, std::min(amountProperty->data(), amount));
+
+    if (amount == 0) {
+        log(WARNING, String::compose("Got move op in StackableDomain with 0 or less amount, for %1", owner->describeEntity()));
+        return HandlerResult::OPERATION_BLOCKED;
+    }
+
+    //If we're moving all items just ignore it here and let the standard move code apply.
+    if (amount == amountProperty->data()) {
+        return HandlerResult::OPERATION_IGNORED;
+    }
+
+    //First create a new entity, a copy of this one.
+    Atlas::Objects::Entity::Anonymous new_ent;
+    for (const auto& entry : owner->getProperties()) {
+        Atlas::Message::Element elem;
+        entry.second->get(elem);
+        new_ent->setAttr(entry.first, elem);
+    }
+    //Make sure to adjust the amount
+    new_ent->setAttr(AmountProperty::property_name, amount);
+    auto obj = BaseWorld::instance().addNewEntity(owner->getType()->name(), new_ent);
+
+    if (!obj) {
+        owner->error(op, "Create op failed.", res, op->getFrom());
+        return HandlerResult::OPERATION_BLOCKED;
+    }
+
+    //We now need to decrease the amount of the original entity with as much.
+    amountProperty->data() -= amount;
+    owner->applyProperty(AmountProperty::property_name, amountProperty);
+
+    Atlas::Objects::Operation::Update update;
+    update->setTo(owner->getId());
+
+    res.emplace_back(std::move(update));
+
+    //and finally we'll issue a new Move operation moving the new entity.
+    // Since the move op has the same amount as the entity, this handler will ignore it.
+
+    auto newMoveOp = op.copy();
+    newMoveOp->setTo(obj->getId());
+    newMoveOp->getArgs().front()->setId(obj->getId());
+    newMoveOp->getArgs().front()->setAttr("amount", amount);
+    //Send the move op directly.
+    OpVector new_res;
+    obj->operation(newMoveOp, new_res);
+    for (auto& resOp: new_res) {
+        obj->sendWorld(resOp);
+    }
+
+
+//    res.emplace_back(std::move(newMoveOp));
+
+    return OPERATION_BLOCKED;
+
+}
 
 void StackableDomain::removeEntity(LocatedEntity& entity)
 {
@@ -172,7 +263,7 @@ bool StackableDomain::isEntityReachable(const LocatedEntity& reachingEntity, flo
 bool StackableDomain::checkEntitiesStackable(const LocatedEntity& first, const LocatedEntity& second)
 {
     PropertyDict firstProps = first.getProperties();
-    PropertyDict secondProps = first.getProperties();
+    PropertyDict secondProps = second.getProperties();
     for (auto& propName : sIgnoredProps) {
         firstProps.erase(propName);
         secondProps.erase(propName);

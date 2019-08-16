@@ -113,7 +113,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         return;
     }
     RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
-    if (!ent.isValid()) {
+    if (!ent.isValid() || ent->isDefaultId()) {
         error(op, "Move op arg is malformed", res, getId());
         return;
     }
@@ -123,7 +123,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     }
 
     Ref<LocatedEntity> new_loc = nullptr;
-    if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+    if (!ent->isDefaultLoc()) {
         const std::string& new_loc_id = ent->getLoc();
         if (new_loc_id != m_location.m_parent->getId()) {
             // If the LOC has not changed, we don't need to look it up, or do
@@ -156,6 +156,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
     std::string mode;
 
+    //TODO: use ModeProperty
     if (hasAttr("mode")) {
         Element mode_attr;
         getAttr("mode", mode_attr);
@@ -271,42 +272,36 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             // new_loc should only be non-null if the LOC specified is
             // different from the current LOC
             assert(m_location.m_parent != new_loc);
-            // Check for pickup, ie if the new LOC is the actor, and the
-            // previous LOC is the actor's LOC.
-            if (new_loc->getId() == op->getFrom() &&
-                m_location.m_parent == new_loc->m_location.m_parent) {
-
-                //Send Pickup to those entities which are currently observing
-                if (m_location.m_parent) {
-
-                    Pickup p;
-                    p->setFrom(op->getFrom());
-                    p->setTo(getId());
-
-                    Sight s;
-                    s->setArgs1(p);
-                    m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
-                }
-
-                Anonymous wield_arg;
-                wield_arg->setId(getId());
-                Wield w;
-                w->setTo(op->getFrom());
-                w->setArgs1(wield_arg);
-                res.push_back(w);
-            }
-            // Check for drop, ie if the old LOC is the actor, and the
-            // new LOC is the actor's LOC.
-            if (m_location.m_parent->getId() == op->getFrom() &&
-                new_loc == m_location.m_parent->m_location.m_parent) {
-
-                Drop d;
-                d->setFrom(op->getFrom());
-                d->setTo(getId());
-                Sight s;
-                s->setArgs1(d);
-                m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
-            }
+//            // Check for pickup, ie if the new LOC is the actor, and the
+//            // previous LOC is the actor's LOC.
+//            if (new_loc->getId() == op->getFrom() &&
+//                m_location.m_parent == new_loc->m_location.m_parent) {
+//
+//                //Send Pickup to those entities which are currently observing
+//                if (m_location.m_parent) {
+//
+//                    Pickup p;
+//                    p->setFrom(op->getFrom());
+//                    p->setTo(getId());
+//
+//                    Sight s;
+//                    s->setArgs1(p);
+//                    m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
+//                }
+//
+//            }
+//            // Check for drop, ie if the old LOC is the actor, and the
+//            // new LOC is the actor's LOC.
+//            if (m_location.m_parent->getId() == op->getFrom() &&
+//                new_loc == m_location.m_parent->m_location.m_parent) {
+//
+//                Drop d;
+//                d->setFrom(op->getFrom());
+//                d->setTo(getId());
+//                Sight s;
+//                s->setArgs1(d);
+//                m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
+//            }
 
             // Update loc
 
