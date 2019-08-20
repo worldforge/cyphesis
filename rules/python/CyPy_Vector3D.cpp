@@ -58,6 +58,7 @@ void CyPy_Vector3D::init_type()
     PYCXX_ADD_VARARGS_METHOD(rotatez, rotatez, "");
     PYCXX_ADD_VARARGS_METHOD(rotate, rotate, "");
     PYCXX_ADD_VARARGS_METHOD(angle, angle, "");
+    PYCXX_ADD_VARARGS_METHOD(normalize, normalize, "");
 
     PYCXX_ADD_NOARGS_METHOD(sqr_mag, sqr_mag, "");
     PYCXX_ADD_NOARGS_METHOD(mag, mag, "");
@@ -163,6 +164,21 @@ Py::Object CyPy_Vector3D::angle(const Py::Tuple& args)
     return Py::Float(WFMath::Angle(m_value, CyPy_Vector3D::value(args.front())));
 }
 
+Py::Object CyPy_Vector3D::normalize(const Py::Tuple& args)
+{
+    args.verify_length(0, 1);
+
+    WFMath::CoordType norm = 1.0;
+    if (args.size()) {
+        norm = verifyNumeric(args.front());
+    }
+    if (m_value != WFMath::Vector<3>::ZERO()) {
+        m_value.normalize(norm);
+    }
+
+    return self();
+}
+
 Py::Object CyPy_Vector3D::sqr_mag()
 {
     return Py::Float(m_value.sqrMag());
@@ -232,34 +248,22 @@ int CyPy_Vector3D::sequence_ass_item(Py_ssize_t pos, const Py::Object& other)
 
 Py::Object CyPy_Vector3D::number_add(const Py::Object& other)
 {
-    if (!CyPy_Vector3D::check(other)) {
-        throw Py::TypeError("Can only add Vector3D to Vector3D");
-    }
-    return CyPy_Vector3D::wrap(m_value + CyPy_Vector3D::value(other));
+    return CyPy_Vector3D::wrap(m_value + verifyObject<CyPy_Vector3D>(other, "Can only add Vector3D to Vector3D."));
 }
 
 Py::Object CyPy_Vector3D::number_subtract(const Py::Object& other)
 {
-    if (!CyPy_Vector3D::check(other)) {
-        throw Py::TypeError("Can only subtract Vector3D from Vector3D");
-    }
-    return CyPy_Vector3D::wrap(m_value - CyPy_Vector3D::value(other));
+    return CyPy_Vector3D::wrap(m_value - verifyObject<CyPy_Vector3D>(other, "Can only subtract Vector3D from Vector3D."));
 }
 
 Py::Object CyPy_Vector3D::number_multiply(const Py::Object& other)
 {
-    if (!other.isNumeric()) {
-        throw Py::TypeError("Vector3D can only be multiplied by numeric value");
-    }
-    return CyPy_Vector3D::wrap(m_value * Py::Float(other));
+    return CyPy_Vector3D::wrap(m_value * verifyNumeric(other, "Vector3D can only be multiplied by numeric value."));
 }
 
 Py::Object CyPy_Vector3D::number_floor_divide(const Py::Object& other)
 {
-    if (!other.isNumeric()) {
-        throw Py::TypeError("Vector3D can only be divided by numeric value");
-    }
-    return CyPy_Vector3D::wrap(m_value / Py::Float(other));
+    return CyPy_Vector3D::wrap(m_value / verifyNumeric(other, "Vector3D can only be divided by numeric value."));
 }
 
 Py::Object CyPy_Vector3D::number_true_divide(const Py::Object& other)

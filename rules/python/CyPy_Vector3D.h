@@ -91,6 +91,10 @@ class CyPy_Vector3D : public WrapperBase<WFMath::Vector<3>, CyPy_Vector3D>
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, angle);
 
+        Py::Object normalize(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Vector3D, normalize);
+
         Py::Object sqr_mag();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Vector3D, sqr_mag);
