@@ -1,32 +1,34 @@
 # This file is distributed under the terms of the GNU General Public license.
-# Copyright (C) 1999 Aloril (See the file COPYING for details).
-# return Operation("create",Entity(name='wood',type=['lumber'],location=self.location.parent.location.copy()),to=self)
+# Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
 from atlas import Operation, Entity, Oplist
 
 from physics import Vector3D, Point3D
-from rules import Location
 
 import server
+from world.utils import Usage
+import entity_filter
 
 
-class Bow(server.Thing):
-    """This is base class for bows, this one just ordinary bow"""
+def shoot(instance):
+    Usage.set_cooldown_on_attached(instance.tool, instance.actor)
 
-    def shoot_operation(self, op):
-        ammo = op[0].id
-        to_ = op[1].id
-        target = server.world.get_object(to_)
-        vel = target.location.pos - self.location.parent.location.pos
-        time = vel.mag() / 5
-        vel = vel.unit_vector() * 5
-        loc1 = Location(self.location.parent.location.parent, self.location.parent.location.pos)
-        loc1.velocity = vel
-        loc2 = Location(target.location.parent, Point3D(0, 0, 0))
-        loc2.velocity = Vector3D(0, 0, 0)
-        m1 = Operation("move", Entity(ammo, location=loc1), to=ammo)
-        m2 = Operation("move", Entity(ammo, location=loc2), to=ammo)
-        m2.set_future_seconds(time)
-        t = Operation("set", Entity(to_, status=-1), to=to_)
-        t.set_future_seconds(time)
-        return Oplist(m1, m2, t)
+    res = Oplist()
+
+    arrows = instance.actor.find_in_contains(entity_filter.Filter("entity instance_of types.arrow"))
+    if len(arrows):
+        direction = instance.get_arg("direction", 0)
+        direction.normalize()
+
+        # Adjust the start position of the arrow, so it's outside of the actor, at mid height
+        start_adjust = Vector3D(direction)
+        print(direction)
+        start_adjust.y = 0
+        start_adjust.normalize()
+        start_adjust.y = instance.actor.location.bbox.high_corner.y * 0.8
+
+        new_loc = instance.actor.location.copy()
+        new_loc.pos += start_adjust
+
+        res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile"), to=arrows[0].id))
+    return server.OPERATION_BLOCKED, res

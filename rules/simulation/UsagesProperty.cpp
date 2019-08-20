@@ -292,7 +292,8 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                             argVector.emplace_back(WFMath::Point<3>(argElement));
                             break;
                         case UsageParameter::Type::DIRECTION:
-                            argVector.emplace_back(WFMath::Vector<3>(argElement));
+                            //Normalize the entry just to make sure.
+                            argVector.emplace_back(WFMath::Vector<3>(argElement).normalize());
                             break;
                     }
                 }

@@ -16,6 +16,14 @@
             <map name="domain">
                 <string name="default">stackable</string>
             </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Embeddable.Embeddable</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">arrow</string>
         <string name="objtype">class</string>
