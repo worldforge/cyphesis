@@ -72,7 +72,8 @@ class Domain
              * An entity onto which the entity should be planted.
              */
             LocatedEntity* plantedOnEntity;
-            boost::optional<std::string> plantedOnAttachPoint;
+
+            const WFMath::Vector<3>& impulseVelocity;
         };
 
         explicit Domain(LocatedEntity& entity);

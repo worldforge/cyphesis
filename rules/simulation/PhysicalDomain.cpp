@@ -425,10 +425,12 @@ void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& 
     for (auto& op : res) {
         entity->sendWorld(op);
     }
-    scheduleTick(*entity, BaseWorld::instance().getTime());
+    auto tickOp = scheduleTick(*entity, BaseWorld::instance().getTime());
+    entity->sendWorld(tickOp);
+
 }
 
-void PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
+Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
 {
     Atlas::Objects::Entity::Anonymous tick_arg;
     tick_arg->setName("domain");
@@ -438,7 +440,7 @@ void PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
     tickOp->setAttr("lastTick", timeNow);
     tickOp->setArgs1(tick_arg);
 
-    entity.sendWorld(tickOp);
+    return tickOp;
 }
 
 
@@ -460,7 +462,8 @@ HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operatio
         }
 
         tick(tickSize, res);
-        scheduleTick(*entity, timeNow);
+        auto tickOp = scheduleTick(*entity, timeNow);
+        res.emplace_back(std::move(tickOp));
 
         return OPERATION_BLOCKED;
     }
@@ -586,7 +589,7 @@ void PhysicalDomain::createDomainBorders()
                 btStaticPlaneShape* plane = new btStaticPlaneShape(normal, .0f);
                 btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane));
                 planeBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), translate));
-
+                planeBody->setUserPointer(&mContainingEntityEntry);
                 m_dynamicsWorld->addRigidBody(planeBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
                 m_borderPlanes.push_back(planeBody);
             };
@@ -1230,6 +1233,13 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 
                 auto rigidBody = btRigidBody::upcast(bulletEntry->collisionObject);
                 if (rigidBody) {
+
+                    if (modeProp->getMode() == ModeProperty::Mode::Projectile) {
+                        rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+                    } else {
+                        rigidBody->setCollisionFlags(rigidBody->getCollisionFlags() & ~btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+                    }
+
                     //If there's a rigid body, there's a valid bbox, otherwise something else is broken
                     auto& bbox = bulletEntry->entity->m_location.bBox();
 
@@ -1429,6 +1439,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 
 void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpdate)
 {
+    //TODO store as flag in BulletEntry so we don't need to do lookup
     auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
     if (modeProp) {
         if (modeProp->getMode() == ModeProperty::Mode::Planted) {
@@ -1834,7 +1845,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
         float h = pos.y();
         getTerrainHeight(pos.x(), pos.z(), h);
         pos.y() = h;
-    } else if (mode == ModeProperty::Mode::Fixed) {
+    } else if (mode == ModeProperty::Mode::Fixed || mode == ModeProperty::Mode::Projectile) {
         //Don't do anything to adjust height
     } else {
         log(WARNING, "Unknown mode for entity " + entity.describeEntity());
@@ -2013,12 +2024,16 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const TransformData& 
     }
     plantOnEntity(entry, entryPlantedOn);
 
-    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.propel, transformedEntities, true);
+    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.propel, transformData.impulseVelocity, transformedEntities, true);
 }
 
-void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
-                                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel,
-                                            std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
+                                            const WFMath::Quaternion& orientation,
+                                            const WFMath::Point<3>& pos,
+                                            const WFMath::Vector<3>& propel,
+                                            const WFMath::Vector<3>& impulseVelocity,
+                                            std::set<LocatedEntity*>& transformedEntities,
+                                            bool calculatePosition)
 {
 
     WFMath::Point<3> oldPos = entity.m_location.m_pos;
@@ -2081,7 +2096,9 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath:
                 }
             }
         }
-
+    }
+    if (impulseVelocity.isValid() && rigidBody) {
+        rigidBody->applyCentralImpulse(Convert::toBullet(impulseVelocity));
     }
 
     if (hadChange) {
@@ -2335,11 +2352,27 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     updateTerrainMod(entity);
 }
 
+
 void PhysicalDomain::tick(double tickSize, OpVector& res)
 {
 //    CProfileManager::Reset();
 //    CProfileManager::Increment_Frame_Counter();
+    static std::map<BulletEntry*, BulletEntry*> projectileCollisions;
 
+    gContactProcessedCallback = [](btManifoldPoint& cp, void* body0, void* body1) -> bool {
+        auto object0 = static_cast<btCollisionObject*>(body0);
+        auto bulletEntry0 = static_cast<BulletEntry*>(object0->getUserPointer());
+        auto object1 = static_cast<btCollisionObject*>(body1);
+        auto bulletEntry1 = static_cast<BulletEntry*>(object1->getUserPointer());
+
+        if (bulletEntry0->mode == ModeProperty::Mode::Projectile) {
+            projectileCollisions.emplace(bulletEntry0, bulletEntry1);
+        } else if (bulletEntry1->mode == ModeProperty::Mode::Projectile) {
+            projectileCollisions.emplace(bulletEntry1, bulletEntry0);
+        }
+    };
+
+    projectileCollisions.clear();
     auto start = std::chrono::high_resolution_clock::now();
     //Step simulations with 60 hz.
     m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
@@ -2353,6 +2386,25 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     }
 
     //CProfileManager::dumpAll();
+
+    for (const auto& entry : projectileCollisions) {
+        {
+            Atlas::Objects::Operation::Hit hit;
+            Atlas::Objects::Entity::Anonymous ent;
+            ent->setId(entry.second->entity->getId());
+            hit->setArgs1(ent);
+            hit->setTo(entry.first->entity->getId());
+            res.emplace_back(std::move(hit));
+        }
+        {
+            Atlas::Objects::Operation::Hit hit;
+            Atlas::Objects::Entity::Anonymous ent;
+            ent->setId(entry.first->entity->getId());
+            hit->setArgs1(ent);
+            hit->setTo(entry.second->entity->getId());
+            res.emplace_back(std::move(hit));
+        }
+    }
 
     //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
     m_visibilityCheckCountdown -= tickSize;
@@ -2564,7 +2616,7 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
             }
 
             applyTransformInternal(*restingEntry->entity, restingEntry->entity->m_location.m_orientation * orientationChange,
-                                   entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), transformedEntities, false);
+                                   entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), WFMath::Vector<3>(), transformedEntities, false);
 
         }
 

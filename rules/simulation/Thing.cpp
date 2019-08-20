@@ -69,7 +69,7 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
     if (m_location.m_parent == nullptr) {
         log(ERROR, String::compose("Deleting %1(%2) when it is not "
-                                       "in the world.", getType(), getId()));
+                                   "in the world.", getType(), getId()));
         assert(m_location.m_parent != nullptr);
         return;
     }
@@ -194,6 +194,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     if (domain) {
 
         WFMath::Vector<3> newPropel;
+        WFMath::Vector<3> newImpulseVelocity;
         WFMath::Point<3> newPos;
         WFMath::Quaternion newOrientation;
 
@@ -229,30 +230,21 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 //just ignore malformed data
             }
         }
-        //TODO: allow for setting of impact velocity as well as propel velocity
-//        else {
-//            if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-//                // Update velocity
-//                if (fromStdVector(newPropel, ent->getVelocity()) == 0) {
-//                    auto propelProp = requirePropertyClassFixed<PropelProperty>();
-//                    if (!newPropel.isEqualTo(propelProp->data())) {
-//                        propelProp->data() = newPropel;
-//                        // Velocity is not persistent so has no flag
-//                        updatedTransform = true;
-//                    } else {
-//                        //Velocity wasn't changed, so we can make newPropel invalid and it won't be applied.
-//                        newPropel.setValid(false);
-//                    }
-//                }
-//            }
-//        }
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            // Update impact velocity
+            if (fromStdVector(newImpulseVelocity, ent->getVelocity()) == 0) {
+                if (newImpulseVelocity.isValid()) {
+                    updatedTransform = true;
+                }
+            }
+        }
 
 
         std::set<LocatedEntity*> transformedEntities;
 
 
         // Check if the location has changed
-        if (new_loc != nullptr) {
+        if (new_loc) {
             // new_loc should only be non-null if the LOC specified is
             // different from the current LOC
             assert(m_location.m_parent != new_loc);
@@ -307,9 +299,16 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 return;
             }
             processAppearDisappear(std::move(previousObserving), res);
+            auto newDomain = new_loc->getDomain();
+            if (newDomain) {
+                if (updatedTransform) {
+                    Domain::TransformData transformData{newOrientation, newPos, newPropel, nullptr, newImpulseVelocity};
+                    newDomain->applyTransform(*this, transformData, transformedEntities);
+                }
+            }
         } else {
             if (updatedTransform) {
-                Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOn.entity.get(), plantedOn.attachment};
+                Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOn.entity.get(), newImpulseVelocity};
                 domain->applyTransform(*this, transformData, transformedEntities);
             }
         }
@@ -707,14 +706,14 @@ void Thing::CreateOperation(const Operation& op, OpVector& res)
 }
 
 
-void Thing::ImaginaryOperation(const Operation & op, OpVector & res)
+void Thing::ImaginaryOperation(const Operation& op, OpVector& res)
 {
     Sight s{};
     s->setArgs1(op);
     res.push_back(s);
 }
 
-void Thing::TalkOperation(const Operation & op, OpVector & res)
+void Thing::TalkOperation(const Operation& op, OpVector& res)
 {
     Sound s{};
     s->setArgs1(op);

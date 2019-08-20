@@ -209,7 +209,8 @@ class PhysicalDomain : public Domain
         /**
          * Struct used to pass information on to the tick callbacks.
          */
-        struct WorldInfo {
+        struct WorldInfo
+        {
             std::map<long, PropelEntry>* propellingEntries;
             std::map<long, std::pair<BulletEntry*, float>>* steppingEntries;
         };
@@ -338,11 +339,15 @@ class PhysicalDomain : public Domain
 
         void plantOnEntity(BulletEntry* plantedEntry, BulletEntry* entryPlantedOn);
 
-        void applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation,
-                            const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel,
-                            std::set<LocatedEntity*>& transformedEntities, bool calculatePosition);
+        void applyTransformInternal(LocatedEntity& entity,
+                                    const WFMath::Quaternion& orientation,
+                                    const WFMath::Point<3>& pos,
+                                    const WFMath::Vector<3>& propel,
+                                    const WFMath::Vector<3>& impulseVelocity,
+                                    std::set<LocatedEntity*>& transformedEntities,
+                                    bool calculatePosition);
 
-        void scheduleTick(LocatedEntity& entity, double timeNow);
+        Atlas::Objects::Operation::RootOperation scheduleTick(LocatedEntity& entity, double timeNow);
 
         HandlerResult tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res);
 

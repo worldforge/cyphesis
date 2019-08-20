@@ -60,6 +60,10 @@ class ModeProperty : public Property<std::string>
                  */
                     Submerged,
                 /**
+                 * Like a free entity, but will emit Hit operations when it hits another entity.
+                 */
+                    Projectile,
+                /**
                  * This mode is used when the mode string isn't recognized.
                  */
                     Unknown
