@@ -321,11 +321,6 @@ void Entity::AppearanceOperation(const Operation &, OpVector &)
 {
 }
 
-/// \brief Handle a combine operation
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
 /// \brief Handle a create operation
 void Entity::CreateOperation(const Operation &, OpVector &)
 {
@@ -342,11 +337,6 @@ void Entity::DeleteOperation(const Operation &, OpVector &)
 
 /// \brief Handle a disappearance operation
 void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a divide operation
-void Entity::DivideOperation(const Operation &, OpVector &)
 {
 }
 

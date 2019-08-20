@@ -248,8 +248,6 @@ void installStandardObjects(TypeStore & i)
     i.addChild(atlasOpDefinition("get", "action"));
     i.addChild(atlasOpDefinition("perception", "info"));
     i.addChild(atlasOpDefinition("error", "info"));
-    i.addChild(atlasOpDefinition("combine", "create"));
-    i.addChild(atlasOpDefinition("divide", "create"));
     i.addChild(atlasOpDefinition("communicate", "create"));
     i.addChild(atlasOpDefinition("move", "set"));
     i.addChild(atlasOpDefinition("affect", "set"));

@@ -67,11 +67,9 @@ class Entity : public LocatedEntity {
     void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
 
     virtual void AppearanceOperation(const Operation &, OpVector &);
-    virtual void CombineOperation(const Operation &, OpVector &);
     virtual void CreateOperation(const Operation &, OpVector &);
     virtual void DeleteOperation(const Operation &, OpVector &);
     virtual void DisappearanceOperation(const Operation &, OpVector &);
-    virtual void DivideOperation(const Operation &, OpVector &);
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void ImaginaryOperation(const Operation &, OpVector &);
     virtual void InfoOperation(const Operation &, OpVector &);

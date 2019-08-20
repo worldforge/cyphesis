@@ -162,10 +162,4 @@
         <string name="parent">affect</string>
     </map>
 
-    <!-- Hit operations are sent when entities are hit by other entities (such as in combat). -->
-    <map>
-        <string name="id">hit</string>
-        <string name="objtype">op_definition</string>
-        <string name="parent">affect</string>
-    </map>
 </atlas>

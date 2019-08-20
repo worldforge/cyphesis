@@ -224,19 +224,11 @@ void Character::mindAttackOperation(const Operation &, OpVector &)
 {
 }
 
-void Character::mindCombineOperation(const Operation &, OpVector &)
-{
-}
-
 void Character::mindCreateOperation(const Operation &, OpVector &)
 {
 }
 
 void Character::mindDeleteOperation(const Operation &, OpVector &)
-{
-}
-
-void Character::mindDivideOperation(const Operation &, OpVector &)
 {
 }
 
@@ -356,10 +348,6 @@ void Entity::AttackOperation(const Operation &, OpVector &)
 {
 }
 
-void Entity::CombineOperation(const Operation &, OpVector &)
-{
-}
-
 void Entity::CreateOperation(const Operation &, OpVector &)
 {
 }
@@ -369,10 +357,6 @@ void Entity::DeleteOperation(const Operation &, OpVector &)
 }
 
 void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-void Entity::DivideOperation(const Operation &, OpVector &)
 {
 }
 
