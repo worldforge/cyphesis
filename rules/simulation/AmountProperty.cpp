@@ -19,6 +19,7 @@
 #include "AmountProperty.h"
 
 #include "rules/LocatedEntity.h"
+#include "DomainProperty.h"
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
@@ -29,6 +30,14 @@ AmountProperty* AmountProperty::copy() const
 
 void AmountProperty::apply(LocatedEntity* entity)
 {
+    auto domainProp = entity->getPropertyClassFixed<DomainProperty>();
+    if (!domainProp || domainProp->data() != "stackable") {
+        //Amount requires that the entity is stackable
+        data() = 1;
+        log(WARNING, String::compose("Amount property set on non-stackable entity %1.", entity->describeEntity()));
+        return;
+    }
+
     if (data() <= 0) {
         Atlas::Objects::Operation::Delete del;
         del->setTo(entity->getId());
