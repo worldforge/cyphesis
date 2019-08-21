@@ -10,8 +10,8 @@ class Embeddable(server.Thing):
         if mode_prop is not None and mode_prop == "projectile":
             # It should now be planted on the thing it hit
             if len(op.args):
-                firstArg = op.args[0]
-                print("embedded in {}".format(firstArg.id))
-                return server.OPERATION_HANDLED, Operation("move", Entity(self.id, mode="planted", planted_on=firstArg.id), to=self.id)
+                first_arg = op.args[0]
+                print("embedded in {}".format(first_arg.id))
+                return server.OPERATION_HANDLED, Operation("move", Entity(self.id, mode="planted", planted_on=first_arg.id), to=self.id)
 
         return server.OPERATION_IGNORED

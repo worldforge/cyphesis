@@ -299,7 +299,7 @@
 
 #ifndef STUB_PhysicalDomain_applyTransformInternal
 //#define STUB_PhysicalDomain_applyTransformInternal
-  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel, const WFMath::Vector<3>& impulseVelocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
   {
     
   }
@@ -307,9 +307,9 @@
 
 #ifndef STUB_PhysicalDomain_scheduleTick
 //#define STUB_PhysicalDomain_scheduleTick
-  void PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
+  Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
   {
-    
+    return *static_cast<Atlas::Objects::Operation::RootOperation*>(nullptr);
   }
 #endif //STUB_PhysicalDomain_scheduleTick
 

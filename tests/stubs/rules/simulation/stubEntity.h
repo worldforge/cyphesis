@@ -89,14 +89,6 @@
   }
 #endif //STUB_Entity_AppearanceOperation
 
-#ifndef STUB_Entity_CombineOperation
-//#define STUB_Entity_CombineOperation
-  void Entity::CombineOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_CombineOperation
-
 #ifndef STUB_Entity_CreateOperation
 //#define STUB_Entity_CreateOperation
   void Entity::CreateOperation(const Operation &, OpVector &)
@@ -120,14 +112,6 @@
     
   }
 #endif //STUB_Entity_DisappearanceOperation
-
-#ifndef STUB_Entity_DivideOperation
-//#define STUB_Entity_DivideOperation
-  void Entity::DivideOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_DivideOperation
 
 #ifndef STUB_Entity_GetOperation
 //#define STUB_Entity_GetOperation

@@ -201,6 +201,14 @@
   }
 #endif //STUB_CyPy_Vector3D_angle
 
+#ifndef STUB_CyPy_Vector3D_normalize
+//#define STUB_CyPy_Vector3D_normalize
+  Py::Object CyPy_Vector3D::normalize(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Vector3D_normalize
+
 #ifndef STUB_CyPy_Vector3D_sqr_mag
 //#define STUB_CyPy_Vector3D_sqr_mag
   Py::Object CyPy_Vector3D::sqr_mag()
