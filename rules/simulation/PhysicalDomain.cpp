@@ -552,7 +552,7 @@ PhysicalDomain::TerrainEntry PhysicalDomain::buildTerrainPage(Mercator::Segment&
     float min = segment.getMin();
     float max = segment.getMax();
 
-    btHeightfieldTerrainShape* terrainShape = new btHeightfieldTerrainShape(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
+    auto* terrainShape = new btHeightfieldTerrainShape(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
 
     terrainShape->setLocalScaling(btVector3(1, 1, 1));
 
@@ -567,7 +567,7 @@ PhysicalDomain::TerrainEntry PhysicalDomain::buildTerrainPage(Mercator::Segment&
 
 
     btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainShape);
-    btRigidBody* segmentBody = new btRigidBody(segmentCI);
+    auto segmentBody = new btRigidBody(segmentCI);
     segmentBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), btPos));
 
     m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
@@ -586,8 +586,8 @@ void PhysicalDomain::createDomainBorders()
         m_borderPlanes.reserve(6);
         auto createPlane =
             [&](const btVector3& normal, const btVector3& translate) {
-                btStaticPlaneShape* plane = new btStaticPlaneShape(normal, .0f);
-                btRigidBody* planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane));
+                auto plane = new btStaticPlaneShape(normal, .0f);
+                auto planeBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane));
                 planeBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), translate));
                 planeBody->setUserPointer(&mContainingEntityEntry);
                 m_dynamicsWorld->addRigidBody(planeBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
@@ -877,7 +877,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
     btVector3 angularFactor(1, 1, 1);
 
-    BulletEntry* entry = new BulletEntry();
+    auto entry = new BulletEntry();
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
     entry->entity = &entity;
 
@@ -973,7 +973,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 #endif
             }
 
-            btRigidBody* rigidBody = new btRigidBody(rigidBodyCI);
+            auto rigidBody = new btRigidBody(rigidBodyCI);
             entry->collisionObject = rigidBody;
 
             calculatePositionForEntity(mode, entry, entity.m_location.m_pos);
@@ -1029,7 +1029,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     {
 
-        btSphereShape* visSphere = new btSphereShape(0);
+        auto visSphere = new btSphereShape(0);
         auto visProp = entity.getPropertyClassFixed<VisibilityProperty>();
         if (visProp) {
             visSphere->setUnscaledRadius(visProp->data() / VISIBILITY_SCALING_FACTOR);
@@ -1040,7 +1040,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             visSphere->setUnscaledRadius(0.25f);
         }
 
-        btCollisionObject* visObject = new btCollisionObject();
+        auto visObject = new btCollisionObject();
         visObject->setCollisionShape(visSphere);
         visObject->setUserPointer(entry);
         entry->visibilitySphere = visObject;
@@ -1050,8 +1050,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         }
     }
     if (entity.isPerceptive()) {
-        btSphereShape* viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
-        btCollisionObject* visObject = new btCollisionObject();
+        auto viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
+        auto visObject = new btCollisionObject();
         visObject->setCollisionShape(viewSphere);
         visObject->setUserPointer(entry);
         entry->viewSphere = visObject;
@@ -1083,8 +1083,8 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
             mContainingEntityEntry.observingThis.insert(entry);
-            btSphereShape* viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
-            btCollisionObject* visObject = new btCollisionObject();
+            auto viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
+            auto visObject = new btCollisionObject();
             visObject->setCollisionShape(viewSphere);
             visObject->setUserPointer(entry);
             entry->viewSphere = visObject;
