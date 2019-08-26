@@ -275,6 +275,7 @@ int main()
 #include "stubs/rules/simulation/stubAmountProperty.h"
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/simulation/stubWorldTimeProperty.h"
+#include "stubs/rules/simulation/stubSimulationSpeedProperty.h"
 
 
 #define STUB_EntityFactory_newEntity
