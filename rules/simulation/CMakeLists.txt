@@ -52,7 +52,8 @@ add_library(rulessimulation
     ScriptUtils.cpp
     ServerBBoxProperty.cpp
     StackableDomain.cpp
-    AmountProperty.cpp)
+    AmountProperty.cpp
+    SimulationSpeedProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

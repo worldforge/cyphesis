@@ -70,6 +70,7 @@
 
 #include <iostream>
 #include <rules/simulation/AmountProperty.h>
+#include <rules/simulation/SimulationSpeedProperty.h>
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/WorldTimeProperty.h"
 
@@ -286,6 +287,8 @@ CorePropertyManager::CorePropertyManager()
     installProperty<Property<Atlas::Message::ListType>>("_goals");
 
     installProperty<AmountProperty>();
+
+    installProperty<SimulationSpeedProperty>();
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

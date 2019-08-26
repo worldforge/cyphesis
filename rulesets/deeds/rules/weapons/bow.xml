@@ -28,10 +28,6 @@
                             <map name="direction">
                                 <string name="type">direction</string>
                             </map>
-<!--                            <map name="consumed">-->
-<!--                                <string name="type">entity</string>-->
-<!--                                <string name="constraint">entity instance_of types.arrow and contains(actor.contains, entity)</string>-->
-<!--                            </map>-->
                         </map>
                         <string name="handler">world.objects.tools.Bow.shoot</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains(actor.contains, child instance_of types.arrow)</string>

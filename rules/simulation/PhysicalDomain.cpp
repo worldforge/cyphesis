@@ -45,6 +45,7 @@
 #include "rules/BBoxProperty.h"
 #include "rules/SolidProperty.h"
 #include "rules/ScaleProperty.h"
+#include "SimulationSpeedProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -458,7 +459,6 @@ HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operatio
         Atlas::Message::Element elem;
         if (op->copyAttr("lastTick", elem) != 0 && elem.isFloat()) {
             tickSize = timeNow - elem.Float();
-
         }
 
         tick(tickSize, res);
@@ -2372,6 +2372,11 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         }
         return true;
     };
+
+    auto simulationSpeedProp = m_entity.getPropertyClassFixed<SimulationSpeedProperty>();
+    if (simulationSpeedProp) {
+        tickSize *= simulationSpeedProp->data();
+    }
 
     projectileCollisions.clear();
     auto start = std::chrono::high_resolution_clock::now();
