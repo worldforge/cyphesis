@@ -3,7 +3,7 @@
 
 from atlas import Operation, Entity, Oplist
 
-from physics import Vector3D, Point3D
+from physics import Vector3D, Point3D, Quaternion
 
 import server
 from world.utils import Usage
@@ -29,6 +29,8 @@ def shoot(instance):
 
         new_loc = instance.actor.location.copy()
         new_loc.pos += start_adjust
+
+        new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
 
         res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile"), to=arrows[0].id))
     return server.OPERATION_BLOCKED, res
