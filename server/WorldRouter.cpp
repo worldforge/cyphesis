@@ -28,8 +28,6 @@
 
 #include "common/id.h"
 #include "common/debug.h"
-#include "common/const.h"
-#include "common/random.h"
 #include "common/TypeNode.h"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
@@ -149,24 +147,24 @@ void WorldRouter::shutdown()
 /// class. Send a Setup op to the entity.
 Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
 {
-    debug_print("WorldRouter::addEntity(" << ent->describeEntity() << ")");
+    debug_print("WorldRouter::addEntity(" << ent->describeEntity() << ")")
     assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
     ++m_entityCount;
 
     if (!ent->m_location.isValid()) {
         log(ERROR, String::compose("Entity %1 added to world with invalid location!", ent->describeEntity()));
-        debug_print("set loc " << &getDefaultLocation());
+        debug_print("set loc " << &getDefaultLocation())
         ent->m_location.m_parent = &getDefaultLocation();
 //        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
         ent->m_location.m_pos = Point3D::ZERO();
-        debug_print("loc set with loc " << ent->m_location.m_parent->getId());
+        debug_print("loc set with loc " << ent->m_location.m_parent->getId())
     }
     ent->m_location.update(getTime());
 
     ent->m_location.m_parent->addChild(*ent);
 
-    debug_print("Entity loc " << ent->m_location);
+    debug_print("Entity loc " << ent->m_location)
 
     if (ent->m_contains != nullptr) {
         for (auto& child : *ent->m_contains) {
@@ -194,8 +192,7 @@ Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
 Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & typestr,
                                           const RootEntity & attrs)
 {
-    debug(std::cout << "WorldRouter::addNewEntity(\"" << typestr << "\", attrs)"
-                    << std::endl << std::flush;);
+    debug_print("WorldRouter::addNewEntity(\"" << typestr << "\", attrs)")
     std::string id;
     long intId = newId(id);
 
@@ -363,10 +360,9 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
     } else {
         m_operationsDispatcher.addOperationToQueue(op, Ref<LocatedEntity>(&fromEntity));
     }
-    debug(std::cout << "WorldRouter::message {"
+    debug_print("WorldRouter::message {"
                     << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                    << std::flush;);
+                    << op->getFrom() << ":" << op->getTo() << "}")
 }
 
 void WorldRouter::messageToClients(const Operation & op)
@@ -377,22 +373,18 @@ void WorldRouter::messageToClients(const Operation & op)
         entry.second->operation(op, res);
     }
 
-    debug(std::cout << "WorldRouter::messageToClients {"
+    debug_print("WorldRouter::messageToClients {"
                     << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                    << std::flush;);
+                    << op->getFrom() << ":" << op->getTo() << "}")
 }
 
 bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
 {
     int op_class = op->getClassNo();
-    if (op_class == Atlas::Objects::Operation::SIGHT_NO ||
-        op_class == Atlas::Objects::Operation::SOUND_NO ||
-        op_class == Atlas::Objects::Operation::APPEARANCE_NO ||
-        op_class == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-        return true;
-    }
-    return false;
+    return op_class == Atlas::Objects::Operation::SIGHT_NO ||
+           op_class == Atlas::Objects::Operation::SOUND_NO ||
+           op_class == Atlas::Objects::Operation::APPEARANCE_NO ||
+           op_class == Atlas::Objects::Operation::DISAPPEARANCE_NO;
 }
 
 /// \brief Deliver an operation to its target.
@@ -406,7 +398,7 @@ void WorldRouter::deliverTo(const Operation & op, Ref<LocatedEntity> ent)
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
         if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-            m_suspendedQueue.push(OpQueEntry<LocatedEntity>(op, ent));
+            m_suspendedQueue.push(OpQueEntry<LocatedEntity>(op, std::move(ent)));
             return;
         }
     }
@@ -455,17 +447,24 @@ void WorldRouter::operation(const Operation & op, Ref<LocatedEntity> from)
 
         if (to == from->getId()) {
             if (from->isDestroyed()) {
-                // Entity no longer exists
+                // Entity no longer exists, don't send anything
                 return;
             }
             to_entity = std::move(from);
         } else {
             to_entity = getEntity(to);
 
-            if (to_entity == nullptr) {
-                debug(std::cerr << "WARNING: Op to=\"" << to << "\""
-                                << " does not exist"
-                                << std::endl << std::flush;);
+            if (to_entity == nullptr || to_entity->isDestroyed()) {
+                // Entity has been removed, send an Unseen op back to the observer
+                // But check that the observer hasn't been destroyed (to avoid infinite loops)
+                if (!from->isDestroyed()) {
+                    Atlas::Objects::Operation::Unseen unseen;
+                    Atlas::Objects::Entity::Anonymous ent;
+                    ent->setId(to);
+                    unseen->setArgs1(ent);
+                    unseen->setTo(from->getId());
+                    message(unseen, *from);
+                }
                 return;
             }
         }
