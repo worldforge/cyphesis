@@ -9,20 +9,21 @@ import server
 from world.utils import Usage
 import entity_filter
 
+arrow_filter = entity_filter.Filter("entity instance_of types.arrow")
+
 
 def shoot(instance):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
 
     res = Oplist()
 
-    arrows = instance.actor.find_in_contains(entity_filter.Filter("entity instance_of types.arrow"))
+    arrows = instance.actor.find_in_contains(arrow_filter)
     if len(arrows):
         direction = instance.get_arg("direction", 0)
         direction.normalize()
 
         # Adjust the start position of the arrow, so it's outside of the actor, at mid height
         start_adjust = Vector3D(direction)
-        print(direction)
         start_adjust.y = 0
         start_adjust.normalize()
         start_adjust.y = instance.actor.location.bbox.high_corner.y * 0.8
