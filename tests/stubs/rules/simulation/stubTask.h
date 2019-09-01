@@ -27,6 +27,14 @@
 
 #ifndef STUB_Task_callScriptFunction
 //#define STUB_Task_callScriptFunction
+  void Task::callScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Task_callScriptFunction
+
+#ifndef STUB_Task_callScriptFunction
+//#define STUB_Task_callScriptFunction
   void Task::callScriptFunction(const std::string& function, OpVector& res)
   {
     
@@ -43,7 +51,7 @@
 
 #ifndef STUB_Task_initTask
 //#define STUB_Task_initTask
-  void Task::initTask(const std::string& id, OpVector & res)
+  void Task::initTask(const std::string& id, OpVector& res)
   {
     
   }
@@ -51,7 +59,7 @@
 
 #ifndef STUB_Task_tick
 //#define STUB_Task_tick
-  void Task::tick(const std::string& id, const Operation& op, OpVector & res)
+  void Task::tick(const std::string& id, const Operation& op, OpVector& res)
   {
     
   }
@@ -67,7 +75,7 @@
 
 #ifndef STUB_Task_getAttr
 //#define STUB_Task_getAttr
-  int Task::getAttr(const std::string & attr, Atlas::Message::Element & val) const
+  int Task::getAttr(const std::string& attr, Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -75,7 +83,7 @@
 
 #ifndef STUB_Task_setAttr
 //#define STUB_Task_setAttr
-  void Task::setAttr(const std::string & attr, const Atlas::Message::Element & val)
+  void Task::setAttr(const std::string& attr, const Atlas::Message::Element& val)
   {
     
   }

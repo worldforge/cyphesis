@@ -11,8 +11,8 @@ class StoppableTask(server.Task):
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)
-        self.usages = self.usages + ["stop"]
+        self.usages = self.usages + [{"name": "stop"}]
 
-    def stop_usage(self):
+    def stop_usage(self, args):
         self.irrelevant()
         return server.OPERATION_HANDLED

@@ -27,8 +27,13 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <rules/entityfilter/python/CyPy_EntityFilter.h>
+#include <modules/Variant.h>
+#include <rules/python/CyPy_Point3D.h>
+#include <rules/python/CyPy_Vector3D.h>
 
-Py::Object wrapPython(Task* value) {
+Py::Object wrapPython(Task* value)
+{
     return CyPy_Task::wrap(value);
 }
 
@@ -75,6 +80,32 @@ void CyPy_Task::init_type()
     PYCXX_ADD_NOARGS_METHOD(obsolete, obsolete, "");
 
     behaviors().readyType();
+
+    Task::argsCreator = [](const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args) {
+        Py::Dict dict;
+
+        for (auto& entry : args) {
+            Py::List list;
+
+            auto visitor = compose(
+                [&](const EntityLocation& value) {
+                    list.append(CyPy_EntityLocation::wrap(value));
+                },
+                [&](const WFMath::Point<3>& value) {
+                    list.append(CyPy_Point3D::wrap(value));
+                },
+                [&](const WFMath::Vector<3>& value) {
+                    list.append(CyPy_Vector3D::wrap(value));
+                }
+            );
+
+            for (const auto& vector_instance : entry.second) {
+                boost::apply_visitor(visitor, vector_instance);
+            }
+            dict.setItem(entry.first, list);
+        }
+        return dict;
+    };
 }
 
 
@@ -110,20 +141,6 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "tool") {
         return CyPy_LocatedEntity::wrap(m_value->m_usageInstance.tool);
     }
-//    if (nameStr == "targets") {
-//        Py::List list(m_value->m_usageInstance.targets.size());
-//        for (size_t i = 0; i < m_value->m_usageInstance.targets.size(); ++i) {
-//            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.targets[i]);
-//        }
-//        return list;
-//    }
-//    if (nameStr == "consumed") {
-//        Py::List list(m_value->m_usageInstance.consumed.size());
-//        for (size_t i = 0; i < m_value->m_usageInstance.consumed.size(); ++i) {
-//            list[i] = CyPy_EntityLocation::wrap(m_value->m_usageInstance.consumed[i]);
-//        }
-//        return list;
-//    }
     if (nameStr == "definition") {
         return CyPy_Usage::wrap(m_value->m_usageInstance.definition);
     }
@@ -153,7 +170,39 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "usages") {
         Py::List list;
         for (auto& usage : m_value->usages()) {
-            list.append(Py::String(usage.name));
+            Py::Dict map;
+            map.setItem("name", Py::String(usage.name));
+            Py::Dict params;
+            for (auto& param : usage.params) {
+                Py::Dict paramMap;
+                if (param.second.max != 1) {
+                    paramMap.setItem("max", Py::Long(param.second.max));
+                }
+                if (param.second.min != 1) {
+                    paramMap.setItem("min", Py::Long(param.second.min));
+                }
+                if (param.second.constraint) {
+                    paramMap.setItem("constraint", CyPy_Filter::wrap(param.second.constraint));
+                }
+                switch (param.second.type) {
+                    case UsageParameter::Type::DIRECTION:
+                        paramMap.setItem("type", Py::String("direction"));
+                        break;
+                    case UsageParameter::Type::ENTITY:
+                        paramMap.setItem("type", Py::String("entity"));
+                        break;
+                    case UsageParameter::Type::ENTITYLOCATION:
+                        paramMap.setItem("type", Py::String("entity_location"));
+                        break;
+                    case UsageParameter::Type::POSITION:
+                        paramMap.setItem("type", Py::String("position"));
+                        break;
+                }
+                params.setItem(param.first, paramMap);
+            }
+            map.setItem("params", params);
+
+            list.append(map);
         }
         return list;
     }
@@ -196,7 +245,39 @@ int CyPy_Task::setattro(const Py::String& name, const Py::Object& attr)
         usages.resize(0);
         usages.reserve(list.length());
         for (auto item : list) {
-            usages.emplace_back(TaskUsage{verifyString(item)});
+            auto usageMap = verifyDict(item);
+            TaskUsage usage;
+            usage.name = verifyString(usageMap.getItem("name"));
+            if (usageMap.hasKey("params")) {
+                auto params = verifyDict(usageMap.getItem("params"));
+                for (auto paramEntry : params) {
+                    UsageParameter param;
+                    auto paramMap = verifyDict(paramEntry.second);
+                    if (paramMap.hasKey("max")) {
+                        param.max = verifyLong(paramMap.getItem("max"));
+                    }
+                    if (paramMap.hasKey("min")) {
+                        param.min = verifyLong(paramMap.getItem("min"));
+                    }
+                    if (paramMap.hasKey("constraint")) {
+                        param.constraint = CyPy_Filter::value(paramMap.getItem("constraint"));
+                    }
+                    if (paramMap.hasKey("type")) {
+                        auto typeString = verifyString(paramMap.getItem("type"));
+                        if (typeString == "direction") {
+                            param.type = UsageParameter::Type::DIRECTION;
+                        } else if (typeString == "entity") {
+                            param.type = UsageParameter::Type::ENTITY;
+                        } else if (typeString == "entity_location") {
+                            param.type = UsageParameter::Type::ENTITYLOCATION;
+                        } else if (typeString == "position") {
+                            param.type = UsageParameter::Type::POSITION;
+                        }
+                    }
+                    usage.params.emplace(verifyString(paramEntry.first), std::move(param));
+                }
+            }
+            usages.emplace_back(std::move(usage));
         }
         return 0;
     }

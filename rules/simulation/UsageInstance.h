@@ -37,6 +37,8 @@
  */
 struct UsageParameter
 {
+    typedef boost::variant<EntityLocation, WFMath::Point<3>, WFMath::Vector<3>> UsageArg;
+
     /**
      * The type of parameter.
      */
@@ -79,6 +81,10 @@ struct UsageParameter
      */
     int max = 1;
 
+    static UsageParameter parse(const Atlas::Message::Element& element);
+
+    int countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool) const;
+
 };
 
 struct Usage
@@ -101,9 +107,6 @@ class UsageInstance
 
         static std::function<Py::Object(UsageInstance&& usageInstance)> scriptCreator;
 
-
-        typedef boost::variant<EntityLocation, WFMath::Point<3>, WFMath::Vector<3>> UsageArg;
-
         /**
          * The usage definition.
          */
@@ -122,7 +125,7 @@ class UsageInstance
         /**
          * Any arguments sent along.
          */
-        std::map<std::string, std::vector<UsageArg>> args;
+        std::map<std::string, std::vector<UsageParameter::UsageArg>> args;
 
         /**
          * The operation triggering the usage.

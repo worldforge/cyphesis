@@ -81,6 +81,8 @@ void Task::initTask(const std::string& id, OpVector & res)
 }
 
 #include "stubs/rules/simulation/stubTask.h"
+#include "stubs/rules/entityfilter/stubFilter.h"
+#include "stubs/rules/simulation/stubUsageInstance.h"
 
 #include "stubs/common/stubcustom.h"
 

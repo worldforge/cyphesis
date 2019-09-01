@@ -33,109 +33,124 @@
 #include "modules/ReferenceCounted.h"
 
 class LocatedEntity;
+
 class Script;
 
-struct TaskUsage {
+struct TaskUsage
+{
     std::string name;
+    std::map<std::string, UsageParameter> params;
 };
 
 /// \brief Interface class for handling tasks which take a short while to
 /// complete
-class Task : public boost::noncopyable, public ReferenceCounted {
-  protected:
+class Task : public boost::noncopyable, public ReferenceCounted
+{
+    protected:
 
-    /// \brief Serial number of the tick due to arrive next at this task.
-    int m_serialno;
+        /// \brief Serial number of the tick due to arrive next at this task.
+        int m_serialno;
 
-    /// \brief Flag to indicate if this task is obsolete and should be removed
-    bool m_obsolete;
+        /// \brief Flag to indicate if this task is obsolete and should be removed
+        bool m_obsolete;
 
-    /// \brief Progress towards task completion
-    double m_progress;
+        /// \brief Progress towards task completion
+        double m_progress;
 
-    /// \brief Rate of progress towards task completion
-    double m_rate;
+        /// \brief Rate of progress towards task completion
+        double m_rate;
 
-    double m_start_time;
+        double m_start_time;
 
-    /// \brief Additional task attributes
-    Atlas::Message::MapType m_attr;
+        /// \brief Additional task attributes
+        Atlas::Message::MapType m_attr;
 
-    /// \brief Name of task presented to client
-    std::string m_name;
+        /// \brief Name of task presented to client
+        std::string m_name;
 
-    /// \brief The language script that will handle this task
-    Py::Object m_script;
+        /// \brief The language script that will handle this task
+        Py::Object m_script;
 
-    /**
-     * The usages that are attached to this task, which clients can invoke.
-     */
-    std::vector<TaskUsage> m_usages;
+        /**
+         * The usages that are attached to this task, which clients can invoke.
+         */
+        std::vector<TaskUsage> m_usages;
 
-  public:
+    public:
 
-    boost::optional<double> m_duration;
+        static std::function<Py::Object(const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args)> argsCreator;
 
-    boost::optional<double> m_tick_interval;
+        boost::optional<double> m_duration;
 
-    UsageInstance m_usageInstance;
+        boost::optional<double> m_tick_interval;
 
-    /// \brief Constructor
-    explicit Task(UsageInstance usageInstance, const Py::Object& script);
+        UsageInstance m_usageInstance;
 
-    ~Task() override;
+        /// \brief Constructor
+        explicit Task(UsageInstance usageInstance, const Py::Object& script);
 
-    void callScriptFunction(const std::string& function, OpVector& res);
+        ~Task() override;
 
-    /// \brief Flag this task as obsolete
-    void irrelevant();
+        void callScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res);
 
-    /// \brief Handle the operation that instigates the task
-    ///
-    /// @param res The result of the operation is returned here.
-    void initTask(const std::string& id, OpVector & res);
+        void callScriptFunction(const std::string& function, OpVector& res);
 
-    /// \brief Handle an operation to perform the task
-    ///
-    /// A Task gets regular ticks which cause whatever actions this
-    /// Task involves to be returned.
-    /// @param res The result of the operation is returned here.
-    void tick(const std::string& id, const Operation& op, OpVector & res);
+        /// \brief Flag this task as obsolete
+        void irrelevant();
 
-    /// \brief Create a new tick op for the next iteration of this task
-    Operation nextTick(const std::string& id, const Operation& op);
+        /// \brief Handle the operation that instigates the task
+        ///
+        /// @param res The result of the operation is returned here.
+        void initTask(const std::string& id, OpVector& res);
 
-    /// \brief Return the number of the next to arrive at this task
-    int serialno() const {
-        return m_serialno;
-    }
+        /// \brief Handle an operation to perform the task
+        ///
+        /// A Task gets regular ticks which cause whatever actions this
+        /// Task involves to be returned.
+        /// @param res The result of the operation is returned here.
+        void tick(const std::string& id, const Operation& op, OpVector& res);
 
-    /// \brief Return a new tick serial number.
-    int newTick() {
-        return ++m_serialno;
-    }
+        /// \brief Create a new tick op for the next iteration of this task
+        Operation nextTick(const std::string& id, const Operation& op);
 
-    /// \brief Accessor to determine if this Task is obsolete
-    bool obsolete() { return m_obsolete; }
+        /// \brief Return the number of the next to arrive at this task
+        int serialno() const
+        {
+            return m_serialno;
+        }
 
-    /// \brief Accessor for name of this task
-    std::string & name() { return m_name; }
+        /// \brief Return a new tick serial number.
+        int newTick()
+        {
+            return ++m_serialno;
+        }
 
-    /// \brief Accessor for progress towards completion
-    double & progress() { return m_progress; }
+        /// \brief Accessor to determine if this Task is obsolete
+        bool obsolete()
+        { return m_obsolete; }
 
-    /// \brief Accessor for rate of progress towards completion
-    double & rate() { return m_rate; }
+        /// \brief Accessor for name of this task
+        std::string& name()
+        { return m_name; }
 
-    std::vector<TaskUsage>& usages() { return m_usages; }
+        /// \brief Accessor for progress towards completion
+        double& progress()
+        { return m_progress; }
 
-    /// \brief Accessor for additional attributes
-    int getAttr(const std::string & attr, Atlas::Message::Element & val) const;
+        /// \brief Accessor for rate of progress towards completion
+        double& rate()
+        { return m_rate; }
 
-    /// \brief Sets additional attribute
-    void setAttr(const std::string & attr, const Atlas::Message::Element & val);
+        std::vector<TaskUsage>& usages()
+        { return m_usages; }
 
-    friend class Tasktest;
+        /// \brief Accessor for additional attributes
+        int getAttr(const std::string& attr, Atlas::Message::Element& val) const;
+
+        /// \brief Sets additional attribute
+        void setAttr(const std::string& attr, const Atlas::Message::Element& val);
+
+        friend class Tasktest;
 };
 
 #endif // RULESETS_TASK_H

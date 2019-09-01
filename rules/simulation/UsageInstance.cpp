@@ -22,6 +22,7 @@
 #include "rules/LocatedEntity.h"
 #include "rules/simulation/BaseWorld.h"
 #include "modules/Variant.h"
+#include "common/AtlasQuery.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -33,6 +34,130 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
 std::function<Py::Object(UsageInstance&& usageInstance)> UsageInstance::scriptCreator;
+
+UsageParameter UsageParameter::parse(const Atlas::Message::Element& element)
+{
+    UsageParameter parameter{};
+
+    if (!element.isMap()) {
+        throw std::invalid_argument("Parameter must be a map.");
+    }
+    auto& paramMap = element.Map();
+
+    auto I = paramMap.find("type");
+    if (I == paramMap.end() || !I->second.isString()) {
+        throw std::invalid_argument("Parameter must define a string 'type'.");
+    }
+    if (I->second.String() == "entity") {
+        parameter.type = UsageParameter::Type::ENTITY;
+    } else if (I->second.String() == "entity_location") {
+        parameter.type = UsageParameter::Type::ENTITYLOCATION;
+    } else if (I->second.String() == "direction") {
+        parameter.type = UsageParameter::Type::DIRECTION;
+    } else if (I->second.String() == "position") {
+        parameter.type = UsageParameter::Type::POSITION;
+    } else {
+        throw std::invalid_argument(String::compose("Parameter type not recognized: %1.", I->second.String()));
+    }
+
+
+    AtlasQuery::find<std::string>(paramMap, "constraint", [&](const std::string& constraint) {
+        //TODO: should be a usage constraint provider factory
+        parameter.constraint.reset(new EntityFilter::Filter(constraint, EntityFilter::ProviderFactory()));
+    });
+    AtlasQuery::find<long>(paramMap, "min", [&](const long& min) {
+        parameter.min = static_cast<int>(min);
+    });
+    AtlasQuery::find<long>(paramMap, "max", [&](const long& max) {
+        parameter.max = static_cast<int>(max);
+    });
+
+    return parameter;
+}
+
+int UsageParameter::countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool) const
+{
+    int count = 0;
+    for (auto& arg : args) {
+        bool is_valid = false;
+
+        switch (type) {
+            case UsageParameter::Type::DIRECTION: {
+
+                auto visitor = compose(
+                    [&](const EntityLocation& value) {},
+                    [&](const WFMath::Point<3>& value) {},
+                    [&](const WFMath::Vector<3>& value) {
+                        is_valid = value.isValid();
+                    }
+                );
+
+                boost::apply_visitor(visitor, arg);
+
+                break;
+            }
+            case UsageParameter::Type::POSITION: {
+                auto visitor = compose(
+                    [&](const EntityLocation& value) {},
+                    [&](const WFMath::Point<3>& value) {
+                        is_valid = value.isValid();
+                    },
+                    [&](const WFMath::Vector<3>& value) {}
+                );
+
+                boost::apply_visitor(visitor, arg);
+
+                break;
+            }
+            case UsageParameter::Type::ENTITY: {
+
+                auto visitor = compose(
+                    [&](const EntityLocation& value) -> void {
+                        if (value.m_parent && !value.m_parent->isDestroyed()) {
+                            if (constraint) {
+                                EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
+                                queryContext.entityLoc.pos = &value.m_pos;
+                                queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                                queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+                                is_valid = constraint->match(queryContext);
+                            } else {
+                                is_valid = true;
+                            }
+                        }
+                    },
+                    [&](const WFMath::Point<3>& value) {},
+                    [&](const WFMath::Vector<3>& value) {}
+                );
+                boost::apply_visitor(visitor, arg);
+                break;
+            }
+            case UsageParameter::Type::ENTITYLOCATION: {
+                auto visitor = compose(
+                    [&](const EntityLocation& value) -> void {
+                        if (value.isValid() && !value.m_parent->isDestroyed()) {
+                            if (constraint) {
+                                EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
+                                queryContext.entityLoc.pos = &value.m_pos;
+                                queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                                queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+                                is_valid = constraint->match(queryContext);
+                            } else {
+                                is_valid = true;
+                            }
+                        }
+                    },
+                    [&](const WFMath::Point<3>& value) {},
+                    [&](const WFMath::Vector<3>& value) {}
+                );
+                boost::apply_visitor(visitor, arg);
+            }
+        }
+        if (is_valid) {
+            count++;
+        }
+    }
+    return count;
+}
 
 std::pair<bool, std::string> UsageInstance::isValid() const
 {
@@ -52,85 +177,7 @@ std::pair<bool, std::string> UsageInstance::isValid() const
         if (I == args.end()) {
             return {false, String::compose("Could not find required '%1' argument.", param.first)};
         }
-        int count = 0;
-        for (auto& arg : I->second) {
-            bool is_valid = false;
-
-            switch (param.second.type) {
-                case UsageParameter::Type::DIRECTION: {
-
-                    auto visitor = compose(
-                        [&](const EntityLocation& value) {},
-                        [&](const WFMath::Point<3>& value) {},
-                        [&](const WFMath::Vector<3>& value) {
-                            is_valid = value.isValid();
-                        }
-                    );
-
-                    boost::apply_visitor(visitor, arg);
-
-                    break;
-                }
-                case UsageParameter::Type::POSITION: {
-                    auto visitor = compose(
-                        [&](const EntityLocation& value) {},
-                        [&](const WFMath::Point<3>& value) {
-                            is_valid = value.isValid();
-                        },
-                        [&](const WFMath::Vector<3>& value) {}
-                    );
-
-                    boost::apply_visitor(visitor, arg);
-
-                    break;
-                }
-                case UsageParameter::Type::ENTITY: {
-
-                    auto visitor = compose(
-                        [&](const EntityLocation& value) -> void {
-                            if (value.m_parent && !value.m_parent->isDestroyed()) {
-                                if (param.second.constraint) {
-                                    EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
-                                    queryContext.entityLoc.pos = &value.m_pos;
-                                    queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
-                                    queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
-                                    is_valid = param.second.constraint->match(queryContext);
-                                } else {
-                                    is_valid = true;
-                                }
-                            }
-                        },
-                        [&](const WFMath::Point<3>& value) {},
-                        [&](const WFMath::Vector<3>& value) {}
-                    );
-                    boost::apply_visitor(visitor, arg);
-                    break;
-                }
-                case UsageParameter::Type::ENTITYLOCATION: {
-                    auto visitor = compose(
-                        [&](const EntityLocation& value) -> void {
-                            if (value.isValid() && !value.m_parent->isDestroyed()) {
-                                if (param.second.constraint) {
-                                    EntityFilter::QueryContext queryContext{*value.m_parent, actor.get(), tool.get()};
-                                    queryContext.entityLoc.pos = &value.m_pos;
-                                    queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
-                                    queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
-                                    is_valid = param.second.constraint->match(queryContext);
-                                } else {
-                                    is_valid = true;
-                                }
-                            }
-                        },
-                        [&](const WFMath::Point<3>& value) {},
-                        [&](const WFMath::Vector<3>& value) {}
-                    );
-                    boost::apply_visitor(visitor, arg);
-                }
-            }
-            if (is_valid) {
-                count++;
-            }
-        }
+        int count = param.second.countValidArgs(I->second, actor, tool);
 
         if (count < param.second.min) {
             return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};

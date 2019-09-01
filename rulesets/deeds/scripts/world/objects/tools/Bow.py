@@ -13,14 +13,11 @@ import entity_filter
 arrow_filter = entity_filter.Filter("entity instance_of types.arrow")
 
 
-def shoot(instance):
+def shoot_in_direction(direction, instance, res):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
-
-    res = Oplist()
 
     arrows = instance.actor.find_in_contains(arrow_filter)
     if len(arrows):
-        direction = instance.get_arg("direction", 0)
         direction.normalize()
 
         # Adjust the start position of the arrow, so it's outside of the actor, at mid height
@@ -35,6 +32,14 @@ def shoot(instance):
         new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
 
         res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile"), to=arrows[0].id))
+
+
+def shoot(instance):
+    res = Oplist()
+    direction = instance.get_arg("direction", 0)
+
+    shoot_in_direction(direction, instance, res)
+
     return server.OPERATION_BLOCKED, res
 
 
@@ -62,14 +67,18 @@ class DrawBow(StoppableTask):
             return self.irrelevant(err)
 
         if not self.is_ready:
-            self.usages = ["release"] + self.usages
+            self.usages = [{"name": "release", "params": {"direction": {"type": "direction"}}}] + self.usages
             self.is_ready = True
             self.actor.update_task()
 
         return server.OPERATION_BLOCKED
 
-    def release_usage(self):
+    def release_usage(self, args):
+        res = Oplist()
+
         self.irrelevant()
         if self.is_ready:
-            return shoot(self.usage)
-
+            direction = args["direction"][0]
+            if direction is not None:
+                shoot_in_direction(direction, self.usage, res)
+        return server.OPERATION_BLOCKED, res

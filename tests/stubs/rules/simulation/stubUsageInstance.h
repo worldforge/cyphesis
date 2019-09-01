@@ -7,6 +7,22 @@
 #include "rules/simulation/UsageInstance.h"
 #include "stubUsageInstance_custom.h"
 
+#ifndef STUB_UsageParameter_parse
+//#define STUB_UsageParameter_parse
+   UsageParameter UsageParameter::parse(const Atlas::Message::Element& element)
+  {
+    return *static_cast< UsageParameter*>(nullptr);
+  }
+#endif //STUB_UsageParameter_parse
+
+#ifndef STUB_UsageParameter_countValidArgs
+//#define STUB_UsageParameter_countValidArgs
+  int UsageParameter::countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool) const
+  {
+    return 0;
+  }
+#endif //STUB_UsageParameter_countValidArgs
+
 
 
 #ifndef STUB_UsageInstance_isValid

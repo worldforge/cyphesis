@@ -16,8 +16,8 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <common/operations/Tick.h>
-#include <tests/allOperations.h>
+#include "common/operations/Tick.h"
+#include <Atlas/Objects/Operation.h>
 #include "TasksProperty.h"
 
 #include "rules/LocatedEntity.h"
@@ -27,6 +27,8 @@
 #include "common/TypeNode.h"
 #include "common/operations/Update.h"
 #include "BaseWorld.h"
+
+#include <wfmath/atlasconv.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -60,7 +62,38 @@ int TasksProperty::get(Atlas::Message::Element& val) const
         if (!task->usages().empty()) {
             ListType usagesList;
             for (auto& usage : task->usages()) {
-                usagesList.emplace_back(Atlas::Message::MapType{{"name", usage.name}});
+
+                MapType paramsMap;
+                for (auto& param : usage.params) {
+                    MapType paramMap;
+                    if (param.second.max != 1) {
+                        paramMap.emplace("max", param.second.max);
+                    }
+                    if (param.second.min != 1) {
+                        paramMap.emplace("min", param.second.min);
+                    }
+                    if (param.second.constraint) {
+                        paramMap.emplace("constraint", param.second.constraint->getDeclaration());
+                    }
+                    switch (param.second.type) {
+                        case UsageParameter::Type::DIRECTION:
+                            paramMap.emplace("type", "direction");
+                            break;
+                        case UsageParameter::Type::ENTITY:
+                            paramMap.emplace("type", "entity");
+                            break;
+                        case UsageParameter::Type::ENTITYLOCATION:
+                            paramMap.emplace("type", "entitylocation");
+                            break;
+                        case UsageParameter::Type::POSITION:
+                            paramMap.emplace("type", "position");
+                            break;
+                    }
+                    paramsMap.emplace(param.first, std::move(paramMap));
+                }
+
+                usagesList.emplace_back(Atlas::Message::MapType{{"name",   usage.name},
+                                                                {"params", std::move(paramsMap)}});
             }
             taskMap.emplace("usages", std::move(usagesList));
         }
@@ -199,6 +232,32 @@ HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
     return OPERATION_BLOCKED;
 }
 
+
+std::pair<bool, std::string> areUsageParamsValid(const std::map<std::string, UsageParameter>& params,
+                                                 const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args,
+                                                 const UsageInstance& usageInstance)
+{
+
+    for (auto& param : params) {
+        auto I = args.find(param.first);
+        if (I == args.end()) {
+            return {false, String::compose("Could not find required '%1' argument.", param.first)};
+        }
+        int count = param.second.countValidArgs(I->second, usageInstance.actor, usageInstance.tool);
+
+        if (count < param.second.min) {
+            return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};
+        }
+        if (count > param.second.max) {
+            return {false, String::compose("Too many '%1' arguments. Should be maximum %2, got %3.", param.first, param.second.max, count)};
+        }
+
+    }
+
+
+    return {true, ""};
+}
+
 HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
                                           const Operation& op,
                                           OpVector& res)
@@ -228,6 +287,14 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
         }
         auto taskId = arg->getId();
 
+        auto taskI = m_tasks.find(taskId);
+        if (taskI == m_tasks.end()) {
+            //Task doesn't exist anymore, just ignore.
+            return OPERATION_IGNORED;
+        }
+
+        auto& task = taskI->second;
+
         if (!arg->hasAttr("args")) {
             actor->error(op, "Use arg for task has no args", res, actor->getId());
             return OPERATION_BLOCKED;
@@ -253,19 +320,74 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
             return OPERATION_BLOCKED;
         }
 
-        auto usage = innerArg->getId();
+        auto usageId = innerArg->getId();
 
-
-        auto taskI = m_tasks.find(taskId);
-        if (taskI == m_tasks.end()) {
-            //Task doesn't exist anymore, just ignore.
-            return OPERATION_IGNORED;
+        auto usageI = std::find_if(task->usages().begin(), task->usages().end(), [&](const TaskUsage& it) -> bool { return it.name == usageId; });
+        if (usageI == task->usages().end()) {
+            actor->error(op, String::compose("Usage does %1 not exist in task %2.", usageId, taskId), res, actor->getId());
+            return OPERATION_BLOCKED;
         }
 
-        auto& task = taskI->second;
+        auto& usage = *usageI;
+        std::map<std::string, std::vector<UsageParameter::UsageArg>> usage_instance_args;
+
+
+        for (auto& param : usage.params) {
+            Atlas::Message::Element argumentElement;
+            auto result = innerArg->copyAttr(param.first, argumentElement);
+
+            if (result != 0 || !argumentElement.isList()) {
+                actor->clientError(op, String::compose("Could not find required list argument '%1'.", param.first), res, actor->getId());
+                return OPERATION_IGNORED;
+            }
+
+            auto& argVector = usage_instance_args[param.first];
+
+            for (auto& argElement : argumentElement.List()) {
+                switch (param.second.type) {
+                    case UsageParameter::Type::ENTITY:
+                    case UsageParameter::Type::ENTITYLOCATION: {
+                        if (!argElement.isMap()) {
+                            actor->clientError(op, String::compose("Inner argument in list of arguments for '%1' was not a map.", param.first), res, actor->getId());
+                            return OPERATION_IGNORED;
+                        }
+                        //The arg is for an RootEntity, expressed as a message. Extract id and pos.
+                        auto idI = argElement.Map().find("id");
+                        if (idI == argElement.Map().end() || !idI->second.isString()) {
+                            actor->clientError(op, String::compose("Inner argument in list of arguments for '%1' had no id string.", param.first), res, actor->getId());
+                            return OPERATION_IGNORED;
+                        }
+
+                        auto involved = BaseWorld::instance().getEntity(idI->second.String());
+                        if (!involved) {
+                            actor->error(op, "Involved entity does not exist", res, actor->getId());
+                            return OPERATION_IGNORED;
+                        }
+
+                        auto posI = argElement.Map().find("pos");
+                        if (posI != argElement.Map().end() && posI->second.isList()) {
+                            argVector.emplace_back(EntityLocation(involved, WFMath::Point<3>(posI->second)));
+                        } else {
+                            argVector.emplace_back(EntityLocation(involved));
+                        }
+                    }
+                        break;
+                    case UsageParameter::Type::POSITION:
+                        argVector.emplace_back(WFMath::Point<3>(argElement));
+                        break;
+                    case UsageParameter::Type::DIRECTION:
+                        //Normalize the entry just to make sure.
+                        argVector.emplace_back(WFMath::Vector<3>(argElement).normalize());
+                        break;
+                }
+            }
+        }
+        
+
+        auto validRes = areUsageParamsValid(usage.params, usage_instance_args, task->m_usageInstance);
 
         //Call a script method named after the usage, with "_usage" as suffix.
-        task->callScriptFunction(usage + "_usage", res);
+        task->callScriptFunction(usageId + "_usage", usage_instance_args, res);
 
         if (task->obsolete()) {
             clearTask(taskId, e, res);
@@ -281,6 +403,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
     return OPERATION_IGNORED;
 
 }
+
 
 HandlerResult TasksProperty::operation(LocatedEntity* owner,
                                        const Operation& op,
@@ -313,3 +436,4 @@ void TasksProperty::remove(LocatedEntity* owner, const std::string& name)
     owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
     owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
+

@@ -57,7 +57,7 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
             try {
                 //TODO: check that the op is a subtype of "action"?
                 if (usageEntry.second.isMap()) {
-                    auto map = usageEntry.second.Map();
+                    auto& map = usageEntry.second.Map();
 
                     Usage usage;
 
@@ -77,62 +77,11 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
                     });
                     AtlasQuery::find<Atlas::Message::MapType>(map, "params", [&](const Atlas::Message::MapType& value) {
                         for (auto& entry : value) {
-                            UsageParameter parameter{};
-
-                            if (!entry.second.isMap()) {
-                                throw std::invalid_argument("Parameter must be a map.");
-                            }
-                            auto& paramMap = entry.second.Map();
-
-                            auto I = paramMap.find("type");
-                            if (I == paramMap.end() || !I->second.isString()) {
-                                throw std::invalid_argument("Parameter must define a string 'type'.");
-                            }
-                            if (I->second.String() == "entity") {
-                                parameter.type = UsageParameter::Type::ENTITY;
-                            } else if (I->second.String() == "entity_location") {
-                                parameter.type = UsageParameter::Type::ENTITYLOCATION;
-                            } else if (I->second.String() == "direction") {
-                                parameter.type = UsageParameter::Type::DIRECTION;
-                            } else if (I->second.String() == "position") {
-                                parameter.type = UsageParameter::Type::POSITION;
-                            } else {
-                                throw std::invalid_argument(String::compose("Parameter type not recognized: %1.", I->second.String()));
-                            }
-
-
-                            AtlasQuery::find<std::string>(paramMap, "constraint", [&](const std::string& constraint) {
-                                //TODO: should be a usage constraint provider factory
-                                parameter.constraint.reset(new EntityFilter::Filter(constraint, EntityFilter::ProviderFactory()));
-                            });
-                            AtlasQuery::find<long>(paramMap, "min", [&](const long& min) {
-                                parameter.min = static_cast<int>(min);
-                            });
-                            AtlasQuery::find<long>(paramMap, "max", [&](const long& max) {
-                                parameter.max = static_cast<int>(max);
-                            });
-
+                            auto parameter = UsageParameter::parse(entry.second);
                             usage.params.emplace(entry.first, std::move(parameter));
-
                         }
                     });
-//
-//
-//
-//                    AtlasQuery::find<Atlas::Message::ListType>(map, "targets", [&](const Atlas::Message::ListType& value) {
-//                        for (auto& entry : value) {
-//                            if (entry.isString()) {
-//                                usage.targets.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
-//                            }
-//                        }
-//                    });
-//                    AtlasQuery::find<Atlas::Message::ListType>(map, "consumes", [&](const Atlas::Message::ListType& value) {
-//                        for (auto& entry : value) {
-//                            if (entry.isString()) {
-//                                usage.consumed.emplace_back(new EntityFilter::Filter(entry.String(), EntityFilter::ProviderFactory()));
-//                            }
-//                        }
-//                    });
+
                     m_usages.emplace(usageEntry.first, std::move(usage));
                 }
             } catch (const std::invalid_argument& e) {
@@ -247,7 +196,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             }
 
             //Populate the usage arguments
-            std::map<std::string, std::vector<UsageInstance::UsageArg>> usage_instance_args;
+            std::map<std::string, std::vector<UsageParameter::UsageArg>> usage_instance_args;
 
             for (auto& param : usage.params) {
                 Atlas::Message::Element element;
@@ -261,8 +210,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 for (auto& argElement : element.List()) {
                     switch (param.second.type) {
                         case UsageParameter::Type::ENTITY:
-                        case UsageParameter::Type::ENTITYLOCATION:
-                        {
+                        case UsageParameter::Type::ENTITYLOCATION: {
                             if (!argElement.isMap()) {
                                 actor->clientError(op, String::compose("Inner argument in list of arguments for '%1' was not a map.", param.first), res, actor->getId());
                                 return OPERATION_IGNORED;

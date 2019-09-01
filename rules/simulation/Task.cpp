@@ -32,6 +32,8 @@ using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 
+std::function<Py::Object(const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args)> Task::argsCreator;
+
 /// \brief Task constructor for classes which inherit from Task
 Task::Task(UsageInstance usageInstance, const Py::Object& script) :
     m_serialno(0),
@@ -73,7 +75,7 @@ Operation Task::nextTick(const std::string& id, const Operation& op)
     double futureSeconds = 1.0;
     if (m_tick_interval) {
         futureSeconds = *m_tick_interval;
-    } else if(m_duration) {
+    } else if (m_duration) {
         futureSeconds = *m_duration;
     }
 
@@ -126,7 +128,7 @@ void Task::tick(const std::string& id, const Operation& op, OpVector& res)
 {
     if (m_duration) {
         auto elapsed = (op->getSeconds() - m_start_time);
-        m_progress = std::min(1.0,  elapsed / *m_duration);
+        m_progress = std::min(1.0, elapsed / *m_duration);
     }
     callScriptFunction("tick", res);
     if (!obsolete()) {
@@ -144,6 +146,27 @@ void Task::callScriptFunction(const std::string& function, OpVector& res)
     if (m_script.hasAttr(function)) {
         try {
             auto ret = m_script.callMemberFunction(function);
+            //Ignore any return codes
+            ScriptUtils::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor.get());
+        } catch (const Py::BaseException& e) {
+            log(ERROR, String::compose("Error when calling '%1' on task '%2' on entity '%3'.", function, m_script.str(), m_usageInstance.actor->describeEntity()));
+            if (PyErr_Occurred() != nullptr) {
+                PyErr_Print();
+            }
+            irrelevant();
+        }
+    }
+}
+
+void Task::callScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res)
+{
+    if (m_script.hasAttr(function)) {
+        Py::Object py_args = Py::None();
+        if (argsCreator) {
+            py_args = argsCreator(args);
+        }
+        try {
+            auto ret = m_script.callMemberFunction(function, Py::TupleN(py_args));
             //Ignore any return codes
             ScriptUtils::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor.get());
         } catch (const Py::BaseException& e) {

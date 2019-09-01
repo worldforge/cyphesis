@@ -45,7 +45,7 @@ class Fishing(StoppableTask):
             self.fish_on_hook = False
         return server.OPERATION_HANDLED
 
-    def stop_usage(self):
+    def stop_usage(self, args):
         # Check that the usage still is valid
         (valid, _) = self.usage.is_valid()
         self.irrelevant()

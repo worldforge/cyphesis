@@ -11,7 +11,7 @@ namespace EntityFilter {
 
 #ifndef STUB_Filter_Filter
 //#define STUB_Filter_Filter
-   Filter::Filter(const std::string &what, const ProviderFactory& factory)
+   Filter::Filter(const std::string& what, const ProviderFactory& factory)
   {
     
   }
@@ -32,6 +32,14 @@ namespace EntityFilter {
     return false;
   }
 #endif //STUB_Filter_match
+
+#ifndef STUB_Filter_getDeclaration
+//#define STUB_Filter_getDeclaration
+  const std::string& Filter::getDeclaration() const
+  {
+    static std::string instance; return instance;
+  }
+#endif //STUB_Filter_getDeclaration
 
 
 }  // namespace EntityFilter
