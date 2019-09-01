@@ -89,6 +89,7 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
     PYCXX_ADD_VARARGS_METHOD(mod_property, mod_property, "");
     PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
+    PYCXX_ADD_NOARGS_METHOD(update_task, update_task, "");
     PYCXX_ADD_VARARGS_METHOD(find_in_contains, find_in_contains, "Returns a list of all contained entities that matches the supplied Entity Filter.");
 
 
@@ -121,6 +122,11 @@ Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
     return CyPy_Entity::start_task(m_value, args);
 }
 
+Py::Object CyPy_Entity::update_task()
+{
+    return CyPy_Entity::update_task(m_value);
+}
+
 Py::Object CyPy_Entity::mod_property(const Py::Tuple& args)
 {
     return CyPy_Entity::mod_property(m_value, args);
@@ -147,6 +153,16 @@ Py::Object CyPy_Entity::start_task(const Ref<Entity>& entity, const Py::Tuple& a
 
     auto tp = entity->requirePropertyClassFixed<TasksProperty>();
     tp->startTask(verifyString(args[0]), verifyObject<CyPy_Task>(args[1]), entity.get(), res);
+
+    return CyPy_Oplist::wrap(std::move(res));
+}
+
+Py::Object CyPy_Entity::update_task(const Ref<Entity>& entity)
+{
+    OpVector res;
+
+    auto tp = entity->requirePropertyClassFixed<TasksProperty>();
+    tp->updateTask(entity.get(), res);
 
     return CyPy_Oplist::wrap(std::move(res));
 }
