@@ -14,6 +14,5 @@ class StoppableTask(server.Task):
         self.usages = self.usages + ["stop"]
 
     def stop_usage(self):
-        print("Stopping task")
         self.irrelevant()
         return server.OPERATION_HANDLED

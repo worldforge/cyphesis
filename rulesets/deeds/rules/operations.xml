@@ -91,6 +91,12 @@
     </map>
 
     <map>
+        <string name="id">draw</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">root_operation</string>
+    </map>
+
+    <map>
         <string name="id">sow</string>
         <string name="objtype">op_definition</string>
         <string name="parent">action</string>

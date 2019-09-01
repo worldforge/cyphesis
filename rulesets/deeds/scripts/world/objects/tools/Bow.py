@@ -6,6 +6,7 @@ from atlas import Operation, Entity, Oplist
 from physics import Vector3D, Point3D, Quaternion
 
 import server
+from world.StoppableTask import StoppableTask
 from world.utils import Usage
 import entity_filter
 
@@ -35,3 +36,40 @@ def shoot(instance):
 
         res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile"), to=arrows[0].id))
     return server.OPERATION_BLOCKED, res
+
+
+def draw(instance):
+    usage_name = instance.op.parent
+
+    task = DrawBow(instance, tick_interval=1, name="Draw")
+
+    instance.actor.send_world(Operation("sight", instance.op))
+
+    return server.OPERATION_BLOCKED, instance.actor.start_task(usage_name, task)
+
+
+class DrawBow(StoppableTask):
+    """
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.is_ready = False
+
+    def tick(self):
+        (valid, err) = self.usage.is_valid()
+        if not valid:
+            return self.irrelevant(err)
+
+        if not self.is_ready:
+            self.usages = ["release"] + self.usages
+            self.is_ready = True
+            self.actor.update_task()
+
+        return server.OPERATION_BLOCKED
+
+    def release_usage(self):
+        self.irrelevant()
+        if self.is_ready:
+            return shoot(self.usage)
+

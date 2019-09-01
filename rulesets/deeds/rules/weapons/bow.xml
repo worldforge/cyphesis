@@ -22,6 +22,17 @@
             </map>
             <map name="usages">
                 <map name="default">
+                    <map name="draw">
+                        <string name="name">Draw</string>
+                        <map name="params">
+                            <map name="direction">
+                                <string name="type">direction</string>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Bow.draw</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains(actor.contains, child instance_of types.arrow)</string>
+                        <string name="description">Fire an arrow with a bow.</string>
+                    </map>
                     <map name="shoot">
                         <string name="name">Shoot</string>
                         <map name="params">
