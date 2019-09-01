@@ -73,16 +73,9 @@ to be possible, Link and ExternalMind move into common, and CommSocket
 would need to move into a library. This removes an expensive dynamic_cast
 from the path of every operation coming into the server.
 
-Rename Script::operation for clarify. Needs to merge C++11 first, to
-reduce chances of error. Then we can see how much operation is actually
-called.
-
 Appropriate clothing buff.
  - match the weather in terms of warmth
  - social bonus for not wearing battle gear
-
-In FooOperation(), avoid calling FooOperation() in a parent class, as it
-re-does the checking.
 
 Ducplicated code in ServerAccount::addNewEntity; very similar to
 Account::addNewCharacter.
@@ -109,15 +102,8 @@ It needs to actually handle lobby dispatch first.
 There are only very few places where ConnectedRouter::m_connection is used
 as anything other than Link - should be possible to weaken the coupling.
 
-Motion only ever uses locatio, so doesn't need entity ref
-
 When coverage tells us 0% in a header, that is because the header had to
 generate implicit default code - probably destructor.
-
-Design a general purpose constraints mechanism, and have it inform
-the physics system.
-
-See if we can test CommStreamClient with null_stream
 
 Move logic for reply ops from CommClient::objectArrived to Connection?
 Would probably clean up the logic in CommClient, and allow send()
@@ -155,8 +141,6 @@ Once we are connected to Peer, probably shouldnt have the m_socket pointer
 any more, and need to make sure we are no longer connected to the signals.
 Can we clear the socket signals?
 
-Separate out CommPeer::connect into two trivial inline functions
-
 There are many ways in which MemMap does the same job as WorldRouter.
 Common base class?
 
@@ -168,28 +152,17 @@ serialno?
 
 Improve Interactive to use serialno for responses
 
-Bug: Not listening for IPv6 any more
-Bug: Connecting doesn't fail over
-
 Why isn't ExternalMind a ConnectedRouter
 
 Re-factor login code so Session is the unique class rather than Account.
 Constraining logins to be one per account may be sound policy, but it
 should be policy rather than a hard constraint of the architecture.
 
-BaseWorld, Property, TypeNode and Inheritance into rulesets? Everything else
-in common is lower level.
-
 Need to work out what to do with sections, vs rulesets when uploading and
 storing rules at the server end.
 
 Probably cleaner, and less globals to initiate ruleset load from the config
 phase in main()
-
-Why isn't trailblaze working?
-
-Look into if installcheck-local can be used usefully to ensure all is in
-order.
 
 It's possible to add permissions and possibly even protection against
 CPU overload into the scripting API. Permissions could be controlled by a
@@ -208,10 +181,6 @@ Writing rules to database should only be done if transaction succeeds, so
 all pending writes need to be encapsulated too. This requires the handler
 and builder code not to be in server.
 
-These class belong at the simulator layer (above rulesets,
-                                           but not server specific):
-  EntityBuilder, CorePropertyManager, *RuleHandler
-
 Add a Server config class in server/ which adds all the base EntityFactories
 to the builder, and the PropertyFactories to the CorePropertyManager. Then
 both those can be made independant of server. It could also handle all the
@@ -229,43 +198,11 @@ A more flexible concept of scripting attributes might make sense too.
 
 Move to a mechanism like the new mind property for statistics
 
-Ensure PythonClass checks base on reload
- - What happens when package changes?
- - What happens when class _name_ changes?
-
-Make all PyProperties into an inheritance tree, and all scripts to
-inherit from them
- - add tp_base
- - one aspect is that the property value itself is typically important
-    as_number/as_seq/as_map ?
- - make properties scriptable and the move common code from Entity, Task
-   and Property into Scriptable base class for multiple inheritance
- - It should be possible to simplify Py_Property.cpp function now
-
-Add tests which trigger possible crash conditions in the script interface
-
-Make m_target private in TaskFactory, and change the sort function for the
-target map in activations to sort on how deep the target is in the
-type tree, so we can try and get the closest match first.
-
 Include doxygen docs in http self-served docs.
-
-De-dup code in Py_Thing and Py_Mind and Py_CreatorClient
 
 Make it possible to forget
 
-Allow target to be "foo.bar" where foo is the entity type, and bar is property
-name, allowing either to be unspecified. That way activation can be constrained
-to a particular entity, a paricular property or both.
-
-In NPCMind need to sort what is going on. Probably only need to hold onto
-weak references using WeakValueDict
-
 Use "name" as the property that is supposed to get an operation
-
-It looks like weak reference is being broken way late in Logging. Probably
-because the op queue is holding a reference to the tree, and so deleting 
-the tree wrapper is being delayed. Need to look into when we delete that.
 
 EntityBuilder shouldn't need a permenent reference to the world.
 
@@ -283,7 +220,6 @@ Check out _GLIBCXX_DEBUG
   rebuild of everything that uses stdc++, including non WF deps.
 
 Macro todo list
-  Get server physics kicked off
   Re-work Atlas to be more secure, client driven encrypted
   Make server more modular, scalable
 
@@ -291,28 +227,9 @@ Protocol revision:
   Stop announcing by server, request at client instead
   Consolidate negotiation, and allow other undefined headers
   Allow for multiple exchanges during negotiation
-  Put Unseen and other common ops (between Eris/cuphesis) into the spec
 
 Use SCMS like scheme to ensure no grey goo. entities cannot create other
 entities which can create further persistent entities.
-
-Bullet Physics Ideas:
-  There are two suitable bullet world objects for us to use:
-    btCollisionWorld and btDynamicsWorld
-
-  The former should be pretty simple to use, the latter gives way more.
-
-  The former we can use by adding collision objects for the static world
-  content, then use convexSweepTest to calculate collisions for single
-  moving avatars which themselves do not need to be in the collisionWorld.
-  It can also be used to avoid object intersection at movement and creation
-  time if desirable.
-
-  In a more advanced implementation, perhaps using btDynamicsWorld a bunch
-  of interesting stuff can be simulated without us having to change the
-  way we handle basic avatar collisions. In addition as things get more
-  tricky we can use the bit field and matric features to define what collides
-  with what, all under the control of the designer/builder.
 
 Frontends, backends, routers based architecture
 
@@ -331,10 +248,6 @@ Add config option which allows server owner to control the type of account
 created by default. If they want "admin"/"builder" then they should have it.
 In fact "builder" is a smashing idea for a new account type.
 
-Use weak references to allow players to assist other players. Activating some
-kind of assist task installs a reference in the other task, which breaks
-automatically when the task breaks.
-
 Harmonize Atlas repr of Areas with mods, and also fix bindings and properties
 to make exchanging data easier.
 
@@ -343,8 +256,6 @@ bits of terrain, like ownership. Requires new class in Mercator probably.
 
 We should say "circle" to reference WFMath::Ball in 2D. Pick a different name
 depending in dinension. "rectangle" instead of "box" perhaps.
-
-Consider Entity:destroyed and Entity:containered to interrupt tasks
 
 Allow Admin to use an op - perhaps Login - to claim any object on the server.
 
@@ -1691,64 +1602,7 @@ to world.addNewObject() to avoid duplication.
 Use "REFERENCES foo ON DELETE CASCADE" SQL to make sure character table
 relations are removed when a character is deleted, or an account is deleted.
 
-So, we have skill, which is a way of mapping tool use into actions.
-How about tasks, which are a way of giving persistence and state to actions?
-
-Sort out deer animations.
-
-Add grasing.
-
-By adding a skill class to be referenced by character, and defining Teach 
-(transfer skill) Sling (stop wielding tool, and place somewhere convenient)
-we can have almost a complete system. Implicitly, the click action when a tool
-is wielded is to use that tool.
-
-Re-work the way PyEntity and PyMind are defined so the inheritence is
-available, and open up the scope for exposing more directly the functionality
-of other entity classes.
-
-Stop creating new objects from causing so much activity. Perception of the
-new object must be based on its visibility. Perception of its deletion
-should also be limited. Implement LRU in mind.
-
-Upsidedown chickens suck!
-
-Use tool, Wield op and Use op.
-
-Add beet.
-
-Look at me Swimming!
-
-Debug skellys.
-
-Make lych move. Construct skeleton nearby.
-
-Handle modifying bbox proportionally to parameters.
-
-Linears and stuff.
-
-Path finder based roads and stuff.
-
-Create pig pen.
-
-Generalise money_transfers in mind to store general information about
-all transfers of ownership. Preferably in knowledge.
-
-Make chickens afraid of wolf.
-
-Make vis re-calculated on bbox change.
-
-Make walking speed depend on height.
-
 Make cyclient more robust about receiving random ops.
-
-Implement spawn points in the EntityFactory.
-
-Verify that the persistant code does not insert entities into the world with
-invalid location data. It shouldn't.
-
-Fix movement bug with destination based movement after collision. Ammend
-find target to be derived from velocity.
 
 Fix or get rid of cyphesis-setup
 
@@ -1757,67 +1611,19 @@ Fix usage of map.get in BaseMind and NPCMind
 Make ExternalMind inherit from something higher that BaseMind. It has so
 few features.
 
-It may be possible to get rid of getXyz() (crappy absolute position)
-
 Its really not necessary for WorldRouter and its base to be so virtual, or
 inherit from BaseEntity. Get rid of that, shift all the serialno stuff into
 base.
 
 Add time to location, so we can stamp update time, and always calculate pos.
 
-We can neglect to send appearance if we are about to send Sight Move.
-
-distanceTo does not take into account orientation.
-
-Sort out putting everything at terrain height. This may require some strange
-stuff.
-
-Invesitage interaction between mind/body WRT type. We shouldn't ever use
-the type string in Atlas.
-
-Get rif of Entity::m_name, and other related pointless static attrs.
-
-Fix Entity::addToObject to be more efficient with contlist
-
-Make the server easier to kill.
-
 Enforce well-formed args and parents on IG ops centrally.
-
-Real sight ranges
-
-Do minds delete stuff from memory? Replace Entity with a special class
-for memory entities, includin some kind of LRU thingy.
-Implement LRU culling to minds, only for things with empty contains.
-MemMap::lookId should probably not be exposed to the python API
-
-Add Restore op if required which does the same as Setup, but for restore.
 
 Make sure we don't schedule database maintenence if its already doing it.
 
-There is probably a problem with getLocation bailing if LOC is not of the
-data from the mind code's point of view.
-
-Why the hell is there so much mind activity on database restore.
-
-Take precautions to ensure multiple looks don't get stacked up in the MindMap.
-Probably best done by making additionsById a map.
-
 Add some simple sound op examples
 
-Make Forest a non-solid bbox
-
-Fix problem with vertical movement. (See BUGS)
-
-Debug collision with sty.
-
-Make cyphesis less reluctant to shutdown. Check for exit_flag in more
-places. Add second flag set if other signals are used other than interrupt
-or term, or if those signals are used twice. This could bypass all the
-memory freeing to ensure clean fast stop.
-
 Need to profile why startup takes so long - we are chewing a lot of ops.
-
-Can we run our own RDBMS in the event that root access is not available.
 
 Modify var dir for socket so it is actually the right place.
 
@@ -1826,61 +1632,12 @@ every 30 seconds (or so).
 
 Make database maintainance intervals configurable.
 
-Sort out character relation so it has the right foreign key stuff.
-
-Looks like zero collision time results in move then stop being sent
-almost immediatly. Check for it, and send nothing. This may mean
-re-ordering the movement code. Possibly checkCollisions needs
-to be earlier.
-
-Modify Movement and Pedestrian classes so they handle restricting an
-entity to their parents constraints. In the case of Pedestrian, this
-means walking on the ground.
-
 Clean the database. Use VACUUM once an hour, and probably VACUUM ANALYSE
 and VACUUM FULL each once per day. REINDEX may also be required.
 
 Sort out socket address re-use, and lingering.
 
-Long term, try and sort out the way object factories, scripts, and atlas
-inheritance are handled, so they are a bit more coherant.
-
-Modify the logging code so that it mangles script output a bit less.
-
-Fix up python checks so they work with a prefix other than /usr
-
-Is listen socket getting opened before it will accept or negotiate because
-more work is being done before poll/select occurs.
-
 Fix up cypasswd to allow creation of additional admin accounts.
-
-Think about adding UPnP here or to skstream (or both)
-
-Use PyInstance_New to create an instance given a class.
-
-Use PyModule_AddObject(), PyModule_AddIntConstant(), and
-PyModule_AddStringConstant() when setting up the python consts module.
-(new in version 2).
-
-Look at re-writing python API code to work with python GC
-
-Look at using zipfiles to store entrie trees of python files for a ruleset.
-
-Still plenty of python object leaks. Need to carefully see if references are
-being handled right in the mind code.
-
-Implement constraints on entities, which have to be checked before movement
-is allowed.
-
-Put in different high level exception catchers, to differentiate between
-exceptions caused by a client, which should result in a kick, and bugs in game
-which need to be logged.
-
-Mind state is still utterly unpersisted, so creatures are waking up brain dead
-- mind does not even get kick started with a setup op.
-
-When deleting an entity, need to deal with reparenting its children in the
-database.
 
 Experiment with BEGIN / COMMIT blocks to reduce load on database. A
 possibility is starting a transaction, and then commiting, delaying if their
@@ -1892,26 +1649,6 @@ to worry about who wants the tuples.
 
 General TODO
 
-  Generalise and virtualise the collision code.
-
-  Implement jump operation, which specifies target, and comes back with,
-  a sight of a jump which has the starting velocity, and finish position.
-  If the client sends only velocity, then something else happens. Add
-  a method to Pedestrian to handle it.
-
-  Add Feel as the counterpoint to Touch, as Sight is to Look.
-
-  Implement piles.
-
-  For entities which have a bbox, which other entities do not collide
-  with, such as geo entities, provide a virtual methods which allows the
-  collission code to check whether entities within this bbox should
-  be moved into the bbox entity. Should work fine for irreguler shaped
-  things, as long as bbox is kept up to date.
-
-  Ensure that maxmass set in python has some effect in C++, and investigate
-  other related attributes.
-
   Connecting to other server: Make class peer of CommClient called
   CommConnection or something which is basically the same, but implements
   connecting instead of accepting. Might even be able to merge the code
@@ -1922,81 +1659,6 @@ General TODO
   and what is done with operaions generated by this server due to
   operations from the other one.
 
-  Add suspend functionality, which stops the advance of time, and
-  thus suspends all mind activity. Could also inhibit broadcasts. Effectively
-  puts the server in bulk maintenance mode, from which NPCs should be
-  removed. Should consider the effect this will have on NPC memory,
-  and whether or not it can be rebootstrapped.
-
-  Looking at contains attribute currently only applies sight ranges in
-  world entity. Need to apply sight ranges in all entities.
-
-  Add services features, and test them in equator.
-
-  Fully implement stackable objects.
-  Use combine operation to deal with making more than one object into one.
-
-  Add sending of touch op on collision.
-
-Required for werewolf:
-
-  Implement calendric time using WorldTime and DateTime classes, so nighttime
-  and moons are properlly handled.
-
-  Implement sleeping.
-
-  Sort out a reasonable way of representing day and night to client. Look
-  up info on Durals astronomy. Weather (clouds, snow, rain, thunder and
-  lightening).
-
-Required for mason:
-
-  Create a skills system which the action is passed to, and the skill
-  returns the resulting operation to the world. This skills system
-  would be handling by the character class, in the mindXxxxOperation()
-  methods. The skill would be an object with a reference back to the
-  character it belongs to, and a method that is passed the action taking
-  place. It would return operations to be passed to the world which carry
-  out that action to the extent of the ability of the character. Some
-  skills will just do nothing, like the ability to wave, or shout. or
-  maybe the shout action could decide using a skill how loud the shout is.
-
-  Implement the Mason raw materials.
-  
 Possible ideas:
-
-  Add fully featured database persistance.
-
-  Persistance system is naive right now. It does not take account of that
-  fact that characters need minds, and it stores the world object.
-  Persitance is now sorted so it loads the world hierarchicly, but
-  it still does not handle minds and things. Problems with current
-  code include velocity being stored, and bounding boxes not being
-  recovered.
-  Basic C++ code for supporting saving and loading of mind state is now
-  in place, but support needs to be added into the Python NPCMind
-  class to store the data it requires.
-  Code is still required to store the state of the operation queue.
-  Restoring of accounts from database requires re-connecting characters
-  too.
-
-  Get system working as an AI client to another server. This would also
-  be a good time to get cyphesis working as a mindless server, without
-  any AI code.
-
-  Route finding for the AI. NPCs already have symbolic knowledge of places.
-  All we need is a mechanism for describing that two places (or nodes) have
-  a direct route between them, and then the mind can build a graph which
-  allows them to find a route. We also need to provide a mechanism so that
-  NPCs know about a particular entity. This can be done by sending a generated
-  sight operation.
-
-  Sort out collision detection wrt moving alongside an object in close
-  proximity, and add CD for two moving objects. Basically we need sliding.
-  along an object. This can be done by zeroing the velocity along
-  the axis perpendicular to the collision. Obviously we need to add
-  a mechanism for establishing which axis is perpendicular to the collision.
-  This now works, but the direction the moving entity is facing is sometimes not
-  modified.
 
   Modify map to make more use of stamp.
