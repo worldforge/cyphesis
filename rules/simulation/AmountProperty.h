@@ -21,11 +21,13 @@
 
 #include "common/Property.h"
 
+/**
+ * Used together with the "stackable" domain to handle amount of stacked entities.
+ */
 class AmountProperty : public Property<int>
 {
     public:
         static constexpr const char* property_name = "amount";
-        static std::vector<std::string> sIgnoredProps;
 
         AmountProperty() = default;
 

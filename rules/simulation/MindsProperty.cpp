@@ -25,7 +25,6 @@
 
 #include "common/Router.h"
 #include "common/debug.h"
-#include "common/op_switch.h"
 #include "common/custom.h"
 
 #include "common/operations/Setup.h"
@@ -129,7 +128,7 @@ HandlerResult MindsProperty::operation(LocatedEntity* ent, const Operation& op, 
         return RelayOperation(ent, op, res);
     } else {
         if (world2mind(op)) {
-            debug_print("MindsProperty::operation(" << op->getParent() << ") passed to mind");
+            debug_print("MindsProperty::operation(" << op->getParent() << ") passed to mind")
             OpVector mres;
             sendToMinds(op, mres);
             for (auto& resOp: mres) {
@@ -730,7 +729,7 @@ void MindsProperty::mindThinkOperation(LocatedEntity* ent, const Operation& op, 
 /// @param res The result of the operation is returned here.
 void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector& res) const
 {
-    debug_print("MindsProperty::mind2body(" << op->getParent() << ") " << ent->describeEntity());
+    debug_print("MindsProperty::mind2body(" << op->getParent() << ") " << ent->describeEntity())
 
     if (!op->isDefaultTo()) {
         log(ERROR, String::compose("Operation \"%1\" from mind with TO set. %2", op->getParent(), ent->describeEntity()));
@@ -801,11 +800,7 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
 /// useful information.
 bool MindsProperty::world2mind(const Operation& op) const
 {
-    auto otype = op->getClassNo();
-    if (otype != Atlas::Objects::Operation::RELAY_NO) {
-        return true;
-    }
-    return false;
+    return op->getClassNo() != Atlas::Objects::Operation::RELAY_NO;
 }
 
 void MindsProperty::addMind(Router* mind)

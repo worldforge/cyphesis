@@ -57,6 +57,14 @@
   }
 #endif //STUB_CyPy_Entity_start_task
 
+#ifndef STUB_CyPy_Entity_update_task
+//#define STUB_CyPy_Entity_update_task
+   Py::Object CyPy_Entity::update_task(const Ref<Entity>& entity)
+  {
+    return *static_cast< Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_update_task
+
 #ifndef STUB_CyPy_Entity_mod_property
 //#define STUB_CyPy_Entity_mod_property
    Py::Object CyPy_Entity::mod_property(const Ref<Entity>& entity, const Py::Tuple& args)
@@ -96,6 +104,14 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_Entity_start_task
+
+#ifndef STUB_CyPy_Entity_update_task
+//#define STUB_CyPy_Entity_update_task
+  Py::Object CyPy_Entity::update_task()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_update_task
 
 #ifndef STUB_CyPy_Entity_mod_property
 //#define STUB_CyPy_Entity_mod_property

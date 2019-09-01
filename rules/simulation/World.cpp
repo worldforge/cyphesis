@@ -171,9 +171,8 @@ void World::clearWorld(OpVector & res) {
         }
     }
 
-    CalendarProperty* calProp = new CalendarProperty();
-    calProp->install(this, "calendar");
-    m_properties["calendar"] = calProp;
+    requirePropertyClassFixed<CalendarProperty>();
+    requirePropertyClassFixed<WorldTimeProperty>();
 
     delete m_contains;
     m_contains = nullptr;

@@ -22,7 +22,6 @@
 #include "rules/LocatedEntity.h"
 #include "common/operations/Update.h"
 #include "VoidDomain.h"
-#include "EntityProperty.h"
 #include "rules/simulation/PlantedOnProperty.h"
 
 VoidDomain::VoidDomain(LocatedEntity& entity)

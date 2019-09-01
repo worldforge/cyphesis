@@ -19,11 +19,8 @@
 #include "LineProperty.h"
 
 #include "common/type_utils_impl.h"
-#include "common/debug.h"
 
 #include <wfmath/atlasconv.h>
-
-#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
