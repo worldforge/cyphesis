@@ -181,10 +181,16 @@ namespace Py
 
         // Copy constructor acquires new ownership of pointer
         Object( const Object &ob )
-        : p( ob.p )
+            : p( ob.p )
         {
             Py::_XINCREF( p );
             validate();
+        }
+
+        Object( Object &&ob )
+            : p( ob.p )
+        {
+            ob.p = nullptr;
         }
 
         // Assignment acquires new ownership of pointer

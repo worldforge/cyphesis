@@ -193,11 +193,11 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::client_error(const Py::
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getPropertyFromFirstArg(const Py::Tuple& args, const std::function<Py::Object(const Atlas::Message::Element&, Py::Object)>& checkFn) const
 {
+    args.verify_length(1, 2);
     Py::Object defaultValue = Py::None();
     if (args.length() > 1) {
         defaultValue = args.getItem(1);
     }
-    args.verify_length(1);
     const PropertyBase* prop = this->m_value->getProperty(verifyString(args.front()));
     if (prop) {
         Atlas::Message::Element element;

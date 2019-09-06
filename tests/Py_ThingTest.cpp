@@ -145,6 +145,18 @@ int main()
     run_python_string("le.props.map_attr");
     run_python_string("le.props.list_attr=[1,2]");
     run_python_string("le.props.list_attr");
+    run_python_string("le.props.string_attr='foo'");
+    run_python_string("le.props.int_attr=1");
+    run_python_string("le.props.float_attr=2.0");
+    run_python_string("assert(le.get_prop_string('string_attr')=='foo')");
+    run_python_string("assert(le.get_prop_string('string_attr', 'bar')=='foo')");
+    run_python_string("assert(le.get_prop_string('none_attr', 'bar')=='bar')");
+    run_python_string("assert(le.get_prop_float('float_attr')==2.0)");
+    run_python_string("assert(le.get_prop_float('float_attr', 10.0)==2.0)");
+    run_python_string("assert(le.get_prop_float('none_attr', 10.0)==10.0)");
+    run_python_string("assert(le.get_prop_int('int_attr')==1)");
+    run_python_string("assert(le.get_prop_int('int_attr', 10)==1)");
+    run_python_string("assert(le.get_prop_int('none_attr', 10)==10)");
     expect_python_error("le.props.non_atlas=set([1,2])", PyExc_TypeError);
     run_python_string("le.props.non_atlas == None");
 
