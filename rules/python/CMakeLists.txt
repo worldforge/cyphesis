@@ -26,7 +26,9 @@ add_library(rulesbase_python
     CyPy_EntityLocation.cpp
     CyPy_Props.cpp
     CyPy_WorldTime.cpp
-    CyPy_Rules.cpp CyPy_Rules.h CyPy_Root.cpp CyPy_Root.h)
+    CyPy_Rules.cpp
+    CyPy_Root.cpp
+    CyPy_Ball.cpp)
 
 target_link_libraries(rulesbase_python pycxx ${PYTHON_LIBRARIES})
 

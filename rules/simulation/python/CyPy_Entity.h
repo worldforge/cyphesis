@@ -67,6 +67,9 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, find_in_contains);
 
+        Py::Object get_parent_domain();
+
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Entity, get_parent_domain);
 };
 
 #endif //CYPHESIS_CYPY_ENTITY_H

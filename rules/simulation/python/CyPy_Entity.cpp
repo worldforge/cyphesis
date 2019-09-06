@@ -26,6 +26,7 @@
 #include "rules/python/CyPy_Operation.h"
 #include "rules/python/CyPy_Oplist.h"
 #include "common/id.h"
+#include "CyPy_Domain.h"
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py::Dict& kwds)
     : CyPy_LocatedEntityBase(self, args, kwds)
@@ -91,6 +92,7 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
     PYCXX_ADD_NOARGS_METHOD(update_task, update_task, "");
     PYCXX_ADD_VARARGS_METHOD(find_in_contains, find_in_contains, "Returns a list of all contained entities that matches the supplied Entity Filter.");
+    PYCXX_ADD_NOARGS_METHOD(get_parent_domain, get_parent_domain, "Gets the parent domain, i.e. the domain to which this entity belongs.");
 
 
     behaviors().readyType();
@@ -226,4 +228,17 @@ Py::Object CyPy_Entity::find_in_contains(const Py::Tuple& args)
         }
     }
     return list;
+}
+
+Py::Object CyPy_Entity::get_parent_domain()
+{
+    auto parent = m_value->m_location.m_parent;
+    while (parent) {
+        auto domain = parent->getDomain();
+        if (domain) {
+            return CyPy_Domain::wrap(parent);
+        }
+        parent = parent->m_location.m_parent;
+    }
+    return Py::None();
 }

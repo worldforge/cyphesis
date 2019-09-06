@@ -129,5 +129,13 @@
   }
 #endif //STUB_CyPy_Entity_find_in_contains
 
+#ifndef STUB_CyPy_Entity_get_parent_domain
+//#define STUB_CyPy_Entity_get_parent_domain
+  Py::Object CyPy_Entity::get_parent_domain()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_get_parent_domain
+
 
 #endif

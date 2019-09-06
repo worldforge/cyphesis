@@ -24,6 +24,7 @@
 #include "CyPy_TerrainProperty.h"
 #include "CyPy_UsageInstance.h"
 #include "CyPy_EntityProps.h"
+#include "CyPy_Domain.h"
 
 
 CyPy_Server::CyPy_Server() : ExtensionModule("server")
@@ -38,6 +39,7 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
 
     CyPy_Usage::init_type();
     CyPy_UsageInstance::init_type();
+    CyPy_Domain::init_type();
 
     initialize("server");
 

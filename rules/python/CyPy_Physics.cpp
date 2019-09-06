@@ -22,6 +22,7 @@
 #include "CyPy_Point3D.h"
 #include "CyPy_Quaternion.h"
 #include "CyPy_Axisbox.h"
+#include "CyPy_Ball.h"
 
 CyPy_Physics::CyPy_Physics() : ExtensionModule("physics")
 {
@@ -29,6 +30,7 @@ CyPy_Physics::CyPy_Physics() : ExtensionModule("physics")
     CyPy_Point3D::init_type();
     CyPy_Quaternion::init_type();
     CyPy_Axisbox::init_type();
+    CyPy_Ball::init_type();
 
 
     add_varargs_method("distance_between", &CyPy_Physics::distance_between, "The scalar distance between the edges of two locations.");
@@ -46,6 +48,7 @@ CyPy_Physics::CyPy_Physics() : ExtensionModule("physics")
     d["Point3D"] = CyPy_Point3D::type();
     d["Quaternion"] = CyPy_Quaternion::type();
     d["BBox"] = CyPy_Axisbox::type();
+    d["Ball"] = CyPy_Ball::type();
 
 }
 

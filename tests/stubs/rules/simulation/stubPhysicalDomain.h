@@ -121,6 +121,14 @@
   }
 #endif //STUB_PhysicalDomain_tick
 
+#ifndef STUB_PhysicalDomain_queryCollision
+//#define STUB_PhysicalDomain_queryCollision
+  std::vector<CollisionEntry> PhysicalDomain::queryCollision(const WFMath::Ball<3>& sphere) const
+  {
+    return std::vector<CollisionEntry>();
+  }
+#endif //STUB_PhysicalDomain_queryCollision
+
 #ifndef STUB_PhysicalDomain_createDomainBorders
 //#define STUB_PhysicalDomain_createDomainBorders
   void PhysicalDomain::createDomainBorders()
