@@ -70,18 +70,18 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         if (!thing.m_location.pos().isValid()) {
             thing.m_location.m_pos = WFMath::Point<3>::ZERO();
         }
-        if (thing.m_location.velocity().isValid()) {
-            if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-                log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): "
-                                   "Entity has velocity set from the attributes "
-                                   "given by the creator", thing.getId(), m_type->name()));
-            } else {
-                log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): Entity has "
-                                   "velocity set from an unknown source",
-                                   thing.getId(), m_type->name()));
-            }
-            thing.m_location.m_velocity.setValid(false);
-        }
+//        if (thing.m_location.velocity().isValid()) {
+//            if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+//                log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): "
+//                                   "Entity has velocity set from the attributes "
+//                                   "given by the creator", thing.getId(), m_type->name()));
+//            } else {
+//                log(ERROR, compose("EntityFactory::initializeEntity(%1, %2): Entity has "
+//                                   "velocity set from an unknown source",
+//                                   thing.getId(), m_type->name()));
+//            }
+//            thing.m_location.m_velocity.setValid(false);
+//        }
 
         auto attrs = attributes->asMessage();
         //First make sure that all properties are installed, since Entity::setAttr won't install props if they exist in the type.

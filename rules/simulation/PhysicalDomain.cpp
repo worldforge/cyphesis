@@ -1018,6 +1018,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             if (stepFactorProp && stepFactorProp->data() > 0) {
                 m_steppingEntries.emplace(entity.getIntId(), std::make_pair(entry, stepFactorProp->data()));
             }
+
+            //Should we only do this for "free" and "projectile"?
+            if (entity.m_location.velocity().isValid()) {
+                rigidBody->applyCentralImpulse(Convert::toBullet(entity.m_location.velocity()));
+            }
         }
     }
 
