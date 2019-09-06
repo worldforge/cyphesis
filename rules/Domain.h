@@ -22,15 +22,22 @@
 #include "common/OperationRouter.h"
 
 #include <wfmath/vector.h>
+#include <wfmath/point.h>
 
 #include <string>
 #include <list>
 #include <set>
 #include <boost/optional.hpp>
 
+namespace WFMath
+{
+    template<int> class Ball;
+}
+
 class LocatedEntity;
 
 class Location;
+
 
 /// \brief Base class for movement domains
 ///
@@ -74,6 +81,12 @@ class Domain
             LocatedEntity* plantedOnEntity;
 
             const WFMath::Vector<3>& impulseVelocity;
+        };
+
+        struct CollisionEntry {
+            LocatedEntity* entity;
+            WFMath::Point<3> collisionPoint;
+            float distance;
         };
 
         explicit Domain(LocatedEntity& entity);
@@ -178,6 +191,11 @@ class Domain
         virtual void installDelegates(LocatedEntity* entity, const std::string& propertyName);
 
         virtual HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res);
+
+        virtual std::vector<CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const
+        {
+            return std::vector<CollisionEntry>();
+        }
 
 };
 

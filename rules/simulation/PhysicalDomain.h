@@ -101,6 +101,8 @@ class PhysicalDomain : public Domain
 
         void tick(double t, OpVector& res);
 
+        std::vector<CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const override;
+
     protected:
 
         friend class SteppingCallback;

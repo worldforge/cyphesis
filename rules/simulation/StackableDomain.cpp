@@ -54,6 +54,12 @@ StackableDomain::StackableDomain(LocatedEntity& entity) :
 
 void StackableDomain::addEntity(LocatedEntity& entity)
 {
+    entity.m_location.m_pos = WFMath::Point<3>::ZERO();
+    entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+    entity.m_location.m_velocity = WFMath::Vector<3>::ZERO();
+    entity.m_location.m_angularVelocity = WFMath::Vector<3>::ZERO();
+    entity.removeFlags(entity_clean);
+
     if (m_entity.getType() == entity.getType() && m_entity.hasFlags(entity_stacked)) {
         if (checkEntitiesStackable(m_entity, entity)) {
             //Entity can be stacked.
@@ -73,11 +79,6 @@ void StackableDomain::addEntity(LocatedEntity& entity)
             return;
         }
     }
-
-    entity.m_location.m_pos = WFMath::Point<3>::ZERO();
-    entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
-//    entity.m_location.update(BaseWorld::instance().getTime());
-    entity.removeFlags(entity_clean);
 
     //Reset any planted_on properties when moving to this domain.
     if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {

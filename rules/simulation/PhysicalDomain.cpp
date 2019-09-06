@@ -2769,4 +2769,43 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
     return false;
 }
 
+std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath::Ball<3>& sphere) const
+{
+
+    struct CollisionCallback : public btCollisionWorld::ContactResultCallback
+    {
+        public:
+
+            std::map<BulletEntry*, btManifoldPoint> m_entries;
+
+            btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                                     int partId1, int index1) override
+            {
+                auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+                if (bulletEntry) {
+                    m_entries.emplace(bulletEntry, cp);
+                }
+                return btScalar(1.0);
+            }
+
+    } callback;
+
+    btTransform pos(btQuaternion::getIdentity(), Convert::toBullet(sphere.center()));
+
+    btSphereShape shape(sphere.radius());
+
+    btCollisionObject collisionObject;
+    collisionObject.setCollisionShape(&shape);
+    collisionObject.setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(sphere.center())));
+
+    m_dynamicsWorld->contactTest(&collisionObject, callback);
+
+    std::vector<Domain::CollisionEntry> result;
+    result.reserve(callback.m_entries.size());
+    for (auto& entry: callback.m_entries) {
+        result.emplace_back(Domain::CollisionEntry{entry.first->entity, Convert::toWF<WFMath::Point<3>>(entry.second.getPositionWorldOnA()), entry.second.getDistance()});
+    }
+    return result;
+}
+
 
