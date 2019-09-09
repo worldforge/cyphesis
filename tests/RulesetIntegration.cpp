@@ -47,6 +47,9 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Root;
 
+Atlas::Objects::Factories factories;
+
+
 class ExposedEntityBuilder : public EntityBuilder
 {
     public:

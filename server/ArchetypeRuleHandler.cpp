@@ -26,7 +26,7 @@
 #include "common/debug.h"
 #include "common/compose.hpp"
 
-#include <Atlas/Objects/objectFactory.h>
+#include <Atlas/Objects/Factories.h>
 
 #include <iostream>
 

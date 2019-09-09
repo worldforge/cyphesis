@@ -35,6 +35,9 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
+#include <Atlas/Objects/Factories.h>
+
+Atlas::Objects::Factories factories;
 
 int main()
 {
@@ -130,6 +133,7 @@ int main()
     expect_python_error("o.to={'id': 1}", PyExc_TypeError);
     run_python_string("o.to={'id': '1'}");
     expect_python_error("o.other=1", PyExc_AttributeError);
+    run_python_string("opCopy=o.copy()");
 
     shutdown_python_api();
     return 0;

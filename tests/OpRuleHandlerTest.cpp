@@ -31,12 +31,14 @@
 
 #include <cstdlib>
 #include <common/Inheritance.h>
+#include <Atlas/Objects/Factories.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 
 static TypeNode * stub_addChild_result = 0;
+Atlas::Objects::Factories factories;
 
 int main()
 {

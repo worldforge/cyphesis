@@ -49,7 +49,7 @@ using Atlas::Objects::Root;
 struct TestTypeStore : public TypeStore
 {
     std::map<std::string, TypeNode*> m_types;
-    virtual const TypeNode* getType(const std::string& parent) const
+    const TypeNode* getType(const std::string& parent) const override
     {
         auto I = m_types.find(parent);
         if (I != m_types.end()) {
@@ -58,7 +58,13 @@ struct TestTypeStore : public TypeStore
         return nullptr;
     }
 
-    virtual TypeNode* addChild(const Atlas::Objects::Root& obj)
+    size_t getTypeCount() const override
+    {
+        return m_types.size();
+    }
+
+
+    TypeNode* addChild(const Atlas::Objects::Root& obj) override
     {
         auto type = new TypeNode(obj->getId());
         type->setDescription(obj);

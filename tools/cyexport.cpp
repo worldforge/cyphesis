@@ -73,6 +73,8 @@ int main(int argc, char ** argv)
     int useslave = 0;
     readConfigItem("client", "useslave", useslave);
 
+    Atlas::Objects::Factories factories;
+
     boost::asio::io_context io_context;
     AtlasStreamClient bridge(io_context);
     std::string localSocket;

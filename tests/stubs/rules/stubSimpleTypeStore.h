@@ -32,6 +32,14 @@
   }
 #endif //STUB_SimpleTypeStore_addChild
 
+#ifndef STUB_SimpleTypeStore_getTypeCount
+//#define STUB_SimpleTypeStore_getTypeCount
+  size_t SimpleTypeStore::getTypeCount() const
+  {
+    return 0;
+  }
+#endif //STUB_SimpleTypeStore_getTypeCount
+
 #ifndef STUB_SimpleTypeStore_readAttributesIntoType
 //#define STUB_SimpleTypeStore_readAttributesIntoType
   void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj)

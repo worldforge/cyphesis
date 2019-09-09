@@ -37,6 +37,8 @@
 #include <rules/simulation/python/CyPy_Server.h>
 #include <rules/python/CyPy_Atlas.h>
 
+Atlas::Objects::Factories factories;
+
 static bool stub_setup_fail = false;
 static bool stub_createCharacter_fail = false;
 static bool stub_send_wait_fail = false;

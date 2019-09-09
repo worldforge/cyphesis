@@ -29,58 +29,94 @@
 
 #include <sigc++/signal.h>
 
+#include <memory>
+
 class PropertyBase;
 
-typedef std::map<std::string, PropertyBase *> PropertyDict;
+typedef std::map<std::string, PropertyBase*> PropertyDict;
+
+namespace Atlas {
+    namespace Objects {
+        class Factories;
+    }
+}
 
 /// \brief Class to manage the inheritance tree for in-game entity types
-class Inheritance : public Singleton<Inheritance>, public TypeStore {
-  protected:
-    const Atlas::Objects::Root noClass;
+class Inheritance : public Singleton<Inheritance>, public TypeStore
+{
+    protected:
+        const Atlas::Objects::Root noClass;
 
-    std::map<std::string, TypeNode *> atlasObjects;
+        std::map<std::string, TypeNode*> atlasObjects;
 
+        std::unique_ptr<Atlas::Objects::Factories> m_factories;
 
-  public:
+    public:
 
-    Inheritance();
+        Inheritance();
 
-    ~Inheritance() override;
+        ~Inheritance() override;
 
-    const std::map<std::string, TypeNode *> & getAllObjects() const {
-        return atlasObjects;
-    }
+        const std::map<std::string, TypeNode*>& getAllObjects() const
+        {
+            return atlasObjects;
+        }
 
-    const Atlas::Objects::Root & getClass(const std::string & parent, Visibility visibility) const;
+        size_t getTypeCount() const override
+        {
+            return atlasObjects.size();
+        }
 
-    int updateClass(const std::string & name,
-                    const Atlas::Objects::Root & obj);
-    const TypeNode * getType(const std::string & parent) const override;
-    bool hasClass(const std::string & parent);
-    TypeNode * addChild(const Atlas::Objects::Root & obj) override;
-    bool isTypeOf(const std::string & instance,
-                  const std::string & base_type) const;
-    bool isTypeOf(const TypeNode * instance,
-                  const std::string & base_type) const;
-    bool isTypeOf(const TypeNode * instance,
-                  const TypeNode * base_type) const;
-    void flush();
+        const Atlas::Objects::Root& getClass(const std::string& parent, Visibility visibility) const;
 
-    /**
-     * Emitted when types have been changed.
-     */
-    sigc::signal<void, const std::map<const TypeNode*, TypeNode::PropertiesUpdate>&> typesUpdated;
+        int updateClass(const std::string& name,
+                        const Atlas::Objects::Root& obj);
+
+        const TypeNode* getType(const std::string& parent) const override;
+
+        bool hasClass(const std::string& parent);
+
+        TypeNode* addChild(const Atlas::Objects::Root& obj) override;
+
+        bool isTypeOf(const std::string& instance,
+                      const std::string& base_type) const;
+
+        bool isTypeOf(const TypeNode* instance,
+                      const std::string& base_type) const;
+
+        bool isTypeOf(const TypeNode* instance,
+                      const TypeNode* base_type) const;
+
+        void flush();
+
+        /**
+         * Emitted when types have been changed.
+         */
+        sigc::signal<void, const std::map<const TypeNode*, TypeNode::PropertiesUpdate>&> typesUpdated;
+
+        Atlas::Objects::Factories& getFactories() const;
+
 };
 
-Atlas::Objects::Root atlasOpDefinition(const std::string & name,
-                                       const std::string & parent);
-Atlas::Objects::Root atlasClass(const std::string & name,
-                                const std::string & parent);
-Atlas::Objects::Root atlasType(const std::string & name,
-                               const std::string & parent,
+Atlas::Objects::Root atlasOpDefinition(const std::string& name,
+                                       const std::string& parent);
+
+Atlas::Objects::Root atlasClass(const std::string& name,
+                                const std::string& parent);
+
+Atlas::Objects::Root atlasType(const std::string& name,
+                               const std::string& parent,
                                bool abstract = false);
 
-void installStandardObjects(TypeStore & i);
-void installCustomOperations(TypeStore & i);
-void installCustomEntities(TypeStore & i);
+void installStandardObjects(TypeStore& i);
+
+void installCustomOperations(TypeStore& i);
+
+void installCustomEntities(TypeStore& i);
+
+inline Atlas::Objects::Factories& Inheritance::getFactories() const
+{
+    return *m_factories;
+}
+
 #endif // COMMON_INHERITANCE_H

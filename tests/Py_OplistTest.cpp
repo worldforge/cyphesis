@@ -33,7 +33,9 @@
 
 #include <cassert>
 #include <rules/python/CyPy_Atlas.h>
+#include <Atlas/Objects/Factories.h>
 
+Atlas::Objects::Factories factories;
 
 int main()
 {

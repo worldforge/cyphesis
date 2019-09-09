@@ -47,6 +47,8 @@ using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::RootOperation;
 
+Atlas::Objects::Factories factories;
+
 static void descendTree(const Root & type, Inheritance & i, int & count)
 {
     assert(type.isValid());

@@ -640,6 +640,8 @@ int main(int argc, char ** argv)
 
     int optind = config_status;
 
+    Atlas::Objects::Factories factories;
+
     bool interactive = true;
     int ret = 0;
     std::string cmd;

@@ -52,7 +52,9 @@ class ObjectDecoder : public Atlas::Objects::ObjectsDecoder {
     bool m_check;
     Atlas::Objects::Root m_obj;
   public:
-    ObjectDecoder() : m_check (false) {
+    ObjectDecoder() :
+        ObjectsDecoder(*Atlas::Objects::Factories::instance()),
+        m_check (false) {
     }
 
     bool check() const {

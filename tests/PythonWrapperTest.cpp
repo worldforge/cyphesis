@@ -45,6 +45,8 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 
+Atlas::Objects::Factories factories;
+
 struct TestMod : public Py::ExtensionModule<TestMod>
 {
     TestMod() : ExtensionModule("testmod")

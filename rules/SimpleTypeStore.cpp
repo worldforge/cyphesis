@@ -112,4 +112,9 @@ void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Object
 
 }
 
+size_t SimpleTypeStore::getTypeCount() const
+{
+    return m_types.size();
+}
+
 SimpleTypeStore::SimpleTypeStore() = default;

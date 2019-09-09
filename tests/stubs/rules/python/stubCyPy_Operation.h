@@ -241,6 +241,14 @@
   }
 #endif //STUB_CyPy_Operation_get_name
 
+#ifndef STUB_CyPy_Operation_copy
+//#define STUB_CyPy_Operation_copy
+  Py::Object CyPy_Operation::copy()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Operation_copy
+
 #ifndef STUB_CyPy_Operation_addToArgs
 //#define STUB_CyPy_Operation_addToArgs
   void CyPy_Operation::addToArgs(std::vector<Atlas::Objects::Root>& args, const Py::Object& arg)

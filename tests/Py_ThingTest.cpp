@@ -50,6 +50,8 @@
 
 #include "stubs/common/stubMonitors.h"
 
+Atlas::Objects::Factories factories;
+
 int main()
 {
 

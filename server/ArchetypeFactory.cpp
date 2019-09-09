@@ -158,7 +158,7 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intI
     //"entities" and "thoughts" attributes.
     if (attributes->getObjtype() == "archetype") {
         if (attributes->hasAttr("entities")) {
-            auto& entitiesElem = attributes->getAttr("entities");
+            auto entitiesElem = attributes->getAttr("entities");
             if (!entitiesElem.isList()) {
                 log(WARNING, "'entities' attribute is not a list.");
             } else {
@@ -168,7 +168,7 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intI
         }
 
         if (attributes->hasAttr("thoughts")) {
-            auto& thoughtsElem = attributes->getAttr("thoughts");
+            auto thoughtsElem = attributes->getAttr("thoughts");
             if (!thoughtsElem.isList()) {
                 log(WARNING, "'thoughts' attribute is not a list.");
             } else {

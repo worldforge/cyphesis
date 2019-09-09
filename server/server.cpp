@@ -164,6 +164,7 @@ int main(int argc, char** argv)
         log(ERROR, "If you've built Cyphesis yourself make sure you've run the 'make assets-download' command.");
     }
 
+    Atlas::Objects::Factories atlasFactories;
 
     auto io_context = new boost::asio::io_context();
 

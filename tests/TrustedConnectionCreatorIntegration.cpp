@@ -53,6 +53,8 @@
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
 
+Atlas::Objects::Factories factories;
+
 class StubSocket : public CommSocket
 {
     public:
@@ -74,6 +76,9 @@ class StubSocket : public CommSocket
 
 struct TestDecoder : public Atlas::Objects::ObjectsDecoder {
     Atlas::Objects::Root m_obj;
+
+    TestDecoder(const Atlas::Objects::Factories& factories):
+    ObjectsDecoder(factories){}
 
     void objectArrived(const Atlas::Objects::Root & obj) override
     {
@@ -283,7 +288,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     op->setFrom(mind->getId());
     op->setTo(compose("%1", m_id_counter++));
 
-    TestDecoder decoder{};
+    TestDecoder decoder{factories};
     decoder.streamBegin();
     Atlas::Objects::ObjectsEncoder encoder(decoder);
     m_connection->setEncoder(&encoder);

@@ -42,6 +42,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
 #include "external/pycxx/CXX/Objects.hxx"
+Atlas::Objects::Factories factories;
 
 static bool stub_make_fail = false;
 static bool stub_look_fail = false;

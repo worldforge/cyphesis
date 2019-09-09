@@ -70,6 +70,9 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Talk;
 using Atlas::Objects::Operation::Move;
 
+Atlas::Objects::Factories factories;
+
+
 class TestCommSocket : public CommSocket
 {
   public:

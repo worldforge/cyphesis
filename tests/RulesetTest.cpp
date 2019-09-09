@@ -33,6 +33,7 @@
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Factories.h>
 
 #include <cassert>
 
@@ -402,7 +403,8 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
 
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  std::map<std::string, Root> & m) :
-                m_file(filename.c_str(), std::ios::in),
+    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
+    m_file(filename.c_str(), std::ios::in),
                 m_count(0), m_messages(m)
 {
 }

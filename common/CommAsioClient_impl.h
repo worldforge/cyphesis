@@ -46,6 +46,7 @@ static const bool comm_asio_client_debug_flag = false;
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
                                           boost::asio::io_context& io_context) :
+    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
     CommSocket(io_context),
     mMaxOpsPerDispatch(1),
     mSocket(io_context),

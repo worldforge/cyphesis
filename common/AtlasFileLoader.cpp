@@ -24,6 +24,7 @@
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Factories.h>
 #include <Atlas/Codecs/XML.h>
 
 using Atlas::Objects::Root;
@@ -52,6 +53,7 @@ void AtlasFileLoader::objectArrived(const Root & obj)
 /// @param m Data store for the data loaded from the file
 AtlasFileLoader::AtlasFileLoader(const std::string & filename,
                                  std::map<std::string, Root> & m) :
+                ObjectsDecoder(*Atlas::Objects::Factories::instance()),
                 m_file(filename.c_str(), std::ios::in),
                 m_count(0), m_messages(m), m_filename(filename)
 {

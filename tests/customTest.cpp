@@ -26,8 +26,11 @@
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Factories.h>
 
 using Atlas::Objects::Root;
+
+Atlas::Objects::Factories factories;
 
 int main()
 {

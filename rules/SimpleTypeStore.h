@@ -32,6 +32,8 @@ class SimpleTypeStore : public TypeStore
 
         TypeNode* addChild(const Atlas::Objects::Root& obj) override;
 
+        size_t getTypeCount() const override;
+
     private:
 
         std::map<std::string, std::unique_ptr<TypeNode>> m_types;

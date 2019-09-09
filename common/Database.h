@@ -26,6 +26,7 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include <Atlas/Objects/Factories.h>
 
 #include <set>
 #include <memory>
@@ -72,7 +73,7 @@ class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
         bool m_check;
         Atlas::Objects::Root m_obj;
     public:
-        ObjectDecoder() : m_check(false)
+        ObjectDecoder() : ObjectsDecoder(*Atlas::Objects::Factories::instance()), m_check(false)
         {
         }
 

@@ -353,6 +353,7 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
 }
 
 AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context) :
+    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
     m_io_context(io_context),
     reply_flag(false), error_flag(false),
     serialNo(512), m_currentTask(0)

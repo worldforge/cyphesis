@@ -61,6 +61,8 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
+Atlas::Objects::Factories factories;
+
 struct WorldRouterintegration : public Cyphesis::TestBase
 {
 

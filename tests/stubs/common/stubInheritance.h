@@ -26,7 +26,7 @@
 
 #ifndef STUB_Inheritance_getClass
 //#define STUB_Inheritance_getClass
-  const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility visibility) const
+  const Atlas::Objects::Root& Inheritance::getClass(const std::string& parent, Visibility visibility) const
   {
     return *static_cast<const Atlas::Objects::Root*>(nullptr);
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_Inheritance_updateClass
 //#define STUB_Inheritance_updateClass
-  int Inheritance::updateClass(const std::string & name, const Atlas::Objects::Root & obj)
+  int Inheritance::updateClass(const std::string& name, const Atlas::Objects::Root& obj)
   {
     return 0;
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_Inheritance_getType
 //#define STUB_Inheritance_getType
-  const TypeNode* Inheritance::getType(const std::string & parent) const
+  const TypeNode* Inheritance::getType(const std::string& parent) const
   {
     return nullptr;
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_Inheritance_hasClass
 //#define STUB_Inheritance_hasClass
-  bool Inheritance::hasClass(const std::string & parent)
+  bool Inheritance::hasClass(const std::string& parent)
   {
     return false;
   }
@@ -58,7 +58,7 @@
 
 #ifndef STUB_Inheritance_addChild
 //#define STUB_Inheritance_addChild
-  TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
+  TypeNode* Inheritance::addChild(const Atlas::Objects::Root& obj)
   {
     return nullptr;
   }
@@ -66,7 +66,7 @@
 
 #ifndef STUB_Inheritance_isTypeOf
 //#define STUB_Inheritance_isTypeOf
-  bool Inheritance::isTypeOf(const std::string & instance, const std::string & base_type) const
+  bool Inheritance::isTypeOf(const std::string& instance, const std::string& base_type) const
   {
     return false;
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_Inheritance_isTypeOf
 //#define STUB_Inheritance_isTypeOf
-  bool Inheritance::isTypeOf(const TypeNode * instance, const std::string & base_type) const
+  bool Inheritance::isTypeOf(const TypeNode* instance, const std::string& base_type) const
   {
     return false;
   }
@@ -82,7 +82,7 @@
 
 #ifndef STUB_Inheritance_isTypeOf
 //#define STUB_Inheritance_isTypeOf
-  bool Inheritance::isTypeOf(const TypeNode * instance, const TypeNode * base_type) const
+  bool Inheritance::isTypeOf(const TypeNode* instance, const TypeNode* base_type) const
   {
     return false;
   }
@@ -95,6 +95,14 @@
     
   }
 #endif //STUB_Inheritance_flush
+
+#ifndef STUB_Inheritance_getFactories
+//#define STUB_Inheritance_getFactories
+  Atlas::Objects::Factories& Inheritance::getFactories() const
+  {
+    return *static_cast<Atlas::Objects::Factories*>(nullptr);
+  }
+#endif //STUB_Inheritance_getFactories
 
 
 #endif

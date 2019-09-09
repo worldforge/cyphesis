@@ -15,6 +15,14 @@
   }
 #endif //STUB_TypeStore_getType
 
+#ifndef STUB_TypeStore_getTypeCount
+//#define STUB_TypeStore_getTypeCount
+  size_t TypeStore::getTypeCount() const
+  {
+    return 0;
+  }
+#endif //STUB_TypeStore_getTypeCount
+
 #ifndef STUB_TypeStore_addChild
 //#define STUB_TypeStore_addChild
   TypeNode* TypeStore::addChild(const Atlas::Objects::Root & obj)
