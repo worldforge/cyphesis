@@ -117,6 +117,7 @@ void CyPy_Operation::init_type()
     PYCXX_ADD_NOARGS_METHOD(get_future_seconds, getFutureSeconds, "");
     PYCXX_ADD_NOARGS_METHOD(get_args, getArgs, "");
     PYCXX_ADD_NOARGS_METHOD(get_name, get_name, "");
+    PYCXX_ADD_NOARGS_METHOD(copy, copy, "Copies the operation into a new instance.");
 
     behaviors().readyType();
 }
@@ -442,5 +443,11 @@ int CyPy_Operation::setattro(const Py::String& name, const Py::Object& attr)
     }
 
     throw Py::AttributeError("unknown attribute");
+}
+
+Py::Object CyPy_Operation::copy()
+{
+    auto copy = m_value->copy();
+    return CyPy_Operation::wrap(copy);
 }
 

@@ -125,6 +125,10 @@ class CyPy_Operation : public WrapperBase<Atlas::Objects::Operation::RootOperati
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Operation, get_name);
 
+        Py::Object copy();
+
+        PYCXX_NOARGS_METHOD_DECL(CyPy_Operation, copy);
+
         void addToArgs(std::vector<Atlas::Objects::Root>& args, const Py::Object& arg);
 };
 
