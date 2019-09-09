@@ -21,6 +21,8 @@ class Hittable(server.Thing):
             print("Hit for {} damage".format(status_decrease))
 
             new_status = self.props.status - status_decrease
-            return server.OPERATION_BLOCKED, Operation("set", Entity(self.id, status=new_status), to=self.id)
+            hit_op = op.copy()
+            hit_op[0].damage = status_decrease
+            return server.OPERATION_BLOCKED, Operation("set", Entity(self.id, status=new_status), to=self.id), Operation('sight', hit_op)
 
         return server.OPERATION_IGNORED
