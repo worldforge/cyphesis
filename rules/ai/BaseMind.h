@@ -61,7 +61,7 @@ class BaseMind : public Router, public ReferenceCounted {
 
 
     public:
-    BaseMind(const std::string & mindId, std::string  entityId);
+    BaseMind(const std::string & mindId, std::string entityId);
 
     ~BaseMind() override;
 
@@ -78,7 +78,7 @@ class BaseMind : public Router, public ReferenceCounted {
     /// \brief Accessor for the memory map of world entities
     MemMap * getMap() { return &m_map; }
     /// \brief Accessor for the world time
-    const std::shared_ptr<WorldTime> getTime() const
+    std::shared_ptr<WorldTime> getTime() const
     { return m_time; }
 
     const Ref<MemEntity>& getEntity() const {

@@ -31,12 +31,12 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
-
+Atlas::Objects::Factories atlasFactories;
 class TestAtlasStreamClient : public AtlasStreamClient {
   public:
 
     explicit TestAtlasStreamClient(boost::asio::io_context& io_context):
-        AtlasStreamClient(io_context) {}
+        AtlasStreamClient(io_context, atlasFactories) {}
 
     void test_objectArrived(const Atlas::Objects::Root & op) {
         objectArrived(op);
@@ -70,7 +70,7 @@ int main()
 {
     boost::asio::io_context io_context;
     {
-        AtlasStreamClient * asc = new AtlasStreamClient{io_context};
+        AtlasStreamClient * asc = new AtlasStreamClient{io_context, atlasFactories};
 
         delete asc;
     }

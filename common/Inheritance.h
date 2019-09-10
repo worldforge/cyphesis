@@ -49,11 +49,11 @@ class Inheritance : public Singleton<Inheritance>, public TypeStore
 
         std::map<std::string, TypeNode*> atlasObjects;
 
-        std::unique_ptr<Atlas::Objects::Factories> m_factories;
+        Atlas::Objects::Factories& m_factories;
 
     public:
 
-        Inheritance();
+        explicit Inheritance(Atlas::Objects::Factories& factories);
 
         ~Inheritance() override;
 
@@ -94,7 +94,8 @@ class Inheritance : public Singleton<Inheritance>, public TypeStore
          */
         sigc::signal<void, const std::map<const TypeNode*, TypeNode::PropertiesUpdate>&> typesUpdated;
 
-        Atlas::Objects::Factories& getFactories() const;
+        const Atlas::Objects::Factories& getFactories() const override;
+        Atlas::Objects::Factories& getFactories() override;
 
 };
 
@@ -114,9 +115,13 @@ void installCustomOperations(TypeStore& i);
 
 void installCustomEntities(TypeStore& i);
 
-inline Atlas::Objects::Factories& Inheritance::getFactories() const
+inline Atlas::Objects::Factories& Inheritance::getFactories()
 {
-    return *m_factories;
+    return m_factories;
 }
 
+inline const Atlas::Objects::Factories& Inheritance::getFactories() const
+{
+    return m_factories;
+}
 #endif // COMMON_INHERITANCE_H

@@ -35,4 +35,3 @@ BaseMind* AwareMindFactory::newMind(const std::string& mind_id, const std::strin
     return new AwareMind(mind_id, entity_id, *mSharedTerrain, *mAwarenessStoreProvider);
 }
 
-

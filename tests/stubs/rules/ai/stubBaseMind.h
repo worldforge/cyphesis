@@ -9,7 +9,7 @@
 
 #ifndef STUB_BaseMind_BaseMind
 //#define STUB_BaseMind_BaseMind
-   BaseMind::BaseMind(const std::string & mindId, std::string  entityId)
+   BaseMind::BaseMind(const std::string & mindId, std::string entityId)
     : Router(mindId, entityId)
     , m_scriptFactory(nullptr)
   {

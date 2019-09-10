@@ -62,7 +62,8 @@ int main(int argc, char ** argv)
     std::string ruleset("caaa1085-9ef4-4dc2-b1ad-3d1f15b31060");
 
     {
-        Inheritance inheritance;
+        Atlas::Objects::Factories factories;
+        Inheritance inheritance(factories);
         EntityBuilder eb;
         {
             Ruleset instance(&eb, io_context);
@@ -76,7 +77,8 @@ int main(int argc, char ** argv)
 
     {
         etc_directory = data_path + "/ruleset1/etc";
-        Inheritance inheritance;
+        Atlas::Objects::Factories factories;
+        Inheritance inheritance(factories);
         EntityBuilder eb;
         {
             Ruleset instance(&eb, io_context);
@@ -90,7 +92,8 @@ int main(int argc, char ** argv)
 
     {
         etc_directory = data_path + "/ruleset2/etc";
-        Inheritance inheritance;
+        Atlas::Objects::Factories factories;
+        Inheritance inheritance(factories);
         EntityBuilder eb;
         {
             Ruleset instance(&eb, io_context);
@@ -105,7 +108,8 @@ int main(int argc, char ** argv)
     {
         // Create a test world.
 
-        Inheritance inheritance;
+        Atlas::Objects::Factories factories;
+        Inheritance inheritance(factories);
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder eb;
@@ -401,9 +405,9 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
 #include "stubs/server/stubPersistence.h"
 #include "stubs/common/stubglobals.h"
 
-AtlasFileLoader::AtlasFileLoader(const std::string & filename,
+AtlasFileLoader::AtlasFileLoader(const Atlas::Objects::Factories& factories, const std::string & filename,
                                  std::map<std::string, Root> & m) :
-    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
+    ObjectsDecoder(factories),
     m_file(filename.c_str(), std::ios::in),
                 m_count(0), m_messages(m)
 {

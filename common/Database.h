@@ -59,35 +59,35 @@ class Decoder : public Atlas::Message::DecoderBase
             return m_msg;
         }
 };
-
-/// \brief Class to handle decoding Atlas encoded database records
-class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
-{
-    private:
-        void objectArrived(const Atlas::Objects::Root& obj) override
-        {
-            m_check = true;
-            m_obj = obj;
-        }
-
-        bool m_check;
-        Atlas::Objects::Root m_obj;
-    public:
-        ObjectDecoder() : ObjectsDecoder(*Atlas::Objects::Factories::instance()), m_check(false)
-        {
-        }
-
-        bool check() const
-        {
-            return m_check;
-        }
-
-        const Atlas::Objects::Root& get()
-        {
-            m_check = false;
-            return m_obj;
-        }
-};
+//
+///// \brief Class to handle decoding Atlas encoded database records
+//class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
+//{
+//    private:
+//        void objectArrived(const Atlas::Objects::Root& obj) override
+//        {
+//            m_check = true;
+//            m_obj = obj;
+//        }
+//
+//        bool m_check;
+//        Atlas::Objects::Root m_obj;
+//    public:
+//        ObjectDecoder() : ObjectsDecoder(*Atlas::Objects::Factories::instance()), m_check(false)
+//        {
+//        }
+//
+//        bool check() const
+//        {
+//            return m_check;
+//        }
+//
+//        const Atlas::Objects::Root& get()
+//        {
+//            m_check = false;
+//            return m_obj;
+//        }
+//};
 
 class DatabaseResult;
 

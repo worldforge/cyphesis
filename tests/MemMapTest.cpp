@@ -46,9 +46,11 @@
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
+
 struct TestTypeStore : public TypeStore
 {
     std::map<std::string, TypeNode*> m_types;
+    Atlas::Objects::Factories m_factories;
     const TypeNode* getType(const std::string& parent) const override
     {
         auto I = m_types.find(parent);
@@ -63,13 +65,19 @@ struct TestTypeStore : public TypeStore
         return m_types.size();
     }
 
-
     TypeNode* addChild(const Atlas::Objects::Root& obj) override
     {
         auto type = new TypeNode(obj->getId());
         type->setDescription(obj);
         m_types[obj->getId()] = type;
         return type;
+    }
+
+    Atlas::Objects::Factories& getFactories() override {
+        return m_factories;
+    }
+    virtual const Atlas::Objects::Factories& getFactories() const override{
+        return m_factories;
     }
 };
 

@@ -36,9 +36,10 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
 #include <Atlas/Objects/Factories.h>
+#include <common/Inheritance.h>
 
 Atlas::Objects::Factories factories;
-
+Inheritance inheritance(factories);
 int main()
 {
 

@@ -80,7 +80,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
     void setup()
     {
-        m_inheritance = new Inheritance();
+        m_inheritance = new Inheritance(factories);
         m_entity = new World("1", 1);
         m_test_world = new TestWorld(m_entity);
         m_entity_builder = new ExposedEntityBuilder();

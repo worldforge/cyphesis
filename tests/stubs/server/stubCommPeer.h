@@ -9,8 +9,8 @@
 
 #ifndef STUB_CommPeer_CommPeer
 //#define STUB_CommPeer_CommPeer
-   CommPeer::CommPeer(const std::string & name, boost::asio::io_context& io_context)
-    : CommAsioClient(name, io_context)
+   CommPeer::CommPeer(const std::string& name, boost::asio::io_context& io_context, Atlas::Objects::Factories& factories)
+    : CommAsioClient(name, io_context, factories)
   {
     
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_CommPeer_connect
 //#define STUB_CommPeer_connect
-  void CommPeer::connect(const std::string &, int)
+  void CommPeer::connect(const std::string&, int)
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_CommPeer_setup
 //#define STUB_CommPeer_setup
-  void CommPeer::setup(Link *)
+  void CommPeer::setup(Link*)
   {
     
   }

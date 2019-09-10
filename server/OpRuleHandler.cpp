@@ -61,7 +61,7 @@ int OpRuleHandler::installOpDefinition(const std::string & class_name,
         return -1;
     }
 
-    Atlas::Objects::Factories::instance()->addFactory(class_name, &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
+    Inheritance::instance().getFactories().addFactory(class_name, &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     return 0;
 }

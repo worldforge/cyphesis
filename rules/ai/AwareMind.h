@@ -22,26 +22,35 @@
 #include "MemMap.h"
 
 class Awareness;
+
 class AwarenessStore;
+
 class AwarenessStoreProvider;
+
 class Steering;
+
 class SharedTerrain;
 
 /**
  * @brief A Mind which is aware of its surroundings and thus can steer and navigate in the world.
  */
-class AwareMind: public BaseMind, public MemMap::MapListener
+class AwareMind : public BaseMind, public MemMap::MapListener
 {
     public:
-        AwareMind(const std::string & mind_id, std::string entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider);
+        AwareMind(const std::string& mind_id,
+                  std::string entity_id,
+                  SharedTerrain& sharedTerrain,
+                  AwarenessStoreProvider& awarenessStoreProvider);
 
         ~AwareMind() override;
 
         void entityAdded(const MemEntity& entity) override;
-        void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation) override;
+
+        void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation) override;
+
         void entityDeleted(const MemEntity& entity) override;
 
-        void operation(const Operation & op, OpVector & res) override;
+        void operation(const Operation& op, OpVector& res) override;
 
         int updatePath();
 
@@ -75,7 +84,7 @@ class AwareMind: public BaseMind, public MemMap::MapListener
 
         void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 
-        void processMoveTick(const Operation & op, OpVector & res);
+        void processMoveTick(const Operation& op, OpVector& res);
 
         void requestAwareness(const MemEntity& entity);
 

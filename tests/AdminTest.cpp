@@ -326,9 +326,11 @@ long Admintest::newId()
     return ++m_id_counter;
 }
 
+Atlas::Objects::Factories factories;
+
 void Admintest::setup()
 {
-    inheritance = new Inheritance();
+    inheritance = new Inheritance(factories);
     Atlas::Objects::Operation::MONITOR_NO = m_id_counter++;
 
     Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
@@ -1445,8 +1447,8 @@ void Link::send(const Operation & op) const
 
 
 #define STUB_Inheritance_Inheritance
-Inheritance::Inheritance()
-    : Singleton(), noClass(0)
+Inheritance::Inheritance(Atlas::Objects::Factories& factories)
+    : Singleton(), m_factories(factories), noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 

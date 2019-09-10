@@ -38,20 +38,24 @@
 #include <deque>
 
 template<typename ProtocolT>
-class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
-        public CommSocket,
-        public std::enable_shared_from_this<CommAsioClient<ProtocolT> >
+class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
+                       public CommSocket,
+                       public std::enable_shared_from_this<CommAsioClient<ProtocolT> >
 {
     public:
-        CommAsioClient(std::string  name,
-                boost::asio::io_context& io_context);
+        CommAsioClient(std::string name,
+                       boost::asio::io_context& io_context,
+                       const Atlas::Objects::Factories& factories);
+
         ~CommAsioClient() override;
 
         typename ProtocolT::socket& getSocket();
 
-        void startAccept(Link * connection);
-        void startConnect(Link * connection);
-        int send(const Atlas::Objects::Operation::RootOperation &);
+        void startAccept(Link* connection);
+
+        void startConnect(Link* connection);
+
+        int send(const Atlas::Objects::Operation::RootOperation&);
 
         /// \brief STL deque of pointers to operation objects.
         typedef std::deque<Atlas::Objects::Operation::RootOperation> DispatchQueue;
@@ -110,19 +114,19 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
             /**
              * Arbitrary size of the read buffer.
              */
-            read_buffer_size = 16384
+                read_buffer_size = 16384
         };
 
         /// \brief Queue of operations that have been decoded by not dispatched.
         DispatchQueue m_opQueue;
         /// \brief Atlas codec that handles encoding and decoding traffic.
-        Atlas::Codec * m_codec;
+        Atlas::Codec* m_codec;
         /// \brief high level encoder passes data to the codec for transmission.
-        Atlas::Objects::ObjectsEncoder * m_encoder;
+        Atlas::Objects::ObjectsEncoder* m_encoder;
         /// \brief Atlas negotiator for handling codec negotiation.
-        Atlas::Negotiate * m_negotiate;
+        Atlas::Negotiate* m_negotiate;
         /// \brief Server side object for handling connection level operations.
-        Link * m_link;
+        Link* m_link;
 
         const std::string mName;
 
@@ -141,9 +145,9 @@ class CommAsioClient: public Atlas::Objects::ObjectsDecoder,
 
         void negotiate_write();
 
-        int operation(const Atlas::Objects::Operation::RootOperation &);
+        int operation(const Atlas::Objects::Operation::RootOperation&);
 
-        void objectArrived(const Atlas::Objects::Root & obj) override;
+        void objectArrived(const Atlas::Objects::Root& obj) override;
 };
 
 #endif /* COMMASIOCLIENT_H_ */

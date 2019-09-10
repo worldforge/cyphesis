@@ -45,6 +45,7 @@
 #include <iostream>
 #include <chrono>
 #include <boost/asio/steady_timer.hpp>
+#include <Atlas/Objects/Factories.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -68,9 +69,7 @@ Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context) :
 {
 }
 
-Ruleset::~Ruleset()
-{
-}
+Ruleset::~Ruleset() = default;
 
 int Ruleset::installRuleInner(const std::string & class_name,
                               const Root & class_desc,
@@ -234,7 +233,7 @@ void Ruleset::processChangedRules() {
             try {
                 log(NOTICE, compose("Reloading rule file %1", path));
                 auto& filename = path.native();
-                AtlasFileLoader f(filename, updatedRules);
+                AtlasFileLoader f(Inheritance::instance().getFactories(), filename, updatedRules);
                 if (!f.isOpen()) {
                     log(ERROR, compose("Unable to open rule file \"%1\".", filename));
                 } else {
@@ -314,7 +313,7 @@ void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
         while (dir != end) {
             if (boost::filesystem::is_regular_file(dir->status())) {
                 auto filename = dir->path().native();
-                AtlasFileLoader f(filename, rules);
+                AtlasFileLoader f(Inheritance::instance().getFactories(), filename, rules);
                 if (!f.isOpen()) {
                     log(ERROR, compose("Unable to open rule file \"%1\".", filename));
                 } else {

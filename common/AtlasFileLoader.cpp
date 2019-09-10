@@ -30,7 +30,7 @@
 using Atlas::Objects::Root;
 
 /// \brief Called from the base class when a complete message has been decoded
-void AtlasFileLoader::objectArrived(const Root & obj)
+void AtlasFileLoader::objectArrived(const Root& obj)
 {
     if (obj->isDefaultId()) {
         log(ERROR, String::compose("Object without ID read from file %1", m_filename));
@@ -39,7 +39,7 @@ void AtlasFileLoader::objectArrived(const Root & obj)
         log(ERROR, "Object: " + ss.str());
         return;
     }
-    const std::string & id = obj->getId();
+    const std::string& id = obj->getId();
     if (m_messages.find(id) != m_messages.end()) {
         log(WARNING, String::compose("Duplicate object ID \"%1\" loaded from file %2.", id, m_filename));
     }
@@ -51,11 +51,12 @@ void AtlasFileLoader::objectArrived(const Root & obj)
 ///
 /// @param filename Name of the file to be loaded
 /// @param m Data store for the data loaded from the file
-AtlasFileLoader::AtlasFileLoader(const std::string & filename,
-                                 std::map<std::string, Root> & m) :
-                ObjectsDecoder(*Atlas::Objects::Factories::instance()),
-                m_file(filename.c_str(), std::ios::in),
-                m_count(0), m_messages(m), m_filename(filename)
+AtlasFileLoader::AtlasFileLoader(const Atlas::Objects::Factories& factories,
+                                 const std::string& filename,
+                                 std::map<std::string, Root>& m) :
+    ObjectsDecoder(factories),
+    m_file(filename.c_str(), std::ios::in),
+    m_count(0), m_messages(m), m_filename(filename)
 {
     m_codec = new Atlas::Codecs::XML(m_file, m_file, *this);
 }

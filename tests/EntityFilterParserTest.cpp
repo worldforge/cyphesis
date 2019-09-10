@@ -26,6 +26,7 @@
 
 #include <wfmath/point.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Factories.h>
 
 #include <cassert>
 
@@ -34,6 +35,7 @@ static std::map<std::string, TypeNode*> types;
 using namespace EntityFilter;
 using namespace boost::spirit;
 
+Atlas::Objects::Factories factories;
 ///\These tests aim at verifying that entity filter parser builds
 ///correct predicates for given queries
 class ParserTest : public Cyphesis::TestBase {
@@ -62,7 +64,7 @@ ParserTest::ParserTest()
 
 void ParserTest::setup()
 {
-    m_inheritance = new Inheritance();
+    m_inheritance = new Inheritance(factories);
 }
 
 void ParserTest::teardown()

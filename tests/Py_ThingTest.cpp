@@ -55,7 +55,7 @@ Atlas::Objects::Factories factories;
 int main()
 {
 
-    Inheritance inheritance;
+    Inheritance inheritance(factories);
 
     new TestPropertyManager;
 

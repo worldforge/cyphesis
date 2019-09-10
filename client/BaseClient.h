@@ -40,7 +40,7 @@ class BaseClient {
     std::string m_playerId;
 
   public:
-    explicit BaseClient(boost::asio::io_context& io_context);
+    explicit BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories);
     virtual ~BaseClient();
 
     CreatorClient * character() {

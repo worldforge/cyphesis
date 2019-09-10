@@ -31,5 +31,21 @@
   }
 #endif //STUB_TypeStore_addChild
 
+#ifndef STUB_TypeStore_getFactories
+//#define STUB_TypeStore_getFactories
+  Atlas::Objects::Factories& TypeStore::getFactories()
+  {
+    return *static_cast<Atlas::Objects::Factories*>(nullptr);
+  }
+#endif //STUB_TypeStore_getFactories
+
+#ifndef STUB_TypeStore_getFactories
+//#define STUB_TypeStore_getFactories
+  const Atlas::Objects::Factories& TypeStore::getFactories() const
+  {
+    return *static_cast<const Atlas::Objects::Factories*>(nullptr);
+  }
+#endif //STUB_TypeStore_getFactories
+
 
 #endif

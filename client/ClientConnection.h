@@ -38,7 +38,7 @@ class ClientConnection : public AtlasStreamClient {
 
   public:
 
-    explicit ClientConnection(boost::asio::io_context& io_context);
+    explicit ClientConnection(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories);
     ~ClientConnection() override;
 
     int wait();

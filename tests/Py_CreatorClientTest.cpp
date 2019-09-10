@@ -41,8 +41,10 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
+#include <common/Inheritance.h>
 #include "external/pycxx/CXX/Objects.hxx"
 Atlas::Objects::Factories factories;
+Inheritance inheritance(factories);
 
 static bool stub_make_fail = false;
 static bool stub_look_fail = false;
@@ -60,7 +62,7 @@ int main()
                      &CyPy_Ai::init});
     extend_client_python_api();
 
-    auto client = new CreatorClient("1", "2", *new ClientConnection(io_context));
+    auto client = new CreatorClient("1", "2", *new ClientConnection(io_context, factories));
     Ref<MemEntity> entity = new MemEntity("1", 1);
     OpVector res;
     client->setOwnEntity(res, entity);

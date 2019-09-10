@@ -29,13 +29,19 @@ template<typename ProtocolT, typename ClientT>
 class CommAsioListener
 {
     public:
-        CommAsioListener(std::function<void(ClientT&)> clientStarter, std::string serverName,
-                boost::asio::io_context& ioService,
-                const typename ProtocolT::endpoint& endpoint);
+        CommAsioListener(std::function<std::shared_ptr<ClientT>()> clientCreator,
+                         std::function<void(ClientT&)> clientStarter,
+                         std::string serverName,
+                         boost::asio::io_context& ioService,
+                         const typename ProtocolT::endpoint& endpoint);
+
         virtual ~CommAsioListener();
+
     protected:
+        std::function<std::shared_ptr<ClientT>()> mClientCreator;
         std::function<void(ClientT&)> mClientStarter;
         const std::string mServerName;
+        Atlas::Objects::Factories* mFactories;
 
         typename ProtocolT::acceptor mAcceptor;
 

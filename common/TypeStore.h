@@ -27,6 +27,8 @@ struct TypeStore
     virtual const TypeNode* getType(const std::string& parent) const = 0;
     virtual size_t getTypeCount() const = 0;
     virtual TypeNode * addChild(const Atlas::Objects::Root & obj) = 0;
+    virtual Atlas::Objects::Factories& getFactories() = 0;
+    virtual const Atlas::Objects::Factories& getFactories() const = 0;
 };
 
 #endif //CYPHESIS_TYPESTORE_H

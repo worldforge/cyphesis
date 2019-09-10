@@ -38,8 +38,10 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Element.h>
 #include <Atlas/Objects/Factories.h>
+#include <common/Inheritance.h>
 #include "common/debug.h"
 Atlas::Objects::Factories factories;
+Inheritance inheritance(factories);
 
 using Atlas::Message::Element;
 

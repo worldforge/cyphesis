@@ -10,8 +10,8 @@
 #ifndef STUB_CommAsioClient_CommAsioClient
 //#define STUB_CommAsioClient_CommAsioClient
   template <typename ProtocolT>
-   CommAsioClient<ProtocolT>::CommAsioClient(std::string  name, boost::asio::io_context& io_context)
-    : Atlas::Objects::ObjectsDecoder(name, io_context)
+   CommAsioClient<ProtocolT>::CommAsioClient(std::string name, boost::asio::io_context& io_context, const Atlas::Objects::Factories& factories)
+    : Atlas::Objects::ObjectsDecoder(name, io_context, factories)
     , mWriteBuffer(nullptr),mSendBuffer(nullptr),m_codec(nullptr),m_encoder(nullptr),m_negotiate(nullptr),m_link(nullptr)
   {
     
@@ -39,7 +39,7 @@
 #ifndef STUB_CommAsioClient_startAccept
 //#define STUB_CommAsioClient_startAccept
   template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::startAccept(Link * connection)
+  void CommAsioClient<ProtocolT>::startAccept(Link* connection)
   {
     
   }
@@ -48,7 +48,7 @@
 #ifndef STUB_CommAsioClient_startConnect
 //#define STUB_CommAsioClient_startConnect
   template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::startConnect(Link * connection)
+  void CommAsioClient<ProtocolT>::startConnect(Link* connection)
   {
     
   }
@@ -57,7 +57,7 @@
 #ifndef STUB_CommAsioClient_send
 //#define STUB_CommAsioClient_send
   template <typename ProtocolT>
-  int CommAsioClient<ProtocolT>::send(const Atlas::Objects::Operation::RootOperation &)
+  int CommAsioClient<ProtocolT>::send(const Atlas::Objects::Operation::RootOperation&)
   {
     return 0;
   }
@@ -147,7 +147,7 @@
 #ifndef STUB_CommAsioClient_operation
 //#define STUB_CommAsioClient_operation
   template <typename ProtocolT>
-  int CommAsioClient<ProtocolT>::operation(const Atlas::Objects::Operation::RootOperation &)
+  int CommAsioClient<ProtocolT>::operation(const Atlas::Objects::Operation::RootOperation&)
   {
     return 0;
   }
@@ -156,7 +156,7 @@
 #ifndef STUB_CommAsioClient_objectArrived
 //#define STUB_CommAsioClient_objectArrived
   template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root & obj)
+  void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
   {
     
   }

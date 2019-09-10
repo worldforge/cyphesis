@@ -37,8 +37,8 @@ class AwareMindFactory : public MindKit
         BaseMind* newMind(const std::string& mind_id, const std::string& entity_id) const override;
 
     protected:
-        SharedTerrain* mSharedTerrain;
-        AwarenessStoreProvider* mAwarenessStoreProvider;
+        std::unique_ptr<SharedTerrain> mSharedTerrain;
+        std::unique_ptr<AwarenessStoreProvider> mAwarenessStoreProvider;
 
 };
 

@@ -26,7 +26,9 @@ static const bool debug_flag = false;
 
 CommPythonClient::CommPythonClient(const std::string & name,
         boost::asio::io_context& io_context) :
-        mSocket(io_context), m_pyContext(new PythonContext)
+        mSocket(io_context),
+        mBuffer{},
+        m_pyContext(new PythonContext)
 {
 }
 

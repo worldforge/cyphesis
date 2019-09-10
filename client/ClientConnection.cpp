@@ -30,8 +30,9 @@ using Atlas::Objects::Operation::RootOperation;
 
 static bool debug_flag = false;
 
-ClientConnection::ClientConnection(boost::asio::io_context& io_context)
-: AtlasStreamClient(io_context)
+ClientConnection::ClientConnection(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories)
+: AtlasStreamClient(io_context, factories)
+
 {
 }
 

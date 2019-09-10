@@ -64,6 +64,8 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
+Atlas::Objects::Factories factories;
+
 class EntityBuildertest : public Cyphesis::TestBase
 {
   private:
@@ -98,7 +100,7 @@ EntityBuildertest::EntityBuildertest()
 
 void EntityBuildertest::setup()
 {
-    inheritance = new Inheritance();
+    inheritance = new Inheritance(factories);
     e = new Entity("1", 1);
     test_world = new TestWorld(e);
     eb = new EntityBuilder();
@@ -425,7 +427,7 @@ void log(LogLevel lvl, const std::string & msg)
 
 #ifndef STUB_Inheritance_Inheritance
 #define STUB_Inheritance_Inheritance
-Inheritance::Inheritance() : noClass(0)
+Inheritance::Inheritance(Atlas::Objects::Factories& factories) : m_factories(factories), noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 

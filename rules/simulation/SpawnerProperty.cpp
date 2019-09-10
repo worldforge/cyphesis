@@ -44,7 +44,6 @@ using Atlas::Message::FloatType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Tick;
-using Atlas::Objects::Factories;
 using Atlas::Objects::smart_dynamic_cast;
 using String::compose;
 
@@ -218,7 +217,7 @@ void SpawnerProperty::createNewEntity(LocatedEntity * e, const Operation & op,
     Anonymous create_arg;
     if (!m_entity.empty()) {
         create_arg = smart_dynamic_cast<Anonymous>(
-                Factories::instance()->createObject(m_entity));
+            Inheritance::instance().getFactories().createObject(m_entity));
         if (!create_arg.isValid()) {
             log(ERROR,
                     "Could not parse 'entity' data on spawner into Entity instance.");

@@ -127,7 +127,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
 void WorldRouterintegration::setup()
 {
-    m_inheritance = new Inheritance();
+    m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
 
 

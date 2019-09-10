@@ -24,10 +24,14 @@
 
 template<class ProtocolT, typename ClientT>
 CommAsioListener<ProtocolT, ClientT>::CommAsioListener(
+    std::function<std::shared_ptr<ClientT>()> clientCreator,
     std::function<void(ClientT&)> clientStarter,
     std::string serverName, boost::asio::io_context& ioService,
     const typename ProtocolT::endpoint& endpoint)
-    : mClientStarter(clientStarter), mServerName(std::move(serverName)), mAcceptor(ioService, endpoint)
+    :mClientCreator(clientCreator),
+     mClientStarter(clientStarter),
+     mServerName(std::move(serverName)),
+     mAcceptor(ioService, endpoint)
 {
     startAccept();
 }
@@ -44,7 +48,8 @@ void CommAsioListener<ProtocolT, ClientT>::startAccept()
 #if BOOST_VERSION < 106600
     auto client = std::make_shared<ClientT>(mServerName, mAcceptor.get_io_service());
 #else
-    auto client = std::make_shared<ClientT>(mServerName, mAcceptor.get_executor().context());
+    auto client = mClientCreator();
+//    auto client = std::make_shared<ClientT>(mServerName, mAcceptor.get_executor().context(), mFactories);
 #endif
     mAcceptor.async_accept(client->getSocket(),
                            [this, client](boost::system::error_code ec) {

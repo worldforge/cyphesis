@@ -29,13 +29,13 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <wfmath/atlasconv.h>
+#include <common/Inheritance.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::smart_dynamic_cast;
-using Atlas::Objects::Factories;
 
 using String::compose;
 
@@ -125,7 +125,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
 {
     for (auto& entityI : entitiesElement) {
 
-        auto entity = smart_dynamic_cast<RootEntity>(Factories::instance()->createObject(entityI.second));
+        auto entity = smart_dynamic_cast<RootEntity>(Inheritance::instance().getFactories().createObject(entityI.second));
         if (!entity.isValid()) {
             log(ERROR, "Entity definition is not in Entity format.");
             return false;
@@ -337,7 +337,7 @@ void ArchetypeFactory::sendThoughts(LocatedEntity& entity, std::vector<Atlas::Me
 
     if (!thoughts.empty()) {
         Atlas::Objects::Operation::Set setOp;
-        setOp->setArgsAsList(thoughts);
+        setOp->setArgsAsList(thoughts, &Inheritance::instance().getFactories());
         Atlas::Objects::Operation::Think thoughtOp;
         //Make the thought come from the entity itself
         thoughtOp->setTo(entity.getId());

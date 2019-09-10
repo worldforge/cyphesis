@@ -39,6 +39,8 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::RootOperation;
 
+Atlas::Objects::Factories factories;
+
 class ClientConnectiontest : public Cyphesis::TestBase
 {
     boost::asio::io_context io_context;
@@ -59,7 +61,7 @@ ClientConnectiontest::ClientConnectiontest()
 
 void ClientConnectiontest::setup()
 {
-    cc = new ClientConnection(io_context);
+    cc = new ClientConnection(io_context, factories);
 }
 
 void ClientConnectiontest::teardown()

@@ -48,8 +48,8 @@ using Atlas::Objects::Operation::Error;
 static const bool debug_flag = false;
 
 /// \brief AdminClient constructor
-AdminClient::AdminClient(boost::asio::io_context& io_context)
-: AtlasStreamClient(io_context)
+AdminClient::AdminClient(Atlas::Objects::Factories& factories, boost::asio::io_context& io_context)
+: AtlasStreamClient(io_context, factories)
 {
 }
 
@@ -114,7 +114,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
         Root set_arg(0);
         try {
-            set_arg = Atlas::Objects::Factories::instance()->createObject(rule);
+            set_arg = m_factories.createObject(rule);
         }
         catch (Atlas::Message::WrongTypeException&) {
             std::cerr << "Malformed data in rule"
@@ -188,7 +188,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 
     Root create_arg;
     try {
-        create_arg  = Atlas::Objects::Factories::instance()->createObject(rule);
+        create_arg  = m_factories.createObject(rule);
     }
     catch (Atlas::Message::WrongTypeException&) {
         std::cerr << "Malformed data in rule"

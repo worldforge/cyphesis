@@ -263,8 +263,8 @@
 
 #ifndef STUB_AtlasStreamClient_AtlasStreamClient
 //#define STUB_AtlasStreamClient_AtlasStreamClient
-   AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context)
-    : Atlas::Objects::ObjectsDecoder(io_context)
+   AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context, const Atlas::Objects::Factories& factories)
+    : Atlas::Objects::ObjectsDecoder(io_context, factories)
   {
     
   }

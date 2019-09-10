@@ -86,7 +86,7 @@ int main(int argc, char ** argv)
     Atlas::Objects::Factories factories;
 
     boost::asio::io_context io_context;
-    Interactive bridge(io_context);
+    Interactive bridge(factories, io_context);
 
     if (server.empty()) {
         std::string localSocket;

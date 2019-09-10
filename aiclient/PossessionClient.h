@@ -27,16 +27,21 @@
 #include <unordered_map>
 
 class MindKit;
+
 class PossessionAccount;
+
 class Inheritance;
 
 /**
  * Manages possession requests from the server and spawns new AI clients.
  */
-class PossessionClient: public BaseClient
+class PossessionClient : public BaseClient
 {
     public:
-        explicit PossessionClient(CommSocket& commSocket, MindKit& mindFactory, std::function<void()> reconnectFn);
+        explicit PossessionClient(CommSocket& commSocket,
+                                  MindKit& mindFactory,
+                                  Atlas::Objects::Factories& factories,
+                                  std::function<void()> reconnectFn);
 
         ~PossessionClient() override;
 
@@ -44,8 +49,10 @@ class PossessionClient: public BaseClient
 
     protected:
 
-        void operation(const Operation & op, OpVector & res) override;
-        void operationFromEntity(const Operation & op, Ref<BaseMind> locatedEntity);
+        void operation(const Operation& op, OpVector& res) override;
+
+        void operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity);
+
         double getTime() const;
 
         void scheduleDispatch();
@@ -60,10 +67,11 @@ class PossessionClient: public BaseClient
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
 
+        Atlas::Objects::Factories& m_factories;
+
         std::unique_ptr<Inheritance> m_inheritance;
 
         boost::asio::steady_timer m_dispatcherTimer;
-
 
 
 };

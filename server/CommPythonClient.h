@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <string>
+#include <Atlas/Objects/Factories.h>
 
 class PythonContext;
 

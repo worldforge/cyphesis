@@ -239,7 +239,7 @@ int main(int argc, char** argv)
                     python_directories);
     observe_python_directories(*io_context, *assets_manager);
 
-    auto inheritance = new Inheritance();
+    auto inheritance = new Inheritance(atlasFactories);
 
     auto entityBuilder = new EntityBuilder();
     auto arithmenticBuilder = new ArithmeticBuilder();
@@ -273,7 +273,11 @@ int main(int argc, char** argv)
     // Create the core server object, which stores central data,
     // and track objects
     auto server = new ServerRouting(*world, ruleset_name,
-                                              server_name, server_id, int_id, lobby_id, lobby_int_id);
+                                    server_name, server_id, int_id, lobby_id, lobby_int_id);
+
+    auto tcpAtlasCreator = [&]() -> std::shared_ptr<CommAsioClient<ip::tcp>> {
+        return std::make_shared<CommAsioClient<ip::tcp>>(server->getName(), *io_context, atlasFactories);
+    };
 
     std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
         std::string connection_id;
@@ -291,7 +295,7 @@ int main(int argc, char** argv)
         client_port_num = dynamic_port_start;
         for (; client_port_num <= dynamic_port_end; client_port_num++) {
             try {
-                tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_context,
+                tcp_atlas_clients.emplace_back(tcpAtlasCreator, tcpAtlasStarter, server->getName(), *io_context,
                                                ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
             } catch (const std::exception& e) {
                 break;
@@ -317,7 +321,7 @@ int main(int argc, char** argv)
                              client_port_num + 1, varconf::USER);
     } else {
         try {
-            tcp_atlas_clients.emplace_back(tcpAtlasStarter, server->getName(), *io_context, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
+            tcp_atlas_clients.emplace_back(tcpAtlasCreator, tcpAtlasStarter, server->getName(), *io_context, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
                                        "on port %1. Init failed. The most common reason for this "
@@ -328,32 +332,48 @@ int main(int argc, char** argv)
     }
 
     remove(python_socket_name.c_str());
+    auto pythonCreator = [&]() -> std::shared_ptr<CommPythonClient> {
+        return std::make_shared<CommPythonClient>(server->getName(), *io_context);
+    };
     std::function<void(CommPythonClient&)> pythonStarter =
         [&](CommPythonClient& client) {
             client.startAccept();
         };
-    auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonStarter, server->getName(), *io_context,
+    auto pythonListener = new CommAsioListener<local::stream_protocol, CommPythonClient>(pythonCreator,
+                                                                                         pythonStarter,
+                                                                                         server->getName(),
+                                                                                         *io_context,
                                                                                          local::stream_protocol::endpoint(python_socket_name));
 
     remove(client_socket_name.c_str());
-    std::function<void(CommAsioClient<local::stream_protocol>&)> localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
+    auto localCreator = [&]() -> std::shared_ptr<CommAsioClient<local::stream_protocol>> {
+        return std::make_shared<CommAsioClient<local::stream_protocol>>(server->getName(), *io_context, atlasFactories);
+    };
+    auto localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
         std::string connection_id;
         long c_iid = newId(connection_id);
         client.startAccept(new TrustedConnection(client, *server, "", connection_id, c_iid));
     };
-    auto localListener = new CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>(localStarter, server->getName(), *io_context,
+    auto localListener = new CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>(localCreator,
+                                                                                                              localStarter,
+                                                                                                              server->getName(),
+                                                                                                              *io_context,
                                                                                                               local::stream_protocol::endpoint(client_socket_name));
 
 
     //Instantiate at startup
     auto httpCache = new HttpCache();
-    std::function<void(CommHttpClient&)> httpStarter = [&](CommHttpClient& client) {
+    auto httpCreator = [&]() -> std::shared_ptr<CommHttpClient> {
+        return std::make_shared<CommHttpClient>(server->getName(), *io_context);
+    };
+
+    auto httpStarter = [&](CommHttpClient& client) {
         //Listen to both ipv4 and ipv6
         //client.getSocket().set_option(boost::asio::ip::v6_only(false));
         client.serveRequest();
     };
 
-    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpStarter, server->getName(), *io_context,
+    auto httpListener = new CommAsioListener<ip::tcp, CommHttpClient>(httpCreator, httpStarter, server->getName(), *io_context,
                                                                       ip::tcp::endpoint(ip::tcp::v6(), http_port_num));
 
     log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));

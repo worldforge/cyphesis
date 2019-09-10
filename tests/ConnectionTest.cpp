@@ -64,6 +64,8 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Operation::Logout;
 using Atlas::Objects::Operation::Move;
 
+Atlas::Objects::Factories factories;
+
 class TestCommSocket : public CommSocket
 {
   public:
@@ -160,7 +162,7 @@ Connectiontest::Connectiontest()
 
 void Connectiontest::setup()
 {
-    m_inheritance = new Inheritance();
+    m_inheritance = new Inheritance(factories);
     Router_error_called = false;
 
     m_server = new ServerRouting(*(BaseWorld*)0, "noruleset", "unittesting",

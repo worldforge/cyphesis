@@ -9,7 +9,7 @@
 
 #ifndef STUB_AtlasFileLoader_objectArrived
 //#define STUB_AtlasFileLoader_objectArrived
-  void AtlasFileLoader::objectArrived(const Atlas::Objects::Root & obj)
+  void AtlasFileLoader::objectArrived(const Atlas::Objects::Root& obj)
   {
     
   }
@@ -17,8 +17,8 @@
 
 #ifndef STUB_AtlasFileLoader_AtlasFileLoader
 //#define STUB_AtlasFileLoader_AtlasFileLoader
-   AtlasFileLoader::AtlasFileLoader(const std::string & filename, std::map<std::string, Atlas::Objects::Root> & m)
-    : Atlas::Objects::ObjectsDecoder(filename, m)
+   AtlasFileLoader::AtlasFileLoader(const Atlas::Objects::Factories& factories, const std::string& filename, std::map<std::string, Atlas::Objects::Root>& m)
+    : Atlas::Objects::ObjectsDecoder(factories, filename, m)
     , m_codec(nullptr)
   {
     

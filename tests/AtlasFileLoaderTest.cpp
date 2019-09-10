@@ -31,19 +31,21 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include <Atlas/Objects/Factories.h>
 
 int main()
 {
+    Atlas::Objects::Factories factories;
     {
         // Test constructor
         std::map<std::string, Atlas::Objects::Root> data;
-        AtlasFileLoader loader("foo", data);
+        AtlasFileLoader loader(factories, "foo", data);
     }
 
     {
         // Test destructor
         std::map<std::string, Atlas::Objects::Root> data;
-        AtlasFileLoader * loader = new AtlasFileLoader("foo", data);
+        AtlasFileLoader * loader = new AtlasFileLoader(factories, "foo", data);
 
         delete loader;
     }
@@ -51,7 +53,7 @@ int main()
     {
         // Test isOpen
         std::map<std::string, Atlas::Objects::Root> data;
-        AtlasFileLoader loader("foo", data);
+        AtlasFileLoader loader(factories, "foo", data);
 
         assert(!loader.isOpen());
     }
@@ -59,7 +61,7 @@ int main()
     {
         // Test count
         std::map<std::string, Atlas::Objects::Root> data;
-        AtlasFileLoader loader("foo", data);
+        AtlasFileLoader loader(factories, "foo", data);
 
         assert(loader.count() == 0);
         assert((unsigned int)loader.count() == data.size());

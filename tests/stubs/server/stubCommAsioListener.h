@@ -10,7 +10,8 @@
 #ifndef STUB_CommAsioListener_CommAsioListener
 //#define STUB_CommAsioListener_CommAsioListener
   template <typename ProtocolT,typename ClientT>
-   CommAsioListener<ProtocolT,ClientT>::CommAsioListener(std::function<void(ClientT&)> clientStarter, std::string serverName, boost::asio::io_context& ioService, const typename ProtocolT::endpoint& endpoint)
+   CommAsioListener<ProtocolT,ClientT>::CommAsioListener(std::function<std::shared_ptr<ClientT>()> clientCreator, std::function<void(ClientT&)> clientStarter, std::string serverName, boost::asio::io_context& ioService, const typename ProtocolT::endpoint& endpoint)
+    : mFactories(nullptr)
   {
     
   }

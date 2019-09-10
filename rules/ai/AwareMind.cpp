@@ -43,7 +43,10 @@
 
 static const bool debug_flag = true;
 
-AwareMind::AwareMind(const std::string& mind_id, std::string entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider) :
+AwareMind::AwareMind(const std::string& mind_id,
+                     std::string entity_id,
+                     SharedTerrain& sharedTerrain,
+                     AwarenessStoreProvider& awarenessStoreProvider) :
     BaseMind(mind_id, std::move(entity_id)),
     mSharedTerrain(sharedTerrain),
     mAwarenessStoreProvider(awarenessStoreProvider),

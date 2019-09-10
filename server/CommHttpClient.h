@@ -25,6 +25,7 @@
 #include <list>
 #include <string>
 #include <memory>
+#include <Atlas/Objects/Factories.h>
 
 /// \brief Handle an internet socket connected to a remote web browser.
 /// \ingroup ServerSockets

@@ -20,9 +20,9 @@
 
 static const bool debug_flag = false;
 
-CommHttpClient::CommHttpClient(const std::string & name,
-        boost::asio::io_context& io_context) :
-        mSocket(io_context), mStream(&mBuffer)
+CommHttpClient::CommHttpClient(const std::string& name,
+                               boost::asio::io_context& io_context) :
+    mSocket(io_context), mStream(&mBuffer)
 {
 }
 
@@ -37,22 +37,20 @@ void CommHttpClient::do_read()
 {
     auto self(this->shared_from_this());
     mSocket.async_read_some(mBuffer.prepare(1024),
-            [this, self](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                    mBuffer.commit(length);
-                    bool complete = read();
-                    if (complete) {
-                        write();
-                    }
-                    //By calling do_read again we make sure that the instance
-                    //doesn't go out of scope ("shared_from this"). As soon as that
-                    //doesn't happen, and there's no do_write in progress, the instance
-                    //will be deleted since there's no more references to it.
-                    this->do_read();
-                }
-            });
+                            [this, self](boost::system::error_code ec, std::size_t length) {
+                                if (!ec) {
+                                    mBuffer.commit(length);
+                                    bool complete = read();
+                                    if (complete) {
+                                        write();
+                                    }
+                                    //By calling do_read again we make sure that the instance
+                                    //doesn't go out of scope ("shared_from this"). As soon as that
+                                    //doesn't happen, and there's no do_write in progress, the instance
+                                    //will be deleted since there's no more references to it.
+                                    this->do_read();
+                                }
+                            });
 
 }
 
@@ -61,13 +59,11 @@ void CommHttpClient::write()
     HttpCache::instance().processQuery(mStream, m_headers);
     auto self(this->shared_from_this());
     boost::asio::async_write(mSocket, mBuffer.data(),
-            [this, self](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                }
-                mSocket.close();
-            });
+                             [this, self](boost::system::error_code ec, std::size_t length) {
+                                 if (!ec) {
+                                 }
+                                 mSocket.close();
+                             });
 }
 
 bool CommHttpClient::read()

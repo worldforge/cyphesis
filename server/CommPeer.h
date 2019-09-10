@@ -25,25 +25,29 @@
 
 /// \brief Handle an internet socket connected to a remote peer server.
 /// \ingroup ServerSockets
-class CommPeer : public CommAsioClient<boost::asio::ip::tcp> {
-  public:
-    CommPeer(const std::string & name,
-            boost::asio::io_context& io_context);
+class CommPeer : public CommAsioClient<boost::asio::ip::tcp>
+{
+    public:
+        CommPeer(const std::string& name,
+                 boost::asio::io_context& io_context,
+                 Atlas::Objects::Factories& factories);
 
-    ~CommPeer() override;
+        ~CommPeer() override;
 
-    void connect(const std::string &, int);
-    void connect(const boost::asio::ip::tcp::endpoint&);
-    void setup(Link *);
+        void connect(const std::string&, int);
 
-    sigc::signal<void> connected;
-    sigc::signal<void> failed;
+        void connect(const boost::asio::ip::tcp::endpoint&);
 
-  protected:
-    boost::asio::deadline_timer m_auth_timer;
-    boost::posix_time::ptime m_start_auth;
+        void setup(Link*);
 
-    void checkAuth();
+        sigc::signal<void> connected;
+        sigc::signal<void> failed;
+
+    protected:
+        boost::asio::deadline_timer m_auth_timer;
+        boost::posix_time::ptime m_start_auth;
+
+        void checkAuth();
 
 };
 

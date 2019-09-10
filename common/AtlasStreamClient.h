@@ -145,7 +145,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     virtual void loginSuccess(const Atlas::Objects::Root & arg);
 
   public:
-     explicit AtlasStreamClient(boost::asio::io_context& io_context);
+     explicit AtlasStreamClient(boost::asio::io_context& io_context,
+         const Atlas::Objects::Factories& factories);
 
     ~AtlasStreamClient() override;
 

@@ -26,7 +26,7 @@ class SimpleTypeStore : public TypeStore
 {
     public:
 
-        SimpleTypeStore();
+        explicit SimpleTypeStore();
 
         const TypeNode* getType(const std::string& parent) const override;
 
@@ -34,11 +34,18 @@ class SimpleTypeStore : public TypeStore
 
         size_t getTypeCount() const override;
 
+        Atlas::Objects::Factories& getFactories() override;
+
+        const Atlas::Objects::Factories& getFactories() const override;
+
+
     private:
 
         std::map<std::string, std::unique_ptr<TypeNode>> m_types;
 
         void readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj);
+
+        std::unique_ptr<Atlas::Objects::Factories> m_factories;
 
 };
 

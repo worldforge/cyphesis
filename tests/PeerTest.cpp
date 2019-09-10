@@ -476,8 +476,9 @@ void TeleportState::setKey(const std::string & key)
 
 
 CommPeer::CommPeer(const std::string & name,
-        boost::asio::io_context& io_context) :
-        CommAsioClient<boost::asio::ip::tcp>(name, io_context), m_auth_timer(io_context)
+        boost::asio::io_context& io_context,
+                   Atlas::Objects::Factories& factories) :
+        CommAsioClient<boost::asio::ip::tcp>(name, io_context, factories), m_auth_timer(io_context)
 {
 }
 

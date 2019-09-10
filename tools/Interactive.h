@@ -56,7 +56,7 @@ class Interactive : public AdminClient,
     void loginSuccess(const Atlas::Objects::Root & arg) override;
 
   public:
-    explicit Interactive(boost::asio::io_context& io_context);
+    explicit Interactive(Atlas::Objects::Factories& factories, boost::asio::io_context& io_context);
     ~Interactive() override;
 
     int setup();

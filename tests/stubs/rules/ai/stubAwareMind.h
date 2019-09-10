@@ -9,7 +9,7 @@
 
 #ifndef STUB_AwareMind_AwareMind
 //#define STUB_AwareMind_AwareMind
-   AwareMind::AwareMind(const std::string & mind_id, std::string entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
+   AwareMind::AwareMind(const std::string& mind_id, std::string entity_id, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
     : BaseMind(mind_id, entity_id, sharedTerrain, awarenessStoreProvider)
     , mAwarenessStore(nullptr)
   {
@@ -35,7 +35,7 @@
 
 #ifndef STUB_AwareMind_entityUpdated
 //#define STUB_AwareMind_entityUpdated
-  void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity & ent, LocatedEntity* oldLocation)
+  void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
   {
     
   }
@@ -51,7 +51,7 @@
 
 #ifndef STUB_AwareMind_operation
 //#define STUB_AwareMind_operation
-  void AwareMind::operation(const Operation & op, OpVector & res)
+  void AwareMind::operation(const Operation& op, OpVector& res)
   {
     
   }
@@ -115,7 +115,7 @@
 
 #ifndef STUB_AwareMind_processMoveTick
 //#define STUB_AwareMind_processMoveTick
-  void AwareMind::processMoveTick(const Operation & op, OpVector & res)
+  void AwareMind::processMoveTick(const Operation& op, OpVector& res)
   {
     
   }

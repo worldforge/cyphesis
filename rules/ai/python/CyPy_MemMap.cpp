@@ -25,7 +25,6 @@
 
 
 using Atlas::Objects::Root;
-using Atlas::Objects::Factories;
 using Atlas::Objects::Entity::RootEntity;
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
@@ -119,7 +118,8 @@ Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
     if (args[0].isDict()) {
         auto element = CyPy_Element::dictAsElement(Py::Dict(args[0]));
         try {
-            Root obj = Factories::instance()->createObject(element);
+
+            Root obj = m_value->getTypeStore().getFactories().createObject(element);
 
             RootEntity ent = Atlas::Objects::smart_dynamic_cast<RootEntity>(obj);
             if (!ent.isValid()) {

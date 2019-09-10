@@ -8,7 +8,6 @@
 #include "stubDatabase_custom.h"
 
 
-
 #ifndef STUB_Database_Database
 //#define STUB_Database_Database
    Database::Database()

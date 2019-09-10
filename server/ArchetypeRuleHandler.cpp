@@ -36,7 +36,6 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::smart_dynamic_cast;
-using Atlas::Objects::Factories;
 
 using String::compose;
 

@@ -36,8 +36,10 @@
 #include <cassert>
 #include <rules/simulation/python/CyPy_Server.h>
 #include <rules/python/CyPy_Atlas.h>
+#include <common/Inheritance.h>
 
 Atlas::Objects::Factories factories;
+Inheritance inheritance(factories);
 
 static bool stub_setup_fail = false;
 static bool stub_createCharacter_fail = false;
@@ -52,7 +54,7 @@ int main()
     init_python_api({&CyPy_Server::init, &CyPy_Atlas::init});
     extend_client_python_api();
 
-    auto client = new ObserverClient(io_context);
+    auto client = new ObserverClient(io_context, factories);
 
     Py::Module module("server");
     module.setAttr("testclient", CyPy_ObserverClient::wrap(client));

@@ -42,7 +42,7 @@ class AdminClient : public AtlasStreamClient
     void waitForInfo();
     int checkRule(const std::string & id);
   public:
-    explicit AdminClient(boost::asio::io_context& io_context);
+    explicit AdminClient(Atlas::Objects::Factories& factories, boost::asio::io_context& io_context);
     ~AdminClient() override;
 
     int login();

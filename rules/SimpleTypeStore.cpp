@@ -24,6 +24,7 @@
 #include "common/compose.hpp"
 
 #include <Atlas/Objects/Entity.h>
+#include <Atlas/Objects/Factories.h>
 #include <common/Property.h>
 
 const TypeNode* SimpleTypeStore::getType(const std::string& parent) const
@@ -117,4 +118,17 @@ size_t SimpleTypeStore::getTypeCount() const
     return m_types.size();
 }
 
-SimpleTypeStore::SimpleTypeStore() = default;
+SimpleTypeStore::SimpleTypeStore()
+: m_factories(new Atlas::Objects::Factories()){
+
+}
+
+Atlas::Objects::Factories& SimpleTypeStore::getFactories()
+{
+    return *m_factories;
+}
+
+const Atlas::Objects::Factories& SimpleTypeStore::getFactories() const
+{
+    return *m_factories;
+}

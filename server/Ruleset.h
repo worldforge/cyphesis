@@ -34,7 +34,6 @@ class EntityBuilder;
 class EntityKit;
 class RuleHandler;
 class EntityRuleHandler;
-class TaskRuleHandler;
 class OpRuleHandler;
 class PropertyRuleHandler;
 class ArchetypeRuleHandler;

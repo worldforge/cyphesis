@@ -40,13 +40,15 @@
 
 #include <sstream>
 #include <iostream>
+
 static const bool comm_asio_client_debug_flag = false;
 
 
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
-                                          boost::asio::io_context& io_context) :
-    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
+                                          boost::asio::io_context& io_context,
+                                          const Atlas::Objects::Factories& factories) :
+    ObjectsDecoder(factories),
     CommSocket(io_context),
     mMaxOpsPerDispatch(1),
     mSocket(io_context),
@@ -322,7 +324,7 @@ void CommAsioClient<ProtocolT>::dispatch()
 
     if (!m_opQueue.empty()) {
         auto self(this->shared_from_this());
-        m_io_context.post([this, self](){
+        m_io_context.post([this, self]() {
             int i = 0;
             while (!m_opQueue.empty() && i < mMaxOpsPerDispatch) {
                 auto op = std::move(m_opQueue.front());

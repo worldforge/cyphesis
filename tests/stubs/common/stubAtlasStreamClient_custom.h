@@ -32,8 +32,8 @@ LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_context& io_con
 
 #ifndef STUB_AtlasStreamClient_AtlasStreamClient
 #define STUB_AtlasStreamClient_AtlasStreamClient
-AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context)
-    :    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
+AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context, const Atlas::Objects::Factories& factories)
+    :    ObjectsDecoder(factories),
          m_io_context(io_context)
 {
 

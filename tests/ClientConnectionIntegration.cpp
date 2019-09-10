@@ -38,6 +38,8 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::RootOperation;
 
+Atlas::Objects::Factories factories;
+
 class ClientConnectionintegration : public Cyphesis::TestBase
 {
     ClientConnection * cc;
@@ -58,7 +60,7 @@ ClientConnectionintegration::ClientConnectionintegration()
 
 void ClientConnectionintegration::setup()
 {
-    cc = new ClientConnection(m_io_context);
+    cc = new ClientConnection(m_io_context, factories);
 }
 
 void ClientConnectionintegration::teardown()

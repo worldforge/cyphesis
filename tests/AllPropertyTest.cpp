@@ -55,7 +55,6 @@ static const Element::Type TYPE_STRING = Element::TYPE_STRING;
 static const Element::Type TYPE_PTR = Element::TYPE_PTR;
 static const Element::Type TYPE_LIST = Element::TYPE_LIST;
 static const Element::Type TYPE_MAP = Element::TYPE_MAP;
-Atlas::Objects::Factories factories;
 
 int main()
 {

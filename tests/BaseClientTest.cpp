@@ -32,10 +32,12 @@
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::RootOperation;
 
+Atlas::Objects::Factories factories;
+
 class TestBaseClient : public BaseClient
 {
   public:
-    TestBaseClient(boost::asio::io_context& io_context) : BaseClient(io_context) { }
+    TestBaseClient(boost::asio::io_context& io_context) : BaseClient(io_context, factories) { }
 
     virtual void idle() { }
 };

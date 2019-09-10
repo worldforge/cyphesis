@@ -40,6 +40,7 @@ using Atlas::Message::Element;
 //The following are adapters to make the Ember logging syntax work with the Cyphesis log.
 #include "common/log.h"
 #include "common/debug.h"
+
 static const bool debug_flag = true;
 #define S_LOG_VERBOSE(message) \
     { debug(std::stringstream ss;\
@@ -63,18 +64,18 @@ static const bool debug_flag = true;
     log(CRITICAL, ss.str()); }
 
 
-StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o, const std::list<std::string>::const_iterator & c) :
-        obj(o), currentChildIterator(c)
+StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity& o, const std::list<std::string>::const_iterator& c) :
+    obj(o), currentChildIterator(c)
 {
 }
 
-StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity & o) :
-        obj(o)
+StackEntry::StackEntry(const Atlas::Objects::Entity::RootEntity& o) :
+    obj(o)
 {
     currentChildIterator = obj->getContains().end();
 }
 
-bool EntityImporterBase::getEntity(const std::string & id, OpVector & res)
+bool EntityImporterBase::getEntity(const std::string& id, OpVector& res)
 {
     std::map<std::string, Root>::const_iterator I = mPersistedEntities.find(id);
     if (I == mPersistedEntities.end()) {
@@ -118,7 +119,7 @@ void EntityImporterBase::extractChildren(const Root& op, std::list<std::string>&
     }
 }
 
-bool EntityImporterBase::getRule(const std::string & id, OpVector & res)
+bool EntityImporterBase::getRule(const std::string& id, OpVector& res)
 {
     auto I = mPersistedRules.find(id);
     if (I == mPersistedRules.end()) {
@@ -133,7 +134,7 @@ bool EntityImporterBase::getRule(const std::string & id, OpVector & res)
     std::list<std::string> children;
     extractChildren(definition, children);
 
-    RuleStackEntry entry = { id, definition, children };
+    RuleStackEntry entry = {id, definition, children};
     mRuleStack.push_back(entry);
 
     Get get;
@@ -152,12 +153,12 @@ bool EntityImporterBase::getRule(const std::string & id, OpVector & res)
     return true;
 }
 
-void EntityImporterBase::walkRules(OpVector & res)
+void EntityImporterBase::walkRules(OpVector& res)
 {
     if (mRuleStack.empty()) {
         startEntityWalking();
     } else {
-        auto & current = mRuleStack.back();
+        auto& current = mRuleStack.back();
         auto definition = current.definition;
         //Check if there are any children. If not, we should pop the stack and
 
@@ -166,7 +167,7 @@ void EntityImporterBase::walkRules(OpVector & res)
             assert(!mRuleStack.empty());
             mRuleStack.pop_back();
             while (!mRuleStack.empty()) {
-                auto & se = mRuleStack.back();
+                auto& se = mRuleStack.back();
                 //Try to get the next child rule (unless we've reached the end of the list of children).
                 for (; ++se.currentChildIterator, se.currentChildIterator != se.children.end();) {
                     if (getRule(*se.currentChildIterator, res)) {
@@ -193,19 +194,19 @@ void EntityImporterBase::walkRules(OpVector & res)
     }
 }
 
-void EntityImporterBase::walkEntities(OpVector & res)
+void EntityImporterBase::walkEntities(OpVector& res)
 {
     if (mTreeStack.empty()) {
         sendResolvedEntityReferences();
     } else {
-        StackEntry & current = mTreeStack.back();
+        StackEntry& current = mTreeStack.back();
         //Check if there are any children. If not, we should pop the stack and
         if (current.obj->getContains().empty()) {
             // Pop: Go back to WALKING parent
             assert(!mTreeStack.empty());
             mTreeStack.pop_back();
             while (!mTreeStack.empty()) {
-                StackEntry & se = mTreeStack.back();
+                StackEntry& se = mTreeStack.back();
                 //Try to get the next child entity (unless we've reached the end of the list of children).
                 //Since some entities are references but not persisted we need to loop until we find one that we know of.
                 for (; ++se.currentChildIterator, se.currentChildIterator != se.obj->getContains().end();) {
@@ -239,6 +240,7 @@ void EntityImporterBase::walkEntities(OpVector & res)
 void EntityImporterBase::sendMinds()
 {
     if (!mResolvedMindMapping.empty()) {
+        Atlas::Objects::Factories factories;
         S_LOG_INFO("Sending minds.");
         for (auto mind : mResolvedMindMapping) {
             Atlas::Message::MapType message;
@@ -335,7 +337,7 @@ void EntityImporterBase::sendMinds()
             thinkOp->setSerialno(newSerialNumber());
 
             Atlas::Objects::Operation::Set setOp;
-            setOp->setArgsAsList(thoughtArgs);
+            setOp->setArgsAsList(thoughtArgs, &factories);
             thinkOp->setArgs1(setOp);
 
 
@@ -419,11 +421,12 @@ void EntityImporterBase::resolveEntityReferences(Atlas::Message::Element& elemen
 void EntityImporterBase::complete()
 {
     S_LOG_INFO("Restore done.");
-    S_LOG_INFO("Restored " << mStats.entitiesProcessedCount<< ", created: " << mStats.entitiesCreateCount << ", updated: " << mStats.entitiesUpdateCount << ", create errors: " << mStats.entitiesCreateErrorCount << " .");
+    S_LOG_INFO("Restored " << mStats.entitiesProcessedCount << ", created: " << mStats.entitiesCreateCount << ", updated: " << mStats.entitiesUpdateCount << ", create errors: "
+                           << mStats.entitiesCreateErrorCount << " .");
     EventCompleted.emit();
 }
 
-void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
+void EntityImporterBase::createEntity(const RootEntity& obj, OpVector& res)
 {
     ++mStats.entitiesProcessedCount;
     ++mStats.entitiesCreateCount;
@@ -435,7 +438,7 @@ void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
     auto I = mTreeStack.rbegin();
     ++I;
     assert(I != mTreeStack.rend());
-    const std::string & loc = I->restored_id;
+    const std::string& loc = I->restored_id;
 
     RootEntity create_arg = obj.copy();
 
@@ -497,7 +500,7 @@ void EntityImporterBase::createEntity(const RootEntity & obj, OpVector & res)
     res.push_back(create);
 }
 
-void EntityImporterBase::createRule(const Atlas::Objects::Root & obj, OpVector & res)
+void EntityImporterBase::createRule(const Atlas::Objects::Root& obj, OpVector& res)
 {
     m_state = RULE_CREATING;
     Atlas::Objects::Operation::Create createOp;
@@ -509,7 +512,7 @@ void EntityImporterBase::createRule(const Atlas::Objects::Root & obj, OpVector &
     res.push_back(createOp);
 }
 
-void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& newDefinition, OpVector & res)
+void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& newDefinition, OpVector& res)
 {
 
     m_state = RULE_UPDATING;
@@ -539,7 +542,7 @@ void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& 
     }
 
     if (updatedDefinition->asMessage() != existingDefinition->asMessage()) {
-        S_LOG_INFO("Updating server rule '"<< updatedDefinition->getId() << "'.");
+        S_LOG_INFO("Updating server rule '" << updatedDefinition->getId() << "'.");
         Atlas::Objects::Operation::Set setOp;
         setOp->setFrom(mAccountId);
         setOp->setArgs1(updatedDefinition);
@@ -549,12 +552,12 @@ void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& 
     } else {
         mStats.rulesProcessedCount++;
         EventProgress.emit();
-        S_LOG_VERBOSE("Not updating server rule '"<< updatedDefinition->getId() << "' as nothing is changed.");
+        S_LOG_VERBOSE("Not updating server rule '" << updatedDefinition->getId() << "' as nothing is changed.");
         walkRules(res);
     }
 }
 
-void EntityImporterBase::errorArrived(const Operation & op, OpVector & res)
+void EntityImporterBase::errorArrived(const Operation& op, OpVector& res)
 {
     std::string errorMessage;
     if (!op->getArgs().empty()) {
@@ -568,88 +571,82 @@ void EntityImporterBase::errorArrived(const Operation & op, OpVector & res)
     }
 
     switch (m_state) {
-    case RULE_WALKING:
-    {
-        //An error here just means that the rule we asked for didn't exist on the server, and we need
-        //to create it. This is an expected result.
-        auto& current = mRuleStack.back();
-        auto definition = current.definition;
-        assert(definition.isValid());
+        case RULE_WALKING: {
+            //An error here just means that the rule we asked for didn't exist on the server, and we need
+            //to create it. This is an expected result.
+            auto& current = mRuleStack.back();
+            auto definition = current.definition;
+            assert(definition.isValid());
 
-        createRule(definition, res);
+            createRule(definition, res);
 
-    }
-        break;
-    case RULE_CREATING:
-    {
-        mStats.rulesProcessedCount++;
-        mStats.rulesCreateErrorCount++;
-        //An error here means that something went wrong when trying to create a rule. This is wrong.
-        //It probably means that there's something wrong with the data we're sending.
-        auto& current = mRuleStack.back();
-
-        std::string ruleId = current.definition->getId();
-        S_LOG_FAILURE("Could not create rule with id '" << ruleId << "', continuing with next. Server message: " << errorMessage);
-        EventProgress.emit();
-        walkRules(res);
-    }
-        break;
-    case RULE_UPDATING:
-    {
-        mStats.rulesProcessedCount++;
-        //An error here means that something went wrong when trying to update a rule. This is wrong.
-        //It probably means that there's something wrong with the data we're sending.
-        auto& current = mRuleStack.back();
-
-        std::string ruleId = current.definition->getId();
-        S_LOG_FAILURE("Could not update rule with id '" << ruleId << "', continuing with next. Server message: " << errorMessage);
-        mStats.rulesCreateErrorCount++;
-        EventProgress.emit();
-        walkRules(res);
-    }
-        break;
-    case ENTITY_WALKING:
-    {
-        //An error here just means that the entity we asked for didn't exist on the server, and we need
-        //to create it. This is an expected result.
-        assert(!mTreeStack.empty());
-        StackEntry & current = mTreeStack.back();
-        const RootEntity& obj = current.obj;
-
-        assert(obj.isValid());
-
-        createEntity(obj, res);
-    }
-        break;
-    case ENTITY_CREATING:
-    {
-        //An error here means that something went wrong when trying to create an entity. This is wrong.
-        //It probably means that there's something wrong with the data we're sending. Either the
-        //persisted data is corrupt, or there have been changes on the server (for example entity types
-        //renamed or removed).
-        std::string entityType = "unknown";
-
-        auto I = mCreateEntityMapping.find(op->getRefno());
-        if (I != mCreateEntityMapping.end()) {
-            auto J = mPersistedEntities.find(I->second);
-            if (J != mPersistedEntities.end()) {
-                auto& entity = J->second;
-                entityType = entity->getParent();
-            }
         }
-        S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage);
-        mStats.entitiesCreateErrorCount++;
-        EventProgress.emit();
-        walkEntities(res);
-    }
-        break;
-    default:
-        S_LOG_FAILURE("Unexpected state in state machine: " << m_state << ". Server message: " << errorMessage);
-        break;
+            break;
+        case RULE_CREATING: {
+            mStats.rulesProcessedCount++;
+            mStats.rulesCreateErrorCount++;
+            //An error here means that something went wrong when trying to create a rule. This is wrong.
+            //It probably means that there's something wrong with the data we're sending.
+            auto& current = mRuleStack.back();
+
+            std::string ruleId = current.definition->getId();
+            S_LOG_FAILURE("Could not create rule with id '" << ruleId << "', continuing with next. Server message: " << errorMessage);
+            EventProgress.emit();
+            walkRules(res);
+        }
+            break;
+        case RULE_UPDATING: {
+            mStats.rulesProcessedCount++;
+            //An error here means that something went wrong when trying to update a rule. This is wrong.
+            //It probably means that there's something wrong with the data we're sending.
+            auto& current = mRuleStack.back();
+
+            std::string ruleId = current.definition->getId();
+            S_LOG_FAILURE("Could not update rule with id '" << ruleId << "', continuing with next. Server message: " << errorMessage);
+            mStats.rulesCreateErrorCount++;
+            EventProgress.emit();
+            walkRules(res);
+        }
+            break;
+        case ENTITY_WALKING: {
+            //An error here just means that the entity we asked for didn't exist on the server, and we need
+            //to create it. This is an expected result.
+            assert(!mTreeStack.empty());
+            StackEntry& current = mTreeStack.back();
+            const RootEntity& obj = current.obj;
+
+            assert(obj.isValid());
+
+            createEntity(obj, res);
+        }
+            break;
+        case ENTITY_CREATING: {
+            //An error here means that something went wrong when trying to create an entity. This is wrong.
+            //It probably means that there's something wrong with the data we're sending. Either the
+            //persisted data is corrupt, or there have been changes on the server (for example entity types
+            //renamed or removed).
+            std::string entityType = "unknown";
+
+            auto I = mCreateEntityMapping.find(op->getRefno());
+            if (I != mCreateEntityMapping.end()) {
+                auto J = mPersistedEntities.find(I->second);
+                if (J != mPersistedEntities.end()) {
+                    auto& entity = J->second;
+                    entityType = entity->getParent();
+                }
+            }
+            S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage);
+            mStats.entitiesCreateErrorCount++;
+            EventProgress.emit();
+            walkEntities(res);
+        }
+            break;
+        default: S_LOG_FAILURE("Unexpected state in state machine: " << m_state << ". Server message: " << errorMessage);
+            break;
     };
 }
 
-void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
+void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
 {
     if (op->isDefaultRefno()) {
         return;
@@ -658,7 +655,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
         S_LOG_FAILURE("Info with no arg.");
         return;
     }
-    const Root & arg = op->getArgs().front();
+    const Root& arg = op->getArgs().front();
 
     if (m_state == RULE_WALKING) {
         auto& current = mRuleStack.back();
@@ -684,7 +681,7 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
             return;
         }
         mNewIds.insert(arg->getId());
-        StackEntry & current = mTreeStack.back();
+        StackEntry& current = mTreeStack.back();
         current.restored_id = arg->getId();
         S_LOG_VERBOSE("Created: " << arg->getParent() << "(" << arg->getId() << ")");
 
@@ -711,9 +708,9 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
         if (arg->isDefaultId()) {
             S_LOG_FAILURE("Corrupted info response: no id.");
         }
-        const std::string & id = arg->getId();
+        const std::string& id = arg->getId();
 
-        StackEntry & current = mTreeStack.back();
+        StackEntry& current = mTreeStack.back();
         const RootEntity& obj = current.obj;
 
         assert(id == obj->getId());
@@ -754,61 +751,59 @@ void EntityImporterBase::infoArrived(const Operation & op, OpVector & res)
     }
 }
 
-void EntityImporterBase::sightArrived(const Operation & op, OpVector & res)
+void EntityImporterBase::sightArrived(const Operation& op, OpVector& res)
 {
     if (op->isDefaultArgs() || op->getArgs().empty()) {
         S_LOG_FAILURE("No arg");
         return;
     }
-    const Root & arg = op->getArgs().front();
+    const Root& arg = op->getArgs().front();
     switch (m_state) {
-    case ENTITY_WALKSTART:
-        if (op->isDefaultRefno()) {
-            break;
-        }
-        if (arg->isDefaultId()) {
-            S_LOG_WARNING("Corrupted top level entity: no id");
-            cancel();
-            return;
-        } else {
-            getEntity(arg->getId(), res);
-        }
+        case ENTITY_WALKSTART:
+            if (op->isDefaultRefno()) {
+                break;
+            }
+            if (arg->isDefaultId()) {
+                S_LOG_WARNING("Corrupted top level entity: no id");
+                cancel();
+                return;
+            } else {
+                getEntity(arg->getId(), res);
+            }
 
 
-        // Expecting sight of world root
-        break;
-    case ENTITY_UPDATING:
-    {
-        const Operation& sub_op = smart_dynamic_cast<Operation>(arg);
-        if (!sub_op.isValid()) {
+            // Expecting sight of world root
             break;
+        case ENTITY_UPDATING: {
+            const Operation& sub_op = smart_dynamic_cast<Operation>(arg);
+            if (!sub_op.isValid()) {
+                break;
+            }
+            if (sub_op->getClassNo() != Atlas::Objects::Operation::SET_NO || sub_op->getArgs().empty() || sub_op->isDefaultSerialno()) {
+                S_LOG_FAILURE("This is not our entity update response.");
+                break;
+            }
+            walkEntities(res);
         }
-        if (sub_op->getClassNo() != Atlas::Objects::Operation::SET_NO || sub_op->getArgs().empty() || sub_op->isDefaultSerialno()) {
-            S_LOG_FAILURE("This is not our entity update response.");
             break;
-        }
-        walkEntities(res);
-    }
-        break;
-    case ENTITY_CREATING:
-    case ENTITY_WALKING:
-        //Just ignore sights when creating; these are sights of the actual creation ops.
-        break;
-    default:
-        S_LOG_WARNING("Unexpected state in state machine: " << m_state);
-        break;
+        case ENTITY_CREATING:
+        case ENTITY_WALKING:
+            //Just ignore sights when creating; these are sights of the actual creation ops.
+            break;
+        default: S_LOG_WARNING("Unexpected state in state machine: " << m_state);
+            break;
     };
 }
 
 EntityImporterBase::EntityImporterBase(const std::string& accountId, const std::string& avatarId) :
-        mAccountId(accountId), mAvatarId(avatarId), mStats( { }), m_state(INIT), mThoughtOpsInTransit(0), mSetOpsInTransit(0), mResumeWorld(0)
+    mAccountId(accountId), mAvatarId(avatarId), mStats({}), m_state(INIT), mThoughtOpsInTransit(0), mSetOpsInTransit(0), mResumeWorld(0)
 {
 }
 
 void EntityImporterBase::start(const std::string& filename)
 {
     S_LOG_VERBOSE("Starting import from " << filename);
-    auto factories = Atlas::Objects::Factories::instance();
+    Atlas::Objects::Factories factories;
 
     auto rootObj = loadFromFile(filename);
 
@@ -831,7 +826,7 @@ void EntityImporterBase::start(const std::string& filename)
         } else {
             for (auto& ruleMessage : rulesElem.asList()) {
                 if (ruleMessage.isMap()) {
-                    auto object = factories->createObject(ruleMessage.asMap());
+                    auto object = factories.createObject(ruleMessage.asMap());
                     if (object.isValid()) {
                         if (!object->isDefaultId()) {
                             mPersistedRules.insert(std::make_pair(object->getId(), object));
@@ -858,7 +853,7 @@ void EntityImporterBase::start(const std::string& filename)
         for (auto& entityMessage : entitiesElem.asList()) {
             if (entityMessage.isMap()) {
                 auto& entityMap = entityMessage.asMap();
-                auto object = factories->createObject(entityMap);
+                auto object = factories.createObject(entityMap);
                 if (object.isValid()) {
                     if (!object->isDefaultId()) {
                         registerEntityReferences(object->getId(), entityMap);
@@ -883,7 +878,7 @@ void EntityImporterBase::start(const std::string& filename)
     if (!mindsElem.isNone()) {
         for (auto& mindMessage : mindsElem.asList()) {
             if (mindMessage.isMap()) {
-                auto object = factories->createObject(mindMessage.asMap());
+                auto object = factories.createObject(mindMessage.asMap());
                 if (object.isValid()) {
                     if (!object->isDefaultId()) {
                         mPersistedMinds.insert(std::make_pair(object->getId(), object));
@@ -946,7 +941,6 @@ std::set<std::string> EntityImporterBase::extractEntityReferences(const Element&
 }
 
 
-
 void EntityImporterBase::startEntityWalking()
 {
     m_state = ENTITY_WALKSTART;
@@ -1002,7 +996,7 @@ void EntityImporterBase::setResume(bool enabled)
     mResumeWorld = enabled;
 }
 
-void EntityImporterBase::operationThinkResult(const Operation & op)
+void EntityImporterBase::operationThinkResult(const Operation& op)
 {
     mThoughtOpsInTransit--;
     if (mThoughtOpsInTransit == 0) {
@@ -1010,7 +1004,7 @@ void EntityImporterBase::operationThinkResult(const Operation & op)
     }
 }
 
-void EntityImporterBase::operationSetResult(const Operation & op)
+void EntityImporterBase::operationSetResult(const Operation& op)
 {
     mSetOpsInTransit--;
     if (mSetOpsInTransit == 0) {
@@ -1018,7 +1012,7 @@ void EntityImporterBase::operationSetResult(const Operation & op)
     }
 }
 
-void EntityImporterBase::operation(const Operation & op)
+void EntityImporterBase::operation(const Operation& op)
 {
     //std::cout << "Got op ==================" << std::endl;
     //debug_dump(op, std::cout);

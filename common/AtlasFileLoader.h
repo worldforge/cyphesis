@@ -26,31 +26,36 @@
 
 /// Class to read old cyphesis rules on standard input, and output in new
 /// standard format.
-class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder {
-  private:
-    /// Input file
-    std::fstream m_file;
-    /// Atlas codec for decoding input.
-    Atlas::Codec * m_codec;
-    /// Counter for messages read from input
-    int m_count;
-    /// Store for the messages loaded
-    std::map<std::string, Atlas::Objects::Root> & m_messages;
+class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder
+{
+    private:
+        /// Input file
+        std::fstream m_file;
+        /// Atlas codec for decoding input.
+        Atlas::Codec* m_codec;
+        /// Counter for messages read from input
+        int m_count;
+        /// Store for the messages loaded
+        std::map<std::string, Atlas::Objects::Root>& m_messages;
 
-    std::string m_filename;
+        std::string m_filename;
 
-    void objectArrived(const Atlas::Objects::Root & obj) override;
-  public:
-    AtlasFileLoader(const std::string & filename,
-                    std::map<std::string, Atlas::Objects::Root> & m);
-    ~AtlasFileLoader() override;
+        void objectArrived(const Atlas::Objects::Root& obj) override;
 
-    bool isOpen();
+    public:
+        AtlasFileLoader(const Atlas::Objects::Factories& factories,
+                        const std::string& filename,
+                        std::map<std::string, Atlas::Objects::Root>& m);
 
-    void read();
+        ~AtlasFileLoader() override;
 
-    /// \brief Read only accessor for the number of messages loaded
-    int count() { return m_count; }
+        bool isOpen();
+
+        void read();
+
+        /// \brief Read only accessor for the number of messages loaded
+        int count()
+        { return m_count; }
 };
 
 #endif // COMMON_ATLAS_FILE_LOADER_H

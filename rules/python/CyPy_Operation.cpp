@@ -24,11 +24,11 @@
 #include <Atlas/Objects/Generic.h>
 #include <Atlas/Objects/Entity.h>
 #include <common/log.h>
+#include <common/Inheritance.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Objects::Root;
-using Atlas::Objects::Factories;
 using Atlas::Objects::Operation::RootOperation;
 using Atlas::Objects::Operation::Generic;
 using Atlas::Objects::Entity::RootEntity;
@@ -41,8 +41,7 @@ CyPy_Operation::CyPy_Operation(Py::PythonClassInstance* self, Py::Tuple& args, P
     }
 
     auto parent = verifyString(args.front());
-
-    Root r = Atlas::Objects::Factories::instance()->createObject(parent);
+    Root r = Inheritance::instance().getFactories().createObject(parent);
     m_value = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
     if (!m_value) {
         m_value = Generic();
@@ -73,9 +72,9 @@ CyPy_Operation::CyPy_Operation(Py::PythonClassInstance* self, Atlas::Objects::Op
 void CyPy_Operation::addToArgs(std::vector<Root>& args, const Py::Object& arg)
 {
     if (arg.isDict()) {
-        args.push_back(Atlas::Objects::Factories::instance()->createObject(CyPy_Element::dictAsElement(Py::Dict(arg))));
+        args.push_back(Inheritance::instance().getFactories().createObject(CyPy_Element::dictAsElement(Py::Dict(arg))));
     } else if (CyPy_ElementMap::check(arg)) {
-        args.push_back(Atlas::Objects::Factories::instance()->createObject(CyPy_ElementMap::value(arg)));
+        args.push_back(Inheritance::instance().getFactories().createObject(CyPy_ElementMap::value(arg)));
     } else if (CyPy_Operation::check(arg)) {
         args.push_back(CyPy_Operation::value(arg));
     } else if (CyPy_RootEntity::check(arg)) {
@@ -216,9 +215,9 @@ Py::Object CyPy_Operation::setArgs(const Py::Tuple& args)
         if (CyPy_Operation::check(item)) {
             argslist.push_back(CyPy_Operation::value(item));
         } else if (item.isDict()) {
-            argslist.push_back(Factories::instance()->createObject(CyPy_Element::dictAsElement(Py::Dict(item))));
+            argslist.push_back(Inheritance::instance().getFactories().createObject(CyPy_Element::dictAsElement(Py::Dict(item))));
         } else if (CyPy_ElementMap::check(item)) {
-            argslist.push_back(Factories::instance()->createObject(CyPy_ElementMap::value(item)));
+            argslist.push_back(Inheritance::instance().getFactories().createObject(CyPy_ElementMap::value(item)));
         } else if (CyPy_RootEntity::check(item)) {
             argslist.push_back(CyPy_RootEntity::value(item));
         } else {

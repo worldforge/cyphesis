@@ -52,6 +52,8 @@ using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
+Atlas::Objects::Factories factories;
+
 static void usage(const char* prgname)
 {
     std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl << std::flush;
@@ -68,12 +70,12 @@ static void connectToServer(boost::asio::io_context& io_context, AwareMindFactor
     if (exit_flag_soft || exit_flag) {
         return;
     }
-    auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_context);
+    auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_context, factories);
 
     commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
         if (!ec) {
             log(INFO, "Connection detected; creating possession client.");
-            commClient->startConnect(new PossessionClient(*commClient, mindFactory, [&]() {
+            commClient->startConnect(new PossessionClient(*commClient, mindFactory, factories, [&]() {
                 connectToServer(io_context, mindFactory);
             }));
         } else {

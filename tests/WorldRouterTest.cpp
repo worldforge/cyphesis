@@ -57,6 +57,7 @@ using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
 static bool stub_deny_newid = false;
+Atlas::Objects::Factories factories;
 
 class WorldRoutertest : public Cyphesis::TestBase
 {
@@ -104,7 +105,7 @@ WorldRoutertest::WorldRoutertest()
 void WorldRoutertest::setup()
 {
     m_rootEntity = new Entity("", 0);
-    m_inheritance = new Inheritance();
+    m_inheritance = new Inheritance(factories);
     test_world = new WorldRouter(m_rootEntity);
     m_eb = new EntityBuilder();
 }

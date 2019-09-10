@@ -35,6 +35,7 @@
 #include <limits>
 
 #include <cassert>
+#include <Atlas/Objects/Factories.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::IntType;
@@ -45,8 +46,9 @@ using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 
+Atlas::Objects::Factories factories;
 PropertyExerciser::PropertyExerciser()
-: m_inheritance(new Inheritance())
+: m_inheritance(new Inheritance(factories))
 {
     integer_values.push_back(0);
     integer_values.push_back(-1);

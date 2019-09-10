@@ -44,8 +44,10 @@
 #include <rules/python/CyPy_Atlas.h>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
+#include <common/Inheritance.h>
 
 Atlas::Objects::Factories factories;
+Inheritance inheritance(factories);
 
 struct TestMod : public Py::ExtensionModule<TestMod>
 {

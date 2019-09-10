@@ -29,6 +29,7 @@
 #include "BaseWorld.h"
 
 #include <wfmath/atlasconv.h>
+#include <common/Inheritance.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -306,7 +307,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
             return OPERATION_BLOCKED;
         }
 
-        auto innerArgs = Atlas::Objects::Factories::parseListOfObjects(argsElem.asList());
+        auto innerArgs = Inheritance::instance().getFactories().parseListOfObjects(argsElem.asList());
 
         if (innerArgs.empty()) {
             actor->error(op, "Use arg for task has empty args", res, actor->getId());

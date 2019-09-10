@@ -41,6 +41,7 @@
 
 class BaseWorld;
 
+Atlas::Objects::Factories factories;
 class StubSocket : public CommSocket
 {
   public:
@@ -199,7 +200,7 @@ int main()
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         TestJuncture * j = new TestJuncture(0);
         boost::asio::io_context io_context;
-        CommPeer * cp = new CommPeer("", io_context);
+        CommPeer * cp = new CommPeer("", io_context, factories);
         j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
@@ -222,7 +223,7 @@ int main()
         TestJuncture * j = new TestJuncture(0);
 
         boost::asio::io_context io_context;
-        CommPeer * cp = new CommPeer("", io_context);
+        CommPeer * cp = new CommPeer("", io_context, factories);
         Peer * p = new Peer(*cp, sr, "", 6767, "4", 4);
         j->test_addPeer(p);
 
@@ -248,7 +249,7 @@ int main()
         TestJuncture * j = new TestJuncture(0);
 
         boost::asio::io_context io_context;
-        CommPeer * cp = new CommPeer("", io_context);
+        CommPeer * cp = new CommPeer("", io_context, factories);
         j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
 
         OpVector res;
@@ -455,9 +456,10 @@ int CONNECT_NO = 500;
 
 } } }
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/common/stubInheritance.h"
 
-CommPeer::CommPeer(const std::string & n, boost::asio::io_context& svr) :
-        CommAsioClient<boost::asio::ip::tcp> (n, svr), m_auth_timer(svr)
+CommPeer::CommPeer(const std::string & n, boost::asio::io_context& svr, Atlas::Objects::Factories& factories) :
+        CommAsioClient<boost::asio::ip::tcp> (n, svr, factories), m_auth_timer(svr)
 {
 }
 

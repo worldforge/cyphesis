@@ -34,7 +34,7 @@ Atlas::Objects::Factories factories;
 
 int main()
 {
-    Inheritance inheritance;
+    Inheritance inheritance(factories);
     installCustomOperations(inheritance);
     installCustomEntities(inheritance);
     return 0;

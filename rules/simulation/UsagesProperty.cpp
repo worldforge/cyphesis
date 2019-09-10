@@ -32,6 +32,7 @@
 #include <wfmath/atlasconv.h>
 #include <rules/simulation/python/CyPy_UsageInstance.h>
 #include <rules/python/Python_API.h>
+#include <common/Inheritance.h>
 
 static const bool debug_flag = false;
 using Atlas::Message::Element;
@@ -138,7 +139,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         auto op_type = argOp->getParent();
         debug_print("Got op type " << op_type << " from arg")
 
-        auto obj = Atlas::Objects::Factories::instance()->createObject(op_type);
+        auto obj = Inheritance::instance().getFactories().createObject(op_type);
         if (!obj.isValid()) {
             log(ERROR, String::compose("Character::UseOperation Unknown op type "
                                        "\"%1\".", op_type));

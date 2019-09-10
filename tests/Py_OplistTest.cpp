@@ -34,8 +34,10 @@
 #include <cassert>
 #include <rules/python/CyPy_Atlas.h>
 #include <Atlas/Objects/Factories.h>
+#include <common/Inheritance.h>
 
 Atlas::Objects::Factories factories;
+Inheritance inheritance(factories);
 
 int main()
 {

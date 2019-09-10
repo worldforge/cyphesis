@@ -184,7 +184,7 @@ void Accountintegration::setup()
 {
     m_rootEntity = new Entity("", 0);
     m_persistence = new Persistence(m_database);
-    m_inheritance = new Inheritance();
+    m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
     auto entityRuleHandler = new EntityRuleHandler(m_eb);
 

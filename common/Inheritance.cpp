@@ -90,7 +90,9 @@ Root atlasType(const std::string& name,
     return r;
 }
 
-Inheritance::Inheritance() : noClass(nullptr)
+Inheritance::Inheritance(Atlas::Objects::Factories& factories)
+    : noClass(nullptr),
+      m_factories(factories)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
@@ -298,7 +300,7 @@ void installStandardObjects(TypeStore& i)
     //We should now have just as many types registered as there are standard types in Atlas.
     auto typeCount = i.getTypeCount();
     auto anonymousTypeCount = 2; //Anonymous and Generic shouldn't be included
-    auto atlasTypeCount = Atlas::Objects::Factories::instance()->getKeys().size() - anonymousTypeCount;
+    auto atlasTypeCount = i.getFactories().getKeys().size() - anonymousTypeCount;
     if (typeCount != atlasTypeCount) {
         log(ERROR, String::compose("There are %1 Atlas types, but there are only %2 types registered in Cyphesis.", atlasTypeCount, typeCount));
     }

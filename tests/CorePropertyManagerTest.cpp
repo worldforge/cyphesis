@@ -52,6 +52,8 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
+Atlas::Objects::Factories factories;
+
 class MinimalProperty : public PropertyBase {
   public:
     MinimalProperty() { }
@@ -96,7 +98,7 @@ CorePropertyManagertest::CorePropertyManagertest()
 
 void CorePropertyManagertest::setup()
 {
-    m_inheritance = new Inheritance();
+    m_inheritance = new Inheritance(factories);
     m_propertyManager = new CorePropertyManager;
     m_propertyManager->m_propertyFactories.emplace(
         std::string("named_type"), std::make_unique<PropertyFactory<MinimalProperty>>()

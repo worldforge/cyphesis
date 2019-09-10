@@ -9,8 +9,8 @@
 
 #ifndef STUB_Inheritance_Inheritance
 //#define STUB_Inheritance_Inheritance
-   Inheritance::Inheritance()
-    : Singleton()
+   Inheritance::Inheritance(Atlas::Objects::Factories& factories)
+    : Singleton(factories)
   {
     
   }
@@ -98,7 +98,15 @@
 
 #ifndef STUB_Inheritance_getFactories
 //#define STUB_Inheritance_getFactories
-  Atlas::Objects::Factories& Inheritance::getFactories() const
+  const Atlas::Objects::Factories& Inheritance::getFactories() const
+  {
+    return *static_cast<const Atlas::Objects::Factories*>(nullptr);
+  }
+#endif //STUB_Inheritance_getFactories
+
+#ifndef STUB_Inheritance_getFactories
+//#define STUB_Inheritance_getFactories
+  Atlas::Objects::Factories& Inheritance::getFactories()
   {
     return *static_cast<Atlas::Objects::Factories*>(nullptr);
   }

@@ -40,6 +40,22 @@
   }
 #endif //STUB_SimpleTypeStore_getTypeCount
 
+#ifndef STUB_SimpleTypeStore_getFactories
+//#define STUB_SimpleTypeStore_getFactories
+  Atlas::Objects::Factories& SimpleTypeStore::getFactories()
+  {
+    return *static_cast<Atlas::Objects::Factories*>(nullptr);
+  }
+#endif //STUB_SimpleTypeStore_getFactories
+
+#ifndef STUB_SimpleTypeStore_getFactories
+//#define STUB_SimpleTypeStore_getFactories
+  const Atlas::Objects::Factories& SimpleTypeStore::getFactories() const
+  {
+    return *static_cast<const Atlas::Objects::Factories*>(nullptr);
+  }
+#endif //STUB_SimpleTypeStore_getFactories
+
 #ifndef STUB_SimpleTypeStore_readAttributesIntoType
 //#define STUB_SimpleTypeStore_readAttributesIntoType
   void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj)

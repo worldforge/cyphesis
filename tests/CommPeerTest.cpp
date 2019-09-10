@@ -46,7 +46,7 @@ int _var = _val; \
 int_config_register _var ## _register(_var, _section, _setting, _help);
 
 const time_t reference_seconds = 1000000000; // Some time in the early 21st
-
+Atlas::Objects::Factories atlasFactories;
 class TestNegotiate : public Atlas::Negotiate
 {
   public:
@@ -74,7 +74,7 @@ class TestNegotiate : public Atlas::Negotiate
 class TestCommPeer : public CommPeer
 {
   public:
-    explicit TestCommPeer(boost::asio::io_context & svr) : CommPeer("", svr)
+    explicit TestCommPeer(boost::asio::io_context & svr) : CommPeer("", svr, atlasFactories)
     {
     }
 

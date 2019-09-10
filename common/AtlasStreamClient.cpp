@@ -430,8 +430,8 @@ void AtlasStreamClient::errorArrived(const RootOperation & op)
     }
 }
 
-AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context) :
-    ObjectsDecoder(*Atlas::Objects::Factories::instance()),
+AtlasStreamClient::AtlasStreamClient(boost::asio::io_context& io_context, const Atlas::Objects::Factories& factories) :
+    ObjectsDecoder(factories),
     m_io_context(io_context),
     reply_flag(false),
     error_flag(false),

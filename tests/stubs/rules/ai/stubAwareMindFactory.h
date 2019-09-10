@@ -11,7 +11,6 @@
 //#define STUB_AwareMindFactory_AwareMindFactory
    AwareMindFactory::AwareMindFactory()
     : MindKit()
-    , mSharedTerrain(nullptr),mAwarenessStoreProvider(nullptr)
   {
     
   }

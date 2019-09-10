@@ -29,6 +29,7 @@
 
 #include <wfmath/point.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <Atlas/Objects/Factories.h>
 
 #include <cassert>
 
@@ -40,6 +41,7 @@ using namespace EntityFilter;
 
 static std::map<std::string, TypeNode*> types;
 
+Atlas::Objects::Factories factories;
 struct TestEntity : Entity
 {
     explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
@@ -595,7 +597,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
     void setup()
     {
-        m_inheritance = new Inheritance();
+        m_inheritance = new Inheritance(factories);
 //Set up testing environment for Type/Soft properties
         m_b1 = new TestEntity("1", 1);
         add_entity(m_b1);

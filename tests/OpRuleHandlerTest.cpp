@@ -42,7 +42,7 @@ Atlas::Objects::Factories factories;
 
 int main()
 {
-    Inheritance inheritance;
+    Inheritance inheritance(factories);
     {
         RuleHandler * rh = new OpRuleHandler(0);
         delete rh;

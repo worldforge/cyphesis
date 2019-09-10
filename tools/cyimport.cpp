@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
 
     Atlas::Objects::Factories factories;
     boost::asio::io_context io_context;
-    AtlasStreamClient bridge(io_context);
+    AtlasStreamClient bridge(io_context, factories);
     std::string localSocket;
     if (useslave != 0) {
         localSocket = slave_socket_name;

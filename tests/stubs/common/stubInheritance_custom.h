@@ -5,8 +5,8 @@ template<> Inheritance* Singleton<Inheritance>::ms_Singleton = nullptr;
 
 #ifndef STUB_Inheritance_Inheritance
 #define STUB_Inheritance_Inheritance
-Inheritance::Inheritance()
-    : Singleton(), noClass(nullptr)
+Inheritance::Inheritance(Atlas::Objects::Factories& factories)
+    : Singleton(), noClass(nullptr), m_factories(factories)
 {
 
 }
