@@ -89,6 +89,9 @@ Py::Object CyPy_Location::getattro(const Py::String& name)
     if ("bbox" == nameStr) {
         return CyPy_Axisbox::wrap(m_value.bBox());
     }
+    if ("radius" == nameStr) {
+        return Py::Float(m_value.radius());
+    }
     return PythonExtensionBase::getattro(name);
 }
 
