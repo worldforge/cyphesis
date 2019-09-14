@@ -176,6 +176,11 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         plantedOn = PlantedOnProperty::parse(attr_plantedOn);
     }
 
+    Element attr_modeData;
+    if (ent->copyAttr("mode_data", attr_modeData) == 0) {
+        setAttr("mode_data", attr_modeData);
+    }
+
     //Move ops can also alter the "planted_offset" property
     Element attr_plantedOffset;
     if (ent->copyAttr("planted_offset", attr_plantedOffset) == 0) {

@@ -278,6 +278,7 @@ int main()
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/simulation/stubWorldTimeProperty.h"
 #include "stubs/rules/simulation/stubSimulationSpeedProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

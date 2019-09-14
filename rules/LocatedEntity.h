@@ -197,13 +197,13 @@ class LocatedEntity : public Router, public ReferenceCounted {
     int getSeq() const { return m_seq; }
     /// \brief Accessor for entity type property
     const TypeNode * getType() const { return m_type; }
-    /// \brief Accessor for properies
+    /// \brief Accessor for properties
     const PropertyDict & getProperties() const { return m_properties; }
 
     /// \brief Set the value of the entity type property
     virtual void setType(const TypeNode * t);
 
-    virtual bool hasAttr(const std::string & name) const;
+    bool hasAttr(const std::string & name) const;
     virtual int getAttr(const std::string & name,
                         Atlas::Message::Element &) const;
     virtual int getAttrType(const std::string & name,

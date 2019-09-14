@@ -15,16 +15,21 @@ class Explosion(server.Thing):
 
         domain = self.get_parent_domain()
         if domain:
+
+            # If there's an "entity_ref" prop it's the reference to the actor which caused the explosion.
+            actor_id = self.id
+            entity_ref_prop = self.props.entity_ref
+            if entity_ref_prop is not None:
+                actor_id = entity_ref_prop["$eid"]
+
             blast_radius = self.location.radius
             sphere = physics.Ball(self.location.pos, blast_radius)
             collisions = domain.query_collisions(sphere)
             for collision in collisions:
                 entity = collision.entity
                 if entity != self:
-                    print("Exploded on {}".format(entity.describe_entity()))
-                    # TODO: add "id" with the entity that fired the entity, if available
                     # TODO: add "damage"
-                    self.send_world(Operation('hit', Entity(hit_type="explosion"), to=entity, id=self.id))
+                    self.send_world(Operation('hit', Entity(hit_type="explosion", id=actor_id), to=entity))
 
     def tick_operation(self, op):
         return server.OPERATION_HANDLED, Operation("delete", Entity(self.id), to=self.id)

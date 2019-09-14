@@ -33,7 +33,7 @@ def strike(instance):
             damage_attr = getattr(instance.actor.props, "damage_" + instance.op.parent)
             if damage_attr:
                 damage = damage_attr
-            hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
+            hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent, id=instance.actor.id), to=target.entity)
             return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op), task_op
         else:
             return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"), task_op
@@ -61,7 +61,7 @@ class Fight(StoppableTask):
                 damage_attr = getattr(instance.actor.props, "damage_" + instance.op.parent)
                 if damage_attr:
                     damage = damage_attr
-                hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent), to=target.entity, id=instance.actor.id)
+                hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent, id=instance.actor.id), to=target.entity)
                 return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
             else:
                 return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")

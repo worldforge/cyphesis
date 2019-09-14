@@ -71,6 +71,7 @@
 #include <iostream>
 #include <rules/simulation/AmountProperty.h>
 #include <rules/simulation/SimulationSpeedProperty.h>
+#include <rules/simulation/ModeDataProperty.h>
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/WorldTimeProperty.h"
 
@@ -289,6 +290,10 @@ CorePropertyManager::CorePropertyManager()
     installProperty<AmountProperty>();
 
     installProperty<SimulationSpeedProperty>();
+
+    installProperty<ModeDataProperty>();
+
+
 }
 
 int CorePropertyManager::installFactory(const std::string & type_name,

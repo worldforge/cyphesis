@@ -10,7 +10,7 @@
 #ifndef STUB_ModeProperty_ModeProperty
 //#define STUB_ModeProperty_ModeProperty
    ModeProperty::ModeProperty()
-    : Property()
+    : PropertyBase()
   {
     
   }
@@ -39,6 +39,38 @@
     
   }
 #endif //STUB_ModeProperty_set
+
+#ifndef STUB_ModeProperty_get
+//#define STUB_ModeProperty_get
+  int ModeProperty::get(Atlas::Message::Element & val) const
+  {
+    return 0;
+  }
+#endif //STUB_ModeProperty_get
+
+#ifndef STUB_ModeProperty_data
+//#define STUB_ModeProperty_data
+  std::string ModeProperty::data() const
+  {
+    return "";
+  }
+#endif //STUB_ModeProperty_data
+
+#ifndef STUB_ModeProperty_parseMode
+//#define STUB_ModeProperty_parseMode
+   ModeProperty::Mode ModeProperty::parseMode(const std::string& mode)
+  {
+    return *static_cast< ModeProperty::Mode*>(nullptr);
+  }
+#endif //STUB_ModeProperty_parseMode
+
+#ifndef STUB_ModeProperty_encodeMode
+//#define STUB_ModeProperty_encodeMode
+   std::string ModeProperty::encodeMode(ModeProperty::Mode mode)
+  {
+    return "";
+  }
+#endif //STUB_ModeProperty_encodeMode
 
 
 #endif

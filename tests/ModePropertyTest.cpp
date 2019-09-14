@@ -24,8 +24,6 @@
 #endif
 
 #include "PropertyCoverage.h"
-#include "stubs/common/stubcustom.h"
-#include "stubs/rules/stubQuaternionProperty.h"
 
 #include "rules/simulation/ModeProperty.h"
 
@@ -45,4 +43,8 @@ int main()
 
 #include "TestWorld.h"
 
+//stubs
+#include "stubs/rules/stubQuaternionProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
+#include "stubs/modules/stubWeakEntityRef.h"
 

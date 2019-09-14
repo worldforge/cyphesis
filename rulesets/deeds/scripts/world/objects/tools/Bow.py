@@ -31,7 +31,9 @@ def shoot_in_direction(direction, instance, res):
 
         new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
 
-        res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile"), to=arrows[0].id))
+        mode_data = {"mode": "projectile", "$eid": instance.actor.id, "extra": {"damage": 0.2}}
+
+        res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile", mode_data=mode_data), to=arrows[0].id))
 
 
 def shoot(instance):

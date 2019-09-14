@@ -21,6 +21,7 @@
 #include "rules/QuaternionProperty.h"
 
 #include "rules/simulation/BaseWorld.h"
+#include "ModeDataProperty.h"
 
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
@@ -28,14 +29,23 @@
 
 
 ModeProperty::ModeProperty()
-: m_mode(Mode::Free)
+    : m_mode(Mode::Free)
 {
 }
 
-void ModeProperty::apply(LocatedEntity *entity)
+void ModeProperty::apply(LocatedEntity* entity)
 {
+    auto modeDataProp = entity->getPropertyClassFixed<ModeDataProperty>();
+    if (modeDataProp) {
+        if (modeDataProp->getMode() != m_mode && modeDataProp->getMode() != Mode::Unknown) {
+            auto mutableModeDataProp = entity->modPropertyClassFixed<ModeDataProperty>();
+            mutableModeDataProp->clearData();
+            entity->applyProperty(ModeDataProperty::property_name, mutableModeDataProp);
+            mutableModeDataProp->removeFlags(persistence_clean);
+        }
+    }
 
-    if (m_data == "planted") {
+    if (m_mode == Mode::Planted) {
         //See if there's a rotation we should apply
         const auto* plantedRotation = entity->getPropertyClass<QuaternionProperty>("planted_rotation");
         if (plantedRotation && plantedRotation->data().isValid()) {
@@ -101,28 +111,67 @@ void ModeProperty::apply(LocatedEntity *entity)
             }
         }
     }
+
 }
 
-ModeProperty * ModeProperty::copy() const
+ModeProperty* ModeProperty::copy() const
 {
     return new ModeProperty(*this);
 }
 
-void ModeProperty::set(const Atlas::Message::Element & val)
+int ModeProperty::get(Atlas::Message::Element& val) const
 {
-    Property<std::string>::set(val);
-    if (m_data == "free" || m_data.empty()) {
-        m_mode = Mode::Free;
-    } else if (m_data == "planted") {
-        m_mode = Mode::Planted;
-    } else if (m_data == "fixed") {
-        m_mode = Mode::Fixed;
-    } else if (m_data == "submerged") {
-        m_mode = Mode::Submerged;
-    } else if (m_data == "projectile") {
-        m_mode = Mode::Projectile;
-    } else {
-        m_mode = Mode::Unknown;
+    val = encodeMode(m_mode);
+    return 0;
+}
+
+std::string ModeProperty::encodeMode(ModeProperty::Mode mode)
+{
+    switch (mode) {
+        case Mode::Planted:
+            return "planted";
+        case Mode::Fixed:
+            return "fixed";
+        case Mode::Free:
+            return "free";
+        case Mode::Submerged:
+            return "submerged";
+        case Mode::Projectile:
+            return "projectile";
+        case Mode::Unknown:
+            return "";
     }
+    return "";
+}
+
+
+ModeProperty::Mode ModeProperty::parseMode(const std::string& mode)
+{
+    if (mode == "free" || mode.empty()) {
+        return Mode::Free;
+    } else if (mode == "planted") {
+        return Mode::Planted;
+    } else if (mode == "fixed") {
+        return Mode::Fixed;
+    } else if (mode == "submerged") {
+        return Mode::Submerged;
+    } else if (mode == "projectile") {
+        return Mode::Projectile;
+    } else {
+        return Mode::Unknown;
+    }
+}
+
+void ModeProperty::set(const Atlas::Message::Element& val)
+{
+    if (val.isString()) {
+        auto& data = val.asString();
+        m_mode = parseMode(data);
+    }
+}
+
+std::string ModeProperty::data() const
+{
+    return encodeMode(m_mode);
 }
 

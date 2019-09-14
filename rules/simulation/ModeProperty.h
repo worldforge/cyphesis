@@ -28,7 +28,7 @@
  * For entities that should react to physics, use "free".
  * \ingroup PropertyClasses
  */
-class ModeProperty : public Property<std::string>
+class ModeProperty : public PropertyBase
 {
     public:
 
@@ -71,6 +71,7 @@ class ModeProperty : public Property<std::string>
         };
 
         static constexpr const char* property_name = "mode";
+        static constexpr const char* property_atlastype = "string";
 
         ModeProperty();
 
@@ -82,10 +83,17 @@ class ModeProperty : public Property<std::string>
 
         void set(const Atlas::Message::Element& val) override;
 
-        Mode getMode() const
+        int get(Atlas::Message::Element & val) const override;
+
+        ModeProperty::Mode getMode() const
         {
             return m_mode;
         }
+
+        std::string data() const;
+
+        static ModeProperty::Mode parseMode(const std::string& mode);
+        static std::string encodeMode(ModeProperty::Mode mode);
 
     private:
         Mode m_mode;

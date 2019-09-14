@@ -46,6 +46,7 @@
 #include "rules/SolidProperty.h"
 #include "rules/ScaleProperty.h"
 #include "SimulationSpeedProperty.h"
+#include "ModeDataProperty.h"
 
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
@@ -65,6 +66,7 @@
 #include <unordered_set>
 #include <chrono>
 #include <boost/optional.hpp>
+#include <common/Inheritance.h>
 
 
 static const bool debug_flag = false;
@@ -2406,29 +2408,38 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     //CProfileManager::dumpAll();
 
     for (const auto& entry : projectileCollisions) {
+
+        const auto modeDataProperty = entry.first->entity->getPropertyClassFixed<ModeDataProperty>();
+
+        //const auto projectileDataProp = entry.first->entity->getProperty("projectile_data");
         {
-            Atlas::Objects::Operation::Hit hit;
             Atlas::Objects::Entity::Anonymous ent;
-            ent->setId(entry.second.bulletEntry->entity->getId());
+            if (modeDataProperty && modeDataProperty->getProjectileData().entity) {
+                ent->setId(modeDataProperty->getProjectileData().entity->getId());
+            } else {
+                ent->setId(entry.second.bulletEntry->entity->getId());
+            }
             std::vector<double> posList;
             addToEntity(Convert::toWF<WFMath::Point<3>>(entry.second.pos), posList);
             ent->setPos(posList);
             ent->setLoc(m_entity.getId());
+            if (modeDataProperty && modeDataProperty->getMode() == ModeProperty::Mode::Projectile) {
+                auto& projectileData = modeDataProperty->getProjectileData();
+                //Copy any data found in "projectile_data".
+                for (const auto& projectile_entry : projectileData.extra) {
+                    ent->setAttr(projectile_entry.first, projectile_entry.second, &Inheritance::instance().getFactories());
+                }
+            }
+            Atlas::Objects::Operation::Hit hit;
             hit->setArgs1(ent);
             hit->setTo(entry.first->entity->getId());
+            hit->setFrom(entry.second.bulletEntry->entity->getId());
+
+            auto hitCopy = hit.copy();
+            hitCopy->setTo(entry.second.bulletEntry->entity->getId());
+            hitCopy->setFrom(entry.first->entity->getId());
             res.emplace_back(std::move(hit));
-        }
-        {
-            Atlas::Objects::Operation::Hit hit;
-            Atlas::Objects::Entity::Anonymous ent;
-            ent->setId(entry.first->entity->getId());
-            std::vector<double> posList;
-            addToEntity(Convert::toWF<WFMath::Point<3>>(entry.second.pos), posList);
-            ent->setPos(posList);
-            ent->setLoc(m_entity.getId());
-            hit->setArgs1(ent);
-            hit->setTo(entry.second.bulletEntry->entity->getId());
-            res.emplace_back(std::move(hit));
+            res.emplace_back(std::move(hitCopy));
         }
     }
 
