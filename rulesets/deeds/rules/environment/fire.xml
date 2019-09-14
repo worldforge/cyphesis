@@ -17,9 +17,6 @@
             <map name="status">
                 <float name="default">1</float>
             </map>
-            <map name="ticks">
-                <float name="default">0</float>
-            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
