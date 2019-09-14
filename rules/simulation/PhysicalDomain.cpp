@@ -2362,7 +2362,14 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 {
 //    CProfileManager::Reset();
 //    CProfileManager::Increment_Frame_Counter();
-    static std::map<BulletEntry*, BulletEntry*> projectileCollisions;
+
+    struct CollisionEntry
+    {
+        BulletEntry* bulletEntry;
+        btVector3 pos;
+    };
+
+    static std::map<BulletEntry*, CollisionEntry> projectileCollisions;
 
     gContactProcessedCallback = [](btManifoldPoint& cp, void* body0, void* body1) -> bool {
         auto object0 = static_cast<btCollisionObject*>(body0);
@@ -2371,9 +2378,9 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         auto bulletEntry1 = static_cast<BulletEntry*>(object1->getUserPointer());
 
         if (bulletEntry0->mode == ModeProperty::Mode::Projectile) {
-            projectileCollisions.emplace(bulletEntry0, bulletEntry1);
+            projectileCollisions.emplace(bulletEntry0, CollisionEntry{bulletEntry1, cp.getPositionWorldOnB()});
         } else if (bulletEntry1->mode == ModeProperty::Mode::Projectile) {
-            projectileCollisions.emplace(bulletEntry1, bulletEntry0);
+            projectileCollisions.emplace(bulletEntry1, CollisionEntry{bulletEntry0, cp.getPositionWorldOnA()});
         }
         return true;
     };
@@ -2402,7 +2409,11 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         {
             Atlas::Objects::Operation::Hit hit;
             Atlas::Objects::Entity::Anonymous ent;
-            ent->setId(entry.second->entity->getId());
+            ent->setId(entry.second.bulletEntry->entity->getId());
+            std::vector<double> posList;
+            addToEntity(Convert::toWF<WFMath::Point<3>>(entry.second.pos), posList);
+            ent->setPos(posList);
+            ent->setLoc(m_entity.getId());
             hit->setArgs1(ent);
             hit->setTo(entry.first->entity->getId());
             res.emplace_back(std::move(hit));
@@ -2411,8 +2422,12 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
             Atlas::Objects::Operation::Hit hit;
             Atlas::Objects::Entity::Anonymous ent;
             ent->setId(entry.first->entity->getId());
+            std::vector<double> posList;
+            addToEntity(Convert::toWF<WFMath::Point<3>>(entry.second.pos), posList);
+            ent->setPos(posList);
+            ent->setLoc(m_entity.getId());
             hit->setArgs1(ent);
-            hit->setTo(entry.second->entity->getId());
+            hit->setTo(entry.second.bulletEntry->entity->getId());
             res.emplace_back(std::move(hit));
         }
     }
