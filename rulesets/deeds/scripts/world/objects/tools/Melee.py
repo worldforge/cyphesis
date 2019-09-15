@@ -67,7 +67,7 @@ class Melee(StoppableTask):
                 if self.usage.tool.props.damage:
                     damage = self.usage.tool.props.damage
                 hit_op = Operation('hit', Entity(damage=damage, hit_type=self.usage.op.parent, id=self.usage.actor.id), to=target.entity)
-                return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
+                return server.OPERATION_BLOCKED, hit_op
             else:
                 return server.OPERATION_BLOCKED, self.usage.actor.client_error(self.usage.op, "Too far away")
         return server.OPERATION_BLOCKED
