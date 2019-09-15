@@ -149,7 +149,7 @@ int main()
 #include "stubs/rules/simulation/stubPropelProperty.h"
 #include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/rules/simulation/stubEntityProperty.h"
-#include "stubs/rules/simulation/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
 
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()

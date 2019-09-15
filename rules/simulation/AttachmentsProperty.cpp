@@ -22,7 +22,7 @@
 #include "BaseWorld.h"
 #include "common/operations/Update.h"
 #include "rules/LocatedEntity.h"
-#include "PlantedOnProperty.h"
+#include "ModeDataProperty.h"
 #include <Atlas/Objects/Operation.h>
 #include <rules/entityfilter/Providers.h>
 #include <common/Inheritance.h>
@@ -80,10 +80,10 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
 
                 auto resetExistingEntityPlantedOn = [&]() {
                     if (existing_entity) {
-                        auto existing_entity_planted_on_prop = existing_entity->modPropertyClassFixed<PlantedOnProperty>();
-                        if (existing_entity_planted_on_prop) {
-                            existing_entity_planted_on_prop->data() = PlantedOnProperty::Data{};
-                            existing_entity->applyProperty(PlantedOnProperty::property_name, existing_entity_planted_on_prop);
+                        auto existing_entity_mode_data_prop = existing_entity->modPropertyClassFixed<ModeDataProperty>();
+                        if (existing_entity_mode_data_prop) {
+                            existing_entity_mode_data_prop->clearData();
+                            existing_entity->applyProperty(ModeDataProperty::property_name, existing_entity_mode_data_prop);
                             {
                                 Atlas::Objects::Operation::Update update;
                                 update->setTo(existing_entity->getId());
@@ -120,14 +120,15 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             }
                         }
                         //Check if the entity already is attached, and if so abort. The client needs to first send a detach/unwield op in this case.
-                        auto plantedOnProp = new_entity->requirePropertyClassFixed<PlantedOnProperty>();
-                        if (plantedOnProp->data().entity) {
+                        auto modeDataProp = new_entity->requirePropertyClassFixed<ModeDataProperty>();
+                        if (modeDataProp->getMode() == ModeProperty::Mode::Planted) {
+                            auto& plantedOnData = modeDataProp->getPlantedOnData();
                             //Check if the entity is attached to ourselves; if so we can just detach it from ourselves.
                             //Otherwise we need to abort, since we don't allow ourselves to detach it from another entity.
-                            if (plantedOnProp->data().entity.get() == entity) {
-                                if (plantedOnProp->data().attachment) {
+                            if (plantedOnData.entity.get() == entity) {
+                                if (plantedOnData.attachment) {
                                     //We need to reset the old attached value for the attached entity
-                                    auto old_attached_prop_name = std::string("attached_") + *plantedOnProp->data().attachment;
+                                    auto old_attached_prop_name = std::string("attached_") + *plantedOnData.attachment;
                                     auto oldAttachedProp = entity->modPropertyClass<SoftProperty>(old_attached_prop_name);
                                     if (oldAttachedProp) {
                                         oldAttachedProp->data() = Atlas::Message::Element();
@@ -140,10 +141,9 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             }
                         }
 
-                        plantedOnProp->data().entity = WeakEntityRef(entity);
-                        plantedOnProp->data().attachment = attachment_name.String();
+                        modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{WeakEntityRef(entity), attachment_name.String()});
 
-                        new_entity->applyProperty(PlantedOnProperty::property_name, plantedOnProp);
+                        new_entity->applyProperty(ModeDataProperty::property_name, modeDataProp);
                         {
                             Atlas::Objects::Operation::Update update;
                             update->setTo(new_entity->getId());

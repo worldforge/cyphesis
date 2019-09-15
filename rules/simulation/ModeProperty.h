@@ -40,7 +40,7 @@ class ModeProperty : public PropertyBase
                  * Planted entities are not affected by physics, but other free entities will react with them.
                  * If an entity is planted on a water body, it's considered to be "floating", i.e. it will be planted on top
                  * of the water body.
-                 * The attribute "planted_on" provides a reference to the other entity on which an entity is planted on.
+                 * The attribute "mode_data" contains a reference to the other entity on which an entity is planted on.
                  */
                     Planted,
 
@@ -61,6 +61,8 @@ class ModeProperty : public PropertyBase
                     Submerged,
                 /**
                  * Like a free entity, but will emit Hit operations when it hits another entity.
+                 *
+                 * The "mode_data" property can be used to keep information about which entity caused the projectile to get moving.
                  */
                     Projectile,
                 /**

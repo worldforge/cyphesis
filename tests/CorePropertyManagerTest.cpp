@@ -353,7 +353,7 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
 #include "stubs/rules/simulation/stubLineProperty.h"
 #include "stubs/rules/simulation/stubMindProperty.h"
 #include "stubs/rules/simulation/stubAttachmentsProperty.h"
-#include "stubs/rules/simulation/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
 #include "stubs/rules/simulation/stubAdminProperty.h"
 #include "stubs/rules/simulation/stubVisibilityProperty.h"
 #include "stubs/rules/simulation/stubStatisticsProperty.h"

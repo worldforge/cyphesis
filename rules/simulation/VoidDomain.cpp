@@ -22,10 +22,11 @@
 #include "rules/LocatedEntity.h"
 #include "common/operations/Update.h"
 #include "VoidDomain.h"
-#include "rules/simulation/PlantedOnProperty.h"
+#include "ModeProperty.h"
+#include "ModeDataProperty.h"
 
 VoidDomain::VoidDomain(LocatedEntity& entity)
-: Domain(entity)
+    : Domain(entity)
 {
 }
 
@@ -36,13 +37,14 @@ bool VoidDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const 
 }
 
 void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-        std::list<LocatedEntity*>& entityList) const
+                                       std::list<LocatedEntity*>& entityList) const
 {
     //Can't see anything
 }
 
 
-void VoidDomain::addEntity(LocatedEntity& entity) {
+void VoidDomain::addEntity(LocatedEntity& entity)
+{
 
     entity.m_location.m_pos = WFMath::Point<3>::ZERO();
     entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
@@ -50,10 +52,11 @@ void VoidDomain::addEntity(LocatedEntity& entity) {
     entity.m_location.m_angularVelocity = WFMath::Vector<3>::ZERO();
     entity.removeFlags(entity_clean);
 
-    //Reset any planted_on properties when moving to this domain.
-    if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {
-        if (prop->data()) {
-            entity.setAttr(PlantedOnProperty::property_name, Atlas::Message::Element());
+
+    //Reset any mode_data properties when moving to this domain.
+    if (auto prop = entity.getPropertyClassFixed<ModeDataProperty>()) {
+        if (prop->getMode() != ModeProperty::Mode::Unknown) {
+            entity.setAttr(ModeDataProperty::property_name, Atlas::Message::Element());
             Atlas::Objects::Operation::Update update;
             update->setTo(entity.getId());
             entity.sendWorld(update);
@@ -61,11 +64,14 @@ void VoidDomain::addEntity(LocatedEntity& entity) {
     }
 
 }
-void VoidDomain::removeEntity(LocatedEntity& entity) {
+
+void VoidDomain::removeEntity(LocatedEntity& entity)
+{
 
 }
 
-bool VoidDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const {
+bool VoidDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+{
     return &reachingEntity == &m_entity;
 }
 

@@ -45,6 +45,7 @@
 #include "stubs/common/stubProperty.h"
 #include "stubs/rules/stubDomain.h"
 #include "stubs/rules/simulation/stubPropelProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
 #include "TestDomain.h"
 
 
@@ -163,7 +164,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
-#include "stubs/rules/simulation/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
 #include "stubs/modules/stubWeakEntityRef.h"
 
 void log(LogLevel lvl, const std::string & msg)

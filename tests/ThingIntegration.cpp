@@ -37,7 +37,7 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 #include <rules/simulation/AttachmentsProperty.h>
-#include <rules/simulation/PlantedOnProperty.h>
+#include <rules/simulation/ModeDataProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -352,9 +352,9 @@ void ThingIntegration::test_visibility()
         t2->domain = new InventoryDomain(*t2);
         t2->addFlags(entity_domain);
 
-        auto plantedOnProp = new PlantedOnProperty();
-        plantedOnProp->data().entity = t2;
-        t3->setProperty(PlantedOnProperty::property_name, plantedOnProp);
+        auto modeDataProp = new ModeDataProperty();
+        modeDataProp->setPlantedData({WeakEntityRef(t2)});
+        t3->setProperty(ModeDataProperty::property_name, modeDataProp);
 
         Operation sightOp;
         OpVector res;
@@ -426,9 +426,9 @@ void ThingIntegration::test_visibility()
         t3->addChild(*t4);
         t3->addChild(*t6);
 
-        auto plantedOnProp = new PlantedOnProperty();
-        plantedOnProp->data().entity = t3;
-        t4->setProperty(PlantedOnProperty::property_name, plantedOnProp);
+        auto modeDataProp = new ModeDataProperty();
+        modeDataProp->setPlantedData({WeakEntityRef(t3)});
+        t4->setProperty(ModeDataProperty::property_name, modeDataProp);
 
         Operation sightOp;
         OpVector res;
@@ -502,9 +502,9 @@ void ThingIntegration::test_visibility()
         t2->addChild(*t4);
         t2->addChild(*t5);
 
-        auto plantedOnProp = new PlantedOnProperty();
-        plantedOnProp->data().entity = t2;
-        t4->setProperty(PlantedOnProperty::property_name, plantedOnProp);
+        auto modeDataProp = new ModeDataProperty();
+        modeDataProp->setPlantedData({WeakEntityRef(t2)});
+        t4->setProperty(ModeDataProperty::property_name, modeDataProp);
 
 
         Operation sightOp;
@@ -664,32 +664,32 @@ void ThingIntegration::test_reachability()
         t3->addChild(*t4);
 
         //T1 can reach itself
-        ASSERT_TRUE( t1->canReach({t1, {}}));
+        ASSERT_TRUE(t1->canReach({t1, {}}));
         //T1 can reach T2 since it's a child and there's no domain
-        ASSERT_TRUE( t1->canReach({t2, {}}));
+        ASSERT_TRUE(t1->canReach({t2, {}}));
         //T1 can't reach T3 since T2 has a Physical domain and it doesn't allow external entities to reach into it.
-        ASSERT_FALSE( t1->canReach({t3, {}}));
+        ASSERT_FALSE(t1->canReach({t3, {}}));
 
         //T2 can reach T1 since it's a parent and there's no domain
-        ASSERT_TRUE( t2->canReach({t1, {}}));
+        ASSERT_TRUE(t2->canReach({t1, {}}));
         //T3 can't reach T1 since T2 has a domain
-        ASSERT_FALSE( t3->canReach({t1, {}}));
+        ASSERT_FALSE(t3->canReach({t1, {}}));
 
         //T2 can reach itself
-        ASSERT_TRUE( t2->canReach({t2, {}}));
+        ASSERT_TRUE(t2->canReach({t2, {}}));
         //T2 can reach T3 since T2 has a Physical domain which allows it.
-        ASSERT_TRUE( t2->canReach({t3, {}}));
+        ASSERT_TRUE(t2->canReach({t3, {}}));
         //T5 can reach T3 since T2 has a Physical domain which allows it.
-        ASSERT_TRUE( t5->canReach({t3, {}}));
+        ASSERT_TRUE(t5->canReach({t3, {}}));
         //T5 can reach T4 since T2 has a Physical domain which allows it to reach T3, and thus T4.
-        ASSERT_TRUE( t5->canReach({t4, {}}));
+        ASSERT_TRUE(t5->canReach({t4, {}}));
 
         //T2 can reach T6 since the parent of T6 is T5, which can be reached and has no domain.
-        ASSERT_TRUE( t2->canReach({t6, {}}));
+        ASSERT_TRUE(t2->canReach({t6, {}}));
         //T3 can't reach T7 since T2 has a Physical domain and T7 has an invalid pos.
-        ASSERT_FALSE( t3->canReach({t7, {}}));
+        ASSERT_FALSE(t3->canReach({t7, {}}));
         //T4 can't reach T5 since T4 isn't a direct child of T2
-        ASSERT_FALSE( t4->canReach({t5, {}}));
+        ASSERT_FALSE(t4->canReach({t5, {}}));
 
 
     }
@@ -890,7 +890,8 @@ void ThingIntegration::test_reachability()
                                         {1,  1,  1}};
         Ref<ThingExt> t1 = new ThingExt("1", 1);
         t1->m_location.m_pos = WFMath::Point<3>::ZERO();
-        t1->m_location.setBBox({{-200, -200, -200}, {200, 200, 200}});
+        t1->m_location.setBBox({{-200, -200, -200},
+                                {200,  200,  200}});
         Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = {5, 0, 5};
         t2->m_location.setBBox(smallBbox);
@@ -925,7 +926,6 @@ void ThingIntegration::test_reachability()
         ASSERT_FALSE(t3->canReach({t1, {90, 0, 90}}));
         //T2 can't reach a close point in t1 since it has no reach
         ASSERT_FALSE(t2->canReach({t1, {6, 0, 6}}));
-
 
 
     }

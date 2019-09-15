@@ -45,7 +45,6 @@ add_library(rulessimulation
     MindsProperty.cpp
     AdminMind.cpp
     AdminProperty.cpp
-    PlantedOnProperty.cpp
     AttachmentsProperty.cpp
     MindProperty.cpp
     EntityProperty.cpp

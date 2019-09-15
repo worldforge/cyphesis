@@ -22,8 +22,8 @@
 
 #include "common/TypeNode.h"
 #include "rules/simulation/BaseWorld.h"
-#include "PlantedOnProperty.h"
 #include "AmountProperty.h"
+#include "ModeDataProperty.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -43,7 +43,7 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::smart_dynamic_cast;
 
-std::vector<std::string> StackableDomain::sIgnoredProps = {"pos", "orientation", "planted_on", "amount", "id", "stamp", "mode"};
+std::vector<std::string> StackableDomain::sIgnoredProps = {"pos", "orientation", "mode_data", "amount", "id", "stamp", "mode"};
 
 
 StackableDomain::StackableDomain(LocatedEntity& entity) :
@@ -80,11 +80,11 @@ void StackableDomain::addEntity(LocatedEntity& entity)
         }
     }
 
-    //Reset any planted_on properties when moving to this domain.
-    if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {
+    //Reset any mode_data properties when moving to this domain.
+    if (auto prop = entity.getPropertyClassFixed<ModeDataProperty>()) {
         //Check that we've moved from another entity.
-        if (prop->data() && (!prop->data().entity || prop->data().entity->getId() != m_entity.getId())) {
-            entity.setAttr(PlantedOnProperty::property_name, Atlas::Message::Element());
+        if (prop->getMode() != ModeProperty::Mode::Unknown) {
+            entity.setAttr(ModeDataProperty::property_name, Atlas::Message::Element());
             Atlas::Objects::Operation::Update update;
             update->setTo(entity.getId());
             entity.sendWorld(update);

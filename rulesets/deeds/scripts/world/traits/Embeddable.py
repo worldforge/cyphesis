@@ -12,6 +12,7 @@ class Embeddable(server.Thing):
             if len(op.args):
                 first_arg = op.args[0]
                 print("embedded in {}".format(first_arg.id))
-                return server.OPERATION_HANDLED, Operation("move", Entity(self.id, mode="planted", planted_on=first_arg.id), to=self.id)
+                mode_data = {"mode": "planted", "$eid": first_arg.id}
+                return server.OPERATION_HANDLED, Operation("move", Entity(self.id, mode="planted", mode_data=mode_data), to=self.id)
 
         return server.OPERATION_IGNORED

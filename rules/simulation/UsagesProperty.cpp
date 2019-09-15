@@ -24,7 +24,7 @@
 #include "common/debug.h"
 #include "common/AtlasQuery.h"
 #include "ScriptUtils.h"
-#include "rules/simulation/PlantedOnProperty.h"
+#include "ModeDataProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -181,16 +181,19 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             auto actorReadyAtProp = actor->getPropertyType<MapType>("_ready_at_attached");
             if (actorReadyAtProp) {
 
-                auto plantedOnProp = e->getPropertyClassFixed<PlantedOnProperty>();
+                auto modeDataProp = e->getPropertyClassFixed<ModeDataProperty>();
                 //First check if the tool is attached to the actor at an attach point
-                if (plantedOnProp && plantedOnProp->data().entity.get() == actor.get() && plantedOnProp->data().attachment) {
-                    auto attachPoint = *plantedOnProp->data().attachment;
-                    //Lastly check if there's a value for this attach point.
-                    auto attachI = actorReadyAtProp->data().find(attachPoint);
-                    if (attachI != actorReadyAtProp->data().end()) {
-                        if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
-                            actor->clientError(op, "Actor is not ready yet.", res, actor->getId());
-                            return OPERATION_IGNORED;
+                if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
+                    auto& plantedOnData = modeDataProp->getPlantedOnData();
+                    if (plantedOnData.entity.get() == actor.get() && plantedOnData.attachment) {
+                        auto attachPoint = *plantedOnData.attachment;
+                        //Lastly check if there's a value for this attach point.
+                        auto attachI = actorReadyAtProp->data().find(attachPoint);
+                        if (attachI != actorReadyAtProp->data().end()) {
+                            if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
+                                actor->clientError(op, "Actor is not ready yet.", res, actor->getId());
+                                return OPERATION_IGNORED;
+                            }
                         }
                     }
                 }

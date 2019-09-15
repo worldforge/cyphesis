@@ -55,17 +55,17 @@ void ModeDataProperty::set(const Atlas::Message::Element& val)
 
 int ModeDataProperty::get(Atlas::Message::Element& val) const
 {
+    Atlas::Message::MapType map;
     switch (mMode) {
         case ModeProperty::Mode::Planted: {
             auto& plantedData = boost::get<PlantedOnData>(mData);
-            Atlas::Message::MapType map;
             if (plantedData.entity) {
                 map["$eid"] = plantedData.entity->getId();
             }
             if (plantedData.attachment) {
                 map["attachment"] = *plantedData.attachment;
             }
-            val = map;
+            map["mode"] = "planted";
         }
             break;
         case ModeProperty::Mode::Fixed: {
@@ -79,35 +79,34 @@ int ModeDataProperty::get(Atlas::Message::Element& val) const
             break;
         case ModeProperty::Mode::Projectile: {
             auto& projectileData = boost::get<ProjectileData>(mData);
-            Atlas::Message::MapType map;
             if (projectileData.entity) {
                 map["$eid"] = projectileData.entity->getId();
             }
             map["extra"] = projectileData.extra;
-            val = map;
+            map["mode"] = "projectile";
         }
             break;
         case ModeProperty::Mode::Unknown: {
         }
             break;
     }
+    val = map;
+
     return 0;
 }
 
 void ModeDataProperty::setPlantedData(const Atlas::Message::MapType& map)
 {
-    PlantedOnData data{};
-    auto eidI = map.find("$eid");
-    if (eidI != map.end() && eidI->second.isString()) {
-        data.entity = WeakEntityRef(BaseWorld::instance().getEntity(eidI->second.String()));
-    }
-    auto pointI = map.find("attachment");
-    if (pointI != map.end() && pointI->second.isString()) {
-        data.attachment = pointI->second.String();
-    }
-    mData = data;
+    auto data = parsePlantedData(map);
+    setPlantedData(std::move(data));
+}
+
+void ModeDataProperty::setPlantedData(PlantedOnData data)
+{
+    mData = std::move(data);
     mMode = ModeProperty::Mode::Planted;
 }
+
 
 void ModeDataProperty::setProjectileData(const Atlas::Message::MapType& map)
 {
@@ -123,7 +122,12 @@ void ModeDataProperty::setProjectileData(const Atlas::Message::MapType& map)
         data.extra = extraI->second.Map();
     }
 
-    mData = data;
+    setProjectileData(std::move(data));
+}
+
+void ModeDataProperty::setProjectileData(ProjectileData data)
+{
+    mData = std::move(data);
     mMode = ModeProperty::Mode::Projectile;
 }
 
@@ -156,4 +160,18 @@ void ModeDataProperty::clearData()
 ModeProperty::Mode ModeDataProperty::getMode() const
 {
     return mMode;
+}
+
+ModeDataProperty::PlantedOnData ModeDataProperty::parsePlantedData(const Atlas::Message::MapType& map)
+{
+    PlantedOnData data{};
+    auto eidI = map.find("$eid");
+    if (eidI != map.end() && eidI->second.isString()) {
+        data.entity = WeakEntityRef(BaseWorld::instance().getEntity(eidI->second.String()));
+    }
+    auto pointI = map.find("attachment");
+    if (pointI != map.end() && pointI->second.isString()) {
+        data.attachment = pointI->second.String();
+    }
+    return data;
 }

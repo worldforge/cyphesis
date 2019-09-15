@@ -54,7 +54,6 @@
 #include "rules/python/ScriptsProperty.h"
 #include "rules/simulation/UsagesProperty.h"
 #include "rules/simulation/MindsProperty.h"
-#include "rules/simulation/PlantedOnProperty.h"
 #include "rules/simulation/AttachmentsProperty.h"
 #include "rules/simulation/AdminProperty.h"
 
@@ -176,12 +175,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<AngularFactorProperty>();
     installProperty<GeometryProperty>();
 
-    /**
-     * Refers to an entity on which another entity is planted on.
-     */
-    installProperty<PlantedOnProperty>();
-
-
     installProperty<BoolProperty>("floats");
 
     /**
@@ -291,6 +284,9 @@ CorePropertyManager::CorePropertyManager()
 
     installProperty<SimulationSpeedProperty>();
 
+    /**
+     * Handles data specific to the current mode.
+     */
     installProperty<ModeDataProperty>();
 
 

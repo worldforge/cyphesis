@@ -18,7 +18,6 @@
 #include "rules/Domain.h"
 #include "rules/AtlasProperties.h"
 #include "rules/BBoxProperty.h"
-#include "rules/simulation/PlantedOnProperty.h"
 #include "rules/simulation/BaseWorld.h"
 #include "rules/simulation/Entity.h"
 
@@ -32,6 +31,7 @@
 #include <Atlas/Objects/Factories.h>
 
 #include <cassert>
+#include <rules/simulation/ModeDataProperty.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -42,6 +42,7 @@ using namespace EntityFilter;
 static std::map<std::string, TypeNode*> types;
 
 Atlas::Objects::Factories factories;
+
 struct TestEntity : Entity
 {
     explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
@@ -71,7 +72,7 @@ struct TestDomain : Domain
 {
     explicit TestDomain(LocatedEntity& e) : Domain(e)
     {}
-    
+
 
     bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override
     {
@@ -311,7 +312,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
         //m_entityOnlyReachableWithPosition can only be reached if the position is sent along, which happens if we use "entity_location"
         {
             QueryContext c{*m_entityOnlyReachableWithPosition};
-            WFMath::Point<3> pos(1,1,1);
+            WFMath::Point<3> pos(1, 1, 1);
             c.entityLoc.pos = &pos;
             c.actor = m_bl1.get();
             TestContextQuery("actor can_reach entity", {}, {c});
@@ -702,9 +703,10 @@ struct EntityFilterTest : public Cyphesis::TestBase
             attachedProp->data() = Atlas::Message::MapType{{"$eid", m_cloth->getId()}};
             m_glovesEntity->setProperty("attached_thumb", attachedProp);
 
-            auto plantedOnProp = new PlantedOnProperty();
-            plantedOnProp->data().entity = WeakEntityRef(m_glovesEntity.get());
-            m_cloth->setProperty("planted_on", plantedOnProp);
+
+            auto modeDataProp = new ModeDataProperty();
+            modeDataProp->setPlantedData({WeakEntityRef(m_glovesEntity.get())});
+            m_cloth->setProperty(ModeDataProperty::property_name, modeDataProp);
             m_glovesEntity->makeContainer();
             m_glovesEntity->addChild(*m_cloth);
         }
@@ -723,9 +725,9 @@ struct EntityFilterTest : public Cyphesis::TestBase
         }
 
         {
-            auto plantedOnProp = new PlantedOnProperty();
-            plantedOnProp->data().entity = WeakEntityRef(m_ch1.get());
-            m_glovesEntity->setProperty("planted_on", plantedOnProp);
+            auto modeDataProp = new ModeDataProperty();
+            modeDataProp->setPlantedData({WeakEntityRef(m_ch1.get())});
+            m_glovesEntity->setProperty(ModeDataProperty::property_name, modeDataProp);
         }
 
         BBoxProperty* bbox1 = new BBoxProperty;
@@ -818,6 +820,7 @@ int main()
 #include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/rules/simulation/stubDensityProperty.h"
 #include "stubs/rules/stubScaleProperty.h"
+#include "stubs/rules/simulation/stubModeProperty.h"
 
 
 #include "stubs/common/stubcustom.h"

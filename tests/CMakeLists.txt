@@ -295,7 +295,7 @@ wf_add_test(EntityFilterTest.cpp
     ../rules/simulation/Entity.cpp
     ../rules/BBoxProperty.cpp
     ../rules/LocatedEntity.cpp
-    ../rules/simulation/PlantedOnProperty.cpp
+    ../rules/simulation/ModeDataProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp
@@ -318,7 +318,7 @@ wf_add_test(EntityFilterProvidersTest.cpp ../rules/simulation/EntityProperty.cpp
     ../rules/simulation/Entity.cpp
     ../rules/BBoxProperty.cpp
     ../rules/LocatedEntity.cpp
-    ../rules/simulation/PlantedOnProperty.cpp
+    ../rules/simulation/ModeDataProperty.cpp
     ${PROJECT_SOURCE_DIR}/modules/WeakEntityRef.cpp
     ${PROJECT_SOURCE_DIR}/common/Property.cpp
     ${PROJECT_SOURCE_DIR}/common/TypeNode.cpp

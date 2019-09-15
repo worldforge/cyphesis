@@ -90,9 +90,15 @@ class ModeDataProperty : public PropertyBase
 
         int get(Atlas::Message::Element& val) const override;
 
+        static ModeDataProperty::PlantedOnData parsePlantedData(const Atlas::Message::MapType& map);
+
         void setPlantedData(const Atlas::Message::MapType& map);
 
+        void setPlantedData(ModeDataProperty::PlantedOnData data);
+
         void setProjectileData(const Atlas::Message::MapType& map);
+
+        void setProjectileData(ModeDataProperty::ProjectileData data);
 
         void clearData();
 

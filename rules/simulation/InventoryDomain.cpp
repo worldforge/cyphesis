@@ -21,9 +21,9 @@
 
 #include "common/TypeNode.h"
 #include "common/debug.h"
-#include "PlantedOnProperty.h"
 #include "AmountProperty.h"
 #include "StackableDomain.h"
+#include "ModeDataProperty.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -80,14 +80,17 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
     entity.removeFlags(entity_clean);
 
 
-    //Reset any planted_on properties when moving to this domain.
-    if (auto prop = entity.getPropertyClassFixed<PlantedOnProperty>()) {
-        //Check that we've moved from another entity.
-        if (prop->data() && (!prop->data().entity || prop->data().entity->getId() != m_entity.getId())) {
-            entity.setAttr(PlantedOnProperty::property_name, Atlas::Message::Element());
-            Atlas::Objects::Operation::Update update;
-            update->setTo(entity.getId());
-            entity.sendWorld(update);
+    //Reset any mode_data properties when moving to this domain.
+    if (auto prop = entity.getPropertyClassFixed<ModeDataProperty>()) {
+        if (prop->getMode() == ModeProperty::Mode::Planted) {
+            auto& plantedOnData = prop->getPlantedOnData();
+            //Check that we've moved from another entity.
+            if ((!plantedOnData.entity || plantedOnData.entity->getId() != m_entity.getId())) {
+                entity.setAttr(ModeDataProperty::property_name, Atlas::Message::Element());
+                Atlas::Objects::Operation::Update update;
+                update->setTo(entity.getId());
+                entity.sendWorld(update);
+            }
         }
     }
 }
@@ -109,8 +112,8 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     }
 
     //Entities can only be seen by outside observers if they are attached.
-    auto plantedOnProp = observedEntity.getPropertyClassFixed<PlantedOnProperty>();
-    return plantedOnProp && plantedOnProp->data().entity.get() == &m_entity;
+    auto modeDataProp = observedEntity.getPropertyClassFixed<ModeDataProperty>();
+    return modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted && modeDataProp->getPlantedOnData().entity.get() == &m_entity;
 
 }
 

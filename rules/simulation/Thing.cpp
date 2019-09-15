@@ -25,12 +25,10 @@
 #include "common/debug.h"
 
 #include "common/operations/Update.h"
-#include "common/operations/Pickup.h"
-#include "common/operations/Drop.h"
 #include "common/TypeNode.h"
 #include "EntityProperty.h"
-#include "rules/simulation/PlantedOnProperty.h"
 #include "ModeProperty.h"
+#include "ModeDataProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -46,10 +44,8 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Drop;
 using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Operation::Pickup;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
@@ -167,14 +163,14 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         }
     }
 
-    //If a Move op contains a planted_on prop it should be used.
-    //It's expected that only admins should ever send a "planted_on" as Move ops (to build the world).
+    //If a Move op contains a mode_data prop it should be used.
+    //It's expected that only admins should ever send a "mode_data" as Move ops (to build the world).
     //In all other cases we want to let regular Domain rules apply
-    Element attr_plantedOn;
-    PlantedOnProperty::Data plantedOn;
-    if (ent->copyAttr(PlantedOnProperty::property_name, attr_plantedOn) == 0) {
-        plantedOn = PlantedOnProperty::parse(attr_plantedOn);
-    }
+//    Element attr_plantedOn;
+//    PlantedOnProperty::Data plantedOn;
+//    if (ent->copyAttr(PlantedOnProperty::property_name, attr_plantedOn) == 0) {
+//        plantedOn = PlantedOnProperty::parse(attr_plantedOn);
+//    }
 
     Element attr_modeData;
     if (ent->copyAttr("mode_data", attr_modeData) == 0) {
@@ -313,7 +309,14 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             }
         } else {
             if (updatedTransform) {
-                Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOn.entity.get(), newImpulseVelocity};
+
+                auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+                LocatedEntity* plantedOnEntity = nullptr;
+                if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
+                    plantedOnEntity = modeDataProp->getPlantedOnData().entity.get();
+                }
+
+                Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOnEntity, newImpulseVelocity};
                 domain->applyTransform(*this, transformData, transformedEntities);
             }
         }
@@ -329,12 +332,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         assert(marg.isValid());
         m_location.addToEntity(marg);
         {
-            auto plantedOnProp = getPropertyClassFixed<PlantedOnProperty>();
-            if (plantedOnProp) {
-                if (plantedOnProp->hasFlags(flag_unsent)) {
-                    Element plantedOnElem;
-                    if (plantedOnProp->get(plantedOnElem) == 0) {
-                        marg->setAttr(PlantedOnProperty::property_name, plantedOnElem);
+            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+            if (modeDataProp) {
+                if (modeDataProp->hasFlags(flag_unsent)) {
+                    Element modeDataElem;
+                    if (modeDataProp->get(modeDataElem) == 0) {
+                        marg->setAttr(ModeDataProperty::property_name, modeDataElem);
                     }
                 }
             }
@@ -360,12 +363,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     movedArg->setId(transformedEntity->getId());
                     transformedEntity->m_location.addToEntity(movedArg);
 
-                    auto plantedOnProp = transformedEntity->getPropertyClassFixed<PlantedOnProperty>();
-                    if (plantedOnProp) {
-                        if (plantedOnProp->hasFlags(flag_unsent)) {
-                            Element plantedOnElem;
-                            if (plantedOnProp->get(plantedOnElem) == 0) {
-                                movedArg->setAttr(PlantedOnProperty::property_name, plantedOnElem);
+                    auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
+                    if (modeDataProp) {
+                        if (modeDataProp->hasFlags(flag_unsent)) {
+                            Element modeDataElem;
+                            if (modeDataProp->get(modeDataElem) == 0) {
+                                movedArg->setAttr(ModeDataProperty::property_name, modeDataElem);
                             }
                         }
                     }

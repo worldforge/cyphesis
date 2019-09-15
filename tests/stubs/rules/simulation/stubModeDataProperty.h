@@ -80,6 +80,14 @@
   }
 #endif //STUB_ModeDataProperty_get
 
+#ifndef STUB_ModeDataProperty_parsePlantedData
+//#define STUB_ModeDataProperty_parsePlantedData
+   ModeDataProperty::PlantedOnData ModeDataProperty::parsePlantedData(const Atlas::Message::MapType& map)
+  {
+    return *static_cast< ModeDataProperty::PlantedOnData*>(nullptr);
+  }
+#endif //STUB_ModeDataProperty_parsePlantedData
+
 #ifndef STUB_ModeDataProperty_setPlantedData
 //#define STUB_ModeDataProperty_setPlantedData
   void ModeDataProperty::setPlantedData(const Atlas::Message::MapType& map)
@@ -88,9 +96,25 @@
   }
 #endif //STUB_ModeDataProperty_setPlantedData
 
+#ifndef STUB_ModeDataProperty_setPlantedData
+//#define STUB_ModeDataProperty_setPlantedData
+  void ModeDataProperty::setPlantedData(ModeDataProperty::PlantedOnData data)
+  {
+    
+  }
+#endif //STUB_ModeDataProperty_setPlantedData
+
 #ifndef STUB_ModeDataProperty_setProjectileData
 //#define STUB_ModeDataProperty_setProjectileData
   void ModeDataProperty::setProjectileData(const Atlas::Message::MapType& map)
+  {
+    
+  }
+#endif //STUB_ModeDataProperty_setProjectileData
+
+#ifndef STUB_ModeDataProperty_setProjectileData
+//#define STUB_ModeDataProperty_setProjectileData
+  void ModeDataProperty::setProjectileData(ModeDataProperty::ProjectileData data)
   {
     
   }

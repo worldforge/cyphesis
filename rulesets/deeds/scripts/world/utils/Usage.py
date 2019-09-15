@@ -8,10 +8,10 @@ def set_cooldown_on_attached(tool, actor):
     if cooldown and cooldown > 0.0:
 
         # Get the attach point name from the attached tool
-        if tool.props.planted_on:
-            planted_on_data = tool.props.planted_on
-            if planted_on_data["attachment"]:
-                attachment_name = planted_on_data["attachment"]
+        mode_data = tool.props.mode_data
+        if mode_data is not None and mode_data["mode"] == "planted":
+            if mode_data["attachment"]:
+                attachment_name = mode_data["attachment"]
                 ready_at_attached_prop = actor.props._ready_at_attached
                 if not ready_at_attached_prop:
                     ready_at_attached_prop = {}

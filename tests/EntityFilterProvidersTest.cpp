@@ -27,7 +27,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <cassert>
-#include <rules/simulation/PlantedOnProperty.h>
+#include "rules/simulation/ModeDataProperty.h"
 
 using namespace EntityFilter;
 using Atlas::Message::Element;
@@ -144,9 +144,9 @@ struct ProvidersTest : public Cyphesis::TestBase {
                 attachedProp->data() = Atlas::Message::MapType{{"$eid", m_cloth->getId()}};
                 m_glovesEntity->setProperty("attached_thumb", attachedProp);
 
-                auto plantedOnProp = new PlantedOnProperty();
-                plantedOnProp->data().entity = WeakEntityRef(m_glovesEntity.get());
-                m_cloth->setProperty("planted_on", plantedOnProp);
+                auto modeDataProp = new ModeDataProperty();
+                modeDataProp->setPlantedData({WeakEntityRef(m_glovesEntity.get())});
+                m_cloth->setProperty(ModeDataProperty::property_name, modeDataProp);
             }
 
             //Create the character for testing
@@ -162,9 +162,9 @@ struct ProvidersTest : public Cyphesis::TestBase {
                 attachedHandPrimaryProp->data() = Atlas::Message::MapType{{"$eid", m_glovesEntity->getId()}};
                 m_ch1->setProperty("attached_hand_primary", attachedHandPrimaryProp);
 
-                auto plantedOnProp = new PlantedOnProperty();
-                plantedOnProp->data().entity = WeakEntityRef(m_ch1.get());
-                m_glovesEntity->setProperty("planted_on", plantedOnProp);
+                auto modeDataProp = new ModeDataProperty();
+                modeDataProp->setPlantedData({WeakEntityRef(m_ch1.get())});
+                m_glovesEntity->setProperty(ModeDataProperty::property_name, modeDataProp);
             }
 
             //Make second barrel contain the character
@@ -575,6 +575,7 @@ int main()
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/rules/stubLocation.h"
+#include "stubs/rules/simulation/stubModeProperty.h"
 
 
 void log(LogLevel lvl, const std::string & msg)

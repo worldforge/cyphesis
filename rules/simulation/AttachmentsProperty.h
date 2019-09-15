@@ -30,7 +30,7 @@
  *
  * This property defines the various attachments available, with optional Entity Filter constraints.
  * When entities are attached new "attached_*" soft properties are created with references to the
- * entities. The "planted_on" property of the attached entity is also updated.
+ * entities. The "mode_data" property of the attached entity is also updated.
  *
  * To attach something a Wield op needs to be sent. This property will take care of listening to it
  * and making the required changes on all involved entities.

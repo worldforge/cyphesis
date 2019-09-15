@@ -433,7 +433,8 @@ int IdProperty::get(Atlas::Message::Element& val) const
 #include "stubs/rules/simulation/stubTask.h"
 #include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/rules/simulation/stubStatusProperty.h"
-#include "stubs/rules/simulation/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
+#include "stubs/rules/simulation/stubModeProperty.h"
 
 #define STUB_ExternalMind_linkUp
 

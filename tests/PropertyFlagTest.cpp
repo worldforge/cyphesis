@@ -107,7 +107,7 @@ using Atlas::Objects::Entity::RootEntity;
 #include "stubs/common/stubVariable.h"
 #include "stubs/rules/simulation/stubPropelProperty.h"
 #include "stubs/rules/simulation/stubEntityProperty.h"
-#include "stubs/rules/simulation/stubPlantedOnProperty.h"
+#include "stubs/rules/simulation/stubModeDataProperty.h"
 
 
 
