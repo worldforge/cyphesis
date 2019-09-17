@@ -52,7 +52,7 @@ void EntityProperty::set(const Atlas::Message::Element& val)
                 m_data = WeakEntityRef(nullptr);
             } else {
                 auto e = BaseWorld::instance().getEntity(id);
-                if (!e) {
+                if (e) {
                     debug_print("Assigned")
                     m_data = WeakEntityRef(e);
                 }
@@ -63,8 +63,8 @@ void EntityProperty::set(const Atlas::Message::Element& val)
         auto e = static_cast<LocatedEntity*>(val.Ptr());
         m_data = WeakEntityRef(e);
     } else if (val.isMap()) {
-        auto I = val.asMap().find("$eid");
-        if (I != val.asMap().end()) {
+        auto I = val.Map().find("$eid");
+        if (I != val.Map().end()) {
             set(I->second);
         }
     } else if (val.isNone()) {
