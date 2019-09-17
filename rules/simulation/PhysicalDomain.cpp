@@ -2427,7 +2427,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
             ent->setLoc(m_entity.getId());
             if (modeDataProperty && modeDataProperty->getMode() == ModeProperty::Mode::Projectile) {
                 auto& projectileData = modeDataProperty->getProjectileData();
-                //Copy any data found in "projectile_data".
+                //Copy any data found in "mode_data".
                 for (const auto& projectile_entry : projectileData.extra) {
                     ent->setAttr(projectile_entry.first, projectile_entry.second, &Inheritance::instance().getFactories());
                 }
@@ -2825,14 +2825,17 @@ std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath:
 
     btCollisionObject collisionObject;
     collisionObject.setCollisionShape(&shape);
-    collisionObject.setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(sphere.center())));
+    collisionObject.setWorldTransform(pos);
 
     m_dynamicsWorld->contactTest(&collisionObject, callback);
 
     std::vector<Domain::CollisionEntry> result;
     result.reserve(callback.m_entries.size());
     for (auto& entry: callback.m_entries) {
-        result.emplace_back(Domain::CollisionEntry{entry.first->entity, Convert::toWF<WFMath::Point<3>>(entry.second.getPositionWorldOnA()), entry.second.getDistance()});
+        result.emplace_back(Domain::CollisionEntry{entry.first->entity,
+                                                   Convert::toWF<WFMath::Point<3>>(entry.second.getPositionWorldOnA()),
+//                                                   std::abs(entry.second.getDistance())});
+                                                   entry.second.getPositionWorldOnB().distance(pos.getOrigin())});
     }
     return result;
 }
