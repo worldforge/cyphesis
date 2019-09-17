@@ -3,12 +3,12 @@
         <map name="attributes">
             <map name="bbox">
                 <list name="default">
-                    <float>-1</float>
-                    <float>-1</float>
-                    <float>-1</float>
-                    <float>1</float>
-                    <float>1</float>
-                    <float>1</float>
+                    <float>-3</float>
+                    <float>-3</float>
+                    <float>-3</float>
+                    <float>3</float>
+                    <float>3</float>
+                    <float>3</float>
                 </list>
             </map>
             <map name="geometry">
@@ -24,6 +24,9 @@
             </map>
             <map name="present">
                 <string name="default">dural/environment/explosion/explosion.modeldef</string>
+            </map>
+            <map name="damage">
+                <float name="default">20</float>
             </map>
             <map name="__scripts">
                 <list name="default">

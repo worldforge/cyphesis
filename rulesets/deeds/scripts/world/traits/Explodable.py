@@ -23,6 +23,9 @@ class Explodable(server.Thing):
                 if entity_ref is not None:
                     actor_id = entity_ref
             entity["entity_ref"] = {"$eid": actor_id}
+            damage_explosion = self.props.damage_explosion
+            if damage_explosion is not None:
+                entity["damage"] = damage_explosion
 
             res.append(Operation("create", entity, to=self.id))
             res.append(Operation("delete", Entity(self.id), to=self.id))

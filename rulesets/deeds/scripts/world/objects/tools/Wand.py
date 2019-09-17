@@ -26,9 +26,9 @@ def shoot_in_direction(direction, instance, res):
     new_loc.pos += start_adjust
 
     new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
-    mode_data = {"mode": "projectile", "$eid": instance.actor.id, "extra": {"damage": 0.5}}
+    mode_data = {"mode": "projectile", "$eid": instance.actor.id}
 
-    res.append(Operation("create", Entity(parent="fireball", location=new_loc, velocity=direction * 60, mode="projectile", mode_data=mode_data), to=instance.tool.id))
+    res.append(Operation("create", Entity(parent="fireball", location=new_loc, velocity=direction * 60, mode="projectile", mode_data=mode_data, damage_explosion=instance.tool.props.damage), to=instance.tool.id))
 
 
 def fireball(instance):

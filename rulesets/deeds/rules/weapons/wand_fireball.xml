@@ -20,6 +20,9 @@
             <map name="charges">
                 <int name="default">20</int>
             </map>
+            <map name="damage">
+                <float name="default">40</float>
+            </map>
             <map name="usages">
                 <map name="default">
                     <map name="shoot">
