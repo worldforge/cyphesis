@@ -100,7 +100,7 @@ int main()
 
     SoftProperty* prop = new SoftProperty();
     prop->set("bar");
-    e->setProperty("foo", prop);
+    e->setProperty("foo", std::unique_ptr<PropertyBase>(prop));
     Ref<Entity> wrld = new Entity("0", 0);
     e->m_location.m_parent = wrld;
     e->m_location.m_parent->makeContainer();

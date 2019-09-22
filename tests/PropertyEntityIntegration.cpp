@@ -113,26 +113,26 @@ class TestPropertyManager : public PropertyManager
   public:
     virtual ~TestPropertyManager();
 
-    virtual PropertyBase * addProperty(const std::string & name, int type);
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type);
 };
 
 TestPropertyManager::~TestPropertyManager()
 {
 }
 
-PropertyBase * TestPropertyManager::addProperty(const std::string & name,
+std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
                                                 int type)
 {
     if (name == test_values<long>::name) {
-        return new Property<long>;
+        return std::make_unique<Property<long>>();
     } else if (name == test_values<double>::name) {
-        return new Property<double>;
+        return std::make_unique<Property<double>>();
     } else if (name == test_values<std::string>::name) {
-        return new Property<std::string>;
+        return std::make_unique<Property<std::string>>();
     } else if (name == test_values<MapType>::name) {
-        return new Property<MapType>;
+        return std::make_unique<Property<MapType>>();
     } else {
-        return new SoftProperty;
+        return std::make_unique<SoftProperty>();
     }
 }
 
@@ -181,8 +181,8 @@ template<class T>
 void PropertyEntityintegration::test_modProperty()
 {
     // Get a pointer to the types default property
-    PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
-    ASSERT_NOT_NULL(dflt);
+    auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
+    ASSERT_TRUE(dflt);
     ASSERT_TRUE(dflt->flags().m_flags & flag_class);
 
     // The entity instance should not have a property by this name
@@ -193,7 +193,7 @@ void PropertyEntityintegration::test_modProperty()
     ASSERT_NOT_NULL(p);
     ASSERT_TRUE((p->flags().m_flags & flag_class) == 0);
     // modProperty should have forced a new object
-    ASSERT_NOT_EQUAL(p, dflt);
+    ASSERT_NOT_EQUAL(p, dflt.get());
 
     auto subp = dynamic_cast<Property<T> *>(p);
     ASSERT_NOT_NULL(subp);
@@ -203,8 +203,8 @@ template<class T>
 void PropertyEntityintegration::test_modPropertyClass()
 {
     // Get a pointer to the types default property
-    PropertyBase * dflt = m_type->defaults().find(test_values<T>::name)->second;
-    ASSERT_NOT_NULL(dflt);
+    auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
+    ASSERT_TRUE(dflt);
     ASSERT_TRUE(dflt->flags().m_flags & flag_class);
 
     // The entity instance should not have a property by this name
@@ -217,7 +217,7 @@ void PropertyEntityintegration::test_modPropertyClass()
     ASSERT_NOT_NULL(p);
     ASSERT_TRUE((p->flags().m_flags & flag_class) == 0);
     // modProperty should have forced a new object
-    ASSERT_NOT_EQUAL(p, dflt);
+    ASSERT_NOT_EQUAL(p, dflt.get());
     
     ASSERT_EQUAL(p->data(), test_values<T>::initial_value);
 }

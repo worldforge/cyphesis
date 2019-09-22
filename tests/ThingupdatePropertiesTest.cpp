@@ -75,7 +75,7 @@ void ThingupdatePropertiestest::setup()
     m_name->data() = testName;
 
     m_thing = new Thing("1", 1);
-    m_thing->setProperty("name", m_name);
+    m_thing->setProperty("name", std::unique_ptr<PropertyBase>(m_name));
 }
 
 void ThingupdatePropertiestest::teardown()

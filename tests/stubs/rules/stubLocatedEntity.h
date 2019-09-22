@@ -113,6 +113,14 @@
   }
 #endif //STUB_LocatedEntity_setProperty
 
+#ifndef STUB_LocatedEntity_setProperty
+//#define STUB_LocatedEntity_setProperty
+  PropertyBase* LocatedEntity::setProperty(const std::string & name, std::unique_ptr<PropertyBase> prop)
+  {
+    return nullptr;
+  }
+#endif //STUB_LocatedEntity_setProperty
+
 #ifndef STUB_LocatedEntity_installDelegate
 //#define STUB_LocatedEntity_installDelegate
   void LocatedEntity::installDelegate(int, const std::string &)

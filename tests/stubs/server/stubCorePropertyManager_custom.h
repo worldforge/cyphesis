@@ -36,3 +36,11 @@ PropertyFactory<PropertyT>* CorePropertyManager::installProperty()
     return nullptr;
 }
 #endif //STUB_CorePropertyManager_installProperty
+
+#ifndef STUB_CorePropertyManager_addProperty
+#define STUB_CorePropertyManager_addProperty
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name, int type)
+{
+    return {};
+}
+#endif //STUB_CorePropertyManager_addProperty

@@ -18,6 +18,7 @@
 
 #include "CorePropertyManager.h"
 
+#include "rules/LocatedEntity.h"
 #include "server/Juncture.h"
 #include "server/TeleportProperty.h"
 
@@ -82,15 +83,15 @@ using Atlas::Objects::Root;
 static const bool debug_flag = false;
 
 template<typename T>
-PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string & type_name,
-                                                                       const std::string & parent)
+PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string& type_name,
+                                                                       const std::string& parent)
 {
     return this->installProperty<Property<T>>(type_name, parent);
 }
 
 template<typename PropertyT>
-PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string & type_name,
-                                                                 const std::string & parent)
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string& type_name,
+                                                                 const std::string& parent)
 {
     auto factory = new PropertyFactory<PropertyT>{};
     //Attach visibility flags. Properties that starts with "__" are private, "_" are protected and the rest are public.
@@ -102,7 +103,7 @@ PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::stri
 }
 
 template<typename PropertyT>
-PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string & type_name)
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string& type_name)
 {
     return this->installProperty<PropertyT>(type_name, PropertyT::property_atlastype);
 }
@@ -292,11 +293,11 @@ CorePropertyManager::CorePropertyManager()
 
 }
 
-int CorePropertyManager::installFactory(const std::string & type_name,
-                                        const Root & type_desc,
+int CorePropertyManager::installFactory(const std::string& type_name,
+                                        const Root& type_desc,
                                         std::unique_ptr<PropertyKit> factory)
 {
-    Inheritance & i = Inheritance::instance();
+    Inheritance& i = Inheritance::instance();
     if (i.addChild(type_desc) == nullptr) {
         return -1;
     }
@@ -306,27 +307,27 @@ int CorePropertyManager::installFactory(const std::string & type_name,
     return 0;
 }
 
-PropertyBase * CorePropertyManager::addProperty(const std::string & name,
-                                                int type)
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name,
+                                                               int type)
 {
     assert(!name.empty());
     assert(name != "objtype");
-    PropertyBase * p = nullptr;
+    std::unique_ptr<PropertyBase> p;
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
         switch (type) {
-          case Element::TYPE_INT:
-            p = new Property<int>;
-            break;
-          case Element::TYPE_FLOAT:
-            p = new Property<double>;
-            break;
-          case Element::TYPE_STRING:
-            p = new Property<std::string>;
-            break;
-          default:
-            p = new SoftProperty();
-            break;
+            case Element::TYPE_INT:
+                p = std::make_unique<Property<int>>();
+                break;
+            case Element::TYPE_FLOAT:
+                p = std::make_unique<Property<double>>();
+                break;
+            case Element::TYPE_STRING:
+                p = std::make_unique<Property<std::string>>();
+                break;
+            default:
+                p = std::make_unique<SoftProperty>();
+                break;
         }
     } else {
         p = I->second->newProperty();

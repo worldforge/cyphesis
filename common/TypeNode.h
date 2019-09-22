@@ -80,7 +80,7 @@ class TypeNode
         ~TypeNode();
 
         /// \brief injects a new property and updated the m_description
-        TypeNode::PropertiesUpdate injectProperty(const std::string&, PropertyBase*);
+        TypeNode::PropertiesUpdate injectProperty(const std::string&, std::unique_ptr<PropertyBase>);
 
         /// \brief add the class properties for this type from Atlas attributes
         void addProperties(const Atlas::Message::MapType& attributes);

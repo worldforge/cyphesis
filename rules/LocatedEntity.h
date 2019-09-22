@@ -215,7 +215,8 @@ class LocatedEntity : public Router, public ReferenceCounted {
     // FIXME These should be de-virtualised and, and implementations moved
     // from Entity to here.
     virtual PropertyBase * modProperty(const std::string & name, const Atlas::Message::Element& def_val = Atlas::Message::Element());
-    virtual PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
+    PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
+    virtual PropertyBase * setProperty(const std::string & name, std::unique_ptr<PropertyBase> prop);
 
     virtual void installDelegate(int, const std::string &);
     virtual void removeDelegate(int, const std::string &);

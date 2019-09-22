@@ -22,9 +22,9 @@
 #include "PropertyFactory.h"
 
 template <class T>
-PropertyBase * PropertyFactory<T>::newProperty()
+std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
 {
-    auto prop = new T();
+    auto prop = std::make_unique<T>();
     prop->addFlags(m_flags);
     return prop;
 }

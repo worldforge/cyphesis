@@ -84,7 +84,7 @@ void TerrainEffectorPropertytest::test_not_terrain()
     ASSERT_EQUAL(m_entity->m_location.m_parent.get(), m_world.get());
 
     m_world->setProperty("terrain",
-                         new Property<Atlas::Message::MapType>);
+                         std::unique_ptr<PropertyBase>(new Property<Atlas::Message::MapType>));
 
     const TerrainProperty * res = m_property->getTerrain(m_entity.get());
 
@@ -97,7 +97,7 @@ void TerrainEffectorPropertytest::test_found()
     ASSERT_EQUAL(m_entity->m_location.m_parent.get(), m_world.get());
 
     m_world->setProperty("terrain",
-                         new TerrainProperty);
+                         std::unique_ptr<PropertyBase>(new TerrainProperty));
 
     const TerrainProperty * res = m_property->getTerrain(m_entity.get());
 
@@ -122,17 +122,26 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second;
+        return I->second.get();
     }
     return 0;
 }
 
 #define STUB_Entity_setProperty
 PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
+                                   std::unique_ptr<PropertyBase> prop)
 {
-    return m_properties[name] = prop;
+    auto p = prop.get();
+    m_properties[name] = std::move(prop);
+    return p;
 }
+
+//#define STUB_LocatedEntity_setProperty
+//PropertyBase * LocatedEntity::setProperty(const std::string & name,
+//                                   PropertyBase* prop)
+//{
+//    return setProperty(name, std::unique_ptr<PropertyBase>(prop));
+//}
 
 #include "stubs/rules/simulation/stubEntity.h"
 

@@ -19,11 +19,10 @@
 #ifndef RULESETS_TASKS_PROPERTY_H
 #define RULESETS_TASKS_PROPERTY_H
 
+#include "Task.h"
 #include "modules/Ref.h"
 #include "common/Property.h"
 #include <map>
-
-class Task;
 
 /// \brief Keeps track of any ongoing tasks.
 /// \ingroup PropertyClasses

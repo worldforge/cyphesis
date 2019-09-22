@@ -354,7 +354,7 @@ void ThingIntegration::test_visibility()
 
         auto modeDataProp = new ModeDataProperty();
         modeDataProp->setPlantedData({WeakEntityRef(t2)});
-        t3->setProperty(ModeDataProperty::property_name, modeDataProp);
+        t3->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
         Operation sightOp;
         OpVector res;
@@ -428,7 +428,7 @@ void ThingIntegration::test_visibility()
 
         auto modeDataProp = new ModeDataProperty();
         modeDataProp->setPlantedData({WeakEntityRef(t3)});
-        t4->setProperty(ModeDataProperty::property_name, modeDataProp);
+        t4->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
         Operation sightOp;
         OpVector res;
@@ -504,7 +504,7 @@ void ThingIntegration::test_visibility()
 
         auto modeDataProp = new ModeDataProperty();
         modeDataProp->setPlantedData({WeakEntityRef(t2)});
-        t4->setProperty(ModeDataProperty::property_name, modeDataProp);
+        t4->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
 
         Operation sightOp;
@@ -530,7 +530,7 @@ void ThingIntegration::test_reachability()
     WFMath::AxisBox<3> bbox(WFMath::Point<3>(-10, -10, -10), WFMath::Point<3>(10, 10, 10));
 
     auto createReachPropFn = [](double reach) {
-        auto reachProp = new Property<double>();
+        auto reachProp = std::make_unique<Property<double>>();
         reachProp->data() = reach;
         return reachProp;
     };
@@ -726,7 +726,7 @@ void ThingIntegration::test_reachability()
         t2->addFlags(entity_domain);
         auto entityProp = new EntityProperty();
         entityProp->data() = WeakEntityRef(t3);
-        t2->setProperty("right_hand_wield", entityProp);
+        t2->setProperty("right_hand_wield", std::unique_ptr<PropertyBase>(entityProp));
 
         //T1 can reach itself
         ASSERT_TRUE(t1->canReach({t1, {}}));
@@ -793,7 +793,7 @@ void ThingIntegration::test_reachability()
 
         auto entityProp = new EntityProperty();
         entityProp->data() = WeakEntityRef(t4);
-        t3->setProperty("right_hand_wield", entityProp);
+        t3->setProperty("right_hand_wield", std::unique_ptr<PropertyBase>(entityProp));
 
         //T1 can reach itself
         ASSERT_TRUE(t1->canReach({t1, {}}));
@@ -859,7 +859,7 @@ void ThingIntegration::test_reachability()
 
         auto entityProp = new EntityProperty();
         entityProp->data() = WeakEntityRef(t4);
-        t2->setProperty("right_hand_wield", entityProp);
+        t2->setProperty("right_hand_wield", std::unique_ptr<PropertyBase>(entityProp));
 
         //T3 can't reach t4 even though it's wielded
         ASSERT_FALSE(t3->canReach({t4, {}}));
@@ -900,7 +900,7 @@ void ThingIntegration::test_reachability()
         t3->m_location.setBBox(smallBbox);
         auto reachProp = new Property<double>();
         reachProp->data() = 20.f;
-        t3->setProperty("reach", reachProp);
+        t3->setProperty("reach", std::unique_ptr<PropertyBase>(reachProp));
         Ref<ThingExt> t4 = new ThingExt("4", 4);
         t4->m_location.m_pos = {100, 0, 100};
         t4->m_location.setBBox(smallBbox);

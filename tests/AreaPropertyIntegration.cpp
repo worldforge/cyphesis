@@ -71,7 +71,7 @@ void AreaPropertyintegration::setup()
             })
         }
     );
-    m_char_type->injectProperty("char_type", m_char_property);
+    m_char_type->injectProperty("char_type", std::unique_ptr<PropertyBase>(m_char_property));
 
     m_char1 = new Entity("1", 1);
     m_char1->setType(m_char_type);
@@ -146,18 +146,14 @@ TypeNode::TypeNode(std::string name) : m_name(name), m_parent(0)
 #define STUB_TypeNode_TypeNode_DTOR
 TypeNode::~TypeNode()
 {
-    PropertyDict::const_iterator I = m_defaults.begin();
-    PropertyDict::const_iterator Iend = m_defaults.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
+    m_defaults.clear();
 }
 
 #define STUB_TypeNode_injectProperty
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
-                                                    PropertyBase* p)
+                                                    std::unique_ptr<PropertyBase> p)
 {
-    m_defaults[name] = p;
+    m_defaults[name] = std::move(p);
     return {};
 }
 

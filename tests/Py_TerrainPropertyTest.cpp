@@ -50,7 +50,7 @@ class TestProp : public Py::ExtensionModule<TestProp>
         {
             auto ent = CyPy_Entity::value(args.front());
 
-            PropertyBase * p = ent->setProperty("terrain", new TerrainProperty);
+            PropertyBase * p = ent->setProperty("terrain", std::unique_ptr<PropertyBase>(new TerrainProperty));
             p->install(ent.get(), "terrain");
             p->apply(ent.get());
             ent->propertyApplied("terrain", *p);

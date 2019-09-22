@@ -136,14 +136,16 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
         PropertyDict::const_iterator J;
         if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
             prop = J->second->copy();
+            m_properties[name].reset(prop);
         } else {
             // This is an entirely new property, not just a modification of
             // one in defaults, so we need to install it to this Entity.
-            prop = PropertyManager::instance().addProperty(name, attr.getType());
+            auto newProp = PropertyManager::instance().addProperty(name, attr.getType());
+            prop = newProp.get();
+            m_properties[name] = std::move(newProp);
             prop->install(this, name);
         }
         assert(prop != nullptr);
-        m_properties[name].reset(prop);
     }
 
     prop->set(attr);
@@ -200,10 +202,11 @@ PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Messag
 /// @param prop the property object to be used
 /// @returns a pointer to the property
 PropertyBase * Entity::setProperty(const std::string & name,
-                                   PropertyBase * prop)
+                                   std::unique_ptr<PropertyBase> prop)
 {
-    m_properties[name].reset(prop);
-    return prop;
+    auto p = prop.get();
+    m_properties[name] = std::move(prop);
+    return p;
 }
 
 /// \brief Copy attributes into an Atlas element

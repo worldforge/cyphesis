@@ -70,15 +70,16 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
 }
 
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
-                              PropertyBase* p)
+                              std::unique_ptr<PropertyBase> prop)
 {
+    auto p = prop.get();
     TypeNode::PropertiesUpdate update;
     auto existingI = m_defaults.find(name);
-    if (existingI != m_defaults.end() && existingI->second.get() != p) {
-        m_defaults.erase(existingI);
+    if (existingI != m_defaults.end() && existingI->second.get() != prop.get()) {
+        existingI->second = std::move(prop);
         update.changedProps.insert(name);
     } else {
-        m_defaults.emplace(name, p);
+        m_defaults.emplace(name, std::move(prop));
         update.newProps.insert(name);
     }
 
@@ -108,13 +109,13 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
 void TypeNode::addProperties(const MapType& attributes)
 {
     for (const auto& entry : attributes) {
-        PropertyBase* p = PropertyManager::instance().addProperty(entry.first,
+        auto p = PropertyManager::instance().addProperty(entry.first,
                                                                   entry.second.getType());
         assert(p != nullptr);
         p->set(entry.second);
         p->addFlags(flag_class);
         p->install(this, entry.first);
-        m_defaults[entry.first].reset(p);
+        m_defaults[entry.first] = std::move(p);
     }
 }
 
@@ -156,7 +157,6 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             assert(p != nullptr);
             p->addFlags(flag_class);
             p->install(this, entry.first);
-            m_defaults[entry.first].reset(p);
             propertiesUpdate.newProps.emplace(entry.first);
             p->set(entry.second);
 
@@ -167,6 +167,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             if (!p->hasFlags(visibility_non_public)) {
                 attributesMapPublic[entry.first] = entry.second;
             }
+            m_defaults[entry.first] = std::move(p);
         } else {
             Atlas::Message::Element oldVal;
             auto& p = I->second;

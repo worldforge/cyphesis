@@ -490,7 +490,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
         }
 
         if (bBoxProperty) {
-            auto update = typeNode->injectProperty(BBoxProperty::property_name, bBoxProperty);
+            auto update = typeNode->injectProperty(BBoxProperty::property_name, std::unique_ptr<PropertyBase>(bBoxProperty));
 
             Inheritance::instance().typesUpdated({{typeNode, update}});
         }

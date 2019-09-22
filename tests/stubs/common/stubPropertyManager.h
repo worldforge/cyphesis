@@ -34,9 +34,9 @@
 
 #ifndef STUB_PropertyManager_addProperty
 //#define STUB_PropertyManager_addProperty
-  PropertyBase* PropertyManager::addProperty(const std::string & name, int type)
+  std::unique_ptr<PropertyBase> PropertyManager::addProperty(const std::string & name, int type)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
   }
 #endif //STUB_PropertyManager_addProperty
 

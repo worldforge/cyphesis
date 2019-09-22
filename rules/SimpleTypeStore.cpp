@@ -75,7 +75,7 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
     //First add all properties from parent type.
     if (parentNode) {
         for (auto& entry : parentNode->defaults()) {
-            type->injectProperty(entry.first, entry.second->copy());
+            type->injectProperty(entry.first, std::unique_ptr<PropertyBase>(entry.second->copy()));
         }
     }
 

@@ -223,7 +223,7 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
 
     long id = newId();
     Entity* plantedEntity = new Entity(std::to_string(id), id);
-    plantedEntity->setProperty(ModeProperty::property_name, plantedProperty);
+    plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
     plantedEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
@@ -233,7 +233,7 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
                             {1,  1, 1}};
     bBoxProperty->install(plantedEntity, "bbox");
     bBoxProperty->apply(plantedEntity);
-    plantedEntity->setProperty("bbox", bBoxProperty);
+    plantedEntity->setProperty("bbox", std::unique_ptr<PropertyBase>(bBoxProperty));
 
 
     domain->addEntity(*plantedEntity);
@@ -251,13 +251,13 @@ void PhysicalDomainIntegrationTest::test_scaleBbox()
     //Add a box and let it fall on the planted entity
     id = newId();
     Entity* freeEntity = new Entity(std::to_string(id), id);
-    freeEntity->setProperty(ModeProperty::property_name, freeProperty);
+    freeEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(freeProperty));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
     freeEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
     freeEntity->m_location.setBBox({{-0.5f, 0, -0.5f},
                                     {0.5f,  1, 0.5f}});
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
     domain->addEntity(*freeEntity);
 
@@ -329,7 +329,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     fixed1->m_location.setBBox({{-2, -1, -2},
                                 {2,  1,  2}});
     fixed1->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
-    fixed1->setProperty(ModeProperty::property_name, fixedProperty);
+    fixed1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(fixedProperty));
 
     domain->addEntity(*fixed1);
 
@@ -345,7 +345,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     planted1->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
     planted1->m_location.setBBox({{-2, -1, -2},
                                   {2,  1,  2}});
-    planted1->setProperty(ModeProperty::property_name, plantedProperty);
+    planted1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
 
     domain->addEntity(*planted1);
 
@@ -357,7 +357,7 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     planted2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
     planted2->m_location.setBBox({{-2, -1, -2},
                                   {2,  1,  2}});
-    planted2->setProperty(ModeProperty::property_name, plantedProperty);
+    planted2->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
 
     domain->addEntity(*planted2);
 
@@ -369,10 +369,10 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
     Entity* freeEntity = new Entity(std::to_string(id), id);
     freeEntity->m_location.m_pos = {1, 4, 0};
     freeEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
-    freeEntity->setProperty(ModeProperty::property_name, freeProperty);
+    freeEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(freeProperty));
     freeEntity->m_location.setBBox({{-1, -1, -1},
                                     {1,  1,  1}});
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     domain->addEntity(*freeEntity);
 
     ASSERT_FUZZY_EQUAL(4.0f, freeEntity->m_location.m_pos.y(), 0.1);
@@ -462,7 +462,7 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
             terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
             terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-            rootEntity.setProperty("terrain", terrainProperty);
+            rootEntity.setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
             rootEntity.m_location.m_pos = WFMath::Point<3>::ZERO();
             rootEntity.m_location.setBBox({{-64, -64, -64},
                                            {64,  64,  64}});
@@ -480,8 +480,8 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
                 ModeProperty* modeProperty = new ModeProperty();
                 modeProperty->set("planted");
 
-                planted1->setProperty(ModeProperty::property_name, modeProperty);
-                planted1->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+                planted1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
+                planted1->setProperty(GeometryProperty::property_name, std::unique_ptr<PropertyBase>(plantedGeometryProperty));
             }
 
             domain.addEntity(*planted1);
@@ -513,8 +513,8 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
                 ModeProperty* modeProperty = new ModeProperty();
                 modeProperty->set("planted");
 
-                planted2->setProperty(ModeProperty::property_name, modeProperty);
-                planted2->setProperty(GeometryProperty::property_name, plantedGeometryProperty);
+                planted2->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
+                planted2->setProperty(GeometryProperty::property_name, std::unique_ptr<PropertyBase>(plantedGeometryProperty));
             }
 
             domain.addEntity(*planted2);
@@ -541,17 +541,17 @@ void PhysicalDomainIntegrationTest::test_plantedOn()
             {
                 ModeProperty* modeProperty = new ModeProperty();
                 modeProperty->set("planted");
-                plantedOn->setProperty(ModeProperty::property_name, modeProperty);
+                plantedOn->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
             }
             plantedOn->m_location.setBBox({{-1, 0, -1},
                                            {1,  1, 1}});
             auto modeDataProperty = new ModeDataProperty();
             modeDataProperty->setPlantedData({WeakEntityRef(planted1.get())});
-            plantedOn->setProperty(ModeDataProperty::property_name, modeDataProperty);
+            plantedOn->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProperty));
 
             GeometryProperty* geometryProperty = new GeometryProperty();
             geometryProperty->set(MapType{{"type", plantedOnTopShape}});
-            plantedOn->setProperty(GeometryProperty::property_name, geometryProperty);
+            plantedOn->setProperty(GeometryProperty::property_name, std::unique_ptr<PropertyBase>(geometryProperty));
 
             domain.addEntity(*plantedOn);
 
@@ -587,7 +587,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -597,7 +597,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
 
     Entity* terrainModEntity = new Entity("1", newId());
     terrainModEntity->m_location.m_pos = WFMath::Point<3>(32, 10, 32);
-    terrainModEntity->setProperty(ModeProperty::property_name, modeProperty);
+    terrainModEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
     TerrainModProperty* terrainModProperty = new TerrainModProperty();
 
     Atlas::Message::MapType modElement{
@@ -617,7 +617,7 @@ void PhysicalDomainIntegrationTest::test_terrainMods()
     };
 
     terrainModProperty->set(modElement);
-    terrainModEntity->setProperty(TerrainModProperty::property_name, terrainModProperty);
+    terrainModEntity->setProperty(TerrainModProperty::property_name, std::unique_ptr<PropertyBase>(terrainModProperty));
     terrainModProperty->apply(terrainModEntity);
 
     domain->addEntity(*terrainModEntity);
@@ -710,7 +710,7 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
 
     auto modeFreeProperty = new ModeProperty();
     modeFreeProperty->set("free");
-    rockType->injectProperty("mode", modeFreeProperty);
+    rockType->injectProperty("mode", std::unique_ptr<PropertyBase>(modeFreeProperty));
 
     auto modeFixedProperty = new ModeProperty();
     modeFixedProperty->set("fixed");
@@ -723,9 +723,9 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
 
     long id = newId();
     TestEntity* lake = new TestEntity(std::to_string(id), id);
-    lake->setProperty(ModeProperty::property_name, modeFixedProperty);
+    lake->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
     lake->setType(lakeType);
-    lake->setProperty("water_body", waterBodyProp);
+    lake->setProperty("water_body", std::unique_ptr<PropertyBase>(waterBodyProp));
     lake->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(10, 0, 2)));
     lake->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
     //rotate 90 degrees
@@ -735,7 +735,7 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     //Should be in water
     id = newId();
     Entity* freeEntity = new Entity("freeEntity", id);
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(-1, 1, 9);
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
@@ -744,7 +744,7 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     //Should not be in water
     id = newId();
     Entity* freeEntity2 = new Entity("freeEntity2", id);
-    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity2->setType(rockType);
     freeEntity2->m_location.m_pos = WFMath::Point<3>(9, 1, 1);
     freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
@@ -756,8 +756,8 @@ void PhysicalDomainIntegrationTest::test_lake_rotated()
     auto modeDataProp = new ModeDataProperty();
     modeDataProp->setPlantedData({WeakEntityRef(lake)});
     Entity* floatingEntity = new Entity("floatingEntity", id);
-    floatingEntity->setProperty(ModeProperty::property_name, plantedProp);
-    floatingEntity->setProperty(ModeDataProperty::property_name, modeDataProp);
+    floatingEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProp));
+    floatingEntity->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
     floatingEntity->setType(rockType);
     floatingEntity->m_location.m_pos = WFMath::Point<3>(5, 20, 1);
@@ -803,7 +803,7 @@ void PhysicalDomainIntegrationTest::test_lake()
 
     auto modeFreeProperty = new ModeProperty();
     modeFreeProperty->set("free");
-    rockType->injectProperty("mode", modeFreeProperty);
+    rockType->injectProperty("mode", std::unique_ptr<PropertyBase>(modeFreeProperty));
 
     auto modeFixedProperty = new ModeProperty();
     modeFixedProperty->set("fixed");
@@ -816,9 +816,9 @@ void PhysicalDomainIntegrationTest::test_lake()
 
     long id = newId();
     TestEntity* lake = new TestEntity(std::to_string(id), id);
-    lake->setProperty(ModeProperty::property_name, modeFixedProperty);
+    lake->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
     lake->setType(lakeType);
-    lake->setProperty("water_body", waterBodyProp);
+    lake->setProperty("water_body", std::unique_ptr<PropertyBase>(waterBodyProp));
     lake->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-5, -64, -5), WFMath::Point<3>(5, 0, 5)));
     lake->m_location.m_pos = WFMath::Point<3>(20, 0, 0);
     lake->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
@@ -826,7 +826,7 @@ void PhysicalDomainIntegrationTest::test_lake()
 
     id = newId();
     Entity* freeEntity = new Entity(std::to_string(id), id);
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(20, 2, 0);
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -835,7 +835,7 @@ void PhysicalDomainIntegrationTest::test_lake()
     //The second entity is placed in water, and should be submerged from the start
     id = newId();
     Entity* freeEntity2 = new Entity(std::to_string(id), id);
-    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity2->setType(rockType);
     freeEntity2->m_location.m_pos = WFMath::Point<3>(20, -2, 2);
     freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -844,7 +844,7 @@ void PhysicalDomainIntegrationTest::test_lake()
     //The third entity is placed outside of the lake, and should never be submerged.
     id = newId();
     Entity* freeEntity3 = new Entity(std::to_string(id), id);
-    freeEntity3->setProperty("mass", massProp);
+    freeEntity3->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity3->setType(rockType);
     freeEntity3->m_location.m_pos = WFMath::Point<3>(-20, 2, 0);
     freeEntity3->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -898,7 +898,7 @@ void PhysicalDomainIntegrationTest::test_lake()
 
     BBoxProperty* bBoxProperty = new BBoxProperty();
     bBoxProperty->set(newBbox.toAtlas());
-    lake->setProperty("bbox", bBoxProperty);
+    lake->setProperty("bbox", std::unique_ptr<PropertyBase>(bBoxProperty));
     bBoxProperty->apply(lake);
     lake->test_propertyApplied().emit("bbox", *bBoxProperty);
 
@@ -934,7 +934,7 @@ void PhysicalDomainIntegrationTest::test_ocean()
     auto modeFixedProperty = new ModeProperty();
     modeFixedProperty->set("fixed");
 
-    rockType->injectProperty("mode", modeFreeProperty);
+    rockType->injectProperty("mode", std::unique_ptr<PropertyBase>(modeFreeProperty));
 
 
     Entity* rootEntity = new Entity("0", newId());
@@ -944,16 +944,16 @@ void PhysicalDomainIntegrationTest::test_ocean()
 
     long id = newId();
     Entity* ocean = new Entity(std::to_string(id), id);
-    ocean->setProperty(ModeProperty::property_name, modeFixedProperty);
+    ocean->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
     ocean->setType(oceanType);
-    ocean->setProperty("water_body", waterBodyProp);
+    ocean->setProperty("water_body", std::unique_ptr<PropertyBase>(waterBodyProp));
     ocean->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
     ocean->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
     domain->addEntity(*ocean);
 
     id = newId();
     Entity* freeEntity = new Entity(std::to_string(id), id);
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(0, 2, 0);
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -962,7 +962,7 @@ void PhysicalDomainIntegrationTest::test_ocean()
     //The second entity is placed in water, and should be submerged from the start
     id = newId();
     Entity* freeEntity2 = new Entity(std::to_string(id), id);
-    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity2->setType(rockType);
     freeEntity2->m_location.m_pos = WFMath::Point<3>(10, -10, 0);
     freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1091,7 +1091,7 @@ void PhysicalDomainIntegrationTest::test_placement()
     {
         long id = newId();
         Entity* entity = new Entity(std::to_string(id), id);
-        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
         entity->setType(rockType);
         entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
         entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-6, -1, -2), WFMath::Point<3>(6, 1, 2)));
@@ -1105,7 +1105,7 @@ void PhysicalDomainIntegrationTest::test_placement()
     {
         long id = newId();
         Entity* entity = new Entity(std::to_string(id), id);
-        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
         entity->setType(rockType);
         entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
         entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-6, -1, -2), WFMath::Point<3>(6, 1, 2)));
@@ -1121,7 +1121,7 @@ void PhysicalDomainIntegrationTest::test_placement()
     {
         long id = newId();
         Entity* entity = new Entity(std::to_string(id), id);
-        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
         entity->setType(rockType);
         entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
         entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, 0), WFMath::Point<3>(6, 1, 2)));
@@ -1135,7 +1135,7 @@ void PhysicalDomainIntegrationTest::test_placement()
     {
         long id = newId();
         Entity* entity = new Entity(std::to_string(id), id);
-        entity->setProperty(ModeProperty::property_name, modeProperty);
+        entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
         entity->setType(rockType);
         entity->m_location.m_pos = WFMath::Point<3>(10, -20, 1);
         entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(2, 0, 1), WFMath::Point<3>(6, 1, 2)));
@@ -1220,18 +1220,18 @@ void PhysicalDomainIntegrationTest::test_fallToBottom()
 
 
     Entity* freeEntity = new Entity("1", newId());
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*freeEntity);
 
     Entity* fixedEntity = new Entity("2", newId());
-    fixedEntity->setProperty("mass", massProp);
+    fixedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
     ModeProperty* modeProperty = new ModeProperty();
     modeProperty->set("fixed");
-    fixedEntity->setProperty(ModeProperty::property_name, modeProperty);
+    fixedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
     fixedEntity->setType(rockType);
     fixedEntity->m_location.m_pos = WFMath::Point<3>(10, 0, 10);
     fixedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1271,18 +1271,18 @@ void PhysicalDomainIntegrationTest::test_standOnFixed()
 
 
     Entity* freeEntity = new Entity("1", newId());
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(0, 1, 0);
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*freeEntity);
 
     Entity* fixedEntity = new Entity("2", newId());
-    fixedEntity->setProperty("mass", massProp);
+    fixedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
     ModeProperty* modeProperty = new ModeProperty();
     modeProperty->set("fixed");
-    fixedEntity->setProperty(ModeProperty::property_name, modeProperty);
+    fixedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
     fixedEntity->setType(rockType);
     fixedEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     fixedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1310,7 +1310,7 @@ void PhysicalDomainIntegrationTest::test_fallToTerrain()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1322,19 +1322,19 @@ void PhysicalDomainIntegrationTest::test_fallToTerrain()
 
 
     Entity* freeEntity = new Entity("1", newId());
-    freeEntity->setProperty("mass", massProp);
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(10, 20, 10);
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*freeEntity);
 
     Entity* plantedEntity = new Entity("2", newId());
-    plantedEntity->setProperty("mass", massProp);
+    plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
     ModeProperty* modeProperty = new ModeProperty();
     modeProperty->set("planted");
 
-    plantedEntity->setProperty(ModeProperty::property_name, modeProperty);
+    plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(20, 20, 20);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1374,8 +1374,8 @@ void PhysicalDomainIntegrationTest::test_collision()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
-    rootEntity->setProperty("friction", zeroFrictionProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+    rootEntity->setProperty("friction", std::unique_ptr<PropertyBase>(zeroFrictionProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1390,16 +1390,16 @@ void PhysicalDomainIntegrationTest::test_collision()
     //Move y axis 2 meter per second.
     propelProperty->data() = WFMath::Vector<3>(0, 0, 2.0 / speedGroundProperty->data());
 
-    AngularFactorProperty angularZeroFactorProperty;
-    angularZeroFactorProperty.data() = WFMath::Vector<3>::ZERO();
+    auto angularZeroFactorProperty = new AngularFactorProperty();
+    angularZeroFactorProperty->data() = WFMath::Vector<3>::ZERO();
 
 
     Entity* freeEntity = new Entity("1", newId());
-    freeEntity->setProperty(PropelProperty::property_name, propelProperty);
-    freeEntity->setProperty("mass", massProp);
-    freeEntity->setProperty("friction", zeroFrictionProperty);
-    freeEntity->setProperty("speed_ground", speedGroundProperty);
-    freeEntity->setProperty(AngularFactorProperty::property_name, &angularZeroFactorProperty);
+    freeEntity->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty));
+    freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
+    freeEntity->setProperty("friction", std::unique_ptr<PropertyBase>(zeroFrictionProperty));
+    freeEntity->setProperty("speed_ground", std::unique_ptr<PropertyBase>(speedGroundProperty));
+    freeEntity->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty));
     freeEntity->setType(rockType);
     freeEntity->m_location.m_pos = WFMath::Point<3>(10, 10, 10);
     freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1407,12 +1407,12 @@ void PhysicalDomainIntegrationTest::test_collision()
     domain->addEntity(*freeEntity);
 
     Entity* plantedEntity = new Entity("2", newId());
-    plantedEntity->setProperty("mass", massProp);
+    plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
     ModeProperty* modeProperty = new ModeProperty();
     modeProperty->set("planted");
 
-    plantedEntity->setProperty(ModeProperty::property_name, modeProperty);
+    plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(10, 10, 15);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1469,7 +1469,7 @@ void PhysicalDomainIntegrationTest::test_mode()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1478,7 +1478,7 @@ void PhysicalDomainIntegrationTest::test_mode()
     massProp->data() = 100;
 
     Entity* freeEntity1 = new Entity("free1", newId());
-    freeEntity1->setProperty("mass", massProp);
+    freeEntity1->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity1->setType(rockType);
     freeEntity1->m_location.m_pos = WFMath::Point<3>(10, 30, 10);
     freeEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1488,7 +1488,7 @@ void PhysicalDomainIntegrationTest::test_mode()
 
     //The other free entity is placed below the terrain; it's expected to then be clamped to the terrain
     Entity* freeEntity2 = new Entity("free2", newId());
-    freeEntity2->setProperty("mass", massProp);
+    freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
     freeEntity2->setType(rockType);
     freeEntity2->m_location.m_pos = WFMath::Point<3>(20, -10, 20);
     freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1496,8 +1496,8 @@ void PhysicalDomainIntegrationTest::test_mode()
     ASSERT_EQUAL(freeEntity2->m_location.m_pos, WFMath::Point<3>(20, 22.6006, 20));
 
     Entity* plantedEntity = new Entity("planted", newId());
-    plantedEntity->setProperty("mass", massProp);
-    plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
+    plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1506,8 +1506,8 @@ void PhysicalDomainIntegrationTest::test_mode()
 
 
     Entity* fixedEntity = new Entity("fixed", newId());
-    fixedEntity->setProperty("mass", massProp);
-    fixedEntity->setProperty(ModeProperty::property_name, modeFixedProperty);
+    fixedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
+    fixedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
     fixedEntity->setType(rockType);
     fixedEntity->m_location.m_pos = WFMath::Point<3>(40, 50, 40);
     fixedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
@@ -1543,7 +1543,7 @@ void PhysicalDomainIntegrationTest::test_determinism()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1559,7 +1559,7 @@ void PhysicalDomainIntegrationTest::test_determinism()
             std::stringstream ss;
             ss << "free" << id;
             Entity* freeEntity = new Entity(ss.str(), id);
-            freeEntity->setProperty("mass", massProp);
+            freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
             freeEntity->setType(rockType);
             freeEntity->m_location.m_pos = WFMath::Point<3>(i, j, i + j);
             freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, 0, -0.25f), WFMath::Point<3>(-0.25f, 0.5f, -0.25f)));
@@ -1605,7 +1605,7 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1614,11 +1614,11 @@ void PhysicalDomainIntegrationTest::test_zoffset()
 
 
     Ref<Entity> plantedEntity = new Entity("planted", newId());
-    plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 10, 1)));
-    plantedEntity->setProperty("planted_offset", plantedOffset);
+    plantedEntity->setProperty("planted_offset", std::unique_ptr<PropertyBase>(plantedOffset));
     domain->addEntity(*plantedEntity);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
 
@@ -1646,7 +1646,7 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1655,11 +1655,11 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
 
 
     Ref<Entity> plantedEntity = new Entity("planted", newId());
-    plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+    plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
     plantedEntity->setType(rockType);
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 10, 10)));
-    plantedEntity->setProperty("planted_scaled_offset", plantedScaledOffset);
+    plantedEntity->setProperty("planted_scaled_offset", std::unique_ptr<PropertyBase>(plantedScaledOffset));
     domain->addEntity(*plantedEntity);
     ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
 
@@ -1689,14 +1689,14 @@ void PhysicalDomainIntegrationTest::test_visibility()
     TestWorld testWorld(rootEntity);
 
     Ref<Entity> smallEntity1 = new Entity("small1", newId());
-    smallEntity1->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
+    smallEntity1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
     smallEntity1->setType(rockType);
     smallEntity1->m_location.m_pos = WFMath::Point<3>(30, 0, 30);
     smallEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
     domain->addEntity(*smallEntity1);
 
     Ref<Entity> smallEntity2 = new Entity("small2", newId());
-    smallEntity2->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
+    smallEntity2->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
     smallEntity2->setType(rockType);
     smallEntity2->m_location.m_pos = WFMath::Point<3>(-31, 0, -31);
     smallEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
@@ -1704,15 +1704,15 @@ void PhysicalDomainIntegrationTest::test_visibility()
 
     //This entity should always be seen, as "visibility" is specified.
     Ref<Entity> smallVisibleEntity = new Entity("smallVisible", newId());
-    smallVisibleEntity->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
+    smallVisibleEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
     smallVisibleEntity->setType(rockType);
     smallVisibleEntity->m_location.m_pos = WFMath::Point<3>(-63, 0, -63);
     smallVisibleEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
-    smallVisibleEntity->setProperty("visibility", visibilityProperty);
+    smallVisibleEntity->setProperty("visibility", std::unique_ptr<PropertyBase>(visibilityProperty));
     domain->addEntity(*smallVisibleEntity);
 
     Ref<Entity> largeEntity1 = new Entity("large1", newId());
-    largeEntity1->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
+    largeEntity1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
     largeEntity1->setType(rockType);
     largeEntity1->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
     largeEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-10.f, 0, -10.f), WFMath::Point<3>(10, 20, 10)));
@@ -1789,7 +1789,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
 //    Property<double>* stepFactorProp = new Property<double>();
 //    stepFactorProp->data() = 0.3;
 
-    humanType->injectProperty("speed_ground", speedGroundProperty);
+    humanType->injectProperty("speed_ground", std::unique_ptr<PropertyBase>(speedGroundProperty));
 
 
     Ref<Entity> rootEntity = new Entity("0", newId());
@@ -1806,7 +1806,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
         long id = newId();
         ss << "step" << id;
         Ref<Entity> stepElement = new Entity(ss.str(), id);
-        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
+        stepElement->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
         float height = 0.1f + (i * 0.1f);
         float zPos = i * 0.2f;
         WFMath::Point<3> pos(0, 0, zPos);
@@ -1822,9 +1822,9 @@ void PhysicalDomainIntegrationTest::test_stairs()
     //First with an entity which doesn't step; it should collide and be kept in place
     {
         Ref<Entity> human = new Entity("human", newId());
-        human->setProperty(AngularFactorProperty::property_name, angularZeroFactorProperty.copy());
-        human->setProperty("mass", massProp->copy());
-        human->setProperty(PropelProperty::property_name, propelProperty->copy());
+        human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
+        human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp->copy()));
+        human->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty->copy()));
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(0, 0, -1);
         human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, 0, -0.4f), WFMath::Point<3>(0.4, 1.8, 0.4)));
@@ -1840,11 +1840,11 @@ void PhysicalDomainIntegrationTest::test_stairs()
     //Then with an entity with a capsule geometry, it should step
     {
         Ref<Entity> human = new Entity("human", newId());
-        //human->setProperty("step_factor", stepFactorProp);
-        human->setProperty(AngularFactorProperty::property_name, angularZeroFactorProperty.copy());
-        human->setProperty("mass", massProp->copy());
-        human->setProperty(PropelProperty::property_name, propelProperty->copy());
-        human->setProperty(GeometryProperty::property_name, capsuleProperty.copy());
+        //human->setProperty("step_factor", stepFactorProp));
+        human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
+        human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp->copy()));
+        human->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty->copy()));
+        human->setProperty(GeometryProperty::property_name, std::unique_ptr<PropertyBase>(capsuleProperty.copy()));
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(0, 0, -1);
         human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, 0, -0.4f), WFMath::Point<3>(0.4, 1.8, 0.4)));
@@ -1863,7 +1863,7 @@ void PhysicalDomainIntegrationTest::test_stairs()
 
         long id = newId();
         Ref<Entity> stepElement = new Entity("tilted", id);
-        stepElement->setProperty(ModeProperty::property_name, modePlantedProperty->copy());
+        stepElement->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
         WFMath::Point<3> pos(20, 0, 0);
         WFMath::AxisBox<3> bbox(WFMath::Point<3>(-0.4f, 0.f, 0), WFMath::Point<3>(0.4f, 1, 0.4f));
         stepElement->m_location.m_orientation.rotate(WFMath::Quaternion(0, WFMath::numeric_constants<float>::pi() * 0.2f));
@@ -1875,11 +1875,11 @@ void PhysicalDomainIntegrationTest::test_stairs()
         domain->addEntity(*stepElement);
 
         Ref<Entity> human = new Entity("human", newId());
-        //human->setProperty("step_factor", stepFactorProp);
-        human->setProperty(AngularFactorProperty::property_name, angularZeroFactorProperty.copy());
-        human->setProperty("mass", massProp);
-        human->setProperty(PropelProperty::property_name, propelProperty->copy());
-        human->setProperty(GeometryProperty::property_name, capsuleProperty.copy());
+        //human->setProperty("step_factor", stepFactorProp));
+        human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
+        human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
+        human->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty->copy()));
+        human->setProperty(GeometryProperty::property_name, std::unique_ptr<PropertyBase>(capsuleProperty.copy()));
         human->setType(humanType);
         human->m_location.m_pos = WFMath::Point<3>(20, 0, -1);
         human->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.4f, 0, -0.4f), WFMath::Point<3>(0.4, 1.8, 0.4)));
@@ -1910,7 +1910,7 @@ void PhysicalDomainIntegrationTest::test_terrainPrecision()
     terrain.setBasePoint(-1, 0, Mercator::BasePoint(35));
     terrain.setBasePoint(-1, 1, Mercator::BasePoint(40));
     terrain.setBasePoint(-1, -1, Mercator::BasePoint(45));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
     std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));

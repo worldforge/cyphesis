@@ -26,15 +26,12 @@
 #include "TestBase.h"
 
 #include "common/Inheritance.h"
-
+#include "common/Property.h"
 #include "common/log.h"
 #include "common/OperationRouter.h"
 #include "common/TypeNode.h"
 
 #include "common/operations/Setup.h"
-#include "common/operations/Tick.h"
-
-#include <Atlas/Objects/Operation.h>
 
 #include <cassert>
 

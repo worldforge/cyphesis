@@ -100,7 +100,7 @@ static int run_coverage()
 
     pc.basicCoverage();
 
-    pc.tlve()->setProperty("terrain", new TerrainProperty);
+    pc.tlve()->setProperty("terrain", std::unique_ptr<PropertyBase>(new TerrainProperty));
 
     pc.basicCoverage();
 

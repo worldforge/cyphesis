@@ -17,8 +17,9 @@
 
 
 #include "ClientPropertyManager.h"
+#include "common/Property.h"
 
-PropertyBase * ClientPropertyManager::addProperty(const std::string &, int)
+std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string &, int)
 {
-    return nullptr;
+    return {};
 }

@@ -50,9 +50,9 @@
 
 #ifndef STUB_CorePropertyManager_addProperty
 //#define STUB_CorePropertyManager_addProperty
-  PropertyBase* CorePropertyManager::addProperty(const std::string & name, int type)
+  std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name, int type)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
   }
 #endif //STUB_CorePropertyManager_addProperty
 

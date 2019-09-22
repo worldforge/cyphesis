@@ -203,11 +203,18 @@ PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::M
 }
 
 PropertyBase* LocatedEntity::setProperty(const std::string& name,
-                                         PropertyBase* prop)
+                                         std::unique_ptr<PropertyBase> prop)
 {
-    m_properties[name].reset(prop);
-    return prop;
+    auto p = prop.get();
+    m_properties[name] = std::move(prop);
+    return p;
 }
+
+PropertyBase * LocatedEntity::setProperty(const std::string & name, PropertyBase * prop)
+{
+    return setProperty(name, std::unique_ptr<PropertyBase>(prop));
+}
+
 
 void LocatedEntity::installDelegate(int, const std::string&)
 {

@@ -62,14 +62,14 @@ public:
 class TestPropertyManager : public PropertyManager
 {
   public:
-    virtual PropertyBase * addProperty(const std::string & name,
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name,
                                        int type);
 };
 
-PropertyBase * TestPropertyManager::addProperty(const std::string & name,
+std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
                                                 int type)
 {
-    return new SuspendedProperty();
+    return std::unique_ptr<PropertyBase>(new SuspendedProperty());
 }
 
 class SuspendedPropertyintegration : public Cyphesis::TestBase

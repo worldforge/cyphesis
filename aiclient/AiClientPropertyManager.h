@@ -27,7 +27,7 @@ class AiClientPropertyManager : public PropertyManager
     public:
         AiClientPropertyManager();
 
-        PropertyBase* addProperty(const std::string& name, int type) override;
+        std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) override;
 };
 
 

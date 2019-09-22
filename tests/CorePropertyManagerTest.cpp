@@ -114,58 +114,58 @@ void CorePropertyManagertest::teardown()
 
 void CorePropertyManagertest::test_addProperty_int()
 {
-    auto * p = m_propertyManager->addProperty("non_existant_type",
+    auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_INT);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<Property<int> *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<Property<int> *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_float()
 {
-    auto * p = m_propertyManager->addProperty("non_existant_type",
+    auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_FLOAT);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<Property<double> *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<Property<double> *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_string()
 {
-    auto * p = m_propertyManager->addProperty("non_existant_type",
+    auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_STRING);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<Property<std::string> *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<Property<std::string> *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_list()
 {
-    auto * p = m_propertyManager->addProperty("non_existant_type",
+    auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_LIST);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_map()
 {
-    auto * p = m_propertyManager->addProperty("non_existant_type",
+    auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_MAP);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_none()
 {
-    auto * p = m_propertyManager->addProperty("non_existant_type",
+    auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_NONE);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_named()
 {
-    auto * p = m_propertyManager->addProperty("named_type",
+    auto p = m_propertyManager->addProperty("named_type",
                                               Element::TYPE_NONE);
-    ASSERT_NOT_NULL(p);
-    ASSERT_NOT_NULL(dynamic_cast<MinimalProperty *>(p));
+    ASSERT_TRUE(p);
+    ASSERT_NOT_NULL(dynamic_cast<MinimalProperty *>(p.get()));
 }
 
 void CorePropertyManagertest::test_installFactory()
@@ -326,9 +326,9 @@ template class EntityFactory<World>;
 
 
 template <class T>
-PropertyBase * PropertyFactory<T>::newProperty()
+std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
 {
-    return new T();
+    return std::unique_ptr<PropertyBase>(new T());
 }
 
 template <class T>

@@ -35,7 +35,7 @@
 
 #ifndef STUB_TypeNode_injectProperty
 //#define STUB_TypeNode_injectProperty
-  TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string&, PropertyBase*)
+  TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string&, std::unique_ptr<PropertyBase>)
   {
     return *static_cast<TypeNode::PropertiesUpdate*>(nullptr);
   }

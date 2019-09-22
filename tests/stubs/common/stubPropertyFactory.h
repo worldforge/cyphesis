@@ -9,9 +9,9 @@
 
 #ifndef STUB_PropertyKit_newProperty
 //#define STUB_PropertyKit_newProperty
-  PropertyBase* PropertyKit::newProperty()
+  std::unique_ptr<PropertyBase> PropertyKit::newProperty()
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
   }
 #endif //STUB_PropertyKit_newProperty
 
@@ -27,9 +27,9 @@
 #ifndef STUB_PropertyFactory_newProperty
 //#define STUB_PropertyFactory_newProperty
   template <typename T>
-  PropertyBase* PropertyFactory<T>::newProperty()
+  std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
   }
 #endif //STUB_PropertyFactory_newProperty
 

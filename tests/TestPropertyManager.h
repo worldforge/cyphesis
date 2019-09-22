@@ -34,7 +34,7 @@ class TestPropertyManager : public PropertyManager {
     TestPropertyManager();
     virtual ~TestPropertyManager();
 
-    virtual PropertyBase * addProperty(const std::string & name, int type);
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type);
 
     void installPropertyFactory(const std::string &, PropertyKit *);
 };

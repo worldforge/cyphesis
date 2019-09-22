@@ -9,9 +9,9 @@
 
 #ifndef STUB_ClientPropertyManager_addProperty
 //#define STUB_ClientPropertyManager_addProperty
-  PropertyBase* ClientPropertyManager::addProperty(const std::string & name, int)
+  std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string & name, int)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
   }
 #endif //STUB_ClientPropertyManager_addProperty
 

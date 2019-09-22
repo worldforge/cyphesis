@@ -20,7 +20,7 @@
 #define COMMON_PROPERTY_MANAGER_H
 
 #include "Singleton.h"
-
+#include "Property.h"
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <map>
@@ -48,7 +48,7 @@ class PropertyManager : public Singleton<PropertyManager> {
     /// \brief Add a new named property to an Entity
     ///
     /// @param name a string giving the name of the property.
-    virtual PropertyBase * addProperty(const std::string & name,
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name,
                                        int type) = 0;
 
     virtual int installFactory(const std::string & type_name,

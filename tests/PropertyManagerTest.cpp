@@ -25,6 +25,7 @@
 
 #include "TestBase.h"
 
+#include "common/Property.h"
 #include "common/PropertyFactory.h"
 #include "common/PropertyManager.h"
 
@@ -34,17 +35,17 @@ class TestPropertyManager : public PropertyManager {
   public:
     TestPropertyManager() { }
 
-    virtual PropertyBase * addProperty(const std::string &, int) {
-        return 0;
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string &, int) {
+        return {};
     }
 };
 
 class TestPropertyFactory : public PropertyKit
 {
   public:
-    virtual PropertyBase * newProperty()
+    virtual std::unique_ptr<PropertyBase> newProperty()
     {
-        return 0;
+        return {};
     }
 
     virtual TestPropertyFactory * duplicateFactory() const
@@ -91,9 +92,9 @@ void PropertyManagertest::teardown()
 
 void PropertyManagertest::test_interface()
 {
-    auto * ret = m_pm->addProperty("one", 1);
+    auto ret = m_pm->addProperty("one", 1);
 
-    ASSERT_NULL(ret);
+    ASSERT_FALSE(ret);
 }
 
 void PropertyManagertest::test_installFactory()

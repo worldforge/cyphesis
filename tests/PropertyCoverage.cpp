@@ -151,7 +151,7 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second;
+        return I->second.get();
     }
     return 0;
 }

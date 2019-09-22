@@ -148,7 +148,7 @@ void Entitytest::test_setAttr_new()
 void Entitytest::test_setAttr_existing()
 {
     PropertyBase * initial_property = m_entity->setProperty("test_int_property",
-                                                            new TestProperty);
+                                                            std::make_unique<TestProperty>());
 
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
@@ -165,10 +165,10 @@ void Entitytest::test_setAttr_existing()
 
 void Entitytest::test_setAttr_type()
 {
-    TestProperty * type_property = new TestProperty;
+    auto type_property = new TestProperty;
     type_property->data() = 17;
     type_property->flags().m_flags &= flag_class;
-    m_type->injectProperty("test_int_property", type_property);
+    m_type->injectProperty("test_int_property", std::unique_ptr<PropertyBase>(type_property));
 
     PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
@@ -255,7 +255,7 @@ void Entitytest::test_sequence()
     }
 
     {
-        m_entity->setProperty("new_test_prop", new SoftProperty);
+        m_entity->setProperty("new_test_prop", std::unique_ptr<PropertyBase>(new SoftProperty));
     }
 }
 

@@ -32,28 +32,22 @@ AiClientPropertyManager::AiClientPropertyManager()
     PropertyManager::installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
 }
 
-PropertyBase* AiClientPropertyManager::addProperty(const std::string& name,
+std::unique_ptr<PropertyBase> AiClientPropertyManager::addProperty(const std::string& name,
                                                    int type)
 {
-    PropertyBase* p = nullptr;
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
         switch (type) {
             case Element::TYPE_INT:
-                p = new Property<int>;
-                break;
+                return std::make_unique<Property<int>>();
             case Element::TYPE_FLOAT:
-                p = new Property<double>;
-                break;
+                return std::make_unique<Property<double>>();
             case Element::TYPE_STRING:
-                p = new Property<std::string>;
-                break;
+                return std::make_unique<Property<std::string>>();
             default:
-                p = new SoftProperty;
-                break;
+                return std::make_unique<SoftProperty>();
         }
     } else {
-        p = I->second->newProperty();
+        return I->second->newProperty();
     }
-    return p;
 }

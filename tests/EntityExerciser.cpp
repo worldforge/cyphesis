@@ -68,7 +68,7 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
     }
     if (e->getType() == 0) {
         TypeNode * test_type = new TypeNode("test_type");
-        test_type->injectProperty("test_default", new SoftProperty);
+        test_type->injectProperty("test_default", std::unique_ptr<PropertyBase>(new SoftProperty));
         e->setType(test_type);
     }
     attr_types.insert(Atlas::Message::Element::TYPE_INT);
@@ -276,8 +276,8 @@ void EntityExerciser::flushOperations(OpVector & ops)
 // stubs
 
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
-                              PropertyBase* p)
+                              std::unique_ptr<PropertyBase> p)
 {
-    m_defaults[name] = p;
+    m_defaults[name] = std::move(p);
     return {};
 }

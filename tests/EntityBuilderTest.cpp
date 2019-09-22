@@ -223,7 +223,7 @@ void EntityBuildertest::test_sequence4()
     }
 
     PropertyBase * p = new Property<std::string>;
-    custom_type_factory->m_type->injectProperty("test_custom_type_attr", p);
+    custom_type_factory->m_type->injectProperty("test_custom_type_attr", std::unique_ptr<PropertyBase>(p));
     p->set("test_value");
 
     // Check that the factory dictionary now contains a factory for
@@ -504,9 +504,9 @@ void installStandardObjects(TypeStore& i)
 
 #define STUB_TypeNode_injectProperty
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
-                                                    PropertyBase* p)
+                                                    std::unique_ptr<PropertyBase> p)
 {
-    m_defaults[name] = p;
+    m_defaults[name] = std::move(p);
     return {};
 }
 #include "stubs/common/stubTypeNode.h"

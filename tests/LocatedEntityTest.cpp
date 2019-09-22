@@ -115,7 +115,7 @@ void LocatedEntitytest::test_setProperty()
 
     PropertyBase * tp = new SoftProperty;
 
-    m_entity->setProperty(test_property, tp);
+    m_entity->setProperty(test_property, std::unique_ptr<PropertyBase>(tp));
 
     ASSERT_TRUE(m_entity->m_properties.find(test_property) !=
                 m_entity->m_properties.end());
@@ -130,7 +130,7 @@ void LocatedEntitytest::test_removeAttr()
 
     PropertyBase * tp = new TestProperty();
 
-    entity->setProperty(test_property, tp);
+    entity->setProperty(test_property, std::unique_ptr<PropertyBase>(tp));
 
     ASSERT_TRUE(!m_TestProperty_remove_called);
     delete entity;

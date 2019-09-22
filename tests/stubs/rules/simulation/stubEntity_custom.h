@@ -1,9 +1,11 @@
 //Add custom implementations of stubbed functions here
 #ifndef STUB_Entity_setProperty
 #define STUB_Entity_setProperty
-PropertyBase* Entity::setProperty(const std::string& name, PropertyBase* prop)
+PropertyBase* Entity::setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop)
 {
-    return m_properties[name] = prop;
+    auto p = prop.get();
+    m_properties[name] = std::move(prop);
+    return p;
 }
 
 #endif

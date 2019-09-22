@@ -48,8 +48,6 @@ class TerrainModPropertyintegration : public Cyphesis::TestBase
   private:
     Ref<Entity> m_rootEntity;
     Ref<Entity> m_entity;
-    PropertyBase * m_property;
-    PropertyBase * m_terrainProperty;
     std::unique_ptr<TestWorld> m_world;
   public:
     TerrainModPropertyintegration();
@@ -81,17 +79,17 @@ void TerrainModPropertyintegration::setup()
 
     PropertyFactory<TerrainModProperty> terrainmod_property_factory;
 
-    m_terrainProperty = new TerrainProperty;
-    m_terrainProperty->install(m_rootEntity.get(), "terrain");
-    m_rootEntity->setProperty("terrain", m_terrainProperty);
-    m_terrainProperty->apply(m_rootEntity.get());
-    m_rootEntity->propertyApplied("terrain", *m_terrainProperty);
+    auto terrainProperty = new TerrainProperty;
+    terrainProperty->install(m_rootEntity.get(), "terrain");
+    auto tProp = m_rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+    tProp->apply(m_rootEntity.get());
+    m_rootEntity->propertyApplied("terrain", *tProp);
 
-    m_property = terrainmod_property_factory.newProperty();
-    m_property->install(m_entity.get(), "terrainmod");
-    m_entity->setProperty("terrainmod", m_property);
-    m_property->apply(m_entity.get());
-    m_entity->propertyApplied("terrainmod", *m_property);
+    auto terrainModProp = terrainmod_property_factory.newProperty();
+    terrainModProp->install(m_entity.get(), "terrainmod");
+    auto prop = m_entity->setProperty("terrainmod", std::move(terrainModProp));
+    prop->apply(m_entity.get());
+    m_entity->propertyApplied("terrainmod", *prop);
 }
 
 void TerrainModPropertyintegration::teardown()

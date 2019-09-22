@@ -20,6 +20,7 @@
 #define COMMON_PROPERTY_FACTORY_H
 
 #include <cinttypes>
+#include <memory>
 
 class PropertyBase;
 
@@ -29,7 +30,7 @@ class PropertyKit {
     virtual ~PropertyKit() = default;
 
     /// \brief Create a new Property instance
-    virtual PropertyBase * newProperty() = 0;
+    virtual std::unique_ptr<PropertyBase> newProperty() = 0;
 
     /// \brief Create a copy of this factory.
     virtual PropertyKit * duplicateFactory() const = 0;
@@ -41,7 +42,7 @@ class PropertyFactory : public PropertyKit {
   public:
     std::uint32_t m_flags;
     PropertyFactory() : m_flags(0) {}
-    PropertyBase * newProperty() override;
+    std::unique_ptr<PropertyBase> newProperty() override;
     PropertyFactory<T> * duplicateFactory() const override;
 };
 

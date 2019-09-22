@@ -654,9 +654,9 @@ int main()
 
 #define STUB_CorePropertyManager_addProperty
 
-PropertyBase* CorePropertyManager::addProperty(const std::string& name, int type)
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name, int type)
 {
-    return new SoftProperty;
+    return std::unique_ptr<PropertyBase>(new SoftProperty);
 }
 
 #include "stubs/server/stubCorePropertyManager.h"

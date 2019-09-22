@@ -610,37 +610,37 @@ struct EntityFilterTest : public Cyphesis::TestBase
         m_barrelType->setParent(m_thingType);
         types["barrel"] = m_barrelType;
         m_b1->setType(m_barrelType);
-        m_b1->setProperty("mass", new SoftProperty(Element(30)));
-        m_b1->setProperty("burn_speed", new SoftProperty(Element(0.3)));
-        m_b1->setProperty("isVisible", new SoftProperty(Element(true)));
+        m_b1->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(Element(30))));
+        m_b1->setProperty("burn_speed", std::unique_ptr<PropertyBase>(new SoftProperty(Element(0.3))));
+        m_b1->setProperty("isVisible", std::unique_ptr<PropertyBase>(new SoftProperty(Element(true))));
 
         m_b2 = new Entity("2", 2);
         add_entity(m_b2);
-        m_b2->setProperty("mass", new SoftProperty(Element(20)));
-        m_b2->setProperty("burn_speed", new SoftProperty(0.25));
+        m_b2->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(Element(20))));
+        m_b2->setProperty("burn_speed", std::unique_ptr<PropertyBase>(new SoftProperty(0.25)));
         m_b2->setType(m_barrelType);
-        m_b2->setProperty("isVisible", new SoftProperty(Element(false)));
+        m_b2->setProperty("isVisible", std::unique_ptr<PropertyBase>(new SoftProperty(Element(false))));
 
         m_b3 = new Entity("3", 3);
         add_entity(m_b3);
-        m_b3->setProperty("mass", new SoftProperty(Element(25)));
-        m_b3->setProperty("burn_speed", new SoftProperty(Element(0.25)));
+        m_b3->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(Element(25))));
+        m_b3->setProperty("burn_speed", std::unique_ptr<PropertyBase>(new SoftProperty(Element(0.25))));
         m_b3->setType(m_barrelType);
 
         m_boulderType = new TypeNode("boulder");
         types["boulder"] = m_boulderType;
         m_bl1 = new Entity("4", 4);
         add_entity(m_bl1);
-        m_bl1->setProperty("mass", new SoftProperty(Element(25)));
+        m_bl1->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(Element(25))));
         m_bl1->setType(m_boulderType);
 
         SoftProperty* prop1 = new SoftProperty();
         prop1->set(std::vector<Element>{25.0, 20.0});
-        m_bl1->setProperty("float_list", prop1);
+        m_bl1->setProperty("float_list", std::unique_ptr<PropertyBase>(prop1));
 
         SoftProperty* list_prop2 = new SoftProperty();
         list_prop2->set(std::vector<Element>{"foo", "bar"});
-        m_bl1->setProperty("string_list", list_prop2);
+        m_bl1->setProperty("string_list", std::unique_ptr<PropertyBase>(list_prop2));
 
 // Create an entity-related memory map
         Atlas::Message::MapType entity_memory_map{{"disposition", 25}};
@@ -673,40 +673,40 @@ struct EntityFilterTest : public Cyphesis::TestBase
         m_glovesEntity = new Entity("5", 5);
         add_entity(m_glovesEntity);
         m_glovesEntity->setType(m_glovesType);
-        m_glovesEntity->setProperty("color", new SoftProperty("brown"));
-        m_glovesEntity->setProperty("mass", new SoftProperty(5));
+        m_glovesEntity->setProperty("color", std::unique_ptr<PropertyBase>(new SoftProperty("brown")));
+        m_glovesEntity->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(5)));
         //Mark it with a "reach" so we can use it in the "can_reach ... with" tests
         auto reachProp = new Property<double>();
         reachProp->data() = 10.0f;
-        m_glovesEntity->setProperty("reach", reachProp);
+        m_glovesEntity->setProperty("reach", std::unique_ptr<PropertyBase>(reachProp));
 
         m_bootsEntity = new Entity("6", 6);
         add_entity(m_bootsEntity);
         m_bootsEntity->setType(m_bootsType);
-        m_bootsEntity->setProperty("color", new SoftProperty("black"));
-        m_bootsEntity->setProperty("mass", new SoftProperty(10));
+        m_bootsEntity->setProperty("color", std::unique_ptr<PropertyBase>(new SoftProperty("black")));
+        m_bootsEntity->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(10)));
 
 
         m_cloth = new Entity("8", 8);
         add_entity(m_cloth);
         m_cloth->setType(m_clothType);
-        m_cloth->setProperty("color", new SoftProperty("green"));
+        m_cloth->setProperty("color", std::unique_ptr<PropertyBase>(new SoftProperty("green")));
 
         m_leather = new Entity("9", 9);
         add_entity(m_leather);
         m_leather->setType(m_leatherType);
-        m_leather->setProperty("color", new SoftProperty("pink"));
+        m_leather->setProperty("color", std::unique_ptr<PropertyBase>(new SoftProperty("pink")));
 
         //The m_cloth entity is attached to the gloves by the "thumb" attachment
         {
             auto attachedProp = new SoftProperty();
             attachedProp->data() = Atlas::Message::MapType{{"$eid", m_cloth->getId()}};
-            m_glovesEntity->setProperty("attached_thumb", attachedProp);
+            m_glovesEntity->setProperty("attached_thumb", std::unique_ptr<PropertyBase>(attachedProp));
 
 
             auto modeDataProp = new ModeDataProperty();
             modeDataProp->setPlantedData({WeakEntityRef(m_glovesEntity.get())});
-            m_cloth->setProperty(ModeDataProperty::property_name, modeDataProp);
+            m_cloth->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
             m_glovesEntity->makeContainer();
             m_glovesEntity->addChild(*m_cloth);
         }
@@ -721,29 +721,29 @@ struct EntityFilterTest : public Cyphesis::TestBase
         {
             auto attachedHandPrimaryProp = new SoftProperty();
             attachedHandPrimaryProp->data() = Atlas::Message::MapType{{"$eid", m_glovesEntity->getId()}};
-            m_ch1->setProperty("attached_hand_primary", attachedHandPrimaryProp);
+            m_ch1->setProperty("attached_hand_primary", std::unique_ptr<PropertyBase>(attachedHandPrimaryProp));
         }
 
         {
             auto modeDataProp = new ModeDataProperty();
             modeDataProp->setPlantedData({WeakEntityRef(m_ch1.get())});
-            m_glovesEntity->setProperty(ModeDataProperty::property_name, modeDataProp);
+            m_glovesEntity->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
         }
 
         BBoxProperty* bbox1 = new BBoxProperty;
         bbox1->set((std::vector<Element>{-1, -3, -2, 1, 3, 2}));
-        m_b1->setProperty("bbox", bbox1);
+        m_b1->setProperty("bbox", std::unique_ptr<PropertyBase>(bbox1));
 
         BBoxProperty* bbox2 = new BBoxProperty;
         bbox2->set(std::vector<Element>{-3, -2, -1, 1, 3, 2});
-        m_bl1->setProperty("bbox", bbox2);
+        m_bl1->setProperty("bbox", std::unique_ptr<PropertyBase>(bbox2));
 
-        m_cloth->setProperty("bbox", bbox1->copy());
+        m_cloth->setProperty("bbox", std::unique_ptr<PropertyBase>(bbox1->copy()));
 
         //The m_entityOnlyReachableWithPosition is a child of b1
         m_entityOnlyReachableWithPosition = new Entity("8", 8);
         add_entity(m_entityOnlyReachableWithPosition);
-        m_entityOnlyReachableWithPosition->setProperty("only_reachable_with_pos", new SoftProperty(Element(1)));
+        m_entityOnlyReachableWithPosition->setProperty("only_reachable_with_pos", std::unique_ptr<PropertyBase>(new SoftProperty(Element(1))));
         m_entityOnlyReachableWithPosition->setType(m_barrelType);
         m_b1->m_contains->emplace(m_entityOnlyReachableWithPosition);
         m_entityOnlyReachableWithPosition->m_location.m_parent = m_b1;
