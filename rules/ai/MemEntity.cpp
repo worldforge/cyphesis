@@ -42,12 +42,12 @@ const PropertyBase * MemEntity::getProperty(const std::string & name) const
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second;
+        return I->second.get();
     }
     if (m_type != nullptr) {
         I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
-            return I->second;
+            return I->second.get();
         }
     }
     return nullptr;
@@ -87,7 +87,7 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
         I->second->set(attr);
         I->second->apply(this);
         propertyApplied(I->first, *I->second);
-        return I->second;
+        return I->second.get();
     }
     //Check if the property changed is any one of those that will alter the location,
     //and if so use those. This makes sure that the m_location data is correct.
@@ -107,5 +107,6 @@ PropertyBase * MemEntity::setAttr(const std::string & name, const Atlas::Message
     prop->set(attr);
     prop->apply(this);
     propertyApplied(name, *prop);
-    return m_properties[name] = prop;
+    m_properties[name].reset(prop);
+    return prop;
 }

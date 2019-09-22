@@ -48,7 +48,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
     float agentRadius = 0.4;
     auto propertyI = type->defaults().find("bbox");
     if (propertyI != type->defaults().end()) {
-        const PropertyBase* propBase = propertyI->second;
+        auto& propBase = propertyI->second;
         Atlas::Message::Element data;
         propBase->get(data);
         WFMath::AxisBox<3> bbox{};

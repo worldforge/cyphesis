@@ -263,8 +263,16 @@ bool StackableDomain::isEntityReachable(const LocatedEntity& reachingEntity, flo
 
 bool StackableDomain::checkEntitiesStackable(const LocatedEntity& first, const LocatedEntity& second)
 {
-    PropertyDict firstProps = first.getProperties();
-    PropertyDict secondProps = second.getProperties();
+    std::map<std::string, PropertyBase*> firstProps;
+    std::map<std::string, PropertyBase*> secondProps;
+
+    for (auto& entry: first.getProperties()) {
+        firstProps.emplace(entry.first, entry.second.get());
+    }
+    for (auto& entry: second.getProperties()) {
+        secondProps.emplace(entry.first, entry.second.get());
+    }
+
     for (auto& propName : sIgnoredProps) {
         firstProps.erase(propName);
         secondProps.erase(propName);

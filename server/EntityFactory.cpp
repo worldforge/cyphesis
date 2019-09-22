@@ -86,7 +86,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         auto attrs = attributes->asMessage();
         //First make sure that all properties are installed, since Entity::setAttr won't install props if they exist in the type.
         for (auto& propIter : m_type->defaults()) {
-            PropertyBase* prop = propIter.second;
+            auto& prop = propIter.second;
             prop->install(&thing, propIter.first);
         }
 
@@ -97,7 +97,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             // The property will have been applied if it has an overridden
             // value, so we only apply if the value is still default.
             if (attrs.find(propIter.first) == attrs.end()) {
-                auto prop = propIter.second;
+                auto& prop = propIter.second;
                 prop->apply(&thing);
                 thing.propertyApplied(propIter.first, *prop);
             }

@@ -19,6 +19,8 @@
 #ifndef COMMON_TYPE_NODE_H
 #define COMMON_TYPE_NODE_H
 
+#include "Visibility.h"
+
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
@@ -26,11 +28,11 @@
 #include <map>
 #include <set>
 #include <string>
-#include "Visibility.h"
+#include <memory>
 
 class PropertyBase;
 
-typedef std::map<std::string, PropertyBase*> PropertyDict;
+typedef std::map<std::string, std::unique_ptr<PropertyBase>> PropertyDict;
 
 
 

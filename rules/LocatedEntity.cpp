@@ -29,6 +29,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
+#include <memory>
+
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
@@ -55,7 +57,7 @@ LocatedEntity::LocatedEntity(const std::string& id, long intId) :
     m_flags(0),
     m_contains(nullptr)
 {
-    m_properties[IdProperty::property_name] = new IdProperty(getId());
+    m_properties[IdProperty::property_name] = std::make_unique<IdProperty>(getId());
 }
 
 LocatedEntity::~LocatedEntity()
@@ -74,7 +76,7 @@ void LocatedEntity::clearProperties()
 {
 
     if (m_type) {
-        for (auto entry : m_type->defaults()) {
+        for (auto& entry : m_type->defaults()) {
             //Only remove if there's no instance specific property.
             if (m_properties.find(entry.first) == m_properties.end()) {
                 entry.second->remove(this, entry.first);
@@ -82,9 +84,8 @@ void LocatedEntity::clearProperties()
         }
     }
 
-    for (auto entry : m_properties) {
+    for (auto& entry : m_properties) {
         entry.second->remove(this, entry.first);
-        delete entry.second;
     }
     m_properties.clear();
 
@@ -170,7 +171,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name,
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         I->second->set(attr);
-        return I->second;
+        return I->second.get();
     }
     auto prop = new SoftProperty(attr);
     prop->addFlags(PropertyBase::flagsForPropertyName(name));
@@ -187,7 +188,7 @@ const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second;
+        return I->second.get();
     }
     return nullptr;
 }
@@ -196,7 +197,7 @@ PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::M
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second;
+        return I->second.get();
     }
     return nullptr;
 }
@@ -204,7 +205,8 @@ PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::M
 PropertyBase* LocatedEntity::setProperty(const std::string& name,
                                          PropertyBase* prop)
 {
-    return m_properties[name] = prop;
+    m_properties[name].reset(prop);
+    return prop;
 }
 
 void LocatedEntity::installDelegate(int, const std::string&)
@@ -290,7 +292,7 @@ void LocatedEntity::makeContainer()
 {
     if (m_contains == nullptr) {
         m_contains = new LocatedEntitySet;
-        m_properties["contains"] = new ContainsProperty(*m_contains);
+        m_properties["contains"] = std::make_unique<ContainsProperty>(*m_contains);
     }
 }
 

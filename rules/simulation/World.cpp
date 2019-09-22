@@ -162,9 +162,8 @@ void World::clearWorld(OpVector & res) {
     while(propIter != m_properties.end())
     {
         if (propIter->first != "id") {
-            auto prop = propIter->second;
+            auto& prop = propIter->second;
             prop->remove(this, propIter->first);
-            delete prop;
             m_properties.erase(propIter++);
         } else {
             ++propIter;

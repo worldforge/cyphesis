@@ -445,7 +445,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     bool hadPrivateChanges = false;
 
     for (const auto& entry : m_properties) {
-        PropertyBase* prop = entry.second;
+        auto& prop = entry.second;
         assert(prop != nullptr);
         if (prop->hasFlags(flag_unsent)) {
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first

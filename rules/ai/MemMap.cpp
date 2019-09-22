@@ -133,7 +133,7 @@ void MemMap::applyTypePropertiesToEntity(const Ref<MemEntity>& entity) {
         // The property will have been applied if it has an overridden
         // value, so we only apply if the value is still default.
         if (entity->getProperties().find(propIter.first) == entity->getProperties().end()) {
-            PropertyBase * prop = propIter.second;
+            auto& prop = propIter.second;
             prop->install(entity.get(), propIter.first);
             prop->apply(entity.get());
             entity->propertyApplied(propIter.first, *prop);

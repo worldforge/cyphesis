@@ -220,7 +220,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
     if (ent->getType()) {
         for (auto& propIter : ent->getType()->defaults()) {
             if (!instanceProperties.count(propIter.first)) {
-                PropertyBase * prop = propIter.second;
+                auto& prop = propIter.second;
                 // If a property is in the class it won't have been installed
                 // as setAttr() checks
                 prop->install(ent, propIter.first);
@@ -281,11 +281,11 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     KeyValues property_tuples;
     const PropertyDict & properties = ent->getProperties();
     for (auto& entry : properties) {
-        PropertyBase * prop = entry.second;
+        auto& prop = entry.second;
         if (prop->hasFlags(persistence_ephem)) {
             continue;
         }
-        encodeProperty(prop, property_tuples[entry.first]);
+        encodeProperty(prop.get(), property_tuples[entry.first]);
         prop->addFlags(persistence_clean | persistence_seen);
     }
     if (!property_tuples.empty()) {
@@ -324,7 +324,7 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     KeyValues upd_property_tuples;
     const PropertyDict & properties = ent->getProperties();
     for (const auto& property : properties) {
-        PropertyBase * prop = property.second;
+        auto& prop = property.second;
         if (prop->hasFlags(persistence_mask)) {
             continue;
         }

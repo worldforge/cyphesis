@@ -50,7 +50,7 @@ template <typename T>
 class Property;
 
 typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
-typedef std::map<std::string, PropertyBase *> PropertyDict;
+typedef std::map<std::string, std::unique_ptr<PropertyBase>> PropertyDict;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
@@ -380,7 +380,8 @@ class LocatedEntity : public Router, public ReferenceCounted {
         if (sp == nullptr) {
             // If it is not of the right type, delete it and a new
             // one of the right type will be inserted.
-            m_properties[name] = sp = new PropertyT;
+            sp = new PropertyT;
+            m_properties[name].reset(sp);
             sp->install(this, name);
             if (p != nullptr) {
                 log(WARNING, String::compose("Property %1 on entity with id %2 "
@@ -392,7 +393,6 @@ class LocatedEntity : public Router, public ReferenceCounted {
                 if (p->get(val)) {
                     sp->set(val);
                 }
-                delete p;
             } else if (!def_val.isNone()) {
                 sp->set(def_val);
             }

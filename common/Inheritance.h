@@ -33,7 +33,7 @@
 
 class PropertyBase;
 
-typedef std::map<std::string, PropertyBase*> PropertyDict;
+typedef std::map<std::string, std::unique_ptr<PropertyBase>> PropertyDict;
 
 namespace Atlas {
     namespace Objects {

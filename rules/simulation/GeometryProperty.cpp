@@ -481,7 +481,7 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
             bBoxProperty->flags().addFlags(PropertyBase::flagsForPropertyName(BBoxProperty::property_name));
             bBoxProperty->install(typeNode, BBoxProperty::property_name);
         } else if (I->second->flags().hasFlags(persistence_ephem)) {
-            bBoxProperty = dynamic_cast<BBoxProperty*>(I->second);
+            bBoxProperty = dynamic_cast<BBoxProperty*>(I->second.get());
             if (bBoxProperty) {
                 bBoxProperty->data() = m_meshBounds;
                 bBoxProperty->removeFlags(persistence_clean);

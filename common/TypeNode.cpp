@@ -47,9 +47,7 @@ TypeNode::TypeNode(std::string name,
 
 TypeNode::~TypeNode()
 {
-    for (const auto& entry: m_defaults) {
-        delete entry.second;
-    }
+    m_defaults.clear();
 }
 
 
@@ -76,8 +74,7 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
 {
     TypeNode::PropertiesUpdate update;
     auto existingI = m_defaults.find(name);
-    if (existingI != m_defaults.end() && existingI->second != p) {
-        delete existingI->second;
+    if (existingI != m_defaults.end() && existingI->second.get() != p) {
         m_defaults.erase(existingI);
         update.changedProps.insert(name);
     } else {
@@ -117,7 +114,7 @@ void TypeNode::addProperties(const MapType& attributes)
         p->set(entry.second);
         p->addFlags(flag_class);
         p->install(this, entry.first);
-        m_defaults[entry.first] = p;
+        m_defaults[entry.first].reset(p);
     }
 }
 
@@ -145,7 +142,6 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     // no longer exist
     for (auto& entry : propertiesUpdate.removedProps) {
         auto M = m_defaults.find(entry);
-        delete M->second;
         m_defaults.erase(M);
     }
 
@@ -154,14 +150,13 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     // Update the values of existing class properties, and add new class
     // properties for added default attributes.
     for (auto& entry : attributes) {
-        PropertyBase* p;
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
-            p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
+            auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
             assert(p != nullptr);
             p->addFlags(flag_class);
             p->install(this, entry.first);
-            m_defaults[entry.first] = p;
+            m_defaults[entry.first].reset(p);
             propertiesUpdate.newProps.emplace(entry.first);
             p->set(entry.second);
 
@@ -174,7 +169,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             }
         } else {
             Atlas::Message::Element oldVal;
-            p = I->second;
+            auto& p = I->second;
             p->get(oldVal);
             if (oldVal != entry.second) {
                 p->set(entry.second);

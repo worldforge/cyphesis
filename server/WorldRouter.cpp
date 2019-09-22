@@ -94,14 +94,14 @@ WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity) :
 //                    }
                     for (auto& changedPropName : I->second.changedProps) {
                         if (entity->getProperties().find(changedPropName) == entity->getProperties().end()) {
-                            auto prop = typeNode->defaults().find(changedPropName)->second;
+                            auto& prop = typeNode->defaults().find(changedPropName)->second;
                             prop->apply(entity.get());
                             entity->propertyApplied(changedPropName, *prop);
                         }
                     }
                     for (auto& newPropName : I->second.changedProps) {
                         if (entity->getProperties().find(newPropName) == entity->getProperties().end()) {
-                            auto prop = typeNode->defaults().find(newPropName)->second;
+                            auto& prop = typeNode->defaults().find(newPropName)->second;
                             prop->apply(entity.get());
                             entity->propertyApplied(newPropName, *prop);
                         }
