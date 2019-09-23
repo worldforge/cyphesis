@@ -98,7 +98,7 @@ namespace Py
 
     }; // end class MethodTable
 
-    // Note: Python calls noargs as varargs buts args==NULL
+    // Note: Python calls noargs as varargs buts args==nullptr
     extern "C" typedef PyObject *(*method_noargs_call_handler_t)( PyObject *_self, PyObject * );
     extern "C" typedef PyObject *(*method_varargs_call_handler_t)( PyObject *_self, PyObject *_args );
     extern "C" typedef PyObject *(*method_keyword_call_handler_t)( PyObject *_self, PyObject *_args, PyObject *_dict );
@@ -126,8 +126,8 @@ namespace Py
             ext_meth_def.ml_doc = const_cast<char *>( _doc );
 
             ext_noargs_function = _function;
-            ext_varargs_function = NULL;
-            ext_keyword_function = NULL;
+            ext_varargs_function = nullptr;
+            ext_keyword_function = nullptr;
         }
 
         // VARARGS
@@ -144,9 +144,9 @@ namespace Py
             ext_meth_def.ml_flags = METH_VARARGS;
             ext_meth_def.ml_doc = const_cast<char *>( _doc );
 
-            ext_noargs_function = NULL;
+            ext_noargs_function = nullptr;
             ext_varargs_function = _function;
-            ext_keyword_function = NULL;
+            ext_keyword_function = nullptr;
         }
 
         // VARARGS + KEYWORD
@@ -163,8 +163,8 @@ namespace Py
             ext_meth_def.ml_flags = METH_VARARGS|METH_KEYWORDS;
             ext_meth_def.ml_doc = const_cast<char *>( _doc );
 
-            ext_noargs_function = NULL;
-            ext_varargs_function = NULL;
+            ext_noargs_function = nullptr;
+            ext_varargs_function = nullptr;
             ext_keyword_function = _function;
         }
 

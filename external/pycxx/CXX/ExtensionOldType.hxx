@@ -95,7 +95,7 @@ namespace Py
         static PythonType &behaviors()
         {
             static PythonType* p;
-            if( p == NULL )
+            if( p == nullptr )
             {
 #if defined( _CPPRTTI ) || defined( __GNUG__ )
                 const char *default_name =( typeid( T ) ).name();
@@ -119,12 +119,12 @@ namespace Py
         {
             std::string name( _name );
 
-            if( name == "__name__" && type_object()->tp_name != NULL )
+            if( name == "__name__" && type_object()->tp_name != nullptr )
             {
                 return Py::String( type_object()->tp_name );
             }
 
-            if( name == "__doc__" && type_object()->tp_doc != NULL )
+            if( name == "__doc__" && type_object()->tp_doc != nullptr )
             {
                 return Py::String( type_object()->tp_doc );
             }
@@ -178,9 +178,9 @@ namespace Py
             Tuple self( 2 );
 
             self[0] = Object( this );
-            self[1] = Object( PyCapsule_New( method_def, NULL, NULL ), true );
+            self[1] = Object( PyCapsule_New( method_def, nullptr, nullptr ), true );
 
-            PyObject *func = PyCFunction_NewEx( &method_def->ext_meth_def, self.ptr(), NULL );
+            PyObject *func = PyCFunction_NewEx( &method_def->ext_meth_def, self.ptr(), nullptr );
 
             return Object(func, true);
         }
@@ -219,14 +219,14 @@ namespace Py
     private:
         static method_map_t &methods( void )
         {
-            static method_map_t *map_of_methods = NULL;
-            if( map_of_methods == NULL )
+            static method_map_t *map_of_methods = nullptr;
+            if( map_of_methods == nullptr )
                 map_of_methods = new method_map_t;
 
             return *map_of_methods;
         }
 
-        // Note: Python calls noargs as varargs buts args==NULL
+        // Note: Python calls noargs as varargs buts args==nullptr
         static PyObject *method_noargs_call_handler( PyObject *_self_and_name_tuple, PyObject * )
         {
             try
@@ -237,7 +237,7 @@ namespace Py
                 T *self = static_cast<T *>( self_in_cobject );
 
                 MethodDefExt<T> *meth_def = reinterpret_cast<MethodDefExt<T> *>(
-                                                PyCapsule_GetPointer( self_and_name_tuple[1].ptr(), NULL ) );
+                                                PyCapsule_GetPointer( self_and_name_tuple[1].ptr(), nullptr ) );
 
                 Object result;
 
@@ -273,7 +273,7 @@ namespace Py
                 PyObject *self_in_cobject = self_and_name_tuple[0].ptr();
                 T *self = static_cast<T *>( self_in_cobject );
                 MethodDefExt<T> *meth_def = reinterpret_cast<MethodDefExt<T> *>(
-                                                PyCapsule_GetPointer( self_and_name_tuple[1].ptr(), NULL ) );
+                                                PyCapsule_GetPointer( self_and_name_tuple[1].ptr(), nullptr ) );
 
                 Tuple args( _args );
 
@@ -310,13 +310,13 @@ namespace Py
                 PyObject *self_in_cobject = self_and_name_tuple[0].ptr();
                 T *self = static_cast<T *>( self_in_cobject );
                 MethodDefExt<T> *meth_def = reinterpret_cast<MethodDefExt<T> *>(
-                                                PyCapsule_GetPointer( self_and_name_tuple[1].ptr(), NULL ) );
+                                                PyCapsule_GetPointer( self_and_name_tuple[1].ptr(), nullptr ) );
 
                 Tuple args( _args );
 
-                // _keywords may be NULL so be careful about the way the dict is created
+                // _keywords may be nullptr so be careful about the way the dict is created
                 Dict keywords;
-                if( _keywords != NULL )
+                if( _keywords != nullptr )
                     keywords = Dict( _keywords );
 
                 Object result( ( self->*meth_def->ext_keyword_function )( args, keywords ) );

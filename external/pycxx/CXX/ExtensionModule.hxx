@@ -77,7 +77,7 @@ namespace Py
         void operator=( const ExtensionModuleBase & );          //unimplemented
     };
 
-    // Note: Python calls noargs as varargs buts args==NULL
+    // Note: Python calls noargs as varargs buts args==nullptr
     extern "C" PyObject *method_noargs_call_handler( PyObject *_self_and_name_tuple, PyObject * );
     extern "C" PyObject *method_varargs_call_handler( PyObject *_self_and_name_tuple, PyObject *_args );
     extern "C" PyObject *method_keyword_call_handler( PyObject *_self_and_name_tuple, PyObject *_args, PyObject *_keywords );
@@ -132,13 +132,13 @@ namespace Py
             {
                 MethodDefExt<T> *method_def = (*i).second;
 
-                static PyObject *self = PyCapsule_New( this, NULL, NULL );
+                static PyObject *self = PyCapsule_New( this, nullptr, nullptr );
 
                 Tuple args( 2 );
                 args[0] = Object( self, true );
-                args[1] = Object( PyCapsule_New( method_def, NULL, NULL ), true );
+                args[1] = Object( PyCapsule_New( method_def, nullptr, nullptr ), true );
 
-                assert( m_module != NULL );
+                assert( m_module != nullptr );
                 PyObject *func = PyCFunction_NewEx
                                     (
                                     &method_def->ext_meth_def,
@@ -155,8 +155,8 @@ namespace Py
     protected:    // Tom Malcolmson reports that derived classes need access to these
         static method_map_t &methods( void )
         {
-            static method_map_t *map_of_methods = NULL;
-            if( map_of_methods == NULL )
+            static method_map_t *map_of_methods = nullptr;
+            if( map_of_methods == nullptr )
                 map_of_methods = new method_map_t;
 
             return *map_of_methods;

@@ -162,7 +162,7 @@ namespace Py
         void release()
         {
             Py::_XDECREF( p );
-            p = NULL;
+            p = nullptr;
         }
 
         void validate();
@@ -187,7 +187,7 @@ namespace Py
             validate();
         }
 
-        Object( Object &&ob )
+        Object( Object &&ob ) noexcept
             : p( ob.p )
         {
             ob.p = nullptr;
@@ -249,7 +249,7 @@ namespace Py
         // Can pyob be used in this object's constructor?
         virtual bool accepts( PyObject * ) const
         {
-            // allow any object or NULL
+            // allow any object or nullptr
             return true;
         }
 
@@ -310,7 +310,7 @@ namespace Py
 
         bool isNull() const
         {
-            return p == NULL;
+            return p == nullptr;
         }
 
         bool isNone() const
@@ -417,12 +417,12 @@ namespace Py
     };
     // End of class Object
 
-    // Null can be return from when it is require to return NULL to Python from a method
+    // Null can be return from when it is require to return nullptr to Python from a method
     class Null: public Object
     {
     public:
         Null()
-        : Object( NULL )
+        : Object( nullptr )
         {
         }
         virtual ~Null()
@@ -431,7 +431,7 @@ namespace Py
 
         virtual bool accepts( PyObject *pyob ) const
         {
-            return pyob == NULL;
+            return pyob == nullptr;
         }
     };
 
@@ -1785,7 +1785,7 @@ namespace Py
         // Membership
         virtual bool accepts( PyObject *pyob ) const
         {
-            return pyob != NULL
+            return pyob != nullptr
                 && Py::_Bytes_Check( pyob )
                 && PySequence_Length( pyob ) == 1;
         }
@@ -1850,7 +1850,7 @@ namespace Py
         // Membership
         virtual bool accepts( PyObject *pyob ) const
         {
-            return pyob != NULL && Py::_Bytes_Check( pyob );
+            return pyob != nullptr && Py::_Bytes_Check( pyob );
         }
 
         virtual size_type capacity() const
@@ -2036,7 +2036,7 @@ namespace Py
         // Membership
         virtual bool accepts( PyObject *pyob ) const
         {
-            return pyob != NULL && Py::_Unicode_Check( pyob );
+            return pyob != nullptr && Py::_Unicode_Check( pyob );
         }
 
         explicit String( PyObject *pyob, bool owned = false )
@@ -2081,9 +2081,9 @@ namespace Py
            parameters encoding and errors have the same semantics as the ones
            of the builtin unicode() API. 
 
-           Setting encoding to NULL causes the default encoding to be used.
+           Setting encoding to nullptr causes the default encoding to be used.
 
-           Error handling is set by errors which may also be set to NULL
+           Error handling is set by errors which may also be set to nullptr
            meaning to use the default handling defined for the codec. Default
            error handling for all builtin codecs is "strict" (ValueErrors are
            raised).
@@ -2092,19 +2092,19 @@ namespace Py
            generic ones are documented.
 
         */
-        String( const std::string &s, const char *encoding, const char *errors=NULL )
+        String( const std::string &s, const char *encoding, const char *errors=nullptr )
         : SeqBase<Char>( PyUnicode_Decode( s.c_str(), s.size(), encoding, errors ), true )
         {
             validate();
         }
 
-        String( const char *s, const char *encoding, const char *errors=NULL )
+        String( const char *s, const char *encoding, const char *errors=nullptr )
         : SeqBase<Char>( PyUnicode_Decode( s, strlen(s), encoding, errors ), true )
         {
             validate();
         }
 
-        String( const char *s, Py_ssize_t size, const char *encoding, const char *errors=NULL )
+        String( const char *s, Py_ssize_t size, const char *encoding, const char *errors=nullptr )
         : SeqBase<Char>( PyUnicode_Decode( s, size, encoding, errors ), true )
         {
             validate();
@@ -2183,7 +2183,7 @@ namespace Py
         ucs4string as_ucs4string() const
         {
             Py_UCS4 *buf = new Py_UCS4[ size() ];
-            if( PyUnicode_AsUCS4( ptr(), buf, size(), 0 ) == NULL )
+            if( PyUnicode_AsUCS4( ptr(), buf, size(), 0 ) == nullptr )
             {
                 ifPyErrorThrowCxxException();
             }
@@ -2196,10 +2196,10 @@ namespace Py
         operator std::string() const
         {
             // use the default encoding
-            return as_std_string( NULL );
+            return as_std_string( nullptr );
         }
 
-        std::string as_std_string( const char *encoding=NULL, const char *error="strict" ) const
+        std::string as_std_string( const char *encoding=nullptr, const char *error="strict" ) const
         {
             Bytes b( encode( encoding, error ) );
             return b.as_std_string();
@@ -3209,7 +3209,7 @@ namespace Py
         Object apply( const Tuple &args ) const
         {
             PyObject *result = PyObject_CallObject( ptr(), args.ptr() );
-            if( result == NULL )
+            if( result == nullptr )
             {
                 ifPyErrorThrowCxxException();
             }
@@ -3220,7 +3220,7 @@ namespace Py
         Object apply( const Tuple &args, const Dict &kw ) const
         {
             PyObject *result = PyEval_CallObjectWithKeywords( ptr(), args.ptr(), kw.ptr() );
-            if( result == NULL )
+            if( result == nullptr )
             {
                 ifPyErrorThrowCxxException();
             }

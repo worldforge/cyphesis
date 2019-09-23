@@ -84,7 +84,7 @@
             CLS *self = reinterpret_cast< CLS * >( self_python->m_pycxx_object ); \
             Py::Tuple a( _a ); \
             Py::Dict k; \
-            if( _k != NULL ) \
+            if( _k != nullptr ) \
                 k = _k; \
             Py::Object r( (self->NAME)( a, k ) ); \
             return Py::new_reference_to( r.ptr() ); \
@@ -161,10 +161,10 @@ namespace Py
             // add the sentinel marking the table end
             PyMethodDef *p = &m_methods_table[ 0 ];
 
-            p->ml_name = NULL;
-            p->ml_meth = NULL;
+            p->ml_name = nullptr;
+            p->ml_meth = nullptr;
             p->ml_flags = 0;
-            p->ml_doc = NULL;
+            p->ml_doc = nullptr;
         }
 
         ~ExtensionClassMethodsTable()
@@ -213,10 +213,10 @@ namespace Py
             p++;
 
             // add the sentinel marking the table end
-            p->ml_name = NULL;
-            p->ml_meth = NULL;
+            p->ml_name = nullptr;
+            p->ml_meth = nullptr;
             p->ml_flags = 0;
-            p->ml_doc = NULL;
+            p->ml_doc = nullptr;
 
             return m_methods_table;
         }
@@ -253,12 +253,12 @@ namespace Py
         static ExtensionClassMethodsTable &methodTable()
         {
             static ExtensionClassMethodsTable *method_table;
-            if( method_table == NULL )
+            if( method_table == nullptr )
                 method_table = new ExtensionClassMethodsTable;
             return *method_table;
         }
 
-        static void add_method( const char *name, PyCFunction function, int flags, const char *doc=NULL )
+        static void add_method( const char *name, PyCFunction function, int flags, const char *doc=nullptr )
         {
             behaviors().set_methods( methodTable().add_method( name, function, flags, doc ) );
         }
@@ -266,7 +266,7 @@ namespace Py
         static PythonType &behaviors()
         {
             static PythonType *p;
-            if( p == NULL ) 
+            if( p == nullptr )
             {
 #if defined( _CPPRTTI ) || defined( __GNUG__ )
                 const char *default_name = (typeid( T )).name();
@@ -296,10 +296,10 @@ namespace Py
             std::cout << "extension_object_new()" << std::endl;
 #endif
             auto *o = reinterpret_cast<TClassInstance *>( subtype->tp_alloc( subtype, 0 ) );
-            if( o == NULL )
-                return NULL;
+            if( o == nullptr )
+                return nullptr;
 
-            o->m_pycxx_object = NULL;
+            o->m_pycxx_object = nullptr;
             TClassInstance::_new(o);
 
             PyObject *self = reinterpret_cast<PyObject *>( o );
@@ -315,7 +315,7 @@ namespace Py
             {
                 Py::Tuple args( args_ );
                 Py::Dict kwds;
-                if( kwds_ != NULL )
+                if( kwds_ != nullptr )
                     kwds = kwds_;
 
                 auto*self = reinterpret_cast<TClassInstance *>( _self );
@@ -324,7 +324,7 @@ namespace Py
                 std::cout << "    self->m_pycxx_object=0x" << std::hex << reinterpret_cast< unsigned long >( self->m_pycxx_object ) << std::dec << std::endl;
 #endif
 
-                if( self->m_pycxx_object == NULL )
+                if( self->m_pycxx_object == nullptr )
                 {
                     self->m_pycxx_object = new T( self, args, kwds );
                     TClassInstance::init(_self, self);
