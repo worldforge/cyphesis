@@ -56,7 +56,7 @@
         } \
         catch( Py::BaseException & ) \
         { \
-            return 0; \
+            return nullptr; \
         } \
     }
 #define PYCXX_VARARGS_METHOD_DECL( CLS, NAME ) \
@@ -72,7 +72,7 @@
         } \
         catch( Py::BaseException & ) \
         { \
-            return 0; \
+            return nullptr; \
         } \
     }
 #define PYCXX_KEYWORDS_METHOD_DECL( CLS, NAME ) \
@@ -91,7 +91,7 @@
         } \
         catch( Py::BaseException & ) \
         { \
-            return 0; \
+            return nullptr; \
         } \
     }
 

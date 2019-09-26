@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2014 Erik Ogenvik
+ Copyright (C) 2019 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "InventoryDomain.h"
+#include "ContainerDomain.h"
 #include "rules/LocatedEntity.h"
 
 #include "common/TypeNode.h"
@@ -29,25 +29,16 @@
 #include <unordered_set>
 #include <common/operations/Update.h>
 
-static const bool debug_flag = true;
-
-using Atlas::Message::Element;
-using Atlas::Message::MapType;
-using Atlas::Objects::Root;
-using Atlas::Objects::Entity::RootEntity;
-using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Sight;
-using Atlas::Objects::Operation::Unseen;
-
-InventoryDomain::InventoryDomain(LocatedEntity& entity) :
+ContainerDomain::ContainerDomain(LocatedEntity& entity) :
     Domain(entity)
 {
     entity.makeContainer();
 }
 
-void InventoryDomain::addEntity(LocatedEntity& entity)
+void ContainerDomain::addEntity(LocatedEntity& entity)
 {
+    //Check if entity should be stacked.
+    //TODO: combine this code, which is lifted from InventoryDomain
     if (entity.hasFlags(entity_stacked) && m_entity.m_contains) {
         for (const auto& child : *m_entity.m_contains) {
             if (child != &entity && child->getType() == entity.getType() && child->hasFlags(entity_stacked)) {
@@ -73,30 +64,21 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
     }
 
     entity.m_location.resetTransformAndMovement();
+
     entity.removeFlags(entity_clean);
 
-
     //Reset any mode_data properties when moving to this domain.
-    if (auto prop = entity.getPropertyClassFixed<ModeDataProperty>()) {
-        if (prop->getMode() == ModeProperty::Mode::Planted) {
-            auto& plantedOnData = prop->getPlantedOnData();
-            //Check that we've moved from another entity.
-            if ((!plantedOnData.entity || plantedOnData.entity->getId() != m_entity.getId())) {
-                entity.setAttr(ModeDataProperty::property_name, Atlas::Message::Element());
-                Atlas::Objects::Operation::Update update;
-                update->setTo(entity.getId());
-                entity.sendWorld(update);
-            }
-        }
+    if (auto prop = entity.modPropertyClassFixed<ModeDataProperty>()) {
+        prop->clearData();
     }
 }
 
-void InventoryDomain::removeEntity(LocatedEntity& entity)
+void ContainerDomain::removeEntity(LocatedEntity& entity)
 {
     //Nothing special to do for this domain.
 }
 
-bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
+bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
 {
     //If the observing entity is the same as the one the domain belongs to it can see everything.
     if (&observingEntity == &m_entity) {
@@ -107,33 +89,32 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
         return true;
     }
 
-    //Entities can only be seen by outside observers if they are attached.
-    auto modeDataProp = observedEntity.getPropertyClassFixed<ModeDataProperty>();
-    return modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted && modeDataProp->getPlantedOnData().entity.get() == &m_entity;
-
+    //Entities can only be seen by outside observers if the outside entity can reach this.
+    return observingEntity.canReach(m_entity.m_location);
 }
 
-void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
+void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
 {
-    if (m_entity.m_contains) {
-        for (auto& entity : *m_entity.m_contains) {
-            if (isEntityVisibleFor(observingEntity, *entity)) {
-                entityList.push_back(entity.get());
+    if (observingEntity.canReach(m_entity.m_location)) {
+        if (m_entity.m_contains) {
+            for (auto& entity : *m_entity.m_contains) {
+                if (isEntityVisibleFor(observingEntity, *entity)) {
+                    entityList.push_back(entity.get());
+                }
             }
         }
     }
 }
 
-std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> list;
     list.push_back(&m_entity);
     return list;
 }
 
-bool InventoryDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+bool ContainerDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
 {
-    //Only the entity to which the inventory belongs is allowed to reach things in the inventory.
-    return &reachingEntity == &m_entity;
+    //If the container can be reached, its content can be reached.
+    return reachingEntity.canReach(m_entity.m_location);
 }
-

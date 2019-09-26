@@ -26,6 +26,7 @@
 #include "InventoryDomain.h"
 #include "rules/LocatedEntity.h"
 #include "StackableDomain.h"
+#include "ContainerDomain.h"
 
 
 #include <Atlas/Objects/Anonymous.h>
@@ -44,25 +45,25 @@ void DomainProperty::apply(LocatedEntity* entity)
 {
     if (!m_data.empty()) {
         if (!entity->getDomain()) {
-            Domain* domain = nullptr;
+            std::unique_ptr<Domain> domain;
             if (m_data == "physical") {
-                domain = new PhysicalDomain(*entity);
+                domain = std::make_unique<PhysicalDomain>(*entity);
             } else if (m_data == "void") {
-                domain = new VoidDomain(*entity);
+                domain = std::make_unique<VoidDomain>(*entity);
             } else if (m_data == "inventory") {
-                domain = new InventoryDomain(*entity);
+                domain = std::make_unique<InventoryDomain>(*entity);
             } else if (m_data == "stackable") {
-                domain = new StackableDomain(*entity);
+                domain = std::make_unique<StackableDomain>(*entity);
+            } else if (m_data == "container") {
+                domain = std::make_unique<ContainerDomain>(*entity);
             }
-            entity->setDomain(domain);
             if (domain) {
-                entity->addFlags(entity_domain);
                 domain->installDelegates(entity, property_name);
             }
+            entity->setDomain(std::move(domain));
         }
     } else {
         entity->setDomain(nullptr);
-        entity->removeFlags(entity_domain);
     }
 }
 

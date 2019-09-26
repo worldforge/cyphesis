@@ -35,18 +35,19 @@ struct OperationsListener;
 /// This is now also intended to be the base for in-game persistance.
 /// It implements the basic types required for persistance.
 /// \ingroup EntityClasses
-class Entity : public LocatedEntity {
-  protected:
+class Entity : public LocatedEntity
+{
+    protected:
 
-    /// Map of delegate properties.
-    std::multimap<int, std::string> m_delegates;
+        /// Map of delegate properties.
+        std::multimap<int, std::string> m_delegates;
 
-    /// A static map tracking the number of existing entities per type.
-    /// A monitor by the name of "entity_count{type=*}" will be created
-    /// per type.
-    static std::unordered_map<const TypeNode*, std::unique_ptr<int>> s_monitorsMap;
+        /// A static map tracking the number of existing entities per type.
+        /// A monitor by the name of "entity_count{type=*}" will be created
+        /// per type.
+        static std::unordered_map<const TypeNode*, std::unique_ptr<int>> s_monitorsMap;
 
-    Domain* m_domain;
+        std::unique_ptr<Domain> m_domain;
 
 
     public:

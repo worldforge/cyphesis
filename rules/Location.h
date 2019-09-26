@@ -100,6 +100,13 @@ class Location : public EntityLocation {
         modifyBBox();
     }
 
+    void resetTransformAndMovement() {
+        m_pos = WFMath::Point<3>::ZERO();
+        m_orientation = WFMath::Quaternion::IDENTITY();
+        m_velocity = WFMath::Vector<3>::ZERO();
+        m_angularVelocity = WFMath::Vector<3>::ZERO();
+    }
+
     void addToMessage(Atlas::Message::MapType & ent) const;
     void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
     Atlas::Objects::Root asEntity() const;

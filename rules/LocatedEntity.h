@@ -229,7 +229,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
     virtual Domain * getDomain();
     virtual const Domain * getDomain() const;
 
-    virtual void setDomain(Domain* domain);
+    virtual void setDomain(std::unique_ptr<Domain> domain);
 
     virtual void sendWorld(const Operation & op);
 
@@ -303,7 +303,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
         if (p != nullptr) {
             return dynamic_cast<const PropertyT *>(p);
         }
-        return 0;
+        return nullptr;
     }
 
     /// \brief Get a property that is required to of a given type.
@@ -323,7 +323,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
         if (p != nullptr) {
             return dynamic_cast<const Property<T> *>(p);
         }
-        return 0;
+        return nullptr;
     }
 
     /// \brief Get a property that is required to of a given type.
@@ -334,7 +334,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
         if (p != nullptr) {
             return dynamic_cast<PropertyT *>(p);
         }
-        return 0;
+        return nullptr;
     }
 
     /// \brief Get a property that is required to of a given type.
@@ -358,7 +358,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
         if (p != nullptr) {
             return dynamic_cast<Property<T> *>(p);
         }
-        return 0;
+        return nullptr;
     }
 
     /// \brief Require that a property of a given type is set.

@@ -266,7 +266,7 @@ const Domain* LocatedEntity::getDomain() const
     return nullptr;
 }
 
-void LocatedEntity::setDomain(Domain* domain)
+void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
 {
     //no-op
 }

@@ -66,16 +66,13 @@ std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
 /// \defgroup EntityClasses In World Entity Classes
 
 /// \brief Entity constructor
-Entity::Entity(const std::string & id, long intId) :
-        LocatedEntity(id, intId),
-        m_domain(nullptr)
+Entity::Entity(const std::string& id, long intId) :
+    LocatedEntity(id, intId)
 {
 }
 
 Entity::~Entity()
 {
-    delete m_domain;
-
     if (m_type) {
         auto I = s_monitorsMap.find(m_type);
         if (I != s_monitorsMap.end()) {
@@ -83,10 +80,10 @@ Entity::~Entity()
             *ptr = *ptr - 1;
         }
     }
-
 }
 
-void Entity::setType(const TypeNode * t) {
+void Entity::setType(const TypeNode* t)
+{
     LocatedEntity::setType(t);
 
     if (t) {
@@ -123,9 +120,9 @@ void Entity::removeChild(LocatedEntity& childEntity)
 }
 
 
-PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
+PropertyBase* Entity::setAttr(const std::string& name, const Element& attr)
 {
-    PropertyBase * prop;
+    PropertyBase* prop;
     // If it is an existing property, just update the value.
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -154,7 +151,7 @@ PropertyBase * Entity::setAttr(const std::string & name, const Element & attr)
     return prop;
 }
 
-const PropertyBase * Entity::getProperty(const std::string & name) const
+const PropertyBase* Entity::getProperty(const std::string& name) const
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -169,7 +166,7 @@ const PropertyBase * Entity::getProperty(const std::string & name) const
     return nullptr;
 }
 
-PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Message::Element& def_val)
+PropertyBase* Entity::modProperty(const std::string& name, const Atlas::Message::Element& def_val)
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -180,7 +177,7 @@ PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Messag
         if (I != m_type->defaults().end()) {
             // We have a default for this property. Create a new instance
             // property with the same value.
-            PropertyBase * new_prop = I->second->copy();
+            PropertyBase* new_prop = I->second->copy();
             if (!def_val.isNone()) {
                 new_prop->set(def_val);
             }
@@ -201,8 +198,8 @@ PropertyBase * Entity::modProperty(const std::string & name, const Atlas::Messag
 /// @param name name of the attribute for which the property is given
 /// @param prop the property object to be used
 /// @returns a pointer to the property
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   std::unique_ptr<PropertyBase> prop)
+PropertyBase* Entity::setProperty(const std::string& name,
+                                  std::unique_ptr<PropertyBase> prop)
 {
     auto p = prop.get();
     m_properties[name] = std::move(prop);
@@ -212,7 +209,7 @@ PropertyBase * Entity::setProperty(const std::string & name,
 /// \brief Copy attributes into an Atlas element
 ///
 /// @param omap Atlas map element this entity should be copied into
-void Entity::addToMessage(MapType & omap) const
+void Entity::addToMessage(MapType& omap) const
 {
     // We need to have a list of keys to pull from attributes.
     PropertyDict::const_iterator J;
@@ -224,7 +221,7 @@ void Entity::addToMessage(MapType & omap) const
         J->second->add(J->first, omap);
     }
 
-    omap["stamp"] = (double)m_seq;
+    omap["stamp"] = (double) m_seq;
     omap["parent"] = m_type;
     m_location.addToMessage(omap);
     omap["objtype"] = "obj";
@@ -233,7 +230,7 @@ void Entity::addToMessage(MapType & omap) const
 /// \brief Copy attributes into an Atlas entity
 ///
 /// @param ent Atlas entity this entity should be copied into
-void Entity::addToEntity(const RootEntity & ent) const
+void Entity::addToEntity(const RootEntity& ent) const
 {
     // We need to have a list of keys to pull from attributes.
     for (auto& entry : m_properties) {
@@ -252,12 +249,12 @@ void Entity::addToEntity(const RootEntity & ent) const
 ///
 /// @param class_no The class number of the operation to be handled
 /// @param delegate The name of the property to delegate it to.
-void Entity::installDelegate(int class_no, const std::string & delegate)
+void Entity::installDelegate(int class_no, const std::string& delegate)
 {
     m_delegates.insert(std::make_pair(class_no, delegate));
 }
 
-void Entity::removeDelegate(int class_no, const std::string & delegate)
+void Entity::removeDelegate(int class_no, const std::string& delegate)
 {
     auto I = m_delegates.find(class_no);
     if (I != m_delegates.end() && I->second == delegate) {
@@ -275,7 +272,7 @@ void Entity::destroy()
     assert(m_location.m_parent->m_contains);
     if (m_contains != nullptr) {
         for (auto& entity : *m_contains) {
-            Location & child = entity->m_location;
+            Location& child = entity->m_location;
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
 
@@ -300,22 +297,27 @@ void Entity::destroy()
 
 }
 
-Domain * Entity::getDomain()
+Domain* Entity::getDomain()
 {
-    return m_domain;
+    return m_domain.get();
 }
 
-const Domain * Entity::getDomain() const
+const Domain* Entity::getDomain() const
 {
-    return m_domain;
+    return m_domain.get();
 }
 
-void Entity::setDomain(Domain* domain)
+void Entity::setDomain(std::unique_ptr<Domain> domain)
 {
-    m_domain = domain;
+    m_domain = std::move(domain);
+    if (m_domain) {
+        addFlags(entity_domain);
+    } else {
+        removeFlags(entity_domain);
+    }
 }
 
-void Entity::sendWorld(const Operation & op)
+void Entity::sendWorld(const Operation& op)
 {
     BaseWorld::instance().message(op, *this);
 }
@@ -331,7 +333,7 @@ void Entity::CreateOperation(const Operation &, OpVector &)
 }
 
 /// \brief Handle a delete operation
-void Entity::DeleteOperation(const Operation &, OpVector &)
+void Entity::DeleteOperation(const Operation&, OpVector&)
 {
     //We call on the baseworld to delete ourselves here. This allows
     //other components, such as properties, to preempt the deletion if
@@ -438,7 +440,7 @@ void Entity::removeListener(OperationsListener* listener)
     }
 }
 
-void Entity::externalOperation(const Operation & op, Link & link)
+void Entity::externalOperation(const Operation& op, Link& link)
 {
     if (op->getClassNo() != Atlas::Objects::Operation::THOUGHT_NO) {
         OpVector res;
@@ -455,7 +457,7 @@ void Entity::externalOperation(const Operation & op, Link & link)
     }
 }
 
-void Entity::operation(const Operation & op, OpVector & res)
+void Entity::operation(const Operation& op, OpVector& res)
 {
     HandlerResult hr = OPERATION_IGNORED;
 
@@ -473,7 +475,7 @@ void Entity::operation(const Operation & op, OpVector & res)
     }
 
     auto J = m_delegates.equal_range(op->getClassNo());
-    for (;J.first != J.second; ++J.first) {
+    for (; J.first != J.second; ++J.first) {
         HandlerResult hr_call = callDelegate(J.first->second, op, res);
         //We'll record the most blocking of the different results only.
         if (hr != OPERATION_BLOCKED) {
@@ -495,16 +497,16 @@ void Entity::operation(const Operation & op, OpVector & res)
     return callOperation(op, res);
 }
 
-HandlerResult Entity::callDelegate(const std::string & name,
-                                   const Operation & op,
-                                   OpVector & res)
+HandlerResult Entity::callDelegate(const std::string& name,
+                                   const Operation& op,
+                                   OpVector& res)
 {
-    PropertyBase * p = nullptr;
+    PropertyBase* p = nullptr;
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         p = I->second.get();
     } else if (m_type != nullptr) {
-        I = m_type->defaults().find(name); 
+        I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             p = I->second.get();
         }
@@ -519,7 +521,7 @@ HandlerResult Entity::callDelegate(const std::string & name,
 ///
 /// @param op The operation to be processed.
 /// @param res The result of the operation is returned here.
-void Entity::callOperation(const Operation & op, OpVector & res)
+void Entity::callOperation(const Operation& op, OpVector& res)
 {
     auto op_no = op->getClassNo();
     OP_SWITCH(op, op_no, res,)

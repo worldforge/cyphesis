@@ -53,7 +53,8 @@ add_library(rulessimulation
     StackableDomain.cpp
     AmountProperty.cpp
     SimulationSpeedProperty.cpp
-    ModeDataProperty.cpp)
+    ModeDataProperty.cpp
+    ContainerDomain.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 
