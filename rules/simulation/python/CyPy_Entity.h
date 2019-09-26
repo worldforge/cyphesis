@@ -70,6 +70,10 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
         Py::Object get_parent_domain();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Entity, get_parent_domain);
+
+        Py::Object create_new_entity(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, create_new_entity);
 };
 
 #endif //CYPHESIS_CYPY_ENTITY_H

@@ -1,4 +1,5 @@
 //Add custom implementations of stubbed functions here
+#include "rules/Domain.h"
 #ifndef STUB_Entity_setProperty
 #define STUB_Entity_setProperty
 PropertyBase* Entity::setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop)

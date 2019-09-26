@@ -9,9 +9,8 @@
 
 #ifndef STUB_Entity_Entity
 //#define STUB_Entity_Entity
-   Entity::Entity(const std::string & id, long intId)
+   Entity::Entity(const std::string& id, long intId)
     : LocatedEntity(id, intId)
-    , m_domain(nullptr)
   {
     
   }
@@ -27,7 +26,7 @@
 
 #ifndef STUB_Entity_setType
 //#define STUB_Entity_setType
-  void Entity::setType(const TypeNode * t)
+  void Entity::setType(const TypeNode* t)
   {
     
   }
@@ -35,7 +34,7 @@
 
 #ifndef STUB_Entity_setAttr
 //#define STUB_Entity_setAttr
-  PropertyBase* Entity::setAttr(const std::string & name, const Atlas::Message::Element &)
+  PropertyBase* Entity::setAttr(const std::string& name, const Atlas::Message::Element&)
   {
     return nullptr;
   }
@@ -43,7 +42,7 @@
 
 #ifndef STUB_Entity_getProperty
 //#define STUB_Entity_getProperty
-  const PropertyBase* Entity::getProperty(const std::string & name) const
+  const PropertyBase* Entity::getProperty(const std::string& name) const
   {
     return nullptr;
   }
@@ -51,7 +50,7 @@
 
 #ifndef STUB_Entity_modProperty
 //#define STUB_Entity_modProperty
-  PropertyBase* Entity::modProperty(const std::string & name, const Atlas::Message::Element& def_val )
+  PropertyBase* Entity::modProperty(const std::string& name, const Atlas::Message::Element& def_val )
   {
     return nullptr;
   }
@@ -59,7 +58,7 @@
 
 #ifndef STUB_Entity_setProperty
 //#define STUB_Entity_setProperty
-  PropertyBase* Entity::setProperty(const std::string & name, std::unique_ptr<PropertyBase> prop)
+  PropertyBase* Entity::setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop)
   {
     return nullptr;
   }
@@ -67,7 +66,7 @@
 
 #ifndef STUB_Entity_addToMessage
 //#define STUB_Entity_addToMessage
-  void Entity::addToMessage(Atlas::Message::MapType &) const
+  void Entity::addToMessage(Atlas::Message::MapType&) const
   {
     
   }
@@ -75,71 +74,31 @@
 
 #ifndef STUB_Entity_addToEntity
 //#define STUB_Entity_addToEntity
-  void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
+  void Entity::addToEntity(const Atlas::Objects::Entity::RootEntity&) const
   {
     
   }
 #endif //STUB_Entity_addToEntity
 
-#ifndef STUB_Entity_AppearanceOperation
-//#define STUB_Entity_AppearanceOperation
-  void Entity::AppearanceOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_AppearanceOperation
-
-#ifndef STUB_Entity_CreateOperation
-//#define STUB_Entity_CreateOperation
-  void Entity::CreateOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_CreateOperation
-
 #ifndef STUB_Entity_DeleteOperation
 //#define STUB_Entity_DeleteOperation
-  void Entity::DeleteOperation(const Operation &, OpVector &)
+  void Entity::DeleteOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Entity_DeleteOperation
 
-#ifndef STUB_Entity_DisappearanceOperation
-//#define STUB_Entity_DisappearanceOperation
-  void Entity::DisappearanceOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_DisappearanceOperation
-
-#ifndef STUB_Entity_GetOperation
-//#define STUB_Entity_GetOperation
-  void Entity::GetOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_GetOperation
-
 #ifndef STUB_Entity_ImaginaryOperation
 //#define STUB_Entity_ImaginaryOperation
-  void Entity::ImaginaryOperation(const Operation &, OpVector &)
+  void Entity::ImaginaryOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Entity_ImaginaryOperation
 
-#ifndef STUB_Entity_InfoOperation
-//#define STUB_Entity_InfoOperation
-  void Entity::InfoOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_InfoOperation
-
 #ifndef STUB_Entity_LookOperation
 //#define STUB_Entity_LookOperation
-  void Entity::LookOperation(const Operation &, OpVector &)
+  void Entity::LookOperation(const Operation&, OpVector&)
   {
     
   }
@@ -147,7 +106,7 @@
 
 #ifndef STUB_Entity_MoveOperation
 //#define STUB_Entity_MoveOperation
-  void Entity::MoveOperation(const Operation &, OpVector &)
+  void Entity::MoveOperation(const Operation&, OpVector&)
   {
     
   }
@@ -155,95 +114,39 @@
 
 #ifndef STUB_Entity_SetOperation
 //#define STUB_Entity_SetOperation
-  void Entity::SetOperation(const Operation &, OpVector &)
+  void Entity::SetOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Entity_SetOperation
 
-#ifndef STUB_Entity_SightOperation
-//#define STUB_Entity_SightOperation
-  void Entity::SightOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_SightOperation
-
-#ifndef STUB_Entity_SoundOperation
-//#define STUB_Entity_SoundOperation
-  void Entity::SoundOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_SoundOperation
-
 #ifndef STUB_Entity_TalkOperation
 //#define STUB_Entity_TalkOperation
-  void Entity::TalkOperation(const Operation &, OpVector &)
+  void Entity::TalkOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Entity_TalkOperation
 
-#ifndef STUB_Entity_TickOperation
-//#define STUB_Entity_TickOperation
-  void Entity::TickOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_TickOperation
-
-#ifndef STUB_Entity_TouchOperation
-//#define STUB_Entity_TouchOperation
-  void Entity::TouchOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_TouchOperation
-
 #ifndef STUB_Entity_UpdateOperation
 //#define STUB_Entity_UpdateOperation
-  void Entity::UpdateOperation(const Operation &, OpVector &)
+  void Entity::UpdateOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Entity_UpdateOperation
 
-#ifndef STUB_Entity_UseOperation
-//#define STUB_Entity_UseOperation
-  void Entity::UseOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_UseOperation
-
-#ifndef STUB_Entity_WieldOperation
-//#define STUB_Entity_WieldOperation
-  void Entity::WieldOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_WieldOperation
-
 #ifndef STUB_Entity_RelayOperation
 //#define STUB_Entity_RelayOperation
-  void Entity::RelayOperation(const Operation &, OpVector &)
+  void Entity::RelayOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Entity_RelayOperation
 
-#ifndef STUB_Entity_ThoughtOperation
-//#define STUB_Entity_ThoughtOperation
-  void Entity::ThoughtOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Entity_ThoughtOperation
-
 #ifndef STUB_Entity_externalOperation
 //#define STUB_Entity_externalOperation
-  void Entity::externalOperation(const Operation & op, Link &)
+  void Entity::externalOperation(const Operation& op, Link&)
   {
     
   }
@@ -251,7 +154,7 @@
 
 #ifndef STUB_Entity_operation
 //#define STUB_Entity_operation
-  void Entity::operation(const Operation &, OpVector &)
+  void Entity::operation(const Operation&, OpVector&)
   {
     
   }
@@ -259,7 +162,7 @@
 
 #ifndef STUB_Entity_callDelegate
 //#define STUB_Entity_callDelegate
-  HandlerResult Entity::callDelegate(const std::string &, const Operation &, OpVector &)
+  HandlerResult Entity::callDelegate(const std::string&, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -267,7 +170,7 @@
 
 #ifndef STUB_Entity_callOperation
 //#define STUB_Entity_callOperation
-  void Entity::callOperation(const Operation &, OpVector &)
+  void Entity::callOperation(const Operation&, OpVector&)
   {
     
   }
@@ -275,7 +178,7 @@
 
 #ifndef STUB_Entity_installDelegate
 //#define STUB_Entity_installDelegate
-  void Entity::installDelegate(int, const std::string &)
+  void Entity::installDelegate(int, const std::string&)
   {
     
   }
@@ -283,7 +186,7 @@
 
 #ifndef STUB_Entity_removeDelegate
 //#define STUB_Entity_removeDelegate
-  void Entity::removeDelegate(int, const std::string &)
+  void Entity::removeDelegate(int, const std::string&)
   {
     
   }
@@ -347,7 +250,7 @@
 
 #ifndef STUB_Entity_setDomain
 //#define STUB_Entity_setDomain
-  void Entity::setDomain(Domain* domain)
+  void Entity::setDomain(std::unique_ptr<Domain> domain)
   {
     
   }
@@ -355,7 +258,7 @@
 
 #ifndef STUB_Entity_sendWorld
 //#define STUB_Entity_sendWorld
-  void Entity::sendWorld(const Operation & op)
+  void Entity::sendWorld(const Operation& op)
   {
     
   }
@@ -376,6 +279,22 @@
     
   }
 #endif //STUB_Entity_removeListener
+
+#ifndef STUB_Entity_createNewEntity
+//#define STUB_Entity_createNewEntity
+  Ref<LocatedEntity> Entity::createNewEntity(const Atlas::Objects::Entity::RootEntity& entity)
+  {
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
+  }
+#endif //STUB_Entity_createNewEntity
+
+#ifndef STUB_Entity_createNewEntity
+//#define STUB_Entity_createNewEntity
+  Ref<LocatedEntity> Entity::createNewEntity(const Operation& op, OpVector& res)
+  {
+    return *static_cast<Ref<LocatedEntity>*>(nullptr);
+  }
+#endif //STUB_Entity_createNewEntity
 
 
 #endif

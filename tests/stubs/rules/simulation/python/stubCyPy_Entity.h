@@ -137,5 +137,13 @@
   }
 #endif //STUB_CyPy_Entity_get_parent_domain
 
+#ifndef STUB_CyPy_Entity_create_new_entity
+//#define STUB_CyPy_Entity_create_new_entity
+  Py::Object CyPy_Entity::create_new_entity(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Entity_create_new_entity
+
 
 #endif

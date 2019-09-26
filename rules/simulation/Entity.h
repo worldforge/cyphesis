@@ -51,78 +51,87 @@ class Entity : public LocatedEntity
 
 
     public:
-    explicit Entity(const std::string & id, long intId);
-    ~Entity() override;
+        explicit Entity(const std::string& id, long intId);
 
-    std::vector<OperationsListener*> m_listeners;
+        ~Entity() override;
 
-    void setType(const TypeNode * t) override;
+        std::vector<OperationsListener*> m_listeners;
 
-    PropertyBase * setAttr(const std::string & name, const Atlas::Message::Element &) override;
-    const PropertyBase * getProperty(const std::string & name) const override;
+        void setType(const TypeNode* t) override;
 
-    PropertyBase * modProperty(const std::string & name, const Atlas::Message::Element& def_val = Atlas::Message::Element()) override;
-    PropertyBase * setProperty(const std::string & name, std::unique_ptr<PropertyBase> prop) override;
+        PropertyBase* setAttr(const std::string& name, const Atlas::Message::Element&) override;
 
-    void addToMessage(Atlas::Message::MapType &) const override;
-    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
+        const PropertyBase* getProperty(const std::string& name) const override;
 
-    virtual void AppearanceOperation(const Operation &, OpVector &);
-    virtual void CreateOperation(const Operation &, OpVector &);
-    virtual void DeleteOperation(const Operation &, OpVector &);
-    virtual void DisappearanceOperation(const Operation &, OpVector &);
-    virtual void GetOperation(const Operation &, OpVector &);
-    virtual void ImaginaryOperation(const Operation &, OpVector &);
-    virtual void InfoOperation(const Operation &, OpVector &);
-    virtual void LookOperation(const Operation &, OpVector &);
-    virtual void MoveOperation(const Operation &, OpVector &);
-    virtual void SetOperation(const Operation &, OpVector &);
-    virtual void SightOperation(const Operation &, OpVector &);
-    virtual void SoundOperation(const Operation &, OpVector &);
-    virtual void TalkOperation(const Operation &, OpVector &);
-    virtual void TickOperation(const Operation &, OpVector &);
-    virtual void TouchOperation(const Operation &, OpVector &);
-    virtual void UpdateOperation(const Operation &, OpVector &);
-    virtual void UseOperation(const Operation &, OpVector &);
-    virtual void WieldOperation(const Operation &, OpVector &);
-    virtual void RelayOperation(const Operation &, OpVector &);
-    virtual void ThoughtOperation(const Operation &, OpVector &);
+        PropertyBase* modProperty(const std::string& name, const Atlas::Message::Element& def_val = Atlas::Message::Element()) override;
 
-    void externalOperation(const Operation & op, Link &) override;
-    void operation(const Operation &, OpVector &) override;
+        PropertyBase* setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop) override;
 
-    HandlerResult callDelegate(const std::string &,
-                               const Operation &,
-                               OpVector &);
-    void callOperation(const Operation &, OpVector &);
+        void addToMessage(Atlas::Message::MapType&) const override;
 
-    void installDelegate(int, const std::string &) override;
-    void removeDelegate(int, const std::string &) override;
+        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
 
-    void addChild(LocatedEntity& childEntity) override;
+        virtual void DeleteOperation(const Operation&, OpVector&);
 
-    void removeChild(LocatedEntity& childEntity) override;
+        virtual void ImaginaryOperation(const Operation&, OpVector&);
 
-    void onContainered(const Ref<LocatedEntity>& oldLocation) override;
-    void onUpdated() override;
+        virtual void LookOperation(const Operation&, OpVector&);
 
-    void destroy() override;
+        virtual void MoveOperation(const Operation&, OpVector&);
 
-    Domain * getDomain() override ;
-    const Domain * getDomain() const override ;
-    void setDomain(Domain* domain) override;
+        virtual void SetOperation(const Operation&, OpVector&);
 
-    void sendWorld(const Operation & op) override;
+        virtual void TalkOperation(const Operation&, OpVector&);
 
-    void addListener(OperationsListener* listener) override;
-    void removeListener(OperationsListener* listener) override;
+        virtual void UpdateOperation(const Operation&, OpVector&);
 
+        virtual void RelayOperation(const Operation&, OpVector&);
 
-    friend class Entitytest;
-    friend class PropertyEntityintegration;
+        void externalOperation(const Operation& op, Link&) override;
+
+        void operation(const Operation&, OpVector&) override;
+
+        HandlerResult callDelegate(const std::string&,
+                                   const Operation&,
+                                   OpVector&);
+
+        void callOperation(const Operation&, OpVector&);
+
+        void installDelegate(int, const std::string&) override;
+
+        void removeDelegate(int, const std::string&) override;
+
+        void addChild(LocatedEntity& childEntity) override;
+
+        void removeChild(LocatedEntity& childEntity) override;
+
+        void onContainered(const Ref<LocatedEntity>& oldLocation) override;
+
+        void onUpdated() override;
+
+        void destroy() override;
+
+        Domain* getDomain() override;
+
+        const Domain* getDomain() const override;
+
+        void setDomain(std::unique_ptr<Domain> domain) override;
+
+        void sendWorld(const Operation& op) override;
+
+        void addListener(OperationsListener* listener) override;
+
+        void removeListener(OperationsListener* listener) override;
+
+        Ref<LocatedEntity> createNewEntity(const Atlas::Objects::Entity::RootEntity& entity);
+        Ref<LocatedEntity> createNewEntity(const Operation& op, OpVector& res);
+
+        friend class Entitytest;
+
+        friend class PropertyEntityintegration;
 };
 
-inline std::ostream & operator<<(std::ostream& s, Location& v)
+inline std::ostream& operator<<(std::ostream& s, Location& v)
 {
     s << "{";
     if (v.m_parent) {

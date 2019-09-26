@@ -322,16 +322,6 @@ void Entity::sendWorld(const Operation& op)
     BaseWorld::instance().message(op, *this);
 }
 
-/// \brief Handle a appearance operation
-void Entity::AppearanceOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a create operation
-void Entity::CreateOperation(const Operation &, OpVector &)
-{
-}
-
 /// \brief Handle a delete operation
 void Entity::DeleteOperation(const Operation&, OpVector&)
 {
@@ -341,87 +331,38 @@ void Entity::DeleteOperation(const Operation&, OpVector&)
     BaseWorld::instance().delEntity(this);
 }
 
-/// \brief Handle a disappearance operation
-void Entity::DisappearanceOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a get operation
-void Entity::GetOperation(const Operation &, OpVector &)
-{
-}
-
 /// \brief Handle a imaginary operation
-void Entity::ImaginaryOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a info operation
-void Entity::InfoOperation(const Operation &, OpVector &)
+void Entity::ImaginaryOperation(const Operation&, OpVector&)
 {
 }
 
 /// \brief Handle a look operation
-void Entity::LookOperation(const Operation &, OpVector &)
+void Entity::LookOperation(const Operation&, OpVector&)
 {
 }
 
 /// \brief Handle a move operation
-void Entity::MoveOperation(const Operation &, OpVector &)
+void Entity::MoveOperation(const Operation&, OpVector&)
 {
 }
 
 /// \brief Handle a set operation
-void Entity::SetOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a sight operation
-void Entity::SightOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a sound operation
-void Entity::SoundOperation(const Operation &, OpVector &)
+void Entity::SetOperation(const Operation&, OpVector&)
 {
 }
 
 /// \brief Handle a talk operation
-void Entity::TalkOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a tick operation
-void Entity::TickOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a touch operation
-void Entity::TouchOperation(const Operation &, OpVector &)
+void Entity::TalkOperation(const Operation&, OpVector&)
 {
 }
 
 /// \brief Handle a update operation
-void Entity::UpdateOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a use operation
-void Entity::UseOperation(const Operation &, OpVector &)
-{
-}
-
-/// \brief Handle a wield operation
-void Entity::WieldOperation(const Operation &, OpVector &)
+void Entity::UpdateOperation(const Operation&, OpVector&)
 {
 }
 
 /// \brief Handle a relay operation
-void Entity::RelayOperation(const Operation & op, OpVector & res)
-{
-}
-
-void Entity::ThoughtOperation(const Operation&, OpVector&)
+void Entity::RelayOperation(const Operation& op, OpVector& res)
 {
 }
 
@@ -535,4 +476,66 @@ void Entity::onContainered(const Ref<LocatedEntity>& oldLocation)
 void Entity::onUpdated()
 {
     updated.emit();
+}
+
+Ref<LocatedEntity> Entity::createNewEntity(const Operation& op, OpVector& res)
+{
+    const std::vector<Root>& args = op->getArgs();
+    if (args.empty()) {
+        return {};
+    }
+    try {
+        RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
+        if (!ent.isValid()) {
+            error(op, "Entity to be created is malformed", res, getId());
+            return {};
+        }
+        auto obj = createNewEntity(ent);
+
+        if (!obj) {
+            error(op, "Create op failed.", res, op->getFrom());
+            return {};
+        }
+
+        Anonymous new_ent;
+        obj->addToEntity(new_ent);
+
+        if (!op->isDefaultSerialno()) {
+            Atlas::Objects::Operation::Info i;
+            i->setArgs1(new_ent);
+            i->setTo(op->getFrom());
+            res.push_back(i);
+        }
+
+        Operation c(op.copy());
+        c->setArgs1(new_ent);
+
+        Sight s;
+        s->setArgs1(c);
+        //TODO: perhaps check that we don't send private and protected properties?
+        broadcast(s, res, Visibility::PUBLIC);
+        return obj;
+    }
+    catch (const std::runtime_error& e) {
+        log(ERROR, String::compose("Error when trying to create entity: %1", e.what()));
+        error(op, String::compose("Error when trying to create entity: %1", e.what()), res, getId());
+        return {};
+    }
+}
+
+Ref<LocatedEntity> Entity::createNewEntity(const RootEntity& ent)
+{
+    const std::string& type = ent->getParent();
+    if (type.empty()) {
+        throw std::runtime_error("Entity to be created has empty parent.");
+    }
+
+    //If there's no location set we'll use the same one as the current entity.
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_parent)) {
+        ent->setLoc(m_location.m_parent->getId());
+    }
+    debug_print(getId() << " creating " << type);
+
+    return BaseWorld::instance().addNewEntity(type, ent);
+
 }

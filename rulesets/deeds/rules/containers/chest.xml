@@ -13,9 +13,49 @@
             <map name="density">
                 <float name="default">500</float>
             </map>
+            <map name="domain">
+                <string name="default">container</string>
+            </map>
+            <map name="_usages">
+                <map name="default">
+                    <map name="open">
+                        <string name="name">Open</string>
+                        <string name="handler">world.objects.Container.open</string>
+                        <string name="constraint">actor can_reach tool</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">chest</string>
         <string name="objtype">class</string>
         <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <string name="id">chest_apples</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">chest</string>
+                <list name="contains">
+                    <string>apple1</string>
+                    <string>apple2</string>
+                    <string>apple3</string>
+                </list>
+            </map>
+            <map>
+                <string name="id">apple1</string>
+                <string name="parent">apple</string>
+            </map>
+            <map>
+                <string name="id">apple2</string>
+                <string name="parent">apple</string>
+            </map>
+            <map>
+                <string name="id">apple3</string>
+                <string name="parent">apple</string>
+            </map>
+        </list>
     </map>
 </atlas>

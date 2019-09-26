@@ -657,63 +657,6 @@ void Thing::LookOperation(const Operation& op, OpVector& res)
     }
 }
 
-void Thing::CreateOperation(const Operation& op, OpVector& res)
-{
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        return;
-    }
-    try {
-        RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
-        if (!ent.isValid()) {
-            error(op, "Entity to be created is malformed", res, getId());
-            return;
-        }
-        const std::string& type = ent->getParent();
-        if (type.empty()) {
-            error(op, "Entity to be created has empty parent", res, getId());
-            return;
-        }
-
-        //If there's no location set we'll use the same one as the current entity.
-        if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_parent)) {
-            ent->setLoc(m_location.m_parent->getId());
-        }
-        debug_print(getId() << " creating " << type);
-
-        auto obj = BaseWorld::instance().addNewEntity(type, ent);
-
-        if (!obj) {
-            error(op, "Create op failed.", res, op->getFrom());
-            return;
-        }
-
-        Anonymous new_ent;
-        obj->addToEntity(new_ent);
-
-        if (!op->isDefaultSerialno()) {
-            Info i;
-            i->setArgs1(new_ent);
-            i->setTo(op->getFrom());
-            res.push_back(i);
-        }
-
-        Operation c(op.copy());
-        c->setArgs1(new_ent);
-
-        Sight s;
-        s->setArgs1(c);
-        //TODO: perhaps check that we don't send private and protected properties?
-        broadcast(s, res, Visibility::PUBLIC);
-    }
-    catch (Atlas::Message::WrongTypeException&) {
-        log(ERROR, "EXCEPTION: Malformed object to be created");
-        error(op, "Malformed object to be created", res, getId());
-        return;
-    }
-}
-
-
 void Thing::ImaginaryOperation(const Operation& op, OpVector& res)
 {
     Sight s{};

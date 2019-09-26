@@ -21,26 +21,11 @@
 
 #define OP_SWITCH(_op, _op_no, _result, _prefix) \
     switch (_op_no) { \
-        case Atlas::Objects::Operation::APPEARANCE_NO: \
-            _prefix ## AppearanceOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::CREATE_NO: \
-            _prefix ## CreateOperation(_op, _result); \
-            break; \
         case Atlas::Objects::Operation::DELETE_NO: \
             _prefix ## DeleteOperation(_op, _result); \
             break; \
-        case Atlas::Objects::Operation::DISAPPEARANCE_NO: \
-            _prefix ## DisappearanceOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::GET_NO: \
-            _prefix ## GetOperation(_op, _result); \
-            break; \
         case Atlas::Objects::Operation::IMAGINARY_NO: \
             _prefix ## ImaginaryOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::INFO_NO: \
-            _prefix ## InfoOperation(_op, _result); \
             break; \
         case Atlas::Objects::Operation::LOOK_NO: \
             _prefix ## LookOperation(_op, _result); \
@@ -51,32 +36,13 @@
         case Atlas::Objects::Operation::SET_NO: \
             _prefix ## SetOperation(_op, _result); \
             break; \
-        case Atlas::Objects::Operation::SIGHT_NO: \
-            _prefix ## SightOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::SOUND_NO: \
-            _prefix ## SoundOperation(_op, _result); \
-            break; \
         case Atlas::Objects::Operation::TALK_NO: \
             _prefix ## TalkOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::TOUCH_NO: \
-            _prefix ## TouchOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::USE_NO: \
-            _prefix ## UseOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::WIELD_NO: \
-            _prefix ## WieldOperation(_op, _result); \
             break; \
         case OP_INVALID: \
             break; \
         default: \
-            if ((_op_no) == Atlas::Objects::Operation::THOUGHT_NO) { \
-                _prefix ## ThoughtOperation(_op, _result); \
-            } else if ((_op_no) == Atlas::Objects::Operation::TICK_NO) { \
-                _prefix ## TickOperation(_op, _result); \
-            } else if ((_op_no) == Atlas::Objects::Operation::UPDATE_NO) { \
+            if ((_op_no) == Atlas::Objects::Operation::UPDATE_NO) { \
                 _prefix ## UpdateOperation(_op, _result); \
             } else if ((_op_no) == Atlas::Objects::Operation::RELAY_NO) { \
                 _prefix ## RelayOperation(_op, _result); \

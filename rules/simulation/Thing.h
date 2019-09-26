@@ -45,7 +45,6 @@ class Thing : public Entity {
     void SetOperation(const Operation & op, OpVector &) override;
     void UpdateOperation(const Operation & op, OpVector &) override;
     void LookOperation(const Operation & op, OpVector &) override;
-    void CreateOperation(const Operation & op, OpVector &) override;
     void ImaginaryOperation(const Operation & op, OpVector &) override;
     void TalkOperation(const Operation & op, OpVector &) override;
     friend class ThingupdatePropertiestest;

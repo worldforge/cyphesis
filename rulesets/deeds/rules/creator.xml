@@ -70,6 +70,14 @@
             <map name="reach">
                 <float name="default">1000</float>
             </map>
+            <map name="__scripts">
+                <list name="append">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Creator.Creator</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">creator</string>
         <string name="objtype">class</string>

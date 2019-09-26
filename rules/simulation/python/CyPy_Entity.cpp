@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rules/python/CyPy_RootEntity.h>
 #include "CyPy_Entity.h"
 #include "CyPy_Task.h"
 #include "CyPy_EntityProps.h"
@@ -93,6 +94,8 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_NOARGS_METHOD(update_task, update_task, "");
     PYCXX_ADD_VARARGS_METHOD(find_in_contains, find_in_contains, "Returns a list of all contained entities that matches the supplied Entity Filter.");
     PYCXX_ADD_NOARGS_METHOD(get_parent_domain, get_parent_domain, "Gets the parent domain, i.e. the domain to which this entity belongs.");
+
+    PYCXX_ADD_VARARGS_METHOD(create_new_entity, create_new_entity, "Creates a new entity.");
 
 
     behaviors().readyType();
@@ -242,3 +245,21 @@ Py::Object CyPy_Entity::get_parent_domain()
     }
     return Py::None();
 }
+
+Py::Object CyPy_Entity::create_new_entity(const Py::Tuple& args)
+{
+    args.verify_length(1, 2);
+
+    if (CyPy_RootEntity::check(args.front())) {
+        auto newEntity = m_value->createNewEntity(CyPy_RootEntity::value(args.front()));
+        return CyPy_LocatedEntity::wrap(std::move(newEntity));
+    } else if (CyPy_Operation::check(args.front())) {
+        args.verify_length(2);
+        auto newEntity = m_value->createNewEntity(CyPy_Operation::value(args.front()), verifyObject<CyPy_Oplist>(args[1]));
+        return CyPy_LocatedEntity::wrap(std::move(newEntity));
+    } else {
+        throw Py::TypeError("Parameters must be either one single RootEntity, or a RootOperation with an Oplist.");
+    }
+
+}
+

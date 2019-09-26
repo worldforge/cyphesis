@@ -14,6 +14,9 @@
             <map name="present">
                 <string name="default">dural/items/containers/barrel/model/barrel.mesh</string>
             </map>
+            <map name="domain">
+                <string name="default">container</string>
+            </map>
         </map>
         <string name="id">barrel</string>
         <string name="objtype">class</string>

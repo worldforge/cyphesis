@@ -80,14 +80,6 @@
   }
 #endif //STUB_Thing_LookOperation
 
-#ifndef STUB_Thing_CreateOperation
-//#define STUB_Thing_CreateOperation
-  void Thing::CreateOperation(const Operation & op, OpVector &)
-  {
-    
-  }
-#endif //STUB_Thing_CreateOperation
-
 #ifndef STUB_Thing_ImaginaryOperation
 //#define STUB_Thing_ImaginaryOperation
   void Thing::ImaginaryOperation(const Operation & op, OpVector &)

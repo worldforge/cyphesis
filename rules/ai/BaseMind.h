@@ -106,12 +106,12 @@ class BaseMind : public Router, public ReferenceCounted {
 
     void externalOperation(const Operation & op, Link &) override;
 
-    virtual void SightOperation(const Operation &, OpVector &);
-    virtual void SoundOperation(const Operation &, OpVector &);
-    virtual void AppearanceOperation(const Operation &, OpVector &);
-    virtual void DisappearanceOperation(const Operation &, OpVector &);
-    virtual void UnseenOperation(const Operation &, OpVector &);
-    virtual void ThinkOperation(const Operation &, OpVector &);
+    void SightOperation(const Operation &, OpVector &);
+    void SoundOperation(const Operation &, OpVector &);
+    void AppearanceOperation(const Operation &, OpVector &);
+    void DisappearanceOperation(const Operation &, OpVector &);
+    void UnseenOperation(const Operation &, OpVector &);
+    void ThinkOperation(const Operation &, OpVector &);
     void InfoOperation(const Operation&, OpVector& );
 
     void callSightOperation(const Operation &, OpVector &);

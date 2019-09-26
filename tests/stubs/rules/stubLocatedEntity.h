@@ -179,7 +179,7 @@
 
 #ifndef STUB_LocatedEntity_setDomain
 //#define STUB_LocatedEntity_setDomain
-  void LocatedEntity::setDomain(Domain* domain)
+  void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
   {
     
   }

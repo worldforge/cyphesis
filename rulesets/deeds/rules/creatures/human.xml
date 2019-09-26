@@ -88,6 +88,11 @@
                         <string name="language">python</string>
                         <string name="name">world.traits.DecaysInto.DecaysInto</string>
                     </map>
+                    <!-- TODO: remove the creator status of humans; this is here mainly for development ease -->
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Creator.Creator</string>
+                    </map>
                 </list>
             </map>
         </map>

@@ -44,129 +44,134 @@ std::function<void(bool)> worldSetSuspendedCallback;
 using Atlas::Objects::Operation::Tick;
 
 
-class TestEntity : public Entity {
-public:
-	std::function<void()> tickCallback;
+class TestEntity : public Entity
+{
+    public:
 
-	explicit TestEntity(const std::string & id, long intId) : Entity(id, intId)
-	{
+        explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+        {
+        }
 
-	}
-    virtual void TickOperation(const Operation &, OpVector &)
-    {
-    	tickCallback();
-    }
 
 };
 
 class TestPropertyManager : public PropertyManager
 {
-  public:
-    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name,
-                                       int type);
+    public:
+        virtual std::unique_ptr<PropertyBase> addProperty(const std::string& name,
+                                                          int type);
 };
 
-std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
-                                                int type)
+std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string& name,
+                                                               int type)
 {
     return std::unique_ptr<PropertyBase>(new SuspendedProperty());
 }
 
 class SuspendedPropertyintegration : public Cyphesis::TestBase
 {
-  private:
-	Ref<TestEntity> world_entity;
+    private:
+        Ref<TestEntity> world_entity;
 
-	TestWorld* world;
+        TestWorld* world;
 
 
-  public:
-    SuspendedPropertyintegration();
+    public:
+        SuspendedPropertyintegration();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_suspending_entity_should_prevent_ticks();
-    void test_suspending_world_should_suspend_the_whole_baseworld();
+        void teardown();
+
+        void test_suspending_entity_should_prevent_ticks();
+
+        void test_suspending_world_should_suspend_the_whole_baseworld();
 };
 
 SuspendedPropertyintegration::SuspendedPropertyintegration()
 {
-	new TestPropertyManager();
+    new TestPropertyManager();
 
-	ADD_TEST(SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks);
+    ADD_TEST(SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks);
     ADD_TEST(SuspendedPropertyintegration::test_suspending_world_should_suspend_the_whole_baseworld);
 }
 
 void SuspendedPropertyintegration::setup()
 {
-    TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent){
+    TestWorld::extension.messageFn = [](const Operation& op, LocatedEntity& ent) {
         worldMessageCallback(op);
     };
-	world_entity = new TestEntity("0", 0);
-	world = new TestWorld(world_entity);
+    world_entity = new TestEntity("0", 0);
+    world = new TestWorld(world_entity);
 }
 
 void SuspendedPropertyintegration::teardown()
 {
-	delete world;
-	//skip deleting entity
+    delete world;
+    //skip deleting entity
 }
 
 void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
 {
-	TestEntity * entity = new TestEntity("1", 1);
+    TestEntity* entity = new TestEntity("1", 1);
+    struct TickListener : OperationsListener {
+        bool wasCalled;
+         HandlerResult operation(LocatedEntity *, const Operation& op, OpVector & res)
+         {
+             if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+                 wasCalled = true;
+             }
+         }
 
-	bool tick_called = false;
+    } tickListener;
 
-	auto callback = [&]{
-		tick_called = true;
-	};
-	entity->tickCallback = callback;
+    entity->addListener(&tickListener);
 
-	Tick tick;
-	OpVector res;
+    tickListener.wasCalled = false;
 
-	//First make sure TickOperation is called when there's no "suspended" property.
-	entity->operation(tick, res);
-	ASSERT_TRUE(tick_called);
+    Tick tick;
+    OpVector res;
 
-	tick_called = false;
-	//Now make sure it's not called when the suspended property is set
-	entity->setAttr("suspended", 1);
-	entity->operation(tick, res);
-	ASSERT_TRUE(!tick_called);
+    //First make sure TickOperation is called when there's no "suspended" property.
+    entity->operation(tick, res);
+    ASSERT_TRUE(tickListener.wasCalled);
 
-	//And then test resuming it
-	//The previous op should now be resent
-	bool got_message = false;
-	worldMessageCallback = [&](Operation op){
-		got_message = true;
-	};
-	entity->setAttr("suspended", 0);
-	ASSERT_TRUE(got_message);
-	entity->operation(tick, res);
-	ASSERT_TRUE(tick_called);
+    tickListener.wasCalled = false;
+    //Now make sure it's not called when the suspended property is set
+    entity->setAttr("suspended", 1);
+    entity->operation(tick, res);
+    ASSERT_TRUE(!tickListener.wasCalled);
+
+    //And then test resuming it
+    //The previous op should now be resent
+    bool got_message = false;
+    worldMessageCallback = [&](const Operation& op) {
+        got_message = true;
+    };
+    entity->setAttr("suspended", 0);
+    ASSERT_TRUE(got_message);
+    entity->operation(tick, res);
+    ASSERT_TRUE(tickListener.wasCalled);
 }
 
 void SuspendedPropertyintegration::test_suspending_world_should_suspend_the_whole_baseworld()
 {
-	bool is_suspended = false;
-	worldSetSuspendedCallback = [&](bool suspended){
-		is_suspended = suspended;
-	};
-	ASSERT_TRUE(!is_suspended);
-	world_entity->setAttr("suspended", 1);
-	ASSERT_TRUE(is_suspended);
-	world_entity->setAttr("suspended", 0);
-	ASSERT_TRUE(!is_suspended);
+    bool is_suspended = false;
+    worldSetSuspendedCallback = [&](bool suspended) {
+        is_suspended = suspended;
+    };
+    ASSERT_TRUE(!is_suspended);
+    world_entity->setAttr("suspended", 1);
+    ASSERT_TRUE(is_suspended);
+    world_entity->setAttr("suspended", 0);
+    ASSERT_TRUE(!is_suspended);
 }
 
 int main()
 {
 
-	Atlas::Objects::Operation::TICK_NO = 100000;
-	SuspendedPropertyintegration t;
+    Atlas::Objects::Operation::TICK_NO = 100000;
+    SuspendedPropertyintegration t;
 
     return t.run();
 }
@@ -184,7 +189,7 @@ int main()
 #include "stubs/rules/stubAtlasProperties.h"
 
 
-long integerId(const std::string & id)
+long integerId(const std::string& id)
 {
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
@@ -196,7 +201,8 @@ long integerId(const std::string & id)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
+
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string& id) const
 {
     return getEntity(integerId(id));
 }
@@ -211,22 +217,23 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
         return nullptr;
     }
 }
+
 #endif //STUB_BaseWorld_getEntity
 
 #ifndef STUB_BaseWorld_setIsSuspended
 #define STUB_BaseWorld_setIsSuspended
+
 void BaseWorld::setIsSuspended(bool suspended)
 {
     worldSetSuspendedCallback(suspended);
 }
+
 #endif //STUB_BaseWorld_setIsSuspended
 
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
 
 
-
-
-void log(LogLevel lvl, const std::string & msg)
+void log(LogLevel lvl, const std::string& msg)
 {
 }
