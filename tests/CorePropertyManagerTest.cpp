@@ -279,6 +279,7 @@ int main()
 #include "stubs/rules/simulation/stubWorldTimeProperty.h"
 #include "stubs/rules/simulation/stubSimulationSpeedProperty.h"
 #include "stubs/rules/simulation/stubModeDataProperty.h"
+#include "stubs/rules/simulation/stubContainedVisibilityProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

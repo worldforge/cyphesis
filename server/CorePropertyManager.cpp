@@ -72,6 +72,7 @@
 #include <rules/simulation/AmountProperty.h>
 #include <rules/simulation/SimulationSpeedProperty.h>
 #include <rules/simulation/ModeDataProperty.h>
+#include <rules/simulation/ContainedVisibilityProperty.h>
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/WorldTimeProperty.h"
 
@@ -290,6 +291,7 @@ CorePropertyManager::CorePropertyManager()
      */
     installProperty<ModeDataProperty>();
 
+    installProperty<ContainedVisibilityProperty>();
 
 }
 

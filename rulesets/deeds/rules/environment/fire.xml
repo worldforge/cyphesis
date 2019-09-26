@@ -29,6 +29,9 @@
                     </map>
                 </list>
             </map>
+            <map name="contained_visibility">
+                <int name="default">1</int>
+            </map>
         </map>
         <string name="id">fire</string>
         <string name="objtype">class</string>

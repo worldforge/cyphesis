@@ -21,6 +21,7 @@
 
 #include <Atlas/Message/Element.h>
 #include <modules/Ref.h>
+#include <cassert>
 
 class PropertyBase;
 class Entity;
@@ -80,6 +81,7 @@ void PropertyChecker<PropertyT>::interfaceCoverage()
     // type, so we cast the result to void to tell the compiler that we
     // know its unused.
     (void)copy;
+    assert(dynamic_cast<PropertyT*>(copy));
 }
 
 #endif // TESTS_PROPERTY_COVERAGE_H

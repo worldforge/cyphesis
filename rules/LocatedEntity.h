@@ -109,6 +109,12 @@ static const std::uint32_t entity_admin = 1u << 12u;
  */
 static const std::uint32_t entity_stacked = 1u << 13u;
 
+/**
+ * The entity should be visible when contained, even if it normally wouldn't be.
+ * This is of use for things like fires or effects.
+ */
+static const std::uint32_t entity_contained_visible = 1u << 14u;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///

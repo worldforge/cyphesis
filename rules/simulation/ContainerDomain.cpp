@@ -89,6 +89,10 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
         return true;
     }
 
+    if (observedEntity.hasFlags(entity_contained_visible)) {
+        return true;
+    }
+
     //Entities can only be seen by outside observers if the outside entity can reach this.
     return observingEntity.canReach(m_entity.m_location);
 }

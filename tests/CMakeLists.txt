@@ -371,6 +371,9 @@ wf_add_test(TerrainModPropertyIntegration.cpp ../rules/simulation/Entity.cpp
 wf_add_test(StatisticsPropertyIntegration.cpp ../rules/simulation/StatisticsProperty.cpp
     ../rules/simulation/Entity.cpp
     ../rules/LocatedEntity.cpp)
+wf_add_test(ContainedVisibilityPropertyIntegration.cpp ../rules/simulation/ContainedVisibilityProperty.cpp
+    ../rules/simulation/Entity.cpp
+    ../rules/LocatedEntity.cpp)
 wf_add_test(BaseMindMapEntityIntegration.cpp ../rules/ai/BaseMind.cpp
     ../rules/ai/MemEntity.cpp
     ../rules/ai/MemMap.cpp

@@ -107,6 +107,10 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
         return true;
     }
 
+    if (observedEntity.hasFlags(entity_contained_visible)) {
+        return true;
+    }
+
     //Entities can only be seen by outside observers if they are attached.
     auto modeDataProp = observedEntity.getPropertyClassFixed<ModeDataProperty>();
     return modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted && modeDataProp->getPlantedOnData().entity.get() == &m_entity;
