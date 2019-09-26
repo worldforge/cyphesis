@@ -670,3 +670,8 @@ void Thing::TalkOperation(const Operation& op, OpVector& res)
     s->setArgs1(op);
     res.push_back(s);
 }
+
+void Thing::CreateOperation(const Operation& op, OpVector& res)
+{
+    createNewEntity(op, res);
+}

@@ -363,6 +363,10 @@ void Entity::RelayOperation(const Operation& op, OpVector& res)
 {
 }
 
+void Entity::CreateOperation(const Operation& op, OpVector& res)
+{
+}
+
 void Entity::addListener(OperationsListener* listener)
 {
     if (std::find(m_listeners.begin(), m_listeners.end(), listener) == m_listeners.end()) {

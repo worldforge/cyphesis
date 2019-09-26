@@ -9,7 +9,7 @@
 
 #ifndef STUB_Thing_updateProperties
 //#define STUB_Thing_updateProperties
-  void Thing::updateProperties(const Operation & op, OpVector & res)
+  void Thing::updateProperties(const Operation& op, OpVector& res)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_Thing_lookAtEntity
 //#define STUB_Thing_lookAtEntity
-  bool Thing::lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const
+  bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity* watcher) const
   {
     return false;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_Thing_generateSightOp
 //#define STUB_Thing_generateSightOp
-  void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const
+  void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation& originalLookOp, OpVector& res) const
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_Thing_Thing
 //#define STUB_Thing_Thing
-   Thing::Thing(const std::string & id, long intId)
+   Thing::Thing(const std::string& id, long intId)
     : Entity(id, intId)
   {
     
@@ -42,7 +42,7 @@
 
 #ifndef STUB_Thing_DeleteOperation
 //#define STUB_Thing_DeleteOperation
-  void Thing::DeleteOperation(const Operation & op, OpVector &)
+  void Thing::DeleteOperation(const Operation& op, OpVector&)
   {
     
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_Thing_MoveOperation
 //#define STUB_Thing_MoveOperation
-  void Thing::MoveOperation(const Operation & op, OpVector &)
+  void Thing::MoveOperation(const Operation& op, OpVector&)
   {
     
   }
@@ -58,7 +58,7 @@
 
 #ifndef STUB_Thing_SetOperation
 //#define STUB_Thing_SetOperation
-  void Thing::SetOperation(const Operation & op, OpVector &)
+  void Thing::SetOperation(const Operation& op, OpVector&)
   {
     
   }
@@ -66,7 +66,7 @@
 
 #ifndef STUB_Thing_UpdateOperation
 //#define STUB_Thing_UpdateOperation
-  void Thing::UpdateOperation(const Operation & op, OpVector &)
+  void Thing::UpdateOperation(const Operation& op, OpVector&)
   {
     
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_Thing_LookOperation
 //#define STUB_Thing_LookOperation
-  void Thing::LookOperation(const Operation & op, OpVector &)
+  void Thing::LookOperation(const Operation& op, OpVector&)
   {
     
   }
@@ -82,7 +82,7 @@
 
 #ifndef STUB_Thing_ImaginaryOperation
 //#define STUB_Thing_ImaginaryOperation
-  void Thing::ImaginaryOperation(const Operation & op, OpVector &)
+  void Thing::ImaginaryOperation(const Operation& op, OpVector&)
   {
     
   }
@@ -90,11 +90,19 @@
 
 #ifndef STUB_Thing_TalkOperation
 //#define STUB_Thing_TalkOperation
-  void Thing::TalkOperation(const Operation & op, OpVector &)
+  void Thing::TalkOperation(const Operation& op, OpVector&)
   {
     
   }
 #endif //STUB_Thing_TalkOperation
+
+#ifndef STUB_Thing_CreateOperation
+//#define STUB_Thing_CreateOperation
+  void Thing::CreateOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Thing_CreateOperation
 
 
 #endif

@@ -87,6 +87,8 @@ class Entity : public LocatedEntity
 
         virtual void RelayOperation(const Operation&, OpVector&);
 
+        virtual void CreateOperation(const Operation& op, OpVector& res);
+
         void externalOperation(const Operation& op, Link&) override;
 
         void operation(const Operation&, OpVector&) override;

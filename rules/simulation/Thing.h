@@ -28,26 +28,38 @@
 /// any special behavior can be described by a script. It provides
 /// functionality for movement, entity creation and destruction, attribute
 /// changing, and combustion.
-class Thing : public Entity {
-  protected:
-    void updateProperties(const Operation & op, OpVector & res);
+class Thing : public Entity
+{
+    protected:
+        void updateProperties(const Operation& op, OpVector& res);
 
-    bool lookAtEntity(const Operation & op, OpVector & res, const LocatedEntity* watcher) const;
-    void generateSightOp(const LocatedEntity& observingEntity, const Operation & originalLookOp, OpVector& res) const;
+        bool lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity* watcher) const;
 
-  public:
+        void generateSightOp(const LocatedEntity& observingEntity, const Operation& originalLookOp, OpVector& res) const;
 
-    explicit Thing(const std::string & id, long intId);
-    ~Thing() override = default;
+    public:
 
-    void DeleteOperation(const Operation & op, OpVector &) override;
-    void MoveOperation(const Operation & op, OpVector &) override;
-    void SetOperation(const Operation & op, OpVector &) override;
-    void UpdateOperation(const Operation & op, OpVector &) override;
-    void LookOperation(const Operation & op, OpVector &) override;
-    void ImaginaryOperation(const Operation & op, OpVector &) override;
-    void TalkOperation(const Operation & op, OpVector &) override;
-    friend class ThingupdatePropertiestest;
+        explicit Thing(const std::string& id, long intId);
+
+        ~Thing() override = default;
+
+        void DeleteOperation(const Operation& op, OpVector&) override;
+
+        void MoveOperation(const Operation& op, OpVector&) override;
+
+        void SetOperation(const Operation& op, OpVector&) override;
+
+        void UpdateOperation(const Operation& op, OpVector&) override;
+
+        void LookOperation(const Operation& op, OpVector&) override;
+
+        void ImaginaryOperation(const Operation& op, OpVector&) override;
+
+        void TalkOperation(const Operation& op, OpVector&) override;
+
+        void CreateOperation(const Operation& op, OpVector& res) override;
+
+        friend class ThingupdatePropertiestest;
 };
 
 #endif // RULESETS_THING_H

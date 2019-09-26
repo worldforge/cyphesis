@@ -144,6 +144,14 @@
   }
 #endif //STUB_Entity_RelayOperation
 
+#ifndef STUB_Entity_CreateOperation
+//#define STUB_Entity_CreateOperation
+  void Entity::CreateOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Entity_CreateOperation
+
 #ifndef STUB_Entity_externalOperation
 //#define STUB_Entity_externalOperation
   void Entity::externalOperation(const Operation& op, Link&)

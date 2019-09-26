@@ -39,6 +39,9 @@
         case Atlas::Objects::Operation::TALK_NO: \
             _prefix ## TalkOperation(_op, _result); \
             break; \
+        case Atlas::Objects::Operation::CREATE_NO: \
+            _prefix ## CreateOperation(_op, _result); \
+            break; \
         case OP_INVALID: \
             break; \
         default: \
