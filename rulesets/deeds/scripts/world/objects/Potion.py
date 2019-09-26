@@ -1,17 +1,29 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
+import importlib
+
 from atlas import Operation, Entity, Oplist
-from world.utils import Usage
 
 import server
 
 
 def consume(instance):
-    """ When drinking the potion the __effects should be applied to the drinker, and the potion destroyed """
+    """ When drinking the potion the __effects should be applied to the drinker, and the potion destroyed.
+     In addition, if a script handler is registered in the __handler property it will be called as well.
+     """
 
     op_list = Oplist()
     op_list += Operation("delete", Entity(instance.tool.id), to=instance.tool)
+
+    handler_props = instance.tool.props["__handler"]
+    if handler_props is not None:
+        mod_name, func_name = handler_props["name"].rsplit('.', 1)
+        mod = importlib.import_module(mod_name)
+        func = getattr(mod, func_name)
+        result = func(instance)
+        if result:
+            op_list.append(result)
 
     effects_prop = instance.tool.props["__effects"]
     if effects_prop is not None:

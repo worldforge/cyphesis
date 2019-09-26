@@ -12,7 +12,7 @@ def init_ticks(self, interval, jitter=0):
     self.send_world(Operation("tick", Entity(name=self.__class__.__name__), refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
 
 
-def verify_tick(self, op, res, interval, jitter=0):
+def verify_tick(self, op, res, interval=0, jitter=0):
     """Checks that the tick contained in the op is valid, i.e. is the next one for us.
         If so, a new tick op is added to res, and True is returned.
     """
@@ -20,7 +20,8 @@ def verify_tick(self, op, res, interval, jitter=0):
         arg = op[0]
 
         if arg.name == self.__class__.__name__ and op.refno == self.tick_refno:
-            self.tick_refno += 1
-            res.append(Operation("tick", arg, refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
+            if interval > 0:
+                self.tick_refno += 1
+                res.append(Operation("tick", arg, refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
             return True
     return False

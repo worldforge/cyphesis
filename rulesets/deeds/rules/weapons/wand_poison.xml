@@ -3,7 +3,7 @@
     <map>
         <map name="attributes">
             <map name="name">
-                <string name="default">Wand of fireball</string>
+                <string name="default">Wand of poison</string>
             </map>
             <map name="damage">
                 <float name="default">40</float>
@@ -17,14 +17,14 @@
                                 <string name="type">direction</string>
                             </map>
                         </map>
-                        <string name="handler">world.objects.tools.Wand.fireball</string>
+                        <string name="handler">world.objects.tools.Wand.poison</string>
                         <string name="constraint">get_entity(actor.attached_hand_primary) = tool and tool.charges &gt; 0</string>
-                        <string name="description">Send a fireball flying.</string>
+                        <string name="description">Send a ball of poison flying.</string>
                     </map>
                 </map>
             </map>
         </map>
-        <string name="id">wand_fireball</string>
+        <string name="id">wand_poison</string>
         <string name="objtype">class</string>
         <string name="parent">wand</string>
     </map>

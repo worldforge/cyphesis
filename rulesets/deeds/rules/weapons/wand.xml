@@ -1,0 +1,29 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/tools/pick_aul/model/pick_awl.mesh</string>
+                    <string name="type">box</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/tools/pick_aul/model/pick_awl.mesh</string>
+            </map>
+            <map name="density">
+                <float name="default">500</float>
+            </map>
+            <map name="cooldown">
+                <float name="default">2</float>
+            </map>
+            <map name="charges">
+                <int name="default">20</int>
+            </map>
+        </map>
+        <string name="id">wand</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

@@ -1,6 +1,8 @@
 from atlas import Operation, Entity, Oplist
 import server
 import rules
+import physics
+from rules import Location
 
 
 # Used by items that should explode themselves when hit.
@@ -29,4 +31,24 @@ class Explodable(server.Thing):
 
             res.append(Operation("create", entity, to=self.id))
             res.append(Operation("delete", Entity(self.id), to=self.id))
+        return server.OPERATION_HANDLED, res
+
+
+# Like a fireball, but creates poison effects on the hit entity.
+class Poisonable(server.Thing):
+
+    def hit_operation(self, op):
+        res = Oplist()
+        arg = op[0]
+        if arg:
+            # Create a poisoning instance
+            new_entity = Entity(parent="poisoning",
+                                loc=op["from"])
+            print(new_entity.loc)
+            damage_prop = self.props.damage_poison
+            if damage_prop is not None:
+                new_entity.damage = damage_prop
+            res.append(Operation("create", new_entity, to=arg.id))
+
+        res.append(Operation("delete", Entity(self.id), to=self.id))
         return server.OPERATION_HANDLED, res

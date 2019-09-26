@@ -231,7 +231,7 @@ class PhysicalDomain : public Domain
 
         sigc::connection m_propertyAppliedConnection;
 
-        float m_visibilityCheckCountdown;
+        double m_visibilityCheckCountdown;
 
         BulletEntry mContainingEntityEntry;
 

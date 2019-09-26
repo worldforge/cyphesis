@@ -1,4 +1,4 @@
-from atlas import Operation, Entity
+from atlas import Operation, Entity, Oplist
 
 import physics
 import server
@@ -38,4 +38,6 @@ class Explosion(server.Thing):
                         self.send_world(Operation('hit', Entity(hit_type="explosion", id=actor_id, damage=damage), to=entity))
 
     def tick_operation(self, op):
-        return server.OPERATION_HANDLED, Operation("delete", Entity(self.id), to=self.id)
+        if Ticks.verify_tick(self, op, Oplist()):
+            return server.OPERATION_HANDLED, Operation("delete", Entity(self.id), to=self.id)
+        return server.OPERATION_IGNORED

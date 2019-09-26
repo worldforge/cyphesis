@@ -51,4 +51,22 @@
         </list>
     </map>
 
+    <map>
+        <string name="id">potion_poison</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">potion</string>
+                <string name="name">Potion of poison</string>
+                <string name="description">A green liquid. It seems to give off light, a green tint. The smell is putrid.
+                </string>
+                <map name="__handler">
+                    <string name="language">python</string>
+                    <string name="name">world.objects.effects.Poisoning.potion_handler</string>
+                </map>
+                <string name="__message">You feel sick to the core.</string>
+            </map>
+        </list>
+    </map>
 </atlas>

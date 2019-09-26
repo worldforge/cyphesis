@@ -178,25 +178,4 @@
     </map>
 
 
-    <map>
-        <map name="attributes">
-            <map name="bbox">
-                <list name="default">
-                    <float>-0.02</float>
-                    <float>0</float>
-                    <float>-0.02</float>
-                    <float>0.02</float>
-                    <float>0.3</float>
-                    <float>0.02</float>
-                </list>
-            </map>
-            <map name="density">
-                <float name="default">500</float>
-            </map>
-        </map>
-        <string name="id">wand</string>
-        <string name="objtype">class</string>
-        <string name="parent">thing</string>
-    </map>
-
 </atlas>

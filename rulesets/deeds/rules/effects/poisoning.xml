@@ -1,0 +1,28 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="status">
+                <float name="default">1</float>
+            </map>
+            <map name="damage">
+                <float name="default">10</float>
+            </map>
+            <map name="__scripts">
+                <list name="append">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.effects.Poisoning.Poisoning</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">poisoning</string>
+        <string name="objtype">class</string>
+        <string name="parent">effect</string>
+    </map>
+
+</atlas>

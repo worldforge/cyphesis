@@ -1,0 +1,27 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="mode">
+                <string name="default">fixed</string>
+            </map>
+            <map name="domain">
+                <string name="default">void</string>
+            </map>
+            <map name="__scripts">
+                <list name="append">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Immobile.Immobile</string>
+                    </map>
+                </list>
+            </map>
+            <map name="present">
+                <string name="default"></string>
+            </map>
+        </map>
+        <string name="id">effect</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

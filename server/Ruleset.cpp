@@ -208,6 +208,7 @@ int Ruleset::modifyRuleInner(const std::string & class_name,
                            "description", class_name));
         return -1;
     }
+    //TODO: allow changing of parents.
     if (class_desc->getParent() != o->getParent()) {
         log(ERROR, compose("Updated type \"%1\" attempting to change parent "
                            "from %2 to %3", class_name,

@@ -2440,8 +2440,10 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
             auto hitCopy = hit.copy();
             hitCopy->setTo(entry.second.bulletEntry->entity->getId());
             hitCopy->setFrom(entry.first->entity->getId());
-            res.emplace_back(std::move(hit));
-            res.emplace_back(std::move(hitCopy));
+
+            //We need to make sure that Hit ops gets their correct "from".
+            entry.second.bulletEntry->entity->sendWorld(hit);
+            entry.first->entity->sendWorld(hitCopy);
         }
     }
 
