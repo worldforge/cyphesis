@@ -113,15 +113,18 @@ void SuspendedPropertyintegration::teardown()
 
 void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
 {
-    TestEntity* entity = new TestEntity("1", 1);
-    struct TickListener : OperationsListener {
-        bool wasCalled;
-         HandlerResult operation(LocatedEntity *, const Operation& op, OpVector & res)
-         {
-             if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-                 wasCalled = true;
-             }
-         }
+    auto    * entity = new TestEntity("1", 1);
+    struct TickListener : OperationsListener
+    {
+        bool wasCalled = false;
+
+        HandlerResult operation(LocatedEntity*, const Operation& op, OpVector& res)
+        {
+            if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
+                wasCalled = true;
+            }
+            return HandlerResult::OPERATION_IGNORED;
+        }
 
     } tickListener;
 
