@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_DATABASENULL_H
 #define CYPHESIS_DATABASENULL_H
 
-#include "../common/Database.h"
+#include "common/Database.h"
 #include <functional>
 
 

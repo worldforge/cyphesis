@@ -28,7 +28,7 @@
 #include "python_testers.h"
 
 #include "rules/python/PythonClass.h"
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "pycxx/CXX/Extensions.hxx"
 #include <cassert>
 
 Py::Object* stub_Get_PyClass_return = nullptr;

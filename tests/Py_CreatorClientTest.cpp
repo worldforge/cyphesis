@@ -42,7 +42,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
 #include <common/Inheritance.h>
-#include "external/pycxx/CXX/Objects.hxx"
+#include "pycxx/CXX/Objects.hxx"
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);
 

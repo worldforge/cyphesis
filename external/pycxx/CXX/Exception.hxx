@@ -108,7 +108,7 @@ namespace Py
         static PyObject *exceptionType() { return _Exc_##eclass(); } \
     }; \
 
-#include <external/pycxx/CXX/cxx_standard_exceptions.hxx>
+#include "pycxx/CXX/cxx_standard_exceptions.hxx"
 
 #undef PYCXX_STANDARD_EXCEPTION
 

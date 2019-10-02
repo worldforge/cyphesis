@@ -39,5 +39,5 @@
 #if PY_MAJOR_VERSION == 2
 #include "Python2/cxx_extensions.cxx"
 #else
-#include "external/pycxx/Src/Python3/cxx_extensions.cxx"
+#include "pycxx/Src/Python3/cxx_extensions.cxx"
 #endif

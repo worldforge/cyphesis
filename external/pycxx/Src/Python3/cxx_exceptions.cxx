@@ -61,7 +61,7 @@ void initExceptions()
 #define PYCXX_STANDARD_EXCEPTION( eclass, bclass ) \
     addPythonException( eclass::exceptionType(), eclass::throwFunc );
 
-#include <external/pycxx/CXX/cxx_standard_exceptions.hxx>
+#include "CXX/cxx_standard_exceptions.hxx"
 
 #undef PYCXX_STANDARD_EXCEPTION
 

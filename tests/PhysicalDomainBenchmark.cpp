@@ -39,14 +39,14 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
-#include <rules/PhysicalDomain.h>
+#include <rules/simulation/PhysicalDomain.h>
 #include <common/TypeNode.h>
-#include <rules/ModeProperty.h>
+#include <rules/simulation/ModeProperty.h>
 #include <rules/simulation/TerrainProperty.h>
 #include <Mercator/BasePoint.h>
 #include <Mercator/Terrain.h>
-#include <rules/PropelProperty.h>
-#include <rules/AngularFactorProperty.h>
+#include <rules/simulation/PropelProperty.h>
+#include <rules/simulation/AngularFactorProperty.h>
 #include <chrono>
 #include <rules/simulation/VisibilityProperty.h>
 
@@ -123,7 +123,7 @@ void PhysicalDomainBenchmark::test_static_entities_no_move()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
     PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
@@ -139,9 +139,9 @@ void PhysicalDomainBenchmark::test_static_entities_no_move()
             std::stringstream ss;
             ss << "planted" << id;
             Entity* entity = new Entity(ss.str(), id);
-            entity->setProperty("mass", massProp);
+            entity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
             entity->setType(rockType);
-            entity->setProperty(ModeProperty::property_name, modePlantedProperty);
+            entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
             entity->m_location.m_pos = WFMath::Point<3>(i, j, i + j);
             entity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, 0, -0.25f), WFMath::Point<3>(-0.25f, 0.5f, -0.25f)));
             domain->addEntity(*entity);
@@ -183,7 +183,7 @@ void PhysicalDomainBenchmark::test_determinism()
     terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
     terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
     terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-    rootEntity->setProperty("terrain", terrainProperty);
+    rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
     PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
@@ -199,7 +199,7 @@ void PhysicalDomainBenchmark::test_determinism()
             std::stringstream ss;
             ss << "free" << id;
             Entity* freeEntity = new Entity(ss.str(), id);
-            freeEntity->setProperty("mass", massProp);
+            freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
             freeEntity->setType(rockType);
             freeEntity->m_location.m_pos = WFMath::Point<3>(i, j, i + j);
             freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, 0, -0.25f), WFMath::Point<3>(-0.25f, 0.5f, -0.25f)));
@@ -241,13 +241,13 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
     Property<double>* massProp = new Property<double>();
     massProp->data() = 10000;
 
-    Entity* rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity("0", newId());
     rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
     WFMath::AxisBox<3> aabb(WFMath::Point<3>(-512, 0, -512), WFMath::Point<3>(512, 64, 512));
     rootEntity->m_location.setBBox(aabb);
     PhysicalDomain* domain = new PhysicalDomain(*rootEntity);
 
-    TestWorld testWorld(*rootEntity);
+    TestWorld testWorld(rootEntity);
 
     ModeProperty* modePlantedProperty = new ModeProperty();
     modePlantedProperty->set("planted");
@@ -265,7 +265,7 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
             std::stringstream ss;
             ss << "planted" << id;
             Entity* plantedEntity = new Entity(ss.str(), id);
-            plantedEntity->setProperty(ModeProperty::property_name, modePlantedProperty);
+            plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
             plantedEntity->setType(rockType);
             plantedEntity->m_location.m_pos = WFMath::Point<3>(i, 0, j);
             plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.25f, 0, -0.25f), WFMath::Point<3>(-0.25f, .2f, -0.25f)));
@@ -293,9 +293,9 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
         observerEntity->setType(humanType);
         observerEntity->m_location.m_pos = WFMath::Point<3>(aabb.lowCorner().x() + (i * 4), 0, aabb.lowCorner().z());
         observerEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.1f, 0, -0.1f), WFMath::Point<3>(0.1, 2, 0.1)));
-        observerEntity->setProperty(PropelProperty::property_name, propelProperty);
+        observerEntity->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty));
         observerEntity->addFlags(entity_perceptive);
-        observerEntity->setProperty("mass", massProp);
+        observerEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         domain->addEntity(*observerEntity);
     }
 
@@ -321,7 +321,8 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
     std::set<LocatedEntity*> transformedEntities;
     //Now stop the observers from moving, and measure again
     for (Entity* observer : observers) {
-        domain->applyTransform(*observer, WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>::ZERO(), transformedEntities);
+        Domain::TransformData transformData{WFMath::Quaternion(), WFMath::Point<3>(), WFMath::Vector<3>::ZERO(), nullptr,WFMath::Vector<3>::ZERO() };
+        domain->applyTransform(*observer, transformData, transformedEntities);
     }
     domain->tick(10, res);
     {

@@ -1,5 +1,5 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
-#include "external/RecastDetour/Detour/Include/DetourNavMeshQuery.h"
+#include "RecastDetour/Detour/Include/DetourNavMeshQuery.h"
 
 template<typename TItem>
 class MRUList

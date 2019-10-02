@@ -42,7 +42,7 @@
 #include <cassert>
 #include <rules/Py_Property.h>
 
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "pycxx/CXX/Extensions.hxx"
 #include "rules/simulation/python/CyPy_Entity.h"
 
 

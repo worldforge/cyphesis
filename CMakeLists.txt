@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 project(Cyphesis)
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
 set(CMAKE_CXX_STANDARD 14)
 
 include(GNUInstallDirs)
@@ -23,7 +23,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 add_definitions(-DHAVE_CONFIG_H)
 
-include_directories("${PROJECT_SOURCE_DIR};${PROJECT_BINARY_DIR}")
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/src)
 
 enable_testing()
 
@@ -167,25 +167,23 @@ endif(SUBVERSION_CMD)
 #We'll use xmllint for validating schemas of some of our xml files.
 find_program(XMLLINT xmllint)
 
-configure_file(config.h.in config.h)
-
 set(STUB_HEADERS "")
 
 macro(wf_generate_stubs DIRECTORY)
 
-    file(GLOB_RECURSE H_FILES RELATIVE "${CMAKE_SOURCE_DIR}" "${CMAKE_SOURCE_DIR}/${DIRECTORY}/*.h")
+    file(GLOB_RECURSE H_FILES RELATIVE "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/src/${DIRECTORY}/*.h")
 
     set(STUB_DIRECTORY ${CMAKE_SOURCE_DIR}/tests/stubs)
 
     foreach(FILE ${H_FILES})
         set(STUB_FILE ${STUB_DIRECTORY}/stub${FILE}.h)
         set(STUB_CUSTOM_FILE ${STUB_DIRECTORY}/stub${FILE}.h)
-        set(SOURCE_FILE "${CMAKE_SOURCE_DIR}/${FILE}")
+        set(SOURCE_FILE "${CMAKE_SOURCE_DIR}/src/${FILE}")
 
         add_custom_command(TARGET stubs
             COMMAND ${CMAKE_COMMAND} -E echo "Generating stubs for ${FILE}\n"
-            COMMAND ${PROJECT_SOURCE_DIR}/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMAND ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
         )
 
         list(APPEND STUB_HEADERS ${STUB_FILE})
@@ -193,15 +191,7 @@ macro(wf_generate_stubs DIRECTORY)
 
 endmacro()
 
-add_custom_target(stubs)
-wf_generate_stubs(common)
-wf_generate_stubs(modules)
-wf_generate_stubs(navigation)
-wf_generate_stubs(physics)
-wf_generate_stubs(rules)
-wf_generate_stubs(rulesets)
-wf_generate_stubs(server)
-wf_generate_stubs(client)
+
 
 
 # Add a "check" target, which builds and runs the tests.
@@ -210,27 +200,18 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -E Benchmark)
 # Add a "benchmark" target, which builds and runs the benchmarks.
 add_custom_target(benchmark COMMAND ${CMAKE_CTEST_COMMAND} -R Benchmark)
 
+add_subdirectory(src)
 add_subdirectory(external)
-add_subdirectory(physics)
-add_subdirectory(common)
-add_subdirectory(modules)
-add_subdirectory(rules)
-add_subdirectory(rulesets)
-add_subdirectory(navigation)
-add_subdirectory(metaserverapi)
-add_subdirectory(server)
-add_subdirectory(client)
-add_subdirectory(aiclient)
 add_subdirectory(data)
 add_subdirectory(tools)
-add_subdirectory(man)
+add_subdirectory(docs)
 #Only build tests if the "check" target is used.
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 
-configure_file(Doxyfile.in Doxyfile @ONLY)
-configure_file(Doxyfile-python.in Doxyfile-python @ONLY)
+configure_file(docs/Doxyfile.in Doxyfile @ONLY)
+configure_file(docs/Doxyfile-python.in Doxyfile-python @ONLY)
 
-install(FILES README.md COPYING AUTHORS THANKS NEWS FIXME DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/cyphesis)
+install(FILES README.md COPYING AUTHORS THANKS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/cyphesis)
 install(DIRECTORY DESTINATION ${SOCKET_DIR})
 
 ## Doxygen support, exports a "docs" target.

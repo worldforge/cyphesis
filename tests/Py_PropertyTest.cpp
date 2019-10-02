@@ -41,7 +41,7 @@
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/python/CyPy_Entity.h"
 
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "pycxx/CXX/Extensions.hxx"
 
 
 class TestProp : public Py::ExtensionModule<TestProp>

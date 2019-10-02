@@ -40,7 +40,7 @@
 #include <Atlas/Objects/Root.h>
 
 #include <cassert>
-#include <external/pycxx/CXX/Extensions.hxx>
+#include "pycxx/CXX/Extensions.hxx"
 
 struct TestMod : public Py::ExtensionModule<TestMod>
 {

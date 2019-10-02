@@ -35,7 +35,7 @@
 #include "rules/simulation/python/CyPy_Server.h"
 #include "rules/simulation/python/CyPy_Entity.h"
 
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "pycxx/CXX/Extensions.hxx"
 #include <rules/python/CyPy_Atlas.h>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>

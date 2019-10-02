@@ -34,7 +34,7 @@
 
 #include <cassert>
 #include <rules/python/Python_Script_Utils.h>
-#include <external/pycxx/CXX/Extensions.hxx>
+#include "pycxx/CXX/Extensions.hxx"
 
 Py::Object Get_PyClass(const Py::Module& module,
                        const std::string & package,

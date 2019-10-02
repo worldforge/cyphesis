@@ -33,7 +33,7 @@
 #include "rules/python/Python_API.h"
 #include "rules/python/PythonScriptFactory.h"
 #include "rules/python/PythonWrapper.h"
-#include "external/pycxx/CXX/Extensions.hxx"
+#include "pycxx/CXX/Extensions.hxx"
 #include "common/operations/Tick.h"
 
 #include "TestWorld.h"
