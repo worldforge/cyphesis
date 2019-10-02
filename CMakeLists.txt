@@ -236,12 +236,11 @@ if (DOXYGEN_FOUND)
 
 endif (DOXYGEN_FOUND)
 
-#add_custom_command(
-#        OUTPUT ChangeLog
-#        COMMAND ${CMAKE_SOURCE_DIR}/scripts/generate-ChangeLog.sh ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR} f12012e7616c191a8926432faf866c8e43854062
-#)
-#add_custom_target(changelog DEPENDS ChangeLog)
-
+add_custom_command(
+    OUTPUT ChangeLog
+    COMMAND ${CMAKE_SOURCE_DIR}/tools/support/generate-ChangeLog.sh ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR} cce66ef4a196a4871ebaebe82cd91c8dd733be13
+)
+add_custom_target(changelog DEPENDS ChangeLog)
 
 # Packaging
 
