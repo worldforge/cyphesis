@@ -7,6 +7,9 @@
             <map name="domain">
                 <string name="default">void</string>
             </map>
+            <map name="solid">
+                <int name="default">0</int>
+            </map>
             <map name="__scripts">
                 <list name="append">
                     <map>
@@ -16,7 +19,7 @@
                 </list>
             </map>
             <map name="present">
-                <string name="default"></string>
+                <string name="default">dural/effects/effect.entitymap</string>
             </map>
         </map>
         <string name="id">effect</string>
