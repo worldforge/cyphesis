@@ -7,12 +7,6 @@ If necessary the design of the code should reflect this preference.  If a
 pointer is to be used which will be initialised to a value, will never
 change and can never be NULL, then that pointer should be a reference.
 
-RETURN VALUES
-
-Integer return values should be used when returning success or
-failure. The C library convention of using 0 to indicate success, negative
-numbers to indicate errors, and positive values to indicate other 
-statuses should be followed.
 
 CODE FORMATTING
 
