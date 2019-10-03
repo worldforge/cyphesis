@@ -25,6 +25,9 @@
 #include "rules/python/WrapperBase.h"
 
 class TerrainProperty;
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_TerrainProperty: public WrapperBase<Ref<LocatedEntity>, CyPy_TerrainProperty>
 {
     public:

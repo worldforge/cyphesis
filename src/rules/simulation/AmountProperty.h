@@ -23,6 +23,7 @@
 
 /**
  * Used together with the "stackable" domain to handle amount of stacked entities.
+ * \ingroup PropertyClasses
  */
 class AmountProperty : public Property<int>
 {

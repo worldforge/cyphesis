@@ -25,6 +25,7 @@
  * Marks an entity as "admin", allowing it some extra capabilities.
  * 
  * This sets the LocatedEntity::entity_admin flag on the entity.
+ * \ingroup PropertyClasses
  */
 class AdminProperty : public BoolProperty
 {

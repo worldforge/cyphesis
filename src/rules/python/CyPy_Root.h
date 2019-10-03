@@ -24,6 +24,9 @@
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Root: public WrapperBase<Atlas::Objects::Root, CyPy_Root>
 {
     public:

@@ -23,6 +23,9 @@
 #include "rules/ai/MemEntity.h"
 #include "rules/python/CyPy_LocatedEntity_impl.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_MemEntity : public CyPy_LocatedEntityBase<Ref<MemEntity>, CyPy_MemEntity>
 {
     public:

@@ -23,6 +23,9 @@
 #include "modules/Ref.h"
 #include "rules/python/WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Domain : public WrapperBase<Ref<LocatedEntity>, CyPy_Domain>
 {
     public:

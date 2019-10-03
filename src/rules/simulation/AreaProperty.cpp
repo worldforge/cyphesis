@@ -69,7 +69,7 @@ void AreaProperty::apply(LocatedEntity * owner)
         return;
     }
 
-    /// \todo Write the code to handle all the Mercator stuff
+    /// TODO: Write the code to handle all the Mercator stuff
 }
 
 void AreaProperty::set(const Element & ent)

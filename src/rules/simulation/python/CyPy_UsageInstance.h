@@ -22,6 +22,9 @@
 #include "rules/python/WrapperBase.h"
 #include "rules/simulation/UsageInstance.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Usage : public WrapperBase<Usage, CyPy_Usage>
 {
     public:

@@ -21,6 +21,10 @@
 
 #include "rules/python/WrapperBase.h"
 #include "rules/simulation/Entity.h"
+
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_EntityProps: public WrapperBase<Ref<Entity>, CyPy_EntityProps>
 {
     public:

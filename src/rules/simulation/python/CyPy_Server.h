@@ -22,6 +22,9 @@
 #include "pycxx/CXX/Extensions.hxx"
 
 class BaseWorld;
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Server : public Py::ExtensionModule<CyPy_Server>
 {
     public:

@@ -29,6 +29,8 @@
  * Contains extra data for the "mode" of the entity.
  * Currently it can contain data specific to "planted" entities (specifically on which entity they are planted)
  * as well as data for "projectile" entities (specifically which actor that fired them as well as any extra data such as "damage").
+ *
+ * \ingroup PropertyClasses
  */
 class ModeDataProperty : public PropertyBase
 {

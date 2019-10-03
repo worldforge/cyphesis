@@ -24,6 +24,9 @@
 #include "pycxx/CXX/Extensions.hxx"
 #include "WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Axisbox : public WrapperBase<WFMath::AxisBox<3>, CyPy_Axisbox>
 {
     public:

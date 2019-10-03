@@ -24,6 +24,17 @@
 
 class Router;
 
+/**
+ * Keeps tab of the Mind instances that currently are controlling a specific entity.
+ *
+ * Operations sent to the entity will be relayed to the Minds (especially Sights), and
+ * operations coming from the minds will be filtered and wrapped into Thought ops and
+ * sent to the simulation.
+ *
+ * This is the main entry point for allowing an external client to control an entity.
+ *
+ * \ingroup PropertyClasses
+ */
 class MindsProperty : public PropertyBase
 {
     public:

@@ -24,6 +24,9 @@
 #include "WrapperBase.h"
 #include <wfmath/ball.h>
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Ball : public WrapperBase<WFMath::Ball<3>, CyPy_Ball>
 {
     public:

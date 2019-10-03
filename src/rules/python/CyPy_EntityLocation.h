@@ -22,6 +22,9 @@
 #include "rules/EntityLocation.h"
 #include "WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_EntityLocation : public WrapperBase<EntityLocation, CyPy_EntityLocation>
 {
     public:

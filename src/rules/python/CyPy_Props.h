@@ -22,6 +22,9 @@
 #include "WrapperBase.h"
 #include "rules/LocatedEntity.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Props : public WrapperBase<Ref<LocatedEntity>, CyPy_Props>
 {
     public:

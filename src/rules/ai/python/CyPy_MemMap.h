@@ -23,6 +23,9 @@
 #include "rules/ai/MemMap.h"
 #include "rules/python/WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
 {
     public:

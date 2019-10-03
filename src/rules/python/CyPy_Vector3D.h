@@ -22,6 +22,9 @@
 #include "WrapperBase.h"
 #include <wfmath/vector.h>
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Vector3D : public WrapperBase<WFMath::Vector<3>, CyPy_Vector3D>
 {
     public:

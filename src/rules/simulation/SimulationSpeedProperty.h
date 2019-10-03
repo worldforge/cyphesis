@@ -23,6 +23,7 @@
 
 /**
  * Determines the speed of the simulation.
+ * \ingroup PropertyClasses
  */
 class SimulationSpeedProperty : public Property<double>
 {

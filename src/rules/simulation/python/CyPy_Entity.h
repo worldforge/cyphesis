@@ -22,6 +22,9 @@
 #include "rules/simulation/Entity.h"
 #include "rules/python/CyPy_LocatedEntity_impl.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 {
     public:

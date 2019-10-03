@@ -23,7 +23,10 @@
 #include "modules/WorldTime.h"
 #include "rules/python/WrapperBase.h"
 
-    class CyPy_WorldTime : public WrapperBase<std::shared_ptr<WorldTime>, CyPy_WorldTime>
+/**
+ * \ingroup PythonWrappers
+ */
+class CyPy_WorldTime : public WrapperBase<std::shared_ptr<WorldTime>, CyPy_WorldTime>
 {
     public:
         CyPy_WorldTime(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);

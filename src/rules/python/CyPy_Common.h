@@ -21,6 +21,9 @@
 
 #include "pycxx/CXX/Extensions.hxx"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Const : public Py::ExtensionModule<CyPy_Const>
 {
     public:
@@ -28,6 +31,9 @@ class CyPy_Const : public Py::ExtensionModule<CyPy_Const>
 };
 
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Globals : public Py::ExtensionModule<CyPy_Globals>
 {
     public:
@@ -35,6 +41,9 @@ class CyPy_Globals : public Py::ExtensionModule<CyPy_Globals>
 };
 
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Log : public Py::ExtensionModule<CyPy_Log>
 {
     public:
@@ -47,6 +56,9 @@ class CyPy_Log : public Py::ExtensionModule<CyPy_Log>
 
 };
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Common : public Py::ExtensionModule<CyPy_Common>
 {
     public:

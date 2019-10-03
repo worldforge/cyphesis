@@ -22,6 +22,9 @@
 #include "rules/simulation/BaseWorld.h"
 #include "rules/python/WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_World : public WrapperBase<BaseWorld*, CyPy_World>
 {
     public:

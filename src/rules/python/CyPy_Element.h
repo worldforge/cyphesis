@@ -25,6 +25,9 @@
 
 #include <Atlas/Message/Element.h>
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_ElementList : public WrapperBase<Atlas::Message::ListType, CyPy_ElementList> {
     public:
         CyPy_ElementList(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
@@ -56,6 +59,9 @@ class CyPy_ElementList : public WrapperBase<Atlas::Message::ListType, CyPy_Eleme
         Py::Object iter() override;
 };
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_ElementMap : public WrapperBase<Atlas::Message::MapType, CyPy_ElementMap> {
     public:
         CyPy_ElementMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds);
@@ -84,6 +90,9 @@ class CyPy_ElementMap : public WrapperBase<Atlas::Message::MapType, CyPy_Element
 
 };
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Element
 {
     public:

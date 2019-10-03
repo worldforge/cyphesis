@@ -24,6 +24,9 @@
 #include "WrapperBase.h"
 #include <wfmath/point.h>
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Point3D : public WrapperBase<WFMath::Point<3>, CyPy_Point3D>
 {
     public:

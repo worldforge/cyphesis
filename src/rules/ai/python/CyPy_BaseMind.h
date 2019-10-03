@@ -23,6 +23,9 @@
 #include "rules/ai/BaseMind.h"
 #include "rules/python/WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 {
     public:

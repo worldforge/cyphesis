@@ -22,6 +22,9 @@
 #include "rules/Location.h"
 #include "WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Location : public WrapperBase<Location, CyPy_Location>
 {
     public:

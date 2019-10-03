@@ -26,6 +26,14 @@
 #include <memory>
 
 
+/**
+ * Defines all usages available for the entity, as a map.
+ *
+ * This property is also responsible for handling Use operations, using the rules
+ * within the usages.
+ *
+ * \ingroup PropertyClasses
+ */
 class UsagesProperty : public Property<Atlas::Message::MapType>
 {
     public:

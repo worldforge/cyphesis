@@ -22,6 +22,9 @@
 #include "pycxx/CXX/Extensions.hxx"
 
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Ai : public Py::ExtensionModule<CyPy_Ai>
 {
     public:

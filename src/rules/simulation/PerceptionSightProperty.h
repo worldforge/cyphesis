@@ -23,6 +23,8 @@
 
 /**
  * Determines whether the entity is perceptive or not, and by which factor [0..1].
+ *
+ * \ingroup PropertyClasses
  */
 class PerceptionSightProperty : public Property<double>
 {

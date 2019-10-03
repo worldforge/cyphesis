@@ -34,6 +34,7 @@
  *
  * To attach something a Wield op needs to be sent. This property will take care of listening to it
  * and making the required changes on all involved entities.
+ * \ingroup PropertyClasses
  */
 class AttachmentsProperty : public PropertyBase
 {

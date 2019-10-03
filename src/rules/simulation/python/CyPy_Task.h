@@ -24,6 +24,9 @@
 #include "modules/Ref.h"
 #include "rules/python/WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
 {
     public:

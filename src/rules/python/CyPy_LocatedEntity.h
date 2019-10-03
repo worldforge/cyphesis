@@ -24,6 +24,9 @@
 #include "rules/LocatedEntity.h"
 #include "WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 template<typename TValue, typename TPythonClass>
 class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>
 {
@@ -138,6 +141,9 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass, Py::Pyth
 
 };
 
+/**
+ * \ingroup PythonWrappers
+ */
 struct LocatedEntityScriptProvider {
     std::function<Py::Object(const Ref<LocatedEntity>& locatedEntity)> wrapFn;
     std::function<bool(PyObject*)> checkFn;
@@ -145,6 +151,9 @@ struct LocatedEntityScriptProvider {
 
 };
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_LocatedEntity
 {
     public:

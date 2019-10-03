@@ -21,6 +21,9 @@
 
 #include "pycxx/CXX/Extensions.hxx"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Rules: public Py::ExtensionModule<CyPy_Rules>
 {
     public:

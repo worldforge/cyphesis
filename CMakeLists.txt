@@ -29,7 +29,7 @@ enable_testing()
 
 # Meta data
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-set(DESCRIPTION "A complete server for the Worldforge system.")
+set(DESCRIPTION "The Worldforge server.")
 set(SOCKET_DIR ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/tmp)
 set(PACKAGE_BUGREPORT "erik@ogenvik.org")
 
@@ -214,7 +214,7 @@ configure_file(docs/Doxyfile-python.in Doxyfile-python @ONLY)
 install(FILES README.md COPYING AUTHORS THANKS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/cyphesis)
 install(DIRECTORY DESTINATION ${SOCKET_DIR})
 
-## Doxygen support, exports a "docs" target.
+## Doxygen support, exports a "dox" target.
 
 find_package(Doxygen)
 
@@ -232,7 +232,7 @@ if (DOXYGEN_FOUND)
             DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile-python
     )
 
-    add_custom_target(docs DEPENDS ${DOXYGEN_OUTPUT})
+    add_custom_target(dox DEPENDS ${DOXYGEN_OUTPUT})
 
 endif (DOXYGEN_FOUND)
 

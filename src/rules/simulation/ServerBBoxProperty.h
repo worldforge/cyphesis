@@ -22,6 +22,12 @@
 
 #include "rules/BBoxProperty.h"
 
+/**
+ * A specialization of the standard bbox property which also updates mass
+ * when the bounding box is changed.
+ *
+ * \ingroup PropertyClasses
+ */
 class ServerBBoxProperty : public BBoxProperty
 {
     public:

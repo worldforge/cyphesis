@@ -26,6 +26,9 @@
 #include <memory>
 
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Filter : public WrapperBase<std::shared_ptr<EntityFilter::Filter>, CyPy_Filter>
 {
     public:
@@ -40,6 +43,9 @@ class CyPy_Filter : public WrapperBase<std::shared_ptr<EntityFilter::Filter>, Cy
 
 };
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_EntityFilter : public Py::ExtensionModule<CyPy_EntityFilter>
 {
     public:

@@ -24,6 +24,9 @@
 #include "pycxx/CXX/Extensions.hxx"
 #include "WrapperBase.h"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Quaternion : public WrapperBase<WFMath::Quaternion, CyPy_Quaternion>
 {
     public:

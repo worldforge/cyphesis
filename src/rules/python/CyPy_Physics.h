@@ -22,6 +22,9 @@
 #include "pycxx/CXX/Objects.hxx"
 #include "pycxx/CXX/Extensions.hxx"
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Physics : public Py::ExtensionModule<CyPy_Physics>
 {
 

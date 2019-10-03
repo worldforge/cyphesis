@@ -26,6 +26,9 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootOperation.h>
 
+/**
+ * \ingroup PythonWrappers
+ */
 class CyPy_Oplist : public WrapperBase<std::vector<Atlas::Objects::Operation::RootOperation>, CyPy_Oplist>
 {
     public:

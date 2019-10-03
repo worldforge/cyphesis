@@ -21,6 +21,12 @@
 
 #include "common/Property.h"
 
+/**
+ * Keeps track of the world time.
+ *
+ * \ingroup PropertyClasses
+ *
+ */
 class WorldTimeProperty : public PropertyBase
 {
     public:

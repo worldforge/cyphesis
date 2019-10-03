@@ -26,6 +26,7 @@
  * Marks the entity using the entity_contained_visible flag, which means that it's meant
  * to be visible when contained, even if the normal contain rules would disallow it.
  * This is to be used on things such as fires and effects.
+ * \ingroup PropertyClasses
  */
 class ContainedVisibilityProperty : public BoolProperty
 {
