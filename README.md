@@ -33,14 +33,14 @@ make check
 
 ### Documentation
 
-Documentation describing how the system works can be found [here](dox/index.md).
+Documentation describing how the system works can be found [here](docs/dox/index.md).
 
 ### API documentation
 
-If Doxygen is available API documentation can be generated using the ```docs``` target. For example:
+If Doxygen is available API documentation can be generated using the ```dox``` target. For example:
 
 ```
-make docs
+make dox
 ```
 
 ## Dependencies
