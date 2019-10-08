@@ -19,7 +19,11 @@ set(CYPHESIS_VERSION_PATCH 0)
 set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSION_PATCH})
 
 # Set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(WF_WARNING_FLAGS /Wall)
+else ()
+    set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wundef -Wmissing-declarations -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long)
+endif ()
 
 add_definitions(-DHAVE_CONFIG_H)
 

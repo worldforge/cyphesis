@@ -48,3 +48,4 @@ x86_64
 .idea
 *.pyc
 cmake-build-*
+build
