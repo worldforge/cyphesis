@@ -45,7 +45,7 @@
 #include "rules/LocatedEntity.h"
 #include "rules/simulation/World.h"
 
-#if POSTGRES_FOUND
+#ifdef POSTGRES_FOUND
 #include "common/DatabasePostgres.h"
 #endif
 
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
     CommPSQLSocket* dbsocket = nullptr;
     RepeatedTask* dbvacuumTask = nullptr;
     if (databaseBackend == "postgres") {
-#if POSTGRES_FOUND
+#ifdef POSTGRES_FOUND
         database = new DatabasePostgres();
         dbsocket = new CommPSQLSocket(*io_context, *database);
 #else

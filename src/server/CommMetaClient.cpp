@@ -115,8 +115,8 @@ void CommMetaClient::keepalive()
         {
             ip::udp::resolver::query query(ip::udp::v4(), m_server, "8453");
             mResolver.async_resolve(query,
-                    [this](boost::system::error_code ec, ip::udp::resolver::iterator iterator ) {
-                        if (!ec) {
+                    [this](boost::system::error_code ecInner, ip::udp::resolver::iterator iterator ) {
+                        if (!ecInner) {
                             mDestination = *iterator;
                             mHasEndpoint = true;
                             this->metaserverKeepalive();
@@ -265,7 +265,7 @@ void CommMetaClient::updateAttributes()
     const varconf::sec_map& c = global_conf->getSection("metaattributes");
     for (auto& kv : c)
     {
-        std::string s = kv.second;
+        std::string s = kv.second.as_string();
         boost::algorithm::trim(s);
         m_serverAttributes[kv.first] = s;
     }

@@ -47,7 +47,7 @@ struct OpQueEntry {
     Ref<T> from;
 
     explicit OpQueEntry(Operation o, T & f);
-    OpQueEntry(Operation op, Ref<T> from) : op(std::move(op)), from(std::move(from))
+    OpQueEntry(Operation op_, Ref<T> from_) : op(std::move(op_)), from(std::move(from_))
     {
     }
     OpQueEntry(const OpQueEntry & o);

@@ -192,7 +192,7 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
     Possess possess;
     possess->setFrom(getId());
     possess->setArgs1(what);
-    m_client.sendWithCallback(possess, [this](const Operation& op, OpVector& res) {
+    m_client.sendWithCallback(possess, [this](const Operation& op, OpVector& resInner) {
 
         if (op->getClassNo() != Atlas::Objects::Operation::INFO_NO) {
             log(ERROR, "Malformed possession response: not an info.");
@@ -228,7 +228,7 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
 
         auto entityId = I->second.String();
 
-        createMindInstance(res, ent->getId(), entityId);
+        createMindInstance(resInner, ent->getId(), entityId);
 
     });
 

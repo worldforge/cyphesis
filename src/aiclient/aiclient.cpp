@@ -86,8 +86,8 @@ static void connectToServer(boost::asio::io_context& io_context, AwareMindFactor
 #else
             timer->expires_from_now(std::chrono::seconds(5));
 #endif
-            timer->async_wait([&io_context, &mindFactory, timer](boost::system::error_code ec) {
-                if (!ec) {
+            timer->async_wait([&io_context, &mindFactory, timer](boost::system::error_code ecInner) {
+                if (!ecInner) {
                     connectToServer(io_context, mindFactory);
                 }
             });
@@ -119,14 +119,14 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    int optind = config_status;
+    int optindex = config_status;
 
-    assert(optind <= argc);
+    assert(optindex <= argc);
 
-    if (optind == (argc - 1)) {
-        std::string arg(argv[optind]);
+    if (optindex == (argc - 1)) {
+        std::string arg(argv[optindex]);
 
-    } else if (optind != argc) {
+    } else if (optindex != argc) {
         usage(argv[0]);
         return 1;
     }

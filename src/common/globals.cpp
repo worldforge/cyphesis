@@ -160,7 +160,7 @@ template <typename T>
 int readConfigItem(const std::string & section, const std::string & key, T & storage)
 {
     if (global_conf->findItem(section, key)) {
-        storage = global_conf->getItem(section, key);
+        storage = (T)global_conf->getItem(section, key);
         return 0;
     }
     return -1;
@@ -274,7 +274,7 @@ void StaticOption<std::string>::read(varconf::Variable var)
 template<typename ValueT>
 void StaticOption<ValueT>::read(varconf::Variable var)
 {
-    m_data = var;
+    m_data = (ValueT)var;
 }
 
 template<typename ValueT>

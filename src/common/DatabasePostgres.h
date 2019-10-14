@@ -187,7 +187,7 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
 
         bool operator==(const const_iterator_worker& other) const override
         {
-            return (m_row == ((const_iterator_worker_postgres&)other).m_row);
+            return (m_row == ((const const_iterator_worker_postgres&)other).m_row);
         }
 
     };

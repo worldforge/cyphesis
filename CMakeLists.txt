@@ -9,6 +9,7 @@ include(FindPkgConfig)
 include(CheckFunctionExists)
 include(CheckIncludeFiles)
 include(GetGitRevisionDescription)
+include(CMakeDependentOption)
 
 # Version setup
 
@@ -19,11 +20,7 @@ set(CYPHESIS_VERSION_PATCH 0)
 set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSION_PATCH})
 
 # Set compiler flags
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(WF_WARNING_FLAGS /Wall)
-else ()
-    set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wundef -Wmissing-declarations -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long)
-endif ()
+set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wundef -Wmissing-declarations -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long)
 
 add_definitions(-DHAVE_CONFIG_H)
 
@@ -97,6 +94,7 @@ endif (AVAHI_FOUND)
 
 
 find_package(PostgreSQL 7.1)
+cmake_dependent_option(CYPHESIS_USE_POSTGRES "Use PostgreSQL for storage" FALSE "PostgreSQL_FOUND" FALSE)
 
 find_package(SQLite3 REQUIRED)
 if (NOT SQLITE3_FOUND)

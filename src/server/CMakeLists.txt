@@ -52,19 +52,19 @@ set(cyphesis_files
     ExternalMindsManager.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
-if(PostgreSQL_FOUND)
+if(CYPHESIS_USE_POSTGRES)
     list(APPEND cyphesis_files
         CommPSQLSocket.cpp)
-endif(PostgreSQL_FOUND)
+endif(CYPHESIS_USE_POSTGRES)
 
 add_library(server
     ${cyphesis_files})
-target_compile_definitions(server PRIVATE -DPOSTGRES_FOUND=${PostgreSQL_FOUND})
 
-if(PostgreSQL_FOUND)
+if(CYPHESIS_USE_POSTGRES)
+    target_compile_definitions(server PRIVATE POSTGRES_FOUND)
     target_link_libraries(server ${PostgreSQL_LIBRARIES})
     target_include_directories(server PUBLIC ${PostgreSQL_INCLUDE_DIRS})
-endif(PostgreSQL_FOUND)
+endif(CYPHESIS_USE_POSTGRES)
 
 add_executable(cyphesis
     server.cpp)
