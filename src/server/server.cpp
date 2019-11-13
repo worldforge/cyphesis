@@ -359,6 +359,7 @@ int main(int argc, char** argv)
                                                                                                               server->getName(),
                                                                                                               *io_context,
                                                                                                               local::stream_protocol::endpoint(client_socket_name));
+    log(INFO, String::compose("Listening to local named socket at %1", client_socket_name));
 
 
     //Instantiate at startup

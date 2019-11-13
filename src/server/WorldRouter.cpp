@@ -52,11 +52,10 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
 WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity) :
-      BaseWorld(),
-      m_operationsDispatcher([&](const Operation & op, Ref<LocatedEntity> from){this->operation(op, std::move(from));}, [&]()->double {return getTime();}),
-      m_entityCount(1),
-      m_baseEntity(std::move(baseEntity))
-          
+    BaseWorld(),
+    m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
+    m_entityCount(1),
+    m_baseEntity(std::move(baseEntity))
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
@@ -167,7 +166,9 @@ Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
     debug_print("Entity loc " << ent->m_location)
 
     if (ent->m_contains != nullptr) {
-        for (auto& child : *ent->m_contains) {
+        //Iterate through copy, to handle entities being deleted while iterating.
+        auto contains = *ent->m_contains;
+        for (auto& child : contains) {
             addEntity(child);
         }
     }
@@ -189,8 +190,8 @@ Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
 /// Construct a new entity using the entity description provided,
 /// and pass it to addEntity().
 /// @return a pointer to the new entity.
-Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & typestr,
-                                          const RootEntity & attrs)
+Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
+                                             const RootEntity& attrs)
 {
     debug_print("WorldRouter::addNewEntity(\"" << typestr << "\", attrs)")
     std::string id;
@@ -211,7 +212,7 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string & typestr,
     return addEntity(ent);
 }
 
-int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
+int WorldRouter::createSpawnPoint(const MapType& data, LocatedEntity* ent)
 {
     auto I = data.find("name");
     if (I == data.end() || !I->second.isString()) {
@@ -225,10 +226,10 @@ int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
         return -1;
     }
 
-    const std::string & name = I->second.String();
+    const std::string& name = I->second.String();
     auto J = m_spawns.find(name);
     if (J != m_spawns.end()) {
-        Spawn * old = J->second.first;
+        Spawn* old = J->second.first;
         J->second.first = new_spawn;
         J->second.second = ent->getId();
         delete old;
@@ -238,7 +239,7 @@ int WorldRouter::createSpawnPoint(const MapType & data, LocatedEntity * ent)
     return 0;
 }
 
-int WorldRouter::removeSpawnPoint(LocatedEntity * ent)
+int WorldRouter::removeSpawnPoint(LocatedEntity* ent)
 {
     for (auto I = m_spawns.begin(); I != m_spawns.end(); ++I) {
         if (I->second.second == ent->getId()) {
@@ -251,7 +252,7 @@ int WorldRouter::removeSpawnPoint(LocatedEntity * ent)
 }
 
 
-int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
+int WorldRouter::getSpawnList(Atlas::Message::ListType& data)
 {
     for (const auto& entry : m_spawns) {
         MapType spawn;
@@ -262,16 +263,16 @@ int WorldRouter::getSpawnList(Atlas::Message::ListType & data)
     return 0;
 }
 
-Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string & name,
-                                            const std::string & type,
-                                            const RootEntity & desc)
+Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string& name,
+                                               const std::string& type,
+                                               const RootEntity& desc)
 {
     SpawnDict::const_iterator I = m_spawns.find(name);
     if (I == m_spawns.end()) {
         log(ERROR, String::compose("Spawn not found %1", name));
         return nullptr;
     }
-    Spawn * s = I->second.first;
+    Spawn* s = I->second.first;
     int ret = s->spawnEntity(type, desc);
     if (ret != 0) {
         log(ERROR, String::compose("Spawn not permitting %1", type));
@@ -286,7 +287,7 @@ Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string & name,
     return e;
 }
 
-int WorldRouter::moveToSpawn(const std::string & name, Location& location)
+int WorldRouter::moveToSpawn(const std::string& name, Location& location)
 {
     auto I = m_spawns.find(name);
     if (I == m_spawns.end()) {
@@ -297,8 +298,8 @@ int WorldRouter::moveToSpawn(const std::string & name, Location& location)
 }
 
 
-ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
-                                              LocatedEntity * owner)
+ArithmeticScript* WorldRouter::newArithmetic(const std::string& name,
+                                             LocatedEntity* owner)
 {
     return ArithmeticBuilder::instance().newArithmetic(name, owner);
 }
@@ -311,7 +312,7 @@ ArithmeticScript * WorldRouter::newArithmetic(const std::string & name,
 /// reference held by the world is decremented. There may still be
 /// a reference held by an operation in the queue from the removed
 /// entity.
-void WorldRouter::delEntity(LocatedEntity * ent)
+void WorldRouter::delEntity(LocatedEntity* ent)
 {
     if (ent == m_baseEntity.get()) {
         log(WARNING, "Attempt to delete game world");
@@ -341,7 +342,7 @@ void WorldRouter::resumeWorld()
 /// so it gets added to the queue for dispatch.
 /// If the op is a broadcast op, it will be split up into separate ops
 /// for each observer.
-void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
+void WorldRouter::message(const Operation& op, LocatedEntity& fromEntity)
 {
     if (op->isDefaultTo()) {
         if (shouldBroadcastPerception(op)) {
@@ -365,7 +366,7 @@ void WorldRouter::message(const Operation & op, LocatedEntity & fromEntity)
                     << op->getFrom() << ":" << op->getTo() << "}")
 }
 
-void WorldRouter::messageToClients(const Operation & op)
+void WorldRouter::messageToClients(const Operation& op)
 {
     auto& accounts = ServerRouting::instance().getAccounts();
     OpVector res;
@@ -378,7 +379,7 @@ void WorldRouter::messageToClients(const Operation & op)
                     << op->getFrom() << ":" << op->getTo() << "}")
 }
 
-bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
+bool WorldRouter::shouldBroadcastPerception(const Operation& op) const
 {
     int op_class = op->getClassNo();
     return op_class == Atlas::Objects::Operation::SIGHT_NO ||
@@ -392,7 +393,7 @@ bool WorldRouter::shouldBroadcastPerception(const Operation & op) const
 /// Pass the operation to the target entity. The resulting operations
 /// have their ref numbers set, and are added to the queue for
 /// dispatch.
-void WorldRouter::deliverTo(const Operation & op, Ref<LocatedEntity> ent)
+void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
 {
     //If the world is suspended and the op is a tick, we should store it
     //(to be resent when the world is resumed) and not process it now.
@@ -404,15 +405,15 @@ void WorldRouter::deliverTo(const Operation & op, Ref<LocatedEntity> ent)
     }
     OpVector res;
     debug(std::cout << "WorldRouter::deliverTo begin {"
-                        << op->getParent() << ":"
-                        << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                        << std::flush;);
+                    << op->getParent() << ":"
+                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
+                    << std::flush;);
     ent->operation(op, res);
     debug(std::cout << "WorldRouter::deliverTo done {"
-                        << op->getParent() << ":"
-                        << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                        << std::flush;);
-    for(auto& resOp : res) {
+                    << op->getParent() << ":"
+                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
+                    << std::flush;);
+    for (auto& resOp : res) {
         if (op->getFrom() == resOp->getTo()) {
             if (!op->isDefaultSerialno() && resOp->isDefaultRefno()) {
                 resOp->setRefno(op->getSerialno());
@@ -429,7 +430,7 @@ void WorldRouter::deliverTo(const Operation & op, Ref<LocatedEntity> ent)
 /// @param op operation to be dispatched to the world.
 /// @param from entity the operation to be dispatched was send from. Note
 /// that it is possible that this entity has been destroyed.
-void WorldRouter::operation(const Operation & op, Ref<LocatedEntity> from)
+void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
 {
     debug(std::cout << "WorldRouter::operation {"
                     << op->getParent() << ":"
@@ -441,7 +442,7 @@ void WorldRouter::operation(const Operation & op, Ref<LocatedEntity> from)
     Dispatching.emit(op);
 
     if (!op->isDefaultTo()) {
-        const std::string & to = op->getTo();
+        const std::string& to = op->getTo();
         assert(!to.empty());
         Ref<LocatedEntity> to_entity;
 
@@ -505,7 +506,7 @@ bool WorldRouter::idle()
 /// @param name string specifying name of the instance required.
 /// @return a pointer to an entity with the type required, or zero if an
 /// instance with this name was not found.
-Ref<LocatedEntity> WorldRouter::findByName(const std::string & name)
+Ref<LocatedEntity> WorldRouter::findByName(const std::string& name)
 {
     Element name_attr;
     auto Iend = m_eobjects.end();
@@ -525,10 +526,10 @@ Ref<LocatedEntity> WorldRouter::findByName(const std::string & name)
 /// @param type string specifying the class name of the instance required.
 /// @return a pointer to an entity of the type required, or zero if no
 /// instance was found.
-Ref<LocatedEntity> WorldRouter::findByType(const std::string & type)
+Ref<LocatedEntity> WorldRouter::findByType(const std::string& type)
 {
     auto Iend = m_eobjects.end();
-    for(auto I = m_eobjects.begin(); I != Iend; ++I) {
+    for (auto I = m_eobjects.begin(); I != Iend; ++I) {
         if (I->second->getType()->name() == type) {
             return I->second;
         }
