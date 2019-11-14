@@ -44,6 +44,8 @@ typedef enum log_event { NONE = 0,
                          POSSESS_CHAR,   // Imported avatar claimed
 } LogEvent;
 
+void setLoggingPrefix(std::string prefix);
+
 void initLogger();
 void rotateLogger();
 void log(LogLevel, const std::string & msg);

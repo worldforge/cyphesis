@@ -104,6 +104,8 @@ int main(int argc, char** argv)
 
     std::unique_ptr<Monitors> monitors(new Monitors());
 
+    setLoggingPrefix("AI");
+
     int config_status = loadConfig(argc, argv, USAGE_AICLIENT);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {

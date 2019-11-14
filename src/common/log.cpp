@@ -17,7 +17,9 @@
 
 
 #ifdef HAVE_CONFIG_H
+
 #include "config.h"
+
 #endif
 
 #include "log.h"
@@ -32,13 +34,13 @@
 
 extern "C" {
 #ifdef HAVE_SYSLOG_H
-  #include <syslog.h>
+#include <syslog.h>
 #endif // HAVE_SYSLOG_H
 }
 
-static void logDate(std::ostream & log_stream)
+static void logDate(std::ostream& log_stream)
 {
-    struct tm * local_time;
+    struct tm* local_time;
     const time_t now = time(nullptr);
 
 #ifdef HAVE_LOCALTIME_R
@@ -85,11 +87,21 @@ static void open_event_log()
     }
 }
 
-bool testEventLog(const char * path)
+bool testEventLog(const char* path)
 {
-   event_log.open(path, std::ios::out);
-   return event_log.is_open();
+    event_log.open(path, std::ios::out);
+    return event_log.is_open();
 }
+
+namespace {
+    std::string logging_prefix;
+}
+
+void setLoggingPrefix(std::string prefix)
+{
+    logging_prefix = std::move(prefix);
+}
+
 
 void initLogger()
 {
@@ -112,8 +124,9 @@ void rotateLogger()
     open_event_log();
 }
 
-std::ostream & operator<<(std::ostream & s, LogLevel lvl);
-std::ostream & operator<<(std::ostream & s, LogLevel lvl)
+std::ostream& operator<<(std::ostream& s, LogLevel lvl);
+
+std::ostream& operator<<(std::ostream& s, LogLevel lvl)
 {
     switch (lvl) {
         case INFO:
@@ -144,7 +157,7 @@ std::ostream & operator<<(std::ostream & s, LogLevel lvl)
     return s;
 }
 
-void log(LogLevel lvl, const std::string & msg)
+void log(LogLevel lvl, const std::string& msg)
 {
 #ifdef HAVE_SYSLOG
     if (daemon_flag) {
@@ -171,18 +184,27 @@ void log(LogLevel lvl, const std::string & msg)
                 type = LOG_CRIT;
                 break;
         }
-        syslog(type, "%s", msg.c_str());
+        if (!logging_prefix.empty()) {
+            syslog(type, "%s %s", logging_prefix.c_str(), msg.c_str());
+        } else {
+            syslog(type, "%s", msg.c_str());
+        }
+
     } else {
 #else // HAVE_SYSLOG
-    {
+        {
 #endif // HAVE_SYSLOG
 
         logDate(std::cout);
+        if (!logging_prefix.empty()) {
+            std::cout << " " << logging_prefix;
+        }
+
         std::cout << " " << lvl << " " << msg << std::endl;
     }
 }
 
-void log_formatted(LogLevel lvl, const std::string & msg)
+void log_formatted(LogLevel lvl, const std::string& msg)
 {
     std::string::size_type s = 0;
     std::string::size_type p = msg.find('\n');
@@ -198,13 +220,13 @@ void log_formatted(LogLevel lvl, const std::string & msg)
     }
 }
 
-void logEvent(LogEvent lev, const std::string & msg)
+void logEvent(LogEvent lev, const std::string& msg)
 {
     if (!event_log.is_open()) {
         return;
     }
 
-    const char * type;
+    const char* type;
     switch (lev) {
         case START:
             type = "START";
@@ -251,7 +273,7 @@ void logEvent(LogEvent lev, const std::string & msg)
 
 void logSysError(LogLevel lvl)
 {
-    char * err = strerror(errno);
+    char* err = strerror(errno);
     if (err != nullptr) {
         log(lvl, err);
     } else {

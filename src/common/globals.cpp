@@ -468,6 +468,7 @@ int loadConfig(int argc, char ** argv, int usage)
 
     // Read in only the users settings, and the commandline settings.
     if (home != nullptr && boost::filesystem::exists(std::string(home) + "/.cyphesis.vconf")) {
+        log(INFO, String::compose("Reading settings from %1", std::string(home) + "/.cyphesis.vconf"));
         home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
         if (!home_dir_config) {
             //Not being able to read from the local config file, if it exists, should result in fail fast.
