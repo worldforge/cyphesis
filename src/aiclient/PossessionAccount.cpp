@@ -113,8 +113,8 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
             I->second->operation(op, res);
             if (I->second->isDestroyed()) {
                 log(NOTICE, String::compose("Deleting mind %1.", I->second->getId()));
-                m_entitiesWithMinds.erase(I);
                 m_minds.erase(I->second->getId());
+                m_entitiesWithMinds.erase(I);
             }
 
             return;
