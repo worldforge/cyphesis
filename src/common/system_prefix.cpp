@@ -23,6 +23,7 @@
 #include "compose.hpp"
 #include "globals.h"
 #include "system.h"
+#include <iostream>
 
 #ifdef _WIN32
 #undef DATADIR
@@ -65,6 +66,7 @@ void getinstallprefix()
 #else // HAVE_WINDOWS_H
     BrInitError error;
     if (br_init (&error) == 0) {
+        std::cerr << "Error when setting up BinReloc: " << error << std::endl;
         return;
     }
 
