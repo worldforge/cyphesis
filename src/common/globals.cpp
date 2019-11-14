@@ -120,18 +120,19 @@ static const usage_data usage[] = {
 static int check_tmp_path(const std::string & dir)
 {
     std::string tmp_directory = dir + "/tmp";
-    struct stat tmp_stat{};
-
-    if (::stat(tmp_directory.c_str(), &tmp_stat) != 0) {
-        return -1;
-    }
-
-    if (!S_ISDIR(tmp_stat.st_mode)) {
-        return -1;
-    }
-
-    if (::access(tmp_directory.c_str(), W_OK) != 0) {
-        return -1;
+    if (!boost::filesystem::exists(tmp_directory)) {
+        auto createResult = boost::filesystem::create_directories(tmp_directory);
+        if (!createResult) {
+            return -1;
+        }
+        log(INFO, String::compose("Created tmp directory at %1", tmp_directory));
+    } else {
+        if (!boost::filesystem::is_directory(tmp_directory)) {
+            return -1;
+        }
+        if (::access(tmp_directory.c_str(), W_OK) != 0) {
+            return -1;
+        }
     }
 
     return 0;

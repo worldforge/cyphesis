@@ -325,8 +325,9 @@ int main(int argc, char** argv)
         } catch (const std::exception& e) {
             log(ERROR, String::compose("Could not create client listen socket "
                                        "on port %1. Init failed. The most common reason for this "
-                                       "is that you're already running an instance of Cyphesis.",
-                                       client_port_num));
+                                       "is that you're already running an instance of Cyphesis."
+                                       "\nError: %2",
+                                       client_port_num, e.what()));
             return EXIT_SOCKET_ERROR;
         }
     }
@@ -466,8 +467,11 @@ int main(int argc, char** argv)
                 log(INFO,
                     compose("Trying to import world from %1.", importPath));
                 std::stringstream ss;
-                ss << bin_directory <<
-                   "/cyimport --resume \"" << importPath + "\"";
+                ss << bin_directory << "/cyimport";
+                ss << " --cyphesis:confdir=\"" << etc_directory << "\"";
+                ss << " --cyphesis:vardir=\"" << var_directory << "\"";
+                ss << " --cyphesis:directory=\"" << share_directory << "\"";
+                ss << " --resume \"" << importPath + "\"";
                 std::string command = ss.str();
                 std::thread importer([=]() {
                     int result = std::system(command.c_str());

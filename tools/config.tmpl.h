@@ -1,6 +1,3 @@
-/* Define to the version */
-#define VERSION "@VERSION@"
-
 /* Define to the receiver of bug reports */
 #define PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
 

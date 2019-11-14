@@ -74,25 +74,28 @@ add_library(common
 target_link_libraries(common ${GCRYPT_LIBRARIES})
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})
 
-target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}" -DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}" -DSYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}" -DLOCALSTATEDIR="${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
+target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
+    -DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}"
+    -DSYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}"
+    -DLOCALSTATEDIR="${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
 
 
 set(db_files
     DatabaseSQLite.cpp
     DatabaseSQLite.h)
 
-if(PostgreSQL_FOUND)
+if (PostgreSQL_FOUND)
     list(APPEND db_files
         DatabasePostgres.cpp
         DatabasePostgres.h)
-endif(PostgreSQL_FOUND)
+endif (PostgreSQL_FOUND)
 
 add_library(db ${db_files})
 
-if(PostgreSQL_FOUND)
+if (PostgreSQL_FOUND)
     target_link_libraries(db ${PostgreSQL_LIBRARIES})
     target_include_directories(db PUBLIC ${PostgreSQL_INCLUDE_DIRS})
-endif(PostgreSQL_FOUND)
+endif (PostgreSQL_FOUND)
 
 target_link_libraries(db ${SQLITE3_LIBRARIES})
 target_include_directories(db PUBLIC ${SQLITE3_INCLUDE_DIRS})

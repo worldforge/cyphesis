@@ -24,7 +24,7 @@ set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wund
 
 add_definitions(-DHAVE_CONFIG_H)
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/generated)
 
 enable_testing()
 
@@ -133,7 +133,7 @@ if (RSYNC_CMD)
         COMMAND ${CMAKE_COMMAND} -E echo "I will now use rsync to install the assets from amber.worldforge.org into ${ASSETS_DIR}."
         COMMAND ${CMAKE_COMMAND} -E make_directory ${ASSETS_DIR}
         #We'll for now only copy ".mesh" files.
-        COMMAND rsync -rtvzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets ${ASSETS_DIR}
+        COMMAND rsync -rtzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets ${ASSETS_DIR}
         COMMAND ${CMAKE_COMMAND} -E echo "Copying ${ASSETS_DIR} to ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/assets."
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${ASSETS_DIR} ${CMAKE_INSTALL_FULL_DATADIR}/cyphesis/
         COMMAND ${CMAKE_COMMAND} -E echo "Done."
@@ -201,6 +201,10 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -E Benchmark)
 
 # Add a "benchmark" target, which builds and runs the benchmarks.
 add_custom_target(benchmark COMMAND ${CMAKE_CTEST_COMMAND} -R Benchmark)
+
+configure_file(tools/Version.tmpl.h generated/Version.h @ONLY)
+configure_file(tools/config.tmpl.h generated/config.h @ONLY)
+
 
 add_subdirectory(src)
 add_subdirectory(external)
