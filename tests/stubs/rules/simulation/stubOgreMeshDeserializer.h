@@ -9,7 +9,7 @@
 
 #ifndef STUB_OgreMeshDeserializer_OgreMeshDeserializer
 //#define STUB_OgreMeshDeserializer_OgreMeshDeserializer
-   OgreMeshDeserializer::OgreMeshDeserializer(std::fstream& stream)
+   OgreMeshDeserializer::OgreMeshDeserializer(std::ifstream& stream)
   {
     
   }

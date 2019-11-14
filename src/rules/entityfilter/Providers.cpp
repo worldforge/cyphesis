@@ -46,7 +46,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, m_type);
         } else {
-            value = (const void*) (&m_type);
+            value = (Atlas::Message::PtrType) (&m_type);
         }
     }
 
@@ -72,7 +72,7 @@ namespace EntityFilter {
             if (m_consumer && type) {
                 m_consumer->value(value, *type);
             } else {
-                value = (const void*) type;
+                value = (Atlas::Message::PtrType) type;
             }
         }
     }
@@ -116,7 +116,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, context.entityLoc.entity);
         } else {
-            value = (void*) (&context.entityLoc.entity);
+            value = (Atlas::Message::PtrType*) (&context.entityLoc.entity);
         }
     }
 
@@ -139,7 +139,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, context.entityLoc.entity);
         } else {
-            value = (const void*) (&context.entityLoc);
+            value = (Atlas::Message::PtrType) (&context.entityLoc);
         }
     }
 
@@ -162,7 +162,7 @@ namespace EntityFilter {
         if (m_consumer && context.actor) {
             m_consumer->value(value, *context.actor);
         } else {
-            value = (void*) (context.actor);
+            value = (Atlas::Message::PtrType) (context.actor);
         }
     }
 
@@ -176,7 +176,7 @@ namespace EntityFilter {
         if (m_consumer && context.tool) {
             m_consumer->value(value, *context.tool);
         } else {
-            value = (void*) (context.tool);
+            value = (Atlas::Message::PtrType) (context.tool);
         }
     }
 
@@ -190,7 +190,7 @@ namespace EntityFilter {
         if (m_consumer && context.child) {
             m_consumer->value(value, *context.child);
         } else {
-            value = (void*) (context.child);
+            value = (Atlas::Message::PtrType) (context.child);
         }
     }
 
@@ -207,7 +207,7 @@ namespace EntityFilter {
         } else if (m_consumer) {
             return m_consumer->value(value, *context.self_entity);
         } else {
-            value = (void*) (context.self_entity);
+            value = (Atlas::Message::PtrType) (context.self_entity);
         }
     }
 
@@ -235,7 +235,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, *entity.getType());
         } else {
-            value = (const void*) (entity.getType());
+            value = (Atlas::Message::PtrType) (entity.getType());
         }
     }
 

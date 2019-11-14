@@ -49,7 +49,7 @@ OgreMeshDeserializerTest::OgreMeshDeserializerTest()
 
 void OgreMeshDeserializerTest::test_readBboxMesh()
 {
-    std::fstream fileStream(TESTDATADIR "/box.mesh");
+    std::ifstream fileStream(TESTDATADIR "/box.mesh");
 
     ASSERT_TRUE(fileStream);
 
