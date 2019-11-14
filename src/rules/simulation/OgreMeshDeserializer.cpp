@@ -396,7 +396,7 @@ enum VertexElementType
 };
 
 
-OgreMeshDeserializer::OgreMeshDeserializer(std::fstream& stream)
+OgreMeshDeserializer::OgreMeshDeserializer(std::ifstream& stream)
     : m_stream(stream),
       m_flipEndian(false)
 {

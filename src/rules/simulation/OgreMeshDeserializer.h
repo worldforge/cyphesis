@@ -33,7 +33,7 @@
 class OgreMeshDeserializer
 {
     public:
-        explicit OgreMeshDeserializer(std::fstream& stream);;
+        explicit OgreMeshDeserializer(std::ifstream& stream);;
 
         void deserialize();
 
@@ -50,7 +50,7 @@ class OgreMeshDeserializer
             unsigned short source, offset, index, vType, vSemantic;
         };
 
-        std::fstream& m_stream;
+        std::ifstream& m_stream;
         bool m_flipEndian;
         std::uint32_t mCurrentstreamLen;
 

@@ -64,7 +64,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                 AssetsManager::instance().observeFile(fullpath, [this, fullpath](const boost::filesystem::path& changedPath) {
 
                     log(NOTICE, String::compose("Reloading geometry from %1.", fullpath));
-                    boost::filesystem::fstream fileStream(fullpath);
+                    boost::filesystem::ifstream fileStream(fullpath);
                     if (fileStream) {
                         auto deserializer = std::make_shared<OgreMeshDeserializer>(fileStream);
                         deserializer->deserialize();
@@ -90,12 +90,12 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                         visitor.prop = this;
                         m_owner.apply_visitor(visitor);
                     } else {
-                        log(ERROR, "Could not find geometry file at " + fullpath.string());
+                        log(ERROR, "Could not reload geometry file at " + fullpath.string());
                     }
                 });
 
 
-                boost::filesystem::fstream fileStream(fullpath);
+                boost::filesystem::ifstream fileStream(fullpath);
                 if (fileStream) {
                     deserializer.reset(new OgreMeshDeserializer(fileStream));
                     deserializer->deserialize();
