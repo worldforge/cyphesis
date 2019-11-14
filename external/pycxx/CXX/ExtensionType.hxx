@@ -45,7 +45,7 @@
 #define PYCXX_KEYWORDS_METHOD_NAME( NAME ) _callKeywordsMethod__##NAME
 
 #define PYCXX_NOARGS_METHOD_DECL( CLS, NAME ) \
-    static PyObject *PYCXX_NOARGS_METHOD_NAME( NAME )( PyObject *_self, PyObject *, PyObject * ) \
+    static PyObject *PYCXX_NOARGS_METHOD_NAME( NAME )( PyObject *_self, PyObject * ) \
     { \
         try \
         { \
@@ -60,7 +60,7 @@
         } \
     }
 #define PYCXX_VARARGS_METHOD_DECL( CLS, NAME ) \
-    static PyObject *PYCXX_VARARGS_METHOD_NAME( NAME )( PyObject *_self, PyObject *_a, PyObject * ) \
+    static PyObject *PYCXX_VARARGS_METHOD_NAME( NAME )( PyObject *_self, PyObject *_a ) \
     { \
         try \
         { \

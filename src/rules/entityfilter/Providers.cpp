@@ -46,7 +46,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, m_type);
         } else {
-            value = (void*) (&m_type);
+            value = (const void*) (&m_type);
         }
     }
 
@@ -72,7 +72,7 @@ namespace EntityFilter {
             if (m_consumer && type) {
                 m_consumer->value(value, *type);
             } else {
-                value = (void*) type;
+                value = (const void*) type;
             }
         }
     }
@@ -139,7 +139,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, context.entityLoc.entity);
         } else {
-            value = (void*) (&context.entityLoc);
+            value = (const void*) (&context.entityLoc);
         }
     }
 
@@ -235,7 +235,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, *entity.getType());
         } else {
-            value = (void*) (entity.getType());
+            value = (const void*) (entity.getType());
         }
     }
 

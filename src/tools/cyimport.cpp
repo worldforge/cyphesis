@@ -76,9 +76,9 @@ int main(int argc, char ** argv)
     }
 
     std::string filename;
-    int optind = config_status;
-    if ((argc - optind) == 1) {
-        filename = argv[optind];
+    int optindex = config_status;
+    if ((argc - optindex) == 1) {
+        filename = argv[optindex];
     } else {
         usage(argv[0]);
         return 1;

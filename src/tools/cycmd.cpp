@@ -62,7 +62,7 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    int optind = config_status;
+    int optindex = config_status;
 
     std::string server;
     readConfigItem("client", "serverhost", server);
@@ -72,14 +72,14 @@ int main(int argc, char ** argv)
 
     bool interactive = true;
     std::string cmd;
-    if (optind < argc) {
-        if ((argc - optind) == 2) {
-            server = argv[optind + 1];
-        } else if ((argc - optind) > 2) {
+    if (optindex < argc) {
+        if ((argc - optindex) == 2) {
+            server = argv[optindex + 1];
+        } else if ((argc - optindex) > 2) {
             usage(argv[0]);
             return 1;
         }
-        cmd = argv[optind];
+        cmd = argv[optindex];
         interactive = false;
     }
 

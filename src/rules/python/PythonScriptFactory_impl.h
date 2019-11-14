@@ -31,8 +31,9 @@
 ///
 /// @param package Name of the script package where the script type is
 /// @param type Name of the script types instanced by this factory
-
-Py::Object wrapPython(LocatedEntity* value) {
+template <>
+Py::Object wrapPython(LocatedEntity* value)
+{
     return CyPy_LocatedEntity::wrap(value);
 }
 

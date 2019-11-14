@@ -76,24 +76,24 @@ int main(int argc, char ** argv)
         return 1;
     }
     std::string homeDirConfig = std::string(home) + "/.cyphesis.vconf";
-    varconf::Config * global_conf = varconf::Config::inst();
-    global_conf->readFromFile(homeDirConfig);
-    int optind = global_conf->getCmdline(argc, argv);
+    auto config_instance = varconf::Config::inst();
+    config_instance->readFromFile(homeDirConfig);
+    int optindex = config_instance->getCmdline(argc, argv);
 
-    if (global_conf->findItem("", "version")) {
+    if (config_instance->findItem("", "version")) {
         reportVersion(argv[0]);
         return 0;
     }
 
-    if (global_conf->findItem("", "help")) {
+    if (config_instance->findItem("", "help")) {
         showUsage(argv[0], USAGE_SERVER);
         return 0;
     }
 
-    if (optind > 0 && optind < argc) {
-        runCommand(argc - optind, &argv[optind]);
+    if (optindex > 0 && optindex < argc) {
+        runCommand(argc - optindex, &argv[optindex]);
     }
 
-    global_conf->writeToFile(homeDirConfig, (varconf::Scope)(varconf::USER | varconf::INSTANCE));
+    config_instance->writeToFile(homeDirConfig, (varconf::Scope)(varconf::USER | varconf::INSTANCE));
     return 0;
 }

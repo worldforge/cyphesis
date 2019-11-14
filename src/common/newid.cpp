@@ -17,6 +17,7 @@
 
 
 #include "common/Database.h"
+#include "id.h"
 
 long newId(std::string & id)
 {

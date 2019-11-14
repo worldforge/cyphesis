@@ -89,7 +89,7 @@ Py::Object CyPy_TerrainProperty::getSurfaceName(const Py::Tuple& args)
     auto surface = getTerrainProperty().getSurface(verifyNumeric(args[0]), verifyNumeric(args[1]));
     if (surface) {
         auto& surfaceNames = getTerrainProperty().getSurfaceNames();
-        if (*surface >= 0 && *surface < surfaceNames.size()) {
+        if (*surface >= 0 && *surface < (int)surfaceNames.size()) {
             return Py::String(surfaceNames[*surface]);
         }
     }

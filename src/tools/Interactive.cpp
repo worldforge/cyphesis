@@ -91,53 +91,53 @@ struct command {
     const char * cmd_longhelp;
 };
 
-static const int CMD_DEFAULT = 0;
-static const int CMD_CONTEXT = 1 << 1;
+static const unsigned int CMD_DEFAULT = 0u;
+static const unsigned int CMD_CONTEXT = 1u << 1u;
 
 struct command commands[] = {
     { "add_agent",      "Create an in-game agent",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "cancel",         "Cancel the current admin task",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "connect",        "Connect server to a peer",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "create",         "Use account to create server objects",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "delete",         "Delete an entity from the server",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "dump",           "Write a copy of the world to an Atlas file",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "get",            "Examine any object on the server",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "find_by_name",   "Find an entity with the given name",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "find_by_type",   "Find an entity with the given type",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "flush",          "Flush entities from the server",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "help",           "Display this help",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "install",        "Install a new type",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "login",          "Log into a peer server",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "restore",        "Read world data from file and add it to the world",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "look",           "Return the current server lobby",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "logout",         "Log user out of server",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "monitor",        "Enable in-game op monitoring",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "query",          "Synonym for \"get\" (deprecated)",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "reload",         "Reload the script for a type",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "stat",           "Return current server status",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
     { "unmonitor",      "Disable in-game op monitoring",
-      &Interactive::commandUnknown, CMD_DEFAULT, 0, },
-    { nullptr,             "Guard", 0, 0, }
+      &Interactive::commandUnknown, CMD_DEFAULT, nullptr, },
+    { nullptr,             "Guard", nullptr, 0, }
 };
 
 
@@ -168,14 +168,12 @@ Interactive::Interactive(Atlas::Objects::Factories& factories, boost::asio::io_c
 {
 }
 
-Interactive::~Interactive()
-{
-}
+Interactive::~Interactive() = default;
 
 void Interactive::operation(const Operation & op)
 {
-    ContextMap::const_iterator J = m_contexts.begin();
-    ContextMap::const_iterator Jend = m_contexts.end();
+    auto J = m_contexts.begin();
+    auto Jend = m_contexts.end();
     for (; J != Jend; ++J) {
         ObjectContext & c = **J;
         if (c.accept(op)) {
@@ -270,7 +268,7 @@ void Interactive::infoArrived(const Operation & op)
         std::cout << "Server query success" << std::endl << std::flush;
         if (!ent->isDefaultName()) {
             m_serverName = ent->getName();
-            std::string::size_type p = m_serverName.find(".");
+            std::string::size_type p = m_serverName.find('.');
             if (p != std::string::npos) {
                 m_serverName = m_serverName.substr(0, p);
             }
@@ -284,7 +282,7 @@ void Interactive::infoArrived(const Operation & op)
             }
         }
         m_server_flag = false;
-    } else if (m_currentTask == 0 && op->isDefaultRefno()) {
+    } else if (m_currentTask == nullptr && op->isDefaultRefno()) {
         std::cout << "Info(" << std::endl;
         output(ent);
         std::cout << ")" << std::endl << std::flush;
@@ -298,7 +296,7 @@ void Interactive::errorArrived(const Operation & op)
     reply_flag = true;
     error_flag = true;
     
-    if (m_currentTask != 0) {
+    if (m_currentTask != nullptr) {
         return;
     }
     std::cout << "Error(";
@@ -386,7 +384,7 @@ void Interactive::runCommand(char * cmd)
         int len = strlen(arg);
         while (len > 0 && arg[--len] == ' ') { arg[len] = 0; }
     } else {
-        arg = (char *)"";
+        arg = const_cast<char*>("");
     }
 
     for (struct command * I = &commands[0]; I->cmd_string != nullptr; ++I) {
@@ -400,8 +398,8 @@ void Interactive::runCommand(char * cmd)
 
 void Interactive::switchContext(int, int)
 {
-    ContextMap::const_iterator I = m_contexts.begin();
-    ContextMap::const_iterator Iend = m_contexts.end();
+    auto I = m_contexts.begin();
+    auto Iend = m_contexts.end();
     for (; I != Iend; ++I) {
         const std::shared_ptr<ObjectContext> & i = *I;
         if (m_currentContext.lock() == i) {
@@ -431,18 +429,22 @@ void Interactive::addCurrentContext(const shared_ptr<ObjectContext> & c)
 
 int completion_iterator = 0;
 
-char * completion_generator(const char * text, int state)
-{
-    if (state == 0) {
-        completion_iterator = 0;
-    }
-    for (int i = completion_iterator; commands[i].cmd_string != 0; ++i) {
-        if (strncmp(text, commands[i].cmd_string, strlen(text)) == 0) {
-            completion_iterator = i + 1;
-            return strdup(commands[i].cmd_string);
+namespace {
+
+    char* completion_generator(const char* text, int state)
+    {
+        if (state == 0) {
+            completion_iterator = 0;
         }
+        for (int i = completion_iterator; commands[i].cmd_string != nullptr; ++i) {
+            if (strncmp(text, commands[i].cmd_string, strlen(text)) == 0) {
+                completion_iterator = i + 1;
+                return strdup(commands[i].cmd_string);
+            }
+        }
+        return nullptr;
     }
-    return 0;
+
 }
 
 static int context_switch(int a, int b)
@@ -469,7 +471,7 @@ void Interactive::loop()
 int Interactive::select(bool rewrite_prompt)
 {
     fd_set rfds;
-    struct timeval tv;
+    struct timeval tv{};
     int retval;
     FD_ZERO(&rfds);
     FD_SET(0, &rfds);
@@ -501,10 +503,10 @@ void Interactive::updatePrompt()
         designation = "$";
     }
     std::string status = "idle";
-    if (m_currentTask != 0) {
+    if (m_currentTask != nullptr) {
         status = m_currentTask->description();
     }
-    std::string context = "";
+    std::string context;
     std::shared_ptr<ObjectContext> c = m_currentContext.lock();
     if (c) {
         context = c->repr();
@@ -694,7 +696,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         } else {
             Anonymous cmap;
             cmap->setAttr("hostname", args[0]);
-            cmap->setAttr("port", strtol(args[1].c_str(), 0, 10));
+            cmap->setAttr("port", strtol(args[1].c_str(), nullptr, 10));
 
             Connect m;
             m->setArgs1(cmap);
@@ -814,7 +816,7 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
         std::vector<std::string> args;
         tokenize(arg, args);
 
-        if (args.size() < 1) {
+        if (args.empty()) {
             std::cout << "usage: create <type> <params> ... "
                       << std::endl << std::flush;
         } else {

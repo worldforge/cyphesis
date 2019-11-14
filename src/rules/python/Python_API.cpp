@@ -205,26 +205,28 @@ std::vector<std::string> python_directories;
 
 std::map<boost::filesystem::path, std::string> changedPaths;
 
-void reloadChangedPaths()
-{
-    if (!changedPaths.empty()) {
+namespace {
+    void reloadChangedPaths()
+    {
+        if (!changedPaths.empty()) {
 
-        for (auto& entry : changedPaths) {
-            auto& package = entry.second;
-            auto& path = entry.first;
-            auto module = Get_PyModule(package);
-            if (!module.isNull()) {
-                log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
-                auto result = PyImport_ReloadModule(module.ptr());
-                if (result != module.ptr()) {
-                    log(WARNING, String::compose("New pointer returned when reloading module \"%1\".", package));
+            for (auto& entry : changedPaths) {
+                auto& package = entry.second;
+                auto& path = entry.first;
+                auto module = Get_PyModule(package);
+                if (!module.isNull()) {
+                    log(INFO, String::compose("Reloading module \"%1\" from file %2.", package, path));
+                    auto result = PyImport_ReloadModule(module.ptr());
+                    if (result != module.ptr()) {
+                        log(WARNING, String::compose("New pointer returned when reloading module \"%1\".", package));
+                    }
+
                 }
 
             }
-
+            python_reload_scripts();
+            changedPaths.clear();
         }
-        python_reload_scripts();
-        changedPaths.clear();
     }
 }
 

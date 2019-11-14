@@ -31,8 +31,6 @@
 
 #include <Atlas/Codecs/Packed.h>
 
-#include <varconf/config.h>
-
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/algorithm/string.hpp>
@@ -153,14 +151,14 @@ int DatabaseSQLite::getObject(const std::string& table,
         auto firstRowIterator = qry.begin();
         if (firstRowIterator == qry.end()) {
             debug(std::cout << "No entry for " << key << " in " << table
-                            << " table" << std::endl << std::flush;);
+                            << " table" << std::endl << std::flush;)
             return -1;
         }
 
         auto data = (*firstRowIterator).get<const char*>(1);
 
         debug(std::cout << "Got record " << key << " from database, value " << data
-                        << std::endl << std::flush;);
+                        << std::endl << std::flush;)
 
         int ret = decodeMessage(data, o);
 
@@ -230,7 +228,7 @@ int DatabaseSQLite::registerRelation(std::string& tablename,
     query += " (id) ON DELETE CASCADE )";
 
     debug(std::cout << "CREATE QUERY: " << query
-                    << std::endl << std::flush;);
+                    << std::endl << std::flush;)
     if (runCommandQuery(query) != 0) {
         return -1;
     }
@@ -277,7 +275,7 @@ int DatabaseSQLite::registerSimpleTable(const std::string& name,
     createquery += ")";
 
     debug(std::cout << "CREATE QUERY: " << createquery
-                    << std::endl << std::flush;);
+                    << std::endl << std::flush;)
     int ret = runCommandQuery(createquery);
     return ret;
 }
@@ -421,7 +419,7 @@ DatabaseResult::const_iterator_worker& DatabaseResultWorkerSqlite::const_iterato
 
 bool DatabaseResultWorkerSqlite::const_iterator_worker_sqlite::operator==(const const_iterator_worker& other) const
 {
-    return (m_iterator == ((const_iterator_worker_sqlite&) other).m_iterator);
+    return (m_iterator == ((const const_iterator_worker_sqlite&) other).m_iterator);
 }
 
 int DatabaseResultWorkerSqlite::size() const

@@ -3265,6 +3265,12 @@ namespace Py
             validate();
         }
 
+        Module &operator=( const Module &rhs )
+        {
+            *this = *rhs;
+            return *this;
+        }
+
         Module &operator=( const Object &rhs )
         {
             return *this = *rhs;

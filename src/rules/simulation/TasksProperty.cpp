@@ -233,30 +233,31 @@ HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
     return OPERATION_BLOCKED;
 }
 
+namespace {
+    std::pair<bool, std::string> areUsageParamsValid(const std::map<std::string, UsageParameter>& params,
+                                                     const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args,
+                                                     const UsageInstance& usageInstance)
+    {
 
-std::pair<bool, std::string> areUsageParamsValid(const std::map<std::string, UsageParameter>& params,
-                                                 const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args,
-                                                 const UsageInstance& usageInstance)
-{
+        for (auto& param : params) {
+            auto I = args.find(param.first);
+            if (I == args.end()) {
+                return {false, String::compose("Could not find required '%1' argument.", param.first)};
+            }
+            int count = param.second.countValidArgs(I->second, usageInstance.actor, usageInstance.tool);
 
-    for (auto& param : params) {
-        auto I = args.find(param.first);
-        if (I == args.end()) {
-            return {false, String::compose("Could not find required '%1' argument.", param.first)};
+            if (count < param.second.min) {
+                return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};
+            }
+            if (count > param.second.max) {
+                return {false, String::compose("Too many '%1' arguments. Should be maximum %2, got %3.", param.first, param.second.max, count)};
+            }
+
         }
-        int count = param.second.countValidArgs(I->second, usageInstance.actor, usageInstance.tool);
 
-        if (count < param.second.min) {
-            return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};
-        }
-        if (count > param.second.max) {
-            return {false, String::compose("Too many '%1' arguments. Should be maximum %2, got %3.", param.first, param.second.max, count)};
-        }
 
+        return {true, ""};
     }
-
-
-    return {true, ""};
 }
 
 HandlerResult TasksProperty::UseOperation(LocatedEntity* e,

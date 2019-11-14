@@ -67,12 +67,12 @@ static const int CONFIG_ERROR = -1;
 static const int CONFIG_HELP = -2;
 static const int CONFIG_VERSION = -3;
 
-static const int USAGE_SERVER = 1 << 0;
-static const int USAGE_CLIENT = 1 << 1;
-static const int USAGE_CYCMD = 1 << 2;
-static const int USAGE_DBASE = 1 << 3;
-static const int USAGE_CYPYTHON = 1 << 4;
-static const int USAGE_AICLIENT = 1 << 5;
+static const unsigned int USAGE_SERVER = 1u << 0u;
+static const unsigned int USAGE_CLIENT = 1u << 1u;
+static const unsigned int USAGE_CYCMD = 1u << 2u;
+static const unsigned int USAGE_DBASE = 1u << 3u;
+static const unsigned int USAGE_CYPYTHON = 1u << 4u;
+static const unsigned int USAGE_AICLIENT = 1u << 5u;
 
 static const unsigned int SPM = 20; // seconds per minute
 static const unsigned int MPH = 60; // minutes per hour
@@ -133,7 +133,7 @@ int readConfigItem(const std::string & section, const std::string & key,
 
 int loadConfig(int argc, char ** argv, int usage = USAGE_CLIENT);
 void reportVersion(const char * prgname);
-void showUsage(const char * prgname, int usage_flags, const char * extras = 0);
+void showUsage(const char * prgname, unsigned int usage_flags, const char * extras = nullptr);
 void updateUserConfiguration();
 
 #endif // COMMON_GLOBALS_H

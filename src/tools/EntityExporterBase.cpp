@@ -79,10 +79,11 @@ long integerId(const std::string & id);
 //
 //	return intId;
 //}
-
-bool idSorter(const std::string& lhs, const std::string& rhs)
-{
-	return integerId(lhs) < integerId(rhs);
+namespace {
+    bool idSorter(const std::string& lhs, const std::string& rhs)
+    {
+        return integerId(lhs) < integerId(rhs);
+    }
 }
 
 EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp) :

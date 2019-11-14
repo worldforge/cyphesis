@@ -66,8 +66,8 @@ class basic_dir_monitor
     : public boost::asio::basic_io_object<Service>
 {
 public:
-    explicit basic_dir_monitor(boost::asio::io_context &io_context)
-        : boost::asio::basic_io_object<Service>(io_context)
+    explicit basic_dir_monitor(boost::asio::io_context &io_context_in)
+        : boost::asio::basic_io_object<Service>(io_context_in)
     {
     }
 

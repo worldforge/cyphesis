@@ -196,79 +196,81 @@ void reduce_priority(int p)
 #endif // HAVE_NICE
 }
 
+namespace {
 
-extern "C" void shutdown_on_signal(int signo)
-{
-    exit_flag = true;
-
-#if defined(HAVE_SIGACTION)
-    struct sigaction action{};
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    action.sa_handler = SIG_IGN;
-    sigaction(signo, &action, nullptr);
-#else
-    signal(signo, SIG_IGN);
-#endif
-}
-
-extern "C" void soft_shutdown_on_signal(int signo)
-{
-    //If we've already received one call to shut down softly we should elevate
-    //it to a hard shutdown.
-    //This also happens if "soft" exit isn't enabled.
-    if (exit_flag_soft || !exit_soft_enabled) {
+    extern "C" void shutdown_on_signal(int signo)
+    {
         exit_flag = true;
-    } else {
-        exit_flag_soft = true;
-    }
 
 #if defined(HAVE_SIGACTION)
-    struct sigaction action{};
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    action.sa_handler = SIG_IGN;
-    sigaction(signo, &action, nullptr);
+        struct sigaction action{};
+        sigemptyset(&action.sa_mask);
+        action.sa_flags = 0;
+        action.sa_handler = SIG_IGN;
+        sigaction(signo, &action, nullptr);
 #else
-    signal(signo, SIG_IGN);
+        signal(signo, SIG_IGN);
 #endif
-}
-
-extern "C" void report_segfault(int)
-{
-    //Don't print to the log at segfault, as that involves memory allocation.
-    //And with a segfault we might have gotten a tainted stack, which might cause that call to hang.
-    fprintf(stderr, "Segmentation fault");
-    fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
-
-#if !defined(HAVE_SIGACTION)
-    signal(signo, SIG_DFL);
-#endif
-}
-
-extern "C" void report_abort(int)
-{
-    //Don't print to the log in signal handler, as that involves memory allocation.
-    fprintf(stderr, "Aborted");
-    fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
-
-#if !defined(HAVE_SIGACTION)
-    signal(signo, SIG_DFL);
-#endif
-}
-
-extern "C" void report_status(int)
-{
-    if (exit_flag) {
-        log(NOTICE, "Shutting down");
-    } else {
-        log(NOTICE, "Running");
     }
-}
 
-extern "C" void rotate_logs(int)
-{
-    rotateLogger();
+    extern "C" void soft_shutdown_on_signal(int signo)
+    {
+        //If we've already received one call to shut down softly we should elevate
+        //it to a hard shutdown.
+        //This also happens if "soft" exit isn't enabled.
+        if (exit_flag_soft || !exit_soft_enabled) {
+            exit_flag = true;
+        } else {
+            exit_flag_soft = true;
+        }
+
+#if defined(HAVE_SIGACTION)
+        struct sigaction action{};
+        sigemptyset(&action.sa_mask);
+        action.sa_flags = 0;
+        action.sa_handler = SIG_IGN;
+        sigaction(signo, &action, nullptr);
+#else
+        signal(signo, SIG_IGN);
+#endif
+    }
+
+    extern "C" void report_segfault(int)
+    {
+        //Don't print to the log at segfault, as that involves memory allocation.
+        //And with a segfault we might have gotten a tainted stack, which might cause that call to hang.
+        fprintf(stderr, "Segmentation fault");
+        fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
+
+#if !defined(HAVE_SIGACTION)
+        signal(signo, SIG_DFL);
+#endif
+    }
+
+    extern "C" void report_abort(int)
+    {
+        //Don't print to the log in signal handler, as that involves memory allocation.
+        fprintf(stderr, "Aborted");
+        fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
+
+#if !defined(HAVE_SIGACTION)
+        signal(signo, SIG_DFL);
+#endif
+    }
+
+    extern "C" void report_status(int)
+    {
+        if (exit_flag) {
+            log(NOTICE, "Shutting down");
+        } else {
+            log(NOTICE, "Running");
+        }
+    }
+
+    extern "C" void rotate_logs(int)
+    {
+        rotateLogger();
+    }
 }
 
 void interactive_signals()

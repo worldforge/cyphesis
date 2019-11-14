@@ -26,50 +26,52 @@
 #include <boost/asio/signal_set.hpp>
 #include <boost/asio/steady_timer.hpp>
 
-void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
-{
-    if (!error) {
-        switch (signal_number) {
-            case SIGINT:
-            case SIGTERM:
-            case SIGHUP:
-                //If we've already received one call to shut down softly we should elevate
-                //it to a hard shutdown.
-                //This also happens if "soft" exit isn't enabled.
-                if (exit_flag_soft || !exit_soft_enabled) {
+namespace {
+    void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
+    {
+        if (!error) {
+            switch (signal_number) {
+                case SIGINT:
+                case SIGTERM:
+                case SIGHUP:
+                    //If we've already received one call to shut down softly we should elevate
+                    //it to a hard shutdown.
+                    //This also happens if "soft" exit isn't enabled.
+                    if (exit_flag_soft || !exit_soft_enabled) {
+                        exit_flag = true;
+                    } else {
+                        exit_flag_soft = true;
+                    }
+                    break;
+                case SIGQUIT:
                     exit_flag = true;
-                } else {
-                    exit_flag_soft = true;
-                }
-                break;
-            case SIGQUIT:
-                exit_flag = true;
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
+            this_.async_wait([&this_](boost::system::error_code error_in, int signal_nbr) { interactiveSignalsHandler(this_, error_in, signal_nbr); });
         }
-        this_.async_wait([&this_](boost::system::error_code error, int signal_number){interactiveSignalsHandler(this_, error, signal_number);});
     }
-}
 
-void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
-{
-    if (!error) {
-        switch (signal_number) {
-            case SIGTERM:
-                //If we've already received one call to shut down softly we should elevate
-                //it to a hard shutdown.
-                //This also happens if "soft" exit isn't enabled.
-                if (exit_flag_soft || !exit_soft_enabled) {
-                    exit_flag = true;
-                } else {
-                    exit_flag_soft = true;
-                }
-                break;
-            default:
-                break;
+    void daemonSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
+    {
+        if (!error) {
+            switch (signal_number) {
+                case SIGTERM:
+                    //If we've already received one call to shut down softly we should elevate
+                    //it to a hard shutdown.
+                    //This also happens if "soft" exit isn't enabled.
+                    if (exit_flag_soft || !exit_soft_enabled) {
+                        exit_flag = true;
+                    } else {
+                        exit_flag_soft = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            this_.async_wait([&this_](boost::system::error_code error_in, int signal_nbr) { daemonSignalsHandler(this_, error_in, signal_nbr); });
         }
-        this_.async_wait([&this_](boost::system::error_code error, int signal_number){daemonSignalsHandler(this_, error, signal_number);});
     }
 }
 
@@ -84,11 +86,11 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
         signalSet.add(SIGHUP);
         signalSet.add(SIGQUIT);
 
-        signalSet.async_wait([&signalSet](boost::system::error_code error, int signal_number){interactiveSignalsHandler(signalSet, error, signal_number);});
+        signalSet.async_wait([&signalSet](boost::system::error_code error, int signal_number) { interactiveSignalsHandler(signalSet, error, signal_number); });
     } else {
         signalSet.add(SIGTERM);
 
-        signalSet.async_wait([&signalSet](boost::system::error_code error, int signal_number){daemonSignalsHandler(signalSet, error, signal_number);});
+        signalSet.async_wait([&signalSet](boost::system::error_code error, int signal_number) { daemonSignalsHandler(signalSet, error, signal_number); });
     }
 
 
@@ -167,7 +169,6 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
     // It is assumed that any preparation for the shutdown that is required
     // by the game has been done before exit flag was set.
     log(NOTICE, "Performing clean shutdown...");
-
 
 
     signalSet.clear();

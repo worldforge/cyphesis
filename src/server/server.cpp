@@ -147,7 +147,12 @@ int main(int argc, char** argv)
         for (int i = 0; i < ai_clients; ++i) {
             auto pid = fork();
             if (pid == 0) {
-                execl((bin_directory + "/cyaiclient").c_str(), (bin_directory + "/cyaiclient").c_str(), nullptr);
+                execl((bin_directory + "/cyaiclient").c_str(),
+                      (bin_directory + "/cyaiclient").c_str(),
+                      String::compose("--cyphesis:confdir=%1", etc_directory).c_str(),
+                      String::compose("--cyphesis:vardir=%1", var_directory).c_str(),
+                      String::compose("--cyphesis:directory=%1", share_directory).c_str(),
+                      nullptr);
                 return EXIT_FORK_ERROR;
             } else if (pid == -1) {
                 log(WARNING, "Could not spawn AI client process.");

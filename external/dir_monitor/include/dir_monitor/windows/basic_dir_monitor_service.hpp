@@ -83,8 +83,8 @@ public:
 
     static boost::asio::io_context::id id;
 
-    explicit basic_dir_monitor_service(boost::asio::io_context &io_context)
-        : boost::asio::io_context::service(io_context),
+    explicit basic_dir_monitor_service(boost::asio::io_context &io_context_in)
+        : boost::asio::io_context::service(io_context_in),
         last_work_thread_exception_ptr_(nullptr),
         iocp_(init_iocp()),
         run_(true),
@@ -155,10 +155,10 @@ public:
     class monitor_operation
     {
     public:
-        monitor_operation(implementation_type &impl, boost::asio::io_context &io_context, Handler handler)
+        monitor_operation(implementation_type &impl, boost::asio::io_context &io_context_in, Handler handler)
             : impl_(impl),
-            io_context_(io_context),
-            work_(io_context),
+            io_context_(io_context_in),
+            work_(io_context_in),
             handler_(handler)
         {
         }

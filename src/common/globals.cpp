@@ -30,8 +30,6 @@
 
 #include <algorithm>
 
-#include <sys/stat.h>
-
 #include <cstring>
 #include <memory>
 
@@ -71,12 +69,12 @@ int dynamic_port_end = 6899;
 
 static const char * const FALLBACK_LOCALSTATEDIR = "/var";
 
-static const int S = USAGE_SERVER;
-static const int C = USAGE_CLIENT;
-static const int M = USAGE_CYCMD;
-static const int D = USAGE_DBASE;
-static const int P = USAGE_CYPYTHON;
-static const int A = USAGE_AICLIENT;
+static const unsigned int S = USAGE_SERVER;
+static const unsigned int C = USAGE_CLIENT;
+static const unsigned int M = USAGE_CYCMD;
+static const unsigned int D = USAGE_DBASE;
+static const unsigned int P = USAGE_CYPYTHON;
+static const unsigned int A = USAGE_AICLIENT;
 
 /// \brief Structure for holding data about varconf options
 typedef struct {
@@ -85,21 +83,21 @@ typedef struct {
     const char * value;
     const char * dflt;
     const char * description;
-    int flags;
+    unsigned int flags;
 } usage_data;
 
-static const usage_data usage[] = {
+static const usage_data usage_options[] = {
     { "", "help", "", "", "Display usage information and exit", S|C|M|D|A },
     { "", "version", "", "", "Display the version information and exit", S|C|M|D|A },
     { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
     { "", "interactive", "", "", "Run in interactive mode, giving a Python prompt", C },
     { CYPHESIS, "dynamicpaths", "true|false", "false", "Enables dynamic paths, calculated from the current executable", S|D|C|M|A },
     { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
-    { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D },
-    { CYPHESIS, "bindir", "<directory>", "", "Directory where Cyphesis binaries can be found", S|C|M|D },
-    { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M },
+    { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D|A },
+    { CYPHESIS, "bindir", "<directory>", "", "Directory where Cyphesis binaries can be found", S|C|M|D|A },
+    { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M|A },
     { CYPHESIS, "assetsdir", "<directory>", "", "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S },
-    { CYPHESIS, "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D },
+    { CYPHESIS, "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D|A },
     { CYPHESIS, "servername", "<name>", "<hostname>", "Published name of the server", S|C },
     { CYPHESIS, "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
     { CYPHESIS, "dynamic_port_start", "<portnumber>", "6800", "Lowest port to try and used for dyanmic ports", S },
@@ -142,7 +140,7 @@ static int force_simple_name(const std::string & in, std::string & out)
 {
     out = std::string(in.size(), ' ');
 
-    for (unsigned int i = 0; i < in.size(); ++i) {
+    for (size_t i = 0; i < in.size(); ++i) {
         int c = in[i];
         if (islower(c) || isdigit(c)) {
             out[i] = c;
@@ -195,7 +193,7 @@ class Option {
 
     virtual void read(varconf::Variable var) = 0;
 
-    virtual const std::string repr() const = 0;
+    virtual std::string repr() const = 0;
 
     virtual size_t size() const = 0;
 
@@ -216,7 +214,7 @@ class DumbOption : public Option {
 
     void read(varconf::Variable var) override { }
 
-    const std::string repr() const override;
+    std::string repr() const override;
 
     size_t size() const override;
 };
@@ -236,7 +234,7 @@ class StaticOption : public Option {
 
     void read(varconf::Variable var) override;
 
-    const std::string repr() const override;
+    std::string repr() const override;
 
     size_t size() const override;
     
@@ -256,7 +254,7 @@ DumbOption::DumbOption(const std::string & val,
 {
 }
 
-const std::string DumbOption::repr() const
+std::string DumbOption::repr() const
 {
     return m_default;
 }
@@ -279,7 +277,7 @@ void StaticOption<ValueT>::read(varconf::Variable var)
 }
 
 template<typename ValueT>
-const std::string StaticOption<ValueT>::repr() const
+std::string StaticOption<ValueT>::repr() const
 {
     return String::compose("%1", m_default);
 }
@@ -346,7 +344,7 @@ class Options {
         return m_sectionMap;
     }
 
-    int check_config(varconf::Config &, int usage_groups = USAGE_SERVER|
+    int check_config(varconf::Config &, unsigned int usage_groups = USAGE_SERVER|
                                                            USAGE_CLIENT|
                                                            USAGE_CYCMD|
                                                            USAGE_DBASE) const;
@@ -360,7 +358,7 @@ Options * Options::m_instance = nullptr;
 
 Options::Options()
 {
-    const usage_data * ud = &usage[0];
+    const usage_data * ud = &usage_options[0];
     for (; ud->section != nullptr; ++ud) {
         m_sectionMap[ud->section].insert(std::make_pair(ud->option,
               std::unique_ptr<Option>(new DumbOption(ud->value, ud->description, ud->dflt))));
@@ -368,7 +366,7 @@ Options::Options()
 }
 
 int Options::check_config(varconf::Config & config,
-                          int) const
+                          unsigned int) const
 {
     auto I = m_sectionMap.begin();
     auto Iend = m_sectionMap.end();
@@ -458,7 +456,7 @@ int loadConfig(int argc, char ** argv, int usage)
     global_conf->setParameterLookup('v', "version");
     global_conf->setParameterLookup('i', "interactive");
 
-    // Check the commmand line config doesn't contain any unknown or
+    // Check the command line config doesn't contain any unknown or
     // inappropriate options.
     varconf::Config test_cmdline;
     test_cmdline.getCmdline(argc, argv);
@@ -519,11 +517,11 @@ int loadConfig(int argc, char ** argv, int usage)
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
 
-    int optind = global_conf->getCmdline(argc, argv);
+    int optindex = global_conf->getCmdline(argc, argv);
 
     Options::instance()->check_config(*global_conf);
 
-    assert(optind > 0);
+    assert(optindex > 0);
 
     std::string raw_instance;
 
@@ -569,7 +567,7 @@ int loadConfig(int argc, char ** argv, int usage)
         }
     }
 
-    return optind;
+    return optindex;
 }
 
 void updateUserConfiguration()
@@ -657,12 +655,12 @@ void reportVersion(const char * prgname)
               << " (WorldForge)" << std::endl << std::flush;
 }
 
-void showUsage(const char * prgname, int usage_flags, const char * extras)
+void showUsage(const char * prgname, unsigned int usage_flags, const char * extras)
 {
     //Create a lookup table of the commands and flags in "usage"
-    std::map<std::string, int> default_commands_flags;
+    std::map<std::string, unsigned int> default_commands_flags;
 
-    const usage_data * ud = &usage[0];
+    const usage_data * ud = &usage_options[0];
     for (; ud->section != nullptr; ++ud) {
         std::stringstream ss;
         ss << ud->section << ":" << ud->option;
@@ -676,7 +674,7 @@ void showUsage(const char * prgname, int usage_flags, const char * extras)
             //If it can't be found in "usage" it's defined for the specific command and is allowed
             return true;
         }
-        return ((I->second & usage_flags) != 0);
+        return ((I->second & usage_flags) != 0u);
     };
 
 

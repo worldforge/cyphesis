@@ -112,6 +112,7 @@ void rotateLogger()
     open_event_log();
 }
 
+std::ostream & operator<<(std::ostream & s, LogLevel lvl);
 std::ostream & operator<<(std::ostream & s, LogLevel lvl)
 {
     switch (lvl) {

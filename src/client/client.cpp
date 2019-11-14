@@ -71,12 +71,12 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-    int optind = config_status;
+    int optindex = config_status;
 
-    assert(optind <= argc);
+    assert(optindex <= argc);
 
-    if (optind == (argc - 1)) {
-        std::string arg(argv[optind]);
+    if (optindex == (argc - 1)) {
+        std::string arg(argv[optindex]);
         std::string::size_type pos = arg.rfind('.');
         if (pos == std::string::npos) {
             // std::cout << "function " << arg << std::endl << std::flush;
@@ -86,7 +86,7 @@ int main(int argc, char ** argv)
             function = arg.substr(pos + 1);
             // std::cout << "module.function " << package << "." << function << std::endl << std::flush;
         }
-    } else if (optind != argc) {
+    } else if (optindex != argc) {
         usage(argv[0]);
         return 1;
     }

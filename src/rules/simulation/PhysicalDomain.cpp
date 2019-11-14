@@ -1604,8 +1604,8 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
         bool hadHit = false;
         const btCollisionObject* highestObject = nullptr;
 
-        explicit PlantedOnCallback(btVector3 highestPoint)
-            : btCollisionWorld::ContactResultCallback(), highestPoint(highestPoint)
+        explicit PlantedOnCallback(btVector3 highestPoint_in)
+            : btCollisionWorld::ContactResultCallback(), highestPoint(highestPoint_in)
         {
         }
 

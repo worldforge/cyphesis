@@ -32,6 +32,7 @@
 #include <rules/python/CyPy_Point3D.h>
 #include <rules/python/CyPy_Vector3D.h>
 
+template <>
 Py::Object wrapPython(Task* value)
 {
     return CyPy_Task::wrap(value);

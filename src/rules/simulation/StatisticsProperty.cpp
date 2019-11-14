@@ -62,13 +62,13 @@ void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
 void StatisticsProperty::apply(LocatedEntity * ent)
 {
     if (m_script == nullptr) {
-        LocatedEntity * instance = nullptr;
+        LocatedEntity * entity = nullptr;
         if (hasFlags(flag_class)) {
         } else {
-            instance = ent;
+            entity = ent;
         }
 
-        m_script = BaseWorld::instance().newArithmetic("statistics", instance);
+        m_script = BaseWorld::instance().newArithmetic("statistics", entity);
         if (m_script == nullptr) {
             return;
         }

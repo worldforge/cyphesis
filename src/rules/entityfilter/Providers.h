@@ -50,10 +50,10 @@ namespace EntityFilter {
 
         QueryEntityLocation() = delete;
 
-        QueryEntityLocation(LocatedEntity& entity) : entity(entity)
+        QueryEntityLocation(LocatedEntity& entity_in) : entity(entity_in)
         {}
 
-        QueryEntityLocation(LocatedEntity& entity, const WFMath::Point<3>* pos) : entity(entity), pos(pos)
+        QueryEntityLocation(LocatedEntity& entity_in, const WFMath::Point<3>* pos_in) : entity(entity_in), pos(pos_in)
         {}
     };
 

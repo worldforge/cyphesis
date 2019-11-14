@@ -62,28 +62,30 @@ using Atlas::Message::MapType;
 #define PLAYER 1
 #define SERVER 2
 
-void usage(std::ostream & stream, char * n, bool verbose = false)
-{
-    stream << "usage: " << n << std::endl;
-    stream << "       " << n << " [ -a | -d ] [ -s | -r | -p ] account" << std::endl;
-    stream << "       " << n << " -h" << std::endl;
+namespace {
+    void usage(std::ostream& stream, char* n, bool verbose = false)
+    {
+        stream << "usage: " << n << std::endl;
+        stream << "       " << n << " [ -a | -d ] [ -s | -r | -p ] account" << std::endl;
+        stream << "       " << n << " -h" << std::endl;
 
-    if (!verbose) {
-        stream << std::flush;
-        return;
+        if (!verbose) {
+            stream << std::flush;
+            return;
+        }
+
+        stream << std::endl;
+        stream << "Help options" << std::endl;
+        stream << "  -h                          Display this help" << std::endl;
+        stream << std::endl;
+        stream << "Managing accounts" << std::endl;
+        stream << "  -a                          Add a new account" << std::endl;
+        stream << "  -d                          Delete an account" << std::endl;
+        stream << "  -s                          Make server account" << std::endl;
+        stream << "  -r                          Make admin account" << std::endl;
+        stream << "  -p                          Make player account (default)"
+               << std::endl;
     }
-
-    stream << std::endl;
-    stream << "Help options" << std::endl;
-    stream << "  -h                          Display this help" << std::endl;
-    stream << std::endl;
-    stream << "Managing accounts" << std::endl;
-    stream << "  -a                          Add a new account" << std::endl;
-    stream << "  -d                          Delete an account" << std::endl;
-    stream << "  -s                          Make server account" << std::endl;
-    stream << "  -r                          Make admin account" << std::endl;
-    stream << "  -p                          Make player account (default)"
-           << std::endl;
 }
 
 static int get_password(const std::string & acname,

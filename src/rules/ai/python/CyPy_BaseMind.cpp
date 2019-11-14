@@ -17,8 +17,11 @@
  */
 
 #include "CyPy_BaseMind.h"
+
+#include <utility>
 #include "CyPy_MemMap.h"
 #include "CyPy_MemEntity.h"
+#include "rules/python/PythonWrapper.h"
 #include "rules/python/CyPy_Point3D.h"
 #include "rules/python/CyPy_Props.h"
 #include "rules/python/PythonScriptFactory.h"
@@ -33,12 +36,13 @@
 
 #include "common/id.h"
 
+template <>
 Py::Object wrapPython(BaseMind* value) {
     return CyPy_BaseMind::wrap(value);
 }
 
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
-    : WrapperBase(self, value)
+    : WrapperBase(self, std::move(value))
 {
 
 }
