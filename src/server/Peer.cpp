@@ -305,14 +305,15 @@ void Peer::cleanTeleports()
     // Get the current time
     auto curr_time = boost::posix_time::microsec_clock::local_time();
 
-    for(auto I = m_teleports.begin(); I != m_teleports.end(); ++I) {
+    for(auto I = m_teleports.begin(); I != m_teleports.end();) {
         auto time_passed = curr_time - I->second->getCreateTime();
         // If 5 seconds have passed, the teleport has failed
         if (time_passed.seconds() >= 10 && I->second->isRequested()) {
             log(INFO, String::compose("Teleport timed out for entity (ID %1)",
                                             I->first));
-            // FIXME I think this is unsafe.
-            m_teleports.erase(I);
+            I = m_teleports.erase(I);
+        } else {
+            I = std::next(I);
         }
     }
 }
