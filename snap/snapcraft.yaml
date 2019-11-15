@@ -51,6 +51,17 @@ parts:
         source: https://github.com/worldforge/worlds.git
         plugin: cmake
 
+    media:
+        override-pull: |
+            rsync -rtzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets $SNAPCRAFT_PART_SRC/assets
+        override-stage: |
+            mkdir -p $SNAPCRAFT_STAGE/share/cyphesis
+            cp -a $SNAPCRAFT_PART_SRC/assets $SNAPCRAFT_STAGE/share/cyphesis
+        override-prime: |
+            mkdir -p $SNAPCRAFT_PRIME/share/cyphesis
+            cp -a $SNAPCRAFT_STAGE/share/cyphesis/assets $SNAPCRAFT_PRIME/share/cyphesis
+        plugin: nil
+
     cyphesis:
         source: .
         plugin: cmake
@@ -73,10 +84,8 @@ parts:
             - libsigc++-2.0-0v5
             - libxdg-basedir1
         after:
+            - media
             - atlas
             - varconf
             - mercator
             - worlds
-        override-build: |
-            snapcraftctl build
-            cmake -DCMAKE_INSTALL_PREFIX=../install ../src && make assets-download
