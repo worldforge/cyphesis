@@ -45,7 +45,7 @@ using String::compose;
 static const bool debug_flag = false;
 
 BaseClient::BaseClient(CommSocket& commSocket)
-    : Link(commSocket, "", 0)
+    : Link(commSocket, "", 0), m_serialNo(0)
 {
 
 }

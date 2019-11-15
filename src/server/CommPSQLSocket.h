@@ -25,13 +25,14 @@
 #include "common/asio.h"
 #include "common/asio.h"
 #include <boost/asio/deadline_timer.hpp>
+#include <boost/noncopyable.hpp>
 
 class DatabasePostgres;
 
 /// \brief Handle polling the socket used to communicate with the PostgreSQL
 /// RDBMS.
 /// \ingroup ServerSockets
-class CommPSQLSocket {
+class CommPSQLSocket : private boost::noncopyable {
   protected:
 
     boost::asio::io_context& m_io_context;

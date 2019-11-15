@@ -398,7 +398,8 @@ enum VertexElementType
 
 OgreMeshDeserializer::OgreMeshDeserializer(std::ifstream& stream)
     : m_stream(stream),
-      m_flipEndian(false)
+      m_flipEndian(false),
+      mCurrentstreamLen(0)
 {
 
 }
@@ -467,7 +468,7 @@ void OgreMeshDeserializer::readGeometry()
                         char* vertexStart = vertexBuffer.data() + (i * vertexSize);
                         char* positionStart = vertexStart + element.offset;
                         if (element.vType == VertexElementType::VET_FLOAT3) {
-                            float* positions = reinterpret_cast<float*>(positionStart);
+                            auto* positions = reinterpret_cast<float*>(positionStart);
                             m_vertices.push_back(*positions);
                             positions++;
                             m_vertices.push_back(*positions);
