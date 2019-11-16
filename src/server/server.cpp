@@ -107,7 +107,7 @@ namespace {
 
         virtual Database& database() = 0;
 
-        virtual void shutdown() = 0;
+        virtual void stopVacuum() = 0;
     };
 
 #ifdef POSTGRES_FOUND
@@ -129,7 +129,7 @@ namespace {
             return *m_db;
         }
 
-        void shutdown() override
+        void stopVacuum() override
         {
             m_vacuumTask->cancel();
         }
@@ -158,7 +158,7 @@ namespace {
             return *m_db;
         }
 
-        void shutdown() override
+        void stopVacuum() override
         {
             m_vacuumTask->cancel();
         }
@@ -185,6 +185,155 @@ namespace {
         }
     }
 
+    std::unique_ptr<CommMetaClient> createMetaClient(io_context& io_context)
+    {
+        std::unique_ptr<CommMetaClient> cmc;
+        if (useMetaserver) {
+            cmc = std::make_unique<CommMetaClient>(io_context);
+            if (cmc->setup(mserver) != 0) {
+                log(ERROR, "Error creating metaserver comm channel.");
+                cmc.reset();
+            }
+        }
+        return cmc;
+    }
+
+    std::unique_ptr<CommMDNSPublisher> createMDNSClient(io_context& io_context, ServerRouting& serverRouting)
+    {
+        std::unique_ptr<CommMDNSPublisher> cmdns;
+#if defined(HAVE_AVAHI)
+        cmdns = std::make_unique<CommMDNSPublisher>(io_context, serverRouting);
+        if (cmdns->setup() != 0) {
+            log(ERROR, "Unable to register service with MDNS daemon.");
+            cmdns.reset();
+        }
+#endif // defined(HAVE_AVAHI)
+        return cmdns;
+    }
+
+    struct SocketListeners
+    {
+        std::list<CommAsioListener<ip::tcp, CommAsioClient<ip::tcp>>> tcp_atlas_clients;
+        std::unique_ptr<CommAsioListener<local::stream_protocol, CommPythonClient>> pythonListener;
+        std::unique_ptr<CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>> localListener;
+        std::unique_ptr<CommAsioListener<ip::tcp, CommHttpClient>> httpListener;
+    };
+
+    SocketListeners createListeners(io_context& io_context, ServerRouting& serverRouting, Atlas::Objects::Factories& atlasFactories)
+    {
+
+        SocketListeners socketListeners;
+
+        auto tcpAtlasCreator = [&]() -> std::shared_ptr<CommAsioClient<ip::tcp>> {
+            return std::make_shared<CommAsioClient<ip::tcp>>(serverRouting.getName(), io_context, atlasFactories);
+        };
+
+        std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
+            std::string connection_id;
+            long c_iid = newId(connection_id);
+            //Turn off Nagle's algorithm to increase responsiveness.
+            client.getSocket().set_option(ip::tcp::no_delay(true));
+            //Listen to both ipv4 and ipv6
+            //client.getSocket().set_option(boost::asio::ip::v6_only(false));
+            client.startAccept(std::make_unique<Connection>(client, serverRouting, "", connection_id, c_iid));
+        };
+
+
+        if (client_port_num < 0) {
+            client_port_num = dynamic_port_start;
+            for (; client_port_num <= dynamic_port_end; client_port_num++) {
+                try {
+                    socketListeners.tcp_atlas_clients.emplace_back(tcpAtlasCreator, tcpAtlasStarter, serverRouting.getName(), io_context,
+                                                                   ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
+                } catch (const std::exception& e) {
+                    break;
+                }
+            }
+            if (client_port_num < dynamic_port_end) {
+                auto errorMsg = String::compose("Could not find free client listen "
+                                                "socket in range %1-%2. Init failed.",
+                                                dynamic_port_start, dynamic_port_end);
+                log(ERROR, errorMsg);
+                log(INFO, String::compose("To allocate 8 more ports please run:"
+                                          "\n\n    cyconfig "
+                                          "--cyphesis:dynamic_port_end=%1\n\n",
+                                          dynamic_port_end + 8));
+                throw std::runtime_error(errorMsg);
+            }
+            log(INFO, String::compose("Auto configuring new instance \"%1\" "
+                                      "to use port %2.", instance, client_port_num));
+            global_conf->setItem(instance, "tcpport", client_port_num, varconf::USER);
+            global_conf->setItem(CYPHESIS, "dynamic_port_start", client_port_num + 1, varconf::USER);
+        } else {
+            try {
+                socketListeners.tcp_atlas_clients.emplace_back(tcpAtlasCreator,
+                                                               tcpAtlasStarter,
+                                                               serverRouting.getName(),
+                                                               io_context,
+                                                               ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
+            } catch (const std::exception& e) {
+                auto errorMsg = String::compose("Could not create client listen socket "
+                                                "on port %1. Init failed. The most common reason for this "
+                                                "is that you're already running an instance of Cyphesis."
+                                                "\nError: %2",
+                                                client_port_num, e.what());
+                log(ERROR, errorMsg);
+                throw std::runtime_error(errorMsg);
+            }
+        }
+
+        remove(python_socket_name.c_str());
+        auto pythonCreator = [&]() -> std::shared_ptr<CommPythonClient> {
+            return std::make_shared<CommPythonClient>(serverRouting.getName(), io_context);
+        };
+        std::function<void(CommPythonClient&)> pythonStarter =
+            [&](CommPythonClient& client) {
+                client.startAccept();
+            };
+        socketListeners.pythonListener = std::make_unique<CommAsioListener<local::stream_protocol, CommPythonClient>>(pythonCreator,
+                                                                                                                      pythonStarter,
+                                                                                                                      serverRouting.getName(),
+                                                                                                                      io_context,
+                                                                                                                      local::stream_protocol::endpoint(python_socket_name));
+
+        remove(client_socket_name.c_str());
+        auto localCreator = [&]() -> std::shared_ptr<CommAsioClient<local::stream_protocol>> {
+            return std::make_shared<CommAsioClient<local::stream_protocol>>(serverRouting.getName(), io_context, atlasFactories);
+        };
+        auto localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
+            std::string connection_id;
+            long c_iid = newId(connection_id);
+            client.startAccept(std::make_unique<TrustedConnection>(client, serverRouting, "", connection_id, c_iid));
+        };
+        socketListeners.localListener = std::make_unique<CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>>(localCreator,
+                                                                                                                                           localStarter,
+                                                                                                                                           serverRouting.getName(),
+                                                                                                                                           io_context,
+                                                                                                                                           local::stream_protocol::endpoint(client_socket_name));
+        log(INFO, String::compose("Listening to local named socket at %1", client_socket_name));
+
+
+        auto httpCreator = [&]() -> std::shared_ptr<CommHttpClient> {
+            return std::make_shared<CommHttpClient>(serverRouting.getName(), io_context);
+        };
+
+        auto httpStarter = [&](CommHttpClient& client) {
+            //Listen to both ipv4 and ipv6
+            //client.getSocket().set_option(boost::asio::ip::v6_only(false));
+            client.serveRequest();
+        };
+
+        socketListeners.httpListener = std::make_unique<CommAsioListener<ip::tcp, CommHttpClient> >(httpCreator, httpStarter, serverRouting.getName(), io_context,
+                                                                                                    ip::tcp::endpoint(ip::tcp::v6(), http_port_num));
+
+        log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));
+        log(INFO, " /config : shows server configuration");
+        log(INFO, " /monitors : various monitored values, suitable for time series systems");
+        log(INFO, " /monitors/numerics : only numerical values, suitable for time series system that only operates on numerical data");
+
+        return socketListeners;
+    }
+
 
     int run()
     {
@@ -201,7 +350,7 @@ namespace {
                           String::compose("--cyphesis:vardir=%1", var_directory).c_str(),
                           String::compose("--cyphesis:directory=%1", share_directory).c_str(),
                           nullptr);
-                    return EXIT_FORK_ERROR;
+                    return 0;
                 } else if (pid == -1) {
                     log(WARNING, "Could not spawn AI client process.");
                 }
@@ -296,6 +445,9 @@ namespace {
             ExternalMindsManager externalMindsManager;
             StorageManager store(world, serverDatabase->database(), entityBuilder);
 
+            //Instantiate at startup
+            HttpCache httpCache;
+
             // This ID is currently generated every time, but should perhaps be
             // persistent in future.
             std::string server_id, lobby_id;
@@ -307,140 +459,11 @@ namespace {
                 return EXIT_DATABASE_ERROR;
             }
 
-            // Create the core server object, which stores central data,
+            // Create the core serverRouting object, which stores central data,
             // and track objects
-            ServerRouting server(world, ruleset_name,
-                                 server_name, server_id, int_id, lobby_id, lobby_int_id);
+            ServerRouting serverRouting(world, ruleset_name,
+                                        server_name, server_id, int_id, lobby_id, lobby_int_id);
 
-            auto tcpAtlasCreator = [&]() -> std::shared_ptr<CommAsioClient<ip::tcp>> {
-                return std::make_shared<CommAsioClient<ip::tcp>>(server.getName(), *io_context, atlasFactories);
-            };
-
-            std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
-                std::string connection_id;
-                long c_iid = newId(connection_id);
-                //Turn off Nagle's algorithm to increase responsiveness.
-                client.getSocket().set_option(ip::tcp::no_delay(true));
-                //Listen to both ipv4 and ipv6
-                //client.getSocket().set_option(boost::asio::ip::v6_only(false));
-                client.startAccept(std::make_unique<Connection>(client, server, "", connection_id, c_iid));
-            };
-
-            std::list<CommAsioListener<ip::tcp, CommAsioClient<ip::tcp>>> tcp_atlas_clients;
-
-            if (client_port_num < 0) {
-                client_port_num = dynamic_port_start;
-                for (; client_port_num <= dynamic_port_end; client_port_num++) {
-                    try {
-                        tcp_atlas_clients.emplace_back(tcpAtlasCreator, tcpAtlasStarter, server.getName(), *io_context,
-                                                       ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
-                    } catch (const std::exception& e) {
-                        break;
-                    }
-                }
-                if (client_port_num < dynamic_port_end) {
-                    log(ERROR,
-                        String::compose("Could not find free client listen "
-                                        "socket in range %1-%2. Init failed.",
-                                        dynamic_port_start, dynamic_port_end));
-                    log(INFO,
-                        String::compose("To allocate 8 more ports please run:"
-                                        "\n\n    cyconfig "
-                                        "--cyphesis:dynamic_port_end=%1\n\n",
-                                        dynamic_port_end + 8));
-                    return EXIT_PORT_ERROR;
-                }
-                log(INFO, String::compose("Auto configuring new instance \"%1\" "
-                                          "to use port %2.", instance, client_port_num));
-                global_conf->setItem(instance, "tcpport", client_port_num,
-                                     varconf::USER);
-                global_conf->setItem(CYPHESIS, "dynamic_port_start",
-                                     client_port_num + 1, varconf::USER);
-            } else {
-                try {
-                    tcp_atlas_clients.emplace_back(tcpAtlasCreator, tcpAtlasStarter, server.getName(), *io_context, ip::tcp::endpoint(ip::tcp::v6(), client_port_num));
-                } catch (const std::exception& e) {
-                    log(ERROR, String::compose("Could not create client listen socket "
-                                               "on port %1. Init failed. The most common reason for this "
-                                               "is that you're already running an instance of Cyphesis."
-                                               "\nError: %2",
-                                               client_port_num, e.what()));
-                    return EXIT_SOCKET_ERROR;
-                }
-            }
-
-            remove(python_socket_name.c_str());
-            auto pythonCreator = [&]() -> std::shared_ptr<CommPythonClient> {
-                return std::make_shared<CommPythonClient>(server.getName(), *io_context);
-            };
-            std::function<void(CommPythonClient&)> pythonStarter =
-                [&](CommPythonClient& client) {
-                    client.startAccept();
-                };
-            CommAsioListener<local::stream_protocol, CommPythonClient> pythonListener(pythonCreator,
-                                                                                      pythonStarter,
-                                                                                      server.getName(),
-                                                                                      *io_context,
-                                                                                      local::stream_protocol::endpoint(python_socket_name));
-
-            remove(client_socket_name.c_str());
-            auto localCreator = [&]() -> std::shared_ptr<CommAsioClient<local::stream_protocol>> {
-                return std::make_shared<CommAsioClient<local::stream_protocol>>(server.getName(), *io_context, atlasFactories);
-            };
-            auto localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
-                std::string connection_id;
-                long c_iid = newId(connection_id);
-                client.startAccept(std::make_unique<TrustedConnection>(client, server, "", connection_id, c_iid));
-            };
-            CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>> localListener(localCreator,
-                                                                                                           localStarter,
-                                                                                                           server.getName(),
-                                                                                                           *io_context,
-                                                                                                           local::stream_protocol::endpoint(client_socket_name));
-            log(INFO, String::compose("Listening to local named socket at %1", client_socket_name));
-
-
-            //Instantiate at startup
-            HttpCache httpCache;
-            auto httpCreator = [&]() -> std::shared_ptr<CommHttpClient> {
-                return std::make_shared<CommHttpClient>(server.getName(), *io_context);
-            };
-
-            auto httpStarter = [&](CommHttpClient& client) {
-                //Listen to both ipv4 and ipv6
-                //client.getSocket().set_option(boost::asio::ip::v6_only(false));
-                client.serveRequest();
-            };
-
-            CommAsioListener<ip::tcp, CommHttpClient> httpListener(httpCreator, httpStarter, server.getName(), *io_context,
-                                                                   ip::tcp::endpoint(ip::tcp::v6(), http_port_num));
-
-            log(INFO, compose("Http service. The following endpoints are available over port %1.", http_port_num));
-            log(INFO, " /config : shows server configuration");
-            log(INFO, " /monitors : various monitored values, suitable for time series systems");
-            log(INFO, " /monitors/numerics : only numerical values, suitable for time series system that only operates on numerical data");
-
-            std::unique_ptr<CommMetaClient> cmc;
-            if (useMetaserver) {
-                cmc = std::make_unique<CommMetaClient>(*io_context);
-                if (cmc->setup(mserver) != 0) {
-                    log(ERROR, "Error creating metaserver comm channel.");
-                    cmc.reset();
-                }
-            }
-
-            std::unique_ptr<CommMDNSPublisher> cmdns;
-#if defined(HAVE_AVAHI)
-
-            cmdns = std::make_unique<CommMDNSPublisher>(*io_context, server);
-            if (cmdns->setup() != 0) {
-                log(ERROR, "Unable to register service with MDNS daemon.");
-                cmdns.reset();
-            }
-
-#endif // defined(HAVE_AVAHI)
-            // Configuration is now complete, and verified as somewhat sane, so
-            // we save the updated user config.
 
             run_user_scripts("cyphesis");
 
@@ -454,10 +477,8 @@ namespace {
 
             log(INFO, "Restored world.");
 
-            IdleConnector storage_idle(*io_context);
-            storage_idle.idling.connect(sigc::mem_fun(store, &StorageManager::tick));
-
-
+            // Configuration is now complete, and verified as somewhat sane, so
+            // we save the updated user config.
             updateUserConfiguration();
 
             log(INFO, "Running");
@@ -542,8 +563,24 @@ namespace {
             //Report to log when time diff between when an operation should have been handled and when it actually was
             world.getOperationsHandler().m_time_diff_report = 0.2f;
 
-            MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
+            //Inner loop, where listeners are active.
+            {
+                auto socketListeners = createListeners(*io_context, serverRouting, atlasFactories);
 
+                auto metaClient = createMetaClient(*io_context);
+                auto mdnsClient = createMDNSClient(*io_context, serverRouting);
+
+                IdleConnector storage_idle(*io_context);
+                storage_idle.idling.connect(sigc::mem_fun(store, &StorageManager::tick));
+
+                MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
+                if (metaClient) {
+                    metaClient->metaserverTerminate();
+                }
+                file_system_observer.stop();
+                //Cancel vacuum tasks, otherwise they might hold up the io_context.
+                serverDatabase->stopVacuum();
+            }
 
             //Actually, there's no way for the world to know that it's shutting down,
             //as the shutdown signal most probably comes from a sighandler. We need to
@@ -564,15 +601,14 @@ namespace {
             }
 
 
-            if (cmc) {
-                cmc->metaserverTerminate();
-            }
-
-            tcp_atlas_clients.clear();
+            serverRouting.disconnectAllConnections();
 
             //Clear out reference
             baseEntity.reset();
             world.shutdown();
+
+            //Run outstanding tasks from the shut down connections and listeners.
+            io_context->run();
 
         }
         //Run any outstanding tasks before shutting down service.

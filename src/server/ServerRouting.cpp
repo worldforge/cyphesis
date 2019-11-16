@@ -21,6 +21,7 @@
 #include "Account.h"
 #include "Lobby.h"
 #include "Persistence.h"
+#include "Connection.h"
 
 #include "rules/simulation/BaseWorld.h"
 #include "common/compose.hpp"
@@ -35,6 +36,7 @@
 #include <Atlas/Objects/RootEntity.h>
 
 #include <iostream>
+#include <utility>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -47,22 +49,25 @@ BOOL_OPTION(restricted_flag, false, CYPHESIS, "restricted",
 ///
 /// Requires a reference to the World management object, as well as the
 /// ruleset and server name. Implicitly creates the Lobby management object.
-ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
-                             const std::string & id, long intId,
-                             const std::string & lId, long lIntId) :
-        Router(id, intId),
-        m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld), m_lobby(*new Lobby(*this, lId, lIntId))
+ServerRouting::ServerRouting(BaseWorld& wrld,
+                             std::string ruleset,
+                             std::string name,
+                             const std::string& id, long intId,
+                             const std::string& lId, long lIntId) :
+    Router(id, intId),
+    m_svrRuleset(std::move(ruleset)),
+    m_svrName(std::move(name)),
+    m_lobby(new Lobby(*this, lId, lIntId)),
+    m_numClients(0),
+    m_world(wrld)
 {
     Monitors& monitors = Monitors::instance();
     monitors.insert("server", "cyphesis");
     monitors.watch("instance", new Variable<std::string>(::instance));
     monitors.watch("name", new Variable<std::string>(m_svrName));
     monitors.watch("ruleset", new Variable<std::string>(m_svrRuleset));
-    monitors.watch("version", new Variable<const char *>(consts::version));
-    monitors.watch("buildid", new Variable<const char *>(consts::buildId));
+    monitors.watch("version", new Variable<const char*>(consts::version));
+    monitors.watch("buildid", new Variable<const char*>(consts::buildId));
     monitors.watch("clients", new Variable<int>(m_numClients));
 
 }
@@ -70,31 +75,36 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
 /// Server destructor, implicitly destroys all OOG objects in the server.
 ServerRouting::~ServerRouting()
 {
-    for(auto entry : m_objects) {
-        delete entry.second;
-    }
-    delete &m_lobby;
+    disconnectAllConnections();
 }
 
+void ServerRouting::disconnectAllConnections()
+{
+    for (auto connection: m_connections) {
+        connection->disconnect();
+    }
+}
+
+
 /// Add an OOG object to the server.
-void ServerRouting::addObject(ConnectableRouter * obj)
+void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
 {
     assert(!obj->getId().empty());
     assert(integerId(obj->getId()) == obj->getIntId());
     assert(obj->getIntId() > 0);
-    m_objects[obj->getIntId()] = obj;
+    m_objects[obj->getIntId()] = std::move(obj);
 }
 
 /// Add an Account object to the server.
-void ServerRouting::addAccount(Account * a)
+void ServerRouting::addAccount(std::unique_ptr<Account> a)
 {
-    m_accounts[a->username()] = a;
-    addObject(a);
+    m_accounts[a->username()] = a.get();
     a->store();
+    addObject(std::move(a));
 }
 
 /// Remove an OOG object from the server.
-void ServerRouting::delObject(ConnectableRouter * obj)
+void ServerRouting::delObject(ConnectableRouter* obj)
 {
     m_objects.erase(obj->getIntId());
 }
@@ -103,13 +113,13 @@ void ServerRouting::delObject(ConnectableRouter * obj)
 ///
 /// @return a pointer to the object with the given id, or
 /// zero if no object with this id is present.
-ConnectableRouter * ServerRouting::getObject(const std::string & id) const
+ConnectableRouter* ServerRouting::getObject(const std::string& id) const
 {
     auto I = m_objects.find(integerId(id));
     if (I == m_objects.end()) {
         return nullptr;
     } else {
-        return I->second;
+        return I->second.get();
     }
 }
 
@@ -119,9 +129,9 @@ ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 /// username, or zero if the Account is not present. Does
 /// not check any external authentication sources, or the
 /// database.
-Account * ServerRouting::getAccountByName(const std::string & username)
+Account* ServerRouting::getAccountByName(const std::string& username)
 {
-    Account * account = nullptr;
+    Account* account = nullptr;
     auto I = m_accounts.find(username);
     if (I != m_accounts.end()) {
         account = I->second;
@@ -129,15 +139,15 @@ Account * ServerRouting::getAccountByName(const std::string & username)
         account = Persistence::instance().getAccount(username);
         if (account != nullptr) {
             Persistence::instance().registerCharacters(*account,
-                                               m_world.getEntities());
+                                                       m_world.getEntities());
             m_accounts[username] = account;
-            addObject(account);
+            addObject(std::unique_ptr<Account>(account));
         }
     }
     return account;
 }
 
-void ServerRouting::addToMessage(MapType & omap) const
+void ServerRouting::addToMessage(MapType& omap) const
 {
     omap["objtype"] = "obj";
     omap["server"] = "cyphesis";
@@ -151,13 +161,13 @@ void ServerRouting::addToMessage(MapType & omap) const
     if (restricted_flag) {
         omap["restricted"] = "true";
     }
-    omap["entities"] = (long)m_world.getEntities().size();
+    omap["entities"] = (long) m_world.getEntities().size();
     omap["assets"] = Atlas::Message::ListType{"file://" + assets_directory};
 
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
-void ServerRouting::addToEntity(const RootEntity & ent) const
+void ServerRouting::addToEntity(const RootEntity& ent) const
 {
     ent->setObjtype("obj");
     ent->setAttr("server", "cyphesis");
@@ -171,17 +181,17 @@ void ServerRouting::addToEntity(const RootEntity & ent) const
     if (restricted_flag) {
         ent->setAttr("restricted", "true");
     }
-    ent->setAttr("entities", (long)m_world.getEntities().size());
+    ent->setAttr("entities", (long) m_world.getEntities().size());
 
     ent->setAttr("assets", Atlas::Message::ListType{"file://" + assets_directory});
 
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
-void ServerRouting::externalOperation(const Operation & op, Link &)
+void ServerRouting::externalOperation(const Operation& op, Link&)
 {
 }
 
-void ServerRouting::operation(const Operation &, OpVector &)
+void ServerRouting::operation(const Operation&, OpVector&)
 {
 }

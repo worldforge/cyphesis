@@ -29,6 +29,8 @@
 
 #include <memory>
 #include "common/io_context.h"
+#include <set>
+#include <boost/asio/steady_timer.hpp>
 
 class EntityBuilder;
 
@@ -75,6 +77,8 @@ class Ruleset : public Singleton<Ruleset>
         std::set<boost::filesystem::path> m_changedRules;
 
         boost::asio::io_context& m_io_context;
+
+        std::set<boost::asio::steady_timer*> m_reloadTimers;
 
         void installItem(const std::string& class_name,
                          const Atlas::Objects::Root& class_desc,

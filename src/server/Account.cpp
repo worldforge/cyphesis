@@ -67,14 +67,14 @@ static const bool debug_flag = false;
 /// @param passwd Password for this account
 /// @param id String identifier for this account
 /// @param intId Integer identifier for this account
-Account::Account(Connection * conn,
+Account::Account(Connection* conn,
                  std::string uname,
                  std::string passwd,
-                 const std::string & id,
+                 const std::string& id,
                  long intId) :
-         ConnectableRouter(id, intId),
-         m_connection(conn),
-         m_username(std::move(uname)), m_password(std::move(passwd))
+    ConnectableRouter(id, intId),
+    m_connection(conn),
+    m_username(std::move(uname)), m_password(std::move(passwd))
 {
 }
 
@@ -100,7 +100,8 @@ void Account::characterDestroyed(long id)
     }
 }
 
-void Account::setConnection(Connection* connection) {
+void Account::setConnection(Connection* connection)
+{
     if (!connection) {
         for (auto& entry : m_minds) {
             if (m_connection) {
@@ -130,7 +131,8 @@ Connection* Account::getConnection() const
     return m_connection;
 }
 
-ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const {
+ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const
+{
     std::string strId;
 
     auto id = newId(strId);
@@ -204,8 +206,8 @@ void Account::addCharacter(const Ref<LocatedEntity>& chr)
 ///
 /// @param typestr The type name of the Character to be created
 /// @param ent Atlas description of the Character to be created
-Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
-                                         const Root & arg, OpVector& res)
+Ref<LocatedEntity> Account::addNewCharacter(const RootEntity& ent,
+                                            const Root& arg, OpVector& res)
 {
     if (m_connection == nullptr) {
         return nullptr;
@@ -248,10 +250,10 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity & ent,
     return chr;
 }
 
-Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity & ent,
-                                                const Root & arg)
+Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity& ent,
+                                                  const Root& arg)
 {
-    BaseWorld & world = m_connection->m_server.m_world;
+    BaseWorld& world = m_connection->m_server.m_world;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
         return world.spawnNewEntity(spawn.String(), arg->getParent(), ent);
@@ -262,11 +264,11 @@ Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity & ent,
 }
 
 
-void Account::LogoutOperation(const Operation & op, OpVector & res)
+void Account::LogoutOperation(const Operation& op, OpVector& res)
 {
     if (m_connection == nullptr) {
         error(op, String::compose("Account::LogoutOperation on account %1 (%2) that doesn't seem to "
-                   "be connected.", getId(), m_username), res, getId());
+                                  "be connected.", getId(), m_username), res, getId());
         return;
     }
 
@@ -314,7 +316,7 @@ void Account::LogoutOperation(const Operation & op, OpVector & res)
     }
 }
 
-const char * Account::getType() const
+const char* Account::getType() const
 {
     return "account";
 }
@@ -332,7 +334,7 @@ bool Account::isPersisted() const
 }
 
 
-void Account::addToMessage(MapType & omap) const
+void Account::addToMessage(MapType& omap) const
 {
     omap["username"] = m_username;
     omap["name"] = m_username;
@@ -341,16 +343,14 @@ void Account::addToMessage(MapType & omap) const
     }
     omap["parent"] = getType();
     if (m_connection != nullptr) {
-        BaseWorld & world = m_connection->m_server.m_world;
+        BaseWorld& world = m_connection->m_server.m_world;
         ListType spawn_list;
         if (world.getSpawnList(spawn_list) == 0) {
             //We should only send those spawn areas which allows for characters to be created.
             for (auto I = spawn_list.begin(); I != spawn_list.end();) {
-                if((*I).isMap() && (*I).asMap().count("character_types") == 0) {
+                if ((*I).isMap() && (*I).asMap().count("character_types") == 0) {
                     I = spawn_list.erase(I);
-                }
-                else
-                {
+                } else {
                     ++I;
                 }
             }
@@ -370,7 +370,7 @@ void Account::addToMessage(MapType & omap) const
     omap["id"] = getId();
 }
 
-void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+void Account::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
 {
     ent->setAttr("username", m_username);
     ent->setName(m_username);
@@ -379,16 +379,14 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     }
     ent->setParent(getType());
     if (m_connection) {
-        BaseWorld & world = m_connection->m_server.m_world;
+        BaseWorld& world = m_connection->m_server.m_world;
         ListType spawn_list;
         if (world.getSpawnList(spawn_list) == 0) {
             //We should only send those spawn areas which allows for characters to be created.
             for (auto I = spawn_list.begin(); I != spawn_list.end();) {
-                if((*I).isMap() && (*I).asMap().count("character_types") == 0) {
+                if ((*I).isMap() && (*I).asMap().count("character_types") == 0) {
                     I = spawn_list.erase(I);
-                }
-                else
-                {
+                } else {
                     ++I;
                 }
             }
@@ -408,7 +406,7 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
     ent->setId(getId());
 }
 
-void Account::externalOperation(const Operation & op, Link & link)
+void Account::externalOperation(const Operation& op, Link& link)
 {
     //External operations must come from a connection.
     assert(m_connection != nullptr);
@@ -417,7 +415,7 @@ void Account::externalOperation(const Operation & op, Link & link)
     processExternalOperation(op, res);
 
     if (!res.empty()) {
-        for(auto& replyOp : res) {
+        for (auto& replyOp : res) {
             if (!op->isDefaultSerialno()) {
                 // Should we respect existing refnos?
                 if (replyOp->isDefaultRefno()) {
@@ -430,7 +428,8 @@ void Account::externalOperation(const Operation & op, Link & link)
     }
 }
 
-void Account::processExternalOperation(const Operation & op, OpVector& res) {
+void Account::processExternalOperation(const Operation& op, OpVector& res)
+{
     auto op_no = op->getClassNo();
     switch (op_no) {
         case Atlas::Objects::Operation::CREATE_NO:
@@ -467,16 +466,16 @@ void Account::processExternalOperation(const Operation & op, OpVector& res) {
 }
 
 
-void Account::operation(const Operation & op, OpVector & res)
+void Account::operation(const Operation& op, OpVector& res)
 {
     if (m_connection) {
         m_connection->send(op);
     }
 }
 
-void Account::CreateOperation(const Operation & op, OpVector & res)
+void Account::CreateOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         return;
     }
@@ -490,9 +489,9 @@ void Account::CreateOperation(const Operation & op, OpVector & res)
     createObject(arg, op, res);
 }
 
-void Account::createObject(const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
+void Account::createObject(const Root& arg,
+                           const Operation& op,
+                           OpVector& res)
 {
     if (characterError(op, arg, res) != 0) {
         return;
@@ -538,16 +537,16 @@ void Account::createObject(const Root & arg,
 //    res.push_back(sight);
 }
 
-void Account::SetOperation(const Operation & op, OpVector & res)
+void Account::SetOperation(const Operation& op, OpVector& res)
 {
     debug_print("Account::Operation(set)")
     //Nothing to set on account.
 
 }
 
-void Account::ImaginaryOperation(const Operation & op, OpVector & res)
+void Account::ImaginaryOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         return;
     }
@@ -572,13 +571,13 @@ void Account::ImaginaryOperation(const Operation & op, OpVector & res)
         s->setTo(op->getTo());
     }
     if (m_connection != nullptr) {
-        m_connection->m_server.m_lobby.operation(s, res);
+        m_connection->m_server.getLobby().operation(s, res);
     }
 }
 
-void Account::TalkOperation(const Operation & op, OpVector & res)
+void Account::TalkOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         error(op, "Talk has no args", res, getId());
         return;
@@ -605,11 +604,11 @@ void Account::TalkOperation(const Operation & op, OpVector & res)
         s->setTo(op->getTo());
     }
     if (m_connection != nullptr) {
-        m_connection->m_server.m_lobby.operation(s, res);
+        m_connection->m_server.getLobby().operation(s, res);
     }
 }
 
-void Account::PossessOperation(const Operation &op, OpVector &res)
+void Account::PossessOperation(const Operation& op, OpVector& res)
 {
     if (!m_connection) {
         return;
@@ -626,7 +625,7 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
         error(op, "No target for look", res, getId());
         return;
     }
-    const std::string & to = arg->getId();
+    const std::string& to = arg->getId();
 
     long intId = integerId(to);
 
@@ -636,7 +635,7 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
     // successful, add the character to this account.
     Element key;
     if (arg->copyAttr("possess_key", key) == 0 && key.isString()) {
-        const std::string & key_str = key.String();
+        const std::string& key_str = key.String();
         auto character = PossessionAuthenticator::instance().authenticatePossession(to, key_str);
         // FIXME Not finding the character should be fatal
         // FIXME TA needs to generate clientError ops for the client
@@ -667,27 +666,27 @@ void Account::PossessOperation(const Operation &op, OpVector &res)
 }
 
 
-void Account::LookOperation(const Operation & op, OpVector & res)
+void Account::LookOperation(const Operation& op, OpVector& res)
 {
     if (m_connection == nullptr) {
         return;
     }
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         Sight s;
         s->setTo(getId());
         Anonymous sight_arg;
-        m_connection->m_server.m_lobby.addToEntity(sight_arg);
+        m_connection->m_server.getLobby().addToEntity(sight_arg);
         s->setArgs1(sight_arg);
         res.push_back(s);
         return;
     }
-    const Root & arg = args.front();
+    const Root& arg = args.front();
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "No target for look", res, getId());
         return;
     }
-    const std::string & to = arg->getId();
+    const std::string& to = arg->getId();
 
     long intId = integerId(to);
 
@@ -701,7 +700,7 @@ void Account::LookOperation(const Operation & op, OpVector & res)
         res.push_back(s);
         return;
     }
-    auto& accounts = m_connection->m_server.m_lobby.getAccounts();
+    auto& accounts = m_connection->m_server.getLobby().getAccounts();
     auto K = accounts.find(to);
     if (K != accounts.end()) {
         Sight s;
@@ -715,11 +714,11 @@ void Account::LookOperation(const Operation & op, OpVector & res)
     error(op, String::compose("Unknown look target '%1'.", to), res, getId());
 }
 
-void Account::GetOperation(const Operation & op, OpVector & res)
+void Account::GetOperation(const Operation& op, OpVector& res)
 {
 }
 
-void Account::OtherOperation(const Operation & op, OpVector & res)
+void Account::OtherOperation(const Operation& op, OpVector& res)
 {
     std::string parent = op->getParent().empty() ? "-" : op->getParent();
     error(op, String::compose("Unknown operation %1 in Account %2 (%3)", parent, getId(), m_username), res);

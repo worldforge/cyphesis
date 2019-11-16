@@ -59,6 +59,8 @@ class FileSystemObserver
          */
         void remove_directory(const boost::filesystem::path& dirname);
 
+        void stop();
+
     private:
         std::unique_ptr<boost::asio::dir_monitor> mDirectoryMonitor;
 

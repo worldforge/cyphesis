@@ -235,7 +235,7 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         auto K = worldDict.find(intId);
 
         if (J != OOGDict.end()) {
-            Router * obj = J->second;
+            auto& obj = J->second;
             Anonymous info_arg;
             obj->addToEntity(info_arg);
             info->setArgs1(info_arg);
@@ -365,7 +365,7 @@ void Admin::createObject(const Root & arg,
         auto j = new Juncture(m_connection, junc_id, junc_iid);
 
         m_connection->addConnectableRouter(j);
-        m_connection->m_server.addObject(j);
+        m_connection->m_server.addObject(std::unique_ptr<Juncture>(j));
 
         Anonymous info_arg;
         j->addToEntity(info_arg);

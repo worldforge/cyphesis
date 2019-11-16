@@ -23,13 +23,17 @@
 #include "common/Router.h"
 #include "common/Shaker.h"
 #include "ConnectableRouter.h"
+#include <memory>
+#include <set>
 
 class Account;
+
 class BaseWorld;
+
 class Lobby;
 
-typedef std::map<long, ConnectableRouter *> ConnectableRouterMap;
-typedef std::map<std::string, Account *> AccountDict;
+typedef std::map<long, std::unique_ptr<ConnectableRouter>> ConnectableRouterMap;
+typedef std::map<std::string, Account*> AccountDict;
 
 extern bool restricted_flag;
 
@@ -37,74 +41,112 @@ extern bool restricted_flag;
 ///
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
-class ServerRouting : public Router, public Singleton<ServerRouting> {
-  protected:
-    /// A shaker to generate a salt.
-    Shaker m_shaker;
-  private:
-    /// A mapping of ID to object of all the OOG objects in the server.
-    ConnectableRouterMap m_objects;
-    /// A mapping of ID to object of all the accounts in the server.
-    AccountDict m_accounts;
-    /// The text name of the ruleset this server is running.
-    const std::string m_svrRuleset;
-    /// The name of this server.
-    const std::string m_svrName;
-    /// The number of clients currently connected.
-    int m_numClients;
-  public:
-    /// A reference to the World management object.
-    BaseWorld & m_world;
-    /// A reference to the Lobby management object.
-    Lobby & m_lobby;
+class ServerRouting : public Router, public Singleton<ServerRouting>
+{
+    protected:
+        /// A shaker to generate a salt.
+        Shaker m_shaker;
+    private:
+        /// A mapping of ID to object of all the OOG objects in the server.
+        /// These are all owned by this instance.
+        ConnectableRouterMap m_objects;
+        /// A mapping of ID to object of all the accounts in the server.
+        /// All of the accounts are aliases for ConnectableRouter base instances that exists in m_objects.
+        AccountDict m_accounts;
+        /// The text name of the ruleset this server is running.
+        const std::string m_svrRuleset;
+        /// The name of this server.
+        const std::string m_svrName;
+        /// The Lobby management object.
+        std::unique_ptr<Lobby> m_lobby;
+        /// The number of clients currently connected.
+        int m_numClients;
+        //All client connections in the system. These aren't owned by this instance.
+        std::set<Connection*> m_connections;
+    public:
+        /// A reference to the World management object.
+        BaseWorld& m_world;
 
-    ServerRouting(BaseWorld & wrld,
-                  const std::string & ruleset,
-                  const std::string & name,
-                  const std::string & id, long intId,
-                  const std::string & lId, long lIntId);
-    ~ServerRouting() override;
+        ServerRouting(BaseWorld& wrld,
+                      std::string ruleset,
+                      std::string name,
+                      const std::string& id, long intId,
+                      const std::string& lId, long lIntId);
 
-    /// Increment the number of clients connected to this server.
-    void incClients() { ++m_numClients; }
-    /// Decrement the number of clients connected to this server.
-    void decClients() { --m_numClients; }
+        ~ServerRouting() override;
 
-    /// Accessor for the number of clients connected to this server.
-    int getClients() { return m_numClients; }
+        void disconnectAllConnections();
 
-    /// Accessor for world manager object.
-    BaseWorld & getWorld() { return m_world; }
-    
-    /// Accesor for Shaker object.
-    Shaker & getShaker() { return m_shaker; }
-    
-    /// Accessor for OOG objects map.
-    const ConnectableRouterMap & getObjects() const {
-        return m_objects;
-    }
+        void registerConnection(Connection* connection)
+        {
+            m_connections.insert(connection);
+            m_numClients++;
+        }
 
-    const AccountDict& getAccounts() const {
-        return m_accounts;
-    }
+        void deregisterConnection(Connection* connection)
+        {
+            m_connections.erase(connection);
+            m_numClients--;
+        }
 
-    /// Accessor for server ruleset.
-    const std::string & getRuleset() const { return m_svrRuleset; }
+        /// Accessor for the number of clients connected to this server.
+        size_t getClients()
+        { return m_connections.size(); }
 
-    /// Accessor for server name.
-    const std::string & getName() const { return m_svrName; }
+        Lobby& getLobby()
+        {
+            return *m_lobby;
+        }
 
-    void addObject(ConnectableRouter * obj);
-    void addAccount(Account * a);
-    void delObject(ConnectableRouter * obj);
-    ConnectableRouter * getObject(const std::string & id) const;
-    Account * getAccountByName(const std::string & username);
+        const Lobby& getLobby() const
+        {
+            return *m_lobby;
+        }
 
-    void addToMessage(Atlas::Message::MapType &) const override;
-    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
+        /// Accessor for world manager object.
+        BaseWorld& getWorld()
+        { return m_world; }
 
-    void externalOperation(const Operation & op, Link &) override;
-    void operation(const Operation &, OpVector &) override;
+        /// Accesor for Shaker object.
+        Shaker& getShaker()
+        { return m_shaker; }
+
+        /// Accessor for OOG objects map.
+        const ConnectableRouterMap& getObjects() const
+        {
+            return m_objects;
+        }
+
+        const AccountDict& getAccounts() const
+        {
+            return m_accounts;
+        }
+
+        /// Accessor for server ruleset.
+        const std::string& getRuleset() const
+        { return m_svrRuleset; }
+
+        /// Accessor for server name.
+        const std::string& getName() const
+        { return m_svrName; }
+
+        void addObject(std::unique_ptr<ConnectableRouter> obj);
+
+        void addAccount(std::unique_ptr<Account> a);
+
+        void delObject(ConnectableRouter* obj);
+
+        ConnectableRouter* getObject(const std::string& id) const;
+
+        Account* getAccountByName(const std::string& username);
+
+        void addToMessage(Atlas::Message::MapType&) const override;
+
+        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
+
+        void externalOperation(const Operation& op, Link&) override;
+
+        void operation(const Operation&, OpVector&) override;
 };
 
 #endif // SERVER_SERVER_ROUTING_H

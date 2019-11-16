@@ -59,14 +59,15 @@ Connection::Connection(CommSocket & socket,
                        const std::string & id, long iid) :
             Link(socket, id, iid), m_server(svr)
 {
-    m_server.incClients();
+    m_server.registerConnection(this);
     logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr));
 }
 
 Connection::~Connection()
 {
     debug_print("destroy called")
-    
+    m_server.deregisterConnection(this);
+
     logEvent(DISCONNECT, String::compose("%1 - - Disconnect", getId()));
 
     //It's important that we disconnect ourselves as a possession router before we disconnect our objects,
@@ -80,8 +81,6 @@ Connection::~Connection()
     for (auto& entry : routers) {
         disconnectObject(entry.second, "Disconnect");
     }
-
-    m_server.decClients();
 }
 
 Account * Connection::newAccount(const std::string & type,
@@ -115,8 +114,8 @@ Account * Connection::addNewAccount(const std::string & type,
     }
     addConnectableRouter(account);
     assert(account->getConnection() == this);
-    m_server.addAccount(account);
-    m_server.m_lobby.addAccount(account);
+    m_server.addAccount(std::unique_ptr<Account>(account));
+    m_server.getLobby().addAccount(account);
     return account;
 }
 
@@ -127,7 +126,7 @@ Account * Connection::addNewAccount(const std::string & type,
 void Connection::disconnectObject(ConnectableRouter* router,
                                   const std::string & event)
 {
-    m_server.m_lobby.removeAccount(router);
+    m_server.getLobby().removeAccount(router);
     router->setConnection(nullptr);
     m_connectableRouters.erase(router->getIntId());
     removeObject(router->getIntId());
@@ -289,7 +288,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
     }
     // Connect everything up
     addConnectableRouter(account);
-    m_server.m_lobby.addAccount(account);
+    m_server.getLobby().addAccount(account);
     // Let the client know they have logged in
     Info info;
     Anonymous info_arg;

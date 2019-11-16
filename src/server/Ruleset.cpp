@@ -69,7 +69,12 @@ Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context) :
 {
 }
 
-Ruleset::~Ruleset() = default;
+Ruleset::~Ruleset()
+{
+    for (auto& timer :m_reloadTimers) {
+        timer->cancel();
+    }
+}
 
 int Ruleset::installRuleInner(const std::string& class_name,
                               const Root& class_desc,
@@ -299,10 +304,12 @@ void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
             m_changedRules.insert(path);
 
             auto timer = std::make_shared<boost::asio::steady_timer>(m_io_context);
+            m_reloadTimers.insert(timer.get());
             timer->expires_from_now(std::chrono::milliseconds(20));
             timer->async_wait([&, timer](const boost::system::error_code& ec) {
                 if (!ec) {
                     processChangedRules();
+                    m_reloadTimers.erase(timer.get());
                 }
             });
 

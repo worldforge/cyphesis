@@ -29,7 +29,7 @@ class Account;
 class CommSocket;
 class LocatedEntity;
 class ServerRouting;
-class ConnectableRouter;
+struct ConnectableRouter;
 
 typedef std::map<long, Router *> RouterMap;
 

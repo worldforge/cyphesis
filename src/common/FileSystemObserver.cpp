@@ -41,6 +41,11 @@ FileSystemObserver::~FileSystemObserver()
     assert(mCallBacks.empty());
 }
 
+void FileSystemObserver::stop()
+{
+    mDirectoryMonitor.reset();
+}
+
 
 void FileSystemObserver::observe()
 {
@@ -71,8 +76,8 @@ void FileSystemObserver::add_directory(const boost::filesystem::path& dirname, s
 
 void FileSystemObserver::remove_directory(const boost::filesystem::path& dirname)
 {
+    mCallBacks.erase(dirname);
     if (mDirectoryMonitor) {
-        mCallBacks.erase(dirname);
         try {
             mDirectoryMonitor->remove_directory(dirname.string());
         } catch (...) {
