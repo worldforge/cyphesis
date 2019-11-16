@@ -70,9 +70,9 @@ void CommPeer::connect(const boost::asio::ip::tcp::endpoint& endpoint)
                           });
 }
 
-void CommPeer::setup(Link* connection)
+void CommPeer::setup(std::unique_ptr<Link> connection)
 {
-    startConnect(connection);
+    startConnect(std::move(connection));
 
     m_start_auth = boost::posix_time::microsec_clock::local_time();
     m_auth_timer.expires_from_now(boost::posix_time::seconds(1));
@@ -97,7 +97,7 @@ void CommPeer::checkAuth()
             return;
         }
     } else {
-        Peer* peer = dynamic_cast<Peer*>(m_link);
+        Peer* peer = dynamic_cast<Peer*>(m_link.get());
         if (peer == nullptr) {
             log(WARNING, "Casting CommPeer connection to Peer failed");
             return;

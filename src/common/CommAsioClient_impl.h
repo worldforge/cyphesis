@@ -70,7 +70,6 @@ CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::~CommAsioClient()
 {
-    delete m_link;
     delete m_negotiate;
     delete m_encoder;
     delete m_codec;
@@ -225,23 +224,23 @@ void CommAsioClient<ProtocolT>::negotiate_write()
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::startAccept(Link* connection)
+void CommAsioClient<ProtocolT>::startAccept(std::unique_ptr<Link> connection)
 {
     // Create the server side negotiator
     m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mInStream, mOutStream);
 
-    m_link = connection;
+    m_link = std::move(connection);
 
     startNegotiation();
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::startConnect(Link* connection)
+void CommAsioClient<ProtocolT>::startConnect(std::unique_ptr<Link> connection)
 {
     // Create the client side negotiator
     m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mInStream, mOutStream);
 
-    m_link = connection;
+    m_link = std::move(connection);
 
     startNegotiation();
 }

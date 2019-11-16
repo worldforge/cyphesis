@@ -31,6 +31,11 @@ RepeatedTask::RepeatedTask(boost::asio::io_context& io_context, boost::posix_tim
     });
 }
 
+void RepeatedTask::cancel()
+{
+    mTimer.cancel();
+}
+
 void RepeatedTask::executeTask()
 {
     mFunction();

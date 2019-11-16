@@ -22,45 +22,52 @@
 #include "RuleHandler.h"
 
 class EntityBuilder;
+
 class EntityKit;
+
 class ArchetypeFactory;
 
 /// \brief Handle processing and updating of archtype rules.
 ///
 /// An archetype is a rule which will create and populate a new entity of a
 /// certain type
-class ArchetypeRuleHandler : public RuleHandler {
-  protected:
-    EntityBuilder * const m_builder;
+class ArchetypeRuleHandler : public RuleHandler
+{
+    protected:
+        EntityBuilder& m_builder;
 
-    int populateArchetypeFactory(const std::string & class_name,
-                              ArchetypeFactory * factory,
-                              const Atlas::Message::MapType & class_desc,
-                              std::string & dependent,
-                              std::string & reason);
+        int populateArchetypeFactory(const std::string& class_name,
+                                     ArchetypeFactory* factory,
+                                     const Atlas::Message::MapType& class_desc,
+                                     std::string& dependent,
+                                     std::string& reason);
 
-    int installArchetypeClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root & class_desc,
-                           std::string & dependent,
-                           std::string & reason);
+        int installArchetypeClass(const std::string& class_name,
+                                  const std::string& parent,
+                                  const Atlas::Objects::Root& class_desc,
+                                  std::string& dependent,
+                                  std::string& reason);
 
-    int modifyArchetypeClass(const std::string & class_name,
-                             const Atlas::Objects::Root & class_desc,
-                             std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
-  public:
-    explicit ArchetypeRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
+        int modifyArchetypeClass(const std::string& class_name,
+                                 const Atlas::Objects::Root& class_desc,
+                                 std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
-    int check(const Atlas::Objects::Root & desc) override;
-    int install(const std::string &,
-                        const std::string &,
-                        const Atlas::Objects::Root & desc,
-                        std::string &,
-                        std::string &,
-                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
-    int update(const std::string &,
-                        const Atlas::Objects::Root & desc,
-                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+    public:
+        explicit ArchetypeRuleHandler(EntityBuilder& eb) : m_builder(eb)
+        {}
+
+        int check(const Atlas::Objects::Root& desc) override;
+
+        int install(const std::string&,
+                    const std::string&,
+                    const Atlas::Objects::Root& desc,
+                    std::string&,
+                    std::string&,
+                    std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+
+        int update(const std::string&,
+                   const Atlas::Objects::Root& desc,
+                   std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 };
 
 #endif // SERVER_ARCHETYPE_RULE_HANDLER_H

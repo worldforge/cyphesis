@@ -234,7 +234,7 @@ void observe_python_directories(boost::asio::io_context& io_context, AssetsManag
 {
 
     for (auto& directory : python_directories) {
-        AssetsManager::instance().observeDirectory(directory, [=, &io_context](const boost::filesystem::path& path) {
+        assetsManager.observeDirectory(directory, [=, &io_context](const boost::filesystem::path& path) {
             //Trim the ".py" extension
             if (boost::ends_with(path.string(), ".py")) {
                 auto relative = path.string().substr(directory.length() + 1);

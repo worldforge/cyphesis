@@ -158,7 +158,7 @@ int EntityBuilder::installFactory(const std::string& class_name, const Root& cla
     return 0;
 }
 
-EntityKit* EntityBuilder::getClassFactory(const std::string& class_name)
+EntityKit* EntityBuilder::getClassFactory(const std::string& class_name) const
 {
     FactoryDict::const_iterator I = m_entityFactories.find(class_name);
     if (I == m_entityFactories.end()) {

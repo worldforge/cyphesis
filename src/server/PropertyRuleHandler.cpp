@@ -35,7 +35,7 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
+int PropertyRuleHandler::check(const Atlas::Objects::Root& desc)
 {
     assert(!desc->getParent().empty());
     if (desc->getObjtype() != "type") {
@@ -44,11 +44,11 @@ int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
     return 0;
 }
 
-int PropertyRuleHandler::install(const std::string & name,
-                                 const std::string & parent,
-                                 const Atlas::Objects::Root & desc,
-                                 std::string & dependent,
-                                 std::string & reason,
+int PropertyRuleHandler::install(const std::string& name,
+                                 const std::string& parent,
+                                 const Atlas::Objects::Root& desc,
+                                 std::string& dependent,
+                                 std::string& reason,
                                  std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(desc->getObjtype() == "type");
@@ -57,21 +57,21 @@ int PropertyRuleHandler::install(const std::string & name,
         log(ERROR, compose("Property rule \"%1\" already exists.", name));
         return -1;
     }
-    PropertyKit * parent_factory = pm.getPropertyFactory(parent);
+    PropertyKit* parent_factory = pm.getPropertyFactory(parent);
     if (parent_factory == nullptr) {
         dependent = parent;
         reason = compose("Property rule \"%1\" has parent \"%2\" which does "
                          "not exist.", name, parent);
         return 1;
     }
-    auto * factory = parent_factory->duplicateFactory();
+    auto* factory = parent_factory->duplicateFactory();
     assert(factory != nullptr);
     pm.installFactory(name, desc, std::unique_ptr<PropertyKit>(factory));
     return 0;
 }
 
-int PropertyRuleHandler::update(const std::string & name,
-                                const Atlas::Objects::Root & desc,
+int PropertyRuleHandler::update(const std::string& name,
+                                const Atlas::Objects::Root& desc,
                                 std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     // There is not anything to be modified yet.

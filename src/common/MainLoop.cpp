@@ -81,7 +81,7 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
     boost::asio::signal_set signalSet(io_context);
     //If we're not running as a daemon we should use the interactive signal handler.
     if (!daemon) {
-        signalSet.add(SIGINT);
+        //signalSet.add(SIGINT);
         signalSet.add(SIGTERM);
         signalSet.add(SIGHUP);
         signalSet.add(SIGQUIT);
@@ -171,6 +171,7 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
     log(NOTICE, "Performing clean shutdown...");
 
 
+    signalSet.cancel();
     signalSet.clear();
 
 

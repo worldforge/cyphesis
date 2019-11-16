@@ -26,7 +26,6 @@ class EntityBuilder;
 /// \brief Handle processing and updating of task ruless
 class OpRuleHandler : public RuleHandler {
   protected:
-    EntityBuilder * const m_builder;
 
     int installOpDefinition(const std::string & class_name,
                             const std::string & parent,
@@ -38,7 +37,6 @@ class OpRuleHandler : public RuleHandler {
                            const Atlas::Objects::Root & class_desc);
 
   public:
-    explicit OpRuleHandler(EntityBuilder * eb) : m_builder(eb) { }
 
     int check(const Atlas::Objects::Root & desc) override;
 

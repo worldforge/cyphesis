@@ -25,54 +25,59 @@
 #include <functional>
 
 class EntityBuilder;
+
 class EntityKit;
+
 class EntityFactoryBase;
 
 /// \brief Handle processing and updating of entity type rules
-class EntityRuleHandler : public RuleHandler {
-  protected:
-    EntityBuilder * const m_builder;
+class EntityRuleHandler : public RuleHandler
+{
+    protected:
+        EntityBuilder& m_builder;
 
-    int populateEntityFactory(const std::string & class_name,
-                              EntityFactoryBase * factory,
-                              const Atlas::Message::MapType & class_desc,
-                              std::string & dependent,
-                              std::string & reason);
+        int populateEntityFactory(const std::string& class_name,
+                                  EntityFactoryBase* factory,
+                                  const Atlas::Message::MapType& class_desc,
+                                  std::string& dependent,
+                                  std::string& reason);
 
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root & class_desc,
-                           std::string & dependent,
-                           std::string & reason,
-                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
+        int installEntityClass(const std::string& class_name,
+                               const std::string& parent,
+                               const Atlas::Objects::Root& class_desc,
+                               std::string& dependent,
+                               std::string& reason,
+                               std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
-    int installEntityClass(const std::string & class_name,
-                           const std::string & parent,
-                           const Atlas::Objects::Root & class_desc,
-                           std::string & dependent,
-                           std::string & reason,
-                           EntityFactoryBase* factory,
-                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
+        int installEntityClass(const std::string& class_name,
+                               const std::string& parent,
+                               const Atlas::Objects::Root& class_desc,
+                               std::string& dependent,
+                               std::string& reason,
+                               EntityFactoryBase* factory,
+                               std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
-    int modifyEntityClass(const std::string & class_name,
-                          const Atlas::Objects::Root & class_desc,
-                          std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
+        int modifyEntityClass(const std::string& class_name,
+                              const Atlas::Objects::Root& class_desc,
+                              std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
-    std::map<std::string, std::function<EntityFactoryBase*(EntityFactoryBase*)>> mFactories;
+        std::map<std::string, std::function<EntityFactoryBase*(EntityFactoryBase*)>> mFactories;
 
-  public:
-    explicit EntityRuleHandler(EntityBuilder * eb);
+    public:
+        explicit EntityRuleHandler(EntityBuilder& eb);
 
-    int check(const Atlas::Objects::Root & desc) override;
-    int install(const std::string &,
-                        const std::string &,
-                        const Atlas::Objects::Root & desc,
-                        std::string &,
-                        std::string &,
-                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
-    int update(const std::string &,
-                    const Atlas::Objects::Root & desc,
+        int check(const Atlas::Objects::Root& desc) override;
+
+        int install(const std::string&,
+                    const std::string&,
+                    const Atlas::Objects::Root& desc,
+                    std::string&,
+                    std::string&,
                     std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+
+        int update(const std::string&,
+                   const Atlas::Objects::Root& desc,
+                   std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
 
 };

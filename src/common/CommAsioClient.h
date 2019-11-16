@@ -51,9 +51,9 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
 
         typename ProtocolT::socket& getSocket();
 
-        void startAccept(Link* connection);
+        void startAccept(std::unique_ptr<Link> connection);
 
-        void startConnect(Link* connection);
+        void startConnect(std::unique_ptr<Link> connection);
 
         int send(const Atlas::Objects::Operation::RootOperation&);
 
@@ -126,7 +126,7 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
         /// \brief Atlas negotiator for handling codec negotiation.
         Atlas::Negotiate* m_negotiate;
         /// \brief Server side object for handling connection level operations.
-        Link* m_link;
+        std::unique_ptr<Link> m_link;
 
         const std::string mName;
 

@@ -36,7 +36,6 @@ using Atlas::Objects::Root;
 using String::compose;
 
 
-
 class Entity;
 
 class Thing;
@@ -52,7 +51,7 @@ class EntityFactory<World>;
 static const bool debug_flag = false;
 
 
-EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
+EntityRuleHandler::EntityRuleHandler(EntityBuilder& eb)
     : m_builder(eb)
 {
 
@@ -70,11 +69,11 @@ EntityRuleHandler::EntityRuleHandler(EntityBuilder * eb)
 }
 
 
-int EntityRuleHandler::installEntityClass(const std::string & class_name,
-                                          const std::string & parent,
-                                          const Root & class_desc,
-                                          std::string & dependent,
-                                          std::string & reason,
+int EntityRuleHandler::installEntityClass(const std::string& class_name,
+                                          const std::string& parent,
+                                          const Root& class_desc,
+                                          std::string& dependent,
+                                          std::string& reason,
                                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
@@ -94,7 +93,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
             return 1;
         }
     } else {
-        auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(parent));
+        auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder.getClassFactory(parent));
         // Get the new factory for this rule
         if (parent_factory == nullptr) {
             debug(std::cout << "class \"" << class_name
@@ -119,11 +118,11 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
 
 }
 
-int EntityRuleHandler::installEntityClass(const std::string & class_name,
-                                          const std::string & parent,
-                                          const Root & class_desc,
-                                          std::string & dependent,
-                                          std::string & reason,
+int EntityRuleHandler::installEntityClass(const std::string& class_name,
+                                          const std::string& parent,
+                                          const Root& class_desc,
+                                          std::string& dependent,
+                                          std::string& reason,
                                           EntityFactoryBase* factory,
                                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
@@ -132,7 +131,7 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
     if (factory == nullptr) {
         log(ERROR,
             compose("Attempt to install rule \"%1\" which has parent \"%2\" "
-                        "which cannot be instantiated", class_name, parent));
+                    "which cannot be instantiated", class_name, parent));
         return -1;
     }
 
@@ -148,14 +147,14 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
                     << std::endl << std::flush;)
 
     // Install the factory in place.
-    if (m_builder->installFactory(class_name, class_desc, factory) != 0) {
+    if (m_builder.installFactory(class_name, class_desc, factory) != 0) {
         delete factory;
         return -1;
     }
 
     factory->addProperties();
 
-    auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(parent));
+    auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder.getClassFactory(parent));
     if (parent_factory) {
         // Add it as a child to its parent.
         parent_factory->m_children.insert(factory);
@@ -164,20 +163,21 @@ int EntityRuleHandler::installEntityClass(const std::string & class_name,
 
     return 0;
 }
-int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
-                                         const Root & class_desc,
+
+int EntityRuleHandler::modifyEntityClass(const std::string& class_name,
+                                         const Root& class_desc,
                                          std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
-    auto factory = dynamic_cast<EntityFactoryBase*>(m_builder->getClassFactory(class_name));
+    auto factory = dynamic_cast<EntityFactoryBase*>(m_builder.getClassFactory(class_name));
     if (factory == nullptr) {
         log(ERROR, compose("Could not find factory for existing entity class "
                            "\"%1\".", class_name));
         return -1;
     }
     assert(factory != nullptr);
-    
+
     MapType backup_attributes = factory->m_attributes;
     auto backup_class_attributes = factory->m_classAttributes;
 
@@ -199,7 +199,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
     std::string dependent, reason;
     if (populateEntityFactory(class_name, factory,
                               class_desc->asMessage(),
-                               dependent, reason) != 0) {
+                              dependent, reason) != 0) {
         factory->m_attributes = backup_attributes;
         factory->m_classAttributes = backup_class_attributes;
         return -1;
@@ -211,18 +211,18 @@ int EntityRuleHandler::modifyEntityClass(const std::string & class_name,
 }
 
 
-int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
-                                             EntityFactoryBase * factory,
-                                             const MapType & class_desc,
-                                             std::string & dependent,
-                                             std::string & reason)
+int EntityRuleHandler::populateEntityFactory(const std::string& class_name,
+                                             EntityFactoryBase* factory,
+                                             const MapType& class_desc,
+                                             std::string& dependent,
+                                             std::string& reason)
 {
     // assert(class_name == class_desc->getId());
 
     // Store the default attribute for entities create by this rule.
     auto J = class_desc.find("attributes");
     if (J != class_desc.end() && J->second.isMap()) {
-        const MapType & attrs = J->second.asMap();
+        const MapType& attrs = J->second.asMap();
         auto Kend = attrs.end();
         for (auto K = attrs.begin(); K != Kend; ++K) {
             if (!K->second.isMap()) {
@@ -230,7 +230,7 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
                                    "map.", K->first, class_name));
                 continue;
             }
-            const MapType & attr = K->second.asMap();
+            const MapType& attr = K->second.asMap();
             ClassAttribute classAttribute;
             auto L = attr.find("default");
             if (L != attr.end()) {
@@ -266,7 +266,7 @@ int EntityRuleHandler::populateEntityFactory(const std::string & class_name,
     return 0;
 }
 
-int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
+int EntityRuleHandler::check(const Atlas::Objects::Root& desc)
 {
     assert(!desc->getParent().empty());
     if (desc->getObjtype() == "class") {
@@ -275,19 +275,19 @@ int EntityRuleHandler::check(const Atlas::Objects::Root & desc)
     return -1;
 }
 
-int EntityRuleHandler::install(const std::string & name,
-                             const std::string & parent,
-                             const Atlas::Objects::Root & description,
-                             std::string & dependent,
-                             std::string & reason,
-                             std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+int EntityRuleHandler::install(const std::string& name,
+                               const std::string& parent,
+                               const Atlas::Objects::Root& description,
+                               std::string& dependent,
+                               std::string& reason,
+                               std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return installEntityClass(name, parent, description, dependent, reason, changes);
 }
 
-int EntityRuleHandler::update(const std::string & name,
-                                const Atlas::Objects::Root & desc,
-                                std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+int EntityRuleHandler::update(const std::string& name,
+                              const Atlas::Objects::Root& desc,
+                              std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return modifyEntityClass(name, desc, changes);
 }

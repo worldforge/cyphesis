@@ -31,6 +31,8 @@ class RepeatedTask
     public:
         RepeatedTask(boost::asio::io_context& io_context, boost::posix_time::time_duration interval, std::function<void()> function);
 
+        void cancel();
+
     private:
         boost::posix_time::time_duration mInterval;
         boost::asio::deadline_timer mTimer;

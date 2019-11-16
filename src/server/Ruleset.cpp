@@ -17,7 +17,9 @@
 
 
 #ifdef HAVE_CONFIG_H
+
 #include "config.h"
+
 #endif
 
 #include "Ruleset.h"
@@ -58,21 +60,21 @@ typedef std::map<std::string, Root> RootDict;
 
 static const bool debug_flag = false;
 
-Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context) :
-      m_entityHandler(new EntityRuleHandler(eb)),
-      m_opHandler(new OpRuleHandler(eb)),
-      m_propertyHandler(new PropertyRuleHandler(eb)),
-      m_archetypeHandler(new ArchetypeRuleHandler(eb)),
-      m_io_context(io_context)
+Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context) :
+    m_entityHandler(new EntityRuleHandler(eb)),
+    m_opHandler(new OpRuleHandler()),
+    m_propertyHandler(new PropertyRuleHandler()),
+    m_archetypeHandler(new ArchetypeRuleHandler(eb)),
+    m_io_context(io_context)
 {
 }
 
 Ruleset::~Ruleset() = default;
 
-int Ruleset::installRuleInner(const std::string & class_name,
-                              const Root & class_desc,
-                              std::string & dependent,
-                              std::string & reason,
+int Ruleset::installRuleInner(const std::string& class_name,
+                              const Root& class_desc,
+                              std::string& dependent,
+                              std::string& reason,
                               std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
@@ -83,7 +85,7 @@ int Ruleset::installRuleInner(const std::string & class_name,
         return -1;
     }
 
-    const std::string & parent = class_desc->getParent();
+    const std::string& parent = class_desc->getParent();
     if (parent.empty()) {
         log(ERROR, compose("Rule \"%1\" has empty parent. Skipping.",
                            class_name));
@@ -98,10 +100,10 @@ int Ruleset::installRuleInner(const std::string & class_name,
                                        dependent, reason, changes);
     } else if (m_propertyHandler->check(class_desc) == 0) {
         ret = m_propertyHandler->install(class_name, parent, class_desc,
-                                       dependent, reason, changes);
+                                         dependent, reason, changes);
     } else if (m_archetypeHandler->check(class_desc) == 0) {
         ret = m_archetypeHandler->install(class_name, parent, class_desc,
-                                       dependent, reason, changes);
+                                          dependent, reason, changes);
     } else {
         log(ERROR, compose(R"(Rule "%1" has unknown objtype="%2". Skipping.)",
                            class_name, class_desc->getObjtype()));
@@ -111,9 +113,9 @@ int Ruleset::installRuleInner(const std::string & class_name,
     return ret;
 }
 
-int Ruleset::installRule(const std::string & class_name,
-                         const std::string & section,
-                         const Root & class_desc)
+int Ruleset::installRule(const std::string& class_name,
+                         const std::string& section,
+                         const Root& class_desc)
 {
     std::string dependent, reason;
     std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
@@ -121,7 +123,7 @@ int Ruleset::installRule(const std::string & class_name,
     int ret = installRuleInner(class_name, class_desc, dependent, reason, changes);
 
     if (!changes.empty()) {
-        for (auto &entry : changes) {
+        for (auto& entry : changes) {
             Inheritance::instance().updateClass(entry.first->name(), entry.first->description(Visibility::PRIVATE));
             //TODO: write to user writable rule files
         }
@@ -132,8 +134,8 @@ int Ruleset::installRule(const std::string & class_name,
     return ret;
 }
 
-void Ruleset::installItem(const std::string & class_name,
-                          const Root & class_desc,
+void Ruleset::installItem(const std::string& class_name,
+                          const Root& class_desc,
                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     std::string dependent, reason;
@@ -151,32 +153,32 @@ void Ruleset::installItem(const std::string & class_name,
     auto Iend = m_waitingRules.upper_bound(class_name);
     RootDict readyRules;
     for (; I != Iend; ++I) {
-        const std::string & wClassName = I->second.name;
-        const Root & wClassDesc = I->second.desc;
+        const std::string& wClassName = I->second.name;
+        const Root& wClassDesc = I->second.desc;
         readyRules.insert(std::make_pair(wClassName, wClassDesc));
         debug(std::cout << "WAITING rule " << wClassName
                         << " now ready from " << class_name
                         << std::endl << std::flush;);
     }
     m_waitingRules.erase(class_name);
-        
+
     RootDict::const_iterator K = readyRules.begin();
     RootDict::const_iterator Kend = readyRules.end();
     for (; K != Kend; ++K) {
-        const std::string & rClassName = K->first;
-        const Root & rClassDesc = K->second;
+        const std::string& rClassName = K->first;
+        const Root& rClassDesc = K->second;
         installItem(rClassName, rClassDesc, changes);
     }
 }
 
-int Ruleset::modifyRule(const std::string & class_name,
-                        const Root & class_desc)
+int Ruleset::modifyRule(const std::string& class_name,
+                        const Root& class_desc)
 {
     std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-    auto ret = modifyRuleInner(class_name,class_desc, changes);
+    auto ret = modifyRuleInner(class_name, class_desc, changes);
 
     if (!changes.empty()) {
-        for (auto &entry : changes) {
+        for (auto& entry : changes) {
             Inheritance::instance().updateClass(entry.first->name(), entry.first->description(Visibility::PRIVATE));
             //TODO: write to user writable rule files
         }
@@ -187,9 +189,9 @@ int Ruleset::modifyRule(const std::string & class_name,
     return ret;
 }
 
-int Ruleset::modifyRuleInner(const std::string & class_name,
-                        const Root & class_desc,
-                        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+int Ruleset::modifyRuleInner(const std::string& class_name,
+                             const Root& class_desc,
+                             std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
@@ -225,7 +227,8 @@ int Ruleset::modifyRuleInner(const std::string & class_name,
     return ret;
 }
 
-void Ruleset::processChangedRules() {
+void Ruleset::processChangedRules()
+{
     if (!m_changedRules.empty()) {
         RootDict updatedRules;
         for (auto& path : m_changedRules) {
@@ -244,10 +247,10 @@ void Ruleset::processChangedRules() {
             }
         }
         if (!updatedRules.empty()) {
-            std::map<const TypeNode *, TypeNode::PropertiesUpdate> changes;
-            for (auto &entry: updatedRules) {
-                auto &class_name = entry.first;
-                auto &class_desc = entry.second;
+            std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
+            for (auto& entry: updatedRules) {
+                auto& class_name = entry.first;
+                auto& class_desc = entry.second;
                 if (Inheritance::instance().hasClass(class_name)) {
                     log(INFO, compose("Updating existing rule \"%1\".", class_name));
                     modifyRuleInner(class_name, class_desc, changes);
@@ -257,7 +260,7 @@ void Ruleset::processChangedRules() {
                 }
             }
             if (!changes.empty()) {
-                for (auto &entry : changes) {
+                for (auto& entry : changes) {
                     Inheritance::instance().updateClass(entry.first->name(), entry.first->description(Visibility::PRIVATE));
                     //TODO: write to user writable rule files
                 }
@@ -273,10 +276,10 @@ void Ruleset::processChangedRules() {
 ///
 /// Note that a rule cannot yet be installed because it depends on something
 /// that has not yet occurred, or a more fatal condition has occurred.
-void Ruleset::waitForRule(const std::string & rulename,
-                          const Root & ruledesc,
-                          const std::string & dependent,
-                          const std::string & reason)
+void Ruleset::waitForRule(const std::string& rulename,
+                          const Root& ruledesc,
+                          const std::string& dependent,
+                          const std::string& reason)
 {
     RuleWaiting rule;
     rule.name = rulename;
@@ -287,7 +290,7 @@ void Ruleset::waitForRule(const std::string & rulename,
 }
 
 void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
-                                RootDict & rules)
+                                RootDict& rules)
 {
 
     if (boost::filesystem::is_directory(directory)) {
@@ -329,7 +332,7 @@ void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
 
 }
 
-void Ruleset::loadRules(const std::string & ruleset)
+void Ruleset::loadRules(const std::string& ruleset)
 {
     boost::filesystem::path shared_rules_directory = boost::filesystem::path(share_directory) / "cyphesis" / "rulesets/" / ruleset / "rules";
     boost::filesystem::path var_rules_directory = boost::filesystem::path(var_directory) / "lib" / "cyphesis" / "rulesets" / ruleset / "rules";
@@ -353,8 +356,8 @@ void Ruleset::loadRules(const std::string & ruleset)
     std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
     for (auto& entry : ruleTable) {
-        const std::string & class_name = entry.first;
-        const Root & class_desc = entry.second;
+        const std::string& class_name = entry.first;
+        const Root& class_desc = entry.second;
         installItem(class_name, class_desc, changes);
     }
     // Report on the non-cleared rules.

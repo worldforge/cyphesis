@@ -41,50 +41,48 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-int ArchetypeRuleHandler::installArchetypeClass(const std::string & class_name,
-        const std::string & parent, const Root & class_desc,
-        std::string & dependent, std::string & reason)
+int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
+                                                const std::string& parent, const Root& class_desc,
+                                                std::string& dependent, std::string& reason)
 {
     assert(class_name == class_desc->getId());
 
     // Get the new factory for this rule
-    auto* parent_factory = dynamic_cast<ArchetypeFactory*>(m_builder->getClassFactory(parent));
+    auto* parent_factory = dynamic_cast<ArchetypeFactory*>(m_builder.getClassFactory(parent));
     if (parent_factory == nullptr) {
         debug(
-                std::cout << "class \"" << class_name
-                        << "\" has non existent parent \"" << parent
-                        << "\". Waiting." << std::endl << std::flush
-                ;);
+            std::cout << "class \"" << class_name
+                      << "\" has non existent parent \"" << parent
+                      << "\". Waiting." << std::endl << std::flush;)
         dependent = parent;
         reason = compose("Entity rule \"%1\" has parent \"%2\" which does "
-                "not exist.", class_name, parent);
+                         "not exist.", class_name, parent);
         return 1;
     }
-    ArchetypeFactory * factory = parent_factory->duplicateFactory();
+    ArchetypeFactory* factory = parent_factory->duplicateFactory();
     if (factory == nullptr) {
         log(ERROR,
-                compose(
-                        "Attempt to install rule \"%1\" which has parent \"%2\" "
-                                "which cannot be instantiated", class_name,
-                        parent));
+            compose(
+                "Attempt to install rule \"%1\" which has parent \"%2\" "
+                "which cannot be instantiated", class_name,
+                parent));
         return -1;
     }
 
     assert(factory->m_parent == parent_factory);
 
     if (populateArchetypeFactory(class_name, factory, class_desc->asMessage(),
-            dependent, reason) != 0) {
+                                 dependent, reason) != 0) {
         delete factory;
         return -1;
     }
 
     debug(
-            std::cout << "INSTALLING " << class_name << ":" << parent
-                    << std::endl << std::flush
-            ;);
+        std::cout << "INSTALLING " << class_name << ":" << parent
+                  << std::endl << std::flush;)
 
     // Install the factory in place.
-    if (m_builder->installFactory(class_name, class_desc, factory) != 0) {
+    if (m_builder.installFactory(class_name, class_desc, factory) != 0) {
         delete factory;
         return -1;
     }
@@ -97,16 +95,16 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string & class_name,
     return 0;
 }
 
-int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
-        const Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+int ArchetypeRuleHandler::modifyArchetypeClass(const std::string& class_name,
+                                               const Root& class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(class_name == class_desc->getId());
 
     auto factory =
-            dynamic_cast<ArchetypeFactory*>(m_builder->getClassFactory(class_name));
+        dynamic_cast<ArchetypeFactory*>(m_builder.getClassFactory(class_name));
     if (factory == nullptr) {
         log(ERROR, compose("Could not find factory for existing entity class "
-                "\"%1\".", class_name));
+                           "\"%1\".", class_name));
         return -1;
     }
     assert(factory != nullptr);
@@ -124,10 +122,10 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
         // This should only happen if the client attempted to modify the
         // type data for a core hard coded type.
         log(ERROR,
-                compose(
-                        "ArchetypeRuleHandler::modifyEntityClass: \"%1\" modified "
-                                "by client, but has no parent factory.",
-                        class_name));
+            compose(
+                "ArchetypeRuleHandler::modifyEntityClass: \"%1\" modified "
+                "by client, but has no parent factory.",
+                class_name));
         factory->m_entities.clear();
         factory->m_thoughts.clear();
     }
@@ -137,7 +135,7 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
 
     std::string dependent, reason;
     if (populateArchetypeFactory(class_name, factory, class_desc->asMessage(),
-            dependent, reason) != 0) {
+                                 dependent, reason) != 0) {
         factory->m_entities = backup_entities;
         factory->m_thoughts = backup_thoughts;
         return -1;
@@ -149,9 +147,9 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string & class_name,
 }
 
 int ArchetypeRuleHandler::populateArchetypeFactory(
-        const std::string & class_name, ArchetypeFactory * factory,
-        const MapType & class_desc, std::string & dependent,
-        std::string & reason)
+    const std::string& class_name, ArchetypeFactory* factory,
+    const MapType& class_desc, std::string& dependent,
+    std::string& reason)
 {
     // assert(class_name == class_desc->getId());
     // Establish whether this rule has an associated script, and
@@ -212,15 +210,15 @@ int ArchetypeRuleHandler::populateArchetypeFactory(
     if (thoughtsI != class_desc.end() && thoughtsI->second.isList()) {
         const ListType& thoughts = thoughtsI->second.asList();
         factory->m_thoughts.insert(factory->m_thoughts.end(), thoughts.begin(),
-                thoughts.end());
+                                   thoughts.end());
         factory->m_classThoughts.insert(factory->m_classThoughts.end(),
-                thoughts.begin(), thoughts.end());
+                                        thoughts.begin(), thoughts.end());
     }
 
     return 0;
 }
 
-int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
+int ArchetypeRuleHandler::check(const Atlas::Objects::Root& desc)
 {
     assert(!desc->getParent().empty());
     if (desc->getObjtype() != "archetype") {
@@ -229,17 +227,17 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root & desc)
     return 0;
 }
 
-int ArchetypeRuleHandler::install(const std::string & name,
-        const std::string & parent, const Atlas::Objects::Root & description,
-        std::string & dependent, std::string & reason,
-        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+int ArchetypeRuleHandler::install(const std::string& name,
+                                  const std::string& parent, const Atlas::Objects::Root& description,
+                                  std::string& dependent, std::string& reason,
+                                  std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return installArchetypeClass(name, parent, description, dependent, reason);
 }
 
-int ArchetypeRuleHandler::update(const std::string & name,
-        const Atlas::Objects::Root & desc,
-        std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+int ArchetypeRuleHandler::update(const std::string& name,
+                                 const Atlas::Objects::Root& desc,
+                                 std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return modifyArchetypeClass(name, desc, changes);
 }

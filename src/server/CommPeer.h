@@ -38,7 +38,7 @@ class CommPeer : public CommAsioClient<boost::asio::ip::tcp>
 
         void connect(const boost::asio::ip::tcp::endpoint&);
 
-        void setup(Link*);
+        void setup(std::unique_ptr<Link>);
 
         sigc::signal<void> connected;
         sigc::signal<void> failed;

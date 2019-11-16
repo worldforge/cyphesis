@@ -61,7 +61,8 @@ void Juncture::onSocketConnected()
     m_peer = new Peer(*socket, m_connection->m_server,
                       m_host, m_port, getId(), getIntId());
 
-    socket->setup(m_peer);
+    //Transfers ownership to the socket. This feels dangerous, since it's a weak ptr.
+    socket->setup(std::unique_ptr<Link>(m_peer));
     m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
     m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
 
