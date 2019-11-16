@@ -20,15 +20,11 @@
 
 #include "rules/python/PythonArithmeticFactory.h"
 
-template<>
-ArithmeticBuilder* Singleton<ArithmeticBuilder>::ms_Singleton = nullptr;
 
-ArithmeticBuilder::ArithmeticBuilder()
-{
-}
+ArithmeticBuilder::ArithmeticBuilder() = default;
 
-ArithmeticScript * ArithmeticBuilder::newArithmetic(const std::string & name,
-                                                    LocatedEntity * owner)
+ArithmeticScript* ArithmeticBuilder::newArithmetic(const std::string& name,
+                                                   LocatedEntity* owner)
 {
     PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");
     paf.setup();

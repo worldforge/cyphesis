@@ -28,8 +28,6 @@
 
 static const bool debug_flag = false;
 
-template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
-
 /// \brief BaseWorld constructor.
 ///
 /// Protected as BaseWorld is a base class.

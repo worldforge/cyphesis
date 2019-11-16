@@ -21,8 +21,6 @@
 #include "FileSystemObserver.h"
 #include "globals.h"
 
-template<> AssetsManager* Singleton<AssetsManager>::ms_Singleton = nullptr;
-
 AssetsManager::AssetsManager(FileSystemObserver& file_system_observer)
     : m_file_system_observer(file_system_observer)
 {

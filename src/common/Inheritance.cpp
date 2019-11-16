@@ -53,8 +53,6 @@ using Atlas::Objects::Operation::Error;
 using Atlas::Objects::Operation::Use;
 using Atlas::Objects::Operation::Wield;
 
-template<> Inheritance* Singleton<Inheritance>::ms_Singleton = nullptr;
-
 Root atlasOpDefinition(const std::string& name, const std::string& parent)
 {
     Atlas::Objects::Entity::Anonymous r;

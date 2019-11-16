@@ -28,9 +28,6 @@
 
 static const bool debug_flag = false;
 
-template<>
-PossessionAuthenticator* Singleton<PossessionAuthenticator>::ms_Singleton = nullptr;
-
 /// \brief Checks if there is a pending possession on an account
 ///
 /// \param entity_id The entity ID to check for pending teleport

@@ -84,7 +84,7 @@ class ServerRouting : public Router, public Singleton<ServerRouting> {
         return m_objects;
     }
 
-    const AccountDict getAccounts() const {
+    const AccountDict& getAccounts() const {
         return m_accounts;
     }
 

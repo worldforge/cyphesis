@@ -25,9 +25,6 @@
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
-template<>
-Monitors* Singleton<Monitors>::ms_Singleton = nullptr;
-
 Monitors::Monitors() = default;
 
 Monitors::~Monitors()

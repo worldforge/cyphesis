@@ -43,9 +43,6 @@ using Atlas::Objects::Entity::RootEntity;
 BOOL_OPTION(restricted_flag, false, CYPHESIS, "restricted",
             "Flag to control restricted mode");
 
-template<>
-ServerRouting* Singleton<ServerRouting>::ms_Singleton = nullptr;
-
 /// \brief Constructor for server object.
 ///
 /// Requires a reference to the World management object, as well as the

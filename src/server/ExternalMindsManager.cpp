@@ -41,9 +41,6 @@
 
 static const bool debug_flag = false;
 
-template<>
-ExternalMindsManager* Singleton<ExternalMindsManager>::ms_Singleton = nullptr;
-
 
 int ExternalMindsManager::addConnection(
     const ExternalMindsConnection& connection)

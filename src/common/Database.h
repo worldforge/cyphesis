@@ -263,10 +263,6 @@ class DatabaseResult
 
         }
 
-        ~DatabaseResult() {
-
-        }
-
         struct const_iterator_worker
         {
 

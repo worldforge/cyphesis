@@ -37,8 +37,6 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-template<> Persistence* Singleton<Persistence>::ms_Singleton = nullptr;
-
 Persistence::Persistence(Database& database) : m_db(database)
 {
 }

@@ -58,8 +58,6 @@ typedef std::map<std::string, Root> RootDict;
 
 static const bool debug_flag = false;
 
-template<> Ruleset* Singleton<Ruleset>::ms_Singleton = nullptr;
-
 Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context) :
       m_entityHandler(new EntityRuleHandler(eb)),
       m_opHandler(new OpRuleHandler(eb)),

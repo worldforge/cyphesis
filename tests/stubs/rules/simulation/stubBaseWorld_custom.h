@@ -1,6 +1,5 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 #include "rules/simulation/Task.h"
-template<> BaseWorld* Singleton<BaseWorld>::ms_Singleton = nullptr;
 
 #ifndef STUB_BaseWorld_BaseWorld
 #define STUB_BaseWorld_BaseWorld

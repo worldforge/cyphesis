@@ -1,6 +1,4 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
-template<> Database* Singleton<Database>::ms_Singleton = nullptr;
-
 #ifndef STUB_Database_selectEntities
 #define STUB_Database_selectEntities
 DatabaseResult Database::selectEntities(const std::string & loc)

@@ -24,8 +24,6 @@
 
 using Atlas::Objects::Root;
 
-template<> PropertyManager* Singleton<PropertyManager>::ms_Singleton = nullptr;
-
 PropertyManager::PropertyManager() = default;
 
 PropertyManager::~PropertyManager() = default;

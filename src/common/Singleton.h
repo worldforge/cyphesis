@@ -80,6 +80,7 @@ class Singleton : private boost::noncopyable
             return ms_Singleton != nullptr;
         }
 };
+template<typename T> T* Singleton<T>::ms_Singleton = nullptr;
 
 
 #endif //CYPHESIS_SINGLETON_H

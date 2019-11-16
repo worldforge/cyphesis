@@ -1,5 +1,4 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
-template<> Inheritance* Singleton<Inheritance>::ms_Singleton = nullptr;
 
 #include <Atlas/Objects/Factories.h>
 

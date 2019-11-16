@@ -43,8 +43,6 @@ typedef Atlas::Codecs::Packed Serialiser;
 
 static const bool debug_flag = false;
 
-template<> Database* Singleton<Database>::ms_Singleton = nullptr;
-
 Database::Database() : m_queryInProgress(false)
 {
 }

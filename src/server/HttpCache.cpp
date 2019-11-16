@@ -24,9 +24,6 @@
 
 #include <varconf/config.h>
 
-template<>
-HttpCache* Singleton<HttpCache>::ms_Singleton = nullptr;
-
 void HttpCache::sendHeaders(std::ostream & io,
                             int status,
                             const std::string & type,
