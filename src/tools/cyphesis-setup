@@ -206,18 +206,6 @@ if test $RUNNING_AS != "root"; then
 
     echo
 
-    # cyloadrules automatically picks up the right files for the ruleset
-    # set in the main config.
-    echo Loading game rules into database...
-    if $CYPHESIS_BINDIR/cyloadrules; then
-        echo Loaded.
-    else
-        echo ERROR: $0: Unable to load rules into database.
-        exit 1
-    fi
-
-    echo
-
     # The filename given here is mason specific, but as that is the only
     # game explicitly supported at this time, this should not be a problem.
     # echo Loading world data into database...
@@ -296,18 +284,6 @@ if test $CYPHESIS_COMPILED_CONF_DIR != $CYPHESIS_CONF_DIR; then
     if ! su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cyconfig --cyphesis:directory=$CYPHESIS_DATA_DIR --cyphesis:confdir=$CYPHESIS_CONF_DIR"; then
         echo ERROR: $0: Failed to configure cyphesis config and data directories.
     fi
-fi
-
-echo
-
-# cyloadrules automatically picks up the right files for the ruleset
-# set in the main config.
-echo Loading game rules into database...
-if su - $CYPHESIS_USER -c "$CYPHESIS_BINDIR/cyloadrules"; then
-    echo Loaded.
-else
-    echo ERROR: $0: Unable to load rules into database.
-    exit 1
 fi
 
 echo

@@ -24,9 +24,7 @@
 /// cyphesis configuration. For information on the usage, please see the unix
 /// manual page. The manual page is generated from docbook sources, so can
 /// also be converted into other formats.
-///
-/// This tool is work in progress, and could in the long run assimilate
-/// the functionality of cyaddrules, cyloadrules and others.
+
 
 #include "common/globals.h"
 

@@ -7,16 +7,11 @@
 default.apspec
 cyphesis.spec
 cyphesis.iss
-src/server/buildid.cpp
 src/server/cyphesis
 src/client/cyclient
-src/tools/cyaddrules
 src/tools/cycmd
 src/tools/cyconfig
-src/tools/cyconvertrules
 src/tools/cydb
-src/tools/cydumprules
-src/tools/cyloadrules
 src/tools/cypasswd
 src/tools/cypython
 docs/man/manpage.*
@@ -47,5 +42,5 @@ x86
 x86_64
 .idea
 *.pyc
-cmake-build-*
-build
+/*build*
+
