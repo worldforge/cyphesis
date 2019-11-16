@@ -26,9 +26,9 @@
 #include "Database.h"
 
 
-
 namespace sqlite3pp {
     class database;
+
     class query;
 }
 
@@ -111,9 +111,15 @@ class DatabaseSQLite : public Database
 
         int runMaintainance();
 
-        int launchNewQuery() override {return 0;}
+        int launchNewQuery() override
+        {
+            return 0;
+        }
 
-        int clearPendingQuery() override {return 0;}
+        int clearPendingQuery() override
+        {
+            return 0;
+        }
 
 
 };
@@ -129,6 +135,8 @@ struct DatabaseResultWorkerSqlite : public DatabaseResult::DatabaseResultWorker
 
     explicit DatabaseResultWorkerSqlite(std::unique_ptr<sqlite3pp::query>&& r) : m_res(std::move(r))
     {}
+
+    ~DatabaseResultWorkerSqlite() override = default;
 
     struct const_iterator_worker_sqlite : public DatabaseResult::const_iterator_worker
     {

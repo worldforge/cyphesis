@@ -143,6 +143,8 @@ struct DatabaseResultWorkerPostgres : public DatabaseResult::DatabaseResultWorke
     explicit DatabaseResultWorkerPostgres(PGresult* r) : m_res(r, deleter)
     {}
 
+    ~DatabaseResultWorkerPostgres() override = default;
+
     struct const_iterator_worker_postgres : public DatabaseResult::const_iterator_worker
     {
         const DatabaseResultWorkerPostgres& m_dr;

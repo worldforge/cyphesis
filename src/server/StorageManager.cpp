@@ -54,13 +54,14 @@ typedef Database::KeyValues KeyValues;
 
 static const bool debug_flag = false;
 
-StorageManager:: StorageManager(WorldRouter & world) :
+StorageManager::StorageManager(WorldRouter & world) :
       m_insertEntityCount(0), m_updateEntityCount(0),
       m_insertPropertyCount(0), m_updatePropertyCount(0),
       m_insertQps(0), m_updateQps(0),
       m_insertQpsNow(0), m_updateQpsNow(0),
       m_insertQpsAvg(0), m_updateQpsAvg(0),
-      m_insertQpsIndex(0), m_updateQpsIndex(0)
+      m_insertQpsIndex(0), m_updateQpsIndex(0),
+      m_insertQpsRing(), m_updateQpsRing()
 {
 
     world.inserted.connect(sigc::mem_fun(this,
@@ -370,8 +371,8 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Restore children, but don't restore any properties yet.
-    DatabaseResult::const_iterator I = res.begin();
-    DatabaseResult::const_iterator Iend = res.end();
+    auto I = res.begin();
+    auto Iend = res.end();
     for (; I != Iend; ++I) {
         const std::string id = I.column("id");
         const long int_id = forceIntegerId(id);
@@ -419,11 +420,11 @@ void StorageManager::tick()
     while (!m_unstoredEntities.empty()) {
         const WeakEntityRef & ent = m_unstoredEntities.front();
         if (ent && !ent->isDestroyed()) {
-            debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; );
+            debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; )
             insertEntity(ent.get());
             ++inserts;
         } else {
-            debug( std::cout << "deleted" << std::endl << std::flush; );
+            debug( std::cout << "deleted" << std::endl << std::flush; )
         }
         m_unstoredEntities.pop_front();
     }
@@ -448,24 +449,24 @@ void StorageManager::tick()
         const WeakEntityRef & ent = m_dirtyEntities.front();
         if (ent) {
             if ((ent->flags().m_flags & entity_clean_mask) != entity_clean_mask) {
-                debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; );
+                debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; )
                 updateEntity(ent.get());
                 ++updates;
             }
             if (ent->hasFlags(entity_dirty_thoughts)) {
-                debug( std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush; );
+                debug( std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush; )
                 ++updates;
             }
             ent->removeFlags(entity_queued);
         } else {
-            debug( std::cout << "deleted" << std::endl << std::flush; );
+            debug( std::cout << "deleted" << std::endl << std::flush; )
         }
         m_dirtyEntities.pop_front();
     }
 
     if (inserts > 0 || updates > 0) {
         debug(std::cout << "I: " << inserts << " U: " << updates
-                        << std::endl << std::flush;);
+                        << std::endl << std::flush;)
     }
     int insert_queries = m_insertEntityCount + m_insertPropertyCount 
                          - old_insert_queries;
@@ -480,7 +481,7 @@ void StorageManager::tick()
     m_insertQpsNow = insert_queries;
 
     debug(if (insert_queries) { std::cout << "Ins: " << insert_queries << ", " << m_insertQps / 32
-                    << std::endl << std::flush;});
+                    << std::endl << std::flush;})
 
     int update_queries = m_updateEntityCount + m_updatePropertyCount 
                          - old_update_queries;
@@ -495,7 +496,7 @@ void StorageManager::tick()
     m_updateQpsNow = update_queries;
 
     debug(if (update_queries) { std::cout << "Ups: " << update_queries << ", " << m_updateQps / 32
-                    << std::endl << std::flush;});
+                    << std::endl << std::flush;})
 }
 
 int StorageManager::initWorld(const Ref<LocatedEntity>& ent)

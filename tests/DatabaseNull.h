@@ -41,6 +41,8 @@ struct const_iterator_worker_null : public DatabaseResult::const_iterator_worker
 
 class DatabaseNullResultWorker : public DatabaseResult::DatabaseResultWorker
 {
+        ~DatabaseNullResultWorker() override = default;
+
         int size() const override
         {
             return 0;

@@ -33,77 +33,88 @@
 #include "modules/Ref.h"
 
 class Entity;
+
 class WorldRouter;
+
 class PropertyBase;
 
 /// \brief StorageManager represents the subsystem which stores world storage
 ///
 /// This class has one instance which is the core of the world's persistent
 /// storage in whatever data store is being used.
-class StorageManager : public sigc::trackable {
-  protected:
-    typedef std::deque<WeakEntityRef> Entitystore;
-    typedef std::deque<long> Idstore;
+class StorageManager : public sigc::trackable
+{
+    protected:
+        typedef std::deque<WeakEntityRef> Entitystore;
+        typedef std::deque<long> Idstore;
 
-    /// \brief Queue of references to entities yet to be stored.
-    Entitystore m_unstoredEntities;
+        /// \brief Queue of references to entities yet to be stored.
+        Entitystore m_unstoredEntities;
 
-    /// \brief Queue of references to entities with modifications.
-    Entitystore m_dirtyEntities;
+        /// \brief Queue of references to entities with modifications.
+        Entitystore m_dirtyEntities;
 
-    /// \brief Queue of IDs of entities that are destroyed
-    Idstore m_destroyedEntities;
+        /// \brief Queue of IDs of entities that are destroyed
+        Idstore m_destroyedEntities;
 
-    std::deque<Persistence::AddCharacterData> m_addedCharacters;
+        std::deque<Persistence::AddCharacterData> m_addedCharacters;
 
-    std::deque<std::string> m_deletedCharacters;
+        std::deque<std::string> m_deletedCharacters;
 
-    int m_insertEntityCount;
-    int m_updateEntityCount;
+        int m_insertEntityCount;
+        int m_updateEntityCount;
 
-    int m_insertPropertyCount;
-    int m_updatePropertyCount;
+        int m_insertPropertyCount;
+        int m_updatePropertyCount;
 
-    int m_insertQps;
-    int m_updateQps;
+        int m_insertQps;
+        int m_updateQps;
 
-    int m_insertQpsNow;
-    int m_updateQpsNow;
+        int m_insertQpsNow;
+        int m_updateQpsNow;
 
-    int m_insertQpsAvg;
-    int m_updateQpsAvg;
+        int m_insertQpsAvg;
+        int m_updateQpsAvg;
 
-    int m_insertQpsIndex;
-    int m_updateQpsIndex;
+        int m_insertQpsIndex;
+        int m_updateQpsIndex;
 
-    int m_insertQpsRing[32];
-    int m_updateQpsRing[32];
+        std::array<int, 32> m_insertQpsRing;
+        std::array<int, 32> m_updateQpsRing;
 
-    void entityInserted(LocatedEntity *);
-    void entityUpdated(LocatedEntity *);
+        void entityInserted(LocatedEntity*);
 
-    void encodeProperty(PropertyBase *, std::string &);
-    void restorePropertiesRecursively(LocatedEntity *);
+        void entityUpdated(LocatedEntity*);
 
-    void insertEntity(LocatedEntity *);
-    void updateEntity(LocatedEntity *);
-    void restoreChildren(LocatedEntity *);
+        void encodeProperty(PropertyBase*, std::string&);
 
-    bool persistance_characterAdded(const Persistence::AddCharacterData& data);
-    bool persistance_characterDeleted(const std::string& entityId);
+        void restorePropertiesRecursively(LocatedEntity*);
 
-  public:
-    explicit StorageManager(WorldRouter &);
-    virtual ~StorageManager();
+        void insertEntity(LocatedEntity*);
 
-    void tick();
-    int initWorld(const Ref<LocatedEntity>& ent);
-    int restoreWorld(const Ref<LocatedEntity>& ent);
+        void updateEntity(LocatedEntity*);
 
-    /// \brief Called when shutting down.
-    ///
-    /// It's expected that the storage manager attempts to persist entity state.
-    int shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEntity>>& entites);
+        void restoreChildren(LocatedEntity*);
+
+        bool persistance_characterAdded(const Persistence::AddCharacterData& data);
+
+        bool persistance_characterDeleted(const std::string& entityId);
+
+    public:
+        explicit StorageManager(WorldRouter&);
+
+        virtual ~StorageManager();
+
+        void tick();
+
+        int initWorld(const Ref<LocatedEntity>& ent);
+
+        int restoreWorld(const Ref<LocatedEntity>& ent);
+
+        /// \brief Called when shutting down.
+        ///
+        /// It's expected that the storage manager attempts to persist entity state.
+        int shutdown(bool& exit_flag, const std::map<long, Ref<LocatedEntity>>& entites);
 
 };
 

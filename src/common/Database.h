@@ -238,7 +238,6 @@ class Database : public Singleton<Database>
         virtual int scheduleCommand(const std::string& query) = 0;
 
 
-
 };
 
 
@@ -261,6 +260,10 @@ class DatabaseResult
         explicit DatabaseResult(std::unique_ptr<DatabaseResultWorker>&& worker)
             : m_worker(std::move(worker))
         {
+
+        }
+
+        ~DatabaseResult() {
 
         }
 
@@ -317,6 +320,7 @@ class DatabaseResult
 
         struct DatabaseResultWorker
         {
+            virtual ~DatabaseResultWorker() = default;
 
             virtual int size() const = 0;
 
