@@ -21,7 +21,6 @@
 
 #include "rules/LocatedEntity.h"
 
-#include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/id.h"
 #include "common/operations/Think.h"
@@ -41,17 +40,25 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-ArchetypeFactory::ArchetypeFactory() = default;
+ArchetypeFactory::ArchetypeFactory(EntityBuilder& entityBuilder) :
+    m_entityBuilder(entityBuilder),
+    m_parent(nullptr)
+{
+}
 
-ArchetypeFactory::ArchetypeFactory(ArchetypeFactory & o)
-    : EntityKit(o)
+ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& o)
+    : EntityKit(o),
+      m_entityBuilder(o.m_entityBuilder),
+      m_parent(o.m_parent),
+      m_entities(o.m_entities),
+      m_thoughts(o.m_thoughts)
 {
 }
 
 ArchetypeFactory::~ArchetypeFactory() = default;
 
-Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
-        std::map<std::string, EntityCreation>& entities)
+Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string& id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
+                                                  std::map<std::string, EntityCreation>& entities)
 {
     auto& attributes = entityCreation.definition;
     std::string concreteType = attributes->getParent();
@@ -72,7 +79,7 @@ Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long i
         ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());
     }
 
-    auto entity = EntityBuilder::instance().newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
+    auto entity = m_entityBuilder.newChildEntity(id, intId, concreteType, cleansedAttributes, *location);
 
     if (entity == nullptr) {
         log(ERROR, String::compose("Could not create entity of type %1.", concreteType));
@@ -131,7 +138,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
             return false;
         }
 
-        auto result = entities.insert(std::make_pair(entity->getId(), EntityCreation { entity, nullptr, Atlas::Message::MapType() }));
+        auto result = entities.insert(std::make_pair(entity->getId(), EntityCreation{entity, nullptr, Atlas::Message::MapType()}));
         if (!result.second) {
             //it already existed; we should update with the attributes
             for (auto& I : entityI.second) {
@@ -142,7 +149,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
     return true;
 }
 
-Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const RootEntity& attributes, LocatedEntity* location)
 {
     //parse entities into RootEntity instances first
     std::map<std::string, EntityCreation> entities;
@@ -249,7 +256,7 @@ std::vector<Atlas::Message::Element> ArchetypeFactory::createOriginLocationThoug
         thought["object"] = String::compose("(%1,%2,%3)", entity.m_location.m_pos.x(), entity.m_location.m_pos.y(), entity.m_location.m_pos.z());
         thought["predicate"] = "location";
         thought["subject"] = "origin";
-        return std::vector<Atlas::Message::Element> { thought };
+        return std::vector<Atlas::Message::Element>{thought};
     } else {
         return std::vector<Atlas::Message::Element>();
     }
@@ -348,14 +355,9 @@ void ArchetypeFactory::sendThoughts(LocatedEntity& entity, std::vector<Atlas::Me
 
 }
 
-ArchetypeFactory * ArchetypeFactory::duplicateFactory()
+ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 {
-    auto* f = new ArchetypeFactory(*this);
-    // Copy the defaults to the parent
-    f->m_entities = this->m_entities;
-    f->m_thoughts = this->m_thoughts;
-    f->m_parent = this;
-    return f;
+    return new ArchetypeFactory(*this);
 }
 
 void ArchetypeFactory::addProperties()

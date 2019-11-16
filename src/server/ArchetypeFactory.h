@@ -25,6 +25,8 @@
 
 #include <vector>
 
+class EntityBuilder;
+
 /// \brief Concrete factory template for creating in-game entity objects through archetypes.
 ///
 /// An archetype contains one or many entities along with optional thoughts (for NPCs etc).
@@ -155,7 +157,7 @@ class ArchetypeFactory: public EntityKit
 
 
     public:
-        explicit ArchetypeFactory();
+        explicit ArchetypeFactory(EntityBuilder& entityBuilder);
 
         ~ArchetypeFactory() override;
 
@@ -168,6 +170,8 @@ class ArchetypeFactory: public EntityKit
 
         void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
+
+        EntityBuilder& m_entityBuilder;
         /// Factory for class from which the class handled by this factory
         /// inherits.
         ArchetypeFactory * m_parent;

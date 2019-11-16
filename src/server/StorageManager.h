@@ -33,9 +33,9 @@
 #include "modules/Ref.h"
 
 class Entity;
-
+class EntityBuilder;
 class WorldRouter;
-
+class Database;
 class PropertyBase;
 
 /// \brief StorageManager represents the subsystem which stores world storage
@@ -47,6 +47,9 @@ class StorageManager : public sigc::trackable
     protected:
         typedef std::deque<WeakEntityRef> Entitystore;
         typedef std::deque<long> Idstore;
+
+        Database& m_db;
+        EntityBuilder& m_entityBuilder;
 
         /// \brief Queue of references to entities yet to be stored.
         Entitystore m_unstoredEntities;
@@ -101,7 +104,7 @@ class StorageManager : public sigc::trackable
         bool persistance_characterDeleted(const std::string& entityId);
 
     public:
-        explicit StorageManager(WorldRouter&);
+        explicit StorageManager(WorldRouter&, Database& db, EntityBuilder& entityBuilder);
 
         virtual ~StorageManager();
 

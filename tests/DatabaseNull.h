@@ -21,6 +21,7 @@
 
 #include "common/Database.h"
 #include <functional>
+#include <memory>
 
 
 struct const_iterator_worker_null : public DatabaseResult::const_iterator_worker
@@ -41,6 +42,7 @@ struct const_iterator_worker_null : public DatabaseResult::const_iterator_worker
 
 class DatabaseNullResultWorker : public DatabaseResult::DatabaseResultWorker
 {
+    public:
         ~DatabaseNullResultWorker() override = default;
 
         int size() const override
@@ -120,7 +122,7 @@ class DatabaseNull : public Database
 
         DatabaseResult runSimpleSelectQuery(const std::string& query) override
         {
-            return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+            return DatabaseResult(std::make_unique<DatabaseNullResultWorker>());
         }
 
         int runCommandQuery(const std::string& query) override

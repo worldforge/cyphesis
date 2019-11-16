@@ -114,6 +114,7 @@ int main(int argc, char ** argv)
 
     { // scope for CommServer
 
+        EntityBuilder entityBuilder;
     // Create commserver instance that will handle connections from clients.
     // The commserver will create the other server related objects, and the
     // world object pair (World + WorldRouter), and initialise the admin
@@ -196,8 +197,7 @@ int main(int argc, char ** argv)
 
     Persistence::instance().shutdown();
 
-    EntityBuilder::instance().flushFactories();
-    EntityBuilder::del();
+    entityBuilder.flushFactories();
     MindFactory::del();
 
     Inheritance::clear();

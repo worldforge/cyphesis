@@ -33,8 +33,8 @@
 
 #ifndef STUB_WorldRouter_WorldRouter
 //#define STUB_WorldRouter_WorldRouter
-   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity)
-    : BaseWorld(baseEntity)
+   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder)
+    : BaseWorld(baseEntity, entityBuilder)
   {
     
   }

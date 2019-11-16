@@ -91,8 +91,8 @@
 
 #ifndef STUB_ArchetypeFactory_ArchetypeFactory
 //#define STUB_ArchetypeFactory_ArchetypeFactory
-   ArchetypeFactory::ArchetypeFactory()
-    : EntityKit()
+   ArchetypeFactory::ArchetypeFactory(EntityBuilder& entityBuilder)
+    : EntityKit(entityBuilder)
     , m_parent(nullptr)
   {
     

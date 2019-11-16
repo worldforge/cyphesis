@@ -115,10 +115,8 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Instance of Ruleset with all protected methods exposed
             // for testing
-            EntityBuilder* test_eb = EntityBuilder::instancePtr();
-            assert(test_eb == m_entity_builder);
             boost::asio::io_context io_context;
-            Ruleset test_ruleset(test_eb, io_context);
+            Ruleset test_ruleset(m_entity_builder, io_context);
 
 
             {
@@ -131,7 +129,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             Anonymous attributes;
 
             // Create an entity which is an instance of one of the core classes
-            auto test_ent = test_eb->newEntity("1", 1,
+            auto test_ent = m_entity_builder->newEntity("1", 1,
                                                "thing",
                                                attributes,
                                                *m_test_world);
@@ -139,7 +137,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that creating an entity of a type we know we have not yet
             // installed results in a null pointer.
-            assert(!test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world));
+            assert(!m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world));
 
             // Set up a type description for a new type, and install it.
             {
@@ -161,7 +159,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary now contains a factory for
             // the custom type we just installed.
-            EntityFactoryBase* custom_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_type"));
+            EntityFactoryBase* custom_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_type"));
             assert(custom_type_factory != 0);
             assert(custom_type_factory->m_type != 0);
             assert(custom_type_factory->m_type ==
@@ -192,7 +190,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(custom_type_val == "test_value");
 
             // Create an instance of our custom type, ensuring that it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.
@@ -211,7 +209,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that creating an entity of a type we know we have not yet
             // installed results in a null pointer.
-            assert(!test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world));
+            assert(!m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world));
 
             // Set up a type description for a second new type which inherits
             // from the first, and install it.
@@ -238,7 +236,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary does contain the factory for
             // the second newly installed type
-            EntityFactoryBase* custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
+            EntityFactoryBase* custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_inherited_type"));
             assert(custom_inherited_type_factory != 0);
 
             // Check that the factory has inherited the attributes from the
@@ -256,7 +254,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J->second.String() == "test_inherited_value");
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.
@@ -339,7 +337,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary does contain the factory for
             // the second newly installed type
-            custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
+            custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_inherited_type"));
             assert(custom_inherited_type_factory != 0);
 
             // Check that the factory has inherited the attributes from the
@@ -354,7 +352,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_inherited_type_factory->m_attributes.end());
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.
@@ -403,7 +401,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary now contains a factory for
             // the custom type we just installed.
-            custom_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_type"));
+            custom_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_type"));
             assert(custom_type_factory != 0);
 
             // Check the factory has the attributes we described on the custom
@@ -412,7 +410,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_type_factory->m_attributes.end());
 
             // Create an instance of our custom type, ensuring that it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.
@@ -428,7 +426,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary does contain the factory for
             // the second newly installed type
-            custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
+            custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_inherited_type"));
             assert(custom_inherited_type_factory != 0);
 
             // Check that the factory no longer has inherited the attributes
@@ -441,7 +439,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_inherited_type_factory->m_attributes.end());
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.
@@ -500,7 +498,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary now contains a factory for
             // the custom type we just installed.
-            custom_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_type"));
+            custom_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_type"));
 
             // Check the factory has the attributes we described on the custom
             // type.
@@ -515,7 +513,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J->second.String() == "new_value");
 
             // Create an instance of our custom type, ensuring that it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.
@@ -537,7 +535,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that the factory dictionary does contain the factory for
             // the second newly installed type
-            custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(test_eb->getClassFactory("custom_inherited_type"));
+            custom_inherited_type_factory = dynamic_cast<EntityFactoryBase*>(m_entity_builder->getClassFactory("custom_inherited_type"));
             assert(custom_inherited_type_factory != 0);
 
             // Check that the factory now has inherited the attributes
@@ -557,7 +555,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_inherited_type_factory->m_attributes.end());
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = test_eb->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
             assert(test_ent);
 
             // Reset val.

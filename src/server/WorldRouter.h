@@ -28,6 +28,7 @@
 
 
 class Spawn;
+class EntityBuilder;
 
 typedef std::map<std::string, std::pair<Spawn *, std::string>> SpawnDict;
 
@@ -50,6 +51,7 @@ class WorldRouter : public BaseWorld {
 
     /// \brief The top level in-game entity in the world.
     Ref<LocatedEntity> m_baseEntity;
+    EntityBuilder& m_entityBuilder;
   protected:
     /// \brief Determine if the broadcast is allowed.
     ///
@@ -60,7 +62,7 @@ class WorldRouter : public BaseWorld {
                    Ref<LocatedEntity>);
     void resumeWorld() override;
   public:
-    explicit WorldRouter(Ref<LocatedEntity> baseEntity);
+    explicit WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder);
 
     ~WorldRouter() override;
 

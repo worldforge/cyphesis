@@ -106,8 +106,8 @@ void WorldRoutertest::setup()
 {
     m_rootEntity = new Entity("", 0);
     m_inheritance = new Inheritance(factories);
-    test_world = new WorldRouter(m_rootEntity);
     m_eb = new EntityBuilder();
+    test_world = new WorldRouter(m_rootEntity, *m_eb);
 }
 
 void WorldRoutertest::teardown()

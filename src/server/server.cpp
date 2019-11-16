@@ -255,14 +255,14 @@ int main(int argc, char** argv)
     Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
     baseEntity->setType(Inheritance::instance().getType("world"));
 
-    WorldRouter* world = new WorldRouter(baseEntity);
+    WorldRouter* world = new WorldRouter(baseEntity, *entityBuilder);
 
     CyPy_Server::registerWorld(world);
 
     auto possessionAuthenticator = new PossessionAuthenticator();
 
     auto externalMindsManager = new ExternalMindsManager();
-    auto store = new StorageManager(*world);
+    auto store = new StorageManager(*world, *database, *entityBuilder);
 
     // This ID is currently generated every time, but should perhaps be
     // persistent in future.

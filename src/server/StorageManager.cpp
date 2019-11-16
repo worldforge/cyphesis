@@ -54,37 +54,38 @@ typedef Database::KeyValues KeyValues;
 
 static const bool debug_flag = false;
 
-StorageManager::StorageManager(WorldRouter & world) :
-      m_insertEntityCount(0), m_updateEntityCount(0),
-      m_insertPropertyCount(0), m_updatePropertyCount(0),
-      m_insertQps(0), m_updateQps(0),
-      m_insertQpsNow(0), m_updateQpsNow(0),
-      m_insertQpsAvg(0), m_updateQpsAvg(0),
-      m_insertQpsIndex(0), m_updateQpsIndex(0),
-      m_insertQpsRing(), m_updateQpsRing()
+StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder) :
+    m_db(db), m_entityBuilder(entityBuilder),
+    m_insertEntityCount(0), m_updateEntityCount(0),
+    m_insertPropertyCount(0), m_updatePropertyCount(0),
+    m_insertQps(0), m_updateQps(0),
+    m_insertQpsNow(0), m_updateQpsNow(0),
+    m_insertQpsAvg(0), m_updateQpsAvg(0),
+    m_insertQpsIndex(0), m_updateQpsIndex(0),
+    m_insertQpsRing(), m_updateQpsRing()
 {
 
     world.inserted.connect(sigc::mem_fun(this,
-          &StorageManager::entityInserted));
+                                         &StorageManager::entityInserted));
 
     Monitors::instance().watch("storage_entity_inserts",
-                                new Variable<int>(m_insertEntityCount));
+                               new Variable<int>(m_insertEntityCount));
     Monitors::instance().watch("storage_entity_updates",
-                                new Variable<int>(m_updateEntityCount));
+                               new Variable<int>(m_updateEntityCount));
     Monitors::instance().watch("storage_property_inserts",
-                                new Variable<int>(m_insertPropertyCount));
+                               new Variable<int>(m_insertPropertyCount));
     Monitors::instance().watch("storage_property_updates",
-                                new Variable<int>(m_updatePropertyCount));
+                               new Variable<int>(m_updatePropertyCount));
 
     Monitors::instance().watch(R"(storage_qps{qtype="inserts",t="1"})",
-                                new Variable<int>(m_insertQpsNow));
+                               new Variable<int>(m_insertQpsNow));
     Monitors::instance().watch(R"(storage_qps{qtype="updates",t="1"})",
-                                new Variable<int>(m_updateQpsNow));
+                               new Variable<int>(m_updateQpsNow));
 
     Monitors::instance().watch(R"(storage_qps{qtype="inserts",t="32"})",
-                                new Variable<int>(m_insertQpsAvg));
+                               new Variable<int>(m_insertQpsAvg));
     Monitors::instance().watch(R"(storage_qps{qtype="updates",t="32"})",
-                                new Variable<int>(m_updateQpsAvg));
+                               new Variable<int>(m_updateQpsAvg));
 
     for (int i = 0; i < 32; ++i) {
         m_insertQpsRing[i] = 0;
@@ -98,7 +99,7 @@ StorageManager::StorageManager(WorldRouter & world) :
 StorageManager::~StorageManager() = default;
 
 /// \brief Called when a new Entity is inserted in the world
-void StorageManager::entityInserted(LocatedEntity * ent)
+void StorageManager::entityInserted(LocatedEntity* ent)
 {
     if (ent->hasFlags(entity_ephem)) {
         // This entity is not persisted.
@@ -111,7 +112,7 @@ void StorageManager::entityInserted(LocatedEntity * ent)
         // signal will be connected later once the initial database insert
         // has been done.
         ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-        ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) {entityUpdated(ent);});
+        ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
         return;
     }
     // Queue the entity to be inserted into the persistence tables.
@@ -120,7 +121,7 @@ void StorageManager::entityInserted(LocatedEntity * ent)
 }
 
 /// \brief Called when an Entity is modified
-void StorageManager::entityUpdated(LocatedEntity * ent)
+void StorageManager::entityUpdated(LocatedEntity* ent)
 {
     if (ent->isDestroyed()) {
         m_destroyedEntities.push_back(ent->getIntId());
@@ -151,17 +152,16 @@ bool StorageManager::persistance_characterDeleted(const std::string& entityId)
     return true;
 }
 
-void StorageManager::encodeProperty(PropertyBase * prop, std::string & store)
+void StorageManager::encodeProperty(PropertyBase* prop, std::string& store)
 {
     Atlas::Message::MapType map;
     prop->get(map["val"]);
     Database::instance().encodeObject(map, store);
 }
 
-void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
+void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
 {
-    Database * db = Database::instancePtr();
-    DatabaseResult res = db->selectProperties(ent->getId());
+    DatabaseResult res = m_db.selectProperties(ent->getId());
 
     //Keep track of those properties that have been set on the instance, so we'll know what
     //type properties we should ignore.
@@ -183,7 +183,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
             continue;
         }
         MapType prop_data;
-        db->decodeMessage(val_string, prop_data);
+        m_db.decodeMessage(val_string, prop_data);
         auto J = prop_data.find("val");
         if (J == prop_data.end()) {
             log(ERROR, compose("No property value data for %1:%2",
@@ -264,7 +264,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity * ent)
 
 }
 
-void StorageManager::insertEntity(LocatedEntity * ent)
+void StorageManager::insertEntity(LocatedEntity* ent)
 {
     std::string location;
     Atlas::Message::MapType map;
@@ -275,13 +275,13 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     Database::instance().encodeObject(map, location);
 
     Database::instance().insertEntity(ent->getId(),
-                                       ent->m_location.m_parent->getId(),
-                                       ent->getType()->name(),
-                                       ent->getSeq(),
-                                       location);
+                                      ent->m_location.m_parent->getId(),
+                                      ent->getType()->name(),
+                                      ent->getSeq(),
+                                      location);
     ++m_insertEntityCount;
     KeyValues property_tuples;
-    const PropertyDict & properties = ent->getProperties();
+    const PropertyDict& properties = ent->getProperties();
     for (auto& entry : properties) {
         auto& prop = entry.second;
         if (prop->hasFlags(persistence_ephem)) {
@@ -297,10 +297,10 @@ void StorageManager::insertEntity(LocatedEntity * ent)
     ent->removeFlags(entity_queued);
     ent->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
     ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-    ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) {entityUpdated(ent);});
+    ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
 }
 
-void StorageManager::updateEntity(LocatedEntity * ent)
+void StorageManager::updateEntity(LocatedEntity* ent)
 {
     std::string location;
     Atlas::Message::MapType map;
@@ -313,18 +313,18 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     //Under normal circumstances only the top world won't have a location.
     if (ent->m_location.m_parent) {
         Database::instance().updateEntity(ent->getId(),
-                                       ent->getSeq(),
-                                       location,
-                                       ent->m_location.m_parent->getId());
+                                          ent->getSeq(),
+                                          location,
+                                          ent->m_location.m_parent->getId());
     } else {
         Database::instance().updateEntityWithoutLoc(ent->getId(),
-                                       ent->getSeq(),
-                                       location);
+                                                    ent->getSeq(),
+                                                    location);
     }
     ++m_updateEntityCount;
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
-    const PropertyDict & properties = ent->getProperties();
+    const PropertyDict& properties = ent->getProperties();
     for (const auto& property : properties) {
         auto& prop = property.second;
         if (prop->hasFlags(persistence_mask)) {
@@ -354,20 +354,18 @@ void StorageManager::updateEntity(LocatedEntity * ent)
     }
     if (!new_property_tuples.empty()) {
         Database::instance().insertProperties(ent->getId(),
-                                               new_property_tuples);
+                                              new_property_tuples);
     }
     if (!upd_property_tuples.empty()) {
         Database::instance().updateProperties(ent->getId(),
-                                               upd_property_tuples);
+                                              upd_property_tuples);
     }
     ent->addFlags(entity_clean_mask);
 }
 
-void StorageManager::restoreChildren(LocatedEntity * parent)
+void StorageManager::restoreChildren(LocatedEntity* parent)
 {
-    Database * db = Database::instancePtr();
-    DatabaseResult res = db->selectEntities(parent->getId());
-    EntityBuilder * eb = EntityBuilder::instancePtr();
+    DatabaseResult res = m_db.selectEntities(parent->getId());
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Restore children, but don't restore any properties yet.
@@ -380,17 +378,17 @@ void StorageManager::restoreChildren(LocatedEntity * parent)
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
         Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
-        auto child = eb->newEntity(id, int_id, type, attrs, BaseWorld::instance());
+        auto child = m_entityBuilder.newEntity(id, int_id, type, attrs, BaseWorld::instance());
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
-                    ", most likely caused by this type missing.",
-                    id, type));
+                               ", most likely caused by this type missing.",
+                               id, type));
             continue;
         }
-        
+
         const std::string location_string = I.column("location");
         MapType loc_data;
-        db->decodeMessage(location_string, loc_data);
+        m_db.decodeMessage(location_string, loc_data);
         child->m_location.readFromMessage(loc_data);
         if (!child->m_location.pos().isValid()) {
             std::cout << "No pos data" << std::endl << std::flush;
@@ -418,13 +416,13 @@ void StorageManager::tick()
     }
 
     while (!m_unstoredEntities.empty()) {
-        const WeakEntityRef & ent = m_unstoredEntities.front();
+        const WeakEntityRef& ent = m_unstoredEntities.front();
         if (ent && !ent->isDestroyed()) {
-            debug( std::cout << "storing " << ent->getId() << std::endl << std::flush; )
+            debug(std::cout << "storing " << ent->getId() << std::endl << std::flush;)
             insertEntity(ent.get());
             ++inserts;
         } else {
-            debug( std::cout << "deleted" << std::endl << std::flush; )
+            debug(std::cout << "deleted" << std::endl << std::flush;)
         }
         m_unstoredEntities.pop_front();
     }
@@ -446,20 +444,20 @@ void StorageManager::tick()
             debug_print("Too many")
             break;
         }
-        const WeakEntityRef & ent = m_dirtyEntities.front();
+        const WeakEntityRef& ent = m_dirtyEntities.front();
         if (ent) {
             if ((ent->flags().m_flags & entity_clean_mask) != entity_clean_mask) {
-                debug( std::cout << "updating " << ent->getId() << std::endl << std::flush; )
+                debug(std::cout << "updating " << ent->getId() << std::endl << std::flush;)
                 updateEntity(ent.get());
                 ++updates;
             }
             if (ent->hasFlags(entity_dirty_thoughts)) {
-                debug( std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush; )
+                debug(std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush;)
                 ++updates;
             }
             ent->removeFlags(entity_queued);
         } else {
-            debug( std::cout << "deleted" << std::endl << std::flush; )
+            debug(std::cout << "deleted" << std::endl << std::flush;)
         }
         m_dirtyEntities.pop_front();
     }
@@ -468,7 +466,7 @@ void StorageManager::tick()
         debug(std::cout << "I: " << inserts << " U: " << updates
                         << std::endl << std::flush;)
     }
-    int insert_queries = m_insertEntityCount + m_insertPropertyCount 
+    int insert_queries = m_insertEntityCount + m_insertPropertyCount
                          - old_insert_queries;
 
     if (++m_insertQpsIndex >= 32) {
@@ -480,10 +478,12 @@ void StorageManager::tick()
     m_insertQpsAvg = m_insertQps / 32;
     m_insertQpsNow = insert_queries;
 
-    debug(if (insert_queries) { std::cout << "Ins: " << insert_queries << ", " << m_insertQps / 32
-                    << std::endl << std::flush;})
+    debug(if (insert_queries) {
+        std::cout << "Ins: " << insert_queries << ", " << m_insertQps / 32
+                  << std::endl << std::flush;
+    })
 
-    int update_queries = m_updateEntityCount + m_updatePropertyCount 
+    int update_queries = m_updateEntityCount + m_updatePropertyCount
                          - old_update_queries;
 
     if (++m_updateQpsIndex >= 32) {
@@ -495,8 +495,10 @@ void StorageManager::tick()
     m_updateQpsAvg = m_updateQps / 32;
     m_updateQpsNow = update_queries;
 
-    debug(if (update_queries) { std::cout << "Ups: " << update_queries << ", " << m_updateQps / 32
-                    << std::endl << std::flush;})
+    debug(if (update_queries) {
+        std::cout << "Ups: " << update_queries << ", " << m_updateQps / 32
+                  << std::endl << std::flush;
+    })
 }
 
 int StorageManager::initWorld(const Ref<LocatedEntity>& ent)
@@ -529,7 +531,7 @@ int StorageManager::shutdown(bool& exit_flag_ref, const std::map<long, Ref<Locat
     tick();
     while (Database::instance().queryQueueSize()) {
         //Allow for any user to abort the process.
-        if(exit_flag_ref) {
+        if (exit_flag_ref) {
             log(NOTICE, "Aborted entity persisting. This might lead to lost entities.");
             return 0;
         }

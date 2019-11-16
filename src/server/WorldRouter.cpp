@@ -51,11 +51,12 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
-WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity) :
+WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder) :
     BaseWorld(),
     m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
     m_entityCount(1),
-    m_baseEntity(std::move(baseEntity))
+    m_baseEntity(std::move(baseEntity)),
+    m_entityBuilder(entityBuilder)
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
@@ -202,7 +203,7 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
         return nullptr;
     }
 
-    Ref<LocatedEntity> ent = EntityBuilder::instance().newEntity(id, intId, typestr, attrs, *this);
+    auto ent = m_entityBuilder.newEntity(id, intId, typestr, attrs, *this);
     if (!ent) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
@@ -407,12 +408,12 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
     debug(std::cout << "WorldRouter::deliverTo begin {"
                     << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                    << std::flush;);
+                    << std::flush;)
     ent->operation(op, res);
     debug(std::cout << "WorldRouter::deliverTo done {"
                     << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                    << std::flush;);
+                    << std::flush;)
     for (auto& resOp : res) {
         if (op->getFrom() == resOp->getTo()) {
             if (!op->isDefaultSerialno() && resOp->isDefaultRefno()) {
@@ -435,7 +436,7 @@ void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
     debug(std::cout << "WorldRouter::operation {"
                     << op->getParent() << ":"
                     << op->getFrom() << ":" << op->getTo() << "}"
-                    << std::endl << std::flush;);
+                    << std::endl << std::flush;)
     assert(op->getFrom() == from->getId());
     assert(!op->getParent().empty());
 

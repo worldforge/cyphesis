@@ -29,7 +29,6 @@
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
 #include "common/ScriptKit.h"
-#include "common/TypeNode.h"
 #include "common/Variable.h"
 
 #include <Atlas/Objects/RootOperation.h>
@@ -45,13 +44,10 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-template<>
-EntityBuilder* Singleton<EntityBuilder>::ms_Singleton = nullptr;
-
 EntityBuilder::EntityBuilder()
-: m_propertyManager(new CorePropertyManager())
+    : m_propertyManager(new CorePropertyManager())
 {
-    installBaseFactory("archetype", "root_entity", new ArchetypeFactory());
+    installBaseFactory("archetype", "root_entity", new ArchetypeFactory(*this));
     python_reload_scripts.connect([&]() {
 
         ScriptsProperty::reloadAllScriptFactories();
@@ -83,14 +79,7 @@ EntityBuilder::EntityBuilder()
     });
 }
 
-EntityBuilder::~EntityBuilder()
-{
-    FactoryDict::const_iterator I = m_entityFactories.begin();
-    FactoryDict::const_iterator Iend = m_entityFactories.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
-}
+EntityBuilder::~EntityBuilder() = default;
 
 /// \brief Build and populate a new entity object.
 ///
@@ -123,13 +112,13 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, c
         return newChildEntity(id, intId, type, attributes, *loc);
     } catch (const std::exception& ex) {
         log(ERROR, String::compose("Error when creating entity of type %1."
-                                       " Message: %2", type, ex.what()));
+                                   " Message: %2", type, ex.what()));
         return nullptr;
     }
 }
 
 Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attributes,
-                                             LocatedEntity& parentEntity) const
+                                                 LocatedEntity& parentEntity) const
 {
     debug_print("EntityFactor::newEntity()")
     auto I = m_entityFactories.find(type);
@@ -137,7 +126,7 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
         return nullptr;
     }
 
-    EntityKit* factory = I->second;
+    auto& factory = I->second;
     debug_print("[" << type << "]")
     return factory->newEntity(id, intId, attributes, &parentEntity);
 
@@ -146,10 +135,6 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
 /// \brief Clear out all the factory objects owned by the entity builder.
 void EntityBuilder::flushFactories()
 {
-    FactoryDict::const_iterator Iend = m_entityFactories.end();
-    for (FactoryDict::const_iterator I = m_entityFactories.begin(); I != Iend; ++I) {
-        delete I->second;
-    }
     m_entityFactories.clear();
 }
 
@@ -179,6 +164,6 @@ EntityKit* EntityBuilder::getClassFactory(const std::string& class_name)
     if (I == m_entityFactories.end()) {
         return nullptr;
     }
-    return I->second;
+    return I->second.get();
 }
 

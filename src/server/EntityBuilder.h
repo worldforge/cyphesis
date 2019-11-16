@@ -33,13 +33,13 @@ class LocatedEntity;
 class EntityKit;
 class CorePropertyManager;
 
-typedef std::map<std::string, EntityKit *> FactoryDict;
+typedef std::map<std::string, std::unique_ptr<EntityKit>> FactoryDict;
 
 /// \brief Builder to handle the creation of all entities for the world.
 ///
 /// Uses PersistantThingFactory to store information about entity types, and
 /// create them. Handles connecting entities to their persistor as required.
-class EntityBuilder : public Singleton<EntityBuilder> {
+class EntityBuilder {
   protected:
 
     std::unique_ptr<CorePropertyManager> m_propertyManager;
@@ -52,7 +52,7 @@ class EntityBuilder : public Singleton<EntityBuilder> {
 
   public:
     explicit EntityBuilder();
-    ~EntityBuilder() override;
+    ~EntityBuilder();
 
     int installFactory(const std::string & class_name,
                        const Atlas::Objects::Root & class_desc,

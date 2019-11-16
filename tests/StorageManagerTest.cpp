@@ -41,7 +41,7 @@ using Atlas::Message::Element;
 class TestStorageManager : public StorageManager
 {
   public:
-    TestStorageManager(WorldRouter&w) : StorageManager(w) { }
+    TestStorageManager(WorldRouter&w, Database& db, EntityBuilder& eb) : StorageManager(w, db, eb) { }
 
     
     void test_entityInserted(LocatedEntity * e) {
@@ -80,55 +80,55 @@ int main()
     Ref<LocatedEntity> le = new Entity("", 0);
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        StorageManager store(world);
+        StorageManager store(world, database, eb);
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        StorageManager store(world);
+        StorageManager store(world, database, eb);
 
         store.initWorld(le);
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        StorageManager store(world);
+        StorageManager store(world, database, eb);
 
         store.restoreWorld(le);
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        StorageManager store(world);
+        StorageManager store(world, database, eb);
 
         store.tick();
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         store.test_entityInserted(new Entity("1", 1));
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         store.test_entityUpdated(new Entity("1", 1));
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         std::string val;
 
@@ -136,33 +136,33 @@ int main()
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         store.test_restoreProperties(new Entity("1", 1));
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         store.test_insertEntity(new Entity("1", 1));
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         store.test_updateEntity(new Entity("1", 1));
     }
 
     {
-        WorldRouter world(le);
+        WorldRouter world(le, eb);
 
-        TestStorageManager store(world);
+        TestStorageManager store(world, database, eb);
 
         store.test_restoreChildren(new Entity("1", 1));
     }
