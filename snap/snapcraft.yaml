@@ -52,6 +52,8 @@ parts:
         plugin: cmake
 
     media:
+        build-packages:
+            - rsync
         override-pull: |
             rsync -rtzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets $SNAPCRAFT_PART_SRC/assets
         override-stage: |
@@ -74,7 +76,6 @@ parts:
             - libreadline-dev
             - libboost-filesystem-dev
             - libboost-system-dev
-            - rsync
             - g++
         stage-packages:
             - libboost-filesystem1.65.1
