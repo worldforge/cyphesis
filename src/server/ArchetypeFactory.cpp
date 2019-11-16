@@ -357,7 +357,9 @@ void ArchetypeFactory::sendThoughts(LocatedEntity& entity, std::vector<Atlas::Me
 
 ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 {
-    return new ArchetypeFactory(*this);
+    auto child = new ArchetypeFactory(*this);
+    child->m_parent = this;
+    return child;
 }
 
 void ArchetypeFactory::addProperties()
