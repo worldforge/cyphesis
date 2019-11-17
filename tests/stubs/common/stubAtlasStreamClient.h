@@ -10,7 +10,6 @@
 #ifndef STUB_StreamClientSocketBase_StreamClientSocketBase
 //#define STUB_StreamClientSocketBase_StreamClientSocketBase
    StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_context& io_context, std::function<void()>& dispatcher)
-    : m_codec(nullptr),m_encoder(nullptr)
   {
     
   }

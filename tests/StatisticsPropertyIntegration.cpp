@@ -59,9 +59,9 @@ class ArithmeticTestWorld : public TestWorld {
         m_eobjects[ent->getIntId()] = ent;
         return 0;
     }
-    ArithmeticScript * newArithmetic(const std::string &,
+    std::unique_ptr<ArithmeticScript> newArithmetic(const std::string &,
                                              LocatedEntity *) override {
-        return new TestArithmeticScript;
+        return std::make_unique<TestArithmeticScript>();
     }
 };
 

@@ -112,7 +112,7 @@ struct ProvidersTest : public Cyphesis::TestBase
         //Make first barrel contain the second barrel
         m_b1_container = new LocatedEntitySet;
         m_b1_container->insert(m_b2);
-        m_b1->m_contains = m_b1_container;
+        m_b1->m_contains.reset(m_b1_container);
 
         //Set bounding box properties for barrels
         BBoxProperty* bbox1 = new BBoxProperty;
@@ -173,7 +173,7 @@ struct ProvidersTest : public Cyphesis::TestBase
         //Make second barrel contain the character
         m_b2_container = new LocatedEntitySet;
         m_b2_container->insert(m_ch1);
-        m_b2->m_contains = m_b2_container;
+        m_b2->m_contains.reset(m_b2_container);
     }
 
     void teardown()

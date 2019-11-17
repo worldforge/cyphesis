@@ -9,7 +9,7 @@
 
 #ifndef STUB_PropertyRuleHandler_check
 //#define STUB_PropertyRuleHandler_check
-  int PropertyRuleHandler::check(const Atlas::Objects::Root & desc)
+  int PropertyRuleHandler::check(const Atlas::Objects::Root& desc)
   {
     return 0;
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_PropertyRuleHandler_install
 //#define STUB_PropertyRuleHandler_install
-  int PropertyRuleHandler::install(const std::string &, const std::string &, const Atlas::Objects::Root & desc, std::string &, std::string &, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int PropertyRuleHandler::install(const std::string&, const std::string&, const Atlas::Objects::Root& desc, std::string&, std::string&, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_PropertyRuleHandler_update
 //#define STUB_PropertyRuleHandler_update
-  int PropertyRuleHandler::update(const std::string &, const Atlas::Objects::Root & desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int PropertyRuleHandler::update(const std::string&, const Atlas::Objects::Root& desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

@@ -47,7 +47,7 @@ static const bool debug_flag = false;
 EntityBuilder::EntityBuilder()
     : m_propertyManager(new CorePropertyManager())
 {
-    installBaseFactory("archetype", "root_entity", new ArchetypeFactory(*this));
+    installBaseFactory("archetype", "root_entity", std::make_unique<ArchetypeFactory>(*this));
     python_reload_scripts.connect([&]() {
 
         ScriptsProperty::reloadAllScriptFactories();
@@ -138,12 +138,12 @@ void EntityBuilder::flushFactories()
     m_entityFactories.clear();
 }
 
-void EntityBuilder::installBaseFactory(const std::string& class_name, const std::string& parent, EntityKit* factory)
+void EntityBuilder::installBaseFactory(const std::string& class_name, const std::string& parent, std::unique_ptr<EntityKit> factory)
 {
-    installFactory(class_name, atlasClass(class_name, parent), factory);
+    installFactory(class_name, atlasClass(class_name, parent), std::move(factory));
 }
 
-int EntityBuilder::installFactory(const std::string& class_name, const Root& class_desc, EntityKit* factory)
+int EntityBuilder::installFactory(const std::string& class_name, const Root& class_desc, std::unique_ptr<EntityKit> factory)
 {
     Inheritance& i = Inheritance::instance();
     factory->m_type = i.addChild(class_desc);
@@ -152,15 +152,16 @@ int EntityBuilder::installFactory(const std::string& class_name, const Root& cla
         return -1;
     }
 
-    m_entityFactories.insert(std::make_pair(class_name, factory));
-
     Monitors::instance().watch(compose("created_count{type=\"%1\"}", class_name), new Variable<int>(factory->m_createdCount));
+
+    m_entityFactories.emplace(class_name, std::move(factory));
+
     return 0;
 }
 
 EntityKit* EntityBuilder::getClassFactory(const std::string& class_name) const
 {
-    FactoryDict::const_iterator I = m_entityFactories.find(class_name);
+    auto I = m_entityFactories.find(class_name);
     if (I == m_entityFactories.end()) {
         return nullptr;
     }

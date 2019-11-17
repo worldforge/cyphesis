@@ -36,7 +36,7 @@ class PythonArithmeticFactory : private PythonClass, public ArithmeticKit
 
         int setup();
 
-        ArithmeticScript* newScript(LocatedEntity* owner) override;
+        std::unique_ptr<ArithmeticScript> newScript(LocatedEntity* owner) override;
 };
 
 #endif // RULESETS_PYTHON_ARITHMETIC_FACTORY_H

@@ -186,7 +186,7 @@ void Accountintegration::setup()
     m_persistence = new Persistence(m_database);
     m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
-    auto entityRuleHandler = new EntityRuleHandler(m_eb);
+    auto entityRuleHandler = new EntityRuleHandler(*m_eb);
 
     m_world = new WorldRouter(m_rootEntity, *m_eb);
 

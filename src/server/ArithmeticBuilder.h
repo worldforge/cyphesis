@@ -21,16 +21,20 @@
 
 #include <string>
 #include <common/Singleton.h>
+#include <memory>
+#include "rules/simulation/ArithmeticScript.h"
 
 class ArithmeticScript;
+
 class LocatedEntity;
 
 /// \brief Builder to handle the creation of arithmetic objects
-class ArithmeticBuilder : public Singleton<ArithmeticBuilder> {
-  public:
-    ArithmeticBuilder();
+class ArithmeticBuilder : public Singleton<ArithmeticBuilder>
+{
+    public:
+        ArithmeticBuilder();
 
-    ArithmeticScript * newArithmetic(const std::string &, LocatedEntity *);
+        std::unique_ptr<ArithmeticScript> newArithmetic(const std::string&, LocatedEntity*);
 };
 
 #endif // SERVER_ARITHMETIC_BUILDER_H

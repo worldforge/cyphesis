@@ -35,7 +35,7 @@ using Atlas::Message::FloatType;
 /// This is required because although the value the data is copied, the
 /// script must not be. The script is re-instantiated when apply is called
 /// on the enity instance.
-StatisticsProperty::StatisticsProperty(const StatisticsProperty & other) :
+StatisticsProperty::StatisticsProperty(const StatisticsProperty& other) :
     PropertyBase(other),
     m_data(other.m_data),
     m_script(nullptr)
@@ -50,19 +50,16 @@ StatisticsProperty::StatisticsProperty() : m_script(nullptr)
 {
 }
 
-StatisticsProperty::~StatisticsProperty()
-{
-    delete m_script;
-}
+StatisticsProperty::~StatisticsProperty() = default;
 
-void StatisticsProperty::install(LocatedEntity * ent, const std::string & name)
+void StatisticsProperty::install(LocatedEntity* ent, const std::string& name)
 {
 }
 
-void StatisticsProperty::apply(LocatedEntity * ent)
+void StatisticsProperty::apply(LocatedEntity* ent)
 {
-    if (m_script == nullptr) {
-        LocatedEntity * entity = nullptr;
+    if (!m_script) {
+        LocatedEntity* entity = nullptr;
         if (hasFlags(flag_class)) {
         } else {
             entity = ent;
@@ -73,17 +70,17 @@ void StatisticsProperty::apply(LocatedEntity * ent)
             return;
         }
     }
-    std::map<std::string, double>::const_iterator I = m_data.begin();
-    std::map<std::string, double>::const_iterator Iend = m_data.end();
+    auto I = m_data.begin();
+    auto Iend = m_data.end();
     for (; I != Iend; ++I) {
         m_script->set(I->first, static_cast<const float&>(I->second));
     }
 }
 
-int StatisticsProperty::get(Element & val) const
+int StatisticsProperty::get(Element& val) const
 {
     val = MapType();
-    MapType & val_map = val.Map();
+    MapType& val_map = val.Map();
 
     auto I = m_data.begin();
     auto Iend = m_data.end();
@@ -93,13 +90,13 @@ int StatisticsProperty::get(Element & val) const
     return 0;
 }
 
-void StatisticsProperty::set(const Element & ent)
+void StatisticsProperty::set(const Element& ent)
 {
     if (!ent.isMap()) {
         log(WARNING, "Non map statistics");
         return;
     }
-    const MapType & smap = ent.Map();
+    const MapType& smap = ent.Map();
     auto I = smap.begin();
     auto Iend = smap.end();
     for (; I != Iend; ++I) {
@@ -111,7 +108,7 @@ void StatisticsProperty::set(const Element & ent)
     }
 }
 
-StatisticsProperty * StatisticsProperty::copy() const
+StatisticsProperty* StatisticsProperty::copy() const
 {
     return new StatisticsProperty(*this);
 }

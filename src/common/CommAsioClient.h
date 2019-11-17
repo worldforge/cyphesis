@@ -78,12 +78,12 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
          * which basically means that any Atlas op being serialized for outgoing data is written to
          * this buffer.
          */
-        boost::asio::streambuf* mWriteBuffer;
+        std::unique_ptr<boost::asio::streambuf> mWriteBuffer;
 
         /**
          * A buffer which is used when data is being sent asynchronously.
          */
-        boost::asio::streambuf* mSendBuffer;
+        std::unique_ptr<boost::asio::streambuf> mSendBuffer;
 
         /**
          * The stream onto which data is received.
@@ -120,11 +120,11 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
         /// \brief Queue of operations that have been decoded by not dispatched.
         DispatchQueue m_opQueue;
         /// \brief Atlas codec that handles encoding and decoding traffic.
-        Atlas::Codec* m_codec;
+        std::unique_ptr<Atlas::Codec> m_codec;
         /// \brief high level encoder passes data to the codec for transmission.
-        Atlas::Objects::ObjectsEncoder* m_encoder;
+        std::unique_ptr<Atlas::Objects::ObjectsEncoder> m_encoder;
         /// \brief Atlas negotiator for handling codec negotiation.
-        Atlas::Negotiate* m_negotiate;
+        std::unique_ptr<Atlas::Negotiate> m_negotiate;
         /// \brief Server side object for handling connection level operations.
         std::unique_ptr<Link> m_link;
 

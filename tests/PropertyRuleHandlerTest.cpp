@@ -90,7 +90,7 @@ PropertyRuleHandlertest::PropertyRuleHandlertest()
 void PropertyRuleHandlertest::setup()
 {
     propertyManager = new TestPropertyManager;
-    rh = new PropertyRuleHandler(0);
+    rh = new PropertyRuleHandler();
 }
 
 void PropertyRuleHandlertest::teardown()

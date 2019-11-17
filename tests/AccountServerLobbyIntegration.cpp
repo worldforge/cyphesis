@@ -116,8 +116,8 @@ void AccountServerLobbyintegration::setup()
         m_account = new TestAccount(*m_server,
                                     m_id_counter++,
                                     m_id_counter++);
-        m_server->addAccount(m_account);
-        m_server->m_lobby.addAccount(m_account);
+        m_server->addAccount(std::unique_ptr<Account>(m_account));
+        m_server->getLobby().addAccount(m_account);
     }
     ASSERT_NOT_NULL(m_account);
 }

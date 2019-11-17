@@ -205,7 +205,7 @@ void AccountConnectionintegration::test_account_creation()
         ASSERT_NOT_NULL(account_router_ptr);
 
         // Check the account has been logged into the lobby
-        const auto & lobby_dict = m_server->m_lobby.getAccounts();
+        const auto & lobby_dict = m_server->getLobby().getAccounts();
         auto I = lobby_dict.find(account_id);
         ASSERT_TRUE(I != lobby_dict.end());
         auto account_ptr = I->second;

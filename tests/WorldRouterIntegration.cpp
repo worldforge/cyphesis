@@ -134,7 +134,7 @@ void WorldRouterintegration::setup()
     class TestEntityRuleHandler : public EntityRuleHandler
     {
         public:
-            explicit TestEntityRuleHandler(EntityBuilder* eb) : EntityRuleHandler(eb)
+            explicit TestEntityRuleHandler(EntityBuilder& eb) : EntityRuleHandler(eb)
             {}
 
             int test_installEntityClass(const std::string& class_name,
@@ -142,14 +142,14 @@ void WorldRouterintegration::setup()
                                         const Atlas::Objects::Root& class_desc,
                                         std::string& dependent,
                                         std::string& reason,
-                                        EntityFactoryBase* factory)
+                                        std::unique_ptr<EntityFactoryBase> factory)
             {
                 std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-                return installEntityClass(class_name, parent, class_desc, dependent, reason, factory, changes);
+                return installEntityClass(class_name, parent, class_desc, dependent, reason, std::move(factory), changes);
             }
     };
 
-    TestEntityRuleHandler entityRuleHandler(m_eb);
+    TestEntityRuleHandler entityRuleHandler(*m_eb);
 
     auto composeDeclaration = [](std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
 
@@ -171,11 +171,11 @@ void WorldRouterintegration::setup()
     std::string dependent, reason;
     {
         auto decl = composeDeclaration("thing", "game_entity", {});
-        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
+        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, std::make_unique<EntityFactory<Thing>>());
     }
     {
         auto decl = composeDeclaration("character", "thing", {});
-        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, new EntityFactory<Thing>());
+        entityRuleHandler.test_installEntityClass(decl->getId(), decl->getParent(), decl, dependent, reason, std::make_unique<EntityFactory<Thing>>());
     }
 }
 

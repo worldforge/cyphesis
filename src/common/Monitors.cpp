@@ -27,54 +27,47 @@ using Atlas::Message::MapType;
 
 Monitors::Monitors() = default;
 
-Monitors::~Monitors()
-{
-    MonitorDict::const_iterator I = m_variableMonitors.begin();
-    MonitorDict::const_iterator Iend = m_variableMonitors.end();
-    for (; I != Iend; ++I) {
-        delete I->second;
-    }
-}
+Monitors::~Monitors() = default;
 
 
-void Monitors::insert(const std::string & key, const Element & val)
+void Monitors::insert(const std::string& key, const Element& val)
 {
     m_pairs[key] = val;
 }
 
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
+void Monitors::watch(const ::std::string& name, VariableBase* monitor)
 {
-    m_variableMonitors[name] = monitor;
+    m_variableMonitors[name] = std::unique_ptr<VariableBase>(monitor);
 }
 
-static std::ostream & operator<<(std::ostream & s, const Element & e)
+static std::ostream& operator<<(std::ostream& s, const Element& e)
 {
     switch (e.getType()) {
-      case Atlas::Message::Element::TYPE_INT:
-        s << e.Int();
-        break;
-      case Atlas::Message::Element::TYPE_FLOAT:
-        s << e.Float();
-        break;
-      case Atlas::Message::Element::TYPE_STRING:
-        s << e.String();
-        break;
-      default:
-        break;
+        case Atlas::Message::Element::TYPE_INT:
+            s << e.Int();
+            break;
+        case Atlas::Message::Element::TYPE_FLOAT:
+            s << e.Float();
+            break;
+        case Atlas::Message::Element::TYPE_STRING:
+            s << e.String();
+            break;
+        default:
+            break;
     }
     return s;
 }
 
-void Monitors::send(std::ostream & io)
+void Monitors::send(std::ostream& io)
 {
-    MapType::const_iterator I = m_pairs.begin();
-    MapType::const_iterator Iend = m_pairs.end();
+    auto I = m_pairs.begin();
+    auto Iend = m_pairs.end();
     for (; I != Iend; ++I) {
         io << I->first << " " << I->second << std::endl;
     }
 
-    MonitorDict::const_iterator J = m_variableMonitors.begin();
-    MonitorDict::const_iterator Jend = m_variableMonitors.end();
+    auto J = m_variableMonitors.begin();
+    auto Jend = m_variableMonitors.end();
     for (; J != Jend; ++J) {
         io << J->first << " ";
         J->second->send(io);
@@ -82,18 +75,18 @@ void Monitors::send(std::ostream & io)
     }
 }
 
-void Monitors::sendNumerics(std::ostream & io)
+void Monitors::sendNumerics(std::ostream& io)
 {
-    MapType::const_iterator I = m_pairs.begin();
-    MapType::const_iterator Iend = m_pairs.end();
+    auto I = m_pairs.begin();
+    auto Iend = m_pairs.end();
     for (; I != Iend; ++I) {
         if (I->second.isNum()) {
             io << I->first << " " << I->second << std::endl;
         }
     }
 
-    MonitorDict::const_iterator J = m_variableMonitors.begin();
-    MonitorDict::const_iterator Jend = m_variableMonitors.end();
+    auto J = m_variableMonitors.begin();
+    auto Jend = m_variableMonitors.end();
     for (; J != Jend; ++J) {
         if (J->second->isNumeric()) {
             io << J->first << " ";
@@ -108,9 +101,8 @@ void Monitors::sendNumerics(std::ostream & io)
 int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
 {
     auto J = m_variableMonitors.find(key);
-    if ( J != m_variableMonitors.end() )
-    {
-	    J->second->send(out_stream);
+    if (J != m_variableMonitors.end()) {
+        J->second->send(out_stream);
         return 0;
     }
 

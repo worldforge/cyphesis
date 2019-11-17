@@ -18,9 +18,9 @@
 
 #ifndef STUB_ArithmeticBuilder_newArithmetic
 //#define STUB_ArithmeticBuilder_newArithmetic
-  ArithmeticScript* ArithmeticBuilder::newArithmetic(const std::string &, LocatedEntity *)
+  std::unique_ptr<ArithmeticScript> ArithmeticBuilder::newArithmetic(const std::string&, LocatedEntity*)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ArithmeticScript>*>(nullptr);
   }
 #endif //STUB_ArithmeticBuilder_newArithmetic
 

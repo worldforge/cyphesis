@@ -155,7 +155,7 @@ int main()
 void LocatedEntity::makeContainer()
 {
     if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
+        m_contains.reset(new LocatedEntitySet);
     }
 }
 

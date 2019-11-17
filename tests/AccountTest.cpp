@@ -895,7 +895,7 @@ void Accounttest::test_LookOperation_no_args()
 
     ASSERT_TRUE(!result_arg->isDefaultId());
     ASSERT_EQUAL(result_arg->getId(),
-                 m_server->m_lobby.getId());
+                 m_server->getLobby().getId());
 }
 
 void Accounttest::test_LookOperation_unconnected()
@@ -967,7 +967,7 @@ void Accounttest::test_LookOperation_known_account()
 {
     long cid = m_id_counter++;
     Account * ac = new TestAccount(0, "","", compose("%1", cid), cid);
-    m_server->m_lobby.addAccount(ac);
+    m_server->getLobby().addAccount(ac);
 
     Atlas::Objects::Operation::Look op;
     OpVector res;
@@ -993,7 +993,7 @@ void Accounttest::test_LookOperation_known_account()
     ASSERT_EQUAL(result_arg->getId(),
                  ac->getId());
 
-    m_server->m_lobby.removeAccount(ac);
+    m_server->getLobby().removeAccount(ac);
     delete ac;
 }
 
@@ -1405,14 +1405,14 @@ int main()
 
 #define STUB_ServerRouting_ServerRouting
 ServerRouting::ServerRouting(BaseWorld & wrld,
-                             const std::string & ruleset,
-                             const std::string & name,
+                             std::string ruleset,
+                             std::string name,
                              const std::string & id, long intId,
                              const std::string & lId, long lIntId) :
         Router(id, intId),
         m_svrRuleset(ruleset), m_svrName(name),
         m_numClients(0), m_world(wrld),
-        m_lobby(*new Lobby(*this, lId, lIntId))
+        m_lobby(new Lobby(*this, lId, lIntId))
 {
 }
 

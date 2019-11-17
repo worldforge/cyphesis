@@ -11,7 +11,15 @@
 //#define STUB_TerrainModProperty_TerrainModProperty
    TerrainModProperty::TerrainModProperty()
     : TerrainEffectorProperty()
-    , m_translator(nullptr)
+  {
+    
+  }
+#endif //STUB_TerrainModProperty_TerrainModProperty
+
+#ifndef STUB_TerrainModProperty_TerrainModProperty
+//#define STUB_TerrainModProperty_TerrainModProperty
+   TerrainModProperty::TerrainModProperty(const TerrainModProperty& rhs)
+    : TerrainEffectorProperty(rhs)
   {
     
   }

@@ -21,6 +21,7 @@
 
 #include <Atlas/Message/Element.h>
 #include "Singleton.h"
+#include <memory>
 
 class VariableBase;
 
@@ -30,7 +31,7 @@ class VariableBase;
 /// the http interface can access it.
 class Monitors : public Singleton<Monitors>{
   protected:
-    typedef std::map<std::string, VariableBase *> MonitorDict;
+    typedef std::map<std::string, std::unique_ptr<VariableBase>> MonitorDict;
 
 
 

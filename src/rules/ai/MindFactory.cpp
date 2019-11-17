@@ -24,12 +24,7 @@
 
 static const bool debug_flag = false;
 
-MindKit::MindKit() : m_scriptFactory(nullptr)
-{
-}
+MindKit::MindKit() = default;
 
-MindKit::~MindKit()
-{
-    delete m_scriptFactory;
-}
+MindKit::~MindKit() = default;
 

@@ -434,7 +434,7 @@ void log(LogLevel lvl, const std::string & msg)
 bool database_flag = false;
 
 #include <common/Shaker.h>
-
+#include "rules/simulation/ExternalMind.h"
 Shaker::Shaker()
 {
 }

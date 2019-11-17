@@ -39,6 +39,7 @@
 #include <sys/stat.h>
 
 #include <cassert>
+#include <vector>
 
 extern "C" {
 #ifdef HAVE_SYS_UTSNAME_H
@@ -499,13 +500,13 @@ void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash)
 {
     unsigned int digest_length = gcry_md_get_algo_dlen(hash_algorithm);
-    auto* buf = new unsigned char[digest_length];
-    assert(buf != nullptr);
+    std::vector<unsigned char> buf;
+    buf.resize(digest_length);
 
     std::string passwd_and_salt = pwd + salt;
 
     // Generate an MD% hash of the password and salt concatenated
-    gcry_md_hash_buffer(hash_algorithm, buf,
+    gcry_md_hash_buffer(hash_algorithm, buf.data(),
                         (const unsigned char *)passwd_and_salt.c_str(),
                         passwd_and_salt.size());
     // Build a string containing the salt and hash together
@@ -521,7 +522,6 @@ void hash_password(const std::string & pwd, const std::string & salt,
         hash.push_back(hex_table[buf[i] & 0xf]);
         hash.push_back(hex_table[(buf[i] & 0xf0) >> 4]);
     }
-    delete [] buf;
 }
 
 void encrypt_password(const std::string & pwd, std::string & hash)

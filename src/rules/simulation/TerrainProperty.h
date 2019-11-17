@@ -24,11 +24,14 @@
 #include "common/Property.h"
 
 #include <set>
+#include <memory>
 #include <boost/optional.hpp>
 
 namespace Mercator {
     class Terrain;
+
     class TerrainMod;
+
     class TileShader;
 }
 
@@ -36,68 +39,80 @@ typedef std::map<int, std::set<int> > PointSet;
 
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
-class TerrainProperty : public PropertyBase {
-  protected:
-    /// \brief Reference to variable holding the value of this Property
-    Mercator::Terrain & m_data;
-    /// \brief The tile shader which represents all other shaders.
-    Mercator::TileShader* m_tileShader;
-    /// FIXME This should be a reference for consistency. Or could it
-    /// even be stored in the mercator terrain entity.
-    /// \brief Collection of surface data, cos I don't care!
-    Atlas::Message::ListType m_surfaces;
+class TerrainProperty : public PropertyBase
+{
+    protected:
+        /// \brief Reference to variable holding the value of this Property
+        std::unique_ptr<Mercator::Terrain> m_data;
+        /// \brief The tile shader which represents all other shaders.
+        std::unique_ptr<Mercator::TileShader> m_tileShader;
+        /// FIXME This should be a reference for consistency. Or could it
+        /// even be stored in the mercator terrain entity.
+        /// \brief Collection of surface data, cos I don't care!
+        Atlas::Message::ListType m_surfaces;
 
-    std::vector<std::string> m_surfaceNames;
+        std::vector<std::string> m_surfaceNames;
 
-    /// \brief Reference to variable storing the set of modified points
-    PointSet m_modifiedTerrain;
-    /// \brief Reference to variable storing the set of newly created points
-    PointSet m_createdTerrain;
+        /// \brief Reference to variable storing the set of modified points
+        PointSet m_modifiedTerrain;
+        /// \brief Reference to variable storing the set of newly created points
+        PointSet m_createdTerrain;
 
-    std::vector<WFMath::AxisBox<2>> m_changedAreas;
+        std::vector<WFMath::AxisBox<2>> m_changedAreas;
 
-    Mercator::TileShader* createShaders(const Atlas::Message::ListType& surfaceList);
+        std::unique_ptr<Mercator::TileShader> createShaders(const Atlas::Message::ListType& surfaceList);
 
-  public:
+    public:
 
-    static constexpr const char* property_name = "terrain";
-    static constexpr const char* property_atlastype = "map";
+        static constexpr const char* property_name = "terrain";
+        static constexpr const char* property_atlastype = "map";
 
-    TerrainProperty(const TerrainProperty& rhs);
-    explicit TerrainProperty();
+        TerrainProperty(const TerrainProperty& rhs);
 
-    ~TerrainProperty() override;
+        explicit TerrainProperty();
 
-    int get(Atlas::Message::Element &) const override;
-    void set(const Atlas::Message::Element &) override;
-    TerrainProperty * copy() const override;
-    void apply(LocatedEntity* entity) override;
+        ~TerrainProperty() override;
 
-    // Applies a Mercator::TerrainMod to the terrain
-    void addMod(long id, const Mercator::TerrainMod *) const;
-    // Removes all TerrainMods from a terrain segment
-    void clearMods(float, float);
-    // Removes a single TerrainMod from the terrain
-    void updateMod(long id, const Mercator::TerrainMod *) const;
-    // Removes a single TerrainMod from the terrain
-    void removeMod(long id) const;
+        int get(Atlas::Message::Element&) const override;
 
-    bool getHeightAndNormal(float x, float z, float &, Vector3D &) const;
-    bool getHeight(float x, float z, float &) const;
-    boost::optional<int> getSurface(float x, float z) const;
+        void set(const Atlas::Message::Element&) override;
 
-    /// \brief Find the mods at a given location
-    ///
-    /// @param pos the x,y coordinates of a point on the terrain
-    /// @param mods a reference to the list to be returned
-    boost::optional<std::vector<LocatedEntity *>> findMods(float x, float z) const;
+        TerrainProperty* copy() const override;
 
-    Mercator::Terrain& getData();
-    Mercator::Terrain& getData() const;
+        void apply(LocatedEntity* entity) override;
 
-    const std::vector<std::string>& getSurfaceNames() const {
-        return m_surfaceNames;
-    }
+        // Applies a Mercator::TerrainMod to the terrain
+        void addMod(long id, const Mercator::TerrainMod*) const;
+
+        // Removes all TerrainMods from a terrain segment
+        void clearMods(float, float);
+
+        // Removes a single TerrainMod from the terrain
+        void updateMod(long id, const Mercator::TerrainMod*) const;
+
+        // Removes a single TerrainMod from the terrain
+        void removeMod(long id) const;
+
+        bool getHeightAndNormal(float x, float z, float&, Vector3D&) const;
+
+        bool getHeight(float x, float z, float&) const;
+
+        boost::optional<int> getSurface(float x, float z) const;
+
+        /// \brief Find the mods at a given location
+        ///
+        /// @param pos the x,y coordinates of a point on the terrain
+        /// @param mods a reference to the list to be returned
+        boost::optional<std::vector<LocatedEntity*>> findMods(float x, float z) const;
+
+        Mercator::Terrain& getData();
+
+        Mercator::Terrain& getData() const;
+
+        const std::vector<std::string>& getSurfaceNames() const
+        {
+            return m_surfaceNames;
+        }
 
 };
 

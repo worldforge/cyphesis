@@ -27,7 +27,7 @@
 //#define STUB_LocatedEntity_LocatedEntity
    LocatedEntity::LocatedEntity(const std::string & id, long intId)
     : Router(id, intId)
-    , m_type(nullptr),m_contains(nullptr)
+    , m_type(nullptr)
   {
     
   }
@@ -195,7 +195,7 @@
 
 #ifndef STUB_LocatedEntity_setScript
 //#define STUB_LocatedEntity_setScript
-  void LocatedEntity::setScript(Script * scrpt)
+  void LocatedEntity::setScript(std::unique_ptr<Script> scrpt)
   {
     
   }

@@ -131,28 +131,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
     vd[2] = p[2];
 }
 #include "stubs/modules/stubWeakEntityRef.h"
-
-AreaProperty::AreaProperty()
-{
-}
-
-AreaProperty::~AreaProperty()
-{
-}
-
-void AreaProperty::set(const Atlas::Message::Element & ent)
-{
-}
-
-AreaProperty * AreaProperty::copy() const
-{
-    return 0;
-}
-
-void AreaProperty::apply(LocatedEntity * owner)
-{
-}
-
+#include "stubs/rules/simulation/stubAreaProperty.h"
 #include "stubs/rules/stubLocation.h"
 
 void log(LogLevel, const std::string & msg)

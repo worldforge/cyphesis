@@ -457,28 +457,9 @@ int CONNECT_NO = 500;
 } } }
 #include "stubs/server/stubServerRouting.h"
 #include "stubs/common/stubInheritance.h"
-
-CommPeer::CommPeer(const std::string & n, boost::asio::io_context& svr, Atlas::Objects::Factories& factories) :
-        CommAsioClient<boost::asio::ip::tcp> (n, svr, factories), m_auth_timer(svr)
-{
-}
-
-CommPeer::~CommPeer()
-{
-}
-
-void CommPeer::setup(Link * connection)
-{
-}
-
-void CommPeer::connect(boost::asio::ip::basic_endpoint<boost::asio::ip::tcp> const&)
-{
-}
-
-int CommSocket::flush()
-{
-    return 0;
-}
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/common/stubProperty.h"
+#include "stubs/server/stubCommPeer.h"
 
 Peer::Peer(CommSocket & client,
            ServerRouting & svr,

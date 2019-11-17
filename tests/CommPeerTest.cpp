@@ -80,8 +80,7 @@ class TestCommPeer : public CommPeer
 
     void test_setNegotiateState(Atlas::Negotiate::State state)
     {
-        delete m_negotiate;
-        m_negotiate = new TestNegotiate(state);
+        m_negotiate.reset(new TestNegotiate(state));
     }
 
 };
@@ -126,7 +125,7 @@ int main()
     {
         auto cs = std::make_shared<TestCommPeer>(comm_server);
 
-        cs->setup(new TestPeer(*cs, server));
+        cs->setup(std::make_unique<TestPeer>(*cs, server));
         comm_server.poll();
 
     }
@@ -135,7 +134,7 @@ int main()
         auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         TestPeer * tr = new TestPeer(*cs, server);
-        cs->setup(tr);
+        cs->setup(std::unique_ptr<TestPeer>(tr));
         tr->setAuthState(PEER_AUTHENTICATED);
         comm_server.poll();
 
@@ -145,7 +144,7 @@ int main()
         auto cs = std::make_shared<TestCommPeer>(comm_server);
 
         TestPeer * tr = new TestPeer(*cs, server);
-        cs->setup(tr);
+        cs->setup(std::unique_ptr<TestPeer>(tr));
         tr->setAuthState(PEER_FAILED);
         comm_server.poll();
 

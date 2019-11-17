@@ -114,9 +114,6 @@ Inheritance::~Inheritance()
 
 void Inheritance::flush()
 {
-    for (const auto& entry : atlasObjects) {
-        delete entry.second;
-    }
     atlasObjects.clear();
 }
 
@@ -136,7 +133,7 @@ int Inheritance::updateClass(const std::string& parent,
     if (I == atlasObjects.end()) {
         return -1;
     }
-    TypeNode* tn = I->second;
+    auto& tn = I->second;
     if (tn->description(Visibility::PRIVATE)->getParent() != description->getParent()) {
         return -1;
     }
@@ -150,7 +147,7 @@ const TypeNode* Inheritance::getType(const std::string& parent) const
     if (I == atlasObjects.end()) {
         return nullptr;
     }
-    return I->second;
+    return I->second.get();
 }
 
 bool Inheritance::hasClass(const std::string& parent)
@@ -194,10 +191,10 @@ TypeNode* Inheritance::addChild(const Root& obj)
     description->setAttr("children", children);
     I->second->setDescription(description);
 
-    auto* type = new TypeNode(child, obj);
-    type->setParent(I->second);
+    auto type = new TypeNode(child, obj);
+    type->setParent(I->second.get());
 
-    atlasObjects.insert(std::make_pair(child, type));
+    atlasObjects.insert(std::make_pair(child, std::unique_ptr<TypeNode>(type)));
 
     return type;
 }

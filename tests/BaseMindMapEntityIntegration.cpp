@@ -84,17 +84,17 @@ void BaseMindMapEntityintegration::test_MemMapdel_top()
     //HACK: Disabled for now as we've disabled the deletion of entities from the mind. See MemMap::del(...)
     return;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
-    e2->m_contains = new LocatedEntitySet;
+    e2->m_contains.reset(new LocatedEntitySet);
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
-    e3->m_contains = new LocatedEntitySet;
+    e3->m_contains.reset(new LocatedEntitySet);
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
@@ -114,17 +114,17 @@ void BaseMindMapEntityintegration::test_MemMapdel_mid()
     //HACK: Disabled for now as we've disabled the deletion of entities from the mind. See MemMap::del(...)
     return;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
-    e2->m_contains = new LocatedEntitySet;
+    e2->m_contains.reset(new LocatedEntitySet);
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
-    e3->m_contains = new LocatedEntitySet;
+    e3->m_contains.reset(new LocatedEntitySet);
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
@@ -149,17 +149,17 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
     //HACK: Disabled for now as we've disabled the deletion of entities from the mind. See MemMap::del(...)
     return;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
-    e2->m_contains = new LocatedEntitySet;
+    e2->m_contains.reset(new LocatedEntitySet);
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[2] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
-    e3->m_contains = new LocatedEntitySet;
+    e3->m_contains.reset(new LocatedEntitySet);
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[3] = e3;
@@ -182,11 +182,11 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
 void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 {
     Ref<MemEntity> tlve = new MemEntity("0", 0);
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
-    e2->m_contains = new LocatedEntitySet;
+    e2->m_contains.reset(new LocatedEntitySet);
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[1] = e2;
@@ -210,17 +210,17 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 {
     Ref<MemEntity> tlve = new MemEntity("0", 0);
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
-    e2->m_contains = new LocatedEntitySet;
+    e2->m_contains.reset(new LocatedEntitySet);
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[1] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
-    e3->m_contains = new LocatedEntitySet;
+    e3->m_contains.reset(new LocatedEntitySet);
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[2] = e3;
@@ -277,19 +277,19 @@ void BaseMindMapEntityintegration::test_MemMapcheck()
 {
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->setType(m_type);
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
 
     Ref<MemEntity> e2 = new MemEntity("2", 2);
     e2->setType(m_type);
-    e2->m_contains = new LocatedEntitySet;
+    e2->m_contains.reset(new LocatedEntitySet);
     e2->m_location.m_parent = tlve;
     tlve->m_contains->insert(e2);
     m_mind->m_map.m_entities[1] = e2;
 
     Ref<MemEntity> e3 = new MemEntity("3", 3);
     e3->setType(m_type);
-    e3->m_contains = new LocatedEntitySet;
+    e3->m_contains.reset(new LocatedEntitySet);
     e3->m_location.m_parent = e2;
     e2->m_contains->insert(e3);
     m_mind->m_map.m_entities[2] = e3;
@@ -340,16 +340,13 @@ int main()
 #define STUB_LocatedEntity_LocatedEntity_DTOR
 // Deletions and reference count decrements are required to ensure map
 // memory management works correctly.
-LocatedEntity::~LocatedEntity()
-{
-    delete m_contains;
-}
+LocatedEntity::~LocatedEntity() = default;
 
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()
 {
     if (!m_contains) {
-        m_contains = new LocatedEntitySet;
+        m_contains.reset(new LocatedEntitySet);
     }
 }
 

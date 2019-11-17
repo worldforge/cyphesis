@@ -154,7 +154,7 @@ void ExternalMind::linkUp(Link * c)
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/common/stubOperationsDispatcher.h"
-
+#include "stubs/common/stubTypeNode.h"
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/stubLocation.h"
@@ -177,7 +177,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
+    return I->second.get();
 }
 #endif //STUB_Inheritance_getType
 

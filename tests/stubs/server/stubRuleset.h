@@ -10,7 +10,7 @@
 
 #ifndef STUB_Ruleset_installItem
 //#define STUB_Ruleset_installItem
-  void Ruleset::installItem(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  void Ruleset::installItem(const std::string& class_name, const Atlas::Objects::Root& class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     
   }
@@ -18,7 +18,7 @@
 
 #ifndef STUB_Ruleset_installRuleInner
 //#define STUB_Ruleset_installRuleInner
-  int Ruleset::installRuleInner(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::string & dependent, std::string & reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int Ruleset::installRuleInner(const std::string& class_name, const Atlas::Objects::Root& class_desc, std::string& dependent, std::string& reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_Ruleset_modifyRuleInner
 //#define STUB_Ruleset_modifyRuleInner
-  int Ruleset::modifyRuleInner(const std::string &class_name, const Atlas::Objects::Root &class_desc, std::map<const TypeNode *, TypeNode::PropertiesUpdate> &changes)
+  int Ruleset::modifyRuleInner(const std::string& class_name, const Atlas::Objects::Root& class_desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_Ruleset_getRulesFromFiles
 //#define STUB_Ruleset_getRulesFromFiles
-  void Ruleset::getRulesFromFiles(boost::filesystem::path directory, std::map<std::string, Atlas::Objects::Root> &)
+  void Ruleset::getRulesFromFiles(boost::filesystem::path directory, std::map<std::string, Atlas::Objects::Root>&)
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_Ruleset_waitForRule
 //#define STUB_Ruleset_waitForRule
-  void Ruleset::waitForRule(const std::string & class_name, const Atlas::Objects::Root & class_desc, const std::string & dependent, const std::string & reason)
+  void Ruleset::waitForRule(const std::string& class_name, const Atlas::Objects::Root& class_desc, const std::string& dependent, const std::string& reason)
   {
     
   }
@@ -58,7 +58,7 @@
 
 #ifndef STUB_Ruleset_Ruleset
 //#define STUB_Ruleset_Ruleset
-   Ruleset::Ruleset(EntityBuilder * eb, boost::asio::io_context& io_context)
+   Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context)
     : Singleton(eb, io_context)
   {
     
@@ -75,7 +75,7 @@
 
 #ifndef STUB_Ruleset_loadRules
 //#define STUB_Ruleset_loadRules
-  void Ruleset::loadRules(const std::string &)
+  void Ruleset::loadRules(const std::string&)
   {
     
   }
@@ -83,7 +83,7 @@
 
 #ifndef STUB_Ruleset_installRule
 //#define STUB_Ruleset_installRule
-  int Ruleset::installRule(const std::string & class_name, const std::string & section, const Atlas::Objects::Root & class_desc)
+  int Ruleset::installRule(const std::string& class_name, const std::string& section, const Atlas::Objects::Root& class_desc)
   {
     return 0;
   }
@@ -91,7 +91,7 @@
 
 #ifndef STUB_Ruleset_modifyRule
 //#define STUB_Ruleset_modifyRule
-  int Ruleset::modifyRule(const std::string & class_name, const Atlas::Objects::Root & class_desc)
+  int Ruleset::modifyRule(const std::string& class_name, const Atlas::Objects::Root& class_desc)
   {
     return 0;
   }

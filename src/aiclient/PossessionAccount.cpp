@@ -243,7 +243,7 @@ void PossessionAccount::createMindInstance(OpVector& res, const std::string& min
     m_minds.emplace(mindId, mind);
     m_entitiesWithMinds.emplace(entityId, mind);
 
-    mind->m_scriptFactory = m_mindFactory.m_scriptFactory;
+    mind->m_scriptFactory = m_mindFactory.m_scriptFactory.get();
     mind->init(res);
 
 }

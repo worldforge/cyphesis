@@ -404,7 +404,7 @@ void Entity::operation(const Operation& op, OpVector& res)
     HandlerResult hr = OPERATION_IGNORED;
 
     if (!m_scripts.empty()) {
-        for (auto script: m_scripts) {
+        for (auto& script: m_scripts) {
             auto hr_call = script->operation(op->getParent(), op, res);
             //Stop on the first blocker. Only change "hr" value if it's "handled".
             if (hr_call != OPERATION_IGNORED) {

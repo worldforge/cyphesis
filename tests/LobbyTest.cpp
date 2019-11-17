@@ -232,6 +232,7 @@ int main()
 #include "stubs/server/stubConnection.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"
+#include "rules/simulation/ExternalMind.h"
 
 
 void log(LogLevel lvl, const std::string & msg)

@@ -23,6 +23,7 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
 namespace Atlas {
     namespace Message {
@@ -59,7 +60,7 @@ class Shape {
     virtual void stream(std::ostream &) const = 0;
 
     /// \brief Name constructor
-    static Shape * newFromAtlas(const Atlas::Message::MapType &);
+    static std::unique_ptr<Shape> newFromAtlas(const Atlas::Message::MapType &);
 };
 
 template <int dim>

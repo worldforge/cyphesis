@@ -19,7 +19,6 @@
 //#define STUB_AtlasFileLoader_AtlasFileLoader
    AtlasFileLoader::AtlasFileLoader(const Atlas::Objects::Factories& factories, const std::string& filename, std::map<std::string, Atlas::Objects::Root>& m)
     : Atlas::Objects::ObjectsDecoder(factories, filename, m)
-    , m_codec(nullptr)
   {
     
   }

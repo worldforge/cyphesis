@@ -164,7 +164,7 @@ class ArchetypeFactory: public EntityKit
         Ref<LocatedEntity> newEntity(const std::string & id, long intId,
                 const Atlas::Objects::Entity::RootEntity & attributes,
                 LocatedEntity* location) override;
-        virtual ArchetypeFactory * duplicateFactory();
+        virtual std::unique_ptr<ArchetypeFactory> duplicateFactory();
 
         void addProperties() override;
 
@@ -177,7 +177,7 @@ class ArchetypeFactory: public EntityKit
         ArchetypeFactory * m_parent;
         /// Set of factories for classes which inherit from the class handled
         /// by this factory.
-        std::set<ArchetypeFactory *> m_children;
+        std::set<ArchetypeFactory*> m_children;
 
         /// @brief Entity definitions.
         ///

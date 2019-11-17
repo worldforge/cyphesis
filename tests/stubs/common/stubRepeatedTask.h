@@ -15,6 +15,14 @@
   }
 #endif //STUB_RepeatedTask_RepeatedTask
 
+#ifndef STUB_RepeatedTask_cancel
+//#define STUB_RepeatedTask_cancel
+  void RepeatedTask::cancel()
+  {
+    
+  }
+#endif //STUB_RepeatedTask_cancel
+
 #ifndef STUB_RepeatedTask_executeTask
 //#define STUB_RepeatedTask_executeTask
   void RepeatedTask::executeTask()

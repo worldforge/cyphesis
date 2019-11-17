@@ -31,7 +31,7 @@
 class TestArithmeticFactory : public ArithmeticKit
 {
   public:
-    ArithmeticScript * newScript(LocatedEntity * owner) { return 0; }
+    std::unique_ptr<ArithmeticScript> newScript(LocatedEntity * owner) { return {}; }
 };
 
 int main()

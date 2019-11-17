@@ -134,6 +134,7 @@ int main()
 #include <cstdlib>
 
 #include "stubs/server/stubAccount.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
 
 #define STUB_Admin_Admin_DTOR
 Admin::~Admin()

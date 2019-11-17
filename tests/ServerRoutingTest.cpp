@@ -48,32 +48,41 @@ static bool stub_generate_accounts = false;
 
 class TestRouter : public ConnectableRouter
 {
-  public:
-    TestRouter(const std::string &id, int iid) : ConnectableRouter(id, iid) { }
+    public:
+        TestRouter(const std::string& id, int iid) : ConnectableRouter(id, iid)
+        {}
 
-    void externalOperation(const Operation &, Link &) override { }
-    void operation(const Operation &, OpVector &) override { }
+        void externalOperation(const Operation&, Link&) override
+        {}
 
-    void setConnection(Connection* connection) override {}
+        void operation(const Operation&, OpVector&) override
+        {}
 
-    Connection* getConnection() const override {
-        return nullptr;
-    }
+        void setConnection(Connection* connection) override
+        {}
+
+        Connection* getConnection() const override
+        {
+            return nullptr;
+        }
 };
 
-class TestAccount : public Account {
-  public:
-    TestAccount(Connection * conn, const std::string & username,
-                                   const std::string & passwd,
-                                   const std::string & id, long intId) :
-        Account(conn, username, passwd, id, intId) {
-    }
+class TestAccount : public Account
+{
+    public:
+        TestAccount(Connection* conn, const std::string& username,
+                    const std::string& passwd,
+                    const std::string& id, long intId) :
+            Account(conn, username, passwd, id, intId)
+        {
+        }
 
-    virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Root & ent,
-                               OpVector & res) const {
-        return 0;
-    }
+        virtual int characterError(const Operation& op,
+                                   const Atlas::Objects::Root& ent,
+                                   OpVector& res) const
+        {
+            return 0;
+        }
 };
 
 int main()
@@ -106,7 +115,7 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        server.addObject(new TestRouter(id, iid));
+        server.addObject(std::make_unique<TestRouter>(id, iid));
         assert(server.getObjects().size() == 1);
     }
 
@@ -119,8 +128,8 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        ConnectableRouter * r = new TestRouter(id, iid);
-        server.addObject(r);
+        auto r = new TestRouter(id, iid);
+        server.addObject(std::unique_ptr<TestRouter>(r));
         assert(server.getObjects().size() == 1);
         server.delObject(r);
         assert(server.getObjects().size() == 0);
@@ -137,11 +146,11 @@ int main()
 
         newId(id2);
 
-        ConnectableRouter * r = new TestRouter(id, iid);
-        server.addObject(r);
+        ConnectableRouter* r = new TestRouter(id, iid);
+        server.addObject(std::unique_ptr<ConnectableRouter>(r));
         assert(server.getObjects().size() == 1);
 
-        ConnectableRouter * r2 = server.getObject(id);
+        ConnectableRouter* r2 = server.getObject(id);
         assert(r == r2);
 
         r2 = server.getObject(id2);
@@ -157,7 +166,7 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        server.addAccount(new TestAccount(0, "bob", "", id, iid));
+        server.addAccount(std::make_unique<TestAccount>(nullptr, "bob", "", id, iid));
         assert(server.getObjects().size() == 1);
     }
 
@@ -170,10 +179,10 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        Account * ac = new TestAccount(0, "bob", "", id, iid);
-        server.addAccount(ac);;
+        Account* ac = new TestAccount(0, "bob", "", id, iid);
+        server.addAccount(std::unique_ptr<Account>(ac));;
         assert(server.getObjects().size() == 1);
-        Account * rac = server.getAccountByName("bob");
+        Account* rac = server.getAccountByName("bob");
         assert(rac == ac);
     }
 
@@ -189,10 +198,10 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        Account * ac = new TestAccount(0, "bob", "", id, iid);
-        server.addAccount(ac);;
+        Account* ac = new TestAccount(0, "bob", "", id, iid);
+        server.addAccount(std::unique_ptr<Account>(ac));;
         assert(server.getObjects().size() == 1);
-        Account * rac = server.getAccountByName("alice");
+        Account* rac = server.getAccountByName("alice");
         assert(rac == 0);
     }
 
@@ -207,7 +216,7 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        Account * rac = server.getAccountByName("alice");
+        Account* rac = server.getAccountByName("alice");
         assert(rac == 0);
     }
 
@@ -223,7 +232,7 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        Account * rac = server.getAccountByName("alice");
+        Account* rac = server.getAccountByName("alice");
         assert(rac != 0);
     }
 
@@ -269,9 +278,12 @@ int main()
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubAccount.h"
 #include "stubs/server/stubConnectableRouter.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/common/stubLink.h"
 
 #define STUB_Persistence_getAccount
-Account * Persistence::getAccount(const std::string & name)
+
+Account* Persistence::getAccount(const std::string& name)
 {
     if (!stub_generate_accounts) {
         return 0;
@@ -285,10 +297,10 @@ Account * Persistence::getAccount(const std::string & name)
 }
 
 #include "stubs/server/stubPersistence.h"
-
-Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Router(id, intId),
-       m_server(s)
+#include "stubs/common/stubTypeNode.h"
+Lobby::Lobby(ServerRouting& s, const std::string& id, long intId) :
+    Router(id, intId),
+    m_server(s)
 {
 }
 
@@ -296,19 +308,19 @@ Lobby::~Lobby()
 {
 }
 
-void Lobby::externalOperation(const Operation &, Link &)
+void Lobby::externalOperation(const Operation&, Link&)
 {
 }
 
-void Lobby::operation(const Operation & op, OpVector & res)
+void Lobby::operation(const Operation& op, OpVector& res)
 {
 }
 
-void Lobby::addToMessage(Atlas::Message::MapType & omap) const
+void Lobby::addToMessage(Atlas::Message::MapType& omap) const
 {
 }
 
-void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
 {
 }
 
@@ -316,10 +328,10 @@ void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 #include "stubs/common/stubMonitors.h"
 #include "stubs/server/stubBuildid.h"
 
-bool_config_register::bool_config_register(bool & var,
-                                           const char * section,
-                                           const char * setting,
-                                           const char * help)
+bool_config_register::bool_config_register(bool& var,
+                                           const char* section,
+                                           const char* setting,
+                                           const char* help)
 {
 }
 
@@ -327,7 +339,8 @@ bool_config_register::bool_config_register(bool & var,
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
+
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string& id) const
 {
     return getEntity(integerId(id));
 }
@@ -342,6 +355,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
         return nullptr;
     }
 }
+
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
@@ -349,7 +363,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 
 static long idGenerator = 0;
 
-long newId(std::string & id)
+long newId(std::string& id)
 {
     if (stub_deny_newid) {
         return -1;
@@ -362,7 +376,7 @@ long newId(std::string & id)
     return new_id;
 }
 
-long integerId(const std::string & id)
+long integerId(const std::string& id)
 {
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
@@ -372,9 +386,9 @@ long integerId(const std::string & id)
     return intId;
 }
 
-const char * const CYPHESIS = "cyphesis";
+const char* const CYPHESIS = "cyphesis";
 
-static const char * DEFAULT_INSTANCE = "cyphesis";
+static const char* DEFAULT_INSTANCE = "cyphesis";
 
 std::string instance(DEFAULT_INSTANCE);
 int timeoffset = 0;
@@ -382,7 +396,7 @@ bool database_flag = false;
 std::string assets_directory = "";
 
 namespace consts {
-  const char * version = "test_version";
+    const char* version = "test_version";
 }
 
 #include <common/Shaker.h>

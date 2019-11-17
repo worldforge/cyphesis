@@ -46,13 +46,13 @@ int main()
     EntityBuilder eb;
 
     {
-        RuleHandler * rh = new EntityRuleHandler(&eb);
+        RuleHandler * rh = new EntityRuleHandler(eb);
         delete rh;
     }
 
     // check() not a class
     {
-        RuleHandler * rh = new EntityRuleHandler(&eb);
+        RuleHandler * rh = new EntityRuleHandler(eb);
 
         Anonymous description;
         description->setParent("foo");
@@ -65,7 +65,7 @@ int main()
 
     // check() stub says it's not a task
     {
-        RuleHandler * rh = new EntityRuleHandler(&eb);
+        RuleHandler * rh = new EntityRuleHandler(eb);
 
         Anonymous description;
         description->setObjtype("class");
@@ -78,7 +78,7 @@ int main()
     }
 
     {
-        RuleHandler * rh = new EntityRuleHandler(&eb);
+        RuleHandler * rh = new EntityRuleHandler(eb);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -96,7 +96,7 @@ int main()
 
     // Install a rule with addChild rigged to give a correct result
     {
-        RuleHandler * rh = new EntityRuleHandler(&eb);
+        RuleHandler * rh = new EntityRuleHandler(eb);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -116,7 +116,7 @@ int main()
         delete rh;
     }
     {
-        RuleHandler * rh = new EntityRuleHandler(&eb);
+        RuleHandler * rh = new EntityRuleHandler(eb);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -142,6 +142,7 @@ int main()
 #include "common/log.h"
 
 #include "stubs/server/stubEntityBuilder.h"
+#include "stubs/common/stubTypeNode.h"
 
 template <class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string & package,

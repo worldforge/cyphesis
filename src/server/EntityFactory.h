@@ -100,7 +100,7 @@ class EntityFactoryBase : public EntityKit
 
         ~EntityFactoryBase() override;
 
-        virtual EntityFactoryBase* duplicateFactory() = 0;
+        virtual std::unique_ptr<EntityFactoryBase> duplicateFactory() = 0;
 
         void addProperties() override;
 
@@ -124,7 +124,7 @@ class EntityFactory : public EntityFactoryBase
         Ref<LocatedEntity> newEntity(const std::string& id, long intId,
                                      const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location) override;
 
-        EntityFactoryBase* duplicateFactory() override;
+        std::unique_ptr<EntityFactoryBase> duplicateFactory() override;
 
 };
 

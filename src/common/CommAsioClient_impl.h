@@ -55,14 +55,10 @@ CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
     mWriteBuffer(new boost::asio::streambuf()),
     mSendBuffer(new boost::asio::streambuf()),
     mInStream(&mReadBuffer),
-    mOutStream(mWriteBuffer),
+    mOutStream(mWriteBuffer.get()),
     mNegotiateTimer(io_context, boost::posix_time::seconds(1)),
     mIsSending(false),
     mShouldSend(false),
-    m_codec(nullptr),
-    m_encoder(nullptr),
-    m_negotiate(nullptr),
-    m_link(nullptr),
     mName(std::move(name))
 {
 }
@@ -70,11 +66,6 @@ CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
 template<class ProtocolT>
 CommAsioClient<ProtocolT>::~CommAsioClient()
 {
-    delete m_negotiate;
-    delete m_encoder;
-    delete m_codec;
-    delete mWriteBuffer;
-    delete mSendBuffer;
     try {
         mSocket.shutdown(ProtocolT::socket::shutdown_both);
     } catch (const std::exception& e) {
@@ -143,7 +134,7 @@ void CommAsioClient<ProtocolT>::write()
         auto self(this->shared_from_this());
         //Swap places between writing buffer and sending buffer, and attach new write buffer to the out stream.
         std::swap(mWriteBuffer, mSendBuffer);
-        mOutStream.rdbuf(mWriteBuffer);
+        mOutStream.rdbuf(mWriteBuffer.get());
         mIsSending = true;
 
         boost::asio::async_write(mSocket, *mSendBuffer,
@@ -201,8 +192,7 @@ void CommAsioClient<ProtocolT>::negotiate_read()
                                     }
                                 } else {
                                     //If connection is shut down, we should consider this as an aborted negotiaton
-                                    delete m_negotiate;
-                                    m_negotiate = nullptr;
+                                    m_negotiate.reset();
                                     mNegotiateTimer.cancel();
                                 }
                             });
@@ -227,7 +217,7 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startAccept(std::unique_ptr<Link> connection)
 {
     // Create the server side negotiator
-    m_negotiate = new Atlas::Net::StreamAccept("cyphesis " + mName, mInStream, mOutStream);
+    m_negotiate = std::make_unique<Atlas::Net::StreamAccept>("cyphesis " + mName, mInStream, mOutStream);
 
     m_link = std::move(connection);
 
@@ -238,7 +228,7 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startConnect(std::unique_ptr<Link> connection)
 {
     // Create the client side negotiator
-    m_negotiate = new Atlas::Net::StreamConnect("cyphesis " + mName, mInStream, mOutStream);
+    m_negotiate = std::make_unique<Atlas::Net::StreamConnect>("cyphesis " + mName, mInStream, mOutStream);
 
     m_link = std::move(connection);
 
@@ -284,21 +274,20 @@ int CommAsioClient<ProtocolT>::negotiate()
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    m_codec = m_negotiate->getCodec(*this);
+    m_codec.reset(m_negotiate->getCodec(*this));
 
     // Acceptor is now finished with
-    delete m_negotiate;
-    m_negotiate = 0;
+    m_negotiate.reset();
 
     if (m_codec == nullptr) {
         log(NOTICE, "Could not create codec during negotiation.");
         return -1;
     }
     // Create a new encoder to send high level objects to the codec
-    m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
+    m_encoder = std::make_unique<Atlas::Objects::ObjectsEncoder>(*m_codec);
 
     assert(m_link != 0);
-    m_link->setEncoder(m_encoder);
+    m_link->setEncoder(m_encoder.get());
 
     // This should always be sent at the beginning of a session
     m_codec->streamBegin();
@@ -397,8 +386,7 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::disconnect()
 {
     m_active = false;
-    delete m_negotiate;
-    m_negotiate = nullptr;
+    m_negotiate.reset();
     mNegotiateTimer.cancel();
     mSocket.cancel();
 }

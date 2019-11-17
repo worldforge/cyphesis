@@ -43,7 +43,7 @@ using Atlas::Objects::Root;
 
 class ExposedRuleset : public Ruleset {
   public:
-    ExposedRuleset(EntityBuilder * eb, boost::asio::io_context& io_context) : Ruleset(eb, io_context) { }
+    ExposedRuleset(EntityBuilder & eb, boost::asio::io_context& io_context) : Ruleset(eb, io_context) { }
 
     void test_getRulesFromFiles(const std::string & ruleset,
                            std::map<std::string, Root> & rules) {
@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance(factories);
         EntityBuilder eb;
         {
-            Ruleset instance(&eb, io_context);
+            Ruleset instance(eb, io_context);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance(factories);
         EntityBuilder eb;
         {
-            Ruleset instance(&eb, io_context);
+            Ruleset instance(eb, io_context);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -96,7 +96,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance(factories);
         EntityBuilder eb;
         {
-            Ruleset instance(&eb, io_context);
+            Ruleset instance(eb, io_context);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -113,8 +113,7 @@ int main(int argc, char ** argv)
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder eb;
-        EntityBuilder * test_eb = &eb;
-        ExposedRuleset test_ruleset(test_eb, io_context);
+        ExposedRuleset test_ruleset(eb, io_context);
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -447,7 +446,7 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 {
     const std::string & child = obj->getId();
     TypeNode * type = new TypeNode(child, obj);
-    atlasObjects[child] = type;
+    atlasObjects[child].reset(type);
     return type;
 }
 

@@ -23,12 +23,11 @@
 #include <unordered_map>
 #include <boost/optional.hpp>
 #include <common/Singleton.h>
-
+#include "PendingPossession.h"
 class LocatedEntity;
-class PendingPossession;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
-typedef std::unordered_map<std::string, PendingPossession *> PendingPossessionsMap;
+typedef std::unordered_map<std::string, std::unique_ptr<PendingPossession>> PendingPossessionsMap;
 
 
 /// \brief A class that stores and authenticates possession requests

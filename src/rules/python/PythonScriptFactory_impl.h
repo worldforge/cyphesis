@@ -79,8 +79,7 @@ int PythonScriptFactory<T>::addScript(T * entity) const
 {
     auto script = createScript(entity);
     if (!script.isNone() && !script.isNull()) {
-        auto scriptInstance = new PythonWrapper(script);
-        entity->setScript(scriptInstance);
+        entity->setScript(std::make_unique<PythonWrapper>(script));
     }
 
     return (script.isNull()) ? -1 : 0;

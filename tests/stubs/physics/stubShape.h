@@ -113,9 +113,9 @@
 
 #ifndef STUB_Shape_newFromAtlas
 //#define STUB_Shape_newFromAtlas
-   Shape* Shape::newFromAtlas(const Atlas::Message::MapType &)
+   std::unique_ptr<Shape> Shape::newFromAtlas(const Atlas::Message::MapType &)
   {
-    return nullptr;
+    return *static_cast< std::unique_ptr<Shape>*>(nullptr);
   }
 #endif //STUB_Shape_newFromAtlas
 

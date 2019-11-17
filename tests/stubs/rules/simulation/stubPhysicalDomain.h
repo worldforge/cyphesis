@@ -147,7 +147,7 @@
 
 #ifndef STUB_PhysicalDomain_buildTerrainPage
 //#define STUB_PhysicalDomain_buildTerrainPage
-  TerrainEntry PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
+  TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment& segment)
   {
     return *static_cast<TerrainEntry*>(nullptr);
   }

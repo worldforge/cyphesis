@@ -1,4 +1,5 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
+#include "rules/simulation/ArithmeticScript.h"
 #ifndef STUB_WorldRouter_WorldRouter
 #define STUB_WorldRouter_WorldRouter
 WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder)
@@ -10,3 +11,11 @@ WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBui
 
 }
 #endif //STUB_WorldRouter_WorldRouter
+
+#ifndef STUB_WorldRouter_newArithmetic
+#define STUB_WorldRouter_newArithmetic
+std::unique_ptr<ArithmeticScript> WorldRouter::newArithmetic(const std::string&, LocatedEntity*)
+{
+    return {};
+}
+#endif //STUB_WorldRouter_newArithmetic

@@ -34,9 +34,9 @@
 
 #ifndef STUB_PythonArithmeticFactory_newScript
 //#define STUB_PythonArithmeticFactory_newScript
-  ArithmeticScript* PythonArithmeticFactory::newScript(LocatedEntity* owner)
+  std::unique_ptr<ArithmeticScript> PythonArithmeticFactory::newScript(LocatedEntity* owner)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ArithmeticScript>*>(nullptr);
   }
 #endif //STUB_PythonArithmeticFactory_newScript
 

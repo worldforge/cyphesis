@@ -100,7 +100,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
         boost::asio::io_context io_context;
         {
-            Ruleset ruleset(nullptr, io_context);
+            Ruleset ruleset(*m_entity_builder, io_context);
 
             assert(Ruleset::hasInstance());
 
@@ -116,7 +116,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             // Instance of Ruleset with all protected methods exposed
             // for testing
             boost::asio::io_context io_context;
-            Ruleset test_ruleset(m_entity_builder, io_context);
+            Ruleset test_ruleset(*m_entity_builder, io_context);
 
 
             {
@@ -662,11 +662,11 @@ std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string
 
 #define STUB_ArchetypeFactory_duplicateFactory
 
-ArchetypeFactory* ArchetypeFactory::duplicateFactory()
+std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
 {
     ArchetypeFactory* f = new ArchetypeFactory(*this);
     f->m_parent = this;
-    return f;
+    return std::unique_ptr<ArchetypeFactory>(f);
 }
 
 #define STUB_ArchetypeFactory_newEntity
@@ -755,6 +755,7 @@ template
 class PythonScriptFactory<LocatedEntity>;
 
 #include "stubs/rules/simulation/stubTask.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
 
 
 sigc::signal<void> python_reload_scripts;

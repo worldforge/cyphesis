@@ -11,7 +11,6 @@
 //#define STUB_AreaProperty_AreaProperty
    AreaProperty::AreaProperty(const AreaProperty & other)
     : TerrainEffectorProperty(other)
-    , m_shape(nullptr)
   {
     
   }
@@ -21,7 +20,6 @@
 //#define STUB_AreaProperty_AreaProperty
    AreaProperty::AreaProperty()
     : TerrainEffectorProperty()
-    , m_shape(nullptr)
   {
     
   }

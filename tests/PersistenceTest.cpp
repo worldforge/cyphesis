@@ -114,6 +114,7 @@ void ServerAccount::createObject(const Root & arg,
 
 #include "stubs/server/stubAdmin.h"
 #include "stubs/server/stubPlayer.h"
+#include "stubs/rules/simulation/stubExternalMind.h"
 
 
 Shaker::Shaker() {}

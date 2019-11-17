@@ -44,7 +44,7 @@ class CommPythonClient : public std::enable_shared_from_this<CommPythonClient> {
      */
     boost::array<char, 256> mBuffer;
 
-    PythonContext * const m_pyContext;
+    std::unique_ptr<PythonContext> m_pyContext;
     std::string m_incoming;
 
     void read(size_t bytes);

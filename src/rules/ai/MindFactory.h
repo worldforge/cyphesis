@@ -20,6 +20,7 @@
 #define RULESETS_MIND_FACTORY_H
 
 #include <string>
+#include <memory>
 
 class BaseMind;
 
@@ -31,7 +32,7 @@ class MindKit {
     MindKit();
 
   public:
-    ScriptKit<BaseMind> * m_scriptFactory;
+    std::unique_ptr<ScriptKit<BaseMind>> m_scriptFactory;
 
     virtual ~MindKit() = 0;
 

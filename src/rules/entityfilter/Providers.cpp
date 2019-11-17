@@ -26,7 +26,7 @@
 namespace EntityFilter {
 
 
-    FixedElementProvider::FixedElementProvider(Atlas::Message::Element  element)
+    FixedElementProvider::FixedElementProvider(Atlas::Message::Element element)
         : m_element(std::move(element))
     {
     }
@@ -59,7 +59,7 @@ namespace EntityFilter {
         }
     }
 
-    DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string  type)
+    DynamicTypeNodeProvider::DynamicTypeNodeProvider(std::shared_ptr<Consumer<TypeNode>> consumer, std::string type)
         : ConsumingProviderBase<TypeNode, QueryContext>(std::move(consumer)), m_type(std::move(type))
     {
     }
@@ -130,7 +130,7 @@ namespace EntityFilter {
     }
 
     EntityLocationProvider::EntityLocationProvider(std::shared_ptr<Consumer<LocatedEntity>> consumer)
-            : ConsumingProviderBase<LocatedEntity, QueryContext>(std::move(consumer))
+        : ConsumingProviderBase<LocatedEntity, QueryContext>(std::move(consumer))
     {
     }
 
@@ -344,9 +344,9 @@ namespace EntityFilter {
     void ContainsProvider::value(Atlas::Message::Element& value,
                                  const LocatedEntity& entity) const
     {
-        auto container = entity.m_contains;
+        auto& container = entity.m_contains;
         if (container) {
-            value = container;
+            value = container.get();
         }
     }
 
@@ -391,7 +391,7 @@ namespace EntityFilter {
             } else {
                 //If an item we're looking at also contains other items - check them too using recursion
                 if (m_recursive && item->m_contains && !item->m_contains->empty()) {
-                    if (this->checkContainer(item->m_contains, context)) {
+                    if (this->checkContainer(item->m_contains.get(), context)) {
                         return true;
                     }
                 }

@@ -1,6 +1,7 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
+#include "rules/Script.h"
 
 #ifndef STUB_LocatedEntity_LocatedEntity
 #define STUB_LocatedEntity_LocatedEntity
@@ -30,7 +31,7 @@ void LocatedEntity::setType(const TypeNode* t)
 void LocatedEntity::makeContainer()
 {
     if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
+        m_contains.reset(new LocatedEntitySet);
     }
 }
 

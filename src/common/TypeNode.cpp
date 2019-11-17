@@ -45,10 +45,7 @@ TypeNode::TypeNode(std::string name,
     setDescription(d);
 }
 
-TypeNode::~TypeNode()
-{
-    m_defaults.clear();
-}
+TypeNode::~TypeNode() = default;
 
 
 void TypeNode::setDescription(const Atlas::Objects::Root& description)

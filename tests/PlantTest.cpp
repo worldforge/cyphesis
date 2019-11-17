@@ -108,6 +108,7 @@ int main()
 // stubs
 
 #include "stubs/rules/stubScaleProperty.h"
+#include "stubs/common/stubTypeNode.h"
 
 void addToEntity(const Point3D & p, std::vector<double> & vd)
 {

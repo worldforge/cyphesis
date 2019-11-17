@@ -19,11 +19,12 @@
 #include "ArithmeticBuilder.h"
 
 #include "rules/python/PythonArithmeticFactory.h"
+#include "rules/simulation/ArithmeticScript.h"
 
 
 ArithmeticBuilder::ArithmeticBuilder() = default;
 
-ArithmeticScript* ArithmeticBuilder::newArithmetic(const std::string& name,
+std::unique_ptr<ArithmeticScript> ArithmeticBuilder::newArithmetic(const std::string& name,
                                                    LocatedEntity* owner)
 {
     PythonArithmeticFactory paf("world.statistics.Statistics", "Statistics");

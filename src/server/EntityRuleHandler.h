@@ -54,14 +54,14 @@ class EntityRuleHandler : public RuleHandler
                                const Atlas::Objects::Root& class_desc,
                                std::string& dependent,
                                std::string& reason,
-                               EntityFactoryBase* factory,
+                               std::unique_ptr<EntityFactoryBase> factory,
                                std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
         int modifyEntityClass(const std::string& class_name,
                               const Atlas::Objects::Root& class_desc,
                               std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
-        std::map<std::string, std::function<EntityFactoryBase*(EntityFactoryBase*)>> mFactories;
+        std::map<std::string, std::function<std::unique_ptr<EntityFactoryBase>(EntityFactoryBase*)>> mFactories;
 
     public:
         explicit EntityRuleHandler(EntityBuilder& eb);

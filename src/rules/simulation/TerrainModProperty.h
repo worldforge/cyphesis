@@ -22,6 +22,7 @@
 #include "TerrainEffectorProperty.h"
 
 #include "physics/Vector3D.h"
+#include <memory>
 
 namespace Mercator {
     class TerrainMod;
@@ -39,6 +40,8 @@ class TerrainModProperty : public TerrainEffectorProperty
         static constexpr const char* property_name = "terrainmod";
 
         TerrainModProperty();
+
+        TerrainModProperty(const TerrainModProperty& rhs);
 
         ~TerrainModProperty() override;
 
@@ -61,7 +64,7 @@ class TerrainModProperty : public TerrainEffectorProperty
 
     protected:
 
-        TerrainModTranslator* m_translator;
+        std::unique_ptr<TerrainModTranslator> m_translator;
 
 };
 

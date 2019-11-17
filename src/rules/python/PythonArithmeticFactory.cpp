@@ -27,9 +27,9 @@
 ///
 /// @param package Name of the package containing the script
 /// @param name Name of the type within the package for the script
-PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
-                                                 const std::string & name) :
-                                                 PythonClass(package, name)
+PythonArithmeticFactory::PythonArithmeticFactory(const std::string& package,
+                                                 const std::string& name) :
+    PythonClass(package, name)
 {
 }
 
@@ -44,7 +44,7 @@ int PythonArithmeticFactory::setup()
 /// \brief Create a new arithmetic script for a character
 ///
 /// @param chr the Character that requires a new script
-ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
+std::unique_ptr<ArithmeticScript> PythonArithmeticFactory::newScript(LocatedEntity* owner)
 {
     if (!m_class) {
         return nullptr;
@@ -75,7 +75,7 @@ ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
         }
     }
 
-    ArithmeticScript * script = new PythonArithmeticScript(py_object);
+    auto script = std::make_unique<PythonArithmeticScript>(py_object);
     // FIXME This is now part of the property, not the character.
     // chr.statistics().m_script = script;
 

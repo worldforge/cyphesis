@@ -167,7 +167,7 @@ void Connectiontest::setup()
 
     m_server = new ServerRouting(*(BaseWorld*)0, "noruleset", "unittesting",
                                  "1", 1, "2", 2);
-                         
+
     m_tcc = new TestCommSocket();
     m_connection = new Connection(*m_tcc, *m_server, "addr", "3", 3);
 }
@@ -183,8 +183,10 @@ void Connectiontest::test_addNewAccount()
     Account * ac = m_connection->addNewAccount("player", "bob", "foo");
 
     ASSERT_NOT_NULL(ac);
+    auto I = m_connection->m_connectableRouters.find(ac->getIntId());
+    ASSERT_TRUE(I != m_connection->m_connectableRouters.end());
 
-    m_connection->disconnectObject(m_connection->m_connectableRouters.find(ac->getIntId())->second,
+    m_connection->disconnectObject(I->second,
                                    "test_event");
 
     ASSERT_EQUAL(m_connection->m_objects.size(), 0u);
@@ -391,7 +393,7 @@ void Connectiontest::test_disconnectObject_empty()
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");
 
-    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) ==
                 m_connection->m_objects.end());
 }
 
@@ -448,11 +450,11 @@ void Connectiontest::test_disconnectObject_used_Entity()
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");
 
-    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) == 
+    ASSERT_TRUE(m_connection-> m_objects.find(ac->getIntId()) ==
                 m_connection->m_objects.end());
 
     // The Entity was in use, so it stays connected
-    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) != 
+    ASSERT_TRUE(m_connection-> m_objects.find(avatar->getIntId()) !=
                 m_connection->m_objects.end());
 }
 
@@ -655,7 +657,8 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;}
+    return I->second.get();
+}
 
 
 #include "stubs/common/stubInheritance.h"

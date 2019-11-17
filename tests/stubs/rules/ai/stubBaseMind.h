@@ -179,7 +179,7 @@
 
 #ifndef STUB_BaseMind_setScript
 //#define STUB_BaseMind_setScript
-  void BaseMind::setScript(Script * scrpt)
+  void BaseMind::setScript(std::unique_ptr<Script> scrpt)
   {
     
   }

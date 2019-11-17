@@ -55,13 +55,13 @@ EntityRuleHandler::EntityRuleHandler(EntityBuilder& eb)
     : m_builder(eb)
 {
 
-    mFactories["world"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
-        auto factory = new EntityFactory<World>();
+    mFactories["world"] = [](EntityFactoryBase* parent) -> std::unique_ptr<EntityFactoryBase> {
+        auto factory = std::make_unique<EntityFactory<World>>();
         factory->m_parent = parent;
         return factory;
     };
-    mFactories["thing"] = [](EntityFactoryBase* parent) -> EntityFactoryBase* {
-        auto factory = new EntityFactory<Thing>();
+    mFactories["thing"] = [](EntityFactoryBase* parent) -> std::unique_ptr<EntityFactoryBase> {
+        auto factory = std::make_unique<EntityFactory<Thing>>();
         factory->m_parent = parent;
         return factory;
     };
@@ -78,7 +78,7 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
 {
     assert(class_name == class_desc->getId());
 
-    EntityFactoryBase* factory;
+    std::unique_ptr<EntityFactoryBase> factory;
     if (parent == "game_entity") {
         auto I = mFactories.find(class_name);
         if (I != mFactories.end()) {
@@ -114,7 +114,7 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
         assert(factory->m_parent == parent_factory);
     }
 
-    return installEntityClass(class_name, parent, class_desc, dependent, reason, factory, changes);
+    return installEntityClass(class_name, parent, class_desc, dependent, reason, std::move(factory), changes);
 
 }
 
@@ -123,7 +123,7 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
                                           const Root& class_desc,
                                           std::string& dependent,
                                           std::string& reason,
-                                          EntityFactoryBase* factory,
+                                          std::unique_ptr<EntityFactoryBase> factory,
                                           std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     // Get the new factory for this rule
@@ -135,29 +135,28 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
         return -1;
     }
 
-    if (populateEntityFactory(class_name, factory,
+    if (populateEntityFactory(class_name, factory.get(),
                               class_desc->asMessage(),
                               dependent,
                               reason) != 0) {
-        delete factory;
         return -1;
     }
 
     debug(std::cout << "INSTALLING " << class_name << ":" << parent
                     << std::endl << std::flush;)
 
+    auto factoryPtr = factory.get();
     // Install the factory in place.
-    if (m_builder.installFactory(class_name, class_desc, factory) != 0) {
-        delete factory;
+    if (m_builder.installFactory(class_name, class_desc, std::move(factory)) != 0) {
         return -1;
     }
 
-    factory->addProperties();
+    factoryPtr->addProperties();
 
     auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder.getClassFactory(parent));
     if (parent_factory) {
         // Add it as a child to its parent.
-        parent_factory->m_children.insert(factory);
+        parent_factory->m_children.insert(factoryPtr);
         parent_factory->updateProperties(changes);
     }
 

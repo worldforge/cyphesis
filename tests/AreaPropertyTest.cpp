@@ -66,7 +66,7 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owne
     return 0;
 }
 
-Shape * Shape::newFromAtlas(const MapType & data)
+std::unique_ptr<Shape> Shape::newFromAtlas(const MapType & data)
 {
-    return 0;
+    return {};
 }

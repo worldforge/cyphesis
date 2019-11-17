@@ -41,7 +41,7 @@ PropertyInstanceState<sigc::connection> RespawningProperty::sInstanceState;
 void RespawningProperty::install(LocatedEntity * owner, const std::string & name)
 {
     owner->installDelegate(Atlas::Objects::Operation::DELETE_NO, name);
-    sInstanceState.addState(owner, new sigc::connection);
+    sInstanceState.addState(owner, std::make_unique<sigc::connection>());
 }
 
 void RespawningProperty::remove(LocatedEntity *owner, const std::string & name)

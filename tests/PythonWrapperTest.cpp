@@ -105,7 +105,7 @@ int main()
     assert(ret == 0);
 
     assert(e->m_scripts.size() == 1);
-    assert(dynamic_cast<PythonWrapper*>(e->m_scripts.front())->wrapper().getAttr("foo").as_string() == "bar");
+    assert(dynamic_cast<PythonWrapper*>(e->m_scripts.front().get())->wrapper().getAttr("foo").as_string() == "bar");
 
     OpVector res;
     Atlas::Objects::Operation::Look op1;
@@ -129,8 +129,8 @@ int main()
     Atlas::Objects::Operation::Tick op7;
     e->operation(op7, res);
 
-    Script * script = e->m_scripts.front();
-    assert(script != 0);
+    auto& script = e->m_scripts.front();
+    assert(script);
 
     script->hook("nohookfunction", e.get());
     script->hook("test_hook", e.get());

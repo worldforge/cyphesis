@@ -35,7 +35,7 @@ int main()
     {
         ArithmeticBuilder  ab;
 
-        ArithmeticScript * as = ab.newArithmetic("foo", 0);
+        auto as = ab.newArithmetic("foo", nullptr);
         // The factory this uses is stubbed out to return 0.
         assert(as == 0);
     }
@@ -43,26 +43,5 @@ int main()
 }
 
 // stubs
-
-PythonArithmeticFactory::PythonArithmeticFactory(const std::string & package,
-                                                 const std::string & name) :
-                                                 PythonClass(package,
-                                                             name)
-{
-}
-
-PythonArithmeticFactory::~PythonArithmeticFactory()
-{
-}
-
-int PythonArithmeticFactory::setup()
-{
-    return 0;
-}
-
-ArithmeticScript * PythonArithmeticFactory::newScript(LocatedEntity * owner)
-{
-    return 0;
-}
-
+#include "stubs/rules/python/stubPythonArithmeticFactory.h"
 #include "stubs/rules/python/stubPythonClass.h"

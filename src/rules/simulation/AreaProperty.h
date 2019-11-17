@@ -20,6 +20,7 @@
 #define RULESETS_AREA_PROPERTY_H
 
 #include "TerrainEffectorProperty.h"
+#include <memory>
 
 template <int dim>
 class Form;
@@ -29,7 +30,7 @@ class Form;
 class AreaProperty : public TerrainEffectorProperty {
   protected:
     int m_layer;
-    Form<2> * m_shape;
+    std::unique_ptr<Form<2>> m_shape;
 
     AreaProperty(const AreaProperty & other);
   public:
@@ -39,7 +40,7 @@ class AreaProperty : public TerrainEffectorProperty {
     explicit AreaProperty();
     ~AreaProperty() override;
 
-    const Form<2> * shape() const { return m_shape; }
+    const Form<2> * shape() const { return m_shape.get(); }
 
     void apply(LocatedEntity *) override;
 

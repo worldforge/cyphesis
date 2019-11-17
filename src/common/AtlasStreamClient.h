@@ -21,6 +21,8 @@
 
 #include "common/OperationRouter.h"
 
+#include <Atlas/Codec.h>
+#include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Objects/Root.h>
@@ -66,8 +68,8 @@ class StreamClientSocketBase
         boost::asio::streambuf mBuffer;
         boost::asio::streambuf mReadBuffer;
         std::iostream m_ios;
-        Atlas::Codec* m_codec;
-        Atlas::Objects::ObjectsEncoder * m_encoder;
+        std::unique_ptr<Atlas::Codec> m_codec;
+        std::unique_ptr<Atlas::Objects::ObjectsEncoder> m_encoder;
         bool m_is_connected;
 
         virtual size_t read_blocking() = 0;

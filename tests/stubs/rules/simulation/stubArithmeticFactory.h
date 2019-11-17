@@ -9,9 +9,9 @@
 
 #ifndef STUB_ArithmeticKit_newScript
 //#define STUB_ArithmeticKit_newScript
-  ArithmeticScript* ArithmeticKit::newScript(LocatedEntity * owner)
+  std::unique_ptr<ArithmeticScript> ArithmeticKit::newScript(LocatedEntity * owner)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ArithmeticScript>*>(nullptr);
   }
 #endif //STUB_ArithmeticKit_newScript
 

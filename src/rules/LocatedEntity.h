@@ -159,11 +159,11 @@ class LocatedEntity : public Router, public ReferenceCounted {
 
 
     /// Scripts that are associated with this entity.
-    std::vector<Script*> m_scripts;
+    std::vector<std::unique_ptr<Script>> m_scripts;
     /// Full details of location
     Location m_location;
     /// List of entities which use this as ref
-    LocatedEntitySet * m_contains;
+    std::unique_ptr<LocatedEntitySet> m_contains;
     // A representation of this instance used by the scripting system. This is opaque to this class.
     boost::any m_scriptEntity;
 
@@ -239,7 +239,7 @@ class LocatedEntity : public Router, public ReferenceCounted {
 
     virtual void sendWorld(const Operation & op);
 
-    virtual void setScript(Script * scrpt);
+    virtual void setScript(std::unique_ptr<Script> scrpt);
     void makeContainer();
     void changeContainer(const Ref<LocatedEntity>&);
     void merge(const Atlas::Message::MapType &);

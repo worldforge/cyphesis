@@ -41,11 +41,11 @@
 
 #include "fastlz.h"
 
-#include "DetourNavMesh.h"
-#include "DetourNavMeshBuilder.h"
-#include "DetourCommon.h"
-#include "DetourTileCache.h"
-#include "DetourTileCacheBuilder.h"
+#include "RecastDetour/Detour/Include/DetourNavMesh.h"
+#include "RecastDetour/Detour/Include/DetourNavMeshBuilder.h"
+#include "RecastDetour/Detour/Include/DetourCommon.h"
+#include "RecastDetour/DetourTileCache/Include/DetourTileCache.h"
+#include "RecastDetour/DetourTileCache/Include/DetourTileCacheBuilder.h"
 #include <string.h>
 
 struct FastLZCompressor: public dtTileCacheCompressor

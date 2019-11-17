@@ -64,12 +64,6 @@ LocatedEntity::~LocatedEntity()
 {
     m_scriptEntity.clear();
     clearProperties();
-
-    for (auto script : m_scripts) {
-        delete script;
-    }
-
-    delete m_contains;
 }
 
 void LocatedEntity::clearProperties()
@@ -240,9 +234,6 @@ void LocatedEntity::onUpdated()
 void LocatedEntity::destroy()
 {
     m_scriptEntity.clear();
-    for (auto script : m_scripts) {
-        delete script;
-    }
     m_scripts.clear();
 
     if (m_location.m_parent) {
@@ -286,9 +277,9 @@ void LocatedEntity::sendWorld(const Operation& op)
 ///
 /// The previously associated script is deleted.
 /// @param scrpt Pointer to the script to be associated with this entity
-void LocatedEntity::setScript(Script* scrpt)
+void LocatedEntity::setScript(std::unique_ptr<Script> scrpt)
 {
-    m_scripts.push_back(scrpt);
+    m_scripts.emplace_back(std::move(scrpt));
 }
 
 /// \brief Make this entity a container
@@ -298,7 +289,7 @@ void LocatedEntity::setScript(Script* scrpt)
 void LocatedEntity::makeContainer()
 {
     if (m_contains == nullptr) {
-        m_contains = new LocatedEntitySet;
+        m_contains = std::make_unique<LocatedEntitySet>();
         m_properties["contains"] = std::make_unique<ContainsProperty>(*m_contains);
     }
 }

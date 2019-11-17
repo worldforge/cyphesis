@@ -9,7 +9,7 @@
 
 #ifndef STUB_ServerRouting_ServerRouting
 //#define STUB_ServerRouting_ServerRouting
-   ServerRouting::ServerRouting(BaseWorld & wrld, const std::string & ruleset, const std::string & name, const std::string & id, long intId, const std::string & lId, long lIntId)
+   ServerRouting::ServerRouting(BaseWorld& wrld, std::string ruleset, std::string name, const std::string& id, long intId, const std::string& lId, long lIntId)
     : Router(wrld, ruleset, name, id, intId, lId, lIntId)
   {
     
@@ -24,9 +24,17 @@
   }
 #endif //STUB_ServerRouting_ServerRouting_DTOR
 
+#ifndef STUB_ServerRouting_disconnectAllConnections
+//#define STUB_ServerRouting_disconnectAllConnections
+  void ServerRouting::disconnectAllConnections()
+  {
+    
+  }
+#endif //STUB_ServerRouting_disconnectAllConnections
+
 #ifndef STUB_ServerRouting_addObject
 //#define STUB_ServerRouting_addObject
-  void ServerRouting::addObject(ConnectableRouter * obj)
+  void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
   {
     
   }
@@ -34,7 +42,7 @@
 
 #ifndef STUB_ServerRouting_addAccount
 //#define STUB_ServerRouting_addAccount
-  void ServerRouting::addAccount(Account * a)
+  void ServerRouting::addAccount(std::unique_ptr<Account> a)
   {
     
   }
@@ -42,7 +50,7 @@
 
 #ifndef STUB_ServerRouting_delObject
 //#define STUB_ServerRouting_delObject
-  void ServerRouting::delObject(ConnectableRouter * obj)
+  void ServerRouting::delObject(ConnectableRouter* obj)
   {
     
   }
@@ -50,7 +58,7 @@
 
 #ifndef STUB_ServerRouting_getObject
 //#define STUB_ServerRouting_getObject
-  ConnectableRouter* ServerRouting::getObject(const std::string & id) const
+  ConnectableRouter* ServerRouting::getObject(const std::string& id) const
   {
     return nullptr;
   }
@@ -58,7 +66,7 @@
 
 #ifndef STUB_ServerRouting_getAccountByName
 //#define STUB_ServerRouting_getAccountByName
-  Account* ServerRouting::getAccountByName(const std::string & username)
+  Account* ServerRouting::getAccountByName(const std::string& username)
   {
     return nullptr;
   }
@@ -66,7 +74,7 @@
 
 #ifndef STUB_ServerRouting_addToMessage
 //#define STUB_ServerRouting_addToMessage
-  void ServerRouting::addToMessage(Atlas::Message::MapType &) const
+  void ServerRouting::addToMessage(Atlas::Message::MapType&) const
   {
     
   }
@@ -74,7 +82,7 @@
 
 #ifndef STUB_ServerRouting_addToEntity
 //#define STUB_ServerRouting_addToEntity
-  void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
+  void ServerRouting::addToEntity(const Atlas::Objects::Entity::RootEntity&) const
   {
     
   }
@@ -82,7 +90,7 @@
 
 #ifndef STUB_ServerRouting_externalOperation
 //#define STUB_ServerRouting_externalOperation
-  void ServerRouting::externalOperation(const Operation & op, Link &)
+  void ServerRouting::externalOperation(const Operation& op, Link&)
   {
     
   }
@@ -90,7 +98,7 @@
 
 #ifndef STUB_ServerRouting_operation
 //#define STUB_ServerRouting_operation
-  void ServerRouting::operation(const Operation &, OpVector &)
+  void ServerRouting::operation(const Operation&, OpVector&)
   {
     
   }

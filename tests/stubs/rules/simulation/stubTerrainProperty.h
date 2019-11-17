@@ -9,9 +9,9 @@
 
 #ifndef STUB_TerrainProperty_createShaders
 //#define STUB_TerrainProperty_createShaders
-  Mercator::TileShader* TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList)
+  std::unique_ptr<Mercator::TileShader> TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<Mercator::TileShader>*>(nullptr);
   }
 #endif //STUB_TerrainProperty_createShaders
 
@@ -19,7 +19,6 @@
 //#define STUB_TerrainProperty_TerrainProperty
    TerrainProperty::TerrainProperty(const TerrainProperty& rhs)
     : PropertyBase(rhs)
-    , m_tileShader(nullptr)
   {
     
   }
@@ -29,7 +28,6 @@
 //#define STUB_TerrainProperty_TerrainProperty
    TerrainProperty::TerrainProperty()
     : PropertyBase()
-    , m_tileShader(nullptr)
   {
     
   }
@@ -45,7 +43,7 @@
 
 #ifndef STUB_TerrainProperty_get
 //#define STUB_TerrainProperty_get
-  int TerrainProperty::get(Atlas::Message::Element &) const
+  int TerrainProperty::get(Atlas::Message::Element&) const
   {
     return 0;
   }
@@ -53,7 +51,7 @@
 
 #ifndef STUB_TerrainProperty_set
 //#define STUB_TerrainProperty_set
-  void TerrainProperty::set(const Atlas::Message::Element &)
+  void TerrainProperty::set(const Atlas::Message::Element&)
   {
     
   }
@@ -77,7 +75,7 @@
 
 #ifndef STUB_TerrainProperty_addMod
 //#define STUB_TerrainProperty_addMod
-  void TerrainProperty::addMod(long id, const Mercator::TerrainMod *) const
+  void TerrainProperty::addMod(long id, const Mercator::TerrainMod*) const
   {
     
   }
@@ -93,7 +91,7 @@
 
 #ifndef STUB_TerrainProperty_updateMod
 //#define STUB_TerrainProperty_updateMod
-  void TerrainProperty::updateMod(long id, const Mercator::TerrainMod *) const
+  void TerrainProperty::updateMod(long id, const Mercator::TerrainMod*) const
   {
     
   }
@@ -109,7 +107,7 @@
 
 #ifndef STUB_TerrainProperty_getHeightAndNormal
 //#define STUB_TerrainProperty_getHeightAndNormal
-  bool TerrainProperty::getHeightAndNormal(float x, float z, float &, Vector3D &) const
+  bool TerrainProperty::getHeightAndNormal(float x, float z, float&, Vector3D&) const
   {
     return false;
   }
@@ -117,7 +115,7 @@
 
 #ifndef STUB_TerrainProperty_getHeight
 //#define STUB_TerrainProperty_getHeight
-  bool TerrainProperty::getHeight(float x, float z, float &) const
+  bool TerrainProperty::getHeight(float x, float z, float&) const
   {
     return false;
   }

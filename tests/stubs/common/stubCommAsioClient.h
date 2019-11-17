@@ -12,7 +12,6 @@
   template <typename ProtocolT>
    CommAsioClient<ProtocolT>::CommAsioClient(std::string name, boost::asio::io_context& io_context, const Atlas::Objects::Factories& factories)
     : Atlas::Objects::ObjectsDecoder(name, io_context, factories)
-    , mWriteBuffer(nullptr),mSendBuffer(nullptr),m_codec(nullptr),m_encoder(nullptr),m_negotiate(nullptr),m_link(nullptr)
   {
     
   }
@@ -39,7 +38,7 @@
 #ifndef STUB_CommAsioClient_startAccept
 //#define STUB_CommAsioClient_startAccept
   template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::startAccept(Link* connection)
+  void CommAsioClient<ProtocolT>::startAccept(std::unique_ptr<Link> connection)
   {
     
   }
@@ -48,7 +47,7 @@
 #ifndef STUB_CommAsioClient_startConnect
 //#define STUB_CommAsioClient_startConnect
   template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::startConnect(Link* connection)
+  void CommAsioClient<ProtocolT>::startConnect(std::unique_ptr<Link> connection)
   {
     
   }

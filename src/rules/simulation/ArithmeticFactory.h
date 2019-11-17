@@ -19,7 +19,9 @@
 #ifndef RULESETS_ARITHMETIC_FACTORY_H
 #define RULESETS_ARITHMETIC_FACTORY_H
 
-class ArithmeticScript;
+#include <memory>
+#include "rules/simulation/ArithmeticScript.h"
+
 class LocatedEntity;
 
 /// \brief Base class for for factories for creating arithmetic scripts
@@ -30,7 +32,7 @@ class ArithmeticKit {
     /// \brief Create a new arithmetic model object
     ///
     /// @param chr The Character object for which the model should be created
-    virtual ArithmeticScript * newScript(LocatedEntity * owner) = 0;
+    virtual std::unique_ptr<ArithmeticScript> newScript(LocatedEntity * owner) = 0;
 };
 
 #endif // RULESETS_ARITHMETIC_FACTORY_H

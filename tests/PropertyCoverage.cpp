@@ -48,7 +48,7 @@ PropertyCoverage::PropertyCoverage(PropertyBase * pb) :
     m_ent->m_location.m_parent = m_tlve;
     m_ent->m_location.m_pos = Point3D(1,0,0);
 
-    m_tlve->m_contains = new LocatedEntitySet;
+    m_tlve->m_contains.reset(new LocatedEntitySet);
     m_tlve->m_contains->insert(m_ent);
 
     m_testData.push_back(23);

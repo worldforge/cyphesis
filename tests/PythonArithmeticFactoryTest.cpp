@@ -78,7 +78,7 @@ int main()
         PythonArithmeticFactory paf("badmod", "TestArithmeticScript");
         assert(paf.setup() != 0);
 
-        ArithmeticScript * as = paf.newScript(0);
+        auto as = paf.newScript(0);
         assert(as == 0);
     }
 
@@ -86,7 +86,7 @@ int main()
         PythonArithmeticFactory paf("testmod", "BadArithmeticScriptClass");
         assert(paf.setup() != 0);
 
-        ArithmeticScript * as = paf.newScript(0);
+        auto as = paf.newScript(0);
         assert(as == 0);
     }
 
@@ -94,7 +94,7 @@ int main()
         PythonArithmeticFactory paf("testmod", "FailArithmeticScript");
         assert(paf.setup() == 0);
 
-        ArithmeticScript * as = paf.newScript(0);
+        auto as = paf.newScript(0);
         assert(as != 0);
     }
 
@@ -102,7 +102,7 @@ int main()
     PythonArithmeticFactory paf("testmod", "TestArithmeticScript");
     assert(paf.setup() == 0);
 
-    ArithmeticScript * as = paf.newScript(0);
+    auto as = paf.newScript(0);
     assert(as != 0);
     
     Ref<Entity> e = new Entity("1", 1);
@@ -128,7 +128,7 @@ int main()
 void LocatedEntity::makeContainer()
 {
     if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
+        m_contains.reset(new LocatedEntitySet);
     }
 }
 

@@ -86,4 +86,5 @@ void Task::initTask(const std::string& id, OpVector & res)
 #include "stubs/common/stubInheritance.h"
 
 #include "stubs/common/stubcustom.h"
+#include "stubs/common/stubTypeNode.h"
 

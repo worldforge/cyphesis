@@ -9,7 +9,7 @@
 
 #ifndef STUB_EntityBuilder_installBaseFactory
 //#define STUB_EntityBuilder_installBaseFactory
-  void EntityBuilder::installBaseFactory(const std::string & class_name, const std::string & parent, EntityKit * factory)
+  void EntityBuilder::installBaseFactory(const std::string & class_name, const std::string & parent, std::unique_ptr<EntityKit> factory)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_EntityBuilder_installFactory
 //#define STUB_EntityBuilder_installFactory
-  int EntityBuilder::installFactory(const std::string & class_name, const Atlas::Objects::Root & class_desc, EntityKit * factory)
+  int EntityBuilder::installFactory(const std::string & class_name, const Atlas::Objects::Root & class_desc, std::unique_ptr<EntityKit> factory)
   {
     return 0;
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_EntityBuilder_getClassFactory
 //#define STUB_EntityBuilder_getClassFactory
-  EntityKit* EntityBuilder::getClassFactory(const std::string & class_name)
+  EntityKit* EntityBuilder::getClassFactory(const std::string & class_name) const
   {
     return nullptr;
   }

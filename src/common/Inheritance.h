@@ -47,7 +47,7 @@ class Inheritance : public Singleton<Inheritance>, public TypeStore
     protected:
         const Atlas::Objects::Root noClass;
 
-        std::map<std::string, TypeNode*> atlasObjects;
+        std::map<std::string, std::unique_ptr<TypeNode>> atlasObjects;
 
         Atlas::Objects::Factories& m_factories;
 
@@ -57,7 +57,7 @@ class Inheritance : public Singleton<Inheritance>, public TypeStore
 
         ~Inheritance() override;
 
-        const std::map<std::string, TypeNode*>& getAllObjects() const
+        const std::map<std::string, std::unique_ptr<TypeNode>>& getAllObjects() const
         {
             return atlasObjects;
         }

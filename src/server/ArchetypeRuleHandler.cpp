@@ -59,8 +59,8 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
                          "not exist.", class_name, parent);
         return 1;
     }
-    ArchetypeFactory* factory = parent_factory->duplicateFactory();
-    if (factory == nullptr) {
+    auto factory = parent_factory->duplicateFactory();
+    if (!factory) {
         log(ERROR,
             compose(
                 "Attempt to install rule \"%1\" which has parent \"%2\" "
@@ -71,9 +71,8 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
 
     assert(factory->m_parent == parent_factory);
 
-    if (populateArchetypeFactory(class_name, factory, class_desc->asMessage(),
+    if (populateArchetypeFactory(class_name, factory.get(), class_desc->asMessage(),
                                  dependent, reason) != 0) {
-        delete factory;
         return -1;
     }
 
@@ -81,16 +80,16 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
         std::cout << "INSTALLING " << class_name << ":" << parent
                   << std::endl << std::flush;)
 
+    auto factoryPtr = factory.get();
     // Install the factory in place.
-    if (m_builder.installFactory(class_name, class_desc, factory) != 0) {
-        delete factory;
+    if (m_builder.installFactory(class_name, class_desc, std::move(factory)) != 0) {
         return -1;
     }
 
-    factory->addProperties();
+    factoryPtr->addProperties();
 
     // Add it as a child to its parent.
-    parent_factory->m_children.insert(factory);
+    parent_factory->m_children.insert(factoryPtr);
 
     return 0;
 }

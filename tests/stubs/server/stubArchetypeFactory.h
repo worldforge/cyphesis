@@ -117,9 +117,9 @@
 
 #ifndef STUB_ArchetypeFactory_duplicateFactory
 //#define STUB_ArchetypeFactory_duplicateFactory
-  ArchetypeFactory* ArchetypeFactory::duplicateFactory()
+  std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ArchetypeFactory>*>(nullptr);
   }
 #endif //STUB_ArchetypeFactory_duplicateFactory
 

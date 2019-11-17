@@ -24,18 +24,15 @@
 
 static const bool debug_flag = false;
 
-CommPythonClient::CommPythonClient(const std::string & name,
-        boost::asio::io_context& io_context) :
-        mSocket(io_context),
-        mBuffer{},
-        m_pyContext(new PythonContext)
+CommPythonClient::CommPythonClient(const std::string& name,
+                                   boost::asio::io_context& io_context) :
+    mSocket(io_context),
+    mBuffer{},
+    m_pyContext(new PythonContext)
 {
 }
 
-CommPythonClient::~CommPythonClient()
-{
-    delete m_pyContext;
-}
+CommPythonClient::~CommPythonClient() = default;
 
 boost::asio::local::stream_protocol::socket& CommPythonClient::getSocket()
 {
@@ -51,18 +48,16 @@ void CommPythonClient::do_read()
 {
     auto self(this->shared_from_this());
     mSocket.async_read_some(boost::asio::buffer(mBuffer),
-            [this, self](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                    read(length);
-                    //By calling do_read again we make sure that the instance
-                    //doesn't go out of scope ("shared_from this"). As soon as that
-                    //doesn't happen, and there's no do_write in progress, the instance
-                    //will be deleted since there's no more references to it.
-                    this->do_read();
-                }
-            });
+                            [this, self](boost::system::error_code ec, std::size_t length) {
+                                if (!ec) {
+                                    read(length);
+                                    //By calling do_read again we make sure that the instance
+                                    //doesn't go out of scope ("shared_from this"). As soon as that
+                                    //doesn't happen, and there's no do_write in progress, the instance
+                                    //will be deleted since there's no more references to it.
+                                    this->do_read();
+                                }
+                            });
 
 }
 

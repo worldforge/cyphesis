@@ -57,17 +57,11 @@ StreamClientSocketBase::StreamClientSocketBase(boost::asio::io_context& io_conte
     : m_io_context(io_context),
       mDispatcher(dispatcher),
       m_ios(&mBuffer),
-      m_codec(nullptr),
-      m_encoder(nullptr),
       m_is_connected(false)
 {
 }
 
-StreamClientSocketBase::~StreamClientSocketBase()
-{
-    delete m_encoder;
-    delete m_codec;
-}
+StreamClientSocketBase::~StreamClientSocketBase() = default;
 
 std::iostream& StreamClientSocketBase::getIos()
 {
@@ -80,12 +74,12 @@ int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
     Atlas::Net::StreamConnect conn("cyphesis_client", m_ios, m_ios);
 
     while (conn.getState() == Atlas::Net::StreamConnect::IN_PROGRESS) {
-      write();
-      auto dataReceived = read_blocking();
-      if (dataReceived > 0) {
-          m_ios.peek();
-      }
-      conn.poll();
+        write();
+        auto dataReceived = read_blocking();
+        if (dataReceived > 0) {
+            m_ios.peek();
+        }
+        conn.poll();
     }
 
     if (conn.getState() == Atlas::Net::StreamConnect::FAILED) {
@@ -93,13 +87,13 @@ int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
         return -1;
     }
 
-    m_codec = conn.getCodec(decoder);
+    m_codec.reset(conn.getCodec(decoder));
 
     if (!m_codec) {
         return -1;
     }
 
-    m_encoder = new Atlas::Objects::ObjectsEncoder(*m_codec);
+    m_encoder = std::make_unique<Atlas::Objects::ObjectsEncoder>(*m_codec);
 
     m_codec->streamBegin();
 
@@ -118,8 +112,9 @@ Atlas::Objects::ObjectsEncoder& StreamClientSocketBase::getEncoder()
     return *m_encoder;
 }
 
-int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration) {
-    return poll(duration, []()->bool{return false;});
+int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration)
+{
+    return poll(duration, []() -> bool { return false; });
 }
 
 int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn)
@@ -128,7 +123,7 @@ int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duratio
     bool isCancelled = false;
     deadline_timer timer(m_io_context);
     timer.expires_from_now(duration);
-    timer.async_wait([&](boost::system::error_code ec){
+    timer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {
             hasExpired = true;
         } else {
@@ -163,7 +158,7 @@ bool StreamClientSocketBase::isConnected() const
 
 
 TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::ip::tcp::endpoint endpoint)
-: StreamClientSocketBase(io_context, dispatcher), m_socket(io_context)
+    : StreamClientSocketBase(io_context, dispatcher), m_socket(io_context)
 {
     m_socket.connect(endpoint);
     m_is_connected = true;
@@ -172,20 +167,18 @@ TcpStreamClientSocket::TcpStreamClientSocket(boost::asio::io_context& io_context
 void TcpStreamClientSocket::do_read()
 {
     m_socket.async_read_some(mReadBuffer.prepare(read_buffer_size),
-            [this](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                    mReadBuffer.commit(length);
-                    this->m_ios.rdbuf(&mReadBuffer);
-                    m_codec->poll();
-                    this->m_ios.rdbuf(&mBuffer);
-                    mDispatcher();
-                    this->do_read();
-                } else {
-                    m_is_connected = false;
-                }
-            });
+                             [this](boost::system::error_code ec, std::size_t length) {
+                                 if (!ec) {
+                                     mReadBuffer.commit(length);
+                                     this->m_ios.rdbuf(&mReadBuffer);
+                                     m_codec->poll();
+                                     this->m_ios.rdbuf(&mBuffer);
+                                     mDispatcher();
+                                     this->do_read();
+                                 } else {
+                                     m_is_connected = false;
+                                 }
+                             });
 }
 
 size_t TcpStreamClientSocket::read_blocking()
@@ -213,15 +206,14 @@ size_t TcpStreamClientSocket::write()
     }
 
     auto size = boost::asio::write(m_socket, mBuffer.data(),
-              boost::asio::transfer_all());
+                                   boost::asio::transfer_all());
     mBuffer.consume(size);
     return size;
 }
 
 
-
 LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_context& io_context, std::function<void()>& dispatcher, boost::asio::local::stream_protocol::endpoint endpoint)
-: StreamClientSocketBase(io_context, dispatcher), m_socket(io_context)
+    : StreamClientSocketBase(io_context, dispatcher), m_socket(io_context)
 {
     m_socket.connect(endpoint);
     m_is_connected = true;
@@ -230,20 +222,18 @@ LocalStreamClientSocket::LocalStreamClientSocket(boost::asio::io_context& io_con
 void LocalStreamClientSocket::do_read()
 {
     m_socket.async_read_some(mReadBuffer.prepare(read_buffer_size),
-            [this](boost::system::error_code ec, std::size_t length)
-            {
-                if (!ec)
-                {
-                    mReadBuffer.commit(length);
-                    this->m_ios.rdbuf(&mReadBuffer);
-                    m_codec->poll();
-                    this->m_ios.rdbuf(&mBuffer);
-                    mDispatcher();
-                    this->do_read();
-                } else {
-                    m_is_connected = false;
-                }
-            });
+                             [this](boost::system::error_code ec, std::size_t length) {
+                                 if (!ec) {
+                                     mReadBuffer.commit(length);
+                                     this->m_ios.rdbuf(&mReadBuffer);
+                                     m_codec->poll();
+                                     this->m_ios.rdbuf(&mBuffer);
+                                     mDispatcher();
+                                     this->do_read();
+                                 } else {
+                                     m_is_connected = false;
+                                 }
+                             });
 }
 
 size_t LocalStreamClientSocket::read_blocking()
@@ -271,24 +261,23 @@ size_t LocalStreamClientSocket::write()
     }
 
     auto size = boost::asio::write(m_socket, mBuffer.data(),
-              boost::asio::transfer_all());
+                                   boost::asio::transfer_all());
     mBuffer.consume(size);
     return size;
 }
 
 
-
-void AtlasStreamClient::output(const Element & item, size_t depth) const
+void AtlasStreamClient::output(const Element& item, size_t depth) const
 {
     output_element(std::cout, item, depth);
 }
 
-void AtlasStreamClient::output(const Root & ent) const
+void AtlasStreamClient::output(const Root& ent) const
 {
     MapType entmap = ent->asMessage();
     MapType::const_iterator Iend = entmap.end();
     for (MapType::const_iterator I = entmap.begin(); I != Iend; ++I) {
-        const Element & item = I->second;
+        const Element& item = I->second;
         std::cout << std::string(spacing(), ' ') << I->first << ": ";
         output(item, 1);
         std::cout << std::endl;
@@ -299,7 +288,7 @@ void AtlasStreamClient::output(const Root & ent) const
 /// server
 ///
 /// @param obj Object that has arrived from the server
-void AtlasStreamClient::objectArrived(const Root & obj)
+void AtlasStreamClient::objectArrived(const Root& obj)
 {
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
@@ -330,7 +319,7 @@ void AtlasStreamClient::dispatch()
 }
 
 
-void AtlasStreamClient::operation(const RootOperation & op)
+void AtlasStreamClient::operation(const RootOperation& op)
 {
     if (debug_flag) {
         debug_print("Received:");
@@ -373,7 +362,7 @@ void AtlasStreamClient::operation(const RootOperation & op)
     }
 }
 
-void AtlasStreamClient::infoArrived(const RootOperation & op)
+void AtlasStreamClient::infoArrived(const RootOperation& op)
 {
     reply_flag = true;
     if (!op->isDefaultFrom()) {
@@ -392,38 +381,38 @@ void AtlasStreamClient::infoArrived(const RootOperation & op)
     m_infoReply = op->getArgs().front();
 }
 
-void AtlasStreamClient::appearanceArrived(const RootOperation & op)
+void AtlasStreamClient::appearanceArrived(const RootOperation& op)
 {
 }
 
-void AtlasStreamClient::disappearanceArrived(const RootOperation & op)
+void AtlasStreamClient::disappearanceArrived(const RootOperation& op)
 {
 }
 
-void AtlasStreamClient::sightArrived(const RootOperation & op)
+void AtlasStreamClient::sightArrived(const RootOperation& op)
 {
 }
 
-void AtlasStreamClient::soundArrived(const RootOperation & op)
+void AtlasStreamClient::soundArrived(const RootOperation& op)
 {
 }
 
-void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root & arg)
+void AtlasStreamClient::loginSuccess(const Atlas::Objects::Root& arg)
 {
 }
 
 /// \brief Called when an Error operation arrives
 ///
 /// @param op Operation to be processed
-void AtlasStreamClient::errorArrived(const RootOperation & op)
+void AtlasStreamClient::errorArrived(const RootOperation& op)
 {
     reply_flag = true;
     error_flag = true;
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         return;
     }
-    const Root & arg = args.front();
+    const Root& arg = args.front();
     Element message_attr;
     if (arg->copyAttr("message", message_attr) == 0 && message_attr.isString()) {
         m_errorMessage = message_attr.String();
@@ -448,7 +437,7 @@ AtlasStreamClient::~AtlasStreamClient()
     send(Atlas::Objects::Operation::Logout());
 }
 
-void AtlasStreamClient::send(const RootOperation & op)
+void AtlasStreamClient::send(const RootOperation& op)
 {
     if (!m_socket) {
         return;
@@ -465,11 +454,11 @@ void AtlasStreamClient::send(const RootOperation & op)
     m_socket->write();
 }
 
-int AtlasStreamClient::connect(const std::string & host, unsigned short port)
+int AtlasStreamClient::connect(const std::string& host, unsigned short port)
 {
     m_socket.reset();
     try {
-        std::function<void()> dispatcher = [&]{this->dispatch();};
+        std::function<void()> dispatcher = [&] { this->dispatch(); };
         m_socket = std::make_unique<TcpStreamClientSocket>(m_io_context, dispatcher, ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port));
     } catch (const std::exception& e) {
         return -1;
@@ -478,12 +467,12 @@ int AtlasStreamClient::connect(const std::string & host, unsigned short port)
 
 }
 
-int AtlasStreamClient::connectLocal(const std::string & filename)
+int AtlasStreamClient::connectLocal(const std::string& filename)
 {
     m_socket.reset();
 
     try {
-        std::function<void()> dispatcher = [&]{this->dispatch();};
+        std::function<void()> dispatcher = [&] { this->dispatch(); };
         m_socket = std::make_unique<LocalStreamClientSocket>(m_io_context, dispatcher, local::stream_protocol::endpoint(filename));
     } catch (const std::exception& e) {
         return -1;
@@ -503,28 +492,28 @@ int AtlasStreamClient::cleanDisconnect()
 }
 
 
-int AtlasStreamClient::login(const std::string & username,
-                             const std::string & password)
+int AtlasStreamClient::login(const std::string& username,
+                             const std::string& password)
 {
     m_username = username;
 
     Login l;
     Anonymous account;
- 
+
     account->setAttr("username", username);
     account->setAttr("password", password);
- 
+
     l->setArgs1(account);
     l->setSerialno(newSerialNo());
- 
+
     send(l);
 
     return waitForLoginResponse();
 }
 
-int AtlasStreamClient::create(const std::string & type,
-                              const std::string & username,
-                              const std::string & password)
+int AtlasStreamClient::create(const std::string& type,
+                              const std::string& username,
+                              const std::string& password)
 {
     m_username = username;
 
@@ -548,7 +537,7 @@ int AtlasStreamClient::waitForLoginResponse()
     while (poll(boost::posix_time::seconds(10)) == 0) {
         if (reply_flag && !error_flag) {
             if (m_infoReply->isDefaultId()) {
-               std::cerr << "Malformed reply" << std::endl << std::flush;
+                std::cerr << "Malformed reply" << std::endl << std::flush;
             } else {
                 m_accountId = m_infoReply->getId();
                 m_accountType = m_infoReply->getParent();
@@ -567,7 +556,7 @@ int AtlasStreamClient::pollOne(const boost::posix_time::time_duration& duration)
     if (!m_socket) {
         return -1;
     }
-    int result = m_socket->poll(duration, [&]()->bool{return !mOps.empty();});
+    int result = m_socket->poll(duration, [&]() -> bool { return !mOps.empty(); });
     if (result == -1) {
         std::cerr << "Server disconnected" << std::endl << std::flush;
     }
@@ -580,7 +569,7 @@ int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
     if (!m_socket) {
         return -1;
     }
-    int result = m_socket->poll(duration, [](){return false;});
+    int result = m_socket->poll(duration, []() { return false; });
     if (result == -1) {
         std::cerr << "Server disconnected" << std::endl << std::flush;
     }
@@ -592,7 +581,7 @@ int AtlasStreamClient::poll(int seconds, int microseconds)
     return poll(boost::posix_time::seconds(seconds) + boost::posix_time::microseconds(microseconds));
 }
 
-int AtlasStreamClient::runTask(std::shared_ptr<ClientTask> task, const std::string & arg)
+int AtlasStreamClient::runTask(std::shared_ptr<ClientTask> task, const std::string& arg)
 {
     assert(task != nullptr);
 
@@ -628,7 +617,8 @@ int AtlasStreamClient::endTask()
     return 0;
 }
 
-bool AtlasStreamClient::hasTask() const {
+bool AtlasStreamClient::hasTask() const
+{
     return m_currentTask != nullptr;
 }
 

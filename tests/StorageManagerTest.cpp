@@ -270,6 +270,7 @@ template class Variable<std::string>;
 
 #include "stubs/common/stubMonitors.h"
 #include "stubs/common/stubOperationsDispatcher.h"
+#include "stubs/server/stubSpawn.h"
 
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)

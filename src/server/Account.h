@@ -57,7 +57,7 @@ class Account : public ConnectableRouter {
     /**
      * A map of external characters->minds.
      */
-    std::map<long, ExternalMind*> m_minds;
+    std::map<long, std::unique_ptr<ExternalMind>> m_minds;
 
     Ref<LocatedEntity> addNewCharacter(const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &, OpVector& res);

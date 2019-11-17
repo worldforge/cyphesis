@@ -39,6 +39,14 @@
   }
 #endif //STUB_FileSystemObserver_remove_directory
 
+#ifndef STUB_FileSystemObserver_stop
+//#define STUB_FileSystemObserver_stop
+  void FileSystemObserver::stop()
+  {
+    
+  }
+#endif //STUB_FileSystemObserver_stop
+
 #ifndef STUB_FileSystemObserver_observe
 //#define STUB_FileSystemObserver_observe
   void FileSystemObserver::observe()

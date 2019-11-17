@@ -115,13 +115,13 @@ class PhysicalDomain : public Domain
         {
             LocatedEntity* entity = nullptr;
             std::shared_ptr<btCollisionShape> collisionShape;
-            btCollisionObject* collisionObject = nullptr;
+            std::unique_ptr<btCollisionObject> collisionObject;
             sigc::connection propertyUpdatedConnection;
             Location lastSentLocation;
-            PhysicalMotionState* motionState = nullptr;
+            std::unique_ptr<PhysicalMotionState> motionState;
 
-            btCollisionObject* visibilitySphere = nullptr;
-            btCollisionObject* viewSphere = nullptr;
+            std::unique_ptr<btCollisionObject> visibilitySphere;
+            std::unique_ptr<btCollisionObject> viewSphere;
 
             /**
              * Set of entries which are observing by this.
@@ -171,11 +171,11 @@ class PhysicalDomain : public Domain
 
         struct TerrainEntry
         {
-            std::array<float, 65 * 65>* data;
-            btRigidBody* rigidBody;
+            std::unique_ptr<std::array<float, 65 * 65>> data;
+            std::unique_ptr<btRigidBody> rigidBody;
         };
 
-        std::unordered_map<long, BulletEntry*> m_entries;
+        std::unordered_map<long, std::unique_ptr<BulletEntry>> m_entries;
 
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
@@ -219,15 +219,15 @@ class PhysicalDomain : public Domain
 
         WorldInfo mWorldInfo;
 
-        btDefaultCollisionConfiguration* m_collisionConfiguration;
-        btCollisionDispatcher* m_dispatcher;
-        btSequentialImpulseConstraintSolver* m_constraintSolver;
-        btBroadphaseInterface* m_broadphase;
-        PhysicalWorld* m_dynamicsWorld;
+        std::unique_ptr<btDefaultCollisionConfiguration> m_collisionConfiguration;
+        std::unique_ptr<btCollisionDispatcher> m_dispatcher;
+        std::unique_ptr<btSequentialImpulseConstraintSolver> m_constraintSolver;
+        std::unique_ptr<btBroadphaseInterface> m_broadphase;
+        std::unique_ptr<PhysicalWorld> m_dynamicsWorld;
 
-        btCollisionDispatcher* m_visibilityDispatcher;
-        btBroadphaseInterface* m_visibilityBroadphase;
-        btCollisionWorld* m_visibilityWorld;
+        std::unique_ptr<btCollisionDispatcher> m_visibilityDispatcher;
+        std::unique_ptr<btBroadphaseInterface> m_visibilityBroadphase;
+        std::unique_ptr<btCollisionWorld> m_visibilityWorld;
 
         sigc::connection m_propertyAppliedConnection;
 
@@ -250,7 +250,7 @@ class PhysicalDomain : public Domain
          * Contains the six planes that make out the border, which matches the bounding box of the entity to which this
          * property belongs.
          */
-        std::vector<btRigidBody*> m_borderPlanes;
+        std::vector<std::unique_ptr<btRigidBody>> m_borderPlanes;
 
         /**
          * Keeps track of all water bodies, which are ghost objects which we use to detect when entities move in and out of the water.
@@ -273,7 +273,7 @@ class PhysicalDomain : public Domain
          * @brief Builds one terrain page from a Mercator segment.
          * @param segment
          */
-        TerrainEntry buildTerrainPage(Mercator::Segment& segment);
+        TerrainEntry& buildTerrainPage(Mercator::Segment& segment);
 
         /**
          * Listener method for all child entities, called when their properties change.

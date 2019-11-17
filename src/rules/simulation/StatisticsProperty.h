@@ -22,6 +22,7 @@
 #include "common/Property.h"
 
 #include <map>
+#include <memory>
 
 class ArithmeticScript;
 
@@ -31,7 +32,7 @@ class StatisticsProperty : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     std::map<std::string, double> m_data;
-    ArithmeticScript * m_script;
+    std::unique_ptr<ArithmeticScript> m_script;
 
     StatisticsProperty(const StatisticsProperty &);
   public:
@@ -42,8 +43,8 @@ class StatisticsProperty : public PropertyBase {
 
     ~StatisticsProperty() override;
 
-    ArithmeticScript * script() { return m_script; }
-    const ArithmeticScript * script() const { return m_script; }
+    ArithmeticScript * script() { return m_script.get(); }
+    const ArithmeticScript * script() const { return m_script.get(); }
 
     void install(LocatedEntity *, const std::string &) override;
     void apply(LocatedEntity *) override;

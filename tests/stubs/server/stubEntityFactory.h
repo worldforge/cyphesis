@@ -44,9 +44,9 @@
 
 #ifndef STUB_EntityFactoryBase_duplicateFactory
 //#define STUB_EntityFactoryBase_duplicateFactory
-  EntityFactoryBase* EntityFactoryBase::duplicateFactory()
+  std::unique_ptr<EntityFactoryBase> EntityFactoryBase::duplicateFactory()
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<EntityFactoryBase>*>(nullptr);
   }
 #endif //STUB_EntityFactoryBase_duplicateFactory
 
@@ -108,9 +108,9 @@
 #ifndef STUB_EntityFactory_duplicateFactory
 //#define STUB_EntityFactory_duplicateFactory
   template <typename T>
-  EntityFactoryBase* EntityFactory<T>::duplicateFactory()
+  std::unique_ptr<EntityFactoryBase> EntityFactory<T>::duplicateFactory()
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<EntityFactoryBase>*>(nullptr);
   }
 #endif //STUB_EntityFactory_duplicateFactory
 

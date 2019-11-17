@@ -27,6 +27,7 @@
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/RootOperation.h>
 #include <functional>
+#include "rules/simulation/ArithmeticScript.h"
 
 struct TestWorldExtension {
     std::function<void(const Operation & op, LocatedEntity & ent)> messageFn;
@@ -72,9 +73,9 @@ struct TestWorld : public BaseWorld {
     }
     int moveToSpawn(const std::string & name,
                             Location& location) override{return 0;}
-    ArithmeticScript * newArithmetic(const std::string &,
+    std::unique_ptr<ArithmeticScript> newArithmetic(const std::string &,
                                              LocatedEntity *) override {
-        return nullptr;
+        return {};
     }
     void message(const Operation & op, LocatedEntity & ent) override {
         if (extension.messageFn) {

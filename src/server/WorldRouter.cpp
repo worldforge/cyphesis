@@ -25,6 +25,7 @@
 #include "rules/simulation/World.h"
 #include "rules/Domain.h"
 #include "rules/simulation/Task.h"
+#include "rules/simulation/ArithmeticScript.h"
 
 #include "common/id.h"
 #include "common/debug.h"
@@ -121,9 +122,6 @@ WorldRouter::~WorldRouter()
     m_operationsDispatcher.clearQueues();
     m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
 
-    for (const auto& entry : m_spawns) {
-        delete entry.second.first;
-    }
     m_spawns.clear();
 
 }
@@ -220,9 +218,8 @@ int WorldRouter::createSpawnPoint(const MapType& data, LocatedEntity* ent)
         log(ERROR, "No name on spawn point");
         return -1;
     }
-    auto new_spawn = new SpawnEntity(ent);
+    auto new_spawn = std::make_unique<SpawnEntity>(ent);
     if (new_spawn->setup(data) != 0) {
-        delete new_spawn;
         log(ERROR, "Error setting up spawn point");
         return -1;
     }
@@ -230,12 +227,10 @@ int WorldRouter::createSpawnPoint(const MapType& data, LocatedEntity* ent)
     const std::string& name = I->second.String();
     auto J = m_spawns.find(name);
     if (J != m_spawns.end()) {
-        Spawn* old = J->second.first;
-        J->second.first = new_spawn;
+        J->second.first = std::move(new_spawn);
         J->second.second = ent->getId();
-        delete old;
     } else {
-        m_spawns.insert(std::make_pair(name, std::make_pair(new_spawn, ent->getId())));
+        m_spawns.insert(std::make_pair(name, std::make_pair(std::move(new_spawn), ent->getId())));
     }
     return 0;
 }
@@ -244,7 +239,6 @@ int WorldRouter::removeSpawnPoint(LocatedEntity* ent)
 {
     for (auto I = m_spawns.begin(); I != m_spawns.end(); ++I) {
         if (I->second.second == ent->getId()) {
-            delete I->second.first;
             m_spawns.erase(I);
             return 0;
         }
@@ -268,12 +262,12 @@ Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string& name,
                                                const std::string& type,
                                                const RootEntity& desc)
 {
-    SpawnDict::const_iterator I = m_spawns.find(name);
+    auto I = m_spawns.find(name);
     if (I == m_spawns.end()) {
         log(ERROR, String::compose("Spawn not found %1", name));
         return nullptr;
     }
-    Spawn* s = I->second.first;
+    auto& s = I->second.first;
     int ret = s->spawnEntity(type, desc);
     if (ret != 0) {
         log(ERROR, String::compose("Spawn not permitting %1", type));
@@ -299,7 +293,7 @@ int WorldRouter::moveToSpawn(const std::string& name, Location& location)
 }
 
 
-ArithmeticScript* WorldRouter::newArithmetic(const std::string& name,
+std::unique_ptr<ArithmeticScript> WorldRouter::newArithmetic(const std::string& name,
                                              LocatedEntity* owner)
 {
     return ArithmeticBuilder::instance().newArithmetic(name, owner);

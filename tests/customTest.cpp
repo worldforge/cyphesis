@@ -84,3 +84,6 @@ int THINK_NO = -1;
 int RELAY_NO = -1;
 int POSSESS_NO = -1;
 } } }
+
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/common/stubProperty.h"

@@ -31,6 +31,7 @@
 #include "server/Connection.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
+#include "rules/simulation/ExternalMind.h"
 
 #include "rules/simulation/Entity.h"
 
@@ -43,6 +44,7 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include <server/EntityBuilder.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -206,7 +208,8 @@ void Playertest::test_characterError_playable()
 int main()
 {
     boost::asio::io_context io_context;
-    Ruleset ruleset(nullptr, io_context);
+    EntityBuilder eb;
+    Ruleset ruleset(eb, io_context);
 
     Playertest t;
 
@@ -230,6 +233,7 @@ int main()
 
 #include "stubs/server/stubAccount.h"
 #include "stubs/server/stubConnection.h"
+#include "stubs/server/stubEntityBuilder.h"
 
 #include "stubs/server/stubRuleHandler.h"
 
@@ -248,6 +252,7 @@ int main()
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubLink.h"
+#include "stubs/common/stubTypeNode.h"
 
 #define STUB_Inheritance_getClass
 const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility) const
@@ -263,7 +268,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
+    return I->second.get();
 }
 
 #define STUB_Inheritance_hasClass

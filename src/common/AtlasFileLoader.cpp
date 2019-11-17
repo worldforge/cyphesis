@@ -58,13 +58,10 @@ AtlasFileLoader::AtlasFileLoader(const Atlas::Objects::Factories& factories,
     m_file(filename.c_str(), std::ios::in),
     m_count(0), m_messages(m), m_filename(filename)
 {
-    m_codec = new Atlas::Codecs::XML(m_file, m_file, *this);
+    m_codec = std::make_unique<Atlas::Codecs::XML>(m_file, m_file, *this);
 }
 
-AtlasFileLoader::~AtlasFileLoader()
-{
-    delete m_codec;
-}
+AtlasFileLoader::~AtlasFileLoader() = default;
 
 /// Indicate if the input file has been opened successfully
 bool AtlasFileLoader::isOpen()

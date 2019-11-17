@@ -556,10 +556,10 @@ void BaseMind::callSoundOperation(const Operation& op,
     // SUB_OP_SWITCH(op, op_no, res, sound)
 }
 
-void BaseMind::setScript(Script* scrpt)
+void BaseMind::setScript(std::unique_ptr<Script> scrpt)
 {
-    m_script.reset(scrpt);
-    m_map.setScript(scrpt);
+    m_script = std::move(scrpt);
+    m_map.setScript(m_script.get());
     if (m_script && m_ownEntity) {
         //If there are any property callbacks registered call them now.
         for (auto& entry : m_propertyScriptCallbacks) {

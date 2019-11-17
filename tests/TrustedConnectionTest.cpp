@@ -248,7 +248,8 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;}
+    return I->second.get();
+}
 #endif //STUB_Inheritance_getType
 
 #include "stubs/common/stubInheritance.h"

@@ -68,22 +68,28 @@ Atlas::Objects::Factories factories;
 
 class EntityBuildertest : public Cyphesis::TestBase
 {
-  private:
-    Ref<Entity> e;
-    BaseWorld * test_world;
-    EntityBuilder* eb;
-  public:
-    EntityBuildertest();
+    private:
+        Ref<Entity> e;
+        BaseWorld* test_world;
+        EntityBuilder* eb;
+    public:
+        EntityBuildertest();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_sequence1();
-    void test_sequence2();
-    void test_sequence3();
-    void test_sequence4();
-    void test_sequence5();
-    void test_installFactory_duplicate();
+        void teardown();
+
+        void test_sequence1();
+
+        void test_sequence2();
+
+        void test_sequence3();
+
+        void test_sequence4();
+
+        void test_sequence5();
+
+        void test_installFactory_duplicate();
 
         Inheritance* inheritance;
 };
@@ -105,7 +111,7 @@ void EntityBuildertest::setup()
     test_world = new TestWorld(e);
     eb = new EntityBuilder();
 
-    eb->installBaseFactory("thing", "game_entity", new EntityFactory<Thing>());
+    eb->installBaseFactory("thing", "game_entity", std::make_unique<EntityFactory<Thing>>());
 }
 
 void EntityBuildertest::teardown()
@@ -116,10 +122,12 @@ void EntityBuildertest::teardown()
     delete inheritance;
 }
 
-enum action {
-  DO_NOTHING,
-  SET_POS,
-  SET_VELOCITY } LocatedEntity_merge_action = DO_NOTHING;
+enum action
+{
+    DO_NOTHING,
+    SET_POS,
+    SET_VELOCITY
+} LocatedEntity_merge_action = DO_NOTHING;
 
 void EntityBuildertest::test_sequence1()
 {
@@ -195,7 +203,7 @@ void EntityBuildertest::test_sequence4()
     assert(eb->newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == nullptr);
 
     // Get a reference to the internal dictionary of entity factories.
-    const FactoryDict & factory_dict = eb->m_entityFactories;
+    const FactoryDict& factory_dict = eb->m_entityFactories;
 
     // Make sure it has some factories in it already.
     assert(!factory_dict.empty());
@@ -205,20 +213,20 @@ void EntityBuildertest::test_sequence4()
     assert(factory_dict.find("custom_type") == factory_dict.end());
 
     // Set up a type description for a new type, and install it
-    EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();
+    EntityFactoryBase* custom_type_factory = new EntityFactory<Entity>();
     custom_type_factory->m_attributes["test_custom_type_attr"] =
-          "test_value";
+        "test_value";
     {
         int ret;
         ret = eb->installFactory("custom_type",
-                                            atlasClass("custom_type", "thing"),
-                                            custom_type_factory);
+                                 atlasClass("custom_type", "thing"),
+                                 std::unique_ptr<EntityFactoryBase>(custom_type_factory));
         custom_type_factory->m_type = new TypeNode("custom_type");
 
         ASSERT_EQUAL(ret, 0);
     }
 
-    PropertyBase * p = new Property<std::string>;
+    PropertyBase* p = new Property<std::string>;
     custom_type_factory->m_type->injectProperty("test_custom_type_attr", std::unique_ptr<PropertyBase>(p));
     p->set("test_value");
 
@@ -256,7 +264,7 @@ void EntityBuildertest::test_sequence5()
     Anonymous attributes;
 
     // Get a reference to the internal dictionary of entity factories.
-    const FactoryDict & factory_dict = eb->m_entityFactories;
+    const FactoryDict& factory_dict = eb->m_entityFactories;
 
     // Make sure it has some factories in it already.
     assert(!factory_dict.empty());
@@ -266,14 +274,14 @@ void EntityBuildertest::test_sequence5()
     assert(factory_dict.find("custom_scripted_type") == factory_dict.end());
 
     // Set up a type description for a new type, and install it
-    EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();
+    EntityFactoryBase* custom_type_factory = new EntityFactory<Entity>();
     custom_type_factory->m_attributes["test_custom_type_attr"] =
-          "test_value";
+        "test_value";
 
     {
         eb->installFactory("custom_scripted_type",
-              atlasClass("custom_scripted_type", "thing"),
-              custom_type_factory);
+                           atlasClass("custom_scripted_type", "thing"),
+                           std::unique_ptr<EntityFactoryBase>(custom_type_factory));
         custom_type_factory->m_type = new TypeNode("custom_scripted_type");
     }
 
@@ -292,30 +300,30 @@ void EntityBuildertest::test_sequence5()
 
 void EntityBuildertest::test_installFactory_duplicate()
 {
-    FactoryDict & factories = eb->m_entityFactories;
+    FactoryDict& factories = eb->m_entityFactories;
 
-    EntityFactoryBase * custom_type_factory = new EntityFactory<Entity>();
+    EntityFactoryBase* custom_type_factory = new EntityFactory<Entity>();
 
     int ret = eb->installFactory("custom_type",
-                                            atlasClass("custom_type", "thing"),
-                                            custom_type_factory);
+                                 atlasClass("custom_type", "thing"),
+                                 std::unique_ptr<EntityFactoryBase>(custom_type_factory));
 
     ASSERT_EQUAL(ret, 0);
     ASSERT_TRUE(factories.find("custom_type") != factories.end());
     ASSERT_EQUAL(factories.find("custom_type")->second.get(), custom_type_factory);
 
-    EntityFactoryBase * custom_type_factory2 = new EntityFactory<Entity>();
+    EntityFactoryBase* custom_type_factory2 = new EntityFactory<Entity>();
 
     ret = eb->installFactory("custom_type",
-                                        atlasClass("custom_type", "thing"),
-                                        custom_type_factory2);
+                             atlasClass("custom_type", "thing"),
+                             std::unique_ptr<EntityFactoryBase>(custom_type_factory2));
 
     ASSERT_EQUAL(ret, -1);
     ASSERT_TRUE(factories.find("custom_type") != factories.end());
     ASSERT_EQUAL(factories.find("custom_type")->second.get(), custom_type_factory);
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
     EntityBuildertest t;
 
@@ -330,9 +338,10 @@ int main(int argc, char ** argv)
 
 
 #define STUB_EntityFactory_newEntity
-template <class T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId,
-                                            const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+
+template<class T>
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId,
+                                               const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
 {
     ++m_createdCount;
     auto* e = new Entity(id, intId);
@@ -341,10 +350,11 @@ Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intI
 }
 
 #define STUB_EntityFactory_duplicateFactory
-template <typename T>
-EntityFactoryBase* EntityFactory<T>::duplicateFactory()
+
+template<typename T>
+std::unique_ptr<EntityFactoryBase> EntityFactory<T>::duplicateFactory()
 {
-    EntityFactoryBase * f = new EntityFactory<T>(*this);
+    auto f = std::unique_ptr<EntityFactory<T>>(new EntityFactory<T>(*this));
     f->m_parent = this;
     return f;
 }
@@ -353,9 +363,10 @@ EntityFactoryBase* EntityFactory<T>::duplicateFactory()
 #include "stubs/server/stubEntityFactory.h"
 
 #define STUB_ArchetypeFactory_duplicateFactory
-ArchetypeFactory* ArchetypeFactory::duplicateFactory()
+
+std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
 {
-    ArchetypeFactory * f = new ArchetypeFactory(*this);
+    auto f = std::unique_ptr<ArchetypeFactory>(new ArchetypeFactory(*this));
     f->m_parent = this;
     return f;
 }
@@ -367,60 +378,80 @@ ArchetypeFactory* ArchetypeFactory::duplicateFactory()
 
 class World;
 
-template <>
-Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+template<>
+Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string& id, long intId,
+                                                   const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
 {
     return 0;
 }
 
 class Thing;
+
 class Character;
+
 class Creator;
+
 class Plant;
+
 class Stackable;
 
-template class EntityFactory<Entity>;
-template class EntityFactory<Thing>;
-template class EntityFactory<Character>;
-template class EntityFactory<Creator>;
-template class EntityFactory<Plant>;
-template class EntityFactory<Stackable>;
-template class EntityFactory<World>;
+template
+class EntityFactory<Entity>;
+
+template
+class EntityFactory<Thing>;
+
+template
+class EntityFactory<Character>;
+
+template
+class EntityFactory<Creator>;
+
+template
+class EntityFactory<Plant>;
+
+template
+class EntityFactory<Stackable>;
+
+template
+class EntityFactory<World>;
 
 #define STUB_LocatedEntity_makeContainer
+
 void LocatedEntity::makeContainer()
 {
     if (m_contains == 0) {
-        m_contains = new LocatedEntitySet;
+        m_contains.reset(new LocatedEntitySet);
     }
 }
 
 #define STUB_LocatedEntity_merge
-void LocatedEntity::merge(const MapType & ent)
+
+void LocatedEntity::merge(const MapType& ent)
 {
     switch (LocatedEntity_merge_action) {
-      case SET_POS:
-        this->m_location.m_pos.setValid();
-        break;
-      case SET_VELOCITY:
-        this->m_location.m_velocity.setValid();
-        break;
-      case DO_NOTHING:
-      default:
-        break;
+        case SET_POS:
+            this->m_location.m_pos.setValid();
+            break;
+        case SET_VELOCITY:
+            this->m_location.m_velocity.setValid();
+            break;
+        case DO_NOTHING:
+        default:
+            break;
     };
 
 }
 
 #include "stubs/rules/stubLocatedEntity.h"
 
-void log(LogLevel lvl, const std::string & msg)
+void log(LogLevel lvl, const std::string& msg)
 {
 }
 
 #ifndef STUB_Inheritance_Inheritance
 #define STUB_Inheritance_Inheritance
+
 Inheritance::Inheritance(Atlas::Objects::Factories& factories) : m_factories(factories), noClass(0)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
@@ -428,30 +459,35 @@ Inheritance::Inheritance(Atlas::Objects::Factories& factories) : m_factories(fac
     root_desc->setObjtype("meta");
     root_desc->setId("root");
 
-    TypeNode * root = new TypeNode("root", root_desc);
+    TypeNode* root = new TypeNode("root", root_desc);
 
-    atlasObjects["root"] = root;
+    atlasObjects["root"].reset(root);
     installStandardObjects(*this);
 }
+
 #endif //STUB_Inheritance_Inheritance
 
 #ifndef STUB_Inheritance_getType
 #define STUB_Inheritance_getType
-const TypeNode* Inheritance::getType(const std::string & parent) const
+
+const TypeNode* Inheritance::getType(const std::string& parent) const
 {
     auto I = atlasObjects.find(parent);
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;}
+    return I->second.get();
+}
+
 #endif //STUB_Inheritance_getType
 
 #ifndef STUB_Inheritance_addChild
 #define STUB_Inheritance_addChild
-TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
+
+TypeNode* Inheritance::addChild(const Atlas::Objects::Root& obj)
 {
-    const std::string & child = obj->getId();
-    const std::string & parent = obj->getParent();
+    const std::string& child = obj->getId();
+    const std::string& parent = obj->getParent();
     if (atlasObjects.find(child) != atlasObjects.end()) {
         std::cerr << String::compose("Installing type \"%1\"(\"%2\") "
                                      "which was already installed",
@@ -472,12 +508,14 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
     }
     I->second->description(Visibility::PRIVATE)->setAttr("children", children);
 
-    TypeNode * type = new TypeNode(child, obj);
-    type->setParent(I->second);
+    TypeNode* type = new TypeNode(child, obj);
+    type->setParent(I->second.get());
 
-    atlasObjects[child] = type;
+    atlasObjects[child].reset(type);
 
-    return type;}
+    return type;
+}
+
 #endif //STUB_Inheritance_addChild
 
 #include "stubs/common/stubInheritance.h"
@@ -497,54 +535,56 @@ void installStandardObjects(TypeStore& i)
 
 
 #define STUB_TypeNode_injectProperty
+
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                                                     std::unique_ptr<PropertyBase> p)
 {
     m_defaults[name] = std::move(p);
     return {};
 }
+
 #include "stubs/common/stubTypeNode.h"
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
 }
 
-void PropertyBase::install(LocatedEntity *, const std::string & name)
+void PropertyBase::install(LocatedEntity*, const std::string& name)
 {
 }
 
-void PropertyBase::install(TypeNode *, const std::string & name)
+void PropertyBase::install(TypeNode*, const std::string& name)
 {
 }
 
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
+void PropertyBase::remove(LocatedEntity*, const std::string& name)
 {
 }
 
-void PropertyBase::apply(LocatedEntity *)
+void PropertyBase::apply(LocatedEntity*)
 {
 }
 
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
+void PropertyBase::add(const std::string& s,
+                       Atlas::Message::MapType& ent) const
 {
     get(ent[s]);
 }
 
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
+void PropertyBase::add(const std::string& s,
+                       const Atlas::Objects::Entity::RootEntity& ent) const
 {
 }
 
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
+HandlerResult PropertyBase::operation(LocatedEntity*,
+                                      const Operation&,
+                                      OpVector&)
 {
     return OPERATION_IGNORED;
 }
 
 template<>
-void Property<int>::set(const Atlas::Message::Element & e)
+void Property<int>::set(const Atlas::Message::Element& e)
 {
     if (e.isInt()) {
         this->m_data = e.asInt();
@@ -552,7 +592,7 @@ void Property<int>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<double>::set(const Atlas::Message::Element & e)
+void Property<double>::set(const Atlas::Message::Element& e)
 {
     if (e.isNum()) {
         this->m_data = e.asNum();
@@ -560,7 +600,7 @@ void Property<double>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<std::string>::set(const Atlas::Message::Element & e)
+void Property<std::string>::set(const Atlas::Message::Element& e)
 {
     if (e.isString()) {
         this->m_data = e.String();
@@ -568,24 +608,33 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element& e)
 {
     if (e.isList()) {
         this->m_data = e.List();
     }
 }
 
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<Atlas::Message::ListType>;
+template
+class Property<int>;
+
+template
+class Property<double>;
+
+template
+class Property<std::string>;
+
+template
+class Property<Atlas::Message::ListType>;
 
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/stubScript.h"
 #include "stubs/rules/simulation/stubTask.h"
+
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
+
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string& id) const
 {
     return getEntity(integerId(id));
 }
@@ -600,13 +649,14 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
         return nullptr;
     }
 }
+
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/server/stubCorePropertyManager.h"
 #include "stubs/common/stubPropertyManager.h"
 
-long integerId(const std::string & id)
+long integerId(const std::string& id)
 {
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
@@ -616,7 +666,7 @@ long integerId(const std::string & id)
     return intId;
 }
 
-Root atlasClass(const std::string & name, const std::string & parent)
+Root atlasClass(const std::string& name, const std::string& parent)
 {
     Atlas::Objects::Entity::Anonymous r;
     r->setParent(parent);
@@ -624,4 +674,5 @@ Root atlasClass(const std::string & name, const std::string & parent)
     r->setId(name);
     return r;
 }
+
 sigc::signal<void> python_reload_scripts;

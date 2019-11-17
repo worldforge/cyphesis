@@ -82,7 +82,7 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
                 old_loc->m_contains->erase(entity);
             }
             if (entity->m_location.m_parent->m_contains == nullptr) {
-                entity->m_location.m_parent->m_contains = new LocatedEntitySet{};
+                entity->m_location.m_parent->m_contains = std::make_unique<LocatedEntitySet>();
             }
             entity->m_location.m_parent->m_contains->insert(entity);
         }

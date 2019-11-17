@@ -1,5 +1,6 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 #include "rules/simulation/Task.h"
+#include "rules/simulation/ArithmeticScript.h"
 
 #ifndef STUB_BaseWorld_BaseWorld
 #define STUB_BaseWorld_BaseWorld
@@ -28,3 +29,11 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
     }
 }
 #endif //STUB_BaseWorld_getEntity
+
+#ifndef STUB_BaseWorld_newArithmetic
+#define STUB_BaseWorld_newArithmetic
+std::unique_ptr<ArithmeticScript> BaseWorld::newArithmetic(const std::string&, LocatedEntity*)
+{
+    return {};
+}
+#endif //STUB_BaseWorld_newArithmetic

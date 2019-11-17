@@ -23,6 +23,7 @@
 #include <Atlas/Codec.h>
 
 #include <fstream>
+#include <memory>
 
 /// Class to read old cyphesis rules on standard input, and output in new
 /// standard format.
@@ -32,7 +33,7 @@ class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder
         /// Input file
         std::fstream m_file;
         /// Atlas codec for decoding input.
-        Atlas::Codec* m_codec;
+        std::unique_ptr<Atlas::Codec> m_codec;
         /// Counter for messages read from input
         int m_count;
         /// Store for the messages loaded

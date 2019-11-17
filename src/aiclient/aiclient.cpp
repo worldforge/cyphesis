@@ -75,7 +75,7 @@ static void connectToServer(boost::asio::io_context& io_context, AwareMindFactor
     commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
         if (!ec) {
             log(INFO, "Connection detected; creating possession client.");
-            commClient->startConnect(new PossessionClient(*commClient, mindFactory, factories, [&]() {
+            commClient->startConnect(std::make_unique<PossessionClient>(*commClient, mindFactory, factories, [&]() {
                 connectToServer(io_context, mindFactory);
             }));
         } else {
@@ -170,18 +170,16 @@ int main(int argc, char** argv)
 
         if (mindFactory.m_scriptFactory != nullptr) {
             if (mindFactory.m_scriptFactory->package() != script_package) {
-                delete mindFactory.m_scriptFactory;
-                mindFactory.m_scriptFactory = nullptr;
+                mindFactory.m_scriptFactory.reset();
             }
         }
         if (mindFactory.m_scriptFactory == nullptr) {
-            auto* psf = new PythonScriptFactory<BaseMind>(script_package, script_class);
+            auto psf = std::make_unique<PythonScriptFactory<BaseMind>>(script_package, script_class);
             if (psf->setup() == 0) {
                 log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
-                mindFactory.m_scriptFactory = psf;
+                mindFactory.m_scriptFactory = std::move(psf);
             } else {
                 log(ERROR, String::compose("Python class \"%1.%2\" failed to load", script_package, script_class));
-                delete psf;
             }
         }
 

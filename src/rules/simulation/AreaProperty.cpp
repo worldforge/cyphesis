@@ -36,8 +36,8 @@ AreaProperty::AreaProperty(const AreaProperty& other)
       m_layer(other.m_layer),
       m_shape(nullptr)
 {
-    if (other.m_shape != nullptr) {
-        m_shape = other.m_shape->copy();
+    if (other.m_shape) {
+        m_shape.reset(other.m_shape->copy());
     }
 }
 
@@ -50,19 +50,16 @@ AreaProperty::AreaProperty() :
 {
 }
 
-AreaProperty::~AreaProperty()
-{
-    delete m_shape;
-}
+AreaProperty::~AreaProperty() = default;
 
-void AreaProperty::apply(LocatedEntity * owner)
+void AreaProperty::apply(LocatedEntity* owner)
 {
     if (!m_shape) {
         log(ERROR, "Terrain area has no shape to apply");
         return;
     }
 
-    const TerrainProperty * terrain = getTerrain(owner);
+    const TerrainProperty* terrain = getTerrain(owner);
 
     if (!terrain) {
         log(ERROR, "Terrain area could not find terrain");
@@ -72,7 +69,7 @@ void AreaProperty::apply(LocatedEntity * owner)
     /// TODO: Write the code to handle all the Mercator stuff
 }
 
-void AreaProperty::set(const Element & ent)
+void AreaProperty::set(const Element& ent)
 {
     if (!ent.isMap()) {
         return;
@@ -86,14 +83,14 @@ void AreaProperty::set(const Element & ent)
         log(ERROR, "Area shape data missing or is not map");
         return;
     }
-    Shape * shape = Shape::newFromAtlas(I->second.Map());
-    if (!shape) {
-        return;
-    }
-    delete m_shape;
-    m_shape = dynamic_cast<Form<2> *>(shape);
-    if (!m_shape) {
-        return;
+    auto shape = Shape::newFromAtlas(I->second.Map());
+    auto formShape =dynamic_cast<Form<2>*>(shape.get());
+    if (!formShape) {
+        //Make sure we reset the data.
+        m_shape.reset();
+    } else {
+        shape.release();
+        m_shape.reset(formShape);
     }
 
     I = m_data.find("layer");
@@ -104,7 +101,7 @@ void AreaProperty::set(const Element & ent)
     }
 }
 
-AreaProperty * AreaProperty::copy() const
+AreaProperty* AreaProperty::copy() const
 {
     return new AreaProperty(*this);
 }

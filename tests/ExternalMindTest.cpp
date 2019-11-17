@@ -81,7 +81,7 @@ int main()
     // Purge with empty contains
     {
         Entity e("2", 2);
-        e.m_contains = new LocatedEntitySet;
+        e.m_contains.reset(new LocatedEntitySet);
 
         TestExternalMind em(e);
 
@@ -91,7 +91,7 @@ int main()
     // Purge with populated contains
     {
         Entity e("2", 2);
-        e.m_contains = new LocatedEntitySet;
+        e.m_contains.reset(new LocatedEntitySet);
         e.m_contains->insert(new Entity("3", 3));
 
         TestExternalMind em(e);

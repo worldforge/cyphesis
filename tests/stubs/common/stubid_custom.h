@@ -1,4 +1,8 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
+namespace {
+    long _id = 0;
+}
+
 long integerId(const std::string & id)
 {
     long intId = strtol(id.c_str(), 0, 10);
@@ -26,5 +30,7 @@ int integerIdCheck(const std::string & id)
 
 long newId(std::string & id)
 {
-    return 1;
+    ++_id;
+    id = std::to_string(_id);
+    return _id;
 }

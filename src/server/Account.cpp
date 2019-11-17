@@ -91,7 +91,6 @@ void Account::characterDestroyed(long id)
         } else {
             log(WARNING, "Account still had minds even after connection had been shut down.");
         }
-        delete I->second;
         m_minds.erase(I);
     }
     m_charactersDict.erase(id);
@@ -110,7 +109,7 @@ void Account::setConnection(Connection* connection)
             auto& entity = entry.second->getEntity();
             auto prop = entity.modPropertyClassFixed<MindsProperty>();
             if (prop) {
-                prop->removeMind(entry.second, &entity);
+                prop->removeMind(entry.second.get(), &entity);
                 entity.propertyApplied.emit(MindsProperty::property_name, *prop);
 
                 prop->flags().addFlags(flag_unsent);
@@ -118,7 +117,6 @@ void Account::setConnection(Connection* connection)
                 update->setTo(entity.getId());
                 entity.sendWorld(update);
             }
-            delete entry.second;
             //TODO: remove property if it's empty
         }
         m_minds.clear();
@@ -284,10 +282,8 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
                 m_connection->removeObject(entry.second->getIntId());
                 auto prop = entry.second->getEntity().modPropertyClassFixed<MindsProperty>();
                 if (prop) {
-                    prop->removeMind(entry.second, &entry.second->getEntity());
+                    prop->removeMind(entry.second.get(), &entry.second->getEntity());
                 }
-                delete entry.second;
-
                 m_minds.erase(entry.first);
                 Info info;
                 info->setArgs1(op);

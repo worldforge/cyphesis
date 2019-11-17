@@ -317,14 +317,13 @@ LocatedEntity::~LocatedEntity()
     if (m_location.m_parent) {
         m_location.m_parent = nullptr;
     }
-    delete m_contains;
 }
 
 #define STUB_LocatedEntity_makeContainer
 void LocatedEntity::makeContainer()
 {
     if (!m_contains) {
-        m_contains = new LocatedEntitySet;
+        m_contains.reset(new LocatedEntitySet);
     }
 }
 
@@ -470,7 +469,8 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;}
+    return I->second.get();
+}
 #endif //STUB_Inheritance_getType
 
 #include "stubs/common/stubInheritance.h"

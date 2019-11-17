@@ -48,7 +48,7 @@ class EntityBuilder {
 
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,
-                            EntityKit * factory);
+                            std::unique_ptr<EntityKit> factory);
 
   public:
     explicit EntityBuilder();
@@ -56,7 +56,7 @@ class EntityBuilder {
 
     int installFactory(const std::string & class_name,
                        const Atlas::Objects::Root & class_desc,
-                       EntityKit * factory);
+                       std::unique_ptr<EntityKit> factory);
     EntityKit * getClassFactory(const std::string & class_name) const;
     Ref<LocatedEntity> newEntity(const std::string & id,
                               long intId,

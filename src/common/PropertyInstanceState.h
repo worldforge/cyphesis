@@ -20,6 +20,7 @@
 
 #include <unordered_map>
 #include <cassert>
+#include <memory>
 
 class LocatedEntity;
 
@@ -36,7 +37,7 @@ class LocatedEntity;
 template <typename T>
 class PropertyInstanceState {
     private:
-        std::unordered_map<const LocatedEntity*, T*> mStates;
+        std::unordered_map<const LocatedEntity*, std::unique_ptr<T>> mStates;
 
     public:
 
@@ -50,8 +51,8 @@ class PropertyInstanceState {
          * @param entity An entity.
          * @param state A new state instance.
          */
-        void addState(const LocatedEntity* entity, T* state) {
-            mStates.insert(std::make_pair(entity, state));
+        void addState(const LocatedEntity* entity, std::unique_ptr<T> state) {
+            mStates.emplace(entity, std::move(state));
         }
 
         /**
@@ -62,7 +63,7 @@ class PropertyInstanceState {
         T* getState(const LocatedEntity* entity) const {
             auto I = mStates.find(entity);
             if (I != mStates.end()) {
-                return I->second;
+                return I->second.get();
             }
             return nullptr;
         }
@@ -76,7 +77,6 @@ class PropertyInstanceState {
         void removeState(const LocatedEntity* entity) {
             auto I = mStates.find(entity);
             if (I != mStates.end()) {
-                delete I->second;
                 mStates.erase(I);
             }
         }
@@ -88,11 +88,10 @@ class PropertyInstanceState {
          * @param entity An entity.
          * @param state A new state.
          */
-        void replaceState(const LocatedEntity* entity, T* state) {
+        void replaceState(const LocatedEntity* entity, std::unique_ptr<T> state) {
             auto I = mStates.find(entity);
             if (I != mStates.end()) {
-                delete I->second;
-                I->second = state;
+                I->second = std::move(state);
             }
         }
 };

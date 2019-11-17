@@ -17,3 +17,13 @@ ArchetypeFactory::ArchetypeFactory(EntityBuilder& entityBuilder)
 
 }
 #endif //STUB_ArchetypeFactory_ArchetypeFactory
+
+#ifndef STUB_ArchetypeFactory_duplicateFactory
+#define STUB_ArchetypeFactory_duplicateFactory
+  std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
+  {
+    auto factory = std::unique_ptr<ArchetypeFactory>(new ArchetypeFactory(*this));
+    factory->m_parent = this;
+    return factory;
+  }
+#endif //STUB_ArchetypeFactory_duplicateFactory

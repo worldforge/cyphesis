@@ -139,9 +139,9 @@ void LocatedEntitytest::test_removeAttr()
 
 void LocatedEntitytest::test_coverage()
 {
-    m_entity->setScript(new Script());
+    m_entity->setScript(std::make_unique<Script>());
     // Installing a second one should delete the first.
-    m_entity->setScript(new Script());
+    m_entity->setScript(std::make_unique<Script>());
 
     m_entity->onContainered(nullptr);
     m_entity->onUpdated();

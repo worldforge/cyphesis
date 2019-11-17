@@ -53,9 +53,6 @@ void ScriptsProperty::apply(LocatedEntity *entity) {
 
 void ScriptsProperty::applyScripts(LocatedEntity *entity) const {
 
-    for (auto script : entity->m_scripts) {
-        delete script;
-    }
     entity->m_scripts.clear();
     for (auto &scriptFactory : m_scripts) {
         scriptFactory->addScript(entity);
@@ -69,9 +66,6 @@ void ScriptsProperty::reloadAllScriptFactories() {
 }
 
 void ScriptsProperty::remove(LocatedEntity *entity, const std::string & name) {
-    for (auto script : entity->m_scripts) {
-        delete script;
-    }
     entity->m_scripts.clear();
 }
 

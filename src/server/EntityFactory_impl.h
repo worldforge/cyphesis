@@ -43,9 +43,9 @@ Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intI
 }
 
 template <class T>
-EntityFactoryBase * EntityFactory<T>::duplicateFactory()
+std::unique_ptr<EntityFactoryBase> EntityFactory<T>::duplicateFactory()
 {
-    auto * f = new EntityFactory<T>(*this);
+    auto f = std::unique_ptr<EntityFactory<T>>(new EntityFactory<T>(*this));
     // Copy the defaults to the parent
     f->m_attributes = this->m_attributes;
     f->m_parent = this;

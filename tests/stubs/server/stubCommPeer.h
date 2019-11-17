@@ -42,7 +42,7 @@
 
 #ifndef STUB_CommPeer_setup
 //#define STUB_CommPeer_setup
-  void CommPeer::setup(Link*)
+  void CommPeer::setup(std::unique_ptr<Link>)
   {
     
   }

@@ -61,7 +61,7 @@ int SETUP_NO = -1;
 
 #include "stubs/rules/python/stubPythonClass.h"
 
-MindKit::MindKit() : m_scriptFactory(0)
+MindKit::MindKit()
 {
 }
 

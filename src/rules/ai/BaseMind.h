@@ -119,7 +119,7 @@ class BaseMind : public Router, public ReferenceCounted {
 
     friend class BaseMindMapEntityintegration;
 
-    void setScript(Script * scrpt);
+    void setScript(std::unique_ptr<Script> scrpt);
 
     /// \brief Check if this entity is flagged as destroyed
     bool isDestroyed() const { return m_flags.hasFlags(entity_destroyed); }

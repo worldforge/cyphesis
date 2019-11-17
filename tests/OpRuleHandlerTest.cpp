@@ -44,13 +44,13 @@ int main()
 {
     Inheritance inheritance(factories);
     {
-        RuleHandler * rh = new OpRuleHandler(0);
+        RuleHandler * rh = new OpRuleHandler();
         delete rh;
     }
 
     // check() empty description
     {
-        RuleHandler * rh = new OpRuleHandler(0);
+        RuleHandler * rh = new OpRuleHandler();
 
         Anonymous description;
         description->setParent("foo");
@@ -63,7 +63,7 @@ int main()
 
     // check() description with op_definition objtype
     {
-        RuleHandler * rh = new OpRuleHandler(0);
+        RuleHandler * rh = new OpRuleHandler();
 
         Anonymous description;
         description->setObjtype("op_definition");
@@ -76,7 +76,7 @@ int main()
     }
 
     {
-        RuleHandler * rh = new OpRuleHandler(0);
+        RuleHandler * rh = new OpRuleHandler();
 
         Anonymous description;
         std::string dependent, reason;
@@ -91,7 +91,7 @@ int main()
 
     // Install a rule with addChild rigged to give a correct result
     {
-        RuleHandler * rh = new OpRuleHandler(0);
+        RuleHandler * rh = new OpRuleHandler();
 
         Anonymous description;
         std::string dependent, reason;
@@ -109,7 +109,7 @@ int main()
     }
     {
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-        RuleHandler * rh = new OpRuleHandler(0);
+        RuleHandler * rh = new OpRuleHandler();
 
         Anonymous description;
         int ret = rh->update("", description, changes);
@@ -127,6 +127,8 @@ int main()
 
 #include "common/Inheritance.h"
 #include "common/log.h"
+#include "stubs/common/stubTypeNode.h"
+#include "stubs/common/stubProperty.h"
 
 #ifndef STUB_Inheritance_addChild
 #define STUB_Inheritance_addChild

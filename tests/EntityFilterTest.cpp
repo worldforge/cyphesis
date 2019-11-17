@@ -651,14 +651,14 @@ struct EntityFilterTest : public Cyphesis::TestBase
         m_b1_container = new LocatedEntitySet;
         m_b1_container->insert(m_bl1);
         m_bl1->m_location.m_parent = m_b1;
-        m_b1->m_contains = m_b1_container;
+        m_b1->m_contains.reset(m_b1_container);
         m_b1->test_setDomain(new TestDomain(*m_b1));
 
         m_bl1_container = new LocatedEntitySet;
         m_bl1_container->insert(m_b3);
         m_b3->m_location.m_parent = m_bl1;
 
-        m_bl1->m_contains = m_bl1_container;
+        m_bl1->m_contains.reset(m_bl1_container);
 
 //Set up testing environment for Outfit property
         m_glovesType = new TypeNode("gloves");

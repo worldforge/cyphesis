@@ -76,18 +76,18 @@ class TestPhysicalDomain : public PhysicalDomain
 
         PhysicalWorld* test_getPhysicalWorld() const
         {
-            return m_dynamicsWorld;
+            return m_dynamicsWorld.get();
         }
 
 
         btRigidBody* test_getRigidBody(long id)
         {
-            return btRigidBody::upcast(m_entries.find(id)->second->collisionObject);
+            return btRigidBody::upcast(m_entries.find(id)->second->collisionObject.get());
         }
 
         void test_childEntityPropertyApplied(const std::string& name, PropertyBase& prop, long id)
         {
-            childEntityPropertyApplied(name, prop, m_entries.find(id)->second);
+            childEntityPropertyApplied(name, prop, m_entries.find(id)->second.get());
         }
 };
 

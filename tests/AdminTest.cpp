@@ -47,6 +47,7 @@
 #include <sigc++/functors/mem_fun.h>
 
 #include <cassert>
+#include <server/EntityBuilder.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -556,7 +557,7 @@ void Admintest::test_LogoutOperation_known()
                               "c0e095f0-575c-477c-bafd-2055d6958d4d",
                               cid_str, cid);
 
-    m_server->addObject(ac2);
+    m_server->addObject(std::unique_ptr<ConnectableRouter>(ac2));
 
     ASSERT_EQUAL(m_server->getObject(cid_str), ac2);
 
@@ -572,8 +573,6 @@ void Admintest::test_LogoutOperation_known()
     ASSERT_EQUAL(res.size(), 0u);
 
     ASSERT_EQUAL(Account_LogoutOperation_called, ac2);
-
-    delete ac2;
 }
 
 void Admintest::test_LogoutOperation_other_but_unconnected()
@@ -588,7 +587,7 @@ void Admintest::test_LogoutOperation_other_but_unconnected()
                               "c0e095f0-575c-477c-bafd-2055d6958d4d",
                               cid_str, cid);
 
-    m_server->addObject(ac2);
+    m_server->addObject(std::unique_ptr<ConnectableRouter>(ac2));
 
     ASSERT_EQUAL(m_server->getObject(cid_str), ac2);
 
@@ -604,8 +603,6 @@ void Admintest::test_LogoutOperation_other_but_unconnected()
     ASSERT_EQUAL(res.size(), 0u); //Handled by Account, which is mocked here.
 
     ASSERT_NOT_NULL(Account_LogoutOperation_called);
-
-    delete ac2;
 }
 
 void Admintest::test_GetOperation_no_args()
@@ -691,7 +688,7 @@ void Admintest::test_GetOperation_obj_OOG()
     std::string cid_str = String::compose("%1", cid);
     auto to = new TestObject(cid_str, cid);
 
-    m_server->addObject(to);
+    m_server->addObject(std::unique_ptr<ConnectableRouter>(to));
 
     Atlas::Objects::Operation::Get op;
     OpVector res;
@@ -1322,7 +1319,8 @@ void Admintest::test_createObject_fallthrough()
 int main()
 {
     boost::asio::io_context io_context;
-    Ruleset ruleset(nullptr, io_context);
+    EntityBuilder eb;
+    Ruleset ruleset(eb, io_context);
 
     Admintest t;
 
@@ -1407,9 +1405,9 @@ int Ruleset::installRule(const std::string & class_name,
 #include "stubs/server/stubJuncture.h"
 
 #define STUB_ServerRouting_addObject
-void ServerRouting::addObject(ConnectableRouter * obj)
+void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
 {
-    m_objects[obj->getIntId()] = obj;
+    m_objects[obj->getIntId()] = std::move(obj);
 }
 
 #define STUB_ServerRouting_getObject
@@ -1419,7 +1417,7 @@ ConnectableRouter * ServerRouting::getObject(const std::string & id) const
     if (I == m_objects.end()) {
         return 0;
     } else {
-        return I->second;
+        return I->second.get();
     }
 }
 #include "stubs/server/stubServerRouting.h"
@@ -1457,7 +1455,7 @@ Inheritance::Inheritance(Atlas::Objects::Factories& factories)
 
     TypeNode * root = new TypeNode("root", root_desc);
 
-    atlasObjects["root"] = root;
+    atlasObjects["root"].reset(root);
 }
 
 #define STUB_Inheritance_getType
@@ -1467,7 +1465,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
     if (I == atlasObjects.end()) {
         return 0;
     }
-    return I->second;
+    return I->second.get();
 }
 
 #define STUB_Inheritance_getClass
@@ -1509,9 +1507,9 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
     I->second->description(Visibility::PRIVATE)->setAttr("children", children);
 
     TypeNode * type = new TypeNode(child, obj);
-    type->setParent(I->second);
+    type->setParent(I->second.get());
 
-    atlasObjects[child] = type;
+    atlasObjects[child].reset(type);
 
     return type;
 }
@@ -1532,7 +1530,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/rules/simulation/stubAdminMind.h"
 #include "stubs/rules/simulation/stubExternalMind.h"
-
+#include "stubs/server/stubEntityBuilder.h"
 
 Router::Router(const std::string & id, long intId) : m_id(id),
                                                              m_intId(intId)

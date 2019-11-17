@@ -27,7 +27,7 @@
 
 #ifndef STUB_BaseWorld_getEntity
 //#define STUB_BaseWorld_getEntity
-  Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
+  Ref<LocatedEntity> BaseWorld::getEntity(const std::string& id) const
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -107,7 +107,7 @@
 
 #ifndef STUB_BaseWorld_addNewEntity
 //#define STUB_BaseWorld_addNewEntity
-  Ref<LocatedEntity> BaseWorld::addNewEntity(const std::string & type, const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> BaseWorld::addNewEntity(const std::string& type, const Atlas::Objects::Entity::RootEntity&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -115,7 +115,7 @@
 
 #ifndef STUB_BaseWorld_delEntity
 //#define STUB_BaseWorld_delEntity
-  void BaseWorld::delEntity(LocatedEntity * obj)
+  void BaseWorld::delEntity(LocatedEntity* obj)
   {
     
   }
@@ -123,7 +123,7 @@
 
 #ifndef STUB_BaseWorld_createSpawnPoint
 //#define STUB_BaseWorld_createSpawnPoint
-  int BaseWorld::createSpawnPoint(const Atlas::Message::MapType & data, LocatedEntity * ent)
+  int BaseWorld::createSpawnPoint(const Atlas::Message::MapType& data, LocatedEntity* ent)
   {
     return 0;
   }
@@ -131,7 +131,7 @@
 
 #ifndef STUB_BaseWorld_removeSpawnPoint
 //#define STUB_BaseWorld_removeSpawnPoint
-  int BaseWorld::removeSpawnPoint(LocatedEntity * ent)
+  int BaseWorld::removeSpawnPoint(LocatedEntity* ent)
   {
     return 0;
   }
@@ -139,7 +139,7 @@
 
 #ifndef STUB_BaseWorld_getSpawnList
 //#define STUB_BaseWorld_getSpawnList
-  int BaseWorld::getSpawnList(Atlas::Message::ListType & data)
+  int BaseWorld::getSpawnList(Atlas::Message::ListType& data)
   {
     return 0;
   }
@@ -147,7 +147,7 @@
 
 #ifndef STUB_BaseWorld_spawnNewEntity
 //#define STUB_BaseWorld_spawnNewEntity
-  Ref<LocatedEntity> BaseWorld::spawnNewEntity(const std::string & name, const std::string & type, const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> BaseWorld::spawnNewEntity(const std::string& name, const std::string& type, const Atlas::Objects::Entity::RootEntity&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -155,7 +155,7 @@
 
 #ifndef STUB_BaseWorld_moveToSpawn
 //#define STUB_BaseWorld_moveToSpawn
-  int BaseWorld::moveToSpawn(const std::string & name, Location& location)
+  int BaseWorld::moveToSpawn(const std::string& name, Location& location)
   {
     return 0;
   }
@@ -163,15 +163,15 @@
 
 #ifndef STUB_BaseWorld_newArithmetic
 //#define STUB_BaseWorld_newArithmetic
-  ArithmeticScript* BaseWorld::newArithmetic(const std::string &, LocatedEntity *)
+  std::unique_ptr<ArithmeticScript> BaseWorld::newArithmetic(const std::string&, LocatedEntity*)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ArithmeticScript>*>(nullptr);
   }
 #endif //STUB_BaseWorld_newArithmetic
 
 #ifndef STUB_BaseWorld_message
 //#define STUB_BaseWorld_message
-  void BaseWorld::message(const Atlas::Objects::Operation::RootOperation &, LocatedEntity & obj)
+  void BaseWorld::message(const Atlas::Objects::Operation::RootOperation&, LocatedEntity& obj)
   {
     
   }
@@ -179,7 +179,7 @@
 
 #ifndef STUB_BaseWorld_messageToClients
 //#define STUB_BaseWorld_messageToClients
-  void BaseWorld::messageToClients(const Atlas::Objects::Operation::RootOperation &)
+  void BaseWorld::messageToClients(const Atlas::Objects::Operation::RootOperation&)
   {
     
   }
@@ -187,7 +187,7 @@
 
 #ifndef STUB_BaseWorld_findByName
 //#define STUB_BaseWorld_findByName
-  Ref<LocatedEntity> BaseWorld::findByName(const std::string & name)
+  Ref<LocatedEntity> BaseWorld::findByName(const std::string& name)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -195,7 +195,7 @@
 
 #ifndef STUB_BaseWorld_findByType
 //#define STUB_BaseWorld_findByType
-  Ref<LocatedEntity> BaseWorld::findByType(const std::string & type)
+  Ref<LocatedEntity> BaseWorld::findByType(const std::string& type)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

@@ -31,7 +31,7 @@ static const bool debug_flag = false;
 /// \brief Checks if there is a pending possession on an account
 ///
 /// \param entity_id The entity ID to check for pending teleport
-bool PossessionAuthenticator::isPending(const std::string & entity_id) const
+bool PossessionAuthenticator::isPending(const std::string& entity_id) const
 {
     auto I = m_possessions.find(entity_id);
     return (I != m_possessions.end());
@@ -41,8 +41,8 @@ bool PossessionAuthenticator::isPending(const std::string & entity_id) const
 ///
 /// \param entity_id The ID of the entity whose data is to be added
 /// \param possess_key The possess key to authenticate the entity with
-int PossessionAuthenticator::addPossession(const std::string & entity_id,
-                                       const std::string & possess_key)
+int PossessionAuthenticator::addPossession(const std::string& entity_id,
+                                           const std::string& possess_key)
 {
     if (isPending(entity_id)) {
         return -1;
@@ -50,24 +50,24 @@ int PossessionAuthenticator::addPossession(const std::string & entity_id,
     auto pt = new PendingPossession(entity_id, possess_key);
     m_possessions.insert(std::make_pair(entity_id, pt));
     debug(std::cout << String::compose("Added possession auth entry for %1,%2",
-                              entity_id, possess_key) << std::endl;);
+                                       entity_id, possess_key) << std::endl;);
     return 0;
 }
 
 /// \brief Remove a possession authentications entry.
 ///
 /// \param entity_id The ID of the entity whose data is to be removed
-int PossessionAuthenticator::removePossession(const std::string &entity_id)
+int PossessionAuthenticator::removePossession(const std::string& entity_id)
 {
     auto I = m_possessions.find(entity_id);
     if (I == m_possessions.end()) {
         log(ERROR, String::compose("No possession auth entry for entity ID %1",
-                                                entity_id));
+                                   entity_id));
         return -1;
     }
     removePossession(I);
     debug(std::cout << String::compose("Removed possession auth entry for entity ID %1",
-            entity_id) << std::endl;);
+                                       entity_id) << std::endl;);
 
     return 0;
 }
@@ -78,8 +78,6 @@ int PossessionAuthenticator::removePossession(const std::string &entity_id)
 /// \param I The iterator in m_possessions to be removed
 void PossessionAuthenticator::removePossession(PendingPossessionsMap::iterator I)
 {
-    assert(I->second != 0);
-    delete I->second;
     m_possessions.erase(I);
 }
 
@@ -97,24 +95,24 @@ boost::optional<std::string> PossessionAuthenticator::getPossessionKey(const std
 ///
 /// \param entity_id The ID of the entity that was created
 /// \param possess_key The possess key sent by the client
-Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string &entity_id,
-                                            const std::string &possess_key)
+Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string& entity_id,
+                                                                   const std::string& possess_key)
 {
     auto I = m_possessions.find(entity_id);
     if (I == m_possessions.end()) {
         log(ERROR, String::compose("Unable to find possessable entity with ID %1",
-                                                                    entity_id));
+                                   entity_id));
         return nullptr;
     }
-    PendingPossession *entry = I->second;
-    assert(entry != nullptr);
+    auto& entry = I->second;
+    assert(entry);
     if (entry->validate(entity_id, possess_key)) {
         // We are authenticated!
         auto entity = BaseWorld::instance().getEntity(entity_id);
         if (!entity) {
             // This means the authentication entry itself is invalid. Remove it.
             log(ERROR, String::compose("Unable to find possessable entity with ID %1",
-                                                                        entity_id));
+                                       entity_id));
             removePossession(I);
             return nullptr;
         }

@@ -173,8 +173,7 @@ void World::clearWorld(OpVector & res) {
     requirePropertyClassFixed<CalendarProperty>();
     requirePropertyClassFixed<WorldTimeProperty>();
 
-    delete m_contains;
-    m_contains = nullptr;
+    m_contains.reset();
 
     log(INFO, "World cleared of all entities.");
 }

@@ -366,7 +366,7 @@ void MemMaptest::test_findByLoc()
     Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     m_memMap->m_entities[3] = tlve;
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
@@ -399,7 +399,7 @@ void MemMaptest::test_findByLoc_results()
     Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     m_memMap->m_entities[3] = tlve;
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
@@ -432,7 +432,7 @@ void MemMaptest::test_findByLoc_invalid()
     Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     m_memMap->m_entities[3] = tlve;
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
@@ -466,7 +466,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     tlve->setVisible();
     tlve->setType(m_sampleType);
     m_memMap->m_entities[3] = tlve;
-    tlve->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
@@ -491,7 +491,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     // by a longer path, as e3_dup contains no other entities.
     Ref<MemEntity> e3_dup = new MemEntity("3", 3);
     e3_dup->setType(m_sampleType);
-    e3_dup->m_contains = new LocatedEntitySet;
+    tlve->m_contains.reset(new LocatedEntitySet);
 
     Location find_here(e3_dup);
 

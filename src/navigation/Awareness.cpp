@@ -58,13 +58,13 @@
 
 #include "IHeightProvider.h"
 
-#include "DetourNavMesh.h"
-#include "DetourNavMeshQuery.h"
-#include "DetourNavMeshBuilder.h"
-#include "DetourTileCache.h"
-#include "DetourTileCacheBuilder.h"
-#include "DetourCommon.h"
-#include "DetourObstacleAvoidance.h"
+#include "RecastDetour/Detour/Include/DetourNavMesh.h"
+#include "RecastDetour/Detour/Include/DetourNavMeshQuery.h"
+#include "RecastDetour/Detour/Include/DetourNavMeshBuilder.h"
+#include "RecastDetour/DetourTileCache/Include/DetourTileCache.h"
+#include "RecastDetour/DetourTileCache/Include/DetourTileCacheBuilder.h"
+#include "RecastDetour/Detour/Include/DetourCommon.h"
+#include "RecastDetour/Detour/Include/DetourObstacleAvoidance.h"
 
 #include "common/debug.h"
 
@@ -134,12 +134,12 @@ class MRUList
 
 struct InputGeometry
 {
-        std::vector<float> verts;
-        std::vector<int> tris;
-        std::vector<WFMath::RotBox<2>> entityAreas;
+    std::vector<float> verts;
+    std::vector<int> tris;
+    std::vector<WFMath::RotBox<2>> entityAreas;
 };
 
-class AwarenessContext: public rcContext
+class AwarenessContext : public rcContext
 {
     protected:
         void doLog(const rcLogCategory category, const char* msg, const int len) override
@@ -155,30 +155,40 @@ class AwarenessContext: public rcContext
 
 };
 
-Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float agentHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize) :
-        mHeightProvider(heightProvider),
-        mDomainEntity(domainEntity),
-        mTalloc(nullptr),
-        mTcomp(nullptr),
-        mTmproc(nullptr),
-        mAgentRadius(agentRadius),
-        mBaseTileAmount(128),
-        mDesiredTilesAmount(128),
-        mCtx(new AwarenessContext()), mTileCache(nullptr), mNavMesh(nullptr), mNavQuery(dtAllocNavMeshQuery()),
-        mFilter(new dtQueryFilter()),
-        mActiveTileList(new MRUList<std::pair<int, int>>()),
-        mObserverCount(0)
+Awareness::Awareness(const LocatedEntity& domainEntity,
+                     float agentRadius,
+                     float agentHeight,
+                     IHeightProvider& heightProvider,
+                     const WFMath::AxisBox<3>& extent,
+                     int tileSize) :
+    mHeightProvider(heightProvider),
+    mDomainEntity(domainEntity),
+    mTalloc(nullptr),
+    mTcomp(nullptr),
+    mTmproc(nullptr),
+    mAgentRadius(agentRadius),
+    mBaseTileAmount(128),
+    mDesiredTilesAmount(128),
+    mCtx(new AwarenessContext()),
+    mCfg{},
+    mTileCache(nullptr),
+    mNavMesh(nullptr),
+    mNavQuery(dtAllocNavMeshQuery()),
+    mFilter(new dtQueryFilter()),
+    mActiveTileList(new MRUList<std::pair<int, int>>()),
+    mObserverCount(0)
 {
     auto validExtent = extent;
     if (!extent.isValid()) {
         ::log(WARNING, "No valid extent, will default to small area");
-        validExtent = {{-100, -100, -100}, {100, 100, 100}};
+        validExtent = {{-100, -100, -100},
+                       {100,  100,  100}};
     }
     debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius);
     try {
-        mTalloc = new LinearAllocator(128000);
-        mTcomp = new FastLZCompressor;
-        mTmproc = new MeshProcess;
+        auto talloc = std::make_unique<LinearAllocator>(128000);
+        auto tcomp = std::make_unique<FastLZCompressor>();
+        auto tmproc = std::make_unique<MeshProcess>();
 
         // Setup the default query filter
         mFilter->setIncludeFlags(0xFFFF); // Include all
@@ -204,12 +214,13 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
 
         // Max tiles and max polys affect how the tile IDs are caculated.
         // There are 22 bits available for identifying a tile and a polygon.
-        int tileBits = rcMin((int)dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
-        if (tileBits > 14)
+        int tileBits = rcMin((int) dtIlog2(dtNextPow2(tilewidth * tileheight * EXPECTED_LAYERS_PER_TILE)), 14);
+        if (tileBits > 14) {
             tileBits = 14;
+        }
         int polyBits = 22 - tileBits;
-        unsigned int maxTiles = 1 << tileBits;
-        unsigned int maxPolysPerTile = 1 << polyBits;
+        unsigned int maxTiles = 1u << tileBits;
+        unsigned int maxPolysPerTile = 1u << polyBits;
 
         //For an explanation of these values see http://digestingduck.blogspot.se/2009/08/recast-settings-uncovered.html
 
@@ -221,10 +232,10 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         mCfg.walkableRadius = std::ceil(mAgentRadius / mCfg.cs);
         mCfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
 
-        mCfg.maxEdgeLen = mCfg.walkableRadius * 8.0f;
+        mCfg.maxEdgeLen = (int)(mCfg.walkableRadius * 8.0f);
         mCfg.maxSimplificationError = 1.3f;
-        mCfg.minRegionArea = (int)rcSqr(8);
-        mCfg.mergeRegionArea = (int)rcSqr(20);
+        mCfg.minRegionArea = (int) rcSqr(8);
+        mCfg.mergeRegionArea = (int) rcSqr(20);
 
         mCfg.tileSize = tileSize;
         mCfg.borderSize = mCfg.walkableRadius + 3; // Reserve enough padding.
@@ -239,8 +250,8 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         rcVcopy(tcparams.orig, mCfg.bmin);
         tcparams.cs = mCfg.cs;
         tcparams.ch = mCfg.ch;
-        tcparams.width = (int)mCfg.tileSize;
-        tcparams.height = (int)mCfg.tileSize;
+        tcparams.width = (int) mCfg.tileSize;
+        tcparams.height = (int) mCfg.tileSize;
         tcparams.walkableHeight = agentHeight;
         tcparams.walkableRadius = mAgentRadius;
         tcparams.walkableClimb = mCfg.walkableClimb;
@@ -256,7 +267,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         if (!mTileCache) {
             throw std::runtime_error("buildTiledNavigation: Could not allocate tile cache.");
         }
-        status = mTileCache->init(&tcparams, mTalloc, mTcomp, mTmproc);
+        status = mTileCache->init(&tcparams, talloc.get(), tcomp.get(), tmproc.get());
         if (dtStatusFailed(status)) {
             throw std::runtime_error("buildTiledNavigation: Could not init tile cache.");
         }
@@ -289,7 +300,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         mObstacleAvoidanceQuery = dtAllocObstacleAvoidanceQuery();
         mObstacleAvoidanceQuery->init(MAX_OBSTACLES_CIRCLES, 0);
 
-        mObstacleAvoidanceParams = new dtObstacleAvoidanceParams;
+        mObstacleAvoidanceParams = std::make_unique<dtObstacleAvoidanceParams>();
         mObstacleAvoidanceParams->velBias = 0.4f;
         mObstacleAvoidanceParams->weightDesVel = 2.0f;
         mObstacleAvoidanceParams->weightCurVel = 0.75f;
@@ -300,9 +311,11 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
         mObstacleAvoidanceParams->adaptiveDivs = 7;
         mObstacleAvoidanceParams->adaptiveRings = 2;
         mObstacleAvoidanceParams->adaptiveDepth = 5;
+        mTalloc = std::move(talloc);
+        mTcomp = std::move(tcomp);
+        mTmproc = std::move(tmproc);
 
     } catch (const std::exception& e) {
-        delete mObstacleAvoidanceParams;
         dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
 
         dtFreeNavMesh(mNavMesh);
@@ -310,11 +323,6 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
 
         dtFreeTileCache(mTileCache);
 
-        delete mTmproc;
-        delete mTcomp;
-        delete mTalloc;
-
-        delete mCtx;
         throw;
     }
 }
@@ -322,7 +330,6 @@ Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float
 Awareness::~Awareness()
 {
 
-    delete mObstacleAvoidanceParams;
     dtFreeObstacleAvoidanceQuery(mObstacleAvoidanceQuery);
 
     dtFreeNavMesh(mNavMesh);
@@ -330,24 +337,21 @@ Awareness::~Awareness()
 
     dtFreeTileCache(mTileCache);
 
-    delete mTmproc;
-    delete mTcomp;
-    delete mTalloc;
-
-    delete mCtx;
 }
 
-void Awareness::addObserver() {
+void Awareness::addObserver()
+{
     mObserverCount++;
-    mDesiredTilesAmount = mBaseTileAmount + ((mObserverCount - 1) * (mBaseTileAmount * 0.4));
+    mDesiredTilesAmount = mBaseTileAmount + ((double) (mObserverCount - 1) * (mBaseTileAmount * 0.4));
 }
 
-void Awareness::removeObserver() {
+void Awareness::removeObserver()
+{
     mObserverCount--;
     if (mObserverCount == 0) {
         mDesiredTilesAmount = mBaseTileAmount;
     } else {
-        mDesiredTilesAmount = mBaseTileAmount + ((mObserverCount - 1) * (mBaseTileAmount * 0.4));
+        mDesiredTilesAmount = mBaseTileAmount + ((double) (mObserverCount - 1) * (mBaseTileAmount * 0.4));
     }
 }
 
@@ -463,9 +467,9 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
 
             //Only update if there's a change
             if (((entityEntry.location.bBox().isValid() || entity.m_location.bBox().isValid()) && entityEntry.location.bBox() != entity.m_location.bBox())
-                    || ((entityEntry.location.pos().isValid() || entity.m_location.pos().isValid()) && entityEntry.location.pos() != entity.m_location.pos())
-                    || ((entityEntry.location.velocity().isValid() || entity.m_location.velocity().isValid()) && (entityEntry.location.velocity() != entity.m_location.velocity()))
-                    || ((entityEntry.location.orientation().isValid() || entity.m_location.orientation().isValid()) && entityEntry.location.orientation() != entity.m_location.orientation())) {
+                || ((entityEntry.location.pos().isValid() || entity.m_location.pos().isValid()) && entityEntry.location.pos() != entity.m_location.pos())
+                || ((entityEntry.location.velocity().isValid() || entity.m_location.velocity().isValid()) && (entityEntry.location.velocity() != entity.m_location.velocity()))
+                || ((entityEntry.location.orientation().isValid() || entity.m_location.orientation().isValid()) && entityEntry.location.orientation() != entity.m_location.orientation())) {
                 entityEntry.location = entity.m_location;
 
                 debug_print("Updating entity location for entity " << entityEntry.entityId);
@@ -498,7 +502,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                         }
                     }
                     debug_print(
-                            "Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
+                        "Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
                 }
             }
         }
@@ -509,14 +513,14 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
 {
     struct EntityCollisionEntry
     {
-            float distance;
-            const EntityEntry* entity;
-            WFMath::Point<2> viewPosition;
-            WFMath::Ball<2> viewRadius;
+        float distance;
+        const EntityEntry* entity;
+        WFMath::Point<2> viewPosition;
+        WFMath::Ball<2> viewRadius;
     };
 
-    auto comp = []( EntityCollisionEntry& a, EntityCollisionEntry& b ) {return a.distance < b.distance;};
-    std::priority_queue<EntityCollisionEntry, std::vector<EntityCollisionEntry>, decltype( comp )> nearestEntities(comp);
+    auto comp = [](EntityCollisionEntry& a, EntityCollisionEntry& b) { return a.distance < b.distance; };
+    std::priority_queue<EntityCollisionEntry, std::vector<EntityCollisionEntry>, decltype(comp)> nearestEntities(comp);
 
     WFMath::Ball<2> playerRadius(position, 5);
 
@@ -545,7 +549,7 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
         WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->location.radius());
 
         if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
-            nearestEntities.push(EntityCollisionEntry( { WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius }));
+            nearestEntities.push(EntityCollisionEntry({WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius}));
         }
 
     }
@@ -556,20 +560,20 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
         while (!nearestEntities.empty() && i < MAX_OBSTACLES_CIRCLES) {
             const EntityCollisionEntry& entry = nearestEntities.top();
             auto& entity = entry.entity;
-            float pos[] { entry.viewPosition.x(), 0, entry.viewPosition.y() };
-            float vel[] { entity->location.velocity().x(), 0, entity->location.velocity().z() };
+            float pos[]{entry.viewPosition.x(), 0, entry.viewPosition.y()};
+            float vel[]{entity->location.velocity().x(), 0, entity->location.velocity().z()};
             mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
             nearestEntities.pop();
             ++i;
         }
 
-        float pos[] { position.x(), 0, position.y() };
-        float vel[] { desiredVelocity.x(), 0, desiredVelocity.y() };
-        float dvel[] { desiredVelocity.x(), 0, desiredVelocity.y() };
-        float nvel[] { 0, 0, 0 };
+        float pos[]{position.x(), 0, position.y()};
+        float vel[]{desiredVelocity.x(), 0, desiredVelocity.y()};
+        float dvel[]{desiredVelocity.x(), 0, desiredVelocity.y()};
+        float nvel[]{0, 0, 0};
         float desiredSpeed = desiredVelocity.mag();
 
-        int samples = mObstacleAvoidanceQuery->sampleVelocityGrid(pos, mAgentRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams, nullptr);
+        int samples = mObstacleAvoidanceQuery->sampleVelocityGrid(pos, mAgentRadius, desiredSpeed, vel, dvel, nvel, mObstacleAvoidanceParams.get(), nullptr);
         if (samples > 0) {
             if (!WFMath::Equal(vel[0], nvel[0]) || !WFMath::Equal(vel[2], nvel[2])) {
                 newVelocity.x() = nvel[0];
@@ -622,7 +626,7 @@ size_t Awareness::rebuildDirtyTile()
 
         float tilesize = mCfg.tileSize * mCfg.cs;
         WFMath::AxisBox<2> adjustedArea(WFMath::Point<2>(mCfg.bmin[0] + (tileIndex.first * tilesize), mCfg.bmin[2] + (tileIndex.second * tilesize)),
-                WFMath::Point<2>(mCfg.bmin[0] + ((tileIndex.first + 1) * tilesize), mCfg.bmin[2] + ((tileIndex.second + 1) * tilesize)));
+                                        WFMath::Point<2>(mCfg.bmin[0] + ((tileIndex.first + 1) * tilesize), mCfg.bmin[2] + ((tileIndex.second + 1) * tilesize)));
 
         std::vector<WFMath::RotBox<2>> entityAreas;
         findEntityAreas(adjustedArea, entityAreas);
@@ -725,13 +729,13 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
 int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::vector<WFMath::Point<3>>& path) const
 {
 
-    float pStartPos[] { start.x(), start.y(), start.z() };
-    float pEndPos[] { end.x(), end.y(), end.z() };
-    float startExtent[] { mAgentRadius * 2.2f, 100, mAgentRadius  * 2.2f}; //Only extend radius in horizontal plane
+    float pStartPos[]{start.x(), start.y(), start.z()};
+    float pEndPos[]{end.x(), end.y(), end.z()};
+    float startExtent[]{mAgentRadius * 2.2f, 100, mAgentRadius * 2.2f}; //Only extend radius in horizontal plane
     //To make sure that the agent can move close enough we need to subtract the agent's radius from the destination radius.
     //We'll also adjust with 0.95 to allow for some padding.
     float destinationRadius = (radius - mAgentRadius) * 0.95f;
-    float endExtent[] { destinationRadius, 100, destinationRadius}; //Only extend radius in horizontal plane
+    float endExtent[]{destinationRadius, 100, destinationRadius}; //Only extend radius in horizontal plane
 
 
     dtStatus status;
@@ -746,19 +750,23 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
 // find the start polygon
     status = mNavQuery->findNearestPoly(pStartPos, startExtent, mFilter.get(), &StartPoly, StartNearest);
-    if ((status & DT_FAILURE) || StartPoly == 0)
-        return -1; // couldn't find a polygon
+    if ((status & DT_FAILURE) || StartPoly == 0) {
+        return -1;
+    } // couldn't find a polygon
 
 // find the end polygon
     status = mNavQuery->findNearestPoly(pEndPos, endExtent, mFilter.get(), &EndPoly, EndNearest);
-    if ((status & DT_FAILURE) || EndPoly == 0)
-        return -2; // couldn't find a polygon
+    if ((status & DT_FAILURE) || EndPoly == 0) {
+        return -2;
+    } // couldn't find a polygon
 
     status = mNavQuery->findPath(StartPoly, EndPoly, StartNearest, EndNearest, mFilter.get(), PolyPath, &nPathCount, MAX_PATHPOLY);
-    if ((status & DT_FAILURE))
-        return -3; // couldn't create a path
-    if (nPathCount == 0)
-        return -4; // couldn't find a path
+    if ((status & DT_FAILURE)) {
+        return -3;
+    } // couldn't create a path
+    if (nPathCount == 0) {
+        return -4;
+    } // couldn't find a path
 
     status = mNavQuery->findStraightPath(StartNearest, EndNearest, PolyPath, nPathCount, StraightPath, nullptr, nullptr, &nVertCount, MAX_PATHVERT);
     if ((status & DT_FAILURE))
@@ -846,7 +854,7 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
         for (int tz = tileMinZIndex; tz <= tileMaxZIndex; ++tz) {
             // Tile bounds.
             WFMath::AxisBox<2> tileBounds(WFMath::Point<2>((mCfg.bmin[0] + tx * tcs) - tileBorderSize, (mCfg.bmin[2] + tz * tcs) - tileBorderSize),
-                    WFMath::Point<2>((mCfg.bmin[0] + (tx + 1) * tcs) + tileBorderSize, (mCfg.bmin[2] + (tz + 1) * tcs) + tileBorderSize));
+                                          WFMath::Point<2>((mCfg.bmin[0] + (tx + 1) * tcs) + tileBorderSize, (mCfg.bmin[2] + (tz + 1) * tcs) + tileBorderSize));
             if (WFMath::Intersect(area, tileBounds, false) || WFMath::Contains(area, tileBounds, false)) {
 
                 std::pair<int, int> index(tx, tz);
@@ -918,14 +926,15 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
     awareAreaSet = newAwareAreaSet;
 
 
-    debug_print("Awareness area set: " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size() << " Aware tile count: " << mAwareTiles.size());
+    debug_print(
+        "Awareness area set: " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size() << " Aware tile count: " << mAwareTiles.size());
 
     if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
         EventTileDirty();
     }
 }
 
-void Awareness::returnAwareTiles(const std::set<std::pair<int,int>>& tileset)
+void Awareness::returnAwareTiles(const std::set<std::pair<int, int>>& tileset)
 {
     for (auto& tileIndex : tileset) {
         auto awareEntry = mAwareTiles.find(tileIndex);
@@ -980,7 +989,7 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
     for (int j = 0; j < ntiles; ++j) {
         TileCacheData* tile = &tiles[j];
 
-        auto* header = (dtTileCacheLayerHeader*)tile->data;
+        auto* header = (dtTileCacheLayerHeader*) tile->data;
         dtTileRef tileRef = mTileCache->getTileRef(mTileCache->getTileAt(header->tx, header->ty, header->tlayer));
         if (tileRef) {
             mTileCache->removeTile(tileRef, nullptr, nullptr);
@@ -1126,7 +1135,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
         return 0;
     }
-    if (!rcCreateHeightfield(mCtx, *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cs, tcfg.ch)) {
+    if (!rcCreateHeightfield(mCtx.get(), *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cs, tcfg.ch)) {
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
         return 0;
     }
@@ -1139,9 +1148,9 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
     }
 
     memset(rc.triareas, 0, ntris * sizeof(unsigned char));
-    rcMarkWalkableTriangles(mCtx, tcfg.walkableSlopeAngle, verts, nverts, tris, ntris, rc.triareas);
+    rcMarkWalkableTriangles(mCtx.get(), tcfg.walkableSlopeAngle, verts, nverts, tris, ntris, rc.triareas);
 
-    rcRasterizeTriangles(mCtx, verts, nverts, tris, rc.triareas, ntris, *rc.solid, tcfg.walkableClimb);
+    rcRasterizeTriangles(mCtx.get(), verts, nverts, tris, rc.triareas, ntris, *rc.solid, tcfg.walkableClimb);
 
 // Once all geometry is rasterized, we do initial pass of filtering to
 // remove unwanted overhangs caused by the conservative rasterization
@@ -1158,13 +1167,13 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
         return 0;
     }
-    if (!rcBuildCompactHeightfield(mCtx, tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid, *rc.chf)) {
+    if (!rcBuildCompactHeightfield(mCtx.get(), tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid, *rc.chf)) {
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
         return 0;
     }
 
 // Erode the walkable area by agent radius.
-    if (!rcErodeWalkableArea(mCtx, tcfg.walkableRadius, *rc.chf)) {
+    if (!rcErodeWalkableArea(mCtx.get(), tcfg.walkableRadius, *rc.chf)) {
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
         return 0;
     }
@@ -1189,7 +1198,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         areaVerts[10] = 0;
         areaVerts[11] = rotbox.getCorner(0).y();
 
-        rcMarkConvexPolyArea(mCtx, areaVerts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
+        rcMarkConvexPolyArea(mCtx.get(), areaVerts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
     }
 
     rc.lset = rcAllocHeightfieldLayerSet();
@@ -1197,7 +1206,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'lset'.");
         return 0;
     }
-    if (!rcBuildHeightfieldLayers(mCtx, *rc.chf, tcfg.borderSize, tcfg.walkableHeight, *rc.lset)) {
+    if (!rcBuildHeightfieldLayers(mCtx.get(), *rc.chf, tcfg.borderSize, tcfg.walkableHeight, *rc.lset)) {
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not build heighfield layers.");
         return 0;
     }
@@ -1220,14 +1229,14 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         dtVcopy(header.bmax, layer->bmax);
 
         // Tile info.
-        header.width = (unsigned char)layer->width;
-        header.height = (unsigned char)layer->height;
-        header.minx = (unsigned char)layer->minx;
-        header.maxx = (unsigned char)layer->maxx;
-        header.miny = (unsigned char)layer->miny;
-        header.maxy = (unsigned char)layer->maxy;
-        header.hmin = (unsigned short)layer->hmin;
-        header.hmax = (unsigned short)layer->hmax;
+        header.width = (unsigned char) layer->width;
+        header.height = (unsigned char) layer->height;
+        header.minx = (unsigned char) layer->minx;
+        header.maxx = (unsigned char) layer->maxx;
+        header.miny = (unsigned char) layer->miny;
+        header.maxy = (unsigned char) layer->maxy;
+        header.hmin = (unsigned short) layer->hmin;
+        header.hmax = (unsigned short) layer->hmax;
 
         dtStatus status = dtBuildTileCacheLayer(&comp, &header, layer->heights, layer->areas, layer->cons, &tile->data, &tile->dataSize);
         if (dtStatusFailed(status)) {
@@ -1247,10 +1256,10 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 }
 
 void Awareness::processTiles(const WFMath::AxisBox<2>& area,
-        const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+                             const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
-    float bmin[] { area.lowCorner().x(), -100, area.lowCorner().y() };
-    float bmax[] { area.highCorner().x(), 100, area.highCorner().y() };
+    float bmin[]{area.lowCorner().x(), -100, area.lowCorner().y()};
+    float bmax[]{area.highCorner().x(), 100, area.highCorner().y()};
 
     dtCompressedTileRef tilesRefs[256];
     int ntiles;
@@ -1265,7 +1274,7 @@ void Awareness::processTiles(const WFMath::AxisBox<2>& area,
 }
 
 void Awareness::processTile(int tx, int ty,
-        const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+                            const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
     dtCompressedTileRef tilesRefs[MAX_LAYERS];
     const int ntiles = mTileCache->getTilesAt(tx, ty, tilesRefs, MAX_LAYERS);
@@ -1279,7 +1288,7 @@ void Awareness::processTile(int tx, int ty,
 }
 
 void Awareness::processAllTiles(
-        const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+    const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
     int ntiles = mTileCache->getTileCount();
     std::vector<const dtCompressedTile*> tiles(static_cast<unsigned long>(ntiles));
@@ -1292,31 +1301,34 @@ void Awareness::processAllTiles(
 }
 
 void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles,
-        const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
+                             const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
     struct TileCacheBuildContext
     {
-            inline explicit TileCacheBuildContext(struct dtTileCacheAlloc* a) :
-                    layer(nullptr), lcset(nullptr), lmesh(nullptr), alloc(a)
-            {
-            }
-            inline ~TileCacheBuildContext()
-            {
-                purge();
-            }
-            void purge()
-            {
-                dtFreeTileCacheLayer(alloc, layer);
-                layer = nullptr;
-                dtFreeTileCacheContourSet(alloc, lcset);
-                lcset = nullptr;
-                dtFreeTileCachePolyMesh(alloc, lmesh);
-                lmesh = nullptr;
-            }
-            struct dtTileCacheLayer* layer;
-            struct dtTileCacheContourSet* lcset;
-            struct dtTileCachePolyMesh* lmesh;
-            struct dtTileCacheAlloc* alloc;
+        inline explicit TileCacheBuildContext(struct dtTileCacheAlloc* a) :
+            layer(nullptr), lcset(nullptr), lmesh(nullptr), alloc(a)
+        {
+        }
+
+        inline ~TileCacheBuildContext()
+        {
+            purge();
+        }
+
+        void purge()
+        {
+            dtFreeTileCacheLayer(alloc, layer);
+            layer = nullptr;
+            dtFreeTileCacheContourSet(alloc, lcset);
+            lcset = nullptr;
+            dtFreeTileCachePolyMesh(alloc, lmesh);
+            lmesh = nullptr;
+        }
+
+        struct dtTileCacheLayer* layer;
+        struct dtTileCacheContourSet* lcset;
+        struct dtTileCachePolyMesh* lmesh;
+        struct dtTileCacheAlloc* alloc;
     };
 
     dtTileCacheAlloc* talloc = mTileCache->getAlloc();
@@ -1328,32 +1340,38 @@ void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles,
         talloc->reset();
 
         TileCacheBuildContext bc(talloc);
-        const int walkableClimbVx = (int)(params->walkableClimb / params->ch);
+        const int walkableClimbVx = (int) (params->walkableClimb / params->ch);
         dtStatus status;
 
         // Decompress tile layer data.
         status = dtDecompressTileCacheLayer(talloc, tcomp, tile->data, tile->dataSize, &bc.layer);
-        if (dtStatusFailed(status))
+        if (dtStatusFailed(status)) {
             return;
+        }
 
         // Build navmesh
         status = dtBuildTileCacheRegions(talloc, *bc.layer, walkableClimbVx);
-        if (dtStatusFailed(status))
+        if (dtStatusFailed(status)) {
             return;
+        }
 
         bc.lcset = dtAllocTileCacheContourSet(talloc);
-        if (!bc.lcset)
+        if (!bc.lcset) {
             return;
+        }
         status = dtBuildTileCacheContours(talloc, *bc.layer, walkableClimbVx, params->maxSimplificationError, *bc.lcset);
-        if (dtStatusFailed(status))
+        if (dtStatusFailed(status)) {
             return;
+        }
 
         bc.lmesh = dtAllocTileCachePolyMesh(talloc);
-        if (!bc.lmesh)
+        if (!bc.lmesh) {
             return;
+        }
         status = dtBuildTileCachePolyMesh(talloc, *bc.lcset, *bc.lmesh);
-        if (dtStatusFailed(status))
+        if (dtStatusFailed(status)) {
             return;
+        }
 
         processor(mTileCache->getTileRef(tile), *bc.lmesh, tile->header->bmin, params->cs, params->ch, *bc.layer);
 
