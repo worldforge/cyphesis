@@ -43,7 +43,7 @@ class CorePropertyManager : public PropertyManager {
 
   public:
     CorePropertyManager();
-    ~CorePropertyManager() override = default;
+    ~CorePropertyManager() override;
 
     std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type) override;
 

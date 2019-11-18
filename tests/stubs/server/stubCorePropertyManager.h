@@ -48,6 +48,14 @@
   }
 #endif //STUB_CorePropertyManager_CorePropertyManager
 
+#ifndef STUB_CorePropertyManager_CorePropertyManager_DTOR
+//#define STUB_CorePropertyManager_CorePropertyManager_DTOR
+   CorePropertyManager::~CorePropertyManager()
+  {
+    
+  }
+#endif //STUB_CorePropertyManager_CorePropertyManager_DTOR
+
 #ifndef STUB_CorePropertyManager_addProperty
 //#define STUB_CorePropertyManager_addProperty
   std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name, int type)

@@ -1,6 +1,7 @@
 add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 add_library(stubnavigation stubs/navigation/libstub.cpp DatabaseNull.h)
+target_link_libraries(stubnavigation PUBLIC Detour)
 
 link_libraries(${PYTHON_LIBRARIES})
 link_libraries(${GCRYPT_LIBRARIES})

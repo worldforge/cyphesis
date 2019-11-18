@@ -295,6 +295,8 @@ CorePropertyManager::CorePropertyManager()
 
 }
 
+CorePropertyManager::~CorePropertyManager() = default;
+
 int CorePropertyManager::installFactory(const std::string& type_name,
                                         const Root& type_desc,
                                         std::unique_ptr<PropertyKit> factory)
