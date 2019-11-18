@@ -728,7 +728,10 @@ class AstBuilder(object):
 
     def Generate(self):
         while 1:
-            token = self._GetNextToken()
+            try:
+                token = self._GetNextToken()
+            except StopIteration:
+                break
             if not token:
                 break
 

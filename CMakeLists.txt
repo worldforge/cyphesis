@@ -184,7 +184,7 @@ macro(wf_generate_stubs DIRECTORY)
 
         add_custom_command(TARGET stubs
             COMMAND ${CMAKE_COMMAND} -E echo "Generating stubs for ${FILE}\n"
-            COMMAND ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
+            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
         )
 
