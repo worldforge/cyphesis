@@ -49,6 +49,14 @@
   }
 #endif //STUB_ExternalMind_ExternalMind
 
+#ifndef STUB_ExternalMind_ExternalMind_DTOR
+//#define STUB_ExternalMind_ExternalMind_DTOR
+   ExternalMind::~ExternalMind()
+  {
+    
+  }
+#endif //STUB_ExternalMind_ExternalMind_DTOR
+
 #ifndef STUB_ExternalMind_externalOperation
 //#define STUB_ExternalMind_externalOperation
   void ExternalMind::externalOperation(const Operation& op, Link&)

@@ -11,7 +11,7 @@
 //#define STUB_PhysicalDomain_PhysicalDomain
    PhysicalDomain::PhysicalDomain(LocatedEntity& entity)
     : Domain(entity)
-    , m_collisionConfiguration(nullptr),m_dispatcher(nullptr),m_constraintSolver(nullptr),m_broadphase(nullptr),m_dynamicsWorld(nullptr),m_visibilityDispatcher(nullptr),m_visibilityBroadphase(nullptr),m_visibilityWorld(nullptr),m_terrain(nullptr)
+    , m_terrain(nullptr)
   {
     
   }

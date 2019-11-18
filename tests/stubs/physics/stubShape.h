@@ -220,8 +220,8 @@
 
 #ifndef STUB_MathShape_getType
 //#define STUB_MathShape_getType
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  const char* MathShape<int,dim,2,class,ShapeT>::getType() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  const char* MathShape<int,class,ShapeT,dim,2>::getType() const
   {
     return nullptr;
   }
@@ -229,8 +229,8 @@
 
 #ifndef STUB_MathShape_MathShape
 //#define STUB_MathShape_MathShape
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-   MathShape<int,dim,2,class,ShapeT>::MathShape()
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+   MathShape<int,class,ShapeT,dim,2>::MathShape()
     : Form()
   {
     
@@ -239,8 +239,8 @@
 
 #ifndef STUB_MathShape_MathShape
 //#define STUB_MathShape_MathShape
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-   MathShape<int,dim,2,class,ShapeT>::MathShape(const ShapeT<dim> &)
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+   MathShape<int,class,ShapeT,dim,2>::MathShape(const ShapeT<dim> &)
     : Form(???)
   {
     
@@ -249,8 +249,8 @@
 
 #ifndef STUB_MathShape_size
 //#define STUB_MathShape_size
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  size_t MathShape<int,dim,2,class,ShapeT>::size() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  size_t MathShape<int,class,ShapeT,dim,2>::size() const
   {
     return 0;
   }
@@ -258,8 +258,8 @@
 
 #ifndef STUB_MathShape_isValid
 //#define STUB_MathShape_isValid
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  bool MathShape<int,dim,2,class,ShapeT>::isValid() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  bool MathShape<int,class,ShapeT,dim,2>::isValid() const
   {
     return false;
   }
@@ -267,8 +267,8 @@
 
 #ifndef STUB_MathShape_getCorner
 //#define STUB_MathShape_getCorner
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::Point<dim> MathShape<int,dim,2,class,ShapeT>::getCorner(size_t) const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::Point<dim> MathShape<int,class,ShapeT,dim,2>::getCorner(size_t) const
   {
     return *static_cast<WFMath::Point<dim>*>(nullptr);
   }
@@ -276,8 +276,8 @@
 
 #ifndef STUB_MathShape_area
 //#define STUB_MathShape_area
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::CoordType MathShape<int,dim,2,class,ShapeT>::area() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::CoordType MathShape<int,class,ShapeT,dim,2>::area() const
   {
     return *static_cast<WFMath::CoordType*>(nullptr);
   }
@@ -285,8 +285,8 @@
 
 #ifndef STUB_MathShape_centre
 //#define STUB_MathShape_centre
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::Point<dim> MathShape<int,dim,2,class,ShapeT>::centre() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::Point<dim> MathShape<int,class,ShapeT,dim,2>::centre() const
   {
     return *static_cast<WFMath::Point<dim>*>(nullptr);
   }
@@ -294,8 +294,8 @@
 
 #ifndef STUB_MathShape_footprint
 //#define STUB_MathShape_footprint
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::AxisBox<2> MathShape<int,dim,2,class,ShapeT>::footprint() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::AxisBox<2> MathShape<int,class,ShapeT,dim,2>::footprint() const
   {
     return *static_cast<WFMath::AxisBox<2>*>(nullptr);
   }
@@ -303,8 +303,8 @@
 
 #ifndef STUB_MathShape_outline
 //#define STUB_MathShape_outline
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::Polygon<2> MathShape<int,dim,2,class,ShapeT>::outline(WFMath::CoordType precision) const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::Polygon<2> MathShape<int,class,ShapeT,dim,2>::outline(WFMath::CoordType precision) const
   {
     return *static_cast<WFMath::Polygon<2>*>(nullptr);
   }
@@ -312,8 +312,8 @@
 
 #ifndef STUB_MathShape_lowCorner
 //#define STUB_MathShape_lowCorner
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::Point<dim> MathShape<int,dim,2,class,ShapeT>::lowCorner() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::Point<dim> MathShape<int,class,ShapeT,dim,2>::lowCorner() const
   {
     return *static_cast<WFMath::Point<dim>*>(nullptr);
   }
@@ -321,8 +321,8 @@
 
 #ifndef STUB_MathShape_highCorner
 //#define STUB_MathShape_highCorner
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  WFMath::Point<dim> MathShape<int,dim,2,class,ShapeT>::highCorner() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  WFMath::Point<dim> MathShape<int,class,ShapeT,dim,2>::highCorner() const
   {
     return *static_cast<WFMath::Point<dim>*>(nullptr);
   }
@@ -330,8 +330,8 @@
 
 #ifndef STUB_MathShape_intersect
 //#define STUB_MathShape_intersect
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  bool MathShape<int,dim,2,class,ShapeT>::intersect(const WFMath::Point<dim> &) const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  bool MathShape<int,class,ShapeT,dim,2>::intersect(const WFMath::Point<dim> &) const
   {
     return false;
   }
@@ -339,8 +339,8 @@
 
 #ifndef STUB_MathShape_scale
 //#define STUB_MathShape_scale
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  void MathShape<int,dim,2,class,ShapeT>::scale(WFMath::CoordType factor)
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  void MathShape<int,class,ShapeT,dim,2>::scale(WFMath::CoordType factor)
   {
     
   }
@@ -348,8 +348,8 @@
 
 #ifndef STUB_MathShape_equal
 //#define STUB_MathShape_equal
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  bool MathShape<int,dim,2,class,ShapeT>::equal(const Shape & other) const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  bool MathShape<int,class,ShapeT,dim,2>::equal(const Shape & other) const
   {
     return false;
   }
@@ -357,8 +357,8 @@
 
 #ifndef STUB_MathShape_copy
 //#define STUB_MathShape_copy
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  MathShape<ShapeT, dim>* MathShape<int,dim,2,class,ShapeT>::copy() const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  MathShape<ShapeT, dim>* MathShape<int,class,ShapeT,dim,2>::copy() const
   {
     return nullptr;
   }
@@ -366,8 +366,8 @@
 
 #ifndef STUB_MathShape_toAtlas
 //#define STUB_MathShape_toAtlas
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  void MathShape<int,dim,2,class,ShapeT>::toAtlas(Atlas::Message::MapType &) const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  void MathShape<int,class,ShapeT,dim,2>::toAtlas(Atlas::Message::MapType &) const
   {
     
   }
@@ -375,8 +375,8 @@
 
 #ifndef STUB_MathShape_fromAtlas
 //#define STUB_MathShape_fromAtlas
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  int MathShape<int,dim,2,class,ShapeT>::fromAtlas(const Atlas::Message::Element &)
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  int MathShape<int,class,ShapeT,dim,2>::fromAtlas(const Atlas::Message::Element &)
   {
     return 0;
   }
@@ -384,8 +384,8 @@
 
 #ifndef STUB_MathShape_stream
 //#define STUB_MathShape_stream
-  template <typename int,typename dim,typename 2,typename class,typename ShapeT>
-  void MathShape<int,dim,2,class,ShapeT>::stream(std::ostream &) const
+  template <typename int,typename class,typename ShapeT,typename dim,typename 2>
+  void MathShape<int,class,ShapeT,dim,2>::stream(std::ostream &) const
   {
     
   }

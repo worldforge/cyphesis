@@ -9,8 +9,8 @@
 
 #ifndef STUB_WrapperBase_WrapperBase
 //#define STUB_WrapperBase_WrapperBase
-  template <typename TValue,typename TClassInstance,typename TPythonClass>
-   WrapperBase<TValue,TClassInstance,TPythonClass>::WrapperBase(TClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
+  template <typename TValue,typename TPythonClass,typename TClassInstance>
+   WrapperBase<TValue,TPythonClass,TClassInstance>::WrapperBase(TClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
     : Py::PythonClass(self, args, kwds)
   {
     
@@ -19,8 +19,8 @@
 
 #ifndef STUB_WrapperBase_wrap
 //#define STUB_WrapperBase_wrap
-  template <typename TValue,typename TClassInstance,typename TPythonClass>
-   Py::Object WrapperBase<TValue,TClassInstance,TPythonClass>::wrap(TValue value)
+  template <typename TValue,typename TPythonClass,typename TClassInstance>
+   Py::Object WrapperBase<TValue,TPythonClass,TClassInstance>::wrap(TValue value)
   {
     return *static_cast< Py::Object*>(nullptr);
   }
@@ -28,8 +28,8 @@
 
 #ifndef STUB_WrapperBase_value
 //#define STUB_WrapperBase_value
-  template <typename TValue,typename TClassInstance,typename TPythonClass>
-   TValue& WrapperBase<TValue,TClassInstance,TPythonClass>::value(const Py::Object& object)
+  template <typename TValue,typename TPythonClass,typename TClassInstance>
+   TValue& WrapperBase<TValue,TPythonClass,TClassInstance>::value(const Py::Object& object)
   {
     return *static_cast< TValue*>(nullptr);
   }
@@ -37,8 +37,8 @@
 
 #ifndef STUB_WrapperBase_WrapperBase
 //#define STUB_WrapperBase_WrapperBase
-  template <typename TValue,typename TClassInstance,typename TPythonClass>
-   WrapperBase<TValue,TClassInstance,TPythonClass>::WrapperBase(TClassInstance* self, TValue value)
+  template <typename TValue,typename TPythonClass,typename TClassInstance>
+   WrapperBase<TValue,TPythonClass,TClassInstance>::WrapperBase(TClassInstance* self, TValue value)
     : Py::PythonClass(self, value)
   {
     

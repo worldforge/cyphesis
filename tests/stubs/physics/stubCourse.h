@@ -9,8 +9,8 @@
 
 #ifndef STUB_Course_isEqualTo
 //#define STUB_Course_isEqualTo
-  template <typename int,typename dim,typename class,typename PathT>
-  bool Course<int,dim,class,PathT>::isEqualTo(const Course& c, WFMath::CoordType epsilon ) const
+  template <typename dim,typename int,typename class,typename PathT>
+  bool Course<dim,int,class,PathT>::isEqualTo(const Course& c, WFMath::CoordType epsilon ) const
   {
     return false;
   }
@@ -18,8 +18,8 @@
 
 #ifndef STUB_Course_Course
 //#define STUB_Course_Course
-  template <typename int,typename dim,typename class,typename PathT>
-   Course<int,dim,class,PathT>::Course()
+  template <typename dim,typename int,typename class,typename PathT>
+   Course<dim,int,class,PathT>::Course()
   {
     
   }
@@ -27,8 +27,8 @@
 
 #ifndef STUB_Course_Course
 //#define STUB_Course_Course
-  template <typename int,typename dim,typename class,typename PathT>
-   Course<int,dim,class,PathT>::Course(const Course& l)
+  template <typename dim,typename int,typename class,typename PathT>
+   Course<dim,int,class,PathT>::Course(const Course& l)
   {
     
   }
@@ -36,8 +36,8 @@
 
 #ifndef STUB_Course_Course
 //#define STUB_Course_Course
-  template <typename int,typename dim,typename class,typename PathT>
-   Course<int,dim,class,PathT>::Course(const PathT<dim> & l)
+  template <typename dim,typename int,typename class,typename PathT>
+   Course<dim,int,class,PathT>::Course(const PathT<dim> & l)
   {
     
   }
@@ -45,8 +45,8 @@
 
 #ifndef STUB_Course_Course_DTOR
 //#define STUB_Course_Course_DTOR
-  template <typename int,typename dim,typename class,typename PathT>
-   Course<int,dim,class,PathT>::~Course()
+  template <typename dim,typename int,typename class,typename PathT>
+   Course<dim,int,class,PathT>::~Course()
   {
     
   }
@@ -54,8 +54,8 @@
 
 #ifndef STUB_Course_toAtlas
 //#define STUB_Course_toAtlas
-  template <typename int,typename dim,typename class,typename PathT>
-  WFMath::AtlasOutType Course<int,dim,class,PathT>::toAtlas() const
+  template <typename dim,typename int,typename class,typename PathT>
+  WFMath::AtlasOutType Course<dim,int,class,PathT>::toAtlas() const
   {
     return *static_cast<WFMath::AtlasOutType*>(nullptr);
   }
@@ -63,8 +63,8 @@
 
 #ifndef STUB_Course_fromAtlas
 //#define STUB_Course_fromAtlas
-  template <typename int,typename dim,typename class,typename PathT>
-  void Course<int,dim,class,PathT>::fromAtlas(const WFMath::AtlasInType & a)
+  template <typename dim,typename int,typename class,typename PathT>
+  void Course<dim,int,class,PathT>::fromAtlas(const WFMath::AtlasInType & a)
   {
     
   }
@@ -72,8 +72,8 @@
 
 #ifndef STUB_Course_rotateCorner
 //#define STUB_Course_rotateCorner
-  template <typename int,typename dim,typename class,typename PathT>
-  Course& Course<int,dim,class,PathT>::rotateCorner(const WFMath::RotMatrix<dim>& m, size_t corner)
+  template <typename dim,typename int,typename class,typename PathT>
+  Course& Course<dim,int,class,PathT>::rotateCorner(const WFMath::RotMatrix<dim>& m, size_t corner)
   {
     return *static_cast<Course*>(nullptr);
   }
@@ -81,8 +81,8 @@
 
 #ifndef STUB_Course_rotateCenter
 //#define STUB_Course_rotateCenter
-  template <typename int,typename dim,typename class,typename PathT>
-  Course& Course<int,dim,class,PathT>::rotateCenter(const WFMath::RotMatrix<dim>& m)
+  template <typename dim,typename int,typename class,typename PathT>
+  Course& Course<dim,int,class,PathT>::rotateCenter(const WFMath::RotMatrix<dim>& m)
   {
     return *static_cast<Course*>(nullptr);
   }
@@ -90,8 +90,8 @@
 
 #ifndef STUB_Course_rotatePoint
 //#define STUB_Course_rotatePoint
-  template <typename int,typename dim,typename class,typename PathT>
-  Course& Course<int,dim,class,PathT>::rotatePoint(const WFMath::RotMatrix<dim>& m, const WFMath::Point<dim>& p)
+  template <typename dim,typename int,typename class,typename PathT>
+  Course& Course<dim,int,class,PathT>::rotatePoint(const WFMath::RotMatrix<dim>& m, const WFMath::Point<dim>& p)
   {
     return *static_cast<Course*>(nullptr);
   }
@@ -99,8 +99,8 @@
 
 #ifndef STUB_Course_boundingBox
 //#define STUB_Course_boundingBox
-  template <typename int,typename dim,typename class,typename PathT>
-  WFMath::AxisBox<dim> Course<int,dim,class,PathT>::boundingBox() const
+  template <typename dim,typename int,typename class,typename PathT>
+  WFMath::AxisBox<dim> Course<dim,int,class,PathT>::boundingBox() const
   {
     return *static_cast<WFMath::AxisBox<dim>*>(nullptr);
   }
@@ -108,8 +108,8 @@
 
 #ifndef STUB_Course_boundingSphere
 //#define STUB_Course_boundingSphere
-  template <typename int,typename dim,typename class,typename PathT>
-  WFMath::Ball<dim> Course<int,dim,class,PathT>::boundingSphere() const
+  template <typename dim,typename int,typename class,typename PathT>
+  WFMath::Ball<dim> Course<dim,int,class,PathT>::boundingSphere() const
   {
     return *static_cast<WFMath::Ball<dim>*>(nullptr);
   }
@@ -117,8 +117,8 @@
 
 #ifndef STUB_Course_boundingShapeSloppy
 //#define STUB_Course_boundingShapeSloppy
-  template <typename int,typename dim,typename class,typename PathT>
-  WFMath::Ball<dim> Course<int,dim,class,PathT>::boundingShapeSloppy() const
+  template <typename dim,typename int,typename class,typename PathT>
+  WFMath::Ball<dim> Course<dim,int,class,PathT>::boundingShapeSloppy() const
   {
     return *static_cast<WFMath::Ball<dim>*>(nullptr);
   }
