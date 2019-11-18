@@ -33,6 +33,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
+#include <utility>
 #include <common/Inheritance.h>
 
 using Atlas::Objects::Root;
@@ -43,8 +44,8 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-AdminMind::AdminMind(std::string strId, long id, LocatedEntity& entity)
-    : ExternalMind(std::move(strId), id, entity)
+AdminMind::AdminMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
+    : ExternalMind(strId, id, std::move(entity))
 {
 
 }
@@ -66,7 +67,7 @@ void AdminMind::externalOperation(const Operation& op, Link& link)
         //Send directly to the entity, bypassing any normal Thought filtering
         debug_print("Creator handling op ");
         OpVector lres;
-        m_entity.operation(op, lres);
+        m_entity->operation(op, lres);
     } else {
         //Otherwise we're sending something to someone else.
         auto to = BaseWorld::instance().getEntity(op->getTo());
@@ -76,9 +77,9 @@ void AdminMind::externalOperation(const Operation& op, Link& link)
             if (op->getClassNo() == Atlas::Objects::Operation::RELAY_NO) {
                 //Make sure that "from_id" is set to this mind, so the Relay can find its way back.
                 op->setAttr("from_id", getId());
-                m_entity.sendWorld(op);
+                m_entity->sendWorld(op);
             } else {
-                m_entity.sendWorld(op);
+                m_entity->sendWorld(op);
                 // Make it appear like it came from target itself;
 //                op->setFrom(m_entity.getId());
 //                to->sendWorld(op);

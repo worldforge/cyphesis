@@ -105,7 +105,7 @@ ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const {
 
     auto id = newId(strId);
 
-    return new AdminMind(strId, id, *entity);
+    return new AdminMind(strId, id, entity);
 }
 
 Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,

@@ -21,6 +21,7 @@
 
 #include "common/Router.h"
 #include <Atlas/Objects/Operation.h>
+#include <modules/Ref.h>
 
 class Link;
 
@@ -57,7 +58,7 @@ class ExternalMind : public Router
 
 
         Link* m_link;
-        LocatedEntity& m_entity;
+        Ref<LocatedEntity> m_entity;
 
         /**
          * \brief A store of registered relays for this character, both outgoing and incoming.
@@ -72,11 +73,12 @@ class ExternalMind : public Router
         void purgeEntity(const LocatedEntity& ent, bool forceDelete = false);
 
         void RelayOperation(const Operation& op, OpVector& res);
+
         void externalRelayedOperation(const Operation& op);
 
     public:
 
-        explicit ExternalMind(std::string strId, long id, LocatedEntity& entity);
+        explicit ExternalMind(const std::string& strId, long id, Ref<LocatedEntity> entity);
 
         ~ExternalMind() override;
 
@@ -90,7 +92,7 @@ class ExternalMind : public Router
         bool isLinkedTo(Link* c)
         { return m_link == c; }
 
-        LocatedEntity& getEntity() const;
+        const Ref<LocatedEntity>& getEntity() const;
 
         const std::string& connectionId();
 

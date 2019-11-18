@@ -28,7 +28,7 @@
 class AdminMind : public ExternalMind
 {
     public:
-        explicit AdminMind(std::string strId, long id, LocatedEntity& entity);
+        explicit AdminMind(const std::string& strId, long id, Ref<LocatedEntity> entity);
 
         ~AdminMind() override = default;
 

@@ -29,6 +29,8 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <modules/Variant.h>
+
+#include <utility>
 #include "common/operations/Think.h"
 #include "common/operations/Thought.h"
 #include "common/operations/Relay.h"
@@ -59,7 +61,7 @@ void ExternalMind::deleteEntity(const std::string& id, bool forceDelete)
     } else {
         d->setTo(id);
     }
-    m_entity.sendWorld(d);
+    m_entity->sendWorld(d);
 }
 
 void ExternalMind::purgeEntity(const LocatedEntity& ent, bool forceDelete)
@@ -73,13 +75,14 @@ void ExternalMind::purgeEntity(const LocatedEntity& ent, bool forceDelete)
     deleteEntity(ent.getId(), forceDelete);
 }
 
-ExternalMind::ExternalMind(std::string strId, long id, LocatedEntity& e) : Router(strId, id),
-                                                                           m_link(nullptr),
-                                                                           m_entity(e)
+ExternalMind::ExternalMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
+    : Router(strId, id),
+      m_link(nullptr),
+      m_entity(std::move(entity))
 {
 }
 
-LocatedEntity& ExternalMind::getEntity() const
+const Ref<LocatedEntity>& ExternalMind::getEntity() const
 {
     return m_entity;
 }
@@ -90,7 +93,7 @@ void ExternalMind::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) co
     ent->setId(getId());
 
     Anonymous entityAttr;
-    entityAttr->setId(m_entity.getId());
+    entityAttr->setId(m_entity->getId());
     ent->setAttr("entity", entityAttr->asMessage());
 }
 
@@ -113,13 +116,13 @@ void ExternalMind::externalOperation(const Operation& op, Link& link)
 
             //Any ops coming from the mind must be Thought ops.
             Atlas::Objects::Operation::Thought thought{};
-            thought->setTo(m_entity.getId());
+            thought->setTo(m_entity->getId());
             thought->setArgs1(op);
 
-            m_entity.operation(thought, res);
+            m_entity->operation(thought, res);
 
             for (auto& resOp : res) {
-                m_entity.sendWorld(resOp);
+                m_entity->sendWorld(resOp);
             }
         }
     }
@@ -140,7 +143,7 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
     //our registered relays in m_relays. This is a feature to allow for a timeout; if
     //no Relay has been received from the destination Entity after a certain period
     //we'll shut down the relay link.
-    if (op->getTo() == m_entity.getId() && op->getFrom() == m_entity.getId() && !op->isDefaultRefno()) {
+    if (op->getTo() == m_entity->getId() && op->getFrom() == m_entity->getId() && !op->isDefaultRefno()) {
         auto I = m_relays.find(op->getRefno());
         if (I != m_relays.end()) {
             auto& relay = I->second;
@@ -153,9 +156,9 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
                 if (!relay.op->isDefaultFrom()) {
                     noop->setTo(relay.op->getFrom());
                 }
-                noop->setFrom(m_entity.getId());
+                noop->setFrom(m_entity->getId());
                 noop->setId(relay.from_id);
-                m_entity.sendWorld(noop);
+                m_entity->sendWorld(noop);
             }
             m_relays.erase(I);
         }
@@ -179,26 +182,26 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
 
             //Extract the contained operation, and register the relay into m_relays
             if (op->isDefaultSerialno()) {
-                log(ERROR, "ExternalMind::RelayOperation no serial number. " + m_entity.describeEntity());
+                log(ERROR, "ExternalMind::RelayOperation no serial number. " + m_entity->describeEntity());
                 return;
             }
 
             Element from_id;
             if (op->copyAttr("from_id", from_id) != 0 || !from_id.isString()) {
-                log(ERROR, "ExternalMind::RelayOperation no valid 'from_id' attribute. " + m_entity.describeEntity());
+                log(ERROR, "ExternalMind::RelayOperation no valid 'from_id' attribute. " + m_entity->describeEntity());
                 return;
             }
 
 
             if (op->getArgs().empty()) {
-                log(ERROR, "ExternalMind::RelayOperation relay op has no args. " + m_entity.describeEntity());
+                log(ERROR, "ExternalMind::RelayOperation relay op has no args. " + m_entity->describeEntity());
                 return;
             }
 
             Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(op->getArgs().front());
 
             if (!relayedOp.isValid()) {
-                log(ERROR, "ExternalMind::RelayOperation first arg is not an operation. " + m_entity.describeEntity());
+                log(ERROR, "ExternalMind::RelayOperation first arg is not an operation. " + m_entity->describeEntity());
                 return;
             }
 
@@ -215,8 +218,8 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
             //Also send a future Relay op to ourselves to make sure that the registered relay in m_relays
             //is removed in the case that we don't get any response.
             Atlas::Objects::Operation::Relay pruneOp;
-            pruneOp->setTo(m_entity.getId());
-            pruneOp->setFrom(m_entity.getId());
+            pruneOp->setTo(m_entity->getId());
+            pruneOp->setFrom(m_entity->getId());
             pruneOp->setRefno(serialNo);
             //5 seconds should be more than enough.
             pruneOp->setFutureSeconds(5);
@@ -242,7 +245,7 @@ void ExternalMind::externalRelayedOperation(const Operation& op)
             relayOp->setRefno(origOp->getSerialno()); //Set refno to match serial no.
             relayOp->setId(relay.from_id);
             relayOp->setArgs1(op);
-            m_entity.sendWorld(relayOp);
+            m_entity->sendWorld(relayOp);
         }
         m_relays.erase(I);
     }
@@ -268,7 +271,7 @@ void ExternalMind::GetOperation(const Operation& op, OpVector& res)
             auto id = arg->getId();
             auto visibility = Visibility::PUBLIC;
             //Check if the id is of the same type as the entity; that means we're allowed to see protected fields.
-            if (m_entity.getType()->isTypeOf(id)) {
+            if (m_entity->getType()->isTypeOf(id)) {
                 visibility = Visibility::PROTECTED;
             }
 

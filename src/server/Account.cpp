@@ -106,16 +106,16 @@ void Account::setConnection(Connection* connection)
             if (m_connection) {
                 m_connection->removeObject(entry.second->getIntId());
             }
-            auto& entity = entry.second->getEntity();
-            auto prop = entity.modPropertyClassFixed<MindsProperty>();
+            auto entity = entry.second->getEntity();
+            auto prop = entity->modPropertyClassFixed<MindsProperty>();
             if (prop) {
-                prop->removeMind(entry.second.get(), &entity);
-                entity.propertyApplied.emit(MindsProperty::property_name, *prop);
+                prop->removeMind(entry.second.get(), entity.get());
+                entity->propertyApplied.emit(MindsProperty::property_name, *prop);
 
                 prop->flags().addFlags(flag_unsent);
                 Atlas::Objects::Operation::Update update;
-                update->setTo(entity.getId());
-                entity.sendWorld(update);
+                update->setTo(entity->getId());
+                entity->sendWorld(update);
             }
             //TODO: remove property if it's empty
         }
@@ -135,7 +135,7 @@ ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const
 
     auto id = newId(strId);
 
-    return new ExternalMind(strId, id, *entity);
+    return new ExternalMind(strId, id, entity);
 }
 
 /// \brief Connect an existing character to this account
@@ -193,7 +193,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 
 /// \brief Add a Character to those that belong to this Account
 ///
-/// @param chr Character object to be adddded
+/// @param chr Character object to be added
 void Account::addCharacter(const Ref<LocatedEntity>& chr)
 {
     m_charactersDict[chr->getIntId()] = chr;
@@ -280,9 +280,9 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
         for (auto& entry : m_minds) {
             if (entry.second->getId() == id) {
                 m_connection->removeObject(entry.second->getIntId());
-                auto prop = entry.second->getEntity().modPropertyClassFixed<MindsProperty>();
+                auto prop = entry.second->getEntity()->modPropertyClassFixed<MindsProperty>();
                 if (prop) {
-                    prop->removeMind(entry.second.get(), &entry.second->getEntity());
+                    prop->removeMind(entry.second.get(), entry.second->getEntity().get());
                 }
                 m_minds.erase(entry.first);
                 Info info;
