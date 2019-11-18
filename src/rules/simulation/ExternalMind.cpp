@@ -44,6 +44,8 @@ using Atlas::Objects::Operation::Imaginary;
 
 long ExternalMind::s_serialNumberNext = 0L;
 
+ExternalMind::~ExternalMind() = default;
+
 void ExternalMind::deleteEntity(const std::string& id, bool forceDelete)
 {
     Delete d;

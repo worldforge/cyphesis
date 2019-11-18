@@ -78,7 +78,7 @@ class ExternalMind : public Router
 
         explicit ExternalMind(std::string strId, long id, LocatedEntity& entity);
 
-        ~ExternalMind() override = default;
+        ~ExternalMind() override;
 
         void externalOperation(const Operation& op, Link&) override;
 
