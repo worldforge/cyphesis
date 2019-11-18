@@ -149,12 +149,12 @@ TerrainModTranslator::TerrainModTranslator(const Atlas::Message::MapType& data)
 {
 }
 
-Mercator::TerrainMod* TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
+std::unique_ptr<Mercator::TerrainMod> TerrainModTranslator::parseData(const WFMath::Point<3> & pos,
                                      const WFMath::Quaternion & orientation)
 {
     WFMath::Polygon<2> p;
     p.addCorner(0, WFMath::Point<2>(0., 0.));
-    return new Mercator::LevelTerrainMod<WFMath::Polygon>(1.f, p);
+    return std::make_unique<Mercator::LevelTerrainMod<WFMath::Polygon>>(1.f, p);
 }
 
 TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)

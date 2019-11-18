@@ -26,18 +26,14 @@
 #include "rules/Domain.h"
 
 #include "common/Database.h"
-#include "common/TypeNode.h"
 #include "common/debug.h"
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
 #include "common/id.h"
 #include "common/Variable.h"
-#include "common/custom.h"
-#include "common/operations/Think.h"
-#include "common/operations/Commune.h"
+
 
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Operation.h>
 
 #include <wfmath/atlasconv.h>
 
@@ -116,7 +112,7 @@ void StorageManager::entityInserted(LocatedEntity* ent)
         return;
     }
     // Queue the entity to be inserted into the persistence tables.
-    m_unstoredEntities.push_back(WeakEntityRef(ent));
+    m_unstoredEntities.emplace_back(Ref<LocatedEntity>(ent));
     ent->addFlags(entity_queued);
 }
 
@@ -134,7 +130,7 @@ void StorageManager::entityUpdated(LocatedEntity* ent)
         // std::cout << "Already queued " << ent->getId() << std::endl << std::flush;
         return;
     }
-    m_dirtyEntities.push_back(WeakEntityRef(ent));
+    m_dirtyEntities.emplace_back(Ref<LocatedEntity>(ent));
     // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
     ent->addFlags(entity_queued);
 }
@@ -156,7 +152,7 @@ void StorageManager::encodeProperty(PropertyBase* prop, std::string& store)
 {
     Atlas::Message::MapType map;
     prop->get(map["val"]);
-    Database::instance().encodeObject(map, store);
+    m_db.encodeObject(map, store);
 }
 
 void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
@@ -272,9 +268,9 @@ void StorageManager::insertEntity(LocatedEntity* ent)
     if (ent->m_location.orientation().isValid()) {
         map["orientation"] = ent->m_location.orientation().toAtlas();
     }
-    Database::instance().encodeObject(map, location);
+    m_db.encodeObject(map, location);
 
-    Database::instance().insertEntity(ent->getId(),
+    m_db.insertEntity(ent->getId(),
                                       ent->m_location.m_parent->getId(),
                                       ent->getType()->name(),
                                       ent->getSeq(),
@@ -291,7 +287,7 @@ void StorageManager::insertEntity(LocatedEntity* ent)
         prop->addFlags(persistence_clean | persistence_seen);
     }
     if (!property_tuples.empty()) {
-        Database::instance().insertProperties(ent->getId(), property_tuples);
+        m_db.insertProperties(ent->getId(), property_tuples);
         ++m_insertPropertyCount;
     }
     ent->removeFlags(entity_queued);
@@ -308,16 +304,16 @@ void StorageManager::updateEntity(LocatedEntity* ent)
     if (ent->m_location.orientation().isValid()) {
         map["orientation"] = ent->m_location.orientation().toAtlas();
     }
-    Database::instance().encodeObject(map, location);
+    m_db.encodeObject(map, location);
 
     //Under normal circumstances only the top world won't have a location.
     if (ent->m_location.m_parent) {
-        Database::instance().updateEntity(ent->getId(),
+        m_db.updateEntity(ent->getId(),
                                           ent->getSeq(),
                                           location,
                                           ent->m_location.m_parent->getId());
     } else {
-        Database::instance().updateEntityWithoutLoc(ent->getId(),
+        m_db.updateEntityWithoutLoc(ent->getId(),
                                                     ent->getSeq(),
                                                     location);
     }
@@ -337,11 +333,11 @@ void StorageManager::updateEntity(LocatedEntity* ent)
             //TODO: Add code for deleting a database row when the value is none.
             Atlas::Message::MapType propMap;
             prop->get(propMap["val"]);
-            Database::instance().encodeObject(propMap, active_store[property.first]);
+            m_db.encodeObject(propMap, active_store[property.first]);
         } else {
             Atlas::Message::MapType propMap;
             prop->get(propMap["val"]);
-            Database::instance().encodeObject(propMap, active_store[property.first]);
+            m_db.encodeObject(propMap, active_store[property.first]);
         }
 
         // FIXME check if this is new or just modded.
@@ -353,11 +349,11 @@ void StorageManager::updateEntity(LocatedEntity* ent)
         prop->addFlags(persistence_clean | persistence_seen);
     }
     if (!new_property_tuples.empty()) {
-        Database::instance().insertProperties(ent->getId(),
+        m_db.insertProperties(ent->getId(),
                                               new_property_tuples);
     }
     if (!upd_property_tuples.empty()) {
-        Database::instance().updateProperties(ent->getId(),
+        m_db.updateProperties(ent->getId(),
                                               upd_property_tuples);
     }
     ent->addFlags(entity_clean_mask);
@@ -411,12 +407,12 @@ void StorageManager::tick()
 
     while (!m_destroyedEntities.empty()) {
         long id = m_destroyedEntities.front();
-        Database::instance().dropEntity(id);
+        m_db.dropEntity(id);
         m_destroyedEntities.pop_front();
     }
 
     while (!m_unstoredEntities.empty()) {
-        const WeakEntityRef& ent = m_unstoredEntities.front();
+        auto& ent = m_unstoredEntities.front();
         if (ent && !ent->isDestroyed()) {
             debug(std::cout << "storing " << ent->getId() << std::endl << std::flush;)
             insertEntity(ent.get());
@@ -429,22 +425,22 @@ void StorageManager::tick()
 
     while (!m_addedCharacters.empty()) {
         auto& data = m_addedCharacters.front();
-        Database::instance().createRelationRow(Persistence::instance().getCharacterAccountRelationName(), data.account_id, data.entity_id);
+        m_db.createRelationRow(Persistence::instance().getCharacterAccountRelationName(), data.account_id, data.entity_id);
         m_addedCharacters.pop_front();
     }
 
     while (!m_deletedCharacters.empty()) {
         auto& entity_id = m_deletedCharacters.front();
-        Database::instance().removeRelationRowByOther(Persistence::instance().getCharacterAccountRelationName(), entity_id);
+        m_db.removeRelationRowByOther(Persistence::instance().getCharacterAccountRelationName(), entity_id);
         m_deletedCharacters.pop_front();
     }
 
     while (!m_dirtyEntities.empty()) {
-        if (Database::instance().queryQueueSize() > 200) {
+        if (m_db.queryQueueSize() > 200) {
             debug_print("Too many")
             break;
         }
-        const WeakEntityRef& ent = m_dirtyEntities.front();
+        auto& ent = m_dirtyEntities.front();
         if (ent) {
             if ((ent->flags().m_flags & entity_clean_mask) != entity_clean_mask) {
                 debug(std::cout << "updating " << ent->getId() << std::endl << std::flush;)
@@ -529,16 +525,16 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
 int StorageManager::shutdown(bool& exit_flag_ref, const std::map<long, Ref<LocatedEntity>>& entites)
 {
     tick();
-    while (Database::instance().queryQueueSize()) {
+    while (m_db.queryQueueSize()) {
         //Allow for any user to abort the process.
         if (exit_flag_ref) {
             log(NOTICE, "Aborted entity persisting. This might lead to lost entities.");
             return 0;
         }
-        if (!Database::instance().queryInProgress()) {
-            Database::instance().launchNewQuery();
+        if (!m_db.queryInProgress()) {
+            m_db.launchNewQuery();
         } else {
-            Database::instance().clearPendingQuery();
+            m_db.clearPendingQuery();
         }
     }
     return 0;

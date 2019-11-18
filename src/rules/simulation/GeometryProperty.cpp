@@ -550,10 +550,10 @@ void GeometryProperty::buildCompoundCreator()
             compoundShape->setLocalScaling(scaling);
 
             return std::shared_ptr<btCollisionShape>(compoundShape, [childShapes](btCollisionShape* p) {
-                //Don't delete the shape, just the child shapes.
                 for (btCollisionShape* childShape : childShapes) {
                     delete childShape;
                 }
+                delete p;
             });
         }
         return createBoxFn(bbox, size, centerOfMassOffset, mass);

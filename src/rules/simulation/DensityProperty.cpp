@@ -46,7 +46,7 @@ void DensityProperty::updateMass(LocatedEntity *entity) const
 
         double mass = volume * m_data;
 
-        auto massProp = entity->requirePropertyClass<Property<double>>("mass");
+        auto massProp = entity->requirePropertyClass<Property<double>>("mass", 0);
 
         if (massProp->data() != mass) {
             massProp->set(mass);

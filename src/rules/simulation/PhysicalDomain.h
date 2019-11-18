@@ -121,7 +121,9 @@ class PhysicalDomain : public Domain
             std::unique_ptr<PhysicalMotionState> motionState;
 
             std::unique_ptr<btCollisionObject> visibilitySphere;
+            std::unique_ptr<btCollisionShape> visibilityShape;
             std::unique_ptr<btCollisionObject> viewSphere;
+            std::unique_ptr<btCollisionShape> viewShape;
 
             /**
              * Set of entries which are observing by this.
@@ -186,7 +188,7 @@ class PhysicalDomain : public Domain
         std::map<BulletEntry*, btGhostObject*> m_submergedEntities;
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
-        std::unordered_map<long, std::tuple<Mercator::TerrainMod*, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
+        std::unordered_map<long, std::tuple<std::unique_ptr<Mercator::TerrainMod>, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
 
 
         struct PropelEntry

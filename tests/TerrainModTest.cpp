@@ -23,6 +23,7 @@
 #define DEBUG
 #endif
 
+#include <Mercator/TerrainMod.h>
 #include "rules/simulation/TerrainModTranslator.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/rules/stubLocation.h"
@@ -49,11 +50,11 @@ static int test_reparse()
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
         TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        Mercator::TerrainMod * tm1 = titm->parseData(pos, orientation);
+        auto tm1 = titm->parseData(pos, orientation);
         assert(tm1 != 0);
 
         // Re-parse the same data. Should create new instance.
-        Mercator::TerrainMod * tm2 = titm->parseData(pos, orientation);
+        auto tm2 = titm->parseData(pos, orientation);
         assert(tm2 != 0);
         assert(tm2 != tm1);
 
@@ -64,14 +65,14 @@ static int test_reparse()
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
         titm = new TerrainModTranslator(mod);
-        Mercator::TerrainMod * tm3 = titm->parseData(pos, orientation);
+        auto tm3 = titm->parseData(pos, orientation);
         assert(tm3 != 0);
         assert(tm3 != tm1);
 
         // Change it to an adjustmod. This requires a new mod
         mod["type"] = "adjustmod";
         titm = new TerrainModTranslator(mod);
-        Mercator::TerrainMod * tm4 = titm->parseData(pos, orientation);
+        auto tm4 = titm->parseData(pos, orientation);
         assert(tm4 != 0);
         assert(tm4 != tm1);
 
@@ -171,7 +172,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(!ret);
 
         delete titm;
@@ -188,7 +189,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(!ret);
 
 
@@ -206,7 +207,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(!ret);
 
         delete titm;
@@ -226,7 +227,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(ret);
 
         delete titm;
@@ -246,7 +247,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation(0,0,0,1);
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(ret);
 
         delete titm;
@@ -265,7 +266,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(ret);
 
         delete titm;
@@ -285,7 +286,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(ret);
 
         delete titm;
@@ -305,7 +306,7 @@ int main()
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        Mercator::TerrainMod* ret = titm->parseData(pos, orientation);
+        auto ret = titm->parseData(pos, orientation);
         assert(!ret);
 
         delete titm;

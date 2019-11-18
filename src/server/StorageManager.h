@@ -45,7 +45,7 @@ class PropertyBase;
 class StorageManager : public sigc::trackable
 {
     protected:
-        typedef std::deque<WeakEntityRef> Entitystore;
+        typedef std::deque<Ref<LocatedEntity>> Entitystore;
         typedef std::deque<long> Idstore;
 
         Database& m_db;

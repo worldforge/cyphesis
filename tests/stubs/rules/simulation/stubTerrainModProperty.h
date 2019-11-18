@@ -51,9 +51,9 @@
 
 #ifndef STUB_TerrainModProperty_parseModData
 //#define STUB_TerrainModProperty_parseModData
-  Mercator::TerrainMod* TerrainModProperty::parseModData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) const
+  std::unique_ptr<Mercator::TerrainMod> TerrainModProperty::parseModData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) const
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<Mercator::TerrainMod>*>(nullptr);
   }
 #endif //STUB_TerrainModProperty_parseModData
 

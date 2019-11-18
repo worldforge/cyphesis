@@ -17,9 +17,9 @@
 
 #ifndef STUB_TerrainModTranslator_parseData
 //#define STUB_TerrainModTranslator_parseData
-  Mercator::TerrainMod* TerrainModTranslator::parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation)
+  std::unique_ptr<Mercator::TerrainMod> TerrainModTranslator::parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<Mercator::TerrainMod>*>(nullptr);
   }
 #endif //STUB_TerrainModTranslator_parseData
 
@@ -49,9 +49,9 @@
 
 #ifndef STUB_TerrainModTranslator_buildTranslator
 //#define STUB_TerrainModTranslator_buildTranslator
-  InnerTranslator* TerrainModTranslator::buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement)
+  std::unique_ptr<InnerTranslator> TerrainModTranslator::buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<InnerTranslator>*>(nullptr);
   }
 #endif //STUB_TerrainModTranslator_buildTranslator
 

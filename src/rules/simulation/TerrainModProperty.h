@@ -50,7 +50,7 @@ class TerrainModProperty : public TerrainEffectorProperty
         void apply(LocatedEntity*) override;
 
         /// \brief Constructs a Mercator::TerrainMod from Atlas data
-        Mercator::TerrainMod* parseModData(const WFMath::Point<3>& pos,
+        std::unique_ptr<Mercator::TerrainMod> parseModData(const WFMath::Point<3>& pos,
                                            const WFMath::Quaternion& orientation) const;
 
         /// \brief Retrieve a sub attribute of the property

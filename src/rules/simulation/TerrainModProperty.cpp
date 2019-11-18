@@ -65,7 +65,7 @@ void TerrainModProperty::apply(LocatedEntity* owner)
     m_translator = std::make_unique<TerrainModTranslator>(m_data);
 }
 
-Mercator::TerrainMod* TerrainModProperty::parseModData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) const
+std::unique_ptr<Mercator::TerrainMod> TerrainModProperty::parseModData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) const
 {
     if (m_translator) {
         return m_translator->parseData(pos, orientation);

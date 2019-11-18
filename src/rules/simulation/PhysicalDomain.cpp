@@ -362,6 +362,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     m_dynamicsWorld->setInternalTickCallback(postTickCallback, &mWorldInfo, false);
 
     mContainingEntityEntry.entity = &entity;
+    mContainingEntityEntry.mode = ModeProperty::Mode::Fixed;
 
     m_entries.insert(std::make_pair(entity.getIntId(), &mContainingEntityEntry));
 
@@ -1020,7 +1021,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     {
 
-        auto visSphere = new btSphereShape(0);
+        auto visSphere = std::make_unique<btSphereShape>(0);
         auto visProp = entity.getPropertyClassFixed<VisibilityProperty>();
         if (visProp) {
             visSphere->setUnscaledRadius(visProp->data() / VISIBILITY_SCALING_FACTOR);
@@ -1032,24 +1033,26 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         }
 
         auto visObject = std::make_unique<btCollisionObject>();
-        visObject->setCollisionShape(visSphere);
+        visObject->setCollisionShape(visSphere.get());
         visObject->setUserPointer(entry);
         if (entity.m_location.m_pos.isValid()) {
             visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->addCollisionObject(visObject.get(), VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
         }
         entry->visibilitySphere = std::move(visObject);
+        entry->visibilityShape = std::move(visSphere);
     }
     if (entity.isPerceptive()) {
-        auto viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
+        auto viewSphere = std::make_unique<btSphereShape>(0.5f / VISIBILITY_SCALING_FACTOR);
         auto visObject = std::make_unique<btCollisionObject>();
-        visObject->setCollisionShape(viewSphere);
+        visObject->setCollisionShape(viewSphere.get());
         visObject->setUserPointer(entry);
         if (entity.m_location.m_pos.isValid()) {
             visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->addCollisionObject(visObject.get(), VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
         }
         entry->viewSphere = std::move(visObject);
+        entry->viewShape = std::move(viewSphere);
         mContainingEntityEntry.observingThis.insert(entry);
     }
 
@@ -1141,11 +1144,9 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     entry->propertyUpdatedConnection.disconnect();
     if (entry->viewSphere) {
         m_visibilityWorld->removeCollisionObject(entry->viewSphere.get());
-        delete entry->viewSphere->getCollisionShape();
     }
     if (entry->visibilitySphere) {
         m_visibilityWorld->removeCollisionObject(entry->visibilitySphere.get());
-        delete entry->visibilitySphere->getCollisionShape();
     }
     for (BulletEntry* observer : entry->observingThis) {
         observer->observedByThis.erase(entry.get());
@@ -1452,9 +1453,7 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                     }
 
                     auto I = m_terrainMods.find(entity.getIntId());
-                    Mercator::TerrainMod* oldMod = nullptr;
                     if (I != m_terrainMods.end()) {
-                        oldMod = std::get<0>(I->second);
                         const WFMath::Point<3>& oldPos = std::get<1>(I->second);
                         const WFMath::Quaternion& oldOrient = std::get<2>(I->second);
 
@@ -1471,13 +1470,13 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                     }
 
                     if (forceUpdate) {
-                        Mercator::TerrainMod* modifier = terrainModProperty->parseModData(modPos, entity.m_location.m_orientation);
+                        auto modifier = terrainModProperty->parseModData(modPos, entity.m_location.m_orientation);
 
-                        m_terrain->updateMod(entity.getIntId(), modifier);
-                        delete oldMod;
+                        m_terrain->updateMod(entity.getIntId(), modifier.get());
                         if (modifier) {
-                            m_terrainMods[entity.getIntId()] = std::make_tuple(modifier, modPos, entity.m_location.m_orientation, modifier->bbox());
-                            terrainAreas.push_back(modifier->bbox());
+                            auto bbox = modifier->bbox();
+                            terrainAreas.push_back(bbox);
+                            m_terrainMods[entity.getIntId()] = std::make_tuple(std::move(modifier), modPos, entity.m_location.m_orientation, bbox);
                         } else {
                             m_terrainMods.erase(entity.getIntId());
                         }
