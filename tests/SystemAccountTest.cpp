@@ -149,6 +149,7 @@ Admin::~Admin()
 
 #include "stubs/server/stubConnectableRouter.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
 #include "stubs/rules/stubLocatedEntity.h"

@@ -442,7 +442,7 @@ void Connectiontest::test_disconnectObject_used_Entity()
     assert(I != m_connection->m_connectableRouters.end());
 
     Entity * avatar = new Entity("5", 5);
-    auto mind = new ExternalMind("6", 6, *avatar);
+    auto mind = new ExternalMind("6", 6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
     m_connection->m_objects[avatar->getIntId()] = avatar;
@@ -477,7 +477,7 @@ void Connectiontest::test_disconnectObject_others_used_Entity()
     Connection * other_con = new Connection(*otcc, *m_server, "addr", "6", 6);
 
     Entity * avatar = new Entity("5", 5);
-    auto mind = new ExternalMind("6", 6, *avatar);
+    auto mind = new ExternalMind("6", 6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
     m_connection->m_objects[avatar->getIntId()] = avatar;
@@ -512,7 +512,7 @@ void Connectiontest::test_disconnectObject_unlinked_Entity()
     assert(I != m_connection->m_connectableRouters.end());
 
     Entity * avatar = new Entity("5", 5);
-    auto mind = new ExternalMind("6", 6, *avatar);
+    auto mind = new ExternalMind("6", 6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(mind);
     m_connection->m_objects[avatar->getIntId()] = avatar;
     ac->addCharacter(avatar);

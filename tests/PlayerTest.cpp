@@ -245,6 +245,7 @@ int main()
 #include "stubs/server/stubRuleset.h"
 #include "stubs/server/stubJuncture.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 
 #include "stubs/server/stubPersistence.h"

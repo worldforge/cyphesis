@@ -1421,6 +1421,7 @@ ConnectableRouter * ServerRouting::getObject(const std::string & id) const
     }
 }
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 
 

@@ -686,6 +686,7 @@ class World;
 #include "stubs/server/stubServerAccount.h"
 
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/simulation/stubThing.h"
 #include "stubs/rules/simulation/stubWorld.h"

@@ -333,6 +333,7 @@ void LocatedEntity::makeContainer()
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubLink.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/common/stubShaker.h"
 
 long integerId(const std::string & id)
@@ -359,7 +360,6 @@ float squareDistance(const Point3D & u, const Point3D & v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
-#include "stubs/rules/stubLocation.h"
 
 static bool distanceFromAncestor(const Location & self,
                                  const Location & other, Point3D & c)
@@ -415,13 +415,15 @@ float sqrMag(const Point3D & p)
 {
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
 }
-
+#define STUB_squareDistance
 float squareDistance(const Location & self, const Location & other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
     return sqrMag(dist);
 }
+
+#include "stubs/rules/stubLocation.h"
 
 static long idGenerator = 2;
 

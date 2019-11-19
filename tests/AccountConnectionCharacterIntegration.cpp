@@ -233,7 +233,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
                          compose("%1", m_id_counter), m_id_counter++);
 
 
-    auto mind = new ExternalMind("6", 6, *m_character);
+    auto mind = new ExternalMind("6", 6, m_character);
     m_character->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(other_connection);
 

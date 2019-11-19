@@ -190,7 +190,7 @@ void TrustedConnectionCreatorintegration::test_external_op()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    auto mind = new AdminMind("6", 6, *m_creator);
+    auto mind = new AdminMind("6", 6, m_creator);
     m_connection->addObject(mind);
     m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
@@ -217,7 +217,7 @@ void TrustedConnectionCreatorintegration::test_external_op_override()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    auto mind = new AdminMind("6", 6, *m_creator);
+    auto mind = new AdminMind("6", 6, m_creator);
     m_connection->addObject(mind);
     m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
@@ -243,7 +243,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    auto mind = new AdminMind("6", 6, *m_creator);
+    auto mind = new AdminMind("6", 6, m_creator);
     m_connection->addObject(mind);
     m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
@@ -275,7 +275,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    auto mind = new AdminMind("6", 6, *m_creator);
+    auto mind = new AdminMind("6", 6, m_creator);
     m_connection->addObject(mind);
     m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);

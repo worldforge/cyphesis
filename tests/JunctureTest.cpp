@@ -456,6 +456,7 @@ int CONNECT_NO = 500;
 
 } } }
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/common/stubInheritance.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubProperty.h"

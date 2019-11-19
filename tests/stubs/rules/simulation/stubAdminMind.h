@@ -9,7 +9,7 @@
 
 #ifndef STUB_AdminMind_AdminMind
 //#define STUB_AdminMind_AdminMind
-   AdminMind::AdminMind(std::string strId, long id, LocatedEntity& entity)
+   AdminMind::AdminMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
     : ExternalMind(strId, id, entity)
   {
     

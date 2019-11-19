@@ -38,7 +38,7 @@
 class TestExternalMind : public ExternalMind
 {
   public:
-    TestExternalMind(Entity & e) : ExternalMind("", 0, e) { }
+    TestExternalMind(Ref<Entity> & e) : ExternalMind("", 0, e) { }
 
     void test_deleteEntity(const std::string & id) {
         deleteEntity(id, false);
@@ -65,13 +65,13 @@ int main()
     TestWorld world{};
 
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         ExternalMind em("3", 3, e);
     }
 
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         TestExternalMind em(e);
 
@@ -80,28 +80,28 @@ int main()
 
     // Purge with empty contains
     {
-        Entity e("2", 2);
-        e.m_contains.reset(new LocatedEntitySet);
+        Ref<Entity> e(new Entity("2", 2));
+        e->m_contains.reset(new LocatedEntitySet);
 
         TestExternalMind em(e);
 
-        em.test_purgeEntity(e);
+        em.test_purgeEntity(*e);
     }
 
     // Purge with populated contains
     {
-        Entity e("2", 2);
-        e.m_contains.reset(new LocatedEntitySet);
-        e.m_contains->insert(new Entity("3", 3));
+        Ref<Entity> e(new Entity("2", 2));
+        e->m_contains.reset(new LocatedEntitySet);
+        e->m_contains->insert(new Entity("3", 3));
 
         TestExternalMind em(e);
 
-        em.test_purgeEntity(e);
+        em.test_purgeEntity(*e);
     }
 
     // Connect to nothing
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         ExternalMind em("3", 3, e);
 
@@ -110,7 +110,7 @@ int main()
 
     // Connect to something
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         ExternalMind em("3", 3, e);
 
@@ -121,7 +121,7 @@ int main()
 
     // Connect to something, then disconnect
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         ExternalMind em("3", 3, e);
 
@@ -133,7 +133,7 @@ int main()
 
     // Connect to something, then check connection ID
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         ExternalMind em("3", 3, e);
 
@@ -146,7 +146,7 @@ int main()
 
     // Send a random operation
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         TestExternalMind em(e);
 
@@ -158,7 +158,7 @@ int main()
 
     // Send a Delete operation
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         TestExternalMind em(e);
 
@@ -170,8 +170,8 @@ int main()
 
     // Send a Delete operation to an ephemeral entity
     {
-        Entity e("2", 2);
-        e.addFlags(entity_ephem);
+        Ref<Entity> e(new Entity("2", 2));
+        e->addFlags(entity_ephem);
 
         TestExternalMind em(e);
 
@@ -183,7 +183,7 @@ int main()
 
     // Send a random operation to a connected mind
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         TestExternalMind em(e);
 
@@ -201,7 +201,7 @@ int main()
 
     // Send a Sight operation to a connected mind
     {
-        Entity e("2", 2);
+        Ref<Entity> e(new Entity("2", 2));
 
         TestExternalMind em(e);
 

@@ -317,6 +317,7 @@ template class EntityFactory<World>;
 #include "stubs/server/stubPropertyRuleHandler.h"
 #include "stubs/server/stubRuleset.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/rules/simulation/stubTask.h"
 #include "stubs/rules/simulation/stubUsagesProperty.h"
 #include "stubs/rules/entityfilter/stubFilter.h"

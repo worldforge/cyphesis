@@ -58,7 +58,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind("1", 1, *(LocatedEntity*)0);
+        ExternalMind * e = new ExternalMind("1", 1, {});
         ExternalProperty * ep = new ExternalProperty(e);
 
         Element elem;
@@ -86,7 +86,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind("1", 1,*(LocatedEntity*)0);
+        ExternalMind * e = new ExternalMind("1", 1,{});
         ExternalProperty * ep = new ExternalProperty(e);
 
         MapType map;
@@ -113,7 +113,7 @@ int main()
         delete ep;
     }
     {
-        ExternalMind * e = new ExternalMind("1", 1,*(LocatedEntity*)0);
+        ExternalMind * e = new ExternalMind("1", 1,{});
         ExternalProperty * ep = new ExternalProperty(e);
 
         RootEntity ent;
@@ -141,5 +141,7 @@ int main()
 
 
 #include "stubs/rules/simulation/stubExternalMind.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/rules/stubLocation.h"
 
 #include "stubs/common/stubRouter.h"

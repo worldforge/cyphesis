@@ -259,7 +259,7 @@ int main()
         
         Ref<Entity> e(new Entity("3", 3));
         auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
-        mindsProp->addMind(new ExternalMind("1", 1, *e));
+        mindsProp->addMind(new ExternalMind("1", 1, e));
         int ret = p->teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
@@ -275,7 +275,7 @@ int main()
 
 
         Ref<Entity> e(new Entity("3", 3));
-        ExternalMind * mind = new ExternalMind("1", 1, *e);
+        ExternalMind * mind = new ExternalMind("1", 1, e);
         mind->linkUp((Link*)23);
         auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
         mindsProp->addMind(mind);
@@ -393,7 +393,7 @@ int main()
         p->setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        ExternalMind * mind = new ExternalMind("1", 1, *e);
+        ExternalMind * mind = new ExternalMind("1", 1, e);
         mind->linkUp((Link*)23);
         auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
         mindsProp->addMind(mind);

@@ -53,7 +53,7 @@ int main()
 #include "common/log.h"
 #include "common/Shaker.h"
 #include "stubs/server/stubServerRouting.h"
-
+#include "stubs/server/stubLobby.h"
 #include "stubs/common/stubRouter.h"
 
 

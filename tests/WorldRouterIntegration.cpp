@@ -387,6 +387,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/rules/simulation/stubEntityProperty.h"
 #include "stubs/rules/python/stubPythonScriptFactory.h"
 

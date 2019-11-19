@@ -166,6 +166,7 @@ void log(LogLevel, const std::string & msg)
 {
 }
 #include "stubs/server/stubServerRouting.h"
+#include "stubs/server/stubLobby.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubLink.h"
 
