@@ -96,7 +96,7 @@
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
   template <typename T>
-   OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, const std::function<double()>& timeProviderFn)
+   OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, std::function<double()>  timeProviderFn)
     : OperationsHandler(operationProcessor, timeProviderFn)
   {
     

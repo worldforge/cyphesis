@@ -73,5 +73,13 @@
   }
 #endif //STUB_CommPSQLSocket_CommPSQLSocket_DTOR
 
+#ifndef STUB_CommPSQLSocket_cancel
+//#define STUB_CommPSQLSocket_cancel
+  void CommPSQLSocket::cancel()
+  {
+    
+  }
+#endif //STUB_CommPSQLSocket_cancel
+
 
 #endif

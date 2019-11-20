@@ -34,24 +34,32 @@
 
 /// \brief Type to hold an operation and the Entity it is from   for efficiency
 /// when broadcasting.
-template <typename T>
-struct OpQueEntry {
-    bool operator<(const OpQueEntry& right) const {
+template<typename T>
+struct OpQueEntry
+{
+    bool operator<(const OpQueEntry& right) const
+    {
         return op->getSeconds() < right->getSeconds();
     }
 
-    bool operator>(const OpQueEntry& right) const {
+    bool operator>(const OpQueEntry& right) const
+    {
         return op->getSeconds() > right->getSeconds();
     }
+
     Operation op;
     Ref<T> from;
 
-    explicit OpQueEntry(Operation o, T & f);
+    explicit OpQueEntry(Operation o, T& f);
+
     OpQueEntry(Operation op_, Ref<T> from_) : op(std::move(op_)), from(std::move(from_))
     {
     }
-    OpQueEntry(const OpQueEntry & o);
-    OpQueEntry(OpQueEntry && o) noexcept;
+
+    OpQueEntry(const OpQueEntry& o);
+
+    OpQueEntry(OpQueEntry&& o) noexcept;
+
     ~OpQueEntry();
 
     constexpr OpQueEntry& operator=(OpQueEntry&& rhs) noexcept
@@ -61,18 +69,21 @@ struct OpQueEntry {
         return *this;
     }
 
-    const Operation & operator*() const {
+    const Operation& operator*() const
+    {
         return op;
     }
 
-    Atlas::Objects::Operation::RootOperationData * operator->() const {
+    Atlas::Objects::Operation::RootOperationData* operator->() const
+    {
         return op.get();
     }
 
 
 };
 
-struct OperationsHandler {
+struct OperationsHandler
+{
     /// \brief Main world loop function.
     /// This function is called whenever the communications code is idle.
     /// It updates the in-game time, and dispatches operations that are
@@ -111,9 +122,10 @@ struct OperationsHandler {
 
     virtual size_t getQueueSize() const = 0;
 };
+
 /// \brief Handles dispatching of operations at suitable time.
 ///
-template <typename T>
+template<typename T>
 class OperationsDispatcher : public OperationsHandler
 {
     public:
@@ -121,7 +133,8 @@ class OperationsDispatcher : public OperationsHandler
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
          */
-        OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, std::function<double()>  timeProviderFn);
+        OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor,
+                             std::function<double()> timeProviderFn);
 
         virtual ~OperationsDispatcher();
 
@@ -185,7 +198,7 @@ class OperationsDispatcher : public OperationsHandler
         const std::function<double()> m_timeProviderFn;
 
         /// An ordered queue of operations to be dispatched in the future
-        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>> > m_operationQueue;
+        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>> m_operationQueue;
         /// Keeps track of if the operation queues are dirty.
         bool m_operation_queues_dirty;
 
@@ -199,8 +212,6 @@ class OperationsDispatcher : public OperationsHandler
         double getTime() const;
 
 };
-
-
 
 
 #endif /* OPERATIONSDISPATCHER_H_ */

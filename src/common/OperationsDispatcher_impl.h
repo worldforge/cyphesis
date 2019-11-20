@@ -154,10 +154,10 @@ OpQueEntry<T>::~OpQueEntry() = default;
 
 
 template<typename T>
-OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor,
+OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor,
                                               std::function<double()> timeProviderFn)
     :       m_time_diff_report(0),
-            m_operationProcessor(operationProcessor),
+            m_operationProcessor(std::move(operationProcessor)),
             m_timeProviderFn(std::move(timeProviderFn)),
             m_operation_queues_dirty(false)
 {
