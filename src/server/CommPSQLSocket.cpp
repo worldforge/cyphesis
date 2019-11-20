@@ -199,3 +199,12 @@ void CommPSQLSocket::reindex()
         }
     });
 }
+
+void CommPSQLSocket::cancel()
+{
+    if (m_socket) {
+        boost::system::error_code ec;
+        m_socket->cancel(ec);
+    }
+}
+

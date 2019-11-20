@@ -64,6 +64,8 @@ class CommPSQLSocket : private boost::noncopyable {
 
     CommPSQLSocket(boost::asio::io_context& io_context, DatabasePostgres & db);
     virtual ~CommPSQLSocket();
+
+    void cancel();
 };
 
 #endif // SERVER_COMM_PSQL_SOCKET_H
