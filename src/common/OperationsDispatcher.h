@@ -121,7 +121,7 @@ class OperationsDispatcher : public OperationsHandler
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
          */
-        OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, const std::function<double()>& timeProviderFn);
+        OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, std::function<double()>  timeProviderFn);
 
         virtual ~OperationsDispatcher();
 

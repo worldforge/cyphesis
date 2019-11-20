@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <cstdint>
-#include <stdint-gcc.h>
+#include <utility>
 
 static const bool opdispatcher_debug_flag = false;
 
@@ -87,7 +87,7 @@ bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
         dispatchOperation(opQueueEntry);
 
         opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
-    };
+    }
     // If there are still ops to deliver return true
     // to tell the server not to sleep when polling clients. This ensures
     // that we keep processing ops at a the maximum rate without leaving
@@ -155,10 +155,10 @@ OpQueEntry<T>::~OpQueEntry() = default;
 
 template<typename T>
 OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor,
-                                              const std::function<double()>& timeProviderFn)
+                                              std::function<double()> timeProviderFn)
     :       m_time_diff_report(0),
             m_operationProcessor(operationProcessor),
-            m_timeProviderFn(timeProviderFn),
+            m_timeProviderFn(std::move(timeProviderFn)),
             m_operation_queues_dirty(false)
 {
 }
