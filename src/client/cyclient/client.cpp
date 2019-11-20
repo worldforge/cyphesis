@@ -16,8 +16,8 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include "Python_ClientAPI.h"
 #include "client/ClientPropertyManager.h"
-#include "client/Python_ClientAPI.h"
 
 #include "rules/python/Python_API.h"
 
@@ -110,7 +110,7 @@ int main(int argc, char ** argv)
                     python_directories, false);
 
     extend_client_python_api();
-    new ClientPropertyManager();
+    ClientPropertyManager clientPropertyManager;
 
     if (interactive) {
         python_prompt();

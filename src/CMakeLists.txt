@@ -8,6 +8,5 @@ add_subdirectory(navigation)
 add_subdirectory(metaserverapi)
 add_subdirectory(server)
 add_subdirectory(client)
-add_subdirectory(aiclient)
 add_subdirectory(tools)
 

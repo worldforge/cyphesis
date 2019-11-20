@@ -27,9 +27,9 @@
 
 #include "python_testers.h"
 
-#include "client/Python_ClientAPI.h"
-#include "client/ObserverClient.h"
-#include "client/CyPy_ObserverClient.h"
+#include "client/cyclient/Python_ClientAPI.h"
+#include "client/cyclient/ObserverClient.h"
+#include "client/cyclient/CyPy_ObserverClient.h"
 
 #include "rules/python/Python_API.h"
 
@@ -103,15 +103,15 @@ int main()
 
 // stubs
 
-#include "client/ObserverClient.h"
-#include "client/CreatorClient.h"
+#include "client/cyclient/ObserverClient.h"
+#include "client/cyclient/CreatorClient.h"
 
 #include <Atlas/Objects/Operation.h>
 
 using Atlas::Objects::Entity::RootEntity;
 
-#include "stubs/client/stubCharacterClient.h"
-#include "stubs/client/stubCreatorClient.h"
+#include "stubs/client/cyclient/stubCharacterClient.h"
+#include "stubs/client/cyclient/stubCreatorClient.h"
 
 #define STUB_ObserverClient_setup
 int ObserverClient::setup(const std::string & account , const std::string & password , const std::string & avatar )
@@ -121,7 +121,7 @@ int ObserverClient::setup(const std::string & account , const std::string & pass
     }
     return 0;
 }
-#include "stubs/client/stubObserverClient.h"
+#include "stubs/client/cyclient/stubObserverClient.h"
 
 #define STUB_BaseClient_createCharacter
 Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
@@ -131,7 +131,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
     }
     return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection));
 }
-#include "stubs/client/stubBaseClient.h"
+#include "stubs/client/cyclient/stubBaseClient.h"
 
 
 
@@ -158,4 +158,4 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
     return 0;
 }
 
-#include "stubs/client/stubClientConnection.h"
+#include "stubs/client/cyclient/stubClientConnection.h"

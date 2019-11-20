@@ -27,13 +27,13 @@
 
 #include "python_testers.h"
 
-#include "client/Python_ClientAPI.h"
+#include "client/cyclient/Python_ClientAPI.h"
 
 #include "rules/python/Python_API.h"
 
 #include <cassert>
-#include <client/CyPy_CreatorClient.h>
-#include <client/ClientConnection.h>
+#include <client/cyclient/CyPy_CreatorClient.h>
+#include <client/cyclient/ClientConnection.h>
 #include <rules/simulation/Entity.h>
 #include <rules/simulation/python/CyPy_Server.h>
 #include <rules/python/CyPy_Atlas.h>
@@ -123,8 +123,8 @@ int main()
 
 // stubs
 
-#include "client/ObserverClient.h"
-#include "client/CreatorClient.h"
+#include "client/cyclient/ObserverClient.h"
+#include "client/cyclient/CreatorClient.h"
 
 #include "rules/simulation/Entity.h"
 
@@ -162,8 +162,8 @@ Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
     return new Entity(entity->getId(), integerId(entity->getId()));
 }
 
-#include "stubs/client/stubCreatorClient.h"
-#include "stubs/client/stubCharacterClient.h"
-#include "stubs/client/stubObserverClient.h"
-#include "stubs/client/stubBaseClient.h"
-#include "stubs/client/stubClientConnection.h"
+#include "stubs/client/cyclient/stubCreatorClient.h"
+#include "stubs/client/cyclient/stubCharacterClient.h"
+#include "stubs/client/cyclient/stubObserverClient.h"
+#include "stubs/client/cyclient/stubBaseClient.h"
+#include "stubs/client/cyclient/stubClientConnection.h"

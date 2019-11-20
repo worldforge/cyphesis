@@ -8,7 +8,6 @@ default.apspec
 cyphesis.spec
 cyphesis.iss
 src/server/cyphesis
-src/client/cyclient
 src/tools/cycmd
 src/tools/cyconfig
 src/tools/cydb

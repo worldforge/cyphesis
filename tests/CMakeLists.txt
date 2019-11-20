@@ -406,24 +406,24 @@ target_link_libraries(ThingIntegration rulessimulation rulesbase modules common 
 
 
 # CLIENT_TESTS
-wf_add_test(Py_CreatorClientTest.cpp python_testers.cpp ../src/client/CyPy_CreatorClient.cpp
-    ../src/client/CyPy_ObserverClient.cpp
-    ../src/client/Python_ClientAPI.cpp)
+wf_add_test(Py_CreatorClientTest.cpp python_testers.cpp ../src/client/cyclient/CyPy_CreatorClient.cpp
+    ../src/client/cyclient/CyPy_ObserverClient.cpp
+    ../src/client/cyclient/Python_ClientAPI.cpp)
 target_link_libraries(Py_CreatorClientTest ${PYTHON_TESTS_LIBS})
 
-wf_add_test(Py_ObserverClientTest.cpp python_testers.cpp ../src/client/CyPy_CreatorClient.cpp
-    ../src/client/CyPy_ObserverClient.cpp
-    ../src/client/Python_ClientAPI.cpp)
+wf_add_test(Py_ObserverClientTest.cpp python_testers.cpp ../src/client/cyclient/CyPy_CreatorClient.cpp
+    ../src/client/cyclient/CyPy_ObserverClient.cpp
+    ../src/client/cyclient/Python_ClientAPI.cpp)
 target_link_libraries(Py_ObserverClientTest ${PYTHON_TESTS_LIBS})
 
-wf_add_test(ClientConnectionTest.cpp ../src/client/ClientConnection.cpp)
-wf_add_test(BaseClientTest.cpp ../src/client/BaseClient.cpp)
-wf_add_test(ClientPropertyManagerTest.cpp ../src/client/ClientPropertyManager.cpp
+wf_add_test(ClientConnectionTest.cpp ../src/client/cyclient/ClientConnection.cpp)
+wf_add_test(BaseClientTest.cpp ../src/client/cyclient/BaseClient.cpp)
+wf_add_test(ClientPropertyManagerTest.cpp ../src/client/cyclient/ClientPropertyManager.cpp
     ../src/common/PropertyManager.cpp)
 
 
 # CLIENT_INTEGRATION_TESTS
-wf_add_test(ClientConnectionIntegration.cpp ../src/client/ClientConnection.cpp
+wf_add_test(ClientConnectionIntegration.cpp ../src/client/cyclient/ClientConnection.cpp
     ../src/common/AtlasStreamClient.cpp)
 
 # SERVER_TESTS

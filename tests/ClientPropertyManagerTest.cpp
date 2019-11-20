@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "client/ClientPropertyManager.h"
+#include "client/cyclient/ClientPropertyManager.h"
 
 #include <cassert>
 

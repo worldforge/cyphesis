@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "client/BaseClient.h"
+#include "client/cyclient/BaseClient.h"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -96,14 +96,14 @@ int main()
 
 // stubs
 
-#include "client/CreatorClient.h"
+#include "client/cyclient/CreatorClient.h"
 
 #include "common/log.h"
 
 #include <cstdlib>
 
 #include "stubs/rules/ai/stubBaseMind.h"
-#include "stubs/client/stubCreatorClient.h"
+#include "stubs/client/cyclient/stubCreatorClient.h"
 
 #define STUB_ClientConnection_pop
 RootOperation ClientConnection::pop()
@@ -111,8 +111,8 @@ RootOperation ClientConnection::pop()
     return RootOperation(nullptr);
 }
 
-#include "stubs/client/stubClientConnection.h"
-#include "stubs/client/stubCharacterClient.h"
+#include "stubs/client/cyclient/stubClientConnection.h"
+#include "stubs/client/cyclient/stubCharacterClient.h"
 #include "stubs/rules/ai/stubMemMap.h"
 #include "stubs/common/stubAtlasStreamClient.h"
 

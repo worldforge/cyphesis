@@ -25,7 +25,7 @@
 
 #include "TestBase.h"
 
-#include "client/ClientConnection.h"
+#include "client/cyclient/ClientConnection.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
