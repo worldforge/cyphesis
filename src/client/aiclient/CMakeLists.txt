@@ -3,10 +3,11 @@ add_executable(cyaiclient
     PossessionClient.cpp
     aiclient.cpp
     PossessionAccount.cpp
-    AiClientPropertyManager.cpp)
+    ../ClientPropertyManager.cpp)
 
 
 target_link_libraries(cyaiclient
+    client
     rulesai_python
     rulesai
     entityfilter_python

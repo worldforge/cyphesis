@@ -38,7 +38,7 @@
 #include "common/FileSystemObserver.h"
 #include "common/operations/Think.h"
 #include "common/globals.h"
-#include "AiClientPropertyManager.h"
+#include "client/ClientPropertyManager.h"
 
 #include <sys/prctl.h>
 #include <rules/python/CyPy_Rules.h>
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
     //Kill ourselves if our parent is killed.
     prctl(PR_SET_PDEATHSIG, SIGTERM);
 
-    std::unique_ptr<Monitors> monitors(new Monitors());
+    Monitors monitors;
 
     setLoggingPrefix("AI");
 
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
     {
         FileSystemObserver file_system_observer(io_context);
 
-        AiClientPropertyManager propertyManager{};
+        ClientPropertyManager propertyManager{};
 
         AssetsManager assets_manager(file_system_observer);
         assets_manager.init();

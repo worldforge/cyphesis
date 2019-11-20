@@ -20,9 +20,9 @@
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
 
-#include "Link.h"
-#include <memory>
-#include <boost/asio/steady_timer.hpp>
+#include "../common/Link.h"
+#include "../../../../../../../usr/include/c++/9/memory"
+#include "../../../../../../../usr/include/boost/asio/steady_timer.hpp"
 
 class CreatorClient;
 class ClientTask;

@@ -17,7 +17,7 @@
  */
 
 #include <rules/ScaleProperty.h>
-#include "AiClientPropertyManager.h"
+#include "ClientPropertyManager.h"
 
 #include "rules/BBoxProperty.h"
 #include "common/PropertyFactory.h"
@@ -26,14 +26,14 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
-AiClientPropertyManager::AiClientPropertyManager()
+ClientPropertyManager::ClientPropertyManager()
 {
     PropertyManager::installFactory(BBoxProperty::property_name, std::make_unique<PropertyFactory<BBoxProperty>>());
     PropertyManager::installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
 }
 
-std::unique_ptr<PropertyBase> AiClientPropertyManager::addProperty(const std::string& name,
-                                                   int type)
+std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name,
+                                                                 int type)
 {
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {

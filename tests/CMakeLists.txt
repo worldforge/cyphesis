@@ -418,7 +418,7 @@ target_link_libraries(Py_ObserverClientTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(ClientConnectionTest.cpp ../src/client/cyclient/ClientConnection.cpp)
 wf_add_test(BaseClientTest.cpp ../src/client/cyclient/BaseClient.cpp)
-wf_add_test(ClientPropertyManagerTest.cpp ../src/client/cyclient/ClientPropertyManager.cpp
+wf_add_test(ClientPropertyManagerTest.cpp ../src/client/ClientPropertyManager.cpp
     ../src/common/PropertyManager.cpp)
 
 

@@ -16,19 +16,19 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_AICLIENTPROPERTYMANAGER_H
-#define CYPHESIS_AICLIENTPROPERTYMANAGER_H
+#ifndef CYPHESIS_CLIENTPROPERTYMANAGER_H
+#define CYPHESIS_CLIENTPROPERTYMANAGER_H
 
 
 #include <common/PropertyManager.h>
 
-class AiClientPropertyManager : public PropertyManager
+class ClientPropertyManager : public PropertyManager
 {
     public:
-        AiClientPropertyManager();
+        ClientPropertyManager();
 
         std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) override;
 };
 
 
-#endif //CYPHESIS_AICLIENTPROPERTYMANAGER_H
+#endif //CYPHESIS_CLIENTPROPERTYMANAGER_H

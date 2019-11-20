@@ -18,12 +18,12 @@
 
 #include "BaseClient.h"
 
-#include "log.h"
-#include "debug.h"
-#include "compose.hpp"
-#include "system.h"
-#include "CommSocket.h"
-#include "ClientTask.h"
+#include "../common/log.h"
+#include "../common/debug.h"
+#include "../common/compose.hpp"
+#include "../common/system.h"
+#include "../common/CommSocket.h"
+#include "../common/ClientTask.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>

@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "client/cyclient/ClientPropertyManager.h"
+#include "client/ClientPropertyManager.h"
 
 #include <cassert>
 
@@ -36,9 +36,14 @@ int main()
 
     {
         ClientPropertyManager * cpm = new ClientPropertyManager;
-        assert(cpm->addProperty("foo", 0) == 0);
+        assert(cpm->addProperty("foo", 0));
         delete cpm;
     }
 
     return 0;
 }
+
+#include "stubs/rules/stubBBoxProperty.h"
+#include "stubs/rules/stubAtlasProperties.h"
+#include "stubs/rules/stubScaleProperty.h"
+#include "stubs/common/stubProperty.h"
