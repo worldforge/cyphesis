@@ -46,19 +46,21 @@ using Atlas::Message::MapType;
 //for users, just having them supply the flag rather than setting the
 //value to 1. I.e. rather "--clear" than "--clear=1"
 BOOL_OPTION(_clear, false, "", "clear",
-        "Delete all existing entities before importing.")
+            "Delete all existing entities before importing.")
 BOOL_OPTION(_merge, false, "", "merge",
-        "Try to merge contents in export with existing entities.")
+            "Try to merge contents in export with existing entities.")
 BOOL_OPTION(_resume, false, "", "resume",
-        "If the world is suspended, resume after import.")
+            "If the world is suspended, resume after import.")
+BOOL_OPTION(_suspend, false, "", "suspend",
+            "Suspend the world after import.")
 
-static void usage(char * prg)
+static void usage(char* prg)
 {
     std::cerr << "usage: " << prg << " [options] filepath" << std::endl
-            << std::flush;
+              << std::flush;
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
     int config_status = loadConfig(argc, argv, USAGE_CYCMD);
     if (config_status < 0) {
@@ -103,7 +105,7 @@ int main(int argc, char ** argv)
     log(NOTICE, "Attempting local connection");
     if (bridge.connectLocal(localSocket) == 0) {
         if (bridge.create("sys", create_session_username(),
-                String::compose("%1%2", ::rand(), ::rand())) != 0) {
+                          String::compose("%1%2", ::rand(), ::rand())) != 0) {
             log(ERROR, "Could not create sys account.");
             return -1;
         }
@@ -131,44 +133,45 @@ int main(int argc, char ** argv)
         bool merge = varconf::Config::inst()->find("", "merge");
 
         bool resume = varconf::Config::inst()->find("", "resume");
+        bool suspend = varconf::Config::inst()->find("", "suspend");
 
         if (clear && merge) {
             std::cerr
-                    << "'--clear' and '--merge' are mutually exclusive; you can't specify both."
-                    << std::endl << std::flush;
+                << "'--clear' and '--merge' are mutually exclusive; you can't specify both."
+                << std::endl << std::flush;
             return -1;
         }
 
         if (!clear && !merge) {
             bool isPopulated = false;
             std::function<bool(const RootEntity&)> visitor =
-                    [&](const RootEntity& entity)->bool {
-                        if (entity->getId() != "0" && entity->getId() != agent_id && !entity->hasAttr("transient")) {
-                            isPopulated = true;
-                            return false;
-                        }
-                        return true;
-                    };
+                [&](const RootEntity& entity) -> bool {
+                    if (entity->getId() != "0" && entity->getId() != agent_id && !entity->hasAttr("transient")) {
+                        isPopulated = true;
+                        return false;
+                    }
+                    return true;
+                };
 
             log(NOTICE, "Checking if world already is populated.");
             auto populationCheck = std::make_shared<EntityTraversalTask>(accountId, visitor);
             bridge.runTask(populationCheck, "0");
             if (bridge.pollUntilTaskComplete() != 0) {
                 std::cerr
-                        << "Error when checking if the server already is populated."
-                        << std::endl << std::flush;
+                    << "Error when checking if the server already is populated."
+                    << std::endl << std::flush;
                 return -1;
             }
 
             if (isPopulated) {
                 std::cerr << "Server is already populated, aborting.\n"
-                        "Either use the "
-                        "'--clear' flag to first clear it. This "
-                        "will delete all existing entities.\nOr "
-                        "use the '--merge' flag to merge the "
-                        "entities in the export with the existing"
-                        " ones. The results of this are not always"
-                        " predictable though." << std::endl << std::flush;
+                             "Either use the "
+                             "'--clear' flag to first clear it. This "
+                             "will delete all existing entities.\nOr "
+                             "use the '--merge' flag to merge the "
+                             "entities in the export with the existing"
+                             " ones. The results of this are not always"
+                             " predictable though." << std::endl << std::flush;
                 return -1;
             }
         }
@@ -191,7 +194,7 @@ int main(int argc, char ** argv)
             bridge.runTask(std::make_shared<WaitForDeletionTask>(agent_id), "");
             if (bridge.pollUntilTaskComplete() != 0) {
                 std::cerr << "Error when waiting for world to be cleared." << std::endl
-                        << std::flush;
+                          << std::flush;
                 return -1;
             }
 
@@ -203,12 +206,12 @@ int main(int argc, char ** argv)
             bridge.runTask(agentCreationTask, "");
             if (bridge.pollUntilTaskComplete() != 0) {
                 std::cerr << "Could not create agent." << std::endl
-                        << std::flush;
+                          << std::flush;
                 return -1;
             }
             if (!agentCreationTask->m_agent_id || !agentCreationTask->m_mind_id) {
                 std::cerr << "Could not create agent; no id received."
-                        << std::endl << std::flush;
+                          << std::endl << std::flush;
                 return -1;
             }
             agent_id = *agentCreationTask->m_agent_id;
@@ -220,6 +223,7 @@ int main(int argc, char ** argv)
         auto importer = std::make_shared<EntityImporter>(accountId, mind_id);
 
         importer->setResume(resume);
+        importer->setSuspend(suspend);
 
         bridge.runTask(importer, filename);
         if (bridge.pollUntilTaskComplete() != 0) {
