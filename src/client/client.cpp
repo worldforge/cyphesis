@@ -23,6 +23,7 @@
 
 #include "common/globals.h"
 #include "common/log.h"
+#include "ObserverClient.h"
 
 #include <varconf/config.h>
 
@@ -114,11 +115,12 @@ int main(int argc, char ** argv)
     if (interactive) {
         python_prompt();
     } else {
+        boost::asio::io_context io_context;
         std::map<std::string, std::string> keywords;
-        keywords["account"] = account;
-        keywords["password"] = password;
-        keywords["host"] = server;
-        python_client_script(package, function, keywords);
+        Atlas::Objects::Factories factories;
+        ObserverClient observerClient(io_context, factories);
+        observerClient.setup(account, password, server);
+        python_client_script(package, function, observerClient);
     }
 
     shutdown_python_api();

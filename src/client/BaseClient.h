@@ -19,6 +19,7 @@
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
 
+#include <modules/Ref.h>
 #include "ClientConnection.h"
 
 class CreatorClient;
@@ -31,7 +32,7 @@ class BaseClient {
     /// \brief Low level connection to the server
     ClientConnection m_connection;
     /// \brief Client object that manages the creator avatar
-    CreatorClient * m_character;
+    Ref<CreatorClient> m_character;
     /// \brief Store for details of the account after login
     Atlas::Objects::Root m_player;
     /// \brief Name used for the username of the account and the name of avatars
@@ -44,7 +45,7 @@ class BaseClient {
     virtual ~BaseClient();
 
     CreatorClient * character() {
-        return m_character;
+        return m_character.get();
     }
 
     const std::string & id() const {
@@ -54,7 +55,7 @@ class BaseClient {
     Atlas::Objects::Root createSystemAccount();
     Atlas::Objects::Root createAccount(const std::string & name,
                                        const std::string & pword);
-    CreatorClient * createCharacter(const std::string & name);
+    Ref<CreatorClient> createCharacter(const std::string & name);
     void logout();
     void handleNet();
     

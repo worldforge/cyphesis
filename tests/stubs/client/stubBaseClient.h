@@ -10,7 +10,6 @@
 #ifndef STUB_BaseClient_BaseClient
 //#define STUB_BaseClient_BaseClient
    BaseClient::BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories)
-    : m_character(nullptr)
   {
     
   }
@@ -42,9 +41,9 @@
 
 #ifndef STUB_BaseClient_createCharacter
 //#define STUB_BaseClient_createCharacter
-  CreatorClient* BaseClient::createCharacter(const std::string & name)
+  Ref<CreatorClient> BaseClient::createCharacter(const std::string & name)
   {
-    return nullptr;
+    return *static_cast<Ref<CreatorClient>*>(nullptr);
   }
 #endif //STUB_BaseClient_createCharacter
 

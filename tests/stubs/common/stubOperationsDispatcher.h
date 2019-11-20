@@ -10,7 +10,7 @@
 #ifndef STUB_OpQueEntry_OpQueEntry
 //#define STUB_OpQueEntry_OpQueEntry
   template <typename T>
-   OpQueEntry<T>::OpQueEntry(Operation o, T & f)
+   OpQueEntry<T>::OpQueEntry(Operation o, T& f)
   {
     
   }
@@ -19,7 +19,7 @@
 #ifndef STUB_OpQueEntry_OpQueEntry
 //#define STUB_OpQueEntry_OpQueEntry
   template <typename T>
-   OpQueEntry<T>::OpQueEntry(const OpQueEntry & o)
+   OpQueEntry<T>::OpQueEntry(const OpQueEntry& o)
   {
     
   }
@@ -28,7 +28,7 @@
 #ifndef STUB_OpQueEntry_OpQueEntry
 //#define STUB_OpQueEntry_OpQueEntry
   template <typename T>
-   OpQueEntry<T>::OpQueEntry(OpQueEntry && o)
+   OpQueEntry<T>::OpQueEntry(OpQueEntry&& o)
   {
     
   }
@@ -96,7 +96,7 @@
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
   template <typename T>
-   OperationsDispatcher<T>::OperationsDispatcher(const std::function<void(const Operation&, Ref<T>)>& operationProcessor, std::function<double()>  timeProviderFn)
+   OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, std::function<double()> timeProviderFn)
     : OperationsHandler(operationProcessor, timeProviderFn)
   {
     

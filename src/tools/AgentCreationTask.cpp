@@ -29,12 +29,13 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <iostream>
+#include <utility>
 #include <common/operations/Possess.h>
 
-AgentCreationTask::AgentCreationTask(const std::string& account_id,
-                                     const std::string& agent_type) :
-    m_account_id(account_id),
-    m_agent_type(agent_type),
+AgentCreationTask::AgentCreationTask(std::string account_id,
+                                     std::string agent_type) :
+    m_account_id(std::move(account_id)),
+    m_agent_type(std::move(agent_type)),
     m_serial_no(0)
 {
 }

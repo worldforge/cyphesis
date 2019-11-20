@@ -143,12 +143,14 @@ Root BaseClient::createAccount(const std::string & name,
 /// Requires that an account is already logged in.
 /// @param type The type of avatar to be created
 /// @return The CreatorClient object used to directly interact with the avatar
-CreatorClient * BaseClient::createCharacter(const std::string & type)
+Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
 {
+
     Anonymous character;
     character->setName(m_playerName);
     character->setParent(type);
     character->setObjtype("obj");
+    character->setAttr("possess", 1);
 
     Create createOp;
     createOp->setFrom(m_playerId);
@@ -201,7 +203,7 @@ CreatorClient * BaseClient::createCharacter(const std::string & type)
         log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id));
     }
 
-    auto* obj = new CreatorClient(ent->getId(), entityId, m_connection);
+    auto obj = Ref<CreatorClient>(new CreatorClient(ent->getId(), entityId, m_connection));
 
     Ref<MemEntity> ownEntity = new MemEntity(id, intId);
 

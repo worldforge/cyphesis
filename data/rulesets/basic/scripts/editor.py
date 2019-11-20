@@ -147,12 +147,7 @@ class editor:
         self.tell(target, s, i)
 
 
-def create_editor(host, account, password, avatar='creator'):
-    client = server.ObserverClient()
-
-    client.server = host
-
-    client.setup(account, password, avatar)
+def create_editor(client, avatar='creator'):
 
     avatar = client.create_avatar(avatar)
 

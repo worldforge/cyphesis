@@ -3,16 +3,11 @@
 # Copyright (C) 2013 Erik Ogenvik (See the file COPYING for details).
 
 from atlas import *
-from random import *
+
 from mind.panlingua import interlinguish
 
 il = interlinguish
-from cyphesis.editor import editor, create_editor
-from physics import Quaternion
-from physics import Vector3D
-from math import *
-
-import server
+from cyphesis.editor import create_editor
 
 
 # observer calls this
@@ -21,16 +16,16 @@ def default(host='', account='', password='', **args):
 
 
 # Suspends the world, allowing authors to alter it while not worrying about entities moving or changing.
-def suspend(host='', account='', password='', **args):
-    m = create_editor(host, account, password)
+def suspend(client):
+    m = create_editor(client)
 
-    world = m.look()
+    m.look()
     m.set("0", suspended=1)
 
 
 # Resumes a previously suspended world.
-def resume(host='', account='', password='', **args):
-    m = create_editor(host, account, password)
+def resume(client):
+    m = create_editor(client)
 
-    world = m.look()
+    m.look()
     m.set("0", suspended=0)

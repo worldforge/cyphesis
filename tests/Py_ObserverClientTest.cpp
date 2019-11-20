@@ -124,12 +124,12 @@ int ObserverClient::setup(const std::string & account , const std::string & pass
 #include "stubs/client/stubObserverClient.h"
 
 #define STUB_BaseClient_createCharacter
-CreatorClient * BaseClient::createCharacter(const std::string & type)
+Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
 {
     if (stub_createCharacter_fail) {
         return 0;
     }
-    return new CreatorClient("1", "2", m_connection);
+    return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection));
 }
 #include "stubs/client/stubBaseClient.h"
 

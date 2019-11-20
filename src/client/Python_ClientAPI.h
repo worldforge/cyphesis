@@ -22,12 +22,12 @@
 #include <map>
 #include <string>
 
-class CreatorClient;
+class ObserverClient;
 
 void extend_client_python_api();
 void python_prompt();
 int python_client_script(const std::string &,
                          const std::string &,
-                         const std::map<std::string, std::string> &);
+                         ObserverClient &);
 
 #endif // CLIENT_PYTHON_CLIENT_API_H

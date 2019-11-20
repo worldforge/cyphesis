@@ -42,7 +42,6 @@ check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
 check_function_exists(uname HAVE_UNAME)
 check_function_exists(localtime_r HAVE_LOCALTIME_R)
 check_function_exists(syslog HAVE_SYSLOG)
-check_function_exists(usleep HAVE_USLEEP)
 
 check_include_files(syslog.h HAVE_SYSLOG_H)
 check_include_files(sys/utsname.h HAVE_SYS_UTSNAME_H)

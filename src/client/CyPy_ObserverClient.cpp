@@ -116,11 +116,11 @@ Py::Object CyPy_ObserverClient::teardown()
 Py::Object CyPy_ObserverClient::create_avatar(const Py::Tuple& args)
 {
     args.verify_length(1);
-    CreatorClient* c = m_value->createCharacter(verifyString(args.front()));
+    auto c = m_value->createCharacter(verifyString(args.front()));
     if (!c) {
         throw Py::RuntimeError("avatar creation failed");
     }
-    return CyPy_CreatorClient::wrap(c);
+    return CyPy_CreatorClient::wrap(std::move(c));
 }
 
 Py::Object CyPy_ObserverClient::run()

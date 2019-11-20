@@ -30,14 +30,15 @@
 #include <string>
 #include "pycxx/CXX/Objects.hxx"
 
-int python_client_script(const std::string & package,
-                         const std::string & func,
-                         const std::map<std::string, std::string> & keywords)
+int python_client_script(const std::string& package,
+                         const std::string& func,
+                         ObserverClient& client)
 {
     auto module = Get_PyModule(package);
     if (module.isNull()) {
         return -1;
     }
+
     auto function = module.getAttr(func);
     if (function.isNull()) {
         std::cerr << "Could not find " << func << " function" << std::endl
@@ -52,10 +53,7 @@ int python_client_script(const std::string & package,
     }
     Py::Callable callable(function);
     Py::Dict kwds;
-    Py::Tuple args;
-    for (auto& entry : keywords) {
-        kwds.setItem(entry.first, Py::String(entry.second));
-    }
+    Py::TupleN args(CyPy_ObserverClient::wrap(& client));
     try {
         auto ret = callable.apply(args, kwds);
     } catch (...) {
@@ -83,6 +81,7 @@ void extend_client_python_api()
 
     server.setAttr("CreatorClient", CyPy_CreatorClient::type());
     server.setAttr("ObserverClient", CyPy_ObserverClient::type());
+
 }
 
 void python_prompt()

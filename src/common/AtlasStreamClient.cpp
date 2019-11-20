@@ -25,7 +25,9 @@
 #include "common/ClientTask.h"
 
 #include "common/debug.h"
+#include "common/log.h"
 #include "AtlasStreamClient.h"
+#include "compose.hpp"
 
 
 #include <Atlas/Codec.h>
@@ -475,6 +477,7 @@ int AtlasStreamClient::connectLocal(const std::string& filename)
         std::function<void()> dispatcher = [&] { this->dispatch(); };
         m_socket = std::make_unique<LocalStreamClientSocket>(m_io_context, dispatcher, local::stream_protocol::endpoint(filename));
     } catch (const std::exception& e) {
+        log(ERROR, String::compose("Error when connecting to local socket.\n%1", e.what()));
         return -1;
     }
     return m_socket->negotiate(*this);
@@ -590,30 +593,29 @@ int AtlasStreamClient::runTask(std::shared_ptr<ClientTask> task, const std::stri
         return -1;
     }
 
-    m_currentTask = task;
+    m_currentTask = std::move(task);
 
     OpVector res;
 
     m_currentTask->setup(arg, res);
 
     if (m_currentTask->isComplete()) {
-        m_currentTask = nullptr;
+        m_currentTask.reset();
         return -1;
     }
 
-    OpVector::const_iterator Iend = res.end();
-    for (OpVector::const_iterator I = res.begin(); I != Iend; ++I) {
-        send(*I);
+    for (auto& op : res) {
+        send(op);
     }
     return 0;
 }
 
 int AtlasStreamClient::endTask()
 {
-    if (m_currentTask == nullptr) {
+    if (!m_currentTask) {
         return -1;
     }
-    m_currentTask = nullptr;
+    m_currentTask.reset();
     return 0;
 }
 
@@ -624,10 +626,10 @@ bool AtlasStreamClient::hasTask() const
 
 int AtlasStreamClient::pollUntilTaskComplete()
 {
-    if (m_currentTask == nullptr) {
+    if (!m_currentTask) {
         return 1;
     }
-    while (m_currentTask != nullptr) {
+    while (m_currentTask) {
         if (poll(boost::posix_time::milliseconds(100)) == -1) {
             return -1;
         }

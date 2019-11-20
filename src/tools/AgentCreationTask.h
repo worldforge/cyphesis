@@ -34,8 +34,8 @@ class AgentCreationTask: public ClientTask
          * @param agent_id A string into which the agent id
          * (once created) will be put.
          */
-        AgentCreationTask(const std::string& account_id,
-                const std::string& agent_type);
+        AgentCreationTask(std::string  account_id,
+                std::string  agent_type);
 
         ~AgentCreationTask() override;
 

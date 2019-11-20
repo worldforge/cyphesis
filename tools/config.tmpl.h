@@ -19,9 +19,6 @@
 /* Define to 1 if you have the `uname' function. */
 #cmakedefine HAVE_UNAME 1
 
-/* Define to 1 if you have the `usleep' function. */
-#cmakedefine HAVE_USLEEP 1
-
 /* Define to 1 if you have the `localtime_r' function. */
 #cmakedefine HAVE_LOCALTIME_R 1
 

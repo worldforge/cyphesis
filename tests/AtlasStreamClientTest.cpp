@@ -190,7 +190,7 @@ int main()
 
 #include "common/debug.h"
 #include "common/system.h"
-
+#include "stubs/common/stublog.h"
 using Atlas::Message::Element;
 
 ClientTask::ClientTask() : m_complete(false)
