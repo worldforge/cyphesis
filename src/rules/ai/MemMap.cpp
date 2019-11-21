@@ -18,7 +18,7 @@
 
 #include "MemMap.h"
 
-#include "MemEntity.h"
+#include "rules/MemEntity.h"
 #include "BaseMind.h"
 #include "rules/Script.h"
 #include "TypeResolver.h"

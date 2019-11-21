@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rules/ai/MemEntity.h"
+#include "rules/MemEntity.h"
 #include "rules/SolidProperty.h"
 #include "common/Property_impl.h"
 

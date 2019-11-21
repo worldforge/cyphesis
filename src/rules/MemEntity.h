@@ -27,38 +27,45 @@
 /// It adds a flag to indicate if this entity is currently visible, and
 /// a means of tracking when it was last seen, so garbage entities can
 /// be cleaned up.
-class MemEntity : public LocatedEntity {
-  protected:
-    double m_lastSeen;
-  public:
-    explicit MemEntity(const std::string & id, long intId);
-    ~MemEntity() override = default;
+class MemEntity : public LocatedEntity
+{
+    protected:
+        double m_lastSeen;
+    public:
+        explicit MemEntity(const std::string& id, long intId);
 
-    void setVisible(bool v = true) {
-        if (v) {
-            m_flags.addFlags(entity_visible);
-        } else {
-            m_flags.removeFlags(entity_visible);
+        ~MemEntity() override = default;
+
+        void setVisible(bool v = true)
+        {
+            if (v) {
+                m_flags.addFlags(entity_visible);
+            } else {
+                m_flags.removeFlags(entity_visible);
+            }
         }
-    }
 
-    const double & lastSeen() const {
-        return m_lastSeen;
-    }
-
-    void update(const double & d) {
-        if (d >= m_lastSeen) {
-            m_lastSeen = d;
+        const double& lastSeen() const
+        {
+            return m_lastSeen;
         }
-    }
 
-    void externalOperation(const Operation & op, Link &) override;
-    void operation(const Operation &, OpVector &) override;
-    PropertyBase * setAttr(const std::string & name, const Atlas::Message::Element & attr) override;
+        void update(const double& d)
+        {
+            if (d >= m_lastSeen) {
+                m_lastSeen = d;
+            }
+        }
 
-    void destroy() override;
+        void externalOperation(const Operation& op, Link&) override;
 
-    const PropertyBase * getProperty(const std::string & name) const override;
+        void operation(const Operation&, OpVector&) override;
+
+        PropertyBase* setAttr(const std::string& name, const Atlas::Message::Element& attr) override;
+
+        void destroy() override;
+
+        const PropertyBase* getProperty(const std::string& name) const override;
 
 };
 

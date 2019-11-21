@@ -21,7 +21,7 @@
 
 #include "common/OperationRouter.h"
 
-#include "MemEntity.h"
+#include "rules/MemEntity.h"
 #include "modules/Ref.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>

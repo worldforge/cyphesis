@@ -19,13 +19,12 @@
 #include "CyPy_Ai.h"
 #include "CyPy_BaseMind.h"
 #include "CyPy_MemMap.h"
-#include "CyPy_MemEntity.h"
+#include "rules/python/CyPy_MemEntity.h"
 
 CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
 {
 
     CyPy_BaseMind::init_type();
-    CyPy_MemEntity::init_type();
     CyPy_MemMap::init_type();
 
 
@@ -33,7 +32,6 @@ CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
 
     Py::Dict d(moduleDictionary());
     d["Mind"] = CyPy_BaseMind::type();
-    d["MemEntity"] = CyPy_MemEntity::type();
     d["MemMap"] = CyPy_MemMap::type();
 
 }

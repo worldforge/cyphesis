@@ -19,7 +19,7 @@
 #include "Steering.h"
 #include "Awareness.h"
 
-#include "rules/ai/MemEntity.h"
+#include "rules/MemEntity.h"
 
 #include "common/debug.h"
 

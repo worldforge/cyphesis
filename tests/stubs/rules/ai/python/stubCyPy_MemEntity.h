@@ -4,7 +4,7 @@
 #ifndef STUB_RULES_AI_PYTHON_CYPY_MEMENTITY_H
 #define STUB_RULES_AI_PYTHON_CYPY_MEMENTITY_H
 
-#include "rules/ai/python/CyPy_MemEntity.h"
+#include "rules/python/CyPy_MemEntity.h"
 #include "stubCyPy_MemEntity_custom.h"
 
 #ifndef STUB_CyPy_MemEntity_CyPy_MemEntity

@@ -21,6 +21,7 @@
 #include "CyPy_WorldTime.h"
 #include "CyPy_Location.h"
 #include "CyPy_EntityLocation.h"
+#include "CyPy_MemEntity.h"
 
 CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
 {
@@ -28,6 +29,7 @@ CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
     CyPy_WorldTime::init_type();
     CyPy_Location::init_type();
     CyPy_EntityLocation::init_type();
+    CyPy_MemEntity::init_type();
 
     add_varargs_method("isLocation", &CyPy_Rules::is_location, "");
 
@@ -38,6 +40,7 @@ CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
     d["Location"] = CyPy_Location::type();
     d["EntityLocation"] = CyPy_EntityLocation::type();
     d["WorldTime"] = CyPy_WorldTime::type();
+    d["MemEntity"] = CyPy_MemEntity::type();
 
 }
 

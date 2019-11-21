@@ -213,7 +213,7 @@ wf_add_test(VisibilityPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulat
 wf_add_test(ExternalPropertyTest.cpp ../src/rules/simulation/ExternalProperty.cpp
     ../src/common/Property.cpp)
 wf_add_test(BaseMindTest.cpp ../src/rules/ai/BaseMind.cpp ../src/rules/ai/MemMap.cpp)
-wf_add_test(MemEntityTest.cpp ../src/rules/ai/MemEntity.cpp)
+wf_add_test(MemEntityTest.cpp ../src/rules/MemEntity.cpp)
 wf_add_test(MemMapTest.cpp ../src/rules/ai/MemMap.cpp)
 wf_add_test(MovementTest.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(PedestrianTest.cpp ../src/rules/simulation/Pedestrian.cpp ../src/rules/simulation/Movement.cpp)
@@ -383,15 +383,17 @@ wf_add_test(StatisticsPropertyIntegration.cpp ../src/rules/simulation/Statistics
 wf_add_test(ContainedVisibilityPropertyIntegration.cpp ../src/rules/simulation/ContainedVisibilityProperty.cpp
     ../src/rules/simulation/Entity.cpp
     ../src/rules/LocatedEntity.cpp)
-wf_add_test(BaseMindMapEntityIntegration.cpp ../src/rules/ai/BaseMind.cpp
-    ../src/rules/ai/MemEntity.cpp
+wf_add_test(BaseMindMapEntityIntegration.cpp
+    ../src/rules/ai/BaseMind.cpp
+    ../src/rules/MemEntity.cpp
     ../src/rules/ai/MemMap.cpp
     ../src/rules/BBoxProperty.cpp
     ../src/rules/SolidProperty.cpp
     ../src/rules/simulation/InternalProperties.cpp
     ../src/rules/Location.cpp
     ../src/rules/EntityLocation.cpp
-    ../src/common/Property.cpp)
+    ../src/common/Property.cpp
+    ../src/client/ClientPropertyManager.cpp)
 wf_add_test(AreaPropertyIntegration.cpp ../src/rules/simulation/AreaProperty.cpp
     ../src/rules/simulation/Entity.cpp
     ../src/rules/LocatedEntity.cpp

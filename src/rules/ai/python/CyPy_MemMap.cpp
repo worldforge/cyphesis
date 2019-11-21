@@ -17,7 +17,7 @@
  */
 
 #include "CyPy_MemMap.h"
-#include "CyPy_MemEntity.h"
+#include "rules/python/CyPy_MemEntity.h"
 #include "rules/python/CyPy_RootEntity.h"
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 

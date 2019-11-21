@@ -138,7 +138,7 @@ long integerId(const std::string & id)
 
 
 
-#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/stubMemEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/stubLocation.h"

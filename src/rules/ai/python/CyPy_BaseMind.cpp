@@ -20,7 +20,7 @@
 
 #include <utility>
 #include "CyPy_MemMap.h"
-#include "CyPy_MemEntity.h"
+#include "rules/python/CyPy_MemEntity.h"
 #include "rules/python/PythonWrapper.h"
 #include "rules/python/CyPy_Point3D.h"
 #include "rules/python/CyPy_Props.h"

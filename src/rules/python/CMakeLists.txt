@@ -28,7 +28,8 @@ add_library(rulesbase_python
     CyPy_WorldTime.cpp
     CyPy_Rules.cpp
     CyPy_Root.cpp
-    CyPy_Ball.cpp)
+    CyPy_Ball.cpp
+    CyPy_MemEntity.cpp)
 
 target_link_libraries(rulesbase_python pycxx ${PYTHON_LIBRARIES})
 

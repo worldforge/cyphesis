@@ -27,7 +27,7 @@
 
 #include "rules/ai/MemMap.h"
 
-#include "rules/ai/MemEntity.h"
+#include "rules/MemEntity.h"
 #include "rules/Script.h"
 
 #include "common/log.h"
@@ -511,7 +511,7 @@ int main()
 
 // stubs
 
-#include "stubs/rules/ai/stubMemEntity.h"
+#include "stubs/rules/stubMemEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubTypeNode.h"

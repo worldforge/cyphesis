@@ -20,7 +20,7 @@
 #define CYPHESIS_CYPY_MEMENTITY_H
 
 
-#include "rules/ai/MemEntity.h"
+#include "rules/MemEntity.h"
 #include "rules/python/CyPy_LocatedEntity_impl.h"
 
 /**

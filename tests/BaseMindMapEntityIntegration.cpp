@@ -32,6 +32,7 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include <client/ClientPropertyManager.h>
 
 using Atlas::Objects::Entity::Anonymous;
 
@@ -181,6 +182,7 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
 
 void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 {
+    ClientPropertyManager propertyManager;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
@@ -209,6 +211,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 
 void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 {
+    ClientPropertyManager propertyManager;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
@@ -240,6 +243,7 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 
 void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_have_effect()
 {
+    ClientPropertyManager propertyManager;
 
     Ref<MemEntity> tlve = new MemEntity("0", 0);
 
@@ -275,6 +279,7 @@ void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_hav
 
 void BaseMindMapEntityintegration::test_MemMapcheck()
 {
+    ClientPropertyManager propertyManager;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->setType(m_type);
     tlve->m_contains.reset(new LocatedEntitySet);
@@ -364,6 +369,12 @@ void LocatedEntity::setType(const TypeNode* t) {
     m_type = t;
 }
 
+#define STUB_LocatedEntity_applyProperty
+void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
+{
+    prop->apply(this);
+}
+
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubInheritance.h"
@@ -447,5 +458,16 @@ WFMath::CoordType sqrMag(const Point3D & p) {
     return 0;
 }
 
+#define STUB_PropertyManager_installFactory
+void PropertyManager::installFactory(const std::string & name, std::unique_ptr<PropertyKit> factory)
+{
+    m_propertyFactories.emplace(name, std::move(factory));
+}
+int PropertyManager::installFactory(const std::string & type_name, const Atlas::Objects::Root & type_desc, std::unique_ptr<PropertyKit> factory)
+{
+    m_propertyFactories.emplace(type_name, std::move(factory));
+    return 0;
+}
 
+#include "stubs/common/stubPropertyManager.h"
 

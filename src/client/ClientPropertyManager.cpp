@@ -17,6 +17,7 @@
  */
 
 #include <rules/ScaleProperty.h>
+#include <rules/SolidProperty.h>
 #include "ClientPropertyManager.h"
 
 #include "rules/BBoxProperty.h"
@@ -28,8 +29,9 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 ClientPropertyManager::ClientPropertyManager()
 {
-    PropertyManager::installFactory(BBoxProperty::property_name, std::make_unique<PropertyFactory<BBoxProperty>>());
-    PropertyManager::installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
+    installFactory(BBoxProperty::property_name, std::make_unique<PropertyFactory<BBoxProperty>>());
+    installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
+    installFactory(SolidProperty::property_name, std::make_unique<PropertyFactory<SolidProperty>>());
 }
 
 std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name,
