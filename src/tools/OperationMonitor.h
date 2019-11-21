@@ -19,27 +19,41 @@
 #ifndef TOOLS_OPERATION_MONITOR_H
 #define TOOLS_OPERATION_MONITOR_H
 
+#include <Atlas/Message/QueuedDecoder.h>
+#include <memory>
 #include "common/ClientTask.h"
 #include "common/SystemTime.h"
+#include <fstream>
 
 /// \brief Task class for monitoring all in-game operations occuring.
-class OperationMonitor : public ClientTask {
-  protected:
-    int op_count;
-    SystemTime start_time;
-  public:
-    ~OperationMonitor() override;
+class OperationMonitor : public ClientTask
+{
+    protected:
 
-    int count() {
-        return op_count;
-    }
+        Atlas::Message::QueuedDecoder mDecoder;
+        std::unique_ptr<Atlas::Bridge> mCodec;
+        std::unique_ptr<Atlas::Objects::ObjectsEncoder> mEncoder;
+        std::unique_ptr<std::ostream> mOutFile;
+        std::ostream* mOutStream;
 
-    time_t startTime() {
-        return start_time.seconds();
-    }
+        int op_count;
+        SystemTime start_time;
+    public:
+        ~OperationMonitor() override;
 
-    void setup(const std::string & arg, OpVector &) override;
-    void operation(const Operation & op, OpVector &) override;
+        int count() const
+        {
+            return op_count;
+        }
+
+        time_t startTime() const
+        {
+            return start_time.seconds();
+        }
+
+        void setup(const std::string& arg, OpVector&) override;
+
+        void operation(const Operation& op, OpVector&) override;
 };
 
 #endif // TOOLS_OPERATION_MONITOR_H

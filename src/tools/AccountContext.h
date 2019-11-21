@@ -23,20 +23,20 @@
 
 class AccountContext : public IdContext
 {
-  protected:
-    const std::string m_username;
-  public:
-    AccountContext(Interactive &,
-                   const std::string & id,
-                   const std::string & u);
+    protected:
+        const std::string m_username;
+    public:
+        AccountContext(Interactive&,
+                       std::string id,
+                       std::string u);
 
-    bool accept(const Atlas::Objects::Operation::RootOperation&) const override;
+        bool accept(const Atlas::Objects::Operation::RootOperation&) const override;
 
-    int dispatch(const Atlas::Objects::Operation::RootOperation&) override;
+        int dispatch(const Atlas::Objects::Operation::RootOperation&) override;
 
-    std::string repr() const override;
+        std::string repr() const override;
 
-    bool checkContextCommand(const struct command *) override;
+        bool checkContextCommand(const struct command*) override;
 };
 
 #endif // TOOLS_ACCOUNT_CONTEXT_H

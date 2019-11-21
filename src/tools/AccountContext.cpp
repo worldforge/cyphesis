@@ -25,6 +25,7 @@
 #include "common/debug.h"
 
 #include <iostream>
+#include <utility>
 
 static const bool debug_flag = false;
 
@@ -33,46 +34,41 @@ using Atlas::Objects::Operation::RootOperation;
 
 using std::shared_ptr;
 
-AccountContext::AccountContext(Interactive & i,
-                               const std::string & id,
-                               const std::string & u) : IdContext(i, id),
-                                                        m_username(u)
+AccountContext::AccountContext(Interactive& i,
+                               std::string id,
+                               std::string u) :
+    IdContext(i, std::move(id)),
+    m_username(std::move(u))
 {
 }
 
 bool AccountContext::accept(const RootOperation& op) const
 {
     debug_print("Checking account context to see if it matches"
-             )
-    if (m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo) {
-        return true;
-    }
-    return false;
+    )
+    return m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo;
 }
 
-int AccountContext::dispatch(const RootOperation & op)
+int AccountContext::dispatch(const RootOperation& op)
 {
     debug_print("Dispatching with account context to see if it matches"
-             )
+    )
     if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO &&
         !op->getArgs().empty()) {
-        std::cout << "Dispatching info"
-                  << std::endl << std::flush;
-        const Root & ent = op->getArgs().front();
+        std::cout << "Dispatching info" << std::endl << std::flush;
+        const Root& ent = op->getArgs().front();
         if (ent->hasAttrFlag(Atlas::Objects::ID_FLAG) &&
             ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-            const std::string & type = ent->getParent();
+            const std::string& type = ent->getParent();
             if (type == "juncture") {
-                std::cout << "created juncture"
-                          << std::endl << std::flush;
+                std::cout << "created juncture" << std::endl << std::flush;
                 m_client.addCurrentContext(shared_ptr<ObjectContext>(
-                      new JunctureContext(m_client, ent->getId())));
+                    new JunctureContext(m_client, ent->getId())));
             } else {
-                std::cout << "created avatar"
-                          << std::endl << std::flush;
+                std::cout << "created avatar" << std::endl << std::flush;
                 m_client.addCurrentContext(shared_ptr<ObjectContext>(
-                      new AvatarContext(m_client, ent->getId())));
-                
+                    new AvatarContext(m_client, ent->getId())));
+
             }
         } else {
             // FIXME Report an error?
@@ -93,7 +89,7 @@ std::string AccountContext::repr() const
     return m_username;
 }
 
-bool AccountContext::checkContextCommand(const struct command *)
+bool AccountContext::checkContextCommand(const struct command*)
 {
     return false;
 }
