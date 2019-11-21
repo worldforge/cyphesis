@@ -571,7 +571,7 @@ namespace {
                 auto mdnsClient = createMDNSClient(*io_context, serverRouting);
 
                 IdleConnector storage_idle(*io_context);
-                storage_idle.idling.connect(sigc::mem_fun(store, &StorageManager::tick));
+                storage_idle.idling.connect([&store](){store.tick();});
 
                 MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
                 if (metaClient) {

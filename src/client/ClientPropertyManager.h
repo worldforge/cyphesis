@@ -20,7 +20,7 @@
 #define CYPHESIS_CLIENTPROPERTYMANAGER_H
 
 
-#include <common/PropertyManager.h>
+#include "common/PropertyManager.h"
 
 class ClientPropertyManager : public PropertyManager
 {

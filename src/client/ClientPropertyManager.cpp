@@ -16,13 +16,14 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rules/ScaleProperty.h>
-#include <rules/SolidProperty.h>
 #include "ClientPropertyManager.h"
 
+#include "rules/ScaleProperty.h"
+#include "rules/SolidProperty.h"
 #include "rules/BBoxProperty.h"
 #include "common/PropertyFactory.h"
 #include "common/PropertyFactory_impl.h"
+
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
