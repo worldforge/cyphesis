@@ -26,6 +26,8 @@
 
 #include "common/sockets.h"
 
+#include <thread>
+
 ObserverClient::ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories)
 : BaseClient(io_context, factories)
 {
