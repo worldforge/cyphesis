@@ -52,22 +52,19 @@ set(cyphesis_files
         ExternalMindsManager.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
-if (CYPHESIS_USE_POSTGRES)
+if (PostgreSQL_FOUND)
     list(APPEND cyphesis_files
             CommPSQLSocket.cpp)
-endif (CYPHESIS_USE_POSTGRES)
+endif (PostgreSQL_FOUND)
 
 add_library(server
         ${cyphesis_files})
 
-if (CYPHESIS_USE_POSTGRES)
-    message(STATUS "Using Postgres for persistence.")
+if (PostgreSQL_FOUND)
     target_compile_definitions(server PRIVATE POSTGRES_FOUND)
     target_link_libraries(server ${PostgreSQL_LIBRARIES})
     target_include_directories(server PUBLIC ${PostgreSQL_INCLUDE_DIRS})
-else ()
-    message(STATUS "Using SQLite for persistence.")
-endif (CYPHESIS_USE_POSTGRES)
+endif (PostgreSQL_FOUND)
 
 add_executable(cyphesis
         server.cpp)

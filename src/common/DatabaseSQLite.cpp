@@ -258,10 +258,8 @@ int DatabaseSQLite::registerSimpleTable(const std::string& name,
             if (size == 0) {
                 createquery += " text";
             } else {
-                char buf[32];
-                snprintf(buf, 32, "%zd", size);
                 createquery += " varchar(";
-                createquery += buf;
+                createquery += std::to_string(size);
                 createquery += ")";
             }
         } else if (type.isInt()) {
