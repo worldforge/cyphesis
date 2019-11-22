@@ -53,3 +53,7 @@ int LocatedEntity::getAttrType(const std::string & name, Atlas::Message::Element
 }
 #endif //STUB_LocatedEntity_getAttrType
 
+
+std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
+{
+}

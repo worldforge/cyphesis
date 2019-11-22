@@ -40,13 +40,18 @@
 #include <cassert>
 
 class Domain;
+
 class LocatedEntity;
+
 class PropertyBase;
+
 class Script;
+
 class TypeNode;
+
 class _object;
 
-template <typename T>
+template<typename T>
 class Property;
 
 typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
@@ -63,8 +68,8 @@ static const std::uint32_t entity_pos_clean = 1u << 1u;
 static const std::uint32_t entity_orient_clean = 1u << 2u;
 
 static const std::uint32_t entity_clean_mask = entity_clean |
-                                              entity_pos_clean |
-                                              entity_orient_clean;
+                                               entity_pos_clean |
+                                               entity_orient_clean;
 
 /// \brief Flag indicating entity is perceptive
 /// \ingroup EntityFlags
@@ -125,332 +130,366 @@ static const std::uint32_t entity_contained_visible = 1u << 14u;
 /// which lists other entities which specify their location with reference to
 /// this one. It also provides the script interface for handling operations
 /// in scripts rather than in the C++ code.
-class LocatedEntity : public Router, public ReferenceCounted {
-  private:
-    static std::set<std::string> s_immutable;
-    static const std::set<std::string> & immutables();
+class LocatedEntity : public Router, public ReferenceCounted
+{
+    private:
+        static std::set<std::string> s_immutable;
 
-  protected:
-    /// Map of properties
-    PropertyDict m_properties;
+        static const std::set<std::string>& immutables();
 
-    /// Sequence number
-    int m_seq;
-    
-    /// Class of which this is an instance
-    const TypeNode * m_type;
+    protected:
+        /// Map of properties
+        PropertyDict m_properties;
+
+        /// Sequence number
+        int m_seq;
+
+        /// Class of which this is an instance
+        const TypeNode* m_type;
 
 
-    /**
-     * Collects all observers of the child, i.e. all entities that are currently observing it.
-     * This method will walk upwards the entity chain.
-     * @param child The child entity that's being observed.
-     * @param op
-     * @param res
-     */
-    void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
+        /**
+         * Collects all observers of the child, i.e. all entities that are currently observing it.
+         * This method will walk upwards the entity chain.
+         * @param child The child entity that's being observed.
+         * @param op
+         * @param res
+         */
+        void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
 
     public:
 
 
+        /// Flags indicating entity behaviour
+        Flags m_flags;
 
-    /// Flags indicating entity behaviour
-    Flags m_flags;
 
+        /// Scripts that are associated with this entity.
+        std::vector<std::unique_ptr<Script>> m_scripts;
+        /// Full details of location
+        Location m_location;
+        /// List of entities which use this as ref
+        std::unique_ptr<LocatedEntitySet> m_contains;
+        // A representation of this instance used by the scripting system. This is opaque to this class.
+        boost::any m_scriptEntity;
 
-    /// Scripts that are associated with this entity.
-    std::vector<std::unique_ptr<Script>> m_scripts;
-    /// Full details of location
-    Location m_location;
-    /// List of entities which use this as ref
-    std::unique_ptr<LocatedEntitySet> m_contains;
-    // A representation of this instance used by the scripting system. This is opaque to this class.
-    boost::any m_scriptEntity;
+        explicit LocatedEntity(const std::string& id, long intId);
 
-    explicit LocatedEntity(const std::string & id, long intId);
-    ~LocatedEntity() override;
+        ~LocatedEntity() override;
 
-    void clearProperties();
+        void clearProperties();
 
-    /// \brief Check if this entity is flagged as perceptive
-    bool isPerceptive() const { return m_flags.hasFlags(entity_perceptive); }
+        /// \brief Check if this entity is flagged as perceptive
+        bool isPerceptive() const
+        { return m_flags.hasFlags(entity_perceptive); }
 
-    /// \brief Check if this entity is flagged as destroyed
-    bool isDestroyed() const { return m_flags.hasFlags(entity_destroyed); }
+        /// \brief Check if this entity is flagged as destroyed
+        bool isDestroyed() const
+        { return m_flags.hasFlags(entity_destroyed); }
 
-    bool isVisible() const { return m_flags.hasFlags(entity_visible); }
+        bool isVisible() const
+        { return m_flags.hasFlags(entity_visible); }
 
-    /// \brief Accessor for flags
-    const Flags& flags() const { return m_flags; }
-    Flags& flags() { return m_flags; }
+        /// \brief Accessor for flags
+        const Flags& flags() const
+        { return m_flags; }
 
-    void addFlags(std::uint32_t flags)
-    {
-        m_flags.addFlags(flags);
-    }
+        Flags& flags()
+        { return m_flags; }
 
-    void removeFlags(std::uint32_t flags)
-    {
-        m_flags.removeFlags(flags);
-    }
-
-    bool hasFlags(std::uint32_t flags) const
-    {
-        return m_flags.hasFlags(flags);
-    }
-
-    /// \brief Accessor for sequence number
-    int getSeq() const { return m_seq; }
-    /// \brief Accessor for entity type property
-    const TypeNode * getType() const { return m_type; }
-    /// \brief Accessor for properties
-    const PropertyDict & getProperties() const { return m_properties; }
-
-    /// \brief Set the value of the entity type property
-    virtual void setType(const TypeNode * t);
-
-    bool hasAttr(const std::string & name) const;
-    virtual int getAttr(const std::string & name,
-                        Atlas::Message::Element &) const;
-    virtual int getAttrType(const std::string & name,
-                            Atlas::Message::Element &,
-                            int type) const;
-    virtual PropertyBase* setAttr(const std::string & name,
-                                  const Atlas::Message::Element &);
-    virtual const PropertyBase * getProperty(const std::string & name) const;
-    // FIXME These should be de-virtualised and, and implementations moved
-    // from Entity to here.
-    virtual PropertyBase * modProperty(const std::string & name, const Atlas::Message::Element& def_val = Atlas::Message::Element());
-    PropertyBase * setProperty(const std::string & name, PropertyBase * prop);
-    virtual PropertyBase * setProperty(const std::string & name, std::unique_ptr<PropertyBase> prop);
-
-    virtual void installDelegate(int, const std::string &);
-    virtual void removeDelegate(int, const std::string &);
-
-    virtual void onContainered(const Ref<LocatedEntity>& oldLocation);
-    virtual void onUpdated();
-
-    virtual void destroy() = 0;
-
-    virtual Domain * getDomain();
-    virtual const Domain * getDomain() const;
-
-    virtual void setDomain(std::unique_ptr<Domain> domain);
-
-    virtual void sendWorld(const Operation & op);
-
-    virtual void setScript(std::unique_ptr<Script> scrpt);
-    void makeContainer();
-    void changeContainer(const Ref<LocatedEntity>&);
-    void merge(const Atlas::Message::MapType &);
-
-    /// \brief Adds a child to this entity.
-    virtual void addChild(LocatedEntity& childEntity);
-    /// \brief Removes a child from this entity.
-    virtual void removeChild(LocatedEntity& childEntity);
-
-    virtual void addListener(OperationsListener* listener);
-    virtual void removeListener(OperationsListener* listener);
-
-    /**
-     * Applies the property and set flags on both the property and the entity to mark them as unclean.
-     * @param name
-     * @param prop
-     */
-    void applyProperty(const std::string& name, PropertyBase* prop);
-
-    /**
-     * Collects all entities that are observing this entity.
-     * @param observers A set which will be filled with observing entities.
-     */
-    void collectObservers(std::set<const LocatedEntity*>& observers) const;
-
-    /**
-     * Broadcasts an op.
-     *
-     * If this entity has a domain, the op is broadcast to all observers in the domain.
-     * In addition, broadcastFromChild will be called on any parent entity, to make it broadcast to entities in the same domain, or in domains above.
-     * @param op
-     * @param res
-     */
-    void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const;
-
-    /**
-     * Processes appearance and disappearance of this entity for other observing entities. This is done by matching the supplied list of entities that previously
-     * observed the entity. When called, a list of entities that are currently observing it will be created, and the two lists will be compared.
-     *
-     * Any new entity gets a "Appearance" op, and any old entity which wasn't present in the new list will get a "Disappearance" op.
-     * @param previousObserving
-     * @param res
-     */
-    void processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const;
-
-     /**
-     * @brief Determines if this entity is visible to another entity.
-     *
-     * @param watcher The other entity observing this entity, for which we want to determine visibility.
-     * @return True if this entity is visible to another entity.
-     */
-    bool isVisibleForOtherEntity(const LocatedEntity* watcher) const;
-
-    /**
-    * @brief Determines if this entity can be reached by another entity (i.e. physically interacted with).
-    *
-    * @param entityLocation Where we want to reach.
-    * @return True if this entity is reachable to another entity.
-    */
-    bool canReach(const EntityLocation& entityLocation, float extraReach = 0) const;
-
-    /// \brief Get a property that is required to of a given type.
-    template <class PropertyT>
-    const PropertyT * getPropertyClass(const std::string & name) const
-    {
-        const PropertyBase * p = getProperty(name);
-        if (p != nullptr) {
-            return dynamic_cast<const PropertyT *>(p);
+        void addFlags(std::uint32_t flags)
+        {
+            m_flags.addFlags(flags);
         }
-        return nullptr;
-    }
 
-    /// \brief Get a property that is required to of a given type.
-    ///
-    /// The specified class must present the "property_name" trait.
-    template <class PropertyT>
-    const PropertyT * getPropertyClassFixed() const
-    {
-        return this->getPropertyClass<PropertyT>(PropertyT::property_name);
-    }
-
-    /// \brief Get a property that is a generic property of a given type
-    template <typename T>
-    const Property<T> * getPropertyType(const std::string & name) const
-    {
-        const PropertyBase * p = getProperty(name);
-        if (p != nullptr) {
-            return dynamic_cast<const Property<T> *>(p);
+        void removeFlags(std::uint32_t flags)
+        {
+            m_flags.removeFlags(flags);
         }
-        return nullptr;
-    }
 
-    /// \brief Get a property that is required to of a given type.
-    template <class PropertyT>
-    PropertyT * modPropertyClass(const std::string & name)
-    {
-        PropertyBase * p = modProperty(name);
-        if (p != nullptr) {
-            return dynamic_cast<PropertyT *>(p);
+        bool hasFlags(std::uint32_t flags) const
+        {
+            return m_flags.hasFlags(flags);
         }
-        return nullptr;
-    }
 
-    /// \brief Get a property that is required to of a given type.
-    ///
-    /// The specified class must present the "property_name" trait.
-    template <class PropertyT>
-    PropertyT * modPropertyClassFixed()
-    {
-        return this->modPropertyClass<PropertyT>(PropertyT::property_name);
-    }
+        /// \brief Accessor for sequence number
+        int getSeq() const
+        { return m_seq; }
 
-    /// \brief Get a modifiable property that is a generic property of a type
-    ///
-    /// If the property is not set on the Entity instance, but has a class
-    /// default, the default is copied to the instance, and a pointer is
-    /// returned if it is a property of the right type.
-    template <typename T>
-    Property<T> * modPropertyType(const std::string & name)
-    {
-        PropertyBase * p = modProperty(name);
-        if (p != nullptr) {
-            return dynamic_cast<Property<T> *>(p);
-        }
-        return nullptr;
-    }
+        /// \brief Accessor for entity type property
+        const TypeNode* getType() const
+        { return m_type; }
 
-    /// \brief Require that a property of a given type is set.
-    ///
-    /// If the property is not set on the Entity instance, but has a class
-    /// default, the default is copied to the instance, and a pointer is
-    /// returned if it is a property of the right type. If it does not
-    /// exist, or is not of the right type, a new property is created of
-    /// the right type, and installed on the Entity instance.
-    template <class PropertyT>
-    PropertyT * requirePropertyClass(const std::string & name,
-                                     const Atlas::Message::Element & def_val
-                                     = Atlas::Message::Element())
-    {
-        PropertyBase * p = modProperty(name, def_val);
-        PropertyT * sp = nullptr;
-        if (p != nullptr) {
-            sp = dynamic_cast<PropertyT *>(p);
-        }
-        if (sp == nullptr) {
-            // If it is not of the right type, delete it and a new
-            // one of the right type will be inserted.
-            sp = new PropertyT;
-            m_properties[name].reset(sp);
-            sp->install(this, name);
+        /// \brief Accessor for properties
+        const PropertyDict& getProperties() const
+        { return m_properties; }
+
+        /// \brief Set the value of the entity type property
+        virtual void setType(const TypeNode* t);
+
+        bool hasAttr(const std::string& name) const;
+
+        virtual int getAttr(const std::string& name,
+                            Atlas::Message::Element&) const;
+
+        virtual int getAttrType(const std::string& name,
+                                Atlas::Message::Element&,
+                                int type) const;
+
+        virtual PropertyBase* setAttr(const std::string& name,
+                                      const Atlas::Message::Element&);
+
+        virtual const PropertyBase* getProperty(const std::string& name) const;
+
+        // FIXME These should be de-virtualised and, and implementations moved
+        // from Entity to here.
+        virtual PropertyBase* modProperty(const std::string& name, const Atlas::Message::Element& def_val = Atlas::Message::Element());
+
+        PropertyBase* setProperty(const std::string& name, PropertyBase* prop);
+
+        virtual PropertyBase* setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop);
+
+        virtual void installDelegate(int, const std::string&);
+
+        virtual void removeDelegate(int, const std::string&);
+
+        virtual void onContainered(const Ref<LocatedEntity>& oldLocation);
+
+        virtual void onUpdated();
+
+        virtual void destroy() = 0;
+
+        virtual Domain* getDomain();
+
+        virtual const Domain* getDomain() const;
+
+        virtual void setDomain(std::unique_ptr<Domain> domain);
+
+        virtual void sendWorld(const Operation& op);
+
+        virtual void setScript(std::unique_ptr<Script> scrpt);
+
+        void makeContainer();
+
+        void changeContainer(const Ref<LocatedEntity>&);
+
+        void merge(const Atlas::Message::MapType&);
+
+        /// \brief Adds a child to this entity.
+        virtual void addChild(LocatedEntity& childEntity);
+
+        /// \brief Removes a child from this entity.
+        virtual void removeChild(LocatedEntity& childEntity);
+
+        virtual void addListener(OperationsListener* listener);
+
+        virtual void removeListener(OperationsListener* listener);
+
+        /**
+         * Applies the property and set flags on both the property and the entity to mark them as unclean.
+         * @param name
+         * @param prop
+         */
+        void applyProperty(const std::string& name, PropertyBase* prop);
+
+        /**
+         * Collects all entities that are observing this entity.
+         * @param observers A set which will be filled with observing entities.
+         */
+        void collectObservers(std::set<const LocatedEntity*>& observers) const;
+
+        /**
+         * Broadcasts an op.
+         *
+         * If this entity has a domain, the op is broadcast to all observers in the domain.
+         * In addition, broadcastFromChild will be called on any parent entity, to make it broadcast to entities in the same domain, or in domains above.
+         * @param op
+         * @param res
+         */
+        void broadcast(const Atlas::Objects::Operation::RootOperation& op, OpVector& res, Visibility visibility) const;
+
+        /**
+         * Processes appearance and disappearance of this entity for other observing entities. This is done by matching the supplied list of entities that previously
+         * observed the entity. When called, a list of entities that are currently observing it will be created, and the two lists will be compared.
+         *
+         * Any new entity gets a "Appearance" op, and any old entity which wasn't present in the new list will get a "Disappearance" op.
+         * @param previousObserving
+         * @param res
+         */
+        void processAppearDisappear(std::set<const LocatedEntity*> previousObserving, OpVector& res) const;
+
+        /**
+        * @brief Determines if this entity is visible to another entity.
+        *
+        * @param watcher The other entity observing this entity, for which we want to determine visibility.
+        * @return True if this entity is visible to another entity.
+        */
+        bool isVisibleForOtherEntity(const LocatedEntity* watcher) const;
+
+        /**
+        * @brief Determines if this entity can be reached by another entity (i.e. physically interacted with).
+        *
+        * @param entityLocation Where we want to reach.
+        * @return True if this entity is reachable to another entity.
+        */
+        bool canReach(const EntityLocation& entityLocation, float extraReach = 0) const;
+
+        /// \brief Get a property that is required to of a given type.
+        template<class PropertyT>
+        const PropertyT* getPropertyClass(const std::string& name) const
+        {
+            const PropertyBase* p = getProperty(name);
             if (p != nullptr) {
-                log(WARNING, String::compose("Property %1 on entity with id %2 "
-                        "reinstalled with new class."
-                        "This might cause instability. Make sure that all "
-                        "properties are properly installed in "
-                        "CorePropertyManager.", name, getId()));
-                Atlas::Message::Element val;
-                if (p->get(val)) {
-                    sp->set(val);
-                }
-            } else if (!def_val.isNone()) {
-                sp->set(def_val);
+                return dynamic_cast<const PropertyT*>(p);
             }
-            sp->apply(this);
+            return nullptr;
         }
-        return sp;
-    }
 
-    /// \brief Require that a property of a given type is set, relying on the "property_name" trait.
-    ///
-    /// If the property is not set on the Entity instance, but has a class
-    /// default, the default is copied to the instance, and a pointer is
-    /// returned if it is a property of the right type. If it does not
-    /// exist, or is not of the right type, a new property is created of
-    /// the right type, and installed on the Entity instance.
-    ///
-    /// The specified class must present the "property_name" trait.
-    template <class PropertyT>
-    PropertyT * requirePropertyClassFixed(const Atlas::Message::Element & def_val
-            = Atlas::Message::Element())
-    {
-        return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);
-    }
+        /// \brief Get a property that is required to of a given type.
+        ///
+        /// The specified class must present the "property_name" trait.
+        template<class PropertyT>
+        const PropertyT* getPropertyClassFixed() const
+        {
+            return this->getPropertyClass<PropertyT>(PropertyT::property_name);
+        }
 
-    /**
-     * Generates a string describing this entity, used for debugging.
-     *
-     * @return A string describing the entity in more detail.
-     */
-    std::string describeEntity() const;
+        /// \brief Get a property that is a generic property of a given type
+        template<typename T>
+        const Property<T>* getPropertyType(const std::string& name) const
+        {
+            const PropertyBase* p = getProperty(name);
+            if (p != nullptr) {
+                return dynamic_cast<const Property<T>*>(p);
+            }
+            return nullptr;
+        }
 
-    /// Signal indicating that this entity has been changed
-    sigc::signal<void> updated;
+        /// \brief Get a property that is required to of a given type.
+        template<class PropertyT>
+        PropertyT* modPropertyClass(const std::string& name)
+        {
+            PropertyBase* p = modProperty(name);
+            if (p != nullptr) {
+                return dynamic_cast<PropertyT*>(p);
+            }
+            return nullptr;
+        }
 
-    /// Signal indicating that this entity has changed its LOC.
-    /// First parameter is the old location.
-    sigc::signal<void, const Ref<LocatedEntity>&> containered;
+        /// \brief Get a property that is required to of a given type.
+        ///
+        /// The specified class must present the "property_name" trait.
+        template<class PropertyT>
+        PropertyT* modPropertyClassFixed()
+        {
+            return this->modPropertyClass<PropertyT>(PropertyT::property_name);
+        }
 
-    /// \brief Signal emitted when this entity is removed from the server
-    ///
-    /// Note that this is usually well before the object is actually deleted
-    /// and marks the conceptual destruction of the concept this entity
-    /// represents, not the destruction of this object.
-    sigc::signal<void> destroyed;
+        /// \brief Get a modifiable property that is a generic property of a type
+        ///
+        /// If the property is not set on the Entity instance, but has a class
+        /// default, the default is copied to the instance, and a pointer is
+        /// returned if it is a property of the right type.
+        template<typename T>
+        Property<T>* modPropertyType(const std::string& name)
+        {
+            PropertyBase* p = modProperty(name);
+            if (p != nullptr) {
+                return dynamic_cast<Property<T>*>(p);
+            }
+            return nullptr;
+        }
 
-    /// @brief Signal emitted whenever a property update is applied.
-    ///
-    /// The first parameter is the name of the property, the second is the updated property.
-    sigc::signal<void, const std::string&, const PropertyBase&> propertyApplied;
+        /// \brief Require that a property of a given type is set.
+        ///
+        /// If the property is not set on the Entity instance, but has a class
+        /// default, the default is copied to the instance, and a pointer is
+        /// returned if it is a property of the right type. If it does not
+        /// exist, or is not of the right type, a new property is created of
+        /// the right type, and installed on the Entity instance.
+        template<class PropertyT>
+        PropertyT* requirePropertyClass(const std::string& name,
+                                        const Atlas::Message::Element& def_val
+                                        = Atlas::Message::Element())
+        {
+            PropertyBase* p = modProperty(name, def_val);
+            PropertyT* sp = nullptr;
+            if (p != nullptr) {
+                sp = dynamic_cast<PropertyT*>(p);
+            }
+            if (sp == nullptr) {
+                // If it is not of the right type, delete it and a new
+                // one of the right type will be inserted.
+                sp = new PropertyT;
+                m_properties[name].reset(sp);
+                sp->install(this, name);
+                if (p != nullptr) {
+                    log(WARNING, String::compose("Property %1 on entity with id %2 "
+                                                 "reinstalled with new class."
+                                                 "This might cause instability. Make sure that all "
+                                                 "properties are properly installed in "
+                                                 "CorePropertyManager.", name, getId()));
+                    Atlas::Message::Element val;
+                    if (p->get(val)) {
+                        sp->set(val);
+                    }
+                } else if (!def_val.isNone()) {
+                    sp->set(def_val);
+                }
+                sp->apply(this);
+            }
+            return sp;
+        }
 
-    friend class LocatedEntitytest;
+        /// \brief Require that a property of a given type is set, relying on the "property_name" trait.
+        ///
+        /// If the property is not set on the Entity instance, but has a class
+        /// default, the default is copied to the instance, and a pointer is
+        /// returned if it is a property of the right type. If it does not
+        /// exist, or is not of the right type, a new property is created of
+        /// the right type, and installed on the Entity instance.
+        ///
+        /// The specified class must present the "property_name" trait.
+        template<class PropertyT>
+        PropertyT* requirePropertyClassFixed(const Atlas::Message::Element& def_val
+        = Atlas::Message::Element())
+        {
+            return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);
+        }
+
+        /**
+         * Generates a string describing this entity, used for debugging.
+         *
+         * @return A string describing the entity in more detail.
+         */
+        std::string describeEntity() const;
+
+        /// Signal indicating that this entity has been changed
+        sigc::signal<void> updated;
+
+        /// Signal indicating that this entity has changed its LOC.
+        /// First parameter is the old location.
+        sigc::signal<void, const Ref<LocatedEntity>&> containered;
+
+        /// \brief Signal emitted when this entity is removed from the server
+        ///
+        /// Note that this is usually well before the object is actually deleted
+        /// and marks the conceptual destruction of the concept this entity
+        /// represents, not the destruction of this object.
+        sigc::signal<void> destroyed;
+
+        /// @brief Signal emitted whenever a property update is applied.
+        ///
+        /// The first parameter is the name of the property, the second is the updated property.
+        sigc::signal<void, const std::string&, const PropertyBase&> propertyApplied;
+
+        friend class LocatedEntitytest;
+
+        friend std::ostream& operator<<(std::ostream& s, const LocatedEntity& d);
+
 };
+
+std::ostream& operator<<(std::ostream& s, const LocatedEntity& d);
+
 
 #endif // RULESETS_LOCATED_ENTITY_H

@@ -9,7 +9,7 @@
 
 #ifndef STUB_BaseMind_BaseMind
 //#define STUB_BaseMind_BaseMind
-   BaseMind::BaseMind(const std::string & mindId, std::string entityId)
+   BaseMind::BaseMind(const std::string& mindId, std::string entityId)
     : Router(mindId, entityId)
     , m_scriptFactory(nullptr)
   {
@@ -51,7 +51,7 @@
 
 #ifndef STUB_BaseMind_sightCreateOperation
 //#define STUB_BaseMind_sightCreateOperation
-  void BaseMind::sightCreateOperation(const Operation &, OpVector &)
+  void BaseMind::sightCreateOperation(const Operation&, OpVector&)
   {
     
   }
@@ -59,7 +59,7 @@
 
 #ifndef STUB_BaseMind_sightDeleteOperation
 //#define STUB_BaseMind_sightDeleteOperation
-  void BaseMind::sightDeleteOperation(const Operation &, OpVector &)
+  void BaseMind::sightDeleteOperation(const Operation&, OpVector&)
   {
     
   }
@@ -67,7 +67,7 @@
 
 #ifndef STUB_BaseMind_sightMoveOperation
 //#define STUB_BaseMind_sightMoveOperation
-  void BaseMind::sightMoveOperation(const Operation &, OpVector &)
+  void BaseMind::sightMoveOperation(const Operation&, OpVector&)
   {
     
   }
@@ -75,7 +75,7 @@
 
 #ifndef STUB_BaseMind_sightSetOperation
 //#define STUB_BaseMind_sightSetOperation
-  void BaseMind::sightSetOperation(const Operation &, OpVector &)
+  void BaseMind::sightSetOperation(const Operation&, OpVector&)
   {
     
   }
@@ -91,7 +91,7 @@
 
 #ifndef STUB_BaseMind_operation
 //#define STUB_BaseMind_operation
-  void BaseMind::operation(const Operation &, OpVector &)
+  void BaseMind::operation(const Operation&, OpVector&)
   {
     
   }
@@ -99,7 +99,7 @@
 
 #ifndef STUB_BaseMind_externalOperation
 //#define STUB_BaseMind_externalOperation
-  void BaseMind::externalOperation(const Operation & op, Link &)
+  void BaseMind::externalOperation(const Operation& op, Link&)
   {
     
   }
@@ -107,7 +107,7 @@
 
 #ifndef STUB_BaseMind_SightOperation
 //#define STUB_BaseMind_SightOperation
-  void BaseMind::SightOperation(const Operation &, OpVector &)
+  void BaseMind::SightOperation(const Operation&, OpVector&)
   {
     
   }
@@ -115,7 +115,7 @@
 
 #ifndef STUB_BaseMind_SoundOperation
 //#define STUB_BaseMind_SoundOperation
-  void BaseMind::SoundOperation(const Operation &, OpVector &)
+  void BaseMind::SoundOperation(const Operation&, OpVector&)
   {
     
   }
@@ -123,7 +123,7 @@
 
 #ifndef STUB_BaseMind_AppearanceOperation
 //#define STUB_BaseMind_AppearanceOperation
-  void BaseMind::AppearanceOperation(const Operation &, OpVector &)
+  void BaseMind::AppearanceOperation(const Operation&, OpVector&)
   {
     
   }
@@ -131,7 +131,7 @@
 
 #ifndef STUB_BaseMind_DisappearanceOperation
 //#define STUB_BaseMind_DisappearanceOperation
-  void BaseMind::DisappearanceOperation(const Operation &, OpVector &)
+  void BaseMind::DisappearanceOperation(const Operation&, OpVector&)
   {
     
   }
@@ -139,7 +139,7 @@
 
 #ifndef STUB_BaseMind_UnseenOperation
 //#define STUB_BaseMind_UnseenOperation
-  void BaseMind::UnseenOperation(const Operation &, OpVector &)
+  void BaseMind::UnseenOperation(const Operation&, OpVector&)
   {
     
   }
@@ -147,7 +147,7 @@
 
 #ifndef STUB_BaseMind_ThinkOperation
 //#define STUB_BaseMind_ThinkOperation
-  void BaseMind::ThinkOperation(const Operation &, OpVector &)
+  void BaseMind::ThinkOperation(const Operation&, OpVector&)
   {
     
   }
@@ -163,7 +163,7 @@
 
 #ifndef STUB_BaseMind_callSightOperation
 //#define STUB_BaseMind_callSightOperation
-  void BaseMind::callSightOperation(const Operation &, OpVector &)
+  void BaseMind::callSightOperation(const Operation&, OpVector&)
   {
     
   }
@@ -171,7 +171,7 @@
 
 #ifndef STUB_BaseMind_callSoundOperation
 //#define STUB_BaseMind_callSoundOperation
-  void BaseMind::callSoundOperation(const Operation &, OpVector &)
+  void BaseMind::callSoundOperation(const Operation&, OpVector&)
   {
     
   }
@@ -192,6 +192,14 @@
     
   }
 #endif //STUB_BaseMind_setOwnEntity
+
+#ifndef STUB_BaseMind_describeEntity
+//#define STUB_BaseMind_describeEntity
+  std::string BaseMind::describeEntity() const
+  {
+    return "";
+  }
+#endif //STUB_BaseMind_describeEntity
 
 
 #endif

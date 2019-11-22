@@ -25,7 +25,7 @@
 
 #ifndef STUB_LocatedEntity_LocatedEntity
 //#define STUB_LocatedEntity_LocatedEntity
-   LocatedEntity::LocatedEntity(const std::string & id, long intId)
+   LocatedEntity::LocatedEntity(const std::string& id, long intId)
     : Router(id, intId)
     , m_type(nullptr)
   {
@@ -51,7 +51,7 @@
 
 #ifndef STUB_LocatedEntity_setType
 //#define STUB_LocatedEntity_setType
-  void LocatedEntity::setType(const TypeNode * t)
+  void LocatedEntity::setType(const TypeNode* t)
   {
     
   }
@@ -59,7 +59,7 @@
 
 #ifndef STUB_LocatedEntity_hasAttr
 //#define STUB_LocatedEntity_hasAttr
-  bool LocatedEntity::hasAttr(const std::string & name) const
+  bool LocatedEntity::hasAttr(const std::string& name) const
   {
     return false;
   }
@@ -67,7 +67,7 @@
 
 #ifndef STUB_LocatedEntity_getAttr
 //#define STUB_LocatedEntity_getAttr
-  int LocatedEntity::getAttr(const std::string & name, Atlas::Message::Element &) const
+  int LocatedEntity::getAttr(const std::string& name, Atlas::Message::Element&) const
   {
     return 0;
   }
@@ -75,7 +75,7 @@
 
 #ifndef STUB_LocatedEntity_getAttrType
 //#define STUB_LocatedEntity_getAttrType
-  int LocatedEntity::getAttrType(const std::string & name, Atlas::Message::Element &, int type) const
+  int LocatedEntity::getAttrType(const std::string& name, Atlas::Message::Element&, int type) const
   {
     return 0;
   }
@@ -83,7 +83,7 @@
 
 #ifndef STUB_LocatedEntity_setAttr
 //#define STUB_LocatedEntity_setAttr
-  PropertyBase* LocatedEntity::setAttr(const std::string & name, const Atlas::Message::Element &)
+  PropertyBase* LocatedEntity::setAttr(const std::string& name, const Atlas::Message::Element&)
   {
     return nullptr;
   }
@@ -91,7 +91,7 @@
 
 #ifndef STUB_LocatedEntity_getProperty
 //#define STUB_LocatedEntity_getProperty
-  const PropertyBase* LocatedEntity::getProperty(const std::string & name) const
+  const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
   {
     return nullptr;
   }
@@ -99,7 +99,7 @@
 
 #ifndef STUB_LocatedEntity_modProperty
 //#define STUB_LocatedEntity_modProperty
-  PropertyBase* LocatedEntity::modProperty(const std::string & name, const Atlas::Message::Element& def_val )
+  PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::Message::Element& def_val )
   {
     return nullptr;
   }
@@ -107,7 +107,7 @@
 
 #ifndef STUB_LocatedEntity_setProperty
 //#define STUB_LocatedEntity_setProperty
-  PropertyBase* LocatedEntity::setProperty(const std::string & name, PropertyBase * prop)
+  PropertyBase* LocatedEntity::setProperty(const std::string& name, PropertyBase* prop)
   {
     return nullptr;
   }
@@ -115,7 +115,7 @@
 
 #ifndef STUB_LocatedEntity_setProperty
 //#define STUB_LocatedEntity_setProperty
-  PropertyBase* LocatedEntity::setProperty(const std::string & name, std::unique_ptr<PropertyBase> prop)
+  PropertyBase* LocatedEntity::setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop)
   {
     return nullptr;
   }
@@ -123,7 +123,7 @@
 
 #ifndef STUB_LocatedEntity_installDelegate
 //#define STUB_LocatedEntity_installDelegate
-  void LocatedEntity::installDelegate(int, const std::string &)
+  void LocatedEntity::installDelegate(int, const std::string&)
   {
     
   }
@@ -131,7 +131,7 @@
 
 #ifndef STUB_LocatedEntity_removeDelegate
 //#define STUB_LocatedEntity_removeDelegate
-  void LocatedEntity::removeDelegate(int, const std::string &)
+  void LocatedEntity::removeDelegate(int, const std::string&)
   {
     
   }
@@ -187,7 +187,7 @@
 
 #ifndef STUB_LocatedEntity_sendWorld
 //#define STUB_LocatedEntity_sendWorld
-  void LocatedEntity::sendWorld(const Operation & op)
+  void LocatedEntity::sendWorld(const Operation& op)
   {
     
   }
@@ -219,7 +219,7 @@
 
 #ifndef STUB_LocatedEntity_merge
 //#define STUB_LocatedEntity_merge
-  void LocatedEntity::merge(const Atlas::Message::MapType &)
+  void LocatedEntity::merge(const Atlas::Message::MapType&)
   {
     
   }

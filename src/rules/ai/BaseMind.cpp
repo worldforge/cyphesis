@@ -45,15 +45,15 @@ using Atlas::Objects::smart_dynamic_cast;
 static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string& mindId, std::string entityId) :
-        Router(mindId, std::stol(mindId)),
-        m_entityId(std::move(entityId)),
-        m_flags(0),
-        m_typeStore(new SimpleTypeStore()),
-        m_typeResolver(new TypeResolver(*m_typeStore)),
-        m_map(*m_typeResolver),
-        m_time(new WorldTime()),
-        m_serialNoCounter(0),
-        m_scriptFactory(nullptr)
+    Router(mindId, std::stol(mindId)),
+    m_entityId(std::move(entityId)),
+    m_flags(0),
+    m_typeStore(new SimpleTypeStore()),
+    m_typeResolver(new TypeResolver(*m_typeStore)),
+    m_map(*m_typeResolver),
+    m_time(new WorldTime()),
+    m_serialNoCounter(0),
+    m_scriptFactory(nullptr)
 {
     m_typeResolver->m_typeProviderId = mindId;
 }
@@ -573,5 +573,21 @@ void BaseMind::setScript(std::unique_ptr<Script> scrpt)
 const TypeStore& BaseMind::getTypeStore() const
 {
     return *m_typeStore;
+}
+
+std::string BaseMind::describeEntity() const
+{
+    std::stringstream ss;
+    ss << *this;
+    return ss.str();
+}
+
+std::ostream& operator<<(std::ostream& s, const BaseMind& d)
+{
+    if (d.m_ownEntity) {
+        s << *d.m_ownEntity;
+    } else {
+        String::compose("'%1'", d.m_entityId);
+    }
 }
 

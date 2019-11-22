@@ -187,7 +187,7 @@ const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
     return nullptr;
 }
 
-PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::Message::Element & def_val)
+PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::Message::Element& def_val)
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
@@ -204,7 +204,7 @@ PropertyBase* LocatedEntity::setProperty(const std::string& name,
     return p;
 }
 
-PropertyBase * LocatedEntity::setProperty(const std::string & name, PropertyBase * prop)
+PropertyBase* LocatedEntity::setProperty(const std::string& name, PropertyBase* prop)
 {
     return setProperty(name, std::unique_ptr<PropertyBase>(prop));
 }
@@ -261,7 +261,6 @@ void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
 {
     //no-op
 }
-
 
 
 /// \brief Send an operation to the world for dispatch.
@@ -400,7 +399,8 @@ void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previo
     }
 }
 
-void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop) {
+void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
+{
     // Allow the value to take effect.
     prop->apply(this);
     prop->addFlags(flag_unsent);
@@ -619,21 +619,24 @@ void LocatedEntity::merge(const MapType& ent)
 std::string LocatedEntity::describeEntity() const
 {
     std::stringstream ss;
-    Element nameAttr;
-    int nameResult = getAttrType("name", nameAttr, Element::TYPE_STRING);
-    ss << getId();
-    if (m_type) {
-        ss << "(" << m_type->name();
-        if (nameResult == 0) {
-            ss << ",'" << nameAttr.String() << "'";
-        }
-        ss << ")";
-    } else {
-        if (nameResult == 0) {
-            ss << "('" << nameAttr.String() << "')";
-        }
-    }
-
+    ss << *this;
     return ss.str();
 }
 
+std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
+{
+    Element nameAttr;
+    int nameResult = d.getAttrType("name", nameAttr, Element::TYPE_STRING);
+    s << d.getId();
+    if (d.m_type) {
+        s << "(" << d.m_type->name();
+        if (nameResult == 0) {
+            s << ",'" << nameAttr.String() << "'";
+        }
+        s << ")";
+    } else {
+        if (nameResult == 0) {
+            s << "('" << nameAttr.String() << "')";
+        }
+    }
+}

@@ -25,6 +25,7 @@
 #include "common/ScriptKit.h"
 
 class SimpleTypeStore;
+
 struct TypeStore;
 
 /// \brief This is core class for representing the mind of an AI entity.
@@ -33,99 +34,124 @@ struct TypeStore;
 /// handles most of the AI. The main purpose of this class is to handle
 /// operations and interface to the MemMap used as the core of
 /// the entity's memory.
-class BaseMind : public Router, public ReferenceCounted {
-  protected:
+class BaseMind : public Router, public ReferenceCounted
+{
+    protected:
 
-    std::string m_entityId;
+        std::string m_entityId;
 
-    Flags m_flags;
+        Flags m_flags;
 
-    std::unique_ptr<SimpleTypeStore> m_typeStore;
-    std::unique_ptr<TypeResolver> m_typeResolver;
+        std::unique_ptr<SimpleTypeStore> m_typeStore;
+        std::unique_ptr<TypeResolver> m_typeResolver;
 
-    /// \brief Memory map of world entities this mind knows about
-    MemMap m_map;
-    /// \brief World time as far as this mind is aware
-    std::shared_ptr<WorldTime> m_time;
+        /// \brief Memory map of world entities this mind knows about
+        MemMap m_map;
+        /// \brief World time as far as this mind is aware
+        std::shared_ptr<WorldTime> m_time;
 
-    std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
-    std::vector<Operation> m_pendingOperations;
+        std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
+        std::vector<Operation> m_pendingOperations;
 
-    long m_serialNoCounter;
+        long m_serialNoCounter;
 
-    std::unique_ptr<Script> m_script;
+        std::unique_ptr<Script> m_script;
 
-    Ref<MemEntity> m_ownEntity;
+        Ref<MemEntity> m_ownEntity;
 
-    std::map<std::string, std::string> m_propertyScriptCallbacks;
+        std::map<std::string, std::string> m_propertyScriptCallbacks;
 
 
     public:
-    BaseMind(const std::string & mindId, std::string entityId);
+        BaseMind(const std::string& mindId, std::string entityId);
 
-    ~BaseMind() override;
+        ~BaseMind() override;
 
-    ScriptKit<BaseMind>* m_scriptFactory;
+        ScriptKit<BaseMind>* m_scriptFactory;
 
-    void init(OpVector& res);
+        void init(OpVector& res);
 
-    /**
-     * Call this when the mind is destroyed and shouldn't receive any more ops.
-     * This will clear any references to it.
-     */
-    void destroy();
+        /**
+         * Call this when the mind is destroyed and shouldn't receive any more ops.
+         * This will clear any references to it.
+         */
+        void destroy();
 
-    /// \brief Accessor for the memory map of world entities
-    MemMap * getMap() { return &m_map; }
-    /// \brief Accessor for the world time
-    std::shared_ptr<WorldTime> getTime() const
-    { return m_time; }
+        /// \brief Accessor for the memory map of world entities
+        MemMap* getMap()
+        { return &m_map; }
 
-    const Ref<MemEntity>& getEntity() const {
-        return m_ownEntity;
-    }
+        /// \brief Accessor for the world time
+        std::shared_ptr<WorldTime> getTime() const
+        { return m_time; }
 
-    const TypeStore& getTypeStore() const;
+        const Ref<MemEntity>& getEntity() const
+        {
+            return m_ownEntity;
+        }
 
-    /// \brief Is this mind active
-    bool isAwake() const { return !m_flags.hasFlags(entity_asleep); }
+        const TypeStore& getTypeStore() const;
 
-    /// \brief Set this mind as inactive
-    void sleep() { m_flags.addFlags(entity_asleep); }
-    /// \brief Set this mind as active
-    void awake() { m_flags.removeFlags(entity_asleep); }
+        /// \brief Is this mind active
+        bool isAwake() const
+        { return !m_flags.hasFlags(entity_asleep); }
 
-    void sightCreateOperation(const Operation &, OpVector &);
-    void sightDeleteOperation(const Operation &, OpVector &);
-    void sightMoveOperation(const Operation &, OpVector &);
-    void sightSetOperation(const Operation &, OpVector &);
+        /// \brief Set this mind as inactive
+        void sleep()
+        { m_flags.addFlags(entity_asleep); }
 
-    void addPropertyScriptCallback(std::string propertyName, std::string scriptMethod);
+        /// \brief Set this mind as active
+        void awake()
+        { m_flags.removeFlags(entity_asleep); }
 
-    void operation(const Operation &, OpVector &) override;
+        void sightCreateOperation(const Operation&, OpVector&);
 
-    void externalOperation(const Operation & op, Link &) override;
+        void sightDeleteOperation(const Operation&, OpVector&);
 
-    void SightOperation(const Operation &, OpVector &);
-    void SoundOperation(const Operation &, OpVector &);
-    void AppearanceOperation(const Operation &, OpVector &);
-    void DisappearanceOperation(const Operation &, OpVector &);
-    void UnseenOperation(const Operation &, OpVector &);
-    void ThinkOperation(const Operation &, OpVector &);
-    void InfoOperation(const Operation&, OpVector& );
+        void sightMoveOperation(const Operation&, OpVector&);
 
-    void callSightOperation(const Operation &, OpVector &);
-    void callSoundOperation(const Operation &, OpVector &);
+        void sightSetOperation(const Operation&, OpVector&);
 
-    friend class BaseMindMapEntityintegration;
+        void addPropertyScriptCallback(std::string propertyName, std::string scriptMethod);
 
-    void setScript(std::unique_ptr<Script> scrpt);
+        void operation(const Operation&, OpVector&) override;
 
-    /// \brief Check if this entity is flagged as destroyed
-    bool isDestroyed() const { return m_flags.hasFlags(entity_destroyed); }
+        void externalOperation(const Operation& op, Link&) override;
 
-    virtual void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity);
+        void SightOperation(const Operation&, OpVector&);
+
+        void SoundOperation(const Operation&, OpVector&);
+
+        void AppearanceOperation(const Operation&, OpVector&);
+
+        void DisappearanceOperation(const Operation&, OpVector&);
+
+        void UnseenOperation(const Operation&, OpVector&);
+
+        void ThinkOperation(const Operation&, OpVector&);
+
+        void InfoOperation(const Operation&, OpVector&);
+
+        void callSightOperation(const Operation&, OpVector&);
+
+        void callSoundOperation(const Operation&, OpVector&);
+
+        friend class BaseMindMapEntityintegration;
+
+        void setScript(std::unique_ptr<Script> scrpt);
+
+        /// \brief Check if this entity is flagged as destroyed
+        bool isDestroyed() const
+        { return m_flags.hasFlags(entity_destroyed); }
+
+        virtual void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity);
+
+        std::string describeEntity() const;
+
+        friend std::ostream& operator<<(std::ostream& s, const BaseMind& d);
 
 };
+
+std::ostream& operator<<(std::ostream& s, const BaseMind& d);
 
 #endif // RULESETS_BASE_MIND_H
