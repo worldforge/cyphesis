@@ -10,11 +10,11 @@ if [ ! -f ./bin/cyphesis ] ; then
     exit 1
 fi
 
-TOP=`pwd`
+TOP=$(pwd)
 export PYTHONHOME=${TOP}
 DIROPTS="--cyphesis:directory=${TOP}/share --cyphesis:confdir=${TOP}/etc --cyphesis:vardir=${TOP}/var"
 
-${TOP}/bin/cyphesis --cyphesis:daemon=true ${DIROPTS}
+${TOP}/bin/cyphesis --cyphesis:daemon=true "${DIROPTS}"
 
 RETVAL=$?
 if [ $RETVAL -ne 0 ] ; then
@@ -25,4 +25,4 @@ fi
 
 sleep 5
 
-${TOP}/bin/cyclient ${DIROPTS}
+${TOP}/bin/cyclient "${DIROPTS}"

@@ -55,7 +55,7 @@ int OpRuleHandler::installOpDefinition(const std::string & class_name,
         return 1;
     }
 
-    Atlas::Objects::Root r = atlasOpDefinition(class_name, parent);
+    atlasOpDefinition(class_name, parent);
 
     if (i.addChild(class_desc) == nullptr) {
         return -1;

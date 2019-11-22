@@ -408,7 +408,6 @@ namespace EntityFilter {
     std::shared_ptr<Consumer<QueryContext>> ProviderFactory::createProviders(SegmentsList segments) const
     {
         if (!segments.empty()) {
-            auto front = segments.front();
             auto& first_attribute = segments.front().attribute;
             if (first_attribute == "entity") {
                 return createEntityProvider<EntityProvider>(std::move(segments));

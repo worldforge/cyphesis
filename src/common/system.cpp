@@ -129,9 +129,10 @@ static int security_load_key(const std::string & key_filename, size_t len)
         return -1;
     }
 
-    char * key_text = new char[len];
+    std::vector<char> key_text;
+    key_text.resize(len);
 
-    size_t records = fread(key_text, len, 1, key_file);
+    size_t records = fread(key_text.data(), len, 1, key_file);
     if (records != 1) {
         log(CRITICAL, String::compose("Unable to load identity information"
                                       " from file %1", key_filename));
@@ -140,7 +141,7 @@ static int security_load_key(const std::string & key_filename, size_t len)
 
     gcry_sexp_t key;
 
-    gcry_error_t ret = gcry_sexp_new(&key, key_text, len, 0);
+    gcry_error_t ret = gcry_sexp_new(&key, key_text.data(), len, 0);
 
     if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
         log(CRITICAL, String::compose("Malformed identity information"

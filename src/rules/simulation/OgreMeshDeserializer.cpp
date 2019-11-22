@@ -309,10 +309,9 @@ static inline void bswapChunks(void * pData, size_t size, size_t count)
 {
     for(size_t c = 0; c < count; ++c)
     {
-        char swapByte;
         for(char *p0 = (char*)pData + c * size, *p1 = p0 + size - 1; p0 < p1; ++p0, --p1)
         {
-            swapByte = *p0;
+            char swapByte = *p0;
             *p0 = *p1;
             *p1 = swapByte;
         }
@@ -619,9 +618,8 @@ void OgreMeshDeserializer::readMesh()
 //---------------------------------------------------------------------
 void OgreMeshDeserializer::readSubMesh()
 {
-    unsigned short streamID;
 
-    std::string materialName = readString(m_stream);
+    readString(m_stream); //Read material name first, which we discard.
 
     bool useSharedVertices;
     readBools(m_stream, &useSharedVertices, 1);
@@ -662,7 +660,7 @@ void OgreMeshDeserializer::readSubMesh()
     {
         // M_GEOMETRY m_stream (Optional: present only if useSharedVertices = false)
         if (!useSharedVertices) {
-            streamID = readChunk(m_stream);
+            unsigned short streamID = readChunk(m_stream);
             if (streamID != M_GEOMETRY) {
                 std::runtime_error("Missing geometry data in mesh file");
             }
@@ -672,7 +670,7 @@ void OgreMeshDeserializer::readSubMesh()
 
         // Find all bone assignments, submesh operation, and texture aliases (if present)
         if (!m_stream.eof()) {
-            streamID = readChunk(m_stream);
+            unsigned short streamID = readChunk(m_stream);
             while (!m_stream.eof() &&
                    (streamID == M_SUBMESH_BONE_ASSIGNMENT ||
                     streamID == M_SUBMESH_OPERATION ||

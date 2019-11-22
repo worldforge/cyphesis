@@ -490,8 +490,6 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
     // Movement within current loc. Work out the speed and stuff and
     // use movement object to track movement.
 
-    Location ret_location = ent->m_location;
-
     //If there's a position set, we'll use that to determine the propel value. However, we'll also check if there also was a propel value set,
     //since the magnitude of that indicates the speed to use (otherwise we'll use full speed).
     if (new_pos.isValid()) {

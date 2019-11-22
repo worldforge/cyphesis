@@ -375,13 +375,8 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
             log(ERROR, "Could not find list of vertices for mesh.");
         }
     } else {
-        if (meshDeserializer) {
-            *indices = std::move(meshDeserializer->m_indices);
-            *verts = std::move(meshDeserializer->m_vertices);
-        } else {
-            //No mesh deserializer, and no other mesh data, return.
-            return;
-        }
+        *indices = std::move(meshDeserializer->m_indices);
+        *verts = std::move(meshDeserializer->m_vertices);
     }
 
 

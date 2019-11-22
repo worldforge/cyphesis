@@ -251,9 +251,9 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity& ent,
 Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity& ent,
                                                   const Root& arg)
 {
-    BaseWorld& world = m_connection->m_server.m_world;
     Element spawn;
     if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
+        BaseWorld& world = m_connection->m_server.m_world;
         return world.spawnNewEntity(spawn.String(), arg->getParent(), ent);
     } else {
         log(WARNING, "Client tried to create character out of spawn.");

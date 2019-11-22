@@ -53,7 +53,6 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
             auto attachmentI = m_data.find(attachment_name.String());
 
             if (attachmentI != m_data.end()) {
-                auto& attachment = attachmentI->second;
                 std::string entity_id;
                 if (!arg->isDefaultId()) {
                     entity_id = arg->getId();
@@ -109,6 +108,8 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
 
                     auto new_entity = BaseWorld::instance().getEntity(entity_id);
                     if (new_entity) {
+                        auto& attachment = attachmentI->second;
+
                         //Check that the attached entity matches the constraint filter
                         if (attachment.filter) {
                             EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
