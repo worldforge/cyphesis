@@ -19,10 +19,12 @@
 #ifndef TOOLS_OPERATION_MONITOR_H
 #define TOOLS_OPERATION_MONITOR_H
 
-#include <Atlas/Message/QueuedDecoder.h>
-#include <memory>
 #include "common/ClientTask.h"
 #include "common/SystemTime.h"
+#include <Atlas/Message/QueuedDecoder.h>
+#include <Atlas/Objects/Encoder.h>
+#include <Atlas/Bridge.h>
+#include <memory>
 #include <fstream>
 
 /// \brief Task class for monitoring all in-game operations occuring.

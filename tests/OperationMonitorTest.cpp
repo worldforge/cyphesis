@@ -49,16 +49,6 @@ int main()
         delete tf;
     }
 
-    {
-        ClientTask * tf = new OperationMonitor;
-
-        OpVector ret;
-        Atlas::Objects::Operation::Get op;
-        tf->operation(op, ret);
-        assert(ret.empty());
-
-        delete tf;
-    }
 }
 
 // stubs

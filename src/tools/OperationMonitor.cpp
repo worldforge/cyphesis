@@ -26,7 +26,6 @@
 #include <Atlas/PresentationBridge.h>
 #include <Atlas/Codecs/XML.h>
 #include <Atlas/Codecs/Bach.h>
-#include <Atlas/Objects/Encoder.h>
 #include <boost/algorithm/string/classification.hpp>
 
 OperationMonitor::~OperationMonitor() = default;
