@@ -589,5 +589,6 @@ std::ostream& operator<<(std::ostream& s, const BaseMind& d)
     } else {
         String::compose("'%1'", d.m_entityId);
     }
+    return s;
 }
 

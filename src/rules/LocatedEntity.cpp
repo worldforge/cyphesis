@@ -639,4 +639,5 @@ std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
             s << "('" << nameAttr.String() << "')";
         }
     }
+    return s;
 }
