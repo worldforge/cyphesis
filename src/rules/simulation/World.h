@@ -36,6 +36,9 @@
 /// Relay functionality, as it's suitable to act as a relay for any Out-Of-Game
 /// router which wants to interact with entities through operations (without
 /// having to create an In-Game entity).
+///
+/// The World also always contain a Void domain. This means that any interim entity
+/// can be created in the World and then moved into whatever regular entity is needed.
 /// \ingroup EntityClasses
 class World : public Thing {
 
@@ -48,7 +51,7 @@ class World : public Thing {
     };
 
 public:
-    explicit World(const std::string & id, long intId);
+    explicit World();
 
     ~World() override;
 

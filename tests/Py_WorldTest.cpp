@@ -42,7 +42,7 @@ int main()
 {
     init_python_api({&CyPy_Server::init});
 
-    Ref<World> wrld(new World("0", 0));
+    Ref<World> wrld(new World());
     TestWorld tw(wrld);
 
     Py::Module server("server");

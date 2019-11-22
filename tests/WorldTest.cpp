@@ -71,7 +71,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 int main()
 {
-    Ref<World> e(new World("0", 0));
+    Ref<World> e(new World());
     TypeNode type("world");
     e->setType(&type);
 
@@ -124,6 +124,8 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/rules/simulation/stubWorldTimeProperty.h"
+#include "stubs/rules/simulation/stubVoidDomain.h"
+#include "stubs/common/stubconst.h"
 
 void log(LogLevel lvl, const std::string & msg)
 {

@@ -9,8 +9,8 @@
 
 #ifndef STUB_World_World
 //#define STUB_World_World
-   World::World(const std::string & id, long intId)
-    : Thing(id, intId)
+   World::World()
+    : Thing()
   {
     
   }

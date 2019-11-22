@@ -433,7 +433,7 @@ namespace {
             Ruleset ruleset(entityBuilder, *io_context);
             ruleset.loadRules(ruleset_name);
 
-            Ref<LocatedEntity> baseEntity = new World(consts::rootWorldId, consts::rootWorldIntId);
+            Ref<LocatedEntity> baseEntity = new World();
             baseEntity->setType(inheritance.getType("world"));
 
             WorldRouter world(baseEntity, entityBuilder);

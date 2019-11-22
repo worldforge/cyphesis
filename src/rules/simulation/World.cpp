@@ -28,6 +28,9 @@
 #include "common/custom.h"
 
 #include "WorldTimeProperty.h"
+#include "VoidDomain.h"
+
+#include "common/const.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -48,15 +51,19 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::smart_dynamic_cast;
 
 /// \brief Constructor for the World entity
-World::World(const std::string & id, long intId) : Thing(id, intId), m_serialNumber(0)
+World::World() :
+    Thing(consts::rootWorldId, consts::rootWorldIntId),
+    m_serialNumber(0)
 {
     requirePropertyClassFixed<CalendarProperty>();
     requirePropertyClassFixed<WorldTimeProperty>();
+    //The world always has a void domain.
+    setDomain(std::make_unique<VoidDomain>(*this));
 }
 
 World::~World() = default;
 
-void World::LookOperation(const Operation & op, OpVector & res)
+void World::LookOperation(const Operation& op, OpVector& res)
 {
     // We must be the top level entity
     assert(m_location.m_parent == nullptr);
@@ -90,13 +97,13 @@ void World::LookOperation(const Operation & op, OpVector & res)
     }
 }
 
-void World::MoveOperation(const Operation & op, OpVector & res)
+void World::MoveOperation(const Operation& op, OpVector& res)
 {
     assert(m_location.m_parent == nullptr);
     // Can't move the world.
 }
 
-void World::DeleteOperation(const Operation & op, OpVector & res)
+void World::DeleteOperation(const Operation& op, OpVector& res)
 {
     //A delete operation with an argument sent to the world indicates that an
     //entity should be deleted forcefully (whereas a Delete operation sent to
@@ -129,7 +136,8 @@ void World::DeleteOperation(const Operation & op, OpVector & res)
     }
 }
 
-void World::clearWorld(OpVector & res) {
+void World::clearWorld(OpVector& res)
+{
     log(INFO, "Clearing world; deleting all entities.");
 
     OpVector ignoredRes;
@@ -159,8 +167,7 @@ void World::clearWorld(OpVector & res) {
 
     //Remove all properties except for "id"
     auto propIter = m_properties.begin();
-    while(propIter != m_properties.end())
-    {
+    while (propIter != m_properties.end()) {
         if (propIter->first != "id") {
             auto& prop = propIter->second;
             prop->remove(this, propIter->first);
@@ -178,7 +185,7 @@ void World::clearWorld(OpVector & res) {
     log(INFO, "World cleared of all entities.");
 }
 
-void World::RelayOperation(const Operation & op, OpVector & res)
+void World::RelayOperation(const Operation& op, OpVector& res)
 {
     //A Relay operation with refno sent to ourselves signals that we should prune
     //our registered relays in m_relays. This is a feature to allow for a timeout; if
@@ -198,11 +205,11 @@ void World::RelayOperation(const Operation & op, OpVector & res)
             return;
         }
         Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(
-                op->getArgs().front());
+            op->getArgs().front());
 
         if (!relayedOp.isValid()) {
             log(ERROR,
-                    "World::RelayOperation first arg is not an operation.");
+                "World::RelayOperation first arg is not an operation.");
             return;
         }
 
@@ -215,14 +222,14 @@ void World::RelayOperation(const Operation & op, OpVector & res)
             auto I = m_relays.find(op->getRefno());
             if (I == m_relays.end()) {
                 log(WARNING,
-                        "World::RelayOperation could not find registrered Relay with refno.");
+                    "World::RelayOperation could not find registrered Relay with refno.");
                 return;
             }
 
             //Make sure that this op really comes from the entity the original Relay op was sent to.
             if (op->getFrom() != I->second.entityId) {
                 log(WARNING,
-                        "World::RelayOperation got relay op with mismatching 'from'.");
+                    "World::RelayOperation got relay op with mismatching 'from'.");
                 return;
             }
 

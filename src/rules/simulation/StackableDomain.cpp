@@ -190,6 +190,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity* owner, const Operati
     }
     //Make sure to adjust the amount
     new_ent->setAttr(AmountProperty::property_name, amount);
+    new_ent->setLoc("0"); //Place in top world void domain as interim, since it will be moved immediately.
     auto obj = BaseWorld::instance().addNewEntity(owner->getType()->name(), new_ent);
 
     if (!obj) {

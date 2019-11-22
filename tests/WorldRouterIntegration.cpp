@@ -422,6 +422,7 @@ class World;
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/simulation/stubExternalProperty.h"
 #include "stubs/rules/simulation/stubWorldTimeProperty.h"
+#include "stubs/rules/simulation/stubVoidDomain.h"
 
 #define STUB_IdProperty_get
 
