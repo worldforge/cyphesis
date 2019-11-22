@@ -82,6 +82,23 @@ typename ProtocolT::socket& CommAsioClient<ProtocolT>::getSocket()
     return mSocket;
 }
 
+namespace {
+    template<typename T>
+    std::string socketName(const T& socket);
+
+    template<>
+    std::string socketName(const boost::asio::local::stream_protocol::socket& socket)
+    {
+        return socket.local_endpoint().path();
+    }
+
+    template<>
+    std::string socketName(const boost::asio::ip::tcp::socket& socket)
+    {
+        return socket.remote_endpoint().address().to_string();
+    }
+}
+
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::do_read()
 {
@@ -100,15 +117,15 @@ void CommAsioClient<ProtocolT>::do_read()
                                         this->do_read();
                                     }
                                 } else {
-                                    //No need to write if connection has been actively shut down.
+                                    //No need to read if connection has been actively shut down.
                                     if (m_active) {
                                         std::stringstream ss;
                                         log_level level = WARNING;
                                         if (ec == boost::asio::error::eof) {
-                                            ss << "Client hung up unexpectedly.";
-                                            level = INFO;
+                                            ss << String::compose("Connection at '%1' hung up unexpectedly.", socketName(mSocket));
+                                            level = NOTICE;
                                         } else {
-                                            ss << "Error when reading from socket: (" << ec << ") " << ec.message();
+                                            ss << String::compose("Error when reading from socket at '%1': (", socketName(mSocket)) << ec << ") " << ec.message();
 
                                         }
                                         log(level, ss.str());
@@ -152,10 +169,10 @@ void CommAsioClient<ProtocolT>::write()
                                              std::stringstream ss;
                                              log_level level = WARNING;
                                              if (ec == boost::asio::error::eof) {
-                                                 ss << "Connection hung up unexpectedly.";
-                                                 level = INFO;
+                                                 ss << String::compose("Connection at '%1' hung up unexpectedly.", socketName(mSocket));
+                                                 level = NOTICE;
                                              } else {
-                                                 ss << "Error when reading from socket: (" << ec << ") " << ec.message();
+                                                 ss << String::compose("Error when reading from socket at '%1': (", socketName(mSocket)) << ec << ") " << ec.message();
 
                                              }
                                              log(level, ss.str());
@@ -238,14 +255,13 @@ void CommAsioClient<ProtocolT>::startConnect(std::unique_ptr<Link> connection)
 template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startNegotiation()
 {
-
     auto self(this->shared_from_this());
     mNegotiateTimer.expires_from_now(boost::posix_time::seconds(10));
     mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec) {
         //If the negotiator still exists after the deadline it means that the negotiation hasn't
         //completed yet; we'll consider that a "timeout".
         if (m_negotiate != nullptr) {
-            log(NOTICE, "Client disconnected because of negotiation timeout.");
+            log(NOTICE, String::compose("Client at '%1' disconnected because of negotiation timeout.", socketName(mSocket)));
             mSocket.close();
         }
     });
@@ -268,7 +284,7 @@ int CommAsioClient<ProtocolT>::negotiate()
 
     // Check if negotiation failed
     if (m_negotiate->getState() == Atlas::Negotiate::FAILED) {
-        log(NOTICE, "Failed to negotiate");
+        log(NOTICE, String::compose("Failed to negotiate with client at '%1'.", socketName(mSocket)));
         return -1;
     }
     // Negotiation was successful
@@ -280,7 +296,7 @@ int CommAsioClient<ProtocolT>::negotiate()
     m_negotiate.reset();
 
     if (m_codec == nullptr) {
-        log(NOTICE, "Could not create codec during negotiation.");
+        log(NOTICE, String::compose("Could not create codec during negotiation with '%1'.", socketName(mSocket)));
         return -1;
     }
     // Create a new encoder to send high level objects to the codec
@@ -348,8 +364,8 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
     if (!op.isValid()) {
         log(ERROR,
             String::compose("Object of type \"%1\" with parent "
-                            "\"%2\" arrived from client", obj->getObjtype(),
-                            obj->getParent()));
+                            "\"%2\" arrived from client at '%1'", obj->getObjtype(),
+                            obj->getParent(), socketName(mSocket)));
         return;
     }
     m_opQueue.push_back(op);
