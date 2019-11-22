@@ -81,7 +81,8 @@ bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
             auto timeDiff = realtime - opQueueEntry->getSeconds();
             if (timeDiff > m_time_diff_report) {
                 log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4. Ops in queue: %5",
-                                             opQueueEntry->getParent(), opQueueEntry->getFrom(), opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
+                                             opQueueEntry->getParent(), opQueueEntry.from->describeEntity(),
+                                             opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
             }
         }
         dispatchOperation(opQueueEntry);
@@ -206,7 +207,6 @@ size_t OperationsDispatcher<T>::getQueueSize() const
 {
     return m_operationQueue.size();
 }
-
 
 
 #endif /* OPERATIONSDISPATCHER_IMPL_H_ */

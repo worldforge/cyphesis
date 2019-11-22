@@ -142,7 +142,7 @@ int DatabaseSQLite::getObject(const std::string& table,
     assert(m_database);
 
     debug(std::cout << "Database::getObject() " << table << "." << key
-                    << std::endl << std::flush;);
+                    << std::endl << std::flush;)
     std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "'";
 
     try {

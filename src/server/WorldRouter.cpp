@@ -365,7 +365,7 @@ void WorldRouter::messageToClients(const Operation& op)
 {
     auto& accounts = ServerRouting::instance().getAccounts();
     OpVector res;
-    for (auto entry : accounts) {
+    for (auto& entry : accounts) {
         entry.second->operation(op, res);
     }
 
@@ -470,11 +470,9 @@ void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
         deliverTo(op, std::move(to_entity));
 
     } else {
-        auto I = m_eobjects.begin();
-        auto Iend = m_eobjects.end();
-        for (; I != Iend; ++I) {
-            op->setTo(I->second->getId());
-            deliverTo(op, I->second);
+        for (auto& entry : m_eobjects) {
+            op->setTo(entry.second->getId());
+            deliverTo(op, entry.second);
         }
     }
 }
@@ -504,11 +502,10 @@ bool WorldRouter::idle()
 Ref<LocatedEntity> WorldRouter::findByName(const std::string& name)
 {
     Element name_attr;
-    auto Iend = m_eobjects.end();
-    for (auto I = m_eobjects.begin(); I != Iend; ++I) {
-        if (I->second->getAttr("name", name_attr) == 0) {
+    for (auto& entry : m_eobjects) {
+        if (entry.second->getAttr("name", name_attr) == 0) {
             if (name_attr == name) {
-                return I->second;
+                return entry.second;
             }
         }
     }
@@ -523,10 +520,9 @@ Ref<LocatedEntity> WorldRouter::findByName(const std::string& name)
 /// instance was found.
 Ref<LocatedEntity> WorldRouter::findByType(const std::string& type)
 {
-    auto Iend = m_eobjects.end();
-    for (auto I = m_eobjects.begin(); I != Iend; ++I) {
-        if (I->second->getType()->name() == type) {
-            return I->second;
+    for (auto& entry : m_eobjects) {
+        if (entry.second->getType()->name() == type) {
+            return entry.second;
         }
     }
     return nullptr;
