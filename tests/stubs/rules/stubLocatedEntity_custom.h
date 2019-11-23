@@ -56,4 +56,5 @@ int LocatedEntity::getAttrType(const std::string & name, Atlas::Message::Element
 
 std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
 {
+    return s;
 }
