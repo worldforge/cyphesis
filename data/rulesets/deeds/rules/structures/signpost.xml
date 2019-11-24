@@ -16,6 +16,15 @@
             <map name="density">
                 <float name="default">500</float>
             </map>
+            <map name="usages">
+                <map name="append">
+                    <map name="read">
+                        <string name="name">Read</string>
+                        <string name="handler">world.objects.structures.Signpost.read</string>
+                        <string name="description">Read the message.</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">signpost</string>
         <string name="objtype">class</string>

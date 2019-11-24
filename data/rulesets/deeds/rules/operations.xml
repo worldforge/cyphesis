@@ -168,4 +168,9 @@
         <string name="parent">affect</string>
     </map>
 
+    <map>
+        <string name="id">read</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">affect</string>
+    </map>
 </atlas>
