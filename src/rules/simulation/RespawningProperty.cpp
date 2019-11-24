@@ -149,6 +149,8 @@ void RespawningProperty::entity_gotMinds(LocatedEntity* entity) {
     //Disable the suspension
     Anonymous set_args;
     set_args->setAttr("suspended", 0);
+    //TODO: move this out from being hard coded
+    set_args->setAttr("status", 0.5); //Set health to half
     Set set;
     set->setFrom(entity->getId());
     set->setTo(entity->getId());
