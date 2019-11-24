@@ -1,10 +1,11 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
+import importlib
 from types import *
+
 from atlas import *
 from common import log
-import importlib
 
 
 ## \defgroup PythonGoals Goal Classes
@@ -148,7 +149,7 @@ class Goal:
 
         subgoals = []
         for sg in self.subgoals:
-            if type(sg) != FunctionType and type(sg) != MethodType and sg is not None:
+            if not isinstance(sg, FunctionType) and not isinstance(sg, MethodType) and sg is not None:
                 subgoals.append(sg.report())
         if len(subgoals) > 0:
             report["subgoals"] = subgoals

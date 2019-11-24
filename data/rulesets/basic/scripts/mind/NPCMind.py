@@ -120,31 +120,31 @@ class NPCMind(ai.Mind):
 
             for key, knowledge_element in knowledge.items():
                 (predicate, subject) = key.split(':')
-                object = knowledge_element
+                object_word = knowledge_element
 
                 if predicate == 'location':
                     # If it's just a string it's a reference to an entity id (with zero position).
-                    if isinstance(object, str):
-                        entity_id_string = object
+                    if isinstance(object_word, str):
+                        entity_id_string = object_word
                         # A prefix of "$eid:" denotes an entity id; it should be stripped first.
                         if entity_id_string.startswith("$eid:"):
                             entity_id_string = entity_id_string[5:]
                         where = self.map.get_add(entity_id_string)
-                        object = Location(where)
+                        object_word = Location(where)
                     else:
-                        if len(object) == 3:
+                        if len(object_word) == 3:
                             loc = self.entity.location.copy()
-                            loc.pos = Vector3D(object)
-                            object = loc
-                        elif len(object) == 4:
-                            entity_id_string = object[0]
+                            loc.pos = Vector3D(object_word)
+                            object_word = loc
+                        elif len(object_word) == 4:
+                            entity_id_string = object_word[0]
                             # A prefix of "$eid:" denotes an entity id; it should be stripped first.
                             if entity_id_string.startswith("$eid:"):
                                 entity_id_string = entity_id_string[5:]
                             where = self.map.get_add(entity_id_string)
-                            object = Location(where, Vector3D(object[:3]))
+                            object_word = Location(where, Vector3D(object_word[:3]))
 
-                self.add_knowledge(predicate, subject, object)
+                self.add_knowledge(predicate, subject, object_word)
 
     def relations_updated(self, entity):
         print('Relations updated.')
@@ -428,7 +428,7 @@ class NPCMind(ai.Mind):
             for key in sorted(d):
                 if what != "goal":
                     object_val = d[key]
-                    if type(object_val) is Location:
+                    if isinstance(object_val, Location):
                         # Serialize Location as tuple, with parent if available
                         if object_val.parent is None:
                             location = object_val.position
@@ -703,7 +703,7 @@ class NPCMind(ai.Mind):
         """add certain type of knowledge"""
         self.knowledge.add(what, key, value)
         # forward thought
-        if type(value) == object:
+        if isinstance(value, object):
             if what == "goal":
                 thought_value = value.info()
             else:

@@ -20,7 +20,7 @@
                 <map name="default">
                     <map name="open">
                         <string name="name">Open</string>
-                        <string name="handler">world.objects.Container.open</string>
+                        <string name="handler">world.objects.Container.open_container</string>
                         <string name="constraint">actor can_reach tool</string>
                     </map>
                 </map>

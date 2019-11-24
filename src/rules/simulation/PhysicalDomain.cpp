@@ -1559,10 +1559,10 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, const Proper
             entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
         }
     } else if (name == "friction_spin") {
-        auto frictionSpinningProp = dynamic_cast<const Property<double>*>(&prop);
 #if BT_BULLET_VERSION < 285
         log(WARNING, "Your version of Bullet doesn't support spinning friction.");
 #else
+        auto frictionSpinningProp = dynamic_cast<const Property<double>*>(&prop);
         for (auto& entry : m_terrainSegments) {
             entry.second.rigidBody->setSpinningFriction(static_cast<btScalar>(frictionSpinningProp->data()));
         }
@@ -2206,11 +2206,9 @@ void PhysicalDomain::processDirtyTerrainAreas()
 
 void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange, bool modeChange)
 {
-
-    LocatedEntity& entity = *entry.entity;
-    Location& lastSentLocation = entry.lastSentLocation;
-
     if (!entry.observingThis.empty()) {
+        LocatedEntity& entity = *entry.entity;
+        Location& lastSentLocation = entry.lastSentLocation;
         bool shouldSendOp = false;
         Anonymous move_arg;
         if (velocityChange) {

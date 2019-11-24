@@ -1,10 +1,11 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2006 Al Riddoch (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-from rules import Location
 import random
+
 import server
+from atlas import Operation, Entity
+from rules import Location
 
 
 class DiggableTerrain(server.Thing):
