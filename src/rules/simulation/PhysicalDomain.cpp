@@ -374,14 +374,12 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 PhysicalDomain::~PhysicalDomain()
 {
     for (auto& planeBody : m_borderPlanes) {
-        m_dynamicsWorld->removeCollisionObject(planeBody.get());
-        delete planeBody->getCollisionShape();
+        m_dynamicsWorld->removeCollisionObject(planeBody.first.get());
     }
     m_borderPlanes.clear();
 
     for (auto& entry : m_terrainSegments) {
         m_dynamicsWorld->removeCollisionObject(entry.second.rigidBody.get());
-        delete entry.second.rigidBody->getCollisionShape();
     }
     m_terrainSegments.clear();
 
@@ -526,8 +524,8 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
     }
     if (terrainEntry.rigidBody) {
         m_dynamicsWorld->removeRigidBody(terrainEntry.rigidBody.get());
-        delete terrainEntry.rigidBody->getCollisionShape();
         terrainEntry.rigidBody.reset();
+        terrainEntry.shape.reset();
     }
     float* data = terrainEntry.data->data();
     const float* mercatorData = segment.getPoints();
@@ -537,9 +535,9 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
     float min = segment.getMin();
     float max = segment.getMax();
 
-    auto* terrainShape = new btHeightfieldTerrainShape(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
+    terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
 
-    terrainShape->setLocalScaling(btVector3(1, 1, 1));
+    terrainEntry.shape->setLocalScaling(btVector3(1, 1, 1));
 
     auto res = (float) segment.getResolution();
 
@@ -551,7 +549,7 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
     btVector3 btPos = Convert::toBullet(pos);
 
 
-    btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainShape);
+    btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainEntry.shape.get());
     auto segmentBody = new btRigidBody(segmentCI);
     segmentBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), btPos));
 
@@ -571,12 +569,12 @@ void PhysicalDomain::createDomainBorders()
         m_borderPlanes.reserve(6);
         auto createPlane =
             [&](const btVector3& normal, const btVector3& translate) {
-                auto plane = new btStaticPlaneShape(normal, .0f);
-                auto planeBody = std::make_unique<btRigidBody>(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane));
+                auto plane = std::make_unique<btStaticPlaneShape>(normal, .0f);
+                auto planeBody = std::make_unique<btRigidBody>(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane.get()));
                 planeBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), translate));
                 planeBody->setUserPointer(&mContainingEntityEntry);
                 m_dynamicsWorld->addRigidBody(planeBody.get(), COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
-                m_borderPlanes.emplace_back(std::move(planeBody));
+                m_borderPlanes.emplace_back(std::move(planeBody), std::move(plane));
             };
 
         //Bottom plane
@@ -1077,9 +1075,9 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
             mContainingEntityEntry.observingThis.insert(entry.get());
-            auto viewSphere = new btSphereShape(0.5f / VISIBILITY_SCALING_FACTOR);
+            auto viewSphere = std::make_unique<btSphereShape>(0.5f / VISIBILITY_SCALING_FACTOR);
             auto visObject = std::make_unique<btCollisionObject>();
-            visObject->setCollisionShape(viewSphere);
+            visObject->setCollisionShape(viewSphere.get());
             visObject->setUserPointer(entry.get());
             if (entity.m_location.m_pos.isValid()) {
                 visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
@@ -1095,7 +1093,7 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     } else {
         if (entry->viewSphere) {
             m_visibilityWorld->removeCollisionObject(entry->viewSphere.get());
-            delete entry->viewSphere->getCollisionShape();
+            entry->viewShape.reset();
             entry->viewSphere.reset();
             mContainingEntityEntry.observingThis.erase(entry.get());
         }

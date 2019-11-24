@@ -175,6 +175,7 @@ class PhysicalDomain : public Domain
         {
             std::unique_ptr<std::array<float, 65 * 65>> data;
             std::unique_ptr<btRigidBody> rigidBody;
+            std::unique_ptr<btCollisionShape> shape;
         };
 
         std::unordered_map<long, std::unique_ptr<BulletEntry>> m_entries;
@@ -252,7 +253,7 @@ class PhysicalDomain : public Domain
          * Contains the six planes that make out the border, which matches the bounding box of the entity to which this
          * property belongs.
          */
-        std::vector<std::unique_ptr<btRigidBody>> m_borderPlanes;
+        std::vector<std::pair<std::unique_ptr<btRigidBody>, std::unique_ptr<btCollisionShape>>> m_borderPlanes;
 
         /**
          * Keeps track of all water bodies, which are ghost objects which we use to detect when entities move in and out of the water.
