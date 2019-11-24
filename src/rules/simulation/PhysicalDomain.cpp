@@ -1118,6 +1118,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     m_lastMovingEntities.erase(entry.get());
     m_movingEntities.erase(entry.get());
 
+    //Remove it from the map of submerged entities.
+    auto submergedEntryI = m_submergedEntities.find(entry.get());
+    if (submergedEntryI != m_submergedEntities.end()) {
+        m_submergedEntities.erase(submergedEntryI);
+    }
+
     //Check if the entity is a water body, and if so remove it and detach any submerged entities.
     auto waterBodyProp = entity.getPropertyClass<BoolProperty>("water_body");
     if (waterBodyProp && waterBodyProp->isTrue()) {
