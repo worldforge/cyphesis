@@ -224,9 +224,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     m_broadphase(new btDbvtBroadphase()),
     m_dynamicsWorld(new PhysicalWorld(m_dispatcher.get(), m_broadphase.get(), m_constraintSolver.get(), m_collisionConfiguration.get())),
     m_visibilityDispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
-    //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
-    m_visibilityBroadphase(new bt32BitAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()) / VISIBILITY_SCALING_FACTOR,
-                                                 Convert::toBullet(entity.m_location.bBox().highCorner()) / VISIBILITY_SCALING_FACTOR)),
+    m_visibilityBroadphase(new btDbvtBroadphase()),
     m_visibilityWorld(new btCollisionWorld(m_visibilityDispatcher.get(),
                                            m_visibilityBroadphase.get(),
                                            m_collisionConfiguration.get())),
