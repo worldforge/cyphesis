@@ -69,12 +69,11 @@ class FruitPlant(server.Thing):
                                     res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)
 
     def harvest_operation(self, op):
-        print('harvest')
         res = Oplist()
         if self.props.fruits and self.props.fruits > 0 and self.props.fruit_name:
             res.append(Operation("create", Entity(parent=self.props.fruit_name, loc=op.id), to=self))
             res.append(Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self))
-            res.append(Operation("imaginary", Entity(description="You harvest an acorn from the oak."), to=op.id, from_=op.id))
+            res.append(Operation("imaginary", Entity(description="You harvest an {} from the {}.".format(self.props.fruit_name, self.type)), to=op.id, from_=op.id))
         else:
-            res.append(Operation("imaginary", Entity(description="There aren't any acorns in this oak."), to=op.id, from_=op.id))
+            res.append(Operation("imaginary", Entity(description="There aren't any {}s in this {}.".format(self.props.fruit_name, self.type)), to=op.id, from_=op.id))
         return server.OPERATION_BLOCKED, res
