@@ -19,6 +19,8 @@ set(CYPHESIS_VERSION_PATCH 0)
 
 set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSION_PATCH})
 
+option(PYTHON_USE_MALLOC "Use malloc instead of Python's own allocator. This helps with diagnosing memory usage, but us slightly slower." FALSE)
+
 # Set compiler flags
 set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wundef -Wmissing-declarations -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long)
 
@@ -69,6 +71,10 @@ find_package(PythonLibs 3.3 REQUIRED)
 link_directories(${PYTHON_LIBRARY_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
+if (PYTHON_USE_MALLOC)
+    add_compile_definitions(PYTHON_MALLOC)
+endif ()
+
 find_package(PythonInterp 3 REQUIRED)
 
 find_package(GCrypt 1.2 REQUIRED)
@@ -78,7 +84,7 @@ include_directories(${GCRYPT_INCLUDE_DIRS})
 #The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
 pkg_check_modules(BULLET bullet>=2.81)
 if (NOT BULLET_FOUND)
-       find_package(Bullet 2.81 REQUIRED)
+    find_package(Bullet 2.81 REQUIRED)
 endif (NOT BULLET_FOUND)
 
 link_directories(${BULLET_LIBRARY_DIRS})
@@ -98,7 +104,7 @@ cmake_dependent_option(CYPHESIS_USE_POSTGRES "Use PostgreSQL for storage" FALSE 
 find_package(SQLite3 REQUIRED)
 if (NOT SQLITE3_FOUND)
     message(FATAL_ERROR "Could not find SQLite 3 development package.")
-endif(NOT SQLITE3_FOUND)
+endif (NOT SQLITE3_FOUND)
 
 pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
 link_directories(${XDG_LIBRARY_DIRS})
@@ -110,9 +116,9 @@ link_directories(${READLINE_LIBRARY_DIRS})
 include_directories(${READLINE_INCLUDE_DIRS})
 
 find_package(Boost
-        1.46.0
-        REQUIRED
-        COMPONENTS filesystem system)
+    1.46.0
+    REQUIRED
+    COMPONENTS filesystem system)
 
 link_directories(${Boost_LIBRARY_DIRS})
 link_libraries(${Boost_LIBRARIES})
@@ -138,14 +144,12 @@ if (RSYNC_CMD)
         COMMAND ${CMAKE_COMMAND} -E echo "Done."
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
-else(RSYNC_CMD)
+else (RSYNC_CMD)
     add_custom_command(
         TARGET assets-download
         COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Rsync command. The target 'assets-download' is disabled."
     )
-endif(RSYNC_CMD)
-
-
+endif (RSYNC_CMD)
 
 
 add_custom_target(assetsrepo-checkout)
@@ -156,12 +160,12 @@ if (SUBVERSION_CMD)
         COMMAND ${CMAKE_COMMAND} -E make_directory ${ASSETSREPO_DIR}
         COMMAND ${SUBVERSION_CMD} co https://svn.worldforge.org:886/svn/media/trunk/assets ${ASSETSREPO_DIR}/assets
     )
-else(SUBVERSION_CMD)
+else (SUBVERSION_CMD)
     add_custom_command(
         TARGET assetsrepo-checkout
         COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Subversion command 'svn'. The target 'assetsrepo-checkout' is disabled."
     )
-endif(SUBVERSION_CMD)
+endif (SUBVERSION_CMD)
 
 ##TODO: check for binreloc?
 
@@ -176,7 +180,7 @@ macro(wf_generate_stubs DIRECTORY)
 
     set(STUB_DIRECTORY ${CMAKE_SOURCE_DIR}/tests/stubs)
 
-    foreach(FILE ${H_FILES})
+    foreach (FILE ${H_FILES})
         set(STUB_FILE ${STUB_DIRECTORY}/stub${FILE}.h)
         set(STUB_CUSTOM_FILE ${STUB_DIRECTORY}/stub${FILE}.h)
         set(SOURCE_FILE "${CMAKE_SOURCE_DIR}/src/${FILE}")
@@ -185,14 +189,12 @@ macro(wf_generate_stubs DIRECTORY)
             COMMAND ${CMAKE_COMMAND} -E echo "Generating stubs for ${FILE}\n"
             COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
-        )
+            )
 
         list(APPEND STUB_HEADERS ${STUB_FILE})
-    endforeach(FILE)
+    endforeach (FILE)
 
 endmacro()
-
-
 
 
 # Add a "check" target, which builds and runs the tests.
@@ -228,13 +230,13 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_OUTPUT doc)
 
     add_custom_command(
-            OUTPUT ${DOXYGEN_OUTPUT}
-            COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile-python
-            COMMAND ${CMAKE_COMMAND} -E echo "Done."
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile-python
+        OUTPUT ${DOXYGEN_OUTPUT}
+        COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile-python
+        COMMAND ${CMAKE_COMMAND} -E echo "Done."
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile-python
     )
 
     add_custom_target(dox DEPENDS ${DOXYGEN_OUTPUT})
@@ -263,9 +265,9 @@ set(CPACK_SOURCE_GENERATOR TBZ2 ZIP)
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${PROJECT_NAME}-${VERSION}" CACHE INTERNAL "tarball basename")
 
 set(CPACK_SOURCE_IGNORE_FILES
-        # no hidden files
-        "/\\\\..+$"
-        "~$"
-        )
+    # no hidden files
+    "/\\\\..+$"
+    "~$"
+    )
 
 include(CPack)
