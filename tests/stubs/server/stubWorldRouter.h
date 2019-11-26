@@ -66,9 +66,9 @@
 
 #ifndef STUB_WorldRouter_addEntity
 //#define STUB_WorldRouter_addEntity
-  Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& obj)
+  void WorldRouter::addEntity(const Ref<LocatedEntity>& obj)
   {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
+    
   }
 #endif //STUB_WorldRouter_addEntity
 

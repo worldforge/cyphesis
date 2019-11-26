@@ -75,7 +75,7 @@ class WorldRouter : public BaseWorld
 
         bool idle() override;
 
-        Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& obj) override;
+        void addEntity(const Ref<LocatedEntity>& obj) override;
 
         Ref<LocatedEntity> addNewEntity(const std::string& type,
                                         const Atlas::Objects::Entity::RootEntity&) override;

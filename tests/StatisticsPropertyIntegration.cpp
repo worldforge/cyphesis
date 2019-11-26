@@ -55,9 +55,8 @@ class ArithmeticTestWorld : public TestWorld {
     explicit ArithmeticTestWorld() {
     }
 
-    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
+    void addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;
-        return 0;
     }
     std::unique_ptr<ArithmeticScript> newArithmetic(const std::string &,
                                              LocatedEntity *) override {

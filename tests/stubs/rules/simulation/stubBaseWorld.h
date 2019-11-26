@@ -99,9 +99,9 @@
 
 #ifndef STUB_BaseWorld_addEntity
 //#define STUB_BaseWorld_addEntity
-  Ref<LocatedEntity> BaseWorld::addEntity(const Ref<LocatedEntity>& obj)
+  void BaseWorld::addEntity(const Ref<LocatedEntity>& obj)
   {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
+    
   }
 #endif //STUB_BaseWorld_addEntity
 

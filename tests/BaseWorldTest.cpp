@@ -47,9 +47,8 @@ class MyTestWorld : public TestWorld {
         m_eobjects[gw->getIntId()] = gw;
     }
 
-    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
+    void addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;
-        return ent;
     }
 };
 

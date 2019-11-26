@@ -143,7 +143,7 @@ void WorldRouter::shutdown()
 /// the default spawn area if necessary. Handle inserting the
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Send a Setup op to the entity.
-Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
+void WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
 {
     debug_print("WorldRouter::addEntity(" << ent->describeEntity() << ")")
     assert(ent->getIntId() != 0);
@@ -180,8 +180,6 @@ Ref<LocatedEntity> WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
     message(app, *ent);
 
     inserted.emit(ent.get());
-
-    return ent;
 }
 
 /// \brief Create a new entity and add to the world.
@@ -208,7 +206,8 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
                                    typestr));
         return nullptr;
     }
-    return addEntity(ent);
+    addEntity(ent);
+    return ent;
 }
 
 int WorldRouter::createSpawnPoint(const MapType& data, LocatedEntity* ent)

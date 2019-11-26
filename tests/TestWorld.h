@@ -48,9 +48,8 @@ struct TestWorld : public BaseWorld {
     ~TestWorld() override{}
 
     bool idle() override { return false; }
-    Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& ent) override {
+    void addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;
-        return ent;
     }
     Ref<LocatedEntity> addNewEntity(const std::string & id,
                                          const Atlas::Objects::Entity::RootEntity & op) override

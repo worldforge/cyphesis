@@ -151,7 +151,7 @@ class BaseWorld : public Singleton<BaseWorld>
         virtual bool idle() = 0;
 
         /// \brief Add a new entity to the world.
-        virtual Ref<LocatedEntity> addEntity(const Ref<LocatedEntity>& obj) = 0;
+        virtual void addEntity(const Ref<LocatedEntity>& obj) = 0;
 
         /// \brief Create a new entity and add to the world.
         virtual Ref<LocatedEntity> addNewEntity(const std::string& type,
