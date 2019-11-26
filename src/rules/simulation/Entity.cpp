@@ -182,8 +182,7 @@ PropertyBase* Entity::modProperty(const std::string& name, const Atlas::Message:
             new_prop->removeFlags(flag_class);
             m_properties[name].reset(new_prop);
             new_prop->install(this, name);
-            new_prop->apply(this);
-            propertyApplied(name, *new_prop);
+            applyProperty(name, new_prop);
             return new_prop;
         }
     }

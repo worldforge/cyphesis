@@ -67,9 +67,8 @@ void ModeProperty::apply(LocatedEntity* entity)
                 currentOrientation = rotation * currentOrientation;
 
                 activeRotationProp->data() = plantedRotation->data();
-                activeRotationProp->apply(entity);
+                entity->applyProperty("active_rotation", activeRotationProp);
                 activeRotationProp->removeFlags(persistence_clean);
-                activeRotationProp->addFlags(flag_unsent);
 
                 Atlas::Objects::Entity::Anonymous move_arg;
                 move_arg->setId(entity->getId());
