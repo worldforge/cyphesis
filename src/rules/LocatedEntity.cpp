@@ -63,12 +63,13 @@ LocatedEntity::LocatedEntity(const std::string& id, long intId) :
 LocatedEntity::~LocatedEntity()
 {
     m_scriptEntity.clear();
-    clearProperties();
+    if (!isDestroyed()) {
+        clearProperties();
+    }
 }
 
 void LocatedEntity::clearProperties()
 {
-
     if (m_type) {
         for (auto& entry : m_type->defaults()) {
             //Only remove if there's no instance specific property.
@@ -81,8 +82,6 @@ void LocatedEntity::clearProperties()
     for (auto& entry : m_properties) {
         entry.second->remove(this, entry.first);
     }
-    m_properties.clear();
-
 }
 
 void LocatedEntity::setType(const TypeNode* t)
