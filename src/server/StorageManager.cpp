@@ -302,7 +302,9 @@ void StorageManager::updateEntity(LocatedEntity* ent)
 {
     std::string location;
     Atlas::Message::MapType map;
-    map["pos"] = ent->m_location.pos().toAtlas();
+    if (ent->m_location.pos().isValid()) {
+        map["pos"] = ent->m_location.pos().toAtlas();
+    }
     if (ent->m_location.orientation().isValid()) {
         map["orientation"] = ent->m_location.orientation().toAtlas();
     }
