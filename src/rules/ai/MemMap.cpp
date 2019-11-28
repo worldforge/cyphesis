@@ -48,7 +48,7 @@ void MemMap::setScript(Script* script)
 }
 
 
-Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
+void MemMap::addEntity(const Ref<MemEntity>& entity)
 {
     assert(entity != nullptr);
     assert(!entity->getId().empty());
@@ -60,8 +60,6 @@ Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>& entity)
     }
     m_entities[entity->getIntId()] = entity;
     m_checkIterator = m_entities.find(next);
-
-    return entity;
 }
 
 void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
@@ -175,7 +173,8 @@ Ref<MemEntity> MemMap::newEntity(const std::string& id, long int_id,
 
     readEntity(entity, ent, timestamp);
 
-    return addEntity(entity);
+    addEntity(entity);
+    return entity;
 }
 
 MemMap::MemMap(TypeResolver& typeResolver)
@@ -211,7 +210,8 @@ Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
     debug_print("MemMap::add_id")
     m_additionsById.push_back(id);
     Ref<MemEntity> entity = new MemEntity(id, int_id);
-    return addEntity(entity);
+    addEntity(entity);
+    return entity;
 }
 
 void MemMap::del(const std::string& id)

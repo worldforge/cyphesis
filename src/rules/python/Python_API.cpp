@@ -302,6 +302,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
     PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &alloc);
     PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &alloc);
     PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &alloc);
+    log(INFO, "Python is using malloc for memory allocation.");
 #endif
 
     Py_InitializeEx(0);

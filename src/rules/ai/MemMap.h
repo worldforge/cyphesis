@@ -97,7 +97,7 @@ class MemMap {
 
     std::vector<Ref<MemEntity>> resolveEntitiesForType(const TypeNode* typeNode);
 
-    Ref<MemEntity> addEntity(const Ref<MemEntity>&);
+    void addEntity(const Ref<MemEntity>&);
     void setScript(Script* script);
 
     bool find(const std::string & id) const;

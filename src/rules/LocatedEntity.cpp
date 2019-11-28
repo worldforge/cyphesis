@@ -604,14 +604,13 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
 void LocatedEntity::merge(const MapType& ent)
 {
     const std::set<std::string>& imm = immutables();
-    auto Iend = ent.end();
-    for (auto I = ent.begin(); I != Iend; ++I) {
-        const std::string& key = I->first;
+    for (auto& entry : ent) {
+        const std::string& key = entry.first;
         if (key.empty()) {
             continue;
         }
         if (imm.find(key) != imm.end()) { continue; }
-        setAttr(key, I->second);
+        setAttr(key, entry.second);
     }
 }
 
