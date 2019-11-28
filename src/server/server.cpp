@@ -55,6 +55,7 @@
 #include "common/system.h"
 #include "common/sockets.h"
 #include "common/Monitors.h"
+#include "common/Variable.h"
 #include "ExternalMindsManager.h"
 
 #include <varconf/config.h>
@@ -74,6 +75,7 @@
 #include <rules/python/CyPy_Atlas.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Rules.h>
+#include <rules/simulation/ExternalMind.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -338,6 +340,8 @@ namespace {
     int run()
     {
         Monitors monitors;
+        monitors.watch("minds", new Variable<int>(ExternalMind::s_numberOfMinds));
+
         //Check if we should spawn AI clients.
         if (ai_clients) {
             log(INFO, compose("Spawning %1 AI client processes.", ai_clients));

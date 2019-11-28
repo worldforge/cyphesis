@@ -57,7 +57,7 @@ class ExternalMind : public Router
         static long s_serialNumberNext;
 
 
-        Link* m_link;
+    Link* m_link;
         Ref<LocatedEntity> m_entity;
 
         /**
@@ -77,6 +77,8 @@ class ExternalMind : public Router
         void externalRelayedOperation(const Operation& op);
 
     public:
+        static int s_numberOfMinds;
+
 
         explicit ExternalMind(const std::string& strId, long id, Ref<LocatedEntity> entity);
 
@@ -106,6 +108,7 @@ class ExternalMind : public Router
         void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
 
         virtual void GetOperation(const Operation& smartPtr, OpVector& res);
+
 };
 
 #endif // RULESETS_EXTERNAL_MIND_H

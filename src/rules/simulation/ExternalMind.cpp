@@ -45,8 +45,13 @@ using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
 long ExternalMind::s_serialNumberNext = 0L;
+int ExternalMind::s_numberOfMinds = 0L;
 
-ExternalMind::~ExternalMind() = default;
+
+ExternalMind::~ExternalMind()
+{
+    s_numberOfMinds--;
+}
 
 void ExternalMind::deleteEntity(const std::string& id, bool forceDelete)
 {
@@ -80,6 +85,7 @@ ExternalMind::ExternalMind(const std::string& strId, long id, Ref<LocatedEntity>
       m_link(nullptr),
       m_entity(std::move(entity))
 {
+    s_numberOfMinds++;
 }
 
 const Ref<LocatedEntity>& ExternalMind::getEntity() const
