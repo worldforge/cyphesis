@@ -2,9 +2,8 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 import importlib
-from types import *
+import types
 
-from atlas import *
 from common import log
 
 
@@ -114,7 +113,7 @@ class Goal:
         for sg in self.subgoals:
             if sg is None:
                 continue
-            if type(sg) == FunctionType or type(sg) == MethodType:
+            if isinstance(sg, types.FunctionType) or isinstance(sg, types.MethodType):
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: bef function: " + repr(sg) + " " + repr(res))
                 res = sg(me)
@@ -149,7 +148,7 @@ class Goal:
 
         subgoals = []
         for sg in self.subgoals:
-            if not isinstance(sg, FunctionType) and not isinstance(sg, MethodType) and sg is not None:
+            if not isinstance(sg, types.FunctionType) and not isinstance(sg, types.MethodType) and sg is not None:
                 subgoals.append(sg.report())
         if len(subgoals) > 0:
             report["subgoals"] = subgoals
