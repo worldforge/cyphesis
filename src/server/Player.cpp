@@ -29,6 +29,8 @@ using Atlas::Message::ListType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
+int Player::s_numberOfPlayers = 0;
+
 /// \brief Constructor
 ///
 /// @param conn the Connection this account is being created by.
@@ -43,6 +45,7 @@ Player::Player(Connection * conn,
                long intId) :
         Account(conn, username, passwd, id, intId)
 {
+    s_numberOfPlayers++;
 }
 
 const char * Player::getType() const
@@ -67,4 +70,6 @@ int Player::characterError(const Operation & op,
     return 0;
 }
 
-Player::~Player() = default;
+Player::~Player() {
+    s_numberOfPlayers--;
+}

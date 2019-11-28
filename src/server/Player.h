@@ -38,6 +38,8 @@ class Player : public Account {
     const char * getType() const override;
 
     friend class Playertest;
+
+    static int s_numberOfPlayers;
 };
 
 #endif // SERVER_PLAYER_H

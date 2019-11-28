@@ -57,6 +57,7 @@
 #include "common/Monitors.h"
 #include "common/Variable.h"
 #include "ExternalMindsManager.h"
+#include "Player.h"
 
 #include <varconf/config.h>
 
@@ -341,6 +342,7 @@ namespace {
     {
         Monitors monitors;
         monitors.watch("minds", new Variable<int>(ExternalMind::s_numberOfMinds));
+        monitors.watch("players", new Variable<int>(Player::s_numberOfPlayers));
 
         //Check if we should spawn AI clients.
         if (ai_clients) {
