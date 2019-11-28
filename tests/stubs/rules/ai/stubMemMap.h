@@ -74,9 +74,9 @@
 
 #ifndef STUB_MemMap_addEntity
 //#define STUB_MemMap_addEntity
-  Ref<MemEntity> MemMap::addEntity(const Ref<MemEntity>&)
+  void MemMap::addEntity(const Ref<MemEntity>&)
   {
-    return *static_cast<Ref<MemEntity>*>(nullptr);
+    
   }
 #endif //STUB_MemMap_addEntity
 
