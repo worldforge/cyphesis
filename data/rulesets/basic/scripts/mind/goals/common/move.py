@@ -1,22 +1,18 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
-import math
 
-from .common import const
-from physics import *
-from rules import Location
-
-from physics import Vector3D
-from physics import Point3D
+from random import *
 
 import entity_filter
-
 from mind.Goal import Goal, goal_create
 from mind.goals.common.common import *
 from mind.goals.common.misc_goal import *
-from random import *
+from physics import *
+from physics import Point3D
+from physics import Vector3D
+from rules import Location
 
-import types
+from .common import const
 
 
 ############################ MOVE ME ####################################
@@ -38,7 +34,8 @@ class move_me(Goal):
         self.squared_radius = radius * radius
 
     def get_location_instance(self, me):
-        if type(self.location) == LambdaType or type(self.location) == FunctionType or type(self.location) == MethodType:
+        if type(self.location) == LambdaType or type(self.location) == FunctionType or type(
+                self.location) == MethodType:
             # print "Lambda location"
             return self.location(me)
         if type(self.location) == str:
@@ -55,10 +52,10 @@ class move_me(Goal):
             return True
         square_distance = square_horizontal_distance(me.entity.location, location)
         if square_distance <= self.squared_radius:
-            #print("We are there, distance %s" % math.sqrt(square_distance))
+            # print("We are there, distance %s" % math.sqrt(square_distance))
             return True
         else:
-            #print("We are not there, distance %s" % math.sqrt(square_distance))
+            # print("We are not there, distance %s" % math.sqrt(square_distance))
             return False
 
     def move_to_loc(self, me):
@@ -88,7 +85,7 @@ class move_me(Goal):
     def is_reachable(self, me):
         location = self.get_location_instance(me)
         if not location:
-            #We have no location, so no valid goal
+            # We have no location, so no valid goal
             return False
 
         pathResult = me.pathResult
@@ -420,7 +417,8 @@ class move_me_near_focus(Goal):
                 return 1
             # If we've already moved close to the thing, we are allowed movement within a certain movement radius
             if self.is_close_to_thing:
-                if squared_distance_to_thing < ((self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
+                if squared_distance_to_thing < (
+                        (self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
                     return 1
         self.is_close_to_thing = False
         return 0

@@ -1,14 +1,12 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2007 Al Riddoch (See the file COPYING for details).
 
-from atlas import *
-from physics import *
-from physics import Vector3D
-from rules import Location
-
 from random import *
 
+from atlas import *
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
+from physics import *
+from rules import Location
 
 
 class chase(DynamicGoal):

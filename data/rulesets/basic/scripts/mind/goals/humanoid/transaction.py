@@ -3,14 +3,12 @@
 
 import mind.goals
 import mind.goals.common
+from atlas import Operation, Entity
 from mind.Goal import Goal
 from mind.goals.common.common import *
-from mind.goals.common.move import move_me
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
-from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
 from physics import Point3D
 from rules import Location
-from atlas import Operation, Entity
 
 
 # class sell_things(add_unique_goal_by_perception):
@@ -71,14 +69,22 @@ class buy_from(Goal):
                 coins = me.find_thing("coin")
                 if len(coins) < price:
                     me.remove_thing(item)
-                    return Operation("talk", Entity(say="I can't afford to buy that " + self.what + " at the moment.")) + Operation("move",
-                                                                                                                                    Entity(item.id, location=Location(seller.id, Point3D(0, 0, 0))))
+                    return Operation("talk", Entity(
+                        say="I can't afford to buy that " + self.what + " at the moment.")) + Operation("move",
+                                                                                                        Entity(item.id,
+                                                                                                               location=Location(
+                                                                                                                   seller.id,
+                                                                                                                   Point3D(
+                                                                                                                       0,
+                                                                                                                       0,
+                                                                                                                       0))))
                 res = Oplist()
                 for i in range(0, price):
                     coin = coins[0]
                     me.remove_thing(coin)
                     res.append(Operation("move", Entity(coin.id, location=Location(seller, Point3D(0, 0, 0)))))
-                res.append(Operation("talk", Entity(say="Thankyou " + seller.name + ", here are " + str(price) + " coins for the pig.")))
+                res.append(Operation("talk", Entity(
+                    say="Thankyou " + seller.name + ", here are " + str(price) + " coins for the pig.")))
                 self.irrelevant = 1
                 return res
 
@@ -94,7 +100,8 @@ class buy_from(Goal):
         if len(coins) < price:
             return Operation("talk", Entity(say="I can't afford to buy that " + self.what + " at the moment."))
         else:
-            return Operation("talk", Entity(say=seller.name + " that " + self.what + " is worth " + str(price) + " coins."))
+            return Operation("talk",
+                             Entity(say=seller.name + " that " + self.what + " is worth " + str(price) + " coins."))
 
 
 class buy_livestock(DynamicGoal):
@@ -113,7 +120,8 @@ class buy_livestock(DynamicGoal):
         who = me.map.get(op.to)
         if thing == None:
             if object != self.what:
-                return Operation("talk", Entity(say=who.name + ", I am not interested in buying your " + str(object) + "."))
+                return Operation("talk",
+                                 Entity(say=who.name + ", I am not interested in buying your " + str(object) + "."))
             me.goals.insert(0, buy_from(self.what, self.cost, op.to))
             return Operation("talk", Entity(say=who.name + " which " + object + " would you like to sell?"))
         if not self.what in thing.type: return

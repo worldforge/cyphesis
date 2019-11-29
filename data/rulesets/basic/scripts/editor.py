@@ -1,12 +1,9 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 from atlas import *
-from types import *
 from mind.panlingua import interlinguish
 
 il = interlinguish
-
-import server
 
 
 class editor:
@@ -148,7 +145,6 @@ class editor:
 
 
 def create_editor(client, avatar='creator'):
-
     avatar = client.create_avatar(avatar)
 
     return editor(client, avatar)

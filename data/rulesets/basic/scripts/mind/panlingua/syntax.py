@@ -1,4 +1,5 @@
-import sys, re, string
+import re
+import sys
 
 syntax_desc = re.compile("(\S+)\s+(\d+)\s*([^,]*)\s*,\s*(.*?)\s*$")
 

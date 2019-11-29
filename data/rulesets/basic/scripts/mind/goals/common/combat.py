@@ -1,19 +1,13 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-
+import entity_filter
+from atlas import Operation, Entity
+from mind.Goal import Goal
+from mind.goals.common.misc_goal import spot_something
+from mind.goals.common.move import avoid, move_me_to_focus
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from physics import square_distance, distance_between
-from rules import Location
-from mind.Goal import Goal
-from mind.goals.common.move import avoid, move_me_to_focus
-from mind.goals.common.misc_goal import spot_something
-import entity_filter
-
-import time
-import types
-
 
 # A list of usages which we should look for in weapons.
 weapon_usages = ['strike', 'chop']
@@ -115,10 +109,12 @@ class Fight(Goal):
             attached_current = me.get_attached_entity("hand_primary")
             if attached_current:
                 print("Hitting with a weapon")
-                return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id, targets=[Entity(enemy.id)])))
+                return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id,
+                                                                                           targets=[Entity(enemy.id)])))
             else:
                 print("Punching")
-                return move_to_face + Operation("use", Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
+                return move_to_face + Operation("use",
+                                                Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
         else:
             print("Out of reach. Reach is {} and distance is {}".format(reach, distance))
 

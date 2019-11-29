@@ -1,13 +1,11 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
-from atlas import Operation, Entity
-from physics import *
 import entity_filter
+from atlas import Operation, Entity
 from mind.goals.common.misc_goal import *
 from mind.goals.common.move import *
-
-import types
+from physics import *
 
 
 # Gather a resource from nearby
@@ -38,7 +36,7 @@ class gather(Goal):
         for thing in what_all:
             square_dist = square_distance(me.entity.location, thing.location)
             if square_dist < square_near_dist and \
-                thing.location.parent.id != me.entity.id:
+                    thing.location.parent.id != me.entity.id:
                 return 0
         return 1
 
@@ -53,7 +51,8 @@ class harvest_resource(Goal):
                       [acquire_thing(tool),
                        move_me_area(place, range=range),
                        gather(what),
-                       spot_something_in_area(source, location=place, range=range, condition=self.source_entity_condition, ),
+                       spot_something_in_area(source, location=place, range=range,
+                                              condition=self.source_entity_condition, ),
                        move_me_to_focus(source),
                        self.do])
         self.what = what

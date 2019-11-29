@@ -2,16 +2,15 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 # Al Riddoch - Added transport_something() goal
 
-from physics import *
-from rules import Location
+import time
+from random import *
+
+import entity_filter
 from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import *
-from random import *
-import entity_filter
-
-import time
-import types
+from physics import *
+from rules import Location
 
 
 ######################## MAKE LOTS OF SOMETHING ###############################
@@ -280,7 +279,8 @@ class spot_something_in_area(Goal):
         self.sqr_range = range * range
         self.area_location_name = location
         self.condition = condition
-        self.inner_spot_goal = spot_something(what, range=range, seconds_until_forgotten=seconds_until_forgotten, condition=self.is_thing_in_area)
+        self.inner_spot_goal = spot_something(what, range=range, seconds_until_forgotten=seconds_until_forgotten,
+                                              condition=self.is_thing_in_area)
 
     def do_I_have(self, me):
         self.inner_spot_goal.do_I_have(me)
@@ -494,7 +494,8 @@ class browse(feed):
     def __init__(self, what, min_status):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
-                      [spot_something(what, range=20, condition=(lambda o, s=min_status: hasattr(o.props, "status") and o.props.status > s)),
+                      [spot_something(what, range=20, condition=(
+                          lambda o, s=min_status: hasattr(o.props, "status") and o.props.status > s)),
                        move_me_to_focus(what),
                        self.eat])
         self.what = what
@@ -834,7 +835,8 @@ class assemble(Goal):
         for item in self.fromwhat:
             cmpnt = me.find_thing(item)[0]
             retops = retops + Operation("set", Entity(cmpnt.id, status=-1))
-        retops = retops + Operation("create", Entity(name=self.what, parent=self.what, location=me.entity.location.copy()))
+        retops = retops + Operation("create",
+                                    Entity(name=self.what, parent=self.what, location=me.entity.location.copy()))
         retops = retops + Operation("imaginary", Entity("conjure"))
         return retops
 

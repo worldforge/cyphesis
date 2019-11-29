@@ -2,14 +2,9 @@
 # Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
 from atlas import *
-from types import *
-from common import const
-
-from physics import Vector3D
+from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from physics import Point3D
 from rules import Location
-
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
 class school(DynamicGoal):

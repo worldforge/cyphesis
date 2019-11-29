@@ -2,31 +2,25 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 import random
-import sys
 import traceback
 
-from atlas import Operation, Entity, Oplist
-from mind.Goal import goal_create, Goal
-
-from physics import *
-from physics import Quaternion
-from common import const
-from types import *
-from rules import Location
-
-from physics import Vector3D
-
 import ai
-
-from mind.Memory import Memory
-from mind.Knowledge import Knowledge
-from mind.panlingua import interlinguish, ontology
-from mind.compass import vector_to_compass
-from common import log, const
-from . import dictlist
+import entity_filter
 import mind.goals
 import mind.goals.common
-import entity_filter
+from atlas import Operation, Entity, Oplist
+from common import log, const
+from mind.Goal import goal_create
+from mind.Knowledge import Knowledge
+from mind.Memory import Memory
+from mind.compass import vector_to_compass
+from mind.panlingua import interlinguish, ontology
+from physics import *
+from physics import Quaternion
+from physics import Vector3D
+from rules import Location
+
+from . import dictlist
 
 reverse_cmp = {'>': '<'}
 
@@ -710,7 +704,7 @@ class NPCMind(ai.Mind):
                 thought_value = repr(value)
         else:
             thought_value = value
-        #desc = "%s knowledge about %s is %s" % (what, key, thought_value)
+        # desc = "%s knowledge about %s is %s" % (what, key, thought_value)
         #        ent = Entity(description=desc, what=what, key=key, value=thought_value)
         #        self.send(Operation("thought",ent))
         if what == "location":
@@ -811,7 +805,7 @@ class NPCMind(ai.Mind):
             triggering_goals = goal.triggering_goals()
             for g in triggering_goals:
                 print("Removing trigger goal: {}".format(str(g)))
-                dictlist.remove_value(self.trigger_goals,  g)
+                dictlist.remove_value(self.trigger_goals, g)
 
         self.goals.remove(goal)
 
