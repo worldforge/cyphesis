@@ -1,14 +1,13 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-
-from physics import Vector3D, Point3D, Quaternion
-
+import entity_filter
 import server
+from atlas import Operation, Entity, Oplist
+from physics import Vector3D, Quaternion
+
 from world.StoppableTask import StoppableTask
 from world.utils import Usage
-import entity_filter
 
 arrow_filter = entity_filter.Filter("entity instance_of types.arrow")
 
@@ -33,7 +32,12 @@ def shoot_in_direction(direction, instance, res):
 
         mode_data = {"mode": "projectile", "$eid": instance.actor.id, "extra": {"damage": 0.2}}
 
-        res.append(Operation("move", Entity(arrows[0].id, location=new_loc, velocity=direction * 60, mode="projectile", mode_data=mode_data), to=arrows[0].id))
+        res.append(Operation("move", Entity(arrows[0].id,
+                                            location=new_loc,
+                                            velocity=direction * 60,
+                                            mode="projectile",
+                                            mode_data=mode_data),
+                             to=arrows[0].id))
 
 
 def shoot(instance):

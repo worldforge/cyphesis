@@ -1,10 +1,12 @@
-from atlas import Operation, Entity, Oplist
-from physics import Vector3D
 import server
+from atlas import Operation, Entity
+from physics import Vector3D
 
 
-# Plant nourishing entities are those that can sustain plants in them. When a "consume" op of type "soil" is received a "nourish" op is returned.
-# This would normally be placed on an entity representing "ground". In those cases, if it also has a "terrain" property a check if done against that to
+# Plant nourishing entities are those that can sustain plants in them.
+# When a "consume" op of type "soil" is received a "nourish" op is returned.
+# This would normally be placed on an entity representing "ground".
+# In those cases, if it also has a "terrain" property a check if done against that to
 # make sure that the ground can sustain plants.
 class PlantNourishing(server.Thing):
 
@@ -39,7 +41,8 @@ class PlantNourishing(server.Thing):
                     # Just supply the same mass as was requested
                     nourish_ent.mass = mass_arg
 
-                # Note that we don't change our own status; unlike creatures being "eaten" soil doesn't lose status in this simulation
+                # Note that we don't change our own status;
+                # unlike creatures being "eaten" soil doesn't lose status in this simulation
                 nourish_op = Operation("nourish", nourish_ent, to=op.from_)
 
                 return server.OPERATION_BLOCKED, nourish_op

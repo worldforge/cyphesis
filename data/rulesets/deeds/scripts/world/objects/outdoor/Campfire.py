@@ -1,9 +1,8 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-
 import server
+from atlas import Operation, Oplist
 
 
 class Campfire(server.Thing):

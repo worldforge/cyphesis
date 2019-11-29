@@ -1,10 +1,10 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-
 import server
+from atlas import Operation, Entity, Oplist
 from physics import Vector3D, Quaternion
+
 from world.utils import Usage
 
 
@@ -25,7 +25,9 @@ def shoot_in_direction(direction, instance, res):
     new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
     mode_data = {"mode": "projectile", "$eid": instance.actor.id}
 
-    res.append(Operation("create", Entity(parent="fireball", location=new_loc, velocity=direction * 60, mode="projectile", mode_data=mode_data, damage_explosion=instance.tool.props.damage),
+    res.append(Operation("create",
+                         Entity(parent="fireball", location=new_loc, velocity=direction * 60, mode="projectile",
+                                mode_data=mode_data, damage_explosion=instance.tool.props.damage),
                          to=instance.tool.id))
 
 
@@ -58,7 +60,9 @@ def shoot_poison_in_direction(direction, instance, res):
     new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
     mode_data = {"mode": "projectile", "$eid": instance.actor.id}
 
-    res.append(Operation("create", Entity(parent="poisonball", location=new_loc, velocity=direction * 60, mode="projectile", mode_data=mode_data, damage_poison=instance.tool.props.damage),
+    res.append(Operation("create",
+                         Entity(parent="poisonball", location=new_loc, velocity=direction * 60, mode="projectile",
+                                mode_data=mode_data, damage_poison=instance.tool.props.damage),
                          to=instance.tool.id))
 
 

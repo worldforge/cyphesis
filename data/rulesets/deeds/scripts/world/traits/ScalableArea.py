@@ -1,5 +1,6 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Oplist
+
 from world.utils.Ticks import *
 
 
@@ -31,15 +32,16 @@ class ScalableArea(server.Thing):
 # if (area_radius != 0.0f) {
 #
 # //We're only interested in the horizontal radius of the plant
-# WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(2)), WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(2)));
+# WFMath::AxisBox<2> flat_bbox(WFMath::Point<2>(bbox.lowerBound(0), bbox.lowerBound(2)),
+# WFMath::Point<2>(bbox.upperBound(0), bbox.upperBound(2)));
 # auto plant_radius = flat_bbox.boundingSphere().radius();
 #
 # auto desired_radius = plant_radius * AREA_SCALING_FACTOR;
 # auto scaling_factor = desired_radius / area_radius;
 #
 # //No need to alter if the scale is the same.
-#                                        //Also don't scale the unless the difference is at least 10% in either direction.
-#                                                  //The reason for this is that we don't want to alter the area each tick since
+# //Also don't scale the unless the difference is at least 10% in either direction.
+# //The reason for this is that we don't want to alter the area each tick since
 # //the client often must perform a sometimes expensive material regeneration
 # //calculation every time a terrain area changes. With many plants this runs the
 # //risk of bogging down the client then.

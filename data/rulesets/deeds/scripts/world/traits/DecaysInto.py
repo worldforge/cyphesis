@@ -1,5 +1,5 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity, Oplist
 
 
 # When the entity is deleted it's replaced by one or many other entities.

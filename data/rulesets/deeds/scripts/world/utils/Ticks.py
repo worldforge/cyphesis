@@ -9,7 +9,8 @@ from atlas import Operation, Entity
 
 def init_ticks(self, interval, jitter=0):
     self.tick_refno = 0
-    self.send_world(Operation("tick", Entity(name=self.__class__.__name__), refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
+    self.send_world(Operation("tick", Entity(name=self.__class__.__name__), refno=self.tick_refno,
+                              future_seconds=interval + random.uniform(0, jitter), to=self.id))
 
 
 def verify_tick(self, op, res, interval=0, jitter=0):
@@ -22,6 +23,7 @@ def verify_tick(self, op, res, interval=0, jitter=0):
         if arg.name == self.__class__.__name__ and op.refno == self.tick_refno:
             if interval > 0:
                 self.tick_refno += 1
-                res.append(Operation("tick", arg, refno=self.tick_refno, future_seconds=interval + random.uniform(0, jitter), to=self.id))
+                res.append(Operation("tick", arg, refno=self.tick_refno,
+                                     future_seconds=interval + random.uniform(0, jitter), to=self.id))
             return True
     return False

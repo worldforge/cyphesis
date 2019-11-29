@@ -3,13 +3,6 @@
 
 from atlas import *
 from physics import *
-from physics import Quaternion
-from physics import Point3D
-from physics import Vector3D
-
-import server
-from rules import Location
-
 
 # class Trenching(server.Task):
 #     """ A task for creating Trench with a pickaxe."""

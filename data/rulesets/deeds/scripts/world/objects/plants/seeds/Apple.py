@@ -24,6 +24,6 @@ class Apple(Seed):
             return Operation("set", ent, to=self)
         else:
             self.props.alcohol = 1
-            opTick = Operation("tick", to=self)
-            opTick.set_future_seconds(900)
-            return opTick
+            op_tick = Operation("tick", to=self)
+            op_tick.set_future_seconds(900)
+            return op_tick

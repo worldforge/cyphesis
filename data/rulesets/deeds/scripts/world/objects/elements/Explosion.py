@@ -1,7 +1,7 @@
-from atlas import Operation, Entity, Oplist
-
 import physics
 import server
+from atlas import Operation, Entity, Oplist
+
 from world.utils import Ticks
 
 
@@ -35,7 +35,8 @@ class Explosion(server.Thing):
                     entity = collision.entity
                     damage = base_damage * ((blast_radius - collision.distance) / blast_radius)
                     if entity != self:
-                        self.send_world(Operation('hit', Entity(hit_type="explosion", id=actor_id, damage=damage), to=entity))
+                        self.send_world(
+                            Operation('hit', Entity(hit_type="explosion", id=actor_id, damage=damage), to=entity))
 
     def tick_operation(self, op):
         if Ticks.verify_tick(self, op, Oplist()):

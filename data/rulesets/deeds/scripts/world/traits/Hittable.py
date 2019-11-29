@@ -1,11 +1,12 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity, Oplist
 
 
 # Apply to all entities that should take damage when hit.
 # Modifiers can be applied for various things. The damage value will be multiplied with the modifier.
 # To modify on the type of hit, apply a "__modifier_hit_type_*" modifier.
-# For example, if you want to increase the damage taken when chopping you should add a "__modifier_hit_type_chop" property.
+# For example, if you want to increase the damage taken when chopping you
+# should add a "__modifier_hit_type_chop" property.
 class Hittable(server.Thing):
 
     def hit_operation(self, op):

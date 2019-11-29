@@ -1,11 +1,11 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
+import server
 from atlas import Operation, Entity
 
-import server
-from world.utils import Usage
 from world.StoppableTask import StoppableTask
+from world.utils import Usage
 
 
 def strike(instance):
@@ -37,7 +37,10 @@ def strike(instance):
             damage = 0
             if instance.tool.props.damage:
                 damage = instance.tool.props.damage
-            hit_op = Operation('hit', Entity(damage=damage, hit_type=instance.op.parent, id=instance.actor.id), to=target.entity)
+            hit_op = Operation('hit', Entity(damage=damage,
+                                             hit_type=instance.op.parent,
+                                             id=instance.actor.id),
+                               to=target.entity)
             return server.OPERATION_BLOCKED, hit_op, task_op
         else:
             return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"), task_op
@@ -66,7 +69,8 @@ class Melee(StoppableTask):
                 damage = 0
                 if self.usage.tool.props.damage:
                     damage = self.usage.tool.props.damage
-                hit_op = Operation('hit', Entity(damage=damage, hit_type=self.usage.op.parent, id=self.usage.actor.id), to=target.entity)
+                hit_op = Operation('hit', Entity(damage=damage, hit_type=self.usage.op.parent, id=self.usage.actor.id),
+                                   to=target.entity)
                 return server.OPERATION_BLOCKED, hit_op
             else:
                 return server.OPERATION_BLOCKED, self.usage.actor.client_error(self.usage.op, "Too far away")

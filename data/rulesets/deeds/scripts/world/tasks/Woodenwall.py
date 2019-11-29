@@ -3,12 +3,6 @@
 
 from atlas import *
 from physics import *
-from physics import Quaternion
-from physics import Point3D
-from physics import Vector3D
-
-import server
-
 
 # class Woodenwall(server.Task):
 #     """A task for creating a Woodenwall by consuming 1 lumber , 1 wooden board and a rope"""

@@ -1,5 +1,6 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity, Oplist
+
 from world.utils.Ticks import *
 
 
@@ -17,7 +18,8 @@ class Growing(server.Thing):
             max_scale = 1.0
             if self.props.maxscale:
                 max_scale = self.props.maxscale
-            if self.props.mass and self.props.density and self.props.bbox and self.props._nutrients and self.props._nutrients > 0:
+            if self.props.mass and self.props.density and self.props.bbox \
+                    and self.props._nutrients and self.props._nutrients > 0:
                 # Use half of the nutrients to grow
                 new_mass = self.props.mass + (self.props._nutrients * 0.5)
                 bbox_unscaled = self.props.bbox

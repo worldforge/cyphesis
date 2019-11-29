@@ -1,13 +1,13 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 import random
-
-from atlas import Operation, Entity, Oplist
-from world.StoppableTask import StoppableTask
 from random import randint
 
-import server
 import entity_filter
+import server
+from atlas import Operation, Entity, Oplist
+
+from world.StoppableTask import StoppableTask
 
 
 def fish(instance):
@@ -40,7 +40,8 @@ class Fishing(StoppableTask):
 
         if random.uniform(0, 100) < 10:
             self.fish_on_hook = True
-            return server.OPERATION_HANDLED, Operation("imaginary", Entity(description="You feel something nibbling."), to=self.usage.actor.id, from_=self.usage.actor.id)
+            return server.OPERATION_HANDLED, Operation("imaginary", Entity(description="You feel something nibbling."),
+                                                       to=self.usage.actor.id, from_=self.usage.actor.id)
         else:
             self.fish_on_hook = False
         return server.OPERATION_HANDLED
@@ -54,8 +55,10 @@ class Fishing(StoppableTask):
             worms = self.usage.actor.find_in_contains(entity_filter.Filter("entity instance_of types.annelid"))
             if len(worms):
                 fish_type = self.fishes[randint(0, len(self.fishes) - 1)]
-                res.append(Operation("create", Entity(parent=fish_type, loc=self.usage.actor.id, mind=None), to=self.usage.tool))
+                res.append(Operation("create", Entity(parent=fish_type, loc=self.usage.actor.id, mind=None),
+                                     to=self.usage.tool))
                 # Delete the worm
                 res.append(Operation("delete", Entity(id=worms[0].id), to=worms[0].id))
-                res.append(Operation("imaginary", Entity(description="You caught a {}.".format(fish_type)), to=self.usage.actor.id, from_=self.usage.actor.id))
+                res.append(Operation("imaginary", Entity(description="You caught a {}.".format(fish_type)),
+                                     to=self.usage.actor.id, from_=self.usage.actor.id))
         return server.OPERATION_HANDLED, res

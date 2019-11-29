@@ -1,10 +1,10 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-
 import server
+from atlas import Operation, Entity, Oplist
 from rules import Location
+
 from world.utils import Ticks
 
 
@@ -37,7 +37,8 @@ class Poisoning(server.Thing):
 
             damageProp = self.props.damage
             if self.location.parent and damageProp is not None:
-                res.append(Operation('hit', Entity(hit_type="poison", id=self.id, damage=damageProp), to=self.location.parent.id))
+                res.append(Operation('hit', Entity(hit_type="poison", id=self.id, damage=damageProp),
+                                     to=self.location.parent.id))
 
             return server.OPERATION_HANDLED, res
         return server.OPERATION_IGNORED

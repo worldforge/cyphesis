@@ -3,12 +3,6 @@
 
 from atlas import *
 from physics import *
-from physics import Quaternion
-from physics import Point3D
-from physics import Vector3D
-
-import server
-
 
 # class Earthwall(server.Task):
 #     """A task for creating a Earthwall by consuming one part boulder , 1 part earth and 1 part sand """

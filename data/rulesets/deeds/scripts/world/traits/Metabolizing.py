@@ -1,5 +1,6 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity, Oplist
+
 from world.utils.Ticks import *
 
 

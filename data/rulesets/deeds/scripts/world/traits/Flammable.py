@@ -1,8 +1,9 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity
 
 
-# Flammable entities can burn. When they receive an "consume" op of type "fire" they will lose some status (if they have a status prop) and nourish the flame.
+# Flammable entities can burn. When they receive an "consume" op of type "fire" they will lose some status
+# (if they have a status prop) and nourish the flame.
 class Flammable(server.Thing):
 
     def consume_operation(self, op):
@@ -23,7 +24,8 @@ class Flammable(server.Thing):
                 status_prop = self.props.status
 
                 if status_prop:
-                    return server.OPERATION_BLOCKED, nourish_op, Operation("set", Entity(self.id, status=status_prop - burn_speed), to=self)
+                    return server.OPERATION_BLOCKED, nourish_op, \
+                           Operation("set", Entity(self.id, status=status_prop - burn_speed), to=self)
                 else:
                     return server.OPERATION_BLOCKED, nourish_op
 

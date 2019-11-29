@@ -1,5 +1,5 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity
 
 
 # Turn the entity into lumber when it's destroyed.

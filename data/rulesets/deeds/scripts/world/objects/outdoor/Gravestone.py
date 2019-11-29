@@ -1,11 +1,11 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-from physics import Vector3D
 from random import *
 
 import server
+from atlas import Operation, Entity
+from physics import Vector3D
 
 
 class Gravestone(server.Thing):

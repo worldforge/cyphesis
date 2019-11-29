@@ -1,10 +1,8 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2018 Erik Ogenvik (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-from world.utils import Usage
-
 import server
+from atlas import Operation, Entity
 
 
 def consume(instance):
@@ -18,4 +16,6 @@ def consume(instance):
     if instance.tool.props.consumable_type:
         nourish_ent.consume_type = instance.tool.props.consumable_type
 
-    return server.OPERATION_BLOCKED, Operation("nourish", nourish_ent, to=instance.actor), Operation("delete", Entity(instance.tool.id), to=instance.tool)
+    return server.OPERATION_BLOCKED, \
+           Operation("nourish", nourish_ent, to=instance.actor), \
+           Operation("delete", Entity(instance.tool.id), to=instance.tool)

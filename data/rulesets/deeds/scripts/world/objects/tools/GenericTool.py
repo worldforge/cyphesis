@@ -1,12 +1,11 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
+import server
 from atlas import Operation, Entity
 
 from world.StoppableTask import StoppableTask
 from world.utils import Usage
-
-import server
 
 
 def use(instance):
@@ -29,7 +28,6 @@ class Use(StoppableTask):
         pass
 
     def tick(self):
-
         (valid, err) = self.usage.is_valid()
         if not valid:
             return self.irrelevant(err)

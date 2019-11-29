@@ -1,5 +1,5 @@
-from atlas import Operation, Entity, Oplist
 import server
+from atlas import Operation, Entity
 
 
 # When status is set to <= 0 the entity is deleted

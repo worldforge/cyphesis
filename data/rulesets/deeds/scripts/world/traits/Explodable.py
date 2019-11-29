@@ -1,8 +1,6 @@
-from atlas import Operation, Entity, Oplist
-import server
 import rules
-import physics
-from rules import Location
+import server
+from atlas import Operation, Entity, Oplist
 
 
 # Used by items that should explode themselves when hit.
@@ -18,7 +16,8 @@ class Explodable(server.Thing):
             entity = Entity(parent="explosion", location=new_location, mode="fixed")
             mode_data = self.props.mode_data
             actor_id = self.id
-            # Check if there's an entity ref contained in the mode_data prop, and if so attach that to the "entity_ref" prop of the explosion.
+            # Check if there's an entity ref contained in the mode_data prop,
+            # and if so attach that to the "entity_ref" prop of the explosion.
             # This way the explosion can properly attribute any Hit op it sends to the actor which fired the item.
             if mode_data:
                 entity_ref = mode_data['$eid']

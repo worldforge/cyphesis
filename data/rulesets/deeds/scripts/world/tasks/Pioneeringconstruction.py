@@ -4,14 +4,6 @@
 
 from atlas import *
 from physics import *
-from physics import Quaternion
-from physics import Point3D
-from physics import Vector3D
-
-import server
-import weakref
-from rules import Location
-
 
 # class Pioneeringconstruction(server.Task):
 #     """A task for creating a Wooden structures such as

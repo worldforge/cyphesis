@@ -1,6 +1,6 @@
-from atlas import Operation
-from atlas import Entity
 import server
+from atlas import Entity
+from atlas import Operation
 
 
 def set_cooldown_on_attached(tool, actor):
@@ -17,7 +17,8 @@ def set_cooldown_on_attached(tool, actor):
                     ready_at_attached_prop = {}
 
                 ready_at_attached_prop[attachment_name] = server.world.get_time() + cooldown
-                actor.send_world(Operation('set', Entity(actor.id, _ready_at_attached=ready_at_attached_prop), to=actor.id))
+                actor.send_world(Operation('set',
+                                           Entity(actor.id, _ready_at_attached=ready_at_attached_prop), to=actor.id))
 
 
 def set_cooldown_on_tool(tool):
