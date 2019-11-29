@@ -85,6 +85,12 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
 {
     if (!m_data.empty()) {
 
+        //If we're already in limbo just block.
+        if (BaseWorld::instance().getLimboLocation()) {
+            if (BaseWorld::instance().getLimboLocation() == e->m_location.m_parent.get()) {
+                return OPERATION_BLOCKED;
+            }
+        }
         Location new_loc;
         new_loc.m_velocity = Vector3D::ZERO();
         auto mindsProp = e->getPropertyClassFixed<MindsProperty>();
@@ -109,6 +115,8 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
             //Suspend the entity while its in limbo
             Anonymous set_args;
             set_args->setAttr("suspended", 1);
+            //TODO: move this out from being hard coded
+            set_args->setAttr("status", 0.5); //Set health to half
             Set set;
             set->setFrom(e->getId());
             set->setTo(e->getId());
@@ -117,6 +125,15 @@ HandlerResult RespawningProperty::delete_handler(LocatedEntity * e,
 
         } else {
             if (BaseWorld::instance().moveToSpawn(m_data, new_loc) == 0) {
+                //TODO: move this out from being hard coded
+                Anonymous set_args;
+                set_args->setAttr("status", 0.5); //Set health to half
+                Set set;
+                set->setFrom(e->getId());
+                set->setTo(e->getId());
+                set->setArgs1(set_args);
+                res.push_back(set);
+
             } else {
                 //TODO: handle that the entity now is in limbo
                 new_loc.m_parent = nullptr;

@@ -89,10 +89,7 @@ class PropertyInstanceState {
          * @param state A new state.
          */
         void replaceState(const LocatedEntity* entity, std::unique_ptr<T> state) {
-            auto I = mStates.find(entity);
-            if (I != mStates.end()) {
-                I->second = std::move(state);
-            }
+            mStates[entity] = std::move(state);
         }
 };
 
