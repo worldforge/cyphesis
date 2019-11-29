@@ -18,7 +18,6 @@
 
 #include "CyPy_Props.h"
 #include "CyPy_Element.h"
-#include "CyPy_Axisbox.h"
 
 CyPy_Props::CyPy_Props(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
@@ -64,10 +63,8 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
 
 int CyPy_Props::setattro(const Py::String& name, const Py::Object& attr)
 {
-    auto nameStr = name.as_string();
-
     Atlas::Message::Element obj = CyPy_Element::asElement(attr);
-    m_value->setAttr(name, obj);
+    m_value->setAttr(name.as_string(), obj);
     return 0;
 }
 

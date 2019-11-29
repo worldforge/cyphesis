@@ -157,9 +157,7 @@ void CommMetaClient::metaserverKeepalive()
 /// we are alive.
 void CommMetaClient::metaserverReply(size_t packet_size)
 {
-    uint32_t handshake = 0, command = 0;
-
-    if ( packet_size < (std::streamsize)sizeof(command)) {
+    if ( packet_size < sizeof(uint32_t)) {
         log(WARNING, "WARNING: Reply from metaserver too short");
         return;
     }
@@ -168,7 +166,7 @@ void CommMetaClient::metaserverReply(size_t packet_size)
 
     if(shake.getPacketType() == NMT_HANDSHAKE )
     {
-        handshake = shake.getIntData(4); // we know 4 bytes for type, and 4 for shake
+        uint32_t handshake = shake.getIntData(4); // we know 4 bytes for type, and 4 for shake
         debug_print("MetaServer contacted successfully."
                        )
 
