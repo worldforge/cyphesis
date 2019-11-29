@@ -60,7 +60,6 @@ void HttpCache::processQuery(std::ostream & io,
         return;
     }
 
-    std::string query = request.substr(0, i);
     std::string path;
     ++i;
 
@@ -76,8 +75,8 @@ void HttpCache::processQuery(std::ostream & io,
         sendHeaders(io);
         const varconf::sec_map & conf = global_conf->getSection(::instance);
 
-        varconf::sec_map::const_iterator I = conf.begin();
-        varconf::sec_map::const_iterator Iend = conf.end();
+        auto I = conf.begin();
+        auto Iend = conf.end();
         for (; I != Iend; ++I) {
             io << I->first << " " << I->second << std::endl;
         }
