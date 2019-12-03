@@ -6,26 +6,30 @@
         <string name="parent">archetype</string>
         <list name="entities">
             <map>
+                <string name="id">main</string>
                 <string name="parent">human</string>
                 <list name="contains">
                     <string>pants</string>
                     <string>knife</string>
                     <string>coins</string>
                 </list>
-                <map name="outfit">
-                    <map name="legs">
-                        <string name="$eid">pants</string>
-                    </map>
+                <map name="attached_legs">
+                    <string name="$eid">pants</string>
                 </map>
                 <map name="statistics">
                     <float name="strength">23</float>
                 </map>
-                <float name="status">0.024</float>
+                <float name="status">1</float>
             </map>
             <map>
                 <string name="id">pants</string>
                 <string name="parent">pants</string>
                 <string name="style">burlap</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">legs</string>
+                </map>
             </map>
             <map>
                 <string name="id">knife</string>
@@ -45,6 +49,7 @@
         <string name="parent">archetype</string>
         <list name="entities">
             <map>
+                <string name="id">main</string>
                 <string name="parent">human</string>
             </map>
         </list>
@@ -65,6 +70,7 @@
         <string name="parent">human_npc_basic</string>
         <list name="entities">
             <map>
+                <string name="id">main</string>
                 <string name="parent">human</string>
                 <list name="contains">
                     <string>shirt</string>
@@ -74,22 +80,20 @@
                     <string>hat</string>
                     <string>coins</string>
                 </list>
-                <map name="outfit">
-                    <map name="back">
-                        <string name="$eid">cloak</string>
-                    </map>
-                    <map name="body">
-                        <string name="$eid">shirt</string>
-                    </map>
-                    <map name="feet">
-                        <string name="$eid">boots</string>
-                    </map>
-                    <map name="head">
-                        <string name="$eid">hat</string>
-                    </map>
-                    <map name="legs">
-                        <string name="$eid">pants</string>
-                    </map>
+                <map name="attached_back">
+                    <string name="$eid">cloak</string>
+                </map>
+                <map name="attached_body">
+                    <string name="$eid">shirt</string>
+                </map>
+                <map name="attached_feet">
+                    <string name="$eid">boots</string>
+                </map>
+                <map name="attached_head">
+                    <string name="$eid">hat</string>
+                </map>
+                <map name="attached_legs">
+                    <string name="$eid">pants</string>
                 </map>
                 <map name="statistics">
                     <float name="strength">23</float>
@@ -99,26 +103,51 @@
                 <string name="id">shirt</string>
                 <string name="parent">shirt</string>
                 <string name="style">fine</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">body</string>
+                </map>
             </map>
             <map>
                 <string name="id">pants</string>
                 <string name="parent">pants</string>
                 <string name="style">fine</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">legs</string>
+                </map>
             </map>
             <map>
                 <string name="id">cloak</string>
                 <string name="parent">cloak</string>
                 <string name="style">fine</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">back</string>
+                </map>
             </map>
             <map>
                 <string name="id">boots</string>
                 <string name="parent">boots</string>
                 <string name="style">fine</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">feet</string>
+                </map>
             </map>
             <map>
                 <string name="id">hat</string>
                 <string name="parent">hat</string>
                 <string name="style">fine</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">head</string>
+                </map>
             </map>
             <map>
                 <string name="id">coins</string>
@@ -145,19 +174,17 @@
                     <string>arrows</string>
                     <string>coins</string>
                 </list>
-                <map name="outfit">
-                    <map name="body">
-                        <string name="$eid">shirt</string>
-                    </map>
-                    <map name="feet">
-                        <string name="$eid">boots</string>
-                    </map>
-                    <map name="head">
-                        <string name="$eid">hat</string>
-                    </map>
-                    <map name="legs">
-                        <string name="$eid">pants</string>
-                    </map>
+                <map name="attached_body">
+                    <string name="$eid">shirt</string>
+                </map>
+                <map name="attached_feet">
+                    <string name="$eid">boots</string>
+                </map>
+                <map name="attached_head">
+                    <string name="$eid">hat</string>
+                </map>
+                <map name="attached_legs">
+                    <string name="$eid">pants</string>
                 </map>
                 <map name="attach_hand_primary">
                     <string name="$eid">sword</string>
@@ -170,25 +197,50 @@
                 <string name="id">shirt</string>
                 <string name="parent">shirt</string>
                 <string name="style">ragged</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">body</string>
+                </map>
             </map>
             <map>
                 <string name="id">pants</string>
                 <string name="parent">pants</string>
                 <string name="style">ragged</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">legs</string>
+                </map>
             </map>
             <map>
                 <string name="id">boots</string>
                 <string name="parent">boots</string>
                 <string name="style">ragged</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">feet</string>
+                </map>
             </map>
             <map>
                 <string name="id">hat</string>
                 <string name="parent">hat</string>
                 <string name="style">ragged</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">head</string>
+                </map>
             </map>
             <map>
                 <string name="id">sword</string>
                 <string name="parent">sword</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">hand_primary</string>
+                </map>
             </map>
             <map>
                 <string name="id">bow</string>
@@ -222,10 +274,11 @@
         <string name="parent">archetype</string>
         <list name="entities">
             <map>
+                <string name="id">main</string>
                 <list name="contains">
                     <string>axe</string>
                 </list>
-                <map name="attach_hand_primary">
+                <map name="attached_hand_primary">
                     <string name="$eid">axe</string>
                 </map>
                 <string name="parent">goblin</string>
@@ -233,6 +286,11 @@
             <map>
                 <string name="id">axe</string>
                 <string name="parent">axe</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">hand_primary</string>
+                </map>
             </map>
         </list>
         <list name="thoughts">

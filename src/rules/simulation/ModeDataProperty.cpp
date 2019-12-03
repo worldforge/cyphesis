@@ -68,14 +68,9 @@ int ModeDataProperty::get(Atlas::Message::Element& val) const
             map["mode"] = "planted";
         }
             break;
-        case ModeProperty::Mode::Fixed: {
-        }
-            break;
-        case ModeProperty::Mode::Free: {
-        }
-            break;
-        case ModeProperty::Mode::Submerged: {
-        }
+        case ModeProperty::Mode::Fixed:
+        case ModeProperty::Mode::Free:
+        case ModeProperty::Mode::Submerged:
             break;
         case ModeProperty::Mode::Projectile: {
             auto& projectileData = boost::get<ProjectileData>(mData);

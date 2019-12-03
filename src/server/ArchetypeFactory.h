@@ -42,7 +42,7 @@ class EntityBuilder;
 /// format of an archetype, and will be merged into the parent archetype. This mainly means
 /// that the code will look for entity definitions in the "entities" attribute, and thought
 /// definitions in the "thoughts" attribute.
-class ArchetypeFactory: public EntityKit
+class ArchetypeFactory : public EntityKit
 {
     protected:
 
@@ -51,28 +51,28 @@ class ArchetypeFactory: public EntityKit
          */
         struct EntityCreation
         {
-                /**
-                 * @brief The definition of the entity, as found in the archetype.
-                 */
-                Atlas::Objects::Entity::RootEntity definition;
+            /**
+             * @brief The definition of the entity, as found in the archetype.
+             */
+            Atlas::Objects::Entity::RootEntity definition;
 
-                /**
-                 * @brief The created entity (might be null if none was created).
-                 */
-                Ref<LocatedEntity> createdEntity;
+            /**
+             * @brief The created entity (might be null if none was created).
+             */
+            Ref<LocatedEntity> createdEntity;
 
-                /**
-                 * Any attributes referring to unresolved entities.
-                 * This will be empty is there are no entity referencing attributes.
-                 */
-                Atlas::Message::MapType unresolvedAttributes;
+            /**
+             * Any attributes referring to unresolved entities.
+             * This will be empty is there are no entity referencing attributes.
+             */
+            Atlas::Message::MapType unresolvedAttributes;
         };
 
-        ArchetypeFactory(ArchetypeFactory & o);
+        ArchetypeFactory(ArchetypeFactory& o);
 
-        Ref<LocatedEntity> createEntity(const std::string & id, long intId,
-                EntityCreation& entityCreation, LocatedEntity* location,
-                std::map<std::string, EntityCreation>& entities);
+        Ref<LocatedEntity> createEntity(const std::string& id, long intId,
+                                        EntityCreation& entityCreation, LocatedEntity* location,
+                                        std::map<std::string, EntityCreation>& entities);
 
         /**
          * @brief Sends any thoughts to the entity.
@@ -125,8 +125,7 @@ class ArchetypeFactory: public EntityKit
          * on the entity.
          * @param entities All processed entities.
          */
-        void processResolvedAttributes(
-                std::map<std::string, EntityCreation>& entities);
+        void processResolvedAttributes(std::map<std::string, EntityCreation>& entities);
 
         /**
          * @brief Tries to parse entity data from the map.
@@ -135,7 +134,7 @@ class ArchetypeFactory: public EntityKit
          * @return True if parsing was successful.
          */
         bool parseEntities(const std::map<std::string, Atlas::Message::MapType>& entitiesElement,
-                std::map<std::string, EntityCreation>& entities);
+                           std::map<std::string, EntityCreation>& entities);
 
         /**
          * @brief Tries to parse entity data from the list.
@@ -144,7 +143,7 @@ class ArchetypeFactory: public EntityKit
          * @return True if parsing was successful.
          */
         bool parseEntities(const Atlas::Message::ListType& entitiesElement,
-                std::map<std::string, EntityCreation>& entities);
+                           std::map<std::string, EntityCreation>& entities);
 
         /**
          * Creates a Think-Set operation which adds knowledge about the "origin" to the entity.
@@ -161,9 +160,10 @@ class ArchetypeFactory: public EntityKit
 
         ~ArchetypeFactory() override;
 
-        Ref<LocatedEntity> newEntity(const std::string & id, long intId,
-                const Atlas::Objects::Entity::RootEntity & attributes,
-                LocatedEntity* location) override;
+        Ref<LocatedEntity> newEntity(const std::string& id, long intId,
+                                     const Atlas::Objects::Entity::RootEntity& attributes,
+                                     LocatedEntity* location) override;
+
         virtual std::unique_ptr<ArchetypeFactory> duplicateFactory();
 
         void addProperties() override;
@@ -174,7 +174,7 @@ class ArchetypeFactory: public EntityKit
         EntityBuilder& m_entityBuilder;
         /// Factory for class from which the class handled by this factory
         /// inherits.
-        ArchetypeFactory * m_parent;
+        ArchetypeFactory* m_parent;
         /// Set of factories for classes which inherit from the class handled
         /// by this factory.
         std::set<ArchetypeFactory*> m_children;

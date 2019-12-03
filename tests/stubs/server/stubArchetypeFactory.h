@@ -9,7 +9,7 @@
 
 #ifndef STUB_ArchetypeFactory_ArchetypeFactory
 //#define STUB_ArchetypeFactory_ArchetypeFactory
-   ArchetypeFactory::ArchetypeFactory(ArchetypeFactory & o)
+   ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& o)
     : EntityKit(o)
     , m_parent(nullptr)
   {
@@ -19,7 +19,7 @@
 
 #ifndef STUB_ArchetypeFactory_createEntity
 //#define STUB_ArchetypeFactory_createEntity
-  Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string & id, long intId, EntityCreation& entityCreation, LocatedEntity* location, std::map<std::string, EntityCreation>& entities)
+  Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string& id, long intId, EntityCreation& entityCreation, LocatedEntity* location, std::map<std::string, EntityCreation>& entities)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -109,7 +109,7 @@
 
 #ifndef STUB_ArchetypeFactory_newEntity
 //#define STUB_ArchetypeFactory_newEntity
-  Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+  Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

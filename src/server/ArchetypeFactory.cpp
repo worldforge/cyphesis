@@ -26,6 +26,7 @@
 #include "common/operations/Think.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <Atlas/Message/Element.h>
 
 #include <wfmath/atlasconv.h>
 #include <common/Inheritance.h>
@@ -191,7 +192,27 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId
     if (entities.empty()) {
         return nullptr;
     }
-    auto& entityCreation = entities.begin()->second;
+
+    //Find the entity which isn't a child of any else
+    auto entitiesCandidates = entities;
+    for (auto& entry : entities) {
+        if (!entry.second.definition->isDefaultContains()) {
+            for (auto& contained : entry.second.definition->getContains()) {
+                entitiesCandidates.erase(contained);
+            }
+        }
+    }
+
+    if (entitiesCandidates.empty()) {
+        log(WARNING, "Could not find any entity without a parent.");
+        return nullptr;
+    }
+
+    if (entitiesCandidates.size() > 1) {
+        log(WARNING, "Found multiple entities without a parent.");
+    }
+
+    auto& entityCreation = entities.find(entitiesCandidates.begin()->first)->second;
     RootEntity& attrEntity = entityCreation.definition;
     for (auto& attrI : attrs) {
         //copy all attributes except "parent", since that will point to the name of the archetype
@@ -225,6 +246,7 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId
         attrEntity->modifyPos() = attributes->getPos();
     }
     auto entity = createEntity(id, intId, entityCreation, location, entities);
+    entityCreation.createdEntity = entity;
 
     if (entity != nullptr) {
         processResolvedAttributes(entities);
@@ -265,7 +287,7 @@ std::vector<Atlas::Message::Element> ArchetypeFactory::createOriginLocationThoug
 void ArchetypeFactory::processResolvedAttributes(std::map<std::string, EntityCreation>& entities)
 {
     for (auto& entityI : entities) {
-        if (entityI.second.createdEntity != nullptr && !entityI.second.unresolvedAttributes.empty()) {
+        if (entityI.second.createdEntity) {
             for (auto& attrI : entityI.second.unresolvedAttributes) {
                 Atlas::Message::Element& attr = attrI.second;
                 resolveEntityReference(entities, attr);
@@ -300,11 +322,11 @@ void ArchetypeFactory::resolveEntityReference(std::map<std::string, EntityCreati
     if (attr.isMap()) {
         auto entityRefI = attr.asMap().find("$eid");
         if (entityRefI != attr.asMap().end() && entityRefI->second.isString()) {
-            const std::string& id = entityRefI->second.asString();
+            std::string& id = entityRefI->second.asString();
             auto resolvedI = entities.find(id);
             if (resolvedI != entities.end()) {
                 if (resolvedI->second.createdEntity != nullptr) {
-                    attr = Atlas::Message::Element(resolvedI->second.createdEntity.get());
+                    id = resolvedI->second.createdEntity->getId();
                     return;
                 } else {
                     log(WARNING, String::compose("Attribute '%1' refers to an entity which wasn't created.", id));
