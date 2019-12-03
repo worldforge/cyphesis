@@ -33,6 +33,10 @@
             <map name="fruits_max">
                 <int name="default">0</int>
             </map>
+            <!-- Plants should starve when nutrients are depleted. -->
+            <map name="starveable">
+                <int name="default">1</int>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>

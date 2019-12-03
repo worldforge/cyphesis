@@ -21,9 +21,10 @@ class Metabolizing(server.Thing):
                 nutrients = 0
                 if self.props._nutrients:
                     nutrients = self.props._nutrients
-                # If no nutrient, we're starving and should decrease status
+                # If no nutrient, we're starving and should decrease status, but only if "starveable" is set.
                 if nutrients <= 0:
-                    res += Operation("set", Entity(status=status - 0.01), to=self)
+                    if self.props.starveable == 1:
+                        res += Operation("set", Entity(status=status - 0.01), to=self)
                 else:
                     # Else we'll see if we can increase status by consuming nutrient
                     if status < 1.0:
