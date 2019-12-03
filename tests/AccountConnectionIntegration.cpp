@@ -248,7 +248,6 @@ int main()
 
 
 #include "rules/simulation/ExternalMind.h"
-#include "rules/simulation/ExternalProperty.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
 #include "server/Ruleset.h"
@@ -294,7 +293,6 @@ void ExternalMind::linkUp(Link * c)
 }
 
 #include "stubs/rules/simulation/stubExternalMind.h"
-#include "stubs/rules/simulation/stubExternalProperty.h"
 #include "stubs/rules/simulation/stubMindsProperty.h"
 #include "stubs/rules/simulation/stubAdminMind.h"
 

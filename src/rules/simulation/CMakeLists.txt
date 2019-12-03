@@ -20,8 +20,7 @@ add_library(rulessimulation
     TasksProperty.cpp
     SpawnProperty.cpp
     VisibilityProperty.cpp
-    ExternalProperty.cpp
-    Task.cpp
+        Task.cpp
     SuspendedProperty.cpp
     SpawnerProperty.cpp
     RespawningProperty.cpp

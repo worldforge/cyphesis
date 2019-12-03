@@ -28,8 +28,6 @@
 #include "server/Connection.h"
 #include "server/ServerRouting.h"
 #include "rules/simulation/ExternalMind.h"
-#include "rules/simulation/ExternalProperty.h"
-
 #include "common/CommSocket.h"
 #include "common/Shaker.h"
 #include "common/PropertyManager.h"
@@ -147,7 +145,6 @@ void ExternalMind::linkUp(Link * c)
 }
 
 #include "stubs/rules/simulation/stubExternalMind.h"
-#include "stubs/rules/simulation/stubExternalProperty.h"
 #include "stubs/rules/simulation/stubThing.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"

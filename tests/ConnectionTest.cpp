@@ -30,7 +30,6 @@
 
 #include "server/Account.h"
 #include "rules/simulation/ExternalMind.h"
-#include "rules/simulation/ExternalProperty.h"
 #include "rules/simulation/MindsProperty.h"
 #include "rules/simulation/Entity.h"
 #include "server/Lobby.h"
@@ -608,7 +607,6 @@ void ExternalMind::linkUp(Link * c)
     m_link = c;
 }
 #include "stubs/rules/simulation/stubExternalMind.h"
-#include "stubs/rules/simulation/stubExternalProperty.h"
 #include "stubs/rules/simulation/stubThing.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"

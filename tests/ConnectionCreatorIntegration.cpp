@@ -326,7 +326,6 @@ int main()
 #include "rules/BBoxProperty.h"
 #include "rules/Domain.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/ExternalProperty.h"
 #include "rules/Script.h"
 #include "rules/simulation/StatusProperty.h"
 #include "rules/simulation/Task.h"

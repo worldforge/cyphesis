@@ -430,7 +430,6 @@ int main()
 #include "rules/BBoxProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/ExternalProperty.h"
 #include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/LineProperty.h"
 #include "rules/simulation/MindProperty.h"

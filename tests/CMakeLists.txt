@@ -210,8 +210,7 @@ wf_add_test(SpawnerPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation
     ../src/common/Property.cpp)
 wf_add_test(VisibilityPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/VisibilityProperty.cpp
     ../src/common/Property.cpp)
-wf_add_test(ExternalPropertyTest.cpp ../src/rules/simulation/ExternalProperty.cpp
-    ../src/common/Property.cpp)
+
 wf_add_test(BaseMindTest.cpp ../src/rules/ai/BaseMind.cpp ../src/rules/ai/MemMap.cpp)
 wf_add_test(MemEntityTest.cpp ../src/rules/MemEntity.cpp)
 wf_add_test(MemMapTest.cpp ../src/rules/ai/MemMap.cpp)

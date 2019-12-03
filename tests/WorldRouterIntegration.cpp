@@ -336,7 +336,6 @@ int main()
 #include "rules/BBoxProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/ExternalProperty.h"
 #include "rules/simulation/StatusProperty.h"
 #include "rules/simulation/TasksProperty.h"
 #include "rules/simulation/TerrainProperty.h"
@@ -420,7 +419,6 @@ class World;
 
 #include "stubs/rules/simulation/stubAreaProperty.h"
 #include "stubs/rules/simulation/stubCalendarProperty.h"
-#include "stubs/rules/simulation/stubExternalProperty.h"
 #include "stubs/rules/simulation/stubWorldTimeProperty.h"
 #include "stubs/rules/simulation/stubVoidDomain.h"
 

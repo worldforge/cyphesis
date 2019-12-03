@@ -217,7 +217,6 @@ int main()
 #include "rules/BBoxProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/ExternalProperty.h"
 #include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/LineProperty.h"
 #include "rules/simulation/MindProperty.h"
@@ -324,7 +323,6 @@ template class EntityFactory<World>;
 #include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/rules/simulation/stubCalendarProperty.h"
 #include "stubs/rules/simulation/stubAreaProperty.h"
-#include "stubs/rules/simulation/stubExternalProperty.h"
 
 
 template <class T>
