@@ -282,14 +282,6 @@ void MindsProperty::mindUseOperation(LocatedEntity* ent, const Operation& op, Op
     res.push_back(useOp);
 }
 
-/// \brief Filter a Update operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindUpdateOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
-}
-
 /// \brief Filter a Wield operation coming from the mind
 ///
 /// @param op The operation to be filtered.
@@ -299,14 +291,6 @@ void MindsProperty::mindWieldOperation(LocatedEntity* ent, const Operation& op, 
     debug_print("Got Wield op from mind")
     op->setTo(ent->getId());
     res.push_back(op);
-}
-
-/// \brief Filter a Tick operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindTickOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
 }
 
 /// \brief Filter a Move operation coming from the mind
@@ -772,10 +756,6 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
         default:
             if (op_no == Atlas::Objects::Operation::SETUP_NO) {
                 mindSetupOperation(ent, op, res);
-            } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
-                mindTickOperation(ent, op, res);
-            } else if (op_no == Atlas::Objects::Operation::UPDATE_NO) {
-                mindUpdateOperation(ent, op, res);
             } else if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
                 mindThoughtOperation(ent, op, res);
             } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
