@@ -30,6 +30,9 @@
 CyPy_Server::CyPy_Server() : ExtensionModule("server")
 {
 
+    add_noargs_method("get_limbo_location", &CyPy_Server::get_limbo_location, "The limbo location, if set.");
+
+
     CyPy_Entity::init_type();
     CyPy_EntityProps::init_type();
     CyPy_Task::init_type();
@@ -67,4 +70,13 @@ std::string CyPy_Server::init()
         return server->module().ptr();
     });
     return "server";
+}
+
+Py::Object CyPy_Server::get_limbo_location()
+{
+    auto limboLocation = BaseWorld::instance().getLimboLocation();
+    if (!limboLocation) {
+        return Py::None();
+    }
+    return CyPy_LocatedEntity::wrap(Ref<LocatedEntity>(limboLocation));
 }

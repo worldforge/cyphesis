@@ -32,5 +32,13 @@
   }
 #endif //STUB_CyPy_Server_init
 
+#ifndef STUB_CyPy_Server_get_limbo_location
+//#define STUB_CyPy_Server_get_limbo_location
+  Py::Object CyPy_Server::get_limbo_location()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Server_get_limbo_location
+
 
 #endif
