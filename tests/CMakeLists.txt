@@ -139,7 +139,7 @@ wf_add_test(TerrainContextTest.cpp ../src/modules/TerrainContext.cpp)
 
 set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp EntityExerciser.cpp)
 
-wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ../src/rules/LocatedEntity.cpp)
+wf_add_test(LocatedEntityTest.cpp EntityExerciser.cpp ../src/rules/LocatedEntity.cpp TestPropertyManager.cpp)
 wf_add_test(EntityTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Entity.cpp ../src/rules/LocatedEntity.cpp)
 wf_add_test(ThingTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Thing.cpp)
 wf_add_test(WorldTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/World.cpp)
@@ -384,7 +384,8 @@ wf_add_test(ContainedVisibilityPropertyIntegration.cpp ../src/rules/simulation/C
     ../src/rules/LocatedEntity.cpp)
 wf_add_test(BaseMindMapEntityIntegration.cpp
     ../src/rules/ai/BaseMind.cpp
-    ../src/rules/MemEntity.cpp
+        ../src/rules/MemEntity.cpp
+        ../src/rules/LocatedEntity.cpp
     ../src/rules/ai/MemMap.cpp
     ../src/rules/BBoxProperty.cpp
     ../src/rules/SolidProperty.cpp

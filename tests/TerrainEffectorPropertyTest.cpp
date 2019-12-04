@@ -113,35 +113,6 @@ int main()
 
 // stubs
 
-//#include "Property_stub_impl.h"
-
-
-
-#define STUB_Entity_getProperty
-const PropertyBase * Entity::getProperty(const std::string & name) const
-{
-    PropertyDict::const_iterator I = m_properties.find(name);
-    if (I != m_properties.end()) {
-        return I->second.get();
-    }
-    return 0;
-}
-
-#define STUB_Entity_setProperty
-PropertyBase * Entity::setProperty(const std::string & name,
-                                   std::unique_ptr<PropertyBase> prop)
-{
-    auto p = prop.get();
-    m_properties[name] = std::move(prop);
-    return p;
-}
-
-//#define STUB_LocatedEntity_setProperty
-//PropertyBase * LocatedEntity::setProperty(const std::string & name,
-//                                   PropertyBase* prop)
-//{
-//    return setProperty(name, std::unique_ptr<PropertyBase>(prop));
-//}
 
 #include "stubs/rules/simulation/stubEntity.h"
 

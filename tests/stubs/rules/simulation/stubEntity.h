@@ -32,38 +32,6 @@
   }
 #endif //STUB_Entity_setType
 
-#ifndef STUB_Entity_setAttr
-//#define STUB_Entity_setAttr
-  PropertyBase* Entity::setAttr(const std::string& name, const Atlas::Message::Element&)
-  {
-    return nullptr;
-  }
-#endif //STUB_Entity_setAttr
-
-#ifndef STUB_Entity_getProperty
-//#define STUB_Entity_getProperty
-  const PropertyBase* Entity::getProperty(const std::string& name) const
-  {
-    return nullptr;
-  }
-#endif //STUB_Entity_getProperty
-
-#ifndef STUB_Entity_modProperty
-//#define STUB_Entity_modProperty
-  PropertyBase* Entity::modProperty(const std::string& name, const Atlas::Message::Element& def_val )
-  {
-    return nullptr;
-  }
-#endif //STUB_Entity_modProperty
-
-#ifndef STUB_Entity_setProperty
-//#define STUB_Entity_setProperty
-  PropertyBase* Entity::setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop)
-  {
-    return nullptr;
-  }
-#endif //STUB_Entity_setProperty
-
 #ifndef STUB_Entity_addToMessage
 //#define STUB_Entity_addToMessage
   void Entity::addToMessage(Atlas::Message::MapType&) const

@@ -14,6 +14,27 @@ LocatedEntity::LocatedEntity(const std::string & id, long intId)
 }
 #endif //STUB_LocatedEntity_LocatedEntity
 
+#ifndef STUB_LocatedEntity_setProperty
+#define STUB_LocatedEntity_setProperty
+PropertyBase* LocatedEntity::setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop)
+{
+    auto p = prop.get();
+    m_properties[name] = std::move(prop);
+    return p;
+}
+#endif
+
+#ifndef STUB_LocatedEntity_getProperty
+#define STUB_LocatedEntity_getProperty
+const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
+{
+    PropertyDict::const_iterator I = m_properties.find(name);
+    if (I != m_properties.end()) {
+        return I->second.get();
+    }
+    return nullptr;
+}
+#endif //STUB_LocatedEntity_getProperty
 
 #ifndef STUB_LocatedEntity_setType
 #define STUB_LocatedEntity_setType

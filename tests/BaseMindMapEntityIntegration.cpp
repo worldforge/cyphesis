@@ -342,42 +342,9 @@ int main()
 #include "stubs/rules/stubScaleProperty.h"
 
 
-#define STUB_LocatedEntity_LocatedEntity_DTOR
-// Deletions and reference count decrements are required to ensure map
-// memory management works correctly.
-LocatedEntity::~LocatedEntity() = default;
-
-#define STUB_LocatedEntity_makeContainer
-void LocatedEntity::makeContainer()
-{
-    if (!m_contains) {
-        m_contains.reset(new LocatedEntitySet);
-    }
-}
-
-#define STUB_LocatedEntity_merge
-void LocatedEntity::merge(const Atlas::Message::MapType & ent)
-{
-    for (auto I : ent) {
-        const std::string & key = I.first;
-        setAttr(key, I.second);
-    }
-}
-
-#define STUB_LocatedEntity_setType
-void LocatedEntity::setType(const TypeNode* t) {
-    m_type = t;
-}
-
-#define STUB_LocatedEntity_applyProperty
-void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
-{
-    prop->apply(this);
-}
-
-#include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubInheritance.h"
+#include "stubs/rules/stubAtlasProperties.h"
 #include "stubs/rules/stubScript.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/rules/ai/stubTypeResolver.h"

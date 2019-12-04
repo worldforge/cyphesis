@@ -166,7 +166,8 @@ int main()
 // stubs
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
-
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/common/stubRouter.h"
 
 #define STUB_TypeNode_isTypeOf
 bool TypeNode::isTypeOf(const std::string & base_type) const

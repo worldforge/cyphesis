@@ -229,25 +229,25 @@ class LocatedEntity : public Router, public ReferenceCounted
 
         bool hasAttr(const std::string& name) const;
 
-        virtual int getAttr(const std::string& name,
-                            Atlas::Message::Element&) const;
+        int getAttr(const std::string& name,
+                    Atlas::Message::Element&) const;
 
-        virtual int getAttrType(const std::string& name,
-                                Atlas::Message::Element&,
-                                int type) const;
+        int getAttrType(const std::string& name,
+                        Atlas::Message::Element&,
+                        int type) const;
 
-        virtual PropertyBase* setAttr(const std::string& name,
-                                      const Atlas::Message::Element&);
+        PropertyBase* setAttr(const std::string& name,
+                              const Atlas::Message::Element&);
 
-        virtual const PropertyBase* getProperty(const std::string& name) const;
+        const PropertyBase* getProperty(const std::string& name) const;
 
-        // FIXME These should be de-virtualised and, and implementations moved
-        // from Entity to here.
-        virtual PropertyBase* modProperty(const std::string& name, const Atlas::Message::Element& def_val = Atlas::Message::Element());
+        PropertyBase* modProperty(const std::string& name, const Atlas::Message::Element& def_val = Atlas::Message::Element());
 
-        PropertyBase* setProperty(const std::string& name, PropertyBase* prop);
-
-        virtual PropertyBase* setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop);
+        /// \brief Set the property object for a given attribute
+        ///
+        /// @param name name of the attribute for which the property is given
+        /// @param prop the property object to be used
+        PropertyBase* setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop);
 
         virtual void installDelegate(int, const std::string&);
 

@@ -32,14 +32,6 @@
   }
 #endif //STUB_MemEntity_operation
 
-#ifndef STUB_MemEntity_setAttr
-//#define STUB_MemEntity_setAttr
-  PropertyBase* MemEntity::setAttr(const std::string& name, const Atlas::Message::Element& attr)
-  {
-    return nullptr;
-  }
-#endif //STUB_MemEntity_setAttr
-
 #ifndef STUB_MemEntity_destroy
 //#define STUB_MemEntity_destroy
   void MemEntity::destroy()
@@ -47,14 +39,6 @@
     
   }
 #endif //STUB_MemEntity_destroy
-
-#ifndef STUB_MemEntity_getProperty
-//#define STUB_MemEntity_getProperty
-  const PropertyBase* MemEntity::getProperty(const std::string& name) const
-  {
-    return nullptr;
-  }
-#endif //STUB_MemEntity_getProperty
 
 
 #endif

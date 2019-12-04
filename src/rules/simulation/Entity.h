@@ -59,14 +59,6 @@ class Entity : public LocatedEntity
 
         void setType(const TypeNode* t) override;
 
-        PropertyBase* setAttr(const std::string& name, const Atlas::Message::Element&) override;
-
-        const PropertyBase* getProperty(const std::string& name) const override;
-
-        PropertyBase* modProperty(const std::string& name, const Atlas::Message::Element& def_val = Atlas::Message::Element()) override;
-
-        PropertyBase* setProperty(const std::string& name, std::unique_ptr<PropertyBase> prop) override;
-
         void addToMessage(Atlas::Message::MapType&) const override;
 
         void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;

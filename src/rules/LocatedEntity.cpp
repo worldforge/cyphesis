@@ -24,6 +24,7 @@
 #include "AtlasProperties.h"
 
 #include "common/TypeNode.h"
+#include "common/PropertyManager.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/Operation.h>
@@ -161,14 +162,32 @@ int LocatedEntity::getAttrType(const std::string& name,
 PropertyBase* LocatedEntity::setAttr(const std::string& name,
                                      const Element& attr)
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    PropertyBase* prop;
+    // If it is an existing property, just update the value.
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        I->second->set(attr);
-        return I->second.get();
+        prop = I->second.get();
+        // Mark it as unclean
+        prop->removeFlags(persistence_clean);
+    } else {
+        PropertyDict::const_iterator J;
+        if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
+            prop = J->second->copy();
+            m_properties[name].reset(prop);
+        } else {
+            // This is an entirely new property, not just a modification of
+            // one in defaults, so we need to install it to this Entity.
+            auto newProp = PropertyManager::instance().addProperty(name, attr.getType());
+            prop = newProp.get();
+            m_properties[name] = std::move(newProp);
+            prop->install(this, name);
+        }
+        assert(prop != nullptr);
     }
-    auto prop = new SoftProperty(attr);
-    prop->addFlags(PropertyBase::flagsForPropertyName(name));
-    m_properties.emplace(name, prop);
+
+    prop->set(attr);
+    // Allow the value to take effect.
+    applyProperty(name, prop);
     return prop;
 }
 
@@ -183,14 +202,37 @@ const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
     if (I != m_properties.end()) {
         return I->second.get();
     }
+    if (m_type != nullptr) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            return I->second.get();
+        }
+    }
     return nullptr;
 }
 
 PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::Message::Element& def_val)
 {
-    auto I = m_properties.find(name);
+    PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {
         return I->second.get();
+    }
+    if (m_type != nullptr) {
+        I = m_type->defaults().find(name);
+        if (I != m_type->defaults().end()) {
+            // We have a default for this property. Create a new instance
+            // property with the same value.
+            PropertyBase* new_prop = I->second->copy();
+            if (!def_val.isNone()) {
+                new_prop->set(def_val);
+            }
+            I->second->remove(this, name);
+            new_prop->removeFlags(flag_class);
+            m_properties[name].reset(new_prop);
+            new_prop->install(this, name);
+            applyProperty(name, new_prop);
+            return new_prop;
+        }
     }
     return nullptr;
 }
@@ -202,12 +244,6 @@ PropertyBase* LocatedEntity::setProperty(const std::string& name,
     m_properties[name] = std::move(prop);
     return p;
 }
-
-PropertyBase* LocatedEntity::setProperty(const std::string& name, PropertyBase* prop)
-{
-    return setProperty(name, std::unique_ptr<PropertyBase>(prop));
-}
-
 
 void LocatedEntity::installDelegate(int, const std::string&)
 {

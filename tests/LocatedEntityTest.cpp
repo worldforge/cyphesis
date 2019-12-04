@@ -30,6 +30,7 @@
 
 #include "rules/AtlasProperties.h"
 #include "rules/Script.h"
+#include "TestPropertyManager.h"
 
 #include <cassert>
 
@@ -202,6 +203,7 @@ void LocatedEntitytest::test_coverage()
 
 int main()
 {
+    TestPropertyManager propertyManager;
     // Test constructor
     {
         new LocatedEntityTest("1", 1);
@@ -354,7 +356,7 @@ int SoftProperty::get(Atlas::Message::Element & val) const
 #include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubTypeNode.h"
-
+#include "stubs/common/stubPropertyManager.h"
 namespace Atlas { namespace Objects { namespace Operation {
 int SETUP_NO = -1;
 int TICK_NO = -1;

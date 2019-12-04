@@ -133,6 +133,8 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 #include "stubs/modules/stubWeakEntityRef.h"
 #include "stubs/rules/simulation/stubAreaProperty.h"
 #include "stubs/rules/stubLocation.h"
+#include "stubs/rules/stubLocatedEntity.h"
+#include "stubs/common/stubRouter.h"
 
 void log(LogLevel, const std::string & msg)
 {

@@ -146,8 +146,8 @@ void Entity::destroy()
     destroyed.emit();
 }
 
-#define STUB_Entity_getProperty
-const PropertyBase * Entity::getProperty(const std::string & name) const
+#define STUB_LocatedEntity_getProperty
+const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 {
     PropertyDict::const_iterator I = m_properties.find(name);
     if (I != m_properties.end()) {

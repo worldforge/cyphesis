@@ -61,11 +61,7 @@ class MemEntity : public LocatedEntity
 
         void operation(const Operation&, OpVector&) override;
 
-        PropertyBase* setAttr(const std::string& name, const Atlas::Message::Element& attr) override;
-
         void destroy() override;
-
-        const PropertyBase* getProperty(const std::string& name) const override;
 
 };
 
