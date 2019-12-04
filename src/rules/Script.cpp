@@ -27,22 +27,27 @@ using Atlas::Message::ListType;
 using String::compose;
 
 
-HandlerResult Script::operation(const std::string & opname,
-                       const Atlas::Objects::Operation::RootOperation & op,
-                       OpVector & res)
+HandlerResult Script::operation(const std::string& opname,
+                                const Atlas::Objects::Operation::RootOperation& op,
+                                OpVector& res)
 {
-   return OPERATION_IGNORED;
+    return OPERATION_IGNORED;
 }
 
-void Script::hook(const std::string & function, LocatedEntity * entity)
+void Script::hook(const std::string& function, LocatedEntity* entity)
 {
 }
 
-int Script::getScriptDetails(const Atlas::Message::MapType & script,
-                                      const std::string & class_name,
-                                      const std::string & context,
-                                      std::string & script_package,
-                                      std::string & script_class)
+void Script::attachPropertyCallbacks(LocatedEntity& entity)
+{
+}
+
+
+int Script::getScriptDetails(const Atlas::Message::MapType& script,
+                             const std::string& class_name,
+                             const std::string& context,
+                             std::string& script_package,
+                             std::string& script_class)
 {
     auto J = script.find("name");
     auto Jend = script.end();
@@ -52,14 +57,14 @@ int Script::getScriptDetails(const Atlas::Message::MapType & script,
                            context, class_name));
         return -1;
     }
-    const std::string & script_name = J->second.String();
+    const std::string& script_name = J->second.String();
     J = script.find("language");
     if (J == Jend || !J->second.isString()) {
         log(ERROR, compose("%1 \"%2\" script has no language.",
                            context, class_name));
         return -1;
     }
-    const std::string & script_language = J->second.String();
+    const std::string& script_language = J->second.String();
     if (script_language != "python") {
         log(ERROR, compose(R"(%1 "%2" script has unknown language "%3".)",
                            context, class_name, script_language));

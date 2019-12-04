@@ -561,6 +561,7 @@ void BaseMind::setScript(std::unique_ptr<Script> scrpt)
     m_script = std::move(scrpt);
     m_map.setScript(m_script.get());
     if (m_script && m_ownEntity) {
+        m_script->attachPropertyCallbacks(*m_ownEntity);
         //If there are any property callbacks registered call them now.
         for (auto& entry : m_propertyScriptCallbacks) {
             if (m_ownEntity->hasAttr(entry.first)) {

@@ -313,6 +313,7 @@ void LocatedEntity::sendWorld(const Operation& op)
 /// @param scrpt Pointer to the script to be associated with this entity
 void LocatedEntity::setScript(std::unique_ptr<Script> scrpt)
 {
+    scrpt->attachPropertyCallbacks(*this);
     m_scripts.emplace_back(std::move(scrpt));
 }
 

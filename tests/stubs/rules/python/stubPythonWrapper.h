@@ -40,6 +40,14 @@
   }
 #endif //STUB_PythonWrapper_hook
 
+#ifndef STUB_PythonWrapper_attachPropertyCallbacks
+//#define STUB_PythonWrapper_attachPropertyCallbacks
+  void PythonWrapper::attachPropertyCallbacks(LocatedEntity& entity)
+  {
+    
+  }
+#endif //STUB_PythonWrapper_attachPropertyCallbacks
+
 #ifndef STUB_PythonWrapper_processScriptResult
 //#define STUB_PythonWrapper_processScriptResult
    HandlerResult PythonWrapper::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res)

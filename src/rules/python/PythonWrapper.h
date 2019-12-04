@@ -21,6 +21,7 @@
 
 #include "rules/Script.h"
 #include "pycxx/CXX/Objects.hxx"
+#include <sigc++/connection.h>
 
 /// \brief A Python script wrapping a C++ class.
 /// \ingroup Scripts
@@ -28,6 +29,7 @@ class PythonWrapper : public Script {
   protected:
     /// \brief Python object that wraps the entity.
     Py::Object m_wrapper;
+    std::vector<sigc::connection> m_propertyUpdateConnections;
   public:
     explicit PythonWrapper(const Py::Object& wrapper);
     ~PythonWrapper() override;
@@ -37,6 +39,8 @@ class PythonWrapper : public Script {
                             OpVector & res) override;
 
     void hook(const std::string & function, LocatedEntity * entity) override;
+
+    void attachPropertyCallbacks(LocatedEntity& entity) override;
 
     static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res);
 

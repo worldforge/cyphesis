@@ -39,36 +39,40 @@ class LocatedEntity;
 /// This base class allows scripts to override operation handlers, and
 /// handlers for hooks.
 /// \ingroup Scripts
-class Script {
-  public:
-    Script() = default;
-    virtual ~Script() = default;
+class Script
+{
+    public:
+        Script() = default;
 
-    /// \brief Pass an operation to the script for processing
-    ///
-    /// @param opname The string representing the type of the operation
-    /// @param op The operation to be passed
-    /// @param res The result of the operation is returned here
-    /// @return true if operation was accepted, false if it was not handled
-    /// or an error occured.
-    virtual HandlerResult operation(const std::string & opname,
-                           const Atlas::Objects::Operation::RootOperation & op,
-                           OpVector & res);
+        virtual ~Script() = default;
 
-    /// \brief Call a named function on the script, passing in the entity
-    ///
-    /// This function is used when object have registered function names to be
-    /// valled any time a certain event occurs. Currently the machanism is only
-    /// used and supported in the mind code.
-    /// @param function name of the function to call in the script
-    /// @param entity which has triggered this hook
-    virtual void hook(const std::string & function, LocatedEntity * entity);
+        /// \brief Pass an operation to the script for processing
+        ///
+        /// @param opname The string representing the type of the operation
+        /// @param op The operation to be passed
+        /// @param res The result of the operation is returned here
+        /// @return true if operation was accepted, false if it was not handled
+        /// or an error occured.
+        virtual HandlerResult operation(const std::string& opname,
+                                        const Atlas::Objects::Operation::RootOperation& op,
+                                        OpVector& res);
 
-    static int getScriptDetails(const Atlas::Message::MapType &,
-                                const std::string &,
-                                const std::string &,
-                                std::string &,
-                                std::string &);
+        /// \brief Call a named function on the script, passing in the entity
+        ///
+        /// This function is used when object have registered function names to be
+        /// called any time a certain event occurs. Currently the mechanism is only
+        /// used and supported in the mind code.
+        /// @param function name of the function to call in the script
+        /// @param entity which has triggered this hook
+        virtual void hook(const std::string& function, LocatedEntity* entity);
+
+        virtual void attachPropertyCallbacks(LocatedEntity& entity);
+
+        static int getScriptDetails(const Atlas::Message::MapType&,
+                                    const std::string&,
+                                    const std::string&,
+                                    std::string&,
+                                    std::string&);
 
 };
 

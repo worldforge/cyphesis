@@ -16,6 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include <boost/algorithm/string.hpp>
 #include "PythonWrapper.h"
 #include "CyPy_Operation.h"
 #include "CyPy_Oplist.h"
@@ -32,11 +33,16 @@ static const bool debug_flag = false;
 
 /// \brief PythonWrapper constructor
 PythonWrapper::PythonWrapper(const Py::Object& wrapper)
-    : m_wrapper(wrapper)
+        : m_wrapper(wrapper)
 {
 }
 
-PythonWrapper::~PythonWrapper() = default;
+PythonWrapper::~PythonWrapper()
+{
+    for (auto& connection : m_propertyUpdateConnections) {
+        connection.disconnect();
+    }
+}
 
 
 HandlerResult PythonWrapper::operation(const std::string& op_type,
@@ -76,6 +82,41 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
         return OPERATION_IGNORED;
     }
 }
+
+void PythonWrapper::attachPropertyCallbacks(LocatedEntity& entity)
+{
+    auto list = m_wrapper.dir();
+    for (int i = 0; i < list.size(); ++i) {
+        auto fieldName = list[i].str().as_string();
+        //Look for fields named "<something>_property_update". These are methods that should be called when that property changes.
+        if (boost::algorithm::ends_with(fieldName, "_property_update")) {
+            auto propertyName = fieldName.substr(0, fieldName.length() - 16);
+            auto connection = entity.propertyApplied.connect([this, fieldName, propertyName, &entity](const std::string& changedPropertyName, const PropertyBase& property) {
+                if (propertyName == changedPropertyName) {
+                    try {
+                        PythonLogGuard logGuard([this, fieldName]() {
+                            return String::compose("%1, %2: ", this->m_wrapper.str(), fieldName);
+                        });
+                        OpVector res;
+                        auto ret = m_wrapper.callMemberFunction(fieldName);
+                        //Ignore Handler result; it does nothing in this context. But process any ops.
+                        processScriptResult(fieldName, ret, res);
+                        for (auto& resOp: res) {
+                            entity.sendWorld(resOp);
+                        }
+                    } catch (const Py::BaseException& py_ex) {
+                        log(ERROR, String::compose("Could not call property update function %1 on %2 for entity %3", fieldName, m_wrapper.type().as_string(), entity.describeEntity()));
+                        if (PyErr_Occurred()) {
+                            PyErr_Print();
+                        }
+                    }
+                }
+            });
+            m_propertyUpdateConnections.emplace_back(connection);
+        }
+    }
+}
+
 
 void PythonWrapper::hook(const std::string& function,
                          LocatedEntity* entity)

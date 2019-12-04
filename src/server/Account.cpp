@@ -110,9 +110,7 @@ void Account::setConnection(Connection* connection)
             auto prop = entity->modPropertyClassFixed<MindsProperty>();
             if (prop) {
                 prop->removeMind(entry.second.get(), entity.get());
-                entity->propertyApplied.emit(MindsProperty::property_name, *prop);
-
-                prop->flags().addFlags(flag_unsent);
+                entity->applyProperty(MindsProperty::property_name, prop);
                 Atlas::Objects::Operation::Update update;
                 update->setTo(entity->getId());
                 entity->sendWorld(update);
@@ -160,8 +158,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 
     auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
     mindsProp->addMind(mind);
-    entity->propertyApplied.emit(MindsProperty::property_name, *mindsProp);
-    mindsProp->flags().addFlags(flag_unsent);
+    entity->applyProperty(MindsProperty::property_name, mindsProp);
 
     Atlas::Objects::Operation::Update update;
     update->setTo(entity->getId());
@@ -283,8 +280,11 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
                 auto prop = entry.second->getEntity()->modPropertyClassFixed<MindsProperty>();
                 if (prop) {
                     prop->removeMind(entry.second.get(), entry.second->getEntity().get());
+                    entry.second->getEntity()->applyProperty(MindsProperty::property_name, prop);
                 }
                 m_minds.erase(entry.first);
+
+
                 Info info;
                 info->setArgs1(op);
                 if (!op->isDefaultSerialno()) {

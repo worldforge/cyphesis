@@ -9,7 +9,7 @@
 
 #ifndef STUB_Script_operation
 //#define STUB_Script_operation
-  HandlerResult Script::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
+  HandlerResult Script::operation(const std::string& opname, const Atlas::Objects::Operation::RootOperation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -17,15 +17,23 @@
 
 #ifndef STUB_Script_hook
 //#define STUB_Script_hook
-  void Script::hook(const std::string & function, LocatedEntity * entity)
+  void Script::hook(const std::string& function, LocatedEntity* entity)
   {
     
   }
 #endif //STUB_Script_hook
 
+#ifndef STUB_Script_attachPropertyCallbacks
+//#define STUB_Script_attachPropertyCallbacks
+  void Script::attachPropertyCallbacks(LocatedEntity& entity)
+  {
+    
+  }
+#endif //STUB_Script_attachPropertyCallbacks
+
 #ifndef STUB_Script_getScriptDetails
 //#define STUB_Script_getScriptDetails
-   int Script::getScriptDetails(const Atlas::Message::MapType &, const std::string &, const std::string &, std::string &, std::string &)
+   int Script::getScriptDetails(const Atlas::Message::MapType&, const std::string&, const std::string&, std::string&, std::string&)
   {
     return 0;
   }
