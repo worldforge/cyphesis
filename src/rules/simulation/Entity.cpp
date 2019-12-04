@@ -102,16 +102,15 @@ void Entity::setType(const TypeNode* t)
 void Entity::addChild(LocatedEntity& childEntity)
 {
     LocatedEntity::addChild(childEntity);
-    auto domain = getDomain();
-    if (domain) {
-        domain->addEntity(childEntity);
+    if (getDomain()) {
+        getDomain()->addEntity(childEntity);
     }
 }
 
 void Entity::removeChild(LocatedEntity& childEntity)
 {
-    if (m_domain) {
-        m_domain->removeEntity(childEntity);
+    if (getDomain()) {
+        getDomain()->removeEntity(childEntity);
     }
     LocatedEntity::removeChild(childEntity);
 }

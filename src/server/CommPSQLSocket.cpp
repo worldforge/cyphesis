@@ -76,7 +76,7 @@ void CommPSQLSocket::tryReConnect()
                 }
                 int fd = PQsocket(con);
                 if (fd >= 0) {
-                    m_socket = new boost::asio::ip::tcp::socket(m_io_context);
+                    m_socket = std::make_unique<boost::asio::ip::tcp::socket>(m_io_context);
                     m_socket->assign(boost::asio::ip::tcp::v4(), fd);
                     do_read();
                     return;
@@ -91,7 +91,6 @@ void CommPSQLSocket::tryReConnect()
 CommPSQLSocket::~CommPSQLSocket()
 {
     m_db.shutdownConnection();
-    delete m_socket;
 }
 
 void CommPSQLSocket::do_read()
@@ -108,13 +107,11 @@ void CommPSQLSocket::do_read()
                         this->dispatch();
                         this->do_read();
                     } else {
-                        delete m_socket;
-                        m_socket = nullptr;
+                        m_socket.reset();
                         this->tryReConnect();
                     }
                 } else {
-                    delete m_socket;
-                    m_socket = nullptr;
+                    m_socket.reset();
                     this->tryReConnect();
                 }
             });

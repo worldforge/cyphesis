@@ -36,7 +36,7 @@ class CommPSQLSocket : private boost::noncopyable {
   protected:
 
     boost::asio::io_context& m_io_context;
-    boost::asio::ip::tcp::socket* m_socket;
+    std::unique_ptr<boost::asio::ip::tcp::socket> m_socket;
     boost::asio::deadline_timer m_vacuumTimer;
     boost::asio::deadline_timer m_reindexTimer;
     boost::asio::deadline_timer m_reconnectTimer;
