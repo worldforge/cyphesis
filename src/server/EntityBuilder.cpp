@@ -128,6 +128,7 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
 
     auto& factory = I->second;
     debug_print("[" << type << "]")
+    attributes->removeAttr("parent");
     return factory->newEntity(id, intId, attributes, &parentEntity);
 
 }

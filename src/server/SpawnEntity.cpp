@@ -35,12 +35,12 @@ using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Create;
 
-SpawnEntity::SpawnEntity(LocatedEntity * e) :
+SpawnEntity::SpawnEntity(LocatedEntity* e) :
         m_ent(e)
 {
 }
 
-int SpawnEntity::setup(const MapType & data)
+int SpawnEntity::setup(const MapType& data)
 {
     auto I = data.find("entities");
     if (I != data.end() && I->second.isMap()) {
@@ -48,7 +48,7 @@ int SpawnEntity::setup(const MapType & data)
         for (auto J : entities) {
             if (!J.second.isMap()) {
                 log(ERROR,
-                        "Entry in entities attribute of spawn not in map format.");
+                    "Entry in entities attribute of spawn not in map format.");
                 continue;
             }
 
@@ -58,7 +58,7 @@ int SpawnEntity::setup(const MapType & data)
     return 0;
 }
 
-int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) const
+int SpawnEntity::spawnEntity(const std::string& type, const RootEntity& dsc) const
 {
     if (!m_ent) {
         return -1;
@@ -72,14 +72,14 @@ int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) c
     MapType entityTemplate = entityI->second;
     auto objtypeI = entityTemplate.find("objtype");
     if (objtypeI != entityTemplate.end()
-            && objtypeI->second.asString() == "archetype") {
+        && objtypeI->second.asString() == "archetype") {
         if (dsc->getObjtype() != "archetype") {
             //if the template is an archetype, but the supplied entity isn't,
             //we need to move the default attributes from the root entity to
             //the first entity in the archetype
             auto entitiesI = entityTemplate.find("entities");
             if (entitiesI != entityTemplate.end() && entitiesI->second.isList()
-                    && !entitiesI->second.asList().empty()) {
+                && !entitiesI->second.asList().empty()) {
                 auto& firstEntityElement = entitiesI->second.asList().front();
                 MapType& firstEntity = firstEntityElement.asMap();
 
@@ -88,8 +88,7 @@ int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) c
                 for (auto attributeEntry : dscAttributes) {
                     //only move those entities that aren't defined in the archetype
                     //(i.e. the archetype overrides what's sent)
-                    if (firstEntity.find(attributeEntry.first)
-                            == firstEntity.end()) {
+                    if (firstEntity.find(attributeEntry.first) == firstEntity.end() && attributeEntry.first != "parent") {
                         firstEntity.insert(attributeEntry);
                         //once moved remove the attribute from the supplied entity
                         dsc->removeAttr(attributeEntry.first);
@@ -111,7 +110,7 @@ int SpawnEntity::spawnEntity(const std::string & type, const RootEntity & dsc) c
     return 0;
 }
 
-int SpawnEntity::addToMessage(MapType & msg) const
+int SpawnEntity::addToMessage(MapType& msg) const
 {
     if (!m_entities.empty()) {
         Atlas::Message::ListType keys(m_entities.size());
@@ -130,14 +129,14 @@ int SpawnEntity::placeInSpawn(Location& location) const
     const auto* ap = m_ent->getPropertyClassFixed<AreaProperty>();
     if (ap && ap->shape()) {
         // FIXME orientation ignored
-        const Area * spawn_area = ap->shape();
+        const Area* spawn_area = ap->shape();
         WFMath::AxisBox<2> spawn_box = spawn_area->footprint();
         Point3D new_pos = m_ent->m_location.pos();
         for (int i = 0; i < 10; ++i) {
             WFMath::CoordType x = uniform(spawn_box.lowCorner().x(),
-                    spawn_box.highCorner().x());
+                                          spawn_box.highCorner().x());
             WFMath::CoordType z = uniform(spawn_box.lowCorner().y(),
-                    spawn_box.highCorner().y());
+                                          spawn_box.highCorner().y());
             if (spawn_area->intersect(WFMath::Point<2>(x, z))) {
                 new_pos += Vector3D(x, 0, z);
                 break;
@@ -145,9 +144,9 @@ int SpawnEntity::placeInSpawn(Location& location) const
         }
         location.m_pos = new_pos;
     } else if (m_ent->m_location.bBox().isValid()) {
-        const BBox & b = m_ent->m_location.bBox();
+        const BBox& b = m_ent->m_location.bBox();
         location.m_pos = Point3D(uniform(b.lowCorner().x(), b.highCorner().x()),
-             0, uniform(b.lowCorner().z(), b.highCorner().z()));
+                                 0, uniform(b.lowCorner().z(), b.highCorner().z()));
         // Locate in bbox
     } else {
         location.m_pos = m_ent->m_location.pos();
