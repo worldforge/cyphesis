@@ -42,17 +42,17 @@ using String::compose;
 static const bool debug_flag = false;
 
 ArchetypeFactory::ArchetypeFactory(EntityBuilder& entityBuilder) :
-    m_entityBuilder(entityBuilder),
-    m_parent(nullptr)
+        m_entityBuilder(entityBuilder),
+        m_parent(nullptr)
 {
 }
 
 ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& o)
-    : EntityKit(o),
-      m_entityBuilder(o.m_entityBuilder),
-      m_parent(o.m_parent),
-      m_entities(o.m_entities),
-      m_thoughts(o.m_thoughts)
+        : EntityKit(o),
+          m_entityBuilder(o.m_entityBuilder),
+          m_parent(o.m_parent),
+          m_entities(o.m_entities),
+          m_thoughts(o.m_thoughts)
 {
 }
 
@@ -204,12 +204,13 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId
     }
 
     if (entitiesCandidates.empty()) {
-        log(WARNING, "Could not find any entity without a parent.");
+        log(WARNING, String::compose("Could not find any entity without a parent in archetype %1.", m_type->name()));
         return nullptr;
     }
 
     if (entitiesCandidates.size() > 1) {
-        log(WARNING, "Found multiple entities without a parent.");
+        log(WARNING, String::compose("Found multiple entities without a parent in archetype %1.", m_type->name()));
+        return nullptr;
     }
 
     auto& entityCreation = entities.find(entitiesCandidates.begin()->first)->second;

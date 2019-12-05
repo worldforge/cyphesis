@@ -20,6 +20,36 @@
                     <float name="strength">23</float>
                 </map>
                 <float name="status">1</float>
+                <list name="__scripts">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.PlayerControlled.PlayerControlled</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.DecaysInto.DecaysInto</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Hittable.Hittable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Metabolizing.Metabolizing</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Nourishable.Nourishable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Immortality.Immortality</string>
+                    </map>
+                </list>
             </map>
             <map>
                 <string name="id">pants</string>
