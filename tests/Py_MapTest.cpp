@@ -30,6 +30,7 @@
 #include "python_testers.h"
 
 #include "rules/python/Python_API.h"
+#include "TestPropertyManager.h"
 
 #include <cassert>
 #include <rules/ai/python/CyPy_MemMap.h>
@@ -47,6 +48,7 @@ Atlas::Objects::Factories factories;
 int main()
 {
 
+    TestPropertyManager propertyManager;
     init_python_api({&CyPy_Server::init,
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,
@@ -92,8 +94,8 @@ int main()
     run_python_string("m.add({'id': '2'}, 1.2)");
     run_python_string("m.add({'id': '2'}, 1.2)");
     expect_python_error("m.add(Entity())", PyExc_IndexError);
-    expect_python_error("m.add(Entity('1', type='oak'))", PyExc_IndexError);
-    run_python_string("m.add(Entity('1', type='thing'), 1.1)");
+    expect_python_error("m.add(Entity('1', parent='oak'))", PyExc_IndexError);
+    run_python_string("m.add(Entity('1', parent='thing'), 1.1)");
     run_python_string("m.find_by_type('thing')");
     expect_python_error("m.get()", PyExc_IndexError);
     expect_python_error("m.get(1)", PyExc_TypeError);

@@ -46,7 +46,7 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
                 m_value->setPos(sequence_asVector(value));
             } else if (keyStr == "parent") {
                 m_value->setParent(verifyString(value));
-            } else if (keyStr == "type") {
+            } else if (keyStr == "objtype") {
                 m_value->setObjtype(verifyString(value));
             } else {
                 m_value->setAttr(key.str(), CyPy_Element::asElement(value));

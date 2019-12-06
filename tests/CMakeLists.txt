@@ -263,7 +263,7 @@ target_link_libraries(Py_OplistTest ${PYTHON_TESTS_LIBS})
 wf_add_test(Py_ThingTest.cpp python_testers.cpp TestPropertyManager.cpp)
 target_link_libraries(Py_ThingTest ${PYTHON_TESTS_LIBS})
 
-wf_add_test(Py_MapTest.cpp python_testers.cpp)
+wf_add_test(Py_MapTest.cpp python_testers.cpp TestPropertyManager.cpp)
 target_link_libraries(Py_MapTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(Py_TaskTest.cpp python_testers.cpp)

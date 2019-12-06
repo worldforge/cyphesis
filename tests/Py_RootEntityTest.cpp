@@ -68,8 +68,8 @@ int main()
     expect_python_error("Entity('1', pos=1)", PyExc_TypeError);
     expect_python_error("Entity('1', parent=1)", PyExc_TypeError);
     run_python_string("Entity('1', parent='0')");
-    expect_python_error("Entity('1', type=1)", PyExc_TypeError);
-    run_python_string("Entity('1', type='pig')");
+    expect_python_error("Entity('1', objtype=1)", PyExc_TypeError);
+    run_python_string("Entity('1', objtype='pig')");
     run_python_string("Entity('1', other=1)");
     expect_python_error("Entity('1', other=set([1,1]))", PyExc_TypeError);
     run_python_string("e=Entity()");
