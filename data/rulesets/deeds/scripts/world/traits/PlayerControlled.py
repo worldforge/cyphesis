@@ -5,6 +5,7 @@ from rules import Location
 
 # A player controlled entity should be moved to limbo when the user stops controlling it.
 # When it's killed it's also moved to limbo and stays there for a while.
+# This relies on the property "_respawning" being set to a spawn area.
 class PlayerControlled(server.Thing):
 
     def __init__(self, cpp):
@@ -61,7 +62,7 @@ class PlayerControlled(server.Thing):
         limbo_entity = server.get_limbo_location()
         if limbo_entity and self.location.parent != limbo_entity:
             # Move to limbo, wait a couple of seconds, and then move back to respawn place
-            set_op = Operation("set", Entity(self.id, __respawn={"spawn": self.props.respawning}, status=1), to=self.id)
+            set_op = Operation("set", Entity(self.id, __respawn={"spawn": self.props["_respawning"]}, status=1), to=self.id)
             self.tick_refno = self.tick_refno + 1
             tick_op = Operation("tick", Entity(name=self.__class__.__name__, type="respawn"), refno=self.tick_refno, future_seconds=30, to=self.id)
             imaginary_op = Operation("imaginary", Entity(description="You were killed. You need to wait 30 seconds before you will be returned to the world."), to=self.id, from_=self.id)

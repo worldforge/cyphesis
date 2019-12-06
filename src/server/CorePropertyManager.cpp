@@ -39,7 +39,6 @@
 #include "rules/simulation/TasksProperty.h"
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/SpawnerProperty.h"
-#include "rules/simulation/RespawningProperty.h"
 #include "rules/simulation/DefaultLocationProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/simulation/LimboProperty.h"
@@ -151,7 +150,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<TasksProperty>();
     installProperty<SpawnerProperty>();
     installProperty<BoolProperty>("immortal");
-    //installProperty<RespawningProperty>();
     installProperty<DefaultLocationProperty>();
     installProperty<DomainProperty>();
     installProperty<LimboProperty>();
