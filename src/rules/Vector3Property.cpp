@@ -20,11 +20,7 @@
 #include <wfmath/atlasconv.h>
 
 
-Vector3Property::Vector3Property(const Vector3Property& rhs)
-    : PropertyBase(rhs)
-{
-    m_data = rhs.m_data;
-}
+Vector3Property::Vector3Property(const Vector3Property& rhs) = default;
 
 int Vector3Property::get(Atlas::Message::Element& val) const
 {

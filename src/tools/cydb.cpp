@@ -649,9 +649,7 @@ int main(int argc, char ** argv)
 
     bool interactive = true;
     int ret = 0;
-    std::string cmd;
     if (optindex < argc) {
-        cmd = argv[optindex];
         interactive = false;
     }
 

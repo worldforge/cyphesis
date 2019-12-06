@@ -78,7 +78,7 @@ void EntityTraversalTask::operation(const Operation & op, OpVector & res)
                         } else {
                             while (!mStack.empty()) {
                                 StackEntry& stackEntry = mStack.back();
-                                stackEntry.currentChildIterator++;
+                                ++stackEntry.currentChildIterator;
                                 if (stackEntry.currentChildIterator
                                         == stackEntry.children.end()) {
                                     mStack.pop_back();

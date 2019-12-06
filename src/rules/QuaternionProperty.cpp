@@ -19,11 +19,7 @@
 
 #include <wfmath/atlasconv.h>
 
-QuaternionProperty::QuaternionProperty(const QuaternionProperty& rhs)
-    : PropertyBase(rhs)
-{
-    m_data = rhs.m_data;
-}
+QuaternionProperty::QuaternionProperty(const QuaternionProperty& rhs) = default;
 
 int QuaternionProperty::get(Atlas::Message::Element& val) const
 {
