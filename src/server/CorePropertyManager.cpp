@@ -151,7 +151,7 @@ CorePropertyManager::CorePropertyManager()
     installProperty<TasksProperty>();
     installProperty<SpawnerProperty>();
     installProperty<BoolProperty>("immortal");
-    installProperty<RespawningProperty>();
+    //installProperty<RespawningProperty>();
     installProperty<DefaultLocationProperty>();
     installProperty<DomainProperty>();
     installProperty<LimboProperty>();

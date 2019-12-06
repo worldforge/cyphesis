@@ -39,6 +39,10 @@ class CyPy_Server : public Py::ExtensionModule<CyPy_Server>
         Py::Object get_limbo_location();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Server, get_limbo_location);
+
+        Py::Object move_to_spawn(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Server, move_to_spawn);
+
 };
 
 

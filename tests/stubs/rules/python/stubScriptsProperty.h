@@ -17,7 +17,7 @@
 
 #ifndef STUB_ScriptsProperty_set
 //#define STUB_ScriptsProperty_set
-  void ScriptsProperty::set(const Atlas::Message::Element &)
+  void ScriptsProperty::set(const Atlas::Message::Element&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_ScriptsProperty_apply
 //#define STUB_ScriptsProperty_apply
-  void ScriptsProperty::apply(LocatedEntity *)
+  void ScriptsProperty::apply(LocatedEntity*)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_ScriptsProperty_remove
 //#define STUB_ScriptsProperty_remove
-  void ScriptsProperty::remove(LocatedEntity *, const std::string & name)
+  void ScriptsProperty::remove(LocatedEntity*, const std::string& name)
   {
     
   }
@@ -41,11 +41,19 @@
 
 #ifndef STUB_ScriptsProperty_applyScripts
 //#define STUB_ScriptsProperty_applyScripts
-  void ScriptsProperty::applyScripts(LocatedEntity *) const
+  void ScriptsProperty::applyScripts(LocatedEntity*) const
   {
     
   }
 #endif //STUB_ScriptsProperty_applyScripts
+
+#ifndef STUB_ScriptsProperty_copy
+//#define STUB_ScriptsProperty_copy
+  ScriptsProperty* ScriptsProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_ScriptsProperty_copy
 
 
 #endif
