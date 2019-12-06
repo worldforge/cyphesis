@@ -32,7 +32,7 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-void output_element(std::ostream & out, const Element & item, size_t depth)
+void output_element(std::ostream& out, const Element& item, size_t depth)
 {
     switch (item.getType()) {
         case Element::TYPE_INT:
@@ -44,27 +44,25 @@ void output_element(std::ostream & out, const Element & item, size_t depth)
         case Element::TYPE_STRING:
             out << "\"" << item.String() << "\"";
             break;
-        case Element::TYPE_LIST:
-            {
-                out << "[ ";
-                for(auto& entry : item.List()) {
-                    output_element(out, entry, depth + 1);
-                    out << " ";
-                }
-                out << "]";
+        case Element::TYPE_LIST: {
+            out << "[ ";
+            for (auto& entry : item.List()) {
+                output_element(out, entry, depth + 1);
+                out << " ";
             }
+            out << "]";
+        }
             break;
-        case Element::TYPE_MAP:
-            {
-                out << "{" << std::endl;
-                for(auto& entry : item.Map()) {
-                    out << std::string((depth + 1) * 4, ' ') << entry.first << ": ";
-                    output_element(out, entry.second, depth + 1);
-                    out << std::endl;
-                }
-                out << std::string(depth * 4, ' ') << "}";
+        case Element::TYPE_MAP: {
+            out << "{" << std::endl;
+            for (auto& entry : item.Map()) {
+                out << std::string((depth + 1) * 4, ' ') << entry.first << ": ";
+                output_element(out, entry.second, depth + 1);
                 out << std::endl;
             }
+            out << std::string(depth * 4, ' ') << "}";
+            out << std::endl;
+        }
             break;
         default:
             out << R"((???))";
@@ -72,8 +70,8 @@ void output_element(std::ostream & out, const Element & item, size_t depth)
     }
 }
 
-template <>
-void debug_dump(const Atlas::Objects::Operation::RootOperation & t, std::ostream & os)
+template<>
+void debug_dump(const Atlas::Objects::Operation::RootOperation& t, std::ostream& os)
 {
     std::stringstream ss;
     Atlas::PresentationBridge bridge(ss);
@@ -82,8 +80,8 @@ void debug_dump(const Atlas::Objects::Operation::RootOperation & t, std::ostream
     os << ss.str();
 }
 
-template <>
-void debug_dump(const Atlas::Objects::Root & t, std::ostream & os)
+template<>
+void debug_dump(const Atlas::Objects::Root& t, std::ostream& os)
 {
     std::stringstream ss;
     Atlas::PresentationBridge bridge(ss);
@@ -92,8 +90,8 @@ void debug_dump(const Atlas::Objects::Root & t, std::ostream & os)
     os << ss.str();
 }
 
-template <>
-void debug_dump(const Atlas::Objects::Entity::Anonymous & t, std::ostream & os)
+template<>
+void debug_dump(const Atlas::Objects::Entity::Anonymous& t, std::ostream& os)
 {
     std::stringstream ss;
     Atlas::PresentationBridge bridge(ss);
@@ -102,14 +100,32 @@ void debug_dump(const Atlas::Objects::Entity::Anonymous & t, std::ostream & os)
     os << ss.str();
 }
 
-template <typename T>
-void debug_dump(const T & t, std::ostream & os)
+template<typename T>
+void debug_dump(const T& t, std::ostream& os)
 {
     output_element(os, t, 0);
 }
 
-template <typename T>
-std::string debug_tostring(const T & t)
+
+template<>
+std::string debug_tostring(const Atlas::Objects::Root& t)
+{
+    std::stringstream out(std::ios::out);
+    debug_dump(t, out);
+    return out.str();
+}
+
+template<>
+std::string debug_tostring(const Atlas::Objects::Operation::RootOperation& t)
+{
+    std::stringstream out(std::ios::out);
+    debug_dump(t, out);
+    return out.str();
+}
+
+
+template<typename T>
+std::string debug_tostring(const T& t)
 {
     std::stringstream out(std::ios::out);
     output_element(out, t, 0);
@@ -117,20 +133,20 @@ std::string debug_tostring(const T & t)
 }
 
 template
-void debug_dump<MapType>(const MapType & map, std::ostream & os);
+void debug_dump<MapType>(const MapType& map, std::ostream& os);
 
 template
-void debug_dump<ListType>(const ListType & list, std::ostream & os);
+void debug_dump<ListType>(const ListType& list, std::ostream& os);
 
 template
-void debug_dump<Element>(const Element & e, std::ostream & os);
+void debug_dump<Element>(const Element& e, std::ostream& os);
 
 template
-std::string debug_tostring<MapType>(const MapType & map);
+std::string debug_tostring<MapType>(const MapType& map);
 
 template
-std::string debug_tostring<ListType>(const ListType & list);
+std::string debug_tostring<ListType>(const ListType& list);
 
 template
-std::string debug_tostring<Element>(const Element & e);
+std::string debug_tostring<Element>(const Element& e);
 
