@@ -53,11 +53,11 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
 WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder) :
-    BaseWorld(),
-    m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
-    m_entityCount(1),
-    m_baseEntity(std::move(baseEntity)),
-    m_entityBuilder(entityBuilder)
+        BaseWorld(),
+        m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
+        m_entityCount(1),
+        m_baseEntity(std::move(baseEntity)),
+        m_entityBuilder(entityBuilder)
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
@@ -293,7 +293,7 @@ int WorldRouter::moveToSpawn(const std::string& name, Location& location)
 
 
 std::unique_ptr<ArithmeticScript> WorldRouter::newArithmetic(const std::string& name,
-                                             LocatedEntity* owner)
+                                                             LocatedEntity* owner)
 {
     return ArithmeticBuilder::instance().newArithmetic(name, owner);
 }
@@ -356,8 +356,8 @@ void WorldRouter::message(const Operation& op, LocatedEntity& fromEntity)
         m_operationsDispatcher.addOperationToQueue(op, Ref<LocatedEntity>(&fromEntity));
     }
     debug_print("WorldRouter::message {"
-                    << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}")
+                        << op->getParent() << ":"
+                        << op->getFrom() << ":" << op->getTo() << "}")
 }
 
 void WorldRouter::messageToClients(const Operation& op)
@@ -369,8 +369,8 @@ void WorldRouter::messageToClients(const Operation& op)
     }
 
     debug_print("WorldRouter::messageToClients {"
-                    << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}")
+                        << op->getParent() << ":"
+                        << op->getFrom() << ":" << op->getTo() << "}")
 }
 
 bool WorldRouter::shouldBroadcastPerception(const Operation& op) const
@@ -437,7 +437,10 @@ void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
 
     if (!op->isDefaultTo()) {
         const std::string& to = op->getTo();
-        assert(!to.empty());
+        if (to.empty()) {
+            log(ERROR, String::compose("Op with 'to' set to an empty string. From %1. Op: %2", from->describeEntity(), debug_tostring(op)));
+            return;
+        }
         Ref<LocatedEntity> to_entity;
 
         if (to == from->getId()) {
@@ -464,11 +467,10 @@ void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
             }
         }
 
-        assert(to_entity != nullptr);
-
         deliverTo(op, std::move(to_entity));
 
     } else {
+        //This will send an op to all entities in the system. Perhaps we should add some more checks for when we want to allow for this?
         for (auto& entry : m_eobjects) {
             op->setTo(entry.second->getId());
             deliverTo(op, entry.second);
