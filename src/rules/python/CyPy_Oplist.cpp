@@ -63,8 +63,13 @@ void CyPy_Oplist::appendToList(const Py::Object& op, std::vector<Atlas::Objects:
             }
             list.push_back(entry);
         }
-    } else if (!op.isNone()) {
-        throw Py::TypeError("Append must be an op or message");
+    } else if (op.isSequence()) {
+        Py::Sequence seq(op);
+        for (auto innerOp : seq) {
+            appendToList(innerOp, list);
+        }
+    } else if (!op.isNone() && !op.isNull()) {
+        throw Py::TypeError("Append must be an op or sequence");
     }
 }
 
