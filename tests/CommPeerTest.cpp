@@ -61,9 +61,9 @@ class TestNegotiate : public Atlas::Negotiate
         return m_state;
     }
 
-    Atlas::Codec * getCodec(Atlas::Bridge &) override
+    std::unique_ptr<Atlas::Codec> getCodec(Atlas::Bridge &) override
     {
-        return 0;
+        return {};
     }
 
     void poll() override

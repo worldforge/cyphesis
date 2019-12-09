@@ -290,7 +290,7 @@ int CommAsioClient<ProtocolT>::negotiate()
     // Negotiation was successful
 
     // Get the codec that negotiation established
-    m_codec.reset(m_negotiate->getCodec(*this));
+    m_codec = m_negotiate->getCodec(*this);
 
     // Acceptor is now finished with
     m_negotiate.reset();

@@ -89,7 +89,7 @@ int StreamClientSocketBase::negotiate(Atlas::Objects::ObjectsDecoder& decoder)
         return -1;
     }
 
-    m_codec.reset(conn.getCodec(decoder));
+    m_codec = conn.getCodec(decoder);
 
     if (!m_codec) {
         return -1;
