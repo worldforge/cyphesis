@@ -30,25 +30,33 @@ class FruitPlant(server.Thing):
     def tick_operation(self, op):
         res = Oplist()
         if verify_tick(self, op, res, self.tick_interval, self.jitter):
+
+            fruits = 0
+            if self.props.fruits:
+                fruits = self.props.fruits
+
             # Check if we should drop any fruit
-            self.handle_drop_fruit(res)
+            fruits_new = self.handle_drop_fruit(res, fruits)
 
             # And then check if we should create any new fruits
-            self.handle_fruiting(res)
+            fruits_new = self.handle_fruiting(res, fruits_new)
+
+            if fruits_new != fruits:
+                res += Operation("set", Entity(self.id, fruits=fruits_new), to=self)
 
             return server.OPERATION_BLOCKED, res
         return server.OPERATION_IGNORED
 
-    def handle_drop_fruit(self, res):
-        if self.props.fruits and self.props.fruits > 0:
+    def handle_drop_fruit(self, res, fruits):
+        if fruits > 0:
             if self.props.fruit_name and self.props.fruit_chance:
                 # hard coded to 5% chance of dropping fruits
                 if random.uniform(0, 100) < 5:
                     self.drop_fruit(res, self.props.fruit_name)
-                    # TODO: use 'modify' op
-                    res.append(Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self))
+                    return fruits - 1
+        return fruits
 
-    def handle_fruiting(self, res):
+    def handle_fruiting(self, res, fruits):
         if not self.has_prop_int("fruits_max"):
             print('FruitPlant script on entity without any fruits_max.', file=sys.stderr)
         else:
@@ -66,8 +74,8 @@ class FruitPlant(server.Thing):
                         if not self.props.fruits or self.props.fruits < fruits_max:
                             if self.props.fruit_name and self.props.fruit_chance:
                                 if random.uniform(0, 100) < self.props.fruit_chance:
-                                    # TODO: use 'modify' op
-                                    res += Operation("set", Entity(self.id, fruits=self.props.fruits - 1), to=self)
+                                    return fruits + 1
+        return fruits
 
     def harvest_operation(self, op):
         res = Oplist()

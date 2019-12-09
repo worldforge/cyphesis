@@ -4,9 +4,6 @@
             <map name="height">
                 <float name="default">6</float>
             </map>
-            <map name="ticks">
-                <float name="default">0</float>
-            </map>
             <map name="density">
                 <float name="default">600</float>
             </map>
