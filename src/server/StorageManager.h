@@ -97,7 +97,7 @@ class StorageManager : public sigc::trackable
 
         void updateEntity(LocatedEntity*);
 
-        void restoreChildren(LocatedEntity*);
+        size_t restoreChildren(LocatedEntity*);
 
         bool persistance_characterAdded(const Persistence::AddCharacterData& data);
 

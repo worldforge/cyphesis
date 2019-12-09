@@ -363,8 +363,9 @@ void StorageManager::updateEntity(LocatedEntity* ent)
     ent->addFlags(entity_clean_mask);
 }
 
-void StorageManager::restoreChildren(LocatedEntity* parent)
+size_t StorageManager::restoreChildren(LocatedEntity* parent)
 {
+    size_t childCount = 0;
     DatabaseResult res = m_db.selectEntities(parent->getId());
 
     // Iterate over res creating entities, and sorting out position, location
@@ -385,6 +386,7 @@ void StorageManager::restoreChildren(LocatedEntity* parent)
                                id, type));
             continue;
         }
+        childCount++;
 
         const std::string location_string = I.column("location");
         MapType loc_data;
@@ -399,8 +401,9 @@ void StorageManager::restoreChildren(LocatedEntity* parent)
         child->m_location.m_parent = parent;
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         BaseWorld::instance().addEntity(child);
-        restoreChildren(child.get());
+        childCount += restoreChildren(child.get());
     }
+    return childCount;
 }
 
 void StorageManager::tick()
@@ -518,11 +521,15 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
     //the child isn't present when the property is installed there will be issues.
     //We do this by first restoring the children, without any properties, and the assigning the properties to
     //all entities in order.
-    restoreChildren(ent.get());
+    auto childCount = restoreChildren(ent.get());
 
     restorePropertiesRecursively(ent.get());
 
-    log(INFO, "Completed restoring world from storage.");
+    if (childCount > 0) {
+        log(INFO, "Completed restoring world from storage.");
+    } else {
+        log(INFO, "No existing world found in storage.");
+    }
     return 0;
 }
 
