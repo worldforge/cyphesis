@@ -24,21 +24,4 @@
 #endif //STUB_SetupProperty_install
 
 
-#ifndef STUB_TickProperty_copy
-//#define STUB_TickProperty_copy
-  TickProperty* TickProperty::copy() const
-  {
-    return nullptr;
-  }
-#endif //STUB_TickProperty_copy
-
-#ifndef STUB_TickProperty_apply
-//#define STUB_TickProperty_apply
-  void TickProperty::apply(LocatedEntity *)
-  {
-    
-  }
-#endif //STUB_TickProperty_apply
-
-
 #endif

@@ -34,18 +34,5 @@ class SetupProperty : public Property<int> {
     void install(LocatedEntity *, const std::string &) override;
 };
 
-/// \brief Class to handle Entity which requires a Tick operation
-/// \ingroup PropertyClasses
-class TickProperty : public Property<double> {
-  public:
-
-    static constexpr const char* property_name = "ticks";
-
-    explicit TickProperty() = default;
-
-    TickProperty * copy() const override;
-
-    void apply(LocatedEntity *) override;
-};
 
 #endif // RULESETS_INTERNAL_PROPERTIES_H

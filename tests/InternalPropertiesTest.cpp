@@ -38,22 +38,10 @@ void test_SetupProperty()
     pc.basicCoverage();
 }
 
-void test_TickProperty()
-{
-    TickProperty * ap = new TickProperty;
-
-    PropertyChecker<TickProperty> pc(ap);
-
-    pc.testDataAppend(0);
-
-    pc.basicCoverage();
-}
-
 
 int main()
 {
     test_SetupProperty();
-    test_TickProperty();
     return 0;
 }
 

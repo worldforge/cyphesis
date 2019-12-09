@@ -40,18 +40,3 @@ void SetupProperty::install(LocatedEntity * ent, const std::string & name)
     s->setTo(ent->getId());
     ent->sendWorld(s);
 }
-
-TickProperty * TickProperty::copy() const
-{
-    return new TickProperty(*this);
-}
-
-void TickProperty::apply(LocatedEntity * ent)
-{
-    Tick t;
-    t->setTo(ent->getId());
-    if (m_data > 0) {
-        t->setFutureSeconds(m_data);
-    }
-    ent->sendWorld(t);
-}

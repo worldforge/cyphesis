@@ -57,9 +57,9 @@
 
 #ifndef STUB_StorageManager_restoreChildren
 //#define STUB_StorageManager_restoreChildren
-  void StorageManager::restoreChildren(LocatedEntity*)
+  size_t StorageManager::restoreChildren(LocatedEntity*)
   {
-    
+    return 0;
   }
 #endif //STUB_StorageManager_restoreChildren
 

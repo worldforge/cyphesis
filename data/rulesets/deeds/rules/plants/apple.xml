@@ -20,9 +20,6 @@
             <map name="density">
                 <float name="default">900</float>
             </map>
-            <map name="ticks">
-                <float name="default">900</float>
-            </map>
             <map name="geometry">
                 <map name="default">
                     <string name="type">sphere</string>

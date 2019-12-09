@@ -57,8 +57,6 @@
 #include "rules/simulation/AttachmentsProperty.h"
 #include "rules/simulation/AdminProperty.h"
 
-#include "common/operations/Teleport.h"
-
 #include "common/types.h"
 #include "common/Inheritance.h"
 #include "common/PropertyFactory_impl.h"
@@ -138,7 +136,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ServerBBoxProperty>();
     installProperty<MindProperty>();
     installProperty<SetupProperty>();
-    installProperty<TickProperty>();
     installProperty<StatisticsProperty>();
     installProperty<SpawnProperty>();
     installProperty<AreaProperty>();
