@@ -628,6 +628,8 @@ namespace {
 
 int main(int argc, char ** argv)
 {
+    setLoggingPrefix("DB");
+
     int config_status = loadConfig(argc, argv, USAGE_DBASE); 
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {

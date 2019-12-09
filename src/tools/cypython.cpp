@@ -51,6 +51,9 @@ using namespace boost::asio;
 
 int main(int argc, char ** argv)
 {
+    setLoggingPrefix("PYTHON");
+
+
     int config_status = loadConfig(argc, argv, 0); 
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {

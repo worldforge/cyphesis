@@ -43,6 +43,8 @@ BOOL_OPTION(minds, true, "export", "minds",
 
 int main(int argc, char ** argv)
 {
+    setLoggingPrefix("EXPORT");
+
     int config_status = loadConfig(argc, argv, USAGE_CYCMD);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {

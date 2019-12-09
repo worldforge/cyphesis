@@ -62,6 +62,8 @@ static void usage(char* prg)
 
 int main(int argc, char** argv)
 {
+    setLoggingPrefix("IMPORT");
+
     int config_status = loadConfig(argc, argv, USAGE_CYCMD);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
