@@ -459,8 +459,12 @@ void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
                     Atlas::Objects::Operation::Unseen unseen;
                     Atlas::Objects::Entity::Anonymous ent;
                     ent->setId(to);
+                    ent->setAttr("destroyed", 1); //Add attribute clarifying that this entity is destroyed.
                     unseen->setArgs1(ent);
                     unseen->setTo(from->getId());
+                    if (!op->isDefaultSerialno()) {
+                        unseen->setRefno(op->getSerialno());
+                    }
                     message(unseen, *from);
                 }
                 return;
