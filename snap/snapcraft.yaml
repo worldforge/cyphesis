@@ -54,6 +54,7 @@ parts:
     media:
         build-packages:
             - rsync
+            - curl
         override-pull: |
             #rsync -rtzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets $SNAPCRAFT_PART_SRC/assets
             cd $SNAPCRAFT_PART_SRC
