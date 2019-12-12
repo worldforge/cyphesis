@@ -46,7 +46,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, m_type);
         } else {
-            value = (Atlas::Message::PtrType) (&m_type);
+            value = static_cast<Atlas::Message::PtrType>(const_cast<TypeNode*>(&m_type));
         }
     }
 
@@ -72,7 +72,7 @@ namespace EntityFilter {
             if (m_consumer && type) {
                 m_consumer->value(value, *type);
             } else {
-                value = (Atlas::Message::PtrType) type;
+                value = static_cast<Atlas::Message::PtrType>(const_cast<TypeNode*>(type));
             }
         }
     }
@@ -139,7 +139,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, context.entityLoc.entity);
         } else {
-            value = (Atlas::Message::PtrType) (&context.entityLoc);
+            value = static_cast<Atlas::Message::PtrType>(const_cast<QueryEntityLocation*>(&context.entityLoc));
         }
     }
 
@@ -162,7 +162,7 @@ namespace EntityFilter {
         if (m_consumer && context.actor) {
             m_consumer->value(value, *context.actor);
         } else {
-            value = (Atlas::Message::PtrType) (context.actor);
+            value = static_cast<Atlas::Message::PtrType>(const_cast<LocatedEntity*>(context.actor));
         }
     }
 
@@ -176,7 +176,7 @@ namespace EntityFilter {
         if (m_consumer && context.tool) {
             m_consumer->value(value, *context.tool);
         } else {
-            value = (Atlas::Message::PtrType) (context.tool);
+            value = static_cast<Atlas::Message::PtrType>(const_cast<LocatedEntity*>(context.tool));
         }
     }
 
@@ -190,7 +190,7 @@ namespace EntityFilter {
         if (m_consumer && context.child) {
             m_consumer->value(value, *context.child);
         } else {
-            value = (Atlas::Message::PtrType) (context.child);
+            value = static_cast<Atlas::Message::PtrType>(const_cast<LocatedEntity*>(context.child));
         }
     }
 
@@ -235,7 +235,7 @@ namespace EntityFilter {
         if (m_consumer) {
             m_consumer->value(value, *entity.getType());
         } else {
-            value = (Atlas::Message::PtrType) (entity.getType());
+            value = static_cast<Atlas::Message::PtrType>(const_cast<TypeNode*>(entity.getType()));
         }
     }
 
