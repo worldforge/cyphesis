@@ -55,7 +55,7 @@ class PlayerControlled(server.Thing):
                             res += Operation("move", Entity(self.id, loc=limbo_entity.id), to=self.id)
                     else:
                         # Only respawn if there's a mind
-                        if len(self.props._minds) != 0:
+                        if self.props._minds and len(self.props._minds) != 0:
                             res += self.respawn()
 
                 return server.OPERATION_BLOCKED, res
