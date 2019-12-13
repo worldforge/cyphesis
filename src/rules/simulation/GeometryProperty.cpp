@@ -66,10 +66,10 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                     log(NOTICE, String::compose("Reloading geometry from %1.", fullpath));
                     boost::filesystem::ifstream fileStream(fullpath);
                     if (fileStream) {
-                        auto deserializer = std::make_shared<OgreMeshDeserializer>(fileStream);
-                        deserializer->deserialize();
-                        m_meshBounds = deserializer->m_bounds;
-                        parseData(std::move(deserializer));
+                        auto innerDeserializer = std::make_shared<OgreMeshDeserializer>(fileStream);
+                        innerDeserializer->deserialize();
+                        m_meshBounds = innerDeserializer->m_bounds;
+                        parseData(std::move(innerDeserializer));
 
 
                         struct my_visitor : public boost::static_visitor<>

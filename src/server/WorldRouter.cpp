@@ -336,7 +336,7 @@ void WorldRouter::resumeWorld()
 /// so it gets added to the queue for dispatch.
 /// If the op is a broadcast op, it will be split up into separate ops
 /// for each observer.
-void WorldRouter::message(const Operation& op, LocatedEntity& fromEntity)
+void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
 {
     if (op->isDefaultTo()) {
         if (shouldBroadcastPerception(op)) {
@@ -353,14 +353,14 @@ void WorldRouter::message(const Operation& op, LocatedEntity& fromEntity)
 
         }
     } else {
-        m_operationsDispatcher.addOperationToQueue(op, Ref<LocatedEntity>(&fromEntity));
+        m_operationsDispatcher.addOperationToQueue(std::move(op), Ref<LocatedEntity>(&fromEntity));
     }
     debug_print("WorldRouter::message {"
                         << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}")
 }
 
-void WorldRouter::messageToClients(const Operation& op)
+void WorldRouter::messageToClients(Operation op)
 {
     auto& accounts = ServerRouting::instance().getAccounts();
     OpVector res;

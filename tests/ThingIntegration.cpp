@@ -86,7 +86,7 @@ class ThingExt : public Thing
             return domain;
         }
 
-        void sendWorld(const Operation& op) override
+        void sendWorld(Operation op) override
         {
 
         }

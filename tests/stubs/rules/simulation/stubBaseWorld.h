@@ -171,7 +171,7 @@
 
 #ifndef STUB_BaseWorld_message
 //#define STUB_BaseWorld_message
-  void BaseWorld::message(const Atlas::Objects::Operation::RootOperation&, LocatedEntity& obj)
+  void BaseWorld::message(Atlas::Objects::Operation::RootOperation, LocatedEntity& obj)
   {
     
   }
@@ -179,7 +179,7 @@
 
 #ifndef STUB_BaseWorld_messageToClients
 //#define STUB_BaseWorld_messageToClients
-  void BaseWorld::messageToClients(const Atlas::Objects::Operation::RootOperation&)
+  void BaseWorld::messageToClients(Atlas::Objects::Operation::RootOperation)
   {
     
   }

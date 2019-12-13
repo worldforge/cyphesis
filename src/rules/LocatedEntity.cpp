@@ -303,7 +303,7 @@ void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
 /// sendWorld() bypasses serialno assignment, so you must ensure
 /// that serialno is sorted. This allows client serialnos to get
 /// in, so that client gets correct useful refnos back.
-void LocatedEntity::sendWorld(const Operation& op)
+void LocatedEntity::sendWorld(Operation op)
 {
 }
 
@@ -325,7 +325,7 @@ void LocatedEntity::makeContainer()
 {
     if (m_contains == nullptr) {
         m_contains = std::make_unique<LocatedEntitySet>();
-        m_properties["contains"] = std::make_unique<ContainsProperty>(*m_contains);
+        m_properties[ContainsProperty::property_name] = std::make_unique<ContainsProperty>(*m_contains);
     }
 }
 
@@ -383,6 +383,16 @@ void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) 
         m_location.m_parent->collectObserversForChild(*this, receivers);
     }
 
+}
+
+void LocatedEntity::collectObserved(std::set<const LocatedEntity*>& observed) const
+{
+    const Domain* domain = getDomain();
+    if (domain) {
+        std::list<LocatedEntity*> observedEntities;
+        domain->getVisibleEntitiesFor(*this, observedEntities);
+        observed.insert(observedEntities.begin(), observedEntities.end());
+    }
 }
 
 

@@ -9,7 +9,7 @@
 
 #ifndef STUB_IdProperty_IdProperty
 //#define STUB_IdProperty_IdProperty
-   IdProperty::IdProperty(const std::string & data)
+   IdProperty::IdProperty(const std::string& data)
     : PropertyBase(data)
   {
     
@@ -18,7 +18,7 @@
 
 #ifndef STUB_IdProperty_get
 //#define STUB_IdProperty_get
-  int IdProperty::get(Atlas::Message::Element & val) const
+  int IdProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_IdProperty_set
 //#define STUB_IdProperty_set
-  void IdProperty::set(const Atlas::Message::Element & val)
+  void IdProperty::set(const Atlas::Message::Element& val)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_IdProperty_add
 //#define STUB_IdProperty_add
-  void IdProperty::add(const std::string & key, Atlas::Message::MapType & map) const
+  void IdProperty::add(const std::string& key, Atlas::Message::MapType& map) const
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_IdProperty_add
 //#define STUB_IdProperty_add
-  void IdProperty::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+  void IdProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
   {
     
   }
@@ -68,7 +68,7 @@
 
 #ifndef STUB_NameProperty_add
 //#define STUB_NameProperty_add
-  void NameProperty::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+  void NameProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
   {
     
   }
@@ -77,7 +77,7 @@
 
 #ifndef STUB_ContainsProperty_ContainsProperty
 //#define STUB_ContainsProperty_ContainsProperty
-   ContainsProperty::ContainsProperty(LocatedEntitySet & data)
+   ContainsProperty::ContainsProperty(LocatedEntitySet& data)
     : PropertyBase(data)
   {
     
@@ -86,7 +86,7 @@
 
 #ifndef STUB_ContainsProperty_get
 //#define STUB_ContainsProperty_get
-  int ContainsProperty::get(Atlas::Message::Element & val) const
+  int ContainsProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -94,7 +94,7 @@
 
 #ifndef STUB_ContainsProperty_set
 //#define STUB_ContainsProperty_set
-  void ContainsProperty::set(const Atlas::Message::Element & val)
+  void ContainsProperty::set(const Atlas::Message::Element& val)
   {
     
   }
@@ -102,7 +102,7 @@
 
 #ifndef STUB_ContainsProperty_add
 //#define STUB_ContainsProperty_add
-  void ContainsProperty::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+  void ContainsProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
   {
     
   }

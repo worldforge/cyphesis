@@ -179,7 +179,7 @@
 
 #ifndef STUB_LocatedEntity_sendWorld
 //#define STUB_LocatedEntity_sendWorld
-  void LocatedEntity::sendWorld(const Operation& op)
+  void LocatedEntity::sendWorld(Operation op)
   {
     
   }
@@ -264,6 +264,14 @@
     
   }
 #endif //STUB_LocatedEntity_collectObservers
+
+#ifndef STUB_LocatedEntity_collectObserved
+//#define STUB_LocatedEntity_collectObserved
+  void LocatedEntity::collectObserved(std::set<const LocatedEntity*>& observed) const
+  {
+    
+  }
+#endif //STUB_LocatedEntity_collectObserved
 
 #ifndef STUB_LocatedEntity_broadcast
 //#define STUB_LocatedEntity_broadcast

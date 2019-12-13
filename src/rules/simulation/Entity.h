@@ -111,7 +111,7 @@ class Entity : public LocatedEntity
 
         void setDomain(std::unique_ptr<Domain> domain) override;
 
-        void sendWorld(const Operation& op) override;
+        void sendWorld(Operation op) override;
 
         void addListener(OperationsListener* listener) override;
 

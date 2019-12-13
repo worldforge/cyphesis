@@ -27,33 +27,35 @@
 
 /// \brief Class to handle Entity id property
 /// \ingroup PropertyClasses
-class IdProperty : public PropertyBase {
-  protected:
-    const std::string & m_data;
-  public:
-    static constexpr const char* property_name = "id";
-    static constexpr const char* property_atlastype = "string";
+class IdProperty : public PropertyBase
+{
+    protected:
+        const std::string& m_data;
+    public:
+        static constexpr const char* property_name = "id";
+        static constexpr const char* property_atlastype = "string";
 
-    explicit IdProperty(const std::string & data);
+        explicit IdProperty(const std::string& data);
 
-    int get(Atlas::Message::Element & val) const override;
+        int get(Atlas::Message::Element& val) const override;
 
-    void set(const Atlas::Message::Element & val) override;
+        void set(const Atlas::Message::Element& val) override;
 
-    void add(const std::string & key, Atlas::Message::MapType & map) const override;
+        void add(const std::string& key, Atlas::Message::MapType& map) const override;
 
-    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+        void add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const override;
 
-    IdProperty * copy() const override;
+        IdProperty* copy() const override;
 };
 
 /// \brief Class to handle Entity name property
 /// \ingroup PropertyClasses
-class NameProperty : public Property<std::string> {
-  public:
-    explicit NameProperty(unsigned int flags);
+class NameProperty : public Property<std::string>
+{
+    public:
+        explicit NameProperty(unsigned int flags);
 
-    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+        void add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const override;
 };
 
 class LocatedEntity;
@@ -62,17 +64,23 @@ typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
 
 /// \brief Class to handle Entity contains property
 /// \ingroup PropertyClasses
-class ContainsProperty : public PropertyBase {
-  protected:
-    LocatedEntitySet & m_data;
-  public:
-    explicit ContainsProperty(LocatedEntitySet & data);
+class ContainsProperty : public PropertyBase
+{
+    protected:
+        LocatedEntitySet& m_data;
+    public:
+        static constexpr const char* property_name = "contains";
+        static constexpr const char* property_atlastype = "list";
 
-    int get(Atlas::Message::Element & val) const override;
-    void set(const Atlas::Message::Element & val) override;
-    void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+        explicit ContainsProperty(LocatedEntitySet& data);
 
-    ContainsProperty * copy() const override;
+        int get(Atlas::Message::Element& val) const override;
+
+        void set(const Atlas::Message::Element& val) override;
+
+        void add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const override;
+
+        ContainsProperty* copy() const override;
 };
 
 #endif // RULESETS_ATLAS_PROPERTIES_H

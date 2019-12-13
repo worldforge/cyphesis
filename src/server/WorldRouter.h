@@ -100,10 +100,10 @@ class WorldRouter : public BaseWorld
         void operation(const Atlas::Objects::Operation::RootOperation&,
                        Ref<LocatedEntity>);
 
-        void message(const Atlas::Objects::Operation::RootOperation&,
+        void message(Atlas::Objects::Operation::RootOperation,
                      LocatedEntity&) override;
 
-        void messageToClients(const Atlas::Objects::Operation::RootOperation&) override;
+        void messageToClients(Atlas::Objects::Operation::RootOperation) override;
 
         Ref<LocatedEntity> findByName(const std::string& name) override;
 

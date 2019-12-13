@@ -20,8 +20,6 @@
 
 #include "rules/LocatedEntity.h"
 
-#include "common/debug.h"
-
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
 

@@ -261,7 +261,7 @@ void Entity::destroy()
 }
 
 #define STUB_Entity_sendWorld
-void Entity::sendWorld(const Operation & op)
+void Entity::sendWorld(Operation op)
 {
     BaseWorld::instance().message(op, *this);
 }

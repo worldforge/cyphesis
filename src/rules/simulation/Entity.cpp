@@ -222,9 +222,9 @@ void Entity::setDomain(std::unique_ptr<Domain> domain)
     }
 }
 
-void Entity::sendWorld(const Operation& op)
+void Entity::sendWorld(Operation op)
 {
-    BaseWorld::instance().message(op, *this);
+    BaseWorld::instance().message(std::move(op), *this);
 }
 
 /// \brief Handle a delete operation

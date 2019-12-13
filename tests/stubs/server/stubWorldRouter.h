@@ -146,7 +146,7 @@
 
 #ifndef STUB_WorldRouter_message
 //#define STUB_WorldRouter_message
-  void WorldRouter::message(const Atlas::Objects::Operation::RootOperation&, LocatedEntity&)
+  void WorldRouter::message(Atlas::Objects::Operation::RootOperation, LocatedEntity&)
   {
     
   }
@@ -154,7 +154,7 @@
 
 #ifndef STUB_WorldRouter_messageToClients
 //#define STUB_WorldRouter_messageToClients
-  void WorldRouter::messageToClients(const Atlas::Objects::Operation::RootOperation&)
+  void WorldRouter::messageToClients(Atlas::Objects::Operation::RootOperation)
   {
     
   }

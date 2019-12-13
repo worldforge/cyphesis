@@ -1175,10 +1175,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
             }
         }
     }
+
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
     m_steppingEntries.erase(entity.getIntId());
+
 }
 
 void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry)

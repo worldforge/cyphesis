@@ -76,12 +76,12 @@ struct TestWorld : public BaseWorld {
                                              LocatedEntity *) override {
         return {};
     }
-    void message(const Operation & op, LocatedEntity & ent) override {
+    void message(Operation op, LocatedEntity & ent) override {
         if (extension.messageFn) {
             extension.messageFn(op, ent);
         }
     }
-    void messageToClients(const Atlas::Objects::Operation::RootOperation &) override{}
+    void messageToClients(Atlas::Objects::Operation::RootOperation) override{}
     Ref<LocatedEntity> findByName(const std::string & name) override { return nullptr; }
     Ref<LocatedEntity> findByType(const std::string & type) override { return nullptr; }
 

@@ -31,6 +31,8 @@
 #include "common/compose.hpp"
 #include "common/Visibility.h"
 
+#include <Atlas/Objects/Operation.h>
+
 #include <sigc++/signal.h>
 
 #include <boost/any.hpp>
@@ -265,7 +267,7 @@ class LocatedEntity : public Router, public ReferenceCounted
 
         virtual void setDomain(std::unique_ptr<Domain> domain);
 
-        virtual void sendWorld(const Operation& op);
+        virtual void sendWorld(Operation op);
 
         virtual void setScript(std::unique_ptr<Script> scrpt);
 
@@ -297,6 +299,8 @@ class LocatedEntity : public Router, public ReferenceCounted
          * @param observers A set which will be filled with observing entities.
          */
         void collectObservers(std::set<const LocatedEntity*>& observers) const;
+
+        void collectObserved(std::set<const LocatedEntity*>& observed) const;
 
         /**
          * Broadcasts an op.

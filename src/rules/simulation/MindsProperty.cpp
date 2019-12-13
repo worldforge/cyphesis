@@ -64,7 +64,7 @@ using Atlas::Objects::smart_dynamic_cast;
 static const bool debug_flag = false;
 
 MindsProperty::MindsProperty()
-    : PropertyBase(persistence_ephem)
+        : PropertyBase(persistence_ephem)
 {
 }
 

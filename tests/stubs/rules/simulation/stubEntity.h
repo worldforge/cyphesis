@@ -234,7 +234,7 @@
 
 #ifndef STUB_Entity_sendWorld
 //#define STUB_Entity_sendWorld
-  void Entity::sendWorld(const Operation& op)
+  void Entity::sendWorld(Operation op)
   {
     
   }

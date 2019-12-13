@@ -57,7 +57,7 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangible entities.
 Thing::Thing(const std::string& id, long intId) :
-    Entity(id, intId)
+        Entity(id, intId)
 {
 }
 
@@ -166,12 +166,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     //If a Move op contains a mode_data prop it should be used.
     //It's expected that only admins should ever send a "mode_data" as Move ops (to build the world).
     //In all other cases we want to let regular Domain rules apply
-//    Element attr_plantedOn;
-//    PlantedOnProperty::Data plantedOn;
-//    if (ent->copyAttr(PlantedOnProperty::property_name, attr_plantedOn) == 0) {
-//        plantedOn = PlantedOnProperty::parse(attr_plantedOn);
-//    }
-
     Element attr_modeData;
     if (ent->copyAttr("mode_data", attr_modeData) == 0) {
         setAttr("mode_data", attr_modeData);
@@ -282,8 +276,17 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
             // Update loc
 
+            //A set of entities that were observing the entity.
             std::set<const LocatedEntity*> previousObserving;
             collectObservers(previousObserving);
+
+            std::set<const LocatedEntity*> previousObserved;
+            if (isPerceptive()) {
+                std::list<LocatedEntity*> observedEntities;
+                domain->getVisibleEntitiesFor(*this, observedEntities);
+                previousObserved.insert(observedEntities.begin(), observedEntities.end());
+                previousObserved.insert(m_location.m_parent.get());
+            }
 
             if (updatedTransform) {
                 if (newOrientation.isValid()) {
@@ -299,8 +302,39 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             if (isDestroyed()) {
                 return;
             }
-            processAppearDisappear(std::move(previousObserving), res);
+            if (!previousObserving.empty()) {
+                processAppearDisappear(std::move(previousObserving), res);
+            }
             auto newDomain = new_loc->getDomain();
+            if (!previousObserved.empty()) {
+                //Get all entities that were previously observed, but aren't any more, and send Disappearence op for them.
+                previousObserved.erase(m_location.m_parent.get());
+                if (newDomain) {
+                    //If there's a new domain, remove all entities that we still can observe.
+                    std::list<LocatedEntity*> observedEntities;
+                    domain->getVisibleEntitiesFor(*this, observedEntities);
+
+                    for (auto& nowObservedEntity : observedEntities) {
+                        if (nowObservedEntity != this) {
+                            previousObserved.erase(nowObservedEntity);
+                        }
+                    }
+                }
+                std::vector<Atlas::Objects::Root> disappearArgs;
+                for (auto& notObservedAnyMoreEntity : previousObserved) {
+                    Anonymous that_ent;
+                    that_ent->setId(notObservedAnyMoreEntity->getId());
+                    that_ent->setStamp(notObservedAnyMoreEntity->getSeq());
+                    disappearArgs.push_back(that_ent);
+
+                }
+                if (!disappearArgs.empty()) {
+                    Disappearance disappear;
+                    disappear->setTo(getId());
+                    disappear->setArgs(disappearArgs);
+                    res.emplace_back(std::move(disappear));
+                }
+            }
             if (newDomain) {
                 if (updatedTransform) {
                     Domain::TransformData transformData{newOrientation, newPos, newPropel, nullptr, newImpulseVelocity};
@@ -381,7 +415,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     OpVector childRes;
                     transformedEntity->broadcast(sight, childRes, Visibility::PUBLIC);
                     for (auto& childOp : childRes) {
-                        transformedEntity->sendWorld(childOp);
+                        transformedEntity->sendWorld(std::move(childOp));
                     }
                 }
             }
