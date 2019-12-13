@@ -81,9 +81,9 @@ void ExternalMind::purgeEntity(const LocatedEntity& ent, bool forceDelete)
 }
 
 ExternalMind::ExternalMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
-    : Router(strId, id),
-      m_link(nullptr),
-      m_entity(std::move(entity))
+        : Router(strId, id),
+          m_link(nullptr),
+          m_entity(std::move(entity))
 {
     s_numberOfMinds++;
 }
@@ -139,7 +139,10 @@ void ExternalMind::operation(const Operation& op, OpVector& res)
     if (op->getClassNo() == Atlas::Objects::Operation::RELAY_NO) {
         RelayOperation(op, res);
     } else {
-        m_link->send(op);
+        //Only sent ops that inherit from "Info" to the client.
+        if (op->instanceOf(Atlas::Objects::Operation::INFO_NO)) {
+            m_link->send(op);
+        }
     }
 }
 

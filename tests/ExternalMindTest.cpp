@@ -181,7 +181,7 @@ int main()
         assert(stub_baseworld_receieved_op == -1);
     }
 
-    // Send a random operation to a connected mind
+    // Send a random operation to a connected mind, and make sure it's filtered out. Only Info ops are allowed.
     {
         Ref<Entity> e(new Entity("2", 2));
 
@@ -195,8 +195,28 @@ int main()
         stub_link_send_count = 0;
         OpVector res;
         em.operation(Atlas::Objects::Operation::RootOperation(), res);
-        assert(stub_link_send_op == Atlas::Objects::Operation::ROOT_OPERATION_NO);
-        assert(stub_link_send_count == 1);
+        assert(stub_link_send_op == -1);
+        assert(stub_link_send_count == 0);
+    }
+
+    // Send an Info operation and an  to a connected mind, and make sure sent filtered out. Only Info ops are allowed.
+    {
+        Ref<Entity> e(new Entity("2", 2));
+
+        TestExternalMind em(e);
+
+        em.linkUp(new Connection(*(CommSocket*)0,
+                                 *(ServerRouting*)0,
+                                 "addr", "4", 4));
+
+        stub_link_send_op = -1;
+        stub_link_send_count = 0;
+        OpVector res;
+        em.operation(Atlas::Objects::Operation::Info(), res);
+        assert(stub_link_send_op == Atlas::Objects::Operation::INFO_NO);
+        em.operation(Atlas::Objects::Operation::Sight(), res);
+        assert(stub_link_send_op == Atlas::Objects::Operation::SIGHT_NO);
+        assert(stub_link_send_count == 2);
     }
 
     // Send a Sight operation to a connected mind
