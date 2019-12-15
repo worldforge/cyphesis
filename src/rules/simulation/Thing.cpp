@@ -648,7 +648,9 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
             std::list<LocatedEntity*> entityList;
             observedEntityDomain->getVisibleEntitiesFor(observingEntity, entityList);
             for (auto& entity : entityList) {
-                contlist.push_back(entity->getId());
+                if (entity->m_location.m_parent.get() == this) {
+                    contlist.push_back(entity->getId());
+                }
             }
         }
 //            if (contlist.empty()) {
