@@ -69,4 +69,22 @@
             </map>
         </list>
     </map>
+
+    <map>
+        <string name="id">potion_death</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">potion</string>
+                <string name="name">Potion of death</string>
+                <string name="description">A black liquid. Or is it green? It seems to shift. You feel a great unease just by looking at it.
+                </string>
+                <map name="__effects">
+                    <float name="status">-10.0</float>
+                </map>
+                <string name="__message">You feel an immense pain. It's like your insides are rotting away.</string>
+            </map>
+        </list>
+    </map>
 </atlas>
