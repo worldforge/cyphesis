@@ -1740,7 +1740,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
         std::list<LocatedEntity*> observedList;
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
 
-        ASSERT_EQUAL(4u, observedList.size());
+        ASSERT_EQUAL(5u, observedList.size());
         ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "small2"; }) != observedList.end());
         ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "smallVisible"; }) != observedList.end());
         ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "large1"; }) != observedList.end());
@@ -1761,7 +1761,7 @@ void PhysicalDomainIntegrationTest::test_visibility()
 
         domain->getVisibleEntitiesFor(*observerEntity, observedList);
 
-        ASSERT_EQUAL(4u, observedList.size());
+        ASSERT_EQUAL(5u, observedList.size());
         ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "small1"; }) != observedList.end());
         ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "smallVisible"; }) != observedList.end());
         ASSERT_TRUE(std::find_if(observedList.begin(), observedList.end(), [](const LocatedEntity* entity) { return entity->getId() == "large1"; }) != observedList.end());

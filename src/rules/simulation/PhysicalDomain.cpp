@@ -150,12 +150,12 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 
         PhysicalMotionState(BulletEntry& bulletEntry, btRigidBody& rigidBody, PhysicalDomain& domain,
                             const btTransform& startTrans, const btTransform& centerOfMassOffset = btTransform::getIdentity())
-            :
-            m_bulletEntry(bulletEntry),
-            m_rigidBody(rigidBody),
-            m_domain(domain),
-            m_worldTrans(startTrans),
-            m_centerOfMassOffset(centerOfMassOffset)
+                :
+                m_bulletEntry(bulletEntry),
+                m_rigidBody(rigidBody),
+                m_domain(domain),
+                m_worldTrans(startTrans),
+                m_centerOfMassOffset(centerOfMassOffset)
         {
         }
 
@@ -199,7 +199,8 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
             auto& visibilitySphere = m_bulletEntry.visibilitySphere;
             if (visibilitySphere) {
                 visibilitySphere->setWorldTransform(
-                    btTransform(visibilitySphere->getWorldTransform().getBasis(), m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
+                        btTransform(visibilitySphere->getWorldTransform().getBasis(),
+                                    m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
                 m_domain.m_visibilityWorld->updateSingleAabb(visibilitySphere.get());
             }
 
@@ -214,23 +215,23 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 };
 
 PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
-    Domain(entity),
-    mWorldInfo{&m_propellingEntries, &m_steppingEntries},
-    //default config for now
-    m_collisionConfiguration(new btDefaultCollisionConfiguration()),
-    m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
-    m_constraintSolver(new btSequentialImpulseConstraintSolver()),
-    //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
-    m_broadphase(new btDbvtBroadphase()),
-    m_dynamicsWorld(new PhysicalWorld(m_dispatcher.get(), m_broadphase.get(), m_constraintSolver.get(), m_collisionConfiguration.get())),
-    m_visibilityDispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
-    m_visibilityBroadphase(new btDbvtBroadphase()),
-    m_visibilityWorld(new btCollisionWorld(m_visibilityDispatcher.get(),
-                                           m_visibilityBroadphase.get(),
-                                           m_collisionConfiguration.get())),
-    m_visibilityCheckCountdown(0),
-    m_terrain(nullptr),
-    m_ghostPairCallback(new btGhostPairCallback())
+        Domain(entity),
+        mWorldInfo{&m_propellingEntries, &m_steppingEntries},
+        //default config for now
+        m_collisionConfiguration(new btDefaultCollisionConfiguration()),
+        m_dispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
+        m_constraintSolver(new btSequentialImpulseConstraintSolver()),
+        //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
+        m_broadphase(new btDbvtBroadphase()),
+        m_dynamicsWorld(new PhysicalWorld(m_dispatcher.get(), m_broadphase.get(), m_constraintSolver.get(), m_collisionConfiguration.get())),
+        m_visibilityDispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
+        m_visibilityBroadphase(new btDbvtBroadphase()),
+        m_visibilityWorld(new btCollisionWorld(m_visibilityDispatcher.get(),
+                                               m_visibilityBroadphase.get(),
+                                               m_collisionConfiguration.get())),
+        m_visibilityCheckCountdown(0),
+        m_terrain(nullptr),
+        m_ghostPairCallback(new btGhostPairCallback())
 {
 
     m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostPairCallback.get());
@@ -566,14 +567,14 @@ void PhysicalDomain::createDomainBorders()
 
         m_borderPlanes.reserve(6);
         auto createPlane =
-            [&](const btVector3& normal, const btVector3& translate) {
-                auto plane = std::make_unique<btStaticPlaneShape>(normal, .0f);
-                auto planeBody = std::make_unique<btRigidBody>(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane.get()));
-                planeBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), translate));
-                planeBody->setUserPointer(&mContainingEntityEntry);
-                m_dynamicsWorld->addRigidBody(planeBody.get(), COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
-                m_borderPlanes.emplace_back(std::move(planeBody), std::move(plane));
-            };
+                [&](const btVector3& normal, const btVector3& translate) {
+                    auto plane = std::make_unique<btStaticPlaneShape>(normal, .0f);
+                    auto planeBody = std::make_unique<btRigidBody>(btRigidBody::btRigidBodyConstructionInfo(0, nullptr, plane.get()));
+                    planeBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), translate));
+                    planeBody->setUserPointer(&mContainingEntityEntry);
+                    m_dynamicsWorld->addRigidBody(planeBody.get(), COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
+                    m_borderPlanes.emplace_back(std::move(planeBody), std::move(plane));
+                };
 
         //Bottom plane
         createPlane(btVector3(0, 1, 0), btVector3(0, bbox.lowerBound(1), 0));
@@ -682,6 +683,9 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;
             m_visibilityWorld->contactTest(bulletEntry->viewSphere.get(), callback);
         }
+
+        //Insert the container entity, which should be seen by the observer.
+        callback.m_entries.insert(&mContainingEntityEntry);
 
         debug_print(" observed by " << bulletEntry->entity->describeEntity() << ": " << callback.m_entries.size())
 
@@ -1585,7 +1589,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
         const btCollisionObject* highestObject = nullptr;
 
         explicit PlantedOnCallback(btVector3 highestPoint_in)
-            : btCollisionWorld::ContactResultCallback(), highestPoint(highestPoint_in)
+                : btCollisionWorld::ContactResultCallback(), highestPoint(highestPoint_in)
         {
         }
 
@@ -1898,7 +1902,7 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
         bool& m_isGrounded;
 
         IsGroundedCallback(const btRigidBody& body, bool& isGrounded)
-            : btCollisionWorld::ContactResultCallback(), m_body(body), m_isGrounded(isGrounded)
+                : btCollisionWorld::ContactResultCallback(), m_body(body), m_isGrounded(isGrounded)
         {
             m_collisionFilterGroup = body.getBroadphaseHandle()->m_collisionFilterGroup;
             m_collisionFilterMask = body.getBroadphaseHandle()->m_collisionFilterMask;
@@ -2732,8 +2736,8 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
                 if (positionOnQueriedEntity.isValid()) {
                     //Adjust position on queried entity into parent coord system (to get a global pos)
                     queriedEntityPos = Convert::toBullet(
-                        positionOnQueriedEntity.toParentCoords(queriedLocation.m_pos,
-                                                               queriedLocation.m_orientation.isValid() ? queriedLocation.m_orientation : WFMath::Quaternion::IDENTITY()));
+                            positionOnQueriedEntity.toParentCoords(queriedLocation.m_pos,
+                                                                   queriedLocation.m_orientation.isValid() ? queriedLocation.m_orientation : WFMath::Quaternion::IDENTITY()));
                 } else {
                     //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
                     queriedEntityPos = queriedBulletEntry->collisionObject ? queriedBulletEntry->collisionObject->getWorldTransform().getOrigin()
