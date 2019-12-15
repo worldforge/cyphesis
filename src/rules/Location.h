@@ -128,10 +128,9 @@ class Location : public EntityLocation {
 };
 
 
-const Vector3D distanceTo(const Location & self, const Location & other);
+Vector3D distanceTo(const Location & self, const Location & other);
 
-
-const Point3D relativePos(const Location & self, const Location & other);
+Point3D relativePos(const Location & self, const Location & other);
 
 float squareDistance(const Location & self, const Location & other);
 

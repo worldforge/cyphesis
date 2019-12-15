@@ -36,7 +36,7 @@ Location::Location(LocatedEntity * rf):
 #ifndef STUB_distanceTo
 #define STUB_distanceTo
 
-const Vector3D distanceTo(const Location & self, const Location & other)
+Vector3D distanceTo(const Location & self, const Location & other)
 {
     return *((Vector3D*)nullptr);
 }
@@ -44,7 +44,7 @@ const Vector3D distanceTo(const Location & self, const Location & other)
 
 #ifndef STUB_relativePos
 #define STUB_relativePos
-const Point3D relativePos(const Location & self, const Location & other)
+Point3D relativePos(const Location & self, const Location & other)
 {
     return *((Point3D*)nullptr);
 }

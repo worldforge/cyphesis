@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -336,7 +336,7 @@ static const Location* distanceToAncestor(const Location& self,
 /// both the scalar distance to another entity, and a direction vector
 /// that can be used to determine the direction for motion if it
 /// is necessary to head toward the other entity.
-const Vector3D distanceTo(const Location& self, const Location& other)
+Vector3D distanceTo(const Location& self, const Location& other)
 {
     static Point3D origin(0, 0, 0);
     Point3D pos;
@@ -357,7 +357,7 @@ const Vector3D distanceTo(const Location& self, const Location& other)
 /// The position calculated is relative to the entity who's location is given
 /// by self. The calculation is very similar to distanceTo() but an extra
 /// step is omitted.
-const Point3D relativePos(const Location& self, const Location& other)
+Point3D relativePos(const Location& self, const Location& other)
 {
     Point3D pos;
     distanceToAncestor(self, other, pos);
