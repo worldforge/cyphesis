@@ -68,7 +68,7 @@ class PlayerControlled(server.Thing):
                                to=self.id)
             self.tick_refno = self.tick_refno + 1
             tick_op = Operation("tick", Entity(name=self.__class__.__name__, type="respawn"), refno=self.tick_refno,
-                                future_seconds=30, to=self.id)
+                                future_seconds=5, to=self.id)
             imaginary_op = Operation("imaginary", Entity(
                 description="You were killed. You need to wait 30 seconds before you will be returned to the world."),
                                      to=self.id, from_=self.id)

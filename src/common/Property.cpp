@@ -110,7 +110,7 @@ void Property<int>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<long>::set(const Atlas::Message::Element & e)
+void Property<Atlas::Message::IntType>::set(const Atlas::Message::Element & e)
 {
     if (e.isInt()) {
         this->m_data = e.Int();
@@ -227,7 +227,7 @@ bool BoolProperty::isTrue() const
 
 
 template class Property<int>;
-template class Property<long>;
+template class Property<Atlas::Message::IntType>;
 template class Property<float>;
 template class Property<double>;
 template class Property<std::string>;
@@ -235,7 +235,7 @@ template class Property<Atlas::Message::ListType>;
 template class Property<Atlas::Message::MapType>;
 
 template <> const std::string Property<int>::property_atlastype = "int";
-template <> const std::string Property<long>::property_atlastype = "int";
+template <> const std::string Property<Atlas::Message::IntType>::property_atlastype = "int";
 template <> const std::string Property<float>::property_atlastype = "float";
 template <> const std::string Property<double>::property_atlastype = "float";
 template <> const std::string Property<std::string>::property_atlastype = "string";

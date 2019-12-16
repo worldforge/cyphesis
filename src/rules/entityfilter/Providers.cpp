@@ -251,7 +251,7 @@ namespace EntityFilter {
     void EntityIdProvider::value(Atlas::Message::Element& value,
                                  const LocatedEntity& entity) const
     {
-        value = Atlas::Message::Element(entity.getIntId());
+        value = Atlas::Message::Element((Atlas::Message::IntType)entity.getIntId());
     }
 
     TypeNodeProvider::TypeNodeProvider(std::string attribute_name)

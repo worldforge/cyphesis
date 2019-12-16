@@ -161,7 +161,7 @@ void ServerRouting::addToMessage(MapType& omap) const
     if (restricted_flag) {
         omap["restricted"] = "true";
     }
-    omap["entities"] = (long) m_world.getEntities().size();
+    omap["entities"] = (Atlas::Message::IntType) m_world.getEntities().size();
     omap["assets"] = Atlas::Message::ListType{"file://" + assets_directory};
 
     // We could add all sorts of stats here, but I don't know exactly what yet.
@@ -181,7 +181,7 @@ void ServerRouting::addToEntity(const RootEntity& ent) const
     if (restricted_flag) {
         ent->setAttr("restricted", "true");
     }
-    ent->setAttr("entities", (long) m_world.getEntities().size());
+    ent->setAttr("entities", (Atlas::Message::IntType) m_world.getEntities().size());
 
     ent->setAttr("assets", Atlas::Message::ListType{"file://" + assets_directory});
 
