@@ -78,7 +78,7 @@ Py::Object CyPy_Physics::distance_between(const Py::Tuple& args)
 
     auto distVector = distanceTo(firstLoc, secondLoc);
     if (distVector.isValid()) {
-        return Py::Float(std::max(0.f, distVector.mag() - firstLoc.radius() - secondLoc.radius()));
+        return Py::Float(std::max(0.0, distVector.mag() - firstLoc.radius() - secondLoc.radius()));
     } else {
         return Py::None();
     }

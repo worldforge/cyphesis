@@ -356,7 +356,7 @@ static inline float sqr(float x)
 }
 
 #define STUB_squareDistance
-float squareDistance(const Point3D & u, const Point3D & v)
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }
@@ -411,12 +411,12 @@ static bool distanceToAncestor(const Location & self,
     return false;
 }
 
-float sqrMag(const Point3D & p)
+WFMath::CoordType sqrMag(const Point3D & p)
 {
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
 }
 #define STUB_squareDistance
-float squareDistance(const Location & self, const Location & other)
+WFMath::CoordType squareDistance(const Location & self, const Location & other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);

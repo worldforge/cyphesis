@@ -200,10 +200,10 @@ Awareness::Awareness(const LocatedEntity& domainEntity,
         const WFMath::Point<3>& upper = validExtent.highCorner();
 
         mCfg.bmin[0] = lower.x();
-        mCfg.bmin[1] = std::min(-500.f, lower.y());
+        mCfg.bmin[1] = std::min(-500.0, lower.y());
         mCfg.bmin[2] = lower.z();
         mCfg.bmax[0] = upper.x();
-        mCfg.bmax[1] = std::max(500.f, upper.y());
+        mCfg.bmax[1] = std::max(500.0, upper.y());
         mCfg.bmax[2] = upper.z();
 
         int gw = 0, gh = 0;
@@ -549,7 +549,7 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
         WFMath::Ball<2> entityViewRadius(entityView2dPos, entity->location.radius());
 
         if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
-            nearestEntities.push(EntityCollisionEntry({WFMath::Distance(position, entityView2dPos), entity, entityView2dPos, entityViewRadius}));
+            nearestEntities.push(EntityCollisionEntry({static_cast<float>(WFMath::Distance(position, entityView2dPos)), entity, entityView2dPos, entityViewRadius}));
         }
 
     }
@@ -560,16 +560,16 @@ bool Awareness::avoidObstacles(long avatarEntityId, const WFMath::Point<2>& posi
         while (!nearestEntities.empty() && i < MAX_OBSTACLES_CIRCLES) {
             const EntityCollisionEntry& entry = nearestEntities.top();
             auto& entity = entry.entity;
-            float pos[]{entry.viewPosition.x(), 0, entry.viewPosition.y()};
-            float vel[]{entity->location.velocity().x(), 0, entity->location.velocity().z()};
+            float pos[]{static_cast<float>(entry.viewPosition.x()), 0, static_cast<float>(entry.viewPosition.y())};
+            float vel[]{static_cast<float>(entity->location.velocity().x()), 0, static_cast<float>(entity->location.velocity().z())};
             mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
             nearestEntities.pop();
             ++i;
         }
 
-        float pos[]{position.x(), 0, position.y()};
-        float vel[]{desiredVelocity.x(), 0, desiredVelocity.y()};
-        float dvel[]{desiredVelocity.x(), 0, desiredVelocity.y()};
+        float pos[]{static_cast<float>(position.x()), 0, static_cast<float>(position.y())};
+        float vel[]{static_cast<float>(desiredVelocity.x()), 0, static_cast<float>(desiredVelocity.y())};
+        float dvel[]{static_cast<float>(desiredVelocity.x()), 0, static_cast<float>(desiredVelocity.y())};
         float nvel[]{0, 0, 0};
         float desiredSpeed = desiredVelocity.mag();
 
@@ -729,8 +729,8 @@ void Awareness::findAffectedTiles(const WFMath::AxisBox<2>& area, int& tileMinXI
 int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& end, float radius, std::vector<WFMath::Point<3>>& path) const
 {
 
-    float pStartPos[]{start.x(), start.y(), start.z()};
-    float pEndPos[]{end.x(), end.y(), end.z()};
+    float pStartPos[]{static_cast<float>(start.x()), static_cast<float>(start.y()), static_cast<float>(start.z())};
+    float pEndPos[]{static_cast<float>(end.x()), static_cast<float>(end.y()), static_cast<float>(end.z())};
     float startExtent[]{mAgentRadius * 2.2f, 100, mAgentRadius * 2.2f}; //Only extend radius in horizontal plane
     //To make sure that the agent can move close enough we need to subtract the agent's radius from the destination radius.
     //We'll also adjust with 0.95 to allow for some padding.
@@ -1258,8 +1258,8 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 void Awareness::processTiles(const WFMath::AxisBox<2>& area,
                              const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
-    float bmin[]{area.lowCorner().x(), -100, area.lowCorner().y()};
-    float bmax[]{area.highCorner().x(), 100, area.highCorner().y()};
+    float bmin[]{static_cast<float>(area.lowCorner().x()), -100, static_cast<float>(area.lowCorner().y())};
+    float bmax[]{static_cast<float>(area.highCorner().x()), 100, static_cast<float>(area.highCorner().y())};
 
     dtCompressedTileRef tilesRefs[256];
     int ntiles;

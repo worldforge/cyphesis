@@ -536,9 +536,9 @@ const TypeStore& TypeResolver::getTypeStore() const
 #include "stubs/rules/stubScript.h"
 
 
-float squareDistance(const Point3D & u, const Point3D & v)
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
-    return 1.f;
+    return 1.0;
 }
 
 void log(LogLevel lvl, const std::string & msg)

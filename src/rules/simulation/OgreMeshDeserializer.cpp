@@ -396,7 +396,8 @@ enum VertexElementType
 
 
 OgreMeshDeserializer::OgreMeshDeserializer(std::ifstream& stream)
-    : m_stream(stream),
+    : m_radius(0),
+      m_stream(stream),
       m_flipEndian(false),
       mCurrentstreamLen(0)
 {
@@ -553,7 +554,7 @@ std::vector<char> OgreMeshDeserializer::readGeometryVertexBuffer(unsigned int ve
         unsigned short headerID;
         headerID = readChunk(m_stream);
         if (headerID != M_GEOMETRY_VERTEX_BUFFER_DATA) {
-            std::runtime_error("Can't find vertex buffer data area");
+            throw std::runtime_error("Can't find vertex buffer data area");
         }
 
         // Create / populate vertex buffer
@@ -662,7 +663,7 @@ void OgreMeshDeserializer::readSubMesh()
         if (!useSharedVertices) {
             unsigned short streamID = readChunk(m_stream);
             if (streamID != M_GEOMETRY) {
-                std::runtime_error("Missing geometry data in mesh file");
+                throw std::runtime_error("Missing geometry data in mesh file");
             }
             readGeometry();
         }
@@ -694,13 +695,15 @@ void OgreMeshDeserializer::readSubMesh()
 
 void OgreMeshDeserializer::readBoundsInfo()
 {
-    WFMath::Point<3> min, max;
-    readFloats(m_stream, &min.x(), 1);
-    readFloats(m_stream, &min.y(), 1);
-    readFloats(m_stream, &min.z(), 1);
-    readFloats(m_stream, &max.x(), 1);
-    readFloats(m_stream, &max.y(), 1);
-    readFloats(m_stream, &max.z(), 1);
+    float minx, miny, minz, maxx, maxy, maxz;
+    readFloats(m_stream, &minx, 1);
+    readFloats(m_stream, &miny, 1);
+    readFloats(m_stream, &minz, 1);
+    readFloats(m_stream, &maxx, 1);
+    readFloats(m_stream, &maxy, 1);
+    readFloats(m_stream, &maxz, 1);
+    WFMath::Point<3> min(minx, miny, minz);
+    WFMath::Point<3> max(maxx, maxy, maxz);
 
     min.setValid(true);
     max.setValid(true);
@@ -724,14 +727,14 @@ void OgreMeshDeserializer::determineEndianness(std::istream& stream)
     stream.seekg(0);
     if (actually_read != sizeof(std::uint16_t)) {
         // end of file?
-        std::runtime_error("Couldn't read 16 bit header value from input stream.");
+        throw std::runtime_error("Couldn't read 16 bit header value from input stream.");
     }
     if (dest == HEADER_STREAM_ID) {
         m_flipEndian = false;
     } else if (dest == OTHER_ENDIAN_HEADER_STREAM_ID) {
         m_flipEndian = true;
     } else {
-        std::runtime_error("Header chunk didn't match either endian: Corrupted stream?");
+        throw std::runtime_error("Header chunk didn't match either endian: Corrupted stream?");
     }
 }
 
@@ -748,11 +751,11 @@ void OgreMeshDeserializer::readFileHeader(std::istream& stream)
         // Read version
         std::string ver = readString(stream);
         if (ver != OGRE_MESH_VERSION) {
-            std::runtime_error("Invalid file: version incompatible, file reports " + ver +
+            throw std::runtime_error("Invalid file: version incompatible, file reports " + ver +
                                " Deserializer is version " + OGRE_MESH_VERSION);
         }
     } else {
-        std::runtime_error("Invalid file: no header");
+        throw std::runtime_error("Invalid file: no header");
     }
 
 }

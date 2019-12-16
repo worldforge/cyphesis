@@ -88,7 +88,7 @@ int main()
 #include "stubs/rules/stubLocation.h"
 
 
-float squareDistance(const Point3D & u, const Point3D & v)
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
-    return 1.f;
+    return 1.0;
 }

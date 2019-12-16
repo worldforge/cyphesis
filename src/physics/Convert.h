@@ -52,19 +52,19 @@ class Convert {
 inline btVector3 Convert::toBullet(const WFMath::Vector<3>& p)
 {
     assert(p.isValid() && "Never convert an invalid WFMath point into Bullet as there will only be pain on the other side.");
-    return {p.x(), p.y(), p.z()};
+    return {static_cast<float>(p.x()), static_cast<float>(p.y()), static_cast<float>(p.z())};
 }
 
 inline btVector3 Convert::toBullet(const WFMath::Point<3>& p)
 {
     assert(p.isValid() && "Never convert an invalid WFMath point into Bullet as there will only be pain on the other side.");
-    return {p.x(), p.y(), p.z()};
+    return {static_cast<float>(p.x()), static_cast<float>(p.y()), static_cast<float>(p.z())};
 }
 
 inline btQuaternion Convert::toBullet(const WFMath::Quaternion& aq)
 {
     assert(aq.isValid() && "Never convert an invalid WFMath quaternion into Bullet as there will only be pain on the other side.");
-    return {aq.vector().x(), aq.vector().y(), aq.vector().z(), aq.scalar()};
+    return {static_cast<float>(aq.vector().x()), static_cast<float>(aq.vector().y()), static_cast<float>(aq.vector().z()), static_cast<float>(aq.scalar())};
 }
 
 template<>

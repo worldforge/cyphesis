@@ -59,9 +59,9 @@ void ScaleProperty::set(const Atlas::Message::Element& val)
         }
         //Don't allow negative scale
         if (m_data.isValid()) {
-            m_data.x() = std::max(0.0f, m_data.x());
-            m_data.y() = std::max(0.0f, m_data.y());
-            m_data.z() = std::max(0.0f, m_data.z());
+            m_data.x() = std::max(0.0, m_data.x());
+            m_data.y() = std::max(0.0, m_data.y());
+            m_data.z() = std::max(0.0, m_data.z());
         }
     } else if (val.isNone()) {
         m_data.setValid(false);

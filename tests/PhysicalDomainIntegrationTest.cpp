@@ -65,6 +65,23 @@ using Atlas::Objects::Entity::RootEntity;
 
 using String::compose;
 
+namespace Cyphesis {
+    template <>
+    int TestBase::assertFuzzyEqual(const char * l, const WFMath::Point<3> & lval,
+                                   const char * r, const WFMath::Point<3> & rval,
+                                   const char * e, const WFMath::CoordType & epsilon,
+                                   const char * func, const char * file, int line)
+    {
+        if (!lval.isEqualTo(rval, epsilon)) {
+            addFailure(String::compose("%1:%2: %3: Assertion '%4 ~= %5' failed. "
+                                       "%6 != %7",
+                                       file, line, func, l, r, lval, rval));
+            return -1;
+        }
+        return 0;
+    }
+}
+
 class TestPhysicalDomain : public PhysicalDomain
 {
     public:
@@ -152,6 +169,8 @@ class PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 };
 
 long PhysicalDomainIntegrationTest::m_id_counter = 0L;
+
+double epsilon = 0.0001;
 
 PhysicalDomainIntegrationTest::PhysicalDomainIntegrationTest()
 {
@@ -386,8 +405,8 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 
         domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(), {10, 10, 10}, {}, nullptr, {}}, transformedEntities);
         ASSERT_EQUAL(4u, transformedEntities.size());
-        ASSERT_EQUAL(WFMath::Point<3>(11, 11, 10), planted1->m_location.pos());
-        ASSERT_EQUAL(WFMath::Point<3>(10, 12, 11), planted2->m_location.pos());
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(11, 11, 10), planted1->m_location.pos(), epsilon);
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(10, 12, 11), planted2->m_location.pos(), epsilon);
         ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(11, 14, 10), freeEntity->m_location.pos(), 0.1));
     }
     domain->tick(0, res);
@@ -399,8 +418,8 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 
         domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi() / 2), {}, {}, nullptr, {}}, transformedEntities);
         ASSERT_EQUAL(4u, transformedEntities.size());
-        ASSERT_EQUAL(WFMath::Point<3>(10, 11, 9), planted1->m_location.pos());
-        ASSERT_EQUAL(WFMath::Point<3>(11, 12, 10), planted2->m_location.pos());
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(10, 11, 9), planted1->m_location.pos(), epsilon);
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(11, 12, 10), planted2->m_location.pos(), epsilon);
         ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(10, 14, 9), freeEntity->m_location.pos(), 0.1));
     }
     domain->tick(0, res);
@@ -412,8 +431,8 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
 
         domain->applyTransform(*fixed1, Domain::TransformData{WFMath::Quaternion(1, WFMath::numeric_constants<float>::pi()), {15, 15, 15}, {}, nullptr, {}}, transformedEntities);
         ASSERT_EQUAL(4u, transformedEntities.size());
-        ASSERT_EQUAL(WFMath::Point<3>(14, 16, 15), planted1->m_location.pos());
-        ASSERT_EQUAL(WFMath::Point<3>(15, 17, 14), planted2->m_location.pos());
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(14, 16, 15), planted1->m_location.pos(), epsilon);
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(15, 17, 14), planted2->m_location.pos(), epsilon);
         ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(14, 19, 15), freeEntity->m_location.pos(), 0.1));
     }
     domain->tick(0, res);
@@ -426,9 +445,9 @@ void PhysicalDomainIntegrationTest::test_movePlantedAndResting()
                                                                 {20, 0, 20},
                                                                 {}, nullptr, {}}, transformedEntities);
         ASSERT_EQUAL(3u, transformedEntities.size());
-        ASSERT_EQUAL(WFMath::Point<3>(21, 1, 19), planted2->m_location.pos());
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(21, 1, 19), planted2->m_location.pos(), epsilon);
         ASSERT_TRUE(WFMath::Equal(WFMath::Point<3>(20, 3, 20), freeEntity->m_location.pos(), 0.1));
-        ASSERT_EQUAL(WFMath::Point<3>(15, 15, 15), fixed1->m_location.pos());
+        ASSERT_FUZZY_EQUAL(WFMath::Point<3>(15, 15, 15), fixed1->m_location.pos(), epsilon);
     }
 
     {
@@ -1163,10 +1182,10 @@ void PhysicalDomainIntegrationTest::test_convert()
     wfQuat.rotation(1, -WFMath::numeric_constants<float>::pi() / 2.0f);
     btQuaternion btQuat = Convert::toBullet(wfQuat);
 
-    ASSERT_EQUAL(wfQuat.scalar(), btQuat.getW());
-    ASSERT_EQUAL(wfQuat.vector().x(), btQuat.getX());
-    ASSERT_EQUAL(wfQuat.vector().y(), btQuat.getY());
-    ASSERT_EQUAL(wfQuat.vector().z(), btQuat.getZ());
+    ASSERT_FUZZY_EQUAL(wfQuat.scalar(), btQuat.getW(), epsilon);
+    ASSERT_FUZZY_EQUAL(wfQuat.vector().x(), btQuat.getX(), epsilon);
+    ASSERT_FUZZY_EQUAL(wfQuat.vector().y(), btQuat.getY(), epsilon);
+    ASSERT_FUZZY_EQUAL(wfQuat.vector().z(), btQuat.getZ(), epsilon);
 
 
     //Now create a box, rotate it and see that the values match.
@@ -1295,7 +1314,7 @@ void PhysicalDomainIntegrationTest::test_standOnFixed()
         time += tickSize;
         domain->tick(tickSize, res);
     }
-    ASSERT_EQUAL(freeEntity->m_location.m_pos, WFMath::Point<3>(0, 1, 0));
+    ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos, WFMath::Point<3>(0, 1, 0), epsilon);
 }
 
 void PhysicalDomainIntegrationTest::test_fallToTerrain()
@@ -1342,7 +1361,7 @@ void PhysicalDomainIntegrationTest::test_fallToTerrain()
 
     ASSERT_EQUAL(freeEntity->m_location.m_pos.y(), 20);
     //Planted entity should be placed on the terrain when added to the domain.
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(20, 10.0058, 20));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(20, 10.0058, 20), epsilon);
 
     OpVector res;
 
@@ -1353,7 +1372,7 @@ void PhysicalDomainIntegrationTest::test_fallToTerrain()
     }
     ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 10.0087f, 0.01f);
     //Planted entity should not move
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(20, 10.0058, 20));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(20, 10.0058, 20), epsilon);
 }
 
 void PhysicalDomainIntegrationTest::test_collision()
@@ -1493,7 +1512,7 @@ void PhysicalDomainIntegrationTest::test_mode()
     freeEntity2->m_location.m_pos = WFMath::Point<3>(20, -10, 20);
     freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*freeEntity2);
-    ASSERT_EQUAL(freeEntity2->m_location.m_pos, WFMath::Point<3>(20, 22.6006, 20));
+    ASSERT_FUZZY_EQUAL(freeEntity2->m_location.m_pos, WFMath::Point<3>(20, 22.6006, 20), epsilon);
 
     Entity* plantedEntity = new Entity("planted", newId());
     plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
@@ -1502,7 +1521,7 @@ void PhysicalDomainIntegrationTest::test_mode()
     plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*plantedEntity);
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 18.4325, 30));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 18.4325, 30), epsilon);
 
 
     Entity* fixedEntity = new Entity("fixed", newId());
@@ -1512,7 +1531,7 @@ void PhysicalDomainIntegrationTest::test_mode()
     fixedEntity->m_location.m_pos = WFMath::Point<3>(40, 50, 40);
     fixedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
     domain->addEntity(*fixedEntity);
-    ASSERT_EQUAL(fixedEntity->m_location.m_pos, WFMath::Point<3>(40, 50, 40));
+    ASSERT_FUZZY_EQUAL(fixedEntity->m_location.m_pos, WFMath::Point<3>(40, 50, 40), epsilon);
 
 
     OpVector res;
@@ -1524,8 +1543,8 @@ void PhysicalDomainIntegrationTest::test_mode()
 
     ASSERT_NOT_EQUAL(freeEntity1->m_location.m_pos, WFMath::Point<3>(10, 30, 10));
     ASSERT_NOT_EQUAL(freeEntity2->m_location.m_pos, WFMath::Point<3>(20, 22.6006, 20));
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 18.4325, 30));
-    ASSERT_EQUAL(fixedEntity->m_location.m_pos, WFMath::Point<3>(40, 50, 40));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 18.4325, 30), epsilon);
+    ASSERT_FUZZY_EQUAL(fixedEntity->m_location.m_pos, WFMath::Point<3>(40, 50, 40), epsilon);
 }
 
 
@@ -1620,12 +1639,12 @@ void PhysicalDomainIntegrationTest::test_zoffset()
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 10, 1)));
     plantedEntity->setProperty("planted_offset", std::unique_ptr<PropertyBase>(plantedOffset));
     domain->addEntity(*plantedEntity);
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30), epsilon);
 
     plantedOffset->data() = -3;
     plantedOffset->apply(plantedEntity.get());
     plantedEntity->propertyApplied.emit("planted_offset", *plantedOffset);
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30), epsilon);
 
 }
 
@@ -1661,12 +1680,12 @@ void PhysicalDomainIntegrationTest::test_zscaledoffset()
     plantedEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 10, 10)));
     plantedEntity->setProperty("planted_scaled_offset", std::unique_ptr<PropertyBase>(plantedScaledOffset));
     domain->addEntity(*plantedEntity);
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30), epsilon);
 
     plantedScaledOffset->data() = -0.3;
     plantedScaledOffset->apply(plantedEntity.get());
     plantedEntity->propertyApplied.emit("planted_offset", *plantedScaledOffset);
-    ASSERT_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30));
+    ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30), epsilon);
 
 }
 

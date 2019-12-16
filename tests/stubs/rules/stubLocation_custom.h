@@ -52,24 +52,24 @@ Point3D relativePos(const Location & self, const Location & other)
 
 #ifndef STUB_squareDistance
 #define STUB_squareDistance
-float squareDistance(const Location & self, const Location & other)
+WFMath::CoordType squareDistance(const Location & self, const Location & other)
 {
-    return 0.0f;
+    return 0.0;
 }
 #endif //STUB_squareDistance
 
 #ifndef STUB_squareHorizontalDistance
 #define STUB_squareHorizontalDistance
-float squareHorizontalDistance(const Location & self, const Location & other)
+WFMath::CoordType squareHorizontalDistance(const Location & self, const Location & other)
 {
-    return 0.0f;
+    return 0.0;
 }
 #endif //STUB_squareHorizontalDistance
 
 #ifndef STUB_squareDistanceWithAncestor
 #define STUB_squareDistanceWithAncestor
-float squareDistanceWithAncestor(const Location & self, const Location & other, const Location** ancestor)
+WFMath::CoordType squareDistanceWithAncestor(const Location & self, const Location & other, const Location** ancestor)
 {
-    return 0.f;
+    return 0.0;
 }
 #endif //STUB_squareDistanceWithAncestor

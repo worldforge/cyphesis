@@ -83,17 +83,17 @@ using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::smart_dynamic_cast;
 
 namespace {
-    bool fuzzyEquals(float a, float b, float epsilon)
+    bool fuzzyEquals(WFMath::CoordType a, WFMath::CoordType b, WFMath::CoordType epsilon)
     {
         return std::abs(a - b) < epsilon;
     }
 
-    bool fuzzyEquals(const WFMath::Point<3>& a, const WFMath::Point<3>& b, float epsilon)
+    bool fuzzyEquals(const WFMath::Point<3>& a, const WFMath::Point<3>& b, WFMath::CoordType epsilon)
     {
         return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
     }
 
-    bool fuzzyEquals(const WFMath::Vector<3>& a, const WFMath::Vector<3>& b, float epsilon)
+    bool fuzzyEquals(const WFMath::Vector<3>& a, const WFMath::Vector<3>& b, WFMath::CoordType epsilon)
     {
         return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
     }
@@ -1446,19 +1446,22 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                 if (segment) {
                     std::vector<WFMath::AxisBox<2>> terrainAreas;
 
+                    float height;
                     //If there's no mods we can just use position right away
                     if (segment->getMods().empty()) {
                         if (!segment->isValid()) {
                             segment->populate();
                         }
-                        segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
+                        segment->getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), height);
                     } else {
                         Mercator::HeightMap heightMap((unsigned int) segment->getResolution());
                         heightMap.allocate();
                         segment->populateHeightMap(heightMap);
 
-                        heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), modPos.y());
+                        heightMap.getHeight(modPos.x() - (segment->getXRef()), modPos.z() - (segment->getZRef()), height);
                     }
+
+                    modPos.y() = height;
 
                     auto I = m_terrainMods.find(entity.getIntId());
                     if (I != m_terrainMods.end()) {
@@ -1832,7 +1835,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
             }
         } else if (mode == ModeProperty::Mode::Free || mode == ModeProperty::Mode::Submerged) {
             //For free entities we only want to clamp to terrain if the entity is below it
-            pos.y() = std::max(pos.y(), h);
+            pos.y() = std::max(pos.y(), static_cast<double>(h));
         }
     } else if (mode == ModeProperty::Mode::Free) {
         float h = pos.y();
@@ -2305,9 +2308,9 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                 velocityChange = true;
                 lastSentLocation.m_velocity = entity.m_location.m_velocity;
             } else {
-                bool xChange = !fuzzyEquals(location.m_velocity.x(), lastSentLocation.m_velocity.x(), 0.01f);
-                bool yChange = !fuzzyEquals(location.m_velocity.y(), lastSentLocation.m_velocity.y(), 0.01f);
-                bool zChange = !fuzzyEquals(location.m_velocity.z(), lastSentLocation.m_velocity.z(), 0.01f);
+                bool xChange = !fuzzyEquals(location.m_velocity.x(), lastSentLocation.m_velocity.x(), 0.01);
+                bool yChange = !fuzzyEquals(location.m_velocity.y(), lastSentLocation.m_velocity.y(), 0.01);
+                bool zChange = !fuzzyEquals(location.m_velocity.z(), lastSentLocation.m_velocity.z(), 0.01);
                 bool hadZeroVelocity = lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
                 if (xChange || yChange || zChange) {
                     debug_print("Velocity changed " << entity.describeEntity() << " " << location.m_velocity)
@@ -2324,7 +2327,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
 
         if (entity.m_location.m_angularVelocity.isValid()) {
             bool hadZeroAngular = lastSentLocation.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO());
-            angularChange = !fuzzyEquals(lastSentLocation.m_angularVelocity, location.m_angularVelocity, 0.01f);
+            angularChange = !fuzzyEquals(lastSentLocation.m_angularVelocity, location.m_angularVelocity, 0.01);
             if (!angularChange && entity.m_location.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroAngular) {
                 debug_print("Angular changed " << entity.describeEntity() << " " << location.m_angularVelocity)
                 angularChange = true;

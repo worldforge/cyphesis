@@ -218,19 +218,18 @@ int main()
         MapType mod;
         MapType shape_desc;
         shape_desc["type"] = "ball";
-        shape_desc["radius"] = 1.f;
+        shape_desc["radius"] = 1.0;
         shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(ret);
 
-        delete titm;
     }
 
     // Call parseData with ball shape and valid ball and orientation

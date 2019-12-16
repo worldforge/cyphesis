@@ -364,14 +364,14 @@ Point3D relativePos(const Location& self, const Location& other)
     return pos;
 }
 
-float squareDistance(const Location& self, const Location& other)
+WFMath::CoordType squareDistance(const Location& self, const Location& other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
     return sqrMag(dist);
 }
 
-float squareDistanceWithAncestor(const Location& self, const Location& other, const Location** ancestor)
+WFMath::CoordType squareDistanceWithAncestor(const Location& self, const Location& other, const Location** ancestor)
 {
     Point3D dist;
     *ancestor = distanceToAncestor(self, other, dist);
@@ -382,7 +382,7 @@ float squareDistanceWithAncestor(const Location& self, const Location& other, co
 }
 
 
-float squareHorizontalDistance(const Location& self, const Location& other)
+WFMath::CoordType squareHorizontalDistance(const Location& self, const Location& other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);

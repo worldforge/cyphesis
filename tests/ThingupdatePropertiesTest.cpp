@@ -237,7 +237,7 @@ template int fromStdVector<double>(Point3D & p, const std::vector<double> & vf);
 template int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
 
 
-float squareDistance(const Point3D & u, const Point3D & v)
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
-    return 1.f;
+    return 1.0;
 }

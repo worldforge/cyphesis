@@ -42,14 +42,14 @@ int fromStdVector(Point3D & p, const std::vector<FloatT> & vf);
 template <typename FloatT>
 int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf);
 
-float sqrMag(const Point3D & p);
+WFMath::CoordType sqrMag(const Point3D & p);
 
 /// Find relative distance, to be used when the result is only
 /// going to be compared with other distances
-float squareDistance(const Point3D & u, const Point3D & v);
+WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v);
 
 /// Find the distance between two points
-inline float distance(const Point3D & u, const Point3D & v)
+inline WFMath::CoordType distance(const Point3D & u, const Point3D & v)
 {
     return std::sqrt(squareDistance(u, v));
 }
