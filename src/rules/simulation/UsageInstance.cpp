@@ -65,10 +65,10 @@ UsageParameter UsageParameter::parse(const Atlas::Message::Element& element)
         //TODO: should be a usage constraint provider factory
         parameter.constraint.reset(new EntityFilter::Filter(constraint, EntityFilter::ProviderFactory()));
     });
-    AtlasQuery::find<long>(paramMap, "min", [&](const long& min) {
+    AtlasQuery::find<Atlas::Message::IntType>(paramMap, "min", [&](const Atlas::Message::IntType& min) {
         parameter.min = static_cast<int>(min);
     });
-    AtlasQuery::find<long>(paramMap, "max", [&](const long& max) {
+    AtlasQuery::find<Atlas::Message::IntType>(paramMap, "max", [&](const Atlas::Message::IntType& max) {
         parameter.max = static_cast<int>(max);
     });
 
