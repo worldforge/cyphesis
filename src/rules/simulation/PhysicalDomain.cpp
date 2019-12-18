@@ -2250,10 +2250,10 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
         }
 
         if (shouldSendOp) {
-            Move m;
+            Set setOp;
             move_arg->setId(entity.getId());
             if (debug_flag) {
-                debug_print("Sending move op.")
+                debug_print("Sending set op for movement.")
                 if (entity.m_location.velocity().isValid()) {
                     debug_print("new velocity: " << entity.m_location.velocity() << " " << entity.m_location.velocity().mag())
                 }
@@ -2261,25 +2261,22 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
 
             //entity.m_location.addToEntity(move_arg);
 
-            m->setArgs1(move_arg);
-            m->setFrom(entity.getId());
-            m->setTo(entity.getId());
+            setOp->setArgs1(move_arg);
+            setOp->setFrom(entity.getId());
+            setOp->setTo(entity.getId());
             double seconds = BaseWorld::instance().getTime();
-            m->setSeconds(seconds);
+            setOp->setSeconds(seconds);
 
 
             for (BulletEntry* observer : entry.observingThis) {
                 Sight s;
-                s->setArgs1(m);
+                s->setArgs1(setOp);
                 s->setTo(observer->entity->getId());
                 s->setFrom(entity.getId());
                 s->setSeconds(seconds);
 
                 entity.sendWorld(s);
             }
-
-
-            //entry.lastSentLocation = entity.m_location;
         }
     }
 
@@ -2292,7 +2289,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     const Location& location = entity.m_location;
 
     bool orientationChange = location.m_orientation.isValid() && !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f);
-
+    bool posChange = location.m_pos.isValid()  && !location.m_pos.isEqualTo(lastSentLocation.m_pos, 0.01f);
 
     if (false) {
         sendMoveSight(bulletEntry, true, true, true, true, true);
@@ -2335,8 +2332,8 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
             }
         }
 
-        if (velocityChange || orientationChange || angularChange || bulletEntry.modeChanged) {
-            sendMoveSight(bulletEntry, true, velocityChange, orientationChange, angularChange, bulletEntry.modeChanged);
+        if (posChange || velocityChange || orientationChange || angularChange || bulletEntry.modeChanged) {
+            sendMoveSight(bulletEntry, posChange, velocityChange, orientationChange, angularChange, bulletEntry.modeChanged);
             lastSentLocation.m_pos = entity.m_location.m_pos;
             bulletEntry.modeChanged = false;
         }

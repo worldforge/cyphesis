@@ -45,7 +45,6 @@ using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Info;
-using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Disappearance;
 using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
@@ -364,18 +363,18 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         Operation m = op.copy();
         RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
         assert(marg.isValid());
-        m_location.addToEntity(marg);
-        {
-            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
-            if (modeDataProp) {
-                if (modeDataProp->hasFlags(flag_unsent)) {
-                    Element modeDataElem;
-                    if (modeDataProp->get(modeDataElem) == 0) {
-                        marg->setAttr(ModeDataProperty::property_name, modeDataElem);
-                    }
-                }
-            }
-        }
+//        m_location.addToEntity(marg);
+//        {
+//            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+//            if (modeDataProp) {
+//                if (modeDataProp->hasFlags(flag_unsent)) {
+//                    Element modeDataElem;
+//                    if (modeDataProp->get(modeDataElem) == 0) {
+//                        marg->setAttr(ModeDataProperty::property_name, modeDataElem);
+//                    }
+//                }
+//            }
+//        }
 
         if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
             m->setSeconds(current_time);
@@ -407,7 +406,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                         }
                     }
 
-                    Move movedOp;
+                    Set movedOp;
                     movedOp->setArgs1(movedArg);
 
                     Sight sight;
@@ -499,6 +498,14 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         }
     }
 
+    //TODO: only send changed location properties
+    if (m_flags.hasFlags(entity_dirty_location)) {
+        m_location.addToEntity(set_arg);
+        removeFlags(entity_dirty_location);
+        hadChanges = true;
+        hadPublicChanges = true;
+    }
+
     if (hadChanges) {
         //Mark that entity needs to be written to storage.
         removeFlags(entity_clean);
@@ -546,26 +553,6 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         sight->setArgs1(set);
         broadcast(sight, res, Visibility::PRIVATE);
     }
-
-    //Location changes must be communicated through a Move op.
-    if (m_flags.hasFlags(entity_dirty_location)) {
-        Move m;
-        Anonymous move_arg;
-        move_arg->setId(getId());
-        m_location.addToEntity(move_arg);
-        m->setArgs1(move_arg);
-        m->setFrom(getId());
-        m->setTo(getId());
-        m->setSeconds(op->getSeconds());
-
-        Sight s;
-        s->setArgs1(m);
-
-        broadcast(s, res, Visibility::PUBLIC);
-        removeFlags(entity_dirty_location);
-        hadChanges = true;
-    }
-
 
     //Only change sequence number and call onUpdated if something actually changed.
     if (hadChanges) {
