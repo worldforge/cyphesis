@@ -285,6 +285,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 domain->getVisibleEntitiesFor(*this, observedEntities);
                 previousObserved.insert(observedEntities.begin(), observedEntities.end());
                 previousObserved.insert(m_location.m_parent.get());
+                previousObserved.erase(this); // Remove ourselves.
             }
 
             if (updatedTransform) {
@@ -307,7 +308,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             auto newDomain = new_loc->getDomain();
             if (!previousObserved.empty()) {
                 //Get all entities that were previously observed, but aren't any more, and send Disappearence op for them.
-                previousObserved.erase(m_location.m_parent.get());
+                previousObserved.erase(m_location.m_parent.get()); //Remove the new container; we want to be able to observe it.
                 if (newDomain) {
                     //If there's a new domain, remove all entities that we still can observe.
                     std::list<LocatedEntity*> observedEntities;
