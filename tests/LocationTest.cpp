@@ -460,7 +460,8 @@ int main()
         testLoc.addToMessage(msg);
         testLoc.addToEntity(ent);
 
-        (void)testLoc.asEntity();
+        Atlas::Objects::Entity::Anonymous ret;
+        testLoc.addToEntity(ret);
 
         {
             Location readLocFromMessage;

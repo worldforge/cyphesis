@@ -95,14 +95,6 @@
   }
 #endif //STUB_Location_addToEntity
 
-#ifndef STUB_Location_asEntity
-//#define STUB_Location_asEntity
-  Atlas::Objects::Root Location::asEntity() const
-  {
-    return *static_cast<Atlas::Objects::Root*>(nullptr);
-  }
-#endif //STUB_Location_asEntity
-
 #ifndef STUB_Location_readFromMessage
 //#define STUB_Location_readFromMessage
   bool Location::readFromMessage(const Atlas::Message::MapType & message)

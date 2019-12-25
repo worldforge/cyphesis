@@ -109,7 +109,6 @@ class Location : public EntityLocation {
 
     void addToMessage(Atlas::Message::MapType & ent) const;
     void addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const;
-    Atlas::Objects::Root asEntity() const;
 
     /**
      * Reads data from a map message.

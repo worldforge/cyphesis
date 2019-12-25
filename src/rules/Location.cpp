@@ -254,13 +254,6 @@ void Location::modifyBBox()
     m_radius = std::sqrt(m_squareRadius);
 }
 
-Atlas::Objects::Root Location::asEntity() const
-{
-    Anonymous ret;
-    addToEntity(ret);
-    return ret;
-}
-
 static const Location* distanceFromAncestor(const Location& self,
                                             const Location& other, Point3D& c)
 {
