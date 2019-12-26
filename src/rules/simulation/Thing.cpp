@@ -393,25 +393,25 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             for (auto& transformedEntity : transformedEntities) {
                 if (transformedEntity != this) {
 
-                    Atlas::Objects::Entity::Anonymous movedArg;
-                    movedArg->setId(transformedEntity->getId());
-                    transformedEntity->m_location.addToEntity(movedArg);
+                    Atlas::Objects::Entity::Anonymous setArgs;
+                    setArgs->setId(transformedEntity->getId());
+                    transformedEntity->m_location.addToEntity(setArgs);
 
                     auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
                     if (modeDataProp) {
                         if (modeDataProp->hasFlags(flag_unsent)) {
                             Element modeDataElem;
                             if (modeDataProp->get(modeDataElem) == 0) {
-                                movedArg->setAttr(ModeDataProperty::property_name, modeDataElem);
+                                setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
                             }
                         }
                     }
 
-                    Set movedOp;
-                    movedOp->setArgs1(movedArg);
+                    Set setOp;
+                    setOp->setArgs1(setArgs);
 
                     Sight sight;
-                    sight->setArgs1(movedOp);
+                    sight->setArgs1(setOp);
                     OpVector childRes;
                     transformedEntity->broadcast(sight, childRes, Visibility::PUBLIC);
                     for (auto& childOp : childRes) {

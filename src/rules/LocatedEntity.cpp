@@ -40,7 +40,7 @@ using Atlas::Message::MapType;
 /// The attributes named are special and are modified using high level
 /// operations, such as Move, not via Set operations, or assigned by
 /// normal means.
-std::set<std::string> LocatedEntity::s_immutable = {"id", "parent", "pos", "loc", "velocity", "orientation", "contains", "objtype", "propel"};
+std::set<std::string> LocatedEntity::s_immutable = {"id", "parent", "pos", "loc", "velocity", "orientation", "contains", "objtype", "propel", "angular"};
 
 /// \brief Singleton accessor for immutables
 ///
@@ -303,18 +303,18 @@ void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
 /// sendWorld() bypasses serialno assignment, so you must ensure
 /// that serialno is sorted. This allows client serialnos to get
 /// in, so that client gets correct useful refnos back.
-void LocatedEntity::sendWorld(Operation op)
+void LocatedEntity::sendWorld(Operation)
 {
 }
 
 /// \brief Associate a script with this entity
 ///
 /// The previously associated script is deleted.
-/// @param scrpt Pointer to the script to be associated with this entity
-void LocatedEntity::setScript(std::unique_ptr<Script> scrpt)
+/// @param script Pointer to the script to be associated with this entity
+void LocatedEntity::setScript(std::unique_ptr<Script> script)
 {
-    scrpt->attachPropertyCallbacks(*this);
-    m_scripts.emplace_back(std::move(scrpt));
+    script->attachPropertyCallbacks(*this);
+    m_scripts.emplace_back(std::move(script));
 }
 
 /// \brief Make this entity a container

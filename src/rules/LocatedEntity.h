@@ -269,7 +269,7 @@ class LocatedEntity : public Router, public ReferenceCounted
 
         virtual void sendWorld(Operation op);
 
-        virtual void setScript(std::unique_ptr<Script> scrpt);
+        virtual void setScript(std::unique_ptr<Script> script);
 
         void makeContainer();
 
