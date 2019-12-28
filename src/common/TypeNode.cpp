@@ -69,7 +69,7 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                               std::unique_ptr<PropertyBase> prop)
 {
-    auto p = prop.get();
+    auto* p = prop.get();
     TypeNode::PropertiesUpdate update;
     auto existingI = m_defaults.find(name);
     if (existingI != m_defaults.end() && existingI->second.get() != prop.get()) {

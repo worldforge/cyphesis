@@ -45,7 +45,7 @@
 #include "rules/LocatedEntity.h"
 
 auto createBoxFn = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-    -> std::shared_ptr<btCollisionShape> {
+        -> std::shared_ptr<btCollisionShape> {
     auto btSize = Convert::toBullet(size * 0.5).absolute();
     centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
     return std::make_shared<btBoxShape>(btSize);
@@ -119,7 +119,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
 {
 
     auto sphereCreator = [](float radius, const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset)
-        -> std::shared_ptr<btCollisionShape> {
+            -> std::shared_ptr<btCollisionShape> {
         float xOffset = bbox.lowCorner().x() + (size.x() / 2.0f);
         float yOffset = bbox.lowCorner().y() + (size.y() / 2.0f);
         float zOffset = bbox.lowCorner().z() + (size.z() / 2.0f);
@@ -135,7 +135,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
         const std::string& shapeType = I->second.String();
         if (shapeType == "sphere") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 float radius = 0;
                 switch (scalerType) {
                     case ScalerType::Min:
@@ -158,7 +158,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
             };
         } else if (shapeType == "capsule-y") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
 
                 float radius = 0;
@@ -192,7 +192,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
 
         } else if (shapeType == "capsule-x") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float radius = 0;
                 switch (scalerType) {
@@ -223,7 +223,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
             };
         } else if (shapeType == "capsule-z") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 float radius = 0;
                 switch (scalerType) {
@@ -256,7 +256,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
             mShapeCreator = createBoxFn;
         } else if (shapeType == "cylinder-y") {
             mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShape>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -264,7 +264,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
             };
         } else if (shapeType == "cylinder-x") {
             mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeX>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -272,7 +272,7 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
             };
         } else if (shapeType == "cylinder-z") {
             mShapeCreator = [](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
-                -> std::shared_ptr<btCollisionShape> {
+                    -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
                 auto shape = std::make_shared<btCylinderShapeZ>(btVector3(1, 1, 1));
                 shape->setLocalScaling(Convert::toBullet(size * 0.5f));
@@ -465,27 +465,17 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
 
     //If there are valid mesh bounds read, and there's no bbox property already, add one.
     if (m_meshBounds.isValid()) {
-        BBoxProperty* bBoxProperty = nullptr;
         auto I = typeNode->defaults().find(BBoxProperty::property_name);
-        if (I == typeNode->defaults().end()) {
+        //Create a new property if either there isn't one, or the existing one is calculated from geometry (which we detect by checking if it's ephemeral).
+        if (I == typeNode->defaults().end() || I->second->flags().hasFlags(persistence_ephem)) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
-            bBoxProperty = new BBoxProperty();
+            auto bBoxProperty = std::make_unique<BBoxProperty>();
             bBoxProperty->data() = m_meshBounds;
             //Mark the property as ephemeral since it's calculated.
             bBoxProperty->addFlags(flag_class | persistence_ephem);
             bBoxProperty->flags().addFlags(PropertyBase::flagsForPropertyName(BBoxProperty::property_name));
             bBoxProperty->install(typeNode, BBoxProperty::property_name);
-        } else if (I->second->flags().hasFlags(persistence_ephem)) {
-            bBoxProperty = dynamic_cast<BBoxProperty*>(I->second.get());
-            if (bBoxProperty) {
-                bBoxProperty->data() = m_meshBounds;
-                bBoxProperty->removeFlags(persistence_clean);
-                bBoxProperty->addFlags(flag_unsent);
-            }
-        }
-
-        if (bBoxProperty) {
-            auto update = typeNode->injectProperty(BBoxProperty::property_name, std::unique_ptr<PropertyBase>(bBoxProperty));
+            auto update = typeNode->injectProperty(BBoxProperty::property_name, std::move(bBoxProperty));
 
             Inheritance::instance().typesUpdated({{typeNode, update}});
         }
