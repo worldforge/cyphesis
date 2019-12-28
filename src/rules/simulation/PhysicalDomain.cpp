@@ -2289,7 +2289,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     const Location& location = entity.m_location;
 
     bool orientationChange = location.m_orientation.isValid() && !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f);
-    bool posChange = location.m_pos.isValid()  && !location.m_pos.isEqualTo(lastSentLocation.m_pos, 0.01f);
+    bool posChange = location.m_pos.isValid() && !fuzzyEquals(location.m_pos, lastSentLocation.m_pos, 0.01f);
 
     if (false) {
         sendMoveSight(bulletEntry, true, true, true, true, true);
