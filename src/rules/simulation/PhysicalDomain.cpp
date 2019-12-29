@@ -2113,6 +2113,7 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
                 rigidBody->activate();
             }
         }
+        processMovedEntity(*I->second);
     }
 }
 

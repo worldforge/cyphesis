@@ -302,6 +302,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             if (isDestroyed()) {
                 return;
             }
+
+            //Since the location has changed we need to issue an Update
+            Update update;
+            update->setTo(getId());
+            res.push_back(std::move(update));
+
             if (!previousObserving.empty()) {
                 processAppearDisappear(std::move(previousObserving), res);
             }
