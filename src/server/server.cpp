@@ -412,6 +412,8 @@ namespace {
 
             FileSystemObserver file_system_observer(*io_context);
 
+            log(INFO, String::compose("Reading assets from %1", assets_directory));
+
             AssetsManager assets_manager(file_system_observer);
             assets_manager.init();
 
