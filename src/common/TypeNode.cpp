@@ -51,7 +51,7 @@ TypeNode::~TypeNode() = default;
 void TypeNode::setDescription(const Atlas::Objects::Root& description)
 {
     //We need to split out any private and protected attributes
-    m_privateDescription = description;
+    m_privateDescription = description.copy();
     m_protectedDescription = description.copy();
     // Regular clients (protected and public) don't need to see children.
     // We want to allow for some mystery about the different kinds of entities in the world.
@@ -122,9 +122,9 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     PropertiesUpdate propertiesUpdate;
 
     //Update the description
-    Atlas::Message::MapType attributesMapPrivate;
-    Atlas::Message::MapType attributesMapProtected;
-    Atlas::Message::MapType attributesMapPublic;
+    Atlas::Message::MapType propertiesMapPrivate = m_privateDescription->hasAttr("properties") ? m_privateDescription->getAttr("properties").Map() : Atlas::Message::MapType{};
+    Atlas::Message::MapType propertiesMapProtected = m_protectedDescription->hasAttr("properties") ? m_protectedDescription->getAttr("properties").Map() : Atlas::Message::MapType{};
+    Atlas::Message::MapType propertiesMapPublic = m_publicDescription->hasAttr("properties") ? m_publicDescription->getAttr("properties").Map() : Atlas::Message::MapType{};
 
     // Discover the default attributes which are no longer
     // present after the update.
@@ -133,6 +133,9 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
         if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(persistence_ephem)) {
             debug(std::cout << entry.first << " removed" << std::endl;)
             propertiesUpdate.removedProps.insert(entry.first);
+            propertiesMapPrivate.erase(entry.first);
+            propertiesMapProtected.erase(entry.first);
+            propertiesMapPublic.erase(entry.first);
         }
     }
 
@@ -157,12 +160,12 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
             propertiesUpdate.newProps.emplace(entry.first);
             p->set(entry.second);
 
-            attributesMapPrivate[entry.first] = entry.second;
+            propertiesMapPrivate[entry.first] = entry.second;
             if (!p->hasFlags(visibility_private)) {
-                attributesMapProtected[entry.first] = entry.second;
+                propertiesMapProtected[entry.first] = entry.second;
             }
             if (!p->hasFlags(visibility_non_public)) {
-                attributesMapPublic[entry.first] = entry.second;
+                propertiesMapPublic[entry.first] = entry.second;
             }
             m_defaults[entry.first] = std::move(p);
         } else {
@@ -173,19 +176,19 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
                 p->set(entry.second);
                 propertiesUpdate.changedProps.emplace(entry.first);
             }
-            attributesMapPrivate[entry.first] = entry.second;
+            propertiesMapPrivate[entry.first] = entry.second;
             if (!p->hasFlags(visibility_private)) {
-                attributesMapProtected[entry.first] = entry.second;
+                propertiesMapProtected[entry.first] = entry.second;
             }
             if (!p->hasFlags(visibility_non_public)) {
-                attributesMapPublic[entry.first] = entry.second;
+                propertiesMapPublic[entry.first] = entry.second;
             }
         }
     }
 
-    m_privateDescription->setAttr("properties", std::move(attributesMapPrivate));
-    m_protectedDescription->setAttr("properties", std::move(attributesMapProtected));
-    m_publicDescription->setAttr("properties", std::move(attributesMapPublic));
+    m_privateDescription->setAttr("properties", std::move(propertiesMapPrivate));
+    m_protectedDescription->setAttr("properties", std::move(propertiesMapProtected));
+    m_publicDescription->setAttr("properties", std::move(propertiesMapPublic));
 
     return propertiesUpdate;
 }
