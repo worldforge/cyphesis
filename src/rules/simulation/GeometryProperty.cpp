@@ -136,22 +136,22 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
         if (shapeType == "sphere") {
             mShapeCreator = [sphereCreator, scalerType](const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& size, btVector3& centerOfMassOffset, float)
                     -> std::shared_ptr<btCollisionShape> {
-                float radius = 0;
+                double radius = 0;
                 switch (scalerType) {
                     case ScalerType::Min:
-                        radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5f;
+                        radius = std::min(size.x(), std::min(size.y(), size.z())) * 0.5;
                         break;
                     case ScalerType::Max:
-                        radius = std::max(size.x(), std::max(size.y(), size.z())) * 0.5f;
+                        radius = std::max(size.x(), std::max(size.y(), size.z())) * 0.5;
                         break;
                     case ScalerType::XAxis:
-                        radius = size.x() * 0.5f;
+                        radius = size.x() * 0.5;
                         break;
                     case ScalerType::YAxis:
-                        radius = size.y() * 0.5f;
+                        radius = size.y() * 0.5;
                         break;
                     case ScalerType::ZAxis:
-                        radius = size.z() * 0.5f;
+                        radius = size.z() * 0.5;
                         break;
                 }
                 return sphereCreator(radius, bbox, size, centerOfMassOffset);
@@ -161,22 +161,22 @@ void GeometryProperty::parseData(std::shared_ptr<OgreMeshDeserializer> deseriali
                     -> std::shared_ptr<btCollisionShape> {
                 centerOfMassOffset = -Convert::toBullet(bbox.getCenter());
 
-                float radius = 0;
+                double radius = 0;
                 switch (scalerType) {
                     case ScalerType::Min:
-                        radius = std::min(size.x(), size.z()) * 0.5f;
+                        radius = std::min(size.x(), size.z()) * 0.5;
                         break;
                     case ScalerType::Max:
-                        radius = std::max(size.x(), size.z()) * 0.5f;
+                        radius = std::max(size.x(), size.z()) * 0.5;
                         break;
                     case ScalerType::XAxis:
-                        radius = size.x() * 0.5f;
+                        radius = size.x() * 0.5;
                         break;
                     case ScalerType::YAxis:
-                        radius = size.y() * 0.5f;
+                        radius = size.y() * 0.5;
                         break;
                     case ScalerType::ZAxis:
-                        radius = size.z() * 0.5f;
+                        radius = size.z() * 0.5;
                         break;
                 }
 
