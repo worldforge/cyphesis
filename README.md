@@ -2,6 +2,8 @@
 
 [![Join us on Gitter!](https://badges.gitter.im/Worldforge.svg)](https://gitter.im/Worldforge/Lobby)
 
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/cyphesis)
+
 Cyphesis is the server for the [WorldForge](http://worldforge.org/ "The main Worldforge site") system.
 
 ## Installation
