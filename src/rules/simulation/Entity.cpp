@@ -123,7 +123,7 @@ void Entity::addToMessage(MapType& omap) const
 {
     // We need to have a list of keys to pull from attributes.
     for (auto& entry : m_properties) {
-        entry.second->add(entry.first, omap);
+        entry.second.property->add(entry.first, omap);
     }
 
     omap["stamp"] = (double) m_seq;
@@ -139,7 +139,7 @@ void Entity::addToEntity(const RootEntity& ent) const
 {
     // We need to have a list of keys to pull from attributes.
     for (auto& entry : m_properties) {
-        entry.second->add(entry.first, ent);
+        entry.second.property->add(entry.first, ent);
     }
 
     ent->setStamp(m_seq);
@@ -352,13 +352,13 @@ HandlerResult Entity::callDelegate(const std::string& name,
                                    OpVector& res)
 {
     PropertyBase* p = nullptr;
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        p = I->second.get();
+        p = I->second.property.get();
     } else if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
-        if (I != m_type->defaults().end()) {
-            p = I->second.get();
+        auto J = m_type->defaults().find(name);
+        if (J != m_type->defaults().end()) {
+            p = J->second.get();
         }
     }
     if (p != nullptr) {

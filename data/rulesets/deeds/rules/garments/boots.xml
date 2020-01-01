@@ -20,6 +20,31 @@
         <string name="parent">garment</string>
     </map>
 
+  <map>
+    <map name="attributes">
+      <map name="modify">
+        <list name="default">
+          <map>
+            <string name="constraint">get_entity(actor.attached_feet) = entity</string>
+            <list name="observed_properties">
+              <string>attached_feet</string>
+            </list>
+            <map name="modifier">
+              <map name="speed_ground">
+                <float name="append">5</float>
+              </map>
+            </map>
+          </map>
+        </list>
+      </map>
+
+    </map>
+    <string name="id">boots_of_speed</string>
+    <string name="objtype">class</string>
+    <string name="parent">boots</string>
+  </map>
+
+
     <map>
         <map name="attributes">
             <map name="geometry">

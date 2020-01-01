@@ -31,6 +31,14 @@
   }
 #endif //STUB_StorageManager_encodeProperty
 
+#ifndef STUB_StorageManager_encodeElement
+//#define STUB_StorageManager_encodeElement
+  void StorageManager::encodeElement(const Atlas::Message::Element& element, std::string& store)
+  {
+    
+  }
+#endif //STUB_StorageManager_encodeElement
+
 #ifndef STUB_StorageManager_restorePropertiesRecursively
 //#define STUB_StorageManager_restorePropertiesRecursively
   void StorageManager::restorePropertiesRecursively(LocatedEntity*)

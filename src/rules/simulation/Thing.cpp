@@ -485,15 +485,15 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     bool hadPrivateChanges = false;
 
     for (const auto& entry : m_properties) {
-        auto& prop = entry.second;
+        auto& prop = entry.second.property;
         assert(prop != nullptr);
         if (prop->hasFlags(flag_unsent)) {
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
-            if (entry.second->hasFlags(visibility_private)) {
+            if (prop->hasFlags(visibility_private)) {
                 prop->add(entry.first, set_arg_private);
                 hadPrivateChanges = true;
-            } else if (entry.second->hasFlags(visibility_protected)) {
+            } else if (prop->hasFlags(visibility_protected)) {
                 prop->add(entry.first, set_arg_protected);
                 hadProtectedChanges = true;
             } else {
@@ -604,20 +604,20 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     //Admin entities can see all properties
     if (observingEntity.hasFlags(entity_admin)) {
         for (auto& entry : m_properties) {
-            entry.second->add(entry.first, sarg);
+            entry.second.property->add(entry.first, sarg);
         }
     } else if (observingEntity.getIntId() == getIntId()) {
         //Our own entity can see both public and protected, but not private properties.
         for (auto& entry : m_properties) {
-            if (!entry.second->hasFlags(visibility_private)) {
-                entry.second->add(entry.first, sarg);
+            if (!entry.second.property->hasFlags(visibility_private)) {
+                entry.second.property->add(entry.first, sarg);
             }
         }
     } else {
         //Other entities can only see public properties.
         for (auto& entry : m_properties) {
-            if (!entry.second->hasFlags(visibility_non_public)) {
-                entry.second->add(entry.first, sarg);
+            if (!entry.second.property->hasFlags(visibility_non_public)) {
+                entry.second.property->add(entry.first, sarg);
             }
         }
     }

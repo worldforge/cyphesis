@@ -20,10 +20,11 @@
 #define RULESETS_LOCATED_ENTITY_H
 
 
+#include "Location.h"
+#include "Modifier.h"
 #include "modules/Ref.h"
 #include "modules/ReferenceCounted.h"
 #include "modules/Flags.h"
-#include "Location.h"
 
 #include "common/Property.h"
 #include "common/Router.h"
@@ -56,8 +57,14 @@ class _object;
 template<typename T>
 class Property;
 
+struct ModifiableProperty
+{
+    std::unique_ptr<PropertyBase> property;
+    Atlas::Message::Element baseValue;
+    std::vector<Modifier*> modifiers;
+};
+
 typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
-typedef std::map<std::string, std::unique_ptr<PropertyBase>> PropertyDict;
 
 /// \brief Flag indicating entity has been written to permanent store
 /// \ingroup EntityFlags
@@ -141,7 +148,7 @@ class LocatedEntity : public Router, public ReferenceCounted
 
     protected:
         /// Map of properties
-        PropertyDict m_properties;
+        std::map<std::string, ModifiableProperty> m_properties;
 
         /// Sequence number
         int m_seq;
@@ -161,10 +168,8 @@ class LocatedEntity : public Router, public ReferenceCounted
 
     public:
 
-
         /// Flags indicating entity behaviour
         Flags m_flags;
-
 
         /// Scripts that are associated with this entity.
         std::vector<std::unique_ptr<Script>> m_scripts;
@@ -223,7 +228,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         { return m_type; }
 
         /// \brief Accessor for properties
-        const PropertyDict& getProperties() const
+        const std::map<std::string, ModifiableProperty>& getProperties() const
         { return m_properties; }
 
         /// \brief Set the value of the entity type property
@@ -239,7 +244,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                         int type) const;
 
         PropertyBase* setAttr(const std::string& name,
-                              const Atlas::Message::Element&);
+                              Atlas::Message::Element);
 
         const PropertyBase* getProperty(const std::string& name) const;
 
@@ -338,6 +343,10 @@ class LocatedEntity : public Router, public ReferenceCounted
         */
         bool canReach(const EntityLocation& entityLocation, float extraReach = 0) const;
 
+        void addModifier(const std::string& propertyName, Modifier* modifier);
+
+        void removeModifier(const std::string& propertyName, Modifier* modifier);
+
         /// \brief Get a property that is required to of a given type.
         template<class PropertyT>
         const PropertyT* getPropertyClass(const std::string& name) const
@@ -425,7 +434,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                 // If it is not of the right type, delete it and a new
                 // one of the right type will be inserted.
                 sp = new PropertyT;
-                m_properties[name].reset(sp);
+                m_properties[name].property.reset(sp);
                 sp->install(this, name);
                 if (p != nullptr) {
                     log(WARNING, String::compose("Property %1 on entity with id %2 "

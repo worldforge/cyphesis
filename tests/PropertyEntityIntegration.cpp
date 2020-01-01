@@ -49,7 +49,7 @@ std::ostream & operator<<(std::ostream & os, const MapType & v)
 }
 
 std::ostream & operator<<(std::ostream & os,
-                          const PropertyDict::const_iterator &)
+                          const std::map<std::string, ModifiableProperty>::const_iterator &)
 {
     os << "[iterator]";
     return os;

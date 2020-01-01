@@ -698,10 +698,10 @@ int LocatedEntity::getAttr(const std::string& name,
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second->get(attr);
+        return I->second.property->get(attr);
     }
     if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
+        auto I = m_type->defaults().find(name);
         if (I != m_type->defaults().end()) {
             return I->second->get(attr);
         }

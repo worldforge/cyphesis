@@ -364,6 +364,7 @@ int RELAY_NO = -1;
 } } }
 
 #include "stubs/common/stubRouter.h"
+#include "stubs/common/stublog.h"
 #include "stubs/rules/stubScript.h"
 #include "stubs/rules/stubLocation.h"
 

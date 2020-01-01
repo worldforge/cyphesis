@@ -30,6 +30,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <Atlas/Message/Element.h>
 #include "modules/Ref.h"
 
 class Entity;
@@ -90,6 +91,8 @@ class StorageManager : public sigc::trackable
         void entityUpdated(LocatedEntity*);
 
         void encodeProperty(PropertyBase*, std::string&);
+
+        void encodeElement(const Atlas::Message::Element& element, std::string& store);
 
         void restorePropertiesRecursively(LocatedEntity*);
 

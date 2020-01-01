@@ -64,7 +64,7 @@ Py::Object CyPy_Props::getattro(const Py::String& name)
 int CyPy_Props::setattro(const Py::String& name, const Py::Object& attr)
 {
     Atlas::Message::Element obj = CyPy_Element::asElement(attr);
-    m_value->setAttr(name.as_string(), obj);
+    m_value->setAttr(name.as_string(), std::move(obj));
     return 0;
 }
 

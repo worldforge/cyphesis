@@ -444,7 +444,7 @@ wf_add_test(ServerAccountTest.cpp ../src/server/ServerAccount.cpp)
 wf_add_test(PlayerTest.cpp ../src/server/Player.cpp
     ../src/common/debug.cpp)
 wf_add_test(EntityFactoryTest.cpp ../src/server/EntityFactory.cpp
-    ../src/common/EntityKit.cpp)
+    ../src/common/EntityKit.cpp ../src/rules/Modifier.cpp)
 wf_add_test(buildidTest.cpp ${PROJECT_BINARY_DIR}/src/server/buildid.cpp)
 wf_add_test(ConnectionTest.cpp ../src/server/Connection.cpp)
 wf_add_test(TrustedConnectionTest.cpp ../src/server/TrustedConnection.cpp)
@@ -490,7 +490,8 @@ wf_add_test(WorldRouterIntegration.cpp ../src/server/WorldRouter.cpp
     ../src/rules/simulation/Entity.cpp
     ../src/rules/simulation/Thing.cpp
     ../src/rules/simulation/World.cpp
-    ../src/rules/simulation/BaseWorld.cpp)
+    ../src/rules/simulation/BaseWorld.cpp
+    ../src/rules/Modifier.cpp)
 target_link_libraries(WorldRouterIntegration modules physics common pycxx)
 wf_add_test(RulesetIntegration.cpp ../src/server/Ruleset.cpp
     ../src/server/EntityBuilder.cpp
@@ -500,7 +501,8 @@ wf_add_test(RulesetIntegration.cpp ../src/server/Ruleset.cpp
     ../src/server/ArchetypeRuleHandler.cpp
     ../src/server/PropertyRuleHandler.cpp
     ../src/server/Persistence.cpp
-    ../src/rules/simulation/BaseWorld.cpp)
+    ../src/rules/simulation/BaseWorld.cpp
+    ../src/rules/Modifier.cpp)
 target_link_libraries(RulesetIntegration common pycxx)
 #Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 wf_add_test(ConnectionShakerIntegration.cpp ../src/server/Connection.cpp
@@ -522,7 +524,8 @@ wf_add_test(EntityFactoryTypeNodeIntegration.cpp TestPropertyManager.cpp ../src/
     ../src/common/EntityKit.cpp
     ../src/common/TypeNode.cpp
     ../src/common/PropertyManager.cpp
-    ../src/common/Property.cpp)
+    ../src/common/Property.cpp
+    ../src/rules/Modifier.cpp)
 wf_add_test(AccountConnectionIntegration.cpp ../src/server/Account.cpp
     ../src/server/Admin.cpp
     ../src/server/Connection.cpp

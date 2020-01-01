@@ -32,9 +32,6 @@
 
 class PropertyBase;
 
-typedef std::map<std::string, std::unique_ptr<PropertyBase>> PropertyDict;
-
-
 
 /// \brief Entry in the type hierarchy for in-game entity classes.
 class TypeNode
@@ -45,7 +42,7 @@ class TypeNode
         const std::string m_name;
 
         /// \brief property defaults
-        PropertyDict m_defaults;
+        std::map<std::string, std::unique_ptr<PropertyBase>> m_defaults;
 
         /// \brief type description, complete
         Atlas::Objects::Root m_privateDescription;
@@ -101,7 +98,7 @@ class TypeNode
         }
 
         /// \brief const accessor for property defaults
-        const PropertyDict& defaults() const
+        const std::map<std::string, std::unique_ptr<PropertyBase>>& defaults() const
         {
             return m_defaults;
         }

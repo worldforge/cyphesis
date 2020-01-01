@@ -7,6 +7,7 @@
 #include "rules/LocatedEntity.h"
 #include "stubLocatedEntity_custom.h"
 
+
 #ifndef STUB_LocatedEntity_immutables
 //#define STUB_LocatedEntity_immutables
   const std::set<std::string>& LocatedEntity::immutables()
@@ -83,7 +84,7 @@
 
 #ifndef STUB_LocatedEntity_setAttr
 //#define STUB_LocatedEntity_setAttr
-  PropertyBase* LocatedEntity::setAttr(const std::string& name, const Atlas::Message::Element&)
+  PropertyBase* LocatedEntity::setAttr(const std::string& name, Atlas::Message::Element)
   {
     return nullptr;
   }
@@ -187,7 +188,7 @@
 
 #ifndef STUB_LocatedEntity_setScript
 //#define STUB_LocatedEntity_setScript
-  void LocatedEntity::setScript(std::unique_ptr<Script> scrpt)
+  void LocatedEntity::setScript(std::unique_ptr<Script> script)
   {
     
   }
@@ -304,6 +305,22 @@
     return false;
   }
 #endif //STUB_LocatedEntity_canReach
+
+#ifndef STUB_LocatedEntity_addModifier
+//#define STUB_LocatedEntity_addModifier
+  void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_addModifier
+
+#ifndef STUB_LocatedEntity_removeModifier
+//#define STUB_LocatedEntity_removeModifier
+  void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* modifier)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_removeModifier
 
 #ifndef STUB_LocatedEntity_describeEntity
 //#define STUB_LocatedEntity_describeEntity

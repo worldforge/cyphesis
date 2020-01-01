@@ -185,7 +185,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity* owner, const Operati
     Atlas::Objects::Entity::Anonymous new_ent;
     for (const auto& entry : owner->getProperties()) {
         Atlas::Message::Element elem;
-        entry.second->get(elem);
+        entry.second.property->get(elem);
         new_ent->setAttr(entry.first, elem);
     }
     //Make sure to adjust the amount
@@ -268,10 +268,10 @@ bool StackableDomain::checkEntitiesStackable(const LocatedEntity& first, const L
     std::map<std::string, PropertyBase*> secondProps;
 
     for (auto& entry: first.getProperties()) {
-        firstProps.emplace(entry.first, entry.second.get());
+        firstProps.emplace(entry.first, entry.second.property.get());
     }
     for (auto& entry: second.getProperties()) {
-        secondProps.emplace(entry.first, entry.second.get());
+        secondProps.emplace(entry.first, entry.second.property.get());
     }
 
     for (auto& propName : sIgnoredProps) {

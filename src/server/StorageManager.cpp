@@ -51,14 +51,14 @@ typedef Database::KeyValues KeyValues;
 static const bool debug_flag = false;
 
 StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder) :
-    m_db(db), m_entityBuilder(entityBuilder),
-    m_insertEntityCount(0), m_updateEntityCount(0),
-    m_insertPropertyCount(0), m_updatePropertyCount(0),
-    m_insertQps(0), m_updateQps(0),
-    m_insertQpsNow(0), m_updateQpsNow(0),
-    m_insertQpsAvg(0), m_updateQpsAvg(0),
-    m_insertQpsIndex(0), m_updateQpsIndex(0),
-    m_insertQpsRing(), m_updateQpsRing()
+        m_db(db), m_entityBuilder(entityBuilder),
+        m_insertEntityCount(0), m_updateEntityCount(0),
+        m_insertPropertyCount(0), m_updatePropertyCount(0),
+        m_insertQps(0), m_updateQps(0),
+        m_insertQpsNow(0), m_updateQpsNow(0),
+        m_insertQpsAvg(0), m_updateQpsAvg(0),
+        m_insertQpsIndex(0), m_updateQpsIndex(0),
+        m_insertQpsRing(), m_updateQpsRing()
 {
 
     world.inserted.connect(sigc::mem_fun(this,
@@ -155,6 +155,12 @@ void StorageManager::encodeProperty(PropertyBase* prop, std::string& store)
     m_db.encodeObject(map, store);
 }
 
+void StorageManager::encodeElement(const Atlas::Message::Element& element, std::string& store)
+{
+    Atlas::Message::MapType map{{"val", element}};
+    m_db.encodeObject(map, store);
+}
+
 void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
 {
     DatabaseResult res = m_db.selectProperties(ent->getId());
@@ -217,7 +223,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
 
     if (ent->getType()) {
         for (auto& propIter : ent->getType()->defaults()) {
-            if (!instanceProperties.count(propIter.first)) {
+            if (instanceProperties.find(propIter.first) == instanceProperties.end()) {
                 auto& prop = propIter.second;
                 // If a property is in the class it won't have been installed
                 // as setAttr() checks
@@ -273,19 +279,27 @@ void StorageManager::insertEntity(LocatedEntity* ent)
     m_db.encodeObject(map, location);
 
     m_db.insertEntity(ent->getId(),
-                                      ent->m_location.m_parent->getId(),
-                                      ent->getType()->name(),
-                                      ent->getSeq(),
-                                      location);
+                      ent->m_location.m_parent->getId(),
+                      ent->getType()->name(),
+                      ent->getSeq(),
+                      location);
     ++m_insertEntityCount;
     KeyValues property_tuples;
-    const PropertyDict& properties = ent->getProperties();
+    const auto& properties = ent->getProperties();
     for (auto& entry : properties) {
-        auto& prop = entry.second;
+        auto& prop = entry.second.property;
+        //The property might be empty if there's only modifiers but no property.
+        if (!prop) {
+            continue;
+        }
         if (prop->hasFlags(persistence_ephem)) {
             continue;
         }
-        encodeProperty(prop.get(), property_tuples[entry.first]);
+        if (entry.second.modifiers.empty()) {
+            encodeProperty(prop.get(), property_tuples[entry.first]);
+        } else {
+            encodeElement(entry.second.baseValue, property_tuples[entry.first]);
+        }
         prop->addFlags(persistence_clean | persistence_seen);
     }
     if (!property_tuples.empty()) {
@@ -313,35 +327,49 @@ void StorageManager::updateEntity(LocatedEntity* ent)
     //Under normal circumstances only the top world won't have a location.
     if (ent->m_location.m_parent) {
         m_db.updateEntity(ent->getId(),
-                                          ent->getSeq(),
-                                          location,
-                                          ent->m_location.m_parent->getId());
+                          ent->getSeq(),
+                          location,
+                          ent->m_location.m_parent->getId());
     } else {
         m_db.updateEntityWithoutLoc(ent->getId(),
-                                                    ent->getSeq(),
-                                                    location);
+                                    ent->getSeq(),
+                                    location);
     }
     ++m_updateEntityCount;
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
-    const PropertyDict& properties = ent->getProperties();
+    auto& properties = ent->getProperties();
     for (const auto& property : properties) {
-        auto& prop = property.second;
+        auto& prop = property.second.property;
+        //There might not be a property if only modifiers are set.
+        if (!prop) {
+            continue;
+        }
         if (prop->hasFlags(persistence_mask)) {
             continue;
         }
         KeyValues& active_store = prop->hasFlags(persistence_seen) ? upd_property_tuples : new_property_tuples;
-        Atlas::Message::Element element;
-        prop->get(element);
-        if (element.isNone()) {
-            //TODO: Add code for deleting a database row when the value is none.
-            Atlas::Message::MapType propMap;
-            prop->get(propMap["val"]);
-            m_db.encodeObject(propMap, active_store[property.first]);
+        if (property.second.modifiers.empty()) {
+            Atlas::Message::Element element;
+            prop->get(element);
+            if (element.isNone()) {
+                //TODO: Add code for deleting a database row when the value is none.
+                Atlas::Message::MapType propMap{{"val", std::move(element)}};
+                m_db.encodeObject(propMap, active_store[property.first]);
+            } else {
+                Atlas::Message::MapType propMap{{"val", std::move(element)}};
+                m_db.encodeObject(propMap, active_store[property.first]);
+            }
         } else {
-            Atlas::Message::MapType propMap;
-            prop->get(propMap["val"]);
-            m_db.encodeObject(propMap, active_store[property.first]);
+            auto& element = property.second.baseValue;
+            if (element.isNone()) {
+                //TODO: Add code for deleting a database row when the value is none.
+                Atlas::Message::MapType propMap{{"val", element}};
+                m_db.encodeObject(propMap, active_store[property.first]);
+            } else {
+                Atlas::Message::MapType propMap{{"val", element}};
+                m_db.encodeObject(propMap, active_store[property.first]);
+            }
         }
 
         // FIXME check if this is new or just modded.
@@ -354,11 +382,11 @@ void StorageManager::updateEntity(LocatedEntity* ent)
     }
     if (!new_property_tuples.empty()) {
         m_db.insertProperties(ent->getId(),
-                                              new_property_tuples);
+                              new_property_tuples);
     }
     if (!upd_property_tuples.empty()) {
         m_db.updateProperties(ent->getId(),
-                                              upd_property_tuples);
+                              upd_property_tuples);
     }
     ent->addFlags(entity_clean_mask);
 }
@@ -517,7 +545,7 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
     log(INFO, "Starting restoring world from storage.");
 
     //The order here is important. We want to restore the children before we restore the properties.
-    //The reason for this is that some properties (such as "outfit") refer to child entities; if
+    //The reason for this is that some properties (such as "attached_*") refer to child entities; if
     //the child isn't present when the property is installed there will be issues.
     //We do this by first restoring the children, without any properties, and the assigning the properties to
     //all entities in order.

@@ -473,7 +473,7 @@ void Connectiontest::test_disconnectObject_others_used_Entity()
     assert(I != m_connection->m_connectableRouters.end());
 
     CommSocket * otcc = new TestCommSocket();
-    Connection * other_con = new Connection(*otcc, *m_server, "addr", "6", 6);
+    new Connection(*otcc, *m_server, "addr", "6", 6);
 
     Entity * avatar = new Entity("5", 5);
     auto mind = new ExternalMind("6", 6, avatar);

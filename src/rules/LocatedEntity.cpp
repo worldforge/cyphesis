@@ -52,13 +52,13 @@ const std::set<std::string>& LocatedEntity::immutables()
 
 /// \brief LocatedEntity constructor
 LocatedEntity::LocatedEntity(const std::string& id, long intId) :
-    Router(id, intId),
-    m_seq(0),
-    m_type(nullptr),
-    m_flags(0),
-    m_contains(nullptr)
+        Router(id, intId),
+        m_seq(0),
+        m_type(nullptr),
+        m_flags(0),
+        m_contains(nullptr)
 {
-    m_properties[IdProperty::property_name] = std::make_unique<IdProperty>(getId());
+    m_properties[IdProperty::property_name].property = std::make_unique<IdProperty>(getId());
 }
 
 LocatedEntity::~LocatedEntity()
@@ -81,7 +81,7 @@ void LocatedEntity::clearProperties()
     }
 
     for (auto& entry : m_properties) {
-        entry.second->remove(this, entry.first);
+        entry.second.property->remove(this, entry.first);
     }
 }
 
@@ -102,8 +102,8 @@ bool LocatedEntity::hasAttr(const std::string& name) const
         return true;
     }
     if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
-        if (I != m_type->defaults().end()) {
+        auto J = m_type->defaults().find(name);
+        if (J != m_type->defaults().end()) {
             return true;
         }
     }
@@ -121,12 +121,12 @@ int LocatedEntity::getAttr(const std::string& name,
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second->get(attr);
+        return I->second.property->get(attr);
     }
     if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
-        if (I != m_type->defaults().end()) {
-            return I->second->get(attr);
+        auto J = m_type->defaults().find(name);
+        if (J != m_type->defaults().end()) {
+            return J->second->get(attr);
         }
     }
     return -1;
@@ -144,12 +144,12 @@ int LocatedEntity::getAttrType(const std::string& name,
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second->get(attr) || (attr.getType() == type ? 0 : 1);
+        return I->second.property->get(attr) || (attr.getType() == type ? 0 : 1);
     }
     if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
-        if (I != m_type->defaults().end()) {
-            return I->second->get(attr) || (attr.getType() == type ? 0 : 1);
+        auto J = m_type->defaults().find(name);
+        if (J != m_type->defaults().end()) {
+            return J->second->get(attr) || (attr.getType() == type ? 0 : 1);
         }
     }
     return -1;
@@ -159,27 +159,35 @@ int LocatedEntity::getAttrType(const std::string& name,
 ///
 /// @param name Name of attribute to be changed
 /// @param attr Value to be stored
-PropertyBase* LocatedEntity::setAttr(const std::string& name,
-                                     const Element& attr)
+PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
 {
-    PropertyBase* prop;
+    PropertyBase* prop = nullptr;
     // If it is an existing property, just update the value.
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        prop = I->second.get();
+        //Should we apply any modifiers?
+        if (!I->second.modifiers.empty()) {
+            I->second.baseValue = attr;
+            for (auto& modifier : I->second.modifiers) {
+                modifier->process(attr, I->second.baseValue);
+            }
+        }
+        prop = I->second.property.get();
+    }
+    if (prop) {
         // Mark it as unclean
         prop->removeFlags(persistence_clean);
     } else {
-        PropertyDict::const_iterator J;
+        std::map<std::string, std::unique_ptr<PropertyBase>>::const_iterator J;
         if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
             prop = J->second->copy();
-            m_properties[name].reset(prop);
+            m_properties[name].property.reset(prop);
         } else {
             // This is an entirely new property, not just a modification of
             // one in defaults, so we need to install it to this Entity.
             auto newProp = PropertyManager::instance().addProperty(name, attr.getType());
             prop = newProp.get();
-            m_properties[name] = std::move(newProp);
+            m_properties[name].property = std::move(newProp);
             prop->install(this, name);
         }
         assert(prop != nullptr);
@@ -191,6 +199,52 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name,
     return prop;
 }
 
+void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier)
+{
+    auto I = m_properties.find(propertyName);
+    if (I != m_properties.end()) {
+        //We had a local value, check if there are any modifiers.
+        if (I->second.modifiers.empty()) {
+            //Set the base value from the current
+            I->second.property->get(I->second.baseValue);
+        }
+        I->second.modifiers.emplace_back(modifier);
+        setAttr(propertyName, I->second.baseValue);
+    } else {
+        //We need to create a new modifier entry.
+        auto& modifiableProperty = m_properties[propertyName];
+        modifiableProperty.modifiers.emplace_back(modifier);
+
+        //Check if there's also a property in the type, and if so create a copy.
+        auto typeI = m_type->defaults().find(propertyName);
+        if (typeI != m_type->defaults().end()) {
+            modifiableProperty.property.reset(typeI->second->copy());
+            //Copy the default value.
+            typeI->second->get(modifiableProperty.baseValue);
+            //Apply the new value
+            setAttr(propertyName,modifiableProperty.baseValue);
+        }
+    }
+}
+
+void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* modifier)
+{
+    auto propertyI = m_properties.find(propertyName);
+    if (propertyI == m_properties.end()) {
+        log(WARNING, String::compose("Tried to remove modifier from property %1 which couldn't be found.", propertyName));
+        return;
+    }
+
+    auto& modifiers = propertyI->second.modifiers;
+    for (auto I = modifiers.begin(); I != modifiers.end(); ++I) {
+        if (modifier == *I) {
+            modifiers.erase(I);
+            setAttr(propertyName, propertyI->second.baseValue);
+            return;
+        }
+    }
+}
+
 /// \brief Get the property object for a given attribute
 ///
 /// @param name name of the attribute for which the property is required.
@@ -200,12 +254,12 @@ const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
 {
     auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second.get();
+        return I->second.property.get();
     }
     if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
-        if (I != m_type->defaults().end()) {
-            return I->second.get();
+        auto J = m_type->defaults().find(name);
+        if (J != m_type->defaults().end()) {
+            return J->second.get();
         }
     }
     return nullptr;
@@ -213,22 +267,22 @@ const PropertyBase* LocatedEntity::getProperty(const std::string& name) const
 
 PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::Message::Element& def_val)
 {
-    PropertyDict::const_iterator I = m_properties.find(name);
+    auto I = m_properties.find(name);
     if (I != m_properties.end()) {
-        return I->second.get();
+        return I->second.property.get();
     }
     if (m_type != nullptr) {
-        I = m_type->defaults().find(name);
-        if (I != m_type->defaults().end()) {
+        auto J = m_type->defaults().find(name);
+        if (J != m_type->defaults().end()) {
             // We have a default for this property. Create a new instance
             // property with the same value.
-            PropertyBase* new_prop = I->second->copy();
+            PropertyBase* new_prop = J->second->copy();
             if (!def_val.isNone()) {
                 new_prop->set(def_val);
             }
-            I->second->remove(this, name);
+            J->second->remove(this, name);
             new_prop->removeFlags(flag_class);
-            m_properties[name].reset(new_prop);
+            m_properties[name].property.reset(new_prop);
             new_prop->install(this, name);
             applyProperty(name, new_prop);
             return new_prop;
@@ -241,7 +295,7 @@ PropertyBase* LocatedEntity::setProperty(const std::string& name,
                                          std::unique_ptr<PropertyBase> prop)
 {
     auto p = prop.get();
-    m_properties[name] = std::move(prop);
+    m_properties[name].property = std::move(prop);
     return p;
 }
 
@@ -325,7 +379,7 @@ void LocatedEntity::makeContainer()
 {
     if (m_contains == nullptr) {
         m_contains = std::make_unique<LocatedEntitySet>();
-        m_properties[ContainsProperty::property_name] = std::make_unique<ContainsProperty>(*m_contains);
+        m_properties[ContainsProperty::property_name].property = std::make_unique<ContainsProperty>(*m_contains);
     }
 }
 

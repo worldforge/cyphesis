@@ -144,124 +144,15 @@ void ClassAttribute::combine(Atlas::Message::Element& existing) const
         existing = defaultValue;
     }
     if (!subtract.isNone()) {
-        switch (subtract.getType()) {
-            case Atlas::Message::Element::TYPE_INT:
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = 0 - subtract.Int();
-                } else {
-                    existing = existing.Int() - subtract.Int();
-                }
-                break;
-            case Atlas::Message::Element::TYPE_FLOAT:
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = 0 - subtract.Float();
-                } else {
-                    existing = existing.Float() - subtract.Float();
-                }
-                break;
-            case Atlas::Message::Element::TYPE_STRING:
-                //There's no one obvious way of subtracting one string from another, so we'll just skip this
-                break;
-            case Atlas::Message::Element::TYPE_MAP:
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = Atlas::Message::MapType();
-                } else {
-                    //Only act on the map keys
-                    for (const auto& entry: subtract.Map()) {
-                        existing.Map().erase(entry.first);
-                    }
-                }
-                break;
-            case Atlas::Message::Element::TYPE_LIST: {
-                if (existing.isNone() || existing.getType() != subtract.getType()) {
-                    existing = Atlas::Message::ListType();
-                } else {
-                    for (auto& entry: subtract.List()) {
-                        Atlas::Message::ListType::iterator I;
-                        //Delete all instances from the list.
-                        while (true) {
-                            I = std::find(std::begin(existing.List()), std::end(existing.List()), entry);
-                            if (I != existing.List().end()) {
-                                existing.List().erase(I);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-            default:
-                break;
-        }
+        SubtractModifier modifier(subtract);
+        modifier.process(existing, defaultValue);
     }
     if (!prepend.isNone()) {
-        if (existing.isNone() || existing.getType() != prepend.getType()) {
-            existing = prepend;
-        } else {
-            switch (prepend.getType()) {
-                case Atlas::Message::Element::TYPE_INT:
-                    existing = prepend.Int() + existing.Int();
-                    break;
-                case Atlas::Message::Element::TYPE_FLOAT:
-                    existing = prepend.Float() + existing.Float();
-                    break;
-                case Atlas::Message::Element::TYPE_STRING:
-                    existing = prepend.String() + existing.String();
-                    break;
-                case Atlas::Message::Element::TYPE_MAP:
-                    //Overwrite existing entries; with C++17 we can use "insert_or_assign".
-                    for (const auto& entry: prepend.Map()) {
-                        existing.Map()[entry.first] = entry.second;
-                    }
-                    break;
-                case Atlas::Message::Element::TYPE_LIST: {
-                    auto listCopy = std::move(existing.List());
-                    existing.List().clear();
-                    existing.List().reserve(listCopy.size() + prepend.List().size());
-                    for (auto& entry: prepend.List()) {
-                        existing.List().push_back(entry);
-                    }
-                    for (auto&& entry: listCopy) {
-                        existing.List().push_back(std::move(entry));
-                    }
-                }
-                    break;
-                default:
-                    break;
-            }
-        }
+        PrependModifier modifier(prepend);
+        modifier.process(existing, defaultValue);
     }
     if (!append.isNone()) {
-        if (existing.isNone() || existing.getType() != append.getType()) {
-            existing = append;
-        } else {
-            switch (append.getType()) {
-                case Atlas::Message::Element::TYPE_INT:
-                    existing = existing.Int() + append.Int();
-                    break;
-                case Atlas::Message::Element::TYPE_FLOAT:
-                    existing = existing.Float() + append.Float();
-                    break;
-                case Atlas::Message::Element::TYPE_STRING:
-                    existing = existing.String() + append.String();
-                    break;
-                case Atlas::Message::Element::TYPE_MAP:
-                    //Overwrite existing entries; with C++17 we can use "insert_or_assign".
-                    for (const auto& entry: append.Map()) {
-                        existing.Map()[entry.first] = entry.second;
-                    }
-                    break;
-                case Atlas::Message::Element::TYPE_LIST:
-                    existing.List().reserve(existing.List().size() + append.List().size());
-                    for (auto& entry: append.List()) {
-                        existing.List().push_back(entry);
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-        }
+        AppendModifier modifier(append);
+        modifier.process(existing, defaultValue);
     }
 }
