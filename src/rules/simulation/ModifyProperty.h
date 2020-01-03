@@ -96,7 +96,7 @@ class ModifyProperty : public PropertyBase
 
         Atlas::Message::Element m_data;
 
-        void newLocation(State& state, LocatedEntity* e);
+        void newLocation(State& state, LocatedEntity& entity,  LocatedEntity* parent);
         void checkIfActive(State& state, LocatedEntity& entity);
         void setData(const Atlas::Message::Element& val) ;
 

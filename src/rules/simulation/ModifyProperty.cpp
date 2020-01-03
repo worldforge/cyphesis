@@ -71,7 +71,11 @@ void ModifyProperty::setData(const Atlas::Message::Element& val)
                         modifyEntry.propertyName = modifierEntry.first;
                         if (modifierEntry.second.isMap()) {
                             auto& valueMap = modifierEntry.second.Map();
-                            auto I = valueMap.find("append");
+                            auto I = valueMap.find("default");
+                            if (I != valueMap.end()) {
+                                modifyEntry.modifier = std::make_unique<DefaultModifier>(I->second);
+                            }
+                            I = valueMap.find("append");
                             if (I != valueMap.end()) {
                                 modifyEntry.modifier = std::make_unique<AppendModifier>(I->second);
                             }
@@ -115,7 +119,7 @@ void ModifyProperty::remove(LocatedEntity* owner, const std::string& name)
 {
     auto* state = sInstanceState.getState(owner);
     state->parentEntity = nullptr;
-    newLocation(*state, nullptr);
+    newLocation(*state, *owner, nullptr);
     state->updatedConnection.disconnect();
     sInstanceState.removeState(owner);
 }
@@ -127,18 +131,18 @@ void ModifyProperty::install(LocatedEntity* owner, const std::string& name)
     state->updatedConnection.disconnect();
     state->updatedConnection = owner->updated.connect([&, state, owner]() {
         if (state->parentEntity == owner->m_location.m_parent.get()) {
-            newLocation(*state, owner->m_location.m_parent.get());
+            newLocation(*state, *owner, owner->m_location.m_parent.get());
         }
     });
     if (owner->m_location.m_parent) {
-        newLocation(*state, owner->m_location.m_parent.get());
+        newLocation(*state, *owner, owner->m_location.m_parent.get());
     }
 
     sInstanceState.addState(owner, std::unique_ptr<ModifyProperty::State>(state));
 }
 
 
-void ModifyProperty::newLocation(State& state, LocatedEntity* e)
+void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEntity* parent)
 {
     if (state.parentEntity) {
         for (auto& entry: state.activeModifiers) {
@@ -146,20 +150,20 @@ void ModifyProperty::newLocation(State& state, LocatedEntity* e)
         }
         state.activeModifiers.clear();
     }
-    state.parentEntity = e;
+    state.parentEntity = parent;
     state.parentEntityPropertyUpdateConnection.disconnect();
     if (state.parentEntity) {
         state.parentEntityPropertyUpdateConnection = state.parentEntity->propertyApplied.connect(
-                [&, e](const std::string& propertyName, const PropertyBase&) {
+                [&](const std::string& propertyName, const PropertyBase&) {
                     for (auto& modifyEntry : m_modifyEntries) {
                         if (modifyEntry.observedProperties.find(propertyName) != modifyEntry.observedProperties.end()) {
-                            checkIfActive(state, *e);
+                            checkIfActive(state, entity);
                             return;
                         }
                     }
                 });
     }
-    checkIfActive(state, *e);
+    checkIfActive(state, entity);
 }
 
 void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)

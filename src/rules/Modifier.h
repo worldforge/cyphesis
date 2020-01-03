@@ -38,6 +38,16 @@ struct Modifier
     virtual void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) = 0;
 };
 
+struct DefaultModifier : public Modifier
+{
+
+    Atlas::Message::Element mValue;
+
+    explicit DefaultModifier(Atlas::Message::Element value) : mValue(std::move(value))
+    {}
+
+    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+};
 
 /**
  * This value will be prepended.

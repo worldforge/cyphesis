@@ -19,6 +19,11 @@
 #include "Modifier.h"
 #include <algorithm>
 
+void DefaultModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+{
+    element = mValue;
+}
+
 void PrependModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
 {
     if (element.isNone() || element.getType() != mValue.getType()) {
