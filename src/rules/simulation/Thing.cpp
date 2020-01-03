@@ -486,8 +486,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
 
     for (const auto& entry : m_properties) {
         auto& prop = entry.second.property;
-        assert(prop != nullptr);
-        if (prop->hasFlags(flag_unsent)) {
+        if (prop && prop->hasFlags(flag_unsent)) {
             debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
             if (prop->hasFlags(visibility_private)) {
