@@ -68,6 +68,15 @@ struct ClassAttribute
     Atlas::Message::Element subtract;
 
     /**
+     * This value will be multiplied with the base value, and then added.
+     * For numerical values it will result in a multiplication and then an addition.
+     * For strings nothing will happen.
+     * For maps nothing will happen.
+     * For lists nothing will happen.
+     */
+    Atlas::Message::Element multiply;
+
+    /**
      * Apply the values on an existing element.
      * @param existing An existing element, which will be altered.
      */

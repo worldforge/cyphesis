@@ -143,16 +143,20 @@ void ClassAttribute::combine(Atlas::Message::Element& existing) const
     if (!defaultValue.isNone()) {
         existing = defaultValue;
     }
+    if (!multiply.isNone()) {
+        MultiplyModifier modifier(multiply);
+        modifier.process(existing, existing);
+    }
     if (!subtract.isNone()) {
         SubtractModifier modifier(subtract);
-        modifier.process(existing, defaultValue);
+        modifier.process(existing, existing); //Won't touch baseValue, so ok if we send "existing".
     }
     if (!prepend.isNone()) {
         PrependModifier modifier(prepend);
-        modifier.process(existing, defaultValue);
+        modifier.process(existing, existing); //Won't touch baseValue, so ok if we send "existing".
     }
     if (!append.isNone()) {
         AppendModifier modifier(append);
-        modifier.process(existing, defaultValue);
+        modifier.process(existing, existing); //Won't touch baseValue, so ok if we send "existing".
     }
 }

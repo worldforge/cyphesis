@@ -150,20 +150,18 @@ void MultiplyModifier::process(Atlas::Message::Element& element, const Atlas::Me
 {
     switch (mValue.getType()) {
         case Atlas::Message::Element::TYPE_INT:
-            if (!element.isNone() && element.getType() == mValue.getType()) {
+            if (element.getType() == mValue.getType() && element.getType() == baseValue.getType()) {
                 element = element.Int() + (baseValue.Int() * mValue.Int());
             }
             break;
         case Atlas::Message::Element::TYPE_FLOAT:
-            if (!element.isNone() && element.getType() == mValue.getType()) {
+            if (element.getType() == mValue.getType() && element.getType() == baseValue.getType()) {
                 element = element.Float() + (baseValue.Float() * mValue.Float());
             }
             break;
         case Atlas::Message::Element::TYPE_STRING:
         case Atlas::Message::Element::TYPE_MAP:
-        case Atlas::Message::Element::TYPE_LIST: {
-            break;
-        }
+        case Atlas::Message::Element::TYPE_LIST:
         default:
             break;
     }
