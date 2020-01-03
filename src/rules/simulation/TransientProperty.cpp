@@ -27,6 +27,7 @@
 
 using Atlas::Message::Element;
 using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Entity::Anonymous;
 
 TransientProperty * TransientProperty::copy() const
@@ -45,14 +46,14 @@ void TransientProperty::apply(LocatedEntity * ent)
     if (m_data < 0) {
         return;
     }
-    Set s;
-    s->setTo(ent->getId());
-    s->setFutureSeconds(m_data);
 
-    Anonymous set_arg;
-    set_arg->setId(ent->getId());
-    set_arg->setAttr("status", -1);
-    s->setArgs1(set_arg);
+    Delete deleteOp;
+    deleteOp->setTo(ent->getId());
+    deleteOp->setFutureSeconds(m_data);
 
-    ent->sendWorld(s);
+    Anonymous entity_arg;
+    entity_arg->setId(ent->getId());
+    deleteOp->setArgs1(entity_arg);
+
+    ent->sendWorld(deleteOp);
 }
