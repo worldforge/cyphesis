@@ -25,6 +25,7 @@
 
 #include "common/TypeNode.h"
 #include "common/PropertyManager.h"
+#include "common/operations/Update.h"
 
 #include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/Operation.h>
@@ -32,6 +33,7 @@
 
 #include <memory>
 
+using Atlas::Objects::Operation::Update;
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
@@ -206,6 +208,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
     if (hasFlags(entity_modifiers_not_allowed)) {
         return;
     }
+
     auto I = m_properties.find(propertyName);
     if (I != m_properties.end()) {
         if (I->second.property && I->second.property->hasFlags(flag_modifiers_not_allowed)) {
@@ -229,19 +232,21 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             //We need to create a new modifier entry.
             auto& modifiableProperty = m_properties[propertyName];
             modifiableProperty.modifiers.emplace_back(modifier);
-            modifiableProperty.property.reset(typeI->second->copy());
             //Copy the default value.
             typeI->second->get(modifiableProperty.baseValue);
             //Apply the new value
-            setAttr(propertyName,modifiableProperty.baseValue);
+            setAttr(propertyName, modifiableProperty.baseValue);
         } else {
             //We need to create a new modifier entry with a new property.
-
-
             auto& modifiableProperty = m_properties[propertyName];
             modifiableProperty.modifiers.emplace_back(modifier);
+            //Apply the new value
+            setAttr(propertyName, modifiableProperty.baseValue);
         }
     }
+    Update update;
+    update->setTo(getId());
+    sendWorld(std::move(update));
 }
 
 void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* modifier)
@@ -256,7 +261,13 @@ void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* mo
     for (auto I = modifiers.begin(); I != modifiers.end(); ++I) {
         if (modifier == *I) {
             modifiers.erase(I);
+            //FIXME: If there's no base value we should remove the property, but there's no support in the storage manager for that yet.
             setAttr(propertyName, propertyI->second.baseValue);
+
+            Update update;
+            update->setTo(getId());
+            sendWorld(std::move(update));
+
             return;
         }
     }
