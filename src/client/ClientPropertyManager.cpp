@@ -40,16 +40,7 @@ std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::stri
 {
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
-        switch (type) {
-            case Element::TYPE_INT:
-                return std::make_unique<Property<int>>();
-            case Element::TYPE_FLOAT:
-                return std::make_unique<Property<double>>();
-            case Element::TYPE_STRING:
-                return std::make_unique<Property<std::string>>();
-            default:
-                return std::make_unique<SoftProperty>();
-        }
+        return std::make_unique<SoftProperty>();
     } else {
         return I->second->newProperty();
     }

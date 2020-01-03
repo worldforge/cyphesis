@@ -317,20 +317,7 @@ std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string
     std::unique_ptr<PropertyBase> p;
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {
-        switch (type) {
-            case Element::TYPE_INT:
-                p = std::make_unique<Property<int>>();
-                break;
-            case Element::TYPE_FLOAT:
-                p = std::make_unique<Property<double>>();
-                break;
-            case Element::TYPE_STRING:
-                p = std::make_unique<Property<std::string>>();
-                break;
-            default:
-                p = std::make_unique<SoftProperty>();
-                break;
-        }
+        p = std::make_unique<SoftProperty>();
     } else {
         p = I->second->newProperty();
     }

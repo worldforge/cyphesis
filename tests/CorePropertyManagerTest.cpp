@@ -117,7 +117,7 @@ void CorePropertyManagertest::test_addProperty_int()
     auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_INT);
     ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<Property<int> *>(p.get()));
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty*>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_float()
@@ -125,7 +125,7 @@ void CorePropertyManagertest::test_addProperty_float()
     auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_FLOAT);
     ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<Property<double> *>(p.get()));
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty*>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_string()
@@ -133,7 +133,7 @@ void CorePropertyManagertest::test_addProperty_string()
     auto p = m_propertyManager->addProperty("non_existant_type",
                                               Element::TYPE_STRING);
     ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<Property<std::string> *>(p.get()));
+    ASSERT_NOT_NULL(dynamic_cast<SoftProperty*>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_list()
