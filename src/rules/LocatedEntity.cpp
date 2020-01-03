@@ -177,10 +177,12 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
     if (prop) {
         // Mark it as unclean
         prop->removeFlags(persistence_clean);
+        prop->set(attr);
     } else {
         std::map<std::string, std::unique_ptr<PropertyBase>>::const_iterator J;
         if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
             prop = J->second->copy();
+            prop->set(attr);
             m_properties[name].property.reset(prop);
         } else {
             // This is an entirely new property, not just a modification of
@@ -188,12 +190,12 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
             auto newProp = PropertyManager::instance().addProperty(name, attr.getType());
             prop = newProp.get();
             m_properties[name].property = std::move(newProp);
+            prop->set(attr);
             prop->install(this, name);
         }
         assert(prop != nullptr);
     }
 
-    prop->set(attr);
     // Allow the value to take effect.
     applyProperty(name, prop);
     return prop;
@@ -233,7 +235,9 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             //Apply the new value
             setAttr(propertyName,modifiableProperty.baseValue);
         } else {
-            //We need to create a new modifier entry, even though there's no property for it (there might be in the future).
+            //We need to create a new modifier entry with a new property.
+
+
             auto& modifiableProperty = m_properties[propertyName];
             modifiableProperty.modifiers.emplace_back(modifier);
         }
