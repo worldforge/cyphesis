@@ -22,6 +22,7 @@
 #include "rules/entityfilter/Providers.h"
 #include "BaseWorld.h"
 
+
 PropertyInstanceState<ModifyProperty::State> ModifyProperty::sInstanceState;
 
 ModifyProperty::ModifyProperty() = default;
@@ -118,7 +119,6 @@ int ModifyProperty::get(Atlas::Message::Element& val) const
 void ModifyProperty::remove(LocatedEntity* owner, const std::string& name)
 {
     auto* state = sInstanceState.getState(owner);
-    state->parentEntity = nullptr;
     newLocation(*state, *owner, nullptr);
     state->updatedConnection.disconnect();
     sInstanceState.removeState(owner);
