@@ -151,6 +151,13 @@ static const std::uint32_t flag_unsent = 1u << 7u;
 /// be handled on a class property.
 static const std::uint32_t flag_instance = 1u << 8u;
 
+/**
+ * \brief The property won't allow any kind of modifiers to affect it.
+ * \ingroup PropertyFlags
+ */
+static const std::uint32_t flag_modifiers_not_allowed = 1u << 9u;
+
+
 /// \brief Entity property template for properties with single data values
 /// \ingroup PropertyClasses
 template <typename T>

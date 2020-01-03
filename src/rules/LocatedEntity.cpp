@@ -201,8 +201,14 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
 
 void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier)
 {
+    if (hasFlags(entity_modifiers_not_allowed)) {
+        return;
+    }
     auto I = m_properties.find(propertyName);
     if (I != m_properties.end()) {
+        if (I->second.property && I->second.property->hasFlags(flag_modifiers_not_allowed)) {
+            return;
+        }
         //We had a local value, check if there are any modifiers.
         if (I->second.modifiers.empty()) {
             //Set the base value from the current
@@ -211,18 +217,25 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
         I->second.modifiers.emplace_back(modifier);
         setAttr(propertyName, I->second.baseValue);
     } else {
-        //We need to create a new modifier entry.
-        auto& modifiableProperty = m_properties[propertyName];
-        modifiableProperty.modifiers.emplace_back(modifier);
 
         //Check if there's also a property in the type, and if so create a copy.
         auto typeI = m_type->defaults().find(propertyName);
         if (typeI != m_type->defaults().end()) {
+            if (typeI->second->hasFlags(entity_modifiers_not_allowed)) {
+                return;
+            }
+            //We need to create a new modifier entry.
+            auto& modifiableProperty = m_properties[propertyName];
+            modifiableProperty.modifiers.emplace_back(modifier);
             modifiableProperty.property.reset(typeI->second->copy());
             //Copy the default value.
             typeI->second->get(modifiableProperty.baseValue);
             //Apply the new value
             setAttr(propertyName,modifiableProperty.baseValue);
+        } else {
+            //We need to create a new modifier entry, even though there's no property for it (there might be in the future).
+            auto& modifiableProperty = m_properties[propertyName];
+            modifiableProperty.modifiers.emplace_back(modifier);
         }
     }
 }

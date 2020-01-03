@@ -129,6 +129,11 @@ static const std::uint32_t entity_stacked = 1u << 13u;
  */
 static const std::uint32_t entity_contained_visible = 1u << 14u;
 
+/**
+ * The entity won't allow any kind of modifiers to affect it.
+ */
+static const std::uint32_t entity_modifiers_not_allowed = 1u << 15u;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///

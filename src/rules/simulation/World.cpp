@@ -52,13 +52,15 @@ using Atlas::Objects::smart_dynamic_cast;
 
 /// \brief Constructor for the World entity
 World::World() :
-    Thing(consts::rootWorldId, consts::rootWorldIntId),
-    m_serialNumber(0)
+        Thing(consts::rootWorldId, consts::rootWorldIntId),
+        m_serialNumber(0)
 {
+    addFlags(entity_modifiers_not_allowed);
     requirePropertyClassFixed<CalendarProperty>();
     requirePropertyClassFixed<WorldTimeProperty>();
     //The world always has a void domain.
-    setDomain(std::make_unique<VoidDomain>(*this));
+    m_domain = std::make_unique<VoidDomain>(*this);
+    addFlags(entity_domain);
 }
 
 World::~World() = default;
@@ -204,8 +206,7 @@ void World::RelayOperation(const Operation& op, OpVector& res)
             log(ERROR, "World::RelayOperation no args.");
             return;
         }
-        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(
-            op->getArgs().front());
+        Operation relayedOp = Atlas::Objects::smart_dynamic_cast<Operation>(op->getArgs().front());
 
         if (!relayedOp.isValid()) {
             log(ERROR,
