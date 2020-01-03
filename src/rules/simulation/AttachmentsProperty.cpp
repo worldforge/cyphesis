@@ -95,7 +95,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                 if (entity_id.empty()) {
                     //Unwielding
 
-                    entity->setAttr(attached_prop_name, "");
+                    entity->setAttr(attached_prop_name, {});
 
                     //Check if there was another entity attached to the attachment, and if so reset it's attachment.
                     resetExistingEntityPlantedOn();
