@@ -15,11 +15,14 @@ class Hittable(server.Thing):
             hit_op = op.copy()
             res = Oplist()
             if hasattr(arg, 'damage'):
-                status_decrease = arg.damage / 100.0
+                # Apply any armor modifiers
+                armor = self.get_prop_float("armor", 0)
+                status_decrease = (arg.damage - armor) / 100.0
                 # Check if there's a modifier for the specific type of hit.
                 if hasattr(arg, 'hit_type') and self.props["__modifier_hit_type_" + arg.hit_type]:
                     status_decrease = status_decrease * self.props["__modifier_hit_type_" + arg.hit_type]
                 print("Hit for {} damage".format(status_decrease))
+                status_decrease = max(0.0, status_decrease)  # Make sure it's not negative
                 hit_op[0].damage = status_decrease
                 if status_decrease > 0:
                     new_status = self.props.status - status_decrease

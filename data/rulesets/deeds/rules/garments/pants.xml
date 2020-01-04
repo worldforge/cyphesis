@@ -14,6 +14,21 @@
             <map name="worn">
                 <string name="default">legs</string>
             </map>
+            <map name="modify">
+                <list name="default">
+                    <map>
+                        <string name="constraint">get_entity(actor.attached_legs) = entity</string>
+                        <list name="observed_properties">
+                            <string>attached_legs</string>
+                        </list>
+                        <map name="modifier">
+                            <map name="armor">
+                                <float name="append">1</float>
+                            </map>
+                        </map>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">pants</string>
         <string name="objtype">class</string>

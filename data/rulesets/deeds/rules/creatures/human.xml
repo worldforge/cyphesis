@@ -30,6 +30,7 @@
                     <string name="legs">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'legs'</string>
                     <string name="feet">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'feet'</string>
                     <string name="head">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'head'</string>
+                    <string name="back">contains(actor.contains, child = tool) &amp;&amp; tool.worn = 'back'</string>
                 </map>
             </map>
             <map name="__decays">

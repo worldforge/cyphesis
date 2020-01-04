@@ -14,6 +14,21 @@
             <map name="worn">
                 <string name="default">back</string>
             </map>
+            <map name="modify">
+                <list name="default">
+                    <map>
+                        <string name="constraint">get_entity(actor.attached_back) = entity</string>
+                        <list name="observed_properties">
+                            <string>attached_back</string>
+                        </list>
+                        <map name="modifier">
+                            <map name="armor">
+                                <float name="append">1</float>
+                            </map>
+                        </map>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">cloak</string>
         <string name="objtype">class</string>
