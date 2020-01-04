@@ -1368,6 +1368,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 
                 bulletEntry->collisionShape = createCollisionShapeForEntry(bulletEntry->entity, bbox, mass, bulletEntry->centerOfMassOffset);
                 bulletEntry->collisionObject->setCollisionShape(bulletEntry->collisionShape.get());
+                if (bulletEntry->motionState) {
+                    bulletEntry->motionState->m_centerOfMassOffset = btTransform(btQuaternion::getIdentity(), bulletEntry->centerOfMassOffset);
+                }
                 bulletEntry->collisionObject->activate();
 
                 short collisionMask;
