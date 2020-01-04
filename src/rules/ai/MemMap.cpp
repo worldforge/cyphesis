@@ -418,7 +418,7 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
 #endif // NDEBUG
     auto I = place->m_contains->begin();
     auto Iend = place->m_contains->end();
-    float square_range = radius * radius;
+    WFMath::CoordType square_range = radius * radius;
     for (; I != Iend; ++I) {
         assert(*I != nullptr);
         auto item = *I;
