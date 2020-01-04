@@ -30,23 +30,43 @@
  */
 struct Modifier
 {
+    enum class Type
+    {
+            Default,
+            Prepend,
+            Append,
+            Subtract,
+            Multiply
+    };
+
+    Atlas::Message::Element mValue;
+
+    explicit Modifier(Atlas::Message::Element value) : mValue(std::move(value))
+    {}
+
     /**
      * Modifies the submitted value in place.
      * @param element The value to be changed.
      * @param baseValue The base value, which is taken into account in some modifiers.
      */
     virtual void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) = 0;
+
+    virtual Type getType() = 0;
+
 };
 
 struct DefaultModifier : public Modifier
 {
 
-    Atlas::Message::Element mValue;
-
-    explicit DefaultModifier(Atlas::Message::Element value) : mValue(std::move(value))
+    explicit DefaultModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
     void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+
+    Type getType() override
+    {
+        return Type::Default;
+    }
 };
 
 /**
@@ -59,12 +79,15 @@ struct DefaultModifier : public Modifier
 struct PrependModifier : public Modifier
 {
 
-    Atlas::Message::Element mValue;
-
-    explicit PrependModifier(Atlas::Message::Element value) : mValue(std::move(value))
+    explicit PrependModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
     void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+
+    Type getType() override
+    {
+        return Type::Prepend;
+    }
 };
 
 /**
@@ -76,13 +99,15 @@ struct PrependModifier : public Modifier
  */
 struct AppendModifier : public Modifier
 {
-
-    Atlas::Message::Element mValue;
-
-    explicit AppendModifier(Atlas::Message::Element value) : mValue(std::move(value))
+    explicit AppendModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
     void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+
+    Type getType() override
+    {
+        return Type::Append;
+    }
 };
 
 /**
@@ -94,12 +119,16 @@ struct AppendModifier : public Modifier
  */
 struct SubtractModifier : public Modifier
 {
-    Atlas::Message::Element mValue;
-
-    explicit SubtractModifier(Atlas::Message::Element value) : mValue(std::move(value))
+    explicit SubtractModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
     void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+
+    Type getType() override
+    {
+        return Type::Subtract;
+    }
+
 };
 
 /**
@@ -112,12 +141,17 @@ struct SubtractModifier : public Modifier
  */
 struct MultiplyModifier : public Modifier
 {
-    Atlas::Message::Element mValue;
 
-    explicit MultiplyModifier(Atlas::Message::Element value) : mValue(std::move(value))
+    explicit MultiplyModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
     void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+
+    Type getType() override
+    {
+        return Type::Multiply;
+    }
+
 };
 
 #endif //CYPHESIS_MODIFIER_H

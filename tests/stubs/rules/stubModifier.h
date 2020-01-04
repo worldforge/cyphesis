@@ -15,6 +15,23 @@
   }
 #endif //STUB_Modifier_process
 
+#ifndef STUB_Modifier_getType
+//#define STUB_Modifier_getType
+  Type Modifier::getType()
+  {
+    return *static_cast<Type*>(nullptr);
+  }
+#endif //STUB_Modifier_getType
+
+
+#ifndef STUB_DefaultModifier_process
+//#define STUB_DefaultModifier_process
+  void DefaultModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  {
+    
+  }
+#endif //STUB_DefaultModifier_process
+
 
 #ifndef STUB_PrependModifier_process
 //#define STUB_PrependModifier_process

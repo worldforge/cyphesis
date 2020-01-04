@@ -278,6 +278,7 @@ int main()
 #include "stubs/rules/simulation/stubModeDataProperty.h"
 #include "stubs/rules/simulation/stubContainedVisibilityProperty.h"
 #include "stubs/rules/simulation/stubModifyProperty.h"
+#include "stubs/rules/simulation/stubModifiersProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

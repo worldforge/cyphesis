@@ -21,6 +21,7 @@
 #include "ModifyProperty.h"
 #include "rules/entityfilter/Providers.h"
 #include "BaseWorld.h"
+#include "ModifiersProperty.h"
 
 
 PropertyInstanceState<ModifyProperty::State> ModifyProperty::sInstanceState;
@@ -147,6 +148,7 @@ void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEnt
     if (state.parentEntity) {
         for (auto& entry: state.activeModifiers) {
             state.parentEntity->removeModifier(entry->propertyName, entry->modifier.get());
+            state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(flag_unsent);
         }
         state.activeModifiers.clear();
     }
@@ -182,13 +184,15 @@ void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)
 
             if (apply) {
                 if (state.activeModifiers.find(&modifyEntry) == state.activeModifiers.end()) {
-                    state.parentEntity->addModifier(modifyEntry.propertyName, modifyEntry.modifier.get());
+                    state.parentEntity->addModifier(modifyEntry.propertyName, modifyEntry.modifier.get(), &entity);
                     state.activeModifiers.insert(&modifyEntry);
+                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(flag_unsent);
                 }
             } else {
                 if (state.activeModifiers.find(&modifyEntry) != state.activeModifiers.end()) {
                     state.parentEntity->removeModifier(modifyEntry.propertyName, modifyEntry.modifier.get());
                     state.activeModifiers.erase(&modifyEntry);
+                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(flag_unsent);
                 }
             }
         }

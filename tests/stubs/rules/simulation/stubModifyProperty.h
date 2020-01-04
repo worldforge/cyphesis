@@ -75,7 +75,7 @@
 
 #ifndef STUB_ModifyProperty_newLocation
 //#define STUB_ModifyProperty_newLocation
-  void ModifyProperty::newLocation(State& state, LocatedEntity* e)
+  void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEntity* parent)
   {
     
   }

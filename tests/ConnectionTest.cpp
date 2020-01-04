@@ -674,9 +674,6 @@ void logEvent(LogEvent lev, const std::string & msg)
 }
 
 
-static long idGenerator = 0;
-
-
 void addToEntity(const Vector3D & v, std::vector<double> & vd)
 {
     vd.resize(3);

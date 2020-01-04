@@ -32,15 +32,15 @@ static const bool debug_flag = false;
 using Atlas::Message::MapType;
 
 TypeNode::TypeNode(std::string name)
-    : m_name(std::move(name)),
-      m_parent(nullptr)
+        : m_name(std::move(name)),
+          m_parent(nullptr)
 {
 }
 
 TypeNode::TypeNode(std::string name,
                    const Atlas::Objects::Root& d)
-    : m_name(std::move(name)),
-      m_parent(nullptr)
+        : m_name(std::move(name)),
+          m_parent(nullptr)
 {
     setDescription(d);
 }
@@ -67,10 +67,15 @@ void TypeNode::setDescription(const Atlas::Objects::Root& description)
 }
 
 TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
-                              std::unique_ptr<PropertyBase> prop)
+                                                    std::unique_ptr<PropertyBase> prop)
 {
-    auto* p = prop.get();
     TypeNode::PropertiesUpdate update;
+    if (prop->hasFlags(flag_instance)) {
+        log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", name, m_name));
+        return update;
+    }
+
+    auto* p = prop.get();
     auto existingI = m_defaults.find(name);
     if (existingI != m_defaults.end() && existingI->second.get() != prop.get()) {
         existingI->second = std::move(prop);
@@ -87,7 +92,7 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
         }
         Atlas::Message::Element propertyElement;
         p->get(propertyElement);
-        propertiesElement.Map()[name] =  propertyElement;
+        propertiesElement.Map()[name] = propertyElement;
         description->setAttr("properties", std::move(propertiesElement));
     };
 
@@ -106,8 +111,11 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
 void TypeNode::addProperties(const MapType& attributes)
 {
     for (const auto& entry : attributes) {
-        auto p = PropertyManager::instance().addProperty(entry.first,
-                                                                  entry.second.getType());
+        auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
+        if (p->hasFlags(flag_instance)) {
+            log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
+            continue;
+        }
         assert(p != nullptr);
         p->set(entry.second);
         p->addFlags(flag_class);
@@ -154,7 +162,10 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
             auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
-            assert(p != nullptr);
+            if (p->hasFlags(flag_instance)) {
+                log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
+                continue;
+            }
             p->addFlags(flag_class);
             p->install(this, entry.first);
             propertiesUpdate.newProps.emplace(entry.first);

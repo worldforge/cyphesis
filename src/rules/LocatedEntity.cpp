@@ -170,8 +170,8 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
         //Should we apply any modifiers?
         if (!I->second.modifiers.empty()) {
             I->second.baseValue = attr;
-            for (auto& modifier : I->second.modifiers) {
-                modifier->process(attr, I->second.baseValue);
+            for (auto& modifierEntry : I->second.modifiers) {
+                modifierEntry.first->process(attr, I->second.baseValue);
             }
         }
         prop = I->second.property.get();
@@ -203,7 +203,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
     return prop;
 }
 
-void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier)
+void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier, LocatedEntity* affectingEntity)
 {
     if (hasFlags(entity_modifiers_not_allowed)) {
         return;
@@ -219,7 +219,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             //Set the base value from the current
             I->second.property->get(I->second.baseValue);
         }
-        I->second.modifiers.emplace_back(modifier);
+        I->second.modifiers.emplace_back(modifier, affectingEntity);
         setAttr(propertyName, I->second.baseValue);
     } else {
 
@@ -231,7 +231,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             }
             //We need to create a new modifier entry.
             auto& modifiableProperty = m_properties[propertyName];
-            modifiableProperty.modifiers.emplace_back(modifier);
+            modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
             //Copy the default value.
             typeI->second->get(modifiableProperty.baseValue);
             //Apply the new value
@@ -239,7 +239,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
         } else {
             //We need to create a new modifier entry with a new property.
             auto& modifiableProperty = m_properties[propertyName];
-            modifiableProperty.modifiers.emplace_back(modifier);
+            modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
             //Apply the new value
             setAttr(propertyName, modifiableProperty.baseValue);
         }
@@ -259,7 +259,7 @@ void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* mo
 
     auto& modifiers = propertyI->second.modifiers;
     for (auto I = modifiers.begin(); I != modifiers.end(); ++I) {
-        if (modifier == *I) {
+        if (modifier == I->first) {
             modifiers.erase(I);
             //FIXME: If there's no base value we should remove the property, but there's no support in the storage manager for that yet.
             setAttr(propertyName, propertyI->second.baseValue);

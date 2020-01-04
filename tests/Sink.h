@@ -25,7 +25,7 @@
 class Sink : public Atlas::Bridge
 {
   public:
-    virtual ~Sink() { }
+    ~Sink() override = default;
 
 
     void streamBegin() override { };
@@ -37,6 +37,7 @@ class Sink : public Atlas::Bridge
     void mapIntItem(std::string name, Atlas::Message::IntType) override { };
     void mapFloatItem(std::string name, Atlas::Message::FloatType) override { };
     void mapStringItem(std::string name, std::string) override { };
+    void mapNoneItem(std::string name) override {};
     void mapEnd() override { };
 
     void listMapItem() override { };
@@ -44,6 +45,7 @@ class Sink : public Atlas::Bridge
     void listIntItem(Atlas::Message::IntType) override { };
     void listFloatItem(Atlas::Message::FloatType) override { };
     void listStringItem(std::string) override { };
+    void listNoneItem() override {};
     void listEnd() override { };
 };
 

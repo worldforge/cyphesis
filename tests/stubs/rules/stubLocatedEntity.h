@@ -308,7 +308,7 @@
 
 #ifndef STUB_LocatedEntity_addModifier
 //#define STUB_LocatedEntity_addModifier
-  void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier)
+  void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier, LocatedEntity* affectingEntity)
   {
     
   }

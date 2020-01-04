@@ -351,18 +351,18 @@ int SoftProperty::get(Atlas::Message::Element & val) const
     val = m_data;
     return 0;
 }
+#define STUB_SoftProperty_set
+void SoftProperty::set(const Atlas::Message::Element & val)
+{
+    m_data = val;
+}
 
 
 #include "stubs/rules/simulation/stubDomainProperty.h"
 #include "stubs/common/stubProperty.h"
 #include "stubs/common/stubTypeNode.h"
 #include "stubs/common/stubPropertyManager.h"
-namespace Atlas { namespace Objects { namespace Operation {
-int SETUP_NO = -1;
-int TICK_NO = -1;
-int RELAY_NO = -1;
-} } }
-
+#include "stubs/common/stubcustom.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stublog.h"
 #include "stubs/rules/stubScript.h"

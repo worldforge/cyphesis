@@ -71,20 +71,14 @@ int main(int argc, char ** argv)
     // Check it is there as a property
     assert(thing->getProperty("test_attr1") != 0);
     assert(thing->modProperty("test_attr1") != 0);
-    // Check it is there as an integer property
-    assert(thing->modPropertyType<int>("test_attr1") != 0);
-    // Check it is not available as any other type.
-    assert(thing->modPropertyType<double>("test_attr1") == 0);
-    assert(thing->modPropertyType<std::string>("test_attr1") == 0);
+    Atlas::Message::Element val;
+    assert(thing->getProperty("test_attr1")->get(val) == 0);
+    assert(val.isInt());
+    // Check it is not available as any other type as it was installed as a soft property.
+    assert(!thing->modPropertyType<int>("test_attr1"));
+    assert(!thing->modPropertyType<double>("test_attr1"));
+    assert(!thing->modPropertyType<std::string>("test_attr1"));
 
-    Property<int> * int_prop = thing->modPropertyType<int>("test_attr1");
-    assert(int_prop != 0);
-    // assert(int_prop->flags() & flag_unsent);
-    // TODO(alriddoch) make sure flags behave fully correctly, and signals
-    // are emitted as required.
-
-    // TODO(alriddoch) add coverage for calling requirePropertyClass() when
-    // a property of the wrong type already exists.
 }
 
 // stubs

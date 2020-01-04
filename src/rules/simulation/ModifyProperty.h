@@ -30,6 +30,7 @@
  *
  * When such an entity is added as a child to another entity the modifiers defined can be applied, if the constraints are fulfilled.
  * This allows us to model various effects, such as armor and weapons affecting the character which wears them.
+ * \ingroup PropertyClasses
  */
 class ModifyProperty : public PropertyBase
 {

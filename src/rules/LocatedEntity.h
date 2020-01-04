@@ -61,7 +61,7 @@ struct ModifiableProperty
 {
     std::unique_ptr<PropertyBase> property;
     Atlas::Message::Element baseValue;
-    std::vector<Modifier*> modifiers;
+    std::vector<std::pair<Modifier*, LocatedEntity*>> modifiers;
 };
 
 typedef std::set<Ref<LocatedEntity>> LocatedEntitySet;
@@ -348,7 +348,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         */
         bool canReach(const EntityLocation& entityLocation, float extraReach = 0) const;
 
-        void addModifier(const std::string& propertyName, Modifier* modifier);
+        void addModifier(const std::string& propertyName, Modifier* modifier, LocatedEntity* affectingEntity);
 
         void removeModifier(const std::string& propertyName, Modifier* modifier);
 
