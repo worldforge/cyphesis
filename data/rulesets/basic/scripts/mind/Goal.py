@@ -7,10 +7,9 @@ import types
 from common import log
 
 
-## \defgroup PythonGoals Goal Classes
-
-## \brief Base class for all goals
-## \ingroup PythonGoals
+# \defgroup PythonGoals Goal Classes
+# \brief Base class for all goals
+# \ingroup PythonGoals
 class Goal:
     def __init__(self, desc="some goal", fulfilled=None, subgoals=None,
                  validity=None, time=None, debug=0):
@@ -70,7 +69,8 @@ class Goal:
             return name + "(" + repr(self.desc) + ")"
         var = ""
         for v in self.vars:
-            if var: var = var + ","
+            if var:
+                var = var + ","
             var = var + repr(getattr(self, v))
         return name + "(" + var + ")"
 
@@ -80,7 +80,7 @@ class Goal:
         return self.validity(me)
 
     def check_goal(self, me, time):
-        "executes goal. Any response that's not None causes the goal checking code to stop after this goal"
+        """executes goal. Any response that's not None causes the goal checking code to stop after this goal"""
         if self.debug:
             log.thinking("GOAL desc: " + str(self))
         res, debug_info = self.check_goal_rec(me, time, 0, "")
@@ -94,9 +94,11 @@ class Goal:
         
         This is done by iterating over all sub goals, breaking if any sub goal returns an operation."""
         res = None
-        if self.irrelevant: return res, debug_info
+        if self.irrelevant:
+            return res, debug_info
         # is it right time range?
-        if self.time and not time.is_now(self.time): return res, debug_info
+        if self.time and not time.is_now(self.time):
+            return res, debug_info
         if self.debug:
             log.thinking("\t" * depth + "GOAL: bef fulfilled: " + self.desc + " " + repr(self.fulfilled))
         if self.fulfilled(me):
@@ -189,7 +191,7 @@ def goal_create(goal_element):
                 return instance
             else:
                 print('Could not create goal from data\n {}'.format(str(goal_element)))
-        except:
+        except Exception:
             print('Error when creating goal from data\n {}'.format(str(goal_element)))
             raise
     return None

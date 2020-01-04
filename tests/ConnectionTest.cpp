@@ -660,18 +660,13 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 
 
 #include "stubs/common/stubInheritance.h"
+#include "stubs/common/stublog.h"
 
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash )
 {
 }
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
+
 
 
 void addToEntity(const Vector3D & v, std::vector<double> & vd)

@@ -4,6 +4,7 @@
 
 import entity_filter
 from atlas import Operation, Entity
+
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal

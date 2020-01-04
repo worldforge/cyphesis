@@ -1590,23 +1590,11 @@ long integerId(const std::string & id)
 
     return intId;
 }
+#include "stubs/common/stublog.h"
 
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 bool database_flag = false;
-
-namespace Atlas { namespace Objects { namespace Operation {
-
-int MONITOR_NO = -1;
-int THOUGHT_NO = -1;
-int GOAL_INFO_NO=-1;
-} } }
+#include "stubs/common/stubcustom.h"
 
 #include <common/Shaker.h>
 

@@ -363,7 +363,5 @@ int main()
 #include "stubs/common/stubProperty.h"
 #include "common/Property_impl.h"
 #include "stubs/rules/stubLocation.h"
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string& msg)
-{
-}

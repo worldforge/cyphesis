@@ -1,14 +1,16 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-import mind.goals
-import mind.goals.common
-from atlas import Operation, Entity
-from mind.Goal import Goal
-from mind.goals.common.common import *
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
+from atlas import Operation, Entity, Oplist
 from physics import Point3D
 from rules import Location
+
+import mind.goals
+import mind.goals.common
+from mind.Goal import Goal
+from mind.goals.common.common import *
+from mind.goals.common.misc_goal import hireling_transaction
+from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
 # class sell_things(add_unique_goal_by_perception):
@@ -33,7 +35,7 @@ class hire_trade(DynamicGoal):
             print("No price")
             return
         # print "I go for " + str(price) + " coins"
-        goal = mind.goals.common.misc_goal.hireling_transaction('services', op.to, price)
+        goal = hireling_transaction('services', op.to, price)
         me.goals.insert(0, goal)
         return Operation("talk", Entity(say=me.map.get(op.to).name + " one day will be " + str(price) + " coins"))
 
@@ -118,7 +120,7 @@ class buy_livestock(DynamicGoal):
         object = say[1].word
         thing = me.map.get(object)
         who = me.map.get(op.to)
-        if thing == None:
+        if thing is None:
             if object != self.what:
                 return Operation("talk",
                                  Entity(say=who.name + ", I am not interested in buying your " + str(object) + "."))

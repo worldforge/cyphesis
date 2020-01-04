@@ -159,14 +159,7 @@ Admin::~Admin()
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/stubLocation.h"
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 bool database_flag = false;
 

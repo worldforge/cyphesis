@@ -1,7 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
-from atlas import *
+from atlas import Operation, Entity, Oplist
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from physics import Point3D
 from rules import Location
@@ -22,7 +22,7 @@ class school(DynamicGoal):
             # print "detecting myself"
             return
         ent = me.map.get(ent.id)
-        if ent == None:
+        if ent is None:
             # print "type is none"
             return
         if ent.name != me.name:
@@ -44,13 +44,13 @@ class school(DynamicGoal):
             return
         distance = (ent.location.pos - me.entity.location.pos).mag()
         id = me.get_knowledge('focus', 'hook')
-        if id != None:
+        if id:
             thing = me.map.get(id)
-            if thing == None:
-                me.remove_knowledge('focus', what)
+            if thing is None:
+                me.remove_knowledge('focus', self.what)
             else:
                 if thing.location.parent.id != me.entity.location.parent.id:
-                    me.remove_knowledge('focus', what)
+                    me.remove_knowledge('focus', self.what)
                 else:
                     if thing.location.parent.id == me.entity.id:
                         return

@@ -194,7 +194,4 @@ bool TypeNode::isTypeOf(const TypeNode * base_type) const
     return false;
 }
 #include "stubs/common/stubTypeNode.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

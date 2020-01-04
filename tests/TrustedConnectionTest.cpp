@@ -257,13 +257,8 @@ void encrypt_password(const std::string & pwd, std::string & hash)
 {
 }
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
 
 static long idGenerator = 0;
 

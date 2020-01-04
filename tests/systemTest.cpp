@@ -144,14 +144,8 @@ int main()
     return 0;
 #endif // HAVE_GETTIMEOFDAY
 }
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
-void rotateLogger()
-{
-}
 
 bool exit_flag = false;
 bool exit_flag_soft = false;

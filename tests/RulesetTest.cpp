@@ -452,13 +452,7 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root & obj)
 
 #include "stubs/common/stubInheritance.h"
 #include "stubs/common/stubTypeNode.h"
-
-
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
+#include "stubs/common/stublog.h"
 #include "stubs/common/stubEntityKit.h"
 #include "stubs/server/stubEntityFactory.h"
 #include "stubs/server/stubEntityRuleHandler.h"

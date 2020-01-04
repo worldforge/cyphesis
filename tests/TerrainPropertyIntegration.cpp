@@ -64,9 +64,7 @@ int main()
 #include "common/log.h"
 #include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubLink.h"
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 int timeoffset = 0;

@@ -537,21 +537,5 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
+#include "stubs/common/stublog.h"
+#include "stubs/common/stubid.h"

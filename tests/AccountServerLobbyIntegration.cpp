@@ -254,14 +254,8 @@ void Link::send(const OpVector& opVector) const
 #include "stubs/common/stubRouter.h"
 #include "stubs/common/stubcustom.h"
 #include "stubs/common/stubid.h"
+#include "stubs/common/stublog.h"
 
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 bool database_flag = false;
 std::string instance("130779df-1e84-4c61-9caf-3e1506597fe1");

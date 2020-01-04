@@ -158,10 +158,7 @@ void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 #include "stubs/rules/stubLocatedEntity.h"
 
 #include "stubs/common/stubRouter.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 PyObject * Get_PyClass(PyObject * module,
                        const std::string & package,

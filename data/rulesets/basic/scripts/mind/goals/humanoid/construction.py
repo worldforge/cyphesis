@@ -3,9 +3,9 @@
 
 import entity_filter
 from atlas import Operation, Entity
-from mind.goals.common.misc_goal import *
+from physics import square_distance
+
 from mind.goals.common.move import *
-from physics import *
 
 
 # Gather a resource from nearby
@@ -66,9 +66,9 @@ class harvest_resource(Goal):
         if hasattr(entity, "sizeAdult"):
             # Only chop down adult plants which have grown at least 1.1 times their adult size
             # (so that we give the trees some time to disperse seeds, which they only do when they are adult)
-            sizeAdult = entity.sizeAdult
+            size_adult = entity.sizeAdult
             entity_height = entity.location.bbox.high_corner.y
-            if entity_height >= (sizeAdult * 1.1):
+            if entity_height >= (size_adult * 1.1):
                 return True
             return False
         return True
@@ -121,13 +121,13 @@ class plant_seeds(Goal):
             # FIXME We need to sort out how to tell seed one is wielding
             return Operation("wield", Entity(tool.id))
         id = me.get_knowledge('focus', self.seed)
-        if id == None:
+        if id is None:
             return
         seed = me.map.get(id)
-        if seed == None:
+        if seed is None:
             me.remove_knowledge('focus', self.seed)
             return
-        if seed.visible == False:
+        if not seed.visible:
             me.remove_knowledge('focus', self.seed)
             return
 

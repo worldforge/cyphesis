@@ -54,20 +54,8 @@ int main()
 
 #include "stubs/server/stubExternalMindsManager.h"
 #include "stubs/server/stubExternalMindsConnection.h"
-
-namespace Atlas { namespace Objects { namespace Operation {
-int SETUP_NO = -1;
-} } }
-
+#include "stubs/common/stubcustom.h"
 #include "stubs/rules/python/stubPythonClass.h"
-
-MindKit::MindKit()
-{
-}
-
-MindKit::~MindKit()
-{
-}
 
 template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,

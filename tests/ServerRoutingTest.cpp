@@ -359,32 +359,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "stubs/rules/simulation/stubBaseWorld.h"
-
-
-static long idGenerator = 0;
-
-long newId(std::string& id)
-{
-    if (stub_deny_newid) {
-        return -1;
-    }
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
-
-long integerId(const std::string& id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
+#include "stubs/common/stubid.h"
 
 const char* const CYPHESIS = "cyphesis";
 

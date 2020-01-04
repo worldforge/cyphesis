@@ -2,6 +2,7 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
 from atlas import Operation, Entity
+
 from mind.Goal import Goal
 from mind.goals.common.move import move_me
 from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception

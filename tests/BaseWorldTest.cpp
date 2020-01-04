@@ -162,19 +162,9 @@ int main()
     return 0;
 }
 
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
+#include "stubs/common/stubid.h"
+#include "stubs/common/stublog.h"
 
-    return intId;
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 int timeoffset = 0;
 

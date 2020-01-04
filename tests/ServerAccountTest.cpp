@@ -422,15 +422,8 @@ void Router::error(const Operation & op,
 }
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/stubLocation.h"
+#include "stubs/common/stublog.h"
 
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 bool database_flag = false;
 

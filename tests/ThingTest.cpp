@@ -166,20 +166,8 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/rules/simulation/stubModeDataProperty.h"
 #include "stubs/modules/stubWeakEntityRef.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
+#include "stubs/common/stublog.h"
+#include "stubs/common/stubid.h"
 
 template <typename FloatT>
 int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)

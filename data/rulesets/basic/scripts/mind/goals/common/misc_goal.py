@@ -5,12 +5,15 @@
 import time
 from random import *
 
+from atlas import Operation, Entity, Oplist
+
 import entity_filter
 from mind.Goal import Goal
 from mind.goals.common.common import *
-from mind.goals.common.move import *
-from physics import *
+from mind.goals.common.move import move_me_place, move_me, pick_up_possession, move_me_area, move_me_to_focus, pick_up_focus, move_it_outof_me, hunt_for, move_it, accompany
+from physics import square_distance, Vector3D, Point3D
 from rules import Location
+from common import const
 
 
 ######################## MAKE LOTS OF SOMETHING ###############################
@@ -347,7 +350,7 @@ class sit_down(Goal):
                       self.am_i_sat,
                       [spot_something(where),
                        move_me_to_focus(where),
-                       sit])
+                       self.sit])
 
     def am_i_sat(self, me):
         return me.entity.props.mode == "sitting"
@@ -377,10 +380,10 @@ class amble(Goal):
         if id != None:
             thing = me.map.get(id)
             if thing == None:
-                me.remove_knowledge('focus', what)
+                me.remove_knowledge('focus', self.what)
             else:
                 if thing.location.parent.id != me.entity.location.parent.id:
-                    me.remove_knowledge('focus', what)
+                    me.remove_knowledge('focus', self.what)
                 else:
                     if thing.location.parent.id == me.entity.id:
                         return

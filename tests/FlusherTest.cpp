@@ -247,6 +247,4 @@ namespace Atlas { namespace Objects { namespace Operation {
 int TICK_NO = 1000;
 } } }
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

@@ -3,9 +3,8 @@
 
 import re
 
-from atlas import *
-from physics import *
-from physics import Vector3D
+from atlas import Operation, Entity
+from physics import distance_to, Vector3D
 from rules import Location
 
 sowee_pattern = re.compile("[Ss]owee")

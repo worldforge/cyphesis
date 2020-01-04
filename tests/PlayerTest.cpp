@@ -316,13 +316,7 @@ long newId(std::string & id)
     return new_id;
 }
 
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 bool database_flag = false;
 

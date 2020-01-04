@@ -1,18 +1,15 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 
-from random import *
+import types
 
 import entity_filter
-from mind.Goal import Goal, goal_create
-from mind.goals.common.common import *
-from mind.goals.common.misc_goal import *
-from physics import *
-from physics import Point3D
-from physics import Vector3D
-from rules import Location
+from atlas import Operation, Entity, Oplist
+from common import const
+from physics import Point3D, Vector3D, distance_to, square_horizontal_distance, square_distance
+from rules import Location, isLocation
 
-from .common import const
+from mind.goals.common.misc_goal import *
 
 
 ############################ MOVE ME ####################################
@@ -34,8 +31,7 @@ class move_me(Goal):
         self.squared_radius = radius * radius
 
     def get_location_instance(self, me):
-        if type(self.location) == LambdaType or type(self.location) == FunctionType or type(
-                self.location) == MethodType:
+        if isinstance(self.location, types.LambdaType) or isinstance(self.location, types.FunctionType) or isinstance(self.location, types.MethodType):
             # print "Lambda location"
             return self.location(me)
         if type(self.location) == str:
@@ -122,7 +118,7 @@ class move_me_area(Goal):
     def get_location_instance(self, me):
         # FIXME Duplicate of method from move_me() goal
         location_ = self.location
-        if type(location_) == LambdaType:
+        if isinstance(location_, types.LambdaType):
             # print "Lambda location"
             location_ = location_(me)
         if type(location_) == str:
@@ -647,9 +643,8 @@ class patrol(Goal):
         self.count = len(locations)
         self.vars = ["stage", "list"]
 
-    """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
-
     def check_move_valid(self, me):
+        """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
         return self.subgoals[0].is_valid(me)
 
     def increment(self, me):
@@ -676,7 +671,7 @@ class accompany(Goal):
     def am_i_with(self, me):
         id = me.get_knowledge('focus', self.who)
         who = me.map.get(str(id))
-        if who == None:
+        if who is None:
             return 0
 
         dist = distance_to(me.entity.location, who.location)

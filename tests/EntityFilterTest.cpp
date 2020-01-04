@@ -842,8 +842,4 @@ const TypeNode* Inheritance::getType(const std::string& parent) const
 }
 
 #include "stubs/common/stubInheritance.h"
-
-void log(LogLevel lvl, const std::string& msg)
-{
-}
-
+#include "stubs/common/stublog.h"

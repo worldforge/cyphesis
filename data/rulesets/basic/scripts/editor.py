@@ -1,6 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
-from atlas import *
+from atlas import Operation, Entity
+
 from mind.panlingua import interlinguish
 
 il = interlinguish
@@ -50,8 +51,8 @@ class editor:
         # kw['type']=name
         ent = Entity(*(), **kw)
         # ent=Entity(kw)
-        ##         if hasattr(ent,"copy"):
-        ##             foo
+        #         if hasattr(ent,"copy"):
+        #             foo
         return self.avatar.make(ent)
 
     def set(self, _id, **kw):
@@ -80,8 +81,8 @@ class editor:
             return knowledge.id
 
     def _say(self, target, verb, subject, object, predicate=None):
-        ##         es=Entity(verb=verb,subject=subject,object=object)
-        ##         self.avatar.send(Operation("talk",es,to=target))
+        #         es=Entity(verb=verb,subject=subject,object=object)
+        #         self.avatar.send(Operation("talk",es,to=target))
         if type(subject) == object:
             subject = subject.id
         elif type(subject) == tuple:

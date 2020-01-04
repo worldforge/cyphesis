@@ -579,8 +579,5 @@ int main()
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/rules/stubLocation.h"
 #include "stubs/rules/simulation/stubModeProperty.h"
+#include "stubs/common/stublog.h"
 
-
-void log(LogLevel lvl, const std::string& msg)
-{
-}

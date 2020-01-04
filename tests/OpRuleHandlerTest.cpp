@@ -154,7 +154,4 @@ Root atlasOpDefinition(const std::string & name, const std::string & parent)
 {
     return Root();
 }
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

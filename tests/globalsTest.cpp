@@ -49,10 +49,8 @@ int main(int argc, char ** argv)
 }
 
 // stubs
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 void getinstallprefix()
 {

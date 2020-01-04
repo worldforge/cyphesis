@@ -96,7 +96,4 @@ int main()
 #include "stubs/rules/simulation/stubThing.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/stubLocation.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

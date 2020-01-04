@@ -287,7 +287,5 @@ void Link::send(const Operation & op) const
 #include "stubs/common/stubLink.h"
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/simulation/stubBaseWorld.h"
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}

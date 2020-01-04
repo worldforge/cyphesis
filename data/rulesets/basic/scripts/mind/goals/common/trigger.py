@@ -3,10 +3,11 @@
 
 from random import *
 
-from atlas import *
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
+from atlas import Operation, Entity
 from physics import *
 from rules import Location
+
+from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
 class chase(DynamicGoal):

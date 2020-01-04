@@ -229,7 +229,4 @@ HandlerResult Script::operation(const std::string & opname,
     return Tasktest::get_Script_operation_ret();
 }
 #include "stubs/rules/stubScript.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

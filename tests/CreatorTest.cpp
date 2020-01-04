@@ -156,17 +156,8 @@ void Character::filterExternalOperation(const Operation & op)
     Creatortest::Character_filterExternalOperation_called(op);
 }
 
+#include "stubs/common/stublog.h"
 
-
-
-
-
-
-
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 
 template <typename FloatT>
 int fromStdVector(Point3D & p, const std::vector<FloatT> & vf)

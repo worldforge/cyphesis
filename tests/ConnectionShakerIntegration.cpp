@@ -179,40 +179,16 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 #endif //STUB_Inheritance_getType
 
 #include "stubs/common/stubInheritance.h"
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
 void hash_password(const std::string & pwd, const std::string & salt,
                    std::string & hash )
 {
     salt_length=salt.length();
 }
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
 
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
+#include "stubs/common/stubid.h"
 
-    return intId;
-}
-
-static long idGenerator = 0;
-
-long newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
 
 void addToEntity(const Vector3D & v, std::vector<double> & vd)
 {

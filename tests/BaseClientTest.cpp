@@ -115,29 +115,14 @@ RootOperation ClientConnection::pop()
 #include "stubs/client/cyclient/stubCharacterClient.h"
 #include "stubs/rules/ai/stubMemMap.h"
 #include "stubs/common/stubAtlasStreamClient.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 std::string create_session_username()
 {
     return "admin_test";
 }
 
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
-
-
-
-
+#include "stubs/common/stubid.h"
 #include "stubs/rules/stubMemEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
 #include "stubs/common/stubRouter.h"

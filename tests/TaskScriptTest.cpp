@@ -524,7 +524,4 @@ void LocatedEntity::merge(const Atlas::Message::MapType & ent)
 }
 
 #include "stubs/common/stubRouter.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

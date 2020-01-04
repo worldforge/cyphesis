@@ -540,20 +540,5 @@ WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
     return 1.0;
 }
-
-void log(LogLevel lvl, const std::string & msg)
-{
-    std::cout << msg << std::endl;
-}
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
-
-
+#include "stubs/common/stublog.h"
+#include "stubs/common/stubid.h"

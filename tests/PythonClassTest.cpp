@@ -168,10 +168,8 @@ int main()
 #include "common/log.h"
 
 #include "rules/python/Python_Script_Utils.h"
+#include "stubs/common/stublog.h"
 
-void log(LogLevel lvl, const std::string& msg)
-{
-}
 
 Py::Object Get_PyClass(const Py::Module& module,
                        const std::string & package,

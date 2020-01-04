@@ -3,11 +3,12 @@
 
 import entity_filter
 from atlas import Operation, Entity
+from physics import square_distance, distance_between
+
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import spot_something
 from mind.goals.common.move import avoid, move_me_to_focus
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
-from physics import square_distance, distance_between
 
 # A list of usages which we should look for in weapons.
 weapon_usages = ['strike', 'chop']

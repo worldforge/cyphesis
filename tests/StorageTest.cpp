@@ -220,9 +220,7 @@ int main()
 
 bool database_flag = true;
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 #define STUB_Database_newId
 long Database::newId(std::string & id)

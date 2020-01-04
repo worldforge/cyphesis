@@ -317,7 +317,4 @@ int main()
 // stubs
 
 #include "common/log.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

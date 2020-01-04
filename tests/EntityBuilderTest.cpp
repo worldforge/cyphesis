@@ -444,10 +444,7 @@ void LocatedEntity::merge(const MapType& ent)
 }
 
 #include "stubs/rules/stubLocatedEntity.h"
-
-void log(LogLevel lvl, const std::string& msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 #ifndef STUB_Inheritance_Inheritance
 #define STUB_Inheritance_Inheritance
@@ -655,16 +652,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/server/stubCorePropertyManager.h"
 #include "stubs/common/stubPropertyManager.h"
-
-long integerId(const std::string& id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
+#include "stubs/common/stubid.h"
 
 Root atlasClass(const std::string& name, const std::string& parent)
 {

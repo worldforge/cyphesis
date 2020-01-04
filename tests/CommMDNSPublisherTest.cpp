@@ -68,9 +68,8 @@ int CommSocket::flush()
     return 0;
 }
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
+
 
 namespace consts {
 

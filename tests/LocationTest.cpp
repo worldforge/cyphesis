@@ -84,13 +84,12 @@ void testDistanceFunctions()
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
         Point3D relPos = relativePos(ent1->m_location, ent2->m_location);
-        assert(relPos.isValid());
+        //position should not be valid if there's no connection between locations
+        assert(!relPos.isValid());
 
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
 
-        ent1->m_location.m_parent = 0;
-        ent2->m_location.m_parent = 0;
     }
 
     {
@@ -105,7 +104,8 @@ void testDistanceFunctions()
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
         Point3D relPos = relativePos(ent1->m_location, ent2->m_location);
-        assert(relPos.isValid());
+        //position should not be valid if there's no connection between locations
+        assert(!relPos.isValid());
 
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
@@ -126,7 +126,8 @@ void testDistanceFunctions()
         ent2->m_location.m_orientation = WFMath::Quaternion().identity();
 
         Point3D relPos = relativePos(ent1->m_location, ent2->m_location);
-        assert(relPos.isValid());
+        //position should not be valid if there's no connection between locations
+        assert(!relPos.isValid());
 
         std::cout << "RelPos ent1 -> ent2: " << relPos
                   << std::endl << std::flush;
@@ -594,7 +595,4 @@ int main()
 
 // stubs
 
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"

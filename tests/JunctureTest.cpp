@@ -507,11 +507,7 @@ void Peer::cleanTeleports()
 #include "stubs/server/stubConnection.h"
 #include "stubs/server/stubConnectableRouter.h"
 #include "stubs/common/stubRouter.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
+#include "stubs/common/stublog.h"
 #include <common/Shaker.h>
 
 Shaker::Shaker()

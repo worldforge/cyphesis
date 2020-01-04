@@ -3,7 +3,10 @@
 
 from random import *
 
+from common import const
 from atlas import Operation, Entity
+from physics import Vector3D
+
 from mind.Goal import Goal
 
 

@@ -164,8 +164,4 @@ const PropertyBase * LocatedEntity::getProperty(const std::string & name) const
 #include "stubs/common/stubRouter.h"
 #include "stubs/rules/simulation/stubBaseWorld.h"
 #include "stubs/rules/stubLocation.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
-
+#include "stubs/common/stublog.h"

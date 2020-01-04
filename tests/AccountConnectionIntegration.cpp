@@ -321,16 +321,7 @@ void Link::send(const Operation & op) const
 #include "stubs/common/stubDatabase.h"
 #include "stubs/server/stubPossessionAuthenticator.h"
 #include "stubs/server/stubPersistence.h"
-
-void log(LogLevel lvl, const std::string & msg)
-{
-    std::cout << msg << std::endl;
-}
-
-void logEvent(LogEvent lev, const std::string & msg)
-{
-}
-
+#include "stubs/common/stublog.h"
 #include "stubs/rules/simulation/stubThing.h"
 #include "stubs/rules/simulation/stubEntity.h"
 #include "stubs/rules/stubLocatedEntity.h"
@@ -341,30 +332,11 @@ void logEvent(LogEvent lev, const std::string & msg)
 #include "stubs/common/stubOperationsDispatcher.h"
 #include "stubs/rules/stubLocation.h"
 #include "stubs/common/stubPropertyManager.h"
-
-long integerId(const std::string & id)
-{
-    long intId = strtol(id.c_str(), 0, 10);
-    if (intId == 0 && id != "0") {
-        intId = -1L;
-    }
-
-    return intId;
-}
+#include "stubs/common/stubid.h"
 
 static long idGenerator = 500;
 
 #include <cstdio>
-
-long newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
 
 void encrypt_password(const std::string & pwd, std::string & hash)
 {

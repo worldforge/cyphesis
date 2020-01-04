@@ -202,9 +202,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 }
 
 
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 
 template <typename FloatT>

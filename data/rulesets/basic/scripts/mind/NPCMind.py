@@ -6,20 +6,18 @@ import traceback
 
 import ai
 import entity_filter
-import mind.goals
-import mind.goals.common
 from atlas import Operation, Entity, Oplist
 from common import log, const
+from physics import Vector3D, distance_to, Quaternion
+from rules import Location
+
+import mind.goals
+import mind.goals.common
 from mind.Goal import goal_create
 from mind.Knowledge import Knowledge
 from mind.Memory import Memory
 from mind.compass import vector_to_compass
 from mind.panlingua import interlinguish, ontology
-from physics import *
-from physics import Quaternion
-from physics import Vector3D
-from rules import Location
-
 from . import dictlist
 
 reverse_cmp = {'>': '<'}
@@ -54,7 +52,7 @@ class NPCMind(ai.Mind):
     goals which are checked each tick, self.trigger_goals are goals which
     are activated by an event."""
 
-    ########## Initialization
+    # Initialization
     def __init__(self, cppthing):
         # FIXME: this shouldn't be needed
         self.mind = cppthing
@@ -62,7 +60,7 @@ class NPCMind(ai.Mind):
         print('init')
 
         self.knowledge = Knowledge()
-        self.mem = Memory(map=self.map)
+        self.mem = Memory(a_map=self.map)
         self.things = {}
         self.pending_things = []
         self._reverse_knowledge()
@@ -98,7 +96,7 @@ class NPCMind(ai.Mind):
     def goals_updated(self, entity):
         print('Goals updated.')
         # For now just clear and recreate all goals when _goals changes. We would probably rather only recreate those that have changed though.
-        goals = entity.props._goals
+        goals = entity.props['_goals']
         # First clear all goals
         while len(self.goals):
             self.remove_goal(self.goals[0])
@@ -191,10 +189,10 @@ class NPCMind(ai.Mind):
            to other entities."""
         talk_entity = op[0]
         if hasattr(talk_entity, "address"):
-            addressElement = talk_entity.address
-            if len(addressElement) == 0:
+            address_element = talk_entity.address
+            if len(address_element) == 0:
                 return True
-            return self.entity.id in addressElement
+            return self.entity.id in address_element
         return True
 
     def update_relation_for_entity(self, entity):
@@ -213,7 +211,7 @@ class NPCMind(ai.Mind):
         self.map.add_entity_memory(entity.id, "disposition", disposition)
         self.map.add_entity_memory(entity.id, "threat", threat)
 
-    ########## Map updates
+    # Map updates
     def add_map(self, obj):
         """Hook called by underlying map code when an entity is added."""
         # print "Map add",obj
@@ -240,7 +238,7 @@ class NPCMind(ai.Mind):
         self.entities.pop(obj.id)
         self.remove_thing(obj)
 
-    ########## Operations
+    # Operations
     def setup_operation(self, op):
         """called once by world after object has been made
            send first tick operation to object
@@ -287,7 +285,7 @@ class NPCMind(ai.Mind):
                     self.message_queue = None
                 return op_tick + result
 
-    ########## Sight operations
+    # Sight operations
     def sight_create_operation(self, op):
         """Note our ownership of entities we created.
         
@@ -471,27 +469,27 @@ class NPCMind(ai.Mind):
         Check if we have any of the type of thing the other character is
         interested in, and whether we know what price to sell at. If so
         set up the transaction goal, which offers to sell it."""
-        object = say[1].word
-        thing = self.things.get(object)
-        if thing:
-            price = self.get_knowledge("price", object)
+        word_object = say[1].word
+        word_thing = self.things.get(word_object)
+        if word_thing:
+            price = self.get_knowledge("price", word_object)
             if not price:
                 return
-            goal = mind.goals.common.misc_goal.transaction(object, op.to, price)
+            goal = mind.goals.common.misc_goal.transaction(word_object, op.to, price)
             who = self.map.get(op.to)
             self.goals.insert(0, goal)
             return Operation("talk", Entity(
-                say=self.thing_name(who) + " one " + object + " will be " + str(price) + " coins")) + self.face(who)
+                say=self.thing_name(who) + " one " + word_object + " will be " + str(price) + " coins")) + self.face(who)
 
     def interlinguish_desire_verb3_operation(self, op, say):
         """Handle a sentence of the form 'I would like to ...'"""
-        object = say[2:]
-        verb = interlinguish.get_verb(object)
-        operation_method = self.find_op_method(verb, "interlinguish_desire_verb3_",
+        word_object = say[2:]
+        word_verb = interlinguish.get_verb(word_object)
+        operation_method = self.find_op_method(word_verb, "interlinguish_desire_verb3_",
                                                self.interlinguish_undefined_operation)
         res = Oplist()
-        res = res + self.call_interlinguish_triggers(verb, "interlinguish_desire_verb3_", op, object)
-        res = res + operation_method(op, object)
+        res = res + self.call_interlinguish_triggers(word_verb, "interlinguish_desire_verb3_", op, word_object)
+        res = res + operation_method(op, word_object)
         return res
 
     def interlinguish_be_verb1_operation(self, op, say):
@@ -514,18 +512,18 @@ class NPCMind(ai.Mind):
         in our knowledge base."""
         if not self.admin_sound(op):
             return self.interlinguish_warning(op, say, "You are not admin")
-        subject = say[1].word
-        predicate = say[2].word
-        object = say[3].word
-        ##        print "know:",subject,predicate,object
-        if object[0] == '(':
+        word_subject = say[1].word
+        word_predicate = say[2].word
+        word_object = say[3].word
+        #        print "know:",subject,predicate,object
+        if word_object[0] == '(':
             # CHEAT!: remove eval
-            xyz = list(eval(object))
+            xyz = list(eval(word_object))
             loc = self.entity.location.copy()
             loc.pos = Vector3D(xyz)
-            self.add_knowledge(predicate, subject, loc)
+            self.add_knowledge(word_predicate, word_subject, loc)
         else:
-            self.add_knowledge(predicate, subject, object)
+            self.add_knowledge(word_predicate, word_subject, word_object)
 
     def interlinguish_tell_verb1_operation(self, op, say):
         """Handle a sentence of the form 'Tell (me) ....'
@@ -540,10 +538,10 @@ class NPCMind(ai.Mind):
 
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
-        subject = say[1].word
-        predicate = say[2].word
-        object = say[3].word
-        k = self.get_knowledge(predicate, object)
+        word_subject = say[1].word
+        word_predicate = say[2].word
+        word_object = say[3].word
+        k = self.get_knowledge(word_predicate, word_object)
         if k is None:
             pass
         # return Operation('talk',Entity(say="I know nothing about the "+predicate+" of "+object))
@@ -560,10 +558,10 @@ class NPCMind(ai.Mind):
                     k = '%f metres %s' % (distmag, vector_to_compass(dist))
             elif k_type != str:
                 k = 'difficult to explain'
-            elif predicate == 'about':
+            elif word_predicate == 'about':
                 return self.face_and_address(op.to, k)
-            return self.face_and_address(op.to, "The " + predicate + " of " +
-                                         object + " is " + k)
+            return self.face_and_address(op.to, "The " + word_predicate + " of " +
+                                         word_object + " is " + k)
 
     def interlinguish_list_verb1_operation(self, op, say):
         """Handle a sentence of the form 'List (me) ....'
@@ -580,9 +578,9 @@ class NPCMind(ai.Mind):
 
         # Currently no checking for trus here.
         # We are being liberal with interpretation of "subject" and "object"
-        subject = say[1].word
-        predicate = say[2].word
-        if predicate == 'all knowledge':
+        word_subject = say[1].word
+        word_predicate = say[2].word
+        if word_predicate == 'all knowledge':
             res = Oplist()
             res = res + self.face(self.map.get(op.to))
             for attr in dir(self.knowledge.knowings):
@@ -593,13 +591,13 @@ class NPCMind(ai.Mind):
                                              key + " is " + str(d[key]))
             return res
         else:
-            d = self.knowledge.get(predicate)
+            d = self.knowledge.get(word_predicate)
             if len(d) == 0:
                 return None
             res = Oplist()
             res = res + self.face(self.map.get(op.to))
             for key in d:
-                res = res + self.address(op.to, "The " + predicate + " of " +
+                res = res + self.address(op.to, "The " + word_predicate + " of " +
                                          key + " is " + str(d[key]))
             return res
 
@@ -611,22 +609,22 @@ class NPCMind(ai.Mind):
         tool, or raw material."""
         if not self.admin_sound(op):
             return self.interlinguish_warning(op, say, "You are not admin")
-        ##         print self,"own:",say[1].word,say[2].word
-        subject = self.map.get_add(say[1].word)
-        ##         print "subject found:",subject
-        object = self.map.get_add(say[2].word)
-        ##         print "object found:",object
-        ##         if subject.id==self.entity.id:
-        ##             foo
-        if subject.id == self.entity.id:
-            self.add_thing(object)
+        #         print self,"own:",say[1].word,say[2].word
+        word_subject = self.map.get_add(say[1].word)
+        #         print "subject found:",subject
+        word_object = self.map.get_add(say[2].word)
+        #         print "object found:",object
+        #         if subject.id==self.entity.id:
+        #             foo
+        if word_subject.id == self.entity.id:
+            self.add_thing(word_object)
 
     def interlinguish_undefined_operation(self, op, say):
         # CHEAT!: any way to handle these?
         log.debug(2, str(self.entity.id) + " interlinguish_undefined_operation:", op)
         log.debug(2, str(say))
 
-    ########## Sound operations
+    # Sound operations
     def sound_talk_operation(self, op):
         """Handle the sound of a talk operation from another character.
 
@@ -650,7 +648,7 @@ class NPCMind(ai.Mind):
                 res = res2
             return res
 
-    ########## Other operations
+    # Other operations
     def call_interlinguish_triggers(self, verb, prefix, op, say):
         """Call trigger goals that have registered a trigger string that
         matches the current interlinguish string.
@@ -674,7 +672,7 @@ class NPCMind(ai.Mind):
             reply += goal.event(self, op, sub_op)
         return reply
 
-    ########## Generic knowledge
+    # Generic knowledge
     def _reverse_knowledge(self):
         """normally location: tell where items reside
            reverse location tells what resides in this spot"""
@@ -715,7 +713,7 @@ class NPCMind(ai.Mind):
         """remove certain type of knowledge"""
         self.knowledge.remove(what, key)
 
-    ########## Importance: Knowledge about how things compare in urgency, etc..
+    # Importance: Knowledge about how things compare in urgency, etc..
     def add_importance(self, sub, cmp, obj):
         """add importance: both a>b and b<a"""
         self.add_knowledge('importance', (sub, obj), cmp)
@@ -746,7 +744,7 @@ class NPCMind(ai.Mind):
             return thing.name
         return thing.type[0]
 
-    ########## things we own
+    # things we own
 
     def get_attached_entity(self, attachment_name):
         attachment_value = self.entity.get_prop_map("attached_" + attachment_name)
@@ -758,8 +756,8 @@ class NPCMind(ai.Mind):
     def add_thing(self, thing):
         """I own this thing"""
         # CHEAT!: this feature not yet supported
-        ##         if not thing.location:
-        ##             thing.location=self.get_knowledge("location",thing.place)
+        #         if not thing.location:
+        #             thing.location=self.get_knowledge("location",thing.place)
         log.debug(3, str(self) + " " + str(thing) + " before add_thing: " + str(self.things))
         # thought about owing thing
         name = self.thing_name(thing)
@@ -786,7 +784,7 @@ class NPCMind(ai.Mind):
         """I don't own this anymore (it may not exist)"""
         dictlist.remove_value(self.things, thing)
 
-    ########## goals
+    # goals
 
     def insert_goal(self, goal):
         # Collect all triggering goals and add them
@@ -810,7 +808,7 @@ class NPCMind(ai.Mind):
         self.goals.remove(goal)
 
     def fulfill_goals(self, time):
-        "see if all goals are fulfilled: if not try to fulfill them"
+        """see if all goals are fulfilled: if not try to fulfill them"""
         for g in self.goals[:]:
             if g is None:
                 continue
@@ -865,14 +863,14 @@ class NPCMind(ai.Mind):
                 res.append(Operation('say', es, to=child))
         return res
 
-    ########## thinking (needs rewrite)
+    # thinking (needs rewrite)
     def think(self):
         output = self.fulfill_goals(self.time)
         #        if output and const.debug_thinking:
         #            log.thinking(str(self)+" result at "+str(self.time)+": "+output[-1][0].description)
         return output
 
-    ########## communication: here send it locally
+    # communication: here send it locally
     def send(self, op):
         if not self.message_queue:
             self.message_queue = Oplist(op)
@@ -898,5 +896,4 @@ class NPCMind(ai.Mind):
         """Utility method for generating ops for both letting the NPC face
            as well as address another entity. In most cases this is what you
            want to do when conversing."""
-        return self.address(entity_id, message) + \
-               self.face(self.map.get(entity_id))
+        return self.address(entity_id, message) + self.face(self.map.get(entity_id))

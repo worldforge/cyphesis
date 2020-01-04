@@ -362,10 +362,7 @@ long forceIntegerId(const std::string & id)
 
     return intId;
 }
-
-void log(LogLevel lvl, const std::string & msg)
-{
-}
+#include "stubs/common/stublog.h"
 
 bool database_flag = true;
 
@@ -378,6 +375,4 @@ namespace consts {
 
 }
 
-namespace Atlas { namespace Objects { namespace Operation {
-int THINK_NO = -1;
-} } }
+#include "stubs/common/stubcustom.h"
