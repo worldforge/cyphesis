@@ -299,21 +299,7 @@ static const Location* distanceToAncestor(const Location& self,
             return ancestor;
         }
     }
-    log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_parent != nullptr) {
-        std::stringstream ss;
-        ss << "Self(" << &self << ", loc:" << self.m_parent->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")";
-        log(ERROR, ss.str());
-    } else {
-        log(ERROR, "Self has no location");
-    }
-    if (other.m_parent != nullptr) {
-        std::stringstream ss;
-        ss << "Other(" << &other << ", loc:" << other.m_parent->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")";
-        log(ERROR, ss.str());
-    } else {
-        log(ERROR, "Other has no location");
-    }
+
     c.setValid(false); //Mark distance as invalid since there's no connection between locations.
 
     return nullptr;
@@ -358,10 +344,13 @@ Point3D relativePos(const Location& self, const Location& other)
     return pos;
 }
 
-WFMath::CoordType squareDistance(const Location& self, const Location& other)
+boost::optional<WFMath::CoordType> squareDistance(const Location& self, const Location& other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
+    if (!dist.isValid()) {
+        return boost::none;
+    }
     return sqrMag(dist);
 }
 
@@ -376,10 +365,13 @@ WFMath::CoordType squareDistanceWithAncestor(const Location& self, const Locatio
 }
 
 
-WFMath::CoordType squareHorizontalDistance(const Location& self, const Location& other)
+boost::optional<WFMath::CoordType> squareHorizontalDistance(const Location& self, const Location& other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);
+    if (!dist.isValid()) {
+        return boost::none;
+    }
     dist.y() = 0.f;
     return sqrMag(dist);
 }

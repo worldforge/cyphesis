@@ -39,9 +39,10 @@ class Fight(Goal):
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
         for thing in thing_all:
-            if square_distance(me.entity.location, thing.location) < self.square_range:
-                return 0
-        return 1
+            distance = square_distance(me.entity.location, thing.location)
+            if distance and distance < self.square_range:
+                return False
+        return True
 
     def equip_weapon(self, me):
         # First check if we're holding a weapon

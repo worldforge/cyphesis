@@ -299,8 +299,8 @@ void testDistanceFunctions()
 
         Point3D relPos = relativePos(ent3->m_location, ent4->m_location);
         Vector3D distance = distanceTo(ent3->m_location, ent4->m_location);
-        float d = squareDistance(ent3->m_location, ent4->m_location);
-        float hd = squareHorizontalDistance(ent3->m_location, ent4->m_location);
+        float d = *squareDistance(ent3->m_location, ent4->m_location);
+        float hd = *squareHorizontalDistance(ent3->m_location, ent4->m_location);
 
         std::cout << "RelPos ent3 -> ent4: " << relPos
                   << " Distance ent3 -> ent4: " << distance

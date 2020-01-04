@@ -47,7 +47,7 @@ class move_me(Goal):
             # print "No location"
             return True
         square_distance = square_horizontal_distance(me.entity.location, location)
-        if square_distance <= self.squared_radius:
+        if square_distance and square_distance <= self.squared_radius:
             # print("We are there, distance %s" % math.sqrt(square_distance))
             return True
         else:
@@ -59,17 +59,19 @@ class move_me(Goal):
         if not location:
             # print "Can't move - no location"
             return
+        if not location.parent:
+            return
         me.set_speed(self.speed)
         me.set_destination(location.pos, self.radius, location.parent.id)
-        refreshResult = me.refresh_path()
+        refresh_result = me.refresh_path()
         # If result is 0 it means that we're already there
-        if refreshResult == 0:
+        if refresh_result == 0:
             return
         # If result is below zero it means that we couldn't find a path yet.
         # This can be because we haven't mapped all areas yet; if so one should check with
         # me.unawareTilesCount
-        if refreshResult < 0:
-            print("Could not find any path, result %s" % refreshResult)
+        if refresh_result < 0:
+            print("Could not find any path, result %s" % refresh_result)
             return
 
         # Return True to signal that this goal is complete now.
@@ -84,15 +86,15 @@ class move_me(Goal):
             # We have no location, so no valid goal
             return False
 
-        pathResult = me.pathResult
+        path_result = me.pathResult
 
         # print("pathResult " + str(pathResult))
-        if pathResult < 0 and pathResult > -7:
+        if 0 > path_result > -7:
             # print("unawareTilesCount " + str(me.unawareTilesCount))
 
             if me.unawareTilesCount == 0:
                 return False
-        elif pathResult == 0 and not self.am_i_at_loc(me):
+        elif path_result == 0 and not self.am_i_at_loc(me):
             # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
             return False
 
@@ -288,7 +290,8 @@ class move_me_to_possession(Goal):
         if type(what) == str:
             if (what in me.things) == 0: return 0
             what = me.things[what][0]
-        if square_horizontal_distance(me.entity.location, what.location) < 4:  # 2 * 2
+        distance = square_horizontal_distance(me.entity.location, what.location)
+        if distance and distance < 4:  # 2 * 2
             return 1
         else:
             return 0
@@ -408,16 +411,18 @@ class move_me_near_focus(Goal):
             # TODO: Add a check for solid and non solid entities.
             # When moving to a non solid entity, we should try to get at its center.
             squared_distance_to_thing = square_horizontal_distance(me.entity.location, thing.location)
+            if not squared_distance_to_thing:
+                return False
             if squared_distance_to_thing < ((self.distance * self.distance) + bbox_size):
                 self.is_close_to_thing = True
-                return 1
+                return True
             # If we've already moved close to the thing, we are allowed movement within a certain movement radius
             if self.is_close_to_thing:
                 if squared_distance_to_thing < (
                         (self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
-                    return 1
+                    return True
         self.is_close_to_thing = False
-        return 0
+        return False
 
     def move_me_to_it(self, me):
         for what in self.what:
@@ -623,7 +628,7 @@ class hunt_for(Goal):
         if thing is None:
             return
         square_dist = square_distance(me.entity.location, thing.location)
-        return square_dist < self.square_proximity
+        return square_dist and square_dist < self.square_proximity
 
 
 ################################ PATROL ##############################
@@ -712,7 +717,7 @@ class accompany(Goal):
 
 ############################ ROAM ####################################
 
-class roam(Goal):
+class Roam(Goal):
     """Move in a non-specific way within one or many locations."""
 
     def __init__(self, radius, locations, extragoal=None):

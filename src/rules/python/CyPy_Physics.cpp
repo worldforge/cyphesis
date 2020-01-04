@@ -95,7 +95,11 @@ Py::Object CyPy_Physics::square_distance(const Py::Tuple& args)
     Location& firstLoc = Py::PythonClassObject<CyPy_Location>(args[0]).getCxxObject()->m_value;
     Location& secondLoc = Py::PythonClassObject<CyPy_Location>(args[1]).getCxxObject()->m_value;
 
-    return Py::Float(squareDistance(firstLoc, secondLoc));
+    auto distance = squareDistance(firstLoc, secondLoc);
+    if (!distance) {
+        return Py::None();
+    }
+    return Py::Float(*distance);
 }
 
 Py::Object CyPy_Physics::square_horizontal_distance(const Py::Tuple& args)
@@ -108,7 +112,12 @@ Py::Object CyPy_Physics::square_horizontal_distance(const Py::Tuple& args)
     Location& firstLoc = Py::PythonClassObject<CyPy_Location>(args[0]).getCxxObject()->m_value;
     Location& secondLoc = Py::PythonClassObject<CyPy_Location>(args[1]).getCxxObject()->m_value;
 
-    return Py::Float(squareHorizontalDistance(firstLoc, secondLoc));
+    auto distance = squareHorizontalDistance(firstLoc, secondLoc);
+    if (!distance) {
+        return Py::None();
+    }
+
+    return Py::Float(*distance);
 }
 
 /**
@@ -124,7 +133,11 @@ Py::Object CyPy_Physics::square_horizontal_edge_distance(const Py::Tuple& args)
     Location& firstLoc = Py::PythonClassObject<CyPy_Location>(args[0]).getCxxObject()->m_value;
     Location& secondLoc = Py::PythonClassObject<CyPy_Location>(args[1]).getCxxObject()->m_value;
 
-    return Py::Float(squareHorizontalDistance(firstLoc, secondLoc) -
+    auto distance = squareHorizontalDistance(firstLoc, secondLoc);
+    if (!distance) {
+        return Py::None();
+    }
+    return Py::Float(*distance -
                      boxSquareHorizontalBoundingRadius(firstLoc.m_bBox) -
                      boxSquareHorizontalBoundingRadius(secondLoc.m_bBox));
 }

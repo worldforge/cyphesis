@@ -260,7 +260,7 @@ class spot_something(Goal):
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent and thing.location.parent.id == me.entity.location.parent.id:
+            if sqr_dist and sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent and thing.location.parent.id == me.entity.location.parent.id:
                 if self.condition(thing):
                     nearest = thing
                     nearsqrdist = nearsqrdist
@@ -298,7 +298,7 @@ class spot_something_in_area(Goal):
             if self.current_location is None:
                 return False
             sqr_dist = square_distance(self.current_location, thing.location)
-            if sqr_dist < self.sqr_range:
+            if sqr_dist and sqr_dist < self.sqr_range:
                 return True
         return False
 
@@ -571,7 +571,8 @@ class hunt(Goal):
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
         for thing in thing_all:
-            if square_distance(me.entity.location, thing.location) < self.square_range:
+            distance = square_distance(me.entity.location, thing.location)
+            if distance and distance < self.square_range:
                 return 0
         return 1
 

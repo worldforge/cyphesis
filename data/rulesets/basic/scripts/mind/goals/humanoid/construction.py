@@ -35,8 +35,7 @@ class gather(Goal):
         what_all = me.map.find_by_filter(self.filter)
         for thing in what_all:
             square_dist = square_distance(me.entity.location, thing.location)
-            if square_dist < square_near_dist and \
-                    thing.location.parent.id != me.entity.id:
+            if square_dist and square_dist < square_near_dist and thing.location.parent.id != me.entity.id:
                 return 0
         return 1
 
@@ -136,7 +135,7 @@ class plant_seeds(Goal):
         spacing_sqr = self.spacing * self.spacing
         for thing in sources_all:
             sqr_dist = square_distance(seed.location, thing.location)
-            if sqr_dist < spacing_sqr:
+            if sqr_dist and sqr_dist < spacing_sqr:
                 # We've found a source which is too close to the seed, so we'll not plant this one
                 me.remove_knowledge('focus', self.seed)
                 return
