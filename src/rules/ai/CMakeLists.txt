@@ -1,7 +1,6 @@
 add_library(rulesai
     BaseMind.cpp
-    MindFactory.cpp
-    ../MemEntity.cpp
+        ../MemEntity.cpp
     MemMap.cpp
     AwareMind.cpp
     AwareMindFactory.cpp

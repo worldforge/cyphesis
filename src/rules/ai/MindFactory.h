@@ -29,12 +29,12 @@ class ScriptKit;
 
 class MindKit {
   protected:
-    MindKit();
+    MindKit() = default;;
 
   public:
     std::unique_ptr<ScriptKit<BaseMind>> m_scriptFactory;
 
-    virtual ~MindKit() = 0;
+    virtual ~MindKit() = default;
 
     virtual BaseMind * newMind(const std::string & mind_id, const std::string & entity_id) const = 0;
 };
