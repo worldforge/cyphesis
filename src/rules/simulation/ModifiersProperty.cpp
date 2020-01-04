@@ -79,6 +79,10 @@ int ModifiersProperty::get(Atlas::Message::Element& val) const
         }
     }
     val = list;
+    return 0;
 }
 
-ModifiersProperty::ModifiersProperty(const ModifiersProperty& rhs) = default;
+ModifiersProperty::ModifiersProperty(const ModifiersProperty& rhs)
+        : PropertyBase(rhs),
+          m_entity(rhs.m_entity)
+{}
