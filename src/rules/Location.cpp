@@ -301,19 +301,20 @@ static const Location* distanceToAncestor(const Location& self,
     }
     log(ERROR, "Broken entity hierarchy doing distance calculation");
     if (self.m_parent != nullptr) {
-        std::cerr << "Self(" << &self << ", loc:" << self.m_parent->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")"
-                  << std::endl << std::flush;
+        std::stringstream ss;
+        ss << "Self(" << &self << ", loc:" << self.m_parent->describeEntity() << ",pos:" << self.m_pos << ":" << self.m_pos.isValid() << ", orient:" << self.m_orientation << ")";
+        log(ERROR, ss.str());
     } else {
-        std::cerr << "Self has no location"
-                  << std::endl << std::flush;
+        log(ERROR, "Self has no location");
     }
     if (other.m_parent != nullptr) {
-        std::cerr << "Other(" << &other << ", loc:" << other.m_parent->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")"
-                  << std::endl << std::flush;
+        std::stringstream ss;
+        ss << "Other(" << &other << ", loc:" << other.m_parent->describeEntity() << ",pos:" << other.m_pos << ":" << self.m_pos.isValid() << ", orient:" << other.m_orientation << ")";
+        log(ERROR, ss.str());
     } else {
-        std::cerr << "Other has no location"
-                  << std::endl << std::flush;
+        log(ERROR, "Other has no location");
     }
+    c.setValid(false); //Mark distance as invalid since there's no connection between locations.
 
     return nullptr;
 }
