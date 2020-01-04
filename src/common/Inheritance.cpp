@@ -93,7 +93,7 @@ Inheritance::Inheritance(Atlas::Objects::Factories& factories)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
-    root_desc->setObjtype(Atlas::Objects::RootData::default_objtype);
+    root_desc->setObjtype("meta");
     root_desc->setId(Atlas::Objects::RootData::default_parent);
 
     auto root = new TypeNode(root_desc->getId(), root_desc);
