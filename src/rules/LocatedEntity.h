@@ -55,10 +55,27 @@ class TypeNode;
 template<typename T>
 class Property;
 
+/**
+ * Stores a property. Since all properties are modifiable we need to handle modifications.
+ */
 struct ModifiableProperty
 {
+    /**
+     * The property.
+     */
     std::unique_ptr<PropertyBase> property;
+
+    /**
+     * An optional base value, in the case of modifiers being applied.
+     * If so, this value is the "base" value set on the property before any modifiers are applied.
+     */
     Atlas::Message::Element baseValue;
+
+    /**
+     * A list of optionally modifiers to apply.
+     * If the list contains modifiers, they must be applied together with the baseValue whenever the property is set.
+     * If the list is empty, the baseValue can be ignored and the value can be fetched or set directly on the property.
+     */
     std::vector<std::pair<Modifier*, LocatedEntity*>> modifiers;
 };
 
