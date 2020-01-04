@@ -35,17 +35,12 @@ MindProperty::MindProperty(const MindProperty & rhs) = default;
 
 void MindProperty::set(const Element & val)
 {
+    m_language.clear();
+    m_script.clear();
     if (!val.isMap()) {
-        m_language.clear();
-        m_script.clear();
         return;
     }
     const MapType & data = val.Map();
-    if (data.empty()) {
-        m_language.clear();
-        m_script.clear();
-        return;
-    }
 
     {
         auto I = data.find("name");
@@ -99,6 +94,6 @@ void MindProperty::apply(LocatedEntity * ent)
 
 bool MindProperty::isMindEnabled() const
 {
-    return !m_language.empty() || !m_script.empty();
+    return !m_language.empty() && !m_script.empty();
 }
 
