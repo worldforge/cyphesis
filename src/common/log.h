@@ -20,6 +20,7 @@
 #define COMMON_LOG_H
 
 #include <string>
+#include <functional>
 
 // Some systems pollute the namespace with defines of ERROR and perhaps
 // others.
@@ -43,6 +44,11 @@ typedef enum log_event { NONE = 0,
                          IMPORT_ENT,     // Entity imported from peer
                          POSSESS_CHAR,   // Imported avatar claimed
 } LogEvent;
+
+/**
+ * An optional function which will be called before anything is written to the log.
+ */
+extern std::function<std::string()> s_logPrefixFn;
 
 void setLoggingPrefix(std::string prefix);
 

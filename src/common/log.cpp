@@ -31,6 +31,7 @@
 
 #include <cstring>
 #include <ctime>
+#include <functional>
 
 extern "C" {
 #ifdef HAVE_SYSLOG_H
@@ -124,6 +125,8 @@ void rotateLogger()
     open_event_log();
 }
 
+std::function<std::string()> s_logPrefixFn;
+
 std::ostream& operator<<(std::ostream& s, LogLevel lvl);
 
 std::ostream& operator<<(std::ostream& s, LogLevel lvl)
@@ -200,7 +203,12 @@ void log(LogLevel lvl, const std::string& msg)
             std::cout << " " << logging_prefix;
         }
 
-        std::cout << " " << lvl << " " << msg << std::endl;
+        if (s_logPrefixFn) {
+            std::cout << " " << lvl << " " << s_logPrefixFn() << msg << std::endl;
+        } else {
+            std::cout << " " << lvl << " " << msg << std::endl;
+        }
+
     }
 }
 

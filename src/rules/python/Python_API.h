@@ -23,6 +23,7 @@
 #include <set>
 #include <sigc++/signal.h>
 #include "common/io_context.h"
+#include "common/log.h"
 
 class AssetsManager;
 class BaseWorld;
@@ -32,11 +33,6 @@ class BaseWorld;
  * Emitted when python scripts needs reloading.
  */
 extern sigc::signal<void> python_reload_scripts;
-
-/**
- * An optional function which will be called before anything is written to the log.
- */
-extern std::function<std::string()> s_pythonLogPrefixFn;
 
 
 /**
@@ -49,12 +45,12 @@ struct PythonLogGuard
 
     explicit PythonLogGuard(const std::function<std::string()>& logFn)
     {
-        s_pythonLogPrefixFn = logFn;
+        s_logPrefixFn = logFn;
     }
 
     ~PythonLogGuard()
     {
-        s_pythonLogPrefixFn = nullptr;
+        s_logPrefixFn = nullptr;
     }
 };
 
