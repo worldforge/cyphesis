@@ -6,8 +6,8 @@ from atlas import Operation, Entity
 from physics import square_distance, distance_between
 
 from mind.Goal import Goal
-from mind.goals.common.misc_goal import spot_something
-from mind.goals.common.move import avoid, move_me_to_focus
+from mind.goals.common.misc_goal import SpotSomething
+from mind.goals.common.move import Avoid, MoveMeToFocus
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 # A list of usages which we should look for in weapons.
@@ -23,10 +23,10 @@ class Fight(Goal):
     def __init__(self, what="", range=30):
         Goal.__init__(self, "fight something",
                       self.none_in_range,
-                      [spot_something(what=what, range=range),
+                      [SpotSomething(what=what, range=range),
                        self.equip_weapon,
                        self.attack,
-                       move_me_to_focus(what=what, radius=0, speed=0.5),
+                       MoveMeToFocus(what=what, radius=0, speed=0.5),
                        #                       hunt_for(what=what, range=range, proximity=3),
                        ])
         self.what = what
@@ -128,7 +128,7 @@ class FightOrFlight(Goal):
         Goal.__init__(self, desc="fight or flee from enemies",
                       subgoals=[KeepGrudge(),
                                 Fight(what="memory.disposition <= -1 && memory.threat <= 0", range=range),
-                                avoid(what="memory.disposition <= -1 && memory.threat > 0", range=range)])
+                                Avoid(what="memory.disposition <= -1 && memory.threat > 0", range=range)])
 
 
 class KeepGrudge(DynamicGoal):

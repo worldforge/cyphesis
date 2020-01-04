@@ -30,7 +30,7 @@
             <map name="_goals">
                 <list name="append">
                     <map>
-                        <string name="class">mind.goals.common.move.roam</string>
+                        <string name="class">mind.goals.common.move.Roam</string>
                         <map name="params">
                             <float name="radius">30</float>
                             <list name="locations">

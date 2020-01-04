@@ -14,7 +14,7 @@ from mind.goals.common.misc_goal import *
 
 ############################ MOVE ME ####################################
 
-class move_me(Goal):
+class MoveMe(Goal):
     """Move me to a certain place.
     'radius' specifies how close to the location we accept.
     """
@@ -103,13 +103,13 @@ class move_me(Goal):
 
 ############################ MOVE ME AREA ####################################
 
-class move_me_area(Goal):
+class MoveMeArea(Goal):
     """Move me to a certain area."""
 
     def __init__(self, location, range=30):
         Goal.__init__(self, "move me to certain area",
-                      self.am_I_in_area,
-                      [move_me(location, range), self.latch_loc],
+                      self.am_i_in_area,
+                      [MoveMe(location, range), self.latch_loc],
                       self.is_reachable)
         self.location = location
         self.range = range
@@ -131,7 +131,7 @@ class move_me_area(Goal):
             return None
         return location_
 
-    def am_I_in_area(self, me):
+    def am_i_in_area(self, me):
         location = self.get_location_instance(me)
         if not location:
             # print "No location"
@@ -157,15 +157,15 @@ class move_me_area(Goal):
     unaware tiles."""
 
     def is_reachable(self, me):
-        pathResult = me.pathResult
+        path_result = me.pathResult
 
         # print("pathResult " + str(pathResult))
-        if pathResult < 0 and pathResult > -7:
+        if 0 > path_result > -7:
             # print("unawareTilesCount " + str(me.unawareTilesCount))
 
             if me.unawareTilesCount == 0:
                 return False
-        elif pathResult == 0 and not self.am_I_at_loc(me):
+        elif path_result == 0 and not self.am_i_in_area(me):
             # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
             return False
 
@@ -174,7 +174,7 @@ class move_me_area(Goal):
 
 ############################ MOVE ME PLACE ####################################
 
-class move_me_place(move_me):
+class MoveMePlace(MoveMe):
     """Move me to a place by name."""
 
     def __init__(self, what):
@@ -195,7 +195,7 @@ class move_me_place(move_me):
 
 ############################ MOVE THING ####################################
 
-class move_it(Goal):
+class MoveIt(Goal):
     """Move something to a place."""
 
     def __init__(self, what, location, speed=0):
@@ -250,7 +250,7 @@ class move_it(Goal):
 
 ############################ MOVE THING FROM ME ####################################
 
-class move_it_outof_me(Goal):
+class MoveItOutOfMe(Goal):
     """Put something down."""
 
     def __init__(self, what):
@@ -275,7 +275,7 @@ class move_it_outof_me(Goal):
 
 ############################ MOVE ME TO THING ##################################
 
-class move_me_to_possession(Goal):
+class MoveMeToPossession(Goal):
     """Move me to the same place as something I own."""
 
     def __init__(self, what):
@@ -308,13 +308,13 @@ class move_me_to_possession(Goal):
             return Operation("move", Entity(me.entity.id, location=target))
 
 
-class move_me_to_focus(Goal):
+class MoveMeToFocus(Goal):
     """Move me to something I am interested in."""
 
     def __init__(self, what="", radius=0.5, speed=0.2):
         Goal.__init__(self, "move me to the current focus for '%s'" % what,
                       None,
-                      [move_me(location=self.get_location, radius=radius, speed=speed)])
+                      [MoveMe(location=self.get_location, radius=radius, speed=speed)])
         self.what = what
         self.vars = ["what"]
 
@@ -376,7 +376,7 @@ class move_me_to_focus(Goal):
 #                 return Operation("move", Entity(me.entity.id, location=target))
 
 
-class move_me_near_focus(Goal):
+class MoveMeNearFocus(Goal):
     """Move me to something I am interested in, first really close, and the allowing movement within a certain radius."""
 
     def __init__(self, what, distance=2, allowed_movement_radius=10):
@@ -399,9 +399,9 @@ class move_me_near_focus(Goal):
     def am_i_at_it(self, me):
         for what in self.what:
             id = me.get_knowledge('focus', what)
-            if id == None: continue
+            if id is None: continue
             thing = me.map.get(id)
-            if thing == None:
+            if thing is None:
                 me.remove_knowledge('focus', what)
                 continue
 
@@ -427,10 +427,10 @@ class move_me_near_focus(Goal):
     def move_me_to_it(self, me):
         for what in self.what:
             id = me.get_knowledge('focus', what)
-            if id == None:
+            if id is None:
                 continue
             thing = me.map.get(id)
-            if thing == None:
+            if thing is None:
                 me.remove_knowledge('focus', what)
                 return
             target = thing.location.copy()
@@ -441,13 +441,13 @@ class move_me_near_focus(Goal):
 
 ############################ MOVE THING TO ME ####################################
 
-class pick_up_possession(Goal):
+class PickUpPossession(Goal):
     """Pick up something I own."""
 
     def __init__(self, what):
         Goal.__init__(self, "move this thing to my inventory (class)",
                       self.is_it_with_me,
-                      [move_me_to_possession(what),
+                      [MoveMeToPossession(what),
                        self.pick_it_up])
         self.what = what
         self.vars = ["what"]
@@ -472,13 +472,13 @@ class pick_up_possession(Goal):
         return Operation("move", Entity(id, location=Location(me, Point3D(0, 0, 0))))
 
 
-class pick_up_focus(Goal):
+class PickUpFocus(Goal):
     """Pick up something I am interested in."""
 
     def __init__(self, what):
         Goal.__init__(self, "move this thing to my inventory (class)",
                       self.is_it_with_me,
-                      [move_me_to_focus(what),
+                      [MoveMeToFocus(what),
                        self.pick_it_up])
         if type(what) == list:
             self.what = what
@@ -517,12 +517,12 @@ class pick_up_focus(Goal):
 
 ############################ WANDER ####################################
 
-class wander(Goal):
+class Wander(Goal):
     """Move in a non-specific way."""
 
     def __init__(self, extragoal=None):
         Goal.__init__(self, "wander randomly", false,
-                      [move_me(None),
+                      [MoveMe(None),
                        extragoal,
                        self.do_wandering])
 
@@ -534,14 +534,14 @@ class wander(Goal):
 
 ############################ WANDER & SEARCH ############################
 
-class search(Goal):
+class Search(Goal):
     """Move in a non-specific way looking for something."""
 
     def __init__(self, what):
         Goal.__init__(self, "search for a thing",
                       self.do_I_have,
-                      [wander(),
-                       spot_something(what, 30)])
+                      [Wander(),
+                       SpotSomething(what, 30)])
         # Long range for testing only
         self.what = what
         self.vars = ["what"]
@@ -552,7 +552,7 @@ class search(Goal):
 
 ############################ PURSUIT ####################################
 
-class pursuit(Goal):
+class Pursuit(Goal):
     """avoid or hunt something at range"""
 
     def __init__(self, desc="pursue something", what="", range=0, direction=1):
@@ -591,29 +591,29 @@ class pursuit(Goal):
 
 ############################ AVOID ####################################
 
-class avoid(pursuit):
+class Avoid(Pursuit):
     """avoid something at range"""
 
     def __init__(self, what='', range=0):
-        pursuit.__init__(self, desc="avoid something", what=what, range=range, direction=-1)
+        Pursuit.__init__(self, desc="avoid something", what=what, range=range, direction=-1)
 
 
 ################################ HUNT ################################
 
-class hunt(pursuit):
+class Hunt(Pursuit):
     """hunt something at range"""
 
     def __init__(self, what, range):
-        pursuit.__init__(self, "hunt something", what, range, 1)
+        Pursuit.__init__(self, "hunt something", what, range, 1)
 
 
-class hunt_for(Goal):
+class HuntFor(Goal):
     """hunt something at range"""
 
     def __init__(self, what="", range=0, proximity=5):
         Goal.__init__(self, "hunt for something",
                       self.in_range,
-                      [pursuit(what=what, range=range)])
+                      [Pursuit(what=what, range=range)])
         self.what = what
         self.range = range
         self.proximity = proximity
@@ -633,13 +633,13 @@ class hunt_for(Goal):
 
 ################################ PATROL ##############################
 
-class patrol(Goal):
+class Patrol(Goal):
     """Move around an area defined by some waypoints."""
 
     def __init__(self, locations, extragoal=None):
         Goal.__init__(self, "patrol an area",
                       false,
-                      [move_me(locations[0]),
+                      [MoveMe(locations[0]),
                        extragoal,
                        self.increment],
                       self.check_move_valid)
@@ -662,13 +662,13 @@ class patrol(Goal):
 
 ############################## ACCOMPANY ##############################
 
-class accompany(Goal):
+class Accompany(Goal):
     """Move around staying close to someone."""
 
     def __init__(self, who):
         Goal.__init__(self, "stay with someone",
                       self.am_i_with,
-                      [spot_something(who),
+                      [SpotSomething(who),
                        self.follow])
         self.who = who
         self.vars = ["who"]
@@ -723,7 +723,7 @@ class Roam(Goal):
     def __init__(self, radius, locations, extragoal=None):
         Goal.__init__(self, "roam randomly", false,
                       [self.check_move_valid,
-                       move_me(None),
+                       MoveMe(None),
                        goal_create(extragoal),
                        self.do_roaming])
         self.list = locations

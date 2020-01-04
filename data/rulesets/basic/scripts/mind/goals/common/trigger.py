@@ -10,7 +10,7 @@ from rules import Location
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
-class chase(DynamicGoal):
+class Chase(DynamicGoal):
     """Chase after something that has moved."""
 
     def __init__(self, kinds, desc="Chase after things."):

@@ -6,17 +6,17 @@ import entity_filter
 from atlas import Operation, Entity
 
 from mind.Goal import Goal
-from mind.goals.common.misc_goal import keep
+from mind.goals.common.misc_goal import Keep
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
-from mind.goals.dynamic.add_unique_goal import add_unique_goal
+from mind.goals.dynamic.add_unique_goal import AddUniqueGoal
 
 
-class keep_livestock(keep):
+class KeepLivestock(Keep):
     """Keep livestock that we own in a given location, calling them if 
        required."""
 
     def __init__(self, what, where, call):
-        keep.__init__(self, what, where)
+        Keep.__init__(self, what, where)
         self.call = call
 
     def keep_it(self, me):
@@ -24,10 +24,10 @@ class keep_livestock(keep):
         for thing in thing_all:
             if thing.location.velocity.is_valid() and thing.location.velocity.sqr_mag() > 0.1:
                 return Operation("talk", Entity(say=self.call))
-        return keep.keep_it(self, me)
+        return Keep.keep_it(self, me)
 
 
-class welcome(DynamicGoal):
+class Welcome(DynamicGoal):
     """Welcome entities of a given type that are created nearby."""
 
     def __init__(self, message="", what=""):
@@ -52,7 +52,7 @@ class welcome(DynamicGoal):
             return Operation("talk", Entity(say=self.message)) + me.face(entity)
 
 
-class help(Goal):
+class Help(Goal):
     """Provide a sequence of help messages to a target."""
 
     def __init__(self, messages, responses, target):
@@ -89,14 +89,14 @@ class help(Goal):
         return Operation("talk", ent) + me.face(target_entity)
 
 
-class add_help(add_unique_goal):
+class AddHelp(AddUniqueGoal):
     """Set off a help goal if we get a touch operation."""
 
     def __init__(self, messages=None, responses=None):
-        add_unique_goal.__init__(self,
-                                 help,
-                                 trigger="touch",
-                                 desc="help people out")
+        AddUniqueGoal.__init__(self,
+                               Help,
+                               trigger="touch",
+                               desc="help people out")
         self.messages = messages
         self.responses = responses
 

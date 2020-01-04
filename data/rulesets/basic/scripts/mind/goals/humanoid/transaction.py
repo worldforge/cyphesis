@@ -9,7 +9,7 @@ import mind.goals
 import mind.goals.common
 from mind.Goal import Goal
 from mind.goals.common.common import *
-from mind.goals.common.misc_goal import hireling_transaction
+from mind.goals.common.misc_goal import HirelingTransaction
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
@@ -20,7 +20,7 @@ from mind.goals.dynamic.DynamicGoal import DynamicGoal
 # trigger="sound_talk",
 # desc=desc)
 
-class hire_trade(DynamicGoal):
+class HireTrade(DynamicGoal):
     """Respond to a request for help."""
 
     def __init__(self, desc="be available for hire"):
@@ -35,12 +35,12 @@ class hire_trade(DynamicGoal):
             print("No price")
             return
         # print "I go for " + str(price) + " coins"
-        goal = hireling_transaction('services', op.to, price)
+        goal = HirelingTransaction('services', op.to, price)
         me.goals.insert(0, goal)
         return Operation("talk", Entity(say=me.map.get(op.to).name + " one day will be " + str(price) + " coins"))
 
 
-class buy_from(Goal):
+class BuyFrom(Goal):
     """Respond to an offer to sell something."""
 
     def __init__(self, what, cost, who, desc="buy livestock from someone"):
@@ -106,7 +106,7 @@ class buy_from(Goal):
                              Entity(say=seller.name + " that " + self.what + " is worth " + str(price) + " coins."))
 
 
-class buy_livestock(DynamicGoal):
+class BuyLivestock(DynamicGoal):
     """Respond to an offer to sell livestock by the kg."""
 
     def __init__(self, what, cost, desc="buy livestock by the kg"):
@@ -124,7 +124,7 @@ class buy_livestock(DynamicGoal):
             if object != self.what:
                 return Operation("talk",
                                  Entity(say=who.name + ", I am not interested in buying your " + str(object) + "."))
-            me.goals.insert(0, buy_from(self.what, self.cost, op.to))
+            me.goals.insert(0, BuyFrom(self.what, self.cost, op.to))
             return Operation("talk", Entity(say=who.name + " which " + object + " would you like to sell?"))
         if not self.what in thing.type: return
         if thing in me.find_thing(self.what): return

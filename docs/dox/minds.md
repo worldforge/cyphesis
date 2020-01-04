@@ -43,7 +43,7 @@ For example, here's a definition for a goal which makes the entity welcome all n
 ```xml
 <list name="_goals">
     <map>
-        <string name="class">mind.goals.humanoid.mason.welcome</string>
+        <string name="class">mind.goals.humanoid.mason.Welcome</string>
         <map name="params">
             <string name="message">Welcome traveller to the island of Braga! You look tired and hungry. Come closer and let me introduce this place.</string>
             <string name="what">entity instance_of types.human</string>

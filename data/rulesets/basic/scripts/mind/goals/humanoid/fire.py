@@ -4,17 +4,17 @@
 from atlas import Operation, Entity
 
 from mind.Goal import Goal
-from mind.goals.common.move import move_me
-from mind.goals.dynamic.add_unique_goal import add_unique_goal_by_perception
+from mind.goals.common.move import MoveMe
+from mind.goals.dynamic.add_unique_goal import AddUniqueGoalByPerception
 
 
-class extinguish_fire(Goal):
+class ExtinguishFire(Goal):
     """Put out a specified fire."""
 
     def __init__(self, what):
         Goal.__init__(self, "extinguish fire",
                       self.fire_extinguished,
-                      [move_me(what.location), self.extinguish])
+                      [MoveMe(what.location), self.extinguish])
         self.what = what
         self.vars = ["what"]
 
@@ -29,11 +29,11 @@ class extinguish_fire(Goal):
         return Operation("extinguish", Entity(self.what.id), to=self.what)
 
 
-class add_extinguish_fire(add_unique_goal_by_perception):
+class AddExtinguishFire(AddUniqueGoalByPerception):
     """Respond to spotting a fire by adding a goal to extinguish it."""
 
     def __init__(self, desc="add extinguish fire goal"):
-        add_unique_goal_by_perception.__init__(self,
-                                               extinguish_fire,
-                                               trigger="sight_burn",
-                                               desc=desc)
+        AddUniqueGoalByPerception.__init__(self,
+                                           ExtinguishFire,
+                                           trigger="sight_burn",
+                                           desc=desc)

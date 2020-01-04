@@ -821,7 +821,7 @@ class NPCMind(ai.Mind):
                     if isinstance(res, Operation) or isinstance(res, Oplist):
                         return res
                     return
-            except:
+            except Exception:
                 stacktrace = traceback.format_exc()
                 # Keep track of the number of errors in this goal. This could be used for better logging in the future.
                 g.errors += 1

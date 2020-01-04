@@ -64,7 +64,7 @@
                 </map>
             </map>
             <map name="_relations">
-                <list name="default">
+                <list name="prepend">
                     <!-- Fight humans. -->
                     <map>
                         <string name="filter">entity.type=types.human</string>

@@ -11,14 +11,14 @@ from mind.goals.common.move import *
 # Gather a resource from nearby
 # This is designed to be placed early in a complex goal, so it returns
 # as fulfilled when it has nothing to do
-class gather(Goal):
+class Gather(Goal):
     """Base class for getting a freely available resource."""
 
     def __init__(self, what):
         Goal.__init__(self, "gather a thing",
                       self.is_there_none_around,
-                      [spot_something(what),
-                       pick_up_focus(what)])
+                      [SpotSomething(what),
+                       PickUpFocus(what)])
         if isinstance(what, str):
             self.what = what
         else:
@@ -41,18 +41,18 @@ class gather(Goal):
 
 
 # Harvest a resource from source at a place using a tool
-class harvest_resource(Goal):
+class Harvest_resource(Goal):
     """Gather something from a given location, by using a tool on something."""
 
     def __init__(self, what, source, place, tool, range=30):
         Goal.__init__(self, "Gather a resource using a tool",
                       false,
-                      [acquire_thing(tool),
-                       move_me_area(place, range=range),
-                       gather(what),
-                       spot_something_in_area(source, location=place, range=range,
-                                              condition=self.source_entity_condition, ),
-                       move_me_to_focus(source),
+                      [AcquireThing(tool),
+                       MoveMeArea(place, range=range),
+                       Gather(what),
+                       SpotSomethingInArea(source, location=place, range=range,
+                                           condition=self.source_entity_condition, ),
+                       MoveMeToFocus(source),
                        self.do])
         self.what = what
         self.source = source
@@ -87,21 +87,21 @@ class harvest_resource(Goal):
         return Operation("use", Entity(target, objtype="obj"))
 
 
-class plant_seeds(Goal):
+class PlantSeeds(Goal):
     """Use a tool to plant a given kind of seed in a given location."""
 
     # Get a tool, move to area, look for seed, if found act on seed, if not look for source, move near source. If neither seed nor source is found, roam.
     def __init__(self, seed, source, place, tool, range=30, spacing=4):
         Goal.__init__(self, "Plant seed to grow plants",
                       false,
-                      [acquire_thing(tool),
-                       move_me_area(place, range=range),
-                       spot_something_in_area(seed, place, range=range, seconds_until_forgotten=360),
-                       move_me_to_focus(seed),
+                      [AcquireThing(tool),
+                       MoveMeArea(place, range=range),
+                       SpotSomethingInArea(seed, place, range=range, seconds_until_forgotten=360),
+                       MoveMeToFocus(seed),
                        self.do,
-                       spot_something_in_area(source, place, range=range),
-                       move_me_near_focus(source, allowed_movement_radius=5),
-                       clear_focus(source)])
+                       SpotSomethingInArea(source, place, range=range),
+                       MoveMeNearFocus(source, allowed_movement_radius=5),
+                       ClearFocus(source)])
         self.seed = seed
         self.source = source
         self.source_filter = entity_filter.Filter(source)
