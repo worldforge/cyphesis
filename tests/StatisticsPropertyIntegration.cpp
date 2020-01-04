@@ -95,7 +95,7 @@ void StatisicsPropertyintegration::setup()
     m_char_type = new TypeNode("char_type");
 
     m_char_property = new StatisticsProperty;
-    m_char_property->addFlags(flag_class);
+    m_char_property->addFlags(prop_flag_class);
     m_char_type->injectProperty("char_prop", std::unique_ptr<PropertyBase>(m_char_property));
 
     m_char1 = new Entity("1", 1);

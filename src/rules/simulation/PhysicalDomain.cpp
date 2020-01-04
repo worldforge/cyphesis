@@ -2691,7 +2691,7 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
         newModeDataProp->clearData();
     }
 
-    newModeDataProp->addFlags(flag_unsent);
+    newModeDataProp->addFlags(prop_flag_unsent);
 
 }
 

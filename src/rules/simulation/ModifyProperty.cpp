@@ -148,7 +148,7 @@ void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEnt
     if (state.parentEntity) {
         for (auto& entry: state.activeModifiers) {
             state.parentEntity->removeModifier(entry->propertyName, entry->modifier.get());
-            state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(flag_unsent);
+            state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
         }
         state.activeModifiers.clear();
     }
@@ -186,13 +186,13 @@ void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)
                 if (state.activeModifiers.find(&modifyEntry) == state.activeModifiers.end()) {
                     state.parentEntity->addModifier(modifyEntry.propertyName, modifyEntry.modifier.get(), &entity);
                     state.activeModifiers.insert(&modifyEntry);
-                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(flag_unsent);
+                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
                 }
             } else {
                 if (state.activeModifiers.find(&modifyEntry) != state.activeModifiers.end()) {
                     state.parentEntity->removeModifier(modifyEntry.propertyName, modifyEntry.modifier.get());
                     state.activeModifiers.erase(&modifyEntry);
-                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(flag_unsent);
+                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
                 }
             }
         }

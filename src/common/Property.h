@@ -110,52 +110,52 @@ class PropertyBase : public OperationsListener {
 
 /// \brief Flag indicating data has been written to permanent store
 /// \ingroup PropertyFlags
-static const std::uint32_t persistence_clean = 1u << 0u;
+static const std::uint32_t prop_flag_persistence_clean = 1u << 0u;
 /// \brief Flag indicating data should never be persisted
 /// \ingroup PropertyFlags
-static const std::uint32_t persistence_ephem = 1u << 1u;
+static const std::uint32_t prop_flag_persistence_ephem = 1u << 1u;
 /// \brief Flag indicating data has been stored initially
 /// \ingroup PropertyFlags
-static const std::uint32_t persistence_seen = 1u << 2u;
+static const std::uint32_t prop_flag_persistence_seen = 1u << 2u;
 
 /// \brief Flag mask indicating data should not be written to store
 /// \ingroup PropertyFlags
-static const std::uint32_t persistence_mask = persistence_clean | persistence_ephem;
+static const std::uint32_t prop_flag_persistence_mask = prop_flag_persistence_clean | prop_flag_persistence_ephem;
 
 /// \brief Flag indicating property is "private", i.e. only available to the simulation.
 /// \ingroup PropertyFlags
-static const std::uint32_t visibility_private = 1u << 3u;
+static const std::uint32_t prop_flag_visibility_private = 1u << 3u;
 /// \brief Flag indicating property is "protected", i.e. only available to the entity itself.
 /// \ingroup PropertyFlags
-static const std::uint32_t visibility_protected = 1u << 4u;
+static const std::uint32_t prop_flag_visibility_protected = 1u << 4u;
 
 /// \brief Flag mask indicating property is private or protected.
 /// \ingroup PropertyFlags
-static const std::uint32_t visibility_non_public = visibility_private | visibility_protected;
+static const std::uint32_t prop_flag_visibility_non_public = prop_flag_visibility_private | prop_flag_visibility_protected;
 
 /// \brief Flag set to indicate this is a class property, and has no instance
 /// \ingroup PropertyFlags
-static const std::uint32_t flag_class = 1u << 5u;
+static const std::uint32_t prop_flag_class = 1u << 5u;
 
 /// \brief Flag used for boolean properties
 /// \ingroup PropertyFlags
-static const std::uint32_t flag_bool = 1u << 6u;
+static const std::uint32_t prop_flag_bool = 1u << 6u;
 
 /// \brief Flag used to mark properties whose state has not been broadcast
 /// \ingroup PropertyFlags
-static const std::uint32_t flag_unsent = 1u << 7u;
+static const std::uint32_t prop_flag_unsent = 1u << 7u;
 
 /// \brief Flag used to mark properties which must be instance properties
 /// \ingroup PropertyFlags
 /// Typically this will be because they have per-entity state which cannot
 /// be handled on a class property.
-static const std::uint32_t flag_instance = 1u << 8u;
+static const std::uint32_t prop_flag_instance = 1u << 8u;
 
 /**
  * \brief The property won't allow any kind of modifiers to affect it.
  * \ingroup PropertyFlags
  */
-static const std::uint32_t flag_modifiers_not_allowed = 1u << 9u;
+static const std::uint32_t prop_flag_modifiers_not_allowed = 1u << 9u;
 
 
 /// \brief Entity property template for properties with single data values

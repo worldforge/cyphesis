@@ -59,7 +59,7 @@ class ScalableArea(server.Thing):
 #
 # area_property->set(areaElement);
 # area_property->apply(this);
-# area_property->addFlags(flag_unsent);
+# area_property->addFlags(prop_flag_unsent);
 # }
 # }
 # }

@@ -178,7 +178,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
     }
     if (prop) {
         // Mark it as unclean
-        prop->removeFlags(persistence_clean);
+        prop->removeFlags(prop_flag_persistence_clean);
         prop->set(attr);
     } else {
         std::map<std::string, std::unique_ptr<PropertyBase>>::const_iterator J;
@@ -211,7 +211,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
 
     auto I = m_properties.find(propertyName);
     if (I != m_properties.end()) {
-        if (I->second.property && I->second.property->hasFlags(flag_modifiers_not_allowed)) {
+        if (I->second.property && I->second.property->hasFlags(prop_flag_modifiers_not_allowed)) {
             return;
         }
         //We had a local value, check if there are any modifiers.
@@ -309,7 +309,7 @@ PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::M
                 new_prop->set(def_val);
             }
             J->second->remove(this, name);
-            new_prop->removeFlags(flag_class);
+            new_prop->removeFlags(prop_flag_class);
             m_properties[name].property.reset(new_prop);
             new_prop->install(this, name);
             applyProperty(name, new_prop);
@@ -532,7 +532,7 @@ void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
 {
     // Allow the value to take effect.
     prop->apply(this);
-    prop->addFlags(flag_unsent);
+    prop->addFlags(prop_flag_unsent);
     propertyApplied(name, *prop);
     // Mark the Entity as unclean
     m_flags.removeFlags(entity_clean);

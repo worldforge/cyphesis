@@ -109,7 +109,7 @@ SoftProperty::SoftProperty(Atlas::Message::Element data)
 #define STUB_BoolProperty_get
 int BoolProperty::get(Atlas::Message::Element & val) const
 {
-    val = hasFlags(flag_bool) ? 1 : 0;
+    val = hasFlags(prop_flag_bool) ? 1 : 0;
     return 0;
 }
 #endif //STUB_BoolProperty_get
@@ -120,9 +120,9 @@ void BoolProperty::set(const Atlas::Message::Element & val)
 {
     if (val.isInt()) {
         if (val.Int() == 0) {
-            removeFlags(flag_bool);
+            removeFlags(prop_flag_bool);
         } else {
-            addFlags(flag_bool);
+            addFlags(prop_flag_bool);
         }
     }
 }
@@ -134,7 +134,7 @@ void BoolProperty::set(const Atlas::Message::Element & val)
 #define STUB_BoolProperty_isTrue
 bool BoolProperty::isTrue() const
 {
-    return hasFlags(flag_bool);
+    return hasFlags(prop_flag_bool);
 }
 #endif //STUB_BoolProperty_isTrue
 

@@ -60,7 +60,7 @@ void StatisticsProperty::apply(LocatedEntity* ent)
 {
     if (!m_script) {
         LocatedEntity* entity = nullptr;
-        if (hasFlags(flag_class)) {
+        if (hasFlags(prop_flag_class)) {
         } else {
             entity = ent;
         }

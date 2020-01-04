@@ -55,23 +55,23 @@ static void exerciseProperty(PropertyBase * pb)
 int main()
 {
     // Assertions to verify the flags have the desired properties.
-    assert((persistence_clean | persistence_mask) == persistence_mask);
-    assert((persistence_ephem | persistence_mask) == persistence_mask);
-    assert((persistence_ephem | persistence_clean) == persistence_mask);
+    assert((prop_flag_persistence_clean | prop_flag_persistence_mask) == prop_flag_persistence_mask);
+    assert((prop_flag_persistence_ephem | prop_flag_persistence_mask) == prop_flag_persistence_mask);
+    assert((prop_flag_persistence_ephem | prop_flag_persistence_clean) == prop_flag_persistence_mask);
 
-    assert((persistence_clean & persistence_mask) == persistence_clean);
-    assert((persistence_ephem & persistence_mask) == persistence_ephem);
-    assert((persistence_ephem & persistence_clean) == 0);
+    assert((prop_flag_persistence_clean & prop_flag_persistence_mask) == prop_flag_persistence_clean);
+    assert((prop_flag_persistence_ephem & prop_flag_persistence_mask) == prop_flag_persistence_ephem);
+    assert((prop_flag_persistence_ephem & prop_flag_persistence_clean) == 0);
 
-    assert((visibility_private | visibility_non_public) == visibility_non_public);
-    assert((visibility_protected | visibility_non_public) == visibility_non_public);
-    assert((visibility_protected | visibility_private) == visibility_non_public);
+    assert((prop_flag_visibility_private | prop_flag_visibility_non_public) == prop_flag_visibility_non_public);
+    assert((prop_flag_visibility_protected | prop_flag_visibility_non_public) == prop_flag_visibility_non_public);
+    assert((prop_flag_visibility_protected | prop_flag_visibility_private) == prop_flag_visibility_non_public);
 
-    assert((visibility_private & visibility_non_public) == visibility_private);
-    assert((visibility_protected & visibility_non_public) == visibility_protected);
-    assert((visibility_protected & visibility_private) == 0);
+    assert((prop_flag_visibility_private & prop_flag_visibility_non_public) == prop_flag_visibility_private);
+    assert((prop_flag_visibility_protected & prop_flag_visibility_non_public) == prop_flag_visibility_protected);
+    assert((prop_flag_visibility_protected & prop_flag_visibility_private) == 0);
 
-    assert((visibility_non_public & persistence_mask) == 0);
+    assert((prop_flag_visibility_non_public & prop_flag_persistence_mask) == 0);
 
     Element val;
 

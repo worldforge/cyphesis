@@ -70,7 +70,7 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                                                     std::unique_ptr<PropertyBase> prop)
 {
     TypeNode::PropertiesUpdate update;
-    if (prop->hasFlags(flag_instance)) {
+    if (prop->hasFlags(prop_flag_instance)) {
         log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", name, m_name));
         return update;
     }
@@ -97,10 +97,10 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
     };
 
     add_attribute_fn(m_privateDescription);
-    if (!p->hasFlags(visibility_private)) {
+    if (!p->hasFlags(prop_flag_visibility_private)) {
         add_attribute_fn(m_protectedDescription);
     }
-    if (!p->hasFlags(visibility_non_public)) {
+    if (!p->hasFlags(prop_flag_visibility_non_public)) {
         add_attribute_fn(m_publicDescription);
     }
 
@@ -112,13 +112,13 @@ void TypeNode::addProperties(const MapType& attributes)
 {
     for (const auto& entry : attributes) {
         auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
-        if (p->hasFlags(flag_instance)) {
+        if (p->hasFlags(prop_flag_instance)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
             continue;
         }
         assert(p != nullptr);
         p->set(entry.second);
-        p->addFlags(flag_class);
+        p->addFlags(prop_flag_class);
         p->install(this, entry.first);
         m_defaults[entry.first] = std::move(p);
     }
@@ -138,7 +138,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     // present after the update.
     for (auto& entry : m_defaults) {
         //Don't remove ephemeral attributes.
-        if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(persistence_ephem)) {
+        if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(prop_flag_persistence_ephem)) {
             debug(std::cout << entry.first << " removed" << std::endl;)
             propertiesUpdate.removedProps.insert(entry.first);
             propertiesMapPrivate.erase(entry.first);
@@ -162,20 +162,20 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
             auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
-            if (p->hasFlags(flag_instance)) {
+            if (p->hasFlags(prop_flag_instance)) {
                 log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
                 continue;
             }
-            p->addFlags(flag_class);
+            p->addFlags(prop_flag_class);
             p->install(this, entry.first);
             propertiesUpdate.newProps.emplace(entry.first);
             p->set(entry.second);
 
             propertiesMapPrivate[entry.first] = entry.second;
-            if (!p->hasFlags(visibility_private)) {
+            if (!p->hasFlags(prop_flag_visibility_private)) {
                 propertiesMapProtected[entry.first] = entry.second;
             }
-            if (!p->hasFlags(visibility_non_public)) {
+            if (!p->hasFlags(prop_flag_visibility_non_public)) {
                 propertiesMapPublic[entry.first] = entry.second;
             }
             m_defaults[entry.first] = std::move(p);
@@ -188,10 +188,10 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
                 propertiesUpdate.changedProps.emplace(entry.first);
             }
             propertiesMapPrivate[entry.first] = entry.second;
-            if (!p->hasFlags(visibility_private)) {
+            if (!p->hasFlags(prop_flag_visibility_private)) {
                 propertiesMapProtected[entry.first] = entry.second;
             }
-            if (!p->hasFlags(visibility_non_public)) {
+            if (!p->hasFlags(prop_flag_visibility_non_public)) {
                 propertiesMapPublic[entry.first] = entry.second;
             }
         }

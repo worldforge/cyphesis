@@ -467,12 +467,12 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
     if (m_meshBounds.isValid()) {
         auto I = typeNode->defaults().find(BBoxProperty::property_name);
         //Create a new property if either there isn't one, or the existing one is calculated from geometry (which we detect by checking if it's ephemeral).
-        if (I == typeNode->defaults().end() || I->second->flags().hasFlags(persistence_ephem)) {
+        if (I == typeNode->defaults().end() || I->second->flags().hasFlags(prop_flag_persistence_ephem)) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
             auto bBoxProperty = std::make_unique<BBoxProperty>();
             bBoxProperty->data() = m_meshBounds;
             //Mark the property as ephemeral since it's calculated.
-            bBoxProperty->addFlags(flag_class | persistence_ephem);
+            bBoxProperty->addFlags(prop_flag_class | prop_flag_persistence_ephem);
             bBoxProperty->flags().addFlags(PropertyBase::flagsForPropertyName(BBoxProperty::property_name));
             bBoxProperty->install(typeNode, BBoxProperty::property_name);
             auto update = typeNode->injectProperty(BBoxProperty::property_name, std::move(bBoxProperty));

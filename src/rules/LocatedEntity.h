@@ -52,8 +52,6 @@ class Script;
 
 class TypeNode;
 
-class _object;
-
 template<typename T>
 class Property;
 

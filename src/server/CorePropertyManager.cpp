@@ -262,13 +262,13 @@ CorePropertyManager::CorePropertyManager()
      * Keeps track of when attachments are ready to be used again.
      * For example, if you swing a sword you can't do anything with the sword arm for a second or two.
      */
-    installProperty<Property<MapType>>("_ready_at_attached")->m_flags |= persistence_ephem;
+    installProperty<Property<MapType>>("_ready_at_attached")->m_flags |= prop_flag_persistence_ephem;
 
     /**
      * Keeps track of when singular entities are ready to be used again.
      * This could be used on a magic scroll for example.
      */
-    installProperty<Property<double>>("ready_at")->m_flags |= persistence_ephem;
+    installProperty<Property<double>>("ready_at")->m_flags |= prop_flag_persistence_ephem;
 
     installProperty<MindsProperty>();
 

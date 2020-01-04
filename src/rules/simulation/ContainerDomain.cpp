@@ -48,7 +48,7 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
 
                     auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
                     stackProp->data() += newEntityStackProp->data();
-                    stackProp->removeFlags(persistence_clean);
+                    stackProp->removeFlags(prop_flag_persistence_clean);
                     child->applyProperty(AmountProperty::property_name, stackProp);
 
                     newEntityStackProp->data() = 0;

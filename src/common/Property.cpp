@@ -208,7 +208,7 @@ const Atlas::Message::Element& SoftProperty::data() const
 
 int BoolProperty::get(Atlas::Message::Element & ent) const
 {
-    ent = m_flags.hasFlags(flag_bool) ? 1 : 0;
+    ent = m_flags.hasFlags(prop_flag_bool) ? 1 : 0;
     return 0;
 }
 
@@ -216,9 +216,9 @@ void BoolProperty::set(const Atlas::Message::Element & ent)
 {
     if (ent.isInt()) {
         if (ent.Int() == 0) {
-            m_flags.removeFlags(flag_bool);
+            m_flags.removeFlags(prop_flag_bool);
         } else {
-            m_flags.addFlags(flag_bool);
+            m_flags.addFlags(prop_flag_bool);
         }
     }
 }
@@ -230,7 +230,7 @@ BoolProperty * BoolProperty::copy() const
 
 bool BoolProperty::isTrue() const
 {
-    return m_flags.hasFlags(flag_bool);
+    return m_flags.hasFlags(prop_flag_bool);
 }
 
 
@@ -255,9 +255,9 @@ template <> const std::string Property<Atlas::Message::MapType>::property_atlast
 std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
 {
     if (name.size() > 1 && name[0] == '_' && name[1] == '_') {
-        return visibility_private;
+        return prop_flag_visibility_private;
     } else if (!name.empty() && name[0] == '_') {
-        return visibility_protected;
+        return prop_flag_visibility_protected;
     }
     return 0;
 }

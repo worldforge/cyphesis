@@ -42,7 +42,7 @@ static const bool debug_flag = false;
 static const std::string SERIALNO = "serialno";
 
 TasksProperty::TasksProperty()
-    : PropertyBase(persistence_ephem)
+    : PropertyBase(prop_flag_persistence_ephem)
 {
 }
 
@@ -117,7 +117,7 @@ TasksProperty* TasksProperty::copy() const
 
 int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
 {
-    m_flags.addFlags(flag_unsent);
+    m_flags.addFlags(prop_flag_unsent);
 
     Update update;
     update->setTo(owner->getId());

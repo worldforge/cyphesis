@@ -21,7 +21,7 @@
 #include "rules/Modifier.h"
 
 ModifiersProperty::ModifiersProperty() :
-        PropertyBase(flag_instance | persistence_ephem),
+        PropertyBase(prop_flag_instance | prop_flag_persistence_ephem),
         m_entity(nullptr)
 {
 }

@@ -67,7 +67,7 @@ void StackableDomain::addEntity(LocatedEntity& entity)
 
             auto stackProp = m_entity.requirePropertyClassFixed<AmountProperty>(1);
             stackProp->data() += newEntityStackProp->data();
-            stackProp->removeFlags(persistence_clean);
+            stackProp->removeFlags(prop_flag_persistence_clean);
             m_entity.applyProperty(AmountProperty::property_name, stackProp);
 
             newEntityStackProp->data() = 0;

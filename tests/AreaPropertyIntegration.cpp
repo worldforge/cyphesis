@@ -62,7 +62,7 @@ void AreaPropertyintegration::setup()
     m_char_type = new TypeNode("char_type");
 
     m_char_property = new AreaProperty;
-    m_char_property->addFlags(flag_class);
+    m_char_property->addFlags(prop_flag_class);
     m_char_property->set(
         MapType{
             std::make_pair("shape", MapType{
@@ -170,7 +170,7 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 #include "stubs/rules/stubLocation.h"
 
 
-IdProperty::IdProperty(const std::string & data) : PropertyBase(persistence_ephem),
+IdProperty::IdProperty(const std::string & data) : PropertyBase(prop_flag_persistence_ephem),
                                                    m_data(data)
 {
 }
@@ -200,7 +200,7 @@ IdProperty * IdProperty::copy() const
 }
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-    PropertyBase(persistence_ephem), m_data(data)
+        PropertyBase(prop_flag_persistence_ephem), m_data(data)
 {
 }
 

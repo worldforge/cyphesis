@@ -215,7 +215,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
 
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
         prop->set(val);
-        prop->addFlags(persistence_clean | persistence_seen);
+        prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
         prop->apply(ent);
         ent->propertyApplied(name, *prop);
         instanceProperties.insert(name);
@@ -292,7 +292,7 @@ void StorageManager::insertEntity(LocatedEntity* ent)
         if (!prop) {
             continue;
         }
-        if (prop->hasFlags(persistence_ephem)) {
+        if (prop->hasFlags(prop_flag_persistence_ephem)) {
             continue;
         }
         if (entry.second.modifiers.empty()) {
@@ -300,7 +300,7 @@ void StorageManager::insertEntity(LocatedEntity* ent)
         } else {
             encodeElement(entry.second.baseValue, property_tuples[entry.first]);
         }
-        prop->addFlags(persistence_clean | persistence_seen);
+        prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
     }
     if (!property_tuples.empty()) {
         m_db.insertProperties(ent->getId(), property_tuples);
@@ -345,10 +345,10 @@ void StorageManager::updateEntity(LocatedEntity* ent)
         if (!prop) {
             continue;
         }
-        if (prop->hasFlags(persistence_mask)) {
+        if (prop->hasFlags(prop_flag_persistence_mask)) {
             continue;
         }
-        KeyValues& active_store = prop->hasFlags(persistence_seen) ? upd_property_tuples : new_property_tuples;
+        KeyValues& active_store = prop->hasFlags(prop_flag_persistence_seen) ? upd_property_tuples : new_property_tuples;
         if (property.second.modifiers.empty()) {
             Atlas::Message::Element element;
             prop->get(element);
@@ -373,12 +373,12 @@ void StorageManager::updateEntity(LocatedEntity* ent)
         }
 
         // FIXME check if this is new or just modded.
-        if (prop->hasFlags(persistence_seen)) {
+        if (prop->hasFlags(prop_flag_persistence_seen)) {
             ++m_updatePropertyCount;
         } else {
             ++m_insertPropertyCount;
         }
-        prop->addFlags(persistence_clean | persistence_seen);
+        prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
     }
     if (!new_property_tuples.empty()) {
         m_db.insertProperties(ent->getId(),

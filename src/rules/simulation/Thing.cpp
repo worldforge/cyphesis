@@ -374,7 +374,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 //        {
 //            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
 //            if (modeDataProp) {
-//                if (modeDataProp->hasFlags(flag_unsent)) {
+//                if (modeDataProp->hasFlags(prop_flag_unsent)) {
 //                    Element modeDataElem;
 //                    if (modeDataProp->get(modeDataElem) == 0) {
 //                        marg->setAttr(ModeDataProperty::property_name, modeDataElem);
@@ -405,7 +405,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
                     auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
                     if (modeDataProp) {
-                        if (modeDataProp->hasFlags(flag_unsent)) {
+                        if (modeDataProp->hasFlags(prop_flag_unsent)) {
                             Element modeDataElem;
                             if (modeDataProp->get(modeDataElem) == 0) {
                                 setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
@@ -486,20 +486,20 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
 
     for (const auto& entry : m_properties) {
         auto& prop = entry.second.property;
-        if (prop && prop->hasFlags(flag_unsent)) {
-            debug(std::cout << "UPDATE:  " << flag_unsent << " " << entry.first
+        if (prop && prop->hasFlags(prop_flag_unsent)) {
+            debug(std::cout << "UPDATE:  " << prop_flag_unsent << " " << entry.first
                             << std::endl << std::flush;);
-            if (prop->hasFlags(visibility_private)) {
+            if (prop->hasFlags(prop_flag_visibility_private)) {
                 prop->add(entry.first, set_arg_private);
                 hadPrivateChanges = true;
-            } else if (prop->hasFlags(visibility_protected)) {
+            } else if (prop->hasFlags(prop_flag_visibility_protected)) {
                 prop->add(entry.first, set_arg_protected);
                 hadProtectedChanges = true;
             } else {
                 prop->add(entry.first, set_arg);
                 hadPublicChanges = true;
             }
-            prop->removeFlags(flag_unsent | persistence_clean);
+            prop->removeFlags(prop_flag_unsent | prop_flag_persistence_clean);
             hadChanges = true;
         }
     }
@@ -608,14 +608,14 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     } else if (observingEntity.getIntId() == getIntId()) {
         //Our own entity can see both public and protected, but not private properties.
         for (auto& entry : m_properties) {
-            if (!entry.second.property->hasFlags(visibility_private)) {
+            if (!entry.second.property->hasFlags(prop_flag_visibility_private)) {
                 entry.second.property->add(entry.first, sarg);
             }
         }
     } else {
         //Other entities can only see public properties.
         for (auto& entry : m_properties) {
-            if (!entry.second.property->hasFlags(visibility_non_public)) {
+            if (!entry.second.property->hasFlags(prop_flag_visibility_non_public)) {
                 entry.second.property->add(entry.first, sarg);
             }
         }

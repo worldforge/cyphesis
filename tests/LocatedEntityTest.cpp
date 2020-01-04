@@ -368,7 +368,7 @@ void SoftProperty::set(const Atlas::Message::Element & val)
 #include "stubs/rules/stubScript.h"
 #include "stubs/rules/stubLocation.h"
 
-IdProperty::IdProperty(const std::string & data) : PropertyBase(persistence_ephem),
+IdProperty::IdProperty(const std::string & data) : PropertyBase(prop_flag_persistence_ephem),
                                                    m_data(data)
 {
 }
@@ -400,7 +400,7 @@ IdProperty * IdProperty::copy() const
 
 
 ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-    PropertyBase(persistence_ephem), m_data(data)
+        PropertyBase(prop_flag_persistence_ephem), m_data(data)
 {
 }
 
