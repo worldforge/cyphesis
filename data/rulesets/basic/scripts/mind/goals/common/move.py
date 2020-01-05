@@ -1,6 +1,6 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
-
+import math
 import types
 
 import entity_filter
@@ -10,6 +10,7 @@ from physics import Point3D, Vector3D, distance_to, square_horizontal_distance, 
 from rules import Location, isLocation
 
 from mind.goals.common.misc_goal import *
+from mind.Goal import Goal
 
 
 ############################ MOVE ME ####################################

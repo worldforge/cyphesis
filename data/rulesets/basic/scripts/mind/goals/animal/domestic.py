@@ -12,7 +12,7 @@ sowee_pattern = re.compile("[Ss]owee")
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 
-class driven(DynamicGoal):
+class Driven(DynamicGoal):
     """Move away from a herder when touched."""
 
     def __init__(self, desc="Move away when touched, as by a swineherd"):
@@ -25,7 +25,7 @@ class driven(DynamicGoal):
         return Operation("move", Entity(me.entity.id, location=destination))
 
 
-class summons(DynamicGoal):
+class Summons(DynamicGoal):
     """Stop moving when the herder gives a cry."""
 
     def __init__(self, verb, desc="Come to a stop when commanded to"):

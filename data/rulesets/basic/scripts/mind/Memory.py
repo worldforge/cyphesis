@@ -15,7 +15,7 @@ class Memory:
 
     def recall_place(self, location, radius, a_filter):
         try:
-            if type(a_filter) == list:
+            if isinstance(a_filter, list):
                 for i in a_filter:
                     result = self.map.find_by_location_query(location, radius, i)
                     if len(result) != 0:

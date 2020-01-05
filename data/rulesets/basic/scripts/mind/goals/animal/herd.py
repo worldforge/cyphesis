@@ -1,13 +1,14 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Al Riddoch (See the file COPYING for details).
 
-from atlas import Operation, Entity, Oplist
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
+from atlas import Operation, Entity
 from physics import Point3D
 from rules import Location
 
+from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
-class school(DynamicGoal):
+
+class School(DynamicGoal):
     """Move in a shoal with other animals of the same type"""
 
     def __init__(self, members=[], desc="mirror the movement of other animals like me"):
@@ -28,10 +29,10 @@ class school(DynamicGoal):
         if ent.name != me.name:
             # print "ent.type!=me.entity.type"
             return
-        if type(ent.location.parent) == type(None):
+        if not ent.location.parent:
             # print "school.event, ent.location.parent is None"
             return
-        if type(me.entity.location.parent) == type(None):
+        if not me.entity.location.parent:
             # print "school.event, me.entity.location.parent is None"
             return
         if me.entity.location.parent.id != ent.location.parent.id:
@@ -161,11 +162,15 @@ class herd(DynamicGoal):
 
     def event(self, me, original_op, op):
         ent = op[0]
-        if ent.id == me.entity.id: return
+        if ent.id == me.entity.id:
+            return
         ent = me.map.get(ent.id)
-        if ent == None: return
-        if ent.type[0] != me.entity.type[0]: return
-        if me.entity.location.parent.id != ent.location.parent.id: return
+        if ent is None:
+            return
+        if ent.type[0] != me.entity.type[0]:
+            return
+        if me.entity.location.parent.id != ent.location.parent.id:
+            return
         try:
             val = self.herd_members[ent.id]
         except KeyError:
@@ -178,7 +183,8 @@ class herd(DynamicGoal):
             return
         # If we have not seen this one before 50 times, then it is not yet
         # really a member of the herd
-        if not val > 50: return
+        if not val > 50:
+            return
         val = val + 1
         self.herd_members[ent.id] = val
         if ent.location.velocity:
