@@ -414,7 +414,7 @@ WFMath::CoordType sqrMag(const Point3D & p)
     return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
 }
 #define STUB_squareDistance
-WFMath::CoordType squareDistance(const Location & self, const Location & other)
+boost::optional<WFMath::CoordType> squareDistance(const Location & self, const Location & other)
 {
     Point3D dist;
     distanceToAncestor(self, other, dist);

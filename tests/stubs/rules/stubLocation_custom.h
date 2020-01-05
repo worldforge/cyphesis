@@ -38,7 +38,7 @@ Location::Location(LocatedEntity * rf):
 
 Vector3D distanceTo(const Location & self, const Location & other)
 {
-    return *((Vector3D*)nullptr);
+    return Vector3D();
 }
 #endif //STUB_distanceTo
 
@@ -46,13 +46,13 @@ Vector3D distanceTo(const Location & self, const Location & other)
 #define STUB_relativePos
 Point3D relativePos(const Location & self, const Location & other)
 {
-    return *((Point3D*)nullptr);
+    return Point3D();
 }
 #endif //STUB_relativePos
 
 #ifndef STUB_squareDistance
 #define STUB_squareDistance
-WFMath::CoordType squareDistance(const Location & self, const Location & other)
+boost::optional<WFMath::CoordType> squareDistance(const Location & self, const Location & other)
 {
     return 0.0;
 }
@@ -60,7 +60,7 @@ WFMath::CoordType squareDistance(const Location & self, const Location & other)
 
 #ifndef STUB_squareHorizontalDistance
 #define STUB_squareHorizontalDistance
-WFMath::CoordType squareHorizontalDistance(const Location & self, const Location & other)
+boost::optional<WFMath::CoordType> squareHorizontalDistance(const Location & self, const Location & other)
 {
     return 0.0;
 }
