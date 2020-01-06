@@ -340,11 +340,11 @@ SteeringResult Steering::update(double currentTimestamp)
                 }
 
                 WFMath::Vector<2> distance = nextWaypoint - entityPosition;
-                WFMath::Vector<2> velocity = distance;
+                WFMath::Vector<2> velocityNorm = distance; //The velocity, normalized
+                velocityNorm = velocityNorm.normalize() * mDesiredSpeed;
                 WFMath::Point<2> destination;
-                velocity = velocity.normalize() * mDesiredSpeed;
 
-                result.timeToNextWaypoint = distance.mag() / velocity.mag();
+                result.timeToNextWaypoint = distance.mag() / velocityNorm.mag();
 
                 if (mCurrentPathIndex == mPath.size() - 1) {
                     //if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
@@ -353,30 +353,27 @@ SteeringResult Steering::update(double currentTimestamp)
                 }
 
                 //Check if we need to divert in order to avoid colliding.
-                WFMath::Vector<2> newVelocity;
-                bool avoiding = mAwareness->avoidObstacles(mAvatar.getIntId(), entityPosition, velocity * mMaxSpeed, newVelocity, currentTimestamp);
+                WFMath::Vector<2> newVelocity; //The new velocity after avoiding, not normalized.
+                bool shouldSend = false;
+                bool avoiding = mAwareness->avoidObstacles(mAvatar.getIntId(), entityPosition, velocityNorm * mMaxSpeed, newVelocity, currentTimestamp, &nextWaypoint);
                 if (avoiding) {
-                    auto newMag = newVelocity.mag();
-                    auto relativeMag = mMaxSpeed / newMag;
-
-                    velocity = newVelocity;
-                    velocity.normalize();
-                    velocity *= relativeMag;
+                    //log(INFO, "Avoiding.");
+                    velocityNorm = newVelocity / mMaxSpeed;
 
                     //Schedule a new steering op very soon
                     result.timeToNextWaypoint = std::min(*result.timeToNextWaypoint, 0.1);
                     mUpdateNeeded = true;
+                    shouldSend = true;
                 }
 
-                bool shouldSend = false;
-                if (velocity.isValid()) {
+                if (velocityNorm.isValid()) {
                     if (mLastSentVelocity.isValid()) {
                         //If the entity has stopped, and we're not waiting for confirmation to a movement request we've made, we need to start moving.
                         if (mAvatar.m_location.velocity() == WFMath::Vector<3>::ZERO() && !mExpectingServerMovement) {
                             shouldSend = true;
                         } else {
                             auto currentTheta = std::atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
-                            auto newTheta = std::atan2(velocity.y(), velocity.x());
+                            auto newTheta = std::atan2(velocityNorm.y(), velocityNorm.x());
 
                             //If we divert too much from where we need to go we must adjust.
                             if (std::abs(currentTheta - newTheta) > WFMath::numeric_constants<double>::pi() / 20) {
@@ -393,8 +390,8 @@ SteeringResult Steering::update(double currentTimestamp)
                     if (destination.isValid() && !avoiding) {
                         result.destination = WFMath::Point<3>(destination.x(), mAvatar.m_location.m_pos.y(), destination.y());
                     }
-                    result.direction = WFMath::Vector<3>(velocity.x(), 0, velocity.y());
-                    mLastSentVelocity = velocity;
+                    result.direction = WFMath::Vector<3>(velocityNorm.x(), 0, velocityNorm.y());
+                    mLastSentVelocity = velocityNorm;
                     mExpectingServerMovement = true;
                 }
             }

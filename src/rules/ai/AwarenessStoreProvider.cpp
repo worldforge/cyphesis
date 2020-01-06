@@ -44,7 +44,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
     }
 
 
-    float agentHeight = 2;
+    double agentHeight = 2;
     float agentRadius = 0.4;
     auto propertyI = type->defaults().find("bbox");
     if (propertyI != type->defaults().end()) {
@@ -59,7 +59,7 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
         agentRadius = std::max(0.2, agent2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
     }
 
-    return m_awarenessStores.emplace(type->name(), AwarenessStore(agentRadius, agentHeight, m_heightProvider, tileSize)).first->second;
+    return m_awarenessStores.emplace(type->name(), AwarenessStore(agentRadius, (float)agentHeight, m_heightProvider, tileSize)).first->second;
 
 }
 

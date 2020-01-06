@@ -209,7 +209,12 @@ class Awareness
          * @param currentTimestamp The current timestamp. Used to determine positions of moving entities.
          * @return True if the velocity had to be changed in order to avoid obstacles.
          */
-        bool avoidObstacles(long avatarEntityId, const WFMath::Point<2>& position, const WFMath::Vector<2>& desiredVelocity, WFMath::Vector<2>& newVelocity, double currentTimestamp) const;
+        bool avoidObstacles(long avatarEntityId,
+                const WFMath::Point<2>& position,
+                const WFMath::Vector<2>& desiredVelocity,
+                WFMath::Vector<2>& newVelocity,
+                double currentTimestamp,
+                const WFMath::Point<2>* nextWayPoint) const;
 
         /**
          * @brief Prunes a tile if possible and needed.
