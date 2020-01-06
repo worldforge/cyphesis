@@ -89,6 +89,7 @@ void CyPy_BaseMind::init_type()
     PYCXX_ADD_VARARGS_METHOD(set_destination, setDestination, "");
     PYCXX_ADD_VARARGS_METHOD(set_speed, setSpeed, "");
     PYCXX_ADD_VARARGS_METHOD(query_destination, queryDestination, "");
+    PYCXX_ADD_VARARGS_METHOD(is_at_location, isAtLocation, "");
 
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
     PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
@@ -339,6 +340,24 @@ Py::Object CyPy_BaseMind::queryDestination(const Py::Tuple& args)
 
     return Py::Long(result);
 }
+
+Py::Object CyPy_BaseMind::isAtLocation(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    if (!awareMind) {
+        throw Py::TypeError("Not an AwareMind");
+    }
+    auto& entityLocation = verifyObject<CyPy_Location>(args[0]);
+
+    auto steering = awareMind->getSteering();
+    if (!steering) {
+        return Py::None();
+    }
+
+    return Py::Boolean(steering->isAtDestination(awareMind->getCurrentServerTime(), entityLocation.m_pos));
+}
+
 
 template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,

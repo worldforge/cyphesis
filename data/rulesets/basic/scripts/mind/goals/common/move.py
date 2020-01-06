@@ -1,6 +1,5 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
-import math
 import types
 
 import entity_filter
@@ -9,8 +8,8 @@ from common import const
 from physics import Point3D, Vector3D, distance_to, square_horizontal_distance, square_distance
 from rules import Location, isLocation
 
-from mind.goals.common.misc_goal import *
 from mind.Goal import Goal
+from mind.goals.common.misc_goal import *
 
 
 ############################ MOVE ME ####################################
@@ -47,12 +46,13 @@ class MoveMe(Goal):
         if not location:
             # print "No location"
             return True
-        square_distance = square_horizontal_distance(me.entity.location, location)
-        if square_distance and square_distance <= self.squared_radius:
-            # print("We are there, distance %s" % math.sqrt(square_distance))
+        if me.is_at_location(location):
+            #        square_distance = square_horizontal_distance(me.entity.location, location)
+            #        if square_distance and square_distance <= self.squared_radius:
+            print("We are there")
             return True
         else:
-            # print("We are not there, distance %s" % math.sqrt(square_distance))
+            print("We are not there")
             return False
 
     def move_to_loc(self, me):

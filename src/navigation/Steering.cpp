@@ -45,7 +45,7 @@ Steering::Steering(MemEntity& avatar) :
         mDesiredSpeed(0.5),
         mExpectingServerMovement(false),
         mPathResult(0),
-        mAvatarHorizRadius(0.4)
+        mAvatarHorizRadius(0)
 {
     auto speedGroundProp = avatar.getPropertyType<double>("speed_ground");
     if (speedGroundProp) {
@@ -300,6 +300,12 @@ WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp)
     return currentEntityPos;
 }
 
+bool Steering::isAtDestination(double currentTimestamp, const WFMath::Point<3>& destination) {
+    auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
+    const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.z());
+    return WFMath::Distance(WFMath::Point<2>(destination.x(), destination.z()), entityPosition) < mAvatarHorizRadius;
+}
+
 SteeringResult Steering::update(double currentTimestamp)
 {
     SteeringResult result{};
@@ -314,9 +320,8 @@ SteeringResult Steering::update(double currentTimestamp)
         if (!mPath.empty()) {
             const auto& finalDestination = mPath.back();
 
-            const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.z());
             //First check if we've arrived at our actual destination.
-            if (WFMath::Distance(WFMath::Point<2>(finalDestination.x(), finalDestination.z()), entityPosition) < mAvatarHorizRadius) {
+            if (isAtDestination(currentTimestamp, finalDestination)) {
                 //We've arrived at our destination. If we're moving we should stop.
                 if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
                     result.direction = WFMath::Vector<3>::ZERO();
@@ -326,6 +331,7 @@ SteeringResult Steering::update(double currentTimestamp)
                 stopSteering();
             } else {
                 //We should send a move op if we're either not moving, or we've reached a waypoint, or we need to divert a lot.
+                const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.z());
 
                 WFMath::Point<2> nextWaypoint(mPath[mCurrentPathIndex].x(), mPath[mCurrentPathIndex].z());
                 while (WFMath::Distance(nextWaypoint, entityPosition) < mAvatarHorizRadius && mCurrentPathIndex < mPath.size() - 1) {
@@ -338,7 +344,7 @@ SteeringResult Steering::update(double currentTimestamp)
                 WFMath::Point<2> destination;
                 velocity = velocity.normalize() * mDesiredSpeed;
 
-                result.timeToNextWaypoint = distance.mag() / mMaxSpeed;
+                result.timeToNextWaypoint = distance.mag() / velocity.mag();
 
                 if (mCurrentPathIndex == mPath.size() - 1) {
                     //if the next waypoint is the destination we should send a "move to position" update to the server, to make sure that we stop when we've arrived.
@@ -358,7 +364,7 @@ SteeringResult Steering::update(double currentTimestamp)
                     velocity *= relativeMag;
 
                     //Schedule a new steering op very soon
-                    result.timeToNextWaypoint = 0.2f;
+                    result.timeToNextWaypoint = std::min(*result.timeToNextWaypoint, 0.1);
                     mUpdateNeeded = true;
                 }
 

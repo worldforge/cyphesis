@@ -65,6 +65,9 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
         Py::Object queryDestination(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, queryDestination);
 
+        Py::Object isAtLocation(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, isAtLocation);
+
 };
 
 

@@ -165,7 +165,9 @@ public:
 
 	int getPathResult() const;
 
-	/**
+    bool isAtDestination(double currentTimestamp, const WFMath::Point<3>& destination);
+
+    /**
 	 * @brief Emitted when the path has been updated.
 	 */
 	sigc::signal<void> EventPathUpdated;
@@ -248,7 +250,7 @@ private:
 	 * Horizontal radius of the avatar, i.e. radius using only x and y.
 	 * Used to determine how close the avatar should be to things.
 	 */
-	float mAvatarHorizRadius;
+    WFMath::CoordType mAvatarHorizRadius;
 
 	/**
 	 * @brief Keep track of the last sent velocity.
