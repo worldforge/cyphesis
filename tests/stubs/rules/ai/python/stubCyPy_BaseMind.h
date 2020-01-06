@@ -121,5 +121,13 @@
   }
 #endif //STUB_CyPy_BaseMind_queryDestination
 
+#ifndef STUB_CyPy_BaseMind_isAtLocation
+//#define STUB_CyPy_BaseMind_isAtLocation
+  Py::Object CyPy_BaseMind::isAtLocation(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_isAtLocation
+
 
 #endif

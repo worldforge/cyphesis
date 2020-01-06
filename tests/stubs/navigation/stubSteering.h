@@ -162,6 +162,14 @@
   }
 #endif //STUB_Steering_getPathResult
 
+#ifndef STUB_Steering_isAtDestination
+//#define STUB_Steering_isAtDestination
+  bool Steering::isAtDestination(double currentTimestamp, const WFMath::Point<3>& destination)
+  {
+    return false;
+  }
+#endif //STUB_Steering_isAtDestination
+
 #ifndef STUB_Steering_setAwarenessArea
 //#define STUB_Steering_setAwarenessArea
   void Steering::setAwarenessArea()

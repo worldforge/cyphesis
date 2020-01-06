@@ -8,7 +8,6 @@ from common import const
 from physics import Point3D, Vector3D, distance_to, square_horizontal_distance, square_distance
 from rules import Location, isLocation
 
-from mind.Goal import Goal
 from mind.goals.common.misc_goal import *
 
 
@@ -49,10 +48,10 @@ class MoveMe(Goal):
         if me.is_at_location(location):
             #        square_distance = square_horizontal_distance(me.entity.location, location)
             #        if square_distance and square_distance <= self.squared_radius:
-            print("We are there")
+            # print("We are there")
             return True
         else:
-            print("We are not there")
+            # print("We are not there")
             return False
 
     def move_to_loc(self, me):
@@ -420,7 +419,7 @@ class MoveMeNearFocus(Goal):
             # If we've already moved close to the thing, we are allowed movement within a certain movement radius
             if self.is_close_to_thing:
                 if squared_distance_to_thing < (
-                        (self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
+                    (self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
                     return True
         self.is_close_to_thing = False
         return False

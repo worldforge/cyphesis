@@ -7,22 +7,6 @@
 #include "rules/ai/MindFactory.h"
 #include "stubMindFactory_custom.h"
 
-#ifndef STUB_MindKit_MindKit
-//#define STUB_MindKit_MindKit
-   MindKit::MindKit()
-  {
-    
-  }
-#endif //STUB_MindKit_MindKit
-
-#ifndef STUB_MindKit_MindKit_DTOR
-//#define STUB_MindKit_MindKit_DTOR
-   MindKit::~MindKit()
-  {
-    
-  }
-#endif //STUB_MindKit_MindKit_DTOR
-
 #ifndef STUB_MindKit_newMind
 //#define STUB_MindKit_newMind
   BaseMind* MindKit::newMind(const std::string & mind_id, const std::string & entity_id) const
