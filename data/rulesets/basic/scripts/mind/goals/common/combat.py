@@ -3,12 +3,11 @@
 
 import entity_filter
 from atlas import Operation, Entity
-from physics import square_distance, distance_between
-
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import SpotSomething
 from mind.goals.common.move import Avoid, MoveMeToFocus
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
+from physics import square_distance, distance_between
 
 # A list of usages which we should look for in weapons.
 weapon_usages = ['strike', 'chop']
@@ -57,7 +56,8 @@ class Fight(Goal):
                     if usage in weapon_usages:
                         self.weapon_usage = usage
                         return None
-        # Current tool isn't a weapon, or we have nothing attached, try to find one, and if not unequip so we can fight with our fists
+        # Current tool isn't a weapon, or we have nothing attached, try to find one,
+        # and if not unequip so we can fight with our fists
         for child in me.entity.contains:
             usages = child.get_prop_map("usages")
             if usages:
@@ -138,7 +138,9 @@ class KeepGrudge(DynamicGoal):
         DynamicGoal.__init__(self, trigger="sight_hit", desc="React when being hit.")
 
     def event(self, me, original_op, op):
-        actor_id = op.id
+        # The args of the hit op contains the originating entity for the hit (i.e. the actual attacker).
+        hit_args = op[0]
+        actor_id = hit_args.id
         to_id = op.to
         print('Got sight of hit from "{}" to "{}"'.format(actor_id, to_id))
         if actor_id and to_id:
