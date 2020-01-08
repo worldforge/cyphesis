@@ -55,6 +55,7 @@ void CyPy_MemEntity::init_type()
     PYCXX_ADD_VARARGS_METHOD(can_reach, can_reach, "");
     PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
     PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
+    PYCXX_ADD_VARARGS_METHOD(is_type, is_type, "Returns true if the current entity is of supplied string type.");
 
     PYCXX_ADD_VARARGS_METHOD(get_prop_num, get_prop_num, "");
     PYCXX_ADD_VARARGS_METHOD(has_prop_num, has_prop_num, "");

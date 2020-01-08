@@ -71,6 +71,10 @@ class CyPy_LocatedEntityBase : public WrapperBase<TValue, TPythonClass, Py::Pyth
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, client_error);
 
+        Py::Object is_type(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_LocatedEntityBase, is_type);
+
 
         Py::Object get_prop_num(const Py::Tuple& args);
 

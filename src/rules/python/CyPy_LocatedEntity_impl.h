@@ -190,6 +190,20 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::client_error(const Py::
     return Py::None();
 }
 
+
+template<typename TValue, typename TPythonClass>
+Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::is_type(const Py::Tuple& args)
+{
+    args.verify_length(1);
+
+    const TypeNode* type = this->m_value->getType();
+    if (!type) {
+        return Py::False();
+    }
+    return Py::Boolean(type->isTypeOf(verifyString(args[0])));
+}
+
+
 template<typename TValue, typename TPythonClass>
 Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getPropertyFromFirstArg(const Py::Tuple& args, const std::function<Py::Object(const Atlas::Message::Element&, Py::Object)>& checkFn) const
 {
