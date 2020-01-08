@@ -193,6 +193,7 @@
         <string name="parent">human_npc_basic</string>
         <list name="entities">
             <map>
+                <string name="id">main</string>
                 <string name="parent">human</string>
                 <list name="contains">
                     <string>shirt</string>
@@ -203,6 +204,7 @@
                     <string>bow</string>
                     <string>arrows</string>
                     <string>coins</string>
+                    <string>shield</string>
                 </list>
                 <map name="attached_body">
                     <string name="$eid">shirt</string>
@@ -285,6 +287,10 @@
                 <string name="id">coins</string>
                 <string name="parent">coin</string>
                 <int name="amount">10</int>
+            </map>
+            <map>
+                <string name="id">shield</string>
+                <string name="parent">shield</string>
             </map>
         </list>
         <list name="_relations">
