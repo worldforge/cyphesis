@@ -23,12 +23,13 @@ class Fight(Goal):
     def __init__(self, what="", range=30):
         Goal.__init__(self, "fight something",
                       self.none_in_range,
-                      [SpotSomething(what=what, range=range),
-                       self.equip_weapon,
-                       self.attack,
-                       MoveMeToFocus(what=what, radius=0, speed=0.5),
-                       #                       hunt_for(what=what, range=range, proximity=3),
-                       ])
+                      [
+                          SpotSomething(what=what, range=range),
+                          self.equip_weapon,
+                          self.attack,
+                          MoveMeToFocus(what=what, radius=0, speed=0.5),
+                          #                       hunt_for(what=what, range=range, proximity=3),
+                      ])
         self.what = what
         self.filter = entity_filter.Filter(what)
         self.range = range
@@ -116,7 +117,6 @@ class Fight(Goal):
                 # Check if we're already hitting
                 if tasks_prop:
                     if "melee" in tasks_prop:
-                        print("Already hitting with weapon")
                         return True
                 print("Hitting with a weapon")
                 return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id,
@@ -125,9 +125,7 @@ class Fight(Goal):
                 # Check if we're already hitting
                 if tasks_prop:
                     if "melee" in tasks_prop:
-                        print("Already punching")
                         return True
-                print("Punching")
                 return move_to_face + Operation("use",
                                                 Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
         else:
@@ -135,7 +133,6 @@ class Fight(Goal):
             # Check if we should stop hitting
             if tasks_prop:
                 if "melee" in tasks_prop:
-                    print("stop hitting")
                     return Operation("use",
                                      Root(args=[Entity("stop")], id="melee", objtype="task"))
 

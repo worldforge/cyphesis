@@ -13,7 +13,8 @@ from rules import Location
 
 from mind.Goal import Goal
 from mind.goals.common.common import *
-from mind.goals.common.move import MoveMePlace, MoveMe, PickUpPossession, MoveMeArea, MoveMeToFocus, PickUpFocus, MoveItOutOfMe, HuntFor, MoveIt, Accompany
+from mind.goals.common.move import MoveMePlace, MoveMe, PickUpPossession, MoveMeArea, MoveMeToFocus, PickUpFocus, \
+    MoveItOutOfMe, HuntFor, MoveIt, Accompany
 
 
 ######################## MAKE LOTS OF SOMETHING ###############################
@@ -260,8 +261,8 @@ class SpotSomething(Goal):
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist and sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent and thing.location.parent.id == \
-                    me.entity.location.parent.id:
+            if sqr_dist and sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent and \
+                    thing.location.parent.id == me.entity.location.parent.id:
                 if self.condition(thing):
                     nearest = thing
                     nearsqrdist = nearsqrdist
