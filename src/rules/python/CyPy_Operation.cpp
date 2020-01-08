@@ -79,6 +79,8 @@ void CyPy_Operation::addToArgs(std::vector<Root>& args, const Py::Object& arg)
         args.push_back(CyPy_Operation::value(arg));
     } else if (CyPy_RootEntity::check(arg)) {
         args.push_back(CyPy_RootEntity::value(arg));
+    } else if (CyPy_Root::check(arg)) {
+        args.push_back(CyPy_Root::value(arg));
     } else {
         throw Py::TypeError("Operation arg is of unknown type");
     }

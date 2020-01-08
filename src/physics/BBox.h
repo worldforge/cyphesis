@@ -44,6 +44,11 @@ inline WFMath::CoordType boxBoundingRadius(const BBox & box)
     return std::sqrt(boxSquareBoundingRadius(box));
 }
 
+inline WFMath::CoordType boxHorizontalBoundingRadius(const BBox & box)
+{
+    return std::sqrt(boxSquareBoundingRadius(box));
+}
+
 void boxScale(BBox& box, float scale);
 
 #endif // PHYSICS_B_BOX_H

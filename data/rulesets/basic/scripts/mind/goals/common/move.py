@@ -153,10 +153,9 @@ class MoveMeArea(Goal):
         # print "Latching at location"
         self.arrived = 1
 
-    """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
-    unaware tiles."""
-
     def is_reachable(self, me):
+        """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+        unaware tiles."""
         path_result = me.pathResult
 
         # print("pathResult " + str(pathResult))
@@ -379,7 +378,7 @@ class MoveMeToFocus(Goal):
 class MoveMeNearFocus(Goal):
     """Move me to something I am interested in, first really close, and the allowing movement within a certain radius."""
 
-    def __init__(self, what, distance=2, allowed_movement_radius=10):
+    def __init__(self, what, distance=2, allowed_movement_radius=10, speed=0.2):
         Goal.__init__(self, "move me near this thing",
                       self.am_i_at_it,
                       [self.move_me_to_it])
@@ -395,6 +394,7 @@ class MoveMeNearFocus(Goal):
         # Keeps track of if we're close enough to a thing to consider us near it.
         # If this is true, i.e. we're near a thing, we consider this goal fulfilled as long as we're within the allowed_movement_radius
         self.is_close_to_thing = False
+        self.speed = speed
 
     def am_i_at_it(self, me):
         for what in self.what:
@@ -405,21 +405,13 @@ class MoveMeNearFocus(Goal):
                 me.remove_knowledge('focus', what)
                 continue
 
-            # Only move to the edge of the entity, since else we'll just collide with it.
-            # TODO: Make this check better, taking into account the real collision volume, rotated and all.
-            bbox_size = thing.location.bbox.square_horizontal_bounding_radius()
-            # TODO: Add a check for solid and non solid entities.
-            # When moving to a non solid entity, we should try to get at its center.
-            squared_distance_to_thing = square_horizontal_distance(me.entity.location, thing.location)
-            if not squared_distance_to_thing:
-                return False
-            if squared_distance_to_thing < ((self.distance * self.distance) + bbox_size):
+            distance_to_thing = me.distance_to(thing.location)
+            if distance_to_thing < self.distance:
                 self.is_close_to_thing = True
                 return True
             # If we've already moved close to the thing, we are allowed movement within a certain movement radius
             if self.is_close_to_thing:
-                if squared_distance_to_thing < (
-                    (self.allowed_movement_radius * self.allowed_movement_radius) + bbox_size):
+                if distance_to < self.allowed_movement_radius:
                     return True
         self.is_close_to_thing = False
         return False
@@ -433,10 +425,22 @@ class MoveMeNearFocus(Goal):
             if thing is None:
                 me.remove_knowledge('focus', what)
                 return
-            target = thing.location.copy()
-            if target.parent.id == me.entity.location.parent.id:
-                target.velocity = me.entity.location.pos.unit_vector_to(target.pos)
-                return Operation("move", Entity(me.entity.id, location=target))
+            location = thing.location
+            me.set_speed(self.speed)
+            me.set_destination(location.pos, self.distance, location.parent.id)
+            refresh_result = me.refresh_path()
+            # If result is 0 it means that we're already there
+            if refresh_result == 0:
+                return
+            # If result is below zero it means that we couldn't find a path yet.
+            # This can be because we haven't mapped all areas yet; if so one should check with
+            # me.unawareTilesCount
+            if refresh_result < 0:
+                print("Could not find any path, result %s" % refresh_result)
+                return
+
+            # Return True to signal that this goal is complete now.
+            return True
 
 
 ############################ MOVE THING TO ME ####################################

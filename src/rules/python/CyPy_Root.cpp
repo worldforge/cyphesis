@@ -34,13 +34,7 @@ CyPy_Root::CyPy_Root(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& k
         for (auto key : kwds.keys()) {
             auto keyStr = key.str().as_string();
             auto value = kwds.getItem(key);
-            if (keyStr == "parent") {
-                m_value->setParent(verifyString(value));
-            } else if (keyStr == "type") {
-                m_value->setObjtype(verifyString(value));
-            } else {
-                m_value->setAttr(key.str(), CyPy_Element::asElement(value));
-            }
+            m_value->setAttr(key.str(), CyPy_Element::asElement(value));
         }
     }
 }
