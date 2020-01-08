@@ -209,7 +209,12 @@ Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId
     }
 
     if (entitiesCandidates.size() > 1) {
-        log(WARNING, String::compose("Found multiple entities without a parent in archetype %1.", m_type->name()));
+        std::stringstream ss;
+        for (auto& entry : entitiesCandidates) {
+            ss << entry.first << ",";
+        }
+
+        log(WARNING, String::compose("Found multiple entities without a parent location in archetype %1: %2", m_type->name(), ss.str()));
         return nullptr;
     }
 
