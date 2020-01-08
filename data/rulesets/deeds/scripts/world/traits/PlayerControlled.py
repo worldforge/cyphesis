@@ -15,16 +15,16 @@ class PlayerControlled(server.Thing):
         limbo_entity = server.get_limbo_location()
         # If we're in limbo we should respawn
         if limbo_entity and self.location.parent == limbo_entity:
-            respawn_loc = self.props["__respawn"]
-            if respawn_loc:
+            respawn_prop = self.props["__respawn"]
+            if respawn_prop:
                 set_op = Operation("set", Entity(self.id, __respawn=None), to=self.id)
-                if hasattr(respawn_loc, "pos") and hasattr(respawn_loc, "loc"):
-                    return Operation("move", Entity(self.id, pos=respawn_loc.pos, loc=respawn_loc.loc),
+                if hasattr(respawn_prop, "pos") and hasattr(respawn_prop, "loc"):
+                    return Operation("move", Entity(self.id, pos=respawn_prop.pos, loc=respawn_prop.loc),
                                      to=self.id), set_op
-                elif hasattr(respawn_loc, "spawn"):
+                elif hasattr(respawn_prop, "spawn") and respawn_prop.spawn:
                     # Respawn in a spawn area
                     location = Location()
-                    server.move_to_spawn(respawn_loc.spawn, location)
+                    server.move_to_spawn(respawn_prop.spawn, location)
                     return Operation("move", Entity(self.id, location=location), to=self.id), set_op
 
     def _minds_property_update(self):
