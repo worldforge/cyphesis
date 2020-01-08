@@ -943,7 +943,7 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
     returnAwareTiles(awareAreaSet);
 
     //Finally copy the new aware area set into the set
-    awareAreaSet = newAwareAreaSet;
+    awareAreaSet = std::move(newAwareAreaSet);
 
 
     debug_print(
