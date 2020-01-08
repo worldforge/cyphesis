@@ -26,6 +26,7 @@ class Fight(Goal):
                       [
                           SpotSomething(what=what, range=range),
                           self.equip_weapon,
+                          self.equip_shield,
                           self.attack,
                           MoveMeToFocus(what=what, radius=0, speed=0.5),
                           #                       hunt_for(what=what, range=range, proximity=3),
@@ -44,6 +45,21 @@ class Fight(Goal):
             if distance and distance < self.square_range:
                 return False
         return True
+
+    def equip_shield(self, me):
+        # First check if we're holding a shield
+        attached_current = me.get_attached_entity("hand_secondary")
+        has_attached = False
+        if attached_current:
+            has_attached = True
+            # Check that the attached entity is a shield
+            if attached_current.is_type("shield"):
+                return None
+        # Current tool isn't a shield, or we have nothing attached, try to find one.
+        for child in me.entity.contains:
+            if child.is_type("shield"):
+                return Operation("wield", Entity(child.id, attachment="hand_secondary"))
+        return None
 
     def equip_weapon(self, me):
         # First check if we're holding a weapon
