@@ -1,0 +1,49 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="present">
+                <string name="default">common/primitives/placeholder.modeldef</string>
+            </map>
+            <map name="density">
+                <float name="default">7500</float>
+            </map>
+            <map name="bbox">
+                <list name="default">
+                    <float>-0.2</float>
+                    <float>-0.05</float>
+                    <float>-0.2</float>
+                    <float>0.2</float>
+                    <float>0.05</float>
+                    <float>0.2</float>
+                </list>
+            </map>
+            <map name="description">
+                <string name="default">A flimsy shield. No more than the lid of a pot held together by twine and rusty nails.</string>
+            </map>
+            <map name="worn">
+                <string name="default">hand_secondary</string>
+            </map>
+            <map name="modify">
+                <list name="default">
+                    <map>
+                        <string name="constraint">get_entity(actor.attached_hand_secondary) = entity</string>
+                        <list name="observed_properties">
+                            <string>attached_hand_secondary</string>
+                        </list>
+                        <map name="modifier">
+                            <map name="armor">
+                                <float name="append">1</float>
+                            </map>
+                        </map>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">shield</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+
+</atlas>
