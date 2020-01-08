@@ -2,12 +2,13 @@
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
 import entity_filter
-from atlas import Operation, Entity
+from atlas import Operation, Entity, Root
+from physics import square_distance, distance_between
+
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import SpotSomething
 from mind.goals.common.move import Avoid, MoveMeToFocus
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
-from physics import square_distance, distance_between
 
 # A list of usages which we should look for in weapons.
 weapon_usages = ['strike', 'chop']
@@ -106,19 +107,45 @@ class Fight(Goal):
             print("Could not calculate distance.")
             return
         reach = self.get_reach(me)
+        attached_current = me.get_attached_entity("hand_primary")
+        tasks_prop = me.entity.get_prop_map('tasks')
         if distance - reach <= 0:
             move_to_face = me.face(enemy)
-            attached_current = me.get_attached_entity("hand_primary")
+
             if attached_current:
+                # Check if we're already hitting
+                if tasks_prop:
+                    if "melee" in tasks_prop:
+                        print("Already hitting with weapon")
+                        return True
                 print("Hitting with a weapon")
                 return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id,
                                                                                            targets=[Entity(enemy.id)])))
             else:
+                # Check if we're already hitting
+                if tasks_prop:
+                    if "melee" in tasks_prop:
+                        print("Already punching")
+                        return True
                 print("Punching")
                 return move_to_face + Operation("use",
                                                 Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
         else:
             print("Out of reach. Reach is {} and distance is {}".format(reach, distance))
+            # Check if we should stop hitting
+            if attached_current:
+                print("Checking if we're hitting")
+                if tasks_prop:
+                    if "melee" in tasks_prop:
+                        print("stop hitting")
+                        return Operation("use",
+                                         Root(args=[Entity("stop")], id="melee", objType="task"))
+            else:
+                print("Checking if we're punching")
+                if tasks_prop:
+                    if "melee" in tasks_prop:
+                        return Operation("use",
+                                         Root(args=[Entity("stop")], id="punch", objType="task"))
 
 
 class FightOrFlight(Goal):

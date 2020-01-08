@@ -36,19 +36,20 @@
 
 #include "common/id.h"
 
-template <>
-Py::Object wrapPython(BaseMind* value) {
+template<>
+Py::Object wrapPython(BaseMind* value)
+{
     return CyPy_BaseMind::wrap(value);
 }
 
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Ref<BaseMind> value)
-    : WrapperBase(self, std::move(value))
+        : WrapperBase(self, std::move(value))
 {
 
 }
 
 CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+        : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
 
@@ -90,6 +91,8 @@ void CyPy_BaseMind::init_type()
     PYCXX_ADD_VARARGS_METHOD(set_speed, setSpeed, "");
     PYCXX_ADD_VARARGS_METHOD(query_destination, queryDestination, "");
     PYCXX_ADD_VARARGS_METHOD(is_at_location, isAtLocation, "");
+    PYCXX_ADD_VARARGS_METHOD(distance_to, distanceTo, "");
+    PYCXX_ADD_VARARGS_METHOD(distance_between, distanceBetween, "");
 
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
     PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
@@ -358,14 +361,49 @@ Py::Object CyPy_BaseMind::isAtLocation(const Py::Tuple& args)
     return Py::Boolean(steering->isAtDestination(awareMind->getCurrentServerTime(), entityLocation.m_pos));
 }
 
+Py::Object CyPy_BaseMind::distanceTo(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    if (!awareMind) {
+        throw Py::TypeError("Not an AwareMind");
+    }
+    auto& entityLocation = verifyObject<CyPy_Location>(args[0]);
+
+    auto steering = awareMind->getSteering();
+    if (!steering) {
+        return Py::None();
+    }
+
+    return Py::Float(steering->distanceTo(awareMind->getCurrentServerTime(), entityLocation.m_pos));
+}
+
+Py::Object CyPy_BaseMind::distanceBetween(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
+    if (!awareMind) {
+        throw Py::TypeError("Not an AwareMind");
+    }
+    auto& entityLocation = verifyObject<CyPy_Location>(args[0]);
+
+    auto steering = awareMind->getSteering();
+    if (!steering) {
+        return Py::None();
+    }
+
+    return Py::Float(steering->distanceBetween(awareMind->getCurrentServerTime(), entityLocation));
+}
 
 template<>
-PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,
-                                                   const std::string & type) :
-    PythonClass(package,
-                type)
+PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string& package,
+                                                   const std::string& type) :
+        PythonClass(package,
+                    type)
 {
 }
-template class PythonScriptFactory<BaseMind>;
+
+template
+class PythonScriptFactory<BaseMind>;
 
 #include "rules/python/PythonScriptFactory_impl.h"

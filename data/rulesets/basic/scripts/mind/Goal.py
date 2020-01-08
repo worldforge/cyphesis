@@ -13,6 +13,16 @@ from common import log
 class Goal:
     def __init__(self, desc="some goal", fulfilled=None, subgoals=None,
                  validity=None, time=None, debug=0):
+        """ Init
+            Args:
+                desc (string): A user facing description of the goal
+                fulfilled (func): A function returning a bool whether the goal is fulfilled or not.
+                    Fulfilled goals will be skipped by the mind code when determining which goal to run next.
+                subgoals (list): A list of subgoals which will be checked and executed in order.
+                validity (func): A function returning bool whether the goal still is valid. Used mainly by other goals.
+                time (object): An optional time object. If set, the goal is only valid if the time has passed.
+                debug (int): A flag declaring whether debug output should be enabled.
+        """
         if subgoals is None:
             subgoals = []
         self.desc = desc
