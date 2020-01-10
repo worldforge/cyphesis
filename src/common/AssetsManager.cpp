@@ -47,9 +47,25 @@ void AssetsManager::init()
         }
 
         for (auto& entry : m_directoryCallbacks) {
+
             if (boost::starts_with(event.ev.path.string(), entry.first.string())) {
-                for (auto& callback : entry.second) {
-                    callback(event.ev.path);
+                if (!boost::filesystem::is_directory(event.ev.path)) {
+                    for (auto& callback : entry.second) {
+                        callback(event.ev.path);
+                    }
+                } else {
+                    //Handle new files and directories being added. It's trickier with stuff being removed though.
+                    if (event.ev.type == boost::asio::dir_monitor_event::added) {
+                        boost::filesystem::recursive_directory_iterator dir(event.ev.path), end{};
+                        while (dir != end) {
+                            if (!boost::filesystem::is_directory(dir->status())) {
+                                for (auto& callback : entry.second) {
+                                    callback(dir->path());
+                                }
+                            }
+                            ++dir;
+                        }
+                    }
                 }
             }
         }
@@ -68,10 +84,10 @@ void AssetsManager::init()
 
 void AssetsManager::observeFile(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
 {
-    m_callbacks[path].push_back(callback);
+    m_callbacks[std::move(path)].push_back(callback);
 }
 
 void AssetsManager::observeDirectory(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
 {
-    m_directoryCallbacks[path].push_back(callback);
+    m_directoryCallbacks[std::move(path)].push_back(callback);
 }
