@@ -170,6 +170,22 @@
   }
 #endif //STUB_Steering_isAtDestination
 
+#ifndef STUB_Steering_distanceTo
+//#define STUB_Steering_distanceTo
+  float Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination)
+  {
+    return 0;
+  }
+#endif //STUB_Steering_distanceTo
+
+#ifndef STUB_Steering_distanceBetween
+//#define STUB_Steering_distanceBetween
+  double Steering::distanceBetween(double currentTimestamp, const Location& destination)
+  {
+    return 0;
+  }
+#endif //STUB_Steering_distanceBetween
+
 #ifndef STUB_Steering_setAwarenessArea
 //#define STUB_Steering_setAwarenessArea
   void Steering::setAwarenessArea()

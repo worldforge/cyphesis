@@ -126,6 +126,15 @@
   }
 #endif //STUB_CyPy_LocatedEntityBase_client_error
 
+#ifndef STUB_CyPy_LocatedEntityBase_is_type
+//#define STUB_CyPy_LocatedEntityBase_is_type
+  template <typename TValue,typename TPythonClass>
+  Py::Object CyPy_LocatedEntityBase<TValue,TPythonClass>::is_type(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_LocatedEntityBase_is_type
+
 #ifndef STUB_CyPy_LocatedEntityBase_get_prop_num
 //#define STUB_CyPy_LocatedEntityBase_get_prop_num
   template <typename TValue,typename TPythonClass>
