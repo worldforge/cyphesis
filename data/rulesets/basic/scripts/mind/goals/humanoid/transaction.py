@@ -90,12 +90,17 @@ class BuyFrom(Goal):
                 self.irrelevant = 1
                 return res
 
-        if not hasattr(seller, "right_hand_wield") or not seller.right_hand_wield: return
-        if self.last_valued and seller.right_hand_wield == self.last_valued: return
+        if not hasattr(seller, "right_hand_wield") or not seller.right_hand_wield:
+            return
+        if self.last_valued and seller.right_hand_wield == self.last_valued:
+            return
         wield = me.map.get(seller.right_hand_wield)
-        if not wield: return
-        if self.what != wield.type[0]: return
-        if not wield.mass: return
+        if not wield:
+            return
+        if self.what != wield.type[0]:
+            return
+        if not wield.mass:
+            return
         price = int(wield.mass * self.cost)
         coins = me.find_thing("coin")
         self.last_valued = wield.id
@@ -126,14 +131,16 @@ class BuyLivestock(DynamicGoal):
                                  Entity(say=who.name + ", I am not interested in buying your " + str(object) + "."))
             me.goals.insert(0, BuyFrom(self.what, self.cost, op.to))
             return Operation("talk", Entity(say=who.name + " which " + object + " would you like to sell?"))
-        if not self.what in thing.type: return
-        if thing in me.find_thing(self.what): return
+        if self.what not in thing.type:
+            return
+        if thing in me.find_thing(self.what):
+            return
         # price=me.get_knowledge("price", thing.type[0])
         price = self.cost * int(thing.mass)
         res = Oplist()
         coins = me.find_thing("coin")
         if len(coins) < int(price):
-            print("Coins: " + len(coins) + " Cost: " + self.cost)
+            print("Coins: " + str(len(coins)) + " Cost: " + str(self.cost))
             return Operation("talk", Entity(say="I can't afford any " + self.what + "s at the moment."))
         for i in range(0, int(price)):
             coin = coins[0]

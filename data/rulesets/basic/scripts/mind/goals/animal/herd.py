@@ -44,9 +44,9 @@ class School(DynamicGoal):
             # print "type(ent.location.pos)!=object"
             return
         distance = (ent.location.pos - me.entity.location.pos).mag()
-        id = me.get_knowledge('focus', 'hook')
-        if id:
-            thing = me.map.get(id)
+        focus_id = me.get_knowledge('focus', 'hook')
+        if focus_id:
+            thing = me.map.get(focus_id)
             if thing is None:
                 me.remove_knowledge('focus', self.what)
             else:

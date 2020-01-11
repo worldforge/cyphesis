@@ -12,8 +12,7 @@ from mind.goals.dynamic.add_unique_goal import AddUniqueGoal
 
 
 class KeepLivestock(Keep):
-    """Keep livestock that we own in a given location, calling them if 
-       required."""
+    """Keep livestock that we own in a given location, calling them if required."""
 
     def __init__(self, what, where, call):
         Keep.__init__(self, what, where)

@@ -11,8 +11,6 @@ from rules import Location, isLocation
 from mind.goals.common.misc_goal import *
 
 
-############################ MOVE ME ####################################
-
 class MoveMe(Goal):
     """Move me to a certain place.
     'radius' specifies how close to the location we accept.
@@ -101,8 +99,6 @@ class MoveMe(Goal):
         return True
 
 
-############################ MOVE ME AREA ####################################
-
 class MoveMeArea(Goal):
     """Move me to a certain area."""
 
@@ -171,8 +167,6 @@ class MoveMeArea(Goal):
         return True
 
 
-############################ MOVE ME PLACE ####################################
-
 class MoveMePlace(MoveMe):
     """Move me to a place by name."""
 
@@ -191,8 +185,6 @@ class MoveMePlace(MoveMe):
             return None
         return location
 
-
-############################ MOVE THING ####################################
 
 class MoveIt(Goal):
     """Move something to a place."""
@@ -216,10 +208,13 @@ class MoveIt(Goal):
         if not isLocation(self.location):
             self.location = Location(self.location, Point3D(0.0, 0.0, 0.0))
         if type(self.what) == str:
-            if (self.what in me.things) == 0: return 1
+            if (self.what in me.things) == 0:
+                return 1
             what = me.things[self.what][0]
-        if what.location.parent.id != self.location.parent.id: return 0
-        return what.location.pos.distance(self.location.pos) < 1.5
+            if what.location.parent.id != self.location.parent.id:
+                return 0
+            return what.location.pos.distance(self.location.pos) < 1.5
+        return False
 
     def move_it_to_loc(self, me):
         if self.wait > 0:
@@ -233,21 +228,19 @@ class MoveIt(Goal):
             if (self.what in me.things) == 0:
                 return
             what = me.things[self.what][0]
-        if self.speed == 0 or what.location.parent.id != self.location.parent.id:
-            return Operation("move", Entity(what.id, location=self.location))
-        iloc = what.location.copy()
-        vel = what.location.pos.unit_vector_to(self.location.pos)
-        iloc.velocity = vel * self.speed
-        self.location.velocity = Vector3D(0.0, 0.0, 0.0)
-        mOp1 = Operation("move", Entity(what.id, location=iloc))
-        mOp2 = Operation("move", Entity(what.id, location=self.location))
-        time = ((self.location.pos - what.location.pos).mag() / self.speed)
-        self.wait = (time / const.basic_tick) + 1
-        mOp2.set_future_seconds(time)
-        return Oplist(mOp1, mOp2)
+            if self.speed == 0 or what.location.parent.id != self.location.parent.id:
+                return Operation("move", Entity(what.id, location=self.location))
+            iloc = what.location.copy()
+            vel = what.location.pos.unit_vector_to(self.location.pos)
+            iloc.velocity = vel * self.speed
+            self.location.velocity = Vector3D(0.0, 0.0, 0.0)
+            m_op1 = Operation("move", Entity(what.id, location=iloc))
+            m_op2 = Operation("move", Entity(what.id, location=self.location))
+            time = ((self.location.pos - what.location.pos).mag() / self.speed)
+            self.wait = (time / const.basic_tick) + 1
+            m_op2.set_future_seconds(time)
+            return Oplist(m_op1, m_op2)
 
-
-############################ MOVE THING FROM ME ####################################
 
 class MoveItOutOfMe(Goal):
     """Put something down."""
@@ -272,8 +265,6 @@ class MoveItOutOfMe(Goal):
             return
 
 
-############################ MOVE ME TO THING ##################################
-
 class MoveMeToPossession(Goal):
     """Move me to the same place as something I own."""
 
@@ -287,7 +278,8 @@ class MoveMeToPossession(Goal):
     def am_i_at_it(self, me):
         what = self.what
         if type(what) == str:
-            if (what in me.things) == 0: return 0
+            if (what in me.things) == 0:
+                return 0
             what = me.things[what][0]
         distance = square_horizontal_distance(me.entity.location, what.location)
         if distance and distance < 4:  # 2 * 2
@@ -318,10 +310,10 @@ class MoveMeToFocus(Goal):
         self.vars = ["what"]
 
     def get_location(self, me):
-        id = me.get_knowledge('focus', self.what)
-        if id is None:
+        focus_id = me.get_knowledge('focus', self.what)
+        if focus_id is None:
             return None
-        thing = me.map.get(id)
+        thing = me.map.get(focus_id)
         if thing is None:
             me.remove_knowledge('focus', self.what)
             return None
@@ -398,9 +390,10 @@ class MoveMeNearFocus(Goal):
 
     def am_i_at_it(self, me):
         for what in self.what:
-            id = me.get_knowledge('focus', what)
-            if id is None: continue
-            thing = me.map.get(id)
+            focus_id = me.get_knowledge('focus', what)
+            if focus_id is None:
+                continue
+            thing = me.map.get(focus_id)
             if thing is None:
                 me.remove_knowledge('focus', what)
                 continue
@@ -418,10 +411,10 @@ class MoveMeNearFocus(Goal):
 
     def move_me_to_it(self, me):
         for what in self.what:
-            id = me.get_knowledge('focus', what)
-            if id is None:
+            focus_id = me.get_knowledge('focus', what)
+            if focus_id is None:
                 continue
-            thing = me.map.get(id)
+            thing = me.map.get(focus_id)
             if thing is None:
                 me.remove_knowledge('focus', what)
                 return
@@ -443,8 +436,6 @@ class MoveMeNearFocus(Goal):
             return True
 
 
-############################ MOVE THING TO ME ####################################
-
 class PickUpPossession(Goal):
     """Pick up something I own."""
 
@@ -460,7 +451,8 @@ class PickUpPossession(Goal):
         # CHEAT!: cludge
         what = self.what
         if type(what) == str:
-            if (self.what in me.things) == 0: return 0
+            if (self.what in me.things) == 0:
+                return 0
             what = me.things[self.what][0]
         if what.location.parent.id != me.entity.id:
             if what.location.parent.id != me.entity.location.parent.id:
@@ -471,7 +463,8 @@ class PickUpPossession(Goal):
     def pick_it_up(self, me):
         what = self.what
         if type(what) == str:
-            if (self.what in me.things) == 0: return 0
+            if (self.what in me.things) == 0:
+                return 0
             what = me.things[self.what][0]
         return Operation("move", Entity(id, location=Location(me, Point3D(0, 0, 0))))
 
@@ -493,10 +486,11 @@ class PickUpFocus(Goal):
     def is_it_with_me(self, me):
         # CHEAT!: cludge
         for what in self.what:
-            id = me.get_knowledge('focus', what)
-            if id == None: continue
-            thing = me.map.get(id)
-            if thing == None:
+            focus_id = me.get_knowledge('focus', what)
+            if focus_id is None:
+                continue
+            thing = me.map.get(focus_id)
+            if thing is None:
                 me.remove_knowledge('focus', what)
                 continue
             # If its not not near us on the ground, forget about it.
@@ -509,17 +503,16 @@ class PickUpFocus(Goal):
 
     def pick_it_up(self, me):
         for what in self.what:
-            id = me.get_knowledge('focus', what)
-            if id == None: continue
-            thing = me.map.get(id)
-            if thing == None:
+            focus_id = me.get_knowledge('focus', what)
+            if focus_id is None:
+                continue
+            thing = me.map.get(focus_id)
+            if thing is None:
                 me.remove_knowledge('focus', what)
                 continue
             if thing.location.parent.id != me.entity.id:
-                return Operation("move", Entity(id, location=Location(me, Point3D(0, 0, 0))))
+                return Operation("move", Entity(focus_id, location=Location(me, Point3D(0, 0, 0))))
 
-
-############################ WANDER ####################################
 
 class Wander(Goal):
     """Move in a non-specific way."""
@@ -536,32 +529,28 @@ class Wander(Goal):
         self.subgoals[0].location = loc
 
 
-############################ WANDER & SEARCH ############################
-
 class Search(Goal):
     """Move in a non-specific way looking for something."""
 
     def __init__(self, what):
         Goal.__init__(self, "search for a thing",
-                      self.do_I_have,
+                      self.do_i_have,
                       [Wander(),
                        SpotSomething(what, 30)])
         # Long range for testing only
         self.what = what
         self.vars = ["what"]
 
-    def do_I_have(self, me):
+    def do_i_have(self, me):
         return (self.what in me.things) == 1
 
-
-############################ PURSUIT ####################################
 
 class Pursuit(Goal):
     """avoid or hunt something at range"""
 
     def __init__(self, desc="pursue something", what="", range=0, direction=1):
         Goal.__init__(self,
-                      "pursue something",
+                      desc,
                       self.not_visible,
                       [self.run])
 
@@ -584,7 +573,8 @@ class Pursuit(Goal):
 
     def run(self, me):
         lst_of_what = me.mem.recall_place(me.entity.location, self.range, self.filter)
-        if not lst_of_what or len(lst_of_what) == 0: return
+        if not lst_of_what or len(lst_of_what) == 0:
+            return
         dist_vect = distance_to(me.entity.location, lst_of_what[0].location).unit_vector()
         multiply = 1.0 * self.direction * const.basic_tick
         loc = Location(me.entity.location.parent)
@@ -593,16 +583,12 @@ class Pursuit(Goal):
         return Operation("move", ent)
 
 
-############################ AVOID ####################################
-
 class Avoid(Pursuit):
     """avoid something at range"""
 
     def __init__(self, what='', range=0):
         Pursuit.__init__(self, desc="avoid something", what=what, range=range, direction=-1)
 
-
-################################ HUNT ################################
 
 class Hunt(Pursuit):
     """hunt something at range"""
@@ -625,17 +611,15 @@ class HuntFor(Goal):
         self.vars = ["what", "range", "proximity"]
 
     def in_range(self, me):
-        id = me.get_knowledge('focus', self.what)
-        if id is None:
+        focus_id = me.get_knowledge('focus', self.what)
+        if focus_id is None:
             return
-        thing = me.map.get(id)
+        thing = me.map.get(focus_id)
         if thing is None:
             return
         square_dist = square_distance(me.entity.location, thing.location)
         return square_dist and square_dist < self.square_proximity
 
-
-################################ PATROL ##############################
 
 class Patrol(Goal):
     """Move around an area defined by some waypoints."""
@@ -664,8 +648,6 @@ class Patrol(Goal):
         # print "Moved to next patrol goal: " + str(self.subgoals[0].location)
 
 
-############################## ACCOMPANY ##############################
-
 class Accompany(Goal):
     """Move around staying close to someone."""
 
@@ -678,8 +660,8 @@ class Accompany(Goal):
         self.vars = ["who"]
 
     def am_i_with(self, me):
-        id = me.get_knowledge('focus', self.who)
-        who = me.map.get(str(id))
+        focus_id = me.get_knowledge('focus', self.who)
+        who = me.map.get(str(focus_id))
         if who is None:
             return 0
 
@@ -699,9 +681,9 @@ class Accompany(Goal):
             return 1
 
     def follow(self, me):
-        id = me.get_knowledge('focus', self.who)
-        who = me.map.get(str(id))
-        if who == None:
+        focus_id = me.get_knowledge('focus', self.who)
+        who = me.map.get(str(focus_id))
+        if who is None:
             self.irrelevant = 1
             return
         dist = distance_to(me.entity.location, who.location)
@@ -718,8 +700,6 @@ class Accompany(Goal):
             target.velocity = Vector3D(0, 0, 0)
         return Operation("move", Entity(me.entity.id, location=target))
 
-
-############################ ROAM ####################################
 
 class Roam(Goal):
     """Move in a non-specific way within one or many locations."""
@@ -738,22 +718,22 @@ class Roam(Goal):
     def do_roaming(self, me):
         move_me_goal = self.subgoals[1]
         # We need to set a new direction if we've either haven't set one, or if we've arrived.
-        if move_me_goal.location == None or move_me_goal.fulfilled(me) == True or move_me_goal.is_valid(me) == False:
+        if move_me_goal.location is None or move_me_goal.fulfilled(me) or not move_me_goal.is_valid(me):
             self.set_new_target(me, move_me_goal)
 
     def check_move_valid(self, me):
         move_me_goal = self.subgoals[1]
         # Check that the goal is reachable, and if not skip to a new goal
-        if move_me_goal.is_valid(me) == False:
+        if not move_me_goal.is_valid(me):
             self.set_new_target(me, move_me_goal)
 
     def set_new_target(self, me, move_me_goal):
         # print("setting new target")
-        waypointName = self.list[randint(0, self.count - 1)]
-        waypoint = me.get_knowledge("location", waypointName)
+        waypoint_name = self.list[randint(0, self.count - 1)]
+        waypoint = me.get_knowledge("location", waypoint_name)
 
         if not waypoint:
-            print("Could not location with name '%s'." % waypointName)
+            print("Could not location with name '%s'." % waypoint_name)
             return
 
         loc = me.entity.location.copy()

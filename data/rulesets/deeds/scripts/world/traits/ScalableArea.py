@@ -1,5 +1,4 @@
 import server
-from atlas import Oplist
 
 from world.utils.Ticks import *
 
@@ -12,7 +11,6 @@ class ScalableArea(server.Thing):
 
     def set_operation(self, op):
         # TODO: implement
-        res = Oplist()
         return server.OPERATION_IGNORED
 
 # C++ code from Plant

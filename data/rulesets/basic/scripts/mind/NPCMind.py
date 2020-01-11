@@ -19,6 +19,7 @@ from mind.Memory import Memory
 from mind.compass import vector_to_compass
 from mind.panlingua import interlinguish, ontology
 from . import dictlist
+from .goals.common.misc_goal import Transaction
 
 reverse_cmp = {'>': '<'}
 
@@ -460,8 +461,8 @@ class NPCMind(ai.Mind):
         return op.from_ == self.entity.id
 
     def interlinguish_warning(self, op, say, msg):
-        log.debug(1, str(self.entity.id) + " interlinguish_warning: " + str(msg) + \
-                  ": " + str(say[0].lexlink.id[1:]), op)
+        log.debug(1, str(self.entity.id) + " interlinguish_warning: " + str(msg) + ": " +
+                  str(say[0].lexlink.id[1:]), op)
 
     def interlinguish_desire_verb3_buy_verb1_operation(self, op, say):
         """Handle a sentence of the form 'I would like to buy a ....'
@@ -475,7 +476,7 @@ class NPCMind(ai.Mind):
             price = self.get_knowledge("price", word_object)
             if not price:
                 return
-            goal = mind.goals.common.misc_goal.transaction(word_object, op.to, price)
+            goal = Transaction(word_object, op.to, price)
             who = self.map.get(op.to)
             self.goals.insert(0, goal)
             return Operation("talk", Entity(
@@ -547,7 +548,7 @@ class NPCMind(ai.Mind):
         # return Operation('talk',Entity(say="I know nothing about the "+predicate+" of "+object))
         else:
             k_type = type(k)
-            if k_type == type(Location()):
+            if isinstance(k_type, Location):
                 dist = distance_to(self.entity.location, k)
                 dist.y = 0
                 distmag = dist.mag()
@@ -777,7 +778,8 @@ class NPCMind(ai.Mind):
             return self.things.get(thing, [])
         found = []
         for t in self.things.get(self.thing_name(thing), []):
-            if t == thing: found.append(t)
+            if t == thing:
+                found.append(t)
         return found
 
     def remove_thing(self, thing):

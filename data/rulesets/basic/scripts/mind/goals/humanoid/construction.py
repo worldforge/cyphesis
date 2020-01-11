@@ -5,12 +5,16 @@ import entity_filter
 from atlas import Operation, Entity
 from physics import square_distance
 
-from mind.goals.common.move import *
 
 
 # Gather a resource from nearby
 # This is designed to be placed early in a complex goal, so it returns
 # as fulfilled when it has nothing to do
+from mind.Goal import Goal
+from mind.goals.common.misc_goal import SpotSomething, false, AcquireThing, SpotSomethingInArea, ClearFocus
+from mind.goals.common.move import PickUpFocus, MoveMeArea, MoveMeToFocus, MoveMeNearFocus
+
+
 class Gather(Goal):
     """Base class for getting a freely available resource."""
 
