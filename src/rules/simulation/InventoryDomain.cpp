@@ -81,7 +81,7 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
         if (prop->getMode() == ModeProperty::Mode::Planted) {
             auto& plantedOnData = prop->getPlantedOnData();
             //Check that we've moved from another entity.
-            if ((!plantedOnData.entity || plantedOnData.entity->getId() != m_entity.getId())) {
+            if (plantedOnData.entityId && (plantedOnData.entityId != m_entity.getIntId())) {
                 entity.setAttr(ModeDataProperty::property_name, Atlas::Message::Element());
                 Atlas::Objects::Operation::Update update;
                 update->setTo(entity.getId());
@@ -113,7 +113,9 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
 
     //Entities can only be seen by outside observers if they are attached.
     auto modeDataProp = observedEntity.getPropertyClassFixed<ModeDataProperty>();
-    return modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted && modeDataProp->getPlantedOnData().entity.get() == &m_entity;
+    return modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted
+        && modeDataProp->getPlantedOnData().entityId
+        && *modeDataProp->getPlantedOnData().entityId == m_entity.getIntId();
 
 }
 

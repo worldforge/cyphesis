@@ -126,7 +126,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             auto& plantedOnData = modeDataProp->getPlantedOnData();
                             //Check if the entity is attached to ourselves; if so we can just detach it from ourselves.
                             //Otherwise we need to abort, since we don't allow ourselves to detach it from another entity.
-                            if (plantedOnData.entity.get() == entity) {
+                            if (plantedOnData.entityId && plantedOnData.entityId == entity->getIntId()) {
                                 if (plantedOnData.attachment) {
                                     //We need to reset the old attached value for the attached entity
                                     auto old_attached_prop_name = std::string("attached_") + *plantedOnData.attachment;
@@ -142,7 +142,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             }
                         }
 
-                        modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{WeakEntityRef(entity), attachment_name.String()});
+                        modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{entity->getIntId(), attachment_name.String()});
 
                         new_entity->applyProperty(ModeDataProperty::property_name, modeDataProp);
                         {

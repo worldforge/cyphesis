@@ -59,8 +59,8 @@ int ModeDataProperty::get(Atlas::Message::Element& val) const
     switch (mMode) {
         case ModeProperty::Mode::Planted: {
             auto& plantedData = boost::get<PlantedOnData>(mData);
-            if (plantedData.entity) {
-                map["$eid"] = plantedData.entity->getId();
+            if (plantedData.entityId) {
+                map["$eid"] = std::to_string(*plantedData.entityId);
             }
             if (plantedData.attachment) {
                 map["attachment"] = *plantedData.attachment;
@@ -162,7 +162,7 @@ ModeDataProperty::PlantedOnData ModeDataProperty::parsePlantedData(const Atlas::
     PlantedOnData data{};
     auto eidI = map.find("$eid");
     if (eidI != map.end() && eidI->second.isString()) {
-        data.entity = WeakEntityRef(BaseWorld::instance().getEntity(eidI->second.String()));
+        data.entityId = std::stol(eidI->second.String());
     }
     auto pointI = map.find("attachment");
     if (pointI != map.end() && pointI->second.isString()) {

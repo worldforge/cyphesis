@@ -353,7 +353,7 @@ void ThingIntegration::test_visibility()
         t2->addFlags(entity_domain);
 
         auto modeDataProp = new ModeDataProperty();
-        modeDataProp->setPlantedData({WeakEntityRef(t2)});
+        modeDataProp->setPlantedData({t2->getIntId()});
         t3->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
         Operation sightOp;
@@ -427,7 +427,7 @@ void ThingIntegration::test_visibility()
         t3->addChild(*t6);
 
         auto modeDataProp = new ModeDataProperty();
-        modeDataProp->setPlantedData({WeakEntityRef(t3)});
+        modeDataProp->setPlantedData({t3->getIntId()});
         t4->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
         Operation sightOp;
@@ -503,7 +503,7 @@ void ThingIntegration::test_visibility()
         t2->addChild(*t5);
 
         auto modeDataProp = new ModeDataProperty();
-        modeDataProp->setPlantedData({WeakEntityRef(t2)});
+        modeDataProp->setPlantedData({t2->getIntId()});
         t4->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
 
 

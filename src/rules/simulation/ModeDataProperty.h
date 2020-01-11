@@ -48,7 +48,7 @@ class ModeDataProperty : public PropertyBase
             /**
              * The entity on to which this entity is attached.
              */
-            WeakEntityRef entity;
+            boost::optional<long> entityId;
 
             /**
              * An optional attachment.
@@ -61,7 +61,7 @@ class ModeDataProperty : public PropertyBase
              */
             explicit operator bool() const
             {
-                return (entity || attachment);
+                return (entityId || attachment);
             }
         };
 

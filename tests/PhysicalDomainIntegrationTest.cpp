@@ -506,8 +506,8 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
                 domain.tick(0, res);
 
                 ASSERT_TRUE(planted1->getPropertyClassFixed<ModeDataProperty>())
-                ASSERT_TRUE(planted1->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entity)
-                ASSERT_EQUAL(rootEntity.getIntId(), planted1->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entity->getIntId())
+                ASSERT_TRUE(planted1->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+                ASSERT_EQUAL(rootEntity.getIntId(), *planted1->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
                 ASSERT_FUZZY_EQUAL(10, planted1->m_location.m_pos.y(), 0.1);
                 {
                     auto* planted1RigidBody = domain.test_getRigidBody(planted1->getIntId());
@@ -538,8 +538,8 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
                 domain.tick(0, res);
 
                 ASSERT_TRUE(planted2->getPropertyClassFixed<ModeDataProperty>());
-                ASSERT_TRUE(planted2->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entity);
-                ASSERT_EQUAL(planted1->getIntId(), planted2->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entity->getIntId());
+                ASSERT_TRUE(planted2->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId);
+                ASSERT_EQUAL(planted1->getIntId(), *planted2->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId);
                 ASSERT_FUZZY_EQUAL(11, planted2->m_location.m_pos.y(), 0.1);
                 {
                     auto* planted2RigidBody = domain.test_getRigidBody(planted2->getIntId());
@@ -562,7 +562,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
                 plantedOn->m_location.setBBox({{-1, 0, -1},
                                                {1,  1, 1}});
                 auto modeDataProperty = new ModeDataProperty();
-                modeDataProperty->setPlantedData({WeakEntityRef(planted1.get())});
+                modeDataProperty->setPlantedData({planted1->getIntId()});
                 plantedOn->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProperty));
 
                 GeometryProperty* geometryProperty = new GeometryProperty();
@@ -573,8 +573,8 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
 
                 ASSERT_TRUE(plantedOn->getPropertyClassFixed<ModeDataProperty>());
-                ASSERT_TRUE(plantedOn->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entity);
-                ASSERT_EQUAL(planted1->getIntId(), plantedOn->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entity->getIntId());
+                ASSERT_TRUE(plantedOn->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId);
+                ASSERT_EQUAL(planted1->getIntId(), *plantedOn->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId);
                 ASSERT_FUZZY_EQUAL_FN(plantedOn->m_location.m_pos.y(), 11, 0.1, [&]() { this->addFailure(String::compose("Using shape '%1' on top of '%2'.", plantedOnTopShape, plantedShape)); });
                 {
                     auto* plantedOnRigidBody = domain.test_getRigidBody(plantedOn->getIntId());
@@ -769,7 +769,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ModeProperty* plantedProp = new ModeProperty();
         plantedProp->set("planted");
         auto modeDataProp = new ModeDataProperty();
-        modeDataProp->setPlantedData({WeakEntityRef(lake)});
+        modeDataProp->setPlantedData({lake->getIntId()});
         Entity* floatingEntity = new Entity("floatingEntity", id);
         floatingEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProp));
         floatingEntity->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));

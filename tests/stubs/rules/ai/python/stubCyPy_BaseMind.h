@@ -129,5 +129,21 @@
   }
 #endif //STUB_CyPy_BaseMind_isAtLocation
 
+#ifndef STUB_CyPy_BaseMind_distanceTo
+//#define STUB_CyPy_BaseMind_distanceTo
+  Py::Object CyPy_BaseMind::distanceTo(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_distanceTo
+
+#ifndef STUB_CyPy_BaseMind_distanceBetween
+//#define STUB_CyPy_BaseMind_distanceBetween
+  Py::Object CyPy_BaseMind::distanceBetween(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_distanceBetween
+
 
 #endif

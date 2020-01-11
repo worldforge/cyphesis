@@ -352,8 +352,15 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
                 auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
                 LocatedEntity* plantedOnEntity = nullptr;
+
                 if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
-                    plantedOnEntity = modeDataProp->getPlantedOnData().entity.get();
+                    auto& plantedOnData = modeDataProp->getPlantedOnData();
+                    if (plantedOnData.entityId) {
+                        auto entityRef = BaseWorld::instance().getEntity(*plantedOnData.entityId);
+                        if (entityRef) {
+                            plantedOnEntity = entityRef.get();
+                        }
+                    }
                 }
 
                 Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOnEntity, newImpulseVelocity};

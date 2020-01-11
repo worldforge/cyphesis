@@ -148,7 +148,7 @@ struct ProvidersTest : public Cyphesis::TestBase
             m_glovesEntity->setProperty("attached_thumb", std::unique_ptr<PropertyBase>(attachedProp));
 
             auto modeDataProp = new ModeDataProperty();
-            modeDataProp->setPlantedData({WeakEntityRef(m_glovesEntity.get())});
+            modeDataProp->setPlantedData({m_glovesEntity->getIntId()});
             m_cloth->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
         }
 
@@ -166,7 +166,7 @@ struct ProvidersTest : public Cyphesis::TestBase
             m_ch1->setProperty("attached_hand_primary", std::unique_ptr<PropertyBase>(attachedHandPrimaryProp));
 
             auto modeDataProp = new ModeDataProperty();
-            modeDataProp->setPlantedData({WeakEntityRef(m_ch1.get())});
+            modeDataProp->setPlantedData({m_ch1->getIntId()});
             m_glovesEntity->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
         }
 

@@ -705,7 +705,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
 
             auto modeDataProp = new ModeDataProperty();
-            modeDataProp->setPlantedData({WeakEntityRef(m_glovesEntity.get())});
+            modeDataProp->setPlantedData({m_glovesEntity->getIntId()});
             m_cloth->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
             m_glovesEntity->makeContainer();
             m_glovesEntity->addChild(*m_cloth);
@@ -726,7 +726,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
         {
             auto modeDataProp = new ModeDataProperty();
-            modeDataProp->setPlantedData({WeakEntityRef(m_ch1.get())});
+            modeDataProp->setPlantedData({m_ch1->getIntId()});
             m_glovesEntity->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
         }
 

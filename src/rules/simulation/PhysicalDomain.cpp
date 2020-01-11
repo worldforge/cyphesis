@@ -1172,8 +1172,8 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     auto modeDataProp = entity.getPropertyClassFixed<ModeDataProperty>();
     if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
         auto& plantedOnData = modeDataProp->getPlantedOnData();
-        if (plantedOnData.entity) {
-            auto plantedOnI = m_entries.find(plantedOnData.entity->getIntId());
+        if (plantedOnData.entityId) {
+            auto plantedOnI = m_entries.find(*plantedOnData.entityId);
             if (plantedOnI != m_entries.end()) {
                 plantedOnI->second->attachedEntities.erase(entry.get());
             }
@@ -1694,18 +1694,18 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
 
                     auto modeDataProp = entity.getPropertyClassFixed<ModeDataProperty>();
                     if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
-                        const auto& plantedOnEntityRef = modeDataProp->getPlantedOnData().entity;
-                        if (plantedOnEntityRef) {
+                        if (modeDataProp->getPlantedOnData().entityId) {
+                            auto plantedOnId = *modeDataProp->getPlantedOnData().entityId;
                             //If it's desired that the entity should be planted on the ground then make it so.
                             //Since the ground is everywhere.
-                            if (plantedOnEntityRef->getIntId() == m_entity.getIntId()) {
+                            if (plantedOnId == m_entity.getIntId()) {
                                 plantOnEntity(entry, &mContainingEntityEntry);
 
                                 pos.y() = h;
                                 plantedOn = true;
                             } else {
                                 //Otherwise we need to check that it really can be planted on what it's planted on.
-                                auto I = m_entries.find(plantedOnEntityRef->getIntId());
+                                auto I = m_entries.find(plantedOnId);
                                 if (I != m_entries.end()) {
                                     auto& plantedOnBulletEntry = I->second;
 
@@ -2658,8 +2658,8 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
     if (existingModeDataProp && existingModeDataProp->getMode() == ModeProperty::Mode::Planted) {
         auto& plantedOnData = existingModeDataProp->getPlantedOnData();
         //Check if we're already planted, and perhaps should be detached.
-        if (plantedOnData.entity) {
-            if (entryPlantedOn && plantedOnData.entity.get() == entryPlantedOn->entity) {
+        if (plantedOnData.entityId) {
+            if (entryPlantedOn && *plantedOnData.entityId == entryPlantedOn->entity->getIntId()) {
                 //Already planted on entity, nothing to do
                 return;
             }
@@ -2668,7 +2668,7 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
                 return;
             }
 
-            auto I = m_entries.find(plantedOnData.entity->getIntId());
+            auto I = m_entries.find(*plantedOnData.entityId);
             if (I != m_entries.end()) {
                 I->second->attachedEntities.erase(plantedEntry);
             }
@@ -2685,7 +2685,7 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
     auto newModeDataProp = plantedEntry->entity->requirePropertyClassFixed<ModeDataProperty>();
 
     if (entryPlantedOn) {
-        newModeDataProp->setPlantedData({WeakEntityRef(entryPlantedOn->entity)});
+        newModeDataProp->setPlantedData({entryPlantedOn->entity->getIntId()});
         entryPlantedOn->attachedEntities.insert(plantedEntry);
     } else {
         newModeDataProp->clearData();
