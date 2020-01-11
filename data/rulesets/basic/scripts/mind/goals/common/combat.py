@@ -37,6 +37,7 @@ class Fight(Goal):
         self.square_range = range * range
         self.vars = ["what", "range"]
         self.weapon_usage = None
+        self.use_ranged = False
 
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
@@ -61,7 +62,30 @@ class Fight(Goal):
                 return Operation("wield", Entity(child.id, attachment="hand_secondary"))
         return None
 
-    def equip_weapon(self, me):
+    def equip_ranged_weapon(self, me):
+        # First check if we have any arrows
+        has_arrows = False
+        for child in me.entity.contains:
+            if child.is_type("arrow"):
+                has_arrows = True
+                break
+
+        if not has_arrows:
+            return None
+
+        attached_current = me.get_attached_entity("hand_primary")
+        if attached_current:
+            # Check that the attached entity can be used to strike
+            if attached_current.is_type("bow"):
+                self.use_ranged = True
+                return None
+        # Current tool isn't a bow, or we have nothing attached, try to find one.
+        for child in me.entity.contains:
+            if child.is_type("bow"):
+                self.use_ranged = True
+                return Operation("wield", Entity(child.id, attachment="hand_primary"))
+
+    def equip_melee_weapon(self, me):
         # First check if we're holding a weapon
         attached_current = me.get_attached_entity("hand_primary")
         has_attached = False
@@ -89,6 +113,32 @@ class Fight(Goal):
             return Operation("wield", Entity(attachment="hand_primary"))
 
         return None
+
+    def equip_weapon(self, me):
+        target_id = me.get_knowledge('focus', self.what)
+        if target_id is None:
+            print("No focus target")
+            return
+        enemy = me.map.get(target_id)
+        if enemy is None:
+            print("No target")
+            me.remove_knowledge('focus', self.what)
+            return
+
+        # check that we can reach the target, and if so attack it
+        distance = distance_between(me.entity.location, enemy.location)
+        if distance is None:
+            print("Could not calculate distance.")
+            return
+
+        # If possible, shoot with ranged weapons if a bit away
+        self.use_ranged = False
+        if distance > 10:
+            res = self.equip_ranged_weapon(me)
+            if res:
+                return res
+        if not self.use_ranged:
+            return self.equip_melee_weapon(me)
 
     @staticmethod
     def get_reach(me):
@@ -118,6 +168,15 @@ class Fight(Goal):
             me.remove_knowledge('focus', self.what)
             return
 
+        if self.use_ranged:
+            res = self.attack_ranged(me, enemy)
+            if self.use_ranged:
+                return res
+        # If we couldn't use ranged weapons (or we're too close) switch to melee.
+        return self.attack_melee(me, enemy)
+
+    def attack_melee(self, me, enemy):
+        print("attack melee")
         # check that we can reach the target, and if so attack it
         distance = distance_between(me.entity.location, enemy.location)
         if distance is None:
@@ -151,6 +210,46 @@ class Fight(Goal):
                 if "melee" in tasks_prop:
                     return Operation("use",
                                      Root(args=[Entity("stop")], id="melee", objtype="task"))
+
+    def attack_ranged(self, me, enemy):
+        print("attack ranged")
+        # check that we can reach the target, and if so attack it
+        distance = distance_between(me.entity.location, enemy.location)
+        if distance is None:
+            print("Could not calculate distance.")
+            return
+        attached_current = me.get_attached_entity("hand_primary")
+        tasks_prop = me.entity.get_prop_map('tasks')
+
+        if distance < 50:
+            print("in range")
+            move_to_face = me.face(enemy)
+
+            if attached_current:
+                # Check if we're already drawing
+                if tasks_prop:
+                    if "draw" in tasks_prop:
+                        # Check if we can release
+                        draw_task = tasks_prop["draw"]
+                        # print("draw task {}".format(str(draw_task)))
+                        usages = draw_task["usages"]
+                        for usage in usages:
+                            print(usage.name)
+                            if usage.name == "release":
+                                print("release bow")
+                                direction = enemy.location.pos - me.entity.location.pos
+                                direction.normalize()
+                                return move_to_face + Operation("use",
+                                                                Root(args=[Entity("release", direction=[direction])],
+                                                                     id="draw",
+                                                                     objtype="task"))
+
+                        return True
+                    print("Drawing bow")
+                    direction = enemy.location.pos - me.entity.location.pos
+                    direction.normalize()
+                    return move_to_face + \
+                           Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
 
 
 class FightOrFlight(Goal):

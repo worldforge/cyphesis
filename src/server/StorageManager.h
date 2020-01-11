@@ -22,7 +22,7 @@
 #include "Persistence.h"
 
 #include "common/OperationRouter.h"
-#include "modules/WeakEntityRef.h"
+#include "modules/Ref.h"
 
 #include <sigc++/trackable.h>
 
@@ -31,7 +31,6 @@
 #include <map>
 #include <set>
 #include <Atlas/Message/Element.h>
-#include "modules/Ref.h"
 
 class Entity;
 class EntityBuilder;

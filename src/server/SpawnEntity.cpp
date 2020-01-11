@@ -25,7 +25,6 @@
 #include "physics/Shape.h"
 
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Operation.h>
 
 #include <wfmath/polygon.h>
 
@@ -60,7 +59,7 @@ int SpawnEntity::setup(const MapType& data)
 
 int SpawnEntity::spawnEntity(const std::string& type, const RootEntity& dsc) const
 {
-    if (!m_ent) {
+    if (!m_ent || m_ent->isDestroyed()) {
         return -1;
     }
 

@@ -113,7 +113,7 @@
                 <map name="attached_back">
                     <string name="$eid">cloak</string>
                 </map>
-                <map name="attached_body">
+                <map name="attached_torso">
                     <string name="$eid">shirt</string>
                 </map>
                 <map name="attached_feet">
@@ -136,7 +136,7 @@
                 <map name="mode_data">
                     <string name="mode">planted</string>
                     <string name="$eid">main</string>
-                    <string name="attachment">body</string>
+                    <string name="attachment">torso</string>
                 </map>
             </map>
             <map>
@@ -206,7 +206,7 @@
                     <string>coins</string>
                     <string>shield</string>
                 </list>
-                <map name="attached_body">
+                <map name="attached_torso">
                     <string name="$eid">shirt</string>
                 </map>
                 <map name="attached_feet">
@@ -218,7 +218,7 @@
                 <map name="attached_legs">
                     <string name="$eid">pants</string>
                 </map>
-                <map name="attach_hand_primary">
+                <map name="attached_hand_primary">
                     <string name="$eid">sword</string>
                 </map>
                 <map name="statistics">
@@ -232,7 +232,7 @@
                 <map name="mode_data">
                     <string name="mode">planted</string>
                     <string name="$eid">main</string>
-                    <string name="attachment">body</string>
+                    <string name="attachment">torso</string>
                 </map>
             </map>
             <map>
