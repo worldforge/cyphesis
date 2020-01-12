@@ -4,17 +4,14 @@
 import entity_filter
 from atlas import Operation, Entity
 from physics import square_distance
-
-
-
-# Gather a resource from nearby
-# This is designed to be placed early in a complex goal, so it returns
-# as fulfilled when it has nothing to do
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import SpotSomething, false, AcquireThing, SpotSomethingInArea, ClearFocus
 from mind.goals.common.move import PickUpFocus, MoveMeArea, MoveMeToFocus, MoveMeNearFocus
 
 
+# Gather a resource from nearby
+# This is designed to be placed early in a complex goal, so it returns
+# as fulfilled when it has nothing to do
 class Gather(Goal):
     """Base class for getting a freely available resource."""
 
@@ -40,12 +37,12 @@ class Gather(Goal):
         for thing in what_all:
             square_dist = square_distance(me.entity.location, thing.location)
             if square_dist and square_dist < square_near_dist and thing.location.parent.id != me.entity.id:
-                return 0
-        return 1
+                return False
+        return True
 
 
 # Harvest a resource from source at a place using a tool
-class Harvest_resource(Goal):
+class HarvestResource(Goal):
     """Gather something from a given location, by using a tool on something."""
 
     def __init__(self, what, source, place, tool, range=30):

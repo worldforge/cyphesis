@@ -511,7 +511,8 @@ class PickUpFocus(Goal):
                 me.remove_knowledge('focus', what)
                 continue
             if thing.location.parent.id != me.entity.id:
-                return Operation("move", Entity(focus_id, location=Location(me, Point3D(0, 0, 0))))
+                print("picking up")
+                return Operation("move", Entity(focus_id, location=Location(me.entity, Point3D(0, 0, 0))))
 
 
 class Wander(Goal):

@@ -7,7 +7,7 @@ from physics import square_distance, distance_between
 
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import SpotSomething
-from mind.goals.common.move import Avoid, MoveMeToFocus
+from mind.goals.common.move import Avoid, MoveMeToFocus, Condition
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 # A list of usages which we should look for in weapons.
@@ -25,10 +25,15 @@ class Fight(Goal):
                       self.none_in_range,
                       [
                           SpotSomething(what=what, range=range),
-                          self.equip_weapon,
-                          self.equip_shield,
-                          self.attack,
-                          MoveMeToFocus(what=what, radius=0, speed=0.5),
+                          Condition(self.should_use_melee,
+                                    [self.equip_melee_weapon,
+                                     self.equip_shield,
+                                     self.attack_melee,
+                                     MoveMeToFocus(what=what, radius=0, speed=0.5)],
+                                    [self.equip_ranged_weapon,
+                                     self.stop_moving,
+                                     self.attack_ranged,
+                                     ])
                           #                       hunt_for(what=what, range=range, proximity=3),
                       ])
         self.what = what
@@ -39,12 +44,50 @@ class Fight(Goal):
         self.weapon_usage = None
         self.use_ranged = False
 
+    def stop_moving(self, me):
+        me.set_destination()
+
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
         for thing in thing_all:
             distance = square_distance(me.entity.location, thing.location)
             if distance and distance < self.square_range:
                 return False
+        return True
+
+    def should_use_melee(self, me):
+        target_id = me.get_knowledge('focus', self.what)
+        if target_id is None:
+            print("No focus target")
+            return None
+        enemy = me.map.get(target_id)
+        if enemy is None:
+            print("No target")
+            me.remove_knowledge('focus', self.what)
+            return None
+
+        # check that we can reach the target, and if so attack it
+        distance = distance_between(me.entity.location, enemy.location)
+        if distance is None:
+            print("Could not calculate distance.")
+            return None
+
+        # If possible, shoot with ranged weapons if a bit away
+        if distance > 10:
+            # Check that we have bow and arrows
+            # First check if we have any arrows
+            has_arrows = False
+            for child in me.entity.contains:
+                if child.is_type("arrow"):
+                    has_arrows = True
+                    break
+
+            if not has_arrows:
+                return True
+
+            for child in me.entity.contains:
+                if child.is_type("bow"):
+                    return False
         return True
 
     def equip_shield(self, me):
@@ -63,26 +106,15 @@ class Fight(Goal):
         return None
 
     def equip_ranged_weapon(self, me):
-        # First check if we have any arrows
-        has_arrows = False
-        for child in me.entity.contains:
-            if child.is_type("arrow"):
-                has_arrows = True
-                break
-
-        if not has_arrows:
-            return None
-
         attached_current = me.get_attached_entity("hand_primary")
         if attached_current:
-            # Check that the attached entity can be used to strike
+            # Check that the attached entity is a bow
             if attached_current.is_type("bow"):
                 self.use_ranged = True
                 return None
         # Current tool isn't a bow, or we have nothing attached, try to find one.
         for child in me.entity.contains:
             if child.is_type("bow"):
-                self.use_ranged = True
                 return Operation("wield", Entity(child.id, attachment="hand_primary"))
 
     def equip_melee_weapon(self, me):
@@ -114,32 +146,6 @@ class Fight(Goal):
 
         return None
 
-    def equip_weapon(self, me):
-        target_id = me.get_knowledge('focus', self.what)
-        if target_id is None:
-            print("No focus target")
-            return
-        enemy = me.map.get(target_id)
-        if enemy is None:
-            print("No target")
-            me.remove_knowledge('focus', self.what)
-            return
-
-        # check that we can reach the target, and if so attack it
-        distance = distance_between(me.entity.location, enemy.location)
-        if distance is None:
-            print("Could not calculate distance.")
-            return
-
-        # If possible, shoot with ranged weapons if a bit away
-        self.use_ranged = False
-        if distance > 10:
-            res = self.equip_ranged_weapon(me)
-            if res:
-                return res
-        if not self.use_ranged:
-            return self.equip_melee_weapon(me)
-
     @staticmethod
     def get_reach(me):
 
@@ -156,8 +162,7 @@ class Fight(Goal):
 
         return reach
 
-    def attack(self, me):
-
+    def get_enemy(self, me):
         target_id = me.get_knowledge('focus', self.what)
         if target_id is None:
             print("No focus target")
@@ -166,17 +171,11 @@ class Fight(Goal):
         if enemy is None:
             print("No target")
             me.remove_knowledge('focus', self.what)
-            return
+        return enemy
 
-        if self.use_ranged:
-            res = self.attack_ranged(me, enemy)
-            if self.use_ranged:
-                return res
-        # If we couldn't use ranged weapons (or we're too close) switch to melee.
-        return self.attack_melee(me, enemy)
-
-    def attack_melee(self, me, enemy):
+    def attack_melee(self, me):
         print("attack melee")
+        enemy = self.get_enemy(me)
         # check that we can reach the target, and if so attack it
         distance = distance_between(me.entity.location, enemy.location)
         if distance is None:
@@ -211,8 +210,9 @@ class Fight(Goal):
                     return Operation("use",
                                      Root(args=[Entity("stop")], id="melee", objtype="task"))
 
-    def attack_ranged(self, me, enemy):
+    def attack_ranged(self, me):
         print("attack ranged")
+        enemy = self.get_enemy(me)
         # check that we can reach the target, and if so attack it
         distance = distance_between(me.entity.location, enemy.location)
         if distance is None:
