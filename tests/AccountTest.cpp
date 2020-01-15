@@ -1411,8 +1411,9 @@ ServerRouting::ServerRouting(BaseWorld & wrld,
                              const std::string & lId, long lIntId) :
         Router(id, intId),
         m_svrRuleset(ruleset), m_svrName(name),
-        m_numClients(0), m_world(wrld),
-        m_lobby(new Lobby(*this, lId, lIntId))
+        m_lobby(new Lobby(*this, lId, lIntId)),
+        m_numClients(0),
+        m_world(wrld)
 {
 }
 

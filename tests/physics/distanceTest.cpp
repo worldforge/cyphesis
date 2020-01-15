@@ -29,9 +29,9 @@
 
 #include "common/log.h"
 
-#include "stubs/common/stubRouter.h"
-#include "stubs/rules/simulation/stubEntity.h"
-#include "stubs/rules/stubLocatedEntity.h"
+#include "../stubs/common/stubRouter.h"
+#include "../stubs/rules/simulation/stubEntity.h"
+#include "../stubs/rules/stubLocatedEntity.h"
 
 // RelPos to self: (0,0,0)
 // RelPos ent -> tlve: (-1,-1,0)
@@ -241,4 +241,4 @@ int main()
 }
 
 // stubs
-#include "stubs/common/stublog.h"
+#include "../stubs/common/stublog.h"

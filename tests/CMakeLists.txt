@@ -15,6 +15,7 @@ link_libraries(${READLINE_LIBRARY})
 #On platforms which supports it, link the "libSegFault" library which provides nice stack traces
 find_library(SEGFAULT_LIBRARY SegFault)
 if (SEGFAULT_LIBRARY)
+    message(STATUS "Adding the SegFault library for nice stack traces for tests.")
     link_libraries(${SEGFAULT_LIBRARY})
 endif (SEGFAULT_LIBRARY)
 
@@ -118,13 +119,13 @@ wf_add_test(FileSystemObserverIntegrationTest.cpp ../src/common/FileSystemObserv
 target_link_libraries(FileSystemObserverIntegrationTest common)
 
 # PHYSICS_TESTS
-wf_add_test(BBoxTest.cpp ../src/physics/BBox.cpp ../src/common/const.cpp)
-wf_add_test(Vector3DTest.cpp ../src/physics/Vector3D.cpp)
-wf_add_test(QuaternionTest.cpp ../src/physics/Quaternion.cpp)
-wf_add_test(transformTest.cpp)
-wf_add_test(distanceTest.cpp ../src/physics/Vector3D ../src/rules/Location ../src/rules/EntityLocation)
-wf_add_test(ShapeTest.cpp ../src/physics/Shape.cpp ../src/physics/Course.cpp)
-wf_add_test(CourseTest.cpp ../src/physics/Course.cpp)
+wf_add_test(physics/BBoxTest.cpp ../src/physics/BBox.cpp ../src/common/const.cpp)
+wf_add_test(physics/Vector3DTest.cpp ../src/physics/Vector3D.cpp)
+wf_add_test(physics/QuaternionTest.cpp ../src/physics/Quaternion.cpp)
+wf_add_test(physics/transformTest.cpp)
+wf_add_test(physics/distanceTest.cpp ../src/physics/Vector3D ../src/rules/Location ../src/rules/EntityLocation)
+wf_add_test(physics/ShapeTest.cpp ../src/physics/Shape.cpp ../src/physics/Course.cpp)
+wf_add_test(physics/CourseTest.cpp ../src/physics/Course.cpp)
 
 # MODULE_TESTS
 

@@ -1447,7 +1447,7 @@ void Link::send(const Operation & op) const
 
 #define STUB_Inheritance_Inheritance
 Inheritance::Inheritance(Atlas::Objects::Factories& factories)
-    : Singleton(), m_factories(factories), noClass(0)
+    : Singleton(), noClass(0), m_factories(factories)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 
