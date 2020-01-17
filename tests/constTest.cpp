@@ -47,16 +47,7 @@ int main()
     float square_basic_tick;
     square_basic_tick = consts::square_basic_tick;
     assert(square_basic_tick > 0);
-    float sight_factor;
-    sight_factor = consts::sight_factor;
-    assert(sight_factor > 0);
-    float square_sight_factor;
-    square_sight_factor = consts::square_sight_factor;
-    assert(square_sight_factor > 0);
-    float minSqrBoxSize;
-    minSqrBoxSize = consts::minSqrBoxSize;
-    assert(minSqrBoxSize > 0);
-    
+
     const char * rootWorldId;
     rootWorldId = consts::rootWorldId;
     assert(rootWorldId != 0);

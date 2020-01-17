@@ -42,9 +42,17 @@
   }
 #endif //STUB_Steering_setDestination
 
+#ifndef STUB_Steering_setDestination
+//#define STUB_Steering_setDestination
+  void Steering::setDestination(SteeringDestination destination, double currentServerTimestamp)
+  {
+    
+  }
+#endif //STUB_Steering_setDestination
+
 #ifndef STUB_Steering_updatePath
 //#define STUB_Steering_updatePath
-  int Steering::updatePath(const WFMath::Point<3>& currentAvatarPosition)
+  int Steering::updatePath(double currentTimestamp, const WFMath::Point<3>& currentAvatarPosition)
   {
     return 0;
   }
@@ -172,11 +180,27 @@
 
 #ifndef STUB_Steering_distanceTo
 //#define STUB_Steering_distanceTo
-  float Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination)
+  double Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination)
   {
     return 0;
   }
 #endif //STUB_Steering_distanceTo
+
+#ifndef STUB_Steering_distanceTo
+//#define STUB_Steering_distanceTo
+  boost::optional<double> Steering::distanceTo(double currentTimestamp, const Destination& destination, MeasureType fromSelf, MeasureType toDestination)
+  {
+    return *static_cast<boost::optional<double>*>(nullptr);
+  }
+#endif //STUB_Steering_distanceTo
+
+#ifndef STUB_Steering_resolvePosition
+//#define STUB_Steering_resolvePosition
+  Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, const Destination& destination)
+  {
+    return *static_cast<Steering::ResolvedPosition*>(nullptr);
+  }
+#endif //STUB_Steering_resolvePosition
 
 #ifndef STUB_Steering_distanceBetween
 //#define STUB_Steering_distanceBetween
@@ -188,7 +212,7 @@
 
 #ifndef STUB_Steering_setAwarenessArea
 //#define STUB_Steering_setAwarenessArea
-  void Steering::setAwarenessArea()
+  void Steering::setAwarenessArea(double currentServerTimestamp)
   {
     
   }

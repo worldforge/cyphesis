@@ -17,32 +17,18 @@
 
 
 #include "BBox.h"
-
-#include "common/const.h"
+#include "Vector3D.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 
 WFMath::CoordType boxSquareSize(const BBox & box)
 {
-    if (!box.isValid()) {
-        return consts::minSqrBoxSize;
-    }
-
     return square(box.highCorner().x() - box.lowCorner().x()) +
            square(box.highCorner().y() - box.lowCorner().y()) +
            square(box.highCorner().z() - box.lowCorner().z());
 }
 
-static WFMath::CoordType sqrMag(const WFMath::Point<3> & p)
-{
-    return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
-}
-
-static WFMath::CoordType sqrMag(const WFMath::Point<2> & p)
-{
-    return p.x() * p.x() + p.y() * p.y();
-}
 
 WFMath::CoordType boxSquareBoundingRadius(const BBox & box)
 {

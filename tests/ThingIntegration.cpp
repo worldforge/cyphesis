@@ -984,8 +984,3 @@ int fromStdVector<double>(Vector3D& v, const std::vector<double>& vf)
     v.setValid();
     return 0;
 }
-
-WFMath::CoordType sqrMag(const Point3D& p)
-{
-    return 0;
-}

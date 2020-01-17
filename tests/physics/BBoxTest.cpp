@@ -31,25 +31,32 @@
 #include <wfmath/point.h>
 
 #include <cassert>
+#include <physics/Vector3D.h>
 
 int main()
 {
-    {
-        BBox test_box;
 
-        assert(boxSquareSize(test_box) == consts::minSqrBoxSize);
+    {
+        WFMath::Point<2> p(2, 2);
+        auto mag = sqrMag(p);
+        assert(mag == 8.0);
     }
 
     {
-        BBox test_box(WFMath::Point<3>(0,0,0), WFMath::Point<3>(1,1,1));
 
-        assert(boxSquareSize(test_box) != consts::minSqrBoxSize);
+        assert(boxSquareSize({{0, 0, 0},
+                              {1, 1, 1}}) != 0);
     }
 
     {
-        BBox test_box(WFMath::Point<3>(0,0,0), WFMath::Point<3>(1,1,1));
+        boxSquareBoundingRadius({{0, 0, 0},
+                                 {1, 1, 1}});
+    }
 
-        boxSquareBoundingRadius(test_box);
+    {
+        auto radius = std::sqrt(boxSquareHorizontalBoundingRadius({{-1, 0, -1},
+                                                         {1,  1, 1}}));
+        assert(WFMath::Equal(1.414215, radius, 0.001));
     }
 
     return 0;

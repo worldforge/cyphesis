@@ -31,7 +31,6 @@
 
 #include "common/operations/Tick.h"
 #include "common/debug.h"
-#include "AwareMind.h"
 
 
 #include <Atlas/Objects/RootEntity.h>

@@ -54,6 +54,16 @@ struct EntityLocation
      */
     bool isValid() const;
 
+    bool operator==(const EntityLocation& rhs) const
+    {
+        return m_parent == rhs.m_parent
+               && m_pos == rhs.m_pos;
+    }
+
+    bool operator!=(const EntityLocation& rhs) const
+    {
+        return !(*this == rhs);
+    }
 };
 //#include "rules/LocatedEntity.h"
 

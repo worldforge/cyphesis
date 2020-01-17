@@ -35,79 +35,79 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Location::Location() :
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0)
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf) :
-    EntityLocation(std::move(rf)),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0)
+        EntityLocation(std::move(rf)),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf, const Point3D& pos) :
-    EntityLocation(std::move(rf), pos),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0)
+        EntityLocation(std::move(rf), pos),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0)
 {
 }
 
 Location::Location(Ref<LocatedEntity> rf,
                    const Point3D& pos,
                    Vector3D velocity) :
-    EntityLocation(std::move(rf), pos),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0),
-    m_velocity(velocity)
+        EntityLocation(std::move(rf), pos),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0),
+        m_velocity(velocity)
 {
 }
 
 Location::Location(LocatedEntity* rf) :
-    EntityLocation(rf),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0)
+        EntityLocation(rf),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0)
 {
 }
 
 Location::Location(LocatedEntity* rf, const Point3D& pos) :
-    EntityLocation(rf, pos),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0)
+        EntityLocation(rf, pos),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0)
 {
 }
 
 Location::Location(EntityLocation entityLocation) :
-    EntityLocation(std::move(entityLocation)),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0)
+        EntityLocation(std::move(entityLocation)),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0)
 {
 }
 
 Location::Location(LocatedEntity* rf,
                    const Point3D& pos,
                    Vector3D velocity) :
-    EntityLocation(rf, pos),
-    m_solid(true),
-    m_timeStamp(0),
-    m_radius(0),
-    m_squareRadius(0),
-    m_velocity(velocity)
+        EntityLocation(rf, pos),
+        m_solid(true),
+        m_timeStamp(0),
+        m_radius(0),
+        m_squareRadius(0),
+        m_velocity(velocity)
 {
 }
 

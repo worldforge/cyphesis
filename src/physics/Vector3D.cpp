@@ -81,8 +81,3 @@ int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf)
 
 template
 int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf);
-
-WFMath::CoordType sqrMag(const Point3D & p)
-{
-    return p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
-}

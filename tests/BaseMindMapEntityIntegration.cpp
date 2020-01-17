@@ -411,10 +411,6 @@ int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf)
     return 0;
 }
 
-WFMath::CoordType sqrMag(const Point3D & p) {
-    return 0;
-}
-
 #define STUB_PropertyManager_installFactory
 void PropertyManager::installFactory(const std::string & name, std::unique_ptr<PropertyKit> factory)
 {

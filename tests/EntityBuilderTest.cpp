@@ -449,7 +449,7 @@ void LocatedEntity::merge(const MapType& ent)
 #ifndef STUB_Inheritance_Inheritance
 #define STUB_Inheritance_Inheritance
 
-Inheritance::Inheritance(Atlas::Objects::Factories& factories) : m_factories(factories), noClass(0)
+Inheritance::Inheritance(Atlas::Objects::Factories& factories) : noClass(0), m_factories(factories)
 {
     Atlas::Objects::Entity::Anonymous root_desc;
 

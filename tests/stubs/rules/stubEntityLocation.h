@@ -10,6 +10,7 @@
 #ifndef STUB_EntityLocation_EntityLocation
 //#define STUB_EntityLocation_EntityLocation
    EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
+    : !(nullptr)
   {
     
   }
@@ -18,6 +19,7 @@
 #ifndef STUB_EntityLocation_EntityLocation
 //#define STUB_EntityLocation_EntityLocation
    EntityLocation::EntityLocation(Ref<LocatedEntity> loc, const WFMath::Point<3>& pos)
+    : !(nullptr)
   {
     
   }

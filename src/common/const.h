@@ -46,13 +46,6 @@ namespace consts {
   /// \brief Square versions of above, to avoid square roots in calculations
   static const float square_basic_tick = basic_tick * basic_tick;
 
-  /// \brief sin() of minimum angle subtended by visible object
-  static const float sight_factor = 0.06f;
-  static const float square_sight_factor = (sight_factor * sight_factor);
-  /// \brief What is the minimum size of an object when calculating visibility
-  static const float minSqrBoxSize = 0.25f;
-  /// \brief What is the minimum size of an object when calculating visibility
-  static const float minBoxSize = 0.5f;
 
   /// \brief Id of root world entity
   extern const char * rootWorldId;

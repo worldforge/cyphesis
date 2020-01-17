@@ -25,8 +25,6 @@
 
 typedef WFMath::AxisBox<3> BBox;
 
-template<typename F>
-inline F square(F f) { return f * f; }
 
 /// What is the size of the box?
 WFMath::CoordType boxSquareSize(const BBox & box);

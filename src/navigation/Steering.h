@@ -66,7 +66,7 @@ struct SteeringResult
 };
 
 
-class EntityLocation;
+struct EntityLocation;
 
 /**
  * @brief Handles steering of an avatar, with path finding and obstacle avoidance.
@@ -76,6 +76,54 @@ class EntityLocation;
 class Steering : public virtual sigc::trackable
 {
     public:
+
+        enum class MeasureType
+        {
+                CENTER,
+                EDGE
+        };
+
+        struct Destination
+        {
+            Location location;
+        };
+
+        struct SteeringDestination
+        {
+            Destination destination;
+            MeasureType measureFromAvatar;
+            MeasureType measureToDestination;
+            double distance; //The distance that we aim for
+
+//            bool operator==(const SteeringDestination& rhs) const
+//            {
+//                return destination.location == rhs.destination.location
+//                       && measureFromAvatar == rhs.measureFromAvatar
+//                       && measureToDestination == rhs.measureToDestination
+//                       && rhs.distance == rhs.distance;
+//            }
+//
+//            bool operator!=(const SteeringDestination& rhs) const
+//            {
+//                return !(*this == rhs);
+//            }
+        };
+
+        struct ResolvedPosition
+        {
+            /**
+             * The position relative to our own parent.
+             */
+            WFMath::Point<3> position;
+
+            /**
+             * The location which is a direct child of our own parent. This is mainly of use when trying to
+             * reach an entity which is contained in another entity, and we really need to know if we can reach
+             * the other entity.
+             */
+            const Location* location;
+        };
+
         explicit Steering(MemEntity& avatar);
 
         virtual ~Steering() = default;
@@ -92,12 +140,14 @@ class Steering : public virtual sigc::trackable
          */
         void setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp);
 
+        void setDestination(SteeringDestination destination, double currentServerTimestamp);
+
         /**
          * @brief Updates the path.
          * @param currentAvatarPosition The current position of the avatar entity.
          * @return If >= 0, a path was found. If <0 and >= -3 we couldn't find a path currently because we don't have all data yet. If <= -4 we couldn't find a path.
          */
-        int updatePath(const WFMath::Point<3>& currentAvatarPosition);
+        int updatePath(double currentTimestamp, const WFMath::Point<3>& currentAvatarPosition);
 
         /**
          * @brief Updates the path.
@@ -179,7 +229,11 @@ class Steering : public virtual sigc::trackable
          * @param destination
          * @return
          */
-        float distanceTo(double currentTimestamp, const WFMath::Point<3>& destination);
+        double distanceTo(double currentTimestamp, const WFMath::Point<3>& destination);
+
+        boost::optional<double> distanceTo(double currentTimestamp, const Destination& destination, MeasureType fromSelf, MeasureType toDestination);
+
+        Steering::ResolvedPosition resolvePosition(double currentTimestamp, const Destination& destination);
 
         double distanceBetween(double currentTimestamp, const Location& destination);
 
@@ -208,11 +262,13 @@ class Steering : public virtual sigc::trackable
          */
         WFMath::Point<3> mEntityRelativeDestination;
 
+        SteeringDestination mSteeringDestination;
+
 
         /**
          * @brief The destination, in view coordinates.
          */
-        WFMath::Point<3> mViewDestination;
+        //WFMath::Point<3> mViewDestination;
 
         float mDestinationRadius;
 
@@ -287,7 +343,7 @@ class Steering : public virtual sigc::trackable
          *
          * mPadding determines the width of the corridor.
          */
-        void setAwarenessArea();
+        void setAwarenessArea(double currentServerTimestamp);
 
         /**
          * @brief Listen to tiles being updated, and request updates.

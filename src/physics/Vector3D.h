@@ -20,6 +20,7 @@
 #define PHYSICS_VECTOR_3D_H
 
 #include <wfmath/const.h>
+#include <wfmath/point.h>
 
 #include <cmath>
 #include <vector>
@@ -43,6 +44,7 @@ template <typename FloatT>
 int fromStdVector(Vector3D & v, const std::vector<FloatT> & vf);
 
 WFMath::CoordType sqrMag(const Point3D & p);
+WFMath::CoordType sqrMag(const WFMath::Point<2> & p);
 
 /// Find relative distance, to be used when the result is only
 /// going to be compared with other distances
@@ -56,5 +58,18 @@ inline WFMath::CoordType distance(const Point3D & u, const Point3D & v)
 
 typedef std::vector<Point3D> CoordList;
 typedef std::vector<Vector3D> VectorList;
+
+template<typename F>
+inline F square(F f) { return f * f; }
+
+inline WFMath::CoordType sqrMag(const WFMath::Point<3> & p)
+{
+    return square(p.x()) + square(p.y()) + square(p.z());
+}
+
+inline WFMath::CoordType sqrMag(const WFMath::Point<2> & p)
+{
+    return square(p.x()) + square(p.y());
+}
 
 #endif // PHYSICS_VECTOR_3D_H

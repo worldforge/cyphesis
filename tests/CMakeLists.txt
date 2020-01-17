@@ -564,3 +564,14 @@ wf_add_test(OperationMonitorTest.cpp ../src/tools/OperationMonitor.cpp
 # PYTHON_TESTS
 #wf_add_test(python_class.cpp)
 #target_link_libraries(python_class scriptpython rulessimulation rulesetmind rulesbase modules physics common)
+
+wf_add_test(navigation/SteeringIntegration.cpp)
+target_link_libraries(SteeringIntegration
+        rulesbase
+        navigation
+        modules
+        common
+        physics
+        DetourTileCache
+        Detour
+        Recast)
