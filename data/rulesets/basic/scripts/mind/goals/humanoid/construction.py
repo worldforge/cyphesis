@@ -15,7 +15,7 @@ from mind.goals.common.move import PickUpFocus, MoveMeArea, MoveMeToFocus, MoveM
 class Gather(Goal):
     """Base class for getting a freely available resource."""
 
-    def __init__(self, what):
+    def __init__(self, what, max_amount=1, distance=30):
         Goal.__init__(self, "gather a thing",
                       self.is_there_none_around,
                       [SpotSomething(what),
@@ -26,17 +26,25 @@ class Gather(Goal):
             self.what = str(what)
         # FIXME: This goal shares the same filter as spot_something
         self.filter = entity_filter.Filter(self.what)
-        self.vars = ["what"]
+        self.max_amount = max_amount
+        self.distance = distance
+        self.vars = ["what", "max_amount", "distance"]
 
     def is_there_none_around(self, me):
+        # Check if we have enough on ourselves
+        amount = 0
+        entities_in_inventory = me.match_entities(self.filter, me.entity.contains)
+        for entity in entities_in_inventory:
+            amount += entity.get_prop_int("amount", 1)
+
+        if amount >= self.max_amount:
+            return True
+
         # A suitably range
-        square_near_dist = 30
-        nearest = None
-        nothing_near = 1
         what_all = me.map.find_by_filter(self.filter)
         for thing in what_all:
-            square_dist = square_distance(me.entity.location, thing.location)
-            if square_dist and square_dist < square_near_dist and thing.location.parent.id != me.entity.id:
+            distance_to_thing = me.distance_to(thing.location)
+            if distance_to_thing < self.distance:
                 return False
         return True
 
