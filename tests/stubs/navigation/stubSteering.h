@@ -148,7 +148,7 @@
 
 #ifndef STUB_Steering_getCurrentAvatarPosition
 //#define STUB_Steering_getCurrentAvatarPosition
-  WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp)
+  WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp) const
   {
     return *static_cast<WFMath::Point<3>*>(nullptr);
   }
@@ -172,15 +172,23 @@
 
 #ifndef STUB_Steering_isAtDestination
 //#define STUB_Steering_isAtDestination
-  bool Steering::isAtDestination(double currentTimestamp, const WFMath::Point<3>& destination)
+  bool Steering::isAtDestination(double currentTimestamp, const SteeringDestination& destination) const
   {
     return false;
   }
 #endif //STUB_Steering_isAtDestination
 
+#ifndef STUB_Steering_isAtCurrentDestination
+//#define STUB_Steering_isAtCurrentDestination
+  bool Steering::isAtCurrentDestination(double currentTimestamp) const
+  {
+    return false;
+  }
+#endif //STUB_Steering_isAtCurrentDestination
+
 #ifndef STUB_Steering_distanceTo
 //#define STUB_Steering_distanceTo
-  double Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination)
+  double Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination) const
   {
     return 0;
   }
@@ -188,7 +196,7 @@
 
 #ifndef STUB_Steering_distanceTo
 //#define STUB_Steering_distanceTo
-  boost::optional<double> Steering::distanceTo(double currentTimestamp, const Destination& destination, MeasureType fromSelf, MeasureType toDestination)
+  boost::optional<double> Steering::distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const
   {
     return *static_cast<boost::optional<double>*>(nullptr);
   }
@@ -196,7 +204,7 @@
 
 #ifndef STUB_Steering_resolvePosition
 //#define STUB_Steering_resolvePosition
-  Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, const Destination& destination)
+  Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, const EntityLocation& location) const
   {
     return *static_cast<Steering::ResolvedPosition*>(nullptr);
   }
@@ -204,7 +212,7 @@
 
 #ifndef STUB_Steering_distanceBetween
 //#define STUB_Steering_distanceBetween
-  double Steering::distanceBetween(double currentTimestamp, const Location& destination)
+  double Steering::distanceBetween(double currentTimestamp, const Location& destination) const
   {
     return 0;
   }

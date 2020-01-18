@@ -79,21 +79,47 @@ class Steering : public virtual sigc::trackable
 
         enum class MeasureType
         {
-                CENTER,
-                EDGE
-        };
+                /**
+                 * Measure from the center.
+                 */
+                        CENTER,
 
-        struct Destination
-        {
-            Location location;
+                /**
+                 * Measure from the edge. This only applies if a Location/LocatedEntity is being used.
+                 */
+                        EDGE
         };
 
         struct SteeringDestination
         {
-            Destination destination;
+            /**
+             * The destination.
+             * Interpretation depends on whether position or parent or both are set.
+             * 1) If there's no parent, or the parent is the domain entity, then only position is used. This ignores the measureToDestination value (since we can't use EDGE).
+             * 2) If the parent is set to something else than the domain entity we'll walk upwards until we find the entity which belongs to the domain. The used position will be
+             *    of that entity, and the radius used if measureToDestination is set to EDGE will be the radius of that entity. Position will be ignored (for now)
+             *
+             * The effect of this is that there are basically two main different ways of setting a destination.
+             * Either you set a specific point in the domain.
+             * Or you set it to track a certain entity. In this case you can also use measureToDestination in EDGE mode.
+             *
+             */
+            EntityLocation location;
+
+            /**
+             * How to measure from the avatar.
+             */
             MeasureType measureFromAvatar;
+
+            /**
+             * How to measure to the destination. EDGE can only be used if the location is set to an Entity.
+             */
             MeasureType measureToDestination;
-            double distance; //The distance that we aim for
+
+            /**
+             * How close we need to be, minus any edges (depending on the MeasureTypes set).
+             */
+            double distance;
 
 //            bool operator==(const SteeringDestination& rhs) const
 //            {
@@ -120,6 +146,7 @@ class Steering : public virtual sigc::trackable
              * The location which is a direct child of our own parent. This is mainly of use when trying to
              * reach an entity which is contained in another entity, and we really need to know if we can reach
              * the other entity.
+             * Is null if we only specified a position.
              */
             const Location* location;
         };
@@ -214,13 +241,15 @@ class Steering : public virtual sigc::trackable
          */
         SteeringResult update(double currentTimestamp);
 
-        WFMath::Point<3> getCurrentAvatarPosition(double currentTimestamp);
+        WFMath::Point<3> getCurrentAvatarPosition(double currentTimestamp) const;
 
         size_t unawareAreaCount() const;
 
         int getPathResult() const;
 
-        bool isAtDestination(double currentTimestamp, const WFMath::Point<3>& destination);
+        bool isAtDestination(double currentTimestamp, const SteeringDestination& destination) const;
+
+        bool isAtCurrentDestination(double currentTimestamp) const;
 
 
         /**
@@ -229,13 +258,13 @@ class Steering : public virtual sigc::trackable
          * @param destination
          * @return
          */
-        double distanceTo(double currentTimestamp, const WFMath::Point<3>& destination);
+        double distanceTo(double currentTimestamp, const WFMath::Point<3>& destination) const;
 
-        boost::optional<double> distanceTo(double currentTimestamp, const Destination& destination, MeasureType fromSelf, MeasureType toDestination);
+        boost::optional<double> distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const;
 
-        Steering::ResolvedPosition resolvePosition(double currentTimestamp, const Destination& destination);
+        Steering::ResolvedPosition resolvePosition(double currentTimestamp, const EntityLocation& location) const;
 
-        double distanceBetween(double currentTimestamp, const Location& destination);
+        double distanceBetween(double currentTimestamp, const Location& destination) const;
 
         /**
      * @brief Emitted when the path has been updated.

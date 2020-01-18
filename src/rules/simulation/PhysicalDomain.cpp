@@ -285,22 +285,6 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     auto postTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
 
-        struct Callback : public btCollisionWorld::ContactResultCallback
-        {
-            bool isHit = false;
-
-            btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap,
-                                     int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
-                                     int partId1, int index1) override
-            {
-                //If the normal points upwards it's below us.
-                if (cp.m_normalWorldOnB.y() > 0) {
-                    isHit = true;
-                }
-                return btScalar(1.0);
-            }
-        };
-
 
         auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
         auto steppingEntries = worldInfo->steppingEntries;
@@ -310,7 +294,21 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
             //Check that the object has moved, and if so check if it should be clamped to the ground
             if (collisionObject->getInterpolationLinearVelocity().length2() > 0.001) {
 
-                Callback collideCallback;
+                struct : btCollisionWorld::ContactResultCallback
+                {
+                    bool isHit = false;
+
+                    btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap,
+                                             int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                                             int partId1, int index1) override
+                    {
+                        //If the normal points upwards it's below us.
+                        if (cp.m_normalWorldOnB.y() > 0) {
+                            isHit = true;
+                        }
+                        return btScalar(1.0);
+                    }
+                } collideCallback;
                 collideCallback.m_collisionFilterMask = collisionObject->getBroadphaseHandle()->m_collisionFilterMask;
                 collideCallback.m_collisionFilterGroup = collisionObject->getBroadphaseHandle()->m_collisionFilterGroup;
 
@@ -1974,8 +1972,8 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
                     if (K == m_propellingEntries.end()) {
                         const Property<double>* stepFactorProp = entity->getPropertyType<double>("step_factor");
                         if (stepFactorProp && entity->m_location.bBox().isValid()) {
-                            float height = entity->m_location.bBox().upperBound(1) - entity->m_location.bBox().lowerBound(1);
-                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, height * (float) stepFactorProp->data()}));
+                            auto height = entity->m_location.bBox().upperBound(1) - entity->m_location.bBox().lowerBound(1);
+                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float)(height * stepFactorProp->data())}));
                         } else {
                             m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0}));
                         }
@@ -2160,7 +2158,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
         frictionSpinning = (float) frictionSpinningProp->data();
     }
 
-    float worldHeight = m_entity.m_location.bBox().highCorner().y() - m_entity.m_location.bBox().lowCorner().y();
+    auto worldHeight = m_entity.m_location.bBox().highCorner().y() - m_entity.m_location.bBox().lowCorner().y();
 
     debug_print("dirty segments: " << dirtySegments.size())
     for (auto& segment : dirtySegments) {
@@ -2789,21 +2787,19 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
 std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath::Ball<3>& sphere) const
 {
 
-    struct CollisionCallback : public btCollisionWorld::ContactResultCallback
+    struct : public btCollisionWorld::ContactResultCallback
     {
-        public:
+        std::map<BulletEntry*, btManifoldPoint> m_entries;
 
-            std::map<BulletEntry*, btManifoldPoint> m_entries;
-
-            btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
-                                     int partId1, int index1) override
-            {
-                auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
-                if (bulletEntry) {
-                    m_entries.emplace(bulletEntry, cp);
-                }
-                return btScalar(1.0);
+        btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                                 int partId1, int index1) override
+        {
+            auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+            if (bulletEntry) {
+                m_entries.emplace(bulletEntry, cp);
             }
+            return btScalar(1.0);
+        }
 
     } callback;
 

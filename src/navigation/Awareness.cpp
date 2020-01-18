@@ -398,7 +398,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
         }
         entityEntry->numberOfObservers--;
         if (entityEntry->numberOfObservers == 0) {
-            if (entityEntry->isIgnored) {
+            if (!entityEntry->isIgnored) {
                 if (entityEntry->isMoving) {
                     mMovingEntities.erase(entityEntry.get());
                 } else {
@@ -411,9 +411,10 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
                     }
                     mEntityAreas.erase(entityEntry.get());
                 }
-                mObservedEntities.erase(I);
             }
+            mObservedEntities.erase(I);
         } else {
+            //If the entity and the observer are the same we need to remove the marking of the entry being owned by an actor.
             if (observer.getIntId() == entity.getIntId()) {
                 entityEntry->isActorOwned = false;
             }

@@ -27,7 +27,7 @@
 
 class TypeNode;
 
-class IHeightProvider;
+struct IHeightProvider;
 
 class AwarenessStoreProvider
 {

@@ -24,7 +24,7 @@
 #include <unordered_map>
 #include <memory>
 
-class IHeightProvider;
+struct IHeightProvider;
 
 class Awareness;
 

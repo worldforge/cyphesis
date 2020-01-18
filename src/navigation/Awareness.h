@@ -62,7 +62,7 @@ class dtObstacleAvoidanceQuery;
 
 struct dtObstacleAvoidanceParams;
 
-class IHeightProvider;
+struct IHeightProvider;
 
 template<typename T>
 class MRUList;
@@ -237,8 +237,21 @@ class Awareness
          */
         void setDesiredTilesAmount(size_t amount);
 
+        /**
+         * Adds a new entity to the awareness.
+         * @param observer The observer, i.e. the entity which currently is observing it. Multiple observers can observe one entity at the same time.
+         * @param entity The entity to observe.
+         * @param isDynamic True if the entity is moving, or is expected to move. This will remove it from the navmesh, and it will instead be treated as an "obstacle" when moving.
+         */
         void addEntity(const MemEntity& observer, const LocatedEntity& entity, bool isDynamic);
 
+        /**
+         * Removes an observation of an entity.
+         * Note that this does not mean that the entity automatically is removed from the awareness, as there might be other observers.
+         * First when all observers have been removed will the entity be removed from the awareness.
+         * @param observer The observer entity.
+         * @param entity The entity to remove.
+         */
         void removeEntity(const MemEntity& observer, const LocatedEntity& entity);
 
         void updateEntityMovement(const MemEntity& observer, const LocatedEntity& entity);

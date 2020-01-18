@@ -121,7 +121,7 @@ int Steering::queryDestination(const EntityLocation& destination, double current
 
 void Steering::setDestination(SteeringDestination destination, double currentServerTimestamp)
 {
-    if (destination.destination.location.m_pos != mSteeringDestination.destination.location.m_pos || destination.destination.location.m_parent != mSteeringDestination.destination.location.m_parent) {
+    if (destination.location.m_pos != mSteeringDestination.location.m_pos || destination.location.m_parent != mSteeringDestination.location.m_parent) {
         mSteeringDestination = std::move(destination);
         mUpdateNeeded = true;
         setAwarenessArea(currentServerTimestamp);
@@ -202,7 +202,7 @@ void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelat
 void Steering::setAwarenessArea(double currentServerTimestamp)
 {
     if (mAwareness) {
-        auto resolvedPosition = resolvePosition(currentServerTimestamp, mSteeringDestination.destination);
+        auto resolvedPosition = resolvePosition(currentServerTimestamp, mSteeringDestination.location);
 //        resolvePosition()
 
 
@@ -268,7 +268,7 @@ int Steering::updatePath(double currentTimestamp, const WFMath::Point<3>& curren
         mPathResult = -7;
         return mPathResult;
     }
-    auto resolvedPosition = resolvePosition(currentTimestamp, mSteeringDestination.destination);
+    auto resolvedPosition = resolvePosition(currentTimestamp, mSteeringDestination.location);
     if (!resolvedPosition.position.isValid()) {
         mPathResult = -8;
         return mPathResult;
@@ -336,7 +336,7 @@ size_t Steering::getCurrentPathIndex() const
     return mCurrentPathIndex;
 }
 
-WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp)
+WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp) const
 {
     auto currentEntityPos = mAvatar.m_location.m_pos;
     if (mAvatar.m_location.m_velocity.isValid()) {
@@ -345,17 +345,17 @@ WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp)
     return currentEntityPos;
 }
 
-double Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination)
+double Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination) const
 {
     auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
     const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.z());
     return WFMath::Distance(WFMath::Point<2>(destination.x(), destination.z()), entityPosition);
 }
 
-boost::optional<double> Steering::distanceTo(double currentTimestamp, const Destination& destination, MeasureType fromSelf, MeasureType toDestination)
+boost::optional<double> Steering::distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const
 {
     auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
-    auto resolvedDestination = resolvePosition(currentTimestamp, destination);
+    auto resolvedDestination = resolvePosition(currentTimestamp, location);
 
     if (!currentEntityPos.isValid() || !resolvedDestination.position.isValid()) {
         return boost::none;
@@ -376,18 +376,20 @@ boost::optional<double> Steering::distanceTo(double currentTimestamp, const Dest
     return std::max(0.0, distance);
 }
 
-Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, const Destination& destination)
+Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, const EntityLocation& location) const
 {
-    if (!destination.location.m_parent) {
-        return {destination.location.m_pos, nullptr};
+    //If there's no parent at all we're operating within the same space as the avatar.
+    if (!location.m_parent) {
+        return {location.m_pos, nullptr};
     }
-    if (destination.location.m_parent == mAvatar.m_location.m_parent) {
+    //If the parent is the same we're just operating on position data without any volume.
+    if (location.m_parent == mAvatar.m_location.m_parent) {
         //Just ignore any extra position supplied.
-        return {destination.location.pos(), &destination.location};
+        return {location.pos(), nullptr};
     }
     //If the supplied destination doesn't belong to the current domain, walk upwards until we find the entity that does.
     //This entity will then determine the position.
-    auto* entity = destination.location.m_parent.get();
+    auto* entity = location.m_parent.get();
 
     while (entity->m_location.m_parent && entity->m_location.m_parent != mAvatar.m_location.m_parent) {
         entity = entity->m_location.m_parent.get();
@@ -402,7 +404,7 @@ Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, co
 }
 
 
-double Steering::distanceBetween(double currentTimestamp, const Location& destination)
+double Steering::distanceBetween(double currentTimestamp, const Location& destination) const
 {
     auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
     const WFMath::Point<2> entityPosition(currentEntityPos.x(), currentEntityPos.z());
@@ -415,10 +417,17 @@ double Steering::distanceBetween(double currentTimestamp, const Location& destin
 }
 
 
-bool Steering::isAtDestination(double currentTimestamp, const WFMath::Point<3>& destination)
+bool Steering::isAtDestination(double currentTimestamp, const SteeringDestination& destination) const
 {
-    return distanceTo(currentTimestamp, destination) < mAvatarHorizRadius;
+    auto distance = distanceTo(currentTimestamp, destination.location, destination.measureFromAvatar, destination.measureToDestination);
+    return distance <= destination.distance;
 }
+
+bool Steering::isAtCurrentDestination(double currentTimestamp) const
+{
+    return isAtDestination(currentTimestamp, mSteeringDestination);
+}
+
 
 SteeringResult Steering::update(double currentTimestamp)
 {
@@ -431,10 +440,8 @@ SteeringResult Steering::update(double currentTimestamp)
             updatePath(currentTimestamp, currentEntityPos);
         }
         if (!mPath.empty()) {
-            const auto& finalDestination = mPath.back();
-
             //First check if we've arrived at our actual destination.
-            if (isAtDestination(currentTimestamp, finalDestination)) {
+            if (isAtCurrentDestination(currentTimestamp)) {
                 //We've arrived at our destination. If we're moving we should stop.
                 if (mLastSentVelocity != WFMath::Vector<2>::ZERO()) {
                     result.direction = WFMath::Vector<3>::ZERO();
