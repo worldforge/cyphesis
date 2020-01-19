@@ -132,6 +132,8 @@ class BaseMind : public Router, public ReferenceCounted
 
         void InfoOperation(const Operation&, OpVector&);
 
+        void ErrorOperation(const Operation& op, OpVector& res);
+
         void callSightOperation(const Operation&, OpVector&);
 
         void callSoundOperation(const Operation&, OpVector&);

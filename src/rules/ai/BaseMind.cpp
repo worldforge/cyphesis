@@ -45,15 +45,15 @@ using Atlas::Objects::smart_dynamic_cast;
 static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string& mindId, std::string entityId) :
-    Router(mindId, std::stol(mindId)),
-    m_entityId(std::move(entityId)),
-    m_flags(0),
-    m_typeStore(new SimpleTypeStore()),
-    m_typeResolver(new TypeResolver(*m_typeStore)),
-    m_map(*m_typeResolver),
-    m_time(new WorldTime()),
-    m_serialNoCounter(0),
-    m_scriptFactory(nullptr)
+        Router(mindId, std::stol(mindId)),
+        m_entityId(std::move(entityId)),
+        m_flags(0),
+        m_typeStore(new SimpleTypeStore()),
+        m_typeResolver(new TypeResolver(*m_typeStore)),
+        m_map(*m_typeResolver),
+        m_time(new WorldTime()),
+        m_serialNoCounter(0),
+        m_scriptFactory(nullptr)
 {
     m_typeResolver->m_typeProviderId = mindId;
 }
@@ -390,6 +390,20 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
     }
 }
 
+void BaseMind::ErrorOperation(const Operation& op, OpVector& res)
+{
+    auto args = op->getArgs();
+    if (!args.empty()) {
+        const Atlas::Objects::Root& arg = args.front();
+        Atlas::Message::Element message;
+        if (arg->copyAttr("message", message) == 0) {
+            if (message.isString()) {
+                log(WARNING, String::compose("Error from server: %1", message.String()));
+            }
+        }
+    }
+}
+
 void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string scriptMethod)
 {
     m_propertyScriptCallbacks.emplace(propertyName, scriptMethod);
@@ -421,6 +435,8 @@ void BaseMind::operation(const Operation& op, OpVector& res)
 
     if (op_no == Atlas::Objects::Operation::INFO_NO) {
         InfoOperation(op, res);
+    } else if (op_no == Atlas::Objects::Operation::ERROR_NO) {
+        ErrorOperation(op, res);
     } else {
 
         //If we haven't yet resolved our own entity we should delay delivery of the ops

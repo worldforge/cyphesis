@@ -161,6 +161,14 @@
   }
 #endif //STUB_BaseMind_InfoOperation
 
+#ifndef STUB_BaseMind_ErrorOperation
+//#define STUB_BaseMind_ErrorOperation
+  void BaseMind::ErrorOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_BaseMind_ErrorOperation
+
 #ifndef STUB_BaseMind_callSightOperation
 //#define STUB_BaseMind_callSightOperation
   void BaseMind::callSightOperation(const Operation&, OpVector&)
