@@ -24,19 +24,20 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
-Router::Router(const std::string & id, long intId) : m_id(id),
-                                                             m_intId(intId)
+Router::Router(std::string id, long intId) :
+        m_id(std::move(id)),
+        m_intId(intId)
 {
 }
 
 Router::~Router() = default;
 
-void Router::buildError(const Operation & op,
-                        const std::string & errstring,
-                        const Operation & e,
-                        const std::string & to) const
+void Router::buildError(const Operation& op,
+                        const std::string& errstring,
+                        const Operation& e,
+                        const std::string& to) const
 {
-    std::vector<Atlas::Objects::Root> & args = e->modifyArgs();
+    std::vector<Atlas::Objects::Root>& args = e->modifyArgs();
 
     Atlas::Objects::Entity::Anonymous arg1;
     arg1->setAttr("message", errstring);
@@ -59,10 +60,10 @@ void Router::buildError(const Operation & op,
 /// @param errstring A message describing the error.
 /// @param res The resulting error operation is returned here.
 /// @param to The error operation should be directed to this ID.
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
+void Router::error(const Operation& op,
+                   const std::string& errstring,
+                   OpVector& res,
+                   const std::string& to) const
 {
     Atlas::Objects::Operation::Error e;
 
@@ -85,10 +86,10 @@ void Router::error(const Operation & op,
 /// @param errstring A message describing the error.
 /// @param res The resulting error operation is returned here.
 /// @param to The error operation should be directed to this ID.
-void Router::clientError(const Operation & op,
-                         const std::string & errstring,
-                         OpVector & res,
-                         const std::string & to) const
+void Router::clientError(const Operation& op,
+                         const std::string& errstring,
+                         OpVector& res,
+                         const std::string& to) const
 {
     Atlas::Objects::Operation::Error e;
 
@@ -104,24 +105,24 @@ void Router::clientError(const Operation & op,
 /// after passing it to here, or expect the attributes
 /// of the operaration to remain the same.
 /// @param op The operation to be processed.
-void Router::externalOperation(const Operation & op, Link &)
+void Router::externalOperation(const Operation& op, Link&)
 {
 }
 
 /// \brief Dispatch an operation that is to this object
-void Router::operation(const Operation & op, OpVector & res)
+void Router::operation(const Operation& op, OpVector& res)
 {
 }
 
 /// \brief Copy the attribute values of this object to an Atlas Message
-void Router::addToMessage(Atlas::Message::MapType & omap) const
+void Router::addToMessage(Atlas::Message::MapType& omap) const
 {
     omap["objtype"] = "obj";
     omap["id"] = getId();
 }
 
 /// \brief Copy the attribute values of this object to an Atlas Entity
-void Router::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
+void Router::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
 {
     ent->setObjtype("obj");
     ent->setId(getId());

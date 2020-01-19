@@ -43,7 +43,7 @@ class Router {
     /// \brief Integer identifier
     const long m_intId;
   protected:
-    explicit Router(const std::string & id, long intId);
+    explicit Router(std::string id, long intId);
   public:
     Router(const Router &) = delete;
     virtual ~Router();

@@ -1533,7 +1533,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 #include "stubs/rules/simulation/stubExternalMind.h"
 #include "stubs/server/stubEntityBuilder.h"
 
-Router::Router(const std::string & id, long intId) : m_id(id),
+Router::Router(std::string id, long intId) : m_id(id),
                                                              m_intId(intId)
 {
 }
