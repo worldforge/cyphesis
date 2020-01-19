@@ -65,22 +65,6 @@
   }
 #endif //STUB_CyPy_BaseMind_str
 
-#ifndef STUB_CyPy_BaseMind_refreshPath
-//#define STUB_CyPy_BaseMind_refreshPath
-  Py::Object CyPy_BaseMind::refreshPath()
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_refreshPath
-
-#ifndef STUB_CyPy_BaseMind_setDestination
-//#define STUB_CyPy_BaseMind_setDestination
-  Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_setDestination
-
 #ifndef STUB_CyPy_BaseMind_addPropertyCallback
 //#define STUB_CyPy_BaseMind_addPropertyCallback
   Py::Object CyPy_BaseMind::addPropertyCallback(const Py::Tuple& args)
@@ -88,14 +72,6 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_BaseMind_addPropertyCallback
-
-#ifndef STUB_CyPy_BaseMind_setSpeed
-//#define STUB_CyPy_BaseMind_setSpeed
-  Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_setSpeed
 
 #ifndef STUB_CyPy_BaseMind_matchEntity
 //#define STUB_CyPy_BaseMind_matchEntity
@@ -112,38 +88,6 @@
     return *static_cast<Py::Object*>(nullptr);
   }
 #endif //STUB_CyPy_BaseMind_matchEntities
-
-#ifndef STUB_CyPy_BaseMind_queryDestination
-//#define STUB_CyPy_BaseMind_queryDestination
-  Py::Object CyPy_BaseMind::queryDestination(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_queryDestination
-
-#ifndef STUB_CyPy_BaseMind_isAtLocation
-//#define STUB_CyPy_BaseMind_isAtLocation
-  Py::Object CyPy_BaseMind::isAtLocation(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_isAtLocation
-
-#ifndef STUB_CyPy_BaseMind_distanceTo
-//#define STUB_CyPy_BaseMind_distanceTo
-  Py::Object CyPy_BaseMind::distanceTo(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_distanceTo
-
-#ifndef STUB_CyPy_BaseMind_distanceBetween
-//#define STUB_CyPy_BaseMind_distanceBetween
-  Py::Object CyPy_BaseMind::distanceBetween(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_BaseMind_distanceBetween
 
 
 #endif

@@ -750,11 +750,11 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
 
     float pStartPos[]{static_cast<float>(start.x()), static_cast<float>(start.y()), static_cast<float>(start.z())};
     float pEndPos[]{static_cast<float>(end.x()), static_cast<float>(end.y()), static_cast<float>(end.z())};
-    float startExtent[]{mAgentRadius * 2.2f, 100, mAgentRadius * 2.2f}; //Only extend radius in horizontal plane
+    float startExtent[]{5, 100, 5}; //Only extend radius in horizontal plane
     //To make sure that the agent can move close enough we need to subtract the agent's radius from the destination radius.
     //We'll also adjust with 0.95 to allow for some padding.
     float destinationRadius = (radius - mAgentRadius) * 0.95f;
-    float endExtent[]{destinationRadius, 100, destinationRadius}; //Only extend radius in horizontal plane
+    float endExtent[]{5, 100, 5}; //Only extend radius in horizontal plane
 
 
     dtStatus status;
@@ -795,13 +795,13 @@ int Awareness::findPath(const WFMath::Point<3>& start, const WFMath::Point<3>& e
         return -6;
     } // couldn't find a path
 
-// At this point we have our path.
-    path.resize(static_cast<unsigned long>(nVertCount));
-    for (int nVert = 0; nVert < nVertCount; nVert++) {
-        path[nVert] = {StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]};
+    // At this point we have our path. Skip the first point since it's where we are now
+    path.resize(static_cast<unsigned long>(nVertCount - 1));
+    for (int nVert = 1; nVert < nVertCount; nVert++) {
+        path[nVert - 1] = {StraightPath[nVert * 3], StraightPath[(nVert * 3) + 1], StraightPath[(nVert * 3) + 2]};
     }
 
-    return nVertCount;
+    return nVertCount - 1;
 }
 
 bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp) const

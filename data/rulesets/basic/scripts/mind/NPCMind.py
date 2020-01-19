@@ -342,12 +342,12 @@ class NPCMind(ai.Mind):
         """Sends back information about the path."""
         think_op = Operation("think")
         path = []
-        my_path = self.path
+        my_path = self.steering.path
         # print("path size: " + str(len(my_path)))
         for point in my_path:
             path.append([point.x, point.y, point.z])
 
-        think_op.set_args([Entity(path=path, current_path_index=self.current_path_index)])
+        think_op.set_args([Entity(path=path, current_path_index=self.steering.current_path_index)])
 
         res = Oplist()
         res = res + think_op

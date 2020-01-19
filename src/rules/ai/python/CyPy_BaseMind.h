@@ -44,17 +44,10 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 
     protected:
 
-        Py::Object refreshPath();
-        PYCXX_NOARGS_METHOD_DECL(CyPy_BaseMind, refreshPath);
-
-        Py::Object setDestination(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setDestination);
 
         Py::Object addPropertyCallback(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, addPropertyCallback);
 
-        Py::Object setSpeed(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, setSpeed);
 
         Py::Object matchEntity(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntity);
@@ -62,17 +55,6 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
         Py::Object matchEntities(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntities);
 
-        Py::Object queryDestination(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, queryDestination);
-
-        Py::Object isAtLocation(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, isAtLocation);
-
-        Py::Object distanceTo(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, distanceTo);
-
-        Py::Object distanceBetween(const Py::Tuple& args);
-        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, distanceBetween);
 
 };
 

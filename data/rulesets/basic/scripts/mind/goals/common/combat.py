@@ -3,9 +3,11 @@
 
 import entity_filter
 from atlas import Operation, Entity, Root
-from physics import square_distance, distance_between
+from physics import square_distance
+import ai
 
 from mind.Goal import Goal
+from mind.goals.common.common import get_reach
 from mind.goals.common.misc_goal import SpotSomething
 from mind.goals.common.move import Avoid, MoveMeToFocus, Condition
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
@@ -45,7 +47,7 @@ class Fight(Goal):
         self.use_ranged = False
 
     def stop_moving(self, me):
-        me.set_destination()
+        me.steering.set_destination()
 
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
@@ -67,7 +69,7 @@ class Fight(Goal):
             return None
 
         # check that we can reach the target, and if so attack it
-        distance = distance_between(me.entity.location, enemy.location)
+        distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
         if distance is None:
             print("Could not calculate distance.")
             return None
@@ -146,22 +148,6 @@ class Fight(Goal):
 
         return None
 
-    @staticmethod
-    def get_reach(me):
-
-        reach = 0
-        own_reach = me.entity.get_prop_float('reach')
-        if own_reach:
-            reach += own_reach
-
-        attached_current = me.get_attached_entity("hand_primary")
-        if attached_current:
-            attached_reach = attached_current.get_prop_float('reach')
-            if attached_reach:
-                reach += attached_reach
-
-        return reach
-
     def get_enemy(self, me):
         target_id = me.get_knowledge('focus', self.what)
         if target_id is None:
@@ -177,11 +163,11 @@ class Fight(Goal):
         print("attack melee")
         enemy = self.get_enemy(me)
         # check that we can reach the target, and if so attack it
-        distance = distance_between(me.entity.location, enemy.location)
+        distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
         if distance is None:
             print("Could not calculate distance.")
             return
-        reach = self.get_reach(me)
+        reach = get_reach(me)
         attached_current = me.get_attached_entity("hand_primary")
         tasks_prop = me.entity.get_prop_map('tasks')
         if distance - reach <= 0:
@@ -214,7 +200,7 @@ class Fight(Goal):
         print("attack ranged")
         enemy = self.get_enemy(me)
         # check that we can reach the target, and if so attack it
-        distance = distance_between(me.entity.location, enemy.location)
+        distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
         if distance is None:
             print("Could not calculate distance.")
             return

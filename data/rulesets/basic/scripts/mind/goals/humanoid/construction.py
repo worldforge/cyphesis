@@ -1,6 +1,7 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2004 Al Riddoch (See the file COPYING for details).
 
+import ai
 import entity_filter
 from atlas import Operation, Entity
 from physics import square_distance
@@ -43,7 +44,7 @@ class Gather(Goal):
         # A suitably range
         what_all = me.map.find_by_filter(self.filter)
         for thing in what_all:
-            distance_to_thing = me.distance_to(thing.location)
+            distance_to_thing = me.steering.distance_to(thing, ai.EDGE, ai.EDGE,)
             if distance_to_thing < self.distance:
                 return False
         return True

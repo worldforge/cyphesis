@@ -159,14 +159,6 @@ class Steering : public virtual sigc::trackable
 
         int queryDestination(const EntityLocation& destination, double currentServerTimestamp);
 
-        /**
-         * @brief Sets a new destination, in view position.
-         * Note that this won't start steering; you need to call startSteering() separately.
-         * @param entityRelativePosition The position, as relative to the referred entity.
-         * @param radius The radius around the destination where it's acceptable to end up if we couldn't reach the destination precisely.
-         */
-        void setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp);
-
         void setDestination(SteeringDestination destination, double currentServerTimestamp);
 
         /**
@@ -251,24 +243,15 @@ class Steering : public virtual sigc::trackable
 
         bool isAtCurrentDestination(double currentTimestamp) const;
 
-
-        /**
-         * Distance between the avatar and the specific destination.
-         * @param currentTimestamp
-         * @param destination
-         * @return
-         */
-        double distanceTo(double currentTimestamp, const WFMath::Point<3>& destination) const;
-
         boost::optional<double> distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const;
 
         Steering::ResolvedPosition resolvePosition(double currentTimestamp, const EntityLocation& location) const;
 
-        double distanceBetween(double currentTimestamp, const Location& destination) const;
+        WFMath::Point<3> projectPosition(double currentTimestamp, const Location& location) const;
 
         /**
-     * @brief Emitted when the path has been updated.
-     */
+         * @brief Emitted when the path has been updated.
+         */
         sigc::signal<void> EventPathUpdated;
 
     private:
@@ -277,19 +260,6 @@ class Steering : public virtual sigc::trackable
         MemEntity& mAvatar;
 
         sigc::connection mTileListenerConnection;
-
-
-        /**
-         * The id of the entity to which the destination is relative.
-         * This is either the domain entity, for which the final destination then would be static.
-         * Or it's the id of an entity contained in the domain. The final destination is then dynamic, and updated as the entity moves.
-         */
-        long mDestinationEntityId;
-
-        /**
-         * The destination as relative to the mDestinationEntityId.
-         */
-        WFMath::Point<3> mEntityRelativeDestination;
 
         SteeringDestination mSteeringDestination;
 

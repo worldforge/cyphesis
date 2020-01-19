@@ -36,14 +36,6 @@
 
 #ifndef STUB_Steering_setDestination
 //#define STUB_Steering_setDestination
-  void Steering::setDestination(long entityId, const WFMath::Point<3>& entityRelativePosition, float radius, double currentServerTimestamp)
-  {
-    
-  }
-#endif //STUB_Steering_setDestination
-
-#ifndef STUB_Steering_setDestination
-//#define STUB_Steering_setDestination
   void Steering::setDestination(SteeringDestination destination, double currentServerTimestamp)
   {
     
@@ -188,14 +180,6 @@
 
 #ifndef STUB_Steering_distanceTo
 //#define STUB_Steering_distanceTo
-  double Steering::distanceTo(double currentTimestamp, const WFMath::Point<3>& destination) const
-  {
-    return 0;
-  }
-#endif //STUB_Steering_distanceTo
-
-#ifndef STUB_Steering_distanceTo
-//#define STUB_Steering_distanceTo
   boost::optional<double> Steering::distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const
   {
     return *static_cast<boost::optional<double>*>(nullptr);
@@ -210,13 +194,13 @@
   }
 #endif //STUB_Steering_resolvePosition
 
-#ifndef STUB_Steering_distanceBetween
-//#define STUB_Steering_distanceBetween
-  double Steering::distanceBetween(double currentTimestamp, const Location& destination) const
+#ifndef STUB_Steering_projectPosition
+//#define STUB_Steering_projectPosition
+  WFMath::Point<3> Steering::projectPosition(double currentTimestamp, const Location& location) const
   {
-    return 0;
+    return *static_cast<WFMath::Point<3>*>(nullptr);
   }
-#endif //STUB_Steering_distanceBetween
+#endif //STUB_Steering_projectPosition
 
 #ifndef STUB_Steering_setAwarenessArea
 //#define STUB_Steering_setAwarenessArea

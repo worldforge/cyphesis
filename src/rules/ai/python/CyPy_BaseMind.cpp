@@ -18,7 +18,6 @@
 
 #include "CyPy_BaseMind.h"
 
-#include <utility>
 #include "CyPy_MemMap.h"
 #include "rules/python/CyPy_MemEntity.h"
 #include "rules/python/PythonWrapper.h"
@@ -35,6 +34,7 @@
 #include "navigation/Awareness.h"
 
 #include "common/id.h"
+#include "CyPy_Steering.h"
 
 template<>
 Py::Object wrapPython(BaseMind* value)
@@ -86,16 +86,8 @@ void CyPy_BaseMind::init_type()
 //    PYCXX_ADD_NOARGS_METHOD(describe_entity, describe_entity, "");
 //    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
-    //TODO: split into a CyPy_Steering class
-    PYCXX_ADD_VARARGS_METHOD(set_destination, setDestination, "");
-    PYCXX_ADD_VARARGS_METHOD(set_speed, setSpeed, "");
-    PYCXX_ADD_VARARGS_METHOD(query_destination, queryDestination, "");
-    PYCXX_ADD_VARARGS_METHOD(is_at_location, isAtLocation, "");
-    PYCXX_ADD_VARARGS_METHOD(distance_to, distanceTo, "");
-    PYCXX_ADD_VARARGS_METHOD(distance_between, distanceBetween, "");
 
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
-    PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
 
 
     PYCXX_ADD_VARARGS_METHOD(match_entity, matchEntity, "");
@@ -139,62 +131,6 @@ Py::Object CyPy_BaseMind::matchEntities(const Py::Tuple& args)
     return list;
 }
 
-Py::Object CyPy_BaseMind::refreshPath()
-{
-
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-    return Py::Long(awareMind->updatePath());
-}
-
-
-Py::Object CyPy_BaseMind::setDestination(const Py::Tuple& args)
-{
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-
-    if (!awareMind->getSteering()) {
-        return Py::None();
-    }
-
-    //FIXME: provide a "stopSteering" method instead
-    if (args.length() == 0) {
-        awareMind->getSteering()->stopSteering();
-
-    } else {
-        args.verify_length(2, 3);
-
-        auto destination = verifyObject<CyPy_Point3D>(args[0]);
-        float radius = verifyNumeric(args[1]);
-
-        if (!destination.isValid()) {
-            throw Py::RuntimeError("Destination must be a valid location.");
-        }
-
-        long entityId;
-        //If no entity id was specified, the location is relative to the parent entity.
-        if (args.size() == 3) {
-            auto entityIdString = verifyString(args[2]);
-            entityId = std::stol(entityIdString);
-        } else {
-            if (awareMind->getEntity()->m_location.m_parent) {
-                entityId = awareMind->getEntity()->m_location.m_parent->getIntId();
-            } else {
-                throw Py::RuntimeError("Mind has no location.");
-            }
-        }
-
-        awareMind->getSteering()->setDestination(entityId, destination, radius, awareMind->getCurrentServerTime());
-        awareMind->getSteering()->startSteering();
-    }
-
-    return Py::None();
-
-}
 
 Py::Object CyPy_BaseMind::getattro(const Py::String& name)
 {
@@ -211,57 +147,16 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     if (nameStr == "map") {
         return CyPy_MemMap::wrap(m_value->getMap());
     }
-    if (nameStr == "unawareTilesCount") {
 
-        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-        if (!awareMind) {
-            throw Py::TypeError("Not an AwareMind");
-        }
-        if (awareMind->getSteering()) {
-            return Py::Long(static_cast<unsigned long>(awareMind->getSteering()->unawareAreaCount()));
-        }
-        return Py::Long(0);
-    }
-    if (nameStr == "path") {
-        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-        if (!awareMind) {
-            throw Py::TypeError("Not an AwareMind");
-        }
-        Py::List list;
-        if (awareMind->getSteering()) {
-            const auto& path = awareMind->getSteering()->getPath();
 
-            for (auto& point : path) {
-                list.append(CyPy_Point3D::wrap(point));
-            }
-        }
-
-        return list;
-    }
-    if (nameStr == "current_path_index") {
-        auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-        if (!awareMind) {
-            throw Py::TypeError("Not an AwareMind");
-        }
-        Py::List list;
-        if (awareMind->getSteering()) {
-            return Py::Long(static_cast<long>(awareMind->getSteering()->getCurrentPathIndex()));
-        }
-
-        return Py::Long(0);
-    }
-
-    if (nameStr == "pathResult") {
+    if (nameStr == "steering") {
         auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
         if (!awareMind) {
             throw Py::TypeError("Not an AwareMind");
         }
 
-        if (!awareMind->getSteering()) {
-            return Py::Long(0);
-        }
+        return CyPy_Steering::wrap(Ref<AwareMind>(awareMind));
 
-        return Py::Long(awareMind->getSteering()->getPathResult());
     }
 
     if (nameStr == "props") {
@@ -311,89 +206,6 @@ Py::Object CyPy_BaseMind::str()
     return Py::String(String::compose("BaseMind %1", m_value->getId()));
 }
 
-Py::Object CyPy_BaseMind::setSpeed(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-    if (awareMind->getSteering()) {
-        awareMind->getSteering()->setDesiredSpeed(verifyFloat(args[0]));
-    }
-    return Py::None();
-}
-
-Py::Object CyPy_BaseMind::queryDestination(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-
-    auto& entityLocation = verifyObject<CyPy_EntityLocation>(args[0]);
-
-    auto steering = awareMind->getSteering();
-    if (!steering) {
-        return Py::None();
-    }
-
-    auto result = steering->queryDestination(entityLocation, awareMind->getCurrentServerTime());
-
-    return Py::Long(result);
-}
-
-Py::Object CyPy_BaseMind::isAtLocation(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-    auto& entityLocation = verifyObject<CyPy_Location>(args[0]);
-
-    auto steering = awareMind->getSteering();
-    if (!steering) {
-        return Py::None();
-    }
-
-    return Py::Boolean(steering->isAtDestination(awareMind->getCurrentServerTime(), entityLocation.m_pos));
-}
-
-Py::Object CyPy_BaseMind::distanceTo(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-    auto& entityLocation = verifyObject<CyPy_Location>(args[0]);
-
-    auto steering = awareMind->getSteering();
-    if (!steering) {
-        return Py::None();
-    }
-
-    return Py::Float(steering->distanceTo(awareMind->getCurrentServerTime(), entityLocation.m_pos));
-}
-
-Py::Object CyPy_BaseMind::distanceBetween(const Py::Tuple& args)
-{
-    args.verify_length(1);
-    auto awareMind = dynamic_cast<AwareMind*>(m_value.get());
-    if (!awareMind) {
-        throw Py::TypeError("Not an AwareMind");
-    }
-    auto& entityLocation = verifyObject<CyPy_Location>(args[0]);
-
-    auto steering = awareMind->getSteering();
-    if (!steering) {
-        return Py::None();
-    }
-
-    return Py::Float(steering->distanceBetween(awareMind->getCurrentServerTime(), entityLocation));
-}
 
 template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string& package,

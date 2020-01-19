@@ -261,12 +261,12 @@ class SpotSomething(Goal):
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist and sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent and \
-                    thing.location.parent.id == me.entity.location.parent.id:
+            if sqr_dist and sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent:
                 if self.condition(thing):
                     nearest = thing
-                    nearsqrdist = nearsqrdist
+                    nearsqrdist = sqr_dist
         if nearest:
+            print("Spotted new thing matching '{}' at square distance of {}. Thing: {}".format(self.what, nearsqrdist, str(nearest)))
             me.add_knowledge('focus', self.what, nearest.id)
             # We should only remember things if we can keep them in memory.
             if self.seconds_until_forgotten > 0:

@@ -2,13 +2,48 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 import types
 
+import ai
 import entity_filter
 from atlas import Operation, Entity, Oplist
 from common import const
 from physics import Point3D, Vector3D, distance_to, square_horizontal_distance, square_distance
 from rules import Location, isLocation
 
+from mind.Goal import goal_create
 from mind.goals.common.misc_goal import *
+
+
+class MoveMeBase(Goal):
+
+    def __init__(self, get_loc_fn, am_i_at_loc_fn, move_to_loc_fn, location, desc="move me to certain place"):
+        Goal.__init__(self, "move me to certain place",
+                      am_i_at_loc_fn,
+                      [move_to_loc_fn],
+                      self.is_reachable)
+        self.get_loc_fn = get_loc_fn
+        self.am_i_at_loc_fn = am_i_at_loc_fn
+
+    def is_reachable(self, me):
+        """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+   unaware tiles."""
+        location = self.get_loc_fn(me)
+        if not location:
+            # We have no location, so no valid goal
+            return False
+
+        path_result = me.pathResult
+
+        # print("pathResult " + str(pathResult))
+        if 0 > path_result > -7:
+            # print("unawareTilesCount " + str(me.unawareTilesCount))
+
+            if me.unawareTilesCount == 0:
+                return False
+        elif path_result == 0 and not self.am_i_at_loc_fn(me):
+            # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
+            return False
+
+        return True
 
 
 class MoveMe(Goal):
@@ -25,7 +60,6 @@ class MoveMe(Goal):
         self.speed = speed
         self.radius = radius
         self.vars = ["location", "speed", "radius"]
-        self.squared_radius = radius * radius
 
     def get_location_instance(self, me):
         if isinstance(self.location, types.LambdaType) or isinstance(self.location, types.FunctionType) or isinstance(self.location, types.MethodType):
@@ -43,9 +77,8 @@ class MoveMe(Goal):
         if not location:
             # print "No location"
             return True
-        if me.is_at_location(location):
-            #        square_distance = square_horizontal_distance(me.entity.location, location)
-            #        if square_distance and square_distance <= self.squared_radius:
+        me.steering.set_destination(location, ai.EDGE, ai.EDGE, self.radius)
+        if me.steering.is_at_current_destination():
             # print("We are there")
             return True
         else:
@@ -54,14 +87,8 @@ class MoveMe(Goal):
 
     def move_to_loc(self, me):
         location = self.get_location_instance(me)
-        if not location:
-            # print "Can't move - no location"
-            return
-        if not location.parent:
-            return
-        me.set_speed(self.speed)
-        me.set_destination(location.pos, self.radius, location.parent.id)
-        refresh_result = me.refresh_path()
+        me.steering.set_speed(self.speed)
+        refresh_result = me.steering.refresh_path()
         # If result is 0 it means that we're already there
         if refresh_result == 0:
             return
@@ -69,16 +96,15 @@ class MoveMe(Goal):
         # This can be because we haven't mapped all areas yet; if so one should check with
         # me.unawareTilesCount
         if refresh_result < 0:
-            print("Could not find any path, result %s" % refresh_result)
+            print("Could not find any path in MoveMe, result {}. Destination {}".format(refresh_result, str(location)))
             return
 
         # Return True to signal that this goal is complete now.
         return True
 
-    """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
-    unaware tiles."""
-
     def is_reachable(self, me):
+        """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
+   unaware tiles."""
         location = self.get_location_instance(me)
         if not location:
             # We have no location, so no valid goal
@@ -310,14 +336,21 @@ class MoveMeToFocus(Goal):
         self.vars = ["what"]
 
     def get_location(self, me):
-        focus_id = me.get_knowledge('focus', self.what)
-        if focus_id is None:
-            return None
-        thing = me.map.get(focus_id)
-        if thing is None:
-            me.remove_knowledge('focus', self.what)
-            return None
-        return thing.location
+        return get_focused_thing(me, self.what)
+
+
+class MoveMeToFocusWithinReach(Goal):
+    """Move me to something I am interested in, so that I can reach it."""
+
+    def __init__(self, what="", radius=0.5, speed=0.2):
+        Goal.__init__(self, "move me to the current focus for '%s'" % what,
+                      None,
+                      [MoveMe(location=self.get_location, radius=radius, speed=speed)])
+        self.what = what
+        self.vars = ["what"]
+
+    def get_location(self, me):
+        return get_focused_thing(me, self.what)
 
 
 # class move_me_to_focus(Goal):
@@ -398,7 +431,7 @@ class MoveMeNearFocus(Goal):
                 me.remove_knowledge('focus', what)
                 continue
 
-            distance_to_thing = me.distance_to(thing.location)
+            distance_to_thing = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
             if distance_to_thing < self.distance:
                 self.is_close_to_thing = True
                 return True
@@ -418,10 +451,9 @@ class MoveMeNearFocus(Goal):
             if thing is None:
                 me.remove_knowledge('focus', what)
                 return
-            location = thing.location
-            me.set_speed(self.speed)
-            me.set_destination(location.pos, self.distance, location.parent.id)
-            refresh_result = me.refresh_path()
+            me.steering.set_speed(self.speed)
+            me.steering.set_destination(thing, ai.EDGE, ai.EDGE, 0)
+            refresh_result = me.steering.refresh_path()
             # If result is 0 it means that we're already there
             if refresh_result == 0:
                 return
@@ -429,7 +461,7 @@ class MoveMeNearFocus(Goal):
             # This can be because we haven't mapped all areas yet; if so one should check with
             # me.unawareTilesCount
             if refresh_result < 0:
-                print("Could not find any path, result %s" % refresh_result)
+                print("Could not find any path in MoveMeNearFocus, result {}. Destination {}".format(refresh_result, str(thing)))
                 return
 
             # Return True to signal that this goal is complete now.
@@ -486,12 +518,8 @@ class PickUpFocus(Goal):
     def is_it_with_me(self, me):
         # CHEAT!: cludge
         for what in self.what:
-            focus_id = me.get_knowledge('focus', what)
-            if focus_id is None:
-                continue
-            thing = me.map.get(focus_id)
+            thing = get_focused_thing(me, what)
             if thing is None:
-                me.remove_knowledge('focus', what)
                 continue
             # If its not not near us on the ground, forget about it.
             if thing.location.parent.id != me.entity.location.parent.id:
@@ -503,16 +531,12 @@ class PickUpFocus(Goal):
 
     def pick_it_up(self, me):
         for what in self.what:
-            focus_id = me.get_knowledge('focus', what)
-            if focus_id is None:
-                continue
-            thing = me.map.get(focus_id)
+            thing = get_focused_thing(me, what)
             if thing is None:
-                me.remove_knowledge('focus', what)
                 continue
             if thing.location.parent.id != me.entity.id:
-                print("picking up")
-                return Operation("move", Entity(focus_id, location=Location(me.entity, Point3D(0, 0, 0))))
+                print("Trying to pick up {}".format(str(thing)))
+                return Operation("move", Entity(thing.id, location=Location(me.entity, Point3D(0, 0, 0))))
 
 
 class Wander(Goal):
@@ -576,7 +600,7 @@ class Pursuit(Goal):
         lst_of_what = me.mem.recall_place(me.entity.location, self.range, self.filter)
         if not lst_of_what or len(lst_of_what) == 0:
             return
-        dist_vect = distance_to(me.entity.location, lst_of_what[0].location).unit_vector()
+        dist_vect = me.steering.distance_to(lst_of_what[0], ai.EDGE, ai.EDGE).unit_vector()
         multiply = 1.0 * self.direction * const.basic_tick
         loc = Location(me.entity.location.parent)
         loc.pos = me.entity.location.pos + (dist_vect * multiply)
@@ -666,7 +690,7 @@ class Accompany(Goal):
         if who is None:
             return 0
 
-        dist = distance_to(me.entity.location, who.location)
+        dist = me.steering.distance_to(who, ai.EDGE, ai.EDGE)
         # Are we further than 3 metres away
         if dist.sqr_mag() > 25:
             # print "We are far away", dist
