@@ -108,7 +108,8 @@ class Task : public boost::noncopyable, public ReferenceCounted
         /// A Task gets regular ticks which cause whatever actions this
         /// Task involves to be returned.
         /// @param res The result of the operation is returned here.
-        void tick(const std::string& id, const Operation& op, OpVector& res);
+        /// @return True if the task was changed.
+        bool tick(const std::string& id, const Operation& op, OpVector& res);
 
         /// \brief Create a new tick op for the next iteration of this task
         Operation nextTick(const std::string& id, const Operation& op);

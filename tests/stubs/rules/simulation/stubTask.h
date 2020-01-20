@@ -59,9 +59,9 @@
 
 #ifndef STUB_Task_tick
 //#define STUB_Task_tick
-  void Task::tick(const std::string& id, const Operation& op, OpVector& res)
+  bool Task::tick(const std::string& id, const Operation& op, OpVector& res)
   {
-    
+    return false;
   }
 #endif //STUB_Task_tick
 

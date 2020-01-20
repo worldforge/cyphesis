@@ -124,11 +124,16 @@ void Task::initTask(const std::string& id, OpVector& res)
     res.push_back(nextTick(id, m_usageInstance.op));
 }
 
-void Task::tick(const std::string& id, const Operation& op, OpVector& res)
+bool Task::tick(const std::string& id, const Operation& op, OpVector& res)
 {
+    bool hadChange = false;
     if (m_duration) {
         auto elapsed = (op->getSeconds() - m_start_time);
-        m_progress = std::min(1.0, elapsed / *m_duration);
+        auto newProgress = std::min(1.0, elapsed / *m_duration);
+        if (newProgress != m_progress) {
+            m_progress = newProgress;
+            hadChange = true;
+        }
     }
     callScriptFunction("tick", res);
     if (!obsolete()) {
@@ -139,6 +144,7 @@ void Task::tick(const std::string& id, const Operation& op, OpVector& res)
             res.push_back(nextTick(id, op));
         }
     }
+    return hadChange;
 }
 
 void Task::callScriptFunction(const std::string& function, OpVector& res)

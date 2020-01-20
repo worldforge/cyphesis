@@ -73,11 +73,10 @@ class DrawBow(StoppableTask):
             return self.irrelevant(err)
 
         if not self.is_ready:
+            # TODO When updating usages, or progress, the enveloping system should take care of checking that the Task (and thus the TaskProperty) has changed. No need for "actor.update_task()"
             self.usages = [{"name": "release", "params": {"direction": {"type": "direction"}}}] + self.usages
             self.is_ready = True
-            self.actor.update_task()
-
-        return server.OPERATION_BLOCKED
+            return self.actor.update_task()
 
     def release_usage(self, args):
         res = Oplist()

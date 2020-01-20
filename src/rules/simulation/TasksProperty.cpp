@@ -218,11 +218,13 @@ HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
         log(ERROR, "Character::TickOperation: No serialno in tick arg");
         return OPERATION_BLOCKED;
     }
-    task->tick(id, op, res);
+    bool hadChange = task->tick(id, op, res);
     if (task->obsolete()) {
         clearTask(id, owner, res);
     } else {
-        updateTask(owner, res);
+        if (hadChange) {
+            updateTask(owner, res);
+        }
     }
 
     if (task != nullptr && res.empty()) {
