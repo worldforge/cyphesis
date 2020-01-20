@@ -173,19 +173,16 @@ class Fight(Goal):
         if distance - reach <= 0:
             move_to_face = me.face(enemy)
 
+            # Check if we're already hitting
+            if tasks_prop:
+                if "melee" in tasks_prop:
+                    return True
+
             if attached_current:
-                # Check if we're already hitting
-                if tasks_prop:
-                    if "melee" in tasks_prop:
-                        return True
                 print("Hitting with a weapon")
                 return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id,
                                                                                            targets=[Entity(enemy.id)])))
             else:
-                # Check if we're already hitting
-                if tasks_prop:
-                    if "melee" in tasks_prop:
-                        return True
                 return move_to_face + Operation("use",
                                                 Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
         else:
@@ -213,29 +210,28 @@ class Fight(Goal):
 
             if attached_current:
                 # Check if we're already drawing
-                if tasks_prop:
-                    if "draw" in tasks_prop:
-                        # Check if we can release
-                        draw_task = tasks_prop["draw"]
-                        # print("draw task {}".format(str(draw_task)))
-                        usages = draw_task["usages"]
-                        for usage in usages:
-                            print(usage.name)
-                            if usage.name == "release":
-                                print("release bow")
-                                direction = enemy.location.pos - me.entity.location.pos
-                                direction.normalize()
-                                return move_to_face + Operation("use",
-                                                                Root(args=[Entity("release", direction=[direction])],
-                                                                     id="draw",
-                                                                     objtype="task"))
+                if tasks_prop and "draw" in tasks_prop:
+                    # Check if we can release
+                    draw_task = tasks_prop["draw"]
+                    # print("draw task {}".format(str(draw_task)))
+                    usages = draw_task["usages"]
+                    for usage in usages:
+                        print(usage.name)
+                        if usage.name == "release":
+                            print("release bow")
+                            direction = enemy.location.pos - me.entity.location.pos
+                            direction.normalize()
+                            return move_to_face + Operation("use",
+                                                            Root(args=[Entity("release", direction=[direction])],
+                                                                 id="draw",
+                                                                 objtype="task"))
 
-                        return True
-                    print("Drawing bow")
-                    direction = enemy.location.pos - me.entity.location.pos
-                    direction.normalize()
-                    return move_to_face + \
-                           Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
+                    return True
+                print("Drawing bow")
+                direction = enemy.location.pos - me.entity.location.pos
+                direction.normalize()
+                return move_to_face + \
+                       Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
 
 
 class FightOrFlight(Goal):
