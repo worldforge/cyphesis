@@ -31,7 +31,7 @@ class MoveMeBase(Goal):
             # We have no location, so no valid goal
             return False
 
-        path_result = me.pathResult
+        path_result = me.steering.path_result
 
         # print("pathResult " + str(pathResult))
         if 0 > path_result > -7:
@@ -110,7 +110,7 @@ class MoveMe(Goal):
             # We have no location, so no valid goal
             return False
 
-        path_result = me.pathResult
+        path_result = me.steering.path_result
 
         # print("pathResult " + str(pathResult))
         if 0 > path_result > -7:
@@ -178,7 +178,7 @@ class MoveMeArea(Goal):
     def is_reachable(self, me):
         """ Checks that the movement goal is reachable. This will return true if the goal currently can't be reached, but there are still
         unaware tiles."""
-        path_result = me.pathResult
+        path_result = me.steering.path_result
 
         # print("pathResult " + str(pathResult))
         if 0 > path_result > -7:

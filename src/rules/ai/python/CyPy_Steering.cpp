@@ -108,7 +108,7 @@ Py::Object CyPy_Steering::getattro(const Py::String& name)
         return Py::Long(0);
     }
 
-    if (nameStr == "pathResult") {
+    if (nameStr == "path_result") {
 
         if (!m_value->getSteering()) {
             return Py::Long(0);
