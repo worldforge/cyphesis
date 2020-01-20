@@ -37,7 +37,7 @@ class MoveMeBase(Goal):
         if 0 > path_result > -7:
             # print("unawareTilesCount " + str(me.unawareTilesCount))
 
-            if me.unawareTilesCount == 0:
+            if me.steering.unaware_tiles_count == 0:
                 return False
         elif path_result == 0 and not self.am_i_at_loc_fn(me):
             # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
@@ -116,7 +116,7 @@ class MoveMe(Goal):
         if 0 > path_result > -7:
             # print("unawareTilesCount " + str(me.unawareTilesCount))
 
-            if me.unawareTilesCount == 0:
+            if me.steering.unaware_tiles_count == 0:
                 return False
         elif path_result == 0 and not self.am_i_at_loc(me):
             # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it
@@ -184,7 +184,7 @@ class MoveMeArea(Goal):
         if 0 > path_result > -7:
             # print("unawareTilesCount " + str(me.unawareTilesCount))
 
-            if me.unawareTilesCount == 0:
+            if me.steering.unaware_tiles_count == 0:
                 return False
         elif path_result == 0 and not self.am_i_in_area(me):
             # If there are no more segments in the path, but we haven't yet reached the destination then something is preventing us from reaching it

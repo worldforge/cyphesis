@@ -77,7 +77,7 @@ Py::Object CyPy_Steering::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
 
-    if (nameStr == "unawareTilesCount") {
+    if (nameStr == "unaware_tiles_count") {
 
 
         if (m_value->getSteering()) {
