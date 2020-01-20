@@ -19,7 +19,7 @@
 #ifndef TESTS_IG_ENTITY_EXERCISER_H
 #define TESTS_IG_ENTITY_EXERCISER_H
 
-#include "EntityExerciser.h"
+#include "common/EntityExerciser.h"
 
 #include "TestPropertyManager.h"
 #include "TestWorld.h"

@@ -32,7 +32,6 @@
 
 #include "common/TypeNode.h"
 
-#include "common/operations/Add.h"
 #include "common/operations/Connect.h"
 #include "common/operations/Monitor.h"
 #include "common/operations/Setup.h"

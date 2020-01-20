@@ -76,8 +76,6 @@ std::unique_ptr<ArithmeticScript> PythonArithmeticFactory::newScript(LocatedEnti
     }
 
     auto script = std::make_unique<PythonArithmeticScript>(py_object);
-    // FIXME This is now part of the property, not the character.
-    // chr.statistics().m_script = script;
 
     return script;
 }

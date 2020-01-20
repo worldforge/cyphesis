@@ -25,7 +25,6 @@
 #include "rules/simulation/LineProperty.h"
 #include "rules/SolidProperty.h"
 #include "rules/simulation/StatusProperty.h"
-#include "rules/simulation/StatisticsProperty.h"
 #include "rules/simulation/TerrainModProperty.h"
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
@@ -138,7 +137,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<ServerBBoxProperty>();
     installProperty<MindProperty>();
     installProperty<SetupProperty>();
-    installProperty<StatisticsProperty>();
     installProperty<SpawnProperty>();
     installProperty<AreaProperty>();
     installProperty<VisibilityProperty>();

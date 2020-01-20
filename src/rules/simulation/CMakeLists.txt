@@ -16,7 +16,6 @@ add_library(rulessimulation
         StatusProperty.cpp
         TransientProperty.cpp
         InternalProperties.cpp
-        StatisticsProperty.cpp
         TasksProperty.cpp
         SpawnProperty.cpp
         VisibilityProperty.cpp

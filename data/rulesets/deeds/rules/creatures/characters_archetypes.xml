@@ -16,9 +16,6 @@
                 <map name="attached_legs">
                     <string name="$eid">pants</string>
                 </map>
-                <map name="statistics">
-                    <float name="strength">23</float>
-                </map>
                 <float name="status">1</float>
                 <list name="__scripts">
                     <map>
@@ -125,9 +122,6 @@
                 <map name="attached_legs">
                     <string name="$eid">pants</string>
                 </map>
-                <map name="statistics">
-                    <float name="strength">23</float>
-                </map>
             </map>
             <map>
                 <string name="id">shirt</string>
@@ -220,9 +214,6 @@
                 </map>
                 <map name="attached_hand_primary">
                     <string name="$eid">sword</string>
-                </map>
-                <map name="statistics">
-                    <float name="strength">40</float>
                 </map>
             </map>
             <map>

@@ -19,7 +19,6 @@
 #ifndef TESTS_ALL_OPERATIONS_H
 #define TESTS_ALL_OPERATIONS_H
 
-#include "common/operations/Add.h"
 #include "common/operations/Connect.h"
 #include "common/operations/Monitor.h"
 #include "common/operations/Setup.h"

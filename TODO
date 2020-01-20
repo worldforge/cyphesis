@@ -184,8 +184,6 @@ It may be just more efficient to ignore this concept for most scripts,
 but will almost certainly simplify the code to add it to many.
 A more flexible concept of scripting attributes might make sense too.
 
-Move to a mechanism like the new mind property for statistics
-
 Include doxygen docs in http self-served docs.
 
 Make it possible to forget
@@ -270,10 +268,6 @@ out when a quarry should work, and how much it should be extended.
 Sort InnerTerrainMod with very thorough tests (check pre/post), then try
 and refactor.
 
-Delve goal established pattern for picking up existing terrin mods.
-  Add additional parallel mechanism for picking up areas.
-  Use areas and mods a whole load more for construction projects.
-  Returning the entities will be vastly more useful, so do that.
 
 CommPythonClient should probably execute python in dispath rather than read()
 
@@ -828,11 +822,6 @@ it can be reported.
 
 Push to remove the world class, making it all more driven by data behavior.
 
-POS can't change in Dig and Delve, so make them irrelevant if its not the right
-kind of terrain.
-
-Add range check to Dig and Delve, and see if it can be done more generally.
-
 Re-write goals for butcher so they now interact correctly with the task
 implementation.
 
@@ -1102,15 +1091,6 @@ STUN can be used for NAT detection. Useful? UDP only. Still useful.
 Perhaps it should be possible to specify class data about the hard coded
 classes in data/*,xml.
 
-In order to store class related stuff without having to store it on
-the instance, might need to have a type class which each Entity has
-a pointer to. Should it also be possible to specifiy different statistics
-classes in data/*.xml?
-
-Add a base class for all active mobile characters in mason.xml, and set
-up the essential statistics values. I am not sure but there may still be
-issues with specifying class inheritance in the rules.
-
 Test account and avatar creation from client when database is down.
 
 Once SEQ has replaced STAMP in Atlas-C++, use it instead of serialno
@@ -1166,9 +1146,6 @@ be detected better.
 
 Make more things emit suitable action operations, especially picking up,
 dropping, and combat.
-
-Character.statistics from python needs to use the statistics script to wrap
-it.
 
 Should be able to use PyModule_New() to add submodules to existing modules,
 rather than the messy dictionary hack now used for some.

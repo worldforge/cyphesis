@@ -25,7 +25,6 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-int ADD_NO = -1;
 int CONNECT_NO = -1;
 int DROP_NO = -1;
 int MONITOR_NO = -1;

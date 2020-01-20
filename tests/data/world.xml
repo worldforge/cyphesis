@@ -24932,11 +24932,6 @@
     </list>
     <string name="sex">male</string>
     <float name="stamina">1</float>
-    <map name="statistics">
-      <float name="attack">25</float>
-      <float name="defend">21</float>
-      <float name="strength">23</float>
-    </map>
     <float name="status">0.9999</float>
     <float name="strength">0.3</float>
     <float name="tick">0</float>
@@ -24995,11 +24990,6 @@
     </list>
     <string name="sex">male</string>
     <float name="stamina">1</float>
-    <map name="statistics">
-      <float name="attack">25</float>
-      <float name="defend">21</float>
-      <float name="strength">23</float>
-    </map>
     <float name="status">0.9999</float>
     <float name="strength">0.3</float>
     <float name="tick">0</float>
@@ -25143,11 +25133,6 @@
     <string name="mind">NPC</string>
     <string name="sex">male</string>
     <float name="stamina">1</float>
-    <map name="statistics">
-      <float name="attack">25</float>
-      <float name="defend">21</float>
-      <float name="strength">23</float>
-    </map>
     <float name="status">0.9999</float>
     <float name="strength">0.3</float>
     <float name="tick">0</float>

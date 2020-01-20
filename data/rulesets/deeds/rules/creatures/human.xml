@@ -50,11 +50,6 @@
             <map name="sex">
                 <string name="default">male</string>
             </map>
-            <map name="statistics">
-                <map name="default">
-                    <float name="strength">23</float>
-                </map>
-            </map>
             <!-- Don't move too slow or it makes traversal boring -->
             <map name="speed_ground">
                 <float name="default">8</float>

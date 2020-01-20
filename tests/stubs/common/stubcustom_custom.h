@@ -1,6 +1,5 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 namespace Atlas { namespace Objects { namespace Operation {
-            int ADD_NO = -1;
             int CONNECT_NO = -1;
             int GOAL_INFO_NO = -1;
             int MONITOR_NO = -1;
@@ -13,7 +12,6 @@ namespace Atlas { namespace Objects { namespace Operation {
             int THINK_NO = -1;
             int COMMUNE_NO = -1;
             int PICKUP_NO = -1;
-            int DROP_NO = -1;
             int POSSESS_NO = -1;
 
         } } }

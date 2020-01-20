@@ -21,7 +21,6 @@
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-extern int ADD_NO;
 extern int CONNECT_NO;
 extern int DROP_NO;
 extern int GOAL_INFO_NO;

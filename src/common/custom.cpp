@@ -26,9 +26,6 @@ void installCustomOperations(TypeStore & i)
 {
     auto& atlas_factories = i.getFactories();
 
-    i.addChild(atlasOpDefinition("add", "set"));
-    Atlas::Objects::Operation::ADD_NO = atlas_factories.addFactory("add", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
     i.addChild(atlasOpDefinition("connect", "set"));
     Atlas::Objects::Operation::CONNECT_NO = atlas_factories.addFactory("connect", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
@@ -43,9 +40,6 @@ void installCustomOperations(TypeStore & i)
 
     i.addChild(atlasOpDefinition("pickup", "action"));
     Atlas::Objects::Operation::PICKUP_NO = atlas_factories.addFactory("pickup", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
-    i.addChild(atlasOpDefinition("drop", "action"));
-    Atlas::Objects::Operation::DROP_NO = atlas_factories.addFactory("drop", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     i.addChild(atlasOpDefinition("update", "tick"));
     Atlas::Objects::Operation::UPDATE_NO = atlas_factories.addFactory("update", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
