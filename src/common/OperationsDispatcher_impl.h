@@ -63,38 +63,38 @@ void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T>& oqe)
 
 
 template<typename T>
-bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
+bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& processUntil)
 {
-    int op_count = 0;
-
-    double realtime = getTime();
-    bool opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
-
-    while (opsAvailableRightNow && op_count < numberOfOpsToProcess) {
-        ++op_count;
-        auto opQueueEntry = m_operationQueue.top();
-        //Pop it before we dispatch it, since dispatching might alter the queue.
-        m_operationQueue.pop();
-
-        if (m_time_diff_report > 0) {
-            //Check if there's too large a difference in time
-            auto timeDiff = realtime - opQueueEntry->getSeconds();
-            if (timeDiff > m_time_diff_report) {
-                log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4. Ops in queue: %5",
-                                             opQueueEntry->getParent(), opQueueEntry.from->describeEntity(),
-                                             opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
-            }
-        }
-        dispatchOperation(opQueueEntry);
-
+    bool opsAvailableRightNow;
+    do {
+        double realtime = getTime();
         opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
-    }
+
+        if (opsAvailableRightNow) {
+            auto opQueueEntry = std::move(m_operationQueue.top());
+            //Pop it before we dispatch it, since dispatching might alter the queue.
+            m_operationQueue.pop();
+
+            if (m_time_diff_report > 0) {
+                //Check if there's too large a difference in time
+                auto timeDiff = realtime - opQueueEntry->getSeconds();
+                if (timeDiff > m_time_diff_report) {
+                    log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4. Ops in queue: %5",
+                                                 opQueueEntry->getParent(), opQueueEntry.from->describeEntity(),
+                                                 opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
+                }
+            }
+            dispatchOperation(opQueueEntry);
+        }
+
+    } while (opsAvailableRightNow && std::chrono::steady_clock::now() < processUntil);
+
     // If there are still ops to deliver return true
     // to tell the server not to sleep when polling clients. This ensures
     // that we keep processing ops at a the maximum rate without leaving
     // clients unattended.
     Monitors::instance().insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
-    return opsAvailableRightNow;
+    return !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= getTime();
 }
 
 

@@ -147,9 +147,6 @@ class BaseWorld : public Singleton<BaseWorld>
         /// without the simulation altering it.
         void setIsSuspended(bool suspended);
 
-        /// \brief Main world loop function.
-        virtual bool idle() = 0;
-
         /// \brief Add a new entity to the world.
         virtual void addEntity(const Ref<LocatedEntity>& obj) = 0;
 

@@ -64,8 +64,6 @@ class MyTestWorld : public TestWorld {
     explicit MyTestWorld() : TestWorld() {
     }
 
-        bool idle() override
-        { return false; }
 
     LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) {
         m_eobjects[intId] = ent;

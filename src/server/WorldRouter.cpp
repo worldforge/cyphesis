@@ -482,22 +482,6 @@ void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
     }
 }
 
-/// Main world loop function.
-/// This function is called whenever the communications code is idle.
-/// It updates the in-game time, and dispatches operations that are
-/// now due for dispatch. The number of operations dispatched is limited
-/// to 10 to ensure that client communications are always handled in a timely
-/// manner. If the maximum number of operations are dispatched, the return 
-/// value indicates that this is the case, and the communications code
-/// will call this function again as soon as possible rather than sleeping.
-/// This ensures that the maximum possible number of operations are dispatched
-/// without becoming unresponsive to client communications traffic.
-bool WorldRouter::idle()
-{
-    return m_operationsDispatcher.idle(10);
-}
-
-
 /// Find an entity of the given name. This is provided to allow administrators
 /// to perform certain admin tasks. It finds and returns the first instance
 /// with the name provided in the game world.

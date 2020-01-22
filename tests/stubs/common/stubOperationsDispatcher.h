@@ -46,7 +46,7 @@
 
 #ifndef STUB_OperationsHandler_idle
 //#define STUB_OperationsHandler_idle
-  bool OperationsHandler::idle(int numberOfOpsToProcess)
+  bool OperationsHandler::idle(const std::chrono::steady_clock::time_point& timeAllowed)
   {
     return false;
   }
@@ -115,7 +115,7 @@
 #ifndef STUB_OperationsDispatcher_idle
 //#define STUB_OperationsDispatcher_idle
   template <typename T>
-  bool OperationsDispatcher<T>::idle(int numberOfOpsToProcess)
+  bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& processUntil)
   {
     return false;
   }

@@ -146,7 +146,7 @@ void PossessionClient::scheduleDispatch()
 
     m_dispatcherTimer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {
-            m_operationsDispatcher.idle(10);
+            m_operationsDispatcher.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(10));
             scheduleDispatch();
         }
     });

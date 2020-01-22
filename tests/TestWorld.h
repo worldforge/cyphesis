@@ -47,7 +47,6 @@ struct TestWorld : public BaseWorld {
 
     ~TestWorld() override{}
 
-    bool idle() override { return false; }
     void addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;
     }

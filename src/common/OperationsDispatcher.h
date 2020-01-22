@@ -87,14 +87,14 @@ struct OperationsHandler
     /// \brief Main world loop function.
     /// This function is called whenever the communications code is idle.
     /// It updates the in-game time, and dispatches operations that are
-    /// now due for dispatch. The number of operations dispatched is limited
-    /// to 10 to ensure that client communications are always handled in a timely
+    /// now due for dispatch. The number of operations dispatched is specified
+    /// to ensure that client communications are always handled in a timely
     /// manner. If the maximum number of operations are dispatched, the return
     /// value indicates that this is the case, and the communications code
     /// will call this function again as soon as possible rather than sleeping.
     /// This ensures that the maximum possible number of operations are dispatched
     /// without becoming unresponsive to client communications traffic.
-    virtual bool idle(int numberOfOpsToProcess) = 0;
+    virtual bool idle(const std::chrono::steady_clock::time_point& timeAllowed) = 0;
 
     /**
      * Gets time until the next operation needs to be dispatched.
@@ -148,7 +148,7 @@ class OperationsDispatcher : public OperationsHandler
         /// will call this function again as soon as possible rather than sleeping.
         /// This ensures that the maximum possible number of operations are dispatched
         /// without becoming unresponsive to client communications traffic.
-        bool idle(int numberOfOpsToProcess) override;
+        bool idle(const std::chrono::steady_clock::time_point& processUntil) override;
 
         /**
          * Gets the number of seconds until the next operation needs to be dispatched.

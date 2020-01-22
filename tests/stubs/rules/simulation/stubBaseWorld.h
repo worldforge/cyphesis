@@ -89,14 +89,6 @@
   }
 #endif //STUB_BaseWorld_setIsSuspended
 
-#ifndef STUB_BaseWorld_idle
-//#define STUB_BaseWorld_idle
-  bool BaseWorld::idle()
-  {
-    return false;
-  }
-#endif //STUB_BaseWorld_idle
-
 #ifndef STUB_BaseWorld_addEntity
 //#define STUB_BaseWorld_addEntity
   void BaseWorld::addEntity(const Ref<LocatedEntity>& obj)

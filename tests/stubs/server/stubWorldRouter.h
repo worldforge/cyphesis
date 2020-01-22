@@ -56,14 +56,6 @@
   }
 #endif //STUB_WorldRouter_shutdown
 
-#ifndef STUB_WorldRouter_idle
-//#define STUB_WorldRouter_idle
-  bool WorldRouter::idle()
-  {
-    return false;
-  }
-#endif //STUB_WorldRouter_idle
-
 #ifndef STUB_WorldRouter_addEntity
 //#define STUB_WorldRouter_addEntity
   void WorldRouter::addEntity(const Ref<LocatedEntity>& obj)
