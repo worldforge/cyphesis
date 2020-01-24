@@ -106,8 +106,6 @@ class BaseMind : public Router, public ReferenceCounted
 
         void sightCreateOperation(const Operation&, OpVector&);
 
-        void sightDeleteOperation(const Operation&, OpVector&);
-
         void sightMoveOperation(const Operation&, OpVector&);
 
         void sightSetOperation(const Operation&, OpVector&);

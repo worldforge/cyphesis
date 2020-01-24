@@ -102,9 +102,6 @@
         case Atlas::Objects::Operation::CREATE_NO: \
             _prefix ## CreateOperation(_op, _result); \
             break; \
-        case Atlas::Objects::Operation::DELETE_NO: \
-            _prefix ## DeleteOperation(_op, _result); \
-            break; \
         case Atlas::Objects::Operation::MOVE_NO: \
             _prefix ## MoveOperation(_op, _result); \
             break; \

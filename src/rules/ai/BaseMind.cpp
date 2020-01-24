@@ -99,36 +99,6 @@ void BaseMind::sightCreateOperation(const Operation& op, OpVector& res)
     m_map.updateAdd(ent, op->getSeconds());
 }
 
-/// \brief Process the Sight of a Delete operation.
-///
-/// @param op The Delete operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseMind::sightDeleteOperation(const Operation& op, OpVector& res)
-{
-    debug_print("Sight Delete operation")
-    auto& args = op->getArgs();
-    if (args.empty()) {
-        debug_print(" no args!")
-        return;
-    }
-    auto& obj = args.front();
-    if (!obj.isValid()) {
-        log(ERROR, "Sight Delete with invalid entity");
-        return;
-    }
-    auto& id = obj->getId();
-    if (!id.empty()) {
-        m_map.del(id);
-        m_pendingEntitiesOperations.erase(obj->getId());
-        if (id == m_entityId) {
-            log(INFO, "Deleting own entity.");
-            destroy();
-        }
-    } else {
-        log(WARNING, "Sight Delete with no ID");
-    }
-}
-
 /// \brief Process the Sight of a Move operation.
 ///
 /// @param op The Move operation to be processed.
@@ -287,12 +257,12 @@ void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
     if (!isAwake()) { return; }
     auto& args = op->getArgs();
     for (auto& arg : args) {
-        const std::string& id = arg->getId();
-        if (id.empty()) { continue; }
-        auto me = m_map.get(id);
-        if (me) {
-            me->update(op->getSeconds());
-            me->setVisible(false);
+        if (!arg->isDefaultId()) {
+            const std::string& id = arg->getId();
+            if (id.empty()) {
+                continue;
+            }
+            m_map.del(id);
         }
     }
 }
