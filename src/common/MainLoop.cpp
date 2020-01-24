@@ -107,7 +107,7 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
     // the code easily.
     while (!exit_flag) {
         try {
-            bool busy = operationsHandler.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(10));
+            bool busy = operationsHandler.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(2));
             operationsHandler.markQueueAsClean();
             //Even if the world is busy we should interleave with a poll, to make sure we always do some IO.
             io_context.poll_one();
