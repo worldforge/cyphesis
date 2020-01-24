@@ -27,7 +27,7 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/MultiLineListFormatter.h>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
@@ -39,16 +39,16 @@ using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 
-EntityExporter::EntityExporter(const std::string & accountId,
-        const std::string & avatarId) :
+EntityExporter::EntityExporter(const std::string& accountId,
+                               const std::string& avatarId) :
         EntityExporterBase(accountId, avatarId, getCurrentTime()), mCurrentRes(
-                nullptr)
+        nullptr)
 {
     assert(accountId != "");
     assert(avatarId != "");
 }
 
-void EntityExporter::setup(const std::string & arg, OpVector & ret)
+void EntityExporter::setup(const std::string& arg, OpVector& ret)
 {
     mCurrentRes = &ret;
 
@@ -58,7 +58,7 @@ void EntityExporter::setup(const std::string & arg, OpVector & ret)
     get->setObjtype("op");
     get->setSerialno(newSerialNumber());
     CallbackFunction callback = sigc::mem_fun(*this,
-            &EntityExporter::operationGetServerInfo);
+                                              &EntityExporter::operationGetServerInfo);
     sendAndAwaitResponse(get, callback);
 
     start(arg, "0");
@@ -70,7 +70,7 @@ void EntityExporter::setup(const std::string & arg, OpVector & ret)
     }
 }
 
-void EntityExporter::operation(const Operation & op, OpVector & res)
+void EntityExporter::operation(const Operation& op, OpVector& res)
 {
     mCurrentRes = &res;
 
@@ -119,17 +119,16 @@ void EntityExporter::sendAndAwaitResponse(
 }
 
 Atlas::Formatter* EntityExporter::createMultiLineFormatter(std::iostream& s,
-        Atlas::Bridge& b)
+                                                           Atlas::Bridge& b)
 {
     return new Atlas::MultiLineListFormatter(s, b);
 }
 
 std::string EntityExporter::getCurrentTime()
 {
-    boost::posix_time::ptime epoch(boost::gregorian::date(1970, 1, 1));
+    auto now = std::chrono::system_clock::now();
     std::stringstream ss;
-    ss
-            << (boost::posix_time::microsec_clock::universal_time() - epoch).total_milliseconds();
+    ss << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     return ss.str();
 }
 

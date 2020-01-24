@@ -53,8 +53,8 @@ class StreamClientSocketBase
         Atlas::Objects::ObjectsEncoder& getEncoder();
 
         virtual size_t write() = 0;
-        int poll(const boost::posix_time::time_duration& duration);
-        int poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn);
+        int poll(const std::chrono::steady_clock::duration& duration);
+        int poll(const std::chrono::steady_clock::duration& duration, const std::function<bool()>& exitCheckerFn);
 
         bool isConnected() const;
     protected:
@@ -180,9 +180,8 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int create(const std::string & type,
                const std::string & username,
                const std::string & password);
-    int pollOne(const boost::posix_time::time_duration& duration);
-    int poll(const boost::posix_time::time_duration& duration);
-    int poll(int seconds = 0, int microseconds = 0);
+    int pollOne(const std::chrono::steady_clock::duration& duration);
+    int poll(const std::chrono::steady_clock::duration& duration);
     void output(const Atlas::Message::Element & item, size_t depth = 0) const;
     void output(const Atlas::Objects::Root & item) const;
 

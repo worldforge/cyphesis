@@ -18,7 +18,7 @@
 
 #include "RepeatedTask.h"
 
-RepeatedTask::RepeatedTask(boost::asio::io_context& io_context, boost::posix_time::time_duration interval, std::function<void()> function)
+RepeatedTask::RepeatedTask(boost::asio::io_context& io_context, std::chrono::steady_clock::duration interval, std::function<void()> function)
     : mInterval(std::move(interval)),
       mTimer(io_context),
       mFunction(std::move(function))

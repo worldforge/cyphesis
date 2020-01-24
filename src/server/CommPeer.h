@@ -44,8 +44,8 @@ class CommPeer : public CommAsioClient<boost::asio::ip::tcp>
         sigc::signal<void> failed;
 
     protected:
-        boost::asio::deadline_timer m_auth_timer;
-        boost::posix_time::ptime m_start_auth;
+        boost::asio::steady_timer m_auth_timer;
+        std::chrono::steady_clock::time_point m_start_auth;
 
         void checkAuth();
 

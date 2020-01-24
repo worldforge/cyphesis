@@ -24,7 +24,7 @@
 #include "common/asio.h"
 #include "common/asio.h"
 #include "common/asio.h"
-#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/steady_timer.hpp>
 #include <boost/noncopyable.hpp>
 
 class DatabasePostgres;
@@ -37,9 +37,9 @@ class CommPSQLSocket : private boost::noncopyable {
 
     boost::asio::io_context& m_io_context;
     std::unique_ptr<boost::asio::ip::tcp::socket> m_socket;
-    boost::asio::deadline_timer m_vacuumTimer;
-    boost::asio::deadline_timer m_reindexTimer;
-    boost::asio::deadline_timer m_reconnectTimer;
+    boost::asio::steady_timer m_vacuumTimer;
+    boost::asio::steady_timer m_reindexTimer;
+    boost::asio::steady_timer m_reconnectTimer;
 
 
     /// Reference to the low level database management object.

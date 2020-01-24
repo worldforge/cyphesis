@@ -377,7 +377,7 @@ int AtlasStreamClient::login(const std::string & username,
     return 0;
 }
 
-int AtlasStreamClient::poll(int timeOut, int msec)
+int AtlasStreamClient::poll(const std::chrono::steady_clock::duration& duration)
 {
     enum srvop stub_poll_returns = SRV_ERROR;
     if (!stub_poll_sequence.empty()) {

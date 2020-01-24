@@ -175,7 +175,7 @@ int main()
     assert(asc->test_currentTask() == tct);
 
     // Verify these bail out cleanly when unconnected
-    asc->poll();
+    asc->poll(std::chrono::seconds::zero());
     asc->login("foo", "bar");
     asc->create("player", "foo", "bar");
 

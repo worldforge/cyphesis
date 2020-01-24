@@ -2379,14 +2379,14 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     }
 
     projectileCollisions.clear();
-    auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::steady_clock::now();
     //Step simulations with 60 hz.
     m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
 
     if (debug_flag) {
         std::stringstream ss;
         ss << "Tick: " << (tickSize * 1000) << " ms Time: "
-           << (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count() / 1000.f)
+           << (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start).count() / 1000.f)
            << " ms";
         debug_print(ss.str())
     }

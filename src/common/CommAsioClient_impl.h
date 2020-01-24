@@ -56,7 +56,7 @@ CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
     mSendBuffer(new boost::asio::streambuf()),
     mInStream(&mReadBuffer),
     mOutStream(mWriteBuffer.get()),
-    mNegotiateTimer(io_context, boost::posix_time::seconds(1)),
+    mNegotiateTimer(io_context, std::chrono::seconds(1)),
     mIsSending(false),
     mShouldSend(false),
     mName(std::move(name))
@@ -256,7 +256,7 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startNegotiation()
 {
     auto self(this->shared_from_this());
-    mNegotiateTimer.expires_from_now(boost::posix_time::seconds(10));
+    mNegotiateTimer.expires_from_now(std::chrono::seconds(10));
     mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec) {
         //If the negotiator still exists after the deadline it means that the negotiation hasn't
         //completed yet; we'll consider that a "timeout".

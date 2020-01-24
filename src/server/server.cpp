@@ -183,7 +183,7 @@ namespace {
 #endif
         } else {
             auto sqliteDatabase = new DatabaseSQLite();
-            auto task = std::make_unique<RepeatedTask>(io_context, boost::posix_time::seconds(25 * 60), [=]() { sqliteDatabase->runMaintainance(); });
+            auto task = std::make_unique<RepeatedTask>(io_context, std::chrono::seconds(25 * 60), [=]() { sqliteDatabase->runMaintainance(); });
             return std::make_unique<SQLiteServerDatabase>(std::unique_ptr<DatabaseSQLite>(sqliteDatabase), std::move(task));
         }
     }

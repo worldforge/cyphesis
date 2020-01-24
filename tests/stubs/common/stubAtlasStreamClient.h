@@ -65,7 +65,7 @@
 
 #ifndef STUB_StreamClientSocketBase_poll
 //#define STUB_StreamClientSocketBase_poll
-  int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration)
+  int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& duration)
   {
     return 0;
   }
@@ -73,7 +73,7 @@
 
 #ifndef STUB_StreamClientSocketBase_poll
 //#define STUB_StreamClientSocketBase_poll
-  int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn)
+  int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& duration, const std::function<bool()>& exitCheckerFn)
   {
     return 0;
   }
@@ -327,7 +327,7 @@
 
 #ifndef STUB_AtlasStreamClient_pollOne
 //#define STUB_AtlasStreamClient_pollOne
-  int AtlasStreamClient::pollOne(const boost::posix_time::time_duration& duration)
+  int AtlasStreamClient::pollOne(const std::chrono::steady_clock::duration& duration)
   {
     return 0;
   }
@@ -335,15 +335,7 @@
 
 #ifndef STUB_AtlasStreamClient_poll
 //#define STUB_AtlasStreamClient_poll
-  int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
-  {
-    return 0;
-  }
-#endif //STUB_AtlasStreamClient_poll
-
-#ifndef STUB_AtlasStreamClient_poll
-//#define STUB_AtlasStreamClient_poll
-  int AtlasStreamClient::poll(int seconds , int microseconds )
+  int AtlasStreamClient::poll(const std::chrono::steady_clock::duration& duration)
   {
     return 0;
   }

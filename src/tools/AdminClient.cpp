@@ -247,7 +247,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
 void AdminClient::waitForInfo()
 {
     for (int i = 0; i < 10 && !reply_flag; ++i) {
-       poll(0, 100000);
+       poll(std::chrono::microseconds(100000));
     }
 }
 

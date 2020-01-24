@@ -9,7 +9,7 @@
 
 #ifndef STUB_TeleportState_TeleportState
 //#define STUB_TeleportState_TeleportState
-   TeleportState::TeleportState(boost::posix_time::ptime time)
+   TeleportState::TeleportState(std::chrono::steady_clock::time_point time)
   {
     
   }
@@ -73,9 +73,9 @@
 
 #ifndef STUB_TeleportState_getCreateTime
 //#define STUB_TeleportState_getCreateTime
-  boost::posix_time::ptime TeleportState::getCreateTime() const
+  std::chrono::steady_clock::time_point TeleportState::getCreateTime() const
   {
-    return *static_cast<boost::posix_time::ptime*>(nullptr);
+    return *static_cast<std::chrono::steady_clock::time_point*>(nullptr);
   }
 #endif //STUB_TeleportState_getCreateTime
 

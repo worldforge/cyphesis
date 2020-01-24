@@ -486,7 +486,7 @@ int Interactive::select(bool rewrite_prompt)
     }
 
 
-    int result = poll(0, 10000);
+    int result = poll(std::chrono::microseconds(10000));
     if (result >= 0) {
         return 0;
     }
@@ -529,7 +529,7 @@ int Interactive::setup()
 
     reply_flag = true;
     while (m_server_flag && !error_flag) {
-       poll(10, 0);
+       poll(std::chrono::seconds(10));
     }
 
     m_server_flag = false;

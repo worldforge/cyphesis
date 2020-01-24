@@ -21,7 +21,7 @@
 
 
 #include "common/io_context.h"
-#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 /**
  * Repeats a task with a specified interval.
@@ -29,13 +29,13 @@
 class RepeatedTask
 {
     public:
-        RepeatedTask(boost::asio::io_context& io_context, boost::posix_time::time_duration interval, std::function<void()> function);
+        RepeatedTask(boost::asio::io_context& io_context, std::chrono::steady_clock::duration interval, std::function<void()> function);
 
         void cancel();
 
     private:
-        boost::posix_time::time_duration mInterval;
-        boost::asio::deadline_timer mTimer;
+        std::chrono::steady_clock::duration mInterval;
+        boost::asio::steady_timer mTimer;
         std::function<void()> mFunction;
 
         void executeTask();

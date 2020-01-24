@@ -31,7 +31,7 @@
 #include "common/asio.h"
 #include "common/asio.h"
 #include <boost/asio/buffer.hpp>
-#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/steady_timer.hpp>
 
 #include <memory>
 #include <sstream>
@@ -96,7 +96,7 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
          */
         std::ostream mOutStream;
 
-        boost::asio::deadline_timer mNegotiateTimer;
+        boost::asio::steady_timer mNegotiateTimer;
 
         /**
          * True if we're currently are sending/writing. No other write operations to the socket is allowed.

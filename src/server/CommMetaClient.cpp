@@ -106,8 +106,7 @@ void CommMetaClient::do_receive()
 void CommMetaClient::keepalive()
 {
 
-    mKeepaliveTimer.expires_from_now(
-            boost::posix_time::seconds(m_heartbeatTime));
+    mKeepaliveTimer.expires_from_now(std::chrono::seconds(m_heartbeatTime));
 
     mKeepaliveTimer.async_wait([this](boost::system::error_code ec)
     {

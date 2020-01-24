@@ -50,16 +50,16 @@ using Atlas::Objects::Entity::Anonymous;
 /// @param svr the server routing object of this server.
 /// @param addr a string representation of the address of the peer.
 /// @param id a string giving the indentifier of the peer connection.
-Peer::Peer(CommSocket & client,
-           ServerRouting & svr,
-           const std::string & addr,
+Peer::Peer(CommSocket& client,
+           ServerRouting& svr,
+           const std::string& addr,
            int port,
-           const std::string & id, long iid) :
-      Link(client, id, iid),
-      m_host(addr),
-      m_port(port),
-      m_state(PEER_INIT),
-      m_server(svr)
+           const std::string& id, long iid) :
+        Link(client, id, iid),
+        m_host(addr),
+        m_port(port),
+        m_state(PEER_INIT),
+        m_server(svr)
 {
     logEvent(CONNECT, String::compose("%1 - - Connect to %2", id, addr));
 }
@@ -85,7 +85,7 @@ PeerAuthState Peer::getAuthState()
     return m_state;
 }
 
-void Peer::externalOperation(const Operation & op, Link &)
+void Peer::externalOperation(const Operation& op, Link&)
 {
     log(ERROR, String::compose("%1 called", __PRETTY_FUNCTION__));
 }
@@ -94,7 +94,7 @@ void Peer::externalOperation(const Operation & op, Link &)
 ///
 /// \param op The operation to be executed
 /// \param res The result set of replies
-void Peer::operation(const Operation &op, OpVector &res)
+void Peer::operation(const Operation& op, OpVector& res)
 {
     if (!op->isDefaultRefno()) {
         replied.emit(op);
@@ -102,16 +102,15 @@ void Peer::operation(const Operation &op, OpVector &res)
 
     auto op_no = op->getClassNo();
     switch (op_no) {
-        case Atlas::Objects::Operation::INFO_NO:
-        {
+        case Atlas::Objects::Operation::INFO_NO: {
             // If we receive an Info op while we are not yet authenticated, it
             // can only be the result of an authentication request.
             if (m_state == PEER_AUTHENTICATING) {
-                const std::vector<Root> & args = op->getArgs();
+                const std::vector<Root>& args = op->getArgs();
                 if (args.empty()) {
                     return;
                 }
-                const Root & arg = args.front();
+                const Root& arg = args.front();
                 if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
                     return;
                 }
@@ -125,12 +124,11 @@ void Peer::operation(const Operation &op, OpVector &res)
                 peerTeleportResponse(op, res);
             }
         }
-        break;
-        case Atlas::Objects::Operation::ERROR_NO:
-        {
+            break;
+        case Atlas::Objects::Operation::ERROR_NO: {
             m_state = PEER_FAILED;
         }
-        break;
+            break;
         default:
             //Ignore all else
             break;
@@ -141,7 +139,7 @@ void Peer::operation(const Operation &op, OpVector &res)
 ///
 /// @param ent The entity to be teleported
 /// @return Returns 0 on success and -1 on failure
-int Peer::teleportEntity(const LocatedEntity * ent)
+int Peer::teleportEntity(const LocatedEntity* ent)
 {
     if (m_state != PEER_AUTHENTICATED) {
         log(ERROR, "Peer not authenticated yet.");
@@ -155,8 +153,7 @@ int Peer::teleportEntity(const LocatedEntity * ent)
     }
 
 
-
-    auto teleport_time = boost::posix_time::microsec_clock::local_time();
+    auto teleport_time = std::chrono::steady_clock::now();
 
     // Add a teleport state object to identify this teleport request
     auto* s = new TeleportState(teleport_time);
@@ -181,8 +178,8 @@ int Peer::teleportEntity(const LocatedEntity * ent)
         log(INFO, "Entity has a mind. Generating random key");
         // FIXME non-random, plus potetial timing attack.
         WFMath::MTRand generator;
-        for(int i=0;i<32;i++) {
-            char ch = (char)((int)'a' + generator.rand(25));
+        for (int i = 0; i < 32; i++) {
+            char ch = (char) ((int) 'a' + generator.rand(25));
             key += ch;
         }
 
@@ -192,12 +189,12 @@ int Peer::teleportEntity(const LocatedEntity * ent)
         Anonymous key_arg;
         key_arg->setAttr("possess_key", key);
 
-        std::vector<Root> & create_args = op->modifyArgs();
+        std::vector<Root>& create_args = op->modifyArgs();
         create_args.push_back(key_arg);
     }
     this->send(op);
     log(INFO, "Sent Create op to peer");
-    
+
     // Set it as validated and add to the list of teleports
     s->setRequested();
     m_teleports[iid] = s;
@@ -210,16 +207,16 @@ int Peer::teleportEntity(const LocatedEntity * ent)
 ///
 /// @param op The Info op sent back as reply to a teleport request
 /// @param res The result set of replies
-void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
+void Peer::peerTeleportResponse(const Operation& op, OpVector& res)
 {
     log(INFO, "Got a peer teleport response");
     // Response to a Create op
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "Malformed args in Info op");
         return;
     }
-    const Root & arg = args.front();
+    const Root& arg = args.front();
 
     if (op->isDefaultRefno()) {
         log(ERROR, "Response to teleport has no refno");
@@ -234,7 +231,7 @@ void Peer::peerTeleportResponse(const Operation &op, OpVector &res)
         return;
     }
 
-    TeleportState *s = I->second;
+    TeleportState* s = I->second;
     assert (s != nullptr);
 
     s->setCreated();
@@ -303,14 +300,14 @@ void Peer::cleanTeleports()
         return;
     }
     // Get the current time
-    auto curr_time = boost::posix_time::microsec_clock::local_time();
+    auto curr_time = std::chrono::steady_clock::now();
 
-    for(auto I = m_teleports.begin(); I != m_teleports.end();) {
+    for (auto I = m_teleports.begin(); I != m_teleports.end();) {
         auto time_passed = curr_time - I->second->getCreateTime();
         // If 5 seconds have passed, the teleport has failed
-        if (time_passed.seconds() >= 10 && I->second->isRequested()) {
+        if (std::chrono::duration_cast<std::chrono::seconds>(time_passed).count() >= 10 && I->second->isRequested()) {
             log(INFO, String::compose("Teleport timed out for entity (ID %1)",
-                                            I->first));
+                                      I->first));
             I = m_teleports.erase(I);
         } else {
             I = std::next(I);

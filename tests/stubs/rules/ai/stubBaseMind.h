@@ -57,14 +57,6 @@
   }
 #endif //STUB_BaseMind_sightCreateOperation
 
-#ifndef STUB_BaseMind_sightDeleteOperation
-//#define STUB_BaseMind_sightDeleteOperation
-  void BaseMind::sightDeleteOperation(const Operation&, OpVector&)
-  {
-    
-  }
-#endif //STUB_BaseMind_sightDeleteOperation
-
 #ifndef STUB_BaseMind_sightMoveOperation
 //#define STUB_BaseMind_sightMoveOperation
   void BaseMind::sightMoveOperation(const Operation&, OpVector&)

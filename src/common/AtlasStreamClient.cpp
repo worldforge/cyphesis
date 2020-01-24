@@ -21,12 +21,11 @@
 #ifdef HAVE_CONFIG_H
 #endif // HAVE_CONFIG_H
 
-#include "common/AtlasStreamClient.h"
+#include "AtlasStreamClient.h"
 #include "common/ClientTask.h"
 
 #include "common/debug.h"
 #include "common/log.h"
-#include "AtlasStreamClient.h"
 #include "compose.hpp"
 
 
@@ -114,16 +113,16 @@ Atlas::Objects::ObjectsEncoder& StreamClientSocketBase::getEncoder()
     return *m_encoder;
 }
 
-int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration)
+int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& duration)
 {
     return poll(duration, []() -> bool { return false; });
 }
 
-int StreamClientSocketBase::poll(const boost::posix_time::time_duration& duration, const std::function<bool()>& exitCheckerFn)
+int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& duration, const std::function<bool()>& exitCheckerFn)
 {
     bool hasExpired = false;
     bool isCancelled = false;
-    deadline_timer timer(m_io_context);
+    boost::asio::steady_timer timer(m_io_context);
     timer.expires_from_now(duration);
     timer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {
@@ -537,7 +536,7 @@ int AtlasStreamClient::create(const std::string& type,
 
 int AtlasStreamClient::waitForLoginResponse()
 {
-    while (poll(boost::posix_time::seconds(10)) == 0) {
+    while (poll(std::chrono::seconds(10)) == 0) {
         if (reply_flag && !error_flag) {
             if (m_infoReply->isDefaultId()) {
                 std::cerr << "Malformed reply" << std::endl << std::flush;
@@ -554,7 +553,7 @@ int AtlasStreamClient::waitForLoginResponse()
     return -1;
 }
 
-int AtlasStreamClient::pollOne(const boost::posix_time::time_duration& duration)
+int AtlasStreamClient::pollOne(const std::chrono::steady_clock::duration& duration)
 {
     if (!m_socket) {
         return -1;
@@ -567,7 +566,7 @@ int AtlasStreamClient::pollOne(const boost::posix_time::time_duration& duration)
 }
 
 
-int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
+int AtlasStreamClient::poll(const std::chrono::steady_clock::duration& duration)
 {
     if (!m_socket) {
         return -1;
@@ -577,11 +576,6 @@ int AtlasStreamClient::poll(const boost::posix_time::time_duration& duration)
         std::cerr << "Server disconnected" << std::endl << std::flush;
     }
     return result;
-}
-
-int AtlasStreamClient::poll(int seconds, int microseconds)
-{
-    return poll(boost::posix_time::seconds(seconds) + boost::posix_time::microseconds(microseconds));
 }
 
 int AtlasStreamClient::runTask(std::shared_ptr<ClientTask> task, const std::string& arg)
@@ -630,7 +624,7 @@ int AtlasStreamClient::pollUntilTaskComplete()
         return 1;
     }
     while (m_currentTask) {
-        if (poll(boost::posix_time::milliseconds(100)) == -1) {
+        if (poll(std::chrono::milliseconds(100)) == -1) {
             return -1;
         }
     }

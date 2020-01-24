@@ -450,7 +450,7 @@ int main()
 
 using Atlas::Message::MapType;
 
-TeleportState::TeleportState(boost::posix_time::ptime time) : m_state(TELEPORT_NONE),
+TeleportState::TeleportState(std::chrono::steady_clock::time_point time) : m_state(TELEPORT_NONE),
                                             m_teleportTime(time)
 {
 }

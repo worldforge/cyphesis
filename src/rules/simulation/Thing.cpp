@@ -176,7 +176,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         setAttr("planted_offset", attr_plantedOffset);
     }
 
-    const double& current_time = BaseWorld::instance().getTime();
+    double current_time = BaseWorld::instance().getTime();
 
     //We can only move if there's a domain
     Domain* domain = nullptr;

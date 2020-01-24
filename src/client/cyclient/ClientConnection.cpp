@@ -73,7 +73,7 @@ int ClientConnection::wait()
    error_flag = false;
    reply_flag = false;
    while (!reply_flag) {
-      if (poll(1) != 0) {
+      if (poll(std::chrono::seconds(1)) != 0) {
           return -1;
       }
    }
@@ -110,7 +110,7 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 
 RootOperation ClientConnection::pop()
 {
-    poll();
+    poll(std::chrono::seconds::zero());
     if (operationQueue.empty()) {
         return RootOperation(nullptr);
     }
