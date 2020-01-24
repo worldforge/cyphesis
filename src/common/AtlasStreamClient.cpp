@@ -38,6 +38,8 @@
 #undef DATADIR
 #endif // _WIN32
 
+#include <boost/asio/steady_timer.hpp>
+
 #include <iostream>
 
 using Atlas::Message::Element;
