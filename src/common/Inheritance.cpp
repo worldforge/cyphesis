@@ -193,9 +193,9 @@ TypeNode* Inheritance::addChild(const Root& obj)
     auto type = new TypeNode(child, obj);
     type->setParent(I->second.get());
 
-    atlasObjects.insert(std::make_pair(child, std::unique_ptr<TypeNode>(type)));
+    auto result = atlasObjects.insert(std::make_pair(child, std::unique_ptr<TypeNode>(type)));
 
-    return type;
+    return result.first->second.get();
 }
 
 bool Inheritance::isTypeOf(const std::string& instance,

@@ -48,7 +48,7 @@
 #include STR_STREAM
 #include <string>
 #include <iterator>
-#include <utility>
+
 #include <typeinfo>
 #include <algorithm>
 

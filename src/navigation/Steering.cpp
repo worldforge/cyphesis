@@ -35,7 +35,7 @@ static const bool debug_flag = true;
 Steering::Steering(MemEntity& avatar) :
         mAwareness(nullptr),
         mAvatar(avatar),
-        mDestinationRadius(1.0),
+        mSteeringDestination{},
         mCurrentPathIndex(0),
         mSteeringEnabled(false),
         mUpdateNeeded(false),
@@ -225,7 +225,7 @@ int Steering::updatePath(double currentTimestamp, const WFMath::Point<3>& curren
         mPathResult = -8;
         return mPathResult;
     }
-    mPathResult = mAwareness->findPath(currentAvatarPosition, resolvedPosition.position, mDestinationRadius, mPath);
+    mPathResult = mAwareness->findPath(currentAvatarPosition, resolvedPosition.position, mSteeringDestination.distance, mPath);
     if (mPathResult == -1) {
         mAwareness->markTilesAsDirty(WFMath::AxisBox<2>(
                 {currentAvatarPosition.x() - 5, currentAvatarPosition.z() - 5},

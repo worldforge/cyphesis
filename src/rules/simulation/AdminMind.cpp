@@ -33,7 +33,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
-#include <utility>
+
 #include <common/Inheritance.h>
 
 using Atlas::Objects::Root;

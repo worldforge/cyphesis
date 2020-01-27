@@ -37,8 +37,6 @@ class Awareness;
 
 class MemEntity;
 
-class Loitering;
-
 /**
  * @brief Results of a steering update.
  *
@@ -262,14 +260,6 @@ class Steering : public virtual sigc::trackable
         sigc::connection mTileListenerConnection;
 
         SteeringDestination mSteeringDestination;
-
-
-        /**
-         * @brief The destination, in view coordinates.
-         */
-        //WFMath::Point<3> mViewDestination;
-
-        float mDestinationRadius;
 
         /**
          * @brief The calculated path to the destination.

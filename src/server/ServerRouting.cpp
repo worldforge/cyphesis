@@ -36,7 +36,7 @@
 #include <Atlas/Objects/RootEntity.h>
 
 #include <iostream>
-#include <utility>
+
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;

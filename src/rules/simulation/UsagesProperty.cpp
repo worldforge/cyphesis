@@ -185,7 +185,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                 //First check if the tool is attached to the actor at an attach point
                 if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
                     auto& plantedOnData = modeDataProp->getPlantedOnData();
-                    if (plantedOnData.entityId && *plantedOnData.entityId == actor.get()->getIntId() && plantedOnData.attachment) {
+                    if (plantedOnData.entityId && *plantedOnData.entityId == actor->getIntId() && plantedOnData.attachment) {
                         auto attachPoint = *plantedOnData.attachment;
                         //Lastly check if there's a value for this attach point.
                         auto attachI = actorReadyAtProp->data().find(attachPoint);

@@ -29,7 +29,7 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <iostream>
-#include <utility>
+
 #include <common/operations/Possess.h>
 
 AgentCreationTask::AgentCreationTask(std::string account_id,

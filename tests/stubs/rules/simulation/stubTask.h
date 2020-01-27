@@ -10,7 +10,7 @@
 
 #ifndef STUB_Task_Task
 //#define STUB_Task_Task
-   Task::Task(UsageInstance usageInstance, const Py::Object& script)
+   Task::Task(UsageInstance usageInstance, Py::Object script)
     : boost::noncopyable(usageInstance, script)
   {
     

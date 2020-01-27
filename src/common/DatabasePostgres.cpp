@@ -31,6 +31,7 @@
 #include <varconf/config.h>
 
 #include <cstring>
+#include <memory>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -298,7 +299,7 @@ DatabaseResult DatabasePostgres::runSimpleSelectQuery(const std::string& query)
         PQclear(nres);
         log(ERROR, "Extra database result to simple query.");
     };
-    return DatabaseResult(std::unique_ptr<DatabaseResultWorkerPostgres>(new DatabaseResultWorkerPostgres(res)));
+    return DatabaseResult(std::make_unique<DatabaseResultWorkerPostgres>(res));
 }
 
 int DatabasePostgres::runCommandQuery(const std::string& query)

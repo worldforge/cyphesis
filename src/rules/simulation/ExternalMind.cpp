@@ -30,7 +30,7 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <modules/Variant.h>
 
-#include <utility>
+
 #include "common/operations/Think.h"
 #include "common/operations/Thought.h"
 #include "common/operations/Relay.h"

@@ -24,7 +24,6 @@
 #include "Task.h"
 
 #include "common/debug.h"
-#include "common/TypeNode.h"
 #include "common/operations/Update.h"
 #include "BaseWorld.h"
 
@@ -211,7 +210,7 @@ HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
         if (serialno.asInt() != task->serialno()) {
-            debug_print("Old tick");
+            debug_print("Old tick")
             return OPERATION_BLOCKED;
         }
     } else {

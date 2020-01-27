@@ -24,7 +24,7 @@
 #include "rules/LocatedEntity.h"
 #include <Atlas/Message/Element.h>
 #include <list>
-#include <utility>
+
 #include <map>
 #include <functional>
 #include <string>

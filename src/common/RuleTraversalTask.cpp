@@ -25,7 +25,7 @@
 
 #include <Atlas/Objects/Operation.h>
 
-#include <utility>
+
 
 using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;

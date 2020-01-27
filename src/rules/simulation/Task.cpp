@@ -26,6 +26,8 @@
 #include "ScriptUtils.h"
 
 #include <Atlas/Objects/Anonymous.h>
+
+
 #include "pycxx/CXX/Objects.hxx"
 
 using Atlas::Objects::Operation::Tick;
@@ -35,13 +37,13 @@ using Atlas::Message::MapType;
 std::function<Py::Object(const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args)> Task::argsCreator;
 
 /// \brief Task constructor for classes which inherit from Task
-Task::Task(UsageInstance usageInstance, const Py::Object& script) :
+Task::Task(UsageInstance usageInstance, Py::Object script) :
     m_serialno(0),
     m_obsolete(false),
     m_progress(-1),
     m_rate(-1),
     m_start_time(-1),
-    m_script(script),
+    m_script(std::move(script)),
     m_tick_interval(1.0),
     m_usageInstance(std::move(usageInstance))
 {

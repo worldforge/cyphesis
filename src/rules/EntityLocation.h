@@ -40,7 +40,7 @@ struct EntityLocation
      */
     WFMath::Point<3> m_pos;
 
-    explicit EntityLocation() = default;
+    EntityLocation() = default;
 
     explicit EntityLocation(Ref<LocatedEntity> loc);
 

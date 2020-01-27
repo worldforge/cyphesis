@@ -87,7 +87,7 @@ class Task : public boost::noncopyable, public ReferenceCounted
         UsageInstance m_usageInstance;
 
         /// \brief Constructor
-        explicit Task(UsageInstance usageInstance, const Py::Object& script);
+        explicit Task(UsageInstance usageInstance, Py::Object script);
 
         ~Task() override;
 
