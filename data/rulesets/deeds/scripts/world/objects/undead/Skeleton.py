@@ -19,4 +19,4 @@ class Skeleton(server.Thing):
             newloc.pos = newloc.pos + Vector3D(uniform(-1, 1), uniform(-1, 1), uniform(-1, 1))
             retops += Operation("create", Entity(name=item, parent=item, location=newloc.copy()), to=self)
         retops += Operation("set", Entity(self.id, status=-1), to=self)
-        return (server.OPERATION_BLOCKED, retops)
+        return server.OPERATION_BLOCKED, retops

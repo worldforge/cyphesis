@@ -38,14 +38,14 @@ std::function<Py::Object(const std::map<std::string, std::vector<UsageParameter:
 
 /// \brief Task constructor for classes which inherit from Task
 Task::Task(UsageInstance usageInstance, Py::Object script) :
-    m_serialno(0),
-    m_obsolete(false),
-    m_progress(-1),
-    m_rate(-1),
-    m_start_time(-1),
-    m_script(std::move(script)),
-    m_tick_interval(1.0),
-    m_usageInstance(std::move(usageInstance))
+        m_serialno(0),
+        m_obsolete(false),
+        m_progress(-1),
+        m_rate(-1),
+        m_start_time(-1),
+        m_script(std::move(script)),
+        m_tick_interval(1.0),
+        m_usageInstance(std::move(usageInstance))
 {
 }
 
@@ -116,7 +116,7 @@ void Task::initTask(const std::string& id, OpVector& res)
         log(WARNING, "Task script failed");
         irrelevant();
     } else {
-        callScriptFunction("setup", res);
+        callScriptFunction("setup", Py::TupleN{Py::String(id)}, res);
     }
 
     if (obsolete()) {
@@ -137,11 +137,11 @@ bool Task::tick(const std::string& id, const Operation& op, OpVector& res)
             hadChange = true;
         }
     }
-    callScriptFunction("tick", res);
+    callScriptFunction("tick", {}, res);
     if (!obsolete()) {
         if (m_progress >= 1.0) {
             irrelevant();
-            callScriptFunction("completed", res);
+            callScriptFunction("completed", {}, res);
         } else {
             res.push_back(nextTick(id, op));
         }
@@ -149,11 +149,11 @@ bool Task::tick(const std::string& id, const Operation& op, OpVector& res)
     return hadChange;
 }
 
-void Task::callScriptFunction(const std::string& function, OpVector& res)
+void Task::callScriptFunction(const std::string& function, const Py::Tuple& args, OpVector& res)
 {
     if (m_script.hasAttr(function)) {
         try {
-            auto ret = m_script.callMemberFunction(function);
+            auto ret = m_script.callMemberFunction(function, args);
             //Ignore any return codes
             ScriptUtils::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor.get());
         } catch (const Py::BaseException& e) {
@@ -166,7 +166,7 @@ void Task::callScriptFunction(const std::string& function, OpVector& res)
     }
 }
 
-void Task::callScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res)
+void Task::callUsageScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res)
 {
     if (m_script.hasAttr(function)) {
         Py::Object py_args = Py::None();

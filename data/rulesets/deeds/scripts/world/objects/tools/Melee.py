@@ -11,56 +11,32 @@ from world.utils import Usage
 def strike(instance):
     """Strike another entity with a weapon."""
 
-    # Check that we can reach the target with our weapon
-    extra_reach = 0.0
-    if instance.tool.props.reach:
-        extra_reach = instance.tool.props.reach
-
-    # If there's a cooldown we need to mark the actor
-    Usage.set_cooldown_on_attached(instance.tool, instance.actor)
-
     # Send sight even if we miss
     instance.actor.send_world(Operation("sight", instance.op))
 
     # Melee weapons only handles one target
-    target = instance.get_arg("targets", 0)
-    if target:
-        cooldown_prop = instance.tool.props.cooldown
-        if cooldown_prop:
-            task = Melee(instance, tick_interval=cooldown_prop, name="Melee")
-            task_op = instance.actor.start_task('melee', task)
-        else:
-            task_op = None
-
-        # Ignore pos
-        if instance.actor.can_reach(target, extra_reach):
-            damage = 0
-            if instance.tool.props.damage:
-                damage = instance.tool.props.damage
-            hit_op = Operation('hit', Entity(damage=damage,
-                                             hit_type=instance.op.parent,
-                                             id=instance.actor.id),
-                               to=target.entity)
-            return server.OPERATION_BLOCKED, hit_op, task_op
-        else:
-            return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away"), task_op
+    tick_interval = instance.tool.get_prop_float("cooldown")
+    if tick_interval is not None:
+        task = Usage.delay_task_if_needed(Melee(instance, tick_interval=tick_interval, name="Melee"))
     else:
-        return server.OPERATION_BLOCKED
+        task = Usage.delay_task_if_needed(Melee(instance, name="Melee"))
+    task_op = instance.actor.start_task('melee', task)
+
+    return server.OPERATION_BLOCKED, task_op
 
 
 class Melee(StoppableTask):
 
-    def tick(self):
-
-        (valid, err) = self.usage.is_valid()
-        if not valid:
-            return self.irrelevant(err)
-
+    def do_strike(self):
         self.usage.actor.send_world(Operation("sight", self.usage.op))
+
+        # If there's a cooldown we need to mark the actor
+        Usage.set_cooldown_on_attached(self.usage.tool, self.usage.actor)
 
         target = self.usage.get_arg("targets", 0)
         if target:
             # Take a swing
+            # Check that we can reach the target with our weapon
             extra_reach = 0.0
             if self.usage.tool.props.reach:
                 extra_reach = self.usage.tool.props.reach
@@ -74,4 +50,17 @@ class Melee(StoppableTask):
                 return server.OPERATION_BLOCKED, hit_op
             else:
                 return server.OPERATION_BLOCKED, self.usage.actor.client_error(self.usage.op, "Too far away")
+        else:
+            print("No target")
         return server.OPERATION_BLOCKED
+
+    def setup(self, task_id):
+        return self.do_strike()
+
+    def tick(self):
+
+        (valid, err) = self.usage.is_valid()
+        if not valid:
+            return self.irrelevant(err)
+
+        return self.do_strike()

@@ -10,7 +10,7 @@ from world.utils import Usage
 def sow(instance):
     Usage.set_cooldown_on_attached(instance.tool, instance.actor)
 
-    task = Cultivate(instance, duration=11, tick_interval=1, name="Cultivate")
+    task = Usage.delay_task_if_needed(Cultivate(instance, duration=11, tick_interval=1, name="Cultivate"))
 
     instance.actor.send_world(Operation("sight", instance.op))
 
@@ -20,7 +20,7 @@ def sow(instance):
 class Cultivate(server.Task):
     """ A proof of concept task germinating seeds into plants."""
 
-    def setup(self):
+    def setup(self, task_id):
         """ Setup code, could do something """
         pass
 

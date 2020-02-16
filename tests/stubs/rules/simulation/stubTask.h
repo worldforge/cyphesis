@@ -25,17 +25,17 @@
   }
 #endif //STUB_Task_Task_DTOR
 
-#ifndef STUB_Task_callScriptFunction
-//#define STUB_Task_callScriptFunction
-  void Task::callScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res)
+#ifndef STUB_Task_callUsageScriptFunction
+//#define STUB_Task_callUsageScriptFunction
+  void Task::callUsageScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res)
   {
     
   }
-#endif //STUB_Task_callScriptFunction
+#endif //STUB_Task_callUsageScriptFunction
 
 #ifndef STUB_Task_callScriptFunction
 //#define STUB_Task_callScriptFunction
-  void Task::callScriptFunction(const std::string& function, OpVector& res)
+  void Task::callScriptFunction(const std::string& function, const Py::Tuple& args, OpVector& res)
   {
     
   }

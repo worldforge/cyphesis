@@ -5,6 +5,8 @@ import server
 
 
 class StoppableTask(server.Task):
+    """Base class for all classes that are "stoppable", i.e. have a "stop" usage.
+    The "stop" usage will just stop the task."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(self, *args, **kwargs)

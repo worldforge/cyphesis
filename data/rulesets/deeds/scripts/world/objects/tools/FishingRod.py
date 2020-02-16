@@ -8,12 +8,13 @@ import server
 from atlas import Operation, Entity, Oplist
 
 from world.StoppableTask import StoppableTask
+from world.utils import Usage
 
 
 def fish(instance):
     usage_name = instance.op.parent
 
-    task = Fishing(instance, tick_interval=2, name="Fishing")
+    task = Usage.delay_task_if_needed(Fishing(instance, tick_interval=2, name="Fishing"))
 
     instance.actor.send_world(Operation("sight", instance.op))
 

@@ -204,8 +204,9 @@ HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
         return OPERATION_BLOCKED;
     }
 
-    auto& id = taskI->first;
-    auto& task = taskI->second;
+    //Make a copy, because the task might be removed as a result of the tick, and the ref count will make it still be alive.
+    auto id = taskI->first;
+    auto task = taskI->second;
 
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
@@ -390,7 +391,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
         auto validRes = areUsageParamsValid(usage.params, usage_instance_args, task->m_usageInstance);
 
         //Call a script method named after the usage, with "_usage" as suffix.
-        task->callScriptFunction(usageId + "_usage", usage_instance_args, res);
+        task->callUsageScriptFunction(usageId + "_usage", usage_instance_args, res);
 
         if (task->obsolete()) {
             clearTask(taskId, e, res);

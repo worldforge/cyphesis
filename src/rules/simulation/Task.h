@@ -91,9 +91,9 @@ class Task : public boost::noncopyable, public ReferenceCounted
 
         ~Task() override;
 
-        void callScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res);
+        void callUsageScriptFunction(const std::string& function, const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args, OpVector& res);
 
-        void callScriptFunction(const std::string& function, OpVector& res);
+        void callScriptFunction(const std::string& function, const Py::Tuple& args, OpVector& res);
 
         /// \brief Flag this task as obsolete
         void irrelevant();

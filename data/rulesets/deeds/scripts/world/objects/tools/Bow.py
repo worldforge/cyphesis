@@ -52,7 +52,7 @@ def shoot(instance):
 def draw(instance):
     usage_name = instance.op.parent
 
-    task = DrawBow(instance, tick_interval=1, name="Draw")
+    task = Usage.delay_task_if_needed(DrawBow(instance, tick_interval=1, name="Draw"))
 
     instance.actor.send_world(Operation("sight", instance.op))
 
@@ -61,6 +61,7 @@ def draw(instance):
 
 class DrawBow(StoppableTask):
     """
+    Starts drawing the bow. Once it's drawn an additional "release" usage is added to the task.
     """
 
     def __init__(self, *args, **kwargs):

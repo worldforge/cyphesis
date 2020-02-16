@@ -207,6 +207,9 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
         }
         return list;
     }
+    if (nameStr == "task") {
+        return PythonExtensionBase::getattro(name);
+    }
     Atlas::Message::Element val;
     if (m_value->getAttr(name, val) == 0) {
         if (val.isNone()) {
@@ -280,6 +283,10 @@ int CyPy_Task::setattro(const Py::String& name, const Py::Object& attr)
             }
             usages.emplace_back(std::move(usage));
         }
+        return 0;
+    }
+    if (nameStr == "task") {
+        PythonExtensionBase::setattro(name, attr);
         return 0;
     }
 

@@ -168,37 +168,6 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
         if (usagesI != m_usages.end()) {
             auto& usage = usagesI->second;
 
-            //Check that the tool is ready
-            auto toolReadyAtProp = e->getPropertyType<double>("ready_at");
-            if (toolReadyAtProp) {
-                if (toolReadyAtProp->data() > BaseWorld::instance().getTime()) {
-                    actor->clientError(op, "Tool is not ready yet.", res, actor->getId());
-                    return OPERATION_IGNORED;
-                }
-            }
-
-            //Check if the tools is attached, and if so the attachment is ready
-            auto actorReadyAtProp = actor->getPropertyType<MapType>("_ready_at_attached");
-            if (actorReadyAtProp) {
-
-                auto modeDataProp = e->getPropertyClassFixed<ModeDataProperty>();
-                //First check if the tool is attached to the actor at an attach point
-                if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
-                    auto& plantedOnData = modeDataProp->getPlantedOnData();
-                    if (plantedOnData.entityId && *plantedOnData.entityId == actor->getIntId() && plantedOnData.attachment) {
-                        auto attachPoint = *plantedOnData.attachment;
-                        //Lastly check if there's a value for this attach point.
-                        auto attachI = actorReadyAtProp->data().find(attachPoint);
-                        if (attachI != actorReadyAtProp->data().end()) {
-                            if (attachI->second.isFloat() && attachI->second.Float() > BaseWorld::instance().getTime()) {
-                                actor->clientError(op, "Actor is not ready yet.", res, actor->getId());
-                                return OPERATION_IGNORED;
-                            }
-                        }
-                    }
-                }
-            }
-
             //Populate the usage arguments
             std::map<std::string, std::vector<UsageParameter::UsageArg>> usage_instance_args;
 

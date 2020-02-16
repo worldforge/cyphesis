@@ -9,11 +9,10 @@ from world.utils import Usage
 
 
 def use(instance):
-    Usage.set_cooldown_on_attached(instance.tool, instance.actor)
-
     usage_name = instance.op.parent
 
-    task = Use(instance, duration=5, tick_interval=1, name=usage_name.capitalize())
+    task = Usage.delay_task_if_needed(Use(instance, duration=5, tick_interval=1, name=usage_name.capitalize()))
+    Usage.set_cooldown_on_attached(instance.tool, instance.actor)
 
     instance.actor.send_world(Operation("sight", instance.op))
 
@@ -23,7 +22,7 @@ def use(instance):
 class Use(StoppableTask):
     """ A generic tool usage class, for simple usages where we want to wait until sending the op to the target. """
 
-    def setup(self):
+    def setup(self, task_id):
         """ Setup code, could do something """
         pass
 
