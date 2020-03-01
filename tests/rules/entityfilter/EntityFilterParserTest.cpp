@@ -6,6 +6,9 @@
 #endif
 
 
+
+#define BOOST_SPIRIT_DEBUG 1
+
 #include "../../TestBase.h"
 
 #include "rules/entityfilter/Filter.h"
@@ -37,6 +40,33 @@ using namespace boost::spirit;
 
 Atlas::Objects::Factories factories;
 
+
+
+namespace std {
+
+    std::ostream& operator<<(std::ostream& os, const std::vector<Atlas::Message::Element>& v);
+
+    std::ostream& operator<<(std::ostream& os, const std::vector<Atlas::Message::Element>& v)
+    {
+        os << "[Atlas vector]";
+        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& v);
+    std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& v)
+    {
+        os << "[Atlas Element]";
+        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const EntityFilter::ComparePredicate::Comparator& v);
+    std::ostream& operator<<(std::ostream& os, const EntityFilter::ComparePredicate::Comparator& v)
+    {
+        os << "[Comparator]";
+        return os;
+    }
+}
+
 ///\These tests aim at verifying that entity filter parser builds
 ///correct predicates for given queries
 struct ParserTest : public Cyphesis::TestBase
@@ -46,6 +76,7 @@ struct ParserTest : public Cyphesis::TestBase
 
     ParserTest()
     {
+        ADD_TEST(ParserTest::test_parsePredicate);
         ADD_TEST(ParserTest::test_ComparisonOperators);
         ADD_TEST(ParserTest::test_LogicalOperators);
         ADD_TEST(ParserTest::test_Literals);
@@ -161,6 +192,14 @@ struct ParserTest : public Cyphesis::TestBase
 
     }
 
+    void test_parsePredicate() {
+        std::shared_ptr<Predicate> pred;
+        pred = ConstructPredicate("describe('One is one', 1 = 1)");
+        ASSERT_NOT_NULL(dynamic_cast<const DescribePredicate*>(pred.get()));
+        pred = ConstructPredicate("describe(\"One is one\", 1 = 1)");
+        ASSERT_NOT_NULL(dynamic_cast<const DescribePredicate*>(pred.get()));
+    }
+
     Inheritance* m_inheritance;
 };
 
@@ -174,12 +213,13 @@ std::shared_ptr<Predicate> ParserTest::ConstructPredicate(const std::string& que
     std::shared_ptr<Predicate> pred;
 
     bool parse_success = qi::phrase_parse(iter_begin, iter_end, grammar,
-                                          boost::spirit::ascii::space, pred);
+                                          boost::spirit::qi::space, pred);
 
     if (!(parse_success && iter_begin == iter_end)) {
         throw std::invalid_argument(
-                "Attempted creating entity filter with invalid query");
+                String::compose("Attempted creating entity filter with invalid query: %1", query));
     }
+    assert(pred.get());
 
     return pred;
 

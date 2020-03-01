@@ -16,7 +16,7 @@ namespace EntityFilter {
         bool parse_success;
         try {
             parse_success = qi::phrase_parse(iter_begin, iter_end, grammar,
-                                             boost::spirit::ascii::space, m_predicate);
+                                             boost::spirit::qi::space, m_predicate);
         } catch (const std::invalid_argument& e) {
             throw std::invalid_argument(String::compose("Error when parsing '%1':\n%2", what, e.what()));
         }

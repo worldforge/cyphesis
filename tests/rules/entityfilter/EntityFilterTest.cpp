@@ -259,6 +259,34 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
     }
 
+    void test_literals() {
+        TestQuery("1=1", {m_b1}, {});
+        TestQuery("true=true", {m_b1}, {});
+        TestQuery("false=false", {m_b1}, {});
+        TestQuery("false!=true", {m_b1}, {});
+        TestQuery("'string'='string'", {m_b1}, {});
+        TestQuery(R"("string"='string')", {m_b1}, {});
+        TestQuery(R"("string"="string")", {m_b1}, {});
+        TestQuery(R"("string with space"="string with space")", {m_b1}, {});
+        TestQuery(R"("string with space"!="stringwithspace")", {m_b1}, {});
+    }
+
+    void test_describe() {
+        TestQuery("describe('Should be barrel', entity.type=types.barrel)", {m_b1}, {m_bl1});
+        TestQuery("describe(\"Should be barrel\", entity.type=types.barrel)", {m_b1}, {m_bl1});
+        TestQuery("describe('Should burn.', entity.burn_speed != none)", {m_b1, m_b2}, {});
+
+        {
+            EntityFilter::Filter f("describe('Should burn.', entity.burn_speed != none)", EntityFilter::ProviderFactory());
+            QueryContext queryContext = makeContext(m_bl1);
+            std::vector<std::string> errors;
+            queryContext.report_error_fn = [&](const std::string& error) {errors.push_back(error);};
+            f.match(queryContext);
+            ASSERT_FALSE(errors.empty());
+            ASSERT_EQUAL("Should burn.", errors.front());
+        }
+    }
+
     void test_Memory()
     {
         TestQuery("memory.disposition = 25", {m_b1}, {m_bl1});
@@ -752,6 +780,8 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
     EntityFilterTest()
     {
+        ADD_TEST(EntityFilterTest::test_literals);
+        ADD_TEST(EntityFilterTest::test_describe);
         ADD_TEST(EntityFilterTest::test_Memory);
         ADD_TEST(EntityFilterTest::test_Types);
         ADD_TEST(EntityFilterTest::test_CanReach);

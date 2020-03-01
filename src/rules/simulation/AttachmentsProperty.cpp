@@ -20,15 +20,15 @@
 
 #include "AttachmentsProperty.h"
 #include "BaseWorld.h"
-#include "common/operations/Update.h"
-#include "rules/LocatedEntity.h"
 #include "ModeDataProperty.h"
+#include "common/operations/Update.h"
+#include "common/Inheritance.h"
+#include "rules/LocatedEntity.h"
+#include "rules/entityfilter/Providers.h"
 #include <Atlas/Objects/Operation.h>
-#include <rules/entityfilter/Providers.h>
-#include <common/Inheritance.h>
 
 AttachmentsProperty::AttachmentsProperty(uint32_t flags)
-    : PropertyBase(flags)
+        : PropertyBase(flags)
 {
 
 }
@@ -113,10 +113,16 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                         //Check that the attached entity matches the constraint filter
                         if (attachment.filter) {
                             EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
+                            std::vector<std::string> errors;
+                            queryContext.report_error_fn = [&](const std::string& error) { errors.push_back(error); };
                             queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
                             queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                             if (!attachment.filter->match(queryContext)) {
-                                entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
+                                if (errors.empty()) {
+                                    entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
+                                } else {
+                                    entity->clientError(op, errors.front(), res, entity->getId());
+                                }
                                 return OPERATION_BLOCKED;
                             }
                         }
@@ -195,15 +201,15 @@ void AttachmentsProperty::set(const Atlas::Message::Element& val)
                 try {
                     EntityFilter::ProviderFactory factory{};
                     Attachment attachment{
-                        entry.second.String(),
-                        std::make_unique<EntityFilter::Filter>(entry.second.String(), factory)
+                            entry.second.String(),
+                            std::make_unique<EntityFilter::Filter>(entry.second.String(), factory)
                     };
                     m_data.emplace(entry.first, std::move(attachment));
                 } catch (const std::invalid_argument& e) {
                     log(WARNING, String::compose(
-                        "Error when creating entity filter for attachment with constraint '%1'.: \n%2",
-                        entry.second.String(),
-                        e.what())
+                            "Error when creating entity filter for attachment with constraint '%1'.: \n%2",
+                            entry.second.String(),
+                            e.what())
                     );
                 }
             }

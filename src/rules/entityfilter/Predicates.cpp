@@ -237,4 +237,22 @@ namespace EntityFilter {
         m_consumer->value(value, context);
         return value.isInt() && value.Int() != 0;
     }
+
+    DescribePredicate::DescribePredicate(std::string description,
+                                         std::shared_ptr<Predicate> predicate) :
+            m_description(std::move(description)),
+            m_predicate(std::move(predicate))
+    {
+    }
+
+    bool DescribePredicate::isMatch(const QueryContext& context) const
+    {
+        bool isMatch = m_predicate->isMatch(context);
+        if (!isMatch) {
+            if (context.report_error_fn) {
+                context.report_error_fn(m_description);
+            }
+        }
+        return isMatch;
+    }
 }

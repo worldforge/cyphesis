@@ -43,6 +43,19 @@ namespace EntityFilter {
             std::shared_ptr<Consumer<QueryContext>> m_with;
     };
 
+    class DescribePredicate : public Predicate
+    {
+        public:
+
+            DescribePredicate(std::string description,
+                              std::shared_ptr<Predicate> predicate);
+
+            bool isMatch(const QueryContext& context) const override;
+
+            std::string m_description;
+            std::shared_ptr<Predicate> m_predicate;
+    };
+
     class AndPredicate : public Predicate
     {
         public:

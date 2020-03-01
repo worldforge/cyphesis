@@ -86,9 +86,21 @@ namespace EntityFilter {
         //This field can be used by client code to specify entity for "self.*" query
         LocatedEntity* self_entity = nullptr;
 
+        /**
+         * Gets entities by their id. Used by the get_entity function. Optional.
+         */
         std::function<Ref<LocatedEntity>(const std::string&)> entity_lookup_fn;
 
+        /**
+         * Looks up types by name. Used by the DynamicTypeNodeProvider. Optional.
+         */
         std::function<const TypeNode*(const std::string&)> type_lookup_fn;
+
+        /**
+         * If provided allows predicates to report on failures to match. This can be used to provide better messages to clients.
+         * Used by the DescribePredicate.
+         */
+        std::function<void (const std::string&)> report_error_fn;
     };
 
     class TypedProvider
