@@ -222,14 +222,13 @@ int EntityRuleHandler::populateEntityFactory(const std::string& class_name,
     auto J = class_desc.find("attributes");
     if (J != class_desc.end() && J->second.isMap()) {
         const MapType& attrs = J->second.asMap();
-        auto Kend = attrs.end();
-        for (auto K = attrs.begin(); K != Kend; ++K) {
-            if (!K->second.isMap()) {
+        for (const auto& entry : attrs) {
+            if (!entry.second.isMap()) {
                 log(ERROR, compose("Attribute '%1' in rule '%2' is not a "
-                                   "map.", K->first, class_name));
+                                   "map.", entry.first, class_name));
                 continue;
             }
-            const MapType& attr = K->second.asMap();
+            const MapType& attr = entry.second.asMap();
             ClassAttribute classAttribute;
             auto L = attr.find("default");
             if (L != attr.end()) {
@@ -247,18 +246,22 @@ int EntityRuleHandler::populateEntityFactory(const std::string& class_name,
             if (L != attr.end()) {
                 classAttribute.subtract = L->second;
             }
+            L = attr.find("add_fraction");
+            if (L != attr.end()) {
+                classAttribute.add_fraction = L->second;
+            }
 
             // and merge it with the defaults inherited from the parent
-            auto existingI = factory->m_attributes.find(K->first);
+            auto existingI = factory->m_attributes.find(entry.first);
             if (existingI != factory->m_attributes.end()) {
                 classAttribute.combine(existingI->second);
             } else {
                 Atlas::Message::Element value;
                 classAttribute.combine(value);
-                factory->m_attributes.emplace(K->first, std::move(value));
+                factory->m_attributes.emplace(entry.first, std::move(value));
             }
             // Store this value in the defaults for this class
-            factory->m_classAttributes[K->first] = std::move(classAttribute);
+            factory->m_classAttributes[entry.first] = std::move(classAttribute);
         }
     }
 

@@ -143,8 +143,8 @@ void ClassAttribute::combine(Atlas::Message::Element& existing) const
     if (!defaultValue.isNone()) {
         existing = defaultValue;
     }
-    if (!multiply.isNone()) {
-        MultiplyModifier modifier(multiply);
+    if (!add_fraction.isNone()) {
+        AddFractionModifier modifier(add_fraction);
         modifier.process(existing, existing);
     }
     if (!subtract.isNone()) {

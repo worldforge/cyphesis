@@ -151,7 +151,7 @@ void SubtractModifier::process(Atlas::Message::Element& element, const Atlas::Me
     }
 }
 
-void MultiplyModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+void AddFractionModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
 {
     switch (mValue.getType()) {
         case Atlas::Message::Element::TYPE_INT:

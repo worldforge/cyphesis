@@ -36,7 +36,7 @@ struct Modifier
             Prepend,
             Append,
             Subtract,
-            Multiply
+            AddFraction
     };
 
     Atlas::Message::Element mValue;
@@ -139,17 +139,17 @@ struct SubtractModifier : public Modifier
  * For maps nothing will happen.
  * For lists nothing will happen.
  */
-struct MultiplyModifier : public Modifier
+struct AddFractionModifier : public Modifier
 {
 
-    explicit MultiplyModifier(Atlas::Message::Element value) : Modifier(std::move(value))
+    explicit AddFractionModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
     void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
 
     Type getType() override
     {
-        return Type::Multiply;
+        return Type::AddFraction;
     }
 
 };

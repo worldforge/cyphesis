@@ -74,7 +74,7 @@ struct ClassAttribute
      * For maps nothing will happen.
      * For lists nothing will happen.
      */
-    Atlas::Message::Element multiply;
+    Atlas::Message::Element add_fraction;
 
     /**
      * Apply the values on an existing element.

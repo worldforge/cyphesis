@@ -67,8 +67,8 @@ int ModifiersProperty::get(Atlas::Message::Element& val) const
                         case Modifier::Type::Subtract:
                             modifierMap["subtract"] = modifierEntry.first->mValue;
                             break;
-                        case Modifier::Type::Multiply:
-                            modifierMap["multiply"] = modifierEntry.first->mValue;
+                        case Modifier::Type::AddFraction:
+                            modifierMap["add_fraction"] = modifierEntry.first->mValue;
                             break;
                     }
 

@@ -89,9 +89,9 @@ void ModifyProperty::setData(const Atlas::Message::Element& val)
                             if (I != valueMap.end()) {
                                 modifyEntry.modifier = std::make_unique<SubtractModifier>(I->second);
                             }
-                            I = valueMap.find("multiply");
+                            I = valueMap.find("add_fraction");
                             if (I != valueMap.end()) {
-                                modifyEntry.modifier = std::make_unique<MultiplyModifier>(I->second);
+                                modifyEntry.modifier = std::make_unique<AddFractionModifier>(I->second);
                             }
                         }
                     }
