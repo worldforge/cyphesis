@@ -15,13 +15,16 @@
                 <float name="default">7500</float>
             </map>
             <map name="reach">
-                <float name="default">1.5</float>
+                <float name="default">1</float>
             </map>
             <map name="damage">
                 <float name="default">10</float>
             </map>
             <map name="cooldown">
                 <float name="default">1.7</float>
+            </map>
+            <map name="level_required">
+                <int name="default">0</int>
             </map>
             <map name="usages">
                 <map name="default">
@@ -41,6 +44,9 @@
                     </map>
                 </map>
             </map>
+            <map name="name">
+                <string name="default">Basic sword</string>
+            </map>
         </map>
         <string name="id">sword</string>
         <string name="objtype">class</string>
@@ -57,6 +63,15 @@
             </map>
             <map name="present">
                 <string name="default">dural/items/weapons/broad_sword/model/broad_sword.mesh</string>
+            </map>
+            <map name="level_required">
+                <int name="default">1</int>
+            </map>
+            <map name="damage">
+                <float name="add_fraction">0.1</float>
+            </map>
+            <map name="name">
+                <string name="default">Basic broad sword</string>
             </map>
         </map>
         <string name="id">sword_broad</string>
@@ -75,6 +90,15 @@
             <map name="present">
                 <string name="default">dural/items/weapons/swords/model/sword_A01.mesh</string>
             </map>
+            <map name="level_required">
+                <int name="default">2</int>
+            </map>
+            <map name="damage">
+                <float name="add_fraction">0.2</float>
+            </map>
+            <map name="name">
+                <string name="default">Sharp sword</string>
+            </map>
         </map>
         <string name="id">sword_a1</string>
         <string name="objtype">class</string>
@@ -92,6 +116,15 @@
             <map name="present">
                 <string name="default">dural/items/weapons/swords/model/sword_A02.mesh</string>
             </map>
+            <map name="level_required">
+                <int name="default">3</int>
+            </map>
+            <map name="damage">
+                <float name="add_fraction">0.3</float>
+            </map>
+            <map name="name">
+                <string name="default">Honed sword</string>
+            </map>
         </map>
         <string name="id">sword_a2</string>
         <string name="objtype">class</string>
@@ -108,6 +141,15 @@
             </map>
             <map name="present">
                 <string name="default">dural/items/weapons/swords/model/sword_A03.mesh</string>
+            </map>
+            <map name="level_required">
+                <int name="default">4</int>
+            </map>
+            <map name="damage">
+                <float name="add_fraction">0.4</float>
+            </map>
+            <map name="name">
+                <string name="default">Cutting sword</string>
             </map>
         </map>
         <string name="id">sword_a3</string>

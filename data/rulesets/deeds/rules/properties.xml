@@ -74,4 +74,25 @@
         <string name="parent">list</string>
         <string name="description">A list of entities or archetypes which should be created when the entity is deleted. Handled by the DecaysInto trait.</string>
     </map>
+
+    <map>
+        <string name="id">level_required</string>
+        <string name="objtype">type</string>
+        <string name="parent">int</string>
+        <string name="description">An entity marked with this cannot be used by entities that have a lower level.</string>
+    </map>
+
+    <map>
+        <string name="id">level</string>
+        <string name="objtype">type</string>
+        <string name="parent">int</string>
+        <string name="description">The level of the entity. This governs additional modifiers applied as well as which entities can be used.</string>
+    </map>
+
+    <map>
+        <string name="id">xp</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">Experience points. Scripts handle upgrading the entity to new levels as this increases.</string>
+    </map>
 </atlas>
