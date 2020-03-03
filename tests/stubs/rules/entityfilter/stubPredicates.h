@@ -44,6 +44,28 @@ namespace EntityFilter {
 
 namespace EntityFilter {
 
+#ifndef STUB_DescribePredicate_DescribePredicate
+//#define STUB_DescribePredicate_DescribePredicate
+   DescribePredicate::DescribePredicate(std::string description, std::shared_ptr<Predicate> predicate)
+    : Predicate(description, predicate)
+  {
+    
+  }
+#endif //STUB_DescribePredicate_DescribePredicate
+
+#ifndef STUB_DescribePredicate_isMatch
+//#define STUB_DescribePredicate_isMatch
+  bool DescribePredicate::isMatch(const QueryContext& context) const
+  {
+    return false;
+  }
+#endif //STUB_DescribePredicate_isMatch
+
+
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+
 #ifndef STUB_AndPredicate_AndPredicate
 //#define STUB_AndPredicate_AndPredicate
    AndPredicate::AndPredicate(std::shared_ptr<Predicate> lhs, std::shared_ptr<Predicate> rhs)

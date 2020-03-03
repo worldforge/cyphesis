@@ -104,6 +104,13 @@ class PropertyBase : public OperationsListener {
      */
     static std::uint32_t flagsForPropertyName(const std::string& name);
 
+    /**
+     * Checks if the name supplied is a valid property name.
+     *
+     * It should not be more than 32 characters, and can only start with ascii characters or underscores ("_").
+     */
+    static bool isValidName(const std::string& name);
+
     bool operator==(const PropertyBase& rhs) const;
     bool operator!=(const PropertyBase& rhs) const;
 };

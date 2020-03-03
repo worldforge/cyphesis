@@ -104,6 +104,14 @@
   }
 #endif //STUB_PropertyBase_flagsForPropertyName
 
+#ifndef STUB_PropertyBase_isValidName
+//#define STUB_PropertyBase_isValidName
+   bool PropertyBase::isValidName(const std::string& name)
+  {
+    return false;
+  }
+#endif //STUB_PropertyBase_isValidName
+
 #ifndef STUB_PropertyBase_operator_EQUALS
 //#define STUB_PropertyBase_operator_EQUALS
   bool PropertyBase::operator==(const PropertyBase& rhs) const

@@ -163,6 +163,11 @@ int LocatedEntity::getAttrType(const std::string& name,
 /// @param attr Value to be stored
 PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
 {
+    if (!PropertyBase::isValidName(name)) {
+        log(WARNING, String::compose("Tried to add a property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
+        return nullptr;
+    }
+
     PropertyBase* prop = nullptr;
     // If it is an existing property, just update the value.
     auto I = m_properties.find(name);
@@ -206,6 +211,10 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
 void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modifier, LocatedEntity* affectingEntity)
 {
     if (hasFlags(entity_modifiers_not_allowed)) {
+        return;
+    }
+    if (!PropertyBase::isValidName(propertyName)) {
+        log(WARNING, String::compose("Tried to add a modifier for property '%1' to entity '%2', which has an invalid name.", propertyName, describeEntity()));
         return;
     }
 

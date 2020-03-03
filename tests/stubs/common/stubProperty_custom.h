@@ -43,6 +43,15 @@ HandlerResult PropertyBase::operation(LocatedEntity *,
 }
 #endif //STUB_PropertyBase_add
 
+#ifndef STUB_PropertyBase_isValidName
+#define STUB_PropertyBase_isValidName
+bool PropertyBase::isValidName(const std::string& name)
+{
+    return true;
+}
+#endif //STUB_PropertyBase_isValidName
+
+
 #ifndef STUB_Property_set
 #define STUB_Property_set
 template<>
@@ -137,6 +146,7 @@ bool BoolProperty::isTrue() const
     return hasFlags(prop_flag_bool);
 }
 #endif //STUB_BoolProperty_isTrue
+
 
 template class Property<int>;
 template class Property<double>;

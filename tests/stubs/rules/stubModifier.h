@@ -60,13 +60,13 @@
 #endif //STUB_SubtractModifier_process
 
 
-#ifndef STUB_MultiplyModifier_process
-//#define STUB_MultiplyModifier_process
-  void MultiplyModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+#ifndef STUB_AddFractionModifier_process
+//#define STUB_AddFractionModifier_process
+  void AddFractionModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
   {
     
   }
-#endif //STUB_MultiplyModifier_process
+#endif //STUB_AddFractionModifier_process
 
 
 #endif

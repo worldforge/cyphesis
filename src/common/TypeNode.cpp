@@ -70,6 +70,10 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                                                     std::unique_ptr<PropertyBase> prop)
 {
     TypeNode::PropertiesUpdate update;
+    if (!PropertyBase::isValidName(name)) {
+        log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", name, m_name));
+        return update;
+    }
     if (prop->hasFlags(prop_flag_instance)) {
         log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", name, m_name));
         return update;
@@ -111,6 +115,10 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
 void TypeNode::addProperties(const MapType& attributes)
 {
     for (const auto& entry : attributes) {
+        if (!PropertyBase::isValidName(entry.first)) {
+            log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", entry.first, m_name));
+            continue;
+        }
         auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
         if (p->hasFlags(prop_flag_instance)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
@@ -159,6 +167,11 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
     // Update the values of existing class properties, and add new class
     // properties for added default attributes.
     for (auto& entry : attributes) {
+        if (!PropertyBase::isValidName(entry.first)) {
+            log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", entry.first, m_name));
+            continue;
+        }
+
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
             auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());

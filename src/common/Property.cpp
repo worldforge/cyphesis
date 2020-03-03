@@ -261,3 +261,9 @@ std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
     }
     return 0;
 }
+
+bool PropertyBase::isValidName(const std::string& name)
+{
+    return !name.empty() && name.size() <= 32 && (std::isalpha(name[0]) || name[0] == '_');
+}
+

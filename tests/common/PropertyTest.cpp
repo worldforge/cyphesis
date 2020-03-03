@@ -34,17 +34,25 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 
-class MinimalProperty : public PropertyBase {
-  public:
-    MinimalProperty() { }
-    virtual int get(Atlas::Message::Element & val) const { return 0; }
-    virtual void set(const Atlas::Message::Element & val) { }
-    virtual MinimalProperty * copy() const { return new MinimalProperty; }
+class MinimalProperty : public PropertyBase
+{
+    public:
+        MinimalProperty()
+        {}
+
+        virtual int get(Atlas::Message::Element& val) const
+        { return 0; }
+
+        virtual void set(const Atlas::Message::Element& val)
+        {}
+
+        virtual MinimalProperty* copy() const
+        { return new MinimalProperty; }
 };
 
-static void exerciseProperty(PropertyBase * pb)
+static void exerciseProperty(PropertyBase* pb)
 {
-    pb->install((LocatedEntity*)nullptr, "test_prop");
+    pb->install((LocatedEntity*) nullptr, "test_prop");
     pb->apply(nullptr);
     MapType map;
     pb->add("test_name", map);
@@ -73,116 +81,129 @@ int main()
 
     assert((prop_flag_visibility_non_public & prop_flag_persistence_mask) == 0);
 
+    assert(!PropertyBase::isValidName("abcdefghijklmnopqrstuvwxyzabcdefg")); //33 characters
+    assert(PropertyBase::isValidName("abcdefghijklmnopqrstuvwxyzabcdef")); //32 characters
+    assert(!PropertyBase::isValidName(""));
+    assert(!PropertyBase::isValidName("1"));
+    assert(PropertyBase::isValidName("a1"));
+    assert(!PropertyBase::isValidName("$"));
+    assert(!PropertyBase::isValidName("Ö"));
+    assert(PropertyBase::isValidName("a"));
+    assert(PropertyBase::isValidName("A"));
+    assert(PropertyBase::isValidName("_a"));
+    assert(PropertyBase::isValidName("__a"));
+    assert(PropertyBase::isValidName("___a"));
+
     Element val;
 
     {
-    PropertyBase * pb = new MinimalProperty;
-    exerciseProperty(pb);
-    delete pb;
+        PropertyBase* pb = new MinimalProperty;
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    long i = 23;
-    PropertyBase * pb = new SoftProperty;
-    assert(pb->flags().m_flags == 0);
-    pb->set(i);
-    pb->get(val);
-    assert(val == i);
-    exerciseProperty(pb);
-    delete pb;
+        long i = 23;
+        PropertyBase* pb = new SoftProperty;
+        assert(pb->flags().m_flags == 0);
+        pb->set(i);
+        pb->get(val);
+        assert(val == i);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    long i = 23;
-    PropertyBase * pb = new SoftProperty(i);
-    assert(pb->flags().m_flags == 0);
-    pb->get(val);
-    assert(val == i);
-    exerciseProperty(pb);
-    delete pb;
+        long i = 23;
+        PropertyBase* pb = new SoftProperty(i);
+        assert(pb->flags().m_flags == 0);
+        pb->get(val);
+        assert(val == i);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    long i = 23;
-    PropertyBase * pb = new Property<int>(0);
-    assert(pb->flags().m_flags == 0);
-    pb->set(i);
-    pb->get(val);
-    assert(val == i);
-    exerciseProperty(pb);
-    delete pb;
+        long i = 23;
+        PropertyBase* pb = new Property<int>(0);
+        assert(pb->flags().m_flags == 0);
+        pb->set(i);
+        pb->get(val);
+        assert(val == i);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    long i = 23;
-    PropertyBase * pb = new Property<long>(0);
-    assert(pb->flags().m_flags == 0);
-    pb->set(i);
-    pb->get(val);
-    assert(val == i);
-    exerciseProperty(pb);
-    delete pb;
+        long i = 23;
+        PropertyBase* pb = new Property<long>(0);
+        assert(pb->flags().m_flags == 0);
+        pb->set(i);
+        pb->get(val);
+        assert(val == i);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    float f = 17.2f;
-    PropertyBase * pb = new Property<float>(1);
-    assert(pb->flags().m_flags == 1);
-    pb->set(f);
-    pb->get(val);
-    assert(val == f);
-    exerciseProperty(pb);
-    delete pb;
+        float f = 17.2f;
+        PropertyBase* pb = new Property<float>(1);
+        assert(pb->flags().m_flags == 1);
+        pb->set(f);
+        pb->get(val);
+        assert(val == f);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    double d = 65.4;
-    PropertyBase * pb = new Property<double>(2);
-    assert(pb->flags().m_flags == 2);
-    pb->set(d);
-    pb->get(val);
-    assert(val == d);
-    exerciseProperty(pb);
-    delete pb;
+        double d = 65.4;
+        PropertyBase* pb = new Property<double>(2);
+        assert(pb->flags().m_flags == 2);
+        pb->set(d);
+        pb->get(val);
+        assert(val == d);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    std::string s = "Test String";
-    PropertyBase * pb = new Property<std::string>(3);
-    assert(pb->flags().m_flags == 3);
-    pb->set(s);
-    pb->get(val);
-    assert(val == s);
-    exerciseProperty(pb);
-    delete pb;
+        std::string s = "Test String";
+        PropertyBase* pb = new Property<std::string>(3);
+        assert(pb->flags().m_flags == 3);
+        pb->set(s);
+        pb->get(val);
+        assert(val == s);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    long i = 23;
-    PropertyBase * pb = new Property<long>(4);
-    assert(pb->flags().m_flags == 4);
-    pb->set(i);
-    pb->get(val);
-    assert(val == i);
-    exerciseProperty(pb);
-    delete pb;
+        long i = 23;
+        PropertyBase* pb = new Property<long>(4);
+        assert(pb->flags().m_flags == 4);
+        pb->set(i);
+        pb->get(val);
+        assert(val == i);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
-    MapType m;
-    m.insert(std::make_pair("foo", "bar"));
-    PropertyBase * pb = new Property<MapType>(5);
-    assert(pb->flags().m_flags == 5);
-    pb->set(m);
-    pb->get(val);
-    assert(val == m);
-    exerciseProperty(pb);
-    delete pb;
+        MapType m;
+        m.insert(std::make_pair("foo", "bar"));
+        PropertyBase* pb = new Property<MapType>(5);
+        assert(pb->flags().m_flags == 5);
+        pb->set(m);
+        pb->get(val);
+        assert(val == m);
+        exerciseProperty(pb);
+        delete pb;
     }
 
     {
         long i = 1;
-        PropertyBase * pb = new BoolProperty();
+        PropertyBase* pb = new BoolProperty();
         assert(pb->flags().m_flags == 0);
         pb->set(i);
         pb->get(val);

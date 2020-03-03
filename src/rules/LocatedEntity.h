@@ -445,6 +445,11 @@ class LocatedEntity : public Router, public ReferenceCounted
                                         const Atlas::Message::Element& def_val
                                         = Atlas::Message::Element())
         {
+            if (!PropertyBase::isValidName(name)) {
+                log(WARNING, String::compose("Tried to add property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
+                return nullptr;
+            }
+
             PropertyBase* p = modProperty(name, def_val);
             PropertyT* sp = nullptr;
             if (p != nullptr) {

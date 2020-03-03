@@ -635,6 +635,7 @@ namespace {
 
 int main(int argc, char** argv)
 {
+    std::setlocale(LC_ALL, "C");
     if (security_init() != 0) {
         log(CRITICAL, "Security initialization Error. Exiting.");
         return EXIT_SECURITY_ERROR;
