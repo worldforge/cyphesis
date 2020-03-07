@@ -50,39 +50,39 @@ PropertyBase::PropertyBase(std::uint32_t flags) : m_flags(flags)
 {
 }
 
-void PropertyBase::install(LocatedEntity *, const std::string & name)
+void PropertyBase::install(LocatedEntity*, const std::string& name)
 {
 }
 
-void PropertyBase::install(TypeNode *, const std::string & name)
+void PropertyBase::install(TypeNode*, const std::string& name)
 {
 }
 
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
+void PropertyBase::remove(LocatedEntity*, const std::string& name)
 {
 }
 
-void PropertyBase::apply(LocatedEntity *)
+void PropertyBase::apply(LocatedEntity*)
 {
 }
 
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
+void PropertyBase::add(const std::string& s,
+                       Atlas::Message::MapType& ent) const
 {
     get(ent[s]);
 }
 
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
+void PropertyBase::add(const std::string& s,
+                       const Atlas::Objects::Entity::RootEntity& ent) const
 {
     Atlas::Message::Element val;
     get(val);
     ent->setAttr(s, val);
 }
 
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector & res)
+HandlerResult PropertyBase::operation(LocatedEntity*,
+                                      const Operation&,
+                                      OpVector& res)
 {
     return OPERATION_IGNORED;
 }
@@ -102,7 +102,7 @@ bool PropertyBase::operator!=(const PropertyBase& rhs) const
 }
 
 template<>
-void Property<int>::set(const Atlas::Message::Element & e)
+void Property<int>::set(const Atlas::Message::Element& e)
 {
     if (e.isInt()) {
         this->m_data = static_cast<int>(e.Int());
@@ -110,7 +110,7 @@ void Property<int>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<long>::set(const Atlas::Message::Element & e)
+void Property<long>::set(const Atlas::Message::Element& e)
 {
     if (e.isInt()) {
         this->m_data = e.Int();
@@ -118,7 +118,7 @@ void Property<long>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<long long>::set(const Atlas::Message::Element & e)
+void Property<long long>::set(const Atlas::Message::Element& e)
 {
     if (e.isInt()) {
         this->m_data = e.Int();
@@ -126,7 +126,7 @@ void Property<long long>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<float>::set(const Atlas::Message::Element & e)
+void Property<float>::set(const Atlas::Message::Element& e)
 {
     if (e.isNum()) {
         this->m_data = static_cast<float>(e.asNum());
@@ -134,7 +134,7 @@ void Property<float>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<double>::set(const Atlas::Message::Element & e)
+void Property<double>::set(const Atlas::Message::Element& e)
 {
     if (e.isNum()) {
         this->m_data = e.asNum();
@@ -142,7 +142,7 @@ void Property<double>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<std::string>::set(const Atlas::Message::Element & e)
+void Property<std::string>::set(const Atlas::Message::Element& e)
 {
     if (e.isString()) {
         this->m_data = e.String();
@@ -150,7 +150,7 @@ void Property<std::string>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
+void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element& e)
 {
     if (e.isList()) {
         this->m_data = e.List();
@@ -158,7 +158,7 @@ void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
+void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element& e)
 {
     if (e.isMap()) {
         this->m_data = e.Map();
@@ -166,8 +166,8 @@ void Property<Atlas::Message::MapType>::set(const Atlas::Message::Element & e)
 }
 
 template<>
-void Property<std::string>::add(const std::string & s,
-                                Atlas::Message::MapType & ent) const
+void Property<std::string>::add(const std::string& s,
+                                Atlas::Message::MapType& ent) const
 {
     if (!m_data.empty()) {
         ent[s] = m_data;
@@ -175,22 +175,22 @@ void Property<std::string>::add(const std::string & s,
 }
 
 SoftProperty::SoftProperty(Atlas::Message::Element data) :
-    PropertyBase(0), m_data(std::move(data))
+        PropertyBase(0), m_data(std::move(data))
 {
 }
 
-int SoftProperty::get(Atlas::Message::Element & val) const
+int SoftProperty::get(Atlas::Message::Element& val) const
 {
     val = m_data;
     return 0;
 }
 
-void SoftProperty::set(const Atlas::Message::Element & val)
+void SoftProperty::set(const Atlas::Message::Element& val)
 {
     m_data = val;
 }
 
-SoftProperty * SoftProperty::copy() const
+SoftProperty* SoftProperty::copy() const
 {
     return new SoftProperty(*this);
 }
@@ -206,13 +206,13 @@ const Atlas::Message::Element& SoftProperty::data() const
 }
 
 
-int BoolProperty::get(Atlas::Message::Element & ent) const
+int BoolProperty::get(Atlas::Message::Element& ent) const
 {
     ent = m_flags.hasFlags(prop_flag_bool) ? 1 : 0;
     return 0;
 }
 
-void BoolProperty::set(const Atlas::Message::Element & ent)
+void BoolProperty::set(const Atlas::Message::Element& ent)
 {
     if (ent.isInt()) {
         if (ent.Int() == 0) {
@@ -223,7 +223,7 @@ void BoolProperty::set(const Atlas::Message::Element & ent)
     }
 }
 
-BoolProperty * BoolProperty::copy() const
+BoolProperty* BoolProperty::copy() const
 {
     return new BoolProperty(*this);
 }
@@ -234,23 +234,38 @@ bool BoolProperty::isTrue() const
 }
 
 
-template class Property<int>;
-template class Property<long>;
-template class Property<long long>;
-template class Property<float>;
-template class Property<double>;
-template class Property<std::string>;
-template class Property<Atlas::Message::ListType>;
-template class Property<Atlas::Message::MapType>;
+template
+class Property<int>;
 
-template <> const std::string Property<int>::property_atlastype = "int";
-template <> const std::string Property<long>::property_atlastype = "int";
-template <> const std::string Property<long long>::property_atlastype = "int";
-template <> const std::string Property<float>::property_atlastype = "float";
-template <> const std::string Property<double>::property_atlastype = "float";
-template <> const std::string Property<std::string>::property_atlastype = "string";
-template <> const std::string Property<Atlas::Message::ListType>::property_atlastype = "list";
-template <> const std::string Property<Atlas::Message::MapType>::property_atlastype = "map";
+template
+class Property<long>;
+
+template
+class Property<long long>;
+
+template
+class Property<float>;
+
+template
+class Property<double>;
+
+template
+class Property<std::string>;
+
+template
+class Property<Atlas::Message::ListType>;
+
+template
+class Property<Atlas::Message::MapType>;
+
+template<> const std::string Property<int>::property_atlastype = "int";
+template<> const std::string Property<long>::property_atlastype = "int";
+template<> const std::string Property<long long>::property_atlastype = "int";
+template<> const std::string Property<float>::property_atlastype = "float";
+template<> const std::string Property<double>::property_atlastype = "float";
+template<> const std::string Property<std::string>::property_atlastype = "string";
+template<> const std::string Property<Atlas::Message::ListType>::property_atlastype = "list";
+template<> const std::string Property<Atlas::Message::MapType>::property_atlastype = "map";
 
 std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
 {
@@ -264,6 +279,15 @@ std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
 
 bool PropertyBase::isValidName(const std::string& name)
 {
-    return !name.empty() && name.size() <= 32 && (std::isalpha(name[0]) || name[0] == '_');
+    if (name.empty() || name.size() > 32) {
+        return false;
+    }
+    for (auto& character : name) {
+        if (std::isalnum(character) || character == '_' || character == '$' || character == '-') {
+            continue;
+        }
+        return false;
+    }
+    return true;
 }
 

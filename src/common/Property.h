@@ -107,7 +107,7 @@ class PropertyBase : public OperationsListener {
     /**
      * Checks if the name supplied is a valid property name.
      *
-     * It should not be more than 32 characters, and can only start with ascii characters or underscores ("_").
+     * It should not be more than 32 characters, and can only contain ascii characters or numbers, dollar sign ("$"), underscores ("_") or hyphens ("-").
      */
     static bool isValidName(const std::string& name);
 

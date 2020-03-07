@@ -147,8 +147,8 @@ namespace {
 
         SQLiteServerDatabase(std::unique_ptr<DatabaseSQLite> db,
                              std::unique_ptr<RepeatedTask> vacuumTask) :
-            m_db(std::move(db)),
-            m_vacuumTask(std::move(vacuumTask))
+                m_db(std::move(db)),
+                m_vacuumTask(std::move(vacuumTask))
         {}
 
         ~SQLiteServerDatabase() override
@@ -290,9 +290,9 @@ namespace {
             return std::make_shared<CommPythonClient>(serverRouting.getName(), io_context);
         };
         std::function<void(CommPythonClient&)> pythonStarter =
-            [&](CommPythonClient& client) {
-                client.startAccept();
-            };
+                [&](CommPythonClient& client) {
+                    client.startAccept();
+                };
         socketListeners.pythonListener = std::make_unique<CommAsioListener<local::stream_protocol, CommPythonClient>>(pythonCreator,
                                                                                                                       pythonStarter,
                                                                                                                       serverRouting.getName(),
@@ -579,7 +579,7 @@ namespace {
                 auto mdnsClient = createMDNSClient(*io_context, serverRouting);
 
                 IdleConnector storage_idle(*io_context);
-                storage_idle.idling.connect([&store](){store.tick();});
+                storage_idle.idling.connect([&store]() { store.tick(); });
 
                 MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
                 if (metaClient) {

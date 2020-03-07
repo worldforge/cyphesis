@@ -84,15 +84,30 @@ int main()
     assert(!PropertyBase::isValidName("abcdefghijklmnopqrstuvwxyzabcdefg")); //33 characters
     assert(PropertyBase::isValidName("abcdefghijklmnopqrstuvwxyzabcdef")); //32 characters
     assert(!PropertyBase::isValidName(""));
-    assert(!PropertyBase::isValidName("1"));
+    assert(PropertyBase::isValidName("1"));
     assert(PropertyBase::isValidName("a1"));
-    assert(!PropertyBase::isValidName("$"));
+    assert(PropertyBase::isValidName("$"));
     assert(!PropertyBase::isValidName("Ö"));
     assert(PropertyBase::isValidName("a"));
     assert(PropertyBase::isValidName("A"));
     assert(PropertyBase::isValidName("_a"));
     assert(PropertyBase::isValidName("__a"));
     assert(PropertyBase::isValidName("___a"));
+    assert(PropertyBase::isValidName("$eid"));
+    assert(PropertyBase::isValidName("foo-"));
+    assert(PropertyBase::isValidName("-"));
+    assert(!PropertyBase::isValidName("@"));
+    assert(!PropertyBase::isValidName(":"));
+    assert(!PropertyBase::isValidName(";"));
+    assert(!PropertyBase::isValidName("!"));
+    assert(!PropertyBase::isValidName("foo!append"));
+
+
+    assert(PropertyBase::flagsForPropertyName("foo") == 0);
+    assert(PropertyBase::flagsForPropertyName("_foo") == prop_flag_visibility_protected);
+    assert(PropertyBase::flagsForPropertyName("__foo") == prop_flag_visibility_private);
+    assert(PropertyBase::flagsForPropertyName("foo_") == 0);
+    assert(PropertyBase::flagsForPropertyName("f_oo") == 0);
 
     Element val;
 
