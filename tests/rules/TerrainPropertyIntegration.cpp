@@ -65,6 +65,7 @@ int main()
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/common/stubLink.h"
 #include "../stubs/common/stublog.h"
+#include "../stubs/rules/stubModifier.h"
 
 
 int timeoffset = 0;

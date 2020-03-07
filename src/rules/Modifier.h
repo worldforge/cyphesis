@@ -19,7 +19,9 @@
 #ifndef CYPHESIS_MODIFIER_H
 #define CYPHESIS_MODIFIER_H
 
+#include "ModifierType.h"
 #include <Atlas/Message/Element.h>
+#include <memory>
 
 /**
  * Allows modifications of arbitrary values.
@@ -30,15 +32,7 @@
  */
 struct Modifier
 {
-    enum class Type
-    {
-            Default,
-            Prepend,
-            Append,
-            Subtract,
-            AddFraction
-    };
-
+    
     Atlas::Message::Element mValue;
 
     explicit Modifier(Atlas::Message::Element value) : mValue(std::move(value))
@@ -49,9 +43,11 @@ struct Modifier
      * @param element The value to be changed.
      * @param baseValue The base value, which is taken into account in some modifiers.
      */
-    virtual void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) = 0;
+    virtual void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const = 0;
 
-    virtual Type getType() = 0;
+    virtual ModifierType getType() const = 0;
+    
+    static std::unique_ptr<Modifier> createModifier(ModifierType modificationType, Atlas::Message::Element attr);
 
 };
 
@@ -61,11 +57,11 @@ struct DefaultModifier : public Modifier
     explicit DefaultModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
-    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const override;
 
-    Type getType() override
+    ModifierType getType() const override
     {
-        return Type::Default;
+        return ModifierType::Default;
     }
 };
 
@@ -82,11 +78,11 @@ struct PrependModifier : public Modifier
     explicit PrependModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
-    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const override;
 
-    Type getType() override
+    ModifierType getType() const override
     {
-        return Type::Prepend;
+        return ModifierType::Prepend;
     }
 };
 
@@ -102,11 +98,11 @@ struct AppendModifier : public Modifier
     explicit AppendModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
-    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const override;
 
-    Type getType() override
+    ModifierType getType() const override
     {
-        return Type::Append;
+        return ModifierType::Append;
     }
 };
 
@@ -122,11 +118,11 @@ struct SubtractModifier : public Modifier
     explicit SubtractModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
-    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const override;
 
-    Type getType() override
+    ModifierType getType() const override
     {
-        return Type::Subtract;
+        return ModifierType::Subtract;
     }
 
 };
@@ -145,11 +141,11 @@ struct AddFractionModifier : public Modifier
     explicit AddFractionModifier(Atlas::Message::Element value) : Modifier(std::move(value))
     {}
 
-    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) override;
+    void process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const override;
 
-    Type getType() override
+    ModifierType getType() const override
     {
-        return Type::AddFraction;
+        return ModifierType::AddFraction;
     }
 
 };

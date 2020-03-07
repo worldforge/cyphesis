@@ -9,7 +9,7 @@
 
 #ifndef STUB_Modifier_process
 //#define STUB_Modifier_process
-  void Modifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  void Modifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
   {
     
   }
@@ -17,16 +17,24 @@
 
 #ifndef STUB_Modifier_getType
 //#define STUB_Modifier_getType
-  Type Modifier::getType()
+  ModifierType Modifier::getType() const
   {
-    return *static_cast<Type*>(nullptr);
+    return *static_cast<ModifierType*>(nullptr);
   }
 #endif //STUB_Modifier_getType
+
+#ifndef STUB_Modifier_createModifier
+//#define STUB_Modifier_createModifier
+   std::unique_ptr<Modifier> Modifier::createModifier(ModifierType modificationType, Atlas::Message::Element attr)
+  {
+    return *static_cast< std::unique_ptr<Modifier>*>(nullptr);
+  }
+#endif //STUB_Modifier_createModifier
 
 
 #ifndef STUB_DefaultModifier_process
 //#define STUB_DefaultModifier_process
-  void DefaultModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  void DefaultModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
   {
     
   }
@@ -35,7 +43,7 @@
 
 #ifndef STUB_PrependModifier_process
 //#define STUB_PrependModifier_process
-  void PrependModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  void PrependModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
   {
     
   }
@@ -44,7 +52,7 @@
 
 #ifndef STUB_AppendModifier_process
 //#define STUB_AppendModifier_process
-  void AppendModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  void AppendModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
   {
     
   }
@@ -53,7 +61,7 @@
 
 #ifndef STUB_SubtractModifier_process
 //#define STUB_SubtractModifier_process
-  void SubtractModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  void SubtractModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
   {
     
   }
@@ -62,7 +70,7 @@
 
 #ifndef STUB_AddFractionModifier_process
 //#define STUB_AddFractionModifier_process
-  void AddFractionModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+  void AddFractionModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
   {
     
   }

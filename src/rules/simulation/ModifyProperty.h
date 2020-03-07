@@ -24,6 +24,7 @@
 #include <sigc++/connection.h>
 #include <common/PropertyInstanceState.h>
 #include "common/Property.h"
+#include <set>
 
 /**
  * A property which allows an entity to modify properties of a parent entity.
@@ -56,7 +57,7 @@ class ModifyProperty : public PropertyBase
         int get(Atlas::Message::Element& val) const override;
 
 
-    private:
+    protected:
 
 
         /**

@@ -112,6 +112,14 @@
   }
 #endif //STUB_PropertyBase_isValidName
 
+#ifndef STUB_PropertyBase_parsePropertyModification
+//#define STUB_PropertyBase_parsePropertyModification
+   std::pair<ModifierType, std::string> PropertyBase::parsePropertyModification(const std::string& propertyName)
+  {
+    return *static_cast< std::pair<ModifierType, std::string>*>(nullptr);
+  }
+#endif //STUB_PropertyBase_parsePropertyModification
+
 #ifndef STUB_PropertyBase_operator_EQUALS
 //#define STUB_PropertyBase_operator_EQUALS
   bool PropertyBase::operator==(const PropertyBase& rhs) const

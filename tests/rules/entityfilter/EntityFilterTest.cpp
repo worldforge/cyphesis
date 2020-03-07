@@ -873,3 +873,4 @@ const TypeNode* Inheritance::getType(const std::string& parent) const
 
 #include "../../stubs/common/stubInheritance.h"
 #include "../../stubs/common/stublog.h"
+#include "../../stubs/rules/stubModifier.h"

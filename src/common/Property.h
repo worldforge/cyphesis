@@ -23,6 +23,7 @@
 #include "OperationRouter.h"
 
 #include <Atlas/Message/Element.h>
+#include <rules/ModifierType.h>
 
 class LocatedEntity;
 class TypeNode;
@@ -110,6 +111,8 @@ class PropertyBase : public OperationsListener {
      * It should not be more than 32 characters, and can only contain ascii characters or numbers, dollar sign ("$"), underscores ("_") or hyphens ("-").
      */
     static bool isValidName(const std::string& name);
+
+    static std::pair<ModifierType, std::string> parsePropertyModification(const std::string& propertyName);
 
     bool operator==(const PropertyBase& rhs) const;
     bool operator!=(const PropertyBase& rhs) const;

@@ -266,6 +266,9 @@ class LocatedEntity : public Router, public ReferenceCounted
         PropertyBase* setAttr(const std::string& name,
                               Atlas::Message::Element);
 
+        PropertyBase* setAttr(const std::string& name,
+                              const Modifier& modifier);
+
         const PropertyBase* getProperty(const std::string& name) const;
 
         PropertyBase* modProperty(const std::string& name, const Atlas::Message::Element& def_val = Atlas::Message::Element());

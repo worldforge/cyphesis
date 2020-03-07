@@ -16,8 +16,11 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include <rules/ModifierType.h>
 #include "Property_impl.h"
 #include "Property.h"
+#include "log.h"
+#include "compose.hpp"
 
 
 
@@ -290,4 +293,32 @@ bool PropertyBase::isValidName(const std::string& name)
     }
     return true;
 }
+
+std::pair<ModifierType, std::string> PropertyBase::parsePropertyModification(const std::string& propertyName)
+{
+    auto pos = propertyName.find('!');
+    if (pos != std::string::npos) {
+        auto modifier = propertyName.substr(pos + 1);
+        auto cleanName = propertyName.substr(0, pos);
+        ModifierType type;
+        if (modifier == "default") {
+            type = ModifierType::Default;
+        } else if (modifier == "append") {
+            type = ModifierType::Append;
+        } else if (modifier == "prepend") {
+            type = ModifierType::Prepend;
+        } else if (modifier == "subtract") {
+            type = ModifierType::Subtract;
+        } else if (modifier == "add-fraction") {
+            type = ModifierType::AddFraction;
+        } else {
+            log(WARNING, String::compose(R"(Could not recognize "%1" modification in property "%2")", modifier, propertyName));
+            return {ModifierType::Default, propertyName};
+        }
+        return {type, cleanName};
+    }
+    return {ModifierType::Default, propertyName};
+}
+
+
 

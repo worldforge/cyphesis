@@ -80,3 +80,5 @@ int main()
 
     return t.run();
 }
+
+#include "../stubs/common/stublog.h"

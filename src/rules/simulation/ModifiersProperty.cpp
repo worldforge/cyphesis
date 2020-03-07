@@ -55,19 +55,19 @@ int ModifiersProperty::get(Atlas::Message::Element& val) const
 
                     Atlas::Message::MapType modifierMap;
                     switch (modifierEntry.first->getType()) {
-                        case Modifier::Type::Default:
+                        case ModifierType::Default:
                             modifierMap["default"] = modifierEntry.first->mValue;
                             break;
-                        case Modifier::Type::Prepend:
+                        case ModifierType::Prepend:
                             modifierMap["prepend"] = modifierEntry.first->mValue;
                             break;
-                        case Modifier::Type::Append:
+                        case ModifierType::Append:
                             modifierMap["append"] = modifierEntry.first->mValue;
                             break;
-                        case Modifier::Type::Subtract:
+                        case ModifierType::Subtract:
                             modifierMap["subtract"] = modifierEntry.first->mValue;
                             break;
-                        case Modifier::Type::AddFraction:
+                        case ModifierType::AddFraction:
                             modifierMap["add_fraction"] = modifierEntry.first->mValue;
                             break;
                     }

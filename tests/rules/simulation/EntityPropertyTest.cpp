@@ -226,3 +226,4 @@ int main()
 #include "../../stubs/common/stubRouter.h"
 #include "../../stubs/rules/simulation/stubBaseWorld.h"
 #include "../../stubs/rules/stubLocation.h"
+#include "../../stubs/common/stublog.h"

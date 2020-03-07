@@ -37,6 +37,7 @@ using Atlas::Objects::Operation::Update;
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 
+
 /// \brief Set of attribute names which must not be changed
 ///
 /// The attributes named are special and are modified using high level
@@ -163,6 +164,12 @@ int LocatedEntity::getAttrType(const std::string& name,
 /// @param attr Value to be stored
 PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
 {
+    auto parsedPropertyName = PropertyBase::parsePropertyModification(name);
+    return setAttr(parsedPropertyName.second, *Modifier::createModifier(parsedPropertyName.first, std::move(attr)));
+}
+
+PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& modifier)
+{
     if (!PropertyBase::isValidName(name)) {
         log(WARNING, String::compose("Tried to add a property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
         return nullptr;
@@ -171,15 +178,24 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
     PropertyBase* prop = nullptr;
     // If it is an existing property, just update the value.
     auto I = m_properties.find(name);
+    Atlas::Message::Element attr;
     if (I != m_properties.end()) {
         //Should we apply any modifiers?
         if (!I->second.modifiers.empty()) {
-            I->second.baseValue = attr;
+            if (modifier.getType() == ModifierType::Default) {
+                I->second.baseValue = modifier.mValue;
+            }
+            modifier.process(attr, I->second.baseValue);
             for (auto& modifierEntry : I->second.modifiers) {
                 modifierEntry.first->process(attr, I->second.baseValue);
             }
+        } else {
+            I->second.property->get(attr);
+            modifier.process(attr, attr);
         }
         prop = I->second.property.get();
+    } else {
+        modifier.process(attr, attr);
     }
     if (prop) {
         // Mark it as unclean
@@ -229,7 +245,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             I->second.property->get(I->second.baseValue);
         }
         I->second.modifiers.emplace_back(modifier, affectingEntity);
-        setAttr(propertyName, I->second.baseValue);
+        setAttr(propertyName, DefaultModifier(I->second.baseValue));
     } else {
 
         //Check if there's also a property in the type, and if so create a copy.
@@ -244,13 +260,13 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             //Copy the default value.
             typeI->second->get(modifiableProperty.baseValue);
             //Apply the new value
-            setAttr(propertyName, modifiableProperty.baseValue);
+            setAttr(propertyName, DefaultModifier(modifiableProperty.baseValue));
         } else {
             //We need to create a new modifier entry with a new property.
             auto& modifiableProperty = m_properties[propertyName];
             modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
             //Apply the new value
-            setAttr(propertyName, modifiableProperty.baseValue);
+            setAttr(propertyName, DefaultModifier(modifiableProperty.baseValue));
         }
     }
     Update update;
@@ -742,15 +758,31 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
 /// @param ent The Atlas map element containing the attribute values
 void LocatedEntity::merge(const MapType& ent)
 {
-    const std::set<std::string>& imm = immutables();
+    //Any modifiers that are not "default" should be applied lastly, after default values are applied.
+    std::vector<std::pair<std::string, std::unique_ptr<Modifier>>> modifiedAttributes;
     for (auto& entry : ent) {
         const std::string& key = entry.first;
         if (key.empty()) {
             continue;
         }
-        if (imm.find(key) != imm.end()) { continue; }
-        setAttr(key, entry.second);
+
+        auto parsedPropertyName = PropertyBase::parsePropertyModification(key);
+        auto modifier = Modifier::createModifier(parsedPropertyName.first, entry.second);
+
+        if (s_immutable.find(parsedPropertyName.second) != s_immutable.end()) {
+            continue;
+        }
+        if (modifier->getType() == ModifierType::Default) {
+            setAttr(key, *modifier);
+        } else {
+            modifiedAttributes.emplace_back(std::make_pair(parsedPropertyName.second, std::move(modifier)));
+        }
     }
+
+    for (auto& entry: modifiedAttributes) {
+        setAttr(entry.first, *entry.second);
+    }
+
 }
 
 std::string LocatedEntity::describeEntity() const

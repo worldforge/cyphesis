@@ -19,12 +19,31 @@
 #include "Modifier.h"
 #include <algorithm>
 
-void DefaultModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+
+std::unique_ptr<Modifier> Modifier::createModifier(ModifierType modificationType, Atlas::Message::Element attr)
+{
+    switch (modificationType) {
+        case ModifierType::Default:
+            return std::make_unique<DefaultModifier>(std::move(attr));
+        case ModifierType::Append:
+            return std::make_unique<AppendModifier>(std::move(attr));
+        case ModifierType::Prepend:
+            return std::make_unique<PrependModifier>(std::move(attr));
+        case ModifierType::Subtract:
+            return std::make_unique<SubtractModifier>(std::move(attr));
+        case ModifierType::AddFraction:
+            return std::make_unique<AddFractionModifier>(std::move(attr));
+        default:
+            return std::make_unique<DefaultModifier>(std::move(attr));
+    }
+}
+
+void DefaultModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
 {
     element = mValue;
 }
 
-void PrependModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+void PrependModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
 {
     if (element.isNone() || element.getType() != mValue.getType()) {
         element = mValue;
@@ -63,7 +82,7 @@ void PrependModifier::process(Atlas::Message::Element& element, const Atlas::Mes
     }
 }
 
-void AppendModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+void AppendModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
 {
     if (element.isNone() || element.getType() != mValue.getType()) {
         element = mValue;
@@ -97,7 +116,7 @@ void AppendModifier::process(Atlas::Message::Element& element, const Atlas::Mess
     }
 }
 
-void SubtractModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+void SubtractModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
 {
     switch (mValue.getType()) {
         case Atlas::Message::Element::TYPE_INT:
@@ -151,17 +170,17 @@ void SubtractModifier::process(Atlas::Message::Element& element, const Atlas::Me
     }
 }
 
-void AddFractionModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue)
+void AddFractionModifier::process(Atlas::Message::Element& element, const Atlas::Message::Element& baseValue) const
 {
-    switch (mValue.getType()) {
+    switch (baseValue.getType()) {
         case Atlas::Message::Element::TYPE_INT:
-            if (element.getType() == mValue.getType() && element.getType() == baseValue.getType()) {
-                element = element.Int() + (baseValue.Int() * mValue.Int());
+            if (element.isNum()) {
+                element = static_cast<Atlas::Message::IntType>( element.asNum() + (baseValue.asNum() * mValue.asNum()));
             }
             break;
         case Atlas::Message::Element::TYPE_FLOAT:
-            if (element.getType() == mValue.getType() && element.getType() == baseValue.getType()) {
-                element = element.Float() + (baseValue.Float() * mValue.Float());
+            if (element.isNum()) {
+                element = element.asNum() + (baseValue.asNum() * mValue.asNum());
             }
             break;
         case Atlas::Message::Element::TYPE_STRING:

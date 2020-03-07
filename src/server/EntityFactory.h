@@ -21,15 +21,6 @@
 
 #include "common/EntityKit.h"
 
-enum class ClassAttributeType
-{
-        DEFAULT,
-        APPEND,
-        PREPEND,
-        SUBTRACT
-};
-
-
 /**
  * An attribute of a class.
  */

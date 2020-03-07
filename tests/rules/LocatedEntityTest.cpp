@@ -343,6 +343,7 @@ int main()
 
 // stubs
 
+
 #include "common/TypeNode.h"
 
 #define STUB_SoftProperty_get
@@ -422,3 +423,5 @@ ContainsProperty * ContainsProperty::copy() const
 {
     return 0;
 }
+
+#include "../stubs/rules/stubModifier.h"

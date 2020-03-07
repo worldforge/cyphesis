@@ -18,6 +18,14 @@ PropertyBase::PropertyBase(unsigned int flags )
 }
 #endif //STUB_PropertyBase_PropertyBase
 
+#ifndef STUB_PropertyBase_parsePropertyModification
+#define STUB_PropertyBase_parsePropertyModification
+std::pair<ModifierType, std::string> PropertyBase::parsePropertyModification(const std::string& propertyName)
+{
+    return std::make_pair(ModifierType::Default, propertyName);
+}
+#endif //STUB_PropertyBase_parsePropertyModification
+
 #ifndef STUB_PropertyBase_add
 #define STUB_PropertyBase_add
 void PropertyBase::add(const std::string & s,

@@ -42,30 +42,67 @@ using Atlas::Message::ListType;
 
 // If tests fail, and print out the message below, you'll have to actually
 // implement this function to find out the details.
-std::ostream & operator<<(std::ostream & os, const MapType & v)
+std::ostream& operator<<(std::ostream& os, const MapType& v)
 {
     os << "[ATLAS_MAP]";
     return os;
 }
 
-std::ostream & operator<<(std::ostream & os,
-                          const std::map<std::string, ModifiableProperty>::const_iterator &)
+std::ostream& operator<<(std::ostream& os,
+                         const std::map<std::string, ModifiableProperty>::const_iterator&)
 {
     os << "[iterator]";
     return os;
 }
 
+namespace std {
+
+    std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& v);
+
+    std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& v)
+    {
+        switch (v.getType()) {
+            case Element::TYPE_NONE:
+                os << "None";
+                break;
+            case Element::TYPE_INT:
+                os << v.Int();
+                break;
+            case Element::TYPE_FLOAT:
+                os << v.Float();
+                break;
+            case Element::TYPE_PTR:
+                os << v.Ptr();
+                break;
+            case Element::TYPE_STRING:
+                os << v.String();
+                break;
+            case Element::TYPE_MAP:
+                os << "[Map]";
+                break;
+            case Element::TYPE_LIST:
+                os << "[List]";
+                break;
+            default:
+                os << "[Atlas Element]";
+        }
+        return os;
+    }
+
+}
+
+
 template<typename T>
 class test_values
 {
-  public:
-    static const char * name;
-    static T initial_value;
-    static T default_value;
+    public:
+        static const char* name;
+        static T initial_value;
+        static T default_value;
 };
 
 template<>
-const char * test_values<long>::name = "test_int";
+const char* test_values<long>::name = "test_int";
 
 template<>
 long test_values<long>::initial_value = 42;
@@ -74,7 +111,7 @@ template<>
 long test_values<long>::default_value = 23;
 
 template<>
-const char * test_values<double>::name = "test_float";
+const char* test_values<double>::name = "test_float";
 
 template<>
 double test_values<double>::initial_value = 69.5;
@@ -83,45 +120,45 @@ template<>
 double test_values<double>::default_value = 17.5;
 
 template<>
-const char * test_values<std::string>::name = "test_string";
+const char* test_values<std::string>::name = "test_string";
 
 template<>
 std::string test_values<std::string>::initial_value =
-      "1356ebe4-220d-46a7-8c69-73f787f6b1ff";
+        "1356ebe4-220d-46a7-8c69-73f787f6b1ff";
 
 template<>
 std::string test_values<std::string>::default_value =
-      "1423a858-f7c6-4b3c-8b0b-726af6dcbeff";
+        "1423a858-f7c6-4b3c-8b0b-726af6dcbeff";
 
 template<>
-const char * test_values<MapType>::name = "test_map";
+const char* test_values<MapType>::name = "test_map";
 
 template<>
 MapType test_values<MapType>::initial_value = {
-    std::make_pair("map_int", 23),
-    std::make_pair("map_float", 17.5f),
+        std::make_pair("map_int", 23),
+        std::make_pair("map_float", 17.5f),
 };
 
 template<>
 MapType test_values<MapType>::default_value = {
-    std::make_pair("map_int", 42l),
-    std::make_pair("map_float", 69.5f),
+        std::make_pair("map_int", 42l),
+        std::make_pair("map_float", 69.5f),
 };
 
 class TestPropertyManager : public PropertyManager
 {
-  public:
-    virtual ~TestPropertyManager();
+    public:
+        virtual ~TestPropertyManager();
 
-    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type);
+        virtual std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type);
 };
 
 TestPropertyManager::~TestPropertyManager()
 {
 }
 
-std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
-                                                int type)
+std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string& name,
+                                                               int type)
 {
     if (name == test_values<long>::name) {
         return std::make_unique<Property<long>>();
@@ -136,139 +173,251 @@ std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string
     }
 }
 
-class PropertyEntityintegration : public Cyphesis::TestBase
+struct TestEntity : Entity
 {
-  private:
-    TypeNode * m_type;
-    Ref<Entity> m_entity;
-  public:
-    PropertyEntityintegration();
+    explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+    {}
 
-    void setup();
-    void teardown();
+    std::map<std::string, ModifiableProperty>& modProperties()
+    { return m_properties; }
 
-    template<class T>
-    void test_requirePropertyClass();
+    void sendWorld(Operation op) override
+    {
+        //no-op
+    }
 
-    template<class T>
-    void test_requirePropertyClass_default();
-
-    template<class T>
-    void test_modProperty();
-
-    template<class T>
-    void test_modPropertyClass();
-
-        TestPropertyManager* propertyManager;
 };
 
-template<class T>
-void PropertyEntityintegration::test_requirePropertyClass()
+
+struct PropertyEntityintegration : public Cyphesis::TestBase
 {
-    auto p = m_entity->requirePropertyClass<Property<T>>("bill");
-    ASSERT_NOT_NULL(p);
-}
+    TypeNode* m_type;
+    Ref<TestEntity> m_entity;
 
-template<class T>
-void PropertyEntityintegration::test_requirePropertyClass_default()
-{
-    auto p = m_entity->requirePropertyClass<Property<T>>("bill",
-          Element(test_values<T>::default_value));
-    ASSERT_EQUAL(p->data(), test_values<T>::default_value);
-}
+    PropertyEntityintegration()
+    {
+        ADD_TEST(PropertyEntityintegration::test_setAttrInt);
+        ADD_TEST(PropertyEntityintegration::test_setAttrIntWithModifiers);
+        ADD_TEST(PropertyEntityintegration::test_setAttrList);
 
-template<class T>
-void PropertyEntityintegration::test_modProperty()
-{
-    // Get a pointer to the types default property
-    auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
-    ASSERT_TRUE(dflt);
-    ASSERT_TRUE(dflt->flags().m_flags & prop_flag_class);
 
-    // The entity instance should not have a property by this name
-    ASSERT_EQUAL(m_entity->m_properties.find(test_values<T>::name),
-                 m_entity->m_properties.end());
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<long>);
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<double>);
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<std::string>);
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<MapType>);
 
-    PropertyBase * p = m_entity->modProperty(test_values<T>::name);
-    ASSERT_NOT_NULL(p);
-    ASSERT_TRUE((p->flags().m_flags & prop_flag_class) == 0);
-    // modProperty should have forced a new object
-    ASSERT_NOT_EQUAL(p, dflt.get());
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<long>);
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<double>);
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<std::string>);
+        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<MapType>);
 
-    auto subp = dynamic_cast<Property<T> *>(p);
-    ASSERT_NOT_NULL(subp);
-}
+        ADD_TEST(PropertyEntityintegration::test_modProperty<long>);
+        ADD_TEST(PropertyEntityintegration::test_modProperty<double>);
+        ADD_TEST(PropertyEntityintegration::test_modProperty<std::string>);
+        ADD_TEST(PropertyEntityintegration::test_modProperty<MapType>);
 
-template<class T>
-void PropertyEntityintegration::test_modPropertyClass()
-{
-    // Get a pointer to the types default property
-    auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
-    ASSERT_TRUE(dflt);
-    ASSERT_TRUE(dflt->flags().m_flags & prop_flag_class);
+        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<long>);
+        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<double>);
+        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<std::string>);
+        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<MapType>);
+    }
 
-    // The entity instance should not have a property by this name
-    ASSERT_EQUAL(m_entity->m_properties.find(test_values<T>::name),
-                 m_entity->m_properties.end());
 
-    auto p = m_entity->modPropertyClass<Property<T>>(
-        test_values<T>::name
-    );
-    ASSERT_NOT_NULL(p);
-    ASSERT_TRUE((p->flags().m_flags & prop_flag_class) == 0);
-    // modProperty should have forced a new object
-    ASSERT_NOT_EQUAL(p, dflt.get());
-    
-    ASSERT_EQUAL(p->data(), test_values<T>::initial_value);
-}
+    void setup()
+    {
+        propertyManager = new TestPropertyManager;
+        m_type = new TypeNode("test_type");
+        m_type->addProperties(MapType{
+                std::make_pair(test_values<long>::name,
+                               test_values<long>::initial_value),
+                std::make_pair(test_values<double>::name,
+                               test_values<double>::initial_value),
+                std::make_pair(test_values<std::string>::name,
+                               test_values<std::string>::initial_value),
+                std::make_pair(test_values<MapType>::name,
+                               test_values<MapType>::initial_value)
+        });
+        m_entity = new TestEntity("1", 1L);
+        m_entity->setType(m_type);
+    }
 
-PropertyEntityintegration::PropertyEntityintegration()
-{
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<long>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<double>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<std::string>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<MapType>);
 
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<long>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<double>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<std::string>);
-    ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<MapType>);
+    void teardown()
+    {
+        m_entity = nullptr;
+        delete m_type;
+        delete propertyManager;
+    }
 
-    ADD_TEST(PropertyEntityintegration::test_modProperty<long>);
-    ADD_TEST(PropertyEntityintegration::test_modProperty<double>);
-    ADD_TEST(PropertyEntityintegration::test_modProperty<std::string>);
-    ADD_TEST(PropertyEntityintegration::test_modProperty<MapType>);
+    void test_setAttrInt()
+    {
+        Atlas::Message::Element element;
 
-    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<long>);
-    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<double>);
-    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<std::string>);
-    ADD_TEST(PropertyEntityintegration::test_modPropertyClass<MapType>);
-}
+        m_entity->setAttr("foo", 1);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 1);
 
-void PropertyEntityintegration::setup()
-{
-    propertyManager = new TestPropertyManager;
-    m_type = new TypeNode("test_type");
-    m_type->addProperties(MapType{
-        std::make_pair(test_values<long>::name,
-                       test_values<long>::initial_value),
-        std::make_pair(test_values<double>::name,
-                       test_values<double>::initial_value),
-        std::make_pair(test_values<std::string>::name,
-                       test_values<std::string>::initial_value),
-        std::make_pair(test_values<MapType>::name,
-                       test_values<MapType>::initial_value)
-    });
-    m_entity = new Entity("1", 1L);
-    m_entity->setType(m_type);
-}
+        m_entity->setAttr("foo", 2);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 2);
 
-void PropertyEntityintegration::teardown()
-{
-    m_entity = nullptr;
-    delete m_type;
-    delete propertyManager;
-}
+        m_entity->setAttr("foo!append", 2);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 4);
+
+        m_entity->setAttr("foo!prepend", 2);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 6);
+
+        m_entity->setAttr("foo!subtract", 3);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 3);
+    }
+
+    void test_setAttrIntWithModifiers()
+    {
+        Atlas::Message::Element element;
+
+        AppendModifier appendModifier(1);
+
+        m_entity->addModifier("foo", &appendModifier, m_entity.get());
+
+        m_entity->setAttr("foo", 1);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 2);
+
+
+        AddFractionModifier addFractionModifier(2.0);
+        m_entity->addModifier("foo", &addFractionModifier, m_entity.get());
+
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 4);
+
+
+        m_entity->setAttr("foo", 6);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 19);
+
+
+        m_entity->removeModifier("foo", &addFractionModifier);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, 7);
+    }
+
+
+    void test_setAttrList()
+    {
+        Atlas::Message::Element element;
+
+        Atlas::Message::ListType list;
+        list.emplace_back(1);
+        m_entity->setAttr("foo", list);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, list);
+
+        list.emplace_back(2);
+
+        m_entity->setAttr("foo", list);
+        m_entity->getAttr("foo", element);
+        ASSERT_EQUAL(element, list);
+
+        list.clear();
+        list.emplace_back(4);
+        m_entity->setAttr("foo!append", list);
+        m_entity->getAttr("foo", element);
+        Atlas::Message::ListType correctList;
+        correctList.emplace_back(1);
+        correctList.emplace_back(2);
+        correctList.emplace_back(4);
+        ASSERT_EQUAL(element, correctList);
+
+        list.clear();
+        list.emplace_back(2);
+        m_entity->setAttr("foo!prepend", list);
+        m_entity->getAttr("foo", element);
+        correctList.clear();
+        correctList.emplace_back(2);
+        correctList.emplace_back(1);
+        correctList.emplace_back(2);
+        correctList.emplace_back(4);
+        ASSERT_EQUAL(element, correctList);
+
+
+        list.clear();
+        list.emplace_back(4);
+        m_entity->setAttr("foo!subtract", list);
+        m_entity->getAttr("foo", element);
+        correctList.clear();
+        correctList.emplace_back(2);
+        correctList.emplace_back(1);
+        correctList.emplace_back(2);
+        ASSERT_EQUAL(element, correctList);
+    }
+
+    template<class T>
+    void test_requirePropertyClass()
+    {
+        auto p = m_entity->requirePropertyClass<Property<T>>("bill");
+        ASSERT_NOT_NULL(p);
+    }
+
+    template<class T>
+    void test_requirePropertyClass_default()
+    {
+        auto p = m_entity->requirePropertyClass<Property<T>>("bill",
+                                                             Element(test_values<T>::default_value));
+        ASSERT_EQUAL(p->data(), test_values<T>::default_value);
+    }
+
+    template<class T>
+    void test_modProperty()
+    {
+        // Get a pointer to the types default property
+        auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
+        ASSERT_TRUE(dflt);
+        ASSERT_TRUE(dflt->flags().m_flags & prop_flag_class);
+
+        // The entity instance should not have a property by this name
+        ASSERT_EQUAL(m_entity->getProperties().find(test_values<T>::name),
+                     m_entity->getProperties().end());
+
+        PropertyBase* p = m_entity->modProperty(test_values<T>::name);
+        ASSERT_NOT_NULL(p);
+        ASSERT_TRUE((p->flags().m_flags & prop_flag_class) == 0);
+        // modProperty should have forced a new object
+        ASSERT_NOT_EQUAL(p, dflt.get());
+
+        auto subp = dynamic_cast<Property<T>*>(p);
+        ASSERT_NOT_NULL(subp);
+    }
+
+    template<class T>
+    void test_modPropertyClass()
+    {
+        // Get a pointer to the types default property
+        auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
+        ASSERT_TRUE(dflt);
+        ASSERT_TRUE(dflt->flags().m_flags & prop_flag_class);
+
+        // The entity instance should not have a property by this name
+        ASSERT_EQUAL(m_entity->getProperties().find(test_values<T>::name),
+                     m_entity->getProperties().end());
+
+        auto p = m_entity->modPropertyClass<Property<T>>(
+                test_values<T>::name
+        );
+        ASSERT_NOT_NULL(p);
+        ASSERT_TRUE((p->flags().m_flags & prop_flag_class) == 0);
+        // modProperty should have forced a new object
+        ASSERT_NOT_EQUAL(p, dflt.get());
+
+        ASSERT_EQUAL(p->data(), test_values<T>::initial_value);
+    }
+
+
+    TestPropertyManager* propertyManager;
+};
+
 
 int main()
 {
@@ -287,15 +436,13 @@ int main()
 #include "common/id.h"
 
 
-
-
 #include "../stubs/common/stubVariable.h"
 #include "../stubs/common/stubMonitors.h"
 #include "../stubs/common/stubcustom.h"
 #include "../stubs/rules/stubDomain.h"
 #include "../stubs/rules/simulation/stubDomainProperty.h"
 
-void addToEntity(const Point3D & p, std::vector<double> & vd)
+void addToEntity(const Point3D& p, std::vector<double>& vd)
 {
     vd.resize(3);
     vd[0] = p[0];
@@ -305,7 +452,8 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
+
+Ref<LocatedEntity> BaseWorld::getEntity(const std::string& id) const
 {
     return getEntity(integerId(id));
 }
@@ -320,6 +468,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
         return nullptr;
     }
 }
+
 #endif //STUB_BaseWorld_getEntity
 
 #include "../stubs/rules/simulation/stubBaseWorld.h"

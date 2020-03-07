@@ -109,6 +109,39 @@ int main()
     assert(PropertyBase::flagsForPropertyName("foo_") == 0);
     assert(PropertyBase::flagsForPropertyName("f_oo") == 0);
 
+    auto parsed = PropertyBase::parsePropertyModification("foo");
+    assert(parsed.first == ModifierType::Default);
+    assert(parsed.second == "foo");
+
+    parsed = PropertyBase::parsePropertyModification("foo!");
+    assert(parsed.first == ModifierType::Default);
+    assert(parsed.second == "foo!");
+
+    parsed = PropertyBase::parsePropertyModification("foo!fdsfds");
+    assert(parsed.first == ModifierType::Default);
+    assert(parsed.second == "foo!fdsfds");
+
+    parsed = PropertyBase::parsePropertyModification("foo!default");
+    assert(parsed.first == ModifierType::Default);
+    assert(parsed.second == "foo");
+
+    parsed = PropertyBase::parsePropertyModification("foo!append");
+    assert(parsed.first == ModifierType::Append);
+    assert(parsed.second == "foo");
+
+    parsed = PropertyBase::parsePropertyModification("foo!prepend");
+    assert(parsed.first == ModifierType::Prepend);
+    assert(parsed.second == "foo");
+
+    parsed = PropertyBase::parsePropertyModification("foo!subtract");
+    assert(parsed.first == ModifierType::Subtract);
+    assert(parsed.second == "foo");
+
+    parsed = PropertyBase::parsePropertyModification("foo!add-fraction");
+    assert(parsed.first == ModifierType::AddFraction);
+    assert(parsed.second == "foo");
+
+
     Element val;
 
     {
@@ -230,3 +263,5 @@ int main()
         delete pb;
     }
 }
+
+#include "../stubs/common/stublog.h"

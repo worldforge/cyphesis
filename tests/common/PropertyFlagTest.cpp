@@ -145,4 +145,5 @@ int fromStdVector<double>(Vector3D & v, const std::vector<double> & vf)
     return 0;
 }
 
+#include "../stubs/rules/stubModifier.h"
 #include "../stubs/common/stublog.h"

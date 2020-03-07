@@ -423,4 +423,5 @@ int PropertyManager::installFactory(const std::string & type_name, const Atlas::
 }
 
 #include "../../stubs/common/stubPropertyManager.h"
+#include "../../stubs/rules/stubModifier.h"
 

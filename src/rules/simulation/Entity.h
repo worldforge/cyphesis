@@ -32,8 +32,8 @@ struct OperationsListener;
 /// This class provides hard-coded attributes which are common to most
 /// in game objects, the dynamic attributes map, and a means to access both
 /// transparently without needing to know which are which.
-/// This is now also intended to be the base for in-game persistance.
-/// It implements the basic types required for persistance.
+/// This is now also intended to be the base for in-game persistence.
+/// It implements the basic types required for persistence.
 /// \ingroup EntityClasses
 class Entity : public LocatedEntity
 {
@@ -119,10 +119,6 @@ class Entity : public LocatedEntity
 
         Ref<LocatedEntity> createNewEntity(const Atlas::Objects::Entity::RootEntity& entity);
         Ref<LocatedEntity> createNewEntity(const Operation& op, OpVector& res);
-
-        friend class Entitytest;
-
-        friend class PropertyEntityintegration;
 };
 
 inline std::ostream& operator<<(std::ostream& s, Location& v)

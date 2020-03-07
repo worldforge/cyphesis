@@ -90,6 +90,14 @@
   }
 #endif //STUB_LocatedEntity_setAttr
 
+#ifndef STUB_LocatedEntity_setAttr
+//#define STUB_LocatedEntity_setAttr
+  PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& modifier)
+  {
+    return nullptr;
+  }
+#endif //STUB_LocatedEntity_setAttr
+
 #ifndef STUB_LocatedEntity_getProperty
 //#define STUB_LocatedEntity_getProperty
   const PropertyBase* LocatedEntity::getProperty(const std::string& name) const

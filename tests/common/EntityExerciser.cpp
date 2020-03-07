@@ -77,9 +77,7 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
     attr_types.insert(Atlas::Message::Element::TYPE_LIST);
 }
 
-EntityExerciser::~EntityExerciser()
-{
-}
+EntityExerciser::~EntityExerciser() = default;
 
 void EntityExerciser::dispatchOp(const Atlas::Objects::Operation::RootOperation&op)
 {
@@ -93,8 +91,8 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
 {
     Atlas::Message::Element null;
     bool res = true;
-    std::set<std::string>::const_iterator I = attr_names.begin();
-    std::set<std::string>::const_iterator Iend = attr_names.end();
+    auto I = attr_names.begin();
+    auto Iend = attr_names.end();
     for (; I != Iend; ++I) {
         if (this->m_ent->getAttr(*I, null) != 0) {
             std::cerr << "Entity does not have \"" << *I << "\" attribute."
@@ -106,8 +104,8 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
                       << std::endl << std::flush;
             res = false;
         }
-        std::set<int>::const_iterator J = attr_types.begin();
-        std::set<int>::const_iterator Jend = attr_types.end();
+        auto J = attr_types.begin();
+        auto Jend = attr_types.end();
         for (; J != Jend; ++J) {
             this->m_ent->getAttrType(*I, null, *J);
         }
@@ -117,8 +115,8 @@ bool EntityExerciser::checkAttributes(const std::set<std::string> & attr_names)
 
 bool EntityExerciser::checkProperties(const std::set<std::string> & prop_names)
 {
-    std::set<std::string>::const_iterator I = prop_names.begin();
-    std::set<std::string>::const_iterator Iend = prop_names.end();
+    auto I = prop_names.begin();
+    auto Iend = prop_names.end();
     for (; I != Iend; ++I) {
     }
     return true;

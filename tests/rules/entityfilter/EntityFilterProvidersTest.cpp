@@ -580,4 +580,5 @@ int main()
 #include "../../stubs/rules/stubLocation.h"
 #include "../../stubs/rules/simulation/stubModeProperty.h"
 #include "../../stubs/common/stublog.h"
+#include "../../stubs/rules/stubModifier.h"
 

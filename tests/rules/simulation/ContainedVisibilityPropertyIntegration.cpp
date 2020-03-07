@@ -116,3 +116,4 @@ void addToEntity(const Point3D& p, std::vector<double>& vd)
 #include "../../stubs/common/stubRouter.h"
 #include "../../stubs/common/stubid.h"
 #include "../../stubs/common/stublog.h"
+#include "../../stubs/rules/stubModifier.h"

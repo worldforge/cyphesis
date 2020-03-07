@@ -359,7 +359,8 @@ target_link_libraries(TerrainPropertyIntegration modules physics)
 wf_add_test(rules/PropertyEntityIntegration.cpp ../src/rules/simulation/Entity.cpp
     ../src/rules/LocatedEntity.cpp
     ../src/common/Property.cpp
-    ../src/common/TypeNode.cpp)
+    ../src/common/TypeNode.cpp
+    ../src/rules/Modifier.cpp)
 wf_add_test(rules/TerrainModPropertyIntegration.cpp ../src/rules/simulation/Entity.cpp
     ../src/rules/LocatedEntity.cpp
     ../src/rules/simulation/TerrainEffectorProperty.cpp

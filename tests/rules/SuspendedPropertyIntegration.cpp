@@ -227,3 +227,4 @@ void BaseWorld::setIsSuspended(bool suspended)
 
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 #include "../stubs/common/stublog.h"
+#include "../stubs/rules/stubModifier.h"
