@@ -17,38 +17,10 @@
                     <string name="$eid">pants</string>
                 </map>
                 <float name="status">1</float>
-                <list name="__scripts">
+                <list name="__scripts!prepend">
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.PlayerControlled.PlayerControlled</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.DecaysInto.DecaysInto</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Hittable.Hittable</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Metabolizing.Metabolizing</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Nourishable.Nourishable</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.StatusDeletable.StatusDeletable</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Immortality.Immortality</string>
-                    </map>
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.Levelable.Levelable</string>
                     </map>
                 </list>
             </map>
@@ -84,7 +56,7 @@
                 <string name="parent">human</string>
             </map>
         </list>
-        <list name="_relations">
+        <list name="_relations!prepend">
             <!-- Flee from dangerous animals. -->
             <map>
                 <string name="filter">entity.type=types.wolf|types.goblin|types.bear|types.skeleton|types.lych</string>
@@ -288,7 +260,7 @@
                 <string name="parent">shield</string>
             </map>
         </list>
-        <list name="_relations">
+        <list name="_relations!prepend">
             <!-- Fight dangerous animals. -->
             <map>
                 <string name="filter">entity.type=types.wolf|types.goblin|types.bear|types.skeleton|types.lych</string>
