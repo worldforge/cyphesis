@@ -40,36 +40,37 @@ using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Look;
 using Atlas::Objects::Operation::Set;
 using Atlas::Message::Element;
+namespace {
+    class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
+    {
+        private:
+            void objectArrived(const Atlas::Objects::Root& obj) override
+            {
+                m_check = true;
+                m_obj = obj;
+            }
 
-class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
-{
-    private:
-        void objectArrived(const Atlas::Objects::Root& obj) override
-        {
-            m_check = true;
-            m_obj = obj;
-        }
+            bool m_check;
+            Atlas::Objects::Root m_obj;
+        public:
+            ObjectDecoder(const Atlas::Objects::Factories& factories) :
+                    ObjectsDecoder(factories),
+                    m_check(false)
+            {
+            }
 
-        bool m_check;
-        Atlas::Objects::Root m_obj;
-    public:
-        ObjectDecoder(const Atlas::Objects::Factories& factories) :
-            ObjectsDecoder(factories),
-            m_check(false)
-        {
-        }
+            bool check() const
+            {
+                return m_check;
+            }
 
-        bool check() const
-        {
-            return m_check;
-        }
-
-        const Atlas::Objects::Root& get()
-        {
-            m_check = false;
-            return m_obj;
-        }
-};
+            const Atlas::Objects::Root& get()
+            {
+                m_check = false;
+                return m_obj;
+            }
+    };
+}
 
 EntityImporter::EntityImporter(const std::string& accountId,
                                const std::string& avatarId) :

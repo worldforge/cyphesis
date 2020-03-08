@@ -7,14 +7,6 @@
 #include "server/EntityBuilder.h"
 #include "stubEntityBuilder_custom.h"
 
-#ifndef STUB_EntityBuilder_installBaseFactory
-//#define STUB_EntityBuilder_installBaseFactory
-  void EntityBuilder::installBaseFactory(const std::string & class_name, const std::string & parent, std::unique_ptr<EntityKit> factory)
-  {
-    
-  }
-#endif //STUB_EntityBuilder_installBaseFactory
-
 #ifndef STUB_EntityBuilder_EntityBuilder
 //#define STUB_EntityBuilder_EntityBuilder
    EntityBuilder::EntityBuilder()
@@ -62,6 +54,14 @@
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_newChildEntity
+
+#ifndef STUB_EntityBuilder_installBaseFactory
+//#define STUB_EntityBuilder_installBaseFactory
+  void EntityBuilder::installBaseFactory(const std::string & class_name, const std::string & parent, std::unique_ptr<EntityKit> factory)
+  {
+    
+  }
+#endif //STUB_EntityBuilder_installBaseFactory
 
 #ifndef STUB_EntityBuilder_flushFactories
 //#define STUB_EntityBuilder_flushFactories

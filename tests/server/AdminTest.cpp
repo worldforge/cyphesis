@@ -72,13 +72,6 @@ std::ostream & operator<<(std::ostream & os,
     return os;
 }
 
-std::ostream & operator<<(std::ostream & os,
-                          const Element & e)
-{
-    debug_dump(e, os);
-    return os;
-}
-
 class TestObject : public ConnectableRouter
 {
   public:

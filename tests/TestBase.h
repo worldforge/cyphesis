@@ -28,11 +28,34 @@
 
 #include "common/compose.hpp"
 
+#include <Atlas/Message/Element.h>
+
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
 #include <iostream>
 #include <cmath>
+
+//debug.cpp is linked to all tests, but we don't want to include debug.h since the "debug" macro creates conflicts.
+template <typename T>
+void debug_dump(const T & t, std::ostream &);
+
+// If tests fail, and print out the message below, you'll have to actually
+// implement this function to find out the details.
+std::ostream& operator<<(std::ostream& os, const Atlas::Message::MapType& v)
+{
+    os << "[ATLAS_MAP]";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os,
+                         const Atlas::Message::Element& e)
+{
+    debug_dump(e, os);
+    return os;
+}
+
+
 
 namespace Cyphesis {
 

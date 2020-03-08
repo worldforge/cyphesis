@@ -422,6 +422,17 @@ wf_add_test(client/ClientConnectionIntegration.cpp ../src/client/cyclient/Client
 
 # SERVER_TESTS
 
+wf_add_test(server/ArchetypeFactoryIntegrationTest.cpp
+        ../src/server/ArchetypeFactory.cpp
+        ../src/server/ArchetypeRuleHandler.cpp
+        ../src/server/EntityBuilder.cpp
+        ../src/server/EntityFactory.cpp
+        ../src/server/EntityRuleHandler.cpp
+        ../src/server/SpawnEntity.cpp
+        ../src/server/ArithmeticBuilder.cpp
+        ../src/server/CorePropertyManager.cpp)
+target_link_libraries(ArchetypeFactoryIntegrationTest modules physics common pycxx rulesbase ${PYTHON_TESTS_LIBS})
+
 wf_add_test(server/RulesetTest.cpp ../src/server/Ruleset.cpp)
 wf_add_test(server/EntityBuilderTest.cpp ../src/server/EntityBuilder.cpp)
 wf_add_test(common/PropertyFlagTest.cpp TestPropertyManager.cpp ../src/rules/simulation/Thing.cpp

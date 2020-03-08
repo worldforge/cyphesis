@@ -194,8 +194,6 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& mo
             modifier.process(attr, attr);
         }
         prop = I->second.property.get();
-    } else {
-        modifier.process(attr, attr);
     }
     if (prop) {
         // Mark it as unclean
@@ -205,6 +203,8 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& mo
         std::map<std::string, std::unique_ptr<PropertyBase>>::const_iterator J;
         if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
             prop = J->second->copy();
+            prop->get(attr);
+            modifier.process(attr, attr);
             prop->set(attr);
             m_properties[name].property.reset(prop);
         } else {
@@ -213,6 +213,8 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& mo
             auto newProp = PropertyManager::instance().addProperty(name, attr.getType());
             prop = newProp.get();
             m_properties[name].property = std::move(newProp);
+            prop->get(attr);
+            modifier.process(attr, attr);
             prop->set(attr);
             prop->install(this, name);
         }

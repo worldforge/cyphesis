@@ -36,13 +36,6 @@
 #include <cassert>
 #include "common/debug.h"
 
-std::ostream& operator<<(std::ostream& os,
-                         const Atlas::Message::Element& e)
-{
-    debug_dump(e, os);
-    return os;
-}
-
 class TestScriptFactory : public ScriptKit<LocatedEntity>
 {
     protected:

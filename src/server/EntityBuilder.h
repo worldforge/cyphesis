@@ -46,9 +46,6 @@ class EntityBuilder {
 
     FactoryDict m_entityFactories;
 
-    void installBaseFactory(const std::string & class_name,
-                            const std::string & parent,
-                            std::unique_ptr<EntityKit> factory);
 
   public:
     explicit EntityBuilder();
@@ -68,6 +65,10 @@ class EntityBuilder {
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs,
                               LocatedEntity & parentEntity) const;
+
+    void installBaseFactory(const std::string & class_name,
+                            const std::string & parent,
+                            std::unique_ptr<EntityKit> factory);
     void flushFactories();
 
 

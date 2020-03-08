@@ -58,7 +58,10 @@ ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& o)
 
 ArchetypeFactory::~ArchetypeFactory() = default;
 
-Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string& id, long intId, EntityCreation& entityCreation, LocatedEntity* location,
+Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string& id,
+                                                  long intId,
+                                                  EntityCreation& entityCreation,
+                                                  LocatedEntity* location,
                                                   std::map<std::string, EntityCreation>& entities)
 {
     auto& attributes = entityCreation.definition;
@@ -75,6 +78,7 @@ Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string& id, long in
         }
     }
 
+    //TODO: allow for invalid position, as non-physical domains don't use them.
     //If no position is set, make sure it's zeroed
     if (cleansedAttributes->isDefaultPos()) {
         ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());

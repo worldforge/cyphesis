@@ -40,57 +40,12 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-// If tests fail, and print out the message below, you'll have to actually
-// implement this function to find out the details.
-std::ostream& operator<<(std::ostream& os, const MapType& v)
-{
-    os << "[ATLAS_MAP]";
-    return os;
-}
-
 std::ostream& operator<<(std::ostream& os,
                          const std::map<std::string, ModifiableProperty>::const_iterator&)
 {
     os << "[iterator]";
     return os;
 }
-
-namespace std {
-
-    std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& v);
-
-    std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& v)
-    {
-        switch (v.getType()) {
-            case Element::TYPE_NONE:
-                os << "None";
-                break;
-            case Element::TYPE_INT:
-                os << v.Int();
-                break;
-            case Element::TYPE_FLOAT:
-                os << v.Float();
-                break;
-            case Element::TYPE_PTR:
-                os << v.Ptr();
-                break;
-            case Element::TYPE_STRING:
-                os << v.String();
-                break;
-            case Element::TYPE_MAP:
-                os << "[Map]";
-                break;
-            case Element::TYPE_LIST:
-                os << "[List]";
-                break;
-            default:
-                os << "[Atlas Element]";
-        }
-        return os;
-    }
-
-}
-
 
 template<typename T>
 class test_values
@@ -189,37 +144,37 @@ struct TestEntity : Entity
 };
 
 
-struct PropertyEntityintegration : public Cyphesis::TestBase
+struct PropertyEntityIntegration : public Cyphesis::TestBase
 {
     TypeNode* m_type;
     Ref<TestEntity> m_entity;
 
-    PropertyEntityintegration()
+    PropertyEntityIntegration()
     {
-        ADD_TEST(PropertyEntityintegration::test_setAttrInt);
-        ADD_TEST(PropertyEntityintegration::test_setAttrIntWithModifiers);
-        ADD_TEST(PropertyEntityintegration::test_setAttrList);
+        ADD_TEST(PropertyEntityIntegration::test_setAttrInt);
+        ADD_TEST(PropertyEntityIntegration::test_setAttrIntWithModifiers);
+        ADD_TEST(PropertyEntityIntegration::test_setAttrList);
 
 
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<long>);
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<double>);
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<std::string>);
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass<MapType>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass<long>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass<double>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass<std::string>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass<MapType>);
 
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<long>);
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<double>);
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<std::string>);
-        ADD_TEST(PropertyEntityintegration::test_requirePropertyClass_default<MapType>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass_default<long>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass_default<double>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass_default<std::string>);
+        ADD_TEST(PropertyEntityIntegration::test_requirePropertyClass_default<MapType>);
 
-        ADD_TEST(PropertyEntityintegration::test_modProperty<long>);
-        ADD_TEST(PropertyEntityintegration::test_modProperty<double>);
-        ADD_TEST(PropertyEntityintegration::test_modProperty<std::string>);
-        ADD_TEST(PropertyEntityintegration::test_modProperty<MapType>);
+        ADD_TEST(PropertyEntityIntegration::test_modProperty<long>);
+        ADD_TEST(PropertyEntityIntegration::test_modProperty<double>);
+        ADD_TEST(PropertyEntityIntegration::test_modProperty<std::string>);
+        ADD_TEST(PropertyEntityIntegration::test_modProperty<MapType>);
 
-        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<long>);
-        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<double>);
-        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<std::string>);
-        ADD_TEST(PropertyEntityintegration::test_modPropertyClass<MapType>);
+        ADD_TEST(PropertyEntityIntegration::test_modPropertyClass<long>);
+        ADD_TEST(PropertyEntityIntegration::test_modPropertyClass<double>);
+        ADD_TEST(PropertyEntityIntegration::test_modPropertyClass<std::string>);
+        ADD_TEST(PropertyEntityIntegration::test_modPropertyClass<MapType>);
     }
 
 
@@ -421,7 +376,7 @@ struct PropertyEntityintegration : public Cyphesis::TestBase
 
 int main()
 {
-    PropertyEntityintegration t;
+    PropertyEntityIntegration t;
 
     return t.run();
 }

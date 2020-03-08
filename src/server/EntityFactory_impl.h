@@ -21,28 +21,29 @@
 
 #include "EntityFactory.h"
 
-template <class T>
-EntityFactory<T>::EntityFactory(EntityFactory<T> & o)
+template<class T>
+EntityFactory<T>::EntityFactory(EntityFactory<T>& o)
 {
 }
 
-template <class T>
+template<class T>
 EntityFactory<T>::EntityFactory() = default;
 
-template <class T>
+template<class T>
 EntityFactory<T>::~EntityFactory() = default;
 
-template <class T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+template<class T>
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId,
+                                               const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
 {
     ++m_createdCount;
-    auto* thing = new T(id, intId);
+    //Important that we create a ref as soon as possible, so we have a positive ref count.
+    Ref<T> thing(new T(id, intId));
     initializeEntity(*thing, attributes, location);
     return thing;
 }
 
-template <class T>
+template<class T>
 std::unique_ptr<EntityFactoryBase> EntityFactory<T>::duplicateFactory()
 {
     auto f = std::unique_ptr<EntityFactory<T>>(new EntityFactory<T>(*this));

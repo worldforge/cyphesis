@@ -41,7 +41,7 @@
 
 #ifndef STUB_ArchetypeRuleHandler_install
 //#define STUB_ArchetypeRuleHandler_install
-  int ArchetypeRuleHandler::install(const std::string&, const std::string&, const Atlas::Objects::Root& desc, std::string&, std::string&, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int ArchetypeRuleHandler::install(const std::string& name, const std::string& parent, const Atlas::Objects::Root& description, std::string& dependent, std::string& reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_ArchetypeRuleHandler_update
 //#define STUB_ArchetypeRuleHandler_update
-  int ArchetypeRuleHandler::update(const std::string&, const Atlas::Objects::Root& desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int ArchetypeRuleHandler::update(const std::string& name, const Atlas::Objects::Root& desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

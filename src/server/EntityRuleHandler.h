@@ -68,14 +68,14 @@ class EntityRuleHandler : public RuleHandler
 
         int check(const Atlas::Objects::Root& desc) override;
 
-        int install(const std::string&,
-                    const std::string&,
+        int install(const std::string& class_name,
+                    const std::string& parent,
                     const Atlas::Objects::Root& desc,
-                    std::string&,
-                    std::string&,
+                    std::string& dependent,
+                    std::string& reason,
                     std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 
-        int update(const std::string&,
+        int update(const std::string& name,
                    const Atlas::Objects::Root& desc,
                    std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
 

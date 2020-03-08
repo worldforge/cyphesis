@@ -58,7 +58,7 @@
 
 #ifndef STUB_EntityRuleHandler_install
 //#define STUB_EntityRuleHandler_install
-  int EntityRuleHandler::install(const std::string&, const std::string&, const Atlas::Objects::Root& desc, std::string&, std::string&, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int EntityRuleHandler::install(const std::string& class_name, const std::string& parent, const Atlas::Objects::Root& desc, std::string& dependent, std::string& reason, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }
@@ -66,7 +66,7 @@
 
 #ifndef STUB_EntityRuleHandler_update
 //#define STUB_EntityRuleHandler_update
-  int EntityRuleHandler::update(const std::string&, const Atlas::Objects::Root& desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  int EntityRuleHandler::update(const std::string& name, const Atlas::Objects::Root& desc, std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
   {
     return 0;
   }

@@ -7,7 +7,7 @@
 
 
 
-#define BOOST_SPIRIT_DEBUG 1
+//#define BOOST_SPIRIT_DEBUG 1
 
 #include "../../TestBase.h"
 

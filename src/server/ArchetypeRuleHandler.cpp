@@ -50,10 +50,10 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
     // Get the new factory for this rule
     auto* parent_factory = dynamic_cast<ArchetypeFactory*>(m_builder.getClassFactory(parent));
     if (parent_factory == nullptr) {
-        debug(
-            std::cout << "class \"" << class_name
+        debug_print(
+             "class \"" << class_name
                       << "\" has non existent parent \"" << parent
-                      << "\". Waiting." << std::endl << std::flush;)
+                      << "\". Waiting.")
         dependent = parent;
         reason = compose("Entity rule \"%1\" has parent \"%2\" which does "
                          "not exist.", class_name, parent);
@@ -76,9 +76,7 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
         return -1;
     }
 
-    debug(
-        std::cout << "INSTALLING " << class_name << ":" << parent
-                  << std::endl << std::flush;)
+    debug_print("INSTALLING " << class_name << ":" << parent)
 
     auto factoryPtr = factory.get();
     // Install the factory in place.
@@ -227,8 +225,10 @@ int ArchetypeRuleHandler::check(const Atlas::Objects::Root& desc)
 }
 
 int ArchetypeRuleHandler::install(const std::string& name,
-                                  const std::string& parent, const Atlas::Objects::Root& description,
-                                  std::string& dependent, std::string& reason,
+                                  const std::string& parent,
+                                  const Atlas::Objects::Root& description,
+                                  std::string& dependent,
+                                  std::string& reason,
                                   std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     return installArchetypeClass(name, parent, description, dependent, reason);
