@@ -94,13 +94,6 @@ std::ostream & operator<<(std::ostream & os,
     return os;
 }
 
-std::ostream & operator<<(std::ostream & os,
-                          const Element & e)
-{
-    debug_dump(e, os);
-    return os;
-}
-
 template <typename T>
 std::ostream & operator<<(std::ostream & os,
                           const std::list<T> & sl)

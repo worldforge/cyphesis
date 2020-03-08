@@ -53,6 +53,8 @@ class IdProperty : public PropertyBase
 class NameProperty : public Property<std::string>
 {
     public:
+        static constexpr const char* property_name = "name";
+        static constexpr const char* property_atlastype = "string";
         explicit NameProperty(unsigned int flags);
 
         void add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const override;
