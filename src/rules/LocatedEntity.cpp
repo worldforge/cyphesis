@@ -251,19 +251,24 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
     } else {
 
         //Check if there's also a property in the type, and if so create a copy.
-        auto typeI = m_type->defaults().find(propertyName);
-        if (typeI != m_type->defaults().end()) {
-            if (typeI->second->hasFlags(entity_modifiers_not_allowed)) {
-                return;
+        bool had_property_in_type = false;
+        if (m_type) {
+            auto typeI = m_type->defaults().find(propertyName);
+            if (typeI != m_type->defaults().end()) {
+                if (typeI->second->hasFlags(entity_modifiers_not_allowed)) {
+                    return;
+                }
+                //We need to create a new modifier entry.
+                auto& modifiableProperty = m_properties[propertyName];
+                modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
+                //Copy the default value.
+                typeI->second->get(modifiableProperty.baseValue);
+                //Apply the new value
+                setAttr(propertyName, DefaultModifier(modifiableProperty.baseValue));
+                had_property_in_type = true;
             }
-            //We need to create a new modifier entry.
-            auto& modifiableProperty = m_properties[propertyName];
-            modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
-            //Copy the default value.
-            typeI->second->get(modifiableProperty.baseValue);
-            //Apply the new value
-            setAttr(propertyName, DefaultModifier(modifiableProperty.baseValue));
-        } else {
+        }
+        if (!had_property_in_type) {
             //We need to create a new modifier entry with a new property.
             auto& modifiableProperty = m_properties[propertyName];
             modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
