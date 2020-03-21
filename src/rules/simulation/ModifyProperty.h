@@ -26,6 +26,33 @@
 #include "common/Property.h"
 #include <set>
 
+
+/**
+* Containing information about how to modify a parent.
+*/
+struct ModifyEntry
+{
+    /**
+     * An optional constraint.
+     */
+    std::unique_ptr<EntityFilter::Filter> constraint;
+    /**
+     * The modifier which will be applied.
+     */
+    std::unique_ptr<Modifier> modifier;
+    /**
+     * The name of the property to modify.
+     */
+    std::string propertyName;
+    /**
+     * A list of observed properties of the parent entity. Whenever one of the properties changes the modification should be re-evaluated.
+     */
+    std::set<std::string> observedProperties;
+
+    static ModifyEntry parseEntry(const Atlas::Message::MapType& entryMap);
+
+};
+
 /**
  * A property which allows an entity to modify properties of a parent entity.
  *
@@ -40,15 +67,16 @@ class ModifyProperty : public PropertyBase
         static constexpr const char* property_atlastype = "list";
 
         ModifyProperty();
+
         ModifyProperty(const ModifyProperty& rhs);
 
         ~ModifyProperty() override = default;
 
         void apply(LocatedEntity*) override;
 
-        void remove(LocatedEntity *, const std::string & name) override;
+        void remove(LocatedEntity*, const std::string& name) override;
 
-        void install(LocatedEntity * owner, const std::string & name) override;
+        void install(LocatedEntity* owner, const std::string& name) override;
 
         ModifyProperty* copy() const override;
 
@@ -60,34 +88,13 @@ class ModifyProperty : public PropertyBase
     protected:
 
 
-        /**
-         * An containing information about how to modify a parent.
-         */
-        struct ModifyEntry {
-            /**
-             * An optional constraint.
-             */
-            std::unique_ptr<EntityFilter::Filter> constraint;
-            /**
-             * The modifier which will be applied.
-             */
-            std::unique_ptr<Modifier> modifier;
-            /**
-             * The name of the property to modify.
-             */
-            std::string propertyName;
-            /**
-             * A list of observed properties of the parent entity. Whenever one of the properties changes the modification should be re-evaluated.
-             */
-            std::set<std::string> observedProperties;
-        };
-
         std::vector<ModifyEntry> m_modifyEntries;
 
         /**
          * Entity specific state. Since we need to listen to both changes in properties as well as in the parent location we need to also keep track of connections for these signals.
          */
-        struct State {
+        struct State
+        {
             sigc::connection updatedConnection;
             sigc::connection parentEntityPropertyUpdateConnection;
             LocatedEntity* parentEntity; //Need to keep track of latest parent as there's no specific signal for when location changes.
@@ -98,9 +105,11 @@ class ModifyProperty : public PropertyBase
 
         Atlas::Message::Element m_data;
 
-        void newLocation(State& state, LocatedEntity& entity,  LocatedEntity* parent);
+        void newLocation(State& state, LocatedEntity& entity, LocatedEntity* parent);
+
         void checkIfActive(State& state, LocatedEntity& entity);
-        void setData(const Atlas::Message::Element& val) ;
+
+        void setData(const Atlas::Message::Element& val);
 
 };
 

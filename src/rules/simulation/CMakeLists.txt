@@ -54,7 +54,8 @@ add_library(rulessimulation
         ContainerDomain.cpp
         ContainedVisibilityProperty.cpp
         ModifyProperty.cpp
-        ModifiersProperty.cpp)
+        ModifiersProperty.cpp
+        ModifySelfProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

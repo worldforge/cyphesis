@@ -26,6 +26,50 @@
 
 PropertyInstanceState<ModifyProperty::State> ModifyProperty::sInstanceState;
 
+ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap) {
+    ModifyEntry modifyEntry;
+    AtlasQuery::find<std::string>(entryMap, "constraint", [&](const std::string& constraint) {
+        modifyEntry.constraint = std::make_unique<EntityFilter::Filter>(constraint, EntityFilter::ProviderFactory());
+    });
+    AtlasQuery::find<Atlas::Message::ListType>(entryMap, "observed_properties", [&](const Atlas::Message::ListType& observedProperties) {
+        for (auto& propertyEntry: observedProperties) {
+            if (propertyEntry.isString()) {
+                modifyEntry.observedProperties.emplace(propertyEntry.String());
+            }
+        }
+    });
+
+    AtlasQuery::find<Atlas::Message::MapType>(entryMap, "modifier", [&](const Atlas::Message::MapType& modifierMap) {
+        for (auto& modifierEntry : modifierMap) {
+            modifyEntry.propertyName = modifierEntry.first;
+            if (modifierEntry.second.isMap()) {
+                auto& valueMap = modifierEntry.second.Map();
+                auto I = valueMap.find("default");
+                if (I != valueMap.end()) {
+                    modifyEntry.modifier = std::make_unique<DefaultModifier>(I->second);
+                }
+                I = valueMap.find("append");
+                if (I != valueMap.end()) {
+                    modifyEntry.modifier = std::make_unique<AppendModifier>(I->second);
+                }
+                I = valueMap.find("prepend");
+                if (I != valueMap.end()) {
+                    modifyEntry.modifier = std::make_unique<PrependModifier>(I->second);
+                }
+                I = valueMap.find("subtract");
+                if (I != valueMap.end()) {
+                    modifyEntry.modifier = std::make_unique<SubtractModifier>(I->second);
+                }
+                I = valueMap.find("add_fraction");
+                if (I != valueMap.end()) {
+                    modifyEntry.modifier = std::make_unique<AddFractionModifier>(I->second);
+                }
+            }
+        }
+    });
+    return modifyEntry;
+}
+
 ModifyProperty::ModifyProperty() = default;
 
 ModifyProperty::ModifyProperty(const ModifyProperty& rhs)
@@ -46,6 +90,8 @@ ModifyProperty* ModifyProperty::copy() const
     return new ModifyProperty(*this);
 }
 
+
+
 void ModifyProperty::setData(const Atlas::Message::Element& val)
 {
     m_data = val;
@@ -55,47 +101,7 @@ void ModifyProperty::setData(const Atlas::Message::Element& val)
         auto& list = val.List();
         for (auto& entry : list) {
             if (entry.isMap()) {
-                ModifyEntry modifyEntry;
-                auto& entryMap = entry.Map();
-                AtlasQuery::find<std::string>(entryMap, "constraint", [&](const std::string& constraint) {
-                    modifyEntry.constraint = std::make_unique<EntityFilter::Filter>(constraint, EntityFilter::ProviderFactory());
-                });
-                AtlasQuery::find<Atlas::Message::ListType>(entryMap, "observed_properties", [&](const Atlas::Message::ListType& observedProperties) {
-                    for (auto& propertyEntry: observedProperties) {
-                        if (propertyEntry.isString()) {
-                            modifyEntry.observedProperties.emplace(propertyEntry.String());
-                        }
-                    }
-                });
-
-                AtlasQuery::find<Atlas::Message::MapType>(entryMap, "modifier", [&](const Atlas::Message::MapType& modifierMap) {
-                    for (auto& modifierEntry : modifierMap) {
-                        modifyEntry.propertyName = modifierEntry.first;
-                        if (modifierEntry.second.isMap()) {
-                            auto& valueMap = modifierEntry.second.Map();
-                            auto I = valueMap.find("default");
-                            if (I != valueMap.end()) {
-                                modifyEntry.modifier = std::make_unique<DefaultModifier>(I->second);
-                            }
-                            I = valueMap.find("append");
-                            if (I != valueMap.end()) {
-                                modifyEntry.modifier = std::make_unique<AppendModifier>(I->second);
-                            }
-                            I = valueMap.find("prepend");
-                            if (I != valueMap.end()) {
-                                modifyEntry.modifier = std::make_unique<PrependModifier>(I->second);
-                            }
-                            I = valueMap.find("subtract");
-                            if (I != valueMap.end()) {
-                                modifyEntry.modifier = std::make_unique<SubtractModifier>(I->second);
-                            }
-                            I = valueMap.find("add_fraction");
-                            if (I != valueMap.end()) {
-                                modifyEntry.modifier = std::make_unique<AddFractionModifier>(I->second);
-                            }
-                        }
-                    }
-                });
+                auto modifyEntry = ModifyEntry::parseEntry(entry.Map());
 
                 if (modifyEntry.modifier) {
                     m_modifyEntries.emplace_back(std::move(modifyEntry));
