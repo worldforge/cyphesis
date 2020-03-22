@@ -38,6 +38,7 @@
 #include "common/CommSocket.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
+#include "../NullPropertyManager.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -197,12 +198,12 @@ void Playertest::test_characterError_playable()
 }
 
 
-
 int main()
 {
     boost::asio::io_context io_context;
     EntityBuilder eb;
-    Ruleset ruleset(eb, io_context);
+    NullPropertyManager propertyManager;
+    Ruleset ruleset(eb, io_context, propertyManager);
 
     Playertest t;
 
@@ -298,6 +299,8 @@ void Router::error(const Operation & op,
 #include "../stubs/common/stubRouter.h"
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 #include "../stubs/rules/stubLocation.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"
 
 long newId(std::string & id)
 {

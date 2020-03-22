@@ -58,6 +58,7 @@
 #include "common/Variable.h"
 #include "ExternalMindsManager.h"
 #include "Player.h"
+#include "ServerPropertyManager.h"
 
 #include <varconf/config.h>
 
@@ -434,11 +435,12 @@ namespace {
             observe_python_directories(*io_context, assets_manager);
 
             Inheritance inheritance(atlasFactories);
+            ServerPropertyManager propertyManager(inheritance);
 
             EntityBuilder entityBuilder;
             ArithmeticBuilder arithmenticBuilder;
 
-            Ruleset ruleset(entityBuilder, *io_context);
+            Ruleset ruleset(entityBuilder, *io_context, propertyManager);
             ruleset.loadRules(ruleset_name);
 
             Ref<LocatedEntity> baseEntity = new World();

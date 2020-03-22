@@ -20,6 +20,8 @@
 #define TESTS_TEST_PROPERTY_MANAGER_H
 
 #include "common/PropertyManager.h"
+#include "common/Property.h"
+#include "common/PropertyFactory.h"
 
 #include <map>
 
@@ -32,11 +34,34 @@ class TestPropertyManager : public PropertyManager {
     std::map<std::string, PropertyKit *> m_propertyFactories;
   public:
     TestPropertyManager();
-    virtual ~TestPropertyManager();
+    ~TestPropertyManager() override;
 
-    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type);
+    std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type) const override;
 
     void installPropertyFactory(const std::string &, PropertyKit *);
 };
+
+
+inline TestPropertyManager::TestPropertyManager() = default;
+
+inline TestPropertyManager::~TestPropertyManager() = default;
+
+inline void TestPropertyManager::installPropertyFactory(const std::string & name,
+                                                 PropertyKit * factory)
+{
+    m_propertyFactories.insert(std::make_pair(name, factory));
+}
+
+inline std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
+                                                               int type) const
+{
+    auto I = m_propertyFactories.find(name);
+    if (I == m_propertyFactories.end()) {
+        return std::make_unique<SoftProperty>();
+    } else {
+        return I->second->newProperty();
+    }
+}
+
 
 #endif // TESTS_TEST_PROPERTY_MANAGER_H

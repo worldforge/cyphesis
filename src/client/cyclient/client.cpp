@@ -118,7 +118,7 @@ int main(int argc, char ** argv)
         boost::asio::io_context io_context;
         std::map<std::string, std::string> keywords;
         Atlas::Objects::Factories factories;
-        ObserverClient observerClient(io_context, factories);
+        ObserverClient observerClient(io_context, factories, clientPropertyManager);
         observerClient.setup(account, password, server);
         python_client_script(package, function, observerClient);
     }

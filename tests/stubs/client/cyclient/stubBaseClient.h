@@ -9,7 +9,7 @@
 
 #ifndef STUB_BaseClient_BaseClient
 //#define STUB_BaseClient_BaseClient
-   BaseClient::BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories)
+   BaseClient::BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories, const PropertyManager& propertyManager)
   {
     
   }

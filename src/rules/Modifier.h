@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_MODIFIER_H
 #define CYPHESIS_MODIFIER_H
 
-#include "ModifierType.h"
+#include "common/ModifierType.h"
 #include <Atlas/Message/Element.h>
 #include <memory>
 

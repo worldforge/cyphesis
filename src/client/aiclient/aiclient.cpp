@@ -28,6 +28,7 @@
 #include "common/sockets.h"
 #include "common/system.h"
 #include "common/RuleTraversalTask.h"
+#include "common/Inheritance.h"
 
 #define _GLIBCXX_USE_NANOSLEEP 1
 
@@ -75,7 +76,7 @@ static void connectToServer(boost::asio::io_context& io_context, AwareMindFactor
     commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
         if (!ec) {
             log(INFO, "Connection detected; creating possession client.");
-            commClient->startConnect(std::make_unique<PossessionClient>(*commClient, mindFactory, factories, [&]() {
+            commClient->startConnect(std::make_unique<PossessionClient>(*commClient, mindFactory, std::make_unique<Inheritance>(factories), [&]() {
                 connectToServer(io_context, mindFactory);
             }));
         } else {
@@ -133,7 +134,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    AwareMindFactory mindFactory;
 
     boost::asio::io_context io_context;
 
@@ -141,6 +141,7 @@ int main(int argc, char** argv)
         FileSystemObserver file_system_observer(io_context);
 
         ClientPropertyManager propertyManager{};
+        AwareMindFactory mindFactory(propertyManager);
 
         AssetsManager assets_manager(file_system_observer);
         assets_manager.init();

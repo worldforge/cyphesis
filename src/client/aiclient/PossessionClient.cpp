@@ -44,7 +44,7 @@ using Atlas::Objects::Operation::RootOperation;
 
 PossessionClient::PossessionClient(CommSocket& commSocket,
                                    MindKit& mindFactory,
-                                   Atlas::Objects::Factories& factories,
+                                   std::unique_ptr<Inheritance> inheritance,
                                    std::function<void()> reconnectFn) :
     BaseClient(commSocket),
     m_mindFactory(mindFactory),
@@ -52,8 +52,7 @@ PossessionClient::PossessionClient(CommSocket& commSocket,
     m_account(nullptr),
     m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
                            [&]() -> double { return getTime(); }),
-    m_factories(factories),
-    m_inheritance(new Inheritance(m_factories)),
+    m_inheritance(std::move(inheritance)),
     m_dispatcherTimer(commSocket.m_io_context)
 {
 

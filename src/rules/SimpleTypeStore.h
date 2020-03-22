@@ -26,7 +26,7 @@ class SimpleTypeStore : public TypeStore
 {
     public:
 
-        explicit SimpleTypeStore();
+        explicit SimpleTypeStore(const PropertyManager& propertyManager);
 
         const TypeNode* getType(const std::string& parent) const override;
 
@@ -40,6 +40,8 @@ class SimpleTypeStore : public TypeStore
 
 
     private:
+
+        const PropertyManager& m_propertyManager;
 
         std::map<std::string, std::unique_ptr<TypeNode>> m_types;
 

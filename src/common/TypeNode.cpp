@@ -112,14 +112,14 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
 
 }
 
-void TypeNode::addProperties(const MapType& attributes)
+void TypeNode::addProperties(const MapType& attributes, const PropertyManager& propertyManager)
 {
     for (const auto& entry : attributes) {
         if (!PropertyBase::isValidName(entry.first)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", entry.first, m_name));
             continue;
         }
-        auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
+        auto p = propertyManager.addProperty(entry.first, entry.second.getType());
         if (p->hasFlags(prop_flag_instance)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
             continue;
@@ -132,7 +132,7 @@ void TypeNode::addProperties(const MapType& attributes)
     }
 }
 
-TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
+TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes, const PropertyManager& propertyManager)
 {
 
     PropertiesUpdate propertiesUpdate;
@@ -174,7 +174,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes)
 
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
-            auto p = PropertyManager::instance().addProperty(entry.first, entry.second.getType());
+            auto p = propertyManager.addProperty(entry.first, entry.second.getType());
             if (p->hasFlags(prop_flag_instance)) {
                 log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
                 continue;

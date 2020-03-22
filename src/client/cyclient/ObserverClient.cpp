@@ -28,8 +28,8 @@
 
 #include <thread>
 
-ObserverClient::ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories)
-: BaseClient(io_context, factories)
+ObserverClient::ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories, const PropertyManager& propertyManager)
+: BaseClient(io_context, factories, propertyManager)
 {
 }
 

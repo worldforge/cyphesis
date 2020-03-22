@@ -39,6 +39,7 @@
 #include "common/debug.h"
 #include "common/Inheritance.h"
 #include "common/operations/Monitor.h"
+#include "../TestPropertyManager.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -1311,9 +1312,10 @@ void Admintest::test_createObject_fallthrough()
 
 int main()
 {
+    TestPropertyManager propertyManager;
     boost::asio::io_context io_context;
     EntityBuilder eb;
-    Ruleset ruleset(eb, io_context);
+    Ruleset ruleset(eb, io_context, propertyManager);
 
     Admintest t;
 
@@ -1334,6 +1336,8 @@ int main()
 
 #include <cstdlib>
 #include <cstdio>
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"
 
 #define STUB_Account_createObject
 void Account::createObject(const Root & arg,

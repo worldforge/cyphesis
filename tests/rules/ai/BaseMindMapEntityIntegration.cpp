@@ -39,6 +39,7 @@ using Atlas::Objects::Entity::Anonymous;
 class BaseMindMapEntityintegration : public Cyphesis::TestBase
 {
   protected:
+    ClientPropertyManager* m_propertyManager;
     Ref<BaseMind> m_mind;
     TypeNode* m_type;
   public:
@@ -69,7 +70,8 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
 
 void BaseMindMapEntityintegration::setup()
 {
-    m_mind = new BaseMind("1", "2");
+    m_propertyManager = new ClientPropertyManager();
+    m_mind = new BaseMind("1", "2", *m_propertyManager);
     m_type = new TypeNode("type");
 }
 
@@ -78,6 +80,8 @@ void BaseMindMapEntityintegration::teardown()
     m_mind = nullptr;
     delete m_type;
     m_type = nullptr;
+    delete m_propertyManager;
+    m_propertyManager = nullptr;
 }
 
 void BaseMindMapEntityintegration::test_MemMapdel_top()
@@ -182,7 +186,6 @@ void BaseMindMapEntityintegration::test_MemMapdel_edge()
 
 void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 {
-    ClientPropertyManager propertyManager;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
@@ -211,7 +214,6 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_noloc()
 
 void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 {
-    ClientPropertyManager propertyManager;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->m_contains.reset(new LocatedEntitySet);
     m_mind->m_map.m_entities[0] = tlve;
@@ -243,8 +245,6 @@ void BaseMindMapEntityintegration::test_MemMapreadEntity_changeloc()
 
 void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_have_effect()
 {
-    ClientPropertyManager propertyManager;
-
     Ref<MemEntity> tlve = new MemEntity("0", 0);
 
     Location location(tlve);
@@ -279,7 +279,6 @@ void BaseMindMapEntityintegration::test_MemMap_updateAdd_location_properties_hav
 
 void BaseMindMapEntityintegration::test_MemMapcheck()
 {
-    ClientPropertyManager propertyManager;
     Ref<MemEntity> tlve = new MemEntity("0", 0);
     tlve->setType(m_type);
     tlve->m_contains.reset(new LocatedEntitySet);

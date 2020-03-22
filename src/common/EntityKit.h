@@ -31,6 +31,7 @@
 namespace Atlas {
     namespace Message {
         class Element;
+
         typedef std::map<std::string, Element> MapType;
     }
 }
@@ -45,31 +46,33 @@ class ScriptKit;
 /// An Entity consists of an instance of one of a number of C++ classes
 /// optionally with a script. Stores information about default attributes,
 /// script language and class name.
-class EntityKit {
-  protected:
-    EntityKit();
-  public:
-    /// Inheritance type of this class.
-    TypeNode * m_type;
-    /// Number of times this factory has created an entity
-    int m_createdCount;
+class EntityKit
+{
+    protected:
+        EntityKit();
 
-    virtual ~EntityKit() = default;
+    public:
+        /// Inheritance type of this class.
+        TypeNode* m_type;
+        /// Number of times this factory has created an entity
+        int m_createdCount;
 
-    /// \brief Create a new Entity and make it persistent.
-    ///
-    /// @param id a string giving the identifier of the Entity.
-    /// @param intId an integer giving the identifier of the Entity.
-    /// @param attributes custom attributes set for the new instance
-    /// @param attributes the location of the entity
-    virtual Ref<LocatedEntity> newEntity(const std::string & id,
-                                      long intId,
-                                      const Atlas::Objects::Entity::RootEntity & attributes,
-                                      LocatedEntity* location) = 0;
+        virtual ~EntityKit() = default;
 
-    virtual void addProperties() = 0;
+        /// \brief Create a new Entity and make it persistent.
+        ///
+        /// @param id a string giving the identifier of the Entity.
+        /// @param intId an integer giving the identifier of the Entity.
+        /// @param attributes custom attributes set for the new instance
+        /// @param attributes the location of the entity
+        virtual Ref<LocatedEntity> newEntity(const std::string& id,
+                                             long intId,
+                                             const Atlas::Objects::Entity::RootEntity& attributes,
+                                             LocatedEntity* location) = 0;
 
-    virtual void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) = 0;
+        virtual void addProperties(const PropertyManager& propertyManager) = 0;
+
+        virtual void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager) = 0;
 
 };
 

@@ -54,6 +54,7 @@
 #include <server/Ruleset.h>
 
 #include "../DatabaseNull.h"
+#include "../TestPropertyManager.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -129,12 +130,12 @@ void WorldRouterintegration::setup()
 {
     m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
-
+    TestPropertyManager propertyManager;
 
     class TestEntityRuleHandler : public EntityRuleHandler
     {
         public:
-            explicit TestEntityRuleHandler(EntityBuilder& eb) : EntityRuleHandler(eb)
+            explicit TestEntityRuleHandler(EntityBuilder& eb, const PropertyManager& propertyManager) : EntityRuleHandler(eb, propertyManager)
             {}
 
             int test_installEntityClass(const std::string& class_name,
@@ -149,7 +150,7 @@ void WorldRouterintegration::setup()
             }
     };
 
-    TestEntityRuleHandler entityRuleHandler(*m_eb);
+    TestEntityRuleHandler entityRuleHandler(*m_eb, propertyManager);
 
     auto composeDeclaration = [](std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
 
@@ -329,7 +330,7 @@ int main()
 
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
-#include "server/CorePropertyManager.h"
+#include "rules/simulation/CorePropertyManager.h"
 
 #include "rules/simulation/AreaProperty.h"
 #include "rules/AtlasProperties.h"
@@ -396,12 +397,12 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "../stubs/rules/python/stubScriptsProperty.h"
 
 #define STUB_CorePropertyManager_addProperty
-std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name, int type)
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name, int type) const
 {
     return std::make_unique<Property<float>>();
 }
 
-#include "../stubs/server/stubCorePropertyManager.h"
+#include "../stubs/rules/simulation/stubCorePropertyManager.h"
 
 
 #define STUB_ArchetypeFactory_newEntity

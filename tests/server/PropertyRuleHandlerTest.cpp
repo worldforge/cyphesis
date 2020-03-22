@@ -46,15 +46,12 @@ class TestPropertyManager : public PropertyManager
         TestPropertyManager() {
             m_propertyFactories["int"] = std::make_unique<PropertyFactory<Property<int>>>();
         }
-    std::unique_ptr<PropertyBase> addProperty(const std::string & name,
-                                       int type) override;
+        std::unique_ptr<PropertyBase> addProperty(const std::string & name,
+                                       int type) const override {
+            return {};
+        }
 };
 
-std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
-                                                int type)
-{
-    return {};
-}
 
 class PropertyRuleHandlertest : public Cyphesis::TestBase
 {

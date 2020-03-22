@@ -2,7 +2,7 @@
 
 #ifndef STUB_Ruleset_Ruleset
 #define STUB_Ruleset_Ruleset
-Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context)
+Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context, const PropertyManager& propertyManager)
 : m_io_context(io_context)
 {
 

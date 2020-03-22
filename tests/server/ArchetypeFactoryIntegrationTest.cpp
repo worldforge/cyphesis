@@ -57,6 +57,7 @@ class EntityFactory<Entity>;
 
 #include "server/EntityFactory_impl.h"
 #include "../DatabaseNull.h"
+#include "../TestPropertyManager.h"
 
 Atlas::Objects::Factories factories;
 
@@ -115,17 +116,19 @@ struct Tested : public Cyphesis::TestBase
         Inheritance inheritance;
         TestWorld testWorld;
 
+        TestPropertyManager propertyManager;
         EntityBuilder eb;
         EntityRuleHandler entityRuleHandler;
         ArchetypeRuleHandler archetypeRuleHandler;
+
 
         TestContext() :
                 world(new World()),
                 inheritance(factories),
                 testWorld(world),
                 eb(),
-                entityRuleHandler(eb),
-                archetypeRuleHandler(eb)
+                entityRuleHandler(eb, propertyManager),
+                archetypeRuleHandler(eb, propertyManager)
         {
             eb.installBaseFactory("thing", "game_entity", std::make_unique<EntityFactory<Thing>>());
             // Set up a type description for a new type, and install it

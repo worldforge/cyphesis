@@ -43,7 +43,7 @@
 
 #ifndef STUB_TypeNode_addProperties
 //#define STUB_TypeNode_addProperties
-  void TypeNode::addProperties(const Atlas::Message::MapType& attributes)
+  void TypeNode::addProperties(const Atlas::Message::MapType& attributes, const PropertyManager& propertyManager)
   {
     
   }
@@ -51,7 +51,7 @@
 
 #ifndef STUB_TypeNode_updateProperties
 //#define STUB_TypeNode_updateProperties
-  TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType& attributes)
+  TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType& attributes, const PropertyManager& propertyManager)
   {
     return *static_cast<TypeNode::PropertiesUpdate*>(nullptr);
   }

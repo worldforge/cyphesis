@@ -52,7 +52,7 @@
 
 #ifndef STUB_EntityFactoryBase_addProperties
 //#define STUB_EntityFactoryBase_addProperties
-  void EntityFactoryBase::addProperties()
+  void EntityFactoryBase::addProperties(const PropertyManager& propertyManager)
   {
     
   }
@@ -60,7 +60,7 @@
 
 #ifndef STUB_EntityFactoryBase_updateProperties
 //#define STUB_EntityFactoryBase_updateProperties
-  void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager)
   {
     
   }

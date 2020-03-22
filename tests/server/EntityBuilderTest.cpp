@@ -26,7 +26,7 @@
 #include "../TestBase.h"
 #include "../TestWorld.h"
 
-#include "server/CorePropertyManager.h"
+#include "rules/simulation/CorePropertyManager.h"
 #include "server/EntityBuilder.h"
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
@@ -650,7 +650,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #endif //STUB_BaseWorld_getEntity
 
 #include "../stubs/rules/simulation/stubBaseWorld.h"
-#include "../stubs/server/stubCorePropertyManager.h"
+#include "../stubs/rules/simulation/stubCorePropertyManager.h"
 #include "../stubs/common/stubPropertyManager.h"
 #include "../stubs/common/stubid.h"
 

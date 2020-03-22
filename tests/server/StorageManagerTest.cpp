@@ -174,7 +174,7 @@ int main()
 
 // stubs
 
-#include "server/CorePropertyManager.h"
+#include "rules/simulation/CorePropertyManager.h"
 #include "server/EntityBuilder.h"
 
 #include "rules/Script.h"

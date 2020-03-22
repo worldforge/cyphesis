@@ -40,7 +40,10 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-BaseClient::BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories) :
+BaseClient::BaseClient(boost::asio::io_context& io_context,
+                       Atlas::Objects::Factories& factories,
+                       const PropertyManager& propertyManager) :
+    m_propertyManager(propertyManager),
     m_connection(io_context, factories),
     m_character(nullptr)
 {
@@ -203,7 +206,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
         log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id));
     }
 
-    auto obj = Ref<CreatorClient>(new CreatorClient(ent->getId(), entityId, m_connection));
+    auto obj = Ref<CreatorClient>(new CreatorClient(ent->getId(), entityId, m_connection, m_propertyManager));
 
     Ref<MemEntity> ownEntity = new MemEntity(id, intId);
 

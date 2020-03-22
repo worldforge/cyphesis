@@ -26,17 +26,19 @@
 #include <unordered_map>
 
 class AwarenessStore;
+class PropertyManager;
 
 class AwareMindFactory : public MindKit
 {
     public:
-        AwareMindFactory();
+        explicit AwareMindFactory(const PropertyManager& propertyManager);
 
         ~AwareMindFactory() override = default;
 
         BaseMind* newMind(const std::string& mind_id, const std::string& entity_id) const override;
 
     protected:
+        const PropertyManager& mPropertyManager;
         std::unique_ptr<SharedTerrain> mSharedTerrain;
         std::unique_ptr<AwarenessStoreProvider> mAwarenessStoreProvider;
 

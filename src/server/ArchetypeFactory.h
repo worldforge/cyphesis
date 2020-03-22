@@ -166,9 +166,9 @@ class ArchetypeFactory : public EntityKit
 
         virtual std::unique_ptr<ArchetypeFactory> duplicateFactory();
 
-        void addProperties() override;
+        void addProperties(const PropertyManager& propertyManager) override;
 
-        void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+        void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager) override;
 
 
         EntityBuilder& m_entityBuilder;

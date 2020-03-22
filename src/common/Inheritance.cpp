@@ -190,10 +190,10 @@ TypeNode* Inheritance::addChild(const Root& obj)
     description->setAttr("children", children);
     I->second->setDescription(description);
 
-    auto type = new TypeNode(child, obj);
+    auto type = std::make_unique<TypeNode>(child, obj);
     type->setParent(I->second.get());
 
-    auto result = atlasObjects.insert(std::make_pair(child, std::unique_ptr<TypeNode>(type)));
+    auto result = atlasObjects.insert(std::make_pair(child, std::move(type)));
 
     return result.first->second.get();
 }

@@ -16,11 +16,11 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <rules/ModifierType.h>
 #include "Property_impl.h"
 #include "Property.h"
 #include "log.h"
 #include "compose.hpp"
+#include "ModifierType.h"
 
 
 

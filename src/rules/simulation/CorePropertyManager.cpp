@@ -19,8 +19,6 @@
 #include "CorePropertyManager.h"
 
 #include "rules/LocatedEntity.h"
-#include "server/Juncture.h"
-#include "server/TeleportProperty.h"
 
 #include "rules/simulation/LineProperty.h"
 #include "rules/SolidProperty.h"
@@ -55,16 +53,6 @@
 #include "rules/simulation/MindsProperty.h"
 #include "rules/simulation/AttachmentsProperty.h"
 #include "rules/simulation/AdminProperty.h"
-
-#include "common/types.h"
-#include "common/Inheritance.h"
-#include "common/PropertyFactory_impl.h"
-
-#include "common/debug.h"
-
-#include <Atlas/Objects/Operation.h>
-
-#include <iostream>
 #include <rules/simulation/AmountProperty.h>
 #include <rules/simulation/SimulationSpeedProperty.h>
 #include <rules/simulation/ModeDataProperty.h>
@@ -75,6 +63,17 @@
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/WorldTimeProperty.h"
 
+#include "common/types.h"
+#include "common/Inheritance.h"
+#include "common/PropertyFactory_impl.h"
+
+#include "common/debug.h"
+
+#include <Atlas/Objects/Operation.h>
+
+#include <iostream>
+
+
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -82,40 +81,9 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-template<typename T>
-PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string& type_name,
-                                                                       const std::string& parent)
-{
-    return this->installProperty<Property<T>>(type_name, parent);
-}
 
-template<typename PropertyT>
-PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string& type_name,
-                                                                 const std::string& parent)
-{
-    auto factory = new PropertyFactory<PropertyT>{};
-    //Attach visibility flags. Properties that starts with "__" are private, "_" are protected and the rest are public.
-    factory->m_flags = PropertyBase::flagsForPropertyName(type_name);
-    installFactory(type_name,
-                   atlasType(type_name, parent),
-                   std::unique_ptr<PropertyFactory<PropertyT>>(factory));
-    return factory;
-}
-
-template<typename PropertyT>
-PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string& type_name)
-{
-    return this->installProperty<PropertyT>(type_name, PropertyT::property_atlastype);
-}
-
-template<typename PropertyT>
-PropertyFactory<PropertyT>* CorePropertyManager::installProperty()
-{
-    return this->installProperty<PropertyT>(PropertyT::property_name, PropertyT::property_atlastype);
-}
-
-
-CorePropertyManager::CorePropertyManager()
+CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
+        : m_inheritance(inheritance)
 {
     // Core types, for inheritance only generally.
     installBaseProperty<int>("int", "root_type");
@@ -143,7 +111,6 @@ CorePropertyManager::CorePropertyManager()
     installProperty<VisibilityProperty>();
     installProperty<TerrainModProperty>();
     installProperty<TerrainProperty>();
-    installProperty<TeleportProperty>("linked");
     installProperty<SuspendedProperty>();
     installProperty<TasksProperty>();
     installProperty<SpawnerProperty>();
@@ -301,8 +268,7 @@ int CorePropertyManager::installFactory(const std::string& type_name,
                                         const Root& type_desc,
                                         std::unique_ptr<PropertyKit> factory)
 {
-    Inheritance& i = Inheritance::instance();
-    if (i.addChild(type_desc) == nullptr) {
+    if (m_inheritance.addChild(type_desc) == nullptr) {
         return -1;
     }
 
@@ -312,7 +278,7 @@ int CorePropertyManager::installFactory(const std::string& type_name,
 }
 
 std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name,
-                                                               int type)
+                                                               int type) const
 {
     assert(!name.empty());
     assert(name != "objtype");

@@ -58,15 +58,13 @@ class TestEntity : public Entity
 class TestPropertyManager : public PropertyManager
 {
     public:
-        virtual std::unique_ptr<PropertyBase> addProperty(const std::string& name,
-                                                          int type);
-};
+        std::unique_ptr<PropertyBase> addProperty(const std::string& name,
+                                                  int type) const override
+        {
+            return std::unique_ptr<PropertyBase>(new SuspendedProperty());
+        }
 
-std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string& name,
-                                                               int type)
-{
-    return std::unique_ptr<PropertyBase>(new SuspendedProperty());
-}
+};
 
 class SuspendedPropertyintegration : public Cyphesis::TestBase
 {
@@ -113,7 +111,7 @@ void SuspendedPropertyintegration::teardown()
 
 void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
 {
-    auto    * entity = new TestEntity("1", 1);
+    auto* entity = new TestEntity("1", 1);
     struct TickListener : OperationsListener
     {
         bool wasCalled = false;

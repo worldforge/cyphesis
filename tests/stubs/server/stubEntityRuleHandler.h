@@ -41,8 +41,8 @@
 
 #ifndef STUB_EntityRuleHandler_EntityRuleHandler
 //#define STUB_EntityRuleHandler_EntityRuleHandler
-   EntityRuleHandler::EntityRuleHandler(EntityBuilder& eb)
-    : RuleHandler(eb)
+   EntityRuleHandler::EntityRuleHandler(EntityBuilder& eb, const PropertyManager& propertyManager)
+    : RuleHandler(eb, propertyManager)
   {
     
   }

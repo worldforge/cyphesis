@@ -23,7 +23,7 @@
 
 #ifndef STUB_TypeNode_updateProperties
 #define STUB_TypeNode_updateProperties
-TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType & attributes)
+TypeNode::PropertiesUpdate TypeNode::updateProperties(const Atlas::Message::MapType& attributes, const PropertyManager& propertyManager)
 {
     return TypeNode::PropertiesUpdate();
 }

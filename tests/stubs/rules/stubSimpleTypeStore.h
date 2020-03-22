@@ -9,8 +9,8 @@
 
 #ifndef STUB_SimpleTypeStore_SimpleTypeStore
 //#define STUB_SimpleTypeStore_SimpleTypeStore
-   SimpleTypeStore::SimpleTypeStore()
-    : TypeStore()
+   SimpleTypeStore::SimpleTypeStore(const PropertyManager& propertyManager)
+    : TypeStore(propertyManager)
   {
     
   }

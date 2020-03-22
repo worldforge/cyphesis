@@ -35,6 +35,7 @@ class ArchetypeRuleHandler : public RuleHandler
 {
     protected:
         EntityBuilder& m_builder;
+        const PropertyManager& m_propertyManager;
 
         int populateArchetypeFactory(const std::string& class_name,
                                      ArchetypeFactory* factory,
@@ -53,7 +54,8 @@ class ArchetypeRuleHandler : public RuleHandler
                                  std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes);
 
     public:
-        explicit ArchetypeRuleHandler(EntityBuilder& eb) : m_builder(eb)
+        explicit ArchetypeRuleHandler(EntityBuilder& eb, const PropertyManager& propertyManager)
+                : m_builder(eb), m_propertyManager(propertyManager)
         {}
 
         int check(const Atlas::Objects::Root& desc) override;

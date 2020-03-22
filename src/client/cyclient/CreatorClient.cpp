@@ -33,14 +33,16 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-CreatorClient::CreatorClient(const std::string & mindId, const std::string & entityId,
-                             ClientConnection &c) :
-               CharacterClient(mindId, entityId, c)
+CreatorClient::CreatorClient(const std::string& mindId,
+                             const std::string& entityId,
+                             ClientConnection& c,
+                             const PropertyManager& propertyManager) :
+        CharacterClient(mindId, entityId, c, propertyManager)
 {
 }
 
-LocatedEntity * CreatorClient::handleMakeResponse(const RootOperation & op,
-                                                  double create_time)
+LocatedEntity* CreatorClient::handleMakeResponse(const RootOperation& op,
+                                                 double create_time)
 {
     if (op->getArgs().empty()) {
         std::cerr << "Arg of reply to make has no args"
@@ -58,19 +60,19 @@ LocatedEntity * CreatorClient::handleMakeResponse(const RootOperation & op,
                   << std::endl << std::flush;
         return nullptr;
     }
-    const std::string & created_id = created->getId();
+    const std::string& created_id = created->getId();
     if (created->getParent().empty()) {
         std::cerr << "Created entity " << created_id << " has no type"
                   << std::endl << std::flush;
         return nullptr;
     }
-    const std::string & created_type = created->getParent();
+    const std::string& created_type = created->getParent();
     std::cout << "Created: " << created_type << "(" << created_id << ")"
               << std::endl << std::flush;
     return m_map.updateAdd(created, create_time).get();
 }
 
-Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
+Ref<LocatedEntity> CreatorClient::make(const RootEntity& entity)
 {
     Create op;
     op->setArgs1(entity);
@@ -82,7 +84,7 @@ Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
         return nullptr;
     }
     assert(!result.empty());
-    const Operation & res = result.front();
+    const Operation& res = result.front();
     if (!res.isValid()) {
         std::cerr << "nullptr reply to make" << std::endl << std::flush;
         return nullptr;
@@ -115,8 +117,8 @@ Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
 }
 
 
-void CreatorClient::sendSet(const std::string & id,
-                            const RootEntity & entity)
+void CreatorClient::sendSet(const std::string& id,
+                            const RootEntity& entity)
 {
     Set op;
     op->setArgs1(entity);
@@ -125,7 +127,7 @@ void CreatorClient::sendSet(const std::string & id,
     send(op);
 }
 
-void CreatorClient::del(const std::string & id)
+void CreatorClient::del(const std::string& id)
 {
     Delete op;
     Anonymous ent;

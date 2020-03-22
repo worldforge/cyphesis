@@ -19,6 +19,7 @@
 #ifndef SERVER_CORE_PROPERTY_MANAGER_H
 #define SERVER_CORE_PROPERTY_MANAGER_H
 
+#include <common/Inheritance.h>
 #include "common/PropertyFactory.h"
 #include "common/PropertyManager.h"
 #include "common/Property.h"
@@ -26,7 +27,7 @@
 /// \brief Property manager for the core server. Handles assigning properties
 /// to entity instances in the world.
 class CorePropertyManager : public PropertyManager {
-  private:
+  protected:
     template<typename T>
     PropertyFactory<Property<T>>* installBaseProperty(const std::string & type_name,
                                                       const std::string & parent);
@@ -41,11 +42,13 @@ class CorePropertyManager : public PropertyManager {
     template<class PropertyT>
     PropertyFactory<PropertyT>* installProperty();
 
+    Inheritance& m_inheritance;
+
   public:
-    CorePropertyManager();
+    explicit CorePropertyManager(Inheritance& inheritance);
     ~CorePropertyManager() override;
 
-    std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type) override;
+    std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type) const override;
 
     int installFactory(const std::string& type_name,
                        const Atlas::Objects::Root& type_desc,
@@ -53,5 +56,40 @@ class CorePropertyManager : public PropertyManager {
 
     friend class CorePropertyManagertest;
 };
+
+
+template<typename T>
+PropertyFactory<Property<T>>* CorePropertyManager::installBaseProperty(const std::string& type_name,
+                                                                       const std::string& parent)
+{
+    return this->installProperty<Property<T>>(type_name, parent);
+}
+
+template<typename PropertyT>
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string& type_name,
+                                                                 const std::string& parent)
+{
+    auto factory = new PropertyFactory<PropertyT>{};
+    //Attach visibility flags. Properties that starts with "__" are private, "_" are protected and the rest are public.
+    factory->m_flags = PropertyBase::flagsForPropertyName(type_name);
+    installFactory(type_name,
+                   atlasType(type_name, parent),
+                   std::unique_ptr<PropertyFactory<PropertyT>>(factory));
+    return factory;
+}
+
+template<typename PropertyT>
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::string& type_name)
+{
+    return this->installProperty<PropertyT>(type_name, PropertyT::property_atlastype);
+}
+
+template<typename PropertyT>
+PropertyFactory<PropertyT>* CorePropertyManager::installProperty()
+{
+    return this->installProperty<PropertyT>(PropertyT::property_name, PropertyT::property_atlastype);
+}
+
+
 
 #endif // SERVER_CORE_PROPERTY_MANAGER_H

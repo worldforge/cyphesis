@@ -17,7 +17,6 @@
 
 #include "EntityBuilder.h"
 
-#include "CorePropertyManager.h"
 #include "EntityFactory.h"
 #include "ArchetypeFactory.h"
 
@@ -45,7 +44,6 @@ using String::compose;
 static const bool debug_flag = false;
 
 EntityBuilder::EntityBuilder()
-    : m_propertyManager(new CorePropertyManager())
 {
     installBaseFactory("archetype", "root_entity", std::make_unique<ArchetypeFactory>(*this));
     python_reload_scripts.connect([&]() {

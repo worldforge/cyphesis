@@ -35,6 +35,7 @@
 #include <Atlas/Objects/Entity.h>
 #include <cassert>
 #include "common/debug.h"
+#include "../TestPropertyManager.h"
 
 class TestScriptFactory : public ScriptKit<LocatedEntity>
 {
@@ -319,12 +320,14 @@ struct EntityFactorytest : public Cyphesis::TestBase
 
     void test_updateProperties()
     {
+        TestPropertyManager propertyManager;
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-        m_ek->updateProperties(changes);
+        m_ek->updateProperties(changes, propertyManager);
     }
 
     void test_updateProperties_child()
     {
+        TestPropertyManager propertyManager{};
         auto* ekc = new EntityFactory<Thing>;
         ekc->m_type = m_ek->m_type;
         ekc->m_classAttributes.insert(std::make_pair("foo", ClassAttribute{"value"}));
@@ -332,7 +335,7 @@ struct EntityFactorytest : public Cyphesis::TestBase
         m_ek->m_children.insert(ekc);
 
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-        m_ek->updateProperties(changes);
+        m_ek->updateProperties(changes, propertyManager);
 
         assert(ekc->m_attributes.find("foo") != ekc->m_attributes.end());
     }
@@ -357,4 +360,6 @@ int main()
 #include "common/Property_impl.h"
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/common/stublog.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"
 

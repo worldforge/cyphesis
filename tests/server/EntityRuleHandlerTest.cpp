@@ -30,6 +30,7 @@
 #include "server/EntityBuilder.h"
 
 #include "common/TypeNode.h"
+#include "../TestPropertyManager.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -44,15 +45,16 @@ static TypeNode * stub_addChild_result = nullptr;
 int main()
 {
     EntityBuilder eb;
+    TestPropertyManager propertyManager;
 
     {
-        RuleHandler * rh = new EntityRuleHandler(eb);
+        RuleHandler * rh = new EntityRuleHandler(eb, propertyManager);
         delete rh;
     }
 
     // check() not a class
     {
-        RuleHandler * rh = new EntityRuleHandler(eb);
+        RuleHandler * rh = new EntityRuleHandler(eb, propertyManager);
 
         Anonymous description;
         description->setParent("foo");
@@ -65,7 +67,7 @@ int main()
 
     // check() stub says it's not a task
     {
-        RuleHandler * rh = new EntityRuleHandler(eb);
+        RuleHandler * rh = new EntityRuleHandler(eb, propertyManager);
 
         Anonymous description;
         description->setObjtype("class");
@@ -78,7 +80,7 @@ int main()
     }
 
     {
-        RuleHandler * rh = new EntityRuleHandler(eb);
+        RuleHandler * rh = new EntityRuleHandler(eb, propertyManager);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -96,7 +98,7 @@ int main()
 
     // Install a rule with addChild rigged to give a correct result
     {
-        RuleHandler * rh = new EntityRuleHandler(eb);
+        RuleHandler * rh = new EntityRuleHandler(eb, propertyManager);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -116,7 +118,7 @@ int main()
         delete rh;
     }
     {
-        RuleHandler * rh = new EntityRuleHandler(eb);
+        RuleHandler * rh = new EntityRuleHandler(eb, propertyManager);
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
         Anonymous description;
@@ -207,7 +209,7 @@ Root atlasOpDefinition(const std::string & name, const std::string & parent)
 #include "../stubs/common/stublog.h"
 #include "../stubs/common/stubEntityKit.h"
 #include "../stubs/server/stubEntityFactory.h"
-#include "../stubs/server/stubCorePropertyManager.h"
+#include "../stubs/rules/simulation/stubCorePropertyManager.h"
 #include "../stubs/common/stubPropertyManager.h"
 
 class Thing;
@@ -225,4 +227,7 @@ template class EntityFactory<Creator>;
 template class EntityFactory<Plant>;
 template class EntityFactory<Stackable>;
 template class EntityFactory<World>;
+
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"
 

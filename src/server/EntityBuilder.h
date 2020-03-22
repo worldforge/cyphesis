@@ -31,7 +31,6 @@ class BaseWorld;
 class LocatedEntity;
 class LocatedEntity;
 class EntityKit;
-class CorePropertyManager;
 
 typedef std::map<std::string, std::unique_ptr<EntityKit>> FactoryDict;
 
@@ -42,10 +41,7 @@ typedef std::map<std::string, std::unique_ptr<EntityKit>> FactoryDict;
 class EntityBuilder {
   protected:
 
-    std::unique_ptr<CorePropertyManager> m_propertyManager;
-
     FactoryDict m_entityFactories;
-
 
   public:
     explicit EntityBuilder();

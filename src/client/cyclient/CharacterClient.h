@@ -24,18 +24,26 @@
 class ClientConnection;
 
 /// \brief Class to implement a character entity in an admin client
-class CharacterClient : public BaseMind {
-  protected:
-    ClientConnection & m_connection;
+class CharacterClient : public BaseMind
+{
+    protected:
+        ClientConnection& m_connection;
 
-    int sendAndWaitReply(const Operation &, OpVector &);
-    Ref<LocatedEntity> sendLook(const Operation & op);
-  public:
-    CharacterClient(const std::string & mindId, const std::string & entityId, ClientConnection&);
+        int sendAndWaitReply(const Operation&, OpVector&);
 
-    void send(const Operation & op);
-    Ref<LocatedEntity> look(const std::string &);
-    Ref<LocatedEntity> lookFor(const Atlas::Objects::Entity::RootEntity &);
+        Ref<LocatedEntity> sendLook(const Operation& op);
+
+    public:
+        CharacterClient(const std::string& mindId,
+                        const std::string& entityId,
+                        ClientConnection&,
+                        const PropertyManager& propertyManager);
+
+        void send(const Operation& op);
+
+        Ref<LocatedEntity> look(const std::string&);
+
+        Ref<LocatedEntity> lookFor(const Atlas::Objects::Entity::RootEntity&);
 };
 
 #endif // CLIENT_CHARACTER_CLIENT_H

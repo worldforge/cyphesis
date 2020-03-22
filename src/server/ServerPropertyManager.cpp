@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Erik Ogenvik
+ Copyright (C) 2020 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,19 +16,14 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CLIENTPROPERTYMANAGER_H
-#define CYPHESIS_CLIENTPROPERTYMANAGER_H
+#include "ServerPropertyManager.h"
+#include "server/TeleportProperty.h"
+#include "common/PropertyFactory_impl.h"
 
-
-#include "common/PropertyManager.h"
-
-class ClientPropertyManager : public PropertyManager
+ServerPropertyManager::ServerPropertyManager(Inheritance& inheritance)
+: CorePropertyManager(inheritance)
 {
-    public:
-        ClientPropertyManager();
+    installProperty<TeleportProperty>("linked");
+}
 
-        std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) const override;
-};
-
-
-#endif //CYPHESIS_CLIENTPROPERTYMANAGER_H
+ServerPropertyManager::~ServerPropertyManager() = default;

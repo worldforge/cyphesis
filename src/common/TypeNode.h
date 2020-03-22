@@ -20,6 +20,7 @@
 #define COMMON_TYPE_NODE_H
 
 #include "Visibility.h"
+#include "PropertyManager.h"
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
@@ -80,10 +81,10 @@ class TypeNode
         TypeNode::PropertiesUpdate injectProperty(const std::string&, std::unique_ptr<PropertyBase>);
 
         /// \brief add the class properties for this type from Atlas attributes
-        void addProperties(const Atlas::Message::MapType& attributes);
+        void addProperties(const Atlas::Message::MapType& attributes, const PropertyManager& propertyManager);
 
         /// \brief update the class properties for this type from Atlas attributes
-        TypeNode::PropertiesUpdate updateProperties(const Atlas::Message::MapType& attributes);
+        TypeNode::PropertiesUpdate updateProperties(const Atlas::Message::MapType& attributes, const PropertyManager& propertyManager);
 
         /// \brief check if this type inherits from another
         bool isTypeOf(const std::string& base_type) const;

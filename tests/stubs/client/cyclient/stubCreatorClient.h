@@ -9,8 +9,8 @@
 
 #ifndef STUB_CreatorClient_CreatorClient
 //#define STUB_CreatorClient_CreatorClient
-   CreatorClient::CreatorClient(const std::string & mindId, const std::string & entityId, ClientConnection&)
-    : CharacterClient(mindId, entityId, ClientConnection)
+   CreatorClient::CreatorClient(const std::string& mindId, const std::string& entityId, ClientConnection&, const PropertyManager& propertyManager)
+    : CharacterClient(mindId, entityId, ClientConnection, propertyManager)
   {
     
   }
@@ -18,7 +18,7 @@
 
 #ifndef STUB_CreatorClient_handleMakeResponse
 //#define STUB_CreatorClient_handleMakeResponse
-  LocatedEntity* CreatorClient::handleMakeResponse(const Atlas::Objects::Operation::RootOperation &, double)
+  LocatedEntity* CreatorClient::handleMakeResponse(const Atlas::Objects::Operation::RootOperation&, double)
   {
     return nullptr;
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_CreatorClient_make
 //#define STUB_CreatorClient_make
-  Ref<LocatedEntity> CreatorClient::make(const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> CreatorClient::make(const Atlas::Objects::Entity::RootEntity&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_CreatorClient_sendSet
 //#define STUB_CreatorClient_sendSet
-  void CreatorClient::sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &)
+  void CreatorClient::sendSet(const std::string&, const Atlas::Objects::Entity::RootEntity&)
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_CreatorClient_del
 //#define STUB_CreatorClient_del
-  void CreatorClient::del(const std::string &)
+  void CreatorClient::del(const std::string&)
   {
     
   }

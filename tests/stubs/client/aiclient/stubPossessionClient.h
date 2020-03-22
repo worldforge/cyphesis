@@ -9,8 +9,8 @@
 
 #ifndef STUB_PossessionClient_PossessionClient
 //#define STUB_PossessionClient_PossessionClient
-   PossessionClient::PossessionClient(CommSocket& commSocket, MindKit& mindFactory, Atlas::Objects::Factories& factories, std::function<void()> reconnectFn)
-    : BaseClient(commSocket, mindFactory, factories, reconnectFn)
+   PossessionClient::PossessionClient(CommSocket& commSocket, MindKit& mindFactory, std::unique_ptr<Inheritance> inheritance, std::function<void()> reconnectFn)
+    : BaseClient(commSocket, mindFactory, inheritance, reconnectFn)
   {
     
   }

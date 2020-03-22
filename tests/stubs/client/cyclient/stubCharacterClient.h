@@ -9,7 +9,7 @@
 
 #ifndef STUB_CharacterClient_sendAndWaitReply
 //#define STUB_CharacterClient_sendAndWaitReply
-  int CharacterClient::sendAndWaitReply(const Operation &, OpVector &)
+  int CharacterClient::sendAndWaitReply(const Operation&, OpVector&)
   {
     return 0;
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_CharacterClient_sendLook
 //#define STUB_CharacterClient_sendLook
-  Ref<LocatedEntity> CharacterClient::sendLook(const Operation & op)
+  Ref<LocatedEntity> CharacterClient::sendLook(const Operation& op)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -25,8 +25,8 @@
 
 #ifndef STUB_CharacterClient_CharacterClient
 //#define STUB_CharacterClient_CharacterClient
-   CharacterClient::CharacterClient(const std::string & mindId, const std::string & entityId, ClientConnection&)
-    : BaseMind(mindId, entityId, ClientConnection)
+   CharacterClient::CharacterClient(const std::string& mindId, const std::string& entityId, ClientConnection&, const PropertyManager& propertyManager)
+    : BaseMind(mindId, entityId, ClientConnection, propertyManager)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_CharacterClient_send
 //#define STUB_CharacterClient_send
-  void CharacterClient::send(const Operation & op)
+  void CharacterClient::send(const Operation& op)
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_CharacterClient_look
 //#define STUB_CharacterClient_look
-  Ref<LocatedEntity> CharacterClient::look(const std::string &)
+  Ref<LocatedEntity> CharacterClient::look(const std::string&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_CharacterClient_lookFor
 //#define STUB_CharacterClient_lookFor
-  Ref<LocatedEntity> CharacterClient::lookFor(const Atlas::Objects::Entity::RootEntity &)
+  Ref<LocatedEntity> CharacterClient::lookFor(const Atlas::Objects::Entity::RootEntity&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

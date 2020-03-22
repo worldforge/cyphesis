@@ -23,12 +23,14 @@
 #include "ClientConnection.h"
 
 class CreatorClient;
+class PropertyManager;
 
 /// \brief Base class for classes that implement clients used to connect to a
 /// cyphesis server
 /// TODO: remove in favour of common/BaseClient which uses the asio event loop
 class BaseClient {
   protected:
+    const PropertyManager& m_propertyManager;
     /// \brief Low level connection to the server
     ClientConnection m_connection;
     /// \brief Client object that manages the creator avatar
@@ -41,7 +43,9 @@ class BaseClient {
     std::string m_playerId;
 
   public:
-    explicit BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories);
+    explicit BaseClient(boost::asio::io_context& io_context,
+                        Atlas::Objects::Factories& factories,
+                        const PropertyManager& propertyManager);
     virtual ~BaseClient();
 
     CreatorClient * character() {
@@ -58,7 +62,7 @@ class BaseClient {
     Ref<CreatorClient> createCharacter(const std::string & name);
     void logout();
     void handleNet();
-    
+
     /// \brief Function called when nothing else is going on
     virtual void idle() = 0;
 

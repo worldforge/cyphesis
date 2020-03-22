@@ -24,6 +24,7 @@
 #endif
 
 #include "client/cyclient/BaseClient.h"
+#include "../NullPropertyManager.h"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -37,22 +38,23 @@ Atlas::Objects::Factories factories;
 class TestBaseClient : public BaseClient
 {
   public:
-    TestBaseClient(boost::asio::io_context& io_context) : BaseClient(io_context, factories) { }
+    explicit TestBaseClient(boost::asio::io_context& io_context, const PropertyManager& propertyManager) : BaseClient(io_context, factories, propertyManager) { }
 
-    virtual void idle() { }
+    void idle() override { }
 };
 
 int main()
 {
+    NullPropertyManager propertyManager;
     boost::asio::io_context io_context;
     {
-        BaseClient * bc = new TestBaseClient{io_context};
+        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
 
         delete bc;
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context};
+        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
 
         bc->createAccount("8e7e4452-f666-11df-8027-00269e5444b3", "84abee0c-f666-11df-8f7e-00269e5444b3");
 
@@ -60,7 +62,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context};
+        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
 
         bc->createSystemAccount();
 
@@ -68,7 +70,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context};
+        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
 
         bc->createCharacter("9e7f4004-f666-11df-a327-00269e5444b3");
 
@@ -76,7 +78,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context};
+        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
 
         bc->logout();
 
@@ -84,7 +86,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context};
+        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
 
         bc->handleNet();
 
@@ -116,6 +118,8 @@ RootOperation ClientConnection::pop()
 #include "../stubs/rules/ai/stubMemMap.h"
 #include "../stubs/common/stubAtlasStreamClient.h"
 #include "../stubs/common/stublog.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"
 
 std::string create_session_username()
 {

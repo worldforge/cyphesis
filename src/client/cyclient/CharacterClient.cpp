@@ -36,22 +36,24 @@ static const bool debug_flag = false;
 /// @param intId Integer identifier
 /// @param name The name of the avatar used by this remote agent
 /// @param c The network connection to the server used for communication
-CharacterClient::CharacterClient(const std::string & mindId, const std::string & entityId,
-                                 ClientConnection & c) :
-                 BaseMind(mindId, entityId), m_connection(c)
+CharacterClient::CharacterClient(const std::string& mindId,
+                                 const std::string& entityId,
+                                 ClientConnection& c,
+                                 const PropertyManager& propertyManager) :
+        BaseMind(mindId, entityId, propertyManager), m_connection(c)
 {
 }
 
 /// \brief Send an operation to the server from this avatar
 ///
 /// @param op Operation to be sent
-void CharacterClient::send(const Operation & op)
+void CharacterClient::send(const Operation& op)
 {
     op->setFrom(getId());
     m_connection.send(op);
 }
 
-Ref<LocatedEntity> CharacterClient::look(const std::string & id)
+Ref<LocatedEntity> CharacterClient::look(const std::string& id)
 {
     Look op;
     if (!id.empty()) {
@@ -63,7 +65,7 @@ Ref<LocatedEntity> CharacterClient::look(const std::string & id)
     return sendLook(op);
 }
 
-Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & ent)
+Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity& ent)
 {
     Look op;
     op->setArgs1(ent);
@@ -77,13 +79,13 @@ Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & ent)
 /// the serialno of the operation sent.
 /// @param op Operation to be sent
 /// @param res Result with correct refno is returned here
-int CharacterClient::sendAndWaitReply(const Operation & op, OpVector & res)
+int CharacterClient::sendAndWaitReply(const Operation& op, OpVector& res)
 {
     op->setFrom(getId());
     return m_connection.sendAndWaitReply(op, res);
 }
 
-Ref<LocatedEntity> CharacterClient::sendLook(const Operation & op)
+Ref<LocatedEntity> CharacterClient::sendLook(const Operation& op)
 {
     OpVector result;
     if (sendAndWaitReply(op, result) != 0) {
@@ -91,12 +93,12 @@ Ref<LocatedEntity> CharacterClient::sendLook(const Operation & op)
         return nullptr;
     }
     assert(!result.empty());
-    const Operation & res = result.front();
+    const Operation& res = result.front();
     if (!res.isValid()) {
         std::cerr << "nullptr reply to look" << std::endl << std::flush;
         return nullptr;
     }
-    const std::string & resparent = res->getParent();
+    const std::string& resparent = res->getParent();
     if (resparent == "unseen") {
         return nullptr;
     }
@@ -117,7 +119,7 @@ Ref<LocatedEntity> CharacterClient::sendLook(const Operation & op)
         std::cerr << "Looked at entity has no id" << std::endl << std::flush;
         return nullptr;
     }
-    const std::string & sight_id = seen->getId();
+    const std::string& sight_id = seen->getId();
     if (seen->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         std::cout << "Seen: " << seen->getParent()
                   << "(" << sight_id << ")" << std::endl << std::flush;

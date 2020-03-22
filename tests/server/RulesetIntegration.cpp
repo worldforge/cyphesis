@@ -36,6 +36,7 @@
 
 #include "common/Inheritance.h"
 #include "common/TypeNode.h"
+#include "../TestPropertyManager.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -99,8 +100,9 @@ struct Rulesetintegration : public Cyphesis::TestBase
         assert(!Ruleset::hasInstance());
 
         boost::asio::io_context io_context;
+        TestPropertyManager propertyManager;
         {
-            Ruleset ruleset(*m_entity_builder, io_context);
+            Ruleset ruleset(*m_entity_builder, io_context, propertyManager);
 
             assert(Ruleset::hasInstance());
 
@@ -116,7 +118,8 @@ struct Rulesetintegration : public Cyphesis::TestBase
             // Instance of Ruleset with all protected methods exposed
             // for testing
             boost::asio::io_context io_context;
-            Ruleset test_ruleset(*m_entity_builder, io_context);
+            TestPropertyManager propertyManager;
+            Ruleset test_ruleset(*m_entity_builder, io_context, propertyManager);
 
 
             {
@@ -633,7 +636,7 @@ int main()
 // stubs
 
 #include "server/Connection.h"
-#include "server/CorePropertyManager.h"
+#include "rules/simulation/CorePropertyManager.h"
 #include "server/Juncture.h"
 #include "server/Player.h"
 #include "server/ServerAccount.h"
@@ -652,12 +655,12 @@ int main()
 
 #define STUB_CorePropertyManager_addProperty
 
-std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name, int type)
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name, int type) const
 {
     return std::unique_ptr<PropertyBase>(new SoftProperty);
 }
 
-#include "../stubs/server/stubCorePropertyManager.h"
+#include "../stubs/rules/simulation/stubCorePropertyManager.h"
 
 
 #define STUB_ArchetypeFactory_duplicateFactory

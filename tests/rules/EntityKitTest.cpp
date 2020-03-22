@@ -30,6 +30,7 @@
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 #include "rules/LocatedEntity.h"
+#include "../TestPropertyManager.h"
 #include <Atlas/Message/Element.h>
 
 #include <cassert>
@@ -44,12 +45,12 @@ class TestEntityKit : public EntityKit
     Ref<LocatedEntity> newEntity(const std::string & id,
             long intId,
             const Atlas::Objects::Entity::RootEntity & attributes,
-            LocatedEntity* location) override { return 0; }
+            LocatedEntity* location) override { return nullptr; }
 
-    EntityKit * duplicateFactory() { return 0; }
-    void addProperties() override{}
+    static EntityKit * duplicateFactory() { return nullptr; }
+    void addProperties(const PropertyManager&) override{}
 
-    void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override {
+    void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager&) override {
     }
 };
 
@@ -96,13 +97,15 @@ void EntityKittest::teardown()
 
 void EntityKittest::test_addProperties()
 {
-    m_ek->addProperties();
+    TestPropertyManager propertyManager{};
+    m_ek->addProperties(propertyManager);
 }
 
 void EntityKittest::test_updateProperties()
 {
+    TestPropertyManager propertyManager{};
     std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-    m_ek->updateProperties(changes);
+    m_ek->updateProperties(changes, propertyManager);
 }
 
 int main()
@@ -115,3 +118,5 @@ int main()
 // stubs
 
 #include "../stubs/common/stubTypeNode.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"

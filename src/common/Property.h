@@ -23,7 +23,7 @@
 #include "OperationRouter.h"
 
 #include <Atlas/Message/Element.h>
-#include <rules/ModifierType.h>
+#include <common/ModifierType.h>
 
 class LocatedEntity;
 class TypeNode;

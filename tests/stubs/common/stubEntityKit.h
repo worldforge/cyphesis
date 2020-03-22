@@ -18,7 +18,7 @@
 
 #ifndef STUB_EntityKit_newEntity
 //#define STUB_EntityKit_newEntity
-  Ref<LocatedEntity> EntityKit::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+  Ref<LocatedEntity> EntityKit::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_EntityKit_addProperties
 //#define STUB_EntityKit_addProperties
-  void EntityKit::addProperties()
+  void EntityKit::addProperties(const PropertyManager& propertyManager)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_EntityKit_updateProperties
 //#define STUB_EntityKit_updateProperties
-  void EntityKit::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  void EntityKit::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager)
   {
     
   }

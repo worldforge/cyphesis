@@ -7,6 +7,15 @@
 #include "rules/simulation/ModifyProperty.h"
 #include "stubModifyProperty_custom.h"
 
+#ifndef STUB_ModifyEntry_parseEntry
+//#define STUB_ModifyEntry_parseEntry
+   ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap)
+  {
+    return *static_cast< ModifyEntry*>(nullptr);
+  }
+#endif //STUB_ModifyEntry_parseEntry
+
+
 #ifndef STUB_ModifyProperty_ModifyProperty
 //#define STUB_ModifyProperty_ModifyProperty
    ModifyProperty::ModifyProperty()
@@ -35,7 +44,7 @@
 
 #ifndef STUB_ModifyProperty_remove
 //#define STUB_ModifyProperty_remove
-  void ModifyProperty::remove(LocatedEntity *, const std::string & name)
+  void ModifyProperty::remove(LocatedEntity*, const std::string& name)
   {
     
   }
@@ -43,7 +52,7 @@
 
 #ifndef STUB_ModifyProperty_install
 //#define STUB_ModifyProperty_install
-  void ModifyProperty::install(LocatedEntity * owner, const std::string & name)
+  void ModifyProperty::install(LocatedEntity* owner, const std::string& name)
   {
     
   }

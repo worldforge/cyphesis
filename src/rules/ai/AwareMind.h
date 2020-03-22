@@ -39,6 +39,7 @@ class AwareMind : public BaseMind, public MemMap::MapListener
     public:
         AwareMind(const std::string& mind_id,
                   std::string entity_id,
+                  const PropertyManager& propertyManager,
                   SharedTerrain& sharedTerrain,
                   AwarenessStoreProvider& awarenessStoreProvider);
 

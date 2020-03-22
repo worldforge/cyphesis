@@ -26,6 +26,7 @@
 #include "../../TestBase.h"
 
 #include "rules/ai/BaseMind.h"
+#include "../../TestPropertyManager.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -37,6 +38,7 @@ class BaseMindtest : public Cyphesis::TestBase
 {
   protected:
     Ref<BaseMind> bm;
+    std::unique_ptr<TestPropertyManager> propertyManager;
   public:
     BaseMindtest();
 
@@ -79,11 +81,13 @@ BaseMindtest::BaseMindtest()
 
 void BaseMindtest::setup()
 {
-    bm = new BaseMind("1", "2");
+    propertyManager = std::make_unique<TestPropertyManager>();
+    bm = new BaseMind("1", "2", *propertyManager);
 }
 
 void BaseMindtest::teardown()
 {
+    propertyManager.reset();
     bm = nullptr;
 }
 
@@ -287,6 +291,8 @@ int main()
 #include "../../stubs/common/stubInheritance.h"
 #include "../../stubs/rules/stubMemEntity.h"
 #include "../../stubs/rules/stubLocatedEntity.h"
+#include "../../stubs/common/stubProperty.h"
+#include "../../stubs/common/stubPropertyManager.h"
 
 
 #include "../../stubs/rules/stubScript.h"

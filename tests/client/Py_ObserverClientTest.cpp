@@ -32,6 +32,7 @@
 #include "client/cyclient/CyPy_ObserverClient.h"
 
 #include "rules/python/Python_API.h"
+#include "../NullPropertyManager.h"
 
 #include <cassert>
 #include <rules/simulation/python/CyPy_Server.h>
@@ -39,7 +40,6 @@
 #include <common/Inheritance.h>
 
 Atlas::Objects::Factories factories;
-Inheritance inheritance(factories);
 
 static bool stub_setup_fail = false;
 static bool stub_createCharacter_fail = false;
@@ -49,12 +49,14 @@ static bool stub_wait_fail = false;
 
 int main()
 {
+    NullPropertyManager propertyManager;
+    Inheritance inheritance(factories);
     boost::asio::io_context io_context;
 
     init_python_api({&CyPy_Server::init, &CyPy_Atlas::init});
     extend_client_python_api();
 
-    auto client = new ObserverClient(io_context, factories);
+    auto client = new ObserverClient(io_context, factories, propertyManager);
 
     Py::Module module("server");
     module.setAttr("testclient", CyPy_ObserverClient::wrap(client));
@@ -129,7 +131,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
     if (stub_createCharacter_fail) {
         return 0;
     }
-    return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection));
+    return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection, m_propertyManager));
 }
 #include "../stubs/client/cyclient/stubBaseClient.h"
 
@@ -159,3 +161,5 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 }
 
 #include "../stubs/client/cyclient/stubClientConnection.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"

@@ -94,16 +94,16 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
 
 }
 
-void EntityFactoryBase::addProperties()
+void EntityFactoryBase::addProperties(const PropertyManager& propertyManager)
 {
     assert(m_type != nullptr);
-    m_type->addProperties(m_attributes);
+    m_type->addProperties(m_attributes, propertyManager);
 }
 
-void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager)
 {
     assert(m_type != nullptr);
-    changes.emplace(m_type, m_type->updateProperties(m_attributes));
+    changes.emplace(m_type, m_type->updateProperties(m_attributes, propertyManager));
 
     for (auto& child_factory : m_children) {
         child_factory->m_attributes = m_attributes;
@@ -117,7 +117,7 @@ void EntityFactoryBase::updateProperties(std::map<const TypeNode*, TypeNode::Pro
                 child_factory->m_attributes.emplace(entry.first, std::move(value));
             }
         }
-        child_factory->updateProperties(changes);
+        child_factory->updateProperties(changes, propertyManager);
     }
 }
 

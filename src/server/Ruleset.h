@@ -105,7 +105,9 @@ class Ruleset : public Singleton<Ruleset>
         void processChangedRules();
 
     public:
-        explicit Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context);
+        explicit Ruleset(EntityBuilder& eb,
+                         boost::asio::io_context& io_context,
+                         const PropertyManager& propertyManager);
 
         ~Ruleset() override;
 

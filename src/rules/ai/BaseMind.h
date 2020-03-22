@@ -63,7 +63,7 @@ class BaseMind : public Router, public ReferenceCounted
 
 
     public:
-        BaseMind(const std::string& mindId, std::string entityId);
+        BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager);
 
         ~BaseMind() override;
 

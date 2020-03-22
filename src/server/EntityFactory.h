@@ -102,9 +102,9 @@ class EntityFactoryBase : public EntityKit
 
         virtual std::unique_ptr<EntityFactoryBase> duplicateFactory() = 0;
 
-        void addProperties() override;
+        void addProperties(const PropertyManager& propertyManager) override;
 
-        void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes) override;
+        void updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager) override;
 
 };
 

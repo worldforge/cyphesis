@@ -9,8 +9,8 @@
 
 #ifndef STUB_AwareMindFactory_AwareMindFactory
 //#define STUB_AwareMindFactory_AwareMindFactory
-   AwareMindFactory::AwareMindFactory()
-    : MindKit()
+   AwareMindFactory::AwareMindFactory(const PropertyManager& propertyManager)
+    : MindKit(propertyManager)
   {
     
   }

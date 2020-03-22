@@ -125,7 +125,7 @@
 
 #ifndef STUB_ArchetypeFactory_addProperties
 //#define STUB_ArchetypeFactory_addProperties
-  void ArchetypeFactory::addProperties()
+  void ArchetypeFactory::addProperties(const PropertyManager& propertyManager)
   {
     
   }
@@ -133,7 +133,7 @@
 
 #ifndef STUB_ArchetypeFactory_updateProperties
 //#define STUB_ArchetypeFactory_updateProperties
-  void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+  void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager)
   {
     
   }

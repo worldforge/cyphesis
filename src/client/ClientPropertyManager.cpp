@@ -36,7 +36,7 @@ ClientPropertyManager::ClientPropertyManager()
 }
 
 std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name,
-                                                                 int type)
+                                                                 int type) const
 {
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {

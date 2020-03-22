@@ -44,11 +44,11 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-BaseMind::BaseMind(const std::string& mindId, std::string entityId) :
+BaseMind::BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager) :
         Router(mindId, std::stol(mindId)),
         m_entityId(std::move(entityId)),
         m_flags(0),
-        m_typeStore(new SimpleTypeStore()),
+        m_typeStore(new SimpleTypeStore(propertyManager)),
         m_typeResolver(new TypeResolver(*m_typeStore)),
         m_map(*m_typeResolver),
         m_time(new WorldTime()),

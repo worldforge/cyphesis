@@ -27,7 +27,6 @@ set(cyphesis_files
         Spawn.h
         WorldRouter.cpp
         StorageManager.cpp
-        CorePropertyManager.cpp
         Ruleset.cpp
         EntityRuleHandler.cpp
         ArchetypeRuleHandler.cpp
@@ -50,6 +49,7 @@ set(cyphesis_files
         server.cpp
         ExternalMindsConnection.cpp
         ExternalMindsManager.cpp
+        ServerPropertyManager.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
 if (PostgreSQL_FOUND)

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2018 Erik Ogenvik
+ Copyright (C) 2020 Erik Ogenvik
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,19 +16,19 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_CLIENTPROPERTYMANAGER_H
-#define CYPHESIS_CLIENTPROPERTYMANAGER_H
+#ifndef CYPHESIS_SERVERPROPERTYMANAGER_H
+#define CYPHESIS_SERVERPROPERTYMANAGER_H
 
+#include "rules/simulation/CorePropertyManager.h"
 
-#include "common/PropertyManager.h"
-
-class ClientPropertyManager : public PropertyManager
+class ServerPropertyManager : public CorePropertyManager
 {
     public:
-        ClientPropertyManager();
+        explicit ServerPropertyManager(Inheritance& inheritance);
 
-        std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) const override;
+        ~ServerPropertyManager() override;
+
 };
 
 
-#endif //CYPHESIS_CLIENTPROPERTYMANAGER_H
+#endif //CYPHESIS_SERVERPROPERTYMANAGER_H

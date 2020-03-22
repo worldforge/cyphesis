@@ -31,6 +31,7 @@
 #include "common/const.h"
 #include "common/globals.h"
 #include "common/Inheritance.h"
+#include "../NullPropertyManager.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Factories.h>
@@ -43,7 +44,7 @@ using Atlas::Objects::Root;
 
 class ExposedRuleset : public Ruleset {
   public:
-    ExposedRuleset(EntityBuilder & eb, boost::asio::io_context& io_context) : Ruleset(eb, io_context) { }
+    ExposedRuleset(EntityBuilder & eb, boost::asio::io_context& io_context, const PropertyManager& propertyManager) : Ruleset(eb, io_context, propertyManager) { }
 
     void test_getRulesFromFiles(const std::string & ruleset,
                            std::map<std::string, Root> & rules) {
@@ -58,6 +59,7 @@ int main(int argc, char ** argv)
 {
     boost::asio::io_context io_context;
     int ret;
+    NullPropertyManager propertyManager;
 
     std::string ruleset("caaa1085-9ef4-4dc2-b1ad-3d1f15b31060");
 
@@ -66,7 +68,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance(factories);
         EntityBuilder eb;
         {
-            Ruleset instance(eb, io_context);
+            Ruleset instance(eb, io_context, propertyManager);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -81,7 +83,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance(factories);
         EntityBuilder eb;
         {
-            Ruleset instance(eb, io_context);
+            Ruleset instance(eb, io_context, propertyManager);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -96,7 +98,7 @@ int main(int argc, char ** argv)
         Inheritance inheritance(factories);
         EntityBuilder eb;
         {
-            Ruleset instance(eb, io_context);
+            Ruleset instance(eb, io_context, propertyManager);
             instance.loadRules(ruleset);
 
             assert(Ruleset::hasInstance());
@@ -113,7 +115,7 @@ int main(int argc, char ** argv)
         // Instance of Ruleset with all protected methods exposed
         // for testing
         EntityBuilder eb;
-        ExposedRuleset test_ruleset(eb, io_context);
+        ExposedRuleset test_ruleset(eb, io_context, propertyManager);
 
         // Attributes for test entities being created
         Anonymous attributes;
@@ -352,7 +354,7 @@ int main(int argc, char ** argv)
 #include "server/ArchetypeRuleHandler.h"
 #include "server/Persistence.h"
 #include "server/EntityFactory.h"
-#include "server/CorePropertyManager.h"
+#include "rules/simulation/CorePropertyManager.h"
 
 #include "common/AtlasFileLoader.h"
 #include "common/log.h"

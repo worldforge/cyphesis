@@ -397,6 +397,8 @@ wf_add_test(rules/SuspendedPropertyIntegration.cpp ../src/rules/simulation/Suspe
 target_link_libraries(SuspendedPropertyIntegration common)
 wf_add_test(rules/ThingIntegration.cpp)
 target_link_libraries(ThingIntegration rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
+wf_add_test(rules/RulesIntegrationTest.cpp)
+target_link_libraries(RulesIntegrationTest rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
 
 
 # CLIENT_TESTS
@@ -430,7 +432,7 @@ wf_add_test(server/ArchetypeFactoryIntegrationTest.cpp
         ../src/server/EntityRuleHandler.cpp
         ../src/server/SpawnEntity.cpp
         ../src/server/ArithmeticBuilder.cpp
-        ../src/server/CorePropertyManager.cpp)
+        ../src/rules/simulation/CorePropertyManager.cpp)
 target_link_libraries(ArchetypeFactoryIntegrationTest modules physics common pycxx rulesbase ${PYTHON_TESTS_LIBS})
 
 wf_add_test(server/RulesetTest.cpp ../src/server/Ruleset.cpp)
@@ -478,7 +480,7 @@ wf_add_test(server/PropertyRuleHandlerTest.cpp ../src/server/PropertyRuleHandler
 wf_add_test(server/IdleConnectorTest.cpp ../src/server/IdleConnector.cpp)
 wf_add_test(server/PersistenceTest.cpp ../src/server/Persistence.cpp)
 wf_add_test(server/SystemAccountTest.cpp ../src/server/SystemAccount.cpp)
-wf_add_test(server/CorePropertyManagerTest.cpp ../src/server/CorePropertyManager.cpp)
+wf_add_test(server/CorePropertyManagerTest.cpp ../src/rules/simulation/CorePropertyManager.cpp)
 
 # SERVER_INTEGRATION_TESTS
 

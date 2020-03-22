@@ -105,7 +105,7 @@ class TestPropertyManager : public PropertyManager
     public:
         virtual ~TestPropertyManager();
 
-        virtual std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type);
+        std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) const override;
 };
 
 TestPropertyManager::~TestPropertyManager()
@@ -113,7 +113,7 @@ TestPropertyManager::~TestPropertyManager()
 }
 
 std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string& name,
-                                                               int type)
+                                                               int type) const
 {
     if (name == test_values<long>::name) {
         return std::make_unique<Property<long>>();
@@ -194,7 +194,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
                                test_values<std::string>::initial_value),
                 std::make_pair(test_values<MapType>::name,
                                test_values<MapType>::initial_value)
-        });
+        }, *propertyManager);
         m_entity = new TestEntity("1", 1L);
         m_entity->setType(m_type);
     }

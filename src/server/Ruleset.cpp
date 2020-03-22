@@ -60,12 +60,12 @@ typedef std::map<std::string, Root> RootDict;
 
 static const bool debug_flag = false;
 
-Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context) :
-    m_entityHandler(new EntityRuleHandler(eb)),
-    m_opHandler(new OpRuleHandler()),
-    m_propertyHandler(new PropertyRuleHandler()),
-    m_archetypeHandler(new ArchetypeRuleHandler(eb)),
-    m_io_context(io_context)
+Ruleset::Ruleset(EntityBuilder& eb, boost::asio::io_context& io_context, const PropertyManager& propertyManager) :
+        m_entityHandler(new EntityRuleHandler(eb, propertyManager)),
+        m_opHandler(new OpRuleHandler()),
+        m_propertyHandler(new PropertyRuleHandler()),
+        m_archetypeHandler(new ArchetypeRuleHandler(eb, propertyManager)),
+        m_io_context(io_context)
 {
 }
 

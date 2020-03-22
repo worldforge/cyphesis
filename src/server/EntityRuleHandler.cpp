@@ -51,8 +51,8 @@ class EntityFactory<World>;
 static const bool debug_flag = false;
 
 
-EntityRuleHandler::EntityRuleHandler(EntityBuilder& eb)
-    : m_builder(eb)
+EntityRuleHandler::EntityRuleHandler(EntityBuilder& eb, const PropertyManager& propertyManager)
+        : m_builder(eb), m_propertyManager(propertyManager)
 {
 
     mFactories["world"] = [](EntityFactoryBase* parent) -> std::unique_ptr<EntityFactoryBase> {
@@ -151,13 +151,13 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
         return -1;
     }
 
-    factoryPtr->addProperties();
+    factoryPtr->addProperties(m_propertyManager);
 
     auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder.getClassFactory(parent));
     if (parent_factory) {
         // Add it as a child to its parent.
         parent_factory->m_children.insert(factoryPtr);
-        parent_factory->updateProperties(changes);
+        parent_factory->updateProperties(changes, m_propertyManager);
     }
 
     return 0;
@@ -204,7 +204,7 @@ int EntityRuleHandler::modifyEntityClass(const std::string& class_name,
         return -1;
     }
 
-    factory->updateProperties(changes);
+    factory->updateProperties(changes, m_propertyManager);
 
     return 0;
 }

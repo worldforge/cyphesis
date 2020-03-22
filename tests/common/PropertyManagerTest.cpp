@@ -35,7 +35,7 @@ class TestPropertyManager : public PropertyManager {
   public:
     TestPropertyManager() { }
 
-    virtual std::unique_ptr<PropertyBase> addProperty(const std::string &, int) {
+    std::unique_ptr<PropertyBase> addProperty(const std::string &, int) const override {
         return {};
     }
 };
@@ -43,12 +43,12 @@ class TestPropertyManager : public PropertyManager {
 class TestPropertyFactory : public PropertyKit
 {
   public:
-    virtual std::unique_ptr<PropertyBase> newProperty()
+    std::unique_ptr<PropertyBase> newProperty() override
     {
         return {};
     }
 
-    virtual TestPropertyFactory * duplicateFactory() const
+    TestPropertyFactory * duplicateFactory() const override
     {
         return new TestPropertyFactory;
     }
@@ -61,8 +61,8 @@ class PropertyManagertest : public Cyphesis::TestBase
   public:
     PropertyManagertest();
 
-    void setup();
-    void teardown();
+    void setup() override;
+    void teardown() override;
 
     void test_interface();
     void test_installFactory();

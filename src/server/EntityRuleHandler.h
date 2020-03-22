@@ -35,6 +35,7 @@ class EntityRuleHandler : public RuleHandler
 {
     protected:
         EntityBuilder& m_builder;
+        const PropertyManager& m_propertyManager;
 
         int populateEntityFactory(const std::string& class_name,
                                   EntityFactoryBase* factory,
@@ -64,7 +65,7 @@ class EntityRuleHandler : public RuleHandler
         std::map<std::string, std::function<std::unique_ptr<EntityFactoryBase>(EntityFactoryBase*)>> mFactories;
 
     public:
-        explicit EntityRuleHandler(EntityBuilder& eb);
+        explicit EntityRuleHandler(EntityBuilder& eb, const PropertyManager& propertyManager);
 
         int check(const Atlas::Objects::Root& desc) override;
 

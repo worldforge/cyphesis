@@ -56,7 +56,7 @@ int main()
                      &CyPy_Common::init,
                      &CyPy_Ai::init});
 
-    SimpleTypeStore typeStore{};
+    SimpleTypeStore typeStore{propertyManager};
     TypeResolver typeResolver{typeStore};
 
     MemMap memMap(typeResolver);

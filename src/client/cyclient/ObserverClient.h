@@ -31,7 +31,7 @@ class ObserverClient : public BaseClient {
   protected:
     std::string m_server;
   public:
-    explicit ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories);
+    explicit ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories, const PropertyManager& propertyManager);
     ~ObserverClient() override;
 
     void setServer(const std::string & server) {

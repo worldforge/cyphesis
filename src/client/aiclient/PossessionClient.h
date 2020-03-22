@@ -40,7 +40,7 @@ class PossessionClient : public BaseClient
     public:
         explicit PossessionClient(CommSocket& commSocket,
                                   MindKit& mindFactory,
-                                  Atlas::Objects::Factories& factories,
+                                  std::unique_ptr<Inheritance> inheritance,
                                   std::function<void()> reconnectFn);
 
         ~PossessionClient() override;
@@ -66,8 +66,6 @@ class PossessionClient : public BaseClient
         std::unique_ptr<PossessionAccount> m_account;
 
         OperationsDispatcher<BaseMind> m_operationsDispatcher;
-
-        Atlas::Objects::Factories& m_factories;
 
         std::unique_ptr<Inheritance> m_inheritance;
 

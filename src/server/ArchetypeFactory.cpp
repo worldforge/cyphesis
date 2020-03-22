@@ -394,7 +394,7 @@ std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
     return child;
 }
 
-void ArchetypeFactory::addProperties()
+void ArchetypeFactory::addProperties(const PropertyManager& propertyManager)
 {
     assert(m_type != nullptr);
     MapType attributes;
@@ -404,11 +404,11 @@ void ArchetypeFactory::addProperties()
     }
     attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));
-    m_type->addProperties(attributes);
+    m_type->addProperties(attributes, propertyManager);
 
 }
 
-void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
+void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes, const PropertyManager& propertyManager)
 {
     assert(m_type != nullptr);
 
@@ -419,7 +419,7 @@ void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::Prop
     }
     attributes.insert(std::make_pair("entities", entities));
     attributes.insert(std::make_pair("thoughts", m_thoughts));
-    changes.emplace(m_type, m_type->updateProperties(attributes));
+    changes.emplace(m_type, m_type->updateProperties(attributes, propertyManager));
 
     for (auto& child_factory : m_children) {
         child_factory->m_thoughts = m_thoughts;
@@ -427,6 +427,6 @@ void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::Prop
 
         child_factory->m_entities = m_entities;
 
-        child_factory->updateProperties(changes);
+        child_factory->updateProperties(changes, propertyManager);
     }
 }

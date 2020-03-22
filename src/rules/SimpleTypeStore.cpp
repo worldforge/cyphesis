@@ -102,12 +102,13 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
     return result.first->second.get();
 }
 
-void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj) {
+void SimpleTypeStore::readAttributesIntoType(TypeNode& type, const Atlas::Objects::Root& obj)
+{
     // Store the default attribute for entities create by this rule.
     if (obj->hasAttr("properties")) {
         auto propertiesElement = obj->getAttr("properties");
         if (propertiesElement.isMap()) {
-            type.addProperties(propertiesElement.Map());
+            type.addProperties(propertiesElement.Map(), m_propertyManager);
         }
     }
 
@@ -118,8 +119,10 @@ size_t SimpleTypeStore::getTypeCount() const
     return m_types.size();
 }
 
-SimpleTypeStore::SimpleTypeStore()
-: m_factories(new Atlas::Objects::Factories()){
+SimpleTypeStore::SimpleTypeStore(const PropertyManager& propertyManager)
+        : m_propertyManager(propertyManager),
+          m_factories(new Atlas::Objects::Factories())
+{
 
 }
 

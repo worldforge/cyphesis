@@ -43,6 +43,8 @@
 #include <rules/python/CyPy_Rules.h>
 #include <common/Inheritance.h>
 #include "pycxx/CXX/Objects.hxx"
+#include "../NullPropertyManager.h"
+
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);
 
@@ -52,6 +54,7 @@ static bool stub_lookfor_fail = false;
 
 int main()
 {
+    NullPropertyManager propertyManager;
     boost::asio::io_context io_context;
 
     init_python_api({&CyPy_Server::init,
@@ -62,7 +65,7 @@ int main()
                      &CyPy_Ai::init});
     extend_client_python_api();
 
-    auto client = new CreatorClient("1", "2", *new ClientConnection(io_context, factories));
+    auto client = new CreatorClient("1", "2", *new ClientConnection(io_context, factories), propertyManager);
     Ref<MemEntity> entity = new MemEntity("1", 1);
     OpVector res;
     client->setOwnEntity(res, entity);
@@ -167,3 +170,5 @@ Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
 #include "../stubs/client/cyclient/stubObserverClient.h"
 #include "../stubs/client/cyclient/stubBaseClient.h"
 #include "../stubs/client/cyclient/stubClientConnection.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"

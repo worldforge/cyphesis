@@ -24,16 +24,22 @@
 class LocatedEntity;
 
 /// \brief Class to implement a creator entity in an admin client
-class CreatorClient : public CharacterClient {
-  public:
-    CreatorClient(const std::string & mindId, const std::string & entityId, ClientConnection&);
+class CreatorClient : public CharacterClient
+{
+    public:
+        CreatorClient(const std::string& mindId,
+                      const std::string& entityId,
+                      ClientConnection&,
+                      const PropertyManager& propertyManager);
 
-    LocatedEntity * handleMakeResponse(const Atlas::Objects::Operation::RootOperation &,
-                                       double);
+        LocatedEntity* handleMakeResponse(const Atlas::Objects::Operation::RootOperation&,
+                                          double);
 
-    Ref<LocatedEntity> make(const Atlas::Objects::Entity::RootEntity &);
-    void sendSet(const std::string &, const Atlas::Objects::Entity::RootEntity &);
-    void del(const std::string &);
+        Ref<LocatedEntity> make(const Atlas::Objects::Entity::RootEntity&);
+
+        void sendSet(const std::string&, const Atlas::Objects::Entity::RootEntity&);
+
+        void del(const std::string&);
 
 };
 

@@ -84,7 +84,7 @@ int ArchetypeRuleHandler::installArchetypeClass(const std::string& class_name,
         return -1;
     }
 
-    factoryPtr->addProperties();
+    factoryPtr->addProperties(m_propertyManager);
 
     // Add it as a child to its parent.
     parent_factory->m_children.insert(factoryPtr);
@@ -138,7 +138,7 @@ int ArchetypeRuleHandler::modifyArchetypeClass(const std::string& class_name,
         return -1;
     }
 
-    factory->updateProperties(changes);
+    factory->updateProperties(changes, m_propertyManager);
 
     return 0;
 }

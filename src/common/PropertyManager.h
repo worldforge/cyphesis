@@ -49,7 +49,7 @@ class PropertyManager : public Singleton<PropertyManager> {
     ///
     /// @param name a string giving the name of the property.
     virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name,
-                                       int type) = 0;
+                                       int type) const = 0;
 
     virtual int installFactory(const std::string & type_name,
                                const Atlas::Objects::Root & type_desc,

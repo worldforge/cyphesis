@@ -25,7 +25,7 @@
 
 #include "../TestBase.h"
 
-#include "server/CorePropertyManager.h"
+#include "rules/simulation/CorePropertyManager.h"
 
 #include "rules/Domain.h"
 #include "rules/simulation/Entity.h"
@@ -99,7 +99,7 @@ CorePropertyManagertest::CorePropertyManagertest()
 void CorePropertyManagertest::setup()
 {
     m_inheritance = new Inheritance(factories);
-    m_propertyManager = new CorePropertyManager;
+    m_propertyManager = new CorePropertyManager(*m_inheritance);
     m_propertyManager->m_propertyFactories.emplace(
         std::string("named_type"), std::make_unique<PropertyFactory<MinimalProperty>>()
     );
@@ -322,7 +322,7 @@ template class EntityFactory<World>;
 #include "../stubs/rules/stubAtlasProperties.h"
 #include "../stubs/rules/simulation/stubCalendarProperty.h"
 #include "../stubs/rules/simulation/stubAreaProperty.h"
-
+#include "../stubs/rules/simulation/stubModifySelfProperty.h"
 
 template <class T>
 std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
