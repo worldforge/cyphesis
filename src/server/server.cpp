@@ -407,7 +407,7 @@ namespace {
                 }
             }
 
-            int nice = 1;
+            int nice = 0;
             readConfigItem(instance, "nice", nice);
 
 

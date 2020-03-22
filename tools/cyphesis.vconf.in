@@ -34,7 +34,7 @@ metastats="clients|entities|version|ruleset|buildid"
 # Run in daemon mode
 daemon="false"
 # Run at an increased nice level
-nice=1
+nice=0
 # Leave control of NPCs to AI client
 useaiclient="false"
 # Database configuration. By default "sqlite" is used.
