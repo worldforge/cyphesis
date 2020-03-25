@@ -58,8 +58,7 @@ class TestEntity : public Entity
 class TestPropertyManager : public PropertyManager
 {
     public:
-        std::unique_ptr<PropertyBase> addProperty(const std::string& name,
-                                                  int type) const override
+        std::unique_ptr<PropertyBase> addProperty(const std::string& name) const override
         {
             return std::unique_ptr<PropertyBase>(new SuspendedProperty());
         }

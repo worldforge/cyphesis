@@ -21,7 +21,7 @@
                         <list name="observed_properties">
                             <string>attached_feet</string>
                         </list>
-                        <map name="modifier">
+                        <map name="modifiers">
                             <map name="armor">
                                 <float name="append">1</float>
                             </map>
@@ -44,7 +44,7 @@
                         <list name="observed_properties">
                             <string>attached_feet</string>
                         </list>
-                        <map name="modifier">
+                        <map name="modifiers">
                             <map name="speed_ground">
                                 <float name="append">5</float>
                             </map>
@@ -81,7 +81,7 @@
                         <list name="observed_properties">
                             <string>attached_feet</string>
                         </list>
-                        <map name="modifier">
+                        <map name="modifiers">
                             <map name="armor">
                                 <float name="append">1.5</float>
                             </map>

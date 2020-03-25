@@ -19,42 +19,6 @@
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
 
-#define OP_SWITCH(_op, _op_no, _result, _prefix) \
-    switch (_op_no) { \
-        case Atlas::Objects::Operation::DELETE_NO: \
-            _prefix ## DeleteOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::IMAGINARY_NO: \
-            _prefix ## ImaginaryOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::LOOK_NO: \
-            _prefix ## LookOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::MOVE_NO: \
-            _prefix ## MoveOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::SET_NO: \
-            _prefix ## SetOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::TALK_NO: \
-            _prefix ## TalkOperation(_op, _result); \
-            break; \
-        case Atlas::Objects::Operation::CREATE_NO: \
-            _prefix ## CreateOperation(_op, _result); \
-            break; \
-        case OP_INVALID: \
-            break; \
-        default: \
-            if ((_op_no) == Atlas::Objects::Operation::UPDATE_NO) { \
-                _prefix ## UpdateOperation(_op, _result); \
-            } else if ((_op_no) == Atlas::Objects::Operation::RELAY_NO) { \
-                _prefix ## RelayOperation(_op, _result); \
-            } else { \
-                /* ERROR */ \
-            } \
-            break; \
-    }
-
 #define POLL_OP_SWITCH(_op, _op_no, _prefix) \
     switch (_op_no) { \
         case Atlas::Objects::Operation::APPEARANCE_NO: \

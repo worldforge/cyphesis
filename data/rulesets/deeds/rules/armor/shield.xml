@@ -31,7 +31,7 @@
                         <list name="observed_properties">
                             <string>attached_hand_secondary</string>
                         </list>
-                        <map name="modifier">
+                        <map name="modifiers">
                             <map name="armor">
                                 <float name="append">1</float>
                             </map>

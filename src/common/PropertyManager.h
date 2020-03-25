@@ -48,8 +48,7 @@ class PropertyManager : public Singleton<PropertyManager> {
     /// \brief Add a new named property to an Entity
     ///
     /// @param name a string giving the name of the property.
-    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name,
-                                       int type) const = 0;
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name) const = 0;
 
     virtual int installFactory(const std::string & type_name,
                                const Atlas::Objects::Root & type_desc,

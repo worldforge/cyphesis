@@ -35,7 +35,7 @@ class TestPropertyManager : public PropertyManager {
   public:
     TestPropertyManager() { }
 
-    std::unique_ptr<PropertyBase> addProperty(const std::string &, int) const override {
+    std::unique_ptr<PropertyBase> addProperty(const std::string &) const override {
         return {};
     }
 };
@@ -92,7 +92,7 @@ void PropertyManagertest::teardown()
 
 void PropertyManagertest::test_interface()
 {
-    auto ret = m_pm->addProperty("one", 1);
+    auto ret = m_pm->addProperty("one");
 
     ASSERT_FALSE(ret);
 }

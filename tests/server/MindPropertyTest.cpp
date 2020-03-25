@@ -28,7 +28,7 @@
 
 #include "../PropertyCoverage.h"
 
-#include "rules/simulation/MindProperty.h"
+#include "server/MindProperty.h"
 #include "rules/ai/MindFactory.h"
 
 int main()

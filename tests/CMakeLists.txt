@@ -169,7 +169,7 @@ wf_add_test(rules/simulation/CalendarPropertyTest.cpp PropertyCoverage.cpp ../sr
     ../src/common/Property.cpp)
 wf_add_test(rules/simulation/LinePropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/LineProperty.cpp
     ../src/common/Property.cpp)
-wf_add_test(server/MindPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/MindProperty.cpp
+wf_add_test(server/MindPropertyTest.cpp PropertyCoverage.cpp ../src/server/MindProperty.cpp
     ../src/common/Property.cpp)
 target_link_libraries(MindPropertyTest pycxx)
 

@@ -64,7 +64,7 @@ std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
 
 /// \brief Entity constructor
 Entity::Entity(const std::string& id, long intId) :
-    LocatedEntity(id, intId)
+        LocatedEntity(id, intId)
 {
 }
 
@@ -365,14 +365,43 @@ HandlerResult Entity::callDelegate(const std::string& name,
     return OPERATION_IGNORED;
 }
 
-/// \brief Find and call the handler for an operation
-///
-/// @param op The operation to be processed.
-/// @param res The result of the operation is returned here.
 void Entity::callOperation(const Operation& op, OpVector& res)
 {
     auto op_no = op->getClassNo();
-    OP_SWITCH(op, op_no, res,)
+    switch (op_no) {
+        case Atlas::Objects::Operation::DELETE_NO:
+            DeleteOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::IMAGINARY_NO:
+            ImaginaryOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::LOOK_NO:
+            LookOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::MOVE_NO:
+            MoveOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::SET_NO:
+            SetOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::TALK_NO:
+            TalkOperation(op, res);
+            break;
+        case Atlas::Objects::Operation::CREATE_NO:
+            CreateOperation(op, res);
+            break;
+        case OP_INVALID:
+            break;
+        default:
+            if ((op_no) == Atlas::Objects::Operation::UPDATE_NO) {
+                UpdateOperation(op, res);
+            } else if ((op_no) == Atlas::Objects::Operation::RELAY_NO) {
+                RelayOperation(op, res);
+            } else {
+                /* ERROR */
+            }
+            break;
+    }
 }
 
 void Entity::onContainered(const Ref<LocatedEntity>& oldLocation)

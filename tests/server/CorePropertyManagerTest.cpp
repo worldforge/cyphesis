@@ -72,12 +72,7 @@ class CorePropertyManagertest : public Cyphesis::TestBase
     void setup();
     void teardown();
 
-    void test_addProperty_int();
-    void test_addProperty_float();
-    void test_addProperty_string();
-    void test_addProperty_list();
-    void test_addProperty_map();
-    void test_addProperty_none();
+    void test_addProperty();
     void test_addProperty_named();
     void test_installFactory();
 
@@ -86,12 +81,7 @@ class CorePropertyManagertest : public Cyphesis::TestBase
 
 CorePropertyManagertest::CorePropertyManagertest()
 {
-    ADD_TEST(CorePropertyManagertest::test_addProperty_int);
-    ADD_TEST(CorePropertyManagertest::test_addProperty_float);
-    ADD_TEST(CorePropertyManagertest::test_addProperty_string);
-    ADD_TEST(CorePropertyManagertest::test_addProperty_list);
-    ADD_TEST(CorePropertyManagertest::test_addProperty_map);
-    ADD_TEST(CorePropertyManagertest::test_addProperty_none);
+    ADD_TEST(CorePropertyManagertest::test_addProperty);
     ADD_TEST(CorePropertyManagertest::test_addProperty_named);
     ADD_TEST(CorePropertyManagertest::test_installFactory);
 }
@@ -112,58 +102,16 @@ void CorePropertyManagertest::teardown()
     delete m_propertyManager;
 }
 
-void CorePropertyManagertest::test_addProperty_int()
+void CorePropertyManagertest::test_addProperty()
 {
-    auto p = m_propertyManager->addProperty("non_existant_type",
-                                              Element::TYPE_INT);
+    auto p = m_propertyManager->addProperty("non_existant_type");
     ASSERT_TRUE(p);
     ASSERT_NOT_NULL(dynamic_cast<SoftProperty*>(p.get()));
-}
-
-void CorePropertyManagertest::test_addProperty_float()
-{
-    auto p = m_propertyManager->addProperty("non_existant_type",
-                                              Element::TYPE_FLOAT);
-    ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty*>(p.get()));
-}
-
-void CorePropertyManagertest::test_addProperty_string()
-{
-    auto p = m_propertyManager->addProperty("non_existant_type",
-                                              Element::TYPE_STRING);
-    ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty*>(p.get()));
-}
-
-void CorePropertyManagertest::test_addProperty_list()
-{
-    auto p = m_propertyManager->addProperty("non_existant_type",
-                                              Element::TYPE_LIST);
-    ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p.get()));
-}
-
-void CorePropertyManagertest::test_addProperty_map()
-{
-    auto p = m_propertyManager->addProperty("non_existant_type",
-                                              Element::TYPE_MAP);
-    ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p.get()));
-}
-
-void CorePropertyManagertest::test_addProperty_none()
-{
-    auto p = m_propertyManager->addProperty("non_existant_type",
-                                              Element::TYPE_NONE);
-    ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<SoftProperty *>(p.get()));
 }
 
 void CorePropertyManagertest::test_addProperty_named()
 {
-    auto p = m_propertyManager->addProperty("named_type",
-                                              Element::TYPE_NONE);
+    auto p = m_propertyManager->addProperty("named_type");
     ASSERT_TRUE(p);
     ASSERT_NOT_NULL(dynamic_cast<MinimalProperty *>(p.get()));
 }
@@ -219,7 +167,7 @@ int main()
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/LineProperty.h"
-#include "rules/simulation/MindProperty.h"
+#include "server/MindProperty.h"
 #include "rules/SolidProperty.h"
 #include "rules/simulation/SpawnProperty.h"
 #include "rules/simulation/StatusProperty.h"

@@ -38,7 +38,8 @@ void ModifySelfProperty::remove(LocatedEntity* owner, const std::string& name)
     auto* state = sInstanceState.getState(owner);
     checkIfActive(*state, *owner);
     state->updatedConnection.disconnect();
-    sInstanceState.removeState(owner);}
+    sInstanceState.removeState(owner);
+}
 
 void ModifySelfProperty::install(LocatedEntity* owner, const std::string& name)
 {
@@ -63,7 +64,7 @@ void ModifySelfProperty::setData(const Atlas::Message::Element& val)
         for (auto& entry : map) {
             if (entry.second.isMap()) {
                 auto modifyEntry = ModifyEntry::parseEntry(entry.second.Map());
-                if (modifyEntry.modifier) {
+                if (!modifyEntry.modifiers.empty()) {
                     m_modifyEntries.emplace(entry.first, std::move(modifyEntry));
                 }
             }
@@ -85,31 +86,35 @@ int ModifySelfProperty::get(Atlas::Message::Element& val) const
 
 void ModifySelfProperty::checkIfActive(State& state, LocatedEntity& entity)
 {
-        for (auto& entry: m_modifyEntries) {
-            auto& modifyEntry = entry.second;
-            bool apply;
-            if (!modifyEntry.constraint) {
-                apply = true;
-            } else {
-                EntityFilter::QueryContext queryContext{entity, &entity};
-                queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
-                queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
-                apply = modifyEntry.constraint->match(queryContext);
-            }
+    for (auto& entry: m_modifyEntries) {
+        auto& modifyEntry = entry.second;
+        bool apply;
+        if (!modifyEntry.constraint) {
+            apply = true;
+        } else {
+            EntityFilter::QueryContext queryContext{entity, &entity};
+            queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+            apply = modifyEntry.constraint->match(queryContext);
+        }
 
-            if (apply) {
-                if (state.activeModifiers.find(&modifyEntry) == state.activeModifiers.end()) {
-                    entity.addModifier(modifyEntry.propertyName, modifyEntry.modifier.get(), &entity);
-                    state.activeModifiers.insert(&modifyEntry);
-                    entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+        if (apply) {
+            if (state.activeModifiers.find(&modifyEntry) == state.activeModifiers.end()) {
+                for (auto& appliedModifierEntry : modifyEntry.modifiers) {
+                    entity.addModifier(appliedModifierEntry.first, appliedModifierEntry.second.get(), &entity);
                 }
-            } else {
-                if (state.activeModifiers.find(&modifyEntry) != state.activeModifiers.end()) {
-                    entity.removeModifier(modifyEntry.propertyName, modifyEntry.modifier.get());
-                    state.activeModifiers.erase(&modifyEntry);
-                    entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
-                }
+                state.activeModifiers.insert(&modifyEntry);
+                entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
             }
+        } else {
+            if (state.activeModifiers.find(&modifyEntry) != state.activeModifiers.end()) {
+                for (auto& appliedModifierEntry : modifyEntry.modifiers) {
+                    entity.removeModifier(appliedModifierEntry.first, appliedModifierEntry.second.get());
+                }
+                state.activeModifiers.erase(&modifyEntry);
+                entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+            }
+        }
     }
 
 }

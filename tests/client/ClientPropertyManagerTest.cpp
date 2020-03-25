@@ -36,7 +36,7 @@ int main()
 
     {
         ClientPropertyManager * cpm = new ClientPropertyManager;
-        assert(cpm->addProperty("foo", 0));
+        assert(cpm->addProperty("foo"));
         delete cpm;
     }
 

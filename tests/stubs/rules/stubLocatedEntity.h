@@ -74,11 +74,27 @@
   }
 #endif //STUB_LocatedEntity_getAttr
 
+#ifndef STUB_LocatedEntity_getAttr
+//#define STUB_LocatedEntity_getAttr
+  boost::optional<Atlas::Message::Element> LocatedEntity::getAttr(const std::string& name) const
+  {
+    return *static_cast<boost::optional<Atlas::Message::Element>*>(nullptr);
+  }
+#endif //STUB_LocatedEntity_getAttr
+
 #ifndef STUB_LocatedEntity_getAttrType
 //#define STUB_LocatedEntity_getAttrType
   int LocatedEntity::getAttrType(const std::string& name, Atlas::Message::Element&, int type) const
   {
     return 0;
+  }
+#endif //STUB_LocatedEntity_getAttrType
+
+#ifndef STUB_LocatedEntity_getAttrType
+//#define STUB_LocatedEntity_getAttrType
+  boost::optional<Atlas::Message::Element> LocatedEntity::getAttrType(const std::string& name, int type) const
+  {
+    return *static_cast<boost::optional<Atlas::Message::Element>*>(nullptr);
   }
 #endif //STUB_LocatedEntity_getAttrType
 

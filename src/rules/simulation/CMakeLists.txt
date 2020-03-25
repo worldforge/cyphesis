@@ -43,7 +43,6 @@ add_library(rulessimulation
         AdminMind.cpp
         AdminProperty.cpp
         AttachmentsProperty.cpp
-        MindProperty.cpp
         EntityProperty.cpp
         ScriptUtils.cpp
         ServerBBoxProperty.cpp

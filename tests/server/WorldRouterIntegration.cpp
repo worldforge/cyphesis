@@ -397,7 +397,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "../stubs/rules/python/stubScriptsProperty.h"
 
 #define STUB_CorePropertyManager_addProperty
-std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name, int type) const
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name) const
 {
     return std::make_unique<Property<float>>();
 }

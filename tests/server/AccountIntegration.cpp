@@ -436,7 +436,7 @@ int main()
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/LineProperty.h"
-#include "rules/simulation/MindProperty.h"
+#include "server/MindProperty.h"
 #include "rules/SolidProperty.h"
 #include "rules/simulation/SpawnProperty.h"
 #include "rules/simulation/StatusProperty.h"

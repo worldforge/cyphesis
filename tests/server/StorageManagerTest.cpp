@@ -28,7 +28,7 @@
 #include "server/WorldRouter.h"
 
 #include "rules/simulation/Entity.h"
-#include "rules/simulation/MindProperty.h"
+#include "server/MindProperty.h"
 
 #include "common/SystemTime.h"
 #include "../DatabaseNull.h"

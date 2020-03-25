@@ -35,8 +35,7 @@ ClientPropertyManager::ClientPropertyManager()
     installFactory(SolidProperty::property_name, std::make_unique<PropertyFactory<SolidProperty>>());
 }
 
-std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name,
-                                                                 int type) const
+std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name) const
 {
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {

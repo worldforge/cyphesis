@@ -22,7 +22,7 @@
 #include "EntityBuilder.h"
 
 #include "rules/LocatedEntity.h"
-#include "rules/simulation/MindProperty.h"
+#include "MindProperty.h"
 #include "rules/Domain.h"
 
 #include "common/Database.h"
@@ -206,7 +206,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
 
         auto* prop = ent->modProperty(name, val);
         if (!prop) {
-            auto newProp = PropertyManager::instance().addProperty(name, val.getType());
+            auto newProp = PropertyManager::instance().addProperty(name);
             prop = newProp.get();
             prop->install(ent, name);
             //This transfers ownership of the property to the entity.

@@ -27,7 +27,6 @@
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/ServerBBoxProperty.h"
-#include "rules/simulation/MindProperty.h"
 #include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/SpawnProperty.h"
 #include "rules/simulation/AreaProperty.h"
@@ -104,7 +103,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<TransientProperty>();
     installProperty<Property<double>>("mass");
     installProperty<ServerBBoxProperty>();
-    installProperty<MindProperty>();
     installProperty<SetupProperty>();
     installProperty<SpawnProperty>();
     installProperty<AreaProperty>();
@@ -277,8 +275,7 @@ int CorePropertyManager::installFactory(const std::string& type_name,
     return 0;
 }
 
-std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name,
-                                                               int type) const
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name) const
 {
     assert(!name.empty());
     assert(name != "objtype");

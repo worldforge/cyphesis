@@ -23,8 +23,7 @@
 
 struct NullPropertyManager : PropertyManager {
 
-    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name,
-                                                      int type) const {
+    virtual std::unique_ptr<PropertyBase> addProperty(const std::string & name) const {
         return {};
     }
 };

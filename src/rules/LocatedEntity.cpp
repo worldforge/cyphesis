@@ -113,12 +113,6 @@ bool LocatedEntity::hasAttr(const std::string& name) const
     return false;
 }
 
-/// \brief Get the value of an attribute
-///
-/// @param name Name of attribute to be retrieved
-/// @param attr Reference used to store value
-/// @return zero if this entity has an attribute with the name given
-/// nonzero otherwise
 int LocatedEntity::getAttr(const std::string& name,
                            Element& attr) const
 {
@@ -135,12 +129,19 @@ int LocatedEntity::getAttr(const std::string& name,
     return -1;
 }
 
-/// \brief Get the value of an attribute if it is the right type
-///
-/// @param name Name of attribute to be retrieved
-/// @param attr Reference used to store value
-/// @return zero if this entity has an attribute with the name given
-/// nonzero otherwise
+boost::optional<Atlas::Message::Element> LocatedEntity::getAttr(const std::string& name) const
+{
+    //The idea here is to gradually move away from the C style method call to a more C++ based one with boost::optional (and even std::optional).
+    Atlas::Message::Element attr;
+    auto result = getAttr(name, attr);
+    if (result == 0) {
+        return attr;
+    } else {
+        return boost::none;
+    }
+}
+
+
 int LocatedEntity::getAttrType(const std::string& name,
                                Element& attr,
                                int type) const
@@ -158,10 +159,20 @@ int LocatedEntity::getAttrType(const std::string& name,
     return -1;
 }
 
-/// \brief Set the value of an attribute
-///
-/// @param name Name of attribute to be changed
-/// @param attr Value to be stored
+boost::optional<Atlas::Message::Element> LocatedEntity::getAttrType(const std::string& name, int type) const
+{
+    //The idea here is to gradually move away from the C style method call to a more C++ based one with boost::optional (and even std::optional).
+
+    Atlas::Message::Element attr;
+    auto result = getAttrType(name, attr, type);
+    if (result == 0) {
+        return attr;
+    } else {
+        return boost::none;
+    }
+}
+
+
 PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
 {
     auto parsedPropertyName = PropertyBase::parsePropertyModification(name);
@@ -175,50 +186,59 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& mo
         return nullptr;
     }
 
+    bool propNeedsInstalling = false;
     PropertyBase* prop = nullptr;
+    Atlas::Message::Element attr;
     // If it is an existing property, just update the value.
     auto I = m_properties.find(name);
-    Atlas::Message::Element attr;
-    if (I != m_properties.end()) {
-        //Should we apply any modifiers?
-        if (!I->second.modifiers.empty()) {
-            if (modifier.getType() == ModifierType::Default) {
-                I->second.baseValue = modifier.mValue;
-            }
-            modifier.process(attr, I->second.baseValue);
-            for (auto& modifierEntry : I->second.modifiers) {
-                modifierEntry.first->process(attr, I->second.baseValue);
-            }
-        } else {
-            I->second.property->get(attr);
-            modifier.process(attr, attr);
-        }
-        prop = I->second.property.get();
-    }
-    if (prop) {
-        // Mark it as unclean
-        prop->removeFlags(prop_flag_persistence_clean);
-        prop->set(attr);
-    } else {
+    if (I == m_properties.end() || !I->second.property) {
+        //Install a new property.
         std::map<std::string, std::unique_ptr<PropertyBase>>::const_iterator J;
-        if (m_type != nullptr && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
+        if (m_type && (J = m_type->defaults().find(name)) != m_type->defaults().end()) {
             prop = J->second->copy();
-            prop->get(attr);
-            modifier.process(attr, attr);
-            prop->set(attr);
             m_properties[name].property.reset(prop);
         } else {
             // This is an entirely new property, not just a modification of
             // one in defaults, so we need to install it to this Entity.
-            auto newProp = PropertyManager::instance().addProperty(name, attr.getType());
+            auto newProp = PropertyManager::instance().addProperty(name);
             prop = newProp.get();
             m_properties[name].property = std::move(newProp);
+            propNeedsInstalling = true;
+        }
+    } else {
+        prop = I->second.property.get();
+    }
+
+    if (I != m_properties.end() && !I->second.modifiers.empty()) {
+        ModifiableProperty& modifiableProperty = I->second;
+        //Should we apply any modifiers?
+        //If the new value is default we can just apply it directly.
+        if (modifier.getType() == ModifierType::Default) {
+            modifiableProperty.baseValue = modifier.mValue;
+            attr = modifier.mValue;
+        } else {
+            attr = modifiableProperty.baseValue;
+            modifier.process(attr, modifiableProperty.baseValue);
+        }
+        for (auto& modifierEntry : modifiableProperty.modifiers) {
+            modifierEntry.first->process(attr, modifiableProperty.baseValue);
+        }
+    } else {
+        if (modifier.getType() == ModifierType::Default) {
+            attr = modifier.mValue;
+        } else {
             prop->get(attr);
             modifier.process(attr, attr);
-            prop->set(attr);
-            prop->install(this, name);
         }
-        assert(prop != nullptr);
+    }
+    //By now we should always have a new prop.
+    assert(prop != nullptr);
+    prop->removeFlags(prop_flag_persistence_clean);
+    prop->set(attr);
+
+    //We deferred any installation until after the prop has had its value set.
+    if (propNeedsInstalling) {
+        prop->install(this, name);
     }
 
     // Allow the value to take effect.

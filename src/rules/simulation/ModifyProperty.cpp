@@ -26,7 +26,8 @@
 
 PropertyInstanceState<ModifyProperty::State> ModifyProperty::sInstanceState;
 
-ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap) {
+ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap)
+{
     ModifyEntry modifyEntry;
     AtlasQuery::find<std::string>(entryMap, "constraint", [&](const std::string& constraint) {
         modifyEntry.constraint = std::make_unique<EntityFilter::Filter>(constraint, EntityFilter::ProviderFactory());
@@ -39,30 +40,29 @@ ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap) {
         }
     });
 
-    AtlasQuery::find<Atlas::Message::MapType>(entryMap, "modifier", [&](const Atlas::Message::MapType& modifierMap) {
-        for (auto& modifierEntry : modifierMap) {
-            modifyEntry.propertyName = modifierEntry.first;
+    AtlasQuery::find<Atlas::Message::MapType>(entryMap, "modifiers", [&](const Atlas::Message::MapType& modifiersMap) {
+        for (auto& modifierEntry : modifiersMap) {
             if (modifierEntry.second.isMap()) {
                 auto& valueMap = modifierEntry.second.Map();
                 auto I = valueMap.find("default");
                 if (I != valueMap.end()) {
-                    modifyEntry.modifier = std::make_unique<DefaultModifier>(I->second);
+                    modifyEntry.modifiers.emplace(modifierEntry.first, std::make_unique<DefaultModifier>(I->second));
                 }
                 I = valueMap.find("append");
                 if (I != valueMap.end()) {
-                    modifyEntry.modifier = std::make_unique<AppendModifier>(I->second);
+                    modifyEntry.modifiers.emplace(modifierEntry.first, std::make_unique<AppendModifier>(I->second));
                 }
                 I = valueMap.find("prepend");
                 if (I != valueMap.end()) {
-                    modifyEntry.modifier = std::make_unique<PrependModifier>(I->second);
+                    modifyEntry.modifiers.emplace(modifierEntry.first, std::make_unique<PrependModifier>(I->second));
                 }
                 I = valueMap.find("subtract");
                 if (I != valueMap.end()) {
-                    modifyEntry.modifier = std::make_unique<SubtractModifier>(I->second);
+                    modifyEntry.modifiers.emplace(modifierEntry.first, std::make_unique<SubtractModifier>(I->second));
                 }
                 I = valueMap.find("add_fraction");
                 if (I != valueMap.end()) {
-                    modifyEntry.modifier = std::make_unique<AddFractionModifier>(I->second);
+                    modifyEntry.modifiers.emplace(modifierEntry.first, std::make_unique<AddFractionModifier>(I->second));
                 }
             }
         }
@@ -91,7 +91,6 @@ ModifyProperty* ModifyProperty::copy() const
 }
 
 
-
 void ModifyProperty::setData(const Atlas::Message::Element& val)
 {
     m_data = val;
@@ -103,7 +102,7 @@ void ModifyProperty::setData(const Atlas::Message::Element& val)
             if (entry.isMap()) {
                 auto modifyEntry = ModifyEntry::parseEntry(entry.Map());
 
-                if (modifyEntry.modifier) {
+                if (!modifyEntry.modifiers.empty()) {
                     m_modifyEntries.emplace_back(std::move(modifyEntry));
                 }
             }
@@ -153,7 +152,9 @@ void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEnt
 {
     if (state.parentEntity) {
         for (auto& entry: state.activeModifiers) {
-            state.parentEntity->removeModifier(entry->propertyName, entry->modifier.get());
+            for (auto& modifierEntry : entry->modifiers) {
+                state.parentEntity->removeModifier(modifierEntry.first, modifierEntry.second.get());
+            }
             state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
         }
         state.activeModifiers.clear();
@@ -190,13 +191,17 @@ void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)
 
             if (apply) {
                 if (state.activeModifiers.find(&modifyEntry) == state.activeModifiers.end()) {
-                    state.parentEntity->addModifier(modifyEntry.propertyName, modifyEntry.modifier.get(), &entity);
+                    for (auto& appliedModifierEntry : modifyEntry.modifiers) {
+                        state.parentEntity->addModifier(appliedModifierEntry.first, appliedModifierEntry.second.get(), &entity);
+                    }
                     state.activeModifiers.insert(&modifyEntry);
                     state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
                 }
             } else {
                 if (state.activeModifiers.find(&modifyEntry) != state.activeModifiers.end()) {
-                    state.parentEntity->removeModifier(modifyEntry.propertyName, modifyEntry.modifier.get());
+                    for (auto& appliedModifierEntry : modifyEntry.modifiers) {
+                        state.parentEntity->removeModifier(appliedModifierEntry.first, appliedModifierEntry.second.get());
+                    }
                     state.activeModifiers.erase(&modifyEntry);
                     state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
                 }

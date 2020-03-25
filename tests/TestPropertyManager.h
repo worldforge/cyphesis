@@ -36,7 +36,7 @@ class TestPropertyManager : public PropertyManager {
     TestPropertyManager();
     ~TestPropertyManager() override;
 
-    std::unique_ptr<PropertyBase> addProperty(const std::string & name, int type) const override;
+    std::unique_ptr<PropertyBase> addProperty(const std::string & name) const override;
 
     void installPropertyFactory(const std::string &, PropertyKit *);
 };
@@ -52,8 +52,7 @@ inline void TestPropertyManager::installPropertyFactory(const std::string & name
     m_propertyFactories.insert(std::make_pair(name, factory));
 }
 
-inline std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name,
-                                                               int type) const
+inline std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name) const
 {
     auto I = m_propertyFactories.find(name);
     if (I == m_propertyFactories.end()) {

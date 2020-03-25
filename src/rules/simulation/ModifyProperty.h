@@ -36,14 +36,11 @@ struct ModifyEntry
      * An optional constraint.
      */
     std::unique_ptr<EntityFilter::Filter> constraint;
+
     /**
-     * The modifier which will be applied.
+     * The modifiers which will be applied.
      */
-    std::unique_ptr<Modifier> modifier;
-    /**
-     * The name of the property to modify.
-     */
-    std::string propertyName;
+    std::map<std::string, std::unique_ptr<Modifier>> modifiers;
     /**
      * A list of observed properties of the parent entity. Whenever one of the properties changes the modification should be re-evaluated.
      */

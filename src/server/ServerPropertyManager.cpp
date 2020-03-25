@@ -17,13 +17,16 @@
  */
 
 #include "ServerPropertyManager.h"
-#include "server/TeleportProperty.h"
+#include "TeleportProperty.h"
+#include "MindProperty.h"
 #include "common/PropertyFactory_impl.h"
 
 ServerPropertyManager::ServerPropertyManager(Inheritance& inheritance)
 : CorePropertyManager(inheritance)
 {
     installProperty<TeleportProperty>("linked");
+    installProperty<MindProperty>();
+
 }
 
 ServerPropertyManager::~ServerPropertyManager() = default;

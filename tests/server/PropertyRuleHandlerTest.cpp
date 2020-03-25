@@ -39,15 +39,13 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 
-class TestPropertyManager : public PropertyManager
+struct TestPropertyManager : public PropertyManager
 {
-  public:
 
         TestPropertyManager() {
             m_propertyFactories["int"] = std::make_unique<PropertyFactory<Property<int>>>();
         }
-        std::unique_ptr<PropertyBase> addProperty(const std::string & name,
-                                       int type) const override {
+        std::unique_ptr<PropertyBase> addProperty(const std::string & name) const override {
             return {};
         }
 };

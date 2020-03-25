@@ -4,7 +4,7 @@
 #ifndef STUB_RULES_SIMULATION_MINDPROPERTY_H
 #define STUB_RULES_SIMULATION_MINDPROPERTY_H
 
-#include "rules/simulation/MindProperty.h"
+#include "server/MindProperty.h"
 #include "stubMindProperty_custom.h"
 
 #ifndef STUB_MindProperty_MindProperty

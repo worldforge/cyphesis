@@ -105,15 +105,14 @@ class TestPropertyManager : public PropertyManager
     public:
         virtual ~TestPropertyManager();
 
-        std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) const override;
+        std::unique_ptr<PropertyBase> addProperty(const std::string& name) const override;
 };
 
 TestPropertyManager::~TestPropertyManager()
 {
 }
 
-std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string& name,
-                                                               int type) const
+std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string& name) const
 {
     if (name == test_values<long>::name) {
         return std::make_unique<Property<long>>();

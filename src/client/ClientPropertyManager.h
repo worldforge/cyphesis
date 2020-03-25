@@ -27,7 +27,7 @@ class ClientPropertyManager : public PropertyManager
     public:
         ClientPropertyManager();
 
-        std::unique_ptr<PropertyBase> addProperty(const std::string& name, int type) const override;
+        std::unique_ptr<PropertyBase> addProperty(const std::string& name) const override;
 };
 
 

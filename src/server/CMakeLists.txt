@@ -50,6 +50,7 @@ set(cyphesis_files
         ExternalMindsConnection.cpp
         ExternalMindsManager.cpp
         ServerPropertyManager.cpp
+        MindProperty.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
 if (PostgreSQL_FOUND)

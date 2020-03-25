@@ -119,7 +119,7 @@ void TypeNode::addProperties(const MapType& attributes, const PropertyManager& p
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", entry.first, m_name));
             continue;
         }
-        auto p = propertyManager.addProperty(entry.first, entry.second.getType());
+        auto p = propertyManager.addProperty(entry.first);
         if (p->hasFlags(prop_flag_instance)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
             continue;
@@ -174,7 +174,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes,
 
         auto I = m_defaults.find(entry.first);
         if (I == m_defaults.end()) {
-            auto p = propertyManager.addProperty(entry.first, entry.second.getType());
+            auto p = propertyManager.addProperty(entry.first);
             if (p->hasFlags(prop_flag_instance)) {
                 log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which is forbidden since it's instance only.", entry.first, m_name));
                 continue;
