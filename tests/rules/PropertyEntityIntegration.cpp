@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "../TestBase.h"
+#include "../TestBaseWithContext.h"
 #include "../TestWorld.h"
 
 #include "rules/simulation/Entity.h"
@@ -35,6 +35,7 @@
 #include <cstdlib>
 
 #include <cassert>
+#include <rules/simulation/World.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -142,17 +143,36 @@ struct TestEntity : Entity
 
 };
 
-
-struct PropertyEntityIntegration : public Cyphesis::TestBase
+struct TestContext
 {
-    TypeNode* m_type{};
-    Ref<TestEntity> m_entity;
-    TestPropertyManager* propertyManager{};
+    TypeNode m_type{"test_type"};
+    Ref<TestEntity> m_entity{new TestEntity("1", 1L)};
+    TestPropertyManager propertyManager{};
+
+    TestContext()
+    {
+        m_type.addProperties(MapType{
+                std::make_pair(test_values<long>::name,
+                               test_values<long>::initial_value),
+                std::make_pair(test_values<double>::name,
+                               test_values<double>::initial_value),
+                std::make_pair(test_values<std::string>::name,
+                               test_values<std::string>::initial_value),
+                std::make_pair(test_values<MapType>::name,
+                               test_values<MapType>::initial_value)
+        }, propertyManager);
+        m_entity->setType(&m_type);
+    }
+};
+
+struct PropertyEntityIntegration : public Cyphesis::TestBaseWithContext<TestContext>
+{
+
 
     PropertyEntityIntegration()
     {
-        ADD_TEST(PropertyEntityIntegration::test_addModifiersToTypeAttr);
-        ADD_TEST(PropertyEntityIntegration::test_setAttrInt);
+        ADD_TEST(test_addModifiersToTypeAttr);
+        ADD_TEST(test_setAttrInt);
         ADD_TEST(PropertyEntityIntegration::test_setAttrIntWithNameModifiers);
         ADD_TEST(PropertyEntityIntegration::test_setAttrList);
         ADD_TEST(PropertyEntityIntegration::test_setAttrMap);
@@ -181,33 +201,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
     }
 
 
-    void setup() override
-    {
-        propertyManager = new TestPropertyManager;
-        m_type = new TypeNode("test_type");
-        m_type->addProperties(MapType{
-                std::make_pair(test_values<long>::name,
-                               test_values<long>::initial_value),
-                std::make_pair(test_values<double>::name,
-                               test_values<double>::initial_value),
-                std::make_pair(test_values<std::string>::name,
-                               test_values<std::string>::initial_value),
-                std::make_pair(test_values<MapType>::name,
-                               test_values<MapType>::initial_value)
-        }, *propertyManager);
-        m_entity = new TestEntity("1", 1L);
-        m_entity->setType(m_type);
-    }
-
-
-    void teardown() override
-    {
-        m_entity = nullptr;
-        delete m_type;
-        delete propertyManager;
-    }
-
-    void test_setAttrWithModifiers()
+    void test_setAttrWithModifiers(const TestContext& context)
     {
 
         //Test different ways of setting an attribute which has a modifier
@@ -233,112 +227,112 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
         }
     }
 
-    void test_setAttrInt()
+    void test_setAttrInt(const TestContext& context)
     {
         Atlas::Message::Element element;
 
-        m_entity->setAttrValue("foo", 1);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", 1);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 1);
 
-        m_entity->setAttrValue("foo", 2);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", 2);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 2);
 
-        m_entity->setAttrValue("foo!append", 2);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!append", 2);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 4);
 
-        m_entity->setAttrValue("foo!prepend", 2);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!prepend", 2);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 6);
 
-        m_entity->setAttrValue("foo!subtract", 3);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!subtract", 3);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 3);
 
-        m_entity->setAttrValue("foo!add-fraction", 2);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!add-fraction", 2);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 9);
 
-        m_entity->setAttrValue("bar!append", 2);
-        m_entity->getAttr("bar", element);
+        context.m_entity->setAttrValue("bar!append", 2);
+        context.m_entity->getAttr("bar", element);
         ASSERT_EQUAL(element, 2);
 
-        m_entity->setAttrValue("baz!add-fraction", 2);
-        m_entity->getAttr("baz", element);
+        context.m_entity->setAttrValue("baz!add-fraction", 2);
+        context.m_entity->getAttr("baz", element);
         ASSERT_TRUE(element.isNone());
     }
 
-    void test_setAttrIntWithNameModifiers()
+    void test_setAttrIntWithNameModifiers(const TestContext& context)
     {
         Atlas::Message::Element element;
 
         AppendModifier appendModifier(1);
 
-        m_entity->addModifier("foo", &appendModifier, m_entity.get());
+        context.m_entity->addModifier("foo", &appendModifier, context.m_entity.get());
 
-        m_entity->setAttrValue("foo", 1);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", 1);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 2);
 
 
         AddFractionModifier addFractionModifier(2.0);
-        m_entity->addModifier("foo", &addFractionModifier, m_entity.get());
+        context.m_entity->addModifier("foo", &addFractionModifier, context.m_entity.get());
 
-        m_entity->getAttr("foo", element);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 4);
 
 
-        m_entity->setAttrValue("foo", 6);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", 6);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 19);
 
 
-        m_entity->removeModifier("foo", &addFractionModifier);
-        m_entity->getAttr("foo", element);
+        context.m_entity->removeModifier("foo", &addFractionModifier);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 7);
     }
 
-    void test_addModifiersToTypeAttr()
+    void test_addModifiersToTypeAttr(TestContext& context)
     {
         Atlas::Message::Element element;
-        m_type->addProperties(MapType{
-                                      {"foo", 10}
-                              },
-                              *propertyManager);
+        context.m_type.addProperties(MapType{
+                                             {"foo", 10}
+                                     },
+                                     context.propertyManager);
 
 
-        ASSERT_EQUAL(*m_entity->getAttr("foo"), 10);
+        ASSERT_EQUAL(*context.m_entity->getAttr("foo"), 10);
 
         AppendModifier appendModifier(1);
 
-        m_entity->addModifier("foo", &appendModifier, m_entity.get());
-        ASSERT_EQUAL(*m_entity->getAttr("foo"), 11);
-        m_entity->removeModifier("foo", &appendModifier);
-        ASSERT_EQUAL(*m_entity->getAttr("foo"), 10);
+        context.m_entity->addModifier("foo", &appendModifier, context.m_entity.get());
+        ASSERT_EQUAL(*context.m_entity->getAttr("foo"), 11);
+        context.m_entity->removeModifier("foo", &appendModifier);
+        ASSERT_EQUAL(*context.m_entity->getAttr("foo"), 10);
     }
 
-    void test_setAttrList()
+    void test_setAttrList(const TestContext& context)
     {
         Atlas::Message::Element element;
 
         Atlas::Message::ListType list;
         list.emplace_back(1);
-        m_entity->setAttrValue("foo", list);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", list);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, list);
 
         list.emplace_back(2);
 
-        m_entity->setAttrValue("foo", list);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", list);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, list);
 
         list.clear();
         list.emplace_back(4);
-        m_entity->setAttrValue("foo!append", list);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!append", list);
+        context.m_entity->getAttr("foo", element);
         Atlas::Message::ListType correctList;
         correctList.emplace_back(1);
         correctList.emplace_back(2);
@@ -347,8 +341,8 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         list.clear();
         list.emplace_back(2);
-        m_entity->setAttrValue("foo!prepend", list);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!prepend", list);
+        context.m_entity->getAttr("foo", element);
         correctList.clear();
         correctList.emplace_back(2);
         correctList.emplace_back(1);
@@ -359,8 +353,8 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         list.clear();
         list.emplace_back(4);
-        m_entity->setAttrValue("foo!subtract", list);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!subtract", list);
+        context.m_entity->getAttr("foo", element);
         correctList.clear();
         correctList.emplace_back(2);
         correctList.emplace_back(1);
@@ -368,27 +362,27 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
         ASSERT_EQUAL(element, correctList);
     }
 
-    void test_setAttrMap()
+    void test_setAttrMap(const TestContext& context)
     {
         Atlas::Message::Element element;
 
         Atlas::Message::MapType map;
         map.emplace("one", 1);
 
-        m_entity->setAttrValue("foo", map);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", map);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, map);
 
         map.emplace("two", 2);
 
-        m_entity->setAttrValue("foo", map);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo", map);
+        context.m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, map);
 
         map.clear();
         map.emplace("three", 3);
-        m_entity->setAttrValue("foo!append", map);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!append", map);
+        context.m_entity->getAttr("foo", element);
         Atlas::Message::MapType correctMap = {{"one",   1},
                                               {"two",   2},
                                               {"three", 3}};
@@ -396,8 +390,8 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         map.clear();
         map.emplace("four", 4);
-        m_entity->setAttrValue("foo!prepend", map);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!prepend", map);
+        context.m_entity->getAttr("foo", element);
         correctMap = {{"one",   1},
                       {"two",   2},
                       {"three", 3},
@@ -406,8 +400,8 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         map.clear();
         map.emplace("four", 400);
-        m_entity->setAttrValue("foo!prepend", map);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!prepend", map);
+        context.m_entity->getAttr("foo", element);
         correctMap = {{"one",   1},
                       {"two",   2},
                       {"three", 3},
@@ -416,8 +410,8 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         map.clear();
         map.emplace("four", "any_value_it_doesnt_matter");
-        m_entity->setAttrValue("foo!subtract", map);
-        m_entity->getAttr("foo", element);
+        context.m_entity->setAttrValue("foo!subtract", map);
+        context.m_entity->getAttr("foo", element);
         correctMap = {{"one",   1},
                       {"two",   2},
                       {"three", 3}};
@@ -425,33 +419,33 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
     }
 
     template<class T>
-    void test_requirePropertyClass()
+    void test_requirePropertyClass(const TestContext& context)
     {
-        auto p = m_entity->requirePropertyClass<Property<T>>("bill");
+        auto p = context.m_entity->requirePropertyClass<Property<T>>("bill");
         ASSERT_NOT_NULL(p);
     }
 
     template<class T>
-    void test_requirePropertyClass_default()
+    void test_requirePropertyClass_default(const TestContext& context)
     {
-        auto p = m_entity->requirePropertyClass<Property<T>>("bill",
-                                                             Element(test_values<T>::default_value));
+        auto p = context.m_entity->requirePropertyClass<Property<T>>("bill",
+                                                                     Element(test_values<T>::default_value));
         ASSERT_EQUAL(p->data(), test_values<T>::default_value);
     }
 
     template<class T>
-    void test_modProperty()
+    void test_modProperty(TestContext& context)
     {
         // Get a pointer to the types default property
-        auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
+        auto& dflt = context.m_type.defaults().find(test_values<T>::name)->second;
         ASSERT_TRUE(dflt);
         ASSERT_TRUE(dflt->flags().m_flags & prop_flag_class);
 
         // The entity instance should not have a property by this name
-        ASSERT_EQUAL(m_entity->getProperties().find(test_values<T>::name),
-                     m_entity->getProperties().end());
+        ASSERT_EQUAL(context.m_entity->getProperties().find(test_values<T>::name),
+                     context.m_entity->getProperties().end());
 
-        PropertyBase* p = m_entity->modProperty(test_values<T>::name);
+        PropertyBase* p = context.m_entity->modProperty(test_values<T>::name);
         ASSERT_NOT_NULL(p);
         ASSERT_TRUE((p->flags().m_flags & prop_flag_class) == 0);
         // modProperty should have forced a new object
@@ -462,18 +456,18 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
     }
 
     template<class T>
-    void test_modPropertyClass()
+    void test_modPropertyClass(const TestContext& context)
     {
         // Get a pointer to the types default property
-        auto& dflt = m_type->defaults().find(test_values<T>::name)->second;
+        auto& dflt = context.m_type.defaults().find(test_values<T>::name)->second;
         ASSERT_TRUE(dflt);
         ASSERT_TRUE(dflt->flags().m_flags & prop_flag_class);
 
         // The entity instance should not have a property by this name
-        ASSERT_EQUAL(m_entity->getProperties().find(test_values<T>::name),
-                     m_entity->getProperties().end());
+        ASSERT_EQUAL(context.m_entity->getProperties().find(test_values<T>::name),
+                     context.m_entity->getProperties().end());
 
-        auto p = m_entity->modPropertyClass<Property<T>>(
+        auto p = context.m_entity->modPropertyClass<Property<T>>(
                 test_values<T>::name
         );
         ASSERT_NOT_NULL(p);

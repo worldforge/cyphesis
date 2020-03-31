@@ -1070,7 +1070,7 @@ void Accounttest::test_LookOperation_possess_Character()
 //
 //    Anonymous arg;
 //    arg->setId(c->getId());
-//    arg->setAttr("possess_key", "3efc5e84-6fc6-4c66-bd68-1eec24ba09b6");
+//    arg->setAttrValue("possess_key", "3efc5e84-6fc6-4c66-bd68-1eec24ba09b6");
 //    op->setArgs1(arg);
 //
 //    m_account->LookOperation(op, res);

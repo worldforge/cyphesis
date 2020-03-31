@@ -62,7 +62,7 @@ namespace Cyphesis {
     struct Test
     {
         const char* name;
-        std::function<void(const ContextT&)> method;
+        std::function<void(ContextT&)> method;
     };
 
     /**
@@ -96,7 +96,7 @@ namespace Cyphesis {
 
             void addTest(Test<ContextT> t);
 
-            void addTest(const char* test_name, std::function<void(const ContextT&)> method);
+            void addTest(const char* test_name, std::function<void(ContextT&)> method);
 
             int run();
 
@@ -167,7 +167,7 @@ namespace Cyphesis {
     }
 
     template<typename ContextT>
-    void TestBaseWithContext<ContextT>::addTest(const char* test_name, std::function<void(const ContextT&)> method)
+    void TestBaseWithContext<ContextT>::addTest(const char* test_name, std::function<void(ContextT&)> method)
     {
         m_tests.emplace_back(Test<ContextT>{test_name, method});
     }
@@ -181,7 +181,8 @@ namespace Cyphesis {
         for (auto& test : m_tests) {
             std::cerr << "Starting test " << test.name << std::endl << std::flush;
             {
-                test.method(ContextT{});
+                ContextT context{};
+                test.method(context);
             }
             std::cerr << "Completed test " << test.name << std::endl << std::flush;
 
@@ -333,7 +334,7 @@ namespace Cyphesis {
 }
 
 #define ADD_TEST(_function) {\
-    this->addTest(#_function, [&](const auto& context){_function(context);});\
+    this->addTest(#_function, [&](auto& context){_function(context);});\
 }
 
 #define ASSERT_TRUE(_expr) {\
