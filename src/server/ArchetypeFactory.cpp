@@ -301,7 +301,7 @@ void ArchetypeFactory::processResolvedAttributes(std::map<std::string, EntityCre
             for (auto& attrI : entityI.second.unresolvedAttributes) {
                 Atlas::Message::Element& attr = attrI.second;
                 resolveEntityReference(entities, attr);
-                entityI.second.createdEntity->setAttr(attrI.first, attr);
+                entityI.second.createdEntity->setAttrValue(attrI.first, attr);
             }
         }
     }

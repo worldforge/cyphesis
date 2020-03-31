@@ -174,19 +174,19 @@ void LocatedEntitytest::test_coverage()
     assert(!ee.checkAttributes(attrNames));
 
     // Add the test attributes
-    m_entity->setAttr("test_int", 1);
-    m_entity->setAttr("test_float", 1.f);
-    m_entity->setAttr("test_list_string", "test_value");
-    m_entity->setAttr("test_list_int", ListType(1, 1));
-    m_entity->setAttr("test_list_float", ListType(1, 1.f));
-    m_entity->setAttr("test_map_string", ListType(1, "test_value"));
+    m_entity->setAttrValue("test_int", 1);
+    m_entity->setAttrValue("test_float", 1.f);
+    m_entity->setAttrValue("test_list_string", "test_value");
+    m_entity->setAttrValue("test_list_int", ListType(1, 1));
+    m_entity->setAttrValue("test_list_float", ListType(1, 1.f));
+    m_entity->setAttrValue("test_map_string", ListType(1, "test_value"));
     MapType test_map;
     test_map["test_key"] = 1;
-    m_entity->setAttr("test_map_int", test_map);
+    m_entity->setAttrValue("test_map_int", test_map);
     test_map["test_key"] = 1.f;
-    m_entity->setAttr("test_map_float", test_map);
+    m_entity->setAttrValue("test_map_float", test_map);
     test_map["test_key"] = "test_value";
-    m_entity->setAttr("test_map_string", test_map);
+    m_entity->setAttrValue("test_map_string", test_map);
     
     // Make sure we have the test attributes now
     assert(ee.checkAttributes(attrNames));
@@ -251,19 +251,19 @@ int main()
         // Enitity deleted - verified as not leaked
     }
 
-    // Test setAttr()
+    // Test setAttrValue()
     {
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
-        e->setAttr("foo", "bar");
+        e->setAttrValue("foo", "bar");
     }
 
-    // Test setAttr()
+    // Test setAttrValue()
     {
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
 
-        e->setAttr("foo", "bar");
-        e->setAttr("foo", 23);
+        e->setAttrValue("foo", "bar");
+        e->setAttrValue("foo", 23);
     }
 
     // Test getAttr()
@@ -281,7 +281,7 @@ int main()
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         Atlas::Message::Element val;
 
-        e->setAttr("foo", "bar");
+        e->setAttrValue("foo", "bar");
         int ret = e->getAttr("foo", val);
         assert(ret == 0);
         assert(val.isString());
@@ -331,7 +331,7 @@ int main()
         LocatedEntityTest * e = new LocatedEntityTest("1", 1);
         Atlas::Message::Element val;
 
-        e->setAttr("foo", "bar");
+        e->setAttrValue("foo", "bar");
         bool ret = e->hasAttr("foo");
         assert(ret == true);
     }

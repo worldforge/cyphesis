@@ -98,17 +98,17 @@
   }
 #endif //STUB_LocatedEntity_getAttrType
 
-#ifndef STUB_LocatedEntity_setAttr
-//#define STUB_LocatedEntity_setAttr
-  PropertyBase* LocatedEntity::setAttr(const std::string& name, Atlas::Message::Element)
+#ifndef STUB_LocatedEntity_setAttrValue
+//#define STUB_LocatedEntity_setAttrValue
+  PropertyBase* LocatedEntity::setAttrValue(const std::string& name, Atlas::Message::Element attr)
   {
     return nullptr;
   }
-#endif //STUB_LocatedEntity_setAttr
+#endif //STUB_LocatedEntity_setAttrValue
 
 #ifndef STUB_LocatedEntity_setAttr
 //#define STUB_LocatedEntity_setAttr
-  PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& modifier)
+  PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* modifier)
   {
     return nullptr;
   }

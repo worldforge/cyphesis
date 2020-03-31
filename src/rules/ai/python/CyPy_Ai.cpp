@@ -39,8 +39,8 @@ CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
     d["CENTER"] = Py::Long(0);
     d["EDGE"] = Py::Long(1);
 //    Py::Dict measureType;
-//    measureType.setAttr("CENTER", Py::Long(0));
-//    measureType.setAttr("EDGE", Py::Long(1));
+//    measureType.setAttrValue("CENTER", Py::Long(0));
+//    measureType.setAttrValue("EDGE", Py::Long(1));
 //    d["MeasureType"] = measureType;
 
 }

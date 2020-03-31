@@ -134,7 +134,7 @@ void Tasktest::test_sequence()
 //    Atlas::Message::Element val;
 //    m_task->getAttr("foo", val);
 //    assert(val.isNone());
-//    m_task->setAttr("foo", 1);
+//    m_task->setAttrValue("foo", 1);
 //    m_task->getAttr("foo", val);
 //    assert(val.isInt());
 //

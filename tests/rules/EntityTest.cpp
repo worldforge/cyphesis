@@ -133,7 +133,7 @@ void Entitytest::test_setAttr_new()
 {
     ASSERT_TRUE(!m_TestProperty_install_called);
 
-    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    PropertyBase * pb = m_entity->setAttrValue("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
 
     ASSERT_TRUE((pb->flags().m_flags & prop_flag_class) == 0);
@@ -150,7 +150,7 @@ void Entitytest::test_setAttr_existing()
     PropertyBase * initial_property = m_entity->setProperty("test_int_property",
                                                             std::make_unique<TestProperty>());
 
-    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    PropertyBase * pb = m_entity->setAttrValue("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
     ASSERT_EQUAL(initial_property, pb);
 
@@ -170,7 +170,7 @@ void Entitytest::test_setAttr_type()
     type_property->flags().m_flags &= prop_flag_class;
     m_type->injectProperty("test_int_property", std::unique_ptr<PropertyBase>(type_property));
 
-    PropertyBase * pb = m_entity->setAttr("test_int_property", 24);
+    PropertyBase * pb = m_entity->setAttrValue("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
     ASSERT_NOT_EQUAL(type_property, pb);
 
@@ -200,19 +200,19 @@ void Entitytest::test_sequence()
     ee.addAllOperations(opNames);
 
     // Add the test attributes
-    m_entity->setAttr("test_int", 1);
-    m_entity->setAttr("test_float", 1.f);
-    m_entity->setAttr("test_list_string", "test_value");
-    m_entity->setAttr("test_list_int", ListType(1, 1));
-    m_entity->setAttr("test_list_float", ListType(1, 1.f));
-    m_entity->setAttr("test_map_string", ListType(1, "test_value"));
+    m_entity->setAttrValue("test_int", 1);
+    m_entity->setAttrValue("test_float", 1.f);
+    m_entity->setAttrValue("test_list_string", "test_value");
+    m_entity->setAttrValue("test_list_int", ListType(1, 1));
+    m_entity->setAttrValue("test_list_float", ListType(1, 1.f));
+    m_entity->setAttrValue("test_map_string", ListType(1, "test_value"));
     MapType test_map;
     test_map["test_key"] = 1;
-    m_entity->setAttr("test_map_int", test_map);
+    m_entity->setAttrValue("test_map_int", test_map);
     test_map["test_key"] = 1.f;
-    m_entity->setAttr("test_map_float", test_map);
+    m_entity->setAttrValue("test_map_float", test_map);
     test_map["test_key"] = "test_value";
-    m_entity->setAttr("test_map_string", test_map);
+    m_entity->setAttrValue("test_map_string", test_map);
     
     // Make sure we have the test attributes now
     MapType entityAsAtlas;

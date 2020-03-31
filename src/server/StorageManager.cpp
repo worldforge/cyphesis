@@ -226,7 +226,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
             if (instanceProperties.find(propIter.first) == instanceProperties.end()) {
                 auto& prop = propIter.second;
                 // If a property is in the class it won't have been installed
-                // as setAttr() checks
+                // as setAttrValue() checks
                 prop->install(ent, propIter.first);
                 // The property will have been applied if it has an overridden
                 // value, so we only apply it the value is still default.

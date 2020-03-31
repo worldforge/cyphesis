@@ -59,8 +59,8 @@ int main(int argc, char ** argv)
     assert(thing->flags().m_flags & entity_queued);
     // Check the entity_clean flag is still set
     assert(thing->flags().m_flags & entity_clean);
-    
-    thing->setAttr("test_attr1", 1);
+
+    thing->setAttrValue("test_attr1", 1);
 
     // Check entity_clean is no longer set
     assert((thing->flags().m_flags & entity_clean) == 0);

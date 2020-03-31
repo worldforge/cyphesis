@@ -151,6 +151,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
     PropertyEntityIntegration()
     {
+        ADD_TEST(PropertyEntityIntegration::test_addModifiersToTypeAttr);
         ADD_TEST(PropertyEntityIntegration::test_setAttrInt);
         ADD_TEST(PropertyEntityIntegration::test_setAttrIntWithNameModifiers);
         ADD_TEST(PropertyEntityIntegration::test_setAttrList);
@@ -216,7 +217,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
             Ref<TestEntity> entity(new TestEntity("1", 1L));
             //We'll add a modifier without any previous value
             entity->addModifier("foo", &appendModifier, entity.get());
-            entity->setAttr("foo!append", 1);
+            entity->setAttrValue("foo!append", 1);
             Atlas::Message::Element element;
             entity->getAttr("foo", element);
             ASSERT_EQUAL(element, 2)
@@ -225,7 +226,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
         {
             Ref<TestEntity> entity(new TestEntity("1", 1L));
             entity->addModifier("foo", &appendModifier, entity.get());
-            entity->setAttr("foo", 4);
+            entity->setAttrValue("foo", 4);
             Atlas::Message::Element element;
             entity->getAttr("foo", element);
             ASSERT_EQUAL(element, 5)
@@ -236,35 +237,35 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
     {
         Atlas::Message::Element element;
 
-        m_entity->setAttr("foo", 1);
+        m_entity->setAttrValue("foo", 1);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 1);
 
-        m_entity->setAttr("foo", 2);
+        m_entity->setAttrValue("foo", 2);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 2);
 
-        m_entity->setAttr("foo!append", 2);
+        m_entity->setAttrValue("foo!append", 2);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 4);
 
-        m_entity->setAttr("foo!prepend", 2);
+        m_entity->setAttrValue("foo!prepend", 2);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 6);
 
-        m_entity->setAttr("foo!subtract", 3);
+        m_entity->setAttrValue("foo!subtract", 3);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 3);
 
-        m_entity->setAttr("foo!add-fraction", 2);
+        m_entity->setAttrValue("foo!add-fraction", 2);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 9);
 
-        m_entity->setAttr("bar!append", 2);
+        m_entity->setAttrValue("bar!append", 2);
         m_entity->getAttr("bar", element);
         ASSERT_EQUAL(element, 2);
 
-        m_entity->setAttr("baz!add-fraction", 2);
+        m_entity->setAttrValue("baz!add-fraction", 2);
         m_entity->getAttr("baz", element);
         ASSERT_TRUE(element.isNone());
     }
@@ -277,7 +278,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         m_entity->addModifier("foo", &appendModifier, m_entity.get());
 
-        m_entity->setAttr("foo", 1);
+        m_entity->setAttrValue("foo", 1);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 2);
 
@@ -289,7 +290,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
         ASSERT_EQUAL(element, 4);
 
 
-        m_entity->setAttr("foo", 6);
+        m_entity->setAttrValue("foo", 6);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, 19);
 
@@ -299,6 +300,24 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
         ASSERT_EQUAL(element, 7);
     }
 
+    void test_addModifiersToTypeAttr()
+    {
+        Atlas::Message::Element element;
+        m_type->addProperties(MapType{
+                                      {"foo", 10}
+                              },
+                              *propertyManager);
+
+
+        ASSERT_EQUAL(*m_entity->getAttr("foo"), 10);
+
+        AppendModifier appendModifier(1);
+
+        m_entity->addModifier("foo", &appendModifier, m_entity.get());
+        ASSERT_EQUAL(*m_entity->getAttr("foo"), 11);
+        m_entity->removeModifier("foo", &appendModifier);
+        ASSERT_EQUAL(*m_entity->getAttr("foo"), 10);
+    }
 
     void test_setAttrList()
     {
@@ -306,19 +325,19 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         Atlas::Message::ListType list;
         list.emplace_back(1);
-        m_entity->setAttr("foo", list);
+        m_entity->setAttrValue("foo", list);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, list);
 
         list.emplace_back(2);
 
-        m_entity->setAttr("foo", list);
+        m_entity->setAttrValue("foo", list);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, list);
 
         list.clear();
         list.emplace_back(4);
-        m_entity->setAttr("foo!append", list);
+        m_entity->setAttrValue("foo!append", list);
         m_entity->getAttr("foo", element);
         Atlas::Message::ListType correctList;
         correctList.emplace_back(1);
@@ -328,7 +347,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         list.clear();
         list.emplace_back(2);
-        m_entity->setAttr("foo!prepend", list);
+        m_entity->setAttrValue("foo!prepend", list);
         m_entity->getAttr("foo", element);
         correctList.clear();
         correctList.emplace_back(2);
@@ -340,7 +359,7 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
 
         list.clear();
         list.emplace_back(4);
-        m_entity->setAttr("foo!subtract", list);
+        m_entity->setAttrValue("foo!subtract", list);
         m_entity->getAttr("foo", element);
         correctList.clear();
         correctList.emplace_back(2);
@@ -356,42 +375,52 @@ struct PropertyEntityIntegration : public Cyphesis::TestBase
         Atlas::Message::MapType map;
         map.emplace("one", 1);
 
-        m_entity->setAttr("foo", map);
+        m_entity->setAttrValue("foo", map);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, map);
 
         map.emplace("two", 2);
 
-        m_entity->setAttr("foo", map);
+        m_entity->setAttrValue("foo", map);
         m_entity->getAttr("foo", element);
         ASSERT_EQUAL(element, map);
 
         map.clear();
         map.emplace("three", 3);
-        m_entity->setAttr("foo!append", map);
+        m_entity->setAttrValue("foo!append", map);
         m_entity->getAttr("foo", element);
-        Atlas::Message::MapType correctMap = {{"one", 1}, {"two", 2}, {"three", 3}};
+        Atlas::Message::MapType correctMap = {{"one",   1},
+                                              {"two",   2},
+                                              {"three", 3}};
         ASSERT_EQUAL(element, correctMap);
 
         map.clear();
         map.emplace("four", 4);
-        m_entity->setAttr("foo!prepend", map);
+        m_entity->setAttrValue("foo!prepend", map);
         m_entity->getAttr("foo", element);
-        correctMap = {{"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}};
+        correctMap = {{"one",   1},
+                      {"two",   2},
+                      {"three", 3},
+                      {"four",  4}};
         ASSERT_EQUAL(element, correctMap);
 
         map.clear();
         map.emplace("four", 400);
-        m_entity->setAttr("foo!prepend", map);
+        m_entity->setAttrValue("foo!prepend", map);
         m_entity->getAttr("foo", element);
-        correctMap = {{"one", 1}, {"two", 2}, {"three", 3}, {"four", 400}};
+        correctMap = {{"one",   1},
+                      {"two",   2},
+                      {"three", 3},
+                      {"four",  400}};
         ASSERT_EQUAL(element, correctMap);
 
         map.clear();
         map.emplace("four", "any_value_it_doesnt_matter");
-        m_entity->setAttr("foo!subtract", map);
+        m_entity->setAttrValue("foo!subtract", map);
         m_entity->getAttr("foo", element);
-        correctMap = {{"one", 1}, {"two", 2}, {"three", 3}};
+        correctMap = {{"one",   1},
+                      {"two",   2},
+                      {"three", 3}};
         ASSERT_EQUAL(element, correctMap);
     }
 

@@ -1275,7 +1275,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                         //If there are attached entities, we must also make them free.
                         auto attachedEntitiesCopy = bulletEntry->attachedEntities;
                         for (auto attachedEntry : attachedEntitiesCopy) {
-                            attachedEntry->entity->setAttr("mode", modeProp->data());
+                            attachedEntry->entity->setAttrValue("mode", modeProp->data());
                         }
                         if (!bulletEntry->attachedEntities.empty()) {
                             log(WARNING, "Set of attached entities isn't empty after changing all of them to free mode.");

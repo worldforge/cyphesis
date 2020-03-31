@@ -65,6 +65,14 @@
   }
 #endif //STUB_ModifySelfProperty_get
 
+#ifndef STUB_ModifySelfProperty_apply
+//#define STUB_ModifySelfProperty_apply
+  void ModifySelfProperty::apply(LocatedEntity* e)
+  {
+    
+  }
+#endif //STUB_ModifySelfProperty_apply
+
 #ifndef STUB_ModifySelfProperty_setData
 //#define STUB_ModifySelfProperty_setData
   void ModifySelfProperty::setData(const Atlas::Message::Element& val)
@@ -75,7 +83,7 @@
 
 #ifndef STUB_ModifySelfProperty_checkIfActive
 //#define STUB_ModifySelfProperty_checkIfActive
-  void ModifySelfProperty::checkIfActive(State& state, LocatedEntity& entity)
+  void ModifySelfProperty::checkIfActive(LocatedEntity& entity)
   {
     
   }

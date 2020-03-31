@@ -27,7 +27,8 @@
 #include <Atlas/Objects/Entity.h>
 #include <rules/simulation/CorePropertyManager.h>
 
-#include <utility>
+#include <memory>
+#include <rules/simulation/ModifiersProperty.h>
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Entity::Anonymous;
@@ -118,6 +119,19 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         sendSetOp(entity, "foo", 2.0);
         ASSERT_EQUAL(*entity->getAttr("foo"), 3.0);
+
+        //Removing the "bar" modifier should remove the "bar" property.
+        sendSetOp(entity, "modify_self", MapType{{"set_by_test",
+                                                         MapType{
+                                                                 {"constraint", "true = true"},
+                                                                 {"modifiers",  MapType{
+                                                                         {"foo", MapType{
+                                                                                 {"append", 1.0}}}
+                                                                 }}
+                                                         }}});
+
+        ASSERT_EQUAL(*entity->getAttr("bar"), Atlas::Message::Element());
+
     }
 
     void test_setModify(const TestContext& context)
@@ -145,7 +159,27 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         sendSetOp(entity, "foo", 2.0);
         ASSERT_EQUAL(*entity->getAttr("foo"), 3.0);
 
+        //Trying to alter "_modifiers" should not be possible.
+        sendSetOp(entity, ModifiersProperty::property_name, ListType{});
+
+        ASSERT_TRUE(entity->getAttr("bar"));
+        ASSERT_EQUAL(*entity->getAttr("bar"), 1.0);
+
+        //Removing the "bar" modifier should remove the "bar" property.
+        sendSetOp(entityChild, "modify", ListType{
+                MapType{
+                        {"constraint", "true = true"},
+                        {"modifiers",  MapType{
+                                {"foo", MapType{
+                                        {"append", 1.0}}}
+                        }}
+                }});
+
+        ASSERT_EQUAL(*entity->getAttr("bar"), Atlas::Message::Element());
+
+
         entityChild->destroy();
+
     }
 
 

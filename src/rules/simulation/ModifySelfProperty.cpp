@@ -33,10 +33,26 @@ ModifySelfProperty::ModifySelfProperty(const ModifySelfProperty& rhs)
     setData(rhs.m_data);
 }
 
+void ModifySelfProperty::apply(LocatedEntity* entity)
+{
+    //Whenever a the value is changed and the property is applied we need to clear out all applied modifiers.
+    auto& activeModifiers = entity->getActiveModifiers();
+    auto I = activeModifiers.find(entity);
+    if (I != activeModifiers.end()) {
+        for (auto& entry: I->second) {
+            //Note that the modifier pointer points to an invalid memory location! We can only remove it; not touch it otherwise.
+            entity->removeModifier(entry.first, entry.second);
+        }
+    }
+
+    checkIfActive(*entity);
+
+}
+
 void ModifySelfProperty::remove(LocatedEntity* owner, const std::string& name)
 {
     auto* state = sInstanceState.getState(owner);
-    checkIfActive(*state, *owner);
+    checkIfActive(*owner);
     state->updatedConnection.disconnect();
     sInstanceState.removeState(owner);
 }
@@ -44,7 +60,7 @@ void ModifySelfProperty::remove(LocatedEntity* owner, const std::string& name)
 void ModifySelfProperty::install(LocatedEntity* owner, const std::string& name)
 {
     auto state = std::make_unique<ModifySelfProperty::State>();
-    checkIfActive(*state, *owner);
+    checkIfActive(*owner);
 
     sInstanceState.addState(owner, std::move(state));
 }
@@ -84,8 +100,9 @@ int ModifySelfProperty::get(Atlas::Message::Element& val) const
     return 0;
 }
 
-void ModifySelfProperty::checkIfActive(State& state, LocatedEntity& entity)
+void ModifySelfProperty::checkIfActive(LocatedEntity& entity)
 {
+    std::set<std::pair<std::string, Modifier*>> activatedModifiers;
     for (auto& entry: m_modifyEntries) {
         auto& modifyEntry = entry.second;
         bool apply;
@@ -99,23 +116,43 @@ void ModifySelfProperty::checkIfActive(State& state, LocatedEntity& entity)
         }
 
         if (apply) {
-            if (state.activeModifiers.find(&modifyEntry) == state.activeModifiers.end()) {
-                for (auto& appliedModifierEntry : modifyEntry.modifiers) {
-                    entity.addModifier(appliedModifierEntry.first, appliedModifierEntry.second.get(), &entity);
-                }
-                state.activeModifiers.insert(&modifyEntry);
-                entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
-            }
-        } else {
-            if (state.activeModifiers.find(&modifyEntry) != state.activeModifiers.end()) {
-                for (auto& appliedModifierEntry : modifyEntry.modifiers) {
-                    entity.removeModifier(appliedModifierEntry.first, appliedModifierEntry.second.get());
-                }
-                state.activeModifiers.erase(&modifyEntry);
-                entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+            for (auto& appliedModifierEntry : modifyEntry.modifiers) {
+                activatedModifiers.emplace(appliedModifierEntry.first, appliedModifierEntry.second.get());
             }
         }
     }
 
+    auto& activeModifiers = entity.getActiveModifiers();
+    auto I = activeModifiers.find(&entity);
+    if (I != activeModifiers.end()) {
+        //There were already modifiers active. Check the difference and add or remove.
+
+        auto modifiersCopy = I->second;
+        for (auto& appliedModifierEntry : activatedModifiers) {
+            auto pair = std::make_pair(appliedModifierEntry.first, appliedModifierEntry.second);
+            if (modifiersCopy.find(pair) == modifiersCopy.end()) {
+                entity.addModifier(appliedModifierEntry.first, appliedModifierEntry.second, &entity);
+                entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+            } else {
+                modifiersCopy.erase(pair);
+            }
+        }
+
+        //Those that are left should be removed.
+        for (auto& modifierToRemove : modifiersCopy) {
+            entity.removeModifier(modifierToRemove.first, modifierToRemove.second);
+        }
+
+    } else {
+        if (!activatedModifiers.empty()) {
+            //No active modifiers existed, just add all
+            for (auto& appliedModifierEntry : activatedModifiers) {
+                entity.addModifier(appliedModifierEntry.first, appliedModifierEntry.second, &entity);
+            }
+            entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+        }
+    }
 }
+
+
 

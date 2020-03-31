@@ -158,7 +158,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             log(ERROR, "Non string 'mode' set in Thing::MoveOperation");
         } else {
             // Update the mode
-            setAttr("mode", attr_mode);
+            setAttrValue("mode", attr_mode);
         }
     }
 
@@ -167,13 +167,13 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     //In all other cases we want to let regular Domain rules apply
     Element attr_modeData;
     if (ent->copyAttr("mode_data", attr_modeData) == 0) {
-        setAttr("mode_data", attr_modeData);
+        setAttrValue("mode_data", attr_modeData);
     }
 
     //Move ops can also alter the "planted_offset" property
     Element attr_plantedOffset;
     if (ent->copyAttr("planted_offset", attr_plantedOffset) == 0) {
-        setAttr("planted_offset", attr_plantedOffset);
+        setAttrValue("planted_offset", attr_plantedOffset);
     }
 
     double current_time = BaseWorld::instance().getTime();
@@ -384,7 +384,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 //                if (modeDataProp->hasFlags(prop_flag_unsent)) {
 //                    Element modeDataElem;
 //                    if (modeDataProp->get(modeDataElem) == 0) {
-//                        marg->setAttr(ModeDataProperty::property_name, modeDataElem);
+//                        marg->setAttrValue(ModeDataProperty::property_name, modeDataElem);
 //                    }
 //                }
 //            }

@@ -173,13 +173,13 @@ boost::optional<Atlas::Message::Element> LocatedEntity::getAttrType(const std::s
 }
 
 
-PropertyBase* LocatedEntity::setAttr(const std::string& name, Element attr)
+PropertyBase* LocatedEntity::setAttrValue(const std::string& name, Element attr)
 {
     auto parsedPropertyName = PropertyBase::parsePropertyModification(name);
-    return setAttr(parsedPropertyName.second, *Modifier::createModifier(parsedPropertyName.first, std::move(attr)));
+    return setAttr(parsedPropertyName.second, Modifier::createModifier(parsedPropertyName.first, std::move(attr)).get());
 }
 
-PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& modifier)
+PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* modifier)
 {
     if (!PropertyBase::isValidName(name)) {
         log(WARNING, String::compose("Tried to add a property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
@@ -213,22 +213,26 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier& mo
         ModifiableProperty& modifiableProperty = I->second;
         //Should we apply any modifiers?
         //If the new value is default we can just apply it directly.
-        if (modifier.getType() == ModifierType::Default) {
-            modifiableProperty.baseValue = modifier.mValue;
-            attr = modifier.mValue;
-        } else {
-            attr = modifiableProperty.baseValue;
-            modifier.process(attr, modifiableProperty.baseValue);
+        if (modifier) {
+            if (modifier->getType() == ModifierType::Default) {
+                modifiableProperty.baseValue = modifier->mValue;
+                attr = modifier->mValue;
+            } else {
+                attr = modifiableProperty.baseValue;
+                modifier->process(attr, modifiableProperty.baseValue);
+            }
         }
         for (auto& modifierEntry : modifiableProperty.modifiers) {
             modifierEntry.first->process(attr, modifiableProperty.baseValue);
         }
     } else {
-        if (modifier.getType() == ModifierType::Default) {
-            attr = modifier.mValue;
-        } else {
-            prop->get(attr);
-            modifier.process(attr, attr);
+        if (modifier) {
+            if (modifier->getType() == ModifierType::Default) {
+                attr = modifier->mValue;
+            } else {
+                prop->get(attr);
+                modifier->process(attr, attr);
+            }
         }
     }
     //By now we should always have a new prop.
@@ -256,6 +260,8 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
         return;
     }
 
+    m_activeModifiers[affectingEntity].emplace(propertyName, modifier);
+
     auto I = m_properties.find(propertyName);
     if (I != m_properties.end()) {
         if (I->second.property && I->second.property->hasFlags(prop_flag_modifiers_not_allowed)) {
@@ -267,7 +273,8 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             I->second.property->get(I->second.baseValue);
         }
         I->second.modifiers.emplace_back(modifier, affectingEntity);
-        setAttr(propertyName, DefaultModifier(I->second.baseValue));
+        DefaultModifier defaultModifier(I->second.baseValue);
+        setAttr(propertyName, &defaultModifier);
     } else {
 
         //Check if there's also a property in the type, and if so create a copy.
@@ -283,8 +290,9 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
                 modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
                 //Copy the default value.
                 typeI->second->get(modifiableProperty.baseValue);
+                DefaultModifier defaultModifier(modifiableProperty.baseValue);
                 //Apply the new value
-                setAttr(propertyName, DefaultModifier(modifiableProperty.baseValue));
+                setAttr(propertyName, &defaultModifier);
                 had_property_in_type = true;
             }
         }
@@ -293,7 +301,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             auto& modifiableProperty = m_properties[propertyName];
             modifiableProperty.modifiers.emplace_back(modifier, affectingEntity);
             //Apply the new value
-            setAttr(propertyName, DefaultModifier(modifiableProperty.baseValue));
+            setAttr(propertyName, nullptr);
         }
     }
     Update update;
@@ -303,6 +311,13 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
 
 void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* modifier)
 {
+    for (auto& entry: m_activeModifiers) {
+        auto result = entry.second.erase(std::make_pair(propertyName, modifier));
+        if (result > 0) {
+            break;
+        }
+    }
+
     auto propertyI = m_properties.find(propertyName);
     if (propertyI == m_properties.end()) {
         log(WARNING, String::compose("Tried to remove modifier from property %1 which couldn't be found.", propertyName));
@@ -314,7 +329,7 @@ void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* mo
         if (modifier == I->first) {
             modifiers.erase(I);
             //FIXME: If there's no base value we should remove the property, but there's no support in the storage manager for that yet.
-            setAttr(propertyName, propertyI->second.baseValue);
+            setAttrValue(propertyName, propertyI->second.baseValue);
 
             Update update;
             update->setTo(getId());
@@ -800,14 +815,14 @@ void LocatedEntity::merge(const MapType& ent)
             continue;
         }
         if (modifier->getType() == ModifierType::Default) {
-            setAttr(key, *modifier);
+            setAttr(key, modifier.get());
         } else {
             modifiedAttributes.emplace_back(std::make_pair(parsedPropertyName.second, std::move(modifier)));
         }
     }
 
     for (auto& entry: modifiedAttributes) {
-        setAttr(entry.first, *entry.second);
+        setAttr(entry.first, entry.second.get());
     }
 
 }

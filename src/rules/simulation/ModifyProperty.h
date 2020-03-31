@@ -95,7 +95,6 @@ class ModifyProperty : public PropertyBase
             sigc::connection updatedConnection;
             sigc::connection parentEntityPropertyUpdateConnection;
             LocatedEntity* parentEntity; //Need to keep track of latest parent as there's no specific signal for when location changes.
-            std::set<ModifyEntry*> activeModifiers;
         };
 
         static PropertyInstanceState<State> sInstanceState;

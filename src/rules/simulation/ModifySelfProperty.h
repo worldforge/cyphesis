@@ -45,6 +45,8 @@ class ModifySelfProperty : public PropertyBase
 
         int get(Atlas::Message::Element& val) const override;
 
+        void apply(LocatedEntity* e) override;
+
     protected:
 
         std::map<std::string, ModifyEntry> m_modifyEntries;
@@ -56,14 +58,13 @@ class ModifySelfProperty : public PropertyBase
         struct State
         {
             sigc::connection updatedConnection;
-            std::set<ModifyEntry*> activeModifiers;
         };
 
         static PropertyInstanceState<State> sInstanceState;
 
         void setData(const Atlas::Message::Element& val);
 
-        void checkIfActive(State& state, LocatedEntity& entity);
+        void checkIfActive(LocatedEntity& entity);
 
 };
 

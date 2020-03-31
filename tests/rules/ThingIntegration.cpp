@@ -247,7 +247,7 @@ void ThingIntegration::test_visibility()
      */
     {
         Ref<ThingExt> t1 = new ThingExt("1", 1);
-//        t1->setAttr()
+//        t1->setAttrValue()
         Ref<ThingExt> t2 = new ThingExt("2", 2);
         t2->m_location.m_pos = WFMath::Point<3>::ZERO();
         t2->m_location.setBBox(bbox);

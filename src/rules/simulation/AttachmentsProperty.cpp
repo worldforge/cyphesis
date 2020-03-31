@@ -157,7 +157,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             new_entity->sendWorld(update);
                         }
 
-                        entity->setAttr(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
+                        entity->setAttrValue(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
 
                         //Check if there was another entity attached to the attachment, and if so reset it's attachment.
                         resetExistingEntityPlantedOn();

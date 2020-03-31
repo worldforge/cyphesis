@@ -138,7 +138,7 @@ void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
 
     tickListener.wasCalled = false;
     //Now make sure it's not called when the suspended property is set
-    entity->setAttr("suspended", 1);
+    entity->setAttrValue("suspended", 1);
     entity->operation(tick, res);
     ASSERT_TRUE(!tickListener.wasCalled);
 
@@ -148,7 +148,8 @@ void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
     worldMessageCallback = [&](const Operation& op) {
         got_message = true;
     };
-    entity->setAttr("suspended", 0);
+    DefaultModifier modifier(0);
+    entity->setAttr("suspended", &modifier);
     ASSERT_TRUE(got_message);
     entity->operation(tick, res);
     ASSERT_TRUE(tickListener.wasCalled);
@@ -161,9 +162,9 @@ void SuspendedPropertyintegration::test_suspending_world_should_suspend_the_whol
         is_suspended = suspended;
     };
     ASSERT_TRUE(!is_suspended);
-    world_entity->setAttr("suspended", 1);
-    ASSERT_TRUE(is_suspended);
-    world_entity->setAttr("suspended", 0);
+    world_entity->setAttrValue("suspended", 1);
+    DefaultModifier modifier(0);
+    world_entity->setAttr("suspended", &modifier);
     ASSERT_TRUE(!is_suspended);
 }
 

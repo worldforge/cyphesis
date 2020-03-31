@@ -170,6 +170,8 @@ class LocatedEntity : public Router, public ReferenceCounted
         /// Map of properties
         std::map<std::string, ModifiableProperty> m_properties;
 
+        std::map<LocatedEntity*, std::set<std::pair<std::string, Modifier*>>> m_activeModifiers;
+
         /// Sequence number
         int m_seq;
 
@@ -251,6 +253,10 @@ class LocatedEntity : public Router, public ReferenceCounted
         const std::map<std::string, ModifiableProperty>& getProperties() const
         { return m_properties; }
 
+        const std::map<LocatedEntity*, std::set<std::pair<std::string, Modifier*>>> getActiveModifiers() const {
+            return m_activeModifiers;
+        }
+
         /// \brief Set the value of the entity type property
         virtual void setType(const TypeNode* t);
 
@@ -291,11 +297,11 @@ class LocatedEntity : public Router, public ReferenceCounted
         ///
         /// @param name Name of attribute to be changed
         /// @param attr Value to be stored
-        PropertyBase* setAttr(const std::string& name,
-                              Atlas::Message::Element);
+        PropertyBase* setAttrValue(const std::string& name,
+                                   Atlas::Message::Element attr);
 
         PropertyBase* setAttr(const std::string& name,
-                              const Modifier& modifier);
+                              const Modifier* modifier);
 
         const PropertyBase* getProperty(const std::string& name) const;
 

@@ -140,7 +140,7 @@ void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
 //    if (character_type.isValid()) {
 //        addTypeToList(character_type, typeList);
 //    }
-//    ent->setAttr("character_types", typeList);
+//    ent->setAttrValue("character_types", typeList);
 }
 
 /// \brief Function to monitor server operations

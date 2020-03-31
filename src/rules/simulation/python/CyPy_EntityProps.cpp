@@ -78,7 +78,7 @@ Py::Object CyPy_EntityProps::getattro(const Py::String& name)
 int CyPy_EntityProps::setattro(const Py::String& name, const Py::Object& attr)
 {
     Atlas::Message::Element obj = CyPy_Element::asElement(attr);
-    m_value->setAttr(name, std::move(obj));
+    m_value->setAttrValue(name, std::move(obj));
     return 0;
 }
 
