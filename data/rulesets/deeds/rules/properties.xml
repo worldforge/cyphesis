@@ -95,4 +95,12 @@
         <string name="parent">float</string>
         <string name="description">Experience points. Scripts handle upgrading the entity to new levels as this increases.</string>
     </map>
+
+    <map>
+        <string name="id">stamina</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">The energy level of the entity. When stamina is zero some actions can't be performed.</string>
+    </map>
+
 </atlas>

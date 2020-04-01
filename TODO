@@ -528,16 +528,6 @@ Value of one means nothing is sent.
 Installing class causes instance property to be placed, but install is
 not called on it.
 
-Purge stackable.
-
-Fix the stamina property, currently commented out.
-
-Clear set ops out of tasks (in Character) and combat.
-Can probably get rid of the hard Task pointer while at it.
-
-In Plant.cpp a lot of properties are directly updated. Need to review
-whether apply() and install have to be called on them.
-
 Add an entity flag to indicate that the entity has been modified in
 the python API, and on returning to core context an update needs to
 be triggered.

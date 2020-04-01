@@ -314,13 +314,6 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
         log(ERROR, "mindMoveOperation: Arg has no ID. " + ent->describeEntity());
         return;
     }
-//    Element stamina_attr;
-//    if (getAttrType(STAMINA, stamina_attr, Element::TYPE_FLOAT) == 0) {
-//        if (stamina_attr.Float() <= 0.f) {
-//            // Character is immobilised.
-//            return;
-//        }
-//    }
     const std::string& other_id = arg->getId();
     if (other_id != ent->getId()) {
         debug_print("Moving something else. " << other_id)

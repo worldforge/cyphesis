@@ -92,7 +92,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installBaseProperty<MapType>("map", "root_type");
 
     installProperty<EntityProperty>("entity_ref");
-    installProperty<Property<double>>("stamina");
     installProperty<ModeProperty>();
     installProperty<LineProperty>("coords");
     installProperty<LineProperty>("points");
