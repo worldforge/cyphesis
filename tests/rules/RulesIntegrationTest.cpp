@@ -31,6 +31,7 @@
 #include <rules/simulation/ModifiersProperty.h>
 
 using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -60,6 +61,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 {
     Tested()
     {
+        ADD_TEST(test_modifyWithAttachConstraints);
         ADD_TEST(test_setModify);
         ADD_TEST(test_setModifySelf);
         ADD_TEST(test_setProps);
@@ -75,6 +77,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         entity->operation(set, resIgnored);
     }
+
 
     void test_setProps(const TestContext& context)
     {
@@ -182,6 +185,44 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
     }
 
+    void test_modifyWithAttachConstraints(TestContext& context)
+    {
+        Ref<Thing> entity(new Thing("1", 1));
+        context.testWorld.addEntity(entity);
+        sendSetOp(entity, "attachments", MapType{{"hand_primary", "contains(actor.contains, child = tool)"}});
+
+        Ref<Thing> entityChild(new Thing("2", 2));
+        context.testWorld.addEntity(entityChild);
+        entity->addChild(*entityChild);
+        sendSetOp(entityChild, "modify", ListType{
+                MapType{
+                        {"constraint",          "entity.mode_data.mode = 'planted'"},
+                        {"modifiers",           MapType{
+                                {"foo", MapType{
+                                        {"append", 1.0}}},
+                                {"bar", MapType{
+                                        {"default", 1.0}}}
+                        }},
+                        {"observed_properties", ListType{"attached_hand_primary"}}
+                }});
+
+        ASSERT_FALSE(entity->getAttr("foo"))
+
+        {
+            Wield wield;
+            Anonymous arg1;
+            arg1->setAttr("attachment", "hand_primary");
+            arg1->setId(entityChild->getId());
+            wield->setArgs1(arg1);
+            entity->operation(wield, resIgnored);
+        }
+
+        ASSERT_TRUE(entity->getAttr("foo"))
+        ASSERT_EQUAL(*entity->getAttr("foo"), 1.0)
+
+
+        entityChild->destroy();
+    }
 
 };
 
