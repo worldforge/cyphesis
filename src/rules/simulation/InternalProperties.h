@@ -21,18 +21,6 @@
 
 #include "common/Property.h"
 
-/// \brief Class to handle Entity which requires a Setup operation
-/// \ingroup PropertyClasses
-class SetupProperty : public Property<int> {
-  public:
-    static constexpr const char* property_name = "init";
-
-    explicit SetupProperty() = default;
-
-    SetupProperty * copy() const override;
-
-    void install(LocatedEntity *, const std::string &) override;
-};
 
 
 #endif // RULESETS_INTERNAL_PROPERTIES_H

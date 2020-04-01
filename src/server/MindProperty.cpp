@@ -17,18 +17,13 @@
 
 #include "MindProperty.h"
 
-#include "server/PossessionAuthenticator.h"
 #include "server/ExternalMindsManager.h"
 
-#include "common/operations/Setup.h"
-
 #include <Atlas/Objects/Anonymous.h>
-#include <Atlas/Objects/Operation.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Setup;
 using Atlas::Objects::Operation::Look;
 
 MindProperty::MindProperty(const MindProperty & rhs) = default;

@@ -24,9 +24,6 @@
 #include "BaseWorld.h"
 
 #include "common/Link.h"
-#include "common/operations/Setup.h"
-#include "common/operations/Tick.h"
-#include "common/operations/Update.h"
 #include "common/custom.h"
 
 #include <Atlas/Objects/Operation.h>

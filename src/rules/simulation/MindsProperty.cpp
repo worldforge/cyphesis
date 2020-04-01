@@ -27,9 +27,7 @@
 #include "common/debug.h"
 #include "common/custom.h"
 
-#include "common/operations/Setup.h"
 #include "common/operations/Tick.h"
-#include "common/operations/Update.h"
 #include "common/operations/Think.h"
 #include "common/operations/Thought.h"
 
@@ -54,7 +52,6 @@ using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Operation::Action;
 using Atlas::Objects::Operation::Unseen;
-using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
@@ -212,20 +209,6 @@ HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operatio
         }
     }
     return OPERATION_BLOCKED;
-}
-
-
-/// \brief Filter a Setup operation coming from the mind
-///
-/// @param op The operation to be filtered.
-/// @param res The filtered result is returned here.
-void MindsProperty::mindSetupOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
-{
-    Anonymous setup_arg;
-    setup_arg->setName("mind");
-    op->setArgs1(setup_arg);
-    op->setTo(ent->getId());
-    res.push_back(op);
 }
 
 /// \brief Filter a Use operation coming from the mind
@@ -747,9 +730,7 @@ void MindsProperty::mind2body(LocatedEntity* ent, const Operation& op, OpVector&
             mindWieldOperation(ent, op, res);
             break;
         default:
-            if (op_no == Atlas::Objects::Operation::SETUP_NO) {
-                mindSetupOperation(ent, op, res);
-            } else if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
+            if (op_no == Atlas::Objects::Operation::THOUGHT_NO) {
                 mindThoughtOperation(ent, op, res);
             } else if (op_no == Atlas::Objects::Operation::GOAL_INFO_NO) {
                 mindGoalInfoOperation(ent, op, res);

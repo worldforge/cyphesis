@@ -19,48 +19,6 @@
 #ifndef COMMON_OP_SWITCH_H
 #define COMMON_OP_SWITCH_H
 
-#define POLL_OP_SWITCH(_op, _op_no, _prefix) \
-    switch (_op_no) { \
-        case Atlas::Objects::Operation::APPEARANCE_NO: \
-            return _prefix ## AppearanceOperation(_op); \
-            break; \
-        case Atlas::Objects::Operation::DISAPPEARANCE_NO: \
-            return _prefix ## DisappearanceOperation(_op); \
-            break; \
-        case Atlas::Objects::Operation::SIGHT_NO: \
-            return _prefix ## SightOperation(_op); \
-            break; \
-        case Atlas::Objects::Operation::SOUND_NO: \
-            return _prefix ## SoundOperation(_op); \
-            break; \
-        case Atlas::Objects::Operation::TOUCH_NO: \
-            return _prefix ## TouchOperation(_op); \
-            break; \
-        case Atlas::Objects::Operation::ERROR_NO: \
-            return _prefix ## ErrorOperation(_op); \
-            break; \
-        case OP_INVALID: \
-            break; \
-        default: \
-            if ((_op_no) == Atlas::Objects::Operation::SETUP_NO) { \
-                return _prefix ## SetupOperation(_op); \
-            } else if ((_op_no) == Atlas::Objects::Operation::TICK_NO) { \
-                return _prefix ## TickOperation(_op); \
-            } else if ((_op_no) == Atlas::Objects::Operation::UNSEEN_NO) { \
-                return _prefix ## UnseenOperation(_op); \
-            } else if ((_op_no) == Atlas::Objects::Operation::THOUGHT_NO) { \
-                return _prefix ## ThoughtOperation(_op); \
-            } else if ((_op_no) == Atlas::Objects::Operation::THINK_NO) { \
-                return _prefix ## ThinkOperation(_op); \
-            } else if ((_op_no) == Atlas::Objects::Operation::COMMUNE_NO) { \
-                return _prefix ## CommuneOperation(_op); \
-            } else if ((_op_no) == Atlas::Objects::Operation::RELAY_NO) { \
-                return _prefix ## RelayOperation(_op); \
-            } \
-            break; \
-    }
-
-
 #define SUB_OP_SWITCH(_op, _sub_op_no, _result, _prefix) \
     switch (_sub_op_no) { \
         case Atlas::Objects::Operation::CREATE_NO: \

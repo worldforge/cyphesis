@@ -26,13 +26,11 @@
 #include "common/debug.h"
 #include "common/op_switch.h"
 #include "common/TypeNode.h"
-#include "common/Inheritance.h"
 #include "common/operations/Setup.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <rules/python/Python_API.h>
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;

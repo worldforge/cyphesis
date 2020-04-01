@@ -95,14 +95,11 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<ModeProperty>();
     installProperty<LineProperty>("coords");
     installProperty<LineProperty>("points");
-    //installProperty<Property<IdList> >("start_intersections", "list");
-    //installProperty<Property<IdList> >("end_intersections", "list");
     installProperty<SolidProperty>();
     installProperty<StatusProperty>();
     installProperty<TransientProperty>();
     installProperty<Property<double>>("mass");
     installProperty<ServerBBoxProperty>();
-    installProperty<SetupProperty>();
     installProperty<SpawnProperty>();
     installProperty<AreaProperty>();
     installProperty<VisibilityProperty>();

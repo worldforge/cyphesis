@@ -192,8 +192,6 @@ wf_add_test(rules/TransientPropertyTest.cpp PropertyCoverage.cpp ../src/rules/si
     ../src/common/Property.cpp)
 wf_add_test(rules/TasksPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TasksProperty.cpp
     ../src/common/Property.cpp)
-wf_add_test(server/InternalPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/simulation/InternalProperties.cpp
-    ../src/common/Property.cpp)
 wf_add_test(common/EntityPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/EntityProperties.cpp
     ../src/common/Property.cpp)
 wf_add_test(rules/AtlasPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/AtlasProperties.cpp
@@ -381,7 +379,6 @@ wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
     ../src/rules/ai/MemMap.cpp
     ../src/rules/BBoxProperty.cpp
     ../src/rules/SolidProperty.cpp
-    ../src/rules/simulation/InternalProperties.cpp
     ../src/rules/Location.cpp
     ../src/rules/EntityLocation.cpp
     ../src/common/Property.cpp

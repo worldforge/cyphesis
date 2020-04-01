@@ -200,14 +200,6 @@
   }
 #endif //STUB_MindsProperty_mindSetOperation
 
-#ifndef STUB_MindsProperty_mindSetupOperation
-//#define STUB_MindsProperty_mindSetupOperation
-  void MindsProperty::mindSetupOperation(LocatedEntity*, const Operation&, OpVector&) const
-  {
-    
-  }
-#endif //STUB_MindsProperty_mindSetupOperation
-
 #ifndef STUB_MindsProperty_mindTalkOperation
 //#define STUB_MindsProperty_mindTalkOperation
   void MindsProperty::mindTalkOperation(LocatedEntity*, const Operation&, OpVector&) const

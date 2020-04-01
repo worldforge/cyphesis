@@ -102,8 +102,6 @@ class MindsProperty : public PropertyBase
 
         void mindSetOperation(LocatedEntity*, const Operation&, OpVector&) const;
 
-        void mindSetupOperation(LocatedEntity*, const Operation&, OpVector&) const;
-
         void mindTalkOperation(LocatedEntity*, const Operation&, OpVector&) const;
 
         void mindThoughtOperation(LocatedEntity*, const Operation&, OpVector&) const;

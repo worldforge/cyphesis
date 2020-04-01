@@ -27,13 +27,10 @@
 #include <rules/python/Python_API.h>
 
 #include "common/operations/Possess.h"
-#include "common/id.h"
 #include "common/custom.h"
 #include "common/TypeNode.h"
 #include "common/ScriptKit.h"
-#include "common/operations/Setup.h"
 #include "common/debug.h"
-#include "common/operations/Think.h"
 #include "common/Inheritance.h"
 
 #include <Atlas/Objects/Operation.h>
