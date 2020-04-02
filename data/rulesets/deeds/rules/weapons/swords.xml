@@ -47,6 +47,25 @@
             <map name="name">
                 <string name="default">Basic sword</string>
             </map>
+            <map name="__scripts">
+                <list name="append">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Levelable.Levelled</string>
+                    </map>
+                </list>
+            </map>
+            <map name="level">
+                <int name="default">0</int>
+            </map>
+            <!-- Increase damage as the level increase. -->
+            <map name="levelled_modifiers">
+                <map name="append">
+                    <map name="damage">
+                        <float name="add_fraction">0.1</float>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">sword</string>
         <string name="objtype">class</string>
