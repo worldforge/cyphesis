@@ -62,7 +62,7 @@
                 </map>
             </map>
             <map name="level">
-                <int name="default">1</int>
+                <int name="default">0</int>
             </map>
             <map name="xp">
                 <float name="default">0</float>

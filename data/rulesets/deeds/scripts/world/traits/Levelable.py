@@ -10,7 +10,7 @@ class Levelable(server.Thing):
     def xp_property_update(self):
         xp = self.get_prop_float("xp")
         if xp is not None:
-            level_from_xp = int(math.floor(xp / 100)) + 1
+            level_from_xp = int(math.floor(xp / 100))
             level = self.get_prop_int("level")
             if level is None or level != level_from_xp:
                 return Operation("set", Entity(self.id, level=level_from_xp), to=self.id)
