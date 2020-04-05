@@ -334,7 +334,7 @@ namespace Cyphesis {
 }
 
 #define ADD_TEST(_function) {\
-    this->addTest(#_function, [&](auto& context){_function(context);});\
+    this->addTest(#_function, [&](auto& context){this->_function(context);});\
 }
 
 #define ASSERT_TRUE(_expr) {\
