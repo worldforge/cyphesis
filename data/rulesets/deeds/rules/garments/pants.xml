@@ -11,6 +11,12 @@
             <map name="present">
                 <string name="default">dural/creatures/biped/malebuilder/folded_pants.entitymap</string>
             </map>
+            <map name="name">
+                <string name="default">Simple pants</string>
+            </map>
+            <map name="description">
+                <string name="default">Basic pants. There are some holes, and the seams are missing in places.</string>
+            </map>
             <map name="worn">
                 <string name="default">legs</string>
             </map>
@@ -33,6 +39,35 @@
         <string name="id">pants</string>
         <string name="objtype">class</string>
         <string name="parent">garment</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Fine pants</string>
+            </map>
+            <map name="description">
+                <string name="default">Fine pants. The fabric seems to be of a higher quality.</string>
+            </map>
+            <map name="modify">
+                <list name="default">
+                    <map>
+                        <string name="constraint">get_entity(actor.attached_legs) = entity</string>
+                        <list name="observed_properties">
+                            <string>attached_legs</string>
+                        </list>
+                        <map name="modifiers">
+                            <map name="armor">
+                                <float name="append">1</float>
+                            </map>
+                        </map>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">pants_fine</string>
+        <string name="objtype">class</string>
+        <string name="parent">pants</string>
     </map>
 
 </atlas>

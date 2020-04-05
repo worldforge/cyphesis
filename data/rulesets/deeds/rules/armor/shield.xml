@@ -21,6 +21,9 @@
             <map name="description">
                 <string name="default">A flimsy shield. No more than the lid of a pot held together by twine and rusty nails.</string>
             </map>
+            <map name="name">
+                <string name="default">Flimsy shield</string>
+            </map>
             <map name="worn">
                 <string name="default">hand_secondary</string>
             </map>
@@ -45,5 +48,29 @@
         <string name="parent">thing</string>
     </map>
 
-
+    <map>
+        <map name="attributes">
+            <map name="description">
+                <string name="default">A very basic wooden shield.</string>
+            </map>
+            <map name="modify">
+                <list name="default">
+                    <map>
+                        <string name="constraint">get_entity(actor.attached_hand_secondary) = entity</string>
+                        <list name="observed_properties">
+                            <string>attached_hand_secondary</string>
+                        </list>
+                        <map name="modifiers">
+                            <map name="armor">
+                                <float name="append">2</float>
+                            </map>
+                        </map>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">shield_wooden</string>
+        <string name="objtype">class</string>
+        <string name="parent">shield</string>
+    </map>
 </atlas>

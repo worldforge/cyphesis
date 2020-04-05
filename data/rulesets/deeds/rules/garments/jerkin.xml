@@ -15,10 +15,10 @@
                 <string name="default">torso</string>
             </map>
             <map name="name">
-                <string name="default">Basic shirt</string>
+                <string name="default">Simple leather jerkin</string>
             </map>
             <map name="description">
-                <string name="default">A very basic shirt, made of low quality fabric.</string>
+                <string name="default">A simple leather jerkin. The leather isn't of the best quality.</string>
             </map>
             <map name="modify">
                 <list name="default">
@@ -29,14 +29,14 @@
                         </list>
                         <map name="modifiers">
                             <map name="armor">
-                                <float name="append">1</float>
+                                <float name="append">2</float>
                             </map>
                         </map>
                     </map>
                 </list>
             </map>
         </map>
-        <string name="id">shirt</string>
+        <string name="id">jerkin_leather_simple</string>
         <string name="objtype">class</string>
         <string name="parent">garment</string>
     </map>
@@ -44,10 +44,10 @@
     <map>
         <map name="attributes">
             <map name="name">
-                <string name="default">Fine shirt</string>
+                <string name="default">Cured leather jerkin</string>
             </map>
             <map name="description">
-                <string name="default">A finer shirt made of better fabric.</string>
+                <string name="default">A jerkin made of cured leather.</string>
             </map>
             <map name="modify">
                 <list name="default">
@@ -58,15 +58,44 @@
                         </list>
                         <map name="modifiers">
                             <map name="armor">
-                                <float name="append">1</float>
+                                <float name="append">3</float>
                             </map>
                         </map>
                     </map>
                 </list>
             </map>
         </map>
-        <string name="id">shirt_fine</string>
+        <string name="id">jerkin_leather_cured</string>
         <string name="objtype">class</string>
-        <string name="parent">shirt</string>
+        <string name="parent">jerkin_leather_simple</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Reinforced leather jerkin</string>
+            </map>
+            <map name="description">
+                <string name="default">A reinforced leather jerkin. The leather seems to be of higher quality.</string>
+            </map>
+            <map name="modify">
+                <list name="default">
+                    <map>
+                        <string name="constraint">get_entity(actor.attached_torso) = entity</string>
+                        <list name="observed_properties">
+                            <string>attached_torso</string>
+                        </list>
+                        <map name="modifiers">
+                            <map name="armor">
+                                <float name="append">4</float>
+                            </map>
+                        </map>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">jerkin_leather_reinforced</string>
+        <string name="objtype">class</string>
+        <string name="parent">jerkin_leather_simple</string>
     </map>
 </atlas>
