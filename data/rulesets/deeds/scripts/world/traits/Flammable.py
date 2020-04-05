@@ -25,7 +25,7 @@ class Flammable(server.Thing):
 
                 if status_prop:
                     return server.OPERATION_BLOCKED, nourish_op, \
-                           Operation("set", Entity(self.id, status=status_prop - burn_speed), to=self)
+                           Operation("set", Entity(self.id, {"status!subtract": burn_speed}), to=self)
                 else:
                     return server.OPERATION_BLOCKED, nourish_op
 

@@ -31,27 +31,20 @@ CyPy_RootEntity::CyPy_RootEntity(Py::PythonClassInstance* self, Py::Tuple& args,
 {
     m_value = Anonymous();
     if (args.size() == 1) {
+        auto front = args.front();
+        if (front.isString()) {
+            m_value->setId(verifyString(front));
+        } else {
+            setFromDict(verifyDict(front));
+        }
+    } else if (args.size() == 2) {
         m_value->setId(verifyString(args.front()));
+        setFromDict(verifyDict(args[1]));
+    } else if (args.size() > 2) {
+        throw Py::TypeError("Can only supply two arguments to constructor.");
     }
     if (kwds.size() > 0) {
-        for (auto key : kwds.keys()) {
-            auto keyStr = key.str().as_string();
-            auto value = kwds.getItem(key);
-            if (keyStr == "location") {
-                if (!CyPy_Location::check(value)) {
-                    throw Py::TypeError("location must be a Location object");
-                }
-                CyPy_Location::value(value).addToEntity(m_value);
-            } else if (keyStr == "pos") {
-                m_value->setPos(sequence_asVector(value));
-            } else if (keyStr == "parent") {
-                m_value->setParent(verifyString(value));
-            } else if (keyStr == "objtype") {
-                m_value->setObjtype(verifyString(value));
-            } else {
-                m_value->setAttr(key.str(), CyPy_Element::asElement(value));
-            }
-        }
+        setFromDict(kwds);
     }
 }
 
@@ -74,6 +67,29 @@ void CyPy_RootEntity::init_type()
 
     behaviors().readyType();
 }
+
+void CyPy_RootEntity::setFromDict(const Py::Dict& dict)
+{
+    for (auto key : dict.keys()) {
+        auto keyStr = key.str().as_string();
+        auto value = dict.getItem(key);
+        if (keyStr == "location") {
+            if (!CyPy_Location::check(value)) {
+                throw Py::TypeError("location must be a Location object");
+            }
+            CyPy_Location::value(value).addToEntity(m_value);
+        } else if (keyStr == "pos") {
+            m_value->setPos(sequence_asVector(value));
+        } else if (keyStr == "parent") {
+            m_value->setParent(verifyString(value));
+        } else if (keyStr == "objtype") {
+            m_value->setObjtype(verifyString(value));
+        } else {
+            m_value->setAttr(key.str(), CyPy_Element::asElement(value));
+        }
+    }
+}
+
 
 std::vector<double> CyPy_RootEntity::sequence_asVector(const Py::Object& o)
 {

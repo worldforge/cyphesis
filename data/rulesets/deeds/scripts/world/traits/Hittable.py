@@ -25,8 +25,7 @@ class Hittable(server.Thing):
                 status_decrease = max(0.0, status_decrease)  # Make sure it's not negative
                 hit_op[0].damage = status_decrease
                 if status_decrease > 0:
-                    new_status = self.props.status - status_decrease
-                    res.append(Operation("set", Entity(self.id, status=new_status), to=self.id))
+                    res.append(Operation("set", Entity(self.id, {"status!subtract": status_decrease}), to=self.id))
             return server.OPERATION_BLOCKED, res, Operation('sight', hit_op)
 
         return server.OPERATION_IGNORED

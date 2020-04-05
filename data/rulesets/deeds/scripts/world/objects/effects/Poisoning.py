@@ -32,12 +32,11 @@ class Poisoning(server.Thing):
     def tick_operation(self, op):
         res = Oplist()
         if Ticks.verify_tick(self, op, res, self.tick_interval):
-            new_status = self.props.status - 0.1
-            res.append(Operation("set", Entity(self.id, status=new_status), to=self.id))
+            res.append(Operation("set", Entity(self.id, {"status!subtract": 0.1}), to=self.id))
 
-            damageProp = self.props.damage
-            if self.location.parent and damageProp is not None:
-                res.append(Operation('hit', Entity(hit_type="poison", id=self.id, damage=damageProp),
+            damage_prop = self.props.damage
+            if self.location.parent and damage_prop is not None:
+                res.append(Operation('hit', Entity(hit_type="poison", id=self.id, damage=damage_prop),
                                      to=self.location.parent.id))
 
             return server.OPERATION_HANDLED, res

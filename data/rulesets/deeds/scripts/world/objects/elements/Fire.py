@@ -31,7 +31,7 @@ class Fire(server.Thing):
                     # A 'fire' consume op should be ignored by most entities except those that are flammable.
                     res += Operation("consume", Entity(consume_type='fire'), to=self.location.parent)
                     # Reduce status of fire
-                    res += Operation("set", Entity(status=status_prop - 0.2), to=self)
+                    res += Operation("set", Entity({"status!subtract": 0.2}), to=self)
 
             else:
                 print("Fire entity without status props.")
@@ -58,7 +58,7 @@ class Fire(server.Thing):
         """If somebody tries to extinguish us, change status lower"""
         status_prop = self.props.status
         if status_prop is not None:
-            return server.OPERATION_HANDLED, Operation("set", Entity(self.id, status=status_prop - 0.25), to=self)
+            return server.OPERATION_HANDLED, Operation("set", Entity(self.id, {"status!subtract": 0.25}), to=self)
         else:
             print("Fire entity without status prop")
             return server.OPERATION_HANDLED

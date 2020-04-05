@@ -42,15 +42,16 @@
 
 int main()
 {
-    int res;
 
-    res = security_init();
+    auto res = security_init();
     assert(res == 0);
 
     reduce_priority(1);
     
     exit_flag = false;
+#ifdef HAVE_KILL
     pid_t pid = getpid();
+#endif // HAVE_KILL
     assert(!exit_flag);
 
     // Verify that most of these flag shutdown, except SIGPIPE

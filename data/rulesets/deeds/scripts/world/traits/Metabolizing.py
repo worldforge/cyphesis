@@ -24,7 +24,7 @@ class Metabolizing(server.Thing):
                 # If no nutrient, we're starving and should decrease status, but only if "starveable" is set.
                 if nutrients <= 0:
                     if self.props.starveable == 1:
-                        res += Operation("set", Entity(status=status - 0.01), to=self)
+                        res += Operation("set", Entity({"status!subtract": 0.01}), to=self)
                 else:
                     # Else we'll see if we can increase status by consuming nutrient
                     if status < 1.0:
@@ -39,8 +39,8 @@ class Metabolizing(server.Thing):
                             status_increase_per_tick = 0.1
                             # Which gives us the total mass we can consume this tick
                             nutrient_consumed = min(status_increase_per_tick * mass_for_full_status, nutrients)
-                            set_ent._nutrients = nutrients - nutrient_consumed
-                            set_ent.status = status + (nutrient_consumed / mass_for_full_status)
+                            set_ent["_nutrients!subtract"] = nutrient_consumed
+                            set_ent["status!append"] = (nutrient_consumed / mass_for_full_status)
                             res += Operation("set", set_ent, to=self)
 
             return server.OPERATION_BLOCKED, res

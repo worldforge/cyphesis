@@ -47,11 +47,10 @@ int main()
                      &CyPy_Rules::init});
 
 
-
     run_python_string("from atlas import Entity");
     run_python_string("from rules import Location");
 
-    auto ent = (Py::PythonClassObject<CyPy_RootEntity>)(CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity()));
+    auto ent = (Py::PythonClassObject<CyPy_RootEntity>) (CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity()));
     assert(ent.getCxxObject() != nullptr);
     assert(ent.getCxxObject()->m_value.isValid());
 
@@ -89,6 +88,11 @@ int main()
     expect_python_error("e.ptr=set([1,2])", PyExc_TypeError);
     run_python_string("e.foo");
     expect_python_error("e.ptr", PyExc_AttributeError);
+
+    run_python_string("e=Entity('1', {'wee!append': 1})");
+    run_python_string("assert e['wee!append']==1");
+    run_python_string("e=Entity({'wee!append': 1})");
+    run_python_string("assert e['wee!append']==1");
 
 
     shutdown_python_api();

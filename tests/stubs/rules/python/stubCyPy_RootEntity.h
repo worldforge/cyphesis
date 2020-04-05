@@ -65,6 +65,14 @@
   }
 #endif //STUB_CyPy_RootEntity_get_name
 
+#ifndef STUB_CyPy_RootEntity_getattro
+//#define STUB_CyPy_RootEntity_getattro
+  Py::Object CyPy_RootEntity::getattro(const Py::String& name)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_RootEntity_getattro
+
 #ifndef STUB_CyPy_RootEntity_setattro
 //#define STUB_CyPy_RootEntity_setattro
   int CyPy_RootEntity::setattro(const Py::String& name, const Py::Object& attr)

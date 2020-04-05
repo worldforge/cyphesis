@@ -32,7 +32,7 @@ class Growing(server.Thing):
                     set_ent = Entity(scale=[new_scale])
                     # check how much nutrient really was used
                     final_new_mass = new_scale * volume_new * self.props.density
-                    set_ent._nutrients = self.props._nutrients - (final_new_mass - self.props.mass)
+                    set_ent["_nutrients!subtract"] = final_new_mass - self.props.mass
 
                     res += Operation("set", set_ent, to=self)
 

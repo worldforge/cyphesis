@@ -36,8 +36,7 @@ def fireball(instance):
     direction = instance.get_arg("direction", 0)
 
     shoot_in_direction(direction, instance, res)
-    charges = instance.tool.get_prop_int("charges", 1)
-    set_op = Operation("set", Entity(instance.tool.id, charges=charges - 1), to=instance.tool)
+    set_op = Operation("set", Entity(instance.tool.id, {"charges!subtract": 1}), to=instance.tool)
     res.append(set_op)
 
     return server.OPERATION_BLOCKED, res
@@ -71,8 +70,7 @@ def poison(instance):
     direction = instance.get_arg("direction", 0)
 
     shoot_poison_in_direction(direction, instance, res)
-    charges = instance.tool.get_prop_int("charges", 1)
-    set_op = Operation("set", Entity(instance.tool.id, charges=charges - 1), to=instance.tool)
+    set_op = Operation("set", Entity(instance.tool.id, {"charges!subtract": 1}), to=instance.tool)
     res.append(set_op)
 
     return server.OPERATION_BLOCKED, res

@@ -13,7 +13,7 @@ class Pile(server.Thing):
     def sift_operation(self, op):
         if self.props._worms and self.props._worms > 0:
             create_op = Operation("create", Entity(name="earthworm", parent="annelid", loc=op.id), to=self)
-            set_op = Operation("set", Entity(self.id, _worms=self.props._worms - 1), to=self)
+            set_op = Operation("set", Entity(self.id, {"_worms!subtract": 1}), to=self)
             imaginary_op = Operation("imaginary",
                                      Entity(description="You found a worm in the pile."), to=op.id, from_=op.id)
 
