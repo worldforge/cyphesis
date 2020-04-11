@@ -328,7 +328,7 @@ target_link_libraries(EntityFilterProvidersTest entityfilter)
 
 # RULESETS_INTEGRATION
 
-wf_add_test(server/GeometryPropertyIntegration.cpp ../src/rules/simulation/GeometryProperty.cpp)
+wf_add_test(rules/simulation/GeometryPropertyIntegration.cpp ../src/rules/simulation/GeometryProperty.cpp)
 target_link_libraries(GeometryPropertyIntegration rulessimulation rulesbase physics modules common)
 
 wf_add_benchmark(server/PhysicalDomainBenchmark.cpp ../src/rules/simulation/PhysicalDomain.cpp)

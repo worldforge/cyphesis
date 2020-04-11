@@ -434,7 +434,6 @@ int main()
 #include "rules/BBoxProperty.h"
 #include "rules/simulation/CalendarProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/LineProperty.h"
 #include "server/MindProperty.h"
 #include "rules/SolidProperty.h"

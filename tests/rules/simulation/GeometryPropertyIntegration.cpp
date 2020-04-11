@@ -23,11 +23,8 @@
 #define DEBUG
 #endif
 
-#include "../TestBase.h"
-#include "../TestWorld.h"
-
-#include "server/Ruleset.h"
-#include "server/ServerRouting.h"
+#include "../../TestBase.h"
+#include "../../TestWorld.h"
 
 #include "rules/simulation/Entity.h"
 #include "rules/simulation/GeometryProperty.h"
@@ -43,11 +40,10 @@
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include <BulletCollision/CollisionShapes/btCylinderShape.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
-#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
 
-#include "../stubs/physics/stubVector3D.h"
+#include "../../stubs/physics/stubVector3D.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

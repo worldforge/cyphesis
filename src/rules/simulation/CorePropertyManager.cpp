@@ -27,7 +27,6 @@
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/ServerBBoxProperty.h"
-#include "rules/simulation/InternalProperties.h"
 #include "rules/simulation/SpawnProperty.h"
 #include "rules/simulation/AreaProperty.h"
 #include "rules/simulation/VisibilityProperty.h"
