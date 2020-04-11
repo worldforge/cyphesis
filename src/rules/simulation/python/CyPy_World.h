@@ -42,6 +42,9 @@ class CyPy_World : public WrapperBase<BaseWorld*, CyPy_World>
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_World, get_object);
 
+        Py::Object match_entity(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_World, match_entity);
 
 };
 
