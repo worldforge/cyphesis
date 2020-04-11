@@ -27,6 +27,7 @@
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/RootOperation.h>
 #include <functional>
+#include <utility>
 #include "rules/simulation/ArithmeticScript.h"
 
 struct TestWorldExtension {
@@ -41,11 +42,11 @@ struct TestWorld : public BaseWorld {
     Ref<LocatedEntity> m_gw;
     explicit TestWorld() : BaseWorld(), m_gw(nullptr) {
     }
-    explicit TestWorld(Ref<LocatedEntity> gw) : BaseWorld(), m_gw(gw) {
-        m_eobjects[gw->getIntId()] = gw;
+    explicit TestWorld(Ref<LocatedEntity> gw) : BaseWorld(), m_gw(std::move(gw)) {
+        m_eobjects[m_gw->getIntId()] = m_gw;
     }
 
-    ~TestWorld() override{}
+    ~TestWorld() override= default;
 
     void addEntity(const Ref<LocatedEntity>& ent) override {
         m_eobjects[ent->getIntId()] = ent;

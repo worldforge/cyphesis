@@ -23,7 +23,6 @@
 
 #include "CommHttpClient.h"
 #include "CommPythonClient.h"
-#include "CommPSQLSocket.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
 #include "CommAsioListener_impl.h"
@@ -36,7 +35,6 @@
 #include "Ruleset.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"
-#include "Admin.h"
 #include "PossessionAuthenticator.h"
 #include "TrustedConnection.h"
 #include "HttpCache.h"
@@ -46,6 +44,7 @@
 #include "rules/simulation/World.h"
 
 #ifdef POSTGRES_FOUND
+#include "common/CommPSQLSocket.h"
 #include "common/DatabasePostgres.h"
 #endif
 

@@ -1,7 +1,8 @@
 add_library(common
         const.cpp
         binreloc.c
-        newid.cpp id.cpp
+        newid.cpp
+        id.cpp
         log.cpp
         debug.cpp
         type_utils.cpp
@@ -80,13 +81,13 @@ target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
 
 
 set(db_files
-        DatabaseSQLite.cpp
-        DatabaseSQLite.h)
+        DatabaseSQLite.cpp)
 
 if (PostgreSQL_FOUND)
     list(APPEND db_files
             DatabasePostgres.cpp
-            DatabasePostgres.h)
+            CommPSQLSocket.cpp)
+
 endif (PostgreSQL_FOUND)
 
 add_library(db ${db_files})

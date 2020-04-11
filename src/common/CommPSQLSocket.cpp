@@ -18,9 +18,9 @@
 
 #include "CommPSQLSocket.h"
 
-#include "common/DatabasePostgres.h"
-#include "common/log.h"
-#include "common/debug.h"
+#include "DatabasePostgres.h"
+#include "log.h"
+#include "debug.h"
 
 #include <iostream>
 

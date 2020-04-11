@@ -13,7 +13,7 @@ if (AVAHI_FOUND)
     target_link_libraries(comm ${AVAHI_LIBRARIES} -lavahi-common)
 endif (AVAHI_FOUND)
 
-set(cyphesis_files
+set(server_files
         Account.cpp
         Player.cpp
         Admin.cpp
@@ -46,38 +46,24 @@ set(cyphesis_files
         PendingPossession.cpp
         CommPeer.cpp
         CommPythonClient.cpp
-        server.cpp
         ExternalMindsConnection.cpp
         ExternalMindsManager.cpp
         ServerPropertyManager.cpp
         MindProperty.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
-if (PostgreSQL_FOUND)
-    list(APPEND cyphesis_files
-            CommPSQLSocket.cpp)
-endif (PostgreSQL_FOUND)
-
 add_library(server
-        ${cyphesis_files})
-
-if (PostgreSQL_FOUND)
-    target_compile_definitions(server PRIVATE POSTGRES_FOUND)
-    target_link_libraries(server ${PostgreSQL_LIBRARIES})
-    target_include_directories(server PUBLIC ${PostgreSQL_INCLUDE_DIRS})
-endif (PostgreSQL_FOUND)
+        ${server_files})
 
 add_executable(cyphesis
         server.cpp)
 
+if (PostgreSQL_FOUND)
+    target_compile_definitions(cyphesis PRIVATE POSTGRES_FOUND)
+endif (PostgreSQL_FOUND)
+
 target_link_libraries(cyphesis
         server
-        navigation
-        DetourTileCache
-        Detour
-        Recast
-        rulesai_python
-        rulesai
         rulessimulation_python
         rulessimulation
         entityfilter_python

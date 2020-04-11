@@ -49,5 +49,13 @@
   }
 #endif //STUB_CyPy_World_get_object
 
+#ifndef STUB_CyPy_World_match_entity
+//#define STUB_CyPy_World_match_entity
+  Py::Object CyPy_World::match_entity(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_World_match_entity
+
 
 #endif

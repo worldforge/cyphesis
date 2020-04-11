@@ -19,11 +19,9 @@
 #ifndef SERVER_COMM_PSQL_SOCKET_H
 #define SERVER_COMM_PSQL_SOCKET_H
 
-#include "common/CommSocket.h"
+#include "CommSocket.h"
 
-#include "common/asio.h"
-#include "common/asio.h"
-#include "common/asio.h"
+#include "asio.h"
 #include <boost/asio/steady_timer.hpp>
 #include <boost/noncopyable.hpp>
 
