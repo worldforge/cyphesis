@@ -29,7 +29,6 @@
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
-#include "ArithmeticBuilder.h"
 #include "Persistence.h"
 #include "WorldRouter.h"
 #include "Ruleset.h"
@@ -439,7 +438,6 @@ namespace {
             ServerPropertyManager propertyManager(inheritance);
 
             EntityBuilder entityBuilder;
-            ArithmeticBuilder arithmeticBuilder;
 
             Ruleset ruleset(entityBuilder, *io_context, propertyManager);
             ruleset.loadRules(ruleset_name);
@@ -447,7 +445,7 @@ namespace {
             Ref<LocatedEntity> baseEntity = new World();
             baseEntity->setType(inheritance.getType("world"));
 
-            WorldRouter world(baseEntity, entityBuilder, arithmeticBuilder);
+            WorldRouter world(baseEntity, entityBuilder);
 
             CyPy_Server::registerWorld(&world);
 

@@ -27,7 +27,6 @@
 
 #include "server/WorldRouter.h"
 
-#include "server/ArithmeticBuilder.h"
 #include "server/EntityBuilder.h"
 #include "rules/simulation/SpawnEntity.h"
 
@@ -479,7 +478,6 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 #include "../stubs/common/stubPropertyManager.h"
 #include "rules/simulation/CorePropertyManager.h"
 #include "common/Property_impl.h"
-#include "../stubs/server/stubArithmeticBuilder.h"
 
 #define STUB_EntityBuilder_newEntity
 Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,

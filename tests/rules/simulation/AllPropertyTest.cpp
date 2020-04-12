@@ -32,8 +32,6 @@
 #include "rules/simulation/LineProperty.h"
 #include "rules/simulation/TerrainProperty.h"
 
-#include "rules/simulation/ArithmeticFactory.h"
-
 #include "rules/simulation/BaseWorld.h"
 #include "common/log.h"
 #include "common/Property_impl.h"

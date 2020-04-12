@@ -343,7 +343,6 @@ int main()
 #include "rules/simulation/DomainProperty.h"
 
 #include "rules/simulation/ExternalMind.h"
-#include "rules/python/PythonArithmeticFactory.h"
 #include "rules/simulation/Task.h"
 
 #include "rules/python/PythonScriptFactory.h"
@@ -445,9 +444,6 @@ void ExternalMind::linkUp(Link* c)
 }
 
 #include "../stubs/rules/simulation/stubExternalMind.h"
-
-#include "../stubs/rules/simulation/stubArithmeticFactory.h"
-#include "../stubs/rules/python/stubPythonArithmeticFactory.h"
 
 sigc::signal<void> python_reload_scripts;
 

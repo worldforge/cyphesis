@@ -32,7 +32,6 @@ set(server_files
         OpRuleHandler.cpp
         PropertyRuleHandler.cpp
         EntityBuilder.cpp
-        ArithmeticBuilder.cpp
         Lobby.cpp
         Connection.cpp
         TrustedConnection.cpp

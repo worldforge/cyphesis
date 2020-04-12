@@ -420,7 +420,6 @@ int main()
 
 // stubs
 
-#include "server/ArithmeticBuilder.h"
 #include "server/EntityFactory.h"
 #include "server/ArchetypeFactory.h"
 #include "server/Juncture.h"

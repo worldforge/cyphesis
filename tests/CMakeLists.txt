@@ -210,14 +210,7 @@ wf_add_test(rules/MovementTest.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(rules/PedestrianTest.cpp ../src/rules/simulation/Pedestrian.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(server/ExternalMindTest.cpp ../src/rules/simulation/ExternalMind.cpp)
 wf_add_test(rules/PythonContextTest.cpp ../src/rules/python/PythonContext.cpp)
-wf_add_test(rules/simulation/ArithmeticScriptTest.cpp)
-wf_add_test(rules/PythonArithmeticScriptTest.cpp python_testers.cpp ../src/rules/python/PythonArithmeticScript.cpp)
-target_link_libraries(PythonArithmeticScriptTest pycxx)
 
-wf_add_test(rules/simulation/ArithmeticFactoryTest.cpp)
-wf_add_test(rules/PythonArithmeticFactoryTest.cpp python_testers.cpp ../src/rules/python/PythonArithmeticFactory.cpp
-    ../src/rules/python/PythonClass.cpp)
-target_link_libraries(PythonArithmeticFactoryTest pycxx)
 wf_add_test(rules/TerrainModTest.cpp ../src/rules/simulation/TerrainModTranslator.cpp)
 wf_add_test(rules/TerrainEffectorPropertyTest.cpp ../src/rules/simulation/TerrainEffectorProperty.cpp)
 wf_add_test(rules/simulation/GeometryPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/GeometryProperty.cpp
@@ -430,7 +423,6 @@ wf_add_test(server/ArchetypeFactoryIntegrationTest.cpp
         ../src/server/EntityFactory.cpp
         ../src/server/EntityRuleHandler.cpp
         ../src/rules/simulation/SpawnEntity.cpp
-        ../src/server/ArithmeticBuilder.cpp
         ../src/rules/simulation/CorePropertyManager.cpp)
 target_link_libraries(ArchetypeFactoryIntegrationTest modules physics common pycxx rulesbase ${PYTHON_TESTS_LIBS})
 
@@ -457,8 +449,7 @@ wf_add_test(server/PeerTest.cpp ../src/server/Peer.cpp)
 wf_add_test(server/LobbyTest.cpp ../src/server/Lobby.cpp)
 wf_add_test(server/SpawnTest.cpp)
 wf_add_test(server/SpawnEntityTest.cpp ../src/rules/simulation/SpawnEntity.cpp)
-wf_add_test(stubs/server/ArithmeticBuilderTest.cpp ../src/server/ArithmeticBuilder.cpp)
-target_link_libraries(ArithmeticBuilderTest pycxx)
+
 
 wf_add_test(server/ServerRoutingTest.cpp ../src/server/ServerRouting.cpp)
 wf_add_test(server/StorageManagerTest.cpp ../src/server/StorageManager.cpp)
@@ -487,8 +478,7 @@ wf_add_test(server/WorldRouterIntegration.cpp ../src/server/WorldRouter.cpp
     ../src/server/EntityBuilder.cpp
     ../src/server/EntityFactory.cpp
     ../src/server/EntityRuleHandler.cpp
-        ../src/rules/simulation/SpawnEntity.cpp
-    ../src/server/ArithmeticBuilder.cpp
+    ../src/rules/simulation/SpawnEntity.cpp
     ../src/rules/Domain.cpp
     ../src/rules/LocatedEntity.cpp
     ../src/rules/simulation/Entity.cpp

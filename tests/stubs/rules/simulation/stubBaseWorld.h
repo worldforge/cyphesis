@@ -153,14 +153,6 @@
   }
 #endif //STUB_BaseWorld_moveToSpawn
 
-#ifndef STUB_BaseWorld_newArithmetic
-//#define STUB_BaseWorld_newArithmetic
-  std::unique_ptr<ArithmeticScript> BaseWorld::newArithmetic(const std::string&, LocatedEntity*)
-  {
-    return *static_cast<std::unique_ptr<ArithmeticScript>*>(nullptr);
-  }
-#endif //STUB_BaseWorld_newArithmetic
-
 #ifndef STUB_BaseWorld_message
 //#define STUB_BaseWorld_message
   void BaseWorld::message(Atlas::Objects::Operation::RootOperation, LocatedEntity& obj)

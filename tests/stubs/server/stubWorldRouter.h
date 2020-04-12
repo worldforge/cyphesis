@@ -33,8 +33,8 @@
 
 #ifndef STUB_WorldRouter_WorldRouter
 //#define STUB_WorldRouter_WorldRouter
-   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder, ArithmeticBuilder& arithmeticBuilder)
-    : BaseWorld(baseEntity, entityBuilder, arithmeticBuilder)
+   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder)
+    : BaseWorld(baseEntity, entityBuilder)
   {
     
   }
@@ -119,14 +119,6 @@
     return 0;
   }
 #endif //STUB_WorldRouter_moveToSpawn
-
-#ifndef STUB_WorldRouter_newArithmetic
-//#define STUB_WorldRouter_newArithmetic
-  std::unique_ptr<ArithmeticScript> WorldRouter::newArithmetic(const std::string&, LocatedEntity*)
-  {
-    return *static_cast<std::unique_ptr<ArithmeticScript>*>(nullptr);
-  }
-#endif //STUB_WorldRouter_newArithmetic
 
 #ifndef STUB_WorldRouter_operation
 //#define STUB_WorldRouter_operation

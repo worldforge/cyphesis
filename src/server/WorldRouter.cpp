@@ -23,7 +23,6 @@
 #include "rules/simulation/World.h"
 #include "rules/Domain.h"
 #include "rules/simulation/Task.h"
-#include "rules/simulation/ArithmeticScript.h"
 
 #include "common/id.h"
 #include "common/debug.h"
@@ -31,7 +30,6 @@
 #include "common/Monitors.h"
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
-#include "ArithmeticBuilder.h"
 #include "EntityBuilder.h"
 #include "Account.h"
 
@@ -50,14 +48,12 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
 WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity,
-                         EntityBuilder& entityBuilder,
-                         ArithmeticBuilder& arithmeticBuilder) :
+                         EntityBuilder& entityBuilder) :
         BaseWorld(),
         m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
         m_entityCount(1),
         m_baseEntity(std::move(baseEntity)),
-        m_entityBuilder(entityBuilder),
-        m_arithmeticBuilder(arithmeticBuilder)
+        m_entityBuilder(entityBuilder)
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
@@ -242,14 +238,6 @@ int WorldRouter::moveToSpawn(const std::string& name, Location& location)
     }
     return I->second.first->placeInSpawn(location);
 }
-
-
-std::unique_ptr<ArithmeticScript> WorldRouter::newArithmetic(const std::string& name,
-                                                             LocatedEntity* owner)
-{
-    return m_arithmeticBuilder.newArithmetic(name, owner);
-}
-
 
 /// \brief Remove an entity from the world.
 ///

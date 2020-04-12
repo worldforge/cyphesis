@@ -33,8 +33,6 @@
 
 #include <chrono>
 
-class ArithmeticScript;
-
 class LocatedEntity;
 
 class Location;
@@ -182,10 +180,6 @@ class BaseWorld : public Singleton<BaseWorld>
          */
         virtual int moveToSpawn(const std::string& name,
                                 Location& location) = 0;
-
-        /// \brief Create a new Arithmetic object
-        virtual std::unique_ptr<ArithmeticScript> newArithmetic(const std::string&,
-                                                                LocatedEntity*) = 0;
 
         /// \brief Pass an operation to the world.
         virtual void message(Atlas::Objects::Operation::RootOperation,

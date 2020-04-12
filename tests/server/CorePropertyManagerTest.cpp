@@ -151,7 +151,6 @@ int main()
 // stubs
 
 
-#include "server/ArithmeticBuilder.h"
 #include "server/EntityFactory.h"
 #include "server/Juncture.h"
 #include "server/Persistence.h"
@@ -214,7 +213,6 @@ int main()
 #include "../stubs/rules/python/stubScriptsProperty.h"
 #include "../stubs/rules/simulation/stubMindsProperty.h"
 #include "../stubs/server/stubAccount.h"
-#include "../stubs/server/stubArithmeticBuilder.h"
 #include "../stubs/server/stubConnectableRouter.h"
 #include "../stubs/rules/simulation/stubAmountProperty.h"
 #include "../stubs/rules/simulation/stubCalendarProperty.h"

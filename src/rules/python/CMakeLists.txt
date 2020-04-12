@@ -2,9 +2,7 @@ add_library(rulesbase_python
     PythonClass.cpp
     PythonContext.cpp
     PythonWrapper.cpp
-    PythonArithmeticScript.cpp
-    PythonArithmeticFactory.cpp
-    PythonScriptFactory.cpp
+        PythonScriptFactory.cpp
     PythonScriptFactory_impl.h
     Python_API.cpp
     CoordHelper.h
