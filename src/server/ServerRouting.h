@@ -41,7 +41,7 @@ extern bool restricted_flag;
 ///
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
-class ServerRouting : public Router, public Singleton<ServerRouting>
+class ServerRouting : public Router
 {
     protected:
         /// A shaker to generate a salt.

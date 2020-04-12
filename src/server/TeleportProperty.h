@@ -20,6 +20,7 @@
 #define SERVER_TELEPORT_PROPERTY_H
 
 #include "common/Property.h"
+class ServerRouting;
 
 class TeleportProperty : public Property<std::string>
 {
@@ -33,6 +34,8 @@ class TeleportProperty : public Property<std::string>
     HandlerResult teleport_handler(LocatedEntity * e,
                                    const Operation & op,
                                    OpVector & res);
+
+    static ServerRouting* s_serverRouting;
 };
 
 #endif // SERVER_TELEPORT_PROPERTY_H

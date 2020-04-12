@@ -35,7 +35,6 @@
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/RootEntity.h>
 
-#include <iostream>
 
 
 using Atlas::Message::MapType;

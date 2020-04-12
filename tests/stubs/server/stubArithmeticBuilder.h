@@ -10,7 +10,6 @@
 #ifndef STUB_ArithmeticBuilder_ArithmeticBuilder
 //#define STUB_ArithmeticBuilder_ArithmeticBuilder
    ArithmeticBuilder::ArithmeticBuilder()
-    : Singleton()
   {
     
   }

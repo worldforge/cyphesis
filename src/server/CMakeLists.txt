@@ -48,6 +48,7 @@ set(server_files
         ExternalMindsManager.cpp
         ServerPropertyManager.cpp
         MindProperty.cpp
+        TypeUpdateCoordinator.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
 add_library(server

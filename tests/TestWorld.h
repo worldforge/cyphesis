@@ -86,7 +86,6 @@ struct TestWorld : public BaseWorld {
             extension.messageFn(op, ent);
         }
     }
-    void messageToClients(Atlas::Objects::Operation::RootOperation) override{}
     Ref<LocatedEntity> findByName(const std::string & name) override { return nullptr; }
     Ref<LocatedEntity> findByType(const std::string & type) override { return nullptr; }
 

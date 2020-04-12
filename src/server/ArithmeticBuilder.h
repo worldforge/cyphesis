@@ -20,7 +20,6 @@
 #define SERVER_ARITHMETIC_BUILDER_H
 
 #include <string>
-#include <common/Singleton.h>
 #include <memory>
 #include "rules/simulation/ArithmeticScript.h"
 
@@ -29,7 +28,7 @@ class ArithmeticScript;
 class LocatedEntity;
 
 /// \brief Builder to handle the creation of arithmetic objects
-class ArithmeticBuilder : public Singleton<ArithmeticBuilder>
+class ArithmeticBuilder
 {
     public:
         ArithmeticBuilder();

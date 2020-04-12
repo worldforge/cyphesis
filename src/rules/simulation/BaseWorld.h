@@ -191,9 +191,6 @@ class BaseWorld : public Singleton<BaseWorld>
         virtual void message(Atlas::Objects::Operation::RootOperation,
                              LocatedEntity& obj) = 0;
 
-        /// \brief Sends a message to all connected clients.
-        virtual void messageToClients(Atlas::Objects::Operation::RootOperation) = 0;
-
         /// \brief Find an entity of the given name.
         virtual Ref<LocatedEntity> findByName(const std::string& name) = 0;
 

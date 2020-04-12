@@ -169,14 +169,6 @@
   }
 #endif //STUB_BaseWorld_message
 
-#ifndef STUB_BaseWorld_messageToClients
-//#define STUB_BaseWorld_messageToClients
-  void BaseWorld::messageToClients(Atlas::Objects::Operation::RootOperation)
-  {
-    
-  }
-#endif //STUB_BaseWorld_messageToClients
-
 #ifndef STUB_BaseWorld_findByName
 //#define STUB_BaseWorld_findByName
   Ref<LocatedEntity> BaseWorld::findByName(const std::string& name)

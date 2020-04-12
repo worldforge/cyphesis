@@ -33,8 +33,8 @@
 
 #ifndef STUB_WorldRouter_WorldRouter
 //#define STUB_WorldRouter_WorldRouter
-   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder)
-    : BaseWorld(baseEntity, entityBuilder)
+   WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder, ArithmeticBuilder& arithmeticBuilder)
+    : BaseWorld(baseEntity, entityBuilder, arithmeticBuilder)
   {
     
   }
@@ -143,14 +143,6 @@
     
   }
 #endif //STUB_WorldRouter_message
-
-#ifndef STUB_WorldRouter_messageToClients
-//#define STUB_WorldRouter_messageToClients
-  void WorldRouter::messageToClients(Atlas::Objects::Operation::RootOperation)
-  {
-    
-  }
-#endif //STUB_WorldRouter_messageToClients
 
 #ifndef STUB_WorldRouter_findByName
 //#define STUB_WorldRouter_findByName

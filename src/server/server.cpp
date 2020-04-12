@@ -58,6 +58,8 @@
 #include "ExternalMindsManager.h"
 #include "Player.h"
 #include "ServerPropertyManager.h"
+#include "TypeUpdateCoordinator.h"
+#include "TeleportProperty.h"
 
 #include <varconf/config.h>
 
@@ -437,7 +439,7 @@ namespace {
             ServerPropertyManager propertyManager(inheritance);
 
             EntityBuilder entityBuilder;
-            ArithmeticBuilder arithmenticBuilder;
+            ArithmeticBuilder arithmeticBuilder;
 
             Ruleset ruleset(entityBuilder, *io_context, propertyManager);
             ruleset.loadRules(ruleset_name);
@@ -445,7 +447,7 @@ namespace {
             Ref<LocatedEntity> baseEntity = new World();
             baseEntity->setType(inheritance.getType("world"));
 
-            WorldRouter world(baseEntity, entityBuilder);
+            WorldRouter world(baseEntity, entityBuilder, arithmeticBuilder);
 
             CyPy_Server::registerWorld(&world);
 
@@ -473,6 +475,10 @@ namespace {
             ServerRouting serverRouting(world, ruleset_name,
                                         server_name, server_id, int_id, lobby_id, lobby_int_id);
 
+            //Need to register the server routing instance with the Teleport property.
+            TeleportProperty::s_serverRouting = &serverRouting;
+
+            TypeUpdateCoordinator typeUpdateCoordinator(inheritance, world, serverRouting);
 
             run_user_scripts("cyphesis");
 

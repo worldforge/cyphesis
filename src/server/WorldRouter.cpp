@@ -18,8 +18,6 @@
 
 #include "WorldRouter.h"
 
-#include "ArithmeticBuilder.h"
-#include "EntityBuilder.h"
 #include "rules/simulation/SpawnEntity.h"
 
 #include "rules/simulation/World.h"
@@ -30,11 +28,11 @@
 #include "common/id.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
-#include "common/Inheritance.h"
 #include "common/Monitors.h"
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
-#include "ServerRouting.h"
+#include "ArithmeticBuilder.h"
+#include "EntityBuilder.h"
 #include "Account.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -51,65 +49,20 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
-WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder) :
+WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity,
+                         EntityBuilder& entityBuilder,
+                         ArithmeticBuilder& arithmeticBuilder) :
         BaseWorld(),
         m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
         m_entityCount(1),
         m_baseEntity(std::move(baseEntity)),
-        m_entityBuilder(entityBuilder)
+        m_entityBuilder(entityBuilder),
+        m_arithmeticBuilder(arithmeticBuilder)
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
 
-    /**
-     * When types are updated we will send an "change" op to all connected clients.
-     */
-    Inheritance::instance().typesUpdated.connect([&](const std::map<const TypeNode*, TypeNode::PropertiesUpdate> typeNodes) {
-        //Send Change ops to all clients
-        if (!typeNodes.empty()) {
-            Atlas::Objects::Operation::Change change;
-            std::vector<Atlas::Objects::Root> args;
-            for (auto& entry: typeNodes) {
-                auto typeNode = entry.first;
-                Atlas::Objects::Entity::Anonymous o;
-                o->setObjtype(typeNode->description(Visibility::PRIVATE)->getObjtype());
-                o->setId(typeNode->name());
-                args.emplace_back(o);
-            }
-            change->setArgs(args);
 
-            messageToClients(change);
-
-            //Go through all world entities and check if they need to be updated
-            for (auto& entry : m_eobjects) {
-                auto entity = entry.second;
-                auto I = typeNodes.find(entity->getType());
-                if (I != typeNodes.end()) {
-                    auto typeNode = I->first;
-//                    for (auto& removedPropName : I->second.removedProps) {
-//                        if (entity->getProperties().find(removedPropName) == entity->getProperties().end()) {
-//                            auto prop = typeNode->defaults().find(removedPropName)->second;
-//                            prop->remove(entity, removedPropName);
-//                        }
-//                    }
-                    for (auto& changedPropName : I->second.changedProps) {
-                        if (entity->getProperties().find(changedPropName) == entity->getProperties().end()) {
-                            auto& prop = typeNode->defaults().find(changedPropName)->second;
-                            prop->apply(entity.get());
-                            entity->propertyApplied(changedPropName, *prop);
-                        }
-                    }
-                    for (auto& newPropName : I->second.changedProps) {
-                        if (entity->getProperties().find(newPropName) == entity->getProperties().end()) {
-                            auto& prop = typeNode->defaults().find(newPropName)->second;
-                            prop->apply(entity.get());
-                            entity->propertyApplied(newPropName, *prop);
-                        }
-                    }
-                }
-            }
-        }
-    });
 }
 
 /// \brief Destructor for the world object.
@@ -294,7 +247,7 @@ int WorldRouter::moveToSpawn(const std::string& name, Location& location)
 std::unique_ptr<ArithmeticScript> WorldRouter::newArithmetic(const std::string& name,
                                                              LocatedEntity* owner)
 {
-    return ArithmeticBuilder::instance().newArithmetic(name, owner);
+    return m_arithmeticBuilder.newArithmetic(name, owner);
 }
 
 
@@ -355,19 +308,6 @@ void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
         m_operationsDispatcher.addOperationToQueue(std::move(op), Ref<LocatedEntity>(&fromEntity));
     }
     debug_print("WorldRouter::message {"
-                        << op->getParent() << ":"
-                        << op->getFrom() << ":" << op->getTo() << "}")
-}
-
-void WorldRouter::messageToClients(Operation op)
-{
-    auto& accounts = ServerRouting::instance().getAccounts();
-    OpVector res;
-    for (auto& entry : accounts) {
-        entry.second->operation(op, res);
-    }
-
-    debug_print("WorldRouter::messageToClients {"
                         << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}")
 }

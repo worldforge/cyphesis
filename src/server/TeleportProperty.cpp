@@ -30,6 +30,7 @@
 #include <iostream>
 
 static const bool debug_flag = false;
+ServerRouting* TeleportProperty::s_serverRouting = nullptr;
 
 void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
 {
@@ -47,7 +48,7 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
                                                  const Operation & op,
                                                  OpVector & res)
 {
-    auto* svr = ServerRouting::instancePtr();
+    auto* svr = s_serverRouting;
     if(svr == nullptr) {
         log(ERROR, "Unable to access ServerRouting object");
         return OPERATION_IGNORED;

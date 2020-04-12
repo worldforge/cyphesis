@@ -31,6 +31,8 @@ class Spawn;
 
 class EntityBuilder;
 
+class ArithmeticBuilder;
+
 typedef std::map<std::string, std::pair<std::unique_ptr<Spawn>, std::string>> SpawnDict;
 
 /// \brief WorldRouter encapsulates the game world running in the server.
@@ -54,6 +56,7 @@ class WorldRouter : public BaseWorld
         /// \brief The top level in-game entity in the world.
         Ref<LocatedEntity> m_baseEntity;
         EntityBuilder& m_entityBuilder;
+        ArithmeticBuilder& m_arithmeticBuilder;
     protected:
         /// \brief Determine if the broadcast is allowed.
         ///
@@ -67,7 +70,9 @@ class WorldRouter : public BaseWorld
         void resumeWorld() override;
 
     public:
-        explicit WorldRouter(Ref<LocatedEntity> baseEntity, EntityBuilder& entityBuilder);
+        explicit WorldRouter(Ref<LocatedEntity> baseEntity,
+                             EntityBuilder& entityBuilder,
+                             ArithmeticBuilder& arithmeticBuilder);
 
         ~WorldRouter() override;
 
@@ -100,8 +105,6 @@ class WorldRouter : public BaseWorld
 
         void message(Atlas::Objects::Operation::RootOperation,
                      LocatedEntity&) override;
-
-        void messageToClients(Atlas::Objects::Operation::RootOperation) override;
 
         Ref<LocatedEntity> findByName(const std::string& name) override;
 
