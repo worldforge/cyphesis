@@ -10,6 +10,7 @@
 #ifndef STUB_EntityBuilder_EntityBuilder
 //#define STUB_EntityBuilder_EntityBuilder
    EntityBuilder::EntityBuilder()
+    : EntityCreator()
   {
     
   }

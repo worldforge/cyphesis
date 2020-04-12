@@ -20,7 +20,9 @@
 #define SERVER_WORLD_ROUTER_H
 
 #include "rules/simulation/BaseWorld.h"
+#include "rules/simulation/EntityCreator.h"
 #include "common/OperationsDispatcher.h"
+
 
 #include <list>
 #include <set>
@@ -53,7 +55,7 @@ class WorldRouter : public BaseWorld
 
         /// \brief The top level in-game entity in the world.
         Ref<LocatedEntity> m_baseEntity;
-        EntityBuilder& m_entityBuilder;
+        EntityCreator& m_entityCreator;
     protected:
         /// \brief Determine if the broadcast is allowed.
         ///
@@ -67,8 +69,10 @@ class WorldRouter : public BaseWorld
         void resumeWorld() override;
 
     public:
+
+
         explicit WorldRouter(Ref<LocatedEntity> baseEntity,
-                             EntityBuilder& entityBuilder);
+                             EntityCreator& entityCreator);
 
         ~WorldRouter() override;
 

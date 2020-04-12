@@ -43,8 +43,10 @@
 #include "rules/simulation/World.h"
 
 #ifdef POSTGRES_FOUND
+
 #include "common/CommPSQLSocket.h"
 #include "common/DatabasePostgres.h"
+
 #endif
 
 #include "common/id.h"
@@ -62,9 +64,6 @@
 
 #include <varconf/config.h>
 
-#include <memory>
-#include <thread>
-#include <fstream>
 #include <boost/filesystem/operations.hpp>
 #include <common/FileSystemObserver.h>
 #include <common/AssetsManager.h>
@@ -78,6 +77,12 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Rules.h>
 #include <rules/simulation/ExternalMind.h>
+
+#include <Atlas/Objects/RootEntity.h>
+
+#include <memory>
+#include <thread>
+#include <fstream>
 
 using String::compose;
 using namespace boost::asio;
@@ -115,15 +120,16 @@ namespace {
     };
 
 #ifdef POSTGRES_FOUND
+
     struct PgServerDatabase : public ServerDatabase
     {
         std::unique_ptr<DatabasePostgres> m_db;
         std::unique_ptr<CommPSQLSocket> m_vacuumTask;
 
         PgServerDatabase(std::unique_ptr<DatabasePostgres> db,
-                             std::unique_ptr<CommPSQLSocket> vacuumTask) :
-            m_db(std::move(db)),
-            m_vacuumTask(std::move(vacuumTask))
+                         std::unique_ptr<CommPSQLSocket> vacuumTask) :
+                m_db(std::move(db)),
+                m_vacuumTask(std::move(vacuumTask))
         {}
 
         ~PgServerDatabase() override = default;

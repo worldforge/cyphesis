@@ -30,8 +30,6 @@
 #include "common/Monitors.h"
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
-#include "EntityBuilder.h"
-#include "Account.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -48,12 +46,12 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
 WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity,
-                         EntityBuilder& entityBuilder) :
+                         EntityCreator& entityCreator) :
         BaseWorld(),
         m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> double { return getTime(); }),
         m_entityCount(1),
         m_baseEntity(std::move(baseEntity)),
-        m_entityBuilder(entityBuilder)
+        m_entityCreator(entityCreator)
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
     Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
@@ -147,7 +145,7 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
         return nullptr;
     }
 
-    auto ent = m_entityBuilder.newEntity(id, intId, typestr, attrs, *this);
+    auto ent = m_entityCreator.newEntity(id, intId, typestr, attrs, *this);
     if (!ent) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",

@@ -58,7 +58,7 @@ class ExposedEntityBuilder : public EntityBuilder
         {
         }
 
-        const FactoryDict& factoryDict() const
+        const std::map<std::string, std::unique_ptr<EntityKit>>& factoryDict() const
         { return m_entityFactories; }
 
 };

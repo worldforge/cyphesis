@@ -203,7 +203,7 @@ void EntityBuildertest::test_sequence4()
     assert(eb->newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == nullptr);
 
     // Get a reference to the internal dictionary of entity factories.
-    const FactoryDict& factory_dict = eb->m_entityFactories;
+    const auto& factory_dict = eb->getFactories();
 
     // Make sure it has some factories in it already.
     assert(!factory_dict.empty());
@@ -264,7 +264,7 @@ void EntityBuildertest::test_sequence5()
     Anonymous attributes;
 
     // Get a reference to the internal dictionary of entity factories.
-    const FactoryDict& factory_dict = eb->m_entityFactories;
+    const auto& factory_dict = eb->getFactories();
 
     // Make sure it has some factories in it already.
     assert(!factory_dict.empty());
@@ -300,7 +300,7 @@ void EntityBuildertest::test_sequence5()
 
 void EntityBuildertest::test_installFactory_duplicate()
 {
-    FactoryDict& factories = eb->m_entityFactories;
+    auto& factory_dict = eb->getFactories();
 
     EntityFactoryBase* custom_type_factory = new EntityFactory<Entity>();
 
@@ -309,8 +309,8 @@ void EntityBuildertest::test_installFactory_duplicate()
                                  std::unique_ptr<EntityFactoryBase>(custom_type_factory));
 
     ASSERT_EQUAL(ret, 0);
-    ASSERT_TRUE(factories.find("custom_type") != factories.end());
-    ASSERT_EQUAL(factories.find("custom_type")->second.get(), custom_type_factory);
+    ASSERT_TRUE(factory_dict.find("custom_type") != factory_dict.end());
+    ASSERT_EQUAL(factory_dict.find("custom_type")->second.get(), custom_type_factory);
 
     EntityFactoryBase* custom_type_factory2 = new EntityFactory<Entity>();
 
@@ -319,8 +319,8 @@ void EntityBuildertest::test_installFactory_duplicate()
                              std::unique_ptr<EntityFactoryBase>(custom_type_factory2));
 
     ASSERT_EQUAL(ret, -1);
-    ASSERT_TRUE(factories.find("custom_type") != factories.end());
-    ASSERT_EQUAL(factories.find("custom_type")->second.get(), custom_type_factory);
+    ASSERT_TRUE(factory_dict.find("custom_type") != factory_dict.end());
+    ASSERT_EQUAL(factory_dict.find("custom_type")->second.get(), custom_type_factory);
 }
 
 int main(int argc, char** argv)

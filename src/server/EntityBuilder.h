@@ -26,26 +26,23 @@
 #include <memory>
 #include <common/Singleton.h>
 #include "EntityFactory.h"
+#include "rules/simulation/EntityCreator.h"
+
 
 class BaseWorld;
 class LocatedEntity;
-class LocatedEntity;
 class EntityKit;
 
-typedef std::map<std::string, std::unique_ptr<EntityKit>> FactoryDict;
 
 /// \brief Builder to handle the creation of all entities for the world.
-///
-/// Uses PersistantThingFactory to store information about entity types, and
-/// create them. Handles connecting entities to their persistor as required.
-class EntityBuilder {
+class EntityBuilder : public EntityCreator {
   protected:
 
-    FactoryDict m_entityFactories;
+    std::map<std::string, std::unique_ptr<EntityKit>> m_entityFactories;
 
   public:
     explicit EntityBuilder();
-    ~EntityBuilder();
+    virtual ~EntityBuilder();
 
     int installFactory(const std::string & class_name,
                        const Atlas::Objects::Root & class_desc,
@@ -55,7 +52,7 @@ class EntityBuilder {
                               long intId,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs,
-                              const BaseWorld & world) const;
+                              const BaseWorld & world) const override;
     Ref<LocatedEntity> newChildEntity(const std::string & id,
                               long intId,
                               const std::string & type,
@@ -67,8 +64,11 @@ class EntityBuilder {
                             std::unique_ptr<EntityKit> factory);
     void flushFactories();
 
+    const std::map<std::string, std::unique_ptr<EntityKit>>& getFactories() const {
+        return m_entityFactories;
+    }
 
-    friend class EntityBuildertest;
 };
+
 
 #endif // SERVER_ENTITY_BUILDER_H
