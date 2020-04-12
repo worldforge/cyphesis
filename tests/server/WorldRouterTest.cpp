@@ -29,7 +29,7 @@
 
 #include "server/ArithmeticBuilder.h"
 #include "server/EntityBuilder.h"
-#include "server/SpawnEntity.h"
+#include "rules/simulation/SpawnEntity.h"
 
 #include "rules/Domain.h"
 #include "rules/simulation/World.h"

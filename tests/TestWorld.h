@@ -38,6 +38,7 @@ struct TestWorldExtension {
 struct TestWorld : public BaseWorld {
 
     static TestWorldExtension extension;
+    TestWorldExtension m_extension;
 
     Ref<LocatedEntity> m_gw;
     explicit TestWorld() : BaseWorld(), m_gw(nullptr) {
@@ -54,7 +55,9 @@ struct TestWorld : public BaseWorld {
     Ref<LocatedEntity> addNewEntity(const std::string & id,
                                          const Atlas::Objects::Entity::RootEntity & op) override
     {
-        if (extension.addNewEntityFn) {
+        if (m_extension.addNewEntityFn) {
+            return m_extension.addNewEntityFn(id, op);
+        } else if (extension.addNewEntityFn) {
             return extension.addNewEntityFn(id, op);
         }
         return nullptr;
@@ -77,7 +80,9 @@ struct TestWorld : public BaseWorld {
         return {};
     }
     void message(Operation op, LocatedEntity & ent) override {
-        if (extension.messageFn) {
+        if (m_extension.messageFn) {
+            m_extension.messageFn(op, ent);
+        } else if (extension.messageFn) {
             extension.messageFn(op, ent);
         }
     }

@@ -19,7 +19,7 @@
 #ifndef SERVER_SPAWN_ENTITY_H
 #define SERVER_SPAWN_ENTITY_H
 
-#include "server/Spawn.h"
+#include "Spawn.h"
 #include "modules/Ref.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>

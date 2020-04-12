@@ -19,10 +19,10 @@
 #ifndef SERVER_SPAWN_H
 #define SERVER_SPAWN_H
 
-#include "common/OperationRouter.h"
+#include "../../common/OperationRouter.h"
 
-#include <map>
-#include <string>
+#include "../../../../../../../../usr/include/c++/9/map"
+#include "../../../../../../../../usr/include/c++/9/string"
 
 class LocatedEntity;
 class Location;

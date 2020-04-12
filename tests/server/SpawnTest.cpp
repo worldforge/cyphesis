@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "server/Spawn.h"
+#include "rules/simulation/Spawn.h"
 
 #include <cassert>
 

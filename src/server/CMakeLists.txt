@@ -23,8 +23,6 @@ set(server_files
         EntityFactory.cpp
         EntityFactory_impl.h
         ServerRouting.cpp
-        SpawnEntity.cpp
-        Spawn.h
         WorldRouter.cpp
         StorageManager.cpp
         Ruleset.cpp

@@ -54,7 +54,9 @@ add_library(rulessimulation
         ModifyProperty.cpp
         ModifiersProperty.cpp
         ModifySelfProperty.cpp
-        CorePropertyManager.cpp)
+        CorePropertyManager.cpp
+        SpawnEntity.cpp
+        Spawn.h)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

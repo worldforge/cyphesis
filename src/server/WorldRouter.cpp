@@ -20,7 +20,7 @@
 
 #include "ArithmeticBuilder.h"
 #include "EntityBuilder.h"
-#include "SpawnEntity.h"
+#include "rules/simulation/SpawnEntity.h"
 
 #include "rules/simulation/World.h"
 #include "rules/Domain.h"
@@ -34,7 +34,6 @@
 #include "common/Monitors.h"
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
-#include "server/Connection.h"
 #include "ServerRouting.h"
 #include "Account.h"
 

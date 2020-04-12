@@ -28,7 +28,7 @@
 #include "rules/Location.h"
 #include "common/log.h"
 
-#include "server/SpawnEntity.h"
+#include "rules/simulation/SpawnEntity.h"
 
 #include "rules/simulation/AreaProperty.h"
 

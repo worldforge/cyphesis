@@ -29,7 +29,7 @@
 
 #include "server/EntityBuilder.h"
 #include "server/EntityRuleHandler.h"
-#include "server/SpawnEntity.h"
+#include "rules/simulation/SpawnEntity.h"
 #include "server/EntityFactory.h"
 
 #include "rules/Domain.h"
