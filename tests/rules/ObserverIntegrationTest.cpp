@@ -111,7 +111,7 @@ namespace {
         std::vector<OpQueEntry<LocatedEntity>> list;
         list.reserve(queue.size());
         while (!queue.empty()) {
-            list.emplace_back(std::move(queue.top()));
+            list.emplace_back(queue.top());
             queue.pop();
         }
         return list;

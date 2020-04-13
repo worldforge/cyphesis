@@ -344,7 +344,21 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
                 resOp->setRefno(op->getSerialno());
             }
         }
-        message(resOp, *ent);
+        //If nothing is specified, resulting ops are sent from the active entity.
+        if (resOp->isDefaultFrom() || resOp->getFrom() == ent->getId()) {
+            message(resOp, *ent);
+        } else {
+            auto fromEntity = getEntity(resOp->getFrom());
+            if (fromEntity) {
+                message(resOp, *fromEntity);
+            } else {
+                log(WARNING, String::compose("Resulting operation %1, from sending op of type %2 to entity '%3' was marked as being from entity %4 which doesn't exist.",
+                                             resOp->getClassNo(),
+                                             op->getClassNo(),
+                                             ent->describeEntity(),
+                                             resOp->getFrom()));
+            }
+        }
     }
 }
 

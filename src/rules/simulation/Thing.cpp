@@ -414,9 +414,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         // At this point the Location data for this entity has been updated.
 
         //Check if there are any other transformed entities, and send move ops for those.
-        //However, with this setup the Sight ops for the resting entities will be sent _before_ the Sight
-        //op for this entity is sent. It's a bit backwards.
-        //TODO: send resting sights after main sight
         if (transformedEntities.size() > 1) {
             for (auto& transformedEntity : transformedEntities) {
                 if (transformedEntity != this) {
@@ -440,11 +437,8 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
                     Sight sight;
                     sight->setArgs1(setOp);
-                    OpVector childRes;
-                    transformedEntity->broadcast(sight, childRes, Visibility::PUBLIC);
-                    for (auto& childOp : childRes) {
-                        transformedEntity->sendWorld(std::move(childOp));
-                    }
+                    transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
+
                 }
             }
         }

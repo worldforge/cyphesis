@@ -162,7 +162,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 
     Atlas::Objects::Operation::Update update;
     update->setTo(entity->getId());
-    entity->sendWorld(update);
+    update->setFrom(entity->getId());
 
     //m_connection->addEntity(entity);
     if (isPersisted()) {
