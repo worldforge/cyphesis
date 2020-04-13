@@ -48,28 +48,21 @@ EntityFactoryBase::~EntityFactoryBase() = default;
 template<>
 Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string& id,
                                                    long intId,
-                                                   const Atlas::Objects::Entity::RootEntity& attributes,
-                                                   LocatedEntity* location)
+                                                   const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return nullptr;
 }
 
 void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
-                                         const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
+                                         const Atlas::Objects::Entity::RootEntity& attributes)
 {
     thing.setType(m_type);
-    thing.m_location.m_parent = location;
 
     //Only apply attributes if the supplied attributes is valid.
     //The main use of this is when doing restoration from stored entities and we don't want to apply the default attributes directly when
     //the entity first is created.
     if (attributes.isValid()) {
         thing.m_location.readFromEntity(attributes);
-
-        //TODO: remove this. Positions could be invalid in non-physical domains
-        if (!thing.m_location.pos().isValid()) {
-            thing.m_location.m_pos = WFMath::Point<3>::ZERO();
-        }
 
         auto attrs = attributes->asMessage();
         //First make sure that all properties are installed, since Entity::setAttr won't install props if they exist in the type.

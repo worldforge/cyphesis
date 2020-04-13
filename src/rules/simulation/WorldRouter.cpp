@@ -89,24 +89,14 @@ void WorldRouter::shutdown()
 /// the default spawn area if necessary. Handle inserting the
 /// entity into the loc/contains tree maintained by the Entity
 /// class. Send a Setup op to the entity.
-void WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
+void WorldRouter::addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent)
 {
     debug_print("WorldRouter::addEntity(" << ent->describeEntity() << ")")
     assert(ent->getIntId() != 0);
     m_eobjects[ent->getIntId()] = ent;
     ++m_entityCount;
 
-    if (!ent->m_location.isValid()) {
-        log(ERROR, String::compose("Entity %1 added to world with invalid location!", ent->describeEntity()));
-        debug_print("set loc " << &getDefaultLocation())
-        ent->m_location.m_parent = &getDefaultLocation();
-//        ent->m_location.m_pos = Point3D(uniform(-8,8), uniform(-8,8), 0);
-        ent->m_location.m_pos = Point3D::ZERO();
-        debug_print("loc set with loc " << ent->m_location.m_parent->getId())
-    }
-    ent->m_location.update(getTime());
-
-    ent->m_location.m_parent->addChild(*ent);
+    ent->changeContainer(parent);
 
     debug_print("Entity loc " << ent->m_location)
 
@@ -114,7 +104,7 @@ void WorldRouter::addEntity(const Ref<LocatedEntity>& ent)
         //Iterate through copy, to handle entities being deleted while iterating.
         auto contains = *ent->m_contains;
         for (auto& child : contains) {
-            addEntity(child);
+            addEntity(child, ent);
         }
     }
 
@@ -145,14 +135,29 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
         return nullptr;
     }
 
-    auto ent = m_entityCreator.newEntity(id, intId, typestr, attrs, *this);
+    auto ent = m_entityCreator.newEntity(id, intId, typestr, attrs);
     if (!ent) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",
                                    typestr));
         return nullptr;
     }
-    addEntity(ent);
+
+    Ref<LocatedEntity> loc;
+    // Get location from entity, if it is present
+    // The default attributes cannot contain info on location
+    if (attrs.isValid() && attrs->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
+        const std::string& loc_id = attrs->getLoc();
+        loc = getEntity(loc_id);
+    }
+    if (loc == nullptr) {
+        // If no info was provided, put the entity in the default location world.
+        //TODO: or should we? Perhaps better to require a location always.
+        loc = &getDefaultLocation();
+    }
+
+
+    addEntity(ent, loc);
     return ent;
 }
 

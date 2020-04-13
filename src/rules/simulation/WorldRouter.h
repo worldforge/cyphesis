@@ -78,7 +78,7 @@ class WorldRouter : public BaseWorld
 
         void shutdown() override;
 
-        void addEntity(const Ref<LocatedEntity>& obj) override;
+        void addEntity(const Ref<LocatedEntity>& obj, const Ref<LocatedEntity>& parent) override;
 
         Ref<LocatedEntity> addNewEntity(const std::string& type,
                                         const Atlas::Objects::Entity::RootEntity&) override;

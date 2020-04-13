@@ -134,13 +134,12 @@ struct Rulesetintegration : public Cyphesis::TestBase
             // Create an entity which is an instance of one of the core classes
             auto test_ent = m_entity_builder->newEntity("1", 1,
                                                "thing",
-                                               attributes,
-                                               *m_test_world);
+                                               attributes);
             assert(test_ent);
 
             // Check that creating an entity of a type we know we have not yet
             // installed results in a null pointer.
-            assert(!m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world));
+            assert(!m_entity_builder->newEntity("1", 1, "custom_type", attributes));
 
             // Set up a type description for a new type, and install it.
             {
@@ -193,7 +192,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(custom_type_val == "test_value");
 
             // Create an instance of our custom type, ensuring that it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -212,7 +211,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // Check that creating an entity of a type we know we have not yet
             // installed results in a null pointer.
-            assert(!m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world));
+            assert(!m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes));
 
             // Set up a type description for a second new type which inherits
             // from the first, and install it.
@@ -257,7 +256,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J->second.String() == "test_inherited_value");
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -355,7 +354,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_inherited_type_factory->m_attributes.end());
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -413,7 +412,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_type_factory->m_attributes.end());
 
             // Create an instance of our custom type, ensuring that it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -442,7 +441,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_inherited_type_factory->m_attributes.end());
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -516,7 +515,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J->second.String() == "new_value");
 
             // Create an instance of our custom type, ensuring that it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -558,7 +557,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
             assert(J == custom_inherited_type_factory->m_attributes.end());
 
             // Creat an instance of the second custom type, ensuring it works.
-            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes, *m_test_world);
+            test_ent = m_entity_builder->newEntity("1", 1, "custom_inherited_type", attributes);
             assert(test_ent);
 
             // Reset val.
@@ -674,7 +673,7 @@ std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
 
 #define STUB_ArchetypeFactory_newEntity
 
-Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return new Entity(id, intId);
 }

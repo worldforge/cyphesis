@@ -98,6 +98,7 @@ class ConnectionCreatorintegration : public Cyphesis::TestBase
     StubSocket* m_commSocket;
     ServerRouting * m_server;
     Connection * m_connection;
+    Ref<Entity> m_gw;
     Ref<Entity> m_creator;
     TypeNode * m_creatorType;
     std::unique_ptr<TestWorld> m_world;
@@ -150,9 +151,9 @@ void ConnectionCreatorintegration::setup()
 {
     boost::asio::io_context io_context;
 
-    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
+    m_gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_world = std::make_unique<TestWorld>(gw);
+    m_world = std::make_unique<TestWorld>(m_gw);
     TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
         ConnectionCreatorintegration::BaseWorld_message_called(op, ent);
     };
@@ -169,7 +170,7 @@ void ConnectionCreatorintegration::setup()
     m_creator = new Entity(compose("%1", m_id_counter), m_id_counter++);
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
-    BaseWorld::instance().addEntity(m_creator);
+    BaseWorld::instance().addEntity(m_creator, m_gw);
 
     m_connection->addObject(m_creator.get());
 
@@ -182,6 +183,7 @@ void ConnectionCreatorintegration::teardown()
 
     m_creator = nullptr;
 
+    m_gw.reset();
     m_world.reset();
 
     delete m_connection;
@@ -257,7 +259,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
 
     Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
-    m_server->m_world.addEntity(other);
+    m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(mind->getId());
@@ -289,7 +291,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
 
     Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
-    m_server->m_world.addEntity(other);
+    m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(mind->getId());

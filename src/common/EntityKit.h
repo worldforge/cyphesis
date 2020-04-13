@@ -67,8 +67,7 @@ class EntityKit
         /// @param attributes the location of the entity
         virtual Ref<LocatedEntity> newEntity(const std::string& id,
                                              long intId,
-                                             const Atlas::Objects::Entity::RootEntity& attributes,
-                                             LocatedEntity* location) = 0;
+                                             const Atlas::Objects::Entity::RootEntity& attributes) = 0;
 
         virtual void addProperties(const PropertyManager& propertyManager) = 0;
 

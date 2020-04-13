@@ -225,8 +225,9 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity& ent,
     sight->setArgs1(sight_arg);
     res.push_back(sight);
 
-    assert(chr->m_location.isValid());
-    debug_print("Location set to: " << chr->m_location)
+    if (!chr->m_location.isValid()) {
+        log(WARNING, String::compose("Account %1 created character %2 with invalid location.", getId(), chr->describeEntity()));
+    }
 
     //Check if we also should possess the newly created character.
     Element possessElem;

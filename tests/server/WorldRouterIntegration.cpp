@@ -203,9 +203,8 @@ void WorldRouterintegration::test_sequence()
 
     Entity* ent2 = new Thing(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_parent = base;
     ent2->m_location.m_pos = Point3D(0, 0, 0);
-    test_world->addEntity(ent2);
+    test_world->addEntity(ent2, base);
 
     Tick tick;
     tick->setFutureSeconds(0);
@@ -406,7 +405,7 @@ std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string
 
 #define STUB_ArchetypeFactory_newEntity
 
-Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
+Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return new Entity(id, intId);
 }

@@ -133,9 +133,9 @@ void EntityBuildertest::test_sequence1()
 {
     Anonymous attributes;
 
-    assert(eb->newEntity("1", 1, "world", attributes, BaseWorld::instance()) == nullptr);
-    assert(eb->newEntity("1", 1, "nonexistant", attributes, BaseWorld::instance()) == nullptr);
-    assert(eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance()) != nullptr);
+    assert(eb->newEntity("1", 1, "world", attributes) == nullptr);
+    assert(eb->newEntity("1", 1, "nonexistant", attributes) == nullptr);
+    assert(eb->newEntity("1", 1, "thing", attributes) != nullptr);
 }
 
 void EntityBuildertest::test_sequence2()
@@ -143,13 +143,13 @@ void EntityBuildertest::test_sequence2()
     Anonymous attributes;
 
     // Create a normal Entity
-    auto test_ent = eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    auto test_ent = eb->newEntity("1", 1, "thing", attributes);
     assert(test_ent);
 
     // Create an entity specifying an attrbute
     attributes->setAttr("funky", "true");
 
-    test_ent = eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = eb->newEntity("1", 1, "thing", attributes);
     assert(test_ent);
 
     // Create an entity causing VELOCITY to be set
@@ -159,7 +159,7 @@ void EntityBuildertest::test_sequence2()
 
     LocatedEntity_merge_action = SET_VELOCITY;
 
-    test_ent = eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = eb->newEntity("1", 1, "thing", attributes);
     assert(test_ent);
 
     LocatedEntity_merge_action = DO_NOTHING;
@@ -169,7 +169,7 @@ void EntityBuildertest::test_sequence2()
 
     LocatedEntity_merge_action = SET_VELOCITY;
 
-    test_ent = eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = eb->newEntity("1", 1, "thing", attributes);
     assert(test_ent);
 
     LocatedEntity_merge_action = DO_NOTHING;
@@ -179,7 +179,7 @@ void EntityBuildertest::test_sequence2()
 
     attributes->setLoc("1");
 
-    test_ent = eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    test_ent = eb->newEntity("1", 1, "thing", attributes);
     assert(test_ent);
 }
 
@@ -189,7 +189,7 @@ void EntityBuildertest::test_sequence3()
     Anonymous attributes;
 
     // Create an entity which is an instance of one of the core classes
-    auto test_ent = eb->newEntity("1", 1, "thing", attributes, BaseWorld::instance());
+    auto test_ent = eb->newEntity("1", 1, "thing", attributes);
     assert(test_ent);
 }
 
@@ -200,7 +200,7 @@ void EntityBuildertest::test_sequence4()
 
     // Check that creating an entity of a type we know we have not yet
     // installed results in a null pointer.
-    assert(eb->newEntity("1", 1, "custom_type", attributes, BaseWorld::instance()) == nullptr);
+    assert(eb->newEntity("1", 1, "custom_type", attributes) == nullptr);
 
     // Get a reference to the internal dictionary of entity factories.
     const auto& factory_dict = eb->getFactories();
@@ -245,14 +245,14 @@ void EntityBuildertest::test_sequence4()
     assert(J->second.String() == "test_value");
 
     // Create an instance of our custom type, ensuring that it works.
-    auto test_ent = eb->newEntity("1", 1, "custom_type", attributes, BaseWorld::instance());
+    auto test_ent = eb->newEntity("1", 1, "custom_type", attributes);
     assert(test_ent);
 
     assert(test_ent->getType() == custom_type_factory->m_type);
 
     // Check that creating an entity of a type we know we have not yet
     // installed results in a null pointer.
-    assert(eb->newEntity("1", 1, "custom_inherited_type", attributes, BaseWorld::instance()) == nullptr);
+    assert(eb->newEntity("1", 1, "custom_inherited_type", attributes) == nullptr);
 
     // Assert the dictionary does not contain the factory we know we have
     // have not yet installed.
@@ -292,7 +292,7 @@ void EntityBuildertest::test_sequence5()
     assert(custom_type_factory == I->second.get());
 
     // Create an instance of our custom type, ensuring that it works.
-    auto test_ent = eb->newEntity("1", 1, "custom_scripted_type", attributes, BaseWorld::instance());
+    auto test_ent = eb->newEntity("1", 1, "custom_scripted_type", attributes);
     assert(test_ent);
 
     assert(test_ent->getType() == custom_type_factory->m_type);
@@ -341,7 +341,7 @@ int main(int argc, char** argv)
 
 template<class T>
 Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId,
-                                               const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
+                                               const Atlas::Objects::Entity::RootEntity& attributes)
 {
     ++m_createdCount;
     auto* e = new Entity(id, intId);
@@ -380,7 +380,7 @@ class World;
 
 template<>
 Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string& id, long intId,
-                                                   const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
+                                                   const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return 0;
 }

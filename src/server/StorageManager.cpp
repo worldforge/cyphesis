@@ -408,7 +408,7 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
         Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
-        auto child = m_entityBuilder.newEntity(id, int_id, type, attrs, m_world);
+        auto child = m_entityBuilder.newEntity(id, int_id, type, attrs);
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
                                ", most likely caused by this type missing.",
@@ -427,9 +427,8 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
                                "POS data. Ignored.", child->describeEntity()));
             continue;
         }
-        child->m_location.m_parent = parent;
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
-        m_world.addEntity(child);
+        m_world.addEntity(child, parent);
         childCount += restoreChildren(child.get());
     }
     return childCount;

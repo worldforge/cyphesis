@@ -44,8 +44,7 @@ class TestEntityKit : public EntityKit
 
     Ref<LocatedEntity> newEntity(const std::string & id,
             long intId,
-            const Atlas::Objects::Entity::RootEntity & attributes,
-            LocatedEntity* location) override { return nullptr; }
+            const Atlas::Objects::Entity::RootEntity & attributes) override { return nullptr; }
 
     static EntityKit * duplicateFactory() { return nullptr; }
     void addProperties(const PropertyManager&) override{}

@@ -42,26 +42,27 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
 
-IGEntityExerciser::IGEntityExerciser(Ref<Entity> e) :
+IGEntityExerciser::IGEntityExerciser(const Ref<Entity>& e) :
                            EntityExerciser(e), m_ent(e) {
     new TestPropertyManager;
+    Ref<LocatedEntity> parent;
     if (e->getIntId() == 0) {
         new TestWorld(e);
     } else {
         assert(e->m_location.m_parent != nullptr);
-        e->m_location.m_parent = new Entity("0", 0);
+        parent = new Entity("0", 0);
         e->m_location.m_parent->makeContainer();
         assert(e->m_location.m_parent->m_contains != nullptr);
         e->m_location.m_parent->m_contains->insert(e);
         new TestWorld(e->m_location.m_parent);
     }
-    BaseWorld::instance().addEntity(e);
+    BaseWorld::instance().addEntity(e, parent);
 }
 
 bool IGEntityExerciser::checkProperties(const std::set<std::string> & prop_names)
 {
-    std::set<std::string>::const_iterator I = prop_names.begin();
-    std::set<std::string>::const_iterator Iend = prop_names.end();
+    auto I = prop_names.begin();
+    auto Iend = prop_names.end();
     for (; I != Iend; ++I) {
         if (this->m_ent->getProperty(*I) == nullptr) {
             std::cerr << "Entity does not have \"" << *I << "\" property."

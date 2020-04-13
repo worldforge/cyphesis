@@ -33,13 +33,14 @@ template<class T>
 EntityFactory<T>::~EntityFactory() = default;
 
 template<class T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId,
-                                               const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location)
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id,
+                                               long intId,
+                                               const Atlas::Objects::Entity::RootEntity& attributes)
 {
     ++m_createdCount;
     //Important that we create a ref as soon as possible, so we have a positive ref count.
     Ref<T> thing(new T(id, intId));
-    initializeEntity(*thing, attributes, location);
+    initializeEntity(*thing, attributes);
     return thing;
 }
 

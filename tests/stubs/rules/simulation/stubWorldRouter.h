@@ -58,7 +58,7 @@
 
 #ifndef STUB_WorldRouter_addEntity
 //#define STUB_WorldRouter_addEntity
-  void WorldRouter::addEntity(const Ref<LocatedEntity>& obj)
+  void WorldRouter::addEntity(const Ref<LocatedEntity>& obj, const Ref<LocatedEntity>& parent)
   {
     
   }

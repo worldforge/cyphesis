@@ -70,8 +70,9 @@ class ArchetypeFactory : public EntityKit
 
         ArchetypeFactory(ArchetypeFactory& o);
 
-        Ref<LocatedEntity> createEntity(const std::string& id, long intId,
-                                        EntityCreation& entityCreation, LocatedEntity* location,
+        Ref<LocatedEntity> createEntity(const std::string& id,
+                                        long intId,
+                                        EntityCreation& entityCreation,
                                         std::map<std::string, EntityCreation>& entities);
 
         /**
@@ -161,8 +162,7 @@ class ArchetypeFactory : public EntityKit
         ~ArchetypeFactory() override;
 
         Ref<LocatedEntity> newEntity(const std::string& id, long intId,
-                                     const Atlas::Objects::Entity::RootEntity& attributes,
-                                     LocatedEntity* location) override;
+                                     const Atlas::Objects::Entity::RootEntity& attributes) override;
 
         virtual std::unique_ptr<ArchetypeFactory> duplicateFactory();
 

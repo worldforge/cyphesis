@@ -20,15 +20,13 @@
 #define CYPHESIS_ENTITYCREATOR_H
 
 class LocatedEntity;
-class BaseWorld;
 
 struct EntityCreator
 {
     virtual Ref<LocatedEntity> newEntity(const std::string& id,
                                          long intId,
                                          const std::string& type,
-                                         const Atlas::Objects::Entity::RootEntity& attrs,
-                                         const BaseWorld& world) const = 0;
+                                         const Atlas::Objects::Entity::RootEntity& attrs) const = 0;
 };
 
 #endif //CYPHESIS_ENTITYCREATOR_H

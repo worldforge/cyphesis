@@ -65,8 +65,8 @@ class SpawningTestWorld : public TestWorld {
   public:
     SpawningTestWorld(Ref<Entity> gw) : TestWorld(gw) { }
 
-    void addEntity(const Ref<LocatedEntity>& ent) override{
-        ent->m_location.m_parent = m_gw;
+    void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override{
+        ent->m_location.m_parent = parent;
         ent->m_location.m_pos = WFMath::Point<3>(0,0,0);
         m_eobjects[ent->getIntId()] = ent;
     }
@@ -79,7 +79,7 @@ class SpawningTestWorld : public TestWorld {
         Ref<Entity>  e = new Entity(id, intId);
 
         e->setType(new TypeNode(t));
-        addEntity(e);
+        addEntity(e, m_gw);
         return e;
     }
 };

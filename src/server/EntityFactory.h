@@ -79,8 +79,7 @@ class EntityFactoryBase : public EntityKit
     protected:
 
         void initializeEntity(LocatedEntity& thing,
-                              const Atlas::Objects::Entity::RootEntity& attributes,
-                              LocatedEntity* location);
+                              const Atlas::Objects::Entity::RootEntity& attributes);
 
     public:
 
@@ -121,8 +120,9 @@ class EntityFactory : public EntityFactoryBase
 
         ~EntityFactory() override;
 
-        Ref<LocatedEntity> newEntity(const std::string& id, long intId,
-                                     const Atlas::Objects::Entity::RootEntity& attributes, LocatedEntity* location) override;
+        Ref<LocatedEntity> newEntity(const std::string& id,
+                                     long intId,
+                                     const Atlas::Objects::Entity::RootEntity& attributes) override;
 
         std::unique_ptr<EntityFactoryBase> duplicateFactory() override;
 

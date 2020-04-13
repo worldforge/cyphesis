@@ -112,6 +112,7 @@ class Admintest : public Cyphesis::TestBase
     Connection * m_connection;
     Admin * m_account;
     TestWorld* m_world;
+    Ref<Entity> m_gw;
 
     bool m_monitor_flag;
 
@@ -328,9 +329,9 @@ void Admintest::setup()
     inheritance = new Inheritance(factories);
     Atlas::Objects::Operation::MONITOR_NO = m_id_counter++;
 
-    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
+    m_gw = new Entity(compose("%1", m_id_counter),
                              m_id_counter++);
-    m_world = new TestWorld(gw);
+    m_world = new TestWorld(m_gw);
 
     m_server = new ServerRouting(*m_world,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
@@ -348,6 +349,7 @@ void Admintest::setup()
 
 void Admintest::teardown()
 {
+    m_gw.reset();
     delete m_world;
     delete inheritance;
 
@@ -716,7 +718,7 @@ void Admintest::test_GetOperation_obj_IG()
     std::string cid_str = String::compose("%1", cid);
     Ref<Entity>  to = new Entity(cid_str, cid);
 
-    m_server->m_world.addEntity(to);
+    m_server->m_world.addEntity(to, m_gw);
 
     Atlas::Objects::Operation::Get op;
     OpVector res;

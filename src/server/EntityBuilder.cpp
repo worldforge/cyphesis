@@ -92,22 +92,10 @@ EntityBuilder::~EntityBuilder() = default;
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes, const BaseWorld& world) const
+Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes) const
 {
-    Ref<LocatedEntity> loc;
-    // Get location from entity, if it is present
-    // The default attributes cannot contain info on location
-    if (attributes.isValid() && attributes->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        const std::string& loc_id = attributes->getLoc();
-        loc = world.getEntity(loc_id);
-    }
-    if (loc == nullptr) {
-        // If no info was provided, put the entity in the default location world
-        loc = &world.getDefaultLocation();
-    }
-
     try {
-        return newChildEntity(id, intId, type, attributes, *loc);
+        return newChildEntity(id, intId, type, attributes);
     } catch (const std::exception& ex) {
         log(ERROR, String::compose("Error when creating entity of type %1."
                                    " Message: %2", type, ex.what()));
@@ -115,8 +103,10 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, c
     }
 }
 
-Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attributes,
-                                                 LocatedEntity& parentEntity) const
+Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id,
+                                                 long intId,
+                                                 const std::string& type,
+                                                 const Atlas::Objects::Entity::RootEntity& attributes) const
 {
     debug_print("EntityFactor::newEntity()")
     auto I = m_entityFactories.find(type);
@@ -129,7 +119,7 @@ Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id, long int
     if (attributes) {
         attributes->removeAttr("parent");
     }
-    return factory->newEntity(id, intId, attributes, &parentEntity);
+    return factory->newEntity(id, intId, attributes);
 
 }
 

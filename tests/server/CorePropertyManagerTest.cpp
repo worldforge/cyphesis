@@ -226,7 +226,7 @@ int main()
 
 #define STUB_EntityFactory_newEntity
 template <typename T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes)
 {
     return new Entity(id, intId);
 }
@@ -236,7 +236,7 @@ class World;
 
 template <>
 Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes, LocatedEntity* location)
+        const Atlas::Objects::Entity::RootEntity & attributes)
 {
     return 0;
 }

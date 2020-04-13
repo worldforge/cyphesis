@@ -37,6 +37,7 @@
 #include <cassert>
 #include <server/EntityBuilder.h>
 #include <server/ArchetypeFactory.h>
+#include <server/EntityFactory.h>
 #include <rules/simulation/World.h>
 #include <common/Inheritance.h>
 
@@ -231,7 +232,7 @@ struct Tested : public Cyphesis::TestBase
 ")");
         auto entityDef = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(obj);
 
-        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef, context.testWorld);
+        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef);
         ASSERT_NOT_NULL(entity.get());
         ASSERT_EQUAL(2UL, entity->m_contains->size());
         Atlas::Message::Element element;
@@ -280,7 +281,7 @@ struct Tested : public Cyphesis::TestBase
 ")");
         auto entityDef = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(obj);
 
-        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef, context.testWorld);
+        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef);
         ASSERT_NOT_NULL(entity.get());
         Atlas::Message::Element element;
 
@@ -332,7 +333,7 @@ struct Tested : public Cyphesis::TestBase
 ")");
         auto entityDef = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(obj);
 
-        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef, context.testWorld);
+        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef);
         ASSERT_NOT_NULL(entity.get());
         Atlas::Message::Element element;
         entity->getAttr("name", element);

@@ -9,7 +9,7 @@
 
 #ifndef STUB_EntityCreator_newEntity
 //#define STUB_EntityCreator_newEntity
-  Ref<LocatedEntity> EntityCreator::newEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attrs, const BaseWorld& world) const
+  Ref<LocatedEntity> EntityCreator::newEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attrs) const
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

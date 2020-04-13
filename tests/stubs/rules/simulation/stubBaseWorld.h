@@ -91,7 +91,7 @@
 
 #ifndef STUB_BaseWorld_addEntity
 //#define STUB_BaseWorld_addEntity
-  void BaseWorld::addEntity(const Ref<LocatedEntity>& obj)
+  void BaseWorld::addEntity(const Ref<LocatedEntity>& obj, const Ref<LocatedEntity>& parent)
   {
     
   }

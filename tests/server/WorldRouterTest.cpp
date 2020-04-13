@@ -155,7 +155,7 @@ void WorldRoutertest::test_addEntity()
     assert(ent2 != 0);
     ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
-    test_world->addEntity(ent2);
+    test_world->addEntity(ent2, m_rootEntity);
 }
 
 void WorldRoutertest::test_addEntity_tick()
@@ -167,7 +167,7 @@ void WorldRoutertest::test_addEntity_tick()
     assert(ent2 != 0);
     ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
-    test_world->addEntity(ent2);
+    test_world->addEntity(ent2, m_rootEntity);
 
     Tick tick;
     tick->setFutureSeconds(0);
@@ -185,7 +185,7 @@ void WorldRoutertest::test_addEntity_tick_get()
     assert(ent2 != 0);
     ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
-    test_world->addEntity(ent2);
+    test_world->addEntity(ent2, m_rootEntity);
 
     Tick tick;
     tick->setFutureSeconds(0);
@@ -219,7 +219,7 @@ void WorldRoutertest::test_createSpawnPoint()
     assert(ent2 != 0);
     ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
-    test_world->addEntity(ent2);
+    test_world->addEntity(ent2, m_rootEntity);
 
     {
         int ret;
@@ -267,7 +267,7 @@ void WorldRoutertest::test_delEntity()
     assert(ent2 != 0);
     ent2->m_location.m_parent = m_rootEntity;
     ent2->m_location.m_pos = Point3D(0,0,0);
-    test_world->addEntity(ent2);
+    test_world->addEntity(ent2, m_rootEntity);
 
     test_world->delEntity(ent2);
     test_world->delEntity(m_rootEntity.get());
@@ -482,12 +482,11 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 #define STUB_EntityBuilder_newEntity
 Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
                                          const std::string & type,
-                                         const RootEntity & attributes,
-                                         const BaseWorld & world) const
+                                         const RootEntity & attributes) const
 {
     if (type == "thing") {
         auto e = new Entity(id, intId);
-        e->m_location.m_parent = &world.getDefaultLocation();
+      //  e->m_location.m_parent = &world.getDefaultLocation();
         e->m_location.m_pos = Point3D(0,0,0);
         return e;
     }

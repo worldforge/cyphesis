@@ -48,8 +48,11 @@ struct TestWorld : public BaseWorld {
 
     ~TestWorld() override= default;
 
-    void addEntity(const Ref<LocatedEntity>& ent) override {
+    void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override {
         m_eobjects[ent->getIntId()] = ent;
+        if (parent) {
+            parent->addChild(*ent);
+        }
     }
     Ref<LocatedEntity> addNewEntity(const std::string & id,
                                          const Atlas::Objects::Entity::RootEntity & op) override

@@ -19,17 +19,17 @@
 #ifndef SERVER_ENTITY_BUILDER_H
 #define SERVER_ENTITY_BUILDER_H
 
+#include "common/EntityKit.h"
+#include "rules/simulation/EntityCreator.h"
+
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/ObjectsFwd.h>
 
 #include <memory>
-#include <common/Singleton.h>
-#include "EntityFactory.h"
-#include "rules/simulation/EntityCreator.h"
 
 
-class BaseWorld;
+
 class LocatedEntity;
 class EntityKit;
 
@@ -51,13 +51,11 @@ class EntityBuilder : public EntityCreator {
     Ref<LocatedEntity> newEntity(const std::string & id,
                               long intId,
                               const std::string & type,
-                              const Atlas::Objects::Entity::RootEntity & attrs,
-                              const BaseWorld & world) const override;
+                              const Atlas::Objects::Entity::RootEntity & attrs) const override;
     Ref<LocatedEntity> newChildEntity(const std::string & id,
                               long intId,
                               const std::string & type,
-                              const Atlas::Objects::Entity::RootEntity & attrs,
-                              LocatedEntity & parentEntity) const;
+                              const Atlas::Objects::Entity::RootEntity & attrs) const;
 
     void installBaseFactory(const std::string & class_name,
                             const std::string & parent,

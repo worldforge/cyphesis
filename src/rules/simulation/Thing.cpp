@@ -302,6 +302,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             if (isDestroyed()) {
                 return;
             }
+            m_flags.addFlags(entity_dirty_location);
 
             //Since the location has changed we need to issue an Update
             Update update;

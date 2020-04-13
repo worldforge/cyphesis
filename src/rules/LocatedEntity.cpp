@@ -485,10 +485,10 @@ void LocatedEntity::makeContainer()
 void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
 {
     auto oldLoc = m_location.m_parent;
-    oldLoc->removeChild(*this);
+    if (oldLoc) {
+        oldLoc->removeChild(*this);
+    }
     new_loc->addChild(*this);
-    assert(m_location.m_parent->checkRef() > 0);
-    m_flags.addFlags(entity_dirty_location);
 
     onContainered(oldLoc);
 }

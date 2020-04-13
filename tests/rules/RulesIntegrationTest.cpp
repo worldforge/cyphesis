@@ -188,12 +188,11 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
     void test_modifyWithAttachConstraints(TestContext& context)
     {
         Ref<Thing> entity(new Thing("1", 1));
-        context.testWorld.addEntity(entity);
+        context.testWorld.addEntity(entity, context.world);
         sendSetOp(entity, "attachments", MapType{{"hand_primary", "contains(actor.contains, child = tool)"}});
 
         Ref<Thing> entityChild(new Thing("2", 2));
-        context.testWorld.addEntity(entityChild);
-        entity->addChild(*entityChild);
+        context.testWorld.addEntity(entityChild, entity);
         sendSetOp(entityChild, "modify", ListType{
                 MapType{
                         {"constraint",          "entity.mode_data.mode = 'planted'"},

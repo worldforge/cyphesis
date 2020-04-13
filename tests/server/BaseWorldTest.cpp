@@ -47,7 +47,7 @@ class MyTestWorld : public TestWorld {
         m_eobjects[gw->getIntId()] = gw;
     }
 
-    void addEntity(const Ref<LocatedEntity>& ent) override {
+    void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override {
         m_eobjects[ent->getIntId()] = ent;
     }
 };
@@ -102,7 +102,7 @@ int main()
 
         LocatedEntity * tc = new Entity("2", 2);
 
-        tw.addEntity(tc);
+        tw.addEntity(tc, wrld);
 
         assert(tw.getEntity("2") == tc);
     }
@@ -114,7 +114,7 @@ int main()
 
         LocatedEntity * tc = new Entity("2", 2);
 
-        tw.addEntity(tc);
+        tw.addEntity(tc, wrld);
 
         assert(tw.getEntity(2) == tc);
     }

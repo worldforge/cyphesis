@@ -50,6 +50,7 @@
 
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Objects/Encoder.h>
+
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
 
@@ -74,13 +75,15 @@ class StubSocket : public CommSocket
 };
 
 
-struct TestDecoder : public Atlas::Objects::ObjectsDecoder {
+struct TestDecoder : public Atlas::Objects::ObjectsDecoder
+{
     Atlas::Objects::Root m_obj;
 
-    TestDecoder(const Atlas::Objects::Factories& factories):
-    ObjectsDecoder(factories){}
+    TestDecoder(const Atlas::Objects::Factories& factories) :
+            ObjectsDecoder(factories)
+    {}
 
-    void objectArrived(const Atlas::Objects::Root & obj) override
+    void objectArrived(const Atlas::Objects::Root& obj) override
     {
         m_obj = obj;
     }
@@ -88,49 +91,53 @@ struct TestDecoder : public Atlas::Objects::ObjectsDecoder {
 
 class TrustedConnectionCreatorintegration : public Cyphesis::TestBase
 {
-  protected:
-    long m_id_counter;
-    static Operation m_BaseWorld_message_called;
-    static Ref<LocatedEntity> m_BaseWorld_message_called_from;
+    protected:
+        long m_id_counter;
+        static Operation m_BaseWorld_message_called;
+        static Ref<LocatedEntity> m_BaseWorld_message_called_from;
 
-    StubSocket* m_commSocket;
-    ServerRouting * m_server;
-    Connection * m_connection;
-    Ref<Entity> m_creator;
-    TypeNode * m_creatorType;
-    std::unique_ptr<TestWorld> m_world;
+        StubSocket* m_commSocket;
+        ServerRouting* m_server;
+        Connection* m_connection;
+        Ref<Entity> m_gw;
+        Ref<Entity> m_creator;
+        TypeNode* m_creatorType;
+        std::unique_ptr<TestWorld> m_world;
 
     public:
-    TrustedConnectionCreatorintegration();
+        TrustedConnectionCreatorintegration();
 
-    void setup();
+        void setup();
 
-    void teardown();
+        void teardown();
 
-    void test_external_op();
-    void test_external_op_override();
-    void test_external_op_puppet();
-    void test_external_op_puppet_nonexistant();
+        void test_external_op();
 
-    static void BaseWorld_message_called(const Operation & op, LocatedEntity &);
+        void test_external_op_override();
+
+        void test_external_op_puppet();
+
+        void test_external_op_puppet_nonexistant();
+
+        static void BaseWorld_message_called(const Operation& op, LocatedEntity&);
 };
 
 Operation TrustedConnectionCreatorintegration::m_BaseWorld_message_called(0);
 Ref<LocatedEntity> TrustedConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
 
 void TrustedConnectionCreatorintegration::BaseWorld_message_called(
-      const Operation & op,
-      LocatedEntity & ent)
+        const Operation& op,
+        LocatedEntity& ent)
 {
     m_BaseWorld_message_called = op;
     m_BaseWorld_message_called_from = &ent;
 }
 
 TrustedConnectionCreatorintegration::TrustedConnectionCreatorintegration() :
-    m_id_counter(0L),
-    m_connection(0),
-    m_creator(0),
-    m_creatorType(0)
+        m_id_counter(0L),
+        m_connection(0),
+        m_creator(0),
+        m_creatorType(0)
 {
     new Monitors();
 
@@ -146,9 +153,9 @@ void TrustedConnectionCreatorintegration::setup()
 
     TestWorld::extension.messageFn = &TrustedConnectionCreatorintegration::BaseWorld_message_called;
 
-    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
-                             m_id_counter++);
-    m_world = std::make_unique<TestWorld>(gw);
+    m_gw = new Entity(compose("%1", m_id_counter),
+                      m_id_counter++);
+    m_world = std::make_unique<TestWorld>(m_gw);
     m_server = new ServerRouting(*m_world,
                                  "dd7452be-0137-4664-b90e-77dfb395ac39",
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
@@ -164,7 +171,7 @@ void TrustedConnectionCreatorintegration::setup()
     m_creator->setType(m_creatorType);
 
     m_connection->addObject(m_creator.get());
-    BaseWorld::instance().addEntity(m_creator);
+    BaseWorld::instance().addEntity(m_creator, m_gw);
 
 }
 
@@ -173,7 +180,7 @@ void TrustedConnectionCreatorintegration::teardown()
 
     m_BaseWorld_message_called = nullptr;
     m_BaseWorld_message_called_from = nullptr;
-
+    m_gw.reset();
     m_world.reset();
 
 
@@ -248,9 +255,9 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
 
-    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
-    m_server->m_world.addEntity(other);
+    m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(mind->getId());
@@ -280,9 +287,9 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
 
-    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
-    m_server->m_world.addEntity(other);
+    m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(mind->getId());
