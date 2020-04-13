@@ -260,8 +260,16 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             Atlas::Objects::Operation::Delete deleteOp;
             object1->DeleteOperation(deleteOp, res);
         }
+        ops = collectQueue(queue);
 
-
+        //A Sight is is sent to the deleted entity, but it's sent directly without being put on the queue.
+        ASSERT_EQUAL(0, ops.size())
+        ASSERT_EQUAL(2, res.size())
+        ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
+        ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[1]->getClassNo())
+        ASSERT_EQUAL(observer->getId(), res[0]->getTo())
+        ASSERT_EQUAL(object1->getId(), res[1]->getArgs().front()->getId())
+        ASSERT_EQUAL(observer->getId(), res[1]->getTo())
     }
 
 };

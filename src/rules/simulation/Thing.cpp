@@ -73,6 +73,7 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
         assert(m_location.m_parent != nullptr);
         return;
     }
+
     // The actual destruction and removal of this entity will be handled
     // by the WorldRouter
 
@@ -90,7 +91,15 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
     s->setArgs1(op);
     broadcast(s, res, Visibility::PUBLIC);
 
-//    //Important to send directly before this entity is deleted, so that broadcasts gets right.
+    Disappearance disappearanceOp;
+    Anonymous anonymous;
+    anonymous->setId(getId());
+    anonymous->setAttr("destroyed", 1); //Add attribute clarifying that this entity is destroyed.
+    disappearanceOp->setArgs1(std::move(anonymous));
+    broadcast(disappearanceOp, res, Visibility::PUBLIC);
+
+
+    //    //Important to send directly before this entity is deleted, so that broadcasts gets right.
 //    sendWorld(s);
 
     Entity::DeleteOperation(op, res);
