@@ -21,18 +21,13 @@
 #include "ArchetypeFactory.h"
 
 #include "rules/LocatedEntity.h"
-#include "rules/simulation/Task.h"
 
-#include "rules/simulation/BaseWorld.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
 #include "common/Monitors.h"
-#include "common/ScriptKit.h"
 #include "common/Variable.h"
 
 #include <Atlas/Objects/RootOperation.h>
-#include <rules/python/Python_API.h>
-#include <rules/python/ScriptsProperty.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -46,35 +41,6 @@ static const bool debug_flag = false;
 EntityBuilder::EntityBuilder()
 {
     installBaseFactory("archetype", "root_entity", std::make_unique<ArchetypeFactory>(*this));
-    python_reload_scripts.connect([&]() {
-
-        ScriptsProperty::reloadAllScriptFactories();
-
-        //TODO: Implement scripts on archetypes and reload them here
-//        std::map<const TypeNode*, EntityFactoryBase*> collector;
-//        for (auto& entry : m_entityFactories) {
-//            auto entityFactory = dynamic_cast<EntityFactoryBase*>(entry.second);
-//            if (entityFactory && entityFactory->m_scriptFactory) {
-//                log(NOTICE, compose("Reloading scripts for %1", entityFactory->m_type->name()));
-//                entityFactory->m_scriptFactory->refreshClass();
-//                collector.emplace(entityFactory->m_type, entityFactory);
-//            }
-//        }
-
-        auto& entities = BaseWorld::instance().getEntities();
-
-        for (auto& entry : entities) {
-            auto scriptsProp = entry.second->getPropertyClass<ScriptsProperty>("__scripts");
-            if (scriptsProp) {
-                scriptsProp->applyScripts(entry.second.get());
-            }
-            auto scriptsInstanceProp = entry.second->getPropertyClass<ScriptsProperty>("__scripts_instance");
-            if (scriptsInstanceProp) {
-                scriptsInstanceProp->applyScripts(entry.second.get());
-            }
-        }
-
-    });
 }
 
 EntityBuilder::~EntityBuilder() = default;
@@ -82,12 +48,10 @@ EntityBuilder::~EntityBuilder() = default;
 /// \brief Build and populate a new entity object.
 ///
 /// A factory is found for the type of entity, and invoked to create the object
-/// instance. If the type has a script factory, this is invoked to create the
-/// associates script object which is attached to the entity instance.
+/// instance.
 /// The attribute values are then set on the instance, taking into account
 /// the defaults for the class, and those inherited from parent classes, and
-/// the values specified for this instance. The essential location data for
-/// this instance is then set up.
+/// the values specified for this instance.
 /// @param id The string identifier of the new entity.
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.

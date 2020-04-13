@@ -61,6 +61,7 @@
 #include "ServerPropertyManager.h"
 #include "TypeUpdateCoordinator.h"
 #include "TeleportProperty.h"
+#include "ScriptReloader.h"
 
 #include <varconf/config.h>
 
@@ -483,6 +484,8 @@ namespace {
             TeleportProperty::s_serverRouting = &serverRouting;
 
             TypeUpdateCoordinator typeUpdateCoordinator(inheritance, world, serverRouting);
+
+            ScriptReloader scriptReloader(world);
 
             run_user_scripts("cyphesis");
 
