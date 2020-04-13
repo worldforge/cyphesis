@@ -32,7 +32,7 @@
 #include "server/Player.h"
 #include "server/ServerRouting.h"
 #include "rules/simulation/Task.h"
-#include "server/WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 #include "server/SystemAccount.h"
 
 #include "common/compose.hpp"

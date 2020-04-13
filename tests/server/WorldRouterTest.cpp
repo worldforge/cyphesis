@@ -25,7 +25,7 @@
 
 #include "../TestBase.h"
 
-#include "server/WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 
 #include "server/EntityBuilder.h"
 #include "rules/simulation/SpawnEntity.h"
@@ -404,7 +404,7 @@ static bool distanceToAncestor(const Location & self,
         std::cerr << "Other(" << other.m_parent->getId() << "," << other.m_parent->describeEntity() << ")"
                   << std::endl << std::flush;
     }
-     
+
     return false;
 }
 

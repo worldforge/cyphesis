@@ -22,7 +22,7 @@
 
 #include <common/Inheritance.h>
 #include "ServerRouting.h"
-#include "WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 
 class TypeUpdateCoordinator
 {

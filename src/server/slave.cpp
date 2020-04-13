@@ -21,7 +21,7 @@
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
 #include "Persistence.h"
-#include "WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 
 #include "rules/python/Python_API.h"
 #include "rules/ai/MindFactory.h"

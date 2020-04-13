@@ -30,7 +30,7 @@
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
 #include "Persistence.h"
-#include "WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 #include "Ruleset.h"
 #include "StorageManager.h"
 #include "IdleConnector.h"

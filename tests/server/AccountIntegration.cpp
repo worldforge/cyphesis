@@ -31,7 +31,7 @@
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
 #include "server/Connection.h"
-#include "server/WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 
 #include "rules/Domain.h"
 #include "rules/simulation/Entity.h"

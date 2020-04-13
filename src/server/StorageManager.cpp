@@ -18,12 +18,12 @@
 
 #include "StorageManager.h"
 
-#include "WorldRouter.h"
 #include "EntityBuilder.h"
+#include "MindProperty.h"
 
 #include "rules/LocatedEntity.h"
-#include "MindProperty.h"
 #include "rules/Domain.h"
+#include "rules/simulation/WorldRouter.h"
 
 #include "common/Database.h"
 #include "common/debug.h"
@@ -51,6 +51,7 @@ typedef Database::KeyValues KeyValues;
 static const bool debug_flag = false;
 
 StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder) :
+        m_world(world),
         m_db(db), m_entityBuilder(entityBuilder),
         m_insertEntityCount(0), m_updateEntityCount(0),
         m_insertPropertyCount(0), m_updatePropertyCount(0),
@@ -407,7 +408,7 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
         Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
-        auto child = m_entityBuilder.newEntity(id, int_id, type, attrs, BaseWorld::instance());
+        auto child = m_entityBuilder.newEntity(id, int_id, type, attrs, m_world);
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
                                ", most likely caused by this type missing.",
@@ -428,7 +429,7 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
         }
         child->m_location.m_parent = parent;
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
-        BaseWorld::instance().addEntity(child);
+        m_world.addEntity(child);
         childCount += restoreChildren(child.get());
     }
     return childCount;

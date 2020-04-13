@@ -444,7 +444,7 @@ wf_add_test(server/EntityFactoryTest.cpp ../src/server/EntityFactory.cpp
 wf_add_test(common/buildidTest.cpp ${PROJECT_BINARY_DIR}/src/server/buildid.cpp)
 wf_add_test(server/ConnectionTest.cpp ../src/server/Connection.cpp)
 wf_add_test(server/TrustedConnectionTest.cpp ../src/server/TrustedConnection.cpp)
-wf_add_test(server/WorldRouterTest.cpp ../src/server/WorldRouter.cpp)
+wf_add_test(server/WorldRouterTest.cpp ../src/rules/simulation/WorldRouter.cpp)
 wf_add_test(server/PeerTest.cpp ../src/server/Peer.cpp)
 wf_add_test(server/LobbyTest.cpp ../src/server/Lobby.cpp)
 wf_add_test(server/SpawnTest.cpp)
@@ -474,7 +474,7 @@ wf_add_test(server/CorePropertyManagerTest.cpp ../src/rules/simulation/CorePrope
 
 # SERVER_INTEGRATION_TESTS
 
-wf_add_test(server/WorldRouterIntegration.cpp ../src/server/WorldRouter.cpp
+wf_add_test(server/WorldRouterIntegration.cpp ../src/rules/simulation/WorldRouter.cpp
     ../src/server/EntityBuilder.cpp
     ../src/server/EntityFactory.cpp
     ../src/server/EntityRuleHandler.cpp

@@ -25,7 +25,7 @@
 
 #include "server/StorageManager.h"
 
-#include "server/WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 
 #include "rules/simulation/Entity.h"
 #include "server/MindProperty.h"
@@ -191,7 +191,7 @@ int main()
 #include "common/SystemTime.h"
 #include "common/Variable.h"
 
-#include "../stubs/server/stubWorldRouter.h"
+#include "../stubs/rules/simulation/stubWorldRouter.h"
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/rules/simulation/stubEntity.h"
 #include "../stubs/rules/simulation/stubThing.h"

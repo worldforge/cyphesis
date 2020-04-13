@@ -17,7 +17,6 @@
 
 #include "ArchetypeFactory.h"
 #include "EntityBuilder.h"
-#include "WorldRouter.h"
 
 #include "rules/LocatedEntity.h"
 

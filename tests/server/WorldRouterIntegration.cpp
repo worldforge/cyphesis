@@ -25,7 +25,7 @@
 
 #include "../TestBase.h"
 
-#include "server/WorldRouter.h"
+#include "rules/simulation/WorldRouter.h"
 
 #include "server/EntityBuilder.h"
 #include "server/EntityRuleHandler.h"
