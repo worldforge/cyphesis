@@ -41,6 +41,8 @@ class Thing : public Entity
 
         explicit Thing(const std::string& id, long intId);
 
+        explicit Thing(long intId);
+
         ~Thing() override = default;
 
         void DeleteOperation(const Operation& op, OpVector&) override;

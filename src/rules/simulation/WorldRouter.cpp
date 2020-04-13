@@ -108,6 +108,7 @@ void WorldRouter::addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEnti
         }
     }
 
+    //Broadcast an Appearance and rely on the system sending it to any observers.
     Anonymous arg;
     Appearance app;
     arg->setId(ent->getId());
@@ -356,10 +357,9 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
 /// that it is possible that this entity has been destroyed.
 void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
 {
-    debug(std::cout << "WorldRouter::operation {"
-                    << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}"
-                    << std::endl << std::flush;)
+    debug_print("WorldRouter::operation {"
+                        << op->getParent() << ":"
+                        << op->getFrom() << ":" << op->getTo() << "}")
     assert(op->getFrom() == from->getId());
     assert(!op->getParent().empty());
 

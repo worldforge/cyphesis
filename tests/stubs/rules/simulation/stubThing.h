@@ -40,6 +40,15 @@
   }
 #endif //STUB_Thing_Thing
 
+#ifndef STUB_Thing_Thing
+//#define STUB_Thing_Thing
+   Thing::Thing(long intId)
+    : Entity(intId)
+  {
+    
+  }
+#endif //STUB_Thing_Thing
+
 #ifndef STUB_Thing_DeleteOperation
 //#define STUB_Thing_DeleteOperation
   void Thing::DeleteOperation(const Operation& op, OpVector&)

@@ -60,6 +60,11 @@ Thing::Thing(const std::string& id, long intId) :
 {
 }
 
+Thing::Thing(long intId) :
+        Entity(std::to_string(intId), intId)
+{
+}
+
 void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
     if (m_location.m_parent == nullptr) {
@@ -183,6 +188,31 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     if (m_location.m_parent) {
         domain = m_location.m_parent->getDomain();
     }
+
+    //Send a Sight of the Move to any current observers. Do this before we might alter location.
+    Operation m = op.copy();
+    RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
+    assert(marg.isValid());
+//        m_location.addToEntity(marg);
+//        {
+//            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+//            if (modeDataProp) {
+//                if (modeDataProp->hasFlags(prop_flag_unsent)) {
+//                    Element modeDataElem;
+//                    if (modeDataProp->get(modeDataElem) == 0) {
+//                        marg->setAttrValue(ModeDataProperty::property_name, modeDataElem);
+//                    }
+//                }
+//            }
+//        }
+
+    if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+        m->setSeconds(current_time);
+    }
+
+    Sight s;
+    s->setArgs1(m);
+    broadcast(s, res, Visibility::PUBLIC);
 
 
     if (domain) {
@@ -309,9 +339,8 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             update->setTo(getId());
             res.push_back(std::move(update));
 
-            if (!previousObserving.empty()) {
-                processAppearDisappear(std::move(previousObserving), res);
-            }
+            processAppearDisappear(std::move(previousObserving), res);
+
             auto newDomain = new_loc->getDomain();
             if (!previousObserved.empty()) {
                 //Get all entities that were previously observed, but aren't any more, and send Disappearence op for them.
@@ -374,30 +403,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         removeFlags(entity_clean);
 
         // At this point the Location data for this entity has been updated.
-
-        Operation m = op.copy();
-        RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
-        assert(marg.isValid());
-//        m_location.addToEntity(marg);
-//        {
-//            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
-//            if (modeDataProp) {
-//                if (modeDataProp->hasFlags(prop_flag_unsent)) {
-//                    Element modeDataElem;
-//                    if (modeDataProp->get(modeDataElem) == 0) {
-//                        marg->setAttrValue(ModeDataProperty::property_name, modeDataElem);
-//                    }
-//                }
-//            }
-//        }
-
-        if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
-            m->setSeconds(current_time);
-        }
-
-        Sight s;
-        s->setArgs1(m);
-        broadcast(s, res, Visibility::PUBLIC);
 
         //Check if there are any other transformed entities, and send move ops for those.
         //However, with this setup the Sight ops for the resting entities will be sent _before_ the Sight

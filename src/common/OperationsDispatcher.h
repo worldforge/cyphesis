@@ -192,6 +192,14 @@ class OperationsDispatcher : public OperationsHandler
          */
         float m_time_diff_report;
 
+        const std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue() const {
+            return m_operationQueue;
+        }
+
+        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue() {
+            return m_operationQueue;
+        }
+
     protected:
 
         std::function<void(const Operation&, Ref<T>)> m_operationProcessor;
