@@ -24,6 +24,7 @@
 #include "common/globals.h"
 
 #include <wfmath/const.h>
+#include <common/serialno.h>
 
 CyPy_Const::CyPy_Const() : ExtensionModule("const")
 {
@@ -87,12 +88,15 @@ Py::Object CyPy_Log::thinking(const Py::Tuple& args)
 CyPy_Common::CyPy_Common() : ExtensionModule("common")
 {
 
+    add_noargs_method("new_serial_no", &CyPy_Common::new_serial_no, "Gets the next system wide serial number.");
+
     initialize("Common");
 
     Py::Dict d(moduleDictionary());
     d["log"] = m_log.moduleObject();
     d["const"] = m_const.moduleObject();
     d["globals"] = m_globals.moduleObject();
+
 
 }
 
@@ -103,4 +107,9 @@ std::string CyPy_Common::init()
         return module->module().ptr();
     });
     return "common";
+}
+
+Py::Object CyPy_Common::new_serial_no()
+{
+       return Py::Long(newSerialNo());
 }

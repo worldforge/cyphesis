@@ -71,6 +71,7 @@ class CyPy_Common : public Py::ExtensionModule<CyPy_Common>
         CyPy_Const m_const;
         CyPy_Globals m_globals;
 
+        Py::Object new_serial_no();
 
 };
 
