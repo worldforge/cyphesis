@@ -291,7 +291,7 @@ void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
             }
         } else {
             //Don't broadcast ops which shouldn't be broadcasted.
-            log(WARNING, String::compose("Trying to broadcast '%1' op from %2, which we don't allow.",
+            log(WARNING, String::compose("Trying to broadcast '%1' op from %2, which we don't allow. Did you forget to set 'to' on the op?",
                                          op->getParent(),
                                          fromEntity.describeEntity()));
 
