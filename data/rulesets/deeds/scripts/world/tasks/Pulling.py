@@ -14,7 +14,7 @@ from physics import *
 #             std.stderr.write("Pulling task has no target in pull op")
 #
 #         # FIXME Use weak references, once we have them
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #         self.points = []
 #         self.points.append(self.character.location.pos)

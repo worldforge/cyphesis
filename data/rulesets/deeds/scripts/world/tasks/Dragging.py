@@ -16,7 +16,7 @@ from physics import *
 #             sys.stderr.write("Dragging task has no target in drag op")
 #
 #         # FIXME Use weak references, once we have them
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #         self.pos = Point3D(op[0].pos)

@@ -19,14 +19,14 @@ from physics import *
 #             sys.stderr.write("Pioneeringconstruction  task has no target "
 #                              " in op")
 #
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #         self.pos = Point3D(op[0].pos)
 #
 #     def info_operation(self, op):
 #         print("Aframe info")
-#         aframe = server.world.get_object(op[0].id)
+#         aframe = server.world.get_entity(op[0].id)
 #         self.lcount = 0
 #
 #         raw_materials = []

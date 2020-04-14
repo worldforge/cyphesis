@@ -19,7 +19,7 @@ from physics import *
 #         if len(op) < 1:
 #             sys.stderr.write("%s task has no target in setup op" % self.__class__.__name__)
 #
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #         self.pos = Point3D(op[0].pos)

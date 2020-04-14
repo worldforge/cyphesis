@@ -15,7 +15,7 @@ from physics import *
 #             sys.stderr.write("Trailblaze task has no target in strike op")
 #
 #         # FIXME Use weak references, once we have them
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #         self.stuff = 'stuff'

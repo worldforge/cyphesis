@@ -29,7 +29,7 @@ from physics import *
 #             sys.stderr.write("Repair task has no target in repair op")
 #
 #         # FIXME Use weak references, once we have them
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #     def tick_operation(self, op):

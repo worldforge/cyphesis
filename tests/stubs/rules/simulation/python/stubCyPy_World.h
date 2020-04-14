@@ -41,13 +41,13 @@
   }
 #endif //STUB_CyPy_World_get_time
 
-#ifndef STUB_CyPy_World_get_object
-//#define STUB_CyPy_World_get_object
-  Py::Object CyPy_World::get_object(const Py::Tuple& args)
+#ifndef STUB_CyPy_World_get_entity
+//#define STUB_CyPy_World_get_entity
+  Py::Object CyPy_World::get_entity(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
-#endif //STUB_CyPy_World_get_object
+#endif //STUB_CyPy_World_get_entity
 
 #ifndef STUB_CyPy_World_match_entity
 //#define STUB_CyPy_World_match_entity

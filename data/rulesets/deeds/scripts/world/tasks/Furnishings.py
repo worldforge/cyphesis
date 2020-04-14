@@ -16,14 +16,14 @@ from physics import *
 #         if len(op) < 1:
 #             sys.stderr.write("Furnishings  task has no target in op")
 #
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #         self.pos = Point3D(op[0].pos)
 #
 #     def info_operation(self, op):
 #         print("Furnishings info")
-#         item = server.world.get_object(op[0].id)
+#         item = server.world.get_entity(op[0].id)
 #         chunk_loc = Location(item())
 #         chunk_loc.pos = Point3D([0, 0, 0])
 #         res = Oplist()

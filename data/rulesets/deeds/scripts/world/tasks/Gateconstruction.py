@@ -18,14 +18,14 @@ from physics import *
 #         if len(op) < 1:
 #             sys.stderr.write("Gateconstruction  task has no target in op")
 #
-#         self.target = server.world.get_object(op[0].id)
+#         self.target = server.world.get_entity(op[0].id)
 #         self.tool = op.to
 #
 #         self.pos = Point3D(op[0].pos)
 #
 #     def info_operation(self, op):
 #         print("Gate info")
-#         gate = server.world.get_object(op[0].id)
+#         gate = server.world.get_entity(op[0].id)
 #         self.lcount = 0  # needs 1 lumber for basic gate
 #         self.acount = 0  # needs 2 a frames for basic gate
 #         raw_materials = []  # Holds construction

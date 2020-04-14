@@ -41,7 +41,7 @@ void CyPy_World::init_type()
     behaviors().name("World");
     behaviors().doc("");
 
-    PYCXX_ADD_VARARGS_METHOD(get_object, get_object, "");
+    PYCXX_ADD_VARARGS_METHOD(get_entity, get_entity, "Gets the entity with the supplied id.");
     PYCXX_ADD_VARARGS_METHOD(match_entity, match_entity, "Matches a filter against an entity.");
 
     PYCXX_ADD_NOARGS_METHOD(get_time, get_time, "");
@@ -54,7 +54,7 @@ Py::Object CyPy_World::get_time()
     return Py::Float(m_value->getTime());
 }
 
-Py::Object CyPy_World::get_object(const Py::Tuple& args)
+Py::Object CyPy_World::get_entity(const Py::Tuple& args)
 {
     args.verify_length(1);
     auto id = verifyString(args.front());

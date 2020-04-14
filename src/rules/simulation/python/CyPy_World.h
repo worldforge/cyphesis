@@ -38,9 +38,9 @@ class CyPy_World : public WrapperBase<BaseWorld*, CyPy_World>
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_World, get_time);
 
-        Py::Object get_object(const Py::Tuple& args);
+        Py::Object get_entity(const Py::Tuple& args);
 
-        PYCXX_VARARGS_METHOD_DECL(CyPy_World, get_object);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_World, get_entity);
 
         Py::Object match_entity(const Py::Tuple& args);
 
