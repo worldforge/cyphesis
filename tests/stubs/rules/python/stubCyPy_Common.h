@@ -70,5 +70,13 @@
   }
 #endif //STUB_CyPy_Common_init
 
+#ifndef STUB_CyPy_Common_new_serial_no
+//#define STUB_CyPy_Common_new_serial_no
+  Py::Object CyPy_Common::new_serial_no()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Common_new_serial_no
+
 
 #endif

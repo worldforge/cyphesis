@@ -440,6 +440,7 @@ Ref<LocatedEntity> Entity::createNewEntity(const Operation& op, OpVector& res)
             Atlas::Objects::Operation::Info i;
             i->setArgs1(new_ent);
             i->setTo(op->getFrom());
+            i->setRefno(op->getSerialno());
             res.push_back(i);
         }
 
