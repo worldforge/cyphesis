@@ -136,6 +136,7 @@ wf_add_test(modules/TerrainContextTest.cpp ../src/modules/TerrainContext.cpp)
 
 set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp common/EntityExerciser.cpp)
 
+wf_add_test(rules/ModifierTest.cpp ../src/rules/Modifier.cpp)
 wf_add_test(rules/LocatedEntityTest.cpp common/EntityExerciser.cpp ../src/rules/LocatedEntity.cpp TestPropertyManager.cpp)
 wf_add_test(rules/EntityTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Entity.cpp ../src/rules/LocatedEntity.cpp)
 wf_add_test(rules/ThingTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Thing.cpp)
