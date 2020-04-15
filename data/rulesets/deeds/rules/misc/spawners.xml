@@ -1,0 +1,93 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">10</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">30</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">goblin</string>
+                </map>
+            </map>
+            <map name="__spawner_radius">
+                <float name="default">20</float>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">4</int>
+            </map>
+            <map name="__spawner_criteria">
+                <string name="default">entity instance_of types.goblin</string>
+            </map>
+            <map name="__spawner_disabled">
+                <int name="default">0</int>
+            </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Spawner.SpawnerVicinity</string>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">spawner_vicinity</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">10</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">30</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">goblin</string>
+                </map>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">4</int>
+            </map>
+            <map name="__spawner_disabled">
+                <int name="default">0</int>
+            </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Spawner.SpawnerInstances</string>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">spawner_instances</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>

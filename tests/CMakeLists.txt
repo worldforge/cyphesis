@@ -199,8 +199,6 @@ wf_add_test(rules/AtlasPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/Atla
     ../src/common/Property.cpp)
 wf_add_test(rules/SpawnPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/SpawnProperty.cpp
     ../src/common/Property.cpp)
-wf_add_test(rules/SpawnerPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/SpawnerProperty.cpp
-    ../src/common/Property.cpp)
 wf_add_test(rules/VisibilityPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/VisibilityProperty.cpp
     ../src/common/Property.cpp)
 

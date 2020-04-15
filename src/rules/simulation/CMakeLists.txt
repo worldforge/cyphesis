@@ -20,7 +20,6 @@ add_library(rulessimulation
         VisibilityProperty.cpp
         Task.cpp
         SuspendedProperty.cpp
-        SpawnerProperty.cpp
         DefaultLocationProperty.cpp
         DomainProperty.cpp
         LimboProperty.cpp

@@ -33,7 +33,6 @@
 #include "rules/simulation/SuspendedProperty.h"
 #include "rules/simulation/TasksProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/SpawnerProperty.h"
 #include "rules/simulation/DefaultLocationProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/simulation/LimboProperty.h"
@@ -106,7 +105,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<TerrainProperty>();
     installProperty<SuspendedProperty>();
     installProperty<TasksProperty>();
-    installProperty<SpawnerProperty>();
     installProperty<BoolProperty>("immortal");
     installProperty<DefaultLocationProperty>();
     installProperty<DomainProperty>();

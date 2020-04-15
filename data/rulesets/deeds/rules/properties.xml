@@ -103,4 +103,72 @@
         <string name="description">The energy level of the entity. When stamina is zero some actions can't be performed.</string>
     </map>
 
+
+    <map>
+        <string name="id">__spawner_interval</string>
+        <string name="objtype">type</string>
+        <string name="parent">int</string>
+        <string name="description">Used by Spawner to determine the interval between checks.</string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_locations</string>
+        <string name="objtype">type</string>
+        <string name="parent">list</string>
+        <string name="description">Used by Spawner to determine locations where to create new entities.
+            Each location is a map.
+            Optionally a "pos" can be specified to define a position relative to the entity.
+            Optionally a "loc" can be specified to refer to an entity (otherwise the entity to which the property belongs to is used).
+            Optionally a "radius" can be specified to randomize position within a circle.
+        </string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_amount</string>
+        <string name="objtype">type</string>
+        <string name="parent">int</string>
+        <string name="description">Used by Spawner to determine how many entities it should create.
+        </string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_criteria</string>
+        <string name="objtype">type</string>
+        <string name="parent">string</string>
+        <string name="description">Used by Spawner in "vicinity" mode to check for valid entities.
+        </string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_radius</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">Used by Spawner in "vicinity" mode to determine the area it checks within.
+        </string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_entity</string>
+        <string name="objtype">type</string>
+        <string name="parent">map</string>
+        <string name="description">Used by Spawner to create new entities. Contains an Entity specification.
+        </string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_instances</string>
+        <string name="objtype">type</string>
+        <string name="parent">list</string>
+        <string name="description">Used by Spawner to keep track of the entities it has spawned, independent of where they are.
+        </string>
+    </map>
+
+    <map>
+        <string name="id">__spawner_disabled</string>
+        <string name="objtype">type</string>
+        <string name="parent">int</string>
+        <string name="description">Used by Spawner to optionally disable.
+        </string>
+    </map>
+
 </atlas>

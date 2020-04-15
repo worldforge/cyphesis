@@ -444,7 +444,6 @@ int main()
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/VisibilityProperty.h"
 #include "rules/simulation/SuspendedProperty.h"
-#include "rules/simulation/SpawnerProperty.h"
 #include "rules/simulation/DefaultLocationProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/simulation/LimboProperty.h"
