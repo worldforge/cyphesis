@@ -21,8 +21,8 @@
 
 #include "../../common/OperationRouter.h"
 
-#include "../../../../../../../../usr/include/c++/9/map"
-#include "../../../../../../../../usr/include/c++/9/string"
+#include <map>
+#include <string>
 
 class LocatedEntity;
 class Location;
