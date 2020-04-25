@@ -29,10 +29,24 @@ The standard physical rules that applies to the real world also applies to the P
 
 Any character which has an inventory can expose this through the Inventory Domain. No physical rules are applied to contained entities: velocity is ignored and no collision detection occurs. When an outside entity looks as an entity contained in the Inventory Domain sight is determined by checking if the entity is outiftted. I.e. if the entity in question has been registered in the Outfit property. Only those entities that are outfitted are visible to outside entities.
 
+In addition, any item that is added is checked if it's stackable, and if so an attempt to stack it with existing similar entities is performed.
+
 ### Container domain
 
 Used for any container such as a chest, barrel or crate. Entities are physically constrained to the size of the container, and physics applies, but velocity is ignored. I.e. things are arranged, but nothing moves.
 Sights are determined both by checking the closed/open state of the container, and by checking the distance to the observing entity. Only entities standing close to the container should be able to look into it.
+
+### Stackable domain
+
+Attached to entities that stack. Whenever an item is moved into this domain, a check is performed if it's identical to the entity itself. If so, it's "stacked", which means that the "amount" of the entity is increased while the entity that was moved is destroyed.
+
+Conversely, when a stacked entity is moved an extra "amount" attribute can be specified, which allows the "stack" to be split. 
+
+### Void domain
+
+Used whenever an entity needs to be placed in a void where they can't act. All attempts at movement or sights are ignored while in the void domain.
+
+This type of domain can be used for temporarily placing entities that have died and are waiting for respawning.
 
 ### Custom domains
 
