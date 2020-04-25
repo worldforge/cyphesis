@@ -437,7 +437,7 @@ HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operatio
         double timeNow = op->getSeconds();
         double tickSize = 1.0 / 15.0;
         Atlas::Message::Element elem;
-        if (op->copyAttr("lastTick", elem) != 0 && elem.isFloat()) {
+        if (op->copyAttr("lastTick", elem) == 0 && elem.isFloat()) {
             tickSize = timeNow - elem.Float();
         }
 
