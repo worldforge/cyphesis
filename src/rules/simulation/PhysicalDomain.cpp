@@ -1386,6 +1386,18 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                 m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject.get());
 
             }
+
+            if (bulletEntry->visibilitySphere) {
+                auto entity = bulletEntry->entity;
+                auto visProp = entity->getPropertyClassFixed<VisibilityDistanceProperty>();
+                if (!visProp) {
+                    if (entity->m_location.bBox().isValid() && entity->m_location.radius() > 0) {
+                        bulletEntry->visibilityShape->setUnscaledRadius(entity->m_location.radius());
+                    } else {
+                        bulletEntry->visibilityShape->setUnscaledRadius(0.25f);
+                    }
+                }
+            }
         }
     } else if (name == "planted_offset" || name == "planted_scaled_offset") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity->m_location.m_pos);
