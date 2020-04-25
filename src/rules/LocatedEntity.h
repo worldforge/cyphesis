@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -141,6 +141,7 @@ static const std::uint32_t entity_stacked = 1u << 13u;
 /**
  * The entity should be visible when contained, even if it normally wouldn't be.
  * This is of use for things like fires or effects.
+ * Note that any entity_visibility_protected or entity_visibility_private flags still should apply.
  */
 static const std::uint32_t entity_contained_visible = 1u << 14u;
 
@@ -148,6 +149,17 @@ static const std::uint32_t entity_contained_visible = 1u << 14u;
  * The entity won't allow any kind of modifiers to affect it.
  */
 static const std::uint32_t entity_modifiers_not_allowed = 1u << 15u;
+
+/**
+ * The entity can only be seen by its parent entity.
+ * This is useful for adding entities to a character entity, which only the character entity should see.
+ */
+static const std::uint32_t entity_visibility_protected = 1u << 16u;
+
+/**
+ * The entity can only be seen by the simulation, and admin entities.
+ */
+static const std::uint32_t entity_visibility_private = 1u << 17u;
 
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
@@ -253,7 +265,8 @@ class LocatedEntity : public Router, public ReferenceCounted
         const std::map<std::string, ModifiableProperty>& getProperties() const
         { return m_properties; }
 
-        const std::map<LocatedEntity*, std::set<std::pair<std::string, Modifier*>>> getActiveModifiers() const {
+        const std::map<LocatedEntity*, std::set<std::pair<std::string, Modifier*>>> getActiveModifiers() const
+        {
             return m_activeModifiers;
         }
 

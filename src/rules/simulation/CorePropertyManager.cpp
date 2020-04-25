@@ -65,6 +65,7 @@
 #include "common/PropertyFactory_impl.h"
 
 #include "common/debug.h"
+#include "VisibilityDistanceProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -101,6 +102,7 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<SpawnProperty>();
     installProperty<AreaProperty>();
     installProperty<VisibilityProperty>();
+    installProperty<VisibilityDistanceProperty>();
     installProperty<TerrainModProperty>();
     installProperty<TerrainProperty>();
     installProperty<SuspendedProperty>();

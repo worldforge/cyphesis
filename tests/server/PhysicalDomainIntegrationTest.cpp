@@ -54,6 +54,7 @@
 #include <rules/simulation/TerrainModProperty.h>
 #include <rules/simulation/EntityProperty.h>
 #include <rules/simulation/ModeDataProperty.h>
+#include <rules/simulation/VisibilityDistanceProperty.h>
 #include "../stubs/common/stubMonitors.h"
 
 using Atlas::Message::Element;
@@ -1654,7 +1655,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ModeProperty* modePlantedProperty = new ModeProperty();
         modePlantedProperty->set("planted");
 
-        VisibilityProperty* visibilityProperty = new VisibilityProperty();
+        auto visibilityProperty = new VisibilityDistanceProperty();
         visibilityProperty->set(1000.f);
 
 
@@ -1685,7 +1686,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         smallVisibleEntity->setType(rockType);
         smallVisibleEntity->m_location.m_pos = WFMath::Point<3>(-63, 0, -63);
         smallVisibleEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
-        smallVisibleEntity->setProperty("visibility", std::unique_ptr<PropertyBase>(visibilityProperty));
+        smallVisibleEntity->setProperty(VisibilityDistanceProperty::property_name, std::unique_ptr<PropertyBase>(visibilityProperty));
         domain->addEntity(*smallVisibleEntity);
 
         Ref<Entity> largeEntity1 = new Entity("large1", newId());

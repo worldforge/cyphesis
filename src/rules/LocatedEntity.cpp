@@ -5,16 +5,15 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
 
 #include "LocatedEntity.h"
 
@@ -36,7 +35,6 @@
 using Atlas::Objects::Operation::Update;
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
-
 
 /// \brief Set of attribute names which must not be changed
 ///
@@ -171,7 +169,6 @@ boost::optional<Atlas::Message::Element> LocatedEntity::getAttrType(const std::s
         return boost::none;
     }
 }
-
 
 PropertyBase* LocatedEntity::setAttrValue(const std::string& name, Element attr)
 {
@@ -428,7 +425,6 @@ void LocatedEntity::destroy()
 
     m_flags.addFlags(entity_destroyed);
     destroyed.emit();
-
 }
 
 Domain* LocatedEntity::getDomain()
@@ -445,7 +441,6 @@ void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
 {
     //no-op
 }
-
 
 /// \brief Send an operation to the world for dispatch.
 ///
@@ -516,7 +511,6 @@ void LocatedEntity::broadcast(const Atlas::Objects::Operation::RootOperation& op
         newOp->setFrom(getId());
         res.push_back(newOp);
     }
-
 }
 
 void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) const
@@ -532,7 +526,6 @@ void LocatedEntity::collectObservers(std::set<const LocatedEntity*>& receivers) 
     if (m_location.m_parent) {
         m_location.m_parent->collectObserversForChild(*this, receivers);
     }
-
 }
 
 void LocatedEntity::collectObserved(std::set<const LocatedEntity*>& observed) const
@@ -544,7 +537,6 @@ void LocatedEntity::collectObserved(std::set<const LocatedEntity*>& observed) co
         observed.insert(observedEntities.begin(), observedEntities.end());
     }
 }
-
 
 void LocatedEntity::collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const
 {
@@ -647,6 +639,10 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
 
     //Optimize for the most common case of both entities being direct child of a domain
     if (m_location.m_parent != nullptr && watcher->m_location.m_parent == m_location.m_parent && m_location.m_parent->getDomain()) {
+        // Since both have the same parent, we can check right now for private and protected.
+        if (!watcher->hasFlags(entity_admin) && (this->hasFlags(entity_visibility_protected) || this->hasFlags(entity_visibility_private))) {
+            return false;
+        }
         return m_location.m_parent->getDomain()->isEntityVisibleFor(*watcher, *this);
     }
 
@@ -656,6 +652,12 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     const Domain* watcherParentDomain = nullptr;
 
     while (domainEntity != nullptr) {
+        // If the watcher is a child of this, and there are no domains in between, viewing is always allowed.
+        // This applies even for protected and private domains, at least for now
+        if (domainEntity == this) {
+            return true;
+        }
+
         watcherParentDomain = domainEntity->getDomain();
         if (watcherParentDomain) {
             break;
@@ -673,7 +675,6 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     toAncestors.reserve(4);
     const LocatedEntity* ancestorEntity = this;
     const Domain* ancestorDomain = nullptr;
-
 
     while (true) {
         toAncestors.push_back(ancestorEntity);
@@ -705,6 +706,12 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
             if (!ancestorDomain->isEntityVisibleFor(*watcher, *ancestor)) {
                 return false;
             }
+        }
+        if (ancestor->hasFlags(entity_visibility_private) && !watcher->hasFlags(entity_admin)) {
+            return false;
+        }
+        if (ancestor->hasFlags(entity_visibility_protected) && watcher != ancestor->m_location.m_parent.get() && !watcher->hasFlags(entity_admin)) {
+            return false;
         }
 
         ancestorDomain = ancestor->getDomain();
@@ -824,7 +831,6 @@ void LocatedEntity::merge(const MapType& ent)
     for (auto& entry: modifiedAttributes) {
         setAttr(entry.first, entry.second.get());
     }
-
 }
 
 std::string LocatedEntity::describeEntity() const
