@@ -1,0 +1,101 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">3</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">300</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">mushroom</string>
+                </map>
+            </map>
+            <map name="__spawner_radius">
+                <float name="default">4</float>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">10</int>
+            </map>
+            <map name="__spawner_criteria">
+                <string name="default">entity instance_of types.mushroom</string>
+            </map>
+            <map name="__spawner_disabled">
+                <int name="default">0</int>
+            </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Spawner.SpawnerVicinity</string>
+                    </map>
+                </list>
+            </map>
+            <map name="visibility">
+                <string name="default">private</string>
+            </map>
+            <map name="description">
+                <string name="default">A root system for mushrooms. Will generate new mushrooms at intervals.</string>
+            </map>
+        </map>
+        <string name="id">mycelium</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">amanita</string>
+                </map>
+            </map>
+        </map>
+        <string name="id">mycelium_amanita</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">bluemoon</string>
+                </map>
+            </map>
+        </map>
+        <string name="id">mycelium_bluemoon</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">galerina</string>
+                </map>
+            </map>
+        </map>
+        <string name="id">mycelium_galerina</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+
+</atlas>
