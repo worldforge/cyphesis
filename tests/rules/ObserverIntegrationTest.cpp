@@ -36,17 +36,20 @@
 #include <rules/simulation/WorldRouter.h>
 #include <common/operations/Tick.h>
 #include <wfmath/atlasconv.h>
+#include <rules/simulation/AdminProperty.h>
+
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 
-struct TestWorldRouter : public WorldRouter {
+struct TestWorldRouter : public WorldRouter
+{
     TestWorldExtension m_extension;
 
     explicit TestWorldRouter(Ref<LocatedEntity> gw, EntityCreator& entityCreator)
-        : WorldRouter(std::move(gw), entityCreator)
+            : WorldRouter(std::move(gw), entityCreator)
     {
     }
 
@@ -71,14 +74,16 @@ struct TestWorldRouter : public WorldRouter {
     }
 };
 
-struct NullEntityCreator : public EntityCreator {
+struct NullEntityCreator : public EntityCreator
+{
     Ref<LocatedEntity> newEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attrs) const override
     {
         return {};
     }
 };
 
-struct TestContext {
+struct TestContext
+{
     Atlas::Objects::Factories factories;
     DatabaseNull database;
     NullEntityCreator entityCreator;
@@ -88,33 +93,31 @@ struct TestContext {
     CorePropertyManager propertyManager;
 
     TestContext()
-        : world(new World())
-        , inheritance(factories)
-        , testWorld(world, entityCreator)
-        , propertyManager(inheritance)
+            : world(new World()), inheritance(factories), testWorld(world, entityCreator), propertyManager(inheritance)
     {
     }
 };
 
-namespace
-{
-std::vector<OpQueEntry<LocatedEntity>> collectQueue(std::priority_queue<OpQueEntry<LocatedEntity>, std::vector<OpQueEntry<LocatedEntity>>, std::greater<OpQueEntry<LocatedEntity>>>& queue)
-{
-    std::vector<OpQueEntry<LocatedEntity>> list;
-    list.reserve(queue.size());
-    while (!queue.empty()) {
-        list.emplace_back(queue.top());
-        queue.pop();
+namespace {
+    std::vector<OpQueEntry<LocatedEntity>> collectQueue(std::priority_queue<OpQueEntry<LocatedEntity>, std::vector<OpQueEntry<LocatedEntity>>, std::greater<OpQueEntry<LocatedEntity>>>& queue)
+    {
+        std::vector<OpQueEntry<LocatedEntity>> list;
+        list.reserve(queue.size());
+        while (!queue.empty()) {
+            list.emplace_back(queue.top());
+            queue.pop();
+        }
+        return list;
     }
-    return list;
-}
 }
 
 OpVector resIgnored;
 
-struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
+struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
+{
     Tested()
     {
+        ADD_TEST(test_sendAppearDisappearWithPrivateAndProtected);
         ADD_TEST(test_sendAppearDisappear);
     }
 
@@ -129,6 +132,89 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
         entity->operation(set, resIgnored);
     }
 
+    void test_sendAppearDisappearWithPrivateAndProtected(TestContext& context)
+    {
+        auto& opsHandler = context.testWorld.getOperationsHandler();
+        auto& queue = opsHandler.getQueue();
+
+        long counter = 1;
+        Ref<Thing> domainPhysical(new Thing(counter++));
+        context.testWorld.addEntity(domainPhysical, context.world);
+        domainPhysical->m_location.setBBox({{-512, -512, -512},
+                                            {512,  512,  512}});
+        domainPhysical->setDomain(std::make_unique<PhysicalDomain>(*domainPhysical));
+
+        auto domainTickFn = [&]() -> OpVector {
+            // We must send a Tick op to make the domain handle appear and disappear
+            OpVector res;
+            Atlas::Objects::Operation::Tick tick;
+            Atlas::Objects::Entity::Anonymous arg1;
+            arg1->setName("domain");
+            tick->setArgs1(arg1);
+            tick->setAttr("lastTick", 0.0f);
+            tick->setSeconds(2.0f);  // This should trigger a visibility.
+            domainPhysical->getDomain()->operation(domainPhysical.get(), tick, res);
+            return res;
+        };
+
+        // Clear ops queue
+        opsHandler.clearQueues();
+
+        // Make an observer, which we'll add to the physical domain
+        Ref<Thing> observer(new Thing(counter++));
+        observer->setAttrValue("mode", "fixed");
+        observer->setAttrValue("perception_sight", 1);
+        observer->m_location.m_pos = {0, 0, 0};
+        context.testWorld.addEntity(observer, domainPhysical);
+
+        // Make an admin observer, which we'll add to the physical domain
+        Ref<Thing> observerAdmin(new Thing(counter++));
+        observerAdmin->setAttrValue("mode", "fixed");
+        observerAdmin->setAttrValue("perception_sight", 1);
+        observerAdmin->setAttrValue(AdminProperty::property_name, 1);
+        observerAdmin->m_location.m_pos = {0, 0, 0};
+        context.testWorld.addEntity(observerAdmin, domainPhysical);
+
+        auto ops = collectQueue(queue);
+        opsHandler.clearQueues();
+        OpVector res;
+
+        // Create a private entity, which should only be seen by observerAdmin
+        Ref<Thing> objectPrivate1(new Thing(counter++));
+        objectPrivate1->m_location.setBBox({{-1, -1, -1},
+                                            {1,  1,  1}});
+        objectPrivate1->setAttrValue("mode", "fixed");
+        objectPrivate1->setAttrValue("visibility", "private");
+        objectPrivate1->m_location.m_pos = {0, 0, 0};
+        context.testWorld.addEntity(objectPrivate1, domainPhysical);
+
+        ops = collectQueue(queue);
+
+        // We now expect to get an Appearance op sent to the admin observer (but not the regular observer)
+        ASSERT_EQUAL(1, ops.size())
+        ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, ops.front()->getClassNo())
+        ASSERT_EQUAL(objectPrivate1->getId(), ops.front()->getArgs().front()->getId())
+        ASSERT_EQUAL(observerAdmin->getId(), ops.front()->getTo())
+
+        opsHandler.clearQueues();
+
+        // Move objectPrivate1 a bit; only admin observer should see it
+        {
+            Atlas::Objects::Operation::Move move;
+
+            Anonymous arg1;
+            arg1->setId(objectPrivate1->getId());
+            arg1->setPos({510, 0, 500});
+            move->setArgs1(arg1);
+            objectPrivate1->MoveOperation(move, res);
+        }
+        ASSERT_EQUAL(1, res.size())
+        ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res.front()->getClassNo())
+        ASSERT_EQUAL(Atlas::Objects::Operation::MOVE_NO, res.front()->getArgs().front()->getClassNo())
+        ASSERT_EQUAL(objectPrivate1->getId(), Atlas::Objects::smart_dynamic_cast<Operation>(res.front()->getArgs().front())->getArgs().front()->getId())
+        ASSERT_EQUAL(observerAdmin->getId(), res.front()->getTo())
+    }
+
     void test_sendAppearDisappear(TestContext& context)
     {
         auto& opsHandler = context.testWorld.getOperationsHandler();
@@ -137,7 +223,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
         long counter = 1;
         Ref<Thing> domainPhysical(new Thing(counter++));
         context.testWorld.addEntity(domainPhysical, context.world);
-        domainPhysical->m_location.setBBox({{-512, -512, -512}, {512, 512, 512}});
+        domainPhysical->m_location.setBBox({{-512, -512, -512},
+                                            {512,  512,  512}});
         domainPhysical->setDomain(std::make_unique<PhysicalDomain>(*domainPhysical));
 
         Ref<Thing> domainVoid(new Thing(counter++));
@@ -192,7 +279,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
 
         // Create something we can look at
         Ref<Thing> object1(new Thing(counter++));
-        object1->m_location.setBBox({{-1, -1, -1}, {1, 1, 1}});
+        object1->m_location.setBBox({{-1, -1, -1},
+                                     {1,  1,  1}});
         object1->setAttrValue("mode", "fixed");
         object1->m_location.m_pos = {10, 0, 10};
         context.testWorld.addEntity(object1, domainPhysical);
@@ -273,7 +361,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
 
         // Create a new object, which we'll then move away beyond visible distance
         Ref<Thing> object2(new Thing(counter++));
-        object2->m_location.setBBox({{-0.1, -0.1, -0.1}, {0.1, 0.1, 0.1}});
+        object2->m_location.setBBox({{-0.1, -0.1, -0.1},
+                                     {0.1,  0.1,  0.1}});
         object2->setAttrValue("mode", "fixed");
         object2->m_location.m_pos = {10, 0, 10};
         context.testWorld.addEntity(object2, domainPhysical);
@@ -338,7 +427,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
         opsHandler.clearQueues();
         // Make object2 very much larger, so it should appear
         {
-            object2->setAttrValue("bbox", WFMath::AxisBox<3>{{-500, -500, -500}, {500, 500, 500}}.toAtlas());
+            object2->setAttrValue("bbox", WFMath::AxisBox<3>{{-500, -500, -500},
+                                                             {500,  500,  500}}.toAtlas());
         }
         ops = collectQueue(queue);
         ASSERT_TRUE(ops.empty())
@@ -352,7 +442,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
         opsHandler.clearQueues();
         // Make object2 smaller again, so it should disappear
         {
-            object2->setAttrValue("bbox", WFMath::AxisBox<3>{{-1, -1, -1}, {1, 1, 1}}.toAtlas());
+            object2->setAttrValue("bbox", WFMath::AxisBox<3>{{-1, -1, -1},
+                                                             {1,  1,  1}}.toAtlas());
         }
         res = domainTickFn();
         ASSERT_EQUAL(2, res.size())  // Second op is a Tick
@@ -383,9 +474,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext> {
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, res[0]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
         ASSERT_EQUAL(object2->getId(), res[0]->getArgs().front()->getId())
-
-
-
     }
 };
 

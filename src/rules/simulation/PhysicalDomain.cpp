@@ -23,7 +23,6 @@
 #include "PropelProperty.h"
 #include "rules/simulation/GeometryProperty.h"
 #include "rules/simulation/AngularFactorProperty.h"
-#include "VisibilityProperty.h"
 #include "TerrainModProperty.h"
 #include "PhysicalWorld.h"
 
@@ -31,10 +30,8 @@
 
 #include "common/const.h"
 #include "common/debug.h"
-#include "common/TypeNode.h"
 #include "common/operations/Tick.h"
 #include "rules/simulation/BaseWorld.h"
-#include "EntityProperty.h"
 #include "PerceptionSightProperty.h"
 #include "rules/BBoxProperty.h"
 #include "rules/SolidProperty.h"
@@ -106,16 +103,17 @@ float VISIBILITY_SCALING_FACTOR = 100;
 /**
  * Mask used by visibility checks for observing entries (i.e. creatures etc.).
  */
-short VISIBILITY_MASK_OBSERVER = 1;
-short VISIBILITY_MASK_OBSERVER_ADMIN = 1;
+short VISIBILITY_MASK_OBSERVER = 1u << 1u;
 
 /**
  * Mask used by visibility checks for entries that can be observed (i.e. most entities).
  */
-short VISIBILITY_MASK_OBSERVABLE = 2;
-short VISIBILITY_MASK_OBSERVABLE_PUBLIC = 2;
-short VISIBILITY_MASK_OBSERVABLE_PROTECTED = 4;
-short VISIBILITY_MASK_OBSERVABLE_PRIVATE = 8;
+short VISIBILITY_MASK_OBSERVABLE = 1u << 2u;
+
+/**
+ * Mask used by visibility checks for entries that only can be observed by admin entities.
+ */
+short VISIBILITY_MASK_OBSERVABLE_PRIVATE = 1u << 3u;
 
 /**
  * Mask used by all physical items. They should collide with other physical items, and with the terrain.
@@ -663,7 +661,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
         debug_print(" " << bulletEntry->entity->describeEntity() << " viewSphere: " << bulletEntry->viewSphere->getWorldTransform().getOrigin())
 
         if (bulletEntry->entity->m_location.m_pos.isValid()) {
-            callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVABLE;
+            callback.m_collisionFilterGroup = bulletEntry->entity->hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE;
             callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;
             m_visibilityWorld->contactTest(bulletEntry->viewSphere.get(), callback);
         }
@@ -744,7 +742,8 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
         if (bulletEntry->entity->m_location.m_pos.isValid()) {
             callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVER;
-            callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVABLE;
+            callback.m_collisionFilterMask = bulletEntry->entity->hasFlags(entity_visibility_protected) || bulletEntry->entity->hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
+                                                                                                                                                                    : VISIBILITY_MASK_OBSERVABLE;
             m_visibilityWorld->contactTest(bulletEntry->visibilitySphere.get(), callback);
         }
 
@@ -1009,7 +1008,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         visObject->setUserPointer(entry);
         if (entity.m_location.m_pos.isValid()) {
             visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
-            m_visibilityWorld->addCollisionObject(visObject.get(), VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+            m_visibilityWorld->addCollisionObject(visObject.get(), VISIBILITY_MASK_OBSERVER,
+                                                  entity.hasFlags(entity_visibility_protected) || entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
+                                                                                                                                             : VISIBILITY_MASK_OBSERVABLE);
         }
         entry->visibilitySphere = std::move(visObject);
         entry->visibilityShape = std::move(visSphere);
@@ -1021,7 +1022,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         visObject->setUserPointer(entry);
         if (entity.m_location.m_pos.isValid()) {
             visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
-            m_visibilityWorld->addCollisionObject(visObject.get(), VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+            m_visibilityWorld->addCollisionObject(visObject.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+                                                  VISIBILITY_MASK_OBSERVER);
         }
         entry->viewSphere = std::move(visObject);
         entry->viewShape = std::move(viewSphere);
@@ -1055,7 +1057,8 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
             visObject->setUserPointer(entry.get());
             if (entity.m_location.m_pos.isValid()) {
                 visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
-                m_visibilityWorld->addCollisionObject(visObject.get(), VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+                m_visibilityWorld->addCollisionObject(visObject.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+                                                      VISIBILITY_MASK_OBSERVER);
             }
             entry->viewSphere = std::move(visObject);
             OpVector res;
@@ -1944,7 +1947,7 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
                         const Property<double>* stepFactorProp = entity->getPropertyType<double>("step_factor");
                         if (stepFactorProp && entity->m_location.bBox().isValid()) {
                             auto height = entity->m_location.bBox().upperBound(1) - entity->m_location.bBox().lowerBound(1);
-                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float)(height * stepFactorProp->data())}));
+                            m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float) (height * stepFactorProp->data())}));
                         } else {
                             m_propellingEntries.insert(std::make_pair(entity->getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0}));
                         }
@@ -2054,10 +2057,14 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
                         }
                     }
                     if (entry->viewSphere) {
-                        m_visibilityWorld->addCollisionObject(entry->viewSphere.get(), VISIBILITY_MASK_OBSERVABLE, VISIBILITY_MASK_OBSERVER);
+                        m_visibilityWorld->addCollisionObject(entry->viewSphere.get(),
+                                                              entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+                                                              VISIBILITY_MASK_OBSERVER);
                     }
                     if (entry->visibilitySphere) {
-                        m_visibilityWorld->addCollisionObject(entry->visibilitySphere.get(), VISIBILITY_MASK_OBSERVER, VISIBILITY_MASK_OBSERVABLE);
+                        m_visibilityWorld->addCollisionObject(entry->visibilitySphere.get(), VISIBILITY_MASK_OBSERVER,
+                                                              entity.hasFlags(entity_visibility_protected) || entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
+                                                                                                                                                         : VISIBILITY_MASK_OBSERVABLE);
                     }
                 }
             }

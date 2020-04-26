@@ -105,8 +105,6 @@ class PhysicalDomain : public Domain
 
     protected:
 
-        friend class SteppingCallback;
-
         class PhysicalMotionState;
 
         class VisibilityCallback;
