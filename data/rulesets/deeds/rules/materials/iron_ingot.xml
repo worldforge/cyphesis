@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">7900</float>
             </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
         </map>
         <string name="id">iron_ingot</string>
         <string name="objtype">class</string>

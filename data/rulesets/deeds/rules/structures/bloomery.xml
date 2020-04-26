@@ -11,6 +11,18 @@
             <map name="present">
                 <string name="default">dural/structures/bloomery/model/bloomery.mesh</string>
             </map>
+            <map name="domain">
+                <string name="default">container</string>
+            </map>
+            <map name="usages">
+                <map name="default">
+                    <map name="craft">
+                        <string name="name">Smelt</string>
+                        <string name="handler">world.objects.structures.Bloomery.craft</string>
+                        <string name="constraint">actor can_reach tool and contains(tool.contains, child.type=types.charcoal) and contains(tool.contains, child.type=types.hematite)</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">bloomery</string>
         <string name="objtype">class</string>

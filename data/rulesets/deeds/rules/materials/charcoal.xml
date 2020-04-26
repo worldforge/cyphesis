@@ -16,6 +16,9 @@
             <map name="present">
                 <string name="default">dural/items/resources/charcoal/model/charcoal_single.mesh</string>
             </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
         </map>
         <string name="id">charcoal</string>
         <string name="objtype">class</string>
