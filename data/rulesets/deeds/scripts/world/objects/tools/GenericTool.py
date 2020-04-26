@@ -36,6 +36,4 @@ class Use(StoppableTask):
         entity = target.entity
 
         # Send the op to the entity
-        dig_op = Operation(self.op.parent, Entity(pos=target.pos), to=entity, id=self.actor.id)
-
-        return dig_op
+        return Operation(self.op.parent, Entity(pos=target.pos), to=entity, id=self.actor.id)

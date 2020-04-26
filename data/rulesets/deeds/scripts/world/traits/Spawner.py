@@ -79,10 +79,10 @@ class SpawnerVicinity(SpawnerBase):
     criteria = None
 
     def __init__(self, cpp):
-        init_ticks(self, self.get_prop_int("__spawner_interval", self.tick_interval))
         self.send_world(Operation("setup", to=self.id))
 
     def setup_operation(self, op):
+        init_ticks(self, self.get_prop_int("__spawner_interval", self.tick_interval))
         self.create_criteria()
 
     def __spawner_criteria_property_update(self):
