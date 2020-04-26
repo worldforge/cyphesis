@@ -23,6 +23,12 @@
                     </map>
                 </map>
             </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
+            <map name="description">
+                <string name="default">A small and slightly slimy mushroom. The cap has a brown hue. </string>
+            </map>
         </map>
         <string name="id">mushroom</string>
         <string name="objtype">class</string>
@@ -39,6 +45,9 @@
             </map>
             <map name="present">
                 <string name="default">dural/plants/mushrooms/amanita.modeldef</string>
+            </map>
+            <map name="description">
+                <string name="default">The cap has a bright red color, with white dots sprinkled throughout. Perhaps you shouldn't eat this one?</string>
             </map>
         </map>
         <string name="id">amanita</string>
@@ -57,6 +66,9 @@
             <map name="present">
                 <string name="default">dural/plants/mushrooms/bluemoon.modeldef</string>
             </map>
+            <map name="description">
+                <string name="default">Both the stem and the cap seems almost to glow with a blue hue. The mushroom seems otherworldly.</string>
+            </map>
         </map>
         <string name="id">bluemoon</string>
         <string name="objtype">class</string>
@@ -73,6 +85,9 @@
             </map>
             <map name="present">
                 <string name="default">dural/plants/mushrooms/galerina.modeldef</string>
+            </map>
+            <map name="description">
+                <string name="default">An earthy aroma seems to eminate from the brownish mushroom.</string>
             </map>
         </map>
         <string name="id">galerina</string>

@@ -23,6 +23,9 @@
                     </map>
                 </map>
             </map>
+            <map name="description">
+                <string name="default">A wand of fireballs. Shoots out deadly exploding fireballs.</string>
+            </map>
         </map>
         <string name="id">wand_fireball</string>
         <string name="objtype">class</string>

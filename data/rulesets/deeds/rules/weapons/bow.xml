@@ -46,6 +46,9 @@
                     </map>
                 </map>
             </map>
+            <map name="description">
+                <string name="default">A basic bow, made of yew and twine rope.</string>
+            </map>
         </map>
         <string name="id">bow</string>
         <string name="objtype">class</string>

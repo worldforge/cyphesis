@@ -16,6 +16,9 @@
             <map name="material">
                 <string name="default">stone</string>
             </map>
+            <map name="description">
+                <string name="default">A piece of unrefined iron.</string>
+            </map>
         </map>
         <string name="id">hematite</string>
         <string name="objtype">class</string>

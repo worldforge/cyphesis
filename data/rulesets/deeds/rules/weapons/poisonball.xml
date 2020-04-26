@@ -37,6 +37,9 @@
             <map name="blast_radius">
                 <float name="default">3</float>
             </map>
+            <map name="description">
+                <string name="default">A ball of poison. Stay clear.</string>
+            </map>
         </map>
         <string name="id">poisonball</string>
         <string name="objtype">class</string>

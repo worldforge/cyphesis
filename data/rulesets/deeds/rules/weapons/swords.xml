@@ -47,6 +47,9 @@
             <map name="name">
                 <string name="default">Basic sword</string>
             </map>
+            <map name="description">
+                <string name="default">A basic sword. The edge seems sharp enough, although the grip is slightly awkward.</string>
+            </map>
             <map name="__scripts">
                 <list name="append">
                     <map>
@@ -92,6 +95,9 @@
             <map name="name">
                 <string name="default">Basic broad sword</string>
             </map>
+            <map name="description">
+                <string name="default">A broader sword, slightly on the heavier side.</string>
+            </map>
         </map>
         <string name="id">sword_broad</string>
         <string name="objtype">class</string>
@@ -117,6 +123,9 @@
             </map>
             <map name="name">
                 <string name="default">Sharp sword</string>
+            </map>
+            <map name="description">
+                <string name="default">A sharp sword. The edge seems to have been carefully prepared.</string>
             </map>
         </map>
         <string name="id">sword_a1</string>
@@ -144,6 +153,9 @@
             <map name="name">
                 <string name="default">Honed sword</string>
             </map>
+            <map name="description">
+                <string name="default">A honed sword. The edge seems almost to shimmer.</string>
+            </map>
         </map>
         <string name="id">sword_a2</string>
         <string name="objtype">class</string>
@@ -169,6 +181,9 @@
             </map>
             <map name="name">
                 <string name="default">Cutting sword</string>
+            </map>
+            <map name="description">
+                <string name="default">A more brutal sword, designed for cutting.</string>
             </map>
         </map>
         <string name="id">sword_a3</string>

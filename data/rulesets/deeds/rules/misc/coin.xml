@@ -13,6 +13,9 @@
             <map name="domain">
                 <string name="default">stackable</string>
             </map>
+            <map name="description">
+                <string name="default">A shining coin.</string>
+            </map>
         </map>
         <string name="id">coin</string>
         <string name="objtype">class</string>

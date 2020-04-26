@@ -39,6 +39,9 @@
                     </map>
                 </map>
             </map>
+            <map name="description">
+                <string name="default">An arrow made to be shot from a bow. The tip is of low grade iron and the fletching seems to be from some waterfowl.</string>
+            </map>
         </map>
         <string name="id">arrow</string>
         <string name="objtype">class</string>

@@ -20,6 +20,9 @@
             <map name="charges">
                 <int name="default">20</int>
             </map>
+            <map name="description">
+                <string name="default">A magic wand. Point it at something and watch the magic.</string>
+            </map>
         </map>
         <string name="id">wand</string>
         <string name="objtype">class</string>

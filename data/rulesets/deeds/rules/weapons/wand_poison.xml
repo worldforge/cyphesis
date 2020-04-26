@@ -23,6 +23,9 @@
                     </map>
                 </map>
             </map>
+            <map name="description">
+                <string name="default">A wand of poison. Anything that's hit will feel mighty ill.</string>
+            </map>
         </map>
         <string name="id">wand_poison</string>
         <string name="objtype">class</string>

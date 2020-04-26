@@ -42,6 +42,12 @@
                     </map>
                 </list>
             </map>
+            <map name="description">
+                <string name="default">Spawns new entities. This is done by at interval checking in a circle around the entity if there are enough entities that fulfill the criteria.</string>
+            </map>
+            <map name="visibility">
+                <string name="default">private</string>
+            </map>
         </map>
         <string name="id">spawner_vicinity</string>
         <string name="objtype">class</string>
@@ -84,6 +90,12 @@
                         <string name="name">world.traits.Spawner.SpawnerInstances</string>
                     </map>
                 </list>
+            </map>
+            <map name="description">
+                <string name="default">Spawns new entities. This is done by keeping track of previously spawned entities, and making sure that a certain amount exists.</string>
+            </map>
+            <map name="visibility">
+                <string name="default">private</string>
             </map>
         </map>
         <string name="id">spawner_instances</string>
