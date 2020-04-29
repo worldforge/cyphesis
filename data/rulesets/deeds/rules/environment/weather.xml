@@ -10,7 +10,7 @@
             <map name="solid">
                 <int name="default">0</int>
             </map>
-            <map name="visibility">
+            <map name="vis_dist">
                 <float name="default">1000</float>
             </map>
             <map name="__scripts">

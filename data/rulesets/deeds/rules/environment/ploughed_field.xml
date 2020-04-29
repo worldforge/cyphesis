@@ -6,7 +6,7 @@
         <list name="entities">
             <map>
                 <string name="parent">region</string>
-                <int name="visibility">100</int>
+                <int name="vis_dist">100</int>
                 <map name="area">
                     <int name="layer">8</int>
                     <map name="shape">
