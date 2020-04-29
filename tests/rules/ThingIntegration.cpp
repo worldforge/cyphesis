@@ -36,12 +36,12 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
-struct ThingExt : public Thing {
+struct ThingExt : public Thing
+{
     Domain* domain;
 
     explicit ThingExt(const std::string& id, long intId)
-        : Thing::Thing(id, intId)
-        , domain(nullptr)
+            : Thing::Thing(id, intId), domain(nullptr)
     {
         m_type = new TypeNode(id);
         addFlags(entity_perceptive);
@@ -72,10 +72,12 @@ struct ThingExt : public Thing {
     }
 };
 
-struct Context {
+struct Context
+{
 };
 
-struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context> {
+struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
+{
     ThingIntegration()
     {
         ADD_TEST(test_visibility_levels);
@@ -467,13 +469,9 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context> {
             ASSERT_FALSE(t5->test_lookAtEntity(sightOp, res, t4.get()));
 
             ASSERT_TRUE(verifyBroadcastContains(t1, {t1}));
-            ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t3, t5, t7, t1}));
+            ASSERT_TRUE(verifyBroadcastContains(t2, {t2, t3, t5, t1}));
             // T7 should not be visible since it has an invalid position
-            ASSERT_TRUE(verifyBroadcastContains(t3, {
-                                                        t2,
-                                                        t3,
-                                                        t5,
-                                                    }));
+            ASSERT_TRUE(verifyBroadcastContains(t3, {t2, t3, t5,}));
             ASSERT_TRUE(verifyBroadcastContains(t4, {t2, t3, t5, t4}));
             ASSERT_TRUE(verifyBroadcastContains(t5, {t2, t3, t5}));
             ASSERT_TRUE(verifyBroadcastContains(t6, {t2, t6, t3, t5}));
@@ -1032,10 +1030,12 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context> {
          * T2 has no reach, T3 has a reach of 20 meters
          */
         {
-            WFMath::AxisBox<3> smallBbox = {{-1, -1, -1}, {1, 1, 1}};
+            WFMath::AxisBox<3> smallBbox = {{-1, -1, -1},
+                                            {1,  1,  1}};
             Ref<ThingExt> t1 = new ThingExt("1", 1);
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
-            t1->m_location.setBBox({{-200, -200, -200}, {200, 200, 200}});
+            t1->m_location.setBBox({{-200, -200, -200},
+                                    {200,  200,  200}});
             Ref<ThingExt> t2 = new ThingExt("2", 2);
             t2->m_location.m_pos = {5, 0, 5};
             t2->m_location.setBBox(smallBbox);
