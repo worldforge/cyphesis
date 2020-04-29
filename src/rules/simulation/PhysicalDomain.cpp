@@ -833,6 +833,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 {
     assert(m_entries.find(entity.getIntId()) == m_entries.end());
 
+    if (!entity.m_location.m_pos.isValid()) {
+        log(WARNING, String::compose("Tried to add entity %1 to physical domain belonging to %2, but there's no valid position.", entity.describeEntity(), m_entity.describeEntity()));
+        return;
+    }
+
     float mass = getMassForEntity(entity);
 
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
@@ -893,7 +898,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->collisionObject->setCollisionFlags(entry->collisionObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
         calculatePositionForEntity(mode, entry, entity.m_location.m_pos);
-
         entry->collisionObject->setWorldTransform(btTransform(orientation, Convert::toBullet(entity.m_location.m_pos))
                                                   * btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse());
 
