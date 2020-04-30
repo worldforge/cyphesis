@@ -45,12 +45,18 @@ HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, co
         } else if (CyPy_Operation::check(pythonResult)) {
             auto operation = CyPy_Operation::value(pythonResult);
             assert(operation);
-            operation->setFrom(e->getId());
+            //If nothing is set the operation is from the entity containing the usages.
+            if (operation->isDefaultFrom()) {
+                operation->setFrom(e->getId());
+            }
             res.push_back(std::move(operation));
         } else if (CyPy_Oplist::check(pythonResult)) {
             auto& o = CyPy_Oplist::value(pythonResult);
             for (auto& opRes : o) {
-                opRes->setFrom(e->getId());
+                //If nothing is set the operation is from the entity containing the usages.
+                if (opRes->isDefaultFrom()) {
+                    opRes->setFrom(e->getId());
+                }
                 res.push_back(opRes);
             }
         } else {
