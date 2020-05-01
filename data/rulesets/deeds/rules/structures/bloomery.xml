@@ -15,7 +15,12 @@
                 <string name="default">container</string>
             </map>
             <map name="usages">
-                <map name="default">
+                <map name="append">
+                    <map name="view">
+                        <string name="name">View</string>
+                        <string name="handler">world.objects.Container.view</string>
+                        <string name="constraint">describe("You're too far away.", actor can_reach tool)</string>
+                    </map>
                     <map name="craft">
                         <string name="name">Smelt</string>
                         <string name="handler">world.objects.structures.Bloomery.craft</string>

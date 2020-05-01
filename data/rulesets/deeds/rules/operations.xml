@@ -173,4 +173,11 @@
         <string name="objtype">op_definition</string>
         <string name="parent">affect</string>
     </map>
+
+    <map>
+        <string name="id">view</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">affect</string>
+    </map>
+
 </atlas>
