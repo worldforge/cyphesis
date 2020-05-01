@@ -25,6 +25,7 @@ option(PYTHON_USE_MALLOC "Use malloc instead of Python's own allocator. This hel
 set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wundef -Wmissing-declarations -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long)
 
 add_definitions(-DHAVE_CONFIG_H)
+add_definitions(-DENABLE_BINRELOC)
 
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/external ${PROJECT_BINARY_DIR}/generated)
 
