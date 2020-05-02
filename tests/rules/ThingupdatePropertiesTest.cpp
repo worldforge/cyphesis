@@ -49,10 +49,22 @@ class testThing : public Thing {
 static const std::string testName("bob");
 static const std::string testNewName("fred");
 
+struct TestThing : public Thing
+{
+    TestThing(const std::string& id, long intId)
+            : Thing(id, intId)
+    {
+    }
+
+    void test_updateProperties(const Operation& op, OpVector& res) {
+        updateProperties(op, res);
+    }
+};
+
 class ThingupdatePropertiestest : public Cyphesis::TestBase
 {
   protected:
-    Ref<Thing> m_thing;
+    Ref<TestThing> m_thing;
     Property<std::string> * m_name;
 
   public:
@@ -64,6 +76,7 @@ class ThingupdatePropertiestest : public Cyphesis::TestBase
     void test_update();
 };
 
+
 ThingupdatePropertiestest::ThingupdatePropertiestest()
 {
     ADD_TEST(ThingupdatePropertiestest::test_update);
@@ -74,7 +87,7 @@ void ThingupdatePropertiestest::setup()
     m_name = new Property<std::string>(prop_flag_unsent);
     m_name->data() = testName;
 
-    m_thing = new Thing("1", 1);
+    m_thing = new TestThing("1", 1);
     m_thing->setProperty("name", std::unique_ptr<PropertyBase>(m_name));
 }
 
@@ -90,7 +103,7 @@ void ThingupdatePropertiestest::test_update()
     Update u;
     OpVector res;
    
-    m_thing->updateProperties(u, res);
+    m_thing->test_updateProperties(u, res);
 
     // The flag marking the property has been cleared
     ASSERT_EQUAL(m_name->flags().m_flags & prop_flag_unsent, 0u);

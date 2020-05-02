@@ -264,114 +264,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 
         // Check if the location has changed
         if (new_loc) {
-            // new_loc should only be non-null if the LOC specified is
-            // different from the current LOC
-            assert(m_location.m_parent != new_loc);
-//            // Check for pickup, ie if the new LOC is the actor, and the
-//            // previous LOC is the actor's LOC.
-//            if (new_loc->getId() == op->getFrom() &&
-//                m_location.m_parent == new_loc->m_location.m_parent) {
-//
-//                //Send Pickup to those entities which are currently observing
-//                if (m_location.m_parent) {
-//
-//                    Pickup p;
-//                    p->setFrom(op->getFrom());
-//                    p->setTo(getId());
-//
-//                    Sight s;
-//                    s->setArgs1(p);
-//                    m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
-//                }
-//
-//            }
-//            // Check for drop, ie if the old LOC is the actor, and the
-//            // new LOC is the actor's LOC.
-//            if (m_location.m_parent->getId() == op->getFrom() &&
-//                new_loc == m_location.m_parent->m_location.m_parent) {
-//
-//                Drop d;
-//                d->setFrom(op->getFrom());
-//                d->setTo(getId());
-//                Sight s;
-//                s->setArgs1(d);
-//                m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
-//            }
-
-            // Update loc
-
-            //A set of entities that were observing the entity.
-            std::set<const LocatedEntity*> previousObserving;
-            collectObservers(previousObserving);
-
-            std::set<const LocatedEntity*> previousObserved;
-            if (isPerceptive()) {
-                std::list<LocatedEntity*> observedEntities;
-                domain->getVisibleEntitiesFor(*this, observedEntities);
-                previousObserved.insert(observedEntities.begin(), observedEntities.end());
-                previousObserved.insert(m_location.m_parent.get());
-                previousObserved.erase(this); // Remove ourselves.
-            }
-
-            if (updatedTransform) {
-                if (newOrientation.isValid()) {
-                    m_location.m_orientation = newOrientation;
-                }
-                if (newPos.isValid()) {
-                    m_location.m_pos = newPos;
-                }
-            }
-
-            changeContainer(new_loc);
-            //If the entity is stackable it might have been deleted as a result of changing container. If so bail out now.
-            if (isDestroyed()) {
-                return;
-            }
-            m_flags.addFlags(entity_dirty_location);
-
-            //Since the location has changed we need to issue an Update
-            Update update;
-            update->setTo(getId());
-            res.push_back(std::move(update));
-
-            processAppearDisappear(std::move(previousObserving), res);
-
-            auto newDomain = new_loc->getDomain();
-            if (!previousObserved.empty()) {
-                //Get all entities that were previously observed, but aren't any more, and send Disappearence op for them.
-                previousObserved.erase(m_location.m_parent.get()); //Remove the new container; we want to be able to observe it.
-                if (newDomain) {
-                    //If there's a new domain, remove all entities that we still can observe.
-                    std::list<LocatedEntity*> observedEntities;
-                    domain->getVisibleEntitiesFor(*this, observedEntities);
-
-                    for (auto& nowObservedEntity : observedEntities) {
-                        if (nowObservedEntity != this) {
-                            previousObserved.erase(nowObservedEntity);
-                        }
-                    }
-                }
-                std::vector<Atlas::Objects::Root> disappearArgs;
-                for (auto& notObservedAnyMoreEntity : previousObserved) {
-                    Anonymous that_ent;
-                    that_ent->setId(notObservedAnyMoreEntity->getId());
-                    that_ent->setStamp(notObservedAnyMoreEntity->getSeq());
-                    disappearArgs.push_back(that_ent);
-
-                }
-                if (!disappearArgs.empty()) {
-                    Disappearance disappear;
-                    disappear->setTo(getId());
-                    disappear->setArgs(disappearArgs);
-                    res.emplace_back(std::move(disappear));
-                }
-            }
-            if (newDomain) {
-                if (updatedTransform) {
-                    Domain::TransformData transformData{newOrientation, newPos, nullptr, newImpulseVelocity};
-                    newDomain->applyTransform(*this, transformData, transformedEntities);
-                }
-            }
+            moveToNewLocation(new_loc, res, domain, newPos, newOrientation, newImpulseVelocity);
         } else {
             if (updatedTransform) {
 
@@ -433,6 +326,123 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     m_seq++;
 
     onUpdated();
+}
+
+void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
+                              OpVector& res,
+                              Domain* existingDomain,
+                              const Point3D& newPos,
+                              const Quaternion& newOrientation,
+                              const Vector3D& newImpulseVelocity)
+{
+    // new_loc should only be non-null if the LOC specified is
+    // different from the current LOC
+    assert(m_location.m_parent != new_loc);
+//            // Check for pickup, ie if the new LOC is the actor, and the
+//            // previous LOC is the actor's LOC.
+//            if (new_loc->getId() == op->getFrom() &&
+//                m_location.m_parent == new_loc->m_location.m_parent) {
+//
+//                //Send Pickup to those entities which are currently observing
+//                if (m_location.m_parent) {
+//
+//                    Pickup p;
+//                    p->setFrom(op->getFrom());
+//                    p->setTo(getId());
+//
+//                    Sight s;
+//                    s->setArgs1(p);
+//                    m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
+//                }
+//
+//            }
+//            // Check for drop, ie if the old LOC is the actor, and the
+//            // new LOC is the actor's LOC.
+//            if (m_location.m_parent->getId() == op->getFrom() &&
+//                new_loc == m_location.m_parent->m_location.m_parent) {
+//
+//                Drop d;
+//                d->setFrom(op->getFrom());
+//                d->setTo(getId());
+//                Sight s;
+//                s->setArgs1(d);
+//                m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
+//            }
+
+    // Update loc
+
+    //A set of entities that were observing the entity.
+    std::set<const LocatedEntity*> previousObserving;
+    collectObservers(previousObserving);
+
+    std::set<const LocatedEntity*> previousObserved;
+    if (isPerceptive()) {
+        std::list<LocatedEntity*> observedEntities;
+        existingDomain->getVisibleEntitiesFor(*this, observedEntities);
+        previousObserved.insert(observedEntities.begin(), observedEntities.end());
+        previousObserved.insert(m_location.m_parent.get());
+        previousObserved.erase(this); // Remove ourselves.
+    }
+
+    if (newOrientation.isValid()) {
+        m_location.m_orientation = newOrientation;
+    }
+    if (newPos.isValid()) {
+        m_location.m_pos = newPos;
+    }
+
+    changeContainer(new_loc);
+    //If the entity is stackable it might have been deleted as a result of changing container. If so bail out now.
+    if (isDestroyed()) {
+        return;
+    }
+    m_flags.addFlags(entity_dirty_location);
+
+    //Since the location has changed we need to issue an Update
+    Update update;
+    update->setTo(getId());
+    res.push_back(std::move(update));
+
+    processAppearDisappear(std::move(previousObserving), res);
+
+    auto newDomain = new_loc->getDomain();
+    if (!previousObserved.empty()) {
+        //Get all entities that were previously observed, but aren't any more, and send Disappearence op for them.
+        previousObserved.erase(m_location.m_parent.get()); //Remove the new container; we want to be able to observe it.
+        if (newDomain) {
+            //If there's a new domain, remove all entities that we still can observe.
+            std::list<LocatedEntity*> observedEntities;
+            existingDomain->getVisibleEntitiesFor(*this, observedEntities);
+
+            for (auto& nowObservedEntity : observedEntities) {
+                if (nowObservedEntity != this) {
+                    previousObserved.erase(nowObservedEntity);
+                }
+            }
+        }
+        std::vector<Atlas::Objects::Root> disappearArgs;
+        for (auto& notObservedAnyMoreEntity : previousObserved) {
+            Anonymous that_ent;
+            that_ent->setId(notObservedAnyMoreEntity->getId());
+            that_ent->setStamp(notObservedAnyMoreEntity->getSeq());
+            disappearArgs.push_back(that_ent);
+
+        }
+        if (!disappearArgs.empty()) {
+            Disappearance disappear;
+            disappear->setTo(getId());
+            disappear->setArgs(disappearArgs);
+            res.emplace_back(std::move(disappear));
+        }
+    }
+    if (newDomain) {
+        if (newImpulseVelocity.isValid()) {
+            Domain::TransformData transformData{{}, {}, nullptr, newImpulseVelocity};
+            std::set<LocatedEntity*> transformedEntities;
+            //We can ignore the transformedEntities, since we only are applying an impulse velocity
+            newDomain->applyTransform(*this, transformData, transformedEntities);
+        }
+    }
 }
 
 

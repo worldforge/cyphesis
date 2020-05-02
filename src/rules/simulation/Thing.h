@@ -33,9 +33,20 @@ class Thing : public Entity
     protected:
         void updateProperties(const Operation& op, OpVector& res);
 
-        bool lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity* watcher) const;
+        bool lookAtEntity(const Operation& op,
+                          OpVector& res,
+                          const LocatedEntity* watcher) const;
 
-        void generateSightOp(const LocatedEntity& observingEntity, const Operation& originalLookOp, OpVector& res) const;
+        void generateSightOp(const LocatedEntity& observingEntity,
+                             const Operation& originalLookOp,
+                             OpVector& res) const;
+
+        void moveToNewLocation(Ref<LocatedEntity>& new_loc,
+                               OpVector& res,
+                               Domain* existingDomain,
+                               const Point3D& newPos,
+                               const Quaternion& newOrientation,
+                               const Vector3D& newImpulseVelocity);
 
     public:
 
@@ -60,8 +71,6 @@ class Thing : public Entity
         void TalkOperation(const Operation& op, OpVector&) override;
 
         void CreateOperation(const Operation& op, OpVector& res) override;
-
-        friend class ThingupdatePropertiestest;
 };
 
 #endif // RULESETS_THING_H
