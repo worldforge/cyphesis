@@ -299,65 +299,74 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
     }
     const std::string& other_id = arg->getId();
     if (other_id != ent->getId()) {
-        debug_print("Moving something else. " << other_id)
-        auto other = BaseWorld::instance().getEntity(other_id);
-        if (!other) {
-            Unseen u;
+        moveOtherEntity(ent, op, res, arg, other_id);
+    } else {
+        moveOurselves(ent, op, res, arg);
+    }
+}
 
-            Anonymous unseen_arg;
-            unseen_arg->setId(other_id);
-            u->setArgs1(unseen_arg);
 
-            u->setTo(ent->getId());
-            res.push_back(u);
+void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpVector& res, const RootEntity& arg, const std::string& other_id) const
+{
+    debug_print("Moving something else. " << other_id)
+    auto other = BaseWorld::instance().getEntity(other_id);
+    if (!other) {
+        Unseen u;
+
+        Anonymous unseen_arg;
+        unseen_arg->setId(other_id);
+        u->setArgs1(unseen_arg);
+
+        u->setTo(ent->getId());
+        res.push_back(u);
+        return;
+    }
+
+    //Check that we actually can reach the other entity.
+    if (ent->canReach({other, {}})) {
+        //Now also check that we can reach wherever we're trying to move the entity.
+
+        auto targetLoc = other->m_location.m_parent;
+
+        //Only allow some things to be set when moving another entity.
+        RootEntity newArgs1;
+        //We've already checked that the id exists
+        newArgs1->setId(arg->getId());
+
+        if (!arg->isDefaultLoc()) {
+            newArgs1->setLoc(arg->getLoc());
+            targetLoc = BaseWorld::instance().getEntity(arg->getLoc());
+        }
+        if (!targetLoc) {
+            ent->clientError(op, "Target parent entity doesn't exist.", res, op->getFrom());
             return;
         }
-
-        //Check that we actually can reach the other entity.
-        if (ent->canReach({other, {}})) {
-            //Now also check that we can reach wherever we're trying to move the entity.
-
-            auto targetLoc = other->m_location.m_parent;
-
-            //Only allow some things to be set when moving another entity.
-            RootEntity newArgs1;
-            //We've already checked that the id exists
-            newArgs1->setId(arg->getId());
-
-            if (!arg->isDefaultLoc()) {
-                newArgs1->setLoc(arg->getLoc());
-                targetLoc = BaseWorld::instance().getEntity(arg->getLoc());
-            }
-            if (!targetLoc) {
-                ent->clientError(op, "Target parent entity doesn't exist.", res, op->getFrom());
-                return;
-            }
-            WFMath::Point<3> targetPos;
-            if (!arg->isDefaultPos()) {
-                newArgs1->setPos(arg->getPos());
-                targetPos.fromAtlas(arg->getPosAsList());
-            }
-            //Check that we can reach the edge of the entity if it's placed in its new location.
-            if (!ent->canReach({targetLoc, targetPos}, other->m_location.radius())) {
-                ent->clientError(op, "Target is too far away.", res, op->getFrom());
-                return;
-            }
-            if (arg->hasAttr("orientation")) {
-                newArgs1->setAttr("orientation", arg->getAttr("orientation"));
-            }
-            //Replace first arg with our sanitized arg.
-            op->setArgs1(newArgs1);
-            op->setFrom(ent->getId());
-            op->setTo(other_id);
-
-            res.push_back(op);
-
-        } else {
-            ent->clientError(op, "Entity is too far away.", res, op->getFrom());
+        WFMath::Point<3> targetPos;
+        if (!arg->isDefaultPos()) {
+            newArgs1->setPos(arg->getPos());
+            targetPos.fromAtlas(arg->getPosAsList());
         }
+        //Check that we can reach the edge of the entity if it's placed in its new location.
+        if (!ent->canReach({targetLoc, targetPos}, other->m_location.radius())) {
+            ent->clientError(op, "Target is too far away.", res, op->getFrom());
+            return;
+        }
+        if (arg->hasAttr("orientation")) {
+            newArgs1->setAttr("orientation", arg->getAttr("orientation"));
+        }
+        //Replace first arg with our sanitized arg.
+        op->setArgs1(newArgs1);
+        op->setFrom(ent->getId());
+        op->setTo(other_id);
 
-        //TODO: add checks for the things that we can reach, and that we can move.
-        //Probably involve the domain in this.
+        res.push_back(op);
+
+    } else {
+        ent->clientError(op, "Entity is too far away.", res, op->getFrom());
+    }
+
+    //TODO: add checks for the things that we can reach, and that we can move.
+    //Probably involve the domain in this.
 //        Element mass;
 //        if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
 //            // FIXME Check against strength
@@ -367,9 +376,10 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
 //            //TODO: send op back to the mind informing it that it was too heavy to move.
 //            return;
 //        }
+}
 
-        return;
-    }
+void MindsProperty::moveOurselves(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
+{
     std::string new_loc;
     if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
         new_loc = arg->getLoc();
@@ -387,20 +397,15 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
             debug_print("pos set to " << new_pos)
         }
 
-        //First look for the "propel" attribute; if that's not there look for the legacy "velocity" attribute.
         //Note that we differ between "propel", which is how an entity propels itself forward, and "velocity"
         //which is the resulting velocity of the entity, taking all other entities as well as gravity into consideration.
+        //We do not allow minds to set the "velocity" attribute.
         Element attr_propel;
         if (arg->copyAttr("propel", attr_propel) == 0) {
             try {
                 new_propel.fromAtlas(attr_propel);
             } catch (...) {
                 //just ignore malformed data
-            }
-        } else {
-            if (arg->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-                fromStdVector(new_propel, arg->getVelocity());
-                debug_print("propel set to " << new_propel)
             }
         }
 
@@ -443,8 +448,6 @@ void MindsProperty::mindMoveOperation(LocatedEntity* ent, const Operation& op, O
             assert(distance.isValid());
             // Convert target into our current frame of reference.
             new_pos = ent->m_location.pos() + distance;
-        } else {
-            log(WARNING, "mindMoveOperation: Argument changes LOC, but no POS specified. Not sure this makes any sense. " + ent->describeEntity());
         }
     }
     // Movement within current loc. Work out the speed and stuff and
