@@ -705,6 +705,9 @@ void Thing::LookOperation(const Operation& op, OpVector& res)
 void Thing::ImaginaryOperation(const Operation& op, OpVector& res)
 {
     Sight s{};
+    if (!op->isDefaultTo()) {
+        s->setTo(op->getTo());
+    }
     s->setArgs1(op);
     res.push_back(s);
 }
