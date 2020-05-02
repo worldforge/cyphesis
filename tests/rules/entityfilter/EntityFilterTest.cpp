@@ -259,7 +259,8 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
     }
 
-    void test_literals() {
+    void test_literals()
+    {
         TestQuery("1=1", {m_b1}, {});
         TestQuery("true=true", {m_b1}, {});
         TestQuery("false=false", {m_b1}, {});
@@ -271,16 +272,24 @@ struct EntityFilterTest : public Cyphesis::TestBase
         TestQuery(R"("string with space"!="stringwithspace")", {m_b1}, {});
     }
 
-    void test_describe() {
+    void test_describe()
+    {
         TestQuery("describe('Should be barrel', entity.type=types.barrel)", {m_b1}, {m_bl1});
         TestQuery("describe(\"Should be barrel\", entity.type=types.barrel)", {m_b1}, {m_bl1});
         TestQuery("describe('Should burn.', entity.burn_speed != none)", {m_b1, m_b2}, {});
+        TestQuery("describe('Should burn.', entity.burn_speed != none and entity.burn_speed != none) and describe('Should burn.', entity.burn_speed != none)", {m_b1, m_b2}, {});
 
+        {
+            //Test a tricky filter we had some issues with.
+            EntityFilter::Filter f(
+                    "describe('Must be able to reach the bloomery.', actor can_reach tool) and describe('There must be charcoal or lumber in the bloomery.', contains(tool.contains, child.type=types.charcoal) or contains(tool.contains, child.type=types.lumber)) and describe('There must be hematite in the bloomery.', contains(tool.contains, child.type=types.hematite))",
+                    EntityFilter::ProviderFactory());
+        }
         {
             EntityFilter::Filter f("describe('Should burn.', entity.burn_speed != none)", EntityFilter::ProviderFactory());
             QueryContext queryContext = makeContext(m_bl1);
             std::vector<std::string> errors;
-            queryContext.report_error_fn = [&](const std::string& error) {errors.push_back(error);};
+            queryContext.report_error_fn = [&](const std::string& error) { errors.push_back(error); };
             f.match(queryContext);
             ASSERT_FALSE(errors.empty());
             ASSERT_EQUAL("Should burn.", errors.front());
@@ -395,12 +404,12 @@ struct EntityFilterTest : public Cyphesis::TestBase
         //test query with several criteria
 
         TestQuery("entity.type=types.barrel&&entity.burn_speed=0.3", {m_b1}, {
-            m_b2, m_bl1});
+                m_b2, m_bl1});
         //Test with fudged syntax
         TestQuery("entity.type = types.barrel && entity.burn_speed = 0.3", {m_b1},
                   {m_b2, m_bl1});
         TestQuery("entity.type  =  types.barrel  &&  entity.burn_speed  =  0.3", {
-                      m_b1},
+                          m_b1},
                   {m_b2, m_bl1});
 
         TestQuery("entity instance_of types.barrel", {m_b1}, {m_bl1});
@@ -434,7 +443,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
                   {m_bl1});
 
         TestQuery("entity instance_of types.barrel   or   entity.mass=25", {
-                      m_b1, m_b2, m_bl1},
+                          m_b1, m_b2, m_bl1},
                   {});
 
         //test not operator
@@ -460,8 +469,8 @@ struct EntityFilterTest : public Cyphesis::TestBase
                   {});
 
         TestQuery(
-            "entity.type=types.boulder||entity.type=types.barrel&&entity.burn_speed=0.3",
-            {m_b1, m_bl1}, {});
+                "entity.type=types.boulder||entity.type=types.barrel&&entity.burn_speed=0.3",
+                {m_b1, m_bl1}, {});
 
         //Test not operator precedence. It should be applied to burn_speed comparison, and
         //not the whole expression
@@ -483,23 +492,23 @@ struct EntityFilterTest : public Cyphesis::TestBase
 
         //test query with nested parentheses
         TestQuery(
-            "(entity.type=types.barrel&&(entity.mass=25||entity.mass=30)||entity.type=types.boulder)",
-            {m_b1, m_b3, m_bl1}, {m_b2});
+                "(entity.type=types.barrel&&(entity.mass=25||entity.mass=30)||entity.type=types.boulder)",
+                {m_b1, m_b3, m_bl1}, {m_b2});
         //Test with fudged syntax
         TestQuery(
-            "(entity.type = types.barrel && ( entity.mass = 25 || entity.mass = 30 ) || entity.type = types.boulder )",
-            {m_b1, m_b3, m_bl1}, {m_b2});
+                "(entity.type = types.barrel && ( entity.mass = 25 || entity.mass = 30 ) || entity.type = types.boulder )",
+                {m_b1, m_b3, m_bl1}, {m_b2});
 
         TestQuery(
-            "(entity.type=types.barrel&&(entity.mass=25&&(entity.burn_speed=0.25||entity.mass=30))||entity.type=types.boulder)",
-            {m_bl1}, {m_b1});
+                "(entity.type=types.barrel&&(entity.mass=25&&(entity.burn_speed=0.25||entity.mass=30))||entity.type=types.boulder)",
+                {m_bl1}, {m_b1});
 
         //override precedence rules with parentheses
         TestQuery(
-            "(entity.type=types.boulder||entity.type=types.barrel)&&entity.burn_speed=0.3",
-            {m_b1}, {m_bl1});
+                "(entity.type=types.boulder||entity.type=types.barrel)&&entity.burn_speed=0.3",
+                {m_b1}, {m_bl1});
         TestQuery("not (entity.burn_speed = 0.3 && entity.type=types.barrel)", {
-                      m_bl1, m_b3, m_b2},
+                          m_bl1, m_b3, m_b2},
                   {m_b1});
     }
 
@@ -564,7 +573,7 @@ struct EntityFilterTest : public Cyphesis::TestBase
         TestQuery("entity.bbox.area=8.0", {m_b1}, {m_bl1});
         //Test BBox with another criterion
         TestQuery("entity.type=types.barrel&&entity.bbox.height>0.0", {m_b1}, {
-            m_b2, m_bl1});
+                m_b2, m_bl1});
         //Test BBox of an outfit
 //    TestQuery("entity.outfit.hands.outfit.thumb.bbox.volume=48.0", {m_ch1},
 //              {});
@@ -575,26 +584,26 @@ struct EntityFilterTest : public Cyphesis::TestBase
     {
         //Test contains_recursive function
         TestQuery(
-            "contains_recursive(entity.contains, child.type=types.boulder)",
-            {m_b1}, {m_b2});
+                "contains_recursive(entity.contains, child.type=types.boulder)",
+                {m_b1}, {m_b2});
 
         TestQuery(
-            "contains_recursive(entity.contains, child.type=types.barrel)",
-            {m_b1, m_bl1}, {m_b2});
+                "contains_recursive(entity.contains, child.type=types.barrel)",
+                {m_b1, m_bl1}, {m_b2});
 
         TestQuery(
-            "contains_recursive(entity.contains, child.type=types.barrel or child.mass = 25) = true",
-            {m_b1, m_bl1}, {m_b2});
+                "contains_recursive(entity.contains, child.type=types.barrel or child.mass = 25) = true",
+                {m_b1, m_bl1}, {m_b2});
 
 
         TestContextQuery(
-            "contains_recursive(entity.contains, child = tool)",
-            {{*m_b1, nullptr, m_bl1.get()}}, {});
+                "contains_recursive(entity.contains, child = tool)",
+                {{*m_b1, nullptr, m_bl1.get()}}, {});
 
         //The cloth is a child of the gloves which is a child of the character. Should be found recursively.
         TestQuery(
-            "contains_recursive(entity.contains, child.type = types.cloth)",
-            {m_ch1}, {});
+                "contains_recursive(entity.contains, child.type = types.cloth)",
+                {m_ch1}, {});
     }
 
     //Test contains function
@@ -602,26 +611,26 @@ struct EntityFilterTest : public Cyphesis::TestBase
     {
         //Test contains function
         TestQuery(
-            "contains(entity.contains, child.type=types.boulder)",
-            {m_b1}, {m_b2});
+                "contains(entity.contains, child.type=types.boulder)",
+                {m_b1}, {m_b2});
 
         TestQuery(
-            "contains(entity.contains, child.type=types.barrel)",
-            {m_b1, m_bl1}, {m_b2});
+                "contains(entity.contains, child.type=types.barrel)",
+                {m_b1, m_bl1}, {m_b2});
 
         TestQuery(
-            "contains(entity.contains, child.type=types.barrel or child.mass = 25) = true",
-            {m_b1, m_bl1}, {m_b2});
+                "contains(entity.contains, child.type=types.barrel or child.mass = 25) = true",
+                {m_b1, m_bl1}, {m_b2});
 
 
         TestContextQuery(
-            "contains(entity.contains, child = tool)",
-            {{*m_b1, nullptr, m_bl1.get()}}, {});
+                "contains(entity.contains, child = tool)",
+                {{*m_b1, nullptr, m_bl1.get()}}, {});
 
         //The cloth is a child of the gloves which is a child of the character. Should not be found since it's not recursive.
         TestQuery(
-            "contains(entity.contains, child.type = types.cloth)",
-            {}, {m_ch1});
+                "contains(entity.contains, child.type = types.cloth)",
+                {}, {m_ch1});
     }
 
     void setup()

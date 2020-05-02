@@ -226,7 +226,7 @@ namespace EntityFilter {
                         //Try unary not on a logical predicate
                         (no_case["not"] | "!") >> predicate_g[_val = make_shared_<NotPredicate>()(_1)] |
 
-                        (no_case[qi::lit("describe(")] >> quoted_string_g >> "," >> predicate_g >> ")")
+                        (no_case[qi::lit("describe(")] >> quoted_string_g >> "," >> parenthesised_predicate_g >> ")")
                         [_val = make_shared_<DescribePredicate>()(_1, _2)] |
 
                         //Try binary operators (or, and)

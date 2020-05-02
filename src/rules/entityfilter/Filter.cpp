@@ -21,7 +21,8 @@ namespace EntityFilter {
             throw std::invalid_argument(String::compose("Error when parsing '%1':\n%2", what, e.what()));
         }
         if (!(parse_success && iter_begin == iter_end)) {
-            throw std::invalid_argument(String::compose("Attempted creating entity filter with invalid query. Query was '%1'", what));
+            auto parsedPart = what.substr(0, iter_begin - what.begin());
+            throw std::invalid_argument(String::compose("Attempted creating entity filter with invalid query. Query was '%1'.\n Parser error was at '%2'", what, parsedPart));
         }
     }
 
