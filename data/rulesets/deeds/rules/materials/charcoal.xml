@@ -19,6 +19,9 @@
             <map name="domain">
                 <string name="default">stackable</string>
             </map>
+            <map name="name">
+                <string name="default">Charcoal</string>
+            </map>
         </map>
         <string name="id">charcoal</string>
         <string name="objtype">class</string>

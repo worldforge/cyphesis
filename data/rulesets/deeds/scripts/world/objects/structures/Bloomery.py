@@ -4,7 +4,8 @@ from atlas import Operation, Entity, Oplist
 
 from world.StoppableTask import StoppableTask
 
-charcoal_filter = entity_filter.Filter("entity instance_of types.charcoal")
+#Allow both charcoal and lumber to feed the fire. Charcoal is preferable since it weights less (in the future we could also only allow charcoal, on the basis that it allows higher temperatures).
+charcoal_filter = entity_filter.Filter("entity instance_of types.charcoal or entity instance_of types.lumber")
 hematite_filter = entity_filter.Filter("entity instance_of types.hematite")
 
 

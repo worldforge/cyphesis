@@ -16,6 +16,12 @@
             <map name="domain">
                 <string name="default">stackable</string>
             </map>
+            <map name="name">
+                <string name="default">Iron ingot</string>
+            </map>
+            <map name="description">
+                <string name="default">An ingot of crude iron.</string>
+            </map>
         </map>
         <string name="id">iron_ingot</string>
         <string name="objtype">class</string>
