@@ -345,7 +345,6 @@ class PhysicalDomain : public Domain
         void applyTransformInternal(LocatedEntity& entity,
                                     const WFMath::Quaternion& orientation,
                                     const WFMath::Point<3>& pos,
-                                    const WFMath::Vector<3>& propel,
                                     const WFMath::Vector<3>& impulseVelocity,
                                     std::set<LocatedEntity*>& transformedEntities,
                                     bool calculatePosition);

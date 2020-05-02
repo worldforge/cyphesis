@@ -71,11 +71,6 @@ class Domain
             const WFMath::Point<3>& pos;
 
             /**
-             * A new propelling value. This means that the entity is being propelled by itself (standard case would be a character walking).
-             */
-            const WFMath::Vector<3>& propel;
-
-            /**
              * An entity onto which the entity should be planted.
              */
             LocatedEntity* plantedOnEntity;

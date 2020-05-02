@@ -1167,7 +1167,44 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
 
 void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry)
 {
-    if (name == "friction") {
+    if (name == "pos") {
+//        auto& pos = bulletEntry->entity->m_location.m_pos;
+//        if (pos.isValid()) {
+//            applyNewPositionForEntity(bulletEntry, pos);
+//            if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
+//                entity.removeFlags(entity_pos_clean);
+//                hadChange = true;
+//                //Check if there previously wasn't any valid pos, and thus no valid collision instances.
+//                if (entity.m_location.m_pos.isValid() && !oldPos.isValid()) {
+//                    if (entry->collisionObject) {
+//                        short collisionMask;
+//                        short collisionGroup;
+//                        getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
+//                        if (rigidBody) {
+//                            m_dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+//                        } else {
+//                            m_dynamicsWorld->addCollisionObject(entry->collisionObject.get(), collisionGroup, collisionMask);
+//                        }
+//                    }
+//                    if (entry->viewSphere) {
+//                        m_visibilityWorld->addCollisionObject(entry->viewSphere.get(),
+//                                                              entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+//                                                              VISIBILITY_MASK_OBSERVER);
+//                    }
+//                    if (entry->visibilitySphere) {
+//                        m_visibilityWorld->addCollisionObject(entry->visibilitySphere.get(), VISIBILITY_MASK_OBSERVER,
+//                                                              entity.hasFlags(entity_visibility_protected) || entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
+//                                                                                                                                                         : VISIBILITY_MASK_OBSERVABLE);
+//                    }
+//                }
+//            }
+//        }
+    } else if (name == PropelProperty::property_name) {
+        auto propelProp = dynamic_cast<const PropelProperty*>(&prop);
+        if (propelProp) {
+            applyPropel(*bulletEntry, propelProp->data());
+        }
+    } else if (name == "friction") {
         if (bulletEntry->collisionObject) {
             auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
             bulletEntry->collisionObject->setFriction(static_cast<btScalar>(frictionProp->data()));
@@ -1998,13 +2035,12 @@ void PhysicalDomain::applyTransform(LocatedEntity& entity, const TransformData& 
     }
     plantOnEntity(entry.get(), entryPlantedOn);
 
-    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.propel, transformData.impulseVelocity, transformedEntities, true);
+    applyTransformInternal(entity, transformData.orientation, transformData.pos, transformData.impulseVelocity, transformedEntities, true);
 }
 
 void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
                                             const WFMath::Quaternion& orientation,
                                             const WFMath::Point<3>& pos,
-                                            const WFMath::Vector<3>& propel,
                                             const WFMath::Vector<3>& impulseVelocity,
                                             std::set<LocatedEntity*>& transformedEntities,
                                             bool calculatePosition)
@@ -2015,7 +2051,6 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
     assert(I != m_entries.end());
     bool hadChange = false;
     auto& entry = I->second;
-    applyPropel(*entry, propel);
     btRigidBody* rigidBody = nullptr;
     if (entry->collisionObject) {
         rigidBody = btRigidBody::upcast(entry->collisionObject.get());
@@ -2608,7 +2643,7 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry* entry
             }
 
             applyTransformInternal(*restingEntry->entity, restingEntry->entity->m_location.m_orientation * orientationChange,
-                                   entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), WFMath::Vector<3>(), transformedEntities, false);
+                                   entry->entity->m_location.m_pos + relativePos, WFMath::Vector<3>(), transformedEntities, false);
 
         }
     }

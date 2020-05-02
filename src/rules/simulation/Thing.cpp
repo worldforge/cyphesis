@@ -161,8 +161,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     // Up until this point nothing should have changed, but the changes
     // have all now been checked for validity.
 
-    const Location old_loc = m_location;
-
     // Move ops often include a mode change, so we handle it here, even
     // though it is not a special attribute for efficiency. Otherwise
     // an additional Set op would be required.
@@ -188,6 +186,11 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     Element attr_plantedOffset;
     if (ent->copyAttr("planted_offset", attr_plantedOffset) == 0) {
         setAttrValue("planted_offset", attr_plantedOffset);
+    }
+
+    Element attr_propel;
+    if (ent->copyAttr("propel", attr_propel) == 0) {
+        setAttrValue("propel", attr_propel);
     }
 
     double current_time = BaseWorld::instance().getTime();
@@ -246,23 +249,6 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             updatedTransform = true;
         }
 
-        Element attr_propel;
-        if (ent->copyAttr("propel", attr_propel) == 0) {
-            auto propelProp = requirePropertyClassFixed<PropelProperty>();
-            try {
-                newPropel.fromAtlas(attr_propel);
-                if (!newPropel.isEqualTo(propelProp->data())) {
-                    propelProp->data() = newPropel;
-                    // Velocity is not persistent so has no flag
-                    updatedTransform = true;
-                } else {
-                    //Velocity wasn't changed, so we can make newPropel invalid and it won't be applied.
-                    newPropel.setValid(false);
-                }
-            } catch (...) {
-                //just ignore malformed data
-            }
-        }
         if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
             // Update impact velocity
             if (fromStdVector(newImpulseVelocity, ent->getVelocity()) == 0) {
@@ -382,7 +368,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
             }
             if (newDomain) {
                 if (updatedTransform) {
-                    Domain::TransformData transformData{newOrientation, newPos, newPropel, nullptr, newImpulseVelocity};
+                    Domain::TransformData transformData{newOrientation, newPos, nullptr, newImpulseVelocity};
                     newDomain->applyTransform(*this, transformData, transformedEntities);
                 }
             }
@@ -402,7 +388,7 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                     }
                 }
 
-                Domain::TransformData transformData{newOrientation, newPos, newPropel, plantedOnEntity, newImpulseVelocity};
+                Domain::TransformData transformData{newOrientation, newPos, plantedOnEntity, newImpulseVelocity};
                 domain->applyTransform(*this, transformData, transformedEntities);
             }
         }
