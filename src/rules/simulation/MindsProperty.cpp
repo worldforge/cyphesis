@@ -380,12 +380,6 @@ void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpV
 
 void MindsProperty::moveOurselves(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
 {
-    std::string new_loc;
-    if (arg->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        new_loc = arg->getLoc();
-    } else {
-        debug_print("Parent not set")
-    }
     Point3D new_pos;
     Vector3D new_propel;
     Quaternion new_orientation;
@@ -425,31 +419,6 @@ void MindsProperty::moveOurselves(LocatedEntity* ent, const Operation& op, OpVec
         return;
     }
 
-    debug_print(":" << new_loc << ":" << ent->m_location.m_parent->getId() << ":")
-    if (!new_loc.empty() && (new_loc != ent->m_location.m_parent->getId())) {
-        debug_print("Changing loc")
-        auto target_loc = BaseWorld::instance().getEntity(new_loc);
-        if (!target_loc) {
-            //TODO: what use case is this? Moving the entity to a null location?
-            Unseen u;
-
-            Anonymous unseen_arg;
-            unseen_arg->setId(new_loc);
-            u->setArgs1(unseen_arg);
-
-            u->setTo(ent->getId());
-            res.push_back(u);
-            return;
-        }
-
-        if (new_pos.isValid()) {
-            Location target(target_loc, new_pos);
-            Vector3D distance = distanceTo(ent->m_location, target);
-            assert(distance.isValid());
-            // Convert target into our current frame of reference.
-            new_pos = ent->m_location.pos() + distance;
-        }
-    }
     // Movement within current loc. Work out the speed and stuff and
     // use movement object to track movement.
 
