@@ -102,7 +102,15 @@ void PythonWrapper::attachPropertyCallbacks(LocatedEntity& entity)
                         //Ignore Handler result; it does nothing in this context. But process any ops.
                         processScriptResult(fieldName, ret, res);
                         for (auto& resOp: res) {
-                            entity.sendWorld(resOp);
+                            if (resOp->getClassNo() == Atlas::Objects::Operation::SET_NO && !resOp->isDefaultTo() && resOp->getTo() == entity.getId()) {
+                                //Handle any Set ops to the own entity directly here, so Set ops that affect multiple properties become atomic.
+                                //TODO: how to make sure there's no endless loops here when different properties affect each others?
+                                if (!resOp->getArgs().empty()) {
+                                    entity.merge(resOp->getArgs().front()->asMessage());
+                                }
+                            } else {
+                                entity.sendWorld(resOp);
+                            }
                         }
                     } catch (const Py::BaseException& py_ex) {
                         log(ERROR, String::compose("Could not call property update function %1 on %2 for entity %3", fieldName, m_wrapper.type().as_string(), entity.describeEntity()));
