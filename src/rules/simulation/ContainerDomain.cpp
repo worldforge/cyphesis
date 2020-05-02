@@ -38,29 +38,8 @@ ContainerDomain::ContainerDomain(LocatedEntity& entity) :
 void ContainerDomain::addEntity(LocatedEntity& entity)
 {
     //Check if entity should be stacked.
-    //TODO: combine this code, which is lifted from InventoryDomain
-    if (entity.hasFlags(entity_stacked) && m_entity.m_contains) {
-        for (const auto& child : *m_entity.m_contains) {
-            if (child != &entity && child->getType() == entity.getType() && child->hasFlags(entity_stacked)) {
-                if (StackableDomain::checkEntitiesStackable(*child, entity)) {
-                    //Entity can be stacked.
-                    auto newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
-
-                    auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
-                    stackProp->data() += newEntityStackProp->data();
-                    stackProp->removeFlags(prop_flag_persistence_clean);
-                    child->applyProperty(AmountProperty::property_name, stackProp);
-
-                    newEntityStackProp->data() = 0;
-                    entity.applyProperty(AmountProperty::property_name, newEntityStackProp);
-
-                    Atlas::Objects::Operation::Update update;
-                    update->setTo(child->getId());
-                    child->sendWorld(update);
-                    return;
-                }
-            }
-        }
+    if (StackableDomain::stackIfPossible(m_entity, entity)) {
+        return;
     }
 
     entity.m_location.resetTransformAndMovement();

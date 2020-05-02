@@ -40,35 +40,16 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 
 InventoryDomain::InventoryDomain(LocatedEntity& entity) :
-    Domain(entity)
+        Domain(entity)
 {
     entity.makeContainer();
 }
 
 void InventoryDomain::addEntity(LocatedEntity& entity)
 {
-    if (entity.hasFlags(entity_stacked) && m_entity.m_contains) {
-        for (const auto& child : *m_entity.m_contains) {
-            if (child != &entity && child->getType() == entity.getType() && child->hasFlags(entity_stacked)) {
-                if (StackableDomain::checkEntitiesStackable(*child, entity)) {
-                    //Entity can be stacked.
-                    auto newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
-
-                    auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
-                    stackProp->data() += newEntityStackProp->data();
-                    stackProp->removeFlags(prop_flag_persistence_clean);
-                    child->applyProperty(AmountProperty::property_name, stackProp);
-
-                    newEntityStackProp->data() = 0;
-                    entity.applyProperty(AmountProperty::property_name, newEntityStackProp);
-
-                    Atlas::Objects::Operation::Update update;
-                    update->setTo(child->getId());
-                    child->sendWorld(update);
-                    return;
-                }
-            }
-        }
+    //Check if entity should be stacked.
+    if (StackableDomain::stackIfPossible(m_entity, entity)) {
+        return;
     }
 
     entity.m_location.resetTransformAndMovement();
@@ -113,8 +94,8 @@ bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     //Entities can only be seen by outside observers if they are attached.
     auto modeDataProp = observedEntity.getPropertyClassFixed<ModeDataProperty>();
     return modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted
-        && modeDataProp->getPlantedOnData().entityId
-        && *modeDataProp->getPlantedOnData().entityId == m_entity.getIntId();
+           && modeDataProp->getPlantedOnData().entityId
+           && *modeDataProp->getPlantedOnData().entityId == m_entity.getIntId();
 
 }
 

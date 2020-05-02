@@ -47,7 +47,7 @@ std::vector<std::string> StackableDomain::sIgnoredProps = {"pos", "orientation",
 
 
 StackableDomain::StackableDomain(LocatedEntity& entity) :
-    Domain(entity)
+        Domain(entity)
 {
     entity.addFlags(entity_stacked);
 }
@@ -295,4 +295,32 @@ bool StackableDomain::checkEntitiesStackable(const LocatedEntity& first, const L
     }
     return true;
 
+}
+
+bool StackableDomain::stackIfPossible(const LocatedEntity& domainEntity, LocatedEntity& entity)
+{
+    if (entity.hasFlags(entity_stacked) && domainEntity.m_contains) {
+        for (const auto& child : *domainEntity.m_contains) {
+            if (child != &entity && child->getType() == entity.getType() && child->hasFlags(entity_stacked)) {
+                if (StackableDomain::checkEntitiesStackable(*child, entity)) {
+                    //Entity can be stacked.
+                    auto newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
+
+                    auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
+                    stackProp->data() += newEntityStackProp->data();
+                    stackProp->removeFlags(prop_flag_persistence_clean);
+                    child->applyProperty(AmountProperty::property_name, stackProp);
+
+                    newEntityStackProp->data() = 0;
+                    entity.applyProperty(AmountProperty::property_name, newEntityStackProp);
+
+                    Atlas::Objects::Operation::Update update;
+                    update->setTo(child->getId());
+                    child->sendWorld(update);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }

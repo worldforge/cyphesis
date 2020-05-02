@@ -60,6 +60,8 @@ class StackableDomain : public Domain
 
         static bool checkEntitiesStackable(const LocatedEntity& first, const LocatedEntity& second);
 
+        static bool stackIfPossible(const LocatedEntity& domainEntity, LocatedEntity& entity);
+
     protected:
         static std::vector<std::string> sIgnoredProps;
 
