@@ -54,7 +54,6 @@ class CorePropertyManager : public PropertyManager {
                        const Atlas::Objects::Root& type_desc,
                        std::unique_ptr<PropertyKit> factory) override;
 
-    friend class CorePropertyManagertest;
 };
 
 

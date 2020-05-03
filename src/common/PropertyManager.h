@@ -30,8 +30,6 @@
 class PropertyBase;
 class PropertyKit;
 
-typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
-
 /// \brief Base class for classes that handle creating Entity properties.
 class PropertyManager : public Singleton<PropertyManager> {
   protected:
@@ -56,7 +54,9 @@ class PropertyManager : public Singleton<PropertyManager> {
 
     PropertyKit * getPropertyFactory(const std::string &) const;
 
-    friend class PropertyManagertest;
+    const std::map<std::string, std::unique_ptr<PropertyKit>>& getPropertyFactories() const {
+        return m_propertyFactories;
+    }
 };
 
 #endif // COMMON_PROPERTY_MANAGER_H

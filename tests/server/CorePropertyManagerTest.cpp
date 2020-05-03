@@ -54,27 +54,38 @@ using Atlas::Objects::Entity::RootEntity;
 
 Atlas::Objects::Factories factories;
 
-class MinimalProperty : public PropertyBase {
-  public:
-    MinimalProperty() { }
-    virtual int get(Atlas::Message::Element & val) const { return 0; }
-    virtual void set(const Atlas::Message::Element & val) { }
-    virtual MinimalProperty * copy() const { return 0; }
+class MinimalProperty : public PropertyBase
+{
+    public:
+        MinimalProperty()
+        {}
+
+        virtual int get(Atlas::Message::Element& val) const
+        { return 0; }
+
+        virtual void set(const Atlas::Message::Element& val)
+        {}
+
+        virtual MinimalProperty* copy() const
+        { return 0; }
 };
 
 class CorePropertyManagertest : public Cyphesis::TestBase
 {
-    CorePropertyManager * m_propertyManager;
+        CorePropertyManager* m_propertyManager;
 
-  public:
-    CorePropertyManagertest();
+    public:
+        CorePropertyManagertest();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_addProperty();
-    void test_addProperty_named();
-    void test_installFactory();
+        void teardown();
+
+        void test_addProperty();
+
+        void test_addProperty_named();
+
+        void test_installFactory();
 
         Inheritance* m_inheritance;
 };
@@ -90,10 +101,10 @@ void CorePropertyManagertest::setup()
 {
     m_inheritance = new Inheritance(factories);
     m_propertyManager = new CorePropertyManager(*m_inheritance);
-    m_propertyManager->m_propertyFactories.emplace(
-        std::string("named_type"), std::make_unique<PropertyFactory<MinimalProperty>>()
+    m_propertyManager->installFactory(
+            "named_type", {}, std::make_unique<PropertyFactory<MinimalProperty>>()
     );
-   
+
 }
 
 void CorePropertyManagertest::teardown()
@@ -113,15 +124,15 @@ void CorePropertyManagertest::test_addProperty_named()
 {
     auto p = m_propertyManager->addProperty("named_type");
     ASSERT_TRUE(p);
-    ASSERT_NOT_NULL(dynamic_cast<MinimalProperty *>(p.get()));
+    ASSERT_NOT_NULL(dynamic_cast<MinimalProperty*>(p.get()));
 }
 
 void CorePropertyManagertest::test_installFactory()
 {
     int ret = m_propertyManager->installFactory(
-          "new_named_type",
-          Root(),
-          std::make_unique<PropertyFactory<MinimalProperty>>()
+            "new_named_type",
+            Root(),
+            std::make_unique<PropertyFactory<MinimalProperty>>()
     );
 
     ASSERT_EQUAL(ret, 0);
@@ -133,9 +144,6 @@ int main()
 
     return t.run();
 }
-
-
-
 
 
 #include "common/const.h"
@@ -224,27 +232,33 @@ int main()
 
 
 #define STUB_EntityFactory_newEntity
-template <typename T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string & id, long intId, const Atlas::Objects::Entity::RootEntity & attributes)
+
+template<typename T>
+Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return new Entity(id, intId);
 }
 
 class Stackable;
+
 class World;
 
-template <>
-Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string & id, long intId,
-        const Atlas::Objects::Entity::RootEntity & attributes)
+template<>
+Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string& id, long intId,
+                                                   const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return 0;
 }
 
 
+template
+class EntityFactory<Thing>;
 
-template class EntityFactory<Thing>;
-template class EntityFactory<Stackable>;
-template class EntityFactory<World>;
+template
+class EntityFactory<Stackable>;
+
+template
+class EntityFactory<World>;
 
 
 #include "../stubs/server/stubPersistence.h"
@@ -267,31 +281,33 @@ template class EntityFactory<World>;
 #include "../stubs/rules/simulation/stubAreaProperty.h"
 #include "../stubs/rules/simulation/stubModifySelfProperty.h"
 
-template <class T>
+template<class T>
 std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
 {
     return std::unique_ptr<PropertyBase>(new T());
 }
 
-template <class T>
-PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
+template<class T>
+PropertyFactory<T>* PropertyFactory<T>::duplicateFactory() const
 {
     return new PropertyFactory<T>;
 }
 
-template class PropertyFactory<MinimalProperty>;
+template
+class PropertyFactory<MinimalProperty>;
 
 
-void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
+void TeleportProperty::install(LocatedEntity* owner, const std::string& name)
 {
 }
 
-HandlerResult TeleportProperty::operation(LocatedEntity * ent,
-                                          const Operation & op,
-                                          OpVector & res)
+HandlerResult TeleportProperty::operation(LocatedEntity* ent,
+                                          const Operation& op,
+                                          OpVector& res)
 {
     return OPERATION_IGNORED;
 }
+
 #include "../stubs/rules/simulation/stubLineProperty.h"
 #include "../stubs/rules/simulation/stubMindProperty.h"
 #include "../stubs/rules/simulation/stubAttachmentsProperty.h"
@@ -304,10 +320,10 @@ HandlerResult TeleportProperty::operation(LocatedEntity * ent,
 
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 
-bool_config_register::bool_config_register(bool & var,
-                                           const char * section,
-                                           const char * setting,
-                                           const char * help)
+bool_config_register::bool_config_register(bool& var,
+                                           const char* section,
+                                           const char* setting,
+                                           const char* help)
 {
 }
 
@@ -317,21 +333,36 @@ bool_config_register::bool_config_register(bool & var,
 #include "../stubs/server/stubJuncture.h"
 
 
-Root atlasType(const std::string & name,
-               const std::string & parent,
+Root atlasType(const std::string& name,
+               const std::string& parent,
                bool abstract)
 {
     return Atlas::Objects::Root();
 }
 
+#define STUB_PropertyManager_installFactory
+
+void PropertyManager::installFactory(const std::string& name, std::unique_ptr<PropertyKit> factory)
+{
+    m_propertyFactories.emplace(name, std::move(factory));
+}
+
+int PropertyManager::installFactory(const std::string& type_name, const Atlas::Objects::Root& type_desc, std::unique_ptr<PropertyKit> factory)
+{
+    installFactory(type_name, std::move(factory));
+    return 0;
+}
+
 #define STUB_Inheritance_getClass
-const Atlas::Objects::Root& Inheritance::getClass(const std::string & parent, Visibility) const
+
+const Atlas::Objects::Root& Inheritance::getClass(const std::string& parent, Visibility) const
 {
     return noClass;
 }
 
 #define STUB_Inheritance_addChild
-TypeNode * Inheritance::addChild(const Root & obj)
+
+TypeNode* Inheritance::addChild(const Root& obj)
 {
     return new TypeNode(obj->getId());
 }
@@ -340,28 +371,29 @@ TypeNode * Inheritance::addChild(const Root & obj)
 #include "../stubs/common/stubInheritance.h"
 
 
-
 #include "../stubs/common/stubMonitors.h"
 #include "../stubs/common/stubPropertyManager.h"
 #include "../stubs/common/stubShaker.h"
 
 #define STUB_Router_error
-void Router::error(const Operation & op,
-                   const std::string & errstring,
-                   OpVector & res,
-                   const std::string & to) const
+
+void Router::error(const Operation& op,
+                   const std::string& errstring,
+                   OpVector& res,
+                   const std::string& to) const
 {
     res.push_back(Atlas::Objects::Operation::Error());
 }
+
 #include "../stubs/common/stubRouter.h"
 
 #include "../stubs/common/stubTypeNode.h"
 #include "../stubs/common/stubVariable.h"
 #include "../stubs/server/stubBuildid.h"
 
-const char * const CYPHESIS = "cyphesis";
+const char* const CYPHESIS = "cyphesis";
 
-static const char * DEFAULT_INSTANCE = "cyphesis";
+static const char* DEFAULT_INSTANCE = "cyphesis";
 
 std::string instance(DEFAULT_INSTANCE);
 int timeoffset = 0;
@@ -370,7 +402,7 @@ bool database_flag = false;
 
 static long idGenerator = 0;
 
-long newId(std::string & id)
+long newId(std::string& id)
 {
     static char buf[32];
     long new_id = ++idGenerator;
@@ -383,21 +415,21 @@ long newId(std::string & id)
 #include "../stubs/common/stublog.h"
 
 
-Root atlasClass(const std::string & name, const std::string & parent)
+Root atlasClass(const std::string& name, const std::string& parent)
 {
     return Root();
 }
 
-void hash_password(const std::string & pwd, const std::string & salt,
-                   std::string & hash)
+void hash_password(const std::string& pwd, const std::string& salt,
+                   std::string& hash)
 {
 }
 
-int check_password(const std::string & pwd, const std::string & hash)
+int check_password(const std::string& pwd, const std::string& hash)
 {
     return -1;
 }
 
-void addToEntity(const Point3D & p, std::vector<double> & vd)
+void addToEntity(const Point3D& p, std::vector<double>& vd)
 {
 }
