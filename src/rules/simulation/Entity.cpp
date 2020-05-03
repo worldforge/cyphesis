@@ -179,19 +179,22 @@ void Entity::destroy()
             // FIXME take account of orientation
             // FIXME velocity and orientation  need to be adjusted
 
-            if (m_location.orientation().isValid() && m_location.pos().isValid()) {
+            child.m_velocity = m_location.m_velocity;
+            child.m_pos = m_location.m_pos;
+            child.m_orientation = m_location.m_orientation;
 
-                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
-                if (m_location.m_orientation.isValid()) {
-                    m_location.m_orientation *= m_location.orientation();
-                }
 
-                if (child.m_velocity.isValid()) {
-                    child.m_velocity.rotate(m_location.orientation());
-                }
-            } else {
-                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), Quaternion::IDENTITY());
-            }
+//            if (m_location.orientation().isValid()) {
+//                child.m_orientation *= m_location.orientation();
+//
+//                child.m_pos = child.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
+//
+//                if (child.m_velocity.isValid()) {
+//                    child.m_velocity.rotate(m_location.orientation());
+//                }
+//            } else {
+//                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), Quaternion::IDENTITY());
+//            }
             m_location.m_parent->addChild(*entity);
         }
     }
@@ -471,7 +474,7 @@ Ref<LocatedEntity> Entity::createNewEntity(const RootEntity& ent)
     if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_parent)) {
         ent->setLoc(m_location.m_parent->getId());
     }
-    debug_print(getId() << " creating " << type);
+    debug_print(getId() << " creating " << type)
 
     return BaseWorld::instance().addNewEntity(type, ent);
 

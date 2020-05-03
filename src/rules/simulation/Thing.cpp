@@ -68,6 +68,7 @@ Thing::Thing(long intId) :
 void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
     if (m_location.m_parent == nullptr) {
+        //TODO: is this really incorrect? Why shouldn't we be allowed to delete entities that have no parent?
         log(ERROR, String::compose("Deleting %1(%2) when it is not "
                                    "in the world.", getType(), getId()));
         assert(m_location.m_parent != nullptr);

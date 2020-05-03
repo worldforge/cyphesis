@@ -23,6 +23,8 @@
 #include "common/Inheritance.h"
 #include "rules/simulation/World.h"
 #include "../stubs/common/stubcustom.h"
+#include "../NullEntityCreator.h"
+#include "../TestWorldRouter.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -43,44 +45,6 @@ using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
-
-struct TestWorldRouter : public WorldRouter
-{
-    TestWorldExtension m_extension;
-
-    explicit TestWorldRouter(Ref<LocatedEntity> gw, EntityCreator& entityCreator)
-            : WorldRouter(std::move(gw), entityCreator)
-    {
-    }
-
-    ~TestWorldRouter() override = default;
-
-    Ref<LocatedEntity> addNewEntity(const std::string& id, const Atlas::Objects::Entity::RootEntity& op) override
-    {
-        if (m_extension.addNewEntityFn) {
-            return m_extension.addNewEntityFn(id, op);
-        } else {
-            return WorldRouter::addNewEntity(id, op);
-        }
-    }
-
-    void message(Operation op, LocatedEntity& ent) override
-    {
-        if (m_extension.messageFn) {
-            m_extension.messageFn(op, ent);
-        } else {
-            WorldRouter::message(op, ent);
-        }
-    }
-};
-
-struct NullEntityCreator : public EntityCreator
-{
-    Ref<LocatedEntity> newEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attrs) const override
-    {
-        return {};
-    }
-};
 
 struct TestContext
 {
