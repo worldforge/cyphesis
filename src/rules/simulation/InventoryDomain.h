@@ -46,6 +46,9 @@ class InventoryDomain : public Domain
 
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
 
+        std::vector<Domain::CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const override;
+
+
 };
 
 #endif /* INVENTORYDOMAIN_H_ */

@@ -123,3 +123,15 @@ bool InventoryDomain::isEntityReachable(const LocatedEntity& reachingEntity, flo
     return &reachingEntity == &m_entity;
 }
 
+std::vector<Domain::CollisionEntry> InventoryDomain::queryCollision(const WFMath::Ball<3>& sphere) const
+{
+    std::vector<Domain::CollisionEntry> entries;
+    if (m_entity.m_contains) {
+        entries.reserve(m_entity.m_contains->size());
+        for (auto& child: *m_entity.m_contains) {
+            entries.emplace_back(Domain::CollisionEntry{child.get(), WFMath::Point<3>::ZERO(), 0.0f});
+        }
+    }
+    return entries;
+}
+

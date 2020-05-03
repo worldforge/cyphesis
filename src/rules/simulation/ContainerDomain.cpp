@@ -30,7 +30,7 @@
 #include <common/operations/Update.h>
 
 ContainerDomain::ContainerDomain(LocatedEntity& entity) :
-    Domain(entity)
+        Domain(entity)
 {
     entity.makeContainer();
 }
@@ -100,4 +100,16 @@ bool ContainerDomain::isEntityReachable(const LocatedEntity& reachingEntity, flo
 {
     //If the container can be reached, its content can be reached.
     return reachingEntity.canReach(m_entity.m_location);
+}
+
+std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath::Ball<3>& sphere) const
+{
+    std::vector<Domain::CollisionEntry> entries;
+    if (m_entity.m_contains) {
+        entries.reserve(m_entity.m_contains->size());
+        for (auto& child: *m_entity.m_contains) {
+            entries.emplace_back(Domain::CollisionEntry{child.get(), WFMath::Point<3>::ZERO(), 0.0f});
+        }
+    }
+    return entries;
 }
