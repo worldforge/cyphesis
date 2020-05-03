@@ -307,7 +307,7 @@
 
 #ifndef STUB_PhysicalDomain_applyTransformInternal
 //#define STUB_PhysicalDomain_applyTransformInternal
-  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& propel, const WFMath::Vector<3>& impulseVelocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& impulseVelocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
   {
     
   }

@@ -467,7 +467,7 @@ void LocatedEntity::setScript(std::unique_ptr<Script> script)
 /// storage and property.
 void LocatedEntity::makeContainer()
 {
-    if (m_contains == nullptr) {
+    if (!m_contains) {
         m_contains = std::make_unique<LocatedEntitySet>();
         m_properties[ContainsProperty::property_name].property = std::make_unique<ContainsProperty>(*m_contains);
     }

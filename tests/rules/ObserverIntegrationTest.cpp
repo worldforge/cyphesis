@@ -32,7 +32,6 @@
 
 #include <memory>
 #include <utility>
-#include <rules/simulation/ModifiersProperty.h>
 #include <rules/simulation/PhysicalDomain.h>
 #include <rules/simulation/VoidDomain.h>
 #include <rules/simulation/WorldRouter.h>

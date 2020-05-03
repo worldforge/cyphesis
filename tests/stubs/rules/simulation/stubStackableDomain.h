@@ -88,6 +88,14 @@
   }
 #endif //STUB_StackableDomain_checkEntitiesStackable
 
+#ifndef STUB_StackableDomain_stackIfPossible
+//#define STUB_StackableDomain_stackIfPossible
+   bool StackableDomain::stackIfPossible(const LocatedEntity& domainEntity, LocatedEntity& entity)
+  {
+    return false;
+  }
+#endif //STUB_StackableDomain_stackIfPossible
+
 #ifndef STUB_StackableDomain_DeleteOperation
 //#define STUB_StackableDomain_DeleteOperation
   HandlerResult StackableDomain::DeleteOperation(LocatedEntity* owner, const Operation& op, OpVector& res)

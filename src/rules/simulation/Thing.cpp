@@ -228,15 +228,13 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
     broadcast(s, res, Visibility::PUBLIC);
 
 
-    if (domain) {
+    WFMath::Vector<3> newImpulseVelocity;
+    WFMath::Point<3> newPos;
+    WFMath::Quaternion newOrientation;
 
-        WFMath::Vector<3> newPropel;
-        WFMath::Vector<3> newImpulseVelocity;
-        WFMath::Point<3> newPos;
-        WFMath::Quaternion newOrientation;
-
-        bool updatedTransform = false;
-
+    bool updatedTransform = false;
+    //It only makes sense to set positional attributes if there's a domain, or we're moving to a new location
+    if (domain || new_loc) {
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             // Update pos
             if (fromStdVector(newPos, ent->getPos()) == 0) {
@@ -258,71 +256,71 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
                 }
             }
         }
+    }
+
+    std::set<LocatedEntity*> transformedEntities;
 
 
-        std::set<LocatedEntity*> transformedEntities;
+    // Check if the location has changed
+    if (new_loc) {
+        moveToNewLocation(new_loc, res, domain, newPos, newOrientation, newImpulseVelocity);
+    } else {
+        if (updatedTransform && domain) {
 
+            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+            LocatedEntity* plantedOnEntity = nullptr;
 
-        // Check if the location has changed
-        if (new_loc) {
-            moveToNewLocation(new_loc, res, domain, newPos, newOrientation, newImpulseVelocity);
-        } else {
-            if (updatedTransform) {
-
-                auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
-                LocatedEntity* plantedOnEntity = nullptr;
-
-                if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
-                    auto& plantedOnData = modeDataProp->getPlantedOnData();
-                    if (plantedOnData.entityId) {
-                        auto entityRef = BaseWorld::instance().getEntity(*plantedOnData.entityId);
-                        if (entityRef) {
-                            plantedOnEntity = entityRef.get();
-                        }
+            if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
+                auto& plantedOnData = modeDataProp->getPlantedOnData();
+                if (plantedOnData.entityId) {
+                    auto entityRef = BaseWorld::instance().getEntity(*plantedOnData.entityId);
+                    if (entityRef) {
+                        plantedOnEntity = entityRef.get();
                     }
                 }
-
-                Domain::TransformData transformData{newOrientation, newPos, plantedOnEntity, newImpulseVelocity};
-                domain->applyTransform(*this, transformData, transformedEntities);
             }
+
+            Domain::TransformData transformData{newOrientation, newPos, plantedOnEntity, newImpulseVelocity};
+            domain->applyTransform(*this, transformData, transformedEntities);
         }
+    }
 
 
-        m_location.update(current_time);
-        removeFlags(entity_clean);
+    m_location.update(current_time);
+    removeFlags(entity_clean);
 
-        // At this point the Location data for this entity has been updated.
+    // At this point the Location data for this entity has been updated.
 
-        //Check if there are any other transformed entities, and send move ops for those.
-        if (transformedEntities.size() > 1) {
-            for (auto& transformedEntity : transformedEntities) {
-                if (transformedEntity != this) {
+    //Check if there are any other transformed entities, and send move ops for those.
+    if (transformedEntities.size() > 1) {
+        for (auto& transformedEntity : transformedEntities) {
+            if (transformedEntity != this) {
 
-                    Atlas::Objects::Entity::Anonymous setArgs;
-                    setArgs->setId(transformedEntity->getId());
-                    transformedEntity->m_location.addToEntity(setArgs);
+                Atlas::Objects::Entity::Anonymous setArgs;
+                setArgs->setId(transformedEntity->getId());
+                transformedEntity->m_location.addToEntity(setArgs);
 
-                    auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
-                    if (modeDataProp) {
-                        if (modeDataProp->hasFlags(prop_flag_unsent)) {
-                            Element modeDataElem;
-                            if (modeDataProp->get(modeDataElem) == 0) {
-                                setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
-                            }
+                auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
+                if (modeDataProp) {
+                    if (modeDataProp->hasFlags(prop_flag_unsent)) {
+                        Element modeDataElem;
+                        if (modeDataProp->get(modeDataElem) == 0) {
+                            setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
                         }
                     }
-
-                    Set setOp;
-                    setOp->setArgs1(setArgs);
-
-                    Sight sight;
-                    sight->setArgs1(setOp);
-                    transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
-
                 }
+
+                Set setOp;
+                setOp->setArgs1(setArgs);
+
+                Sight sight;
+                sight->setArgs1(setOp);
+                transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
+
             }
         }
     }
+
 
     m_seq++;
 
@@ -377,7 +375,7 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
     collectObservers(previousObserving);
 
     std::set<const LocatedEntity*> previousObserved;
-    if (isPerceptive()) {
+    if (existingDomain && isPerceptive()) {
         std::list<LocatedEntity*> observedEntities;
         existingDomain->getVisibleEntitiesFor(*this, observedEntities);
         previousObserved.insert(observedEntities.begin(), observedEntities.end());
@@ -413,7 +411,9 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
         if (newDomain) {
             //If there's a new domain, remove all entities that we still can observe.
             std::list<LocatedEntity*> observedEntities;
-            existingDomain->getVisibleEntitiesFor(*this, observedEntities);
+            if (existingDomain) {
+                existingDomain->getVisibleEntitiesFor(*this, observedEntities);
+            }
 
             for (auto& nowObservedEntity : observedEntities) {
                 if (nowObservedEntity != this) {

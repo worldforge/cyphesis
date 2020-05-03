@@ -24,10 +24,8 @@
 
 #include "BaseWorld.h"
 #include "common/debug.h"
-#include "common/op_switch.h"
 #include "common/TypeNode.h"
 #include "common/Link.h"
-#include "common/PropertyManager.h"
 
 #include "common/custom.h"
 #include "common/operations/Relay.h"
@@ -171,31 +169,27 @@ void Entity::removeDelegate(int class_no, const std::string& delegate)
 /// removing from the containership tree.
 void Entity::destroy()
 {
-    assert(m_location.m_parent);
-    assert(m_location.m_parent->m_contains);
-    if (m_contains != nullptr) {
-        for (auto& entity : *m_contains) {
-            Location& child = entity->m_location;
-            // FIXME take account of orientation
-            // FIXME velocity and orientation  need to be adjusted
+    if (m_contains && !m_contains->empty()) {
+        //We can't iterate directly over m_contains since we will be modifying it.
+        auto containsCopy = *m_contains;
 
-            child.m_velocity = m_location.m_velocity;
-            child.m_pos = m_location.m_pos;
-            child.m_orientation = m_location.m_orientation;
+        //Move all contained entities to the same location as this entity.
+        //TODO: allow this behaviour to be changed for different scenarios.
+        for (auto& child: containsCopy) {
+            auto entity = dynamic_cast<Entity*>(child.get());
+            if (entity) {
+                Atlas::Objects::Operation::Move moveOp;
+                RootEntity ent;
+                ent->setId(entity->getId());
+                m_location.addToEntity(ent);
+                moveOp->setArgs1(std::move(ent));
+                OpVector res;
 
-
-//            if (m_location.orientation().isValid()) {
-//                child.m_orientation *= m_location.orientation();
-//
-//                child.m_pos = child.m_pos.toParentCoords(m_location.pos(), m_location.orientation());
-//
-//                if (child.m_velocity.isValid()) {
-//                    child.m_velocity.rotate(m_location.orientation());
-//                }
-//            } else {
-//                m_location.m_pos = child.m_pos.toParentCoords(m_location.pos(), Quaternion::IDENTITY());
-//            }
-            m_location.m_parent->addChild(*entity);
+                entity->MoveOperation(moveOp, res);
+                for (auto& resOp: res) {
+                    entity->sendWorld(resOp);
+                }
+            }
         }
     }
 

@@ -104,36 +104,36 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         {
             Ref<Thing> t1 = new Thing("1", 1);
             t1->setAttrValue("domain", "physical");
+            context.testWorld.addEntity(t1, context.world);
             Ref<Thing> t2 = new Thing("2", 2);
             t2->m_location.m_pos = {10, 0, 20};
             t2->m_location.setBBox(bbox);
             t2->m_location.m_orientation = WFMath::Quaternion(1, 2.0);
             t2->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t2, t1);
             Ref<Thing> t3 = new Thing("3", 3);
-            t3->m_location.m_pos =  {20, 0, 20};
+            t3->m_location.m_pos = {20, 0, 20};
             t3->m_location.setBBox(bbox);
+            context.testWorld.addEntity(t3, t1);
             Ref<Thing> t4 = new Thing("4", 4);
             t4->m_location.m_pos = WFMath::Point<3>::ZERO();
             t4->m_location.setBBox(bbox);
-            t4->m_location.m_pos =  {30, 0, 20};
+            t4->m_location.m_pos = {30, 0, 20};
+            context.testWorld.addEntity(t4, t2);
             Ref<Thing> t5 = new Thing("5", 5);
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
-            t5->m_location.m_pos =  {40, 0, 20};
-
-            t1->addChild(*t2);
-            t1->addChild(*t3);
-            t2->addChild(*t4);
-            t3->addChild(*t5);
+            t5->m_location.m_pos = {40, 0, 20};
+            context.testWorld.addEntity(t5, t3);
 
             OpVector res;
-            t2->DeleteOperation({},res);
+            t2->DeleteOperation({}, res);
             ASSERT_TRUE(t2->isDestroyed())
             ASSERT_EQUAL(t1->getId(), t4->m_location.m_parent->getId())
             ASSERT_EQUAL(t4->m_location.m_pos, WFMath::Point<3>(10, 0, 20))
             ASSERT_EQUAL(t4->m_location.m_orientation, WFMath::Quaternion(1, 2.0))
 
-            t3->DeleteOperation({},res);
+            t3->DeleteOperation({}, res);
             ASSERT_TRUE(t3->isDestroyed())
             ASSERT_EQUAL(t1->getId(), t5->m_location.m_parent->getId())
             ASSERT_EQUAL(t5->m_location.m_pos, WFMath::Point<3>(20, 0, 20))

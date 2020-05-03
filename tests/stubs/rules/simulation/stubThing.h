@@ -31,6 +31,14 @@
   }
 #endif //STUB_Thing_generateSightOp
 
+#ifndef STUB_Thing_moveToNewLocation
+//#define STUB_Thing_moveToNewLocation
+  void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc, OpVector& res, Domain* existingDomain, const Point3D& newPos, const Quaternion& newOrientation, const Vector3D& newImpulseVelocity)
+  {
+    
+  }
+#endif //STUB_Thing_moveToNewLocation
+
 #ifndef STUB_Thing_Thing
 //#define STUB_Thing_Thing
    Thing::Thing(const std::string& id, long intId)
