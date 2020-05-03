@@ -105,7 +105,7 @@ class SpawnerVicinity(SpawnerBase):
                     for collision in collisions:
                         entity = collision.entity
                         if server.world.match_entity(self.criteria, entity):
-                            missing_amount = missing_amount - 1
+                            missing_amount = missing_amount - entity.get_prop_int("amount", 1)
 
                         if missing_amount == 0:
                             break
