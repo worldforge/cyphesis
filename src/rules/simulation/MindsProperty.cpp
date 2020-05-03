@@ -354,6 +354,9 @@ void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpV
         if (arg->hasAttr("orientation")) {
             newArgs1->setAttr("orientation", arg->getAttr("orientation"));
         }
+        if (arg->hasAttr("amount")) {
+            newArgs1->setAttr("amount", arg->getAttr("amount"));
+        }
         //Replace first arg with our sanitized arg.
         op->setArgs1(newArgs1);
         op->setFrom(ent->getId());
