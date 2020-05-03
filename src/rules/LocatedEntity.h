@@ -265,7 +265,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         const std::map<std::string, ModifiableProperty>& getProperties() const
         { return m_properties; }
 
-        const std::map<LocatedEntity*, std::set<std::pair<std::string, Modifier*>>> getActiveModifiers() const
+        const std::map<LocatedEntity*, std::set<std::pair<std::string, Modifier*>>>& getActiveModifiers() const
         {
             return m_activeModifiers;
         }
@@ -539,8 +539,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         ///
         /// The specified class must present the "property_name" trait.
         template<class PropertyT>
-        PropertyT* requirePropertyClassFixed(const Atlas::Message::Element& def_val
-        = Atlas::Message::Element())
+        PropertyT* requirePropertyClassFixed(const Atlas::Message::Element& def_val = Atlas::Message::Element())
         {
             return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);
         }
@@ -570,8 +569,6 @@ class LocatedEntity : public Router, public ReferenceCounted
         ///
         /// The first parameter is the name of the property, the second is the updated property.
         sigc::signal<void, const std::string&, const PropertyBase&> propertyApplied;
-
-        friend class LocatedEntitytest;
 
         friend std::ostream& operator<<(std::ostream& s, const LocatedEntity& d);
 

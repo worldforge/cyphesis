@@ -39,7 +39,8 @@ void ModifySelfProperty::apply(LocatedEntity* entity)
     auto& activeModifiers = entity->getActiveModifiers();
     auto I = activeModifiers.find(entity);
     if (I != activeModifiers.end()) {
-        for (auto& entry: I->second) {
+        auto modifiers = I->second;
+        for (auto& entry: modifiers) {
             //Note that the modifier pointer points to an invalid memory location! We can only remove it; not touch it otherwise.
             entity->removeModifier(entry.first, entry.second);
         }

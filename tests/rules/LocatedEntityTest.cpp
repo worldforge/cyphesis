@@ -111,15 +111,15 @@ void LocatedEntitytest::teardown()
 void LocatedEntitytest::test_setProperty()
 {
     std::string test_property("test_property");
-    ASSERT_TRUE(m_entity->m_properties.find(test_property) ==
-                m_entity->m_properties.end());
+    ASSERT_TRUE(m_entity->getProperties().find(test_property) ==
+                m_entity->getProperties().end());
 
     PropertyBase * tp = new SoftProperty;
 
     m_entity->setProperty(test_property, std::unique_ptr<PropertyBase>(tp));
 
-    ASSERT_TRUE(m_entity->m_properties.find(test_property) !=
-                m_entity->m_properties.end());
+    ASSERT_TRUE(m_entity->getProperties().find(test_property) !=
+                m_entity->getProperties().end());
 }
 
 void LocatedEntitytest::test_removeAttr()

@@ -842,18 +842,17 @@ std::string LocatedEntity::describeEntity() const
 
 std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
 {
-    Element nameAttr;
-    int nameResult = d.getAttrType("name", nameAttr, Element::TYPE_STRING);
+    auto name = d.getAttrType("name", Element::TYPE_STRING);
     s << d.getId();
     if (d.m_type) {
         s << "(" << d.m_type->name();
-        if (nameResult == 0) {
-            s << ",'" << nameAttr.String() << "'";
+        if (name) {
+            s << ",'" << name->String() << "'";
         }
         s << ")";
     } else {
-        if (nameResult == 0) {
-            s << "('" << nameAttr.String() << "')";
+        if (name) {
+            s << "('" << name->String() << "')";
         }
     }
     return s;

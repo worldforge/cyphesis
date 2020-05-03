@@ -87,7 +87,9 @@ void ModifyProperty::apply(LocatedEntity* entity)
         auto& activeModifiers = state->parentEntity->getActiveModifiers();
         auto I = activeModifiers.find(entity);
         if (I != activeModifiers.end()) {
-            for (auto& entry: I->second) {
+            auto modifiers = I->second;
+            //Important that we copy the modifiers since we'll be modifying them.
+            for (auto& entry: modifiers) {
                 //Note that the modifier pointer points to an invalid memory location! We can only remove it; not touch it otherwise.
                 state->parentEntity->removeModifier(entry.first, entry.second);
             }
@@ -168,7 +170,9 @@ void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEnt
         auto& activeModifiers = state.parentEntity->getActiveModifiers();
         auto I = activeModifiers.find(&entity);
         if (I != activeModifiers.end() && !I->second.empty()) {
-            for (auto& entry: I->second) {
+            //Important that we copy the modifiers, since we'll be altering the map.
+            auto modifiers = I->second;
+            for (auto& entry: modifiers) {
                 state.parentEntity->removeModifier(entry.first, entry.second);
             }
             state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
