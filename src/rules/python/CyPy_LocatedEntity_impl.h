@@ -86,6 +86,10 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
         return Py::Boolean(this->m_value->isVisible());
     }
 
+    if (nameStr == "is_destroyed") {
+        return Py::Boolean(this->m_value->isDestroyed());
+    }
+
     return Py::PythonExtensionBase::getattro(name);
 }
 

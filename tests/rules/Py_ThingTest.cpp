@@ -124,6 +124,7 @@ int main()
     run_python_string("import server")
     run_python_string("assert server.testentity is not None");
     run_python_string("assert server.testentity.props.foo == 'bar'");
+    run_python_string("assert server.testentity.is_destroyed == False");
 
     expect_python_error("Thing()", PyExc_IndexError);
     expect_python_error("Thing('s')", PyExc_TypeError);
