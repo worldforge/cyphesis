@@ -19,6 +19,9 @@
 #include "EntityLocation.h"
 #include "LocatedEntity.h"
 
+EntityLocation::EntityLocation() = default;
+
+
 EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
     : m_parent(std::move(loc))
 {

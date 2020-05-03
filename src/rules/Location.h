@@ -32,6 +32,7 @@
 #include <wfmath/quaternion.h>
 
 #include <boost/optional.hpp>
+#include <iostream>
 
 class LocatedEntity;
 
@@ -161,6 +162,5 @@ inline boost::optional<WFMath::CoordType> distance(const Location & self, const 
     return std::sqrt(*distance);
 }
 
-#include "LocatedEntity.h"
 
 #endif // RULESETS_LOCATION_H

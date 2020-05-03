@@ -333,8 +333,6 @@ void Link::send(const Operation & op) const
 #include "../stubs/common/stubPropertyManager.h"
 #include "../stubs/common/stubid.h"
 
-static long idGenerator = 500;
-
 #include <cstdio>
 
 void encrypt_password(const std::string & pwd, std::string & hash)

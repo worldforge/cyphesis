@@ -21,7 +21,6 @@
 
 #include "rules/LocatedEntity.h"
 
-#include <iostream>
 #include <unordered_map>
 
 struct OperationsListener;
@@ -124,22 +123,5 @@ class Entity : public LocatedEntity
         Ref<LocatedEntity> createNewEntity(const Atlas::Objects::Entity::RootEntity& entity);
         Ref<LocatedEntity> createNewEntity(const Operation& op, OpVector& res);
 };
-
-inline std::ostream& operator<<(std::ostream& s, Location& v)
-{
-    s << "{";
-    if (v.m_parent) {
-        s << v.m_parent->getId();
-    } else {
-        s << "null";
-    }
-    if (v.pos().isValid()) {
-        s << "," << v.pos();
-        if (v.velocity().isValid()) {
-            s << "," << v.velocity();
-        }
-    }
-    return s << "}";
-}
 
 #endif // RULESETS_ENTITY_H

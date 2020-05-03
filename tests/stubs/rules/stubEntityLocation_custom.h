@@ -2,6 +2,8 @@
 
 #ifndef STUB_EntityLocation_EntityLocation
 #define STUB_EntityLocation_EntityLocation
+EntityLocation::EntityLocation() = default;
+
 EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
 :m_parent(loc)
 {

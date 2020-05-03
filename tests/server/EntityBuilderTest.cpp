@@ -334,7 +334,6 @@ int main(int argc, char** argv)
 
 
 
-#include "../stubs/common/stubEntityKit.h"
 
 
 #define STUB_EntityFactory_newEntity
@@ -360,8 +359,6 @@ std::unique_ptr<EntityFactoryBase> EntityFactory<T>::duplicateFactory()
 }
 
 
-#include "../stubs/server/stubEntityFactory.h"
-
 #define STUB_ArchetypeFactory_duplicateFactory
 
 std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
@@ -372,8 +369,6 @@ std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
 }
 
 
-#include "../stubs/server/stubArchetypeFactory.h"
-#include "../stubs/rules/python/stubScriptsProperty.h"
 
 
 class World;
@@ -442,9 +437,6 @@ void LocatedEntity::merge(const MapType& ent)
     };
 
 }
-
-#include "../stubs/rules/stubLocatedEntity.h"
-#include "../stubs/common/stublog.h"
 
 #ifndef STUB_Inheritance_Inheritance
 #define STUB_Inheritance_Inheritance
@@ -515,9 +507,6 @@ TypeNode* Inheritance::addChild(const Atlas::Objects::Root& obj)
 
 #endif //STUB_Inheritance_addChild
 
-#include "../stubs/common/stubInheritance.h"
-
-
 void installStandardObjects(TypeStore& i)
 {
 
@@ -539,8 +528,6 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
     m_defaults[name] = std::move(p);
     return {};
 }
-
-#include "../stubs/common/stubTypeNode.h"
 
 PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
 {
@@ -624,9 +611,7 @@ class Property<std::string>;
 template
 class Property<Atlas::Message::ListType>;
 
-#include "../stubs/common/stubRouter.h"
-#include "../stubs/rules/stubScript.h"
-#include "../stubs/rules/simulation/stubTask.h"
+
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
@@ -653,6 +638,17 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "../stubs/rules/simulation/stubCorePropertyManager.h"
 #include "../stubs/common/stubPropertyManager.h"
 #include "../stubs/common/stubid.h"
+#include "../stubs/common/stubRouter.h"
+#include "../stubs/rules/stubScript.h"
+#include "../stubs/rules/simulation/stubTask.h"
+#include "../stubs/common/stubTypeNode.h"
+#include "../stubs/common/stubInheritance.h"
+#include "../stubs/rules/stubLocatedEntity.h"
+#include "../stubs/common/stublog.h"
+#include "../stubs/server/stubArchetypeFactory.h"
+#include "../stubs/rules/python/stubScriptsProperty.h"
+#include "../stubs/server/stubEntityFactory.h"
+#include "../stubs/common/stubEntityKit.h"
 
 Root atlasClass(const std::string& name, const std::string& parent)
 {

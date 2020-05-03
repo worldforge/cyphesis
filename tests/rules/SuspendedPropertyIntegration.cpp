@@ -182,14 +182,9 @@ int main()
 // stubs
 
 //#include "Property_stub_impl.h"
-#include "../stubs/rules/stubLocation.h"
-#include "../stubs/common/stubProperty.h"
-#include "../stubs/common/stubPropertyManager.h"
-#include "../stubs/common/stubRouter.h"
-#include "../stubs/rules/simulation/stubDomainProperty.h"
-#include "../stubs/rules/stubAtlasProperties.h"
-#include "../stubs/common/stubid.h"
 
+
+#include "../stubs/common/stubid.h"
 
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
@@ -226,3 +221,9 @@ void BaseWorld::setIsSuspended(bool suspended)
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 #include "../stubs/common/stublog.h"
 #include "../stubs/rules/stubModifier.h"
+#include "../stubs/rules/stubLocation.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubPropertyManager.h"
+#include "../stubs/common/stubRouter.h"
+#include "../stubs/rules/simulation/stubDomainProperty.h"
+#include "../stubs/rules/stubAtlasProperties.h"

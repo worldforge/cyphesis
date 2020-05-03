@@ -9,6 +9,15 @@
 
 #ifndef STUB_EntityLocation_EntityLocation
 //#define STUB_EntityLocation_EntityLocation
+   EntityLocation::EntityLocation()
+    : !(nullptr)
+  {
+    
+  }
+#endif //STUB_EntityLocation_EntityLocation
+
+#ifndef STUB_EntityLocation_EntityLocation
+//#define STUB_EntityLocation_EntityLocation
    EntityLocation::EntityLocation(Ref<LocatedEntity> loc)
     : !(nullptr)
   {

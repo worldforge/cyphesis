@@ -40,7 +40,7 @@ struct EntityLocation
      */
     WFMath::Point<3> m_pos;
 
-    EntityLocation() = default;
+    EntityLocation();
 
     explicit EntityLocation(Ref<LocatedEntity> loc);
 
@@ -65,7 +65,6 @@ struct EntityLocation
         return !(*this == rhs);
     }
 };
-//#include "rules/LocatedEntity.h"
 
 
 #endif //CYPHESIS_ENTITYLOCATION_H

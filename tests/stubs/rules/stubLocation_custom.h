@@ -1,6 +1,7 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
 #include "common/const.h"
 #include "stubEntityLocation.h"
+#include "rules/LocatedEntity.h"
 #include <Atlas/Objects/Anonymous.h>
 
 #ifndef STUB_Location_Location
