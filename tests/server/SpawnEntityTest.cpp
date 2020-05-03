@@ -25,21 +25,17 @@
 
 #include "../TestBase.h"
 
+#include "rules/LocatedEntity.h"
 #include "rules/Location.h"
 #include "common/log.h"
 
 #include "rules/simulation/SpawnEntity.h"
-
-#include "rules/simulation/AreaProperty.h"
 
 #include "physics/Vector3D.h"
 
 
 #include <Atlas/Message/Element.h>
 
-#include <wfmath/point.h>
-
-#include <cassert>
 
 class SpawnEntitytest : public Cyphesis::TestBase
 {
