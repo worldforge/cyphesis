@@ -89,13 +89,21 @@ namespace {
     template<>
     std::string socketName(const boost::asio::local::stream_protocol::socket& socket)
     {
-        return socket.local_endpoint().path();
+        try {
+            return socket.local_endpoint().path();
+        } catch (...) {
+            return "<local socket removed>";
+        }
     }
 
     template<>
     std::string socketName(const boost::asio::ip::tcp::socket& socket)
     {
-        return socket.remote_endpoint().address().to_string();
+        try {
+            return socket.remote_endpoint().address().to_string();
+        } catch (...) {
+            return "<remote disconnected>";
+        }
     }
 }
 
