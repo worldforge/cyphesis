@@ -1,5 +1,5 @@
 //Add custom implementations of stubbed functions here; this file won't be rewritten when re-generating stubs.
-
+#include "rules/LocatedEntity.h"
 #ifndef STUB_EntityLocation_EntityLocation
 #define STUB_EntityLocation_EntityLocation
 EntityLocation::EntityLocation() = default;
