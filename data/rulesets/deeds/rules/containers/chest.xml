@@ -58,4 +58,29 @@
             </map>
         </list>
     </map>
+
+    <map>
+        <string name="id">chest_of_plenty</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">chest</string>
+                <list name="contains">
+                    <string>spawner</string>
+                </list>
+            </map>
+            <map>
+                <string name="id">spawner</string>
+                <string name="parent">spawner_vicinity</string>
+                <string name="__spawner_criteria">entity instance_of types.coin</string>
+                <map name="__spawner_entity">
+                    <string name="objtype">obj</string>
+                    <string name="parent">coin</string>
+                </map>
+            </map>
+
+        </list>
+    </map>
+
 </atlas>

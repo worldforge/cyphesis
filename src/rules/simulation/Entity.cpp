@@ -169,6 +169,8 @@ void Entity::removeDelegate(int class_no, const std::string& delegate)
 /// removing from the containership tree.
 void Entity::destroy()
 {
+    m_flags.addFlags(entity_destroyed);
+
     if (m_contains && !m_contains->empty()) {
         //We can't iterate directly over m_contains since we will be modifying it.
         auto containsCopy = *m_contains;
@@ -185,7 +187,7 @@ void Entity::destroy()
                 moveOp->setArgs1(std::move(ent));
                 OpVector res;
 
-                entity->MoveOperation(moveOp, res);
+                entity->operation(moveOp, res);
                 for (auto& resOp: res) {
                     entity->sendWorld(resOp);
                 }

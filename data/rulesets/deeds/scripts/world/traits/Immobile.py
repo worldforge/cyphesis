@@ -1,5 +1,7 @@
 import server
 
+from atlas import Operation
+
 
 class Immobile(server.Thing):
     """
@@ -7,4 +9,8 @@ class Immobile(server.Thing):
     """
 
     def move_operation(self, op):
-        return server.OPERATION_BLOCKED
+        # Is the move operation sent because the parent has been deleted? If so we should delete ourselves.
+        if self.location.parent.is_destroyed:
+            return server.OPERATION_BLOCKED, Operation("delete", to=self)
+        else:
+            return server.OPERATION_BLOCKED

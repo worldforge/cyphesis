@@ -19,7 +19,7 @@
             <map name="__spawner_entity">
                 <map name="default">
                     <string name="objtype">obj</string>
-                    <string name="parent">goblin</string>
+<!--                    <string name="parent">goblin</string>-->
                 </map>
             </map>
             <map name="__spawner_radius">
@@ -29,7 +29,8 @@
                 <int name="default">4</int>
             </map>
             <map name="__spawner_criteria">
-                <string name="default">entity instance_of types.goblin</string>
+<!--                <string name="default">entity instance_of types.goblin</string>-->
+                <string name="default"></string>
             </map>
             <map name="__spawner_disabled">
                 <int name="default">0</int>
@@ -39,6 +40,10 @@
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Spawner.SpawnerVicinity</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Immobile.Immobile</string>
                     </map>
                 </list>
             </map>
@@ -74,7 +79,7 @@
             <map name="__spawner_entity">
                 <map name="default">
                     <string name="objtype">obj</string>
-                    <string name="parent">goblin</string>
+<!--                    <string name="parent">goblin</string>-->
                 </map>
             </map>
             <map name="__spawner_amount">
@@ -88,6 +93,10 @@
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Spawner.SpawnerInstances</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Immobile.Immobile</string>
                     </map>
                 </list>
             </map>
