@@ -52,9 +52,11 @@ void ModifySelfProperty::apply(LocatedEntity* entity)
 
 void ModifySelfProperty::remove(LocatedEntity* owner, const std::string& name)
 {
-    auto* state = sInstanceState.getState(owner);
     checkIfActive(*owner);
-    state->updatedConnection.disconnect();
+    auto* state = sInstanceState.getState(owner);
+    if (state) {
+        state->updatedConnection.disconnect();
+    }
     sInstanceState.removeState(owner);
 }
 
