@@ -64,5 +64,21 @@
   }
 #endif //STUB_InventoryDomain_isEntityReachable
 
+#ifndef STUB_InventoryDomain_queryCollision
+//#define STUB_InventoryDomain_queryCollision
+  std::vector<Domain::CollisionEntry> InventoryDomain::queryCollision(const WFMath::Ball<3>& sphere) const
+  {
+    return std::vector<Domain::CollisionEntry>();
+  }
+#endif //STUB_InventoryDomain_queryCollision
+
+#ifndef STUB_InventoryDomain_observeCloseness
+//#define STUB_InventoryDomain_observeCloseness
+  boost::optional<std::function<()>> InventoryDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+  {
+    return *static_cast<boost::optional<std::function<()>>*>(nullptr);
+  }
+#endif //STUB_InventoryDomain_observeCloseness
+
 
 #endif

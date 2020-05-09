@@ -71,5 +71,13 @@
   }
 #endif //STUB_Domain_operation
 
+#ifndef STUB_Domain_observeCloseness
+//#define STUB_Domain_observeCloseness
+  boost::optional<std::function<()>> Domain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+  {
+    return *static_cast<boost::optional<std::function<()>>*>(nullptr);
+  }
+#endif //STUB_Domain_observeCloseness
+
 
 #endif

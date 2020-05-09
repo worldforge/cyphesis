@@ -26,7 +26,7 @@
 #include "ModeDataProperty.h"
 
 VoidDomain::VoidDomain(LocatedEntity& entity)
-    : Domain(entity)
+        : Domain(entity)
 {
 }
 
@@ -73,5 +73,10 @@ void VoidDomain::removeEntity(LocatedEntity& entity)
 bool VoidDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
 {
     return &reachingEntity == &m_entity;
+}
+
+boost::optional<std::function<void()>> VoidDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+{
+    return boost::none;
 }
 

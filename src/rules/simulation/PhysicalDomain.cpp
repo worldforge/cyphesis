@@ -55,6 +55,7 @@
 
 #include <sigc++/bind.h>
 
+#include <memory>
 #include <unordered_set>
 #include <chrono>
 #include <boost/optional.hpp>
@@ -2349,6 +2350,26 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
             lastSentLocation.m_pos = entity.m_location.m_pos;
             bulletEntry.modeChanged = false;
         }
+        if (posChange && !bulletEntry.closenessObservations.empty()) {
+            for (auto I = bulletEntry.closenessObservations.begin(); I != bulletEntry.closenessObservations.end();) {
+                auto* observation = *I;
+                auto result = isWithinReach(*observation->reacher, *observation->target, observation->reach, {});
+                if (!result) {
+                    if (observation->callback) {
+                        observation->callback();
+                    }
+                    if (&bulletEntry == observation->reacher) {
+                        observation->target->closenessObservations.erase(*I);
+                    } else {
+                        observation->reacher->closenessObservations.erase(*I);
+                    }
+                    I = bulletEntry.closenessObservations.erase(I);
+                    m_closenessObservations.erase(std::make_pair(observation->reacher, observation->target));
+                } else {
+                    ++I;
+                }
+            }
+        }
     }
 
     updateTerrainMod(entity);
@@ -2699,9 +2720,9 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
         return true;
     }
 
-    if (reach == 0) {
-        return false;
-    }
+//    if (reach == 0) {
+//        return false;
+//    }
 
     auto& queriedLocation = queriedEntity.m_location;
     auto& reachingLocation = reachingEntity.m_location;
@@ -2713,14 +2734,14 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
     if (reachingEntityI != m_entries.end()) {
         auto& reachingEntityEntry = reachingEntityI->second;
 
-        //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
-        btVector3 reachingEntityPos = reachingEntityEntry->collisionObject ? reachingEntityEntry->collisionObject->getWorldTransform().getOrigin()
-                                                                           : Convert::toBullet(reachingLocation.pos());
         //If a contained entity tries to touch the domain entity we must check the optional position.
         if (&queriedEntity == &m_entity) {
             if (!positionOnQueriedEntity.isValid()) {
                 return false;
             }
+            //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
+            btVector3 reachingEntityPos = reachingEntityEntry->collisionObject ? reachingEntityEntry->collisionObject->getWorldTransform().getOrigin()
+                                                                               : Convert::toBullet(reachingLocation.pos());
 
             auto distance = reachingEntityPos.distance(Convert::toBullet(positionOnQueriedEntity));
             distance -= reachingLocation.radius();
@@ -2731,54 +2752,64 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
             auto queriedBulletEntryI = m_entries.find(queriedEntity.getIntId());
             if (queriedBulletEntryI != m_entries.end()) {
                 auto& queriedBulletEntry = queriedBulletEntryI->second;
-                btVector3 queriedEntityPos;
-
-                if (positionOnQueriedEntity.isValid()) {
-                    //Adjust position on queried entity into parent coord system (to get a global pos)
-                    queriedEntityPos = Convert::toBullet(
-                            positionOnQueriedEntity.toParentCoords(queriedLocation.m_pos,
-                                                                   queriedLocation.m_orientation.isValid() ? queriedLocation.m_orientation : WFMath::Quaternion::IDENTITY()));
-                } else {
-                    //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
-                    queriedEntityPos = queriedBulletEntry->collisionObject ? queriedBulletEntry->collisionObject->getWorldTransform().getOrigin()
-                                                                           : Convert::toBullet(queriedLocation.pos());
-                }
-
-                //Start with the simple case by checking if the centers are close
-                //We measure from the edge of one entity to the edge of another.
-                if (reachingEntityPos.distance(queriedEntityPos) - reachingLocation.radius() - queriedLocation.radius() <= reach) {
-                    return true;
-                }
-
-                if (queriedBulletEntry->collisionObject) {
-                    //Check how we collide with the target.
-                    btCollisionWorld::ClosestRayResultCallback rayResultCallback(reachingEntityPos, queriedEntityPos);
-                    auto extendedQueriedPos = queriedEntityPos + ((queriedEntityPos - reachingEntityPos) * 0.1); //Extend a bit
-                    btCollisionWorld::rayTestSingle(btTransform(btQuaternion::getIdentity(), reachingEntityPos),
-                                                    btTransform(btQuaternion::getIdentity(), extendedQueriedPos),
-                                                    queriedBulletEntry->collisionObject.get(),
-                                                    queriedBulletEntry->collisionShape.get(),
-                                                    queriedBulletEntry->collisionObject->getWorldTransform(),
-                                                    rayResultCallback);
-
-                    if (!rayResultCallback.hasHit()) {
-                        return false;
-                    }
-
-                    //Start with the full distance.
-                    auto distance = reachingEntityPos.distance(rayResultCallback.m_hitPointWorld);
-
-                    //We measure from the edge of one entity to the edge of another.
-                    distance -= reachingLocation.radius();
-
-                    return distance <= reach;
-                }
+                return isWithinReach(*reachingEntityEntry, *queriedBulletEntry, reach, positionOnQueriedEntity);
             }
         }
     }
     //If either the reaching of queried entity doesn't belong to the domain we won't allow it.
     //The most likely case if the reaching entity not belonging (i.e. reaching into a domain).
     return false;
+}
+
+bool PhysicalDomain::isWithinReach(BulletEntry& reacherEntry, BulletEntry& targetEntry, float reach, const WFMath::Point<3>& positionOnQueriedEntity) const
+{
+    auto& targetLocation = targetEntry.entity->m_location;
+    auto& reachingLocation = reacherEntry.entity->m_location;
+    btVector3 queriedEntityPos;
+    //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
+    btVector3 reachingEntityPos = reacherEntry.collisionObject ? reacherEntry.collisionObject->getWorldTransform().getOrigin()
+                                                               : Convert::toBullet(reacherEntry.entity->m_location.pos());
+
+    if (positionOnQueriedEntity.isValid()) {
+        //Adjust position on queried entity into parent coord system (to get a global pos)
+        queriedEntityPos = Convert::toBullet(
+                positionOnQueriedEntity.toParentCoords(targetLocation.m_pos,
+                                                       targetLocation.m_orientation.isValid() ? targetLocation.m_orientation : WFMath::Quaternion::IDENTITY()));
+    } else {
+        //Try to get the collision objects positions, if there are any. Otherwise use the entities positions. This is because some entities don't have collision objects.
+        queriedEntityPos = targetEntry.collisionObject ? targetEntry.collisionObject->getWorldTransform().getOrigin()
+                                                       : Convert::toBullet(targetLocation.pos());
+    }
+
+    //Start with the simple case by checking if the centers are close
+    //We measure from the edge of one entity to the edge of another.
+    if (reachingEntityPos.distance(queriedEntityPos) - reachingLocation.radius() - targetLocation.radius() <= reach) {
+        return true;
+    }
+
+    if (targetEntry.collisionObject) {
+        //Check how we collide with the target.
+        btCollisionWorld::ClosestRayResultCallback rayResultCallback(reachingEntityPos, queriedEntityPos);
+        auto extendedQueriedPos = queriedEntityPos + ((queriedEntityPos - reachingEntityPos) * 0.1); //Extend a bit
+        btCollisionWorld::rayTestSingle(btTransform(btQuaternion::getIdentity(), reachingEntityPos),
+                                        btTransform(btQuaternion::getIdentity(), extendedQueriedPos),
+                                        targetEntry.collisionObject.get(),
+                                        targetEntry.collisionShape.get(),
+                                        targetEntry.collisionObject->getWorldTransform(),
+                                        rayResultCallback);
+
+        if (!rayResultCallback.hasHit()) {
+            return false;
+        }
+
+        //Start with the full distance.
+        auto distance = reachingEntityPos.distance(rayResultCallback.m_hitPointWorld);
+
+        //We measure from the edge of one entity to the edge of another.
+        distance -= reachingLocation.radius();
+
+        return distance <= reach;
+    }
 }
 
 std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath::Ball<3>& sphere) const
@@ -2818,4 +2849,25 @@ std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath:
                                                    entry.second.getPositionWorldOnB().distance(pos.getOrigin())});
     }
     return result;
+}
+
+boost::optional<std::function<void()>> PhysicalDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+{
+    auto reacherEntryI = m_entries.find(reacher.getIntId());
+    auto targetEntryI = m_entries.find(target.getIntId());
+    if (reacherEntryI != m_entries.end() && targetEntryI != m_entries.end()) {
+        auto* reacherEntry = reacherEntryI->second.get();
+        auto* targetEntry = targetEntryI->second.get();
+        auto obs = new ClosenessObserverEntry{reacherEntry, targetEntry, reach, callback};
+        reacherEntry->closenessObservations.insert(obs);
+        targetEntry->closenessObservations.insert(obs);
+        auto pair = std::make_pair(reacherEntry, targetEntry);
+        m_closenessObservations.emplace(pair, std::unique_ptr<ClosenessObserverEntry>(obs));
+        return boost::optional<std::function<void()>>([this, reacherEntry, targetEntry, obs, pair]() {
+            reacherEntry->closenessObservations.erase(obs);
+            targetEntry->closenessObservations.erase(obs);
+            m_closenessObservations.erase(pair);
+        });
+    }
+    return boost::none;
 }

@@ -56,5 +56,13 @@
   }
 #endif //STUB_VoidDomain_isEntityReachable
 
+#ifndef STUB_VoidDomain_observeCloseness
+//#define STUB_VoidDomain_observeCloseness
+  boost::optional<std::function<()>> VoidDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+  {
+    return *static_cast<boost::optional<std::function<()>>*>(nullptr);
+  }
+#endif //STUB_VoidDomain_observeCloseness
+
 
 #endif

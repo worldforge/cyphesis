@@ -192,6 +192,7 @@ class Domain
             return std::vector<CollisionEntry>();
         }
 
+        virtual boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) = 0;
 };
 
 #endif // RULESETS_DOMAIN_H

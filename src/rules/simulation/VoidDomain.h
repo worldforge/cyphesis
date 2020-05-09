@@ -40,6 +40,8 @@ class VoidDomain : public Domain
 
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
 
+        boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override;
+
 };
 
 #endif /* VOIDDOMAIN_H_ */

@@ -38,6 +38,7 @@
 #include <common/operations/Tick.h>
 #include <wfmath/atlasconv.h>
 #include <rules/simulation/AdminProperty.h>
+#include <rules/simulation/ContainerAccessProperty.h>
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;
@@ -58,6 +59,11 @@ struct TestContext
     TestContext()
             : world(new World()), inheritance(factories), testWorld(world, entityCreator), propertyManager(inheritance)
     {
+    }
+
+    ~TestContext()
+    {
+        world->destroy();
     }
 };
 
@@ -80,6 +86,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 {
     Tested()
     {
+        ADD_TEST(test_handleContainers);
         ADD_TEST(test_sendAppearDisappearWithPrivateAndProtected);
         ADD_TEST(test_sendAppearDisappear);
     }
@@ -95,6 +102,161 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         entity->operation(set, resIgnored);
     }
 
+    void test_handleContainers(TestContext& context)
+    {
+
+        auto moveFn = [](const Ref<Thing>& thing, WFMath::Point<3> pos) -> OpVector {
+            OpVector res;
+            Atlas::Objects::Operation::Move move;
+
+            Anonymous arg1;
+            arg1->setId(thing->getId());
+            Atlas::Message::Element posElement = pos.toAtlas();
+            arg1->setPosAsList(posElement.List());
+            move->setArgs1(arg1);
+            thing->MoveOperation(move, res);
+            return res;
+        };
+
+        /**
+         * Check that entities only are allowed to look into containers if they are allowed by the __container_access
+         *
+         * All entities are placed at origo
+         * Hierarchy looks like this:
+         * T1 has a physical domain
+         * T2 and T5 has a container domain
+         *
+         *              T1#
+         *         T2*       T3
+         *      T4   T5*
+         *           T6
+         */
+        {
+            auto& opsHandler = context.testWorld.getOperationsHandler();
+            auto& queue = opsHandler.getQueue();
+
+            WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
+            Ref<Thing> t1 = new Thing(1);
+            t1->setAttrValue("domain", "physical");
+            t1->m_location.m_pos = WFMath::Point<3>::ZERO();
+            context.testWorld.addEntity(t1, context.world);
+            Ref<Thing> t2 = new Thing(2);
+            t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t2->m_location.setBBox(bbox);
+            t2->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t2, t1);
+            Ref<Thing> t3 = new Thing(3);
+            t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t3->m_location.setBBox(bbox);
+            t3->setAttrValue("perception_sight", 1);
+            context.testWorld.addEntity(t3, t1);
+            Ref<Thing> t4 = new Thing(4);
+            t4->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t4->m_location.setBBox(bbox);
+            context.testWorld.addEntity(t4, t2);
+            Ref<Thing> t5 = new Thing(5);
+            t5->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t5->m_location.setBBox(bbox);
+            t5->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t5, t2);
+            Ref<Thing> t6 = new Thing(7);
+            t6->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t6->m_location.setBBox(bbox);
+            context.testWorld.addEntity(t6, t5);
+
+            opsHandler.clearQueues();
+
+            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
+            ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t4}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+            //Add t3 as container observer to t2, which allows it to view its content (t4 and t5)
+            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
+            ASSERT_TRUE(t3->canReach(EntityLocation{t4}))
+            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+            ASSERT_EQUAL(1, queue.size())
+            ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(2, queue.top()->getArgs().size())
+
+            //Add t3 as container observer to t5, which allows it to view its content (t6)
+            opsHandler.clearQueues();
+            t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
+            ASSERT_EQUAL(1, queue.size())
+            ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(1, queue.top()->getArgs().size())
+            //Remove t3 as observer...
+            opsHandler.clearQueues();
+            t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
+            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+            ASSERT_EQUAL(1, queue.size())
+            ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(1, queue.top()->getArgs().size())
+            //...and add it back.
+            t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
+            //Remove t3 as observer from t2, which should sever the connection to t5
+            opsHandler.clearQueues();
+            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
+            //Should still be able to reach t2, even if we can't reach into it.
+            ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
+            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()));
+            ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()));
+            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()));
+            ASSERT_EQUAL(1, queue.size()) //Should really be 2, one from t2 and one from t5
+            ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(2, queue.top()->getArgs().size()) //From both t4 and t5
+
+            //Add it back as observer
+            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
+
+            opsHandler.clearQueues();
+            //Now move t3 away far enough that it can't reach t2 anymore.
+            moveFn(t3, {510, 0, 500});
+            ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+
+            ASSERT_EQUAL(2, queue.size()) //Should really be 3, one Sight, and one Appearance from t2 and one Appearance from t5
+            queue.pop();
+            ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(2, queue.top()->getArgs().size()) //From both t4 and t5
+
+            //Move t3 closer again
+            moveFn(t3, {0, 0, 0});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
+            //t5 should not be reachable since we severed the "reach" connection when moving away
+            ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
+
+            //And then once again move it away
+            moveFn(t3, {510, 0, 500});
+
+            ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+
+
+            //            //When we add t3 back as an observer to t2 the link to t6 should have been severed, and it should no longer be reachable
+//            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+//            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
+//            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+
+
+        }
+    }
+
+
     void test_sendAppearDisappearWithPrivateAndProtected(TestContext& context)
     {
         auto& opsHandler = context.testWorld.getOperationsHandler();
@@ -106,19 +268,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         domainPhysical->m_location.setBBox({{-512, -512, -512},
                                             {512,  512,  512}});
         domainPhysical->setDomain(std::make_unique<PhysicalDomain>(*domainPhysical));
-
-        auto domainTickFn = [&]() -> OpVector {
-            // We must send a Tick op to make the domain handle appear and disappear
-            OpVector res;
-            Atlas::Objects::Operation::Tick tick;
-            Atlas::Objects::Entity::Anonymous arg1;
-            arg1->setName("domain");
-            tick->setArgs1(arg1);
-            tick->setAttr("lastTick", 0.0f);
-            tick->setSeconds(2.0f);  // This should trigger a visibility.
-            domainPhysical->getDomain()->operation(domainPhysical.get(), tick, res);
-            return res;
-        };
 
         // Clear ops queue
         opsHandler.clearQueues();

@@ -47,17 +47,27 @@ class TestDomain : public Domain
         }
 
         virtual void getVisibleEntitiesFor(const LocatedEntity& observingEntity,
-                std::list<LocatedEntity*>& entityList) const
+                                           std::list<LocatedEntity*>& entityList) const
         {
 
         }
 
-        void addEntity(LocatedEntity& entity) {
+        void addEntity(LocatedEntity& entity)
+        {
 
         }
-        void removeEntity(LocatedEntity& entity) {
+
+        void removeEntity(LocatedEntity& entity)
+        {
 
         }
+
+        boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override
+        {
+            return boost::none;
+        }
+
+
 };
 
 #endif /* TESTS_TESTDOMAIN_H_ */

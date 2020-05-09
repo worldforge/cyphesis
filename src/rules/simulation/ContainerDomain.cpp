@@ -30,7 +30,8 @@
 #include <common/operations/Update.h>
 
 ContainerDomain::ContainerDomain(LocatedEntity& entity) :
-        Domain(entity)
+        Domain(entity),
+        mContainerAccessProperty(*entity.requirePropertyClassFixed<ContainerAccessProperty>())
 {
     entity.makeContainer();
 }
@@ -73,7 +74,10 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     }
 
     //Entities can only be seen by outside observers if the outside entity can reach this.
-    return observingEntity.canReach(m_entity.m_location);
+    return mContainerAccessProperty.hasEntity(observingEntity);
+
+
+    // return observingEntity.canReach(m_entity.m_location);
 }
 
 void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
@@ -92,14 +96,19 @@ void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
 std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> list;
+    auto& entities = mContainerAccessProperty.getEntries();
+    for (auto& entry: entities) {
+        if (std::find(entry.second.observedEntities.begin(), entry.second.observedEntities.end(), &observedEntity) != entry.second.observedEntities.end()) {
+            list.push_back(entry.second.observer.get());
+        }
+    }
     list.push_back(&m_entity);
     return list;
 }
 
 bool ContainerDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
 {
-    //If the container can be reached, its content can be reached.
-    return reachingEntity.canReach(m_entity.m_location);
+    return mContainerAccessProperty.hasEntity(reachingEntity);
 }
 
 std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath::Ball<3>& sphere) const
@@ -112,4 +121,19 @@ std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath
         }
     }
     return entries;
+}
+
+boost::optional<std::function<void()>> ContainerDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+{
+    if (m_entity.m_contains) {
+        auto I = std::find_if(m_entity.m_contains->begin(), m_entity.m_contains->end(), [&target](const Ref<LocatedEntity>& child) { return child.get() == &target; });
+        if (I != m_entity.m_contains->end()) {
+            //TODO: add listeners for when the entity leaves the container
+            return boost::optional<std::function<void()>>([this]() {
+
+            });
+
+        }
+    }
+    return boost::none;
 }

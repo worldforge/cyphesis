@@ -18,7 +18,9 @@
 
 #ifndef CYPHESIS_CONTAINERDOMAIN_H
 #define CYPHESIS_CONTAINERDOMAIN_H
+
 #include "rules/Domain.h"
+#include "ContainerAccessProperty.h"
 #include <set>
 #include <string>
 
@@ -42,6 +44,13 @@ class ContainerDomain : public Domain
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
 
         std::vector<CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const override;
+
+        boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override;
+
+    private:
+
+        ContainerAccessProperty& mContainerAccessProperty;
+
 };
 
 

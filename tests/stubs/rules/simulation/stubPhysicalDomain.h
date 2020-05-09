@@ -129,6 +129,14 @@
   }
 #endif //STUB_PhysicalDomain_queryCollision
 
+#ifndef STUB_PhysicalDomain_observeCloseness
+//#define STUB_PhysicalDomain_observeCloseness
+  boost::optional<std::function<()>> PhysicalDomain::observeCloseness(LocatedEntity& entity1, LocatedEntity& entity2, double reach, std::function<void()> callback)
+  {
+    return *static_cast<boost::optional<std::function<()>>*>(nullptr);
+  }
+#endif //STUB_PhysicalDomain_observeCloseness
+
 #ifndef STUB_PhysicalDomain_createDomainBorders
 //#define STUB_PhysicalDomain_createDomainBorders
   void PhysicalDomain::createDomainBorders()
@@ -328,6 +336,14 @@
     return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_PhysicalDomain_tick_handler
+
+#ifndef STUB_PhysicalDomain_isWithinReach
+//#define STUB_PhysicalDomain_isWithinReach
+  bool PhysicalDomain::isWithinReach(BulletEntry& reacherEntry, BulletEntry& targetEntry, float reach, const WFMath::Point<3>& positionOnQueriedEntity) const
+  {
+    return false;
+  }
+#endif //STUB_PhysicalDomain_isWithinReach
 
 
 #endif

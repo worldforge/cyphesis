@@ -62,6 +62,8 @@ class StackableDomain : public Domain
 
         static bool stackIfPossible(const LocatedEntity& domainEntity, LocatedEntity& entity);
 
+        boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override;
+
     protected:
         static std::vector<std::string> sIgnoredProps;
 

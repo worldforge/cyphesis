@@ -135,3 +135,8 @@ std::vector<Domain::CollisionEntry> InventoryDomain::queryCollision(const WFMath
     return entries;
 }
 
+boost::optional<std::function<void()>> InventoryDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+{
+    //TODO:
+    return boost::none;
+}

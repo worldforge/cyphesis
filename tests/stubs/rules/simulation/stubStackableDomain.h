@@ -96,6 +96,14 @@
   }
 #endif //STUB_StackableDomain_stackIfPossible
 
+#ifndef STUB_StackableDomain_observeCloseness
+//#define STUB_StackableDomain_observeCloseness
+  boost::optional<std::function<()>> StackableDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+  {
+    return *static_cast<boost::optional<std::function<()>>*>(nullptr);
+  }
+#endif //STUB_StackableDomain_observeCloseness
+
 #ifndef STUB_StackableDomain_DeleteOperation
 //#define STUB_StackableDomain_DeleteOperation
   HandlerResult StackableDomain::DeleteOperation(LocatedEntity* owner, const Operation& op, OpVector& res)

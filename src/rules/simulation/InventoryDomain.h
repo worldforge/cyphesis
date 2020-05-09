@@ -48,6 +48,7 @@ class InventoryDomain : public Domain
 
         std::vector<Domain::CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const override;
 
+        boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override;
 
 };
 

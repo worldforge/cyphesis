@@ -64,5 +64,21 @@
   }
 #endif //STUB_ContainerDomain_isEntityReachable
 
+#ifndef STUB_ContainerDomain_queryCollision
+//#define STUB_ContainerDomain_queryCollision
+  std::vector<CollisionEntry> ContainerDomain::queryCollision(const WFMath::Ball<3>& sphere) const
+  {
+    return std::vector<CollisionEntry>();
+  }
+#endif //STUB_ContainerDomain_queryCollision
+
+#ifndef STUB_ContainerDomain_observeCloseness
+//#define STUB_ContainerDomain_observeCloseness
+  boost::optional<std::function<()>> ContainerDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
+  {
+    return *static_cast<boost::optional<std::function<()>>*>(nullptr);
+  }
+#endif //STUB_ContainerDomain_observeCloseness
+
 
 #endif

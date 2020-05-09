@@ -103,11 +103,15 @@ class PhysicalDomain : public Domain
 
         std::vector<CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const override;
 
+        boost::optional<std::function<void()>> observeCloseness(LocatedEntity& entity1, LocatedEntity& entity2, double reach, std::function<void()> callback) override;
+
     protected:
 
         class PhysicalMotionState;
 
         class VisibilityCallback;
+
+        struct ClosenessObserverEntry;
 
         struct BulletEntry
         {
@@ -167,6 +171,8 @@ class PhysicalDomain : public Domain
              */
             bool isJumping = false;
 
+            std::set<ClosenessObserverEntry*> closenessObservations;
+
         };
 
         struct TerrainEntry
@@ -175,6 +181,19 @@ class PhysicalDomain : public Domain
             std::unique_ptr<btRigidBody> rigidBody;
             std::unique_ptr<btCollisionShape> shape;
         };
+
+
+        struct ClosenessObserverEntry
+        {
+            BulletEntry* reacher;
+            BulletEntry* target;
+            double reach;
+            /**
+             * Callback to call when entries no longer are close.
+             */
+            std::function<void()> callback;
+        };
+        std::map<std::pair<BulletEntry*, BulletEntry*>, std::unique_ptr<ClosenessObserverEntry>> m_closenessObservations;
 
         std::unordered_map<long, std::unique_ptr<BulletEntry>> m_entries;
 
@@ -352,6 +371,8 @@ class PhysicalDomain : public Domain
         Atlas::Objects::Operation::RootOperation scheduleTick(LocatedEntity& entity, double timeNow);
 
         HandlerResult tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res);
+
+        bool isWithinReach(BulletEntry& reacherEntry, BulletEntry& targetEntry, float reach, const WFMath::Point<3>& positionOnQueriedEntity) const;
 
 };
 

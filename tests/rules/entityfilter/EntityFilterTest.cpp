@@ -111,6 +111,12 @@ struct TestDomain : Domain
         //Only allow reaching if parent or child
         return reachingEntity.m_location.m_parent == &queriedEntity || queriedEntity.m_location.m_parent == &reachingEntity;
     }
+
+    boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override
+    {
+        return boost::none;
+    }
+
 };
 
 struct EntityFilterTest : public Cyphesis::TestBase
