@@ -287,7 +287,7 @@ void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
             OpVector res;
             fromEntity.broadcast(op, res, Visibility::PUBLIC);
             for (auto& broadcastedOp : res) {
-                m_operationsDispatcher.addOperationToQueue(broadcastedOp, Ref<LocatedEntity>(&fromEntity));
+                m_operationsDispatcher.addOperationToQueue(std::move(broadcastedOp), Ref<LocatedEntity>(&fromEntity));
             }
         } else {
             //Don't broadcast ops which shouldn't be broadcasted.

@@ -53,6 +53,10 @@ class ContainerAccessProperty : public PropertyBase
             return m_entities;
         };
 
+        std::map<std::string, ObservationEntry>& getEntries()
+        {
+            return m_entities;
+        };
     protected:
 
 

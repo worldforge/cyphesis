@@ -51,6 +51,14 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
     if (auto prop = entity.modPropertyClassFixed<ModeDataProperty>()) {
         prop->clearData();
     }
+
+    auto& entries = mContainerAccessProperty.getEntries();
+    for (auto& entry: entries) {
+//        if (entry.second.observer->hasFlags(entity_admin) || entity.hasFlags(entity_contained_visible)) {
+            entry.second.observedEntities.push_back(&entity);
+ //       }
+    }
+
 }
 
 void ContainerDomain::removeEntity(LocatedEntity& entity)
@@ -96,13 +104,19 @@ void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
 std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> list;
-    auto& entities = mContainerAccessProperty.getEntries();
-    for (auto& entry: entities) {
-        if (std::find(entry.second.observedEntities.begin(), entry.second.observedEntities.end(), &observedEntity) != entry.second.observedEntities.end()) {
+    auto& entries = mContainerAccessProperty.getEntries();
+    for (auto& entry: entries) {
+        if (entry.second.observer->hasFlags(entity_admin) || observedEntity.hasFlags(entity_contained_visible)) {
             list.push_back(entry.second.observer.get());
+        } else {
+            if (std::find(entry.second.observedEntities.begin(), entry.second.observedEntities.end(), &observedEntity) != entry.second.observedEntities.end()) {
+                list.push_back(entry.second.observer.get());
+            }
         }
     }
-    list.push_back(&m_entity);
+    if (m_entity.hasFlags(entity_perceptive)) {
+        list.push_back(&m_entity);
+    }
     return list;
 }
 

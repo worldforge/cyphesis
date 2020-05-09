@@ -159,7 +159,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t5->m_location.setBBox(bbox);
             t5->setAttrValue("domain", "container");
             context.testWorld.addEntity(t5, t2);
-            Ref<Thing> t6 = new Thing(7);
+            Ref<Thing> t6 = new Thing(6);
             t6->m_location.m_pos = WFMath::Point<3>::ZERO();
             t6->m_location.setBBox(bbox);
             context.testWorld.addEntity(t6, t5);
@@ -245,6 +245,21 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
             ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+
+            //Move it back, access the container, and then add a new entity and expect an Appearance op
+            moveFn(t3, {0, 0, 0});
+            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            opsHandler.clearQueues();
+            Ref<Thing> t7 = new Thing(7);
+            t7->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t7->m_location.setBBox(bbox);
+            context.testWorld.addEntity(t7, t2);
+
+            ASSERT_EQUAL(1, queue.size());
+            ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(1, queue.top()->getArgs().size())
+            ASSERT_EQUAL(t7->getId(), queue.top()->getArgs().front()->getId())
 
 
             //            //When we add t3 back as an observer to t2 the link to t6 should have been severed, and it should no longer be reachable
