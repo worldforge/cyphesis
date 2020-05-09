@@ -42,4 +42,5 @@ x86_64
 .idea
 *.pyc
 /*build*
+/cmake-install*
 

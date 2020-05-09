@@ -2364,7 +2364,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                         observation->reacher->closenessObservations.erase(*I);
                     }
                     I = bulletEntry.closenessObservations.erase(I);
-                    m_closenessObservations.erase(std::make_pair(observation->reacher, observation->target));
+                    m_closenessObservations.erase(observation);
                 } else {
                     ++I;
                 }
@@ -2861,12 +2861,11 @@ boost::optional<std::function<void()>> PhysicalDomain::observeCloseness(LocatedE
         auto obs = new ClosenessObserverEntry{reacherEntry, targetEntry, reach, callback};
         reacherEntry->closenessObservations.insert(obs);
         targetEntry->closenessObservations.insert(obs);
-        auto pair = std::make_pair(reacherEntry, targetEntry);
-        m_closenessObservations.emplace(pair, std::unique_ptr<ClosenessObserverEntry>(obs));
-        return boost::optional<std::function<void()>>([this, reacherEntry, targetEntry, obs, pair]() {
+        m_closenessObservations.emplace(obs, std::unique_ptr<ClosenessObserverEntry>(obs));
+        return boost::optional<std::function<void()>>([this, reacherEntry, targetEntry, obs]() {
             reacherEntry->closenessObservations.erase(obs);
             targetEntry->closenessObservations.erase(obs);
-            m_closenessObservations.erase(pair);
+            m_closenessObservations.erase(obs);
         });
     }
     return boost::none;

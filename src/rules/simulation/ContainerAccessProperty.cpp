@@ -102,16 +102,6 @@ void ContainerAccessProperty::apply(LocatedEntity* entity)
                 reach = reachProp->data();
             }
             auto observerationCallback = entity->m_location.m_parent->getDomain()->observeCloseness(*observer, *entity, reach, [this, entity, observer]() {
-                //TODO: collect observers and send disappear
-
-//                Atlas::Objects::Operation::Look look;
-//                look->setFrom(observer->getId());
-//                look->setTo(entity->getId());
-//                Atlas::Objects::Entity::Anonymous anon;
-//                anon->setId(entity->getId());
-//                look->setArgs1(std::move(anon));
-//                observer->sendWorld(look);
-
                 auto J = m_entities.find(observer->getId());
                 if (J != m_entities.end()) {
                     if (!J->second.observedEntities.empty()) {
