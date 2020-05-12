@@ -27,6 +27,15 @@
             <map name="description">
                 <string name="default">A small bag.</string>
             </map>
+            <map name="usages">
+                <map name="append">
+                    <map name="view">
+                        <string name="name">View</string>
+                        <string name="handler">world.objects.Container.view</string>
+                        <string name="constraint">describe("You're too far away.", actor can_reach tool)</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">bag</string>
         <string name="objtype">class</string>

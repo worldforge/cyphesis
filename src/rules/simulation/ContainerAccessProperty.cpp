@@ -19,7 +19,9 @@
 #include "ContainerAccessProperty.h"
 #include "BaseWorld.h"
 #include "rules/Domain.h"
+#include "ContainersActiveProperty.h"
 #include <Atlas/Objects/Entity.h>
+#include <common/operations/Update.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -68,6 +70,14 @@ void ContainerAccessProperty::set(const Element& ent)
                 fn();
             }
         }
+
+        auto& observer = entry.second.observer;
+
+        auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+        containersActiveProperty->getActiveContainers().erase(entry.second.);
+        observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+
         std::vector<Atlas::Objects::Root> args;
         for (auto& child : entry.second.observedEntities) {
             Atlas::Objects::Entity::Anonymous anon;
@@ -78,7 +88,7 @@ void ContainerAccessProperty::set(const Element& ent)
         Atlas::Objects::Operation::Disappearance disappearance;
         disappearance->setArgs(std::move(args));
         disappearance->setTo(entry.second.observer->getId());
-        entry.second.observer->sendWorld(std::move(disappearance)); //Should really be done by the domain entity...
+        observer->sendWorld(std::move(disappearance)); //Should really be done by the domain entity...
         //entity->sendWorld(std::move(disappearance));
     }
 }
@@ -87,7 +97,6 @@ ContainerAccessProperty* ContainerAccessProperty::copy() const
 {
     return new ContainerAccessProperty(*this);
 }
-
 
 
 void ContainerAccessProperty::apply(LocatedEntity* entity)
@@ -113,6 +122,15 @@ void ContainerAccessProperty::apply(LocatedEntity* entity)
                             args.push_back(std::move(anon));
                         }
 
+                        auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+                        containersActiveProperty->getActiveContainers().erase(entity);
+                        observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+                        Atlas::Objects::Operation::Update update;
+                        update->setTo(observer->getId());
+                        observer->sendWorld(std::move(update));
+
+
                         Atlas::Objects::Operation::Disappearance disappearance;
                         disappearance->setArgs(std::move(args));
                         disappearance->setTo(observer->getId());
@@ -120,33 +138,18 @@ void ContainerAccessProperty::apply(LocatedEntity* entity)
                     }
                     m_entities.erase(J);
                 }
-//                std::vector<LocatedEntity*> visibleEntities;
-//                if (entity->m_contains) {
-//                    for (auto& child : *entity->m_contains) {
-//                        if (child->isVisibleForOtherEntity(observer.get())) {
-//                            visibleEntities.push_back(child.get());
-//                        }
-//                    }
-//                }
-//
-//                std::vector<Atlas::Objects::Root> args;
-//                for (auto& child : visibleEntities) {
-//                    if (!child->isVisibleForOtherEntity(observer.get())) {
-//                        Atlas::Objects::Entity::Anonymous anon;
-//                        anon->setId(child->getId());
-//                        args.push_back(std::move(anon));
-//                    }
-//                }
-//                if (!args.empty()) {
-//                    Atlas::Objects::Operation::Disappearance disappearance;
-//                    disappearance->setArgs(std::move(args));
-//                    disappearance->setTo(observer->getId());
-//                    entity->sendWorld(std::move(disappearance));
-//
-//                }
+
 
             });
             if (observerationCallback) {
+                auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+                containersActiveProperty->getActiveContainers().insert(entity);
+                observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+                Atlas::Objects::Operation::Update update;
+                update->setTo(observer->getId());
+                observer->sendWorld(std::move(update));
+
                 entry.second.disconnectFn = observerationCallback;
                 entity->getDomain()->getVisibleEntitiesFor(*observer, entry.second.observedEntities);
                 if (!entry.second.observedEntities.empty()) {

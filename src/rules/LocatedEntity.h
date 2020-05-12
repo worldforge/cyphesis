@@ -509,6 +509,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                 // If it is not of the right type, delete it and a new
                 // one of the right type will be inserted.
                 sp = new PropertyT;
+                sp->flags().addFlags(PropertyBase::flagsForPropertyName(name));
                 m_properties[name].property.reset(sp);
                 sp->install(this, name);
                 if (p != nullptr) {

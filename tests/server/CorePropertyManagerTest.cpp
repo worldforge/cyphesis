@@ -230,6 +230,7 @@ int main()
 #include "../stubs/rules/simulation/stubModifiersProperty.h"
 #include "../stubs/rules/simulation/stubVisibilityDistanceProperty.h"
 #include "../stubs/rules/simulation/stubContainerAccessProperty.h"
+#include "../stubs/rules/simulation/stubContainersActiveProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

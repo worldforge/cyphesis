@@ -58,7 +58,8 @@ add_library(rulessimulation
         Spawn.h
         WorldRouter.cpp
         VisibilityDistanceProperty.cpp
-        ContainerAccessProperty.cpp)
+        ContainerAccessProperty.cpp
+        ContainersActiveProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

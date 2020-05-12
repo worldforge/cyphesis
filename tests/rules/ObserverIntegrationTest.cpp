@@ -177,7 +177,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_TRUE(t3->canReach(EntityLocation{t4}))
             ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
-            ASSERT_EQUAL(1, queue.size())
+            ASSERT_EQUAL(2, queue.size()) //One Update and one Appearance
+            ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, queue.top()->getClassNo())
+            queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(2, queue.top()->getArgs().size())
@@ -186,7 +188,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             opsHandler.clearQueues();
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
             ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
-            ASSERT_EQUAL(1, queue.size())
+            ASSERT_EQUAL(2, queue.size())
+            queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(1, queue.top()->getArgs().size())
@@ -211,7 +214,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()));
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
             ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()));
-            ASSERT_EQUAL(1, queue.size()) //Should really be 2, one from t2 and one from t5
+            ASSERT_EQUAL(2, queue.size()) //Should really be 3, one from t2 and one from t5
+            queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(2, queue.top()->getArgs().size()) //From both t4 and t5
@@ -226,7 +230,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
 
-            ASSERT_EQUAL(2, queue.size()) //Should really be 3, one Sight, and one Appearance from t2 and one Appearance from t5
+            ASSERT_EQUAL(3, queue.size()) //Should really be 3, one Sight, and one Appearance from t2 and one Appearance from t5
+            queue.pop();
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
