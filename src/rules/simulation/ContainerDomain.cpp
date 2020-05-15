@@ -23,17 +23,20 @@
 #include "AmountProperty.h"
 #include "StackableDomain.h"
 #include "ModeDataProperty.h"
+#include "ContainersActiveProperty.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
 #include <unordered_set>
 #include <common/operations/Update.h>
+#include "BaseWorld.h"
 
 ContainerDomain::ContainerDomain(LocatedEntity& entity) :
         Domain(entity),
-        mContainerAccessProperty(*entity.requirePropertyClassFixed<ContainerAccessProperty>())
+        mContainerAccessProperty(new ContainerAccessProperty(*this))
 {
     entity.makeContainer();
+    entity.setProperty(ContainerAccessProperty::property_name, std::unique_ptr<ContainerAccessProperty>(mContainerAccessProperty));
 }
 
 void ContainerDomain::addEntity(LocatedEntity& entity)
@@ -52,11 +55,10 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
         prop->clearData();
     }
 
-    auto& entries = mContainerAccessProperty.getEntries();
-    for (auto& entry: entries) {
+    for (auto& entry: m_entities) {
 //        if (entry.second.observer->hasFlags(entity_admin) || entity.hasFlags(entity_contained_visible)) {
-            entry.second.observedEntities.push_back(&entity);
- //       }
+        entry.second.observedEntities.push_back(&entity);
+        //       }
     }
 
 }
@@ -82,7 +84,7 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     }
 
     //Entities can only be seen by outside observers if the outside entity can reach this.
-    return mContainerAccessProperty.hasEntity(observingEntity);
+    return hasEntity(observingEntity);
 
 
     // return observingEntity.canReach(m_entity.m_location);
@@ -104,8 +106,7 @@ void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
 std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> list;
-    auto& entries = mContainerAccessProperty.getEntries();
-    for (auto& entry: entries) {
+    for (auto& entry: m_entities) {
         if (entry.second.observer->hasFlags(entity_admin) || observedEntity.hasFlags(entity_contained_visible)) {
             list.push_back(entry.second.observer.get());
         } else {
@@ -122,7 +123,7 @@ std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const Located
 
 bool ContainerDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
 {
-    return mContainerAccessProperty.hasEntity(reachingEntity);
+    return hasEntity(reachingEntity);
 }
 
 std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath::Ball<3>& sphere) const
@@ -150,4 +151,147 @@ boost::optional<std::function<void()>> ContainerDomain::observeCloseness(Located
         }
     }
     return boost::none;
+}
+
+void ContainerDomain::setObservers(std::vector<std::string> observerIds)
+{
+    std::set<std::string> existingObservers;
+    for (auto& entry: m_entities) {
+        existingObservers.emplace(entry.first);
+    }
+
+    for (auto& newId : observerIds) {
+        auto I = existingObservers.find(newId);
+        if (I != existingObservers.end()) {
+            existingObservers.erase(I);
+        } else {
+            //Doesn't exist, needs to be added
+            addObserver(newId);
+        }
+    }
+
+    //Any ids left should be removed.
+
+    for (auto& id: existingObservers) {
+        removeObserver(id);
+    }
+
+}
+
+void ContainerDomain::addObserver(std::string& entityId)
+{
+    auto observer = BaseWorld::instance().getEntity(entityId);
+    if (observer) {
+        double reach = 0;
+        auto reachProp = observer->getPropertyType<double>("reach");
+        if (reachProp) {
+            reach = reachProp->data();
+        }
+        auto observerationCallback = m_entity.m_location.m_parent->getDomain()->observeCloseness(*observer, m_entity, reach, [this, observer]() {
+            auto J = m_entities.find(observer->getId());
+            if (J != m_entities.end()) {
+                if (!J->second.observedEntities.empty()) {
+
+                    std::vector<Atlas::Objects::Root> args;
+                    for (auto& child : J->second.observedEntities) {
+                        Atlas::Objects::Entity::Anonymous anon;
+                        anon->setId(child->getId());
+                        args.push_back(std::move(anon));
+                    }
+
+                    auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+                    containersActiveProperty->getActiveContainers().erase(m_entity.getId());
+                    observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+                    Atlas::Objects::Operation::Update update;
+                    update->setTo(observer->getId());
+                    observer->sendWorld(std::move(update));
+
+
+                    Atlas::Objects::Operation::Disappearance disappearance;
+                    disappearance->setArgs(std::move(args));
+                    disappearance->setTo(observer->getId());
+                    m_entity.sendWorld(std::move(disappearance));
+                }
+                m_entities.erase(J);
+            }
+
+
+        });
+        if (observerationCallback) {
+            auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+            containersActiveProperty->getActiveContainers().insert(m_entity.getId());
+            observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+            Atlas::Objects::Operation::Update update;
+            update->setTo(observer->getId());
+            observer->sendWorld(std::move(update));
+
+            auto& entry = m_entities[entityId];
+            entry.observer = observer;
+
+            entry.disconnectFn = observerationCallback;
+            getVisibleEntitiesFor(*observer, entry.observedEntities);
+            if (!entry.observedEntities.empty()) {
+                std::vector<Atlas::Objects::Root> args;
+                for (auto& child : entry.observedEntities) {
+                    Atlas::Objects::Entity::Anonymous anon;
+                    anon->setId(child->getId());
+                    args.push_back(std::move(anon));
+                }
+
+                Atlas::Objects::Operation::Appearance appearance;
+                appearance->setArgs(std::move(args));
+                appearance->setTo(observer->getId());
+                m_entity.sendWorld(std::move(appearance));
+            }
+
+        }
+    }
+
+}
+
+void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
+{
+    auto I = m_entities.find(entityId);
+    if (I != m_entities.end()) {
+        auto& entry = *I;
+        if (entry.second.disconnectFn) {
+            auto& fn = *entry.second.disconnectFn;
+            if (fn) {
+                fn();
+            }
+        }
+
+        auto& observer = entry.second.observer;
+
+        auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+        containersActiveProperty->getActiveContainers().erase(m_entity.getId());
+        observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+        //Send an update to handle the ContainersActiveProperty being changed.
+        Atlas::Objects::Operation::Update update;
+        update->setTo(observer->getId());
+        observer->sendWorld(std::move(update));
+
+        std::vector<Atlas::Objects::Root> args;
+        for (auto& child : entry.second.observedEntities) {
+            Atlas::Objects::Entity::Anonymous anon;
+            anon->setId(child->getId());
+            args.push_back(std::move(anon));
+        }
+
+        Atlas::Objects::Operation::Disappearance disappearance;
+        disappearance->setArgs(std::move(args));
+        disappearance->setTo(entry.second.observer->getId());
+        observer->sendWorld(std::move(disappearance)); //Should really be done by the domain entity...
+        //entity->sendWorld(std::move(disappearance));
+
+        m_entities.erase(I);
+    }
+}
+
+bool ContainerDomain::hasEntity(const LocatedEntity& entity) const
+{
+    return m_entities.find(entity.getId()) != m_entities.end();
 }

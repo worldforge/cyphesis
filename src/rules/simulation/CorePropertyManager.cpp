@@ -66,8 +66,6 @@
 
 #include "common/debug.h"
 #include "VisibilityDistanceProperty.h"
-#include "ContainerAccessProperty.h"
-#include "ContainersActiveProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -255,8 +253,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<ModifySelfProperty>();
     installProperty<ModifiersProperty>();
 
-    installProperty<ContainerAccessProperty>();
-    installProperty<ContainersActiveProperty>();
 }
 
 CorePropertyManager::~CorePropertyManager() = default;

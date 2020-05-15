@@ -34,7 +34,7 @@ int ContainersActiveProperty::get(Atlas::Message::Element& element) const
 {
     ListType list;
     for (auto& entity: m_activeContainers) {
-        list.emplace_back(entity->getId());
+        list.emplace_back(entity);
     }
     element = list;
     return 0;
@@ -51,4 +51,11 @@ ContainersActiveProperty* ContainersActiveProperty::copy() const
 
 void ContainersActiveProperty::apply(LocatedEntity*)
 {
+}
+
+
+bool ContainersActiveProperty::hasContainer(const std::string& containerId) const
+{
+    auto I = m_activeContainers.find(containerId);
+    return I != m_activeContainers.end();
 }

@@ -27,6 +27,13 @@
 class ContainerDomain : public Domain
 {
     public:
+        struct ObservationEntry
+        {
+            Ref<LocatedEntity> observer;
+            boost::optional<std::function<void()>> disconnectFn;
+            std::list<LocatedEntity*> observedEntities;
+        };
+
         explicit ContainerDomain(LocatedEntity& entity);
 
         ~ContainerDomain() override = default;
@@ -47,10 +54,37 @@ class ContainerDomain : public Domain
 
         boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override;
 
+
+        LocatedEntity& getEntity()
+        {
+            return m_entity;
+        }
+
+        const std::map<std::string, ObservationEntry>& getEntries() const
+        {
+            return m_entities;
+        };
+
+        std::map<std::string, ObservationEntry>& getEntries()
+        {
+            return m_entities;
+        };
+
+        void setObservers(std::vector<std::string> observerIds);
+
+        bool hasEntity(const LocatedEntity& entity) const;
+
     private:
 
-        ContainerAccessProperty& mContainerAccessProperty;
 
+        ContainerAccessProperty* mContainerAccessProperty;
+
+        std::map<std::string, ObservationEntry> m_entities;
+
+
+        void addObserver(std::string& entityId);
+
+        void removeObserver(const std::basic_string<char>& entityId);
 };
 
 

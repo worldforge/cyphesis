@@ -39,6 +39,7 @@
 #include <wfmath/atlasconv.h>
 #include <rules/simulation/AdminProperty.h>
 #include <rules/simulation/ContainerAccessProperty.h>
+#include <rules/simulation/ContainersActiveProperty.h>
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;
@@ -124,12 +125,13 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          * All entities are placed at origo
          * Hierarchy looks like this:
          * T1 has a physical domain
-         * T2 and T5 has a container domain
+         * T2, T5 and T7 has a container domain
+         * T3 has sight
          *
          *              T1#
          *         T2*       T3
-         *      T4   T5*
-         *           T6
+         *      T4   T5*     T7*
+         *           T6      T8
          */
         {
             auto& opsHandler = context.testWorld.getOperationsHandler();
@@ -163,6 +165,15 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t6->m_location.m_pos = WFMath::Point<3>::ZERO();
             t6->m_location.setBBox(bbox);
             context.testWorld.addEntity(t6, t5);
+            Ref<Thing> t7 = new Thing(7);
+            t7->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t7->m_location.setBBox(bbox);
+            t7->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t7, t3);
+            Ref<Thing> t8 = new Thing(8);
+            t8->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t8->m_location.setBBox(bbox);
+            context.testWorld.addEntity(t8, t7);
 
             opsHandler.clearQueues();
 
@@ -177,36 +188,42 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_TRUE(t3->canReach(EntityLocation{t4}))
             ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
-            ASSERT_EQUAL(2, queue.size()) //One Update and one Appearance
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
+            ASSERT_EQUAL(2u, queue.size()) //One Update and one Appearance
             ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, queue.top()->getClassNo())
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(2, queue.top()->getArgs().size())
+            ASSERT_EQUAL(2u, queue.top()->getArgs().size())
 
             //Add t3 as container observer to t5, which allows it to view its content (t6)
             opsHandler.clearQueues();
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
-            ASSERT_EQUAL(2, queue.size())
+            ASSERT_EQUAL(2u, queue.size())
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(1, queue.top()->getArgs().size())
+            ASSERT_EQUAL(1u, queue.top()->getArgs().size())
             //Remove t3 as observer...
             opsHandler.clearQueues();
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
+            ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
-            ASSERT_EQUAL(1, queue.size())
+            ASSERT_EQUAL(2u, queue.size())
+            queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(1, queue.top()->getArgs().size())
+            ASSERT_EQUAL(1u, queue.top()->getArgs().size())
             //...and add it back.
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
             //Remove t3 as observer from t2, which should sever the connection to t5
             opsHandler.clearQueues();
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
+            ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
             //Should still be able to reach t2, even if we can't reach into it.
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
             ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()));
@@ -214,11 +231,11 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()));
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
             ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()));
-            ASSERT_EQUAL(2, queue.size()) //Should really be 3, one from t2 and one from t5
+            ASSERT_EQUAL(2u, queue.size()) //Should really be 3, one from t2 and one from t5
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(2, queue.top()->getArgs().size()) //From both t4 and t5
+            ASSERT_EQUAL(2u, queue.top()->getArgs().size()) //From both t4 and t5
 
             //Add it back as observer
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
@@ -230,12 +247,12 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
 
-            ASSERT_EQUAL(3, queue.size()) //Should really be 3, one Sight, and one Appearance from t2 and one Appearance from t5
+            ASSERT_EQUAL(3u, queue.size()) //Should really be 3, one Sight, and one Appearance from t2 and one Appearance from t5
             queue.pop();
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(2, queue.top()->getArgs().size()) //From both t4 and t5
+            ASSERT_EQUAL(2u, queue.top()->getArgs().size()) //From both t4 and t5
 
             //Move t3 closer again
             moveFn(t3, {0, 0, 0});
@@ -255,16 +272,16 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             moveFn(t3, {0, 0, 0});
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
             opsHandler.clearQueues();
-            Ref<Thing> t7 = new Thing(7);
-            t7->m_location.m_pos = WFMath::Point<3>::ZERO();
-            t7->m_location.setBBox(bbox);
-            context.testWorld.addEntity(t7, t2);
+            Ref<Thing> t9 = new Thing(9);
+            t9->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t9->m_location.setBBox(bbox);
+            context.testWorld.addEntity(t9, t2);
 
-            ASSERT_EQUAL(1, queue.size());
+            ASSERT_EQUAL(1u, queue.size());
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(1, queue.top()->getArgs().size())
-            ASSERT_EQUAL(t7->getId(), queue.top()->getArgs().front()->getId())
+            ASSERT_EQUAL(1u, queue.top()->getArgs().size())
+            ASSERT_EQUAL(t9->getId(), queue.top()->getArgs().front()->getId())
 
 
             //            //When we add t3 back as an observer to t2 the link to t6 should have been severed, and it should no longer be reachable
@@ -323,7 +340,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
 
         // We now expect to get an Appearance op sent to the admin observer (but not the regular observer)
-        ASSERT_EQUAL(1, ops.size())
+        ASSERT_EQUAL(1u, ops.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, ops.front()->getClassNo())
         ASSERT_EQUAL(objectPrivate1->getId(), ops.front()->getArgs().front()->getId())
         ASSERT_EQUAL(observerAdmin->getId(), ops.front()->getTo())
@@ -340,7 +357,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             move->setArgs1(arg1);
             objectPrivate1->MoveOperation(move, res);
         }
-        ASSERT_EQUAL(1, res.size())
+        ASSERT_EQUAL(1u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res.front()->getClassNo())
         ASSERT_EQUAL(Atlas::Objects::Operation::MOVE_NO, res.front()->getArgs().front()->getClassNo())
         ASSERT_EQUAL(objectPrivate1->getId(), Atlas::Objects::smart_dynamic_cast<Operation>(res.front()->getArgs().front())->getArgs().front()->getId())
@@ -388,7 +405,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         auto ops = collectQueue(queue);
         // We now expect to get an Appearence op sent to the observer about the domain entity, as well as an Appearance sent to the observer itself.
-        ASSERT_EQUAL(2, ops.size())
+        ASSERT_EQUAL(2u, ops.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, ops[0]->getClassNo())
         ASSERT_EQUAL(domainPhysical->getId(), ops[0]->getArgs().front()->getId())
         ASSERT_EQUAL(observer->getId(), ops[0]->getTo())
@@ -420,7 +437,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
 
         // We now expect to get an Appearance op sent to the observer (but not the observer in the void)
-        ASSERT_EQUAL(1, ops.size())
+        ASSERT_EQUAL(1u, ops.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, ops.front()->getClassNo())
         ASSERT_EQUAL(object1->getId(), ops.front()->getArgs().front()->getId())
         ASSERT_EQUAL(observer->getId(), ops.front()->getTo())
@@ -441,8 +458,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
 
         // We now expect to get a Disappearance op sent to the observer (but nothing sent to the observer in the void). The first op should be a Sight op, the second an Update op.
-        ASSERT_EQUAL(0, ops.size())
-        ASSERT_EQUAL(3, res.size())
+        ASSERT_EQUAL(0u, ops.size())
+        ASSERT_EQUAL(3u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
         ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, res[1]->getClassNo())
         ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[2]->getClassNo())
@@ -466,8 +483,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
 
         // We now expect to get an Appearance op sent to the observer (but nothing sent to the observer in the void). The first op should be an Update op
-        ASSERT_EQUAL(0, ops.size())
-        ASSERT_EQUAL(2, res.size())
+        ASSERT_EQUAL(0u, ops.size())
+        ASSERT_EQUAL(2u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, res[0]->getClassNo())
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, res[1]->getClassNo())
         ASSERT_EQUAL(object1->getId(), res[1]->getArgs().front()->getId())
@@ -483,8 +500,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
 
         // A Sight is sent to the deleted entity, but it's sent directly without being put on the queue.
-        ASSERT_EQUAL(0, ops.size())
-        ASSERT_EQUAL(2, res.size())
+        ASSERT_EQUAL(0u, ops.size())
+        ASSERT_EQUAL(2u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
         ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[1]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
@@ -502,7 +519,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
 
         // We now expect to get an Appearance op sent to the observer (but not the observer in the void)
-        ASSERT_EQUAL(1, ops.size())
+        ASSERT_EQUAL(1u, ops.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, ops.front()->getClassNo())
         ASSERT_EQUAL(object2->getId(), ops.front()->getArgs().front()->getId())
         ASSERT_EQUAL(observer->getId(), ops.front()->getTo())
@@ -523,17 +540,17 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
         // We now expect to get a Disappearance op sent to the observer. The first op should be a Sight op, the second an Update op.
         // The ops contains a Sight of a Set, which contains the new positional attributes as the entity moved within the PhysicalDomain.
-        ASSERT_EQUAL(1, ops.size())
+        ASSERT_EQUAL(1u, ops.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, ops[0]->getClassNo())
         ASSERT_EQUAL(Atlas::Objects::Operation::SET_NO, ops[0]->getArgs().front()->getClassNo())
         ASSERT_EQUAL(observer->getId(), ops[0]->getTo())
-        ASSERT_EQUAL(1, res.size())
+        ASSERT_EQUAL(1u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
 
         // We must send a Tick op to make the domain handle appear and disappear
         res = domainTickFn();
-        ASSERT_EQUAL(2, res.size())  // Second op is a Tick
+        ASSERT_EQUAL(2u, res.size())  // Second op is a Tick
         ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[0]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
         ASSERT_EQUAL(object2->getId(), res[0]->getArgs().front()->getId())
@@ -554,7 +571,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_TRUE(res.empty())
         ASSERT_TRUE(ops.empty())
         res = domainTickFn();
-        ASSERT_EQUAL(1, res.size())  // Should only contain Tick
+        ASSERT_EQUAL(1u, res.size())  // Should only contain Tick
 
         opsHandler.clearQueues();
         // Make object2 very much larger, so it should appear
@@ -565,7 +582,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ops = collectQueue(queue);
         ASSERT_TRUE(ops.empty())
         res = domainTickFn();
-        ASSERT_EQUAL(2, res.size())  // Second op is a Tick
+        ASSERT_EQUAL(2u, res.size())  // Second op is a Tick
 
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, res[0]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
@@ -578,7 +595,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
                                                              {1,  1,  1}}.toAtlas());
         }
         res = domainTickFn();
-        ASSERT_EQUAL(2, res.size())  // Second op is a Tick
+        ASSERT_EQUAL(2u, res.size())  // Second op is a Tick
 
         ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[0]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
@@ -601,7 +618,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_TRUE(res.empty())
         ASSERT_TRUE(ops.empty())
         res = domainTickFn();
-        ASSERT_EQUAL(2, res.size())  // Second op is a Tick
+        ASSERT_EQUAL(2u, res.size())  // Second op is a Tick
 
         ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, res[0]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())

@@ -45,19 +45,21 @@ class ContainersActiveProperty : public PropertyBase
 
         void apply(LocatedEntity*) override;
 
-        const std::set<LocatedEntity*>& getActiveContainers() const
+        const std::set<std::string>& getActiveContainers() const
         {
             return m_activeContainers;
         };
 
-        std::set<LocatedEntity*>& getActiveContainers()
+        std::set<std::string>& getActiveContainers()
         {
             return m_activeContainers;
         };
+
+        bool hasContainer(const std::string& containerId) const;
     protected:
 
 
-        std::set<LocatedEntity*> m_activeContainers;
+        std::set<std::string> m_activeContainers;
 
 };
 

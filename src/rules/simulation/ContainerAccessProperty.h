@@ -23,20 +23,17 @@
 #include "rules/LocatedEntity.h"
 #include <vector>
 
+class ContainerDomain;
+
 class ContainerAccessProperty : public PropertyBase
 {
     public:
-        struct ObservationEntry
-        {
-            Ref<LocatedEntity> observer;
-            boost::optional<std::function<void()>> disconnectFn;
-            std::list<LocatedEntity*> observedEntities;
-        };
+
 
         static constexpr const char* property_name = "__container_access";
         static constexpr const char* property_atlastype = "list";
 
-        ContainerAccessProperty();
+        ContainerAccessProperty(ContainerDomain& container);
 
         int get(Atlas::Message::Element&) const override;
 
@@ -46,22 +43,13 @@ class ContainerAccessProperty : public PropertyBase
 
         void apply(LocatedEntity*) override;
 
-        bool hasEntity(const LocatedEntity& entity) const;
+       // bool hasEntity(const LocatedEntity& entity) const;
 
-        const std::map<std::string, ObservationEntry>& getEntries() const
-        {
-            return m_entities;
-        };
 
-        std::map<std::string, ObservationEntry>& getEntries()
-        {
-            return m_entities;
-        };
+
     protected:
 
-
-        std::map<std::string, ObservationEntry> m_entities;
-
+        ContainerDomain& m_container;
 
 //        std::set<Ref<LocatedEntity>> m_entities;
 };
