@@ -191,7 +191,7 @@ void ContainerAccessProperty::apply(LocatedEntity* entity)
 //    }
 }
 
-//bool ContainerAccessProperty::hasEntity(const LocatedEntity& entity) const
+//bool ContainerAccessProperty::hasObserverRegistered(const LocatedEntity& entity) const
 //{
 //    return m_entities.find(entity.getId()) != m_entities.end();
 //}

@@ -84,7 +84,7 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
     }
 
     //Entities can only be seen by outside observers if the outside entity can reach this.
-    return hasEntity(observingEntity);
+    return hasObserverRegistered(observingEntity);
 
 
     // return observingEntity.canReach(m_entity.m_location);
@@ -123,7 +123,7 @@ std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const Located
 
 bool ContainerDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
 {
-    return hasEntity(reachingEntity);
+    return hasObserverRegistered(reachingEntity);
 }
 
 std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath::Ball<3>& sphere) const
@@ -140,15 +140,21 @@ std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath
 
 boost::optional<std::function<void()>> ContainerDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
 {
-    if (m_entity.m_contains) {
-        auto I = std::find_if(m_entity.m_contains->begin(), m_entity.m_contains->end(), [&target](const Ref<LocatedEntity>& child) { return child.get() == &target; });
-        if (I != m_entity.m_contains->end()) {
-            //TODO: add listeners for when the entity leaves the container
-            return boost::optional<std::function<void()>>([this]() {
+    if (m_entity.m_contains && hasObserverRegistered(reacher)) {
+        auto observerI = m_entities.find(reacher.getId());
+        if (observerI != m_entities.end()) {
+            auto I = std::find_if(m_entity.m_contains->begin(), m_entity.m_contains->end(), [&target](const Ref<LocatedEntity>& child) { return child.get() == &target; });
+            if (I != m_entity.m_contains->end()) {
+//                observerI->second.closeness
+                //TODO: add listeners for when the entity leaves the container
+                return boost::optional<std::function<void()>>([this]() {
 
-            });
+                });
+
+            }
 
         }
+
     }
     return boost::none;
 }
@@ -187,9 +193,11 @@ void ContainerDomain::addObserver(std::string& entityId)
         if (reachProp) {
             reach = reachProp->data();
         }
-        auto observerationCallback = m_entity.m_location.m_parent->getDomain()->observeCloseness(*observer, m_entity, reach, [this, observer]() {
+
+        auto closenessSeveredCallback = [this, observer]() {
             auto J = m_entities.find(observer->getId());
             if (J != m_entities.end()) {
+
                 if (!J->second.observedEntities.empty()) {
 
                     std::vector<Atlas::Objects::Root> args;
@@ -213,40 +221,142 @@ void ContainerDomain::addObserver(std::string& entityId)
                     disappearance->setTo(observer->getId());
                     m_entity.sendWorld(std::move(disappearance));
                 }
+                for (auto& disconnectFn : J->second.disconnectFunctions) {
+                    disconnectFn();
+                }
                 m_entities.erase(J);
             }
+        };
 
+        //We only allow observers that either
+        // 1) themselves reside in a Physical Domain, to which the container is a (nested) child
+        // 2) are a (nested) parent to the container
+        std::vector<std::function<void()>> disconnectFunctions;
 
-        });
-        if (observerationCallback) {
-            auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
-            containersActiveProperty->getActiveContainers().insert(m_entity.getId());
-            observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
-
-            Atlas::Objects::Operation::Update update;
-            update->setTo(observer->getId());
-            observer->sendWorld(std::move(update));
-
-            auto& entry = m_entities[entityId];
-            entry.observer = observer;
-
-            entry.disconnectFn = observerationCallback;
-            getVisibleEntitiesFor(*observer, entry.observedEntities);
-            if (!entry.observedEntities.empty()) {
-                std::vector<Atlas::Objects::Root> args;
-                for (auto& child : entry.observedEntities) {
-                    Atlas::Objects::Entity::Anonymous anon;
-                    anon->setId(child->getId());
-                    args.push_back(std::move(anon));
+        //Handle the simple case where the container and the ancestor have the same parent.
+        if (observer->m_location.m_parent == m_entity.m_location.m_parent) {
+            auto parentEntity = m_entity.m_location.m_parent.get();
+            if (parentEntity && parentEntity->getDomain()) {
+                auto disconnectFn = parentEntity->getDomain()->observeCloseness(*observer, m_entity, reach, closenessSeveredCallback);
+                if (disconnectFn) {
+                    disconnectFunctions.emplace_back(std::move(*disconnectFn));
+                } else {
+                    //Could not establish closeness observer, abort.
+                    return;
                 }
-
-                Atlas::Objects::Operation::Appearance appearance;
-                appearance->setArgs(std::move(args));
-                appearance->setTo(observer->getId());
-                m_entity.sendWorld(std::move(appearance));
+            } else {
+                //Either null parent, or the parent had no domain
+                return;
             }
 
+        } else {
+            //First find the domain which contains the observer, as well as if the observer has a domain itself.
+            LocatedEntity* domainEntity = observer->m_location.m_parent.get();
+            LocatedEntity* topObserverEntity = observer.get();
+            Domain* observerParentDomain = nullptr;
+
+            while (domainEntity != nullptr) {
+                if (domainEntity == &m_entity) {
+                    //The observer is a child of the container.
+                    //TODO: how to handle this?
+                    break;
+                }
+
+                observerParentDomain = domainEntity->getDomain();
+                if (observerParentDomain) {
+                    break;
+                }
+                topObserverEntity = domainEntity;
+                domainEntity = domainEntity->m_location.m_parent.get();
+            }
+
+            //The parent entity of the observer (possible null), although unlikely.
+            auto* observerParentEntity = observer->m_location.m_parent.get();
+            //The domain of the observer (possible null).
+            Domain* observerOwnDomain = observer->getDomain();
+
+            //Now walk upwards from the container entity until we reach either the observer's parent domain entity,
+            //or the observer itself
+            std::vector<LocatedEntity*> toAncestors;
+            toAncestors.reserve(4); //four seems like a suitable number
+            //This will contain the entity which is the common ancestor.
+            LocatedEntity* ancestorEntity = &m_entity;
+            //This will contain the domain of the common ancestor.
+            Domain* ancestorDomain = nullptr;
+
+            while (true) {
+
+                if (ancestorEntity == observer.get()) {
+                    ancestorDomain = observerOwnDomain;
+                    break;
+                }
+                if (ancestorEntity == observerParentEntity) {
+                    ancestorDomain = observerParentDomain;
+                    break;
+                }
+                if (ancestorEntity == topObserverEntity) {
+                    break;
+                }
+                toAncestors.push_back(ancestorEntity);
+                ancestorEntity = ancestorEntity->m_location.m_parent.get();
+                if (ancestorEntity == nullptr) {
+                    //Could find no common ancestor; can't interact.
+                    return;
+                }
+            }
+
+
+            LocatedEntity* immediateObserver = observer.get();
+            //Now walk back down the toAncestors list, creating closeness checks for each domain
+            for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
+                LocatedEntity* ancestor = *I;
+                if (ancestorDomain) {
+                    auto disconnectFn = ancestorDomain->observeCloseness(*immediateObserver, *ancestor, reach, closenessSeveredCallback);
+                    if (disconnectFn) {
+                        disconnectFunctions.emplace_back(std::move(*disconnectFn));
+                    } else {
+                        //Could not establish closeness observer, abort.
+                        //Clean up first.
+                        for (auto& fn : disconnectFunctions) {
+                            fn();
+                        }
+                        return;
+                    }
+                }
+                ancestorDomain = ancestor->getDomain();
+            }
         }
+
+
+        //If we get here we have successfully created closeness observers for all domains between the observer and the container.
+        auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+        containersActiveProperty->getActiveContainers().insert(m_entity.getId());
+        observer->applyProperty(ContainersActiveProperty::property_name, containersActiveProperty);
+
+        Atlas::Objects::Operation::Update update;
+        update->setTo(observer->getId());
+        observer->sendWorld(std::move(update));
+
+        auto& entry = m_entities[entityId];
+        entry.observer = observer;
+
+        entry.disconnectFunctions = std::move(disconnectFunctions);
+        getVisibleEntitiesFor(*observer, entry.observedEntities);
+        if (!entry.observedEntities.empty()) {
+            std::vector<Atlas::Objects::Root> args;
+            for (auto& child : entry.observedEntities) {
+                Atlas::Objects::Entity::Anonymous anon;
+                anon->setId(child->getId());
+                args.push_back(std::move(anon));
+            }
+
+            Atlas::Objects::Operation::Appearance appearance;
+            appearance->setArgs(std::move(args));
+            appearance->setTo(observer->getId());
+            m_entity.sendWorld(std::move(appearance));
+        }
+
+
     }
 
 }
@@ -256,10 +366,9 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
     auto I = m_entities.find(entityId);
     if (I != m_entities.end()) {
         auto& entry = *I;
-        if (entry.second.disconnectFn) {
-            auto& fn = *entry.second.disconnectFn;
-            if (fn) {
-                fn();
+        for (auto& disconnectFn : entry.second.disconnectFunctions) {
+            if (disconnectFn) {
+                disconnectFn();
             }
         }
 
@@ -291,7 +400,7 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
     }
 }
 
-bool ContainerDomain::hasEntity(const LocatedEntity& entity) const
+bool ContainerDomain::hasObserverRegistered(const LocatedEntity& entity) const
 {
     return m_entities.find(entity.getId()) != m_entities.end();
 }

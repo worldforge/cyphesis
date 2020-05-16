@@ -30,7 +30,11 @@ class ContainerDomain : public Domain
         struct ObservationEntry
         {
             Ref<LocatedEntity> observer;
-            boost::optional<std::function<void()>> disconnectFn;
+
+            /**
+             * A list of disconnect functions which are to be called when the observation needs to be severed.
+             */
+            std::vector<std::function<void()>> disconnectFunctions;
             std::list<LocatedEntity*> observedEntities;
         };
 
@@ -72,7 +76,7 @@ class ContainerDomain : public Domain
 
         void setObservers(std::vector<std::string> observerIds);
 
-        bool hasEntity(const LocatedEntity& entity) const;
+        bool hasObserverRegistered(const LocatedEntity& entity) const;
 
     private:
 

@@ -630,64 +630,66 @@ void LocatedEntity::removeListener(OperationsListener* listener)
     //No-op in LocatedEntity
 }
 
-bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
+bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
 {
     //Are we looking at ourselves?
-    if (watcher == this) {
+    if (observer == this) {
         return true;
     }
 
     //Optimize for the most common case of both entities being direct child of a domain
-    if (m_location.m_parent != nullptr && watcher->m_location.m_parent == m_location.m_parent && m_location.m_parent->getDomain()) {
+    if (m_location.m_parent != nullptr && observer->m_location.m_parent == m_location.m_parent && m_location.m_parent->getDomain()) {
         // Since both have the same parent, we can check right now for private and protected.
-        if (!watcher->hasFlags(entity_admin) && (this->hasFlags(entity_visibility_protected) || this->hasFlags(entity_visibility_private))) {
+        if (!observer->hasFlags(entity_admin) && (this->hasFlags(entity_visibility_protected) || this->hasFlags(entity_visibility_private))) {
             return false;
         }
-        return m_location.m_parent->getDomain()->isEntityVisibleFor(*watcher, *this);
+        return m_location.m_parent->getDomain()->isEntityVisibleFor(*observer, *this);
     }
 
-    //First find the domain which contains the watcher, as well as if the watcher has a domain itself.
-    const LocatedEntity* domainEntity = watcher->m_location.m_parent.get();
-    const LocatedEntity* topWatcherEntity = watcher;
-    const Domain* watcherParentDomain = nullptr;
+    //First find the domain which contains the observer, as well as if the observer has a domain itself.
+    const LocatedEntity* domainEntity = observer->m_location.m_parent.get();
+    const LocatedEntity* topObserverEntity = observer;
+    const Domain* observerParentDomain = nullptr;
 
     while (domainEntity != nullptr) {
-        // If the watcher is a child of this, and there are no domains in between, viewing is always allowed.
+        // If the observer is a child of this, and there are no domains in between, viewing is always allowed.
         // This applies even for protected and private domains, at least for now
         if (domainEntity == this) {
             return true;
         }
 
-        watcherParentDomain = domainEntity->getDomain();
-        if (watcherParentDomain) {
+        observerParentDomain = domainEntity->getDomain();
+        if (observerParentDomain) {
             break;
         }
-        topWatcherEntity = domainEntity;
+        topObserverEntity = domainEntity;
         domainEntity = domainEntity->m_location.m_parent.get();
     }
 
-    domainEntity = watcher->m_location.m_parent.get();
-    const Domain* watcherOwnDomain = watcher->getDomain();
+    //The parent entity of the observer (possible null), although unlikely.
+    auto* observerParentEntity = observer->m_location.m_parent.get();
+    //The domain of the observer (possible null).
+    const Domain* observerOwnDomain = observer->getDomain();
 
-    //Now walk upwards from the entity being looked at until we reach either the watcher's parent domain entity,
-    //or the watcher itself
+    //Now walk upwards from the entity being looked at until we reach either the observer's parent domain entity,
+    //or the observer itself
     std::vector<const LocatedEntity*> toAncestors;
-    toAncestors.reserve(4);
+    toAncestors.reserve(4); //four seems like a suitable number
     const LocatedEntity* ancestorEntity = this;
     const Domain* ancestorDomain = nullptr;
 
     while (true) {
         toAncestors.push_back(ancestorEntity);
 
-        if (ancestorEntity == watcher) {
-            ancestorDomain = watcherOwnDomain;
+        if (ancestorEntity == observer) {
+            ancestorDomain = observerOwnDomain;
             break;
         }
-        if (ancestorEntity == domainEntity) {
-            ancestorDomain = watcherParentDomain;
+        if (ancestorEntity == observerParentEntity) {
+            ancestorDomain = observerParentDomain;
             break;
         }
-        if (ancestorEntity == topWatcherEntity) {
+        if (ancestorEntity == topObserverEntity) {
             break;
         }
         ancestorEntity = ancestorEntity->m_location.m_parent.get();
@@ -703,14 +705,14 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
     for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
         const LocatedEntity* ancestor = *I;
         if (ancestorDomain) {
-            if (!ancestorDomain->isEntityVisibleFor(*watcher, *ancestor)) {
+            if (!ancestorDomain->isEntityVisibleFor(*observer, *ancestor)) {
                 return false;
             }
         }
-        if (ancestor->hasFlags(entity_visibility_private) && !watcher->hasFlags(entity_admin)) {
+        if (ancestor->hasFlags(entity_visibility_private) && !observer->hasFlags(entity_admin)) {
             return false;
         }
-        if (ancestor->hasFlags(entity_visibility_protected) && watcher != ancestor->m_location.m_parent.get() && !watcher->hasFlags(entity_admin)) {
+        if (ancestor->hasFlags(entity_visibility_protected) && observer != ancestor->m_location.m_parent.get() && !observer->hasFlags(entity_admin)) {
             return false;
         }
 

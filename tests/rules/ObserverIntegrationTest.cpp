@@ -126,10 +126,10 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          * Hierarchy looks like this:
          * T1 has a physical domain
          * T2, T5 and T7 has a container domain
-         * T3 has sight
+         * T3 has sight and an inventory domain
          *
          *              T1#
-         *         T2*       T3
+         *         T2*       T3**
          *      T4   T5*     T7*
          *           T6      T8
          */
@@ -150,6 +150,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             Ref<Thing> t3 = new Thing(3);
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
+            t3->setAttrValue("domain", "inventory");
             t3->setAttrValue("perception_sight", 1);
             context.testWorld.addEntity(t3, t1);
             Ref<Thing> t4 = new Thing(4);
@@ -174,6 +175,13 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t8->m_location.m_pos = WFMath::Point<3>::ZERO();
             t8->m_location.setBBox(bbox);
             context.testWorld.addEntity(t8, t7);
+
+            opsHandler.clearQueues();
+
+            ASSERT_FALSE(t8->isVisibleForOtherEntity(t3.get()));
+            //Add t3 as container observer to t7, which allows it to view its content (t8), even if it's an inventory domain, as t3 is both the observer and the owner of the inventory.
+            t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t8->isVisibleForOtherEntity(t3.get()));
 
             opsHandler.clearQueues();
 
@@ -206,11 +214,14 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(1u, queue.top()->getArgs().size())
-            //Remove t3 as observer...
+            //Remove t3 as observer from t5...
             opsHandler.clearQueues();
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+            //Should not affect ability to reach t5 and t2
+            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
+            ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
             ASSERT_EQUAL(2u, queue.size())
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
@@ -226,12 +237,12 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
             //Should still be able to reach t2, even if we can't reach into it.
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
-            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()));
+            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
-            ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()));
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
-            ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()));
-            ASSERT_EQUAL(2u, queue.size()) //Should really be 3, one from t2 and one from t5
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()))
+            ASSERT_EQUAL(2u, queue.size())
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
@@ -247,12 +258,18 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
 
-            ASSERT_EQUAL(3u, queue.size()) //Should really be 3, one Sight, and one Appearance from t2 and one Appearance from t5
+            ASSERT_EQUAL(5u, queue.size()) //One Sight, and then one Update + Disappearance from both t2 and t5, as t5 is child of t2
             queue.pop();
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(2u, queue.top()->getArgs().size()) //From both t4 and t5
+            queue.pop();
+            ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, queue.top()->getClassNo())
+            queue.pop();
+            ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
+            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
+            ASSERT_EQUAL(1u, queue.top()->getArgs().size()) //From both t4 and t5
 
             //Move t3 closer again
             moveFn(t3, {0, 0, 0});
@@ -277,15 +294,20 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t9->m_location.setBBox(bbox);
             context.testWorld.addEntity(t9, t2);
 
-            ASSERT_EQUAL(1u, queue.size());
+            ASSERT_EQUAL(1u, queue.size())
             ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(1u, queue.top()->getArgs().size())
             ASSERT_EQUAL(t9->getId(), queue.top()->getArgs().front()->getId())
 
 
-            //            //When we add t3 back as an observer to t2 the link to t6 should have been severed, and it should no longer be reachable
-//            t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->canReach(EntityLocation{t8}))
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t7->getId()))
+
+
+            //When we add t3 back as an observer to t2 the link to t6 should have been severed, and it should no longer be reachable
+//           t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
 //            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
 //            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
 

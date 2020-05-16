@@ -43,7 +43,7 @@ class ContainerAccessProperty : public PropertyBase
 
         void apply(LocatedEntity*) override;
 
-       // bool hasEntity(const LocatedEntity& entity) const;
+       // bool hasObserverRegistered(const LocatedEntity& entity) const;
 
 
 

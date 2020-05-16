@@ -2355,16 +2355,20 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                 auto* observation = *I;
                 auto result = isWithinReach(*observation->reacher, *observation->target, observation->reach, {});
                 if (!result) {
+                    if (&bulletEntry == observation->reacher) {
+                        observation->target->closenessObservations.erase(observation);
+                    } else {
+                        observation->reacher->closenessObservations.erase(observation);
+                    }
+                    I = bulletEntry.closenessObservations.erase(I);
+
+                    //Hold on to an instance while we call callbacks and erase it.
+                    auto observerInstance = std::move(m_closenessObservations[observation]);
+                    m_closenessObservations.erase(observation);
+
                     if (observation->callback) {
                         observation->callback();
                     }
-                    if (&bulletEntry == observation->reacher) {
-                        observation->target->closenessObservations.erase(*I);
-                    } else {
-                        observation->reacher->closenessObservations.erase(*I);
-                    }
-                    I = bulletEntry.closenessObservations.erase(I);
-                    m_closenessObservations.erase(observation);
                 } else {
                     ++I;
                 }
@@ -2810,6 +2814,7 @@ bool PhysicalDomain::isWithinReach(BulletEntry& reacherEntry, BulletEntry& targe
 
         return distance <= reach;
     }
+    return false;
 }
 
 std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath::Ball<3>& sphere) const

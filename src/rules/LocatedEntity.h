@@ -400,10 +400,10 @@ class LocatedEntity : public Router, public ReferenceCounted
         /**
         * @brief Determines if this entity is visible to another entity.
         *
-        * @param watcher The other entity observing this entity, for which we want to determine visibility.
+        * @param observer The other entity observing this entity, for which we want to determine visibility.
         * @return True if this entity is visible to another entity.
         */
-        bool isVisibleForOtherEntity(const LocatedEntity* watcher) const;
+        bool isVisibleForOtherEntity(const LocatedEntity* observer) const;
 
         /**
         * @brief Determines if this entity can be reached by another entity (i.e. physically interacted with).
