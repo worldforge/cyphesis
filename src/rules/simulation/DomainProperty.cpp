@@ -39,6 +39,9 @@ void DomainProperty::install(LocatedEntity* entity, const std::string& name)
 
 void DomainProperty::remove(LocatedEntity* entity, const std::string& name)
 {
+    if (entity->getDomain()) {
+        entity->setDomain(nullptr);
+    }
 }
 
 void DomainProperty::apply(LocatedEntity* entity)

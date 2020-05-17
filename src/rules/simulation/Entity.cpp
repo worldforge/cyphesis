@@ -211,6 +211,9 @@ const Domain* Entity::getDomain() const
 
 void Entity::setDomain(std::unique_ptr<Domain> domain)
 {
+    if (m_domain) {
+        m_domain->removed();
+    }
     m_domain = std::move(domain);
     if (m_domain) {
         addFlags(entity_domain);

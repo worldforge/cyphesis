@@ -844,9 +844,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
     btVector3 angularFactor(1, 1, 1);
 
-    auto entry = new BulletEntry();
+    auto entry = new BulletEntry{&entity};
     m_entries.insert(std::make_pair(entity.getIntId(), entry));
-    entry->entity = &entity;
 
     auto angularFactorProp = entity.getPropertyClassFixed<AngularFactorProperty>();
     if (angularFactorProp && angularFactorProp->data().isValid()) {
@@ -2881,4 +2880,13 @@ boost::optional<std::function<void()>> PhysicalDomain::observeCloseness(LocatedE
         });
     }
     return boost::none;
+}
+
+void PhysicalDomain::removed()
+{
+    //Copy to allow modifications to the field during callbacks.
+    auto observations = std::move(m_closenessObservations);
+    for (auto& entry : observations) {
+        entry.second->callback();
+    }
 }

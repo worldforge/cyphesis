@@ -78,6 +78,8 @@ class ContainerDomain : public Domain
 
         bool hasObserverRegistered(const LocatedEntity& entity) const;
 
+        void removed() override;
+
     private:
 
 
@@ -93,6 +95,7 @@ class ContainerDomain : public Domain
         void addObserver(std::string& entityId);
 
         void removeObserver(const std::basic_string<char>& entityId);
+
 };
 
 

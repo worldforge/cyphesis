@@ -390,8 +390,7 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
         Atlas::Objects::Operation::Disappearance disappearance;
         disappearance->setArgs(std::move(args));
         disappearance->setTo(entry.second.observer->getId());
-        observer->sendWorld(std::move(disappearance)); //Should really be done by the domain entity...
-        //entity->sendWorld(std::move(disappearance));
+        m_entity.sendWorld(std::move(disappearance));
 
         m_entities.erase(I);
     }
@@ -400,4 +399,20 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
 bool ContainerDomain::hasObserverRegistered(const LocatedEntity& entity) const
 {
     return m_entities.find(entity.getId()) != m_entities.end();
+}
+
+void ContainerDomain::removed()
+{
+    while (!m_entities.empty()) {
+        removeObserver(m_entities.rbegin()->first);
+    }
+//    //Copy to allow modifications to the field during callbacks.
+//    auto entities = std::move(m_entities);
+//    for (auto& entry : entities) {
+//        for (auto& disconnectFn : entry.second.disconnectFunctions) {
+//            if (disconnectFn) {
+//                disconnectFn();
+//            }
+//        }
+//    }
 }

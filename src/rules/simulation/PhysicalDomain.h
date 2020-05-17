@@ -105,6 +105,8 @@ class PhysicalDomain : public Domain
 
         boost::optional<std::function<void()>> observeCloseness(LocatedEntity& entity1, LocatedEntity& entity2, double reach, std::function<void()> callback) override;
 
+        void removed() override;
+
     protected:
 
         class PhysicalMotionState;
@@ -115,7 +117,7 @@ class PhysicalDomain : public Domain
 
         struct BulletEntry
         {
-            LocatedEntity* entity = nullptr;
+            LocatedEntity* entity;
             std::shared_ptr<btCollisionShape> collisionShape;
             std::unique_ptr<btCollisionObject> collisionObject;
             sigc::connection propertyUpdatedConnection;

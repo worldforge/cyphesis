@@ -29,9 +29,9 @@
 #include <set>
 #include <boost/optional.hpp>
 
-namespace WFMath
-{
-    template<int> class Ball;
+namespace WFMath {
+    template<int>
+    class Ball;
 }
 
 class LocatedEntity;
@@ -59,7 +59,8 @@ class Domain
          * A struct containing a collection of transformation that might be carried out on an entity contained in a Domain.
          * Each domain can handle these requests at it's own discretion.
          */
-        struct TransformData {
+        struct TransformData
+        {
             /**
              * The new orientation.
              */
@@ -78,7 +79,8 @@ class Domain
             const WFMath::Vector<3>& impulseVelocity;
         };
 
-        struct CollisionEntry {
+        struct CollisionEntry
+        {
             LocatedEntity* entity;
             WFMath::Point<3> collisionPoint;
             float distance;
@@ -178,7 +180,8 @@ class Domain
          *                                  This only makes sense in some situation (such as reaching for a place in the terrain) and will be ignored by some domains.
          * @return True if the reaching entity can reach the queried entity.
          */
-        virtual bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const {
+        virtual bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const
+        {
             return false;
         }
 
@@ -193,6 +196,12 @@ class Domain
         }
 
         virtual boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) = 0;
+
+        /**
+         * Called when the domain is removed from an entity.
+         */
+        virtual void removed()
+        {}
 };
 
 #endif // RULESETS_DOMAIN_H
