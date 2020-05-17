@@ -117,7 +117,7 @@ class PhysicalDomain : public Domain
 
         struct BulletEntry
         {
-            LocatedEntity* entity;
+            LocatedEntity& entity;
             std::shared_ptr<btCollisionShape> collisionShape;
             std::unique_ptr<btCollisionObject> collisionObject;
             sigc::connection propertyUpdatedConnection;
@@ -344,7 +344,7 @@ class PhysicalDomain : public Domain
          */
         void processWaterBodies();
 
-        std::shared_ptr<btCollisionShape> createCollisionShapeForEntry(LocatedEntity* entity,
+        std::shared_ptr<btCollisionShape> createCollisionShapeForEntry(LocatedEntity& entity,
                                                                        const WFMath::AxisBox<3>& bbox, float mass,
                                                                        btVector3& centerOfMassOffse);
 
