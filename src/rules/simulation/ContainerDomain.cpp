@@ -56,16 +56,16 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
     }
 
     for (auto& entry: m_entities) {
-//        if (entry.second.observer->hasFlags(entity_admin) || entity.hasFlags(entity_contained_visible)) {
         entry.second.observedEntities.push_back(&entity);
-        //       }
     }
 
 }
 
 void ContainerDomain::removeEntity(LocatedEntity& entity)
 {
-    //Nothing special to do for this domain.
+    for (auto& entry: m_entities) {
+        entry.second.observedEntities.remove(&entity);
+    }
 }
 
 bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -85,9 +85,6 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
 
     //Entities can only be seen by outside observers if the outside entity can reach this.
     return hasObserverRegistered(observingEntity);
-
-
-    // return observingEntity.canReach(m_entity.m_location);
 }
 
 void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const

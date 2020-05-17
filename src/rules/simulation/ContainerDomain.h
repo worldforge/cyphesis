@@ -83,6 +83,10 @@ class ContainerDomain : public Domain
 
         ContainerAccessProperty* mContainerAccessProperty;
 
+        /**
+         * A map of the entities that currently are reaching into this container.
+         * Key is the entity id of the reaching entity.
+         */
         std::map<std::string, ObservationEntry> m_entities;
 
 

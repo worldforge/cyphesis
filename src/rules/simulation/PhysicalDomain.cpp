@@ -1160,6 +1160,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         }
     }
 
+    for (auto& observation : entry->closenessObservations) {
+        if (observation->callback) {
+            observation->callback();
+        }
+    }
+
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
