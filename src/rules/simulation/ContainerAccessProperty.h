@@ -33,7 +33,7 @@ class ContainerAccessProperty : public PropertyBase
         static constexpr const char* property_name = "__container_access";
         static constexpr const char* property_atlastype = "list";
 
-        ContainerAccessProperty(ContainerDomain& container);
+        explicit ContainerAccessProperty(ContainerDomain& container);
 
         int get(Atlas::Message::Element&) const override;
 
@@ -41,17 +41,10 @@ class ContainerAccessProperty : public PropertyBase
 
         ContainerAccessProperty* copy() const override;
 
-        void apply(LocatedEntity*) override;
-
-       // bool hasObserverRegistered(const LocatedEntity& entity) const;
-
-
 
     protected:
 
         ContainerDomain& m_container;
-
-//        std::set<Ref<LocatedEntity>> m_entities;
 };
 
 

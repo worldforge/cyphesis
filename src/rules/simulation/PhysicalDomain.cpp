@@ -2724,9 +2724,10 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
         return true;
     }
 
-//    if (reach == 0) {
-//        return false;
-//    }
+    //For physical domains we require "reach" to be set in order for anything to reach.
+    if (reach == 0) {
+        return false;
+    }
 
     auto& queriedLocation = queriedEntity.m_location;
     auto& reachingLocation = reachingEntity.m_location;

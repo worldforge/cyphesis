@@ -37,11 +37,9 @@ add_library(common
         operations/Commune.h
         compose.hpp
         operations/Connect.h
-        operations/Drop.h
         operations/Monitor.h
         nls.h
         op_switch.h
-        operations/Pickup.h
         operations/Possess.h
         Property_impl.h
         PropertyFactory_impl.h

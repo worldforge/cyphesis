@@ -152,6 +152,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t3->m_location.setBBox(bbox);
             t3->setAttrValue("domain", "inventory");
             t3->setAttrValue("perception_sight", 1);
+            t3->setAttrValue("reach", 1);
             context.testWorld.addEntity(t3, t1);
             Ref<Thing> t4 = new Thing(4);
             t4->m_location.m_pos = WFMath::Point<3>::ZERO();
@@ -304,14 +305,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
             ASSERT_TRUE(t3->canReach(EntityLocation{t8}))
             ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t7->getId()))
-
-
-            //When we add t3 back as an observer to t2 the link to t6 should have been severed, and it should no longer be reachable
-//           t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
-//            ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
-//            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
-
-
         }
     }
 

@@ -25,7 +25,7 @@ namespace Atlas { namespace Objects { namespace Operation {
 
 extern int THINK_NO;
 
-/// \brief An "set" operation used to author entities minds.
+/// \brief A "set" operation used to author entities minds.
 ///
 /// This operation is used to send "thoughts" to an entity's mind.
 /// \see Commune
