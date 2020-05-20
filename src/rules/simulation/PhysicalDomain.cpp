@@ -2306,8 +2306,8 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
     Location& lastSentLocation = bulletEntry.lastSentLocation;
     const Location& location = entity.m_location;
 
-    bool orientationChange = location.m_orientation.isValid() && !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f);
-    bool posChange = location.m_pos.isValid() && !fuzzyEquals(location.m_pos, lastSentLocation.m_pos, 0.01f);
+    bool orientationChange = location.m_orientation.isValid() && (!lastSentLocation.m_orientation.isValid() || !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f));
+    bool posChange = location.m_pos.isValid() && (!lastSentLocation.isValid() || !fuzzyEquals(location.m_pos, lastSentLocation.m_pos, 0.01f));
 
     if (false) {
         sendMoveSight(bulletEntry, true, true, true, true, true);
@@ -2367,9 +2367,10 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                     }
                     I = bulletEntry.closenessObservations.erase(I);
 
+                    auto J = m_closenessObservations.find(observation);
                     //Hold on to an instance while we call callbacks and erase it.
-                    auto observerInstance = std::move(m_closenessObservations[observation]);
-                    m_closenessObservations.erase(observation);
+                    auto observerInstance = std::move(J->second);
+                    m_closenessObservations.erase(J);
 
                     if (observation->callback) {
                         observation->callback();

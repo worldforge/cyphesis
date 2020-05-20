@@ -230,12 +230,14 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_EQUAL(1u, queue.top()->getArgs().size())
             //...and add it back.
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
             ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
             //Remove t3 as observer from t2, which should sever the connection to t5
             opsHandler.clearQueues();
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
+            ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             //Should still be able to reach t2, even if we can't reach into it.
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
             ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
@@ -243,34 +245,61 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
             ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()))
-            ASSERT_EQUAL(2u, queue.size())
+            ASSERT_EQUAL(4u, queue.size()) //Get Disappear from t4, t5 and t6
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(2u, queue.top()->getArgs().size()) //From both t4 and t5
 
-            //Add it back as observer
+            //Add it back as observer to both t2 and t5
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+            t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
+
+            //Shall reach all to t6
+            ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
             ASSERT_TRUE(t3->canReach(EntityLocation{t5}))
+            ASSERT_TRUE(t3->canReach(EntityLocation{t4}))
+            ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
+            ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
 
             opsHandler.clearQueues();
-            //Now move t3 away far enough that it can't reach t2 anymore.
+            //Now move t3 away far enough that it can't reach or see t2 anymore.
             moveFn(t3, {510, 0, 500});
+            //Make sure that it cascades, so we can't reach t6 anymore.
             ASSERT_FALSE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t4}))
+            ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
+            ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
+            ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
 
-            ASSERT_EQUAL(5u, queue.size()) //One Sight, and then one Update + Disappearance from both t2 and t5, as t5 is child of t2
+            //The disappear ops are sent in random order (depending on memory layout) so we'll put them in a collection to check them.
+            std::vector<Operation> disappearOps;
+            ASSERT_EQUAL(5u, queue.size()) //One Sight, and then one Update + Disappearance from t2, t5 and t6, as t5 is child of t2 and t6 is a child of t5
             queue.pop();
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
-            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(2u, queue.top()->getArgs().size()) //From both t4 and t5
+            disappearOps.push_back(queue.top().op);
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, queue.top()->getClassNo())
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
-            ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
-            ASSERT_EQUAL(1u, queue.top()->getArgs().size()) //From both t4 and t5
+            disappearOps.push_back(queue.top().op);
+            {
+                auto firstOp = disappearOps[0]->getArgs().size() == 1 ? disappearOps[0] : disappearOps[1];
+                auto secondOp = disappearOps[0]->getArgs().size() == 1 ? disappearOps[1] : disappearOps[0];
+
+                ASSERT_EQUAL(t3->getId(), firstOp->getTo())
+                ASSERT_EQUAL(1u, firstOp->getArgs().size()) //From t6
+                ASSERT_EQUAL(t6->getId(), firstOp->getArgs()[0]->getId());
+
+
+                ASSERT_EQUAL(t3->getId(), secondOp->getTo())
+                ASSERT_EQUAL(2u, secondOp->getArgs().size()) //From both t4 and t5
+                ASSERT_EQUAL(t4->getId(), secondOp->getArgs()[0]->getId());
+                ASSERT_EQUAL(t5->getId(), secondOp->getArgs()[1]->getId());
+            }
 
             //Move t3 closer again
             moveFn(t3, {0, 0, 0});
@@ -539,9 +568,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(object2->getId(), ops.front()->getArgs().front()->getId())
         ASSERT_EQUAL(observer->getId(), ops.front()->getTo())
 
+        domainTickFn();
         opsHandler.clearQueues();
         res.clear();
-        domainTickFn();
         // Move object2 away a great distance, outside of visible range
         {
             Atlas::Objects::Operation::Move move;

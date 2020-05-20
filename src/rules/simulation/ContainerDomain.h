@@ -27,6 +27,17 @@
 class ContainerDomain : public Domain
 {
     public:
+        struct ObservationEntry;
+        struct ClosenessObserverEntry
+        {
+            std::string reacherEntityId;
+            LocatedEntity& target;
+            /**
+             * Callback to call when entries no longer are close.
+             */
+            std::function<void()> callback;
+        };
+
         struct ObservationEntry
         {
             Ref<LocatedEntity> observer;
@@ -36,7 +47,11 @@ class ContainerDomain : public Domain
              */
             std::vector<std::function<void()>> disconnectFunctions;
             std::list<LocatedEntity*> observedEntities;
+            std::set<ClosenessObserverEntry*> closenessObservations;
         };
+
+        std::map<ClosenessObserverEntry*, std::unique_ptr<ClosenessObserverEntry>> m_closenessObservations;
+
 
         explicit ContainerDomain(LocatedEntity& entity);
 
