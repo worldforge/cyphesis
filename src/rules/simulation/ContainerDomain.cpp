@@ -345,15 +345,15 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
 {
     auto I = m_entities.find(entityId);
     if (I != m_entities.end()) {
-        auto entry = std::move(*I);
+        auto entry = std::move(I->second);
         m_entities.erase(I);
-        for (auto& disconnectFn : entry.second.disconnectFunctions) {
+        for (auto& disconnectFn : entry.disconnectFunctions) {
             if (disconnectFn) {
                 disconnectFn();
             }
         }
 
-        auto& observer = entry.second.observer;
+        auto& observer = entry.observer;
 
         auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
         containersActiveProperty->getActiveContainers().erase(m_entity.getId());
@@ -365,7 +365,7 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
         observer->sendWorld(std::move(update));
 
         std::vector<Atlas::Objects::Root> args;
-        for (auto& child : entry.second.observedEntities) {
+        for (auto& child : entry.observedEntities) {
             Atlas::Objects::Entity::Anonymous anon;
             anon->setId(child->getId());
             args.push_back(std::move(anon));
@@ -373,15 +373,17 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
 
         Atlas::Objects::Operation::Disappearance disappearance;
         disappearance->setArgs(std::move(args));
-        disappearance->setTo(entry.second.observer->getId());
+        disappearance->setTo(entry.observer->getId());
         m_entity.sendWorld(std::move(disappearance));
 
-        for (auto closenessEntry: entry.second.closenessObservations) {
+        for (auto closenessEntry: entry.closenessObservations) {
             auto J = m_closenessObservations.find(closenessEntry);
-            //Hold on to an instance while we call callbacks and erase it.
-            auto observerInstance = std::move(J->second);
-            m_closenessObservations.erase(J);
-            closenessEntry->callback();
+            if (J != m_closenessObservations.end()) {
+                //Hold on to an instance while we call callbacks and erase it.
+                auto observerInstance = std::move(J->second);
+                m_closenessObservations.erase(J);
+                closenessEntry->callback();
+            }
         }
     }
 }

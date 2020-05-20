@@ -2356,8 +2356,14 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
             bulletEntry.modeChanged = false;
         }
         if (posChange && !bulletEntry.closenessObservations.empty()) {
-            for (auto I = bulletEntry.closenessObservations.begin(); I != bulletEntry.closenessObservations.end();) {
-                auto* observation = *I;
+            //Since closenessObservations might be deleted as part of the callback issued from here, we need to iterate
+            //over it in a way that's safe for outside modifications. That's why we're using a combination of an index and an iterator.
+            for (size_t i = 0; i < bulletEntry.closenessObservations.size();) {
+                auto iter = bulletEntry.closenessObservations.begin();
+                for (size_t j = 0; j < i; ++j) {
+                    iter++;
+                }
+                auto* observation = *iter;
                 auto result = isWithinReach(*observation->reacher, *observation->target, observation->reach, {});
                 if (!result) {
                     if (&bulletEntry == observation->reacher) {
@@ -2365,7 +2371,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                     } else {
                         observation->reacher->closenessObservations.erase(observation);
                     }
-                    I = bulletEntry.closenessObservations.erase(I);
+                    bulletEntry.closenessObservations.erase(iter);
 
                     auto J = m_closenessObservations.find(observation);
                     //Hold on to an instance while we call callbacks and erase it.
@@ -2375,8 +2381,10 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                     if (observation->callback) {
                         observation->callback();
                     }
+
+                    //If we've removed an entry we should not advance the index.
                 } else {
-                    ++I;
+                    ++i;
                 }
             }
         }
