@@ -81,12 +81,12 @@ class ContainerDomain : public Domain
 
         const std::map<std::string, ObservationEntry>& getEntries() const
         {
-            return m_entities;
+            return m_reachingEntities;
         };
 
         std::map<std::string, ObservationEntry>& getEntries()
         {
-            return m_entities;
+            return m_reachingEntities;
         };
 
         void setObservers(std::vector<std::string> observerIds);
@@ -107,7 +107,7 @@ class ContainerDomain : public Domain
          * A map of the entities that currently are reaching into this container.
          * Key is the entity id of the reaching entity.
          */
-        std::map<std::string, ObservationEntry> m_entities;
+        std::map<std::string, ObservationEntry> m_reachingEntities;
 
 };
 

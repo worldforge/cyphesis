@@ -73,7 +73,21 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
 
 void InventoryDomain::removeEntity(LocatedEntity& entity)
 {
-    //Nothing special to do for this domain.
+    //Since closeness observation callbacks can trigger alterations to the collections we need to extra precautions to iterate in a safe manner, which allows outside modifications.
+    auto I = m_closenessObservations.find(entity.getId());
+    while (I != m_closenessObservations.end()) {
+        auto& observations = I->second;
+        if (observations.empty()) {
+            m_closenessObservations.erase(I);
+            break;
+        } else {
+            auto J = observations.begin();
+            auto obs = std::move(J->second);
+            observations.erase(J);
+            obs->callback();
+        }
+        I = m_closenessObservations.find(entity.getId());
+    }
 }
 
 bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -138,7 +152,19 @@ std::vector<Domain::CollisionEntry> InventoryDomain::queryCollision(const WFMath
 boost::optional<std::function<void()>> InventoryDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
 {
     if (&reacher == &m_entity) {
-        return boost::optional<std::function<void()>>([this]() {
+        auto obs = new ClosenessObserverEntry{target, callback};
+        m_closenessObservations[target.getId()].emplace(obs, std::unique_ptr<ClosenessObserverEntry>(obs));
+        return boost::optional<std::function<void()>>([this, &target, obs]() {
+            auto I = m_closenessObservations.find(target.getId());
+            if (I != m_closenessObservations.end()) {
+                auto J = I->second.find(obs);
+                if (J != I->second.end()) {
+                    I->second.erase(J);
+                    if (I->second.empty()) {
+                        m_closenessObservations.erase(I);
+                    }
+                }
+            }
         });
     }
     return boost::none;

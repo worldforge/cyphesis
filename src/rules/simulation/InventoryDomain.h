@@ -21,6 +21,7 @@
 #include "rules/Domain.h"
 #include <set>
 #include <string>
+#include <map>
 
 /**
  * @brief An inventory domain, typically attached to a character.
@@ -50,6 +51,21 @@ class InventoryDomain : public Domain
 
         boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override;
 
+    private:
+
+        struct ClosenessObserverEntry
+        {
+            LocatedEntity& target;
+            /**
+             * Callback to call when entries no longer are close.
+             */
+            std::function<void()> callback;
+        };
+
+        std::map<std::string, std::map<ClosenessObserverEntry*, std::unique_ptr<ClosenessObserverEntry>>> m_closenessObservations;
+//        std::map<ClosenessObserverEntry*, std::unique_ptr<ClosenessObserverEntry>> m_closenessObservations;
+
+//        std::multimap<std::string, std::function<void()>> m_closenessObservations;
 };
 
 #endif /* INVENTORYDOMAIN_H_ */

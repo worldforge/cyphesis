@@ -55,7 +55,7 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
         prop->clearData();
     }
 
-    for (auto& entry: m_entities) {
+    for (auto& entry: m_reachingEntities) {
         entry.second.observedEntities.push_back(&entity);
     }
 
@@ -63,8 +63,27 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
 
 void ContainerDomain::removeEntity(LocatedEntity& entity)
 {
-    for (auto& entry: m_entities) {
+    for (auto& entry: m_reachingEntities) {
         entry.second.observedEntities.remove(&entity);
+        //Since closeness observations might be updated as part of the callbacks we need to take extra precautions when iterating over them.
+        auto& closenessObservations = entry.second.closenessObservations;
+        if (!closenessObservations.empty()) {
+            std::vector<ClosenessObserverEntry*> toRemove;
+            for (auto& observation : closenessObservations) {
+                if (&observation->target == &entity) {
+                    toRemove.push_back(observation);
+                }
+            }
+            for (auto observation : toRemove) {
+                auto I = closenessObservations.find(observation);
+                if (I != closenessObservations.end()) {
+                    auto J = m_closenessObservations.find(observation);
+                    auto observationEntry = std::move(*J);
+                    m_closenessObservations.erase(J);
+                    observationEntry.second->callback();
+                }
+            }
+        }
     }
 }
 
@@ -103,7 +122,7 @@ void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
 std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
     std::list<LocatedEntity*> list;
-    for (auto& entry: m_entities) {
+    for (auto& entry: m_reachingEntities) {
         if (entry.second.observer->hasFlags(entity_admin) || observedEntity.hasFlags(entity_contained_visible)) {
             list.push_back(entry.second.observer.get());
         } else {
@@ -138,8 +157,8 @@ std::vector<Domain::CollisionEntry> ContainerDomain::queryCollision(const WFMath
 boost::optional<std::function<void()>> ContainerDomain::observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback)
 {
     if (m_entity.m_contains && hasObserverRegistered(reacher)) {
-        auto observerI = m_entities.find(reacher.getId());
-        if (observerI != m_entities.end()) {
+        auto observerI = m_reachingEntities.find(reacher.getId());
+        if (observerI != m_reachingEntities.end()) {
             auto I = std::find_if(m_entity.m_contains->begin(), m_entity.m_contains->end(), [&target](const Ref<LocatedEntity>& child) { return child.get() == &target; });
             if (I != m_entity.m_contains->end()) {
                 auto observerEntry = observerI->second;
@@ -151,10 +170,10 @@ boost::optional<std::function<void()>> ContainerDomain::observeCloseness(Located
                 return boost::optional<std::function<void()>>([this, obs]() {
                     auto J = m_closenessObservations.find(obs);
                     if (J != m_closenessObservations.end()) {
-                        auto reacherI = m_entities.find(J->second->reacherEntityId);
-                        if (reacherI != m_entities.end()) {
+                        auto reacherI = m_reachingEntities.find(J->second->reacherEntityId);
+                        if (reacherI != m_reachingEntities.end()) {
                             reacherI->second.closenessObservations.erase(obs);
-                       }
+                        }
 //                    targetEntry->closenessObservations.erase(obs);
                         m_closenessObservations.erase(obs);
                     }
@@ -172,7 +191,7 @@ boost::optional<std::function<void()>> ContainerDomain::observeCloseness(Located
 void ContainerDomain::setObservers(std::vector<std::string> observerIds)
 {
     std::set<std::string> existingObservers;
-    for (auto& entry: m_entities) {
+    for (auto& entry: m_reachingEntities) {
         existingObservers.emplace(entry.first);
     }
 
@@ -317,7 +336,7 @@ void ContainerDomain::addObserver(std::string& entityId)
         update->setTo(observer->getId());
         observer->sendWorld(std::move(update));
 
-        auto& entry = m_entities[entityId];
+        auto& entry = m_reachingEntities[entityId];
         entry.observer = observer;
 
         entry.disconnectFunctions = std::move(disconnectFunctions);
@@ -343,10 +362,10 @@ void ContainerDomain::addObserver(std::string& entityId)
 
 void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
 {
-    auto I = m_entities.find(entityId);
-    if (I != m_entities.end()) {
+    auto I = m_reachingEntities.find(entityId);
+    if (I != m_reachingEntities.end()) {
         auto entry = std::move(I->second);
-        m_entities.erase(I);
+        m_reachingEntities.erase(I);
         for (auto& disconnectFn : entry.disconnectFunctions) {
             if (disconnectFn) {
                 disconnectFn();
@@ -390,16 +409,16 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
 
 bool ContainerDomain::hasObserverRegistered(const LocatedEntity& entity) const
 {
-    return m_entities.find(entity.getId()) != m_entities.end();
+    return m_reachingEntities.find(entity.getId()) != m_reachingEntities.end();
 }
 
 void ContainerDomain::removed()
 {
-    while (!m_entities.empty()) {
-        removeObserver(m_entities.rbegin()->first);
+    while (!m_reachingEntities.empty()) {
+        removeObserver(m_reachingEntities.rbegin()->first);
     }
 //    //Copy to allow modifications to the field during callbacks.
-//    auto entities = std::move(m_entities);
+//    auto entities = std::move(m_reachingEntities);
 //    for (auto& entry : entities) {
 //        for (auto& disconnectFn : entry.second.disconnectFunctions) {
 //            if (disconnectFn) {

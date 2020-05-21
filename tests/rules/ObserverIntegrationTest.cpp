@@ -79,14 +79,33 @@ namespace {
         }
         return list;
     }
+
+    auto moveFn = [](const Ref<Thing>& thing, WFMath::Point<3> pos, Ref<Thing> location = {}) -> OpVector {
+        OpVector res;
+        Atlas::Objects::Operation::Move move;
+
+        Anonymous arg1;
+        arg1->setId(thing->getId());
+        Atlas::Message::Element posElement = pos.toAtlas();
+        arg1->setPosAsList(posElement.List());
+        if (location) {
+            arg1->setLoc(location->getId());
+        }
+        move->setArgs1(arg1);
+        thing->MoveOperation(move, res);
+        return res;
+    };
+
 }
 
 OpVector resIgnored;
+
 
 struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 {
     Tested()
     {
+        ADD_TEST(test_handleNestedInventoryContainers)
         ADD_TEST(test_handleNestedContainers)
         ADD_TEST(test_handleContainers)
         ADD_TEST(test_sendAppearDisappearWithPrivateAndProtected);
@@ -104,21 +123,117 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         entity->operation(set, resIgnored);
     }
 
+    void test_handleNestedInventoryContainers(TestContext& context)
+    {
+
+
+        /**
+         * Check that entities that are put in a nested inventory container, are handled correctly
+         *
+         * All entities are placed at origo
+         * Hierarchy looks like this:
+         * T1 has a physical domain
+         * T2 has sight and inventory domain
+         * T2, T4, T5 and T7 has a container domain
+         *
+         *              T1#
+         *              T2**
+         *              T3*
+         *          T4*     T7*
+         *          T5*     T8
+         *          T6
+         */
+        {
+            WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
+            Ref<Thing> t1 = new Thing(1);
+            t1->setAttrValue("domain", "physical");
+            t1->m_location.m_pos = WFMath::Point<3>::ZERO();
+            context.testWorld.addEntity(t1, context.world);
+            Ref<Thing> t2 = new Thing(2);
+            t2->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t2->m_location.setBBox(bbox);
+            t2->setAttrValue("perception_sight", 1);
+            t2->setAttrValue("reach", 1);
+            t2->setAttrValue("domain", "inventory");
+            context.testWorld.addEntity(t2, t1);
+            Ref<Thing> t3 = new Thing(3);
+            t3->m_location.m_pos = WFMath::Point<3>::ZERO();
+            t3->m_location.setBBox(bbox);
+            t3->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t3, t2);
+            Ref<Thing> t4 = new Thing(4);
+            t4->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t4, t3);
+            Ref<Thing> t5 = new Thing(5);
+            t5->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t5, t4);
+            Ref<Thing> t6 = new Thing(6);
+            context.testWorld.addEntity(t6, t5);
+            Ref<Thing> t7 = new Thing(7);
+            t7->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t7, t3);
+            Ref<Thing> t8 = new Thing(8);
+            context.testWorld.addEntity(t8, t7);
+
+            //Initially only t3 is visible to t2, since it's in its inventory
+            ASSERT_TRUE(t3->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t3}))
+            ASSERT_FALSE(t4->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t4}))
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t5}))
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t6}))
+            ASSERT_FALSE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t8}))
+
+            //Open containers
+            t3->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
+            t4->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
+            t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
+            t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
+            ASSERT_TRUE(t4->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t4}))
+            ASSERT_TRUE(t5->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t5}))
+            ASSERT_TRUE(t6->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t6}))
+            ASSERT_TRUE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t8}))
+
+            //Now move t4 to t1, which should sever the connection to t5 and t6
+            moveFn(t4, {0, 0, 0}, t1);
+
+            ASSERT_TRUE(t4->m_location.m_parent == t1)
+            ASSERT_TRUE(t4->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t4}))
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t5}))
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t6}))
+            ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t4->getId()))
+            ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
+            //Should not affect t8
+            ASSERT_TRUE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t3->getId()))
+            ASSERT_TRUE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t7->getId()))
+            ASSERT_TRUE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t2->canReach(EntityLocation{t8}))
+
+            //Now move t3 to t1, which should sever the connection to t7 and t8
+            moveFn(t3, {0, 0, 0}, t1);
+            ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t3->getId()))
+            ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t7->getId()))
+            ASSERT_FALSE(t7->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t7}))
+            ASSERT_FALSE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t2->canReach(EntityLocation{t8}))
+        }
+    }
+
+
     void test_handleNestedContainers(TestContext& context)
     {
 
-        auto moveFn = [](const Ref<Thing>& thing, WFMath::Point<3> pos) -> OpVector {
-            OpVector res;
-            Atlas::Objects::Operation::Move move;
-
-            Anonymous arg1;
-            arg1->setId(thing->getId());
-            Atlas::Message::Element posElement = pos.toAtlas();
-            arg1->setPosAsList(posElement.List());
-            move->setArgs1(arg1);
-            thing->MoveOperation(move, res);
-            return res;
-        };
 
         /**
          * Check that entities only are allowed to look into containers if they are allowed by the __container_access, and that nested callbacks work.
@@ -195,19 +310,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
     void test_handleContainers(TestContext& context)
     {
-
-        auto moveFn = [](const Ref<Thing>& thing, WFMath::Point<3> pos) -> OpVector {
-            OpVector res;
-            Atlas::Objects::Operation::Move move;
-
-            Anonymous arg1;
-            arg1->setId(thing->getId());
-            Atlas::Message::Element posElement = pos.toAtlas();
-            arg1->setPosAsList(posElement.List());
-            move->setArgs1(arg1);
-            thing->MoveOperation(move, res);
-            return res;
-        };
 
         /**
          * Check that entities only are allowed to look into containers if they are allowed by the __container_access
