@@ -388,6 +388,7 @@ PropertyBase* LocatedEntity::setProperty(const std::string& name,
 {
     auto p = prop.get();
     m_properties[name].property = std::move(prop);
+    p->install(this, name);
     return p;
 }
 

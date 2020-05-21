@@ -208,10 +208,8 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
         auto* prop = ent->modProperty(name, val);
         if (!prop) {
             auto newProp = PropertyManager::instance().addProperty(name);
-            prop = newProp.get();
-            prop->install(ent, name);
             //This transfers ownership of the property to the entity.
-            ent->setProperty(name, std::move(newProp));
+            prop = ent->setProperty(name, std::move(newProp));
         }
 
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.

@@ -149,6 +149,7 @@ void Entitytest::test_setAttr_existing()
 {
     PropertyBase * initial_property = m_entity->setProperty("test_int_property",
                                                             std::make_unique<TestProperty>());
+    m_TestProperty_install_called = false;
 
     PropertyBase * pb = m_entity->setAttrValue("test_int_property", 24);
     ASSERT_NOT_NULL(pb);
