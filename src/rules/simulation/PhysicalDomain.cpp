@@ -2356,22 +2356,25 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
             bulletEntry.modeChanged = false;
         }
         if (posChange && !bulletEntry.closenessObservations.empty()) {
-            //Since closenessObservations might be deleted as part of the callback issued from here, we need to iterate
-            //over it in a way that's safe for outside modifications. That's why we're using a combination of an index and an iterator.
-            for (size_t i = 0; i < bulletEntry.closenessObservations.size();) {
-                auto iter = bulletEntry.closenessObservations.begin();
-                for (size_t j = 0; j < i; ++j) {
-                    iter++;
+            //Since callbacks can remove observations we need to first collect att invalid observations, and then remove them carefully.
+            std::vector<ClosenessObserverEntry*> invalidEntries;
+            for (auto& observation : bulletEntry.closenessObservations) {
+                if (!isWithinReach(*observation->reacher, *observation->target, observation->reach, {})) {
+                    invalidEntries.emplace_back(observation);
                 }
-                auto* observation = *iter;
-                auto result = isWithinReach(*observation->reacher, *observation->target, observation->reach, {});
-                if (!result) {
+            }
+
+
+            for (auto& observation : invalidEntries) {
+                //It's important that we check that the observation still is valid, since it's possible that callbacks alters the collections.:
+                auto I = bulletEntry.closenessObservations.find(observation);
+                if (I != bulletEntry.closenessObservations.end()) {
                     if (&bulletEntry == observation->reacher) {
                         observation->target->closenessObservations.erase(observation);
                     } else {
                         observation->reacher->closenessObservations.erase(observation);
                     }
-                    bulletEntry.closenessObservations.erase(iter);
+                    bulletEntry.closenessObservations.erase(I);
 
                     auto J = m_closenessObservations.find(observation);
                     //Hold on to an instance while we call callbacks and erase it.
@@ -2381,10 +2384,6 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
                     if (observation->callback) {
                         observation->callback();
                     }
-
-                    //If we've removed an entry we should not advance the index.
-                } else {
-                    ++i;
                 }
             }
         }
