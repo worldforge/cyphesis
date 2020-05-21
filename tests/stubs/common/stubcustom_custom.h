@@ -13,5 +13,6 @@ namespace Atlas { namespace Objects { namespace Operation {
             int COMMUNE_NO = -1;
             int PICKUP_NO = -1;
             int POSSESS_NO = -1;
+            int CLOSE_CONTAINER_NO = -1;
 
         } } }

@@ -1,5 +1,5 @@
 // Cyphesis Online RPG Server and AI Engine
-// Copyright (C) 2009 Alistair Riddoch
+// Copyright (C) 2005 Alistair Riddoch
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,25 +16,24 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef COMMON_CUSTOM_H
-#define COMMON_CUSTOM_H
+#ifndef COMMON_CLOSECONTAINER_H
+#define COMMON_CLOSECONTAINER_H
+
+#include <Atlas/Objects/Operation.h>
 
 namespace Atlas { namespace Objects { namespace Operation {
 
-extern int CONNECT_NO;
-extern int GOAL_INFO_NO;
-extern int MONITOR_NO;
-extern int SETUP_NO;
-extern int THOUGHT_NO;
-extern int TICK_NO;
-extern int UPDATE_NO;
-extern int TELEPORT_NO;
-extern int COMMUNE_NO;
-extern int THINK_NO;
-extern int RELAY_NO;
-extern int POSSESS_NO;
 extern int CLOSE_CONTAINER_NO;
+
+/// \brief An operation for closing containers.
+/// \ingroup CustomOperations
+class CloseContainer : public Action
+{
+  public:
+        CloseContainer() {
+    }
+};
 
 } } }
 
-#endif // COMMON_CUSTOM_H
+#endif // COMMON_CLOSECONTAINER_H

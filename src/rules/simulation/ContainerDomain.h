@@ -95,8 +95,11 @@ class ContainerDomain : public Domain
 
         void removed() override;
 
-    private:
+        void addObserver(std::string& entityId);
 
+        void removeObserver(const std::basic_string<char>& entityId);
+
+    private:
 
         ContainerAccessProperty* mContainerAccessProperty;
 
@@ -105,11 +108,6 @@ class ContainerDomain : public Domain
          * Key is the entity id of the reaching entity.
          */
         std::map<std::string, ObservationEntry> m_entities;
-
-
-        void addObserver(std::string& entityId);
-
-        void removeObserver(const std::basic_string<char>& entityId);
 
 };
 

@@ -34,25 +34,16 @@ add_library(common
         OperationsDispatcher.cpp
         RuleTraversalTask.cpp
         AtlasQuery.h
-        operations/Commune.h
         compose.hpp
-        operations/Connect.h
-        operations/Monitor.h
         nls.h
         op_switch.h
-        operations/Possess.h
         Property_impl.h
         PropertyFactory_impl.h
         PropertyInstanceState.h
         random.h
-        operations/Setup.h
         sockets.h
-        operations/Teleport.h
-        operations/Think.h
-        operations/Tick.h
         type_utils_impl.h
         types.h
-        operations/Update.h
         FileSystemObserver.cpp
         FileSystemObserver.h
         AssetsManager.cpp
@@ -60,8 +51,6 @@ add_library(common
         Singleton.h
         RepeatedTask.cpp
         RepeatedTask.h
-        operations/Thought.h
-        operations/Relay.h
         Visibility.h
         MainLoop.cpp
         MainLoop.h

@@ -5,11 +5,7 @@ import server
 from atlas import Operation, Entity
 
 
-def view(instance):
+def open_container(instance):
+    """ Standard open function"""
     return server.OPERATION_BLOCKED, \
            Operation("set", Entity({"__container_access!append": [instance.actor.id]}), to=instance.tool.id)
-           #Operation("look", to=instance.tool, from_=instance.actor)
-
-
-def open_container(instance):
-    return server.OPERATION_BLOCKED

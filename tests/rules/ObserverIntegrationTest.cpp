@@ -136,9 +136,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          *         T6
          */
         {
-            auto& opsHandler = context.testWorld.getOperationsHandler();
-            auto& queue = opsHandler.getQueue();
-
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
             t1->setAttrValue("domain", "physical");
@@ -163,8 +160,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             context.testWorld.addEntity(t5, t4);
             Ref<Thing> t6 = new Thing(6);
             context.testWorld.addEntity(t6, t5);
-
-            opsHandler.clearQueues();
 
             ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))

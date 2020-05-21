@@ -137,6 +137,14 @@
   }
 #endif //STUB_PhysicalDomain_observeCloseness
 
+#ifndef STUB_PhysicalDomain_removed
+//#define STUB_PhysicalDomain_removed
+  void PhysicalDomain::removed()
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_removed
+
 #ifndef STUB_PhysicalDomain_createDomainBorders
 //#define STUB_PhysicalDomain_createDomainBorders
   void PhysicalDomain::createDomainBorders()
@@ -291,7 +299,7 @@
 
 #ifndef STUB_PhysicalDomain_createCollisionShapeForEntry
 //#define STUB_PhysicalDomain_createCollisionShapeForEntry
-  std::shared_ptr<btCollisionShape> PhysicalDomain::createCollisionShapeForEntry(LocatedEntity* entity, const WFMath::AxisBox<3>& bbox, float mass, btVector3& centerOfMassOffse)
+  std::shared_ptr<btCollisionShape> PhysicalDomain::createCollisionShapeForEntry(LocatedEntity& entity, const WFMath::AxisBox<3>& bbox, float mass, btVector3& centerOfMassOffse)
   {
     return *static_cast<std::shared_ptr<btCollisionShape>*>(nullptr);
   }

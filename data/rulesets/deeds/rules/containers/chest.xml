@@ -16,12 +16,12 @@
             <map name="domain">
                 <string name="default">container</string>
             </map>
-            <map name="_usages">
-                <map name="default">
-                    <map name="open">
+            <map name="usages">
+                <map name="append">
+                    <map name="open_container">
                         <string name="name">Open</string>
                         <string name="handler">world.objects.Container.open_container</string>
-                        <string name="constraint">actor can_reach tool</string>
+                        <string name="constraint">describe("You're too far away.", actor can_reach tool)</string>
                     </map>
                 </map>
             </map>

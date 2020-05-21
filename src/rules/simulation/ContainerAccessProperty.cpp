@@ -18,6 +18,7 @@
 
 #include "ContainerAccessProperty.h"
 #include "ContainerDomain.h"
+#include "common/operations/CloseContainer.h"
 #include <Atlas/Objects/Entity.h>
 
 using Atlas::Message::Element;
@@ -31,7 +32,6 @@ ContainerAccessProperty::ContainerAccessProperty(ContainerDomain& container) :
         m_container(container)
 {
 }
-
 
 int ContainerAccessProperty::get(Element& ent) const
 {
@@ -59,9 +59,38 @@ void ContainerAccessProperty::set(const Element& ent)
 
 }
 
+
+HandlerResult ContainerAccessProperty::operation(LocatedEntity* e,
+                                                 const Operation& op, OpVector& res)
+{
+    auto& args = op->getArgs();
+    if (!args.empty()) {
+        auto& innerOp = args.front();
+        if (!innerOp->isDefaultParent() && innerOp->getClassNo() == Atlas::Objects::Operation::CLOSE_CONTAINER_NO) {
+            if (!op->isDefaultFrom()) {
+                m_container.removeObserver(op->getFrom());
+                return HandlerResult::OPERATION_HANDLED;
+            }
+        }
+    }
+
+    return OPERATION_IGNORED;
+}
+
+
 ContainerAccessProperty* ContainerAccessProperty::copy() const
 {
     return nullptr;
     //return new ContainerAccessProperty(*this);
+}
+
+void ContainerAccessProperty::install(LocatedEntity* entity, const std::string& name)
+{
+    entity->installDelegate(Atlas::Objects::Operation::USE_NO, ContainerAccessProperty::property_name);
+}
+
+void ContainerAccessProperty::remove(LocatedEntity* entity, const std::string& name)
+{
+    entity->removeDelegate(Atlas::Objects::Operation::USE_NO, ContainerAccessProperty::property_name);
 }
 

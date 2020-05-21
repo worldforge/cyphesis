@@ -175,7 +175,7 @@
     </map>
 
     <map>
-        <string name="id">view</string>
+        <string name="id">open_container</string>
         <string name="objtype">op_definition</string>
         <string name="parent">affect</string>
     </map>

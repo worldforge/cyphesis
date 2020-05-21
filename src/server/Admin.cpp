@@ -29,11 +29,8 @@
 
 #include "rules/simulation/BaseWorld.h"
 #include "common/id.h"
-#include "common/debug.h"
-#include "common/custom.h"
 #include "common/Inheritance.h"
 
-#include "common/operations/Connect.h"
 #include "common/operations/Monitor.h"
 
 #include <Atlas/Objects/Operation.h>

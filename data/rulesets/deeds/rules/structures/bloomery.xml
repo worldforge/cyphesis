@@ -16,9 +16,9 @@
             </map>
             <map name="usages">
                 <map name="append">
-                    <map name="view">
-                        <string name="name">View</string>
-                        <string name="handler">world.objects.Container.view</string>
+                    <map name="open_container">
+                        <string name="name">Open</string>
+                        <string name="handler">world.objects.Container.open_container</string>
                         <string name="constraint">describe("You're too far away.", actor can_reach tool)</string>
                     </map>
                     <map name="craft">

@@ -17,6 +17,15 @@
             <map name="domain">
                 <string name="default">container</string>
             </map>
+            <map name="usages">
+                <map name="append">
+                    <map name="open_container">
+                        <string name="name">Open</string>
+                        <string name="handler">world.objects.Container.open_container</string>
+                        <string name="constraint">describe("You're too far away.", actor can_reach tool)</string>
+                    </map>
+                </map>
+            </map>
         </map>
         <string name="id">barrel</string>
         <string name="objtype">class</string>

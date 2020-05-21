@@ -11,6 +11,7 @@
 //#define STUB_ContainerDomain_ContainerDomain
    ContainerDomain::ContainerDomain(LocatedEntity& entity)
     : Domain(entity)
+    , mContainerAccessProperty(nullptr)
   {
     
   }
@@ -79,6 +80,46 @@
     return *static_cast<boost::optional<std::function<()>>*>(nullptr);
   }
 #endif //STUB_ContainerDomain_observeCloseness
+
+#ifndef STUB_ContainerDomain_setObservers
+//#define STUB_ContainerDomain_setObservers
+  void ContainerDomain::setObservers(std::vector<std::string> observerIds)
+  {
+    
+  }
+#endif //STUB_ContainerDomain_setObservers
+
+#ifndef STUB_ContainerDomain_hasObserverRegistered
+//#define STUB_ContainerDomain_hasObserverRegistered
+  bool ContainerDomain::hasObserverRegistered(const LocatedEntity& entity) const
+  {
+    return false;
+  }
+#endif //STUB_ContainerDomain_hasObserverRegistered
+
+#ifndef STUB_ContainerDomain_removed
+//#define STUB_ContainerDomain_removed
+  void ContainerDomain::removed()
+  {
+    
+  }
+#endif //STUB_ContainerDomain_removed
+
+#ifndef STUB_ContainerDomain_addObserver
+//#define STUB_ContainerDomain_addObserver
+  void ContainerDomain::addObserver(std::string& entityId)
+  {
+    
+  }
+#endif //STUB_ContainerDomain_addObserver
+
+#ifndef STUB_ContainerDomain_removeObserver
+//#define STUB_ContainerDomain_removeObserver
+  void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
+  {
+    
+  }
+#endif //STUB_ContainerDomain_removeObserver
 
 
 #endif

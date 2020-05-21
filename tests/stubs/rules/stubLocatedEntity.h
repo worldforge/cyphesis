@@ -316,7 +316,7 @@
 
 #ifndef STUB_LocatedEntity_isVisibleForOtherEntity
 //#define STUB_LocatedEntity_isVisibleForOtherEntity
-  bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* watcher) const
+  bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
   {
     return false;
   }

@@ -22,6 +22,8 @@
 
 #include <Atlas/Objects/Generic.h>
 
+#include "operations/CloseContainer.h"
+
 void installCustomOperations(TypeStore & i)
 {
     auto& atlas_factories = i.getFactories();
@@ -37,9 +39,6 @@ void installCustomOperations(TypeStore & i)
 
     i.addChild(atlasOpDefinition("tick", "root_operation"));
     Atlas::Objects::Operation::TICK_NO = atlas_factories.addFactory("tick", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
-
-    i.addChild(atlasOpDefinition("pickup", "action"));
-    Atlas::Objects::Operation::PICKUP_NO = atlas_factories.addFactory("pickup", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
     i.addChild(atlasOpDefinition("update", "tick"));
     Atlas::Objects::Operation::UPDATE_NO = atlas_factories.addFactory("update", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
@@ -66,6 +65,8 @@ void installCustomOperations(TypeStore & i)
     i.addChild(atlasOpDefinition("possess", "set"));
     Atlas::Objects::Operation::POSSESS_NO = atlas_factories.addFactory("possess", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 
+    i.addChild(atlasOpDefinition("close_container", "action"));
+    Atlas::Objects::Operation::CLOSE_CONTAINER_NO = atlas_factories.addFactory("close_container", &Atlas::Objects::generic_factory, &Atlas::Objects::defaultInstance<Atlas::Objects::RootData>);
 }
 
 void installCustomEntities(TypeStore & i)

@@ -9,8 +9,8 @@
 
 #ifndef STUB_ContainerAccessProperty_ContainerAccessProperty
 //#define STUB_ContainerAccessProperty_ContainerAccessProperty
-   ContainerAccessProperty::ContainerAccessProperty()
-    : PropertyBase()
+   ContainerAccessProperty::ContainerAccessProperty(ContainerDomain& container)
+    : PropertyBase(container)
   {
     
   }
@@ -40,21 +40,29 @@
   }
 #endif //STUB_ContainerAccessProperty_copy
 
-#ifndef STUB_ContainerAccessProperty_apply
-//#define STUB_ContainerAccessProperty_apply
-  void ContainerAccessProperty::apply(LocatedEntity*)
+#ifndef STUB_ContainerAccessProperty_operation
+//#define STUB_ContainerAccessProperty_operation
+  HandlerResult ContainerAccessProperty::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  {
+    return *static_cast<HandlerResult*>(nullptr);
+  }
+#endif //STUB_ContainerAccessProperty_operation
+
+#ifndef STUB_ContainerAccessProperty_install
+//#define STUB_ContainerAccessProperty_install
+  void ContainerAccessProperty::install(LocatedEntity*, const std::string&)
   {
     
   }
-#endif //STUB_ContainerAccessProperty_apply
+#endif //STUB_ContainerAccessProperty_install
 
-#ifndef STUB_ContainerAccessProperty_hasEntity
-//#define STUB_ContainerAccessProperty_hasEntity
-  bool ContainerAccessProperty::hasEntity(const LocatedEntity& entity) const
+#ifndef STUB_ContainerAccessProperty_remove
+//#define STUB_ContainerAccessProperty_remove
+  void ContainerAccessProperty::remove(LocatedEntity*, const std::string& name)
   {
-    return false;
+    
   }
-#endif //STUB_ContainerAccessProperty_hasEntity
+#endif //STUB_ContainerAccessProperty_remove
 
 
 #endif

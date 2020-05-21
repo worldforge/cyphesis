@@ -48,5 +48,13 @@
   }
 #endif //STUB_ContainersActiveProperty_apply
 
+#ifndef STUB_ContainersActiveProperty_hasContainer
+//#define STUB_ContainersActiveProperty_hasContainer
+  bool ContainersActiveProperty::hasContainer(const std::string& containerId) const
+  {
+    return false;
+  }
+#endif //STUB_ContainersActiveProperty_hasContainer
+
 
 #endif
