@@ -80,6 +80,9 @@
             <map name="level">
                 <int name="default">0</int>
             </map>
+            <map name="xp_provided">
+                <float name="default">30</float>
+            </map>
         </map>
         <string name="id">lych</string>
         <string name="objtype">class</string>

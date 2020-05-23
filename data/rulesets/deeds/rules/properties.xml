@@ -97,6 +97,21 @@
     </map>
 
     <map>
+        <string name="id">xp_provided</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">The amount of experience points awarded for killing an entity.</string>
+    </map>
+
+    <map>
+        <string name="id">__aggressor</string>
+        <string name="objtype">type</string>
+        <string name="parent">string</string>
+        <string name="description">Id of the other entity which last hit an entity. This is used for determining to whom XP should be rewarded.</string>
+    </map>
+
+
+    <map>
         <string name="id">stamina</string>
         <string name="objtype">type</string>
         <string name="parent">float</string>

@@ -25,6 +25,14 @@
             <map name="speed_jump">
                 <float name="default">7.5</float>
             </map>
+            <map name="__scripts">
+                <list name="prepend">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.ExperienceProviding.ExperienceProviding</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">mobile</string>
         <string name="objtype">class</string>

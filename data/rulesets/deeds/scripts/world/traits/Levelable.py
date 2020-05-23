@@ -13,7 +13,8 @@ class Levelable(server.Thing):
             level_from_xp = int(math.floor(xp / 100))
             level = self.get_prop_int("level")
             if level is None or level != level_from_xp:
-                return Operation("set", Entity(self.id, level=level_from_xp), to=self.id)
+                return Operation("set", Entity(self.id, level=level_from_xp), to=self.id), \
+                       Operation("imaginary", Entity(description="You are now at level {}!".format(level_from_xp)), to=self.id, from_=self.id)
 
 
 class Levelled(server.Thing):

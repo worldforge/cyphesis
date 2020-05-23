@@ -106,7 +106,7 @@
                 </list>
             </map>
             <map name="craft_duration">
-                <float name="default">1.0</float>
+                <float name="default">5.0</float>
             </map>
             <map name="craft_name">
                 <string name="default">Sword</string>
