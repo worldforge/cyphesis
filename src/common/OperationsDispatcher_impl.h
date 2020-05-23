@@ -79,7 +79,7 @@ bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& 
                 //Check if there's too large a difference in time
                 auto timeDiff = realtime - opQueueEntry->getSeconds();
                 if (timeDiff > m_time_diff_report) {
-                    log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4. Ops in queue: %5",
+                    log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4 seconds. Ops in queue: %5",
                                                  opQueueEntry->getParent(), opQueueEntry.from->describeEntity(),
                                                  opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
                 }
