@@ -24,9 +24,17 @@
                     <map name="craft">
                         <string name="name">Smelt</string>
                         <string name="handler">world.objects.structures.Bloomery.craft</string>
-                        <string name="constraint">describe("Must be able to reach the bloomery.", actor can_reach tool) and describe("There must be charcoal or lumber in the bloomery.", contains(tool.contains, child.type=types.charcoal) or contains(tool.contains, child.type=types.lumber)) and describe("There must be hematite in the bloomery.", contains(tool.contains, child.type=types.hematite))</string>
+                        <string name="constraint">describe("Must be able to reach the bloomery.", actor can_reach tool) and describe("There must be charcoal or lumber in the bloomery.",
+                            contains(tool.contains, child.type=types.charcoal) or contains(tool.contains, child.type=types.lumber))
+                        </string>
                     </map>
                 </map>
+            </map>
+            <map name="name">
+                <string name="default">Bloomery</string>
+            </map>
+            <map name="description">
+                <string name="default">Allows the smelting of ores into ingots. Fill the bloomery with charcoal or lumber, add the ore and start the smelting.</string>
             </map>
         </map>
         <string name="id">bloomery</string>
