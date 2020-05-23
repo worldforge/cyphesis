@@ -63,20 +63,6 @@ Py::Object CyPy_UsageInstance::getattro(const Py::String& name)
     if (nameStr == "tool") {
         return CyPy_LocatedEntity::wrap(m_value.tool);
     }
-//    if (nameStr == "targets") {
-//        Py::List list(m_value.targets.size());
-//        for (size_t i = 0; i < m_value.targets.size(); ++i) {
-//            list[i] = CyPy_EntityLocation::wrap(m_value.targets[i]);
-//        }
-//        return list;
-//    }
-//    if (nameStr == "consumed") {
-//        Py::List list(m_value.consumed.size());
-//        for (size_t i = 0; i < m_value.consumed.size(); ++i) {
-//            list[i] = CyPy_EntityLocation::wrap(m_value.consumed[i]);
-//        }
-//        return list;
-//    }
     if (nameStr == "definition") {
         return CyPy_Usage::wrap(m_value.definition);
     }
@@ -165,20 +151,6 @@ void CyPy_Usage::init_type()
 Py::Object CyPy_Usage::getattro(const Py::String& name)
 {
     auto nameStr = name.as_string();
-//    if (nameStr == "targets") {
-//        Py::List list(m_value.targets.size());
-//        for (size_t i = 0; i < m_value.targets.size(); ++i) {
-//            list[i] = CyPy_Filter::wrap(m_value.targets[i]);
-//        }
-//        return list;
-//    }
-//    if (nameStr == "consumed") {
-//        Py::List list(m_value.consumed.size());
-//        for (size_t i = 0; i < m_value.consumed.size(); ++i) {
-//            list[i] = CyPy_Filter::wrap(m_value.consumed[i]);
-//        }
-//        return list;
-//    }
     if (nameStr == "description") {
         return Py::String(m_value.description);
     }

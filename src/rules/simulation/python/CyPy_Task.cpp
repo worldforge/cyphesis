@@ -210,6 +210,9 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
     if (nameStr == "task") {
         return PythonExtensionBase::getattro(name);
     }
+    if (nameStr == "temporaries") {
+        return mTemporaries;
+    }
     Atlas::Message::Element val;
     if (m_value->getAttr(name, val) == 0) {
         if (val.isNone()) {
@@ -287,6 +290,10 @@ int CyPy_Task::setattro(const Py::String& name, const Py::Object& attr)
     }
     if (nameStr == "task") {
         PythonExtensionBase::setattro(name, attr);
+        return 0;
+    }
+
+    if (nameStr == "intermediates") {
         return 0;
     }
 

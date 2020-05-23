@@ -53,8 +53,15 @@ class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
         Py::Object rich_compare(const Py::Object& other, int type) override;
 
         Py::Object getArg(const Py::Tuple& args);
+
         PYCXX_VARARGS_METHOD_DECL(CyPy_Task, getArg);
 
+        /**
+         * Allow storing random Python objects in the "temporaries" map.
+         * Otherwise only Atlas::Message::Element types are allowed to be stored.
+         * This is meant to be used for instance specific temporary data which can be recreated at instance creation time.
+         */
+        Py::Dict mTemporaries;
 };
 
 

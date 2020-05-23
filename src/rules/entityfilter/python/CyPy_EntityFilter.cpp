@@ -23,7 +23,7 @@
 
 
 CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+        : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
     auto filterString = verifyString(args.front());
@@ -40,17 +40,24 @@ void CyPy_Filter::init_type()
     behaviors().name("Filter");
     behaviors().doc("");
 
+    behaviors().supportStr();
+
     behaviors().readyType();
 }
 
 CyPy_Filter::CyPy_Filter(Py::PythonClassInstance* self, std::shared_ptr<EntityFilter::Filter> value)
-    : WrapperBase(self, std::move(value))
+        : WrapperBase(self, std::move(value))
 {
 
 }
 
+Py::Object CyPy_Filter::str()
+{
+    return Py::String(String::compose("Entity filter: %1", this->m_value->getDeclaration()));
+}
+
 CyPy_EntityFilter::CyPy_EntityFilter()
-    : ExtensionModule("entity_filter")
+        : ExtensionModule("entity_filter")
 {
 
     CyPy_Filter::init_type();

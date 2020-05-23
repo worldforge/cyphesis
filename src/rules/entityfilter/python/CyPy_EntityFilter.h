@@ -38,6 +38,7 @@ class CyPy_Filter : public WrapperBase<std::shared_ptr<EntityFilter::Filter>, Cy
 
         static void init_type();
 
+        Py::Object str() override;
 
     private:
 

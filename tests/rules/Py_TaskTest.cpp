@@ -93,6 +93,9 @@ int main()
     run_python_string("import server");
     expect_python_error("t.foo = server.Thing('2')", PyExc_TypeError);
 
+    // Except when using the "temporaries" map.
+    run_python_string("t.temporaries['foo'] = server.Thing('2')");
+
     run_python_string("assert not t.obsolete()");
     run_python_string("t.irrelevant()");
     run_python_string("assert t.obsolete()");
