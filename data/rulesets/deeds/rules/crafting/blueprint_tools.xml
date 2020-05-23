@@ -1,0 +1,123 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Axe blueprint</string>
+            </map>
+            <map name="description">
+                <string name="default">Blueprint for creating axes at an Forge Pit. Requires one iron ingot and a piece of lumber.</string>
+            </map>
+            <map name="craft_output">
+                <list name="append">
+                    <map>
+                        <string name="objtype">obj</string>
+                        <string name="parent">axe</string>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_input">
+                <list name="append">
+                    <map>
+                        <string name="criteria">describe("You need an iron ingot.", entity instance_of types.iron_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                    <map>
+                        <string name="criteria">describe("You need a piece of lumber.", entity instance_of types.lumber)</string>
+                        <int name="amount">1</int>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_duration">
+                <float name="default">5.0</float>
+            </map>
+            <map name="craft_name">
+                <string name="default">Axe</string>
+            </map>
+        </map>
+        <string name="id">blueprint_axe</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint_generic_forge_pit</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Pickaxe blueprint</string>
+            </map>
+            <map name="description">
+                <string name="default">Blueprint for creating pickaxes at an Forge Pit. Requires one iron ingot and a piece of lumber.</string>
+            </map>
+            <map name="craft_output">
+                <list name="append">
+                    <map>
+                        <string name="objtype">obj</string>
+                        <string name="parent">pickaxe</string>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_input">
+                <list name="append">
+                    <map>
+                        <string name="criteria">describe("You need an iron ingot.", entity instance_of types.iron_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                    <map>
+                        <string name="criteria">describe("You need a piece of lumber.", entity instance_of types.lumber)</string>
+                        <int name="amount">1</int>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_duration">
+                <float name="default">5.0</float>
+            </map>
+            <map name="craft_name">
+                <string name="default">Pickaxe</string>
+            </map>
+        </map>
+        <string name="id">blueprint_pickaxe</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint_generic_forge_pit</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Scythe blueprint</string>
+            </map>
+            <map name="description">
+                <string name="default">Blueprint for creating scythes at an Forge Pit. Requires one iron ingot and a piece of lumber.</string>
+            </map>
+            <map name="craft_output">
+                <list name="append">
+                    <map>
+                        <string name="objtype">obj</string>
+                        <string name="parent">scythe</string>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_input">
+                <list name="append">
+                    <map>
+                        <string name="criteria">describe("You need an iron ingot.", entity instance_of types.iron_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                    <map>
+                        <string name="criteria">describe("You need a piece of lumber.", entity instance_of types.lumber)</string>
+                        <int name="amount">1</int>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_duration">
+                <float name="default">5.0</float>
+            </map>
+            <map name="craft_name">
+                <string name="default">Scythe</string>
+            </map>
+        </map>
+        <string name="id">blueprint_scythe</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint_generic_forge_pit</string>
+    </map>
+
+</atlas>
