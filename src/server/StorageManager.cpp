@@ -419,12 +419,6 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
         MapType loc_data;
         m_db.decodeMessage(location_string, loc_data);
         child->m_location.readFromMessage(loc_data);
-        if (!child->m_location.pos().isValid()) {
-            std::cout << "No pos data" << std::endl << std::flush;
-            log(ERROR, compose("Entity %1 restored from database has no "
-                               "POS data. Ignored.", child->describeEntity()));
-            continue;
-        }
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
         m_world.addEntity(child, parent);
         childCount += restoreChildren(child.get());
