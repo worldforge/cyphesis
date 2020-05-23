@@ -11,6 +11,12 @@
             <map name="present">
                 <string name="default">dural/structures/forge_pit/forge_pit.modeldef</string>
             </map>
+            <map name="name">
+                <string name="default">Forge pit</string>
+            </map>
+            <map name="description">
+                <string name="default">Used to forge new weapons and tools. Requires blueprints to create items.</string>
+            </map>
         </map>
         <string name="id">forge_pit</string>
         <string name="objtype">class</string>

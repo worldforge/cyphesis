@@ -20,7 +20,7 @@
         <string name="parent">thing</string>
     </map>
 
-
+    <!-- A general base for blueprints which all require a forge_pit. -->
     <map>
         <map name="attributes">
             <map name="usages">
@@ -35,15 +35,14 @@
                             </map>
                         </map>
                         <string name="name">Craft</string>
-                        <string name="handler">world.objects.crafting.Sword.craft</string>
-                        <string name="constraint">describe("You need an iron ingot.", contains(actor.contains, child.type=types.iron_ingot))</string>
+                        <string name="handler">world.objects.crafting.Craft.general_crafting</string>
                     </map>
                 </map>
             </map>
-
         </map>
-        <string name="id">blueprint_sword</string>
+        <string name="id">blueprint_generic_forge_pit</string>
         <string name="objtype">class</string>
         <string name="parent">blueprint</string>
     </map>
+
 </atlas>

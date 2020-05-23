@@ -1,0 +1,30 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/resources/iron_ingot/model/ingot_iron.mesh</string>
+                    <string name="type">box</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/resources/iron_ingot/model/ingot_iron.mesh</string>
+            </map>
+            <map name="density">
+                <float name="default">8900</float>
+            </map>
+            <map name="domain">
+                <string name="default">stackable</string>
+            </map>
+            <map name="name">
+                <string name="default">Copper ingot</string>
+            </map>
+            <map name="description">
+                <string name="default">An ingot of crude copper.</string>
+            </map>
+        </map>
+        <string name="id">copper_ingot</string>
+        <string name="objtype">class</string>
+        <string name="parent">material</string>
+    </map>
+</atlas>

@@ -171,4 +171,34 @@
         </string>
     </map>
 
+    <map>
+        <string name="id">craft_duration</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">Used by the Generic Craft mechanism to set the duration of the craft task, in seconds. Defaults to 5.0.</string>
+    </map>
+
+    <map>
+        <string name="id">craft_input</string>
+        <string name="objtype">type</string>
+        <string name="parent">list</string>
+        <string name="description">Used by the Generic Craft mechanism. A list of the ingredients needed to be present on the actor, which will be consumed.
+            Each entry is a map containing a required Entity Filter as a "constraint" string, and an optional "amount" (defaults to 1).
+        </string>
+    </map>
+
+    <map>
+        <string name="id">craft_output</string>
+        <string name="objtype">type</string>
+        <string name="parent">list</string>
+        <string name="description">Used by the Generic Craft mechanism. A list of entity declarations which will be created as a result of the crafting.</string>
+    </map>
+
+    <map>
+        <string name="id">craft_name</string>
+        <string name="objtype">type</string>
+        <string name="parent">string</string>
+        <string name="description">Used by the Generic Craft mechanism. An optional name of the thing(s) created. To be emitted as an Imaginary.</string>
+    </map>
+
 </atlas>

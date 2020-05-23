@@ -1,0 +1,120 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Sharp sword blueprint</string>
+            </map>
+            <map name="description">
+                <string name="default">Blueprint for creating swords at an Forge Pit. Requires one iron ingot.</string>
+            </map>
+            <map name="craft_output">
+                <list name="append">
+                    <map>
+                        <string name="objtype">obj</string>
+                        <string name="parent">sword_a1</string>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_input">
+                <list name="append">
+                    <map>
+                        <string name="criteria">describe("You need an iron ingot.", entity instance_of types.iron_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_duration">
+                <float name="default">5.0</float>
+            </map>
+            <map name="craft_name">
+                <string name="default">Sword</string>
+            </map>
+        </map>
+        <string name="id">blueprint_sword_a1</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint_generic_forge_pit</string>
+    </map>
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Honed sword blueprint</string>
+            </map>
+            <map name="description">
+                <string name="default">Blueprint for creating swords at an Forge Pit. Requires one iron and one copper ingot.</string>
+            </map>
+            <map name="craft_output">
+                <list name="append">
+                    <map>
+                        <string name="objtype">obj</string>
+                        <string name="parent">sword_a2</string>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_input">
+                <list name="append">
+                    <map>
+                        <string name="criteria">describe("You need an iron ingot.", entity instance_of types.iron_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                    <map>
+                        <string name="criteria">describe("You need a copper ingot.", entity instance_of types.copper_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_duration">
+                <float name="default">5.0</float>
+            </map>
+            <map name="craft_name">
+                <string name="default">Sword</string>
+            </map>
+        </map>
+        <string name="id">blueprint_sword_a2</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint_generic_forge_pit</string>
+    </map>
+
+
+    <map>
+        <map name="attributes">
+            <map name="name">
+                <string name="default">Cutting sword blueprint</string>
+            </map>
+            <map name="description">
+                <string name="default">Blueprint for creating swords at an Forge Pit. Requires one iron and two copper ingots.</string>
+            </map>
+            <map name="craft_output">
+                <list name="append">
+                    <map>
+                        <string name="objtype">obj</string>
+                        <string name="parent">sword_a3</string>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_input">
+                <list name="append">
+                    <map>
+                        <string name="criteria">describe("You need an iron ingot.", entity instance_of types.iron_ingot)</string>
+                        <int name="amount">1</int>
+                    </map>
+                    <map>
+                        <string name="criteria">describe("You need two copper ingots.", entity instance_of types.copper_ingot)</string>
+                        <int name="amount">2</int>
+                    </map>
+                </list>
+            </map>
+            <map name="craft_duration">
+                <float name="default">1.0</float>
+            </map>
+            <map name="craft_name">
+                <string name="default">Sword</string>
+            </map>
+        </map>
+        <string name="id">blueprint_sword_a3</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint_generic_forge_pit</string>
+    </map>
+
+</atlas>
