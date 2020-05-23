@@ -27,7 +27,7 @@
     <map>
         <string name="id">craft</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">root_operation</string>
+        <string name="parent">action</string>
     </map>
 
     <map>

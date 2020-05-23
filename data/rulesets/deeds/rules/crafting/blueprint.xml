@@ -1,0 +1,49 @@
+<atlas>
+
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
+                    <string name="type">box</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
+            </map>
+            <map name="mass">
+                <float name="default">0.1</float>
+            </map>
+        </map>
+        <string name="id">blueprint</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+
+    <map>
+        <map name="attributes">
+            <map name="usages">
+                <map name="append">
+                    <map name="craft">
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">describe("You need a forge pit for crafting.", entity instance_of types.forge_pit) and (actor can_reach entity)</string>
+                                <int name="min">1</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="name">Craft</string>
+                        <string name="handler">world.objects.crafting.Sword.craft</string>
+                        <string name="constraint">describe("You need an iron ingot.", contains(actor.contains, child.type=types.iron_ingot))</string>
+                    </map>
+                </map>
+            </map>
+
+        </map>
+        <string name="id">blueprint_sword</string>
+        <string name="objtype">class</string>
+        <string name="parent">blueprint</string>
+    </map>
+</atlas>

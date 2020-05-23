@@ -2,31 +2,6 @@
 
     <map>
         <map name="attributes">
-            <map name="geometry">
-                <map name="default">
-                    <string name="path">dural/items/misc/curly_document/model/curly_document.mesh</string>
-                    <string name="type">box</string>
-                </map>
-            </map>
-            <map name="present">
-                <string name="default">dural/items/misc/curly_document/model/curly_document.mesh</string>
-            </map>
-            <map name="mass">
-                <float name="default">0.1</float>
-            </map>
-            <map name="parameters">
-                <list name="default">
-                </list>
-            </map>
-        </map>
-        <string name="id">blueprint</string>
-        <string name="objtype">class</string>
-        <string name="parent">thing</string>
-    </map>
-
-
-    <map>
-        <map name="attributes">
             <map name="bbox">
                 <list name="default">
                     <float>-0.6</float>
