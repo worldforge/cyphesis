@@ -383,16 +383,18 @@ namespace EntityFilter {
     bool ContainsRecursiveFunctionProvider::checkContainer(LocatedEntitySet* container,
                                                            const QueryContext& context) const
     {
-        QueryContext childContext = context;
-        for (auto& item : *container) {
-            childContext.child = item.get();
-            if (m_condition->isMatch(childContext)) {
-                return true;
-            } else {
-                //If an item we're looking at also contains other items - check them too using recursion
-                if (m_recursive && item->m_contains && !item->m_contains->empty()) {
-                    if (this->checkContainer(item->m_contains.get(), context)) {
-                        return true;
+        if (container) {
+            QueryContext childContext = context;
+            for (auto& item : *container) {
+                childContext.child = item.get();
+                if (m_condition->isMatch(childContext)) {
+                    return true;
+                } else {
+                    //If an item we're looking at also contains other items - check them too using recursion
+                    if (m_recursive && item->m_contains && !item->m_contains->empty()) {
+                        if (this->checkContainer(item->m_contains.get(), context)) {
+                            return true;
+                        }
                     }
                 }
             }
