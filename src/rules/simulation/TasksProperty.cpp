@@ -41,7 +41,7 @@ static const bool debug_flag = false;
 static const std::string SERIALNO = "serialno";
 
 TasksProperty::TasksProperty()
-    : PropertyBase(prop_flag_persistence_ephem)
+        : PropertyBase(prop_flag_persistence_ephem)
 {
 }
 
@@ -246,10 +246,16 @@ namespace {
             if (I == args.end()) {
                 return {false, String::compose("Could not find required '%1' argument.", param.first)};
             }
-            int count = param.second.countValidArgs(I->second, usageInstance.actor, usageInstance.tool);
+
+            std::vector<std::string> errorMessages;
+            int count = param.second.countValidArgs(I->second, usageInstance.actor, usageInstance.tool, errorMessages);
 
             if (count < param.second.min) {
-                return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};
+                if (!errorMessages.empty()) {
+                    return {false, *errorMessages.begin()};
+                } else {
+                    return {false, String::compose("Too few '%1' arguments. Should be minimum %2, got %3.", param.first, param.second.min, count)};
+                }
             }
             if (count > param.second.max) {
                 return {false, String::compose("Too many '%1' arguments. Should be maximum %2, got %3.", param.first, param.second.max, count)};
@@ -386,7 +392,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
                 }
             }
         }
-        
+
 
         auto validRes = areUsageParamsValid(usage.params, usage_instance_args, task->m_usageInstance);
 

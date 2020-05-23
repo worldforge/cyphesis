@@ -83,7 +83,7 @@ struct UsageParameter
 
     static UsageParameter parse(const Atlas::Message::Element& element);
 
-    int countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool) const;
+    int countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool, std::vector<std::string>& errorMessages) const;
 
 };
 

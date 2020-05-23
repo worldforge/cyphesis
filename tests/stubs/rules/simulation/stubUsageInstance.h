@@ -17,7 +17,7 @@
 
 #ifndef STUB_UsageParameter_countValidArgs
 //#define STUB_UsageParameter_countValidArgs
-  int UsageParameter::countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool) const
+  int UsageParameter::countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool, std::vector<std::string>& errorMessages) const
   {
     return 0;
   }
