@@ -1050,7 +1050,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
 {
     auto I = m_entries.find(entity.getIntId());
-    assert(I != m_entries.end());
+    if (I == m_entries.end()) {
+        //This could happen if the entity didn't have any position, for example.
+        return;
+    }
     auto& entry = I->second;
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
