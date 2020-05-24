@@ -28,8 +28,8 @@ class PlayerControlled(server.Thing):
                     return Operation("move", Entity(self.id, location=location), to=self.id), set_op
 
     def _minds_property_update(self):
-        limbo_entity = server.get_limbo_location()
         if len(self.props._minds) == 0:
+            limbo_entity = server.get_limbo_location()
             if self.location.parent != limbo_entity:
                 self.tick_refno = self.tick_refno + 1
                 # No minds anymore, delay movement to limbo with some time
@@ -45,7 +45,7 @@ class PlayerControlled(server.Thing):
             if arg.name == self.__class__.__name__:
                 res = Oplist()
                 if op.refno == self.tick_refno:
-                    if hasattr(arg, "type ") and arg.type == "remove":
+                    if hasattr(arg, "type") and arg.type == "remove":
                         # Move entity to limbo
                         limbo_entity = server.get_limbo_location()
                         if limbo_entity and self.location.parent != limbo_entity:
