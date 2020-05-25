@@ -1088,7 +1088,10 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
 {
     debug_print("PhysicalDomain::removeEntity " << entity.describeEntity())
     auto I = m_entries.find(entity.getIntId());
-    assert(I != m_entries.end());
+    if (I == m_entries.end()) {
+        //This could happen if the entity didn't have any position, for example.
+        return;
+    }
     auto& entry = I->second;
 
     auto modI = m_terrainMods.find(entity.getIntId());
@@ -2057,7 +2060,10 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
     WFMath::Point<3> oldPos = entity.m_location.m_pos;
 
     auto I = m_entries.find(entity.getIntId());
-    assert(I != m_entries.end());
+    if (I == m_entries.end()) {
+        //This could happen if the entity didn't have any position, for example.
+        return;
+    }
     bool hadChange = false;
     auto& entry = I->second;
     btRigidBody* rigidBody = nullptr;
