@@ -32,11 +32,18 @@ class Poisoning(server.Thing):
     def tick_operation(self, op):
         res = Oplist()
         if Ticks.verify_tick(self, op, res, self.tick_interval):
+            # Make ourselves go away after ten ticks by decreasing our status.
             res.append(Operation("set", Entity(self.id, {"status!subtract": 0.1}), to=self.id))
 
             damage_prop = self.props.damage
             if self.location.parent and damage_prop is not None:
-                res.append(Operation('hit', Entity(hit_type="poison", id=self.id, damage=damage_prop),
+                # If there's an "entity_ref" prop it's the reference to the actor which caused the poisoning.
+                actor_id = self.id
+                entity_ref_prop = self.props.entity_ref
+                if entity_ref_prop is not None:
+                    actor_id = entity_ref_prop["$eid"]
+
+                res.append(Operation('hit', Entity(hit_type="poison", id=actor_id, damage=damage_prop),
                                      to=self.location.parent.id))
 
             return server.OPERATION_HANDLED, res

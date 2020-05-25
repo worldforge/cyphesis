@@ -9,7 +9,10 @@ class ExperienceProviding(server.Thing):
         aggressor = self.get_prop_string("__aggressor")
         xp_provided = self.get_prop_float("xp_provided")
         if aggressor and xp_provided:
-            return server.OPERATION_IGNORED, Operation("set", Entity(aggressor, {"xp!append": xp_provided}), to=aggressor, from_=aggressor)
+            return server.OPERATION_IGNORED, \
+                   Operation("set", Entity(aggressor, {"xp!append": xp_provided}), to=aggressor, from_=aggressor), \
+                   Operation("imaginary", Entity(description="You gain {} xp.".format(xp_provided)), to=aggressor, from_=aggressor)
+
         return server.OPERATION_IGNORED
 
     def hit_operation(self, op):

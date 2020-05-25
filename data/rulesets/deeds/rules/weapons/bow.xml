@@ -30,7 +30,7 @@
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.Bow.draw</string>
-                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains(actor.contains, child instance_of types.arrow)</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and describe("You must have arrows in your inventory.", contains(actor.contains, child instance_of types.arrow))</string>
                         <string name="description">Fire an arrow with a bow.</string>
                     </map>
                     <map name="shoot">
@@ -41,8 +41,8 @@
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.Bow.shoot</string>
-                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains(actor.contains, child instance_of types.arrow)</string>
-                        <string name="description">Fire an arrow with a bow.</string>
+                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and describe("You must have arrows in your inventory.", contains(actor.contains, child instance_of types.arrow))</string>
+                        <string name="description">Fire an arrow with a bow directly (for testing purposes; this should be removed).</string>
                     </map>
                 </map>
             </map>

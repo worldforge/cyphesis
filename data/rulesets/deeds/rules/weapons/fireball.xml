@@ -37,6 +37,9 @@
             <map name="description">
                 <string name="default">A ball of fire which will explode on impact.</string>
             </map>
+            <map name="name">
+                <string name="default">Fireball</string>
+            </map>
         </map>
         <string name="id">fireball</string>
         <string name="objtype">class</string>
