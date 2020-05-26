@@ -282,6 +282,10 @@ void WorldRouter::resumeWorld()
 /// for each observer.
 void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
 {
+    debug_print("WorldRouter::message {"
+                        << op->getParent() << ":"
+                        << op->getFrom() << ":" << op->getTo() << "}")
+
     if (op->isDefaultTo()) {
         if (shouldBroadcastPerception(op)) {
             OpVector res;
@@ -299,9 +303,7 @@ void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
     } else {
         m_operationsDispatcher.addOperationToQueue(std::move(op), Ref<LocatedEntity>(&fromEntity));
     }
-    debug_print("WorldRouter::message {"
-                        << op->getParent() << ":"
-                        << op->getFrom() << ":" << op->getTo() << "}")
+
 }
 
 bool WorldRouter::shouldBroadcastPerception(const Operation& op) const

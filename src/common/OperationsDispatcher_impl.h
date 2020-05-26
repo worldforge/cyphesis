@@ -181,7 +181,6 @@ template<typename T>
 void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
 {
     assert(op.isValid());
-    assert(op->getFrom() != "cheat");
 
     m_operation_queues_dirty = true;
     op->setFrom(ent->getId());
@@ -194,12 +193,12 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
             op->removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
         }
     }
-    m_operationQueue.emplace(std::move(op), std::move(ent));
     if (opdispatcher_debug_flag) {
         std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
         debug_dump(op, std::cout);
         std::cout << "}" << std::endl << std::flush;
     }
+    m_operationQueue.emplace(std::move(op), std::move(ent));
 }
 
 template<typename T>
