@@ -10,7 +10,7 @@
 #ifndef STUB_OpQueEntry_OpQueEntry
 //#define STUB_OpQueEntry_OpQueEntry
   template <typename T>
-   OpQueEntry<T>::OpQueEntry(Operation o, T& f)
+   OpQueEntry<T>::OpQueEntry(Operation o, T& f, long sequence_)
   {
     
   }

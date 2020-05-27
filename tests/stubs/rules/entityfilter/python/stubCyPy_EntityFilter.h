@@ -33,6 +33,14 @@
   }
 #endif //STUB_CyPy_Filter_init_type
 
+#ifndef STUB_CyPy_Filter_str
+//#define STUB_CyPy_Filter_str
+  Py::Object CyPy_Filter::str()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Filter_str
+
 
 #ifndef STUB_CyPy_EntityFilter_CyPy_EntityFilter
 //#define STUB_CyPy_EntityFilter_CyPy_EntityFilter

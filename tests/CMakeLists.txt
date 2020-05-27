@@ -67,7 +67,10 @@ wf_generate_stubs(client)
 #### Common tests #####
 wf_add_test(TestBaseTest.cpp)
 wf_add_test(modules/RefTest.cpp)
-wf_add_test(rules/OgreMeshDeserializerTest.cpp ../src/rules/simulation/OgreMeshDeserializer.cpp)
+
+wf_add_test(common/OperationsDispatcherTest.cpp)
+target_link_libraries(OperationsDispatcherTest modules common)
+
 wf_add_test(common/logTest.cpp ../src/common/log.cpp)
 wf_add_test(common/InheritanceTest.cpp ../src/common/Inheritance.cpp ../src/common/custom.cpp)
 wf_add_test(common/PropertyTest.cpp ../src/common/Property.cpp)
@@ -135,6 +138,7 @@ wf_add_test(modules/TerrainContextTest.cpp ../src/modules/TerrainContext.cpp)
 
 set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp common/EntityExerciser.cpp)
 
+wf_add_test(rules/OgreMeshDeserializerTest.cpp ../src/rules/simulation/OgreMeshDeserializer.cpp)
 wf_add_test(rules/ModifierTest.cpp ../src/rules/Modifier.cpp)
 wf_add_test(rules/LocatedEntityTest.cpp common/EntityExerciser.cpp ../src/rules/LocatedEntity.cpp TestPropertyManager.cpp)
 wf_add_test(rules/EntityTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Entity.cpp ../src/rules/LocatedEntity.cpp)

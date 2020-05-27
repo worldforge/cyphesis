@@ -39,20 +39,31 @@ struct OpQueEntry
 {
     bool operator<(const OpQueEntry& right) const
     {
+        if (op->getSeconds() == right->getSeconds()) {
+            return sequence < right.sequence;
+        }
         return op->getSeconds() < right->getSeconds();
     }
 
     bool operator>(const OpQueEntry& right) const
     {
+        if (op->getSeconds() == right->getSeconds()) {
+            return sequence > right.sequence;
+        }
         return op->getSeconds() > right->getSeconds();
     }
 
     Operation op;
     Ref<T> from;
+    //Sequence number is used to determine ordering when to ops have the exact same time.
+    long sequence;
 
-    explicit OpQueEntry(Operation o, T& f);
+    explicit OpQueEntry(Operation o, T& f, long sequence_);
 
-    OpQueEntry(Operation op_, Ref<T> from_) : op(std::move(op_)), from(std::move(from_))
+    OpQueEntry(Operation op_, Ref<T> from_, long sequence_)
+            : op(std::move(op_)),
+              from(std::move(from_)),
+              sequence(sequence_)
     {
     }
 
@@ -66,6 +77,7 @@ struct OpQueEntry
     {
         this->op = std::move(rhs.op);
         this->from = std::move(rhs.from);
+        this->sequence = std::move(rhs.sequence);
         return *this;
     }
 
@@ -192,11 +204,13 @@ class OperationsDispatcher : public OperationsHandler
          */
         float m_time_diff_report;
 
-        const std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue() const {
+        const std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue() const
+        {
             return m_operationQueue;
         }
 
-        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue() {
+        std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue()
+        {
             return m_operationQueue;
         }
 
@@ -209,6 +223,9 @@ class OperationsDispatcher : public OperationsHandler
         std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>> m_operationQueue;
         /// Keeps track of if the operation queues are dirty.
         bool m_operation_queues_dirty;
+
+        /// A sequence number, used when ops that have the same second set needs ordering.
+        long m_sequence;
 
 
         /**

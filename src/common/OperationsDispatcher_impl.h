@@ -34,7 +34,7 @@ static const bool opdispatcher_debug_flag = false;
 template<typename T>
 OperationsDispatcher<T>::~OperationsDispatcher()
 {
-    clearQueues();
+    m_operationQueue = decltype(m_operationQueue)();
 }
 
 
@@ -129,23 +129,26 @@ std::chrono::microseconds OperationsDispatcher<T>::timeUntilNextOp() const
 
 
 template<typename T>
-OpQueEntry<T>::OpQueEntry(Operation o, T& f) :
-    op(std::move(o)),
-    from(&f)
+OpQueEntry<T>::OpQueEntry(Operation o, T& f, long sequence_) :
+        op(std::move(o)),
+        from(&f),
+        sequence(sequence_)
 {
 }
 
 template<typename T>
 OpQueEntry<T>::OpQueEntry(const OpQueEntry& o) :
-    op(o.op),
-    from(o.from)
+        op(o.op),
+        from(o.from),
+        sequence(o.sequence)
 {
 }
 
 template<typename T>
 OpQueEntry<T>::OpQueEntry(OpQueEntry&& o) noexcept
-    : op(std::move(o.op)),
-      from(std::move(o.from))
+        : op(std::move(o.op)),
+          from(std::move(o.from)),
+          sequence(std::move(o.sequence))
 {
 
 }
@@ -157,17 +160,18 @@ OpQueEntry<T>::~OpQueEntry() = default;
 template<typename T>
 OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor,
                                               std::function<double()> timeProviderFn)
-    :       m_time_diff_report(0),
-            m_operationProcessor(std::move(operationProcessor)),
-            m_timeProviderFn(std::move(timeProviderFn)),
-            m_operation_queues_dirty(false)
+        :       m_time_diff_report(0),
+                m_operationProcessor(std::move(operationProcessor)),
+                m_timeProviderFn(std::move(timeProviderFn)),
+                m_operation_queues_dirty(false),
+                m_sequence(0)
 {
 }
 
 template<typename T>
 void OperationsDispatcher<T>::clearQueues()
 {
-    m_operationQueue = std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>();
+    m_operationQueue = decltype(m_operationQueue)();
 }
 
 /// \brief Add an operation to the ordered op queue.
@@ -198,7 +202,7 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
         debug_dump(op, std::cout);
         std::cout << "}" << std::endl << std::flush;
     }
-    m_operationQueue.emplace(std::move(op), std::move(ent));
+    m_operationQueue.emplace(std::move(op), std::move(ent), ++m_sequence);
 }
 
 template<typename T>

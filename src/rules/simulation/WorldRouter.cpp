@@ -326,7 +326,7 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
     //(to be resent when the world is resumed) and not process it now.
     if (m_isSuspended) {
         if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
-            m_suspendedQueue.push(OpQueEntry<LocatedEntity>(op, std::move(ent)));
+            m_suspendedQueue.push(OpQueEntry<LocatedEntity>(op, std::move(ent), m_suspendedQueue.size()));
             return;
         }
     }
