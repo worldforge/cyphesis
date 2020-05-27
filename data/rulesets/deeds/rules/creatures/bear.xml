@@ -60,10 +60,16 @@
                     <map name="damage_strike">
                         <float name="add_fraction">0.1</float>
                     </map>
+                    <map name="xp_provided">
+                        <float name="add_fraction">0.1</float>
+                    </map>
                 </map>
             </map>
             <map name="level">
                 <int name="default">0</int>
+            </map>
+            <map name="xp_provided">
+                <float name="default">5</float>
             </map>
         </map>
         <string name="id">bear</string>

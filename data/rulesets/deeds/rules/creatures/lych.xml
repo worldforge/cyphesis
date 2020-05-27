@@ -75,6 +75,9 @@
                     <map name="damage_punch">
                         <float name="add_fraction">0.1</float>
                     </map>
+                    <map name="xp_provided">
+                        <float name="add_fraction">0.1</float>
+                    </map>
                 </map>
             </map>
             <map name="level">
