@@ -44,7 +44,8 @@ class PlayerControlled(server.Thing):
 
             if arg.name == self.__class__.__name__:
                 res = Oplist()
-                if op.refno == self.tick_refno:
+                # Handle the world being recreated by checking for 0
+                if op.refno == self.tick_refno or self.tick_refno == 0:
                     if hasattr(arg, "type") and arg.type == "remove":
                         # Move entity to limbo
                         limbo_entity = server.get_limbo_location()
@@ -61,18 +62,27 @@ class PlayerControlled(server.Thing):
                 return server.OPERATION_BLOCKED, res
 
     def delete_operation(self, op):
+        res = Oplist()
         limbo_entity = server.get_limbo_location()
-        if limbo_entity and self.location.parent != limbo_entity:
-            # Move to limbo, wait a couple of seconds, and then move back to respawn place
-            set_op = Operation("set", Entity(self.id, __respawn={"spawn": self.props["_respawning"]}, status=1),
-                               to=self.id)
-            self.tick_refno = self.tick_refno + 1
-            tick_op = Operation("tick", Entity(name=self.__class__.__name__, type="respawn"), refno=self.tick_refno,
-                                future_seconds=5, to=self.id)
-            imaginary_op = Operation("imaginary", Entity(
+        if not limbo_entity:
+            print("Entity is set to respawn, but there's no limbo entity set in the system.")
+        if self.location.parent != limbo_entity:
+            res += Operation("imaginary", Entity(
                 description="You were killed. You need to wait 30 seconds before you will be returned to the world."),
-                                     to=self.id, from_=self.id)
-            return server.OPERATION_BLOCKED, imaginary_op, Operation("move", Entity(self.id, loc=limbo_entity.id),
-                                                                     to=self.id), set_op, tick_op
+                             to=self.id, from_=self.id)
+            res += Operation("move", Entity(self.id, loc=limbo_entity.id),
+                             to=self.id)
+
+            respawning_prop = self.get_prop_string("_respawning")
+            # Move to limbo, wait a couple of seconds, and then move back to respawn place
+            if not respawning_prop:
+                print("Entity is set to respawn, but there's no _respawning property set. Will move to limbo.")
+            else:
+                res += Operation("set", Entity(self.id, __respawn={"spawn": self.props["_respawning"]}, status=1),
+                                 to=self.id)
+            self.tick_refno = self.tick_refno + 1
+            res += Operation("tick", Entity(name=self.__class__.__name__, type="respawn"), refno=self.tick_refno,
+                             future_seconds=30, to=self.id)
+            return server.OPERATION_BLOCKED, res
 
         return server.OPERATION_BLOCKED
