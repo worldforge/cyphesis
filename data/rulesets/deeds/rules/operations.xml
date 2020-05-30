@@ -9,49 +9,49 @@
     <map>
         <string name="id">cast</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">chop</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">affect</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">collapse</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">craft</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">cut</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">disperse</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">root_operation</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">drag</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">root_operation</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">extinguish</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">root_operation</string>
+        <string name="parent">activity</string>
     </map>
 
 <!--    <map>-->
@@ -63,94 +63,94 @@
     <map>
         <string name="id">ignite</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">lever</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">pull</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">repair</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">shoot</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">root_operation</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">draw</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">root_operation</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">sow</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">strike</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">punch</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">dig</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <!-- Excavate operations are used when some tool, like a pickaxe, is used to make holes in the ground, or to extract ore from deposits. -->
     <map>
         <string name="id">excavate</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">sift</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">wear</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <!-- Consume ops are sent from entities that needs to feed on other entities. -->
     <map>
         <string name="id">consume</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <!-- Harvest ops are sent to entities that can be harvested (an apple tree for example). -->
     <map>
         <string name="id">harvest</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">action</string>
+        <string name="parent">activity</string>
     </map>
 
     <!-- Nourish operations are sent from things that have previously received an consume op.
@@ -158,26 +158,26 @@
     <map>
         <string name="id">nourish</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">affect</string>
+        <string name="parent">activity</string>
     </map>
 
     <!-- Burn operations are sent to entities that should catch fire. This should result in a Fire entity being spawned, if the entity is flammable. -->
     <map>
         <string name="id">burn</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">affect</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">read</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">affect</string>
+        <string name="parent">activity</string>
     </map>
 
     <map>
         <string name="id">open_container</string>
         <string name="objtype">op_definition</string>
-        <string name="parent">affect</string>
+        <string name="parent">activity</string>
     </map>
 
 </atlas>

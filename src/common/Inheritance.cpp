@@ -282,6 +282,7 @@ void installStandardObjects(TypeStore& i)
     i.addChild(atlasObjDefinition<Atlas::Objects::Operation::HitData>());
     i.addChild(atlasObjDefinition<Atlas::Objects::Operation::ChangeData>());
     i.addChild(atlasObjDefinition<Atlas::Objects::Operation::UnseenData>());
+    i.addChild(atlasObjDefinition<Atlas::Objects::Operation::ActivityData>());
 
     i.addChild(atlasObjDefinition<Atlas::Objects::Entity::RootEntityData>());
     i.addChild(atlasObjDefinition<Atlas::Objects::Entity::AdminEntityData>());
