@@ -18,6 +18,8 @@
 #ifndef RULESETS_PROPERTYINSTANCESTATE_H_
 #define RULESETS_PROPERTYINSTANCESTATE_H_
 
+#include "log.h"
+
 #include <unordered_map>
 #include <cassert>
 #include <memory>
@@ -43,7 +45,10 @@ class PropertyInstanceState {
 
         ~PropertyInstanceState() {
             //When an instance of this is destroyed, all entities should already have deregistered themselves from it.
-            assert(mStates.empty());
+            if (!mStates.empty()) {
+                log(WARNING, "Property instance state wasn't empty as is should be at shutdown.");
+            }
+            //assert(mStates.empty());
         }
 
         /**

@@ -21,14 +21,14 @@
 #include "rules/python/CyPy_Vector3D.h"
 #include "rules/python/CyPy_LocatedEntity.h"
 
-CyPy_TerrainProperty::CyPy_TerrainProperty(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds) 
-    : WrapperBase(self, args, kwds)
+CyPy_TerrainProperty::CyPy_TerrainProperty(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+        : WrapperBase(self, args, kwds)
 {
 
 }
 
 CyPy_TerrainProperty::CyPy_TerrainProperty(Py::PythonClassInstance* self, Ref<LocatedEntity> value)
-    : WrapperBase(self, std::move(value))
+        : WrapperBase(self, std::move(value))
 {
 
 }
@@ -69,16 +69,16 @@ Py::Object CyPy_TerrainProperty::getHeight(const Py::Tuple& args)
 {
     args.verify_length(2);
     float h = 0;
-    getTerrainProperty().getHeight(verifyNumeric(args[0]), verifyNumeric(args[1]), h);
+    getTerrainProperty().getHeight(*m_value, verifyNumeric(args[0]), verifyNumeric(args[1]), h);
     return Py::Float(h);
 }
 
 Py::Object CyPy_TerrainProperty::getSurface(const Py::Tuple& args)
 {
     args.verify_length(2);
-    auto surface = getTerrainProperty().getSurface(verifyNumeric(args[0]), verifyNumeric(args[1]));
+    auto surface = getTerrainProperty().getSurface(*m_value, verifyNumeric(args[0]), verifyNumeric(args[1]));
     if (surface) {
-        return  Py::Long(*surface);
+        return Py::Long(*surface);
     }
     return Py::None();
 }
@@ -86,10 +86,10 @@ Py::Object CyPy_TerrainProperty::getSurface(const Py::Tuple& args)
 Py::Object CyPy_TerrainProperty::getSurfaceName(const Py::Tuple& args)
 {
     args.verify_length(2);
-    auto surface = getTerrainProperty().getSurface(verifyNumeric(args[0]), verifyNumeric(args[1]));
+    auto surface = getTerrainProperty().getSurface(*m_value, verifyNumeric(args[0]), verifyNumeric(args[1]));
     if (surface) {
-        auto& surfaceNames = getTerrainProperty().getSurfaceNames();
-        if (*surface >= 0 && *surface < (int)surfaceNames.size()) {
+        auto& surfaceNames = getTerrainProperty().getSurfaceNames(*m_value);
+        if (*surface >= 0 && *surface < (int) surfaceNames.size()) {
             return Py::String(surfaceNames[*surface]);
         }
     }
@@ -100,8 +100,8 @@ Py::Object CyPy_TerrainProperty::getNormal(const Py::Tuple& args)
 {
     args.verify_length(2);
     float h = 0;
-    Vector3D normal(0,1,0);
-    getTerrainProperty().getHeightAndNormal(verifyNumeric(args[0]), verifyNumeric(args[1]), h, normal);
+    Vector3D normal(0, 1, 0);
+    getTerrainProperty().getHeightAndNormal(*m_value, verifyNumeric(args[0]), verifyNumeric(args[1]), h, normal);
     return CyPy_Vector3D::wrap(normal);
 }
 
@@ -110,7 +110,7 @@ Py::Object CyPy_TerrainProperty::findMods(const Py::Tuple& args)
     args.verify_length(2);
 
     Py::List list;
-    auto entities = getTerrainProperty().findMods(verifyNumeric(args[0]), verifyNumeric(args[1]));
+    auto entities = getTerrainProperty().findMods(*m_value, verifyNumeric(args[0]), verifyNumeric(args[1]));
     if (entities) {
         for (auto& entity : *entities) {
             list.append(CyPy_LocatedEntity::wrap(entity));

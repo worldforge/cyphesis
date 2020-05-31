@@ -246,7 +246,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     auto terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
     if (terrainProperty) {
-        m_terrain = &terrainProperty->getData();
+        m_terrain = &terrainProperty->getData(m_entity);
     }
 
     createDomainBorders();
@@ -470,7 +470,7 @@ void PhysicalDomain::buildTerrainPages()
     }
     const auto* terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
     if (terrainProperty) {
-        auto& terrain = terrainProperty->getData();
+        auto& terrain = terrainProperty->getData(m_entity);
         auto segments = terrain.getTerrain();
         for (auto& row : segments) {
             for (auto& entry : row.second) {
@@ -1611,7 +1611,7 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, const Proper
     } else if (name == TerrainProperty::property_name) {
         auto terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
         if (terrainProperty) {
-            m_terrain = &terrainProperty->getData();
+            m_terrain = &terrainProperty->getData(m_entity);
         }
     }
 }

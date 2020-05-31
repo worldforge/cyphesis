@@ -22,6 +22,10 @@
 #include "physics/Vector3D.h"
 
 #include "common/Property.h"
+#include <common/PropertyInstanceState.h>
+
+#include <Mercator/Terrain.h>
+#include <Mercator/TileShader.h>
 
 #include <set>
 #include <memory>
@@ -39,80 +43,55 @@ typedef std::map<int, std::set<int> > PointSet;
 
 /// \brief Class to handle Entity terrain property
 /// \ingroup PropertyClasses
-class TerrainProperty : public PropertyBase
+class TerrainProperty : public Property<Atlas::Message::MapType>
 {
     protected:
-        /// \brief Reference to variable holding the value of this Property
-        std::unique_ptr<Mercator::Terrain> m_data;
-        /// \brief The tile shader which represents all other shaders.
-        std::unique_ptr<Mercator::TileShader> m_tileShader;
-        /// FIXME This should be a reference for consistency. Or could it
-        /// even be stored in the mercator terrain entity.
-        /// \brief Collection of surface data, cos I don't care!
-        Atlas::Message::ListType m_surfaces;
 
-        std::vector<std::string> m_surfaceNames;
+        struct State
+        {
+            Mercator::Terrain terrain;
+            std::unique_ptr<Mercator::TileShader> tileShader;
+            std::vector<std::string> surfaceNames;
+        };
 
-        /// \brief Reference to variable storing the set of modified points
-        PointSet m_modifiedTerrain;
-        /// \brief Reference to variable storing the set of newly created points
-        PointSet m_createdTerrain;
+        std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>> createShaders(const Atlas::Message::ListType& surfaceList) const;
 
-        std::vector<WFMath::AxisBox<2>> m_changedAreas;
+        void applyToState(LocatedEntity& entity, State& state) const;
 
-        std::unique_ptr<Mercator::TileShader> createShaders(const Atlas::Message::ListType& surfaceList);
+        static PropertyInstanceState<State> sInstanceState;
 
     public:
 
         static constexpr const char* property_name = "terrain";
         static constexpr const char* property_atlastype = "map";
 
-        TerrainProperty(const TerrainProperty& rhs);
+        void install(LocatedEntity* owner, const std::string& name) override;
 
-        explicit TerrainProperty();
-
-        ~TerrainProperty() override;
-
-        int get(Atlas::Message::Element&) const override;
-
-        void set(const Atlas::Message::Element&) override;
+        void remove(LocatedEntity* owner, const std::string& name) override;
 
         TerrainProperty* copy() const override;
 
         void apply(LocatedEntity* entity) override;
 
-        // Applies a Mercator::TerrainMod to the terrain
-        void addMod(long id, const Mercator::TerrainMod*) const;
+        bool getHeightAndNormal(LocatedEntity& entity, float x, float z, float&, Vector3D&) const;
 
-        // Removes all TerrainMods from a terrain segment
-        void clearMods(float, float);
+        bool getHeight(LocatedEntity& entity, float x, float z, float&) const;
 
-        // Removes a single TerrainMod from the terrain
-        void updateMod(long id, const Mercator::TerrainMod*) const;
-
-        // Removes a single TerrainMod from the terrain
-        void removeMod(long id) const;
-
-        bool getHeightAndNormal(float x, float z, float&, Vector3D&) const;
-
-        bool getHeight(float x, float z, float&) const;
-
-        boost::optional<int> getSurface(float x, float z) const;
+        boost::optional<int> getSurface(LocatedEntity& entity, float x, float z) const;
 
         /// \brief Find the mods at a given location
         ///
         /// @param pos the x,y coordinates of a point on the terrain
         /// @param mods a reference to the list to be returned
-        boost::optional<std::vector<LocatedEntity*>> findMods(float x, float z) const;
+        boost::optional<std::vector<LocatedEntity*>> findMods(LocatedEntity& entity, float x, float z) const;
 
-        Mercator::Terrain& getData();
+        Mercator::Terrain& getData(const LocatedEntity& entity);
 
-        Mercator::Terrain& getData() const;
+        Mercator::Terrain& getData(const LocatedEntity& entity) const;
 
-        const std::vector<std::string>& getSurfaceNames() const
-        {
-            return m_surfaceNames;
-        }
+        const std::vector<std::string>& getSurfaceNames(const LocatedEntity& entity) const;
+
+
 
 };
 

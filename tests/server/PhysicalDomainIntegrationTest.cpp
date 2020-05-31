@@ -474,12 +474,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
                 auto id = newId();
                 Entity rootEntity{std::to_string(id), id};
                 TerrainProperty* terrainProperty = new TerrainProperty();
-                Mercator::Terrain& terrain = terrainProperty->getData();
+                rootEntity.setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+                Mercator::Terrain& terrain = terrainProperty->getData(rootEntity);
                 terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
                 terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
                 terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
                 terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-                rootEntity.setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
                 rootEntity.m_location.m_pos = WFMath::Point<3>::ZERO();
                 rootEntity.m_location.setBBox({{-64, -64, -64},
                                                {64,  64,  64}});
@@ -598,12 +598,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Entity* rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1263,12 +1263,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         double time = 0;
         Entity* rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1338,12 +1338,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Entity* rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->setProperty("friction", std::unique_ptr<PropertyBase>(zeroFrictionProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
@@ -1434,12 +1434,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Entity* rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(40));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1510,12 +1510,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Entity* rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(40));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(40));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, 0, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1573,12 +1573,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Ref<Entity> rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1614,12 +1614,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Ref<Entity> rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(1, 1, Mercator::BasePoint(10));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(0, -64, 0), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1877,7 +1877,8 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         Ref<Entity> rootEntity = new Entity("0", newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
-        Mercator::Terrain& terrain = terrainProperty->getData();
+        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
+        Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
         terrain.setBasePoint(0, 0, Mercator::BasePoint(10));
         terrain.setBasePoint(0, 1, Mercator::BasePoint(15));
         terrain.setBasePoint(0, -1, Mercator::BasePoint(15));
@@ -1887,7 +1888,6 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         terrain.setBasePoint(-1, 0, Mercator::BasePoint(35));
         terrain.setBasePoint(-1, 1, Mercator::BasePoint(40));
         terrain.setBasePoint(-1, -1, Mercator::BasePoint(45));
-        rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));

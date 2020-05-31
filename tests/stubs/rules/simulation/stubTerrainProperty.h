@@ -9,53 +9,35 @@
 
 #ifndef STUB_TerrainProperty_createShaders
 //#define STUB_TerrainProperty_createShaders
-  std::unique_ptr<Mercator::TileShader> TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList)
+  std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>> TerrainProperty::createShaders(const Atlas::Message::ListType& surfaceList) const
   {
-    return *static_cast<std::unique_ptr<Mercator::TileShader>*>(nullptr);
+    return *static_cast<std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>>*>(nullptr);
   }
 #endif //STUB_TerrainProperty_createShaders
 
-#ifndef STUB_TerrainProperty_TerrainProperty
-//#define STUB_TerrainProperty_TerrainProperty
-   TerrainProperty::TerrainProperty(const TerrainProperty& rhs)
-    : PropertyBase(rhs)
+#ifndef STUB_TerrainProperty_applyToState
+//#define STUB_TerrainProperty_applyToState
+  void TerrainProperty::applyToState(LocatedEntity& entity, State& state) const
   {
     
   }
-#endif //STUB_TerrainProperty_TerrainProperty
+#endif //STUB_TerrainProperty_applyToState
 
-#ifndef STUB_TerrainProperty_TerrainProperty
-//#define STUB_TerrainProperty_TerrainProperty
-   TerrainProperty::TerrainProperty()
-    : PropertyBase()
+#ifndef STUB_TerrainProperty_install
+//#define STUB_TerrainProperty_install
+  void TerrainProperty::install(LocatedEntity* owner, const std::string& name)
   {
     
   }
-#endif //STUB_TerrainProperty_TerrainProperty
+#endif //STUB_TerrainProperty_install
 
-#ifndef STUB_TerrainProperty_TerrainProperty_DTOR
-//#define STUB_TerrainProperty_TerrainProperty_DTOR
-   TerrainProperty::~TerrainProperty()
+#ifndef STUB_TerrainProperty_remove
+//#define STUB_TerrainProperty_remove
+  void TerrainProperty::remove(LocatedEntity* owner, const std::string& name)
   {
     
   }
-#endif //STUB_TerrainProperty_TerrainProperty_DTOR
-
-#ifndef STUB_TerrainProperty_get
-//#define STUB_TerrainProperty_get
-  int TerrainProperty::get(Atlas::Message::Element&) const
-  {
-    return 0;
-  }
-#endif //STUB_TerrainProperty_get
-
-#ifndef STUB_TerrainProperty_set
-//#define STUB_TerrainProperty_set
-  void TerrainProperty::set(const Atlas::Message::Element&)
-  {
-    
-  }
-#endif //STUB_TerrainProperty_set
+#endif //STUB_TerrainProperty_remove
 
 #ifndef STUB_TerrainProperty_copy
 //#define STUB_TerrainProperty_copy
@@ -73,41 +55,9 @@
   }
 #endif //STUB_TerrainProperty_apply
 
-#ifndef STUB_TerrainProperty_addMod
-//#define STUB_TerrainProperty_addMod
-  void TerrainProperty::addMod(long id, const Mercator::TerrainMod*) const
-  {
-    
-  }
-#endif //STUB_TerrainProperty_addMod
-
-#ifndef STUB_TerrainProperty_clearMods
-//#define STUB_TerrainProperty_clearMods
-  void TerrainProperty::clearMods(float, float)
-  {
-    
-  }
-#endif //STUB_TerrainProperty_clearMods
-
-#ifndef STUB_TerrainProperty_updateMod
-//#define STUB_TerrainProperty_updateMod
-  void TerrainProperty::updateMod(long id, const Mercator::TerrainMod*) const
-  {
-    
-  }
-#endif //STUB_TerrainProperty_updateMod
-
-#ifndef STUB_TerrainProperty_removeMod
-//#define STUB_TerrainProperty_removeMod
-  void TerrainProperty::removeMod(long id) const
-  {
-    
-  }
-#endif //STUB_TerrainProperty_removeMod
-
 #ifndef STUB_TerrainProperty_getHeightAndNormal
 //#define STUB_TerrainProperty_getHeightAndNormal
-  bool TerrainProperty::getHeightAndNormal(float x, float z, float&, Vector3D&) const
+  bool TerrainProperty::getHeightAndNormal(LocatedEntity& entity, float x, float z, float&, Vector3D&) const
   {
     return false;
   }
@@ -115,7 +65,7 @@
 
 #ifndef STUB_TerrainProperty_getHeight
 //#define STUB_TerrainProperty_getHeight
-  bool TerrainProperty::getHeight(float x, float z, float&) const
+  bool TerrainProperty::getHeight(LocatedEntity& entity, float x, float z, float&) const
   {
     return false;
   }
@@ -123,7 +73,7 @@
 
 #ifndef STUB_TerrainProperty_getSurface
 //#define STUB_TerrainProperty_getSurface
-  boost::optional<int> TerrainProperty::getSurface(float x, float z) const
+  boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x, float z) const
   {
     return *static_cast<boost::optional<int>*>(nullptr);
   }
@@ -131,7 +81,7 @@
 
 #ifndef STUB_TerrainProperty_findMods
 //#define STUB_TerrainProperty_findMods
-  boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(float x, float z) const
+  boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEntity& entity, float x, float z) const
   {
     return *static_cast<boost::optional<std::vector<LocatedEntity*>>*>(nullptr);
   }
@@ -139,7 +89,7 @@
 
 #ifndef STUB_TerrainProperty_getData
 //#define STUB_TerrainProperty_getData
-  Mercator::Terrain& TerrainProperty::getData()
+  Mercator::Terrain& TerrainProperty::getData(const LocatedEntity& entity)
   {
     return *static_cast<Mercator::Terrain*>(nullptr);
   }
@@ -147,11 +97,19 @@
 
 #ifndef STUB_TerrainProperty_getData
 //#define STUB_TerrainProperty_getData
-  Mercator::Terrain& TerrainProperty::getData() const
+  Mercator::Terrain& TerrainProperty::getData(const LocatedEntity& entity) const
   {
     return *static_cast<Mercator::Terrain*>(nullptr);
   }
 #endif //STUB_TerrainProperty_getData
+
+#ifndef STUB_TerrainProperty_getSurfaceNames
+//#define STUB_TerrainProperty_getSurfaceNames
+  const std::vector<std::string>& TerrainProperty::getSurfaceNames(const LocatedEntity& entity) const
+  {
+    static std::vector<std::string> instance; return instance;
+  }
+#endif //STUB_TerrainProperty_getSurfaceNames
 
 
 #endif
