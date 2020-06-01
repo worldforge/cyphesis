@@ -370,9 +370,7 @@ int timeoffset = 0;
 bool database_flag = false;
 std::string assets_directory = "";
 
-namespace consts {
-    const char* version = "test_version";
-}
+#include "../stubs/common/stubconst.h"
 
 #include <common/Shaker.h>
 

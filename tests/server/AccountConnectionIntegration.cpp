@@ -261,10 +261,7 @@ int main()
 
 #include <cstdlib>
 #include "../stubs/server/stubBuildid.h"
-
-namespace consts {
-  const char * version = "test_build";
-}
+#include "../stubs/common/stubconst.h"
 
 // globals - why do we have these again?
 

@@ -27,5 +27,6 @@ namespace consts {
   const long rootWorldIntId = 0L;
   // Version of the software we are running
   const char * version = VERSION;
-
+  // Bump this whenever there's a client breaking change to the protocol. Use the current date (ISO format).
+  const long protocol_version = 20200601;
 }

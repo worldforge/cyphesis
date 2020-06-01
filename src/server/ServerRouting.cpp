@@ -157,6 +157,7 @@ void ServerRouting::addToMessage(MapType& omap) const
     omap["uptime"] = m_world.upTime();
     omap["buildid"] = consts::buildId;
     omap["version"] = std::string(consts::version);
+    omap["protocol_version"] = consts::protocol_version;
     if (restricted_flag) {
         omap["restricted"] = "true";
     }
@@ -177,6 +178,7 @@ void ServerRouting::addToEntity(const RootEntity& ent) const
     ent->setAttr("uptime", m_world.upTime());
     ent->setAttr("buildid", consts::buildId);
     ent->setAttr("version", std::string(consts::version));
+    ent->setAttr("protocol_version", consts::protocol_version);
     if (restricted_flag) {
         ent->setAttr("restricted", "true");
     }

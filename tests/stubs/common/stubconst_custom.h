@@ -7,5 +7,6 @@ namespace consts {
     const long rootWorldIntId = 0L;
     // Version of the software we are running
     const char * version = "VERSION";
+    const long protocol_version = 1;
 
 }

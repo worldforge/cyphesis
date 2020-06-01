@@ -260,9 +260,8 @@ void Link::send(const OpVector& opVector) const
 bool database_flag = false;
 std::string instance("130779df-1e84-4c61-9caf-3e1506597fe1");
 
-namespace consts {
-  const char * version = "test_version";
-}
+#include "../stubs/common/stubconst.h"
+
 
 const char * const CYPHESIS = "cyphesis";
 int timeoffset = 0;

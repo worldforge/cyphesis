@@ -53,6 +53,8 @@ namespace consts {
   extern const long rootWorldIntId;
   /// \brief Version of the software we are running
   extern const char * version;
+  /// \brief The version of the protocol. Bump whenever there are client breaking changes.
+  extern const long protocol_version;
   /// \brief Identifier of this build, taken from "git rev-parse".
   extern const char * buildId;
 
