@@ -66,6 +66,7 @@
 
 #include "common/debug.h"
 #include "VisibilityDistanceProperty.h"
+#include "TerrainPointsProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -105,6 +106,7 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<VisibilityDistanceProperty>();
     installProperty<TerrainModProperty>();
     installProperty<TerrainProperty>();
+    installProperty<TerrainPointsProperty>();
     installProperty<SuspendedProperty>();
     installProperty<TasksProperty>();
     installProperty<BoolProperty>("immortal");

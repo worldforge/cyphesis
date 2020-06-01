@@ -59,7 +59,8 @@ add_library(rulessimulation
         WorldRouter.cpp
         VisibilityDistanceProperty.cpp
         ContainerAccessProperty.cpp
-        ContainersActiveProperty.cpp)
+        ContainersActiveProperty.cpp
+        TerrainPointsProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

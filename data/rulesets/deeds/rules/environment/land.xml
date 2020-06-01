@@ -28,8 +28,7 @@
                 </list>
             </map>
             <map name="terrain">
-                <int name="default">0</int>
-                <list name="surfaces">
+                <list name="default">
                     <map>
                         <string name="name">rock</string>
                         <string name="pattern">fill</string>

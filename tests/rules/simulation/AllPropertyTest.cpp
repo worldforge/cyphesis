@@ -138,18 +138,10 @@ int main()
         assert(exerciser.exerciseProperty(test_property, TYPE_LIST) == 0);
     }
 
-#if 0
-    // FIXME THis segfaults, probably the same reason as why WeakEntityRef
-    // does
-    {
-        OutfitProperty test_property;
-        assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
-    }
-#endif
 
     {
         TerrainProperty test_property;
-        assert(exerciser.exerciseProperty(test_property, TYPE_MAP) == 0);
+        assert(exerciser.exerciseProperty(test_property, TYPE_LIST) == 0);
     }
 
     return 0;

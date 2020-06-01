@@ -39,11 +39,10 @@ namespace Mercator {
     class TileShader;
 }
 
-typedef std::map<int, std::set<int> > PointSet;
-
 /// \brief Class to handle Entity terrain property
+/// This property only defines the surfaces. The separate TerrainPointsProperty defines the actual terrain geometry.
 /// \ingroup PropertyClasses
-class TerrainProperty : public Property<Atlas::Message::MapType>
+class TerrainProperty : public Property<Atlas::Message::ListType>
 {
     protected:
 
@@ -63,7 +62,6 @@ class TerrainProperty : public Property<Atlas::Message::MapType>
     public:
 
         static constexpr const char* property_name = "terrain";
-        static constexpr const char* property_atlastype = "map";
 
         void install(LocatedEntity* owner, const std::string& name) override;
 

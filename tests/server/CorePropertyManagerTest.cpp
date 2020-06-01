@@ -197,6 +197,7 @@ int main()
 #include "../stubs/rules/stubBBoxProperty.h"
 #include "../stubs/rules/simulation/stubTerrainModProperty.h"
 #include "../stubs/rules/simulation/stubTerrainProperty.h"
+#include "../stubs/rules/simulation/stubTerrainPointsProperty.h"
 #include "../stubs/rules/simulation/stubServerBBoxProperty.h"
 #include "../stubs/rules/simulation/stubStatusProperty.h"
 #include "../stubs/rules/simulation/stubTasksProperty.h"

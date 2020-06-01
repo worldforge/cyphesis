@@ -43,8 +43,6 @@ using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 using Atlas::Objects::Entity::Anonymous;
 
-typedef Mercator::Terrain::Pointstore Pointstore;
-typedef Mercator::Terrain::Pointcolumn Pointcolumn;
 PropertyInstanceState<TerrainProperty::State> TerrainProperty::sInstanceState;
 
 
@@ -53,106 +51,14 @@ void TerrainProperty::applyToState(LocatedEntity& entity, State& state) const
 
     auto& terrain = state.terrain;
 
-    const Pointstore& base_points = terrain.getPoints();
-
-    int minX = std::numeric_limits<int>::max();
-    int maxX = std::numeric_limits<int>::min();
-    int minY = std::numeric_limits<int>::max();
-    int maxY = std::numeric_limits<int>::min();
-
-    std::vector<WFMath::AxisBox<2>> changedAreas;
-
-    auto I = m_data.find("points");
-    if (I != m_data.end() && I->second.isMap()) {
-        const MapType& points = I->second.asMap();
-        auto Iend = points.end();
-        for (auto pointsI = points.begin(); pointsI != Iend; ++pointsI) {
-            if (!pointsI->second.isList()) {
-                continue;
-            }
-            const ListType& point = pointsI->second.asList();
-            if (point.size() < 3) {
-                continue;
-            }
-            if (!point[0].isNum() || !point[1].isNum() || !point[2].isNum()) {
-                continue;
-            }
-
-            int x = (int) point[0].asNum();
-            int y = (int) point[1].asNum();
-            double h = point[2].asNum();
-            double roughness;
-            double falloff;
-            if (point.size() > 3) {
-                roughness = point[3].asFloat();
-            } else {
-                roughness = Mercator::BasePoint::ROUGHNESS;
-            }
-            if (point.size() > 4) {
-                falloff = point[4].asFloat();
-            } else {
-                falloff = Mercator::BasePoint::FALLOFF;
-            }
-
-            Mercator::BasePoint bp(h, roughness, falloff);
-
-//            auto J = base_points.find(x);
-//            if (J == base_points.end() ||
-//                J->second.find(y) == J->second.end()) {
-//                // Newly added point.
-//                m_createdTerrain[x].insert(y);
-//            } else {
-//                // Modified point
-//                PointSet::const_iterator K = m_createdTerrain.find(x);
-//                if (K == m_createdTerrain.end() ||
-//                    K->second.find(y) == K->second.end()) {
-//                    // Already in database
-//                    m_modifiedTerrain[x].insert(y);
-//                }
-//                // else do nothing, as its currently waiting to be added.
-//            }
-
-
-            minX = std::min(minX, x);
-            maxX = std::max(maxX, x);
-            minY = std::min(minY, y);
-            maxY = std::max(maxY, y);
-
-            terrain.setBasePoint(x, y, bp);
-
-        }
+    auto shaderResult = createShaders(m_data);
+    if (state.tileShader) {
+        terrain.removeShader(state.tileShader.get(), 0);
     }
-
-    if (minX != std::numeric_limits<int>::max()) {
-        float spacing = terrain.getSpacing();
-        WFMath::Point<2> minCorner((minX * spacing) - (spacing * 0.5f), (minY * spacing) - (spacing * 0.5f));
-        WFMath::Point<2> maxCorner((maxX * spacing) + (spacing * 0.5f), (maxY * spacing) + (spacing * 0.5f));
-        WFMath::AxisBox<2> changedArea(minCorner, maxCorner);
-        changedAreas.push_back(changedArea);
-    }
-
-    I = m_data.find("surfaces");
-    if (I != m_data.end() && I->second.isList()) {
-        //Only alter shader if the definition has changed.
-//        if (m_surfaces != I->second.List()) {
-        auto shaderResult = createShaders(I->second.List());
-        if (state.tileShader) {
-            terrain.removeShader(state.tileShader.get(), 0);
-        }
-        state.tileShader = std::move(shaderResult.first);
-        state.surfaceNames = std::move(shaderResult.second);
-        if (state.tileShader) {
-            terrain.addShader(state.tileShader.get(), 0);
-        }
-//            m_surfaces = I->second.List();
-//        }
-    }
-
-    if (!changedAreas.empty()) {
-        Domain* domain = entity.getDomain();
-        if (domain) {
-            domain->refreshTerrain(changedAreas);
-        }
+    state.tileShader = std::move(shaderResult.first);
+    state.surfaceNames = std::move(shaderResult.second);
+    if (state.tileShader) {
+        terrain.addShader(state.tileShader.get(), 0);
     }
 
 }
