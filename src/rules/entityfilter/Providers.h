@@ -29,8 +29,6 @@
 #include <functional>
 #include <string>
 
-class OutfitProperty;
-
 class TypeNode;
 
 class BBoxProperty;

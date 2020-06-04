@@ -4,6 +4,7 @@
 #include "Providers.h"
 
 #include <memory>
+#include <string>
 
 namespace EntityFilter {
 
