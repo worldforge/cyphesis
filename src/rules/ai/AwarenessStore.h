@@ -21,6 +21,7 @@
 #include <wfmath/axisbox.h>
 #include <wfmath/point.h>
 
+#include <string>
 #include <unordered_map>
 #include <memory>
 
