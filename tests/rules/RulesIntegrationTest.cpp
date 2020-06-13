@@ -21,6 +21,7 @@
 #include "../TestWorld.h"
 #include "common/Monitors.h"
 #include "common/Inheritance.h"
+#include "common/operations/Thought.h"
 #include "rules/simulation/World.h"
 #include "../NullEntityCreator.h"
 
@@ -32,10 +33,12 @@
 #include <memory>
 #include <rules/simulation/ModifiersProperty.h>
 #include <rules/simulation/WorldRouter.h>
+#include <rules/simulation/MindsProperty.h>
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;
 using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Operation::Thought;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -182,7 +185,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
           *
           * All entities are placed at origo originally.
           * Hierarchy looks like this:
-          * T1 has a physical domain
+          * T1 has a physical domain.
+          * T2 and T3 have container domains.
           *
           *              T1#
           *          T2*      T3*
@@ -268,7 +272,162 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         }
 
+        /**
+          * Let an entity move other entities.
+          *
+          * All entities are placed at origo originally.
+          * Hierarchy looks like this:
+          * T1 has a physical domain
+          * T2 has container domain.
+          * T6 is an entity with a mind, inventory and reach = 2.0
+          *
+          *              T1#
+          *          T2*      T3     T6**
+          *          T4       T5
+          */
+        {
+            auto thinkMoveFn = [&](const Ref<LocatedEntity>& destination, Anonymous ent) {
 
+                Move move;
+                move->setArgs1(ent);
+                Thought thought;
+                thought->setArgs1(move);
+                OpVector res;
+                destination->operation(thought, res);
+                for (auto& op : res) {
+                    context.testWorld.operation(op, context.testWorld.getEntity(op->getFrom()));
+                }
+
+            };
+
+
+            Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-512, -10, -512},
+                                    {512,  10,  512}});
+            t1->setAttrValue("domain", "physical");
+            context.testWorld.addEntity(t1, context.world);
+            Ref<Thing> t2 = new Thing(2);
+            t2->m_location.m_pos = {0, 0, 0};
+            t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t2->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            t2->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t2, t1);
+            Ref<Thing> t3 = new Thing(3);
+            t3->m_location.m_pos = {0, 0, 0};
+            t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t3->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t3, t1);
+
+            Ref<Thing> t4 = new Thing(4);
+            t4->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t4, t2);
+
+            Ref<Thing> t5 = new Thing(5);
+            t5->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t5, t3);
+            Ref<Thing> t6 = new Thing(6);
+            t6->m_location.m_pos = {0, 0, 0};
+            t6->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t6->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            t6->setAttrValue("domain", "inventory");
+            t6->setAttrValue("reach", 2.0);
+            t6->setAttrValue(MindsProperty::property_name, {});
+            context.testWorld.addEntity(t6, t1);
+
+            OpVector res;
+
+            //A Thought about a Move for moving t2 within t1 should work
+            {
+
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setPosAsList({1, 0, 0});
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t2->m_location.m_pos, WFMath::Point<3>(1, 0, 0))
+
+            //A Thought about a Move for moving t2 to t6 should work
+            {
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t2->m_location.m_parent, t6)
+
+            //Add a listener which blocks all operations to t1
+            struct : public OperationsListener
+            {
+                HandlerResult operation(LocatedEntity*, const Operation& op, OpVector& res) override
+                {
+                    if (op->getClassNo() == Atlas::Objects::Operation::MOVE_NO) {
+                        return OPERATION_BLOCKED;
+                    }
+                    return OPERATION_IGNORED;
+                }
+            } moveBlockListener;
+            t1->addListener(&moveBlockListener);
+
+
+            //A Thought about a Move for moving t3 to t6 should not work if there's a blocker on t1 (the parent of t3)
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+            t1->removeListener(&moveBlockListener);
+            t6->addListener(&moveBlockListener);
+
+            //A Thought about a Move for moving t3 to t6 should not work if there's a blocker on t6
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+            t6->removeListener(&moveBlockListener);
+            t3->addListener(&moveBlockListener);
+
+            //A Thought about a Move for moving t3 to t6 should not work if there's a blocker on t3
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+            t3->removeListener(&moveBlockListener);
+
+            //A Thought about a Move for moving t3 to t6 should work if there no blockers
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t6)
+
+            //A Thought about a Move for moving t3 to t1 should be blocked if the destination is too far away.
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t1->getId());
+                ent->setPosAsList({100.0, 0.0, 100.0});
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t6)
+        }
     }
 
 

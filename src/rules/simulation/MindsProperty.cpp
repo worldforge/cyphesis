@@ -360,25 +360,14 @@ void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpV
         //Replace first arg with our sanitized arg.
         op->setArgs1(newArgs1);
         op->setFrom(ent->getId());
-        op->setTo(other_id);
+        //Send the op to the current location of the entity being moved
+        op->setTo(other->m_location.m_parent->getId());
 
         res.push_back(op);
 
     } else {
         ent->clientError(op, "Entity is too far away.", res, op->getFrom());
     }
-
-    //TODO: add checks for the things that we can reach, and that we can move.
-    //Probably involve the domain in this.
-//        Element mass;
-//        if (other->getAttr(MASS, mass) != 0 || !mass.isFloat()) {
-//            // FIXME Check against strength
-//            // || mass.Float() > m_statistics.get("strength"));
-//            debug(std::cout << "We can't move this. Just too heavy" << std::endl << std::flush
-//            ;);
-//            //TODO: send op back to the mind informing it that it was too heavy to move.
-//            return;
-//        }
 }
 
 void MindsProperty::moveOurselves(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
