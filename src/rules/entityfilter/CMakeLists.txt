@@ -2,7 +2,7 @@ add_library(entityfilter
     Filter.cpp
     Providers.cpp
     Predicates.cpp
-    ParserDefinitions.h)
+    ProviderFactory.cpp)
 
 add_subdirectory(python)
 

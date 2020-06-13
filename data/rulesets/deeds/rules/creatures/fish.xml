@@ -16,6 +16,6 @@
         </map>
         <string name="id">fish</string>
         <string name="objtype">class</string>
-        <string name="parent">mobile</string>
+        <string name="parent">creature</string>
     </map>
 </atlas>

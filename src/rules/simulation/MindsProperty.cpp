@@ -30,6 +30,7 @@
 #include "common/operations/Tick.h"
 #include "common/operations/Think.h"
 #include "common/operations/Thought.h"
+#include "FilterProperty.h"
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -38,6 +39,8 @@
 #include <wfmath/atlasconv.h>
 
 #include <iostream>
+#include "rules/entityfilter/Providers.h"
+#include "common/Inheritance.h"
 
 
 using Atlas::Message::Element;
@@ -322,6 +325,50 @@ void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpV
         return;
     }
 
+    auto moverConstraint = ent->getPropertyClass<FilterProperty>("mover_constraint");
+    if (moverConstraint && moverConstraint->getData()) {
+        std::vector<std::string> errorMessages;
+        EntityFilter::QueryContext queryContext{EntityFilter::QueryEntityLocation{*other}, ent};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+        queryContext.report_error_fn = [&errorMessages](const std::string& message) { errorMessages.emplace_back(message); };
+        if (!moverConstraint->getData()->match(queryContext)) {
+            auto message = errorMessages.empty() ? "You can't move this entity." : errorMessages.front();
+            ent->clientError(op, message, res, ent->getId());
+            return;
+        }
+    }
+
+    auto moveConstraint = other->getPropertyClass<FilterProperty>("move_constraint");
+    if (moveConstraint && moveConstraint->getData()) {
+        std::vector<std::string> errorMessages;
+        EntityFilter::QueryContext queryContext{EntityFilter::QueryEntityLocation{*other}, ent};
+        queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+        queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+        queryContext.report_error_fn = [&errorMessages](const std::string& message) { errorMessages.emplace_back(message); };
+        if (!moveConstraint->getData()->match(queryContext)) {
+            auto message = errorMessages.empty() ? "You can't move this entity." : errorMessages.front();
+            ent->clientError(op, message, res, ent->getId());
+            return;
+        }
+    }
+
+    if (other->m_location.m_parent) {
+        auto containConstraint = other->m_location.m_parent->getPropertyClass<FilterProperty>("contain_constraint");
+        if (containConstraint && containConstraint->getData()) {
+            std::vector<std::string> errorMessages;
+            EntityFilter::QueryContext queryContext{EntityFilter::QueryEntityLocation{*other}, ent, other->m_location.m_parent.get()};
+            queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+            queryContext.report_error_fn = [&errorMessages](const std::string& message) { errorMessages.emplace_back(message); };
+            if (!containConstraint->getData()->match(queryContext)) {
+                auto message = errorMessages.empty() ? "You can't move this entity." : errorMessages.front();
+                ent->clientError(op, message, res, ent->getId());
+                return;
+            }
+        }
+    }
+
     //Check that we actually can reach the other entity.
     if (ent->canReach({other, {}})) {
         //Now also check that we can reach wherever we're trying to move the entity.
@@ -341,6 +388,22 @@ void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpV
             ent->clientError(op, "Target parent entity doesn't exist.", res, op->getFrom());
             return;
         }
+
+        auto destinationConstraint = targetLoc->getPropertyClass<FilterProperty>("destination_constraint");
+        if (destinationConstraint && destinationConstraint->getData()) {
+            std::vector<std::string> errorMessages;
+            EntityFilter::QueryContext queryContext{EntityFilter::QueryEntityLocation{*other}, ent, targetLoc.get()};
+            queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+            queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
+            queryContext.report_error_fn = [&errorMessages](const std::string& message) { errorMessages.emplace_back(message); };
+            if (!destinationConstraint->getData()->match(queryContext)) {
+                auto message = errorMessages.empty() ? "You can't move this entity." : errorMessages.front();
+                ent->clientError(op, message, res, ent->getId());
+                return;
+            }
+        }
+
+
         WFMath::Point<3> targetPos;
         if (!arg->isDefaultPos()) {
             newArgs1->setPos(arg->getPos());

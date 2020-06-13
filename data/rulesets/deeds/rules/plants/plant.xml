@@ -57,6 +57,10 @@
                     </map>
                 </list>
             </map>
+            <!-- Mark this as "rooted" so that movement constraint can take that into consideration. -->
+            <map name="rooted">
+                <int name="default">1</int>
+            </map>
         </map>
         <string name="id">plant</string>
         <string name="objtype">class</string>

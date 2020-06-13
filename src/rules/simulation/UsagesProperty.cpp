@@ -19,7 +19,7 @@
 #include "UsagesProperty.h"
 #include "rules/simulation/BaseWorld.h"
 
-#include "rules/entityfilter/Providers.h"
+#include "rules/entityfilter/ProviderFactory.h"
 
 #include "common/debug.h"
 #include "common/AtlasQuery.h"

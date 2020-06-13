@@ -90,6 +90,20 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
     void test_move_entity(TestContext& context)
     {
+        auto thinkMoveFn = [&](const Ref<LocatedEntity>& destination, Anonymous ent) {
+
+            Move move;
+            move->setArgs1(ent);
+            Thought thought;
+            thought->setArgs1(move);
+            OpVector res;
+            destination->operation(thought, res);
+            for (auto& op : res) {
+                context.testWorld.operation(op, context.testWorld.getEntity(op->getFrom()));
+            }
+
+        };
+
         /**
          * Move within one domain
          *
@@ -286,21 +300,6 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
           *          T4       T5
           */
         {
-            auto thinkMoveFn = [&](const Ref<LocatedEntity>& destination, Anonymous ent) {
-
-                Move move;
-                move->setArgs1(ent);
-                Thought thought;
-                thought->setArgs1(move);
-                OpVector res;
-                destination->operation(thought, res);
-                for (auto& op : res) {
-                    context.testWorld.operation(op, context.testWorld.getEntity(op->getFrom()));
-                }
-
-            };
-
-
             Ref<Thing> t1 = new Thing(1);
             t1->m_location.setBBox({{-512, -10, -512},
                                     {512,  10,  512}});
@@ -427,6 +426,171 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
                 thinkMoveFn(t6, ent);
             }
             ASSERT_EQUAL(t3->m_location.m_parent, t6)
+
+            //A Thought about a Move for moving t3 to t1 should be allowed if the destination is close.
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t1->getId());
+                ent->setPosAsList({1.0, 0.0, 1.0});
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+
+            //Add a "mover" constaint to t6.
+
+            t6->setAttrValue("mover_constraint", "false");
+            //A Thought about a Move for moving t3 to t6 should not be allowed by the "mover_constraint"
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+            t6->setAttrValue("mover_constraint", "entity.id = 3");
+
+            //A Thought about a Move for moving t3 to t6 should be allowed if the "mover_constraint" matches.
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t6)
+
+            //clear "mover_constraint"
+            t6->setAttrValue("mover_constraint", {});
+
+            t3->setAttrValue("move_constraint", "false");
+            //A Thought about a Move for moving t3 to t1 should not be allowed by the "move_constraint"
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setPosAsList({1.0, 0, 1.0});
+                ent->setLoc(t1->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t6)
+
+            t3->setAttrValue("move_constraint", "entity.id = 3");
+            //A Thought about a Move for moving t3 to t1 should be allowed if "move_constraint" matches
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setPosAsList({1.0, 0, 1.0});
+                ent->setLoc(t1->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+            //clear "move_constraint"
+            t3->setAttrValue("move_constraint", {});
+
+            t1->setAttrValue("contain_constraint", "false");
+            //A Thought about a Move for moving t3 to t6 should not be allowed by the "contains_constraint" on t1
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+
+            t1->setAttrValue("contain_constraint", "true");
+            //A Thought about a Move for moving t3 to t6 should not be allowed by the "contains_constraint" on t1
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t6->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t6)
+
+            //clear "contain_constraint"
+            t1->setAttrValue("contain_constraint", {});
+
+            t1->setAttrValue("destination_constraint", "false");
+            //A Thought about a Move for moving t3 to t1 should not be allowed by the "destination_constraint" on t1
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setLoc(t1->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t6)
+
+            t1->setAttrValue("destination_constraint", "true");
+            //A Thought about a Move for moving t3 to t1 should be allowed is the "destination_constraint" matches
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setPosAsList({1.0, 0, 1.0});
+                ent->setLoc(t1->getId());
+                thinkMoveFn(t6, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_parent, t1)
+        }
+
+        /**
+        * A standard case is not allowing a player entity to move too heavy things.
+        *
+        * All entities are placed at origo originally.
+        * Hierarchy looks like this:
+        * T1 has a physical domain
+        * T2 is an entity with a mind, inventory, reach = 2.0 and a "mover_constraint" of "mass < 20".
+        *
+        *              T1#
+        *          T2*      T3
+        */
+        {
+            Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-512, -10, -512},
+                                    {512,  10,  512}});
+            t1->setAttrValue("domain", "physical");
+            context.testWorld.addEntity(t1, context.world);
+            Ref<Thing> t2 = new Thing(2);
+            t2->m_location.m_pos = {0, 0, 0};
+            t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t2->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            t2->setAttrValue("domain", "inventory");
+            t2->setAttrValue("reach", 2.0);
+            t2->setAttrValue(MindsProperty::property_name, {});
+            t2->setAttrValue("mover_constraint", "entity.mass = none or entity.mass < 20");
+            context.testWorld.addEntity(t2, t1);
+            Ref<Thing> t3 = new Thing(3);
+            t3->m_location.m_pos = {0, 0, 0};
+            t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t3->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t3, t1);
+
+
+            OpVector res;
+
+            //A Thought about a Move for moving t3 within t1 should work
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setPosAsList({1, 0, 0});
+                thinkMoveFn(t2, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_pos, WFMath::Point<3>(1, 0, 0))
+
+            t3->setAttrValue("mass", 30.0);
+
+            //A Thought about a Move for moving t3 within t1 should fail as t3 is too heavy
+            {
+                Anonymous ent;
+                ent->setId(t3->getId());
+                ent->setPosAsList({-1, 0, 0});
+                thinkMoveFn(t2, ent);
+            }
+            ASSERT_EQUAL(t3->m_location.m_pos, WFMath::Point<3>(1, 0, 0))
+
         }
     }
 

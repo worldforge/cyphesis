@@ -301,3 +301,5 @@ bool restricted_flag;
 #include "../stubs/server/stubServerRouting.h"
 #include "../stubs/server/stubPersistence.h"
 #include "../stubs/server/stubLobby.h"
+#include "../stubs/rules/entityfilter/stubProviderFactory.h"
+#include "../stubs/rules/entityfilter/stubFilter.h"

@@ -27,7 +27,7 @@ namespace EntityFilter {
 
 #ifndef STUB_Filter_match
 //#define STUB_Filter_match
-  bool Filter::match(const QueryContext& context)
+  bool Filter::match(const QueryContext& context) const
   {
     return false;
   }

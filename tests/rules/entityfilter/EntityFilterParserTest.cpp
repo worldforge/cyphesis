@@ -198,6 +198,8 @@ struct ParserTest : public Cyphesis::TestBase
         ASSERT_NOT_NULL(dynamic_cast<const DescribePredicate*>(pred.get()));
         pred = ConstructPredicate("describe(\"One is one\", 1 = 1)");
         ASSERT_NOT_NULL(dynamic_cast<const DescribePredicate*>(pred.get()));
+        pred = ConstructPredicate("describe(\"False\", false)");
+        ASSERT_NOT_NULL(dynamic_cast<const DescribePredicate*>(pred.get()));
     }
 
     Inheritance* m_inheritance;

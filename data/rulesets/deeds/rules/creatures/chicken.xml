@@ -27,6 +27,9 @@
                     </map>
                 </list>
             </map>
+            <map name="density">
+                <float name="default">15</float>
+            </map>
             <map name="_goals">
                 <list name="append">
                     <map>

@@ -39,6 +39,22 @@
   }
 #endif //STUB_Thing_moveToNewLocation
 
+#ifndef STUB_Thing_moveOurselves
+//#define STUB_Thing_moveOurselves
+  void Thing::moveOurselves(const Operation& op, const Atlas::Objects::Entity::RootEntity& ent, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Thing_moveOurselves
+
+#ifndef STUB_Thing_moveOtherEntity
+//#define STUB_Thing_moveOtherEntity
+  void Thing::moveOtherEntity(const Operation& op, const Atlas::Objects::Entity::RootEntity& ent, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Thing_moveOtherEntity
+
 #ifndef STUB_Thing_Thing
 //#define STUB_Thing_Thing
    Thing::Thing(const std::string& id, long intId)

@@ -23,11 +23,13 @@
                         <map name="params">
                             <map name="targets">
                                 <string name="type">entity_location</string>
-                                <string name="constraint">entity instance_of types.ocean &amp;&amp; actor can_reach entity_location with tool</string>
+                                <string name="constraint">describe("Need an ocean to fish in.", entity instance_of types.ocean) &amp;&amp; describe("Too far away.", actor can_reach entity_location with tool)</string>
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.FishingRod.fish</string>
-                        <string name="constraint">get_entity(actor.attached_hand_primary) = tool and contains(actor.contains, child instance_of types.annelid)</string>
+                        <string name="constraint">describe("Fishing rod needs to be wielded.", get_entity(actor.attached_hand_primary) = tool) and describe("You need worms as bait.",
+                            contains(actor.contains, child instance_of types.annelid))
+                        </string>
                         <string name="description">Fish with fishing rod, requires a worm in inventory.</string>
                     </map>
                 </map>

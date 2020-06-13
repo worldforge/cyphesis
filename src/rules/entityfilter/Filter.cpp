@@ -28,7 +28,7 @@ namespace EntityFilter {
 
     Filter::~Filter() = default;
 
-    bool Filter::match(const QueryContext& context)
+    bool Filter::match(const QueryContext& context) const
     {
 
         return m_predicate->isMatch(context);

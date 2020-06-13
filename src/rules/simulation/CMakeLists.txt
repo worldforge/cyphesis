@@ -60,7 +60,8 @@ add_library(rulessimulation
         VisibilityDistanceProperty.cpp
         ContainerAccessProperty.cpp
         ContainersActiveProperty.cpp
-        TerrainPointsProperty.cpp)
+        TerrainPointsProperty.cpp
+        FilterProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

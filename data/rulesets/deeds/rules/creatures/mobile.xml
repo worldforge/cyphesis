@@ -25,6 +25,12 @@
             <map name="speed_jump">
                 <float name="default">7.5</float>
             </map>
+            <map name="_mover_mass_max">
+                <float name="default">50.0</float>
+            </map>
+            <map name="move_constraint">
+                <string name="default">describe("Creature can't be moved.", false)</string>
+            </map>
             <map name="__scripts">
                 <list name="prepend">
                     <map>

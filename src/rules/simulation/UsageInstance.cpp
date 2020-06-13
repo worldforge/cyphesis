@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <common/Inheritance.h>
-#include "rules/entityfilter/Providers.h"
+#include "common/Inheritance.h"
+#include "rules/entityfilter/ProviderFactory.h"
 #include "UsageInstance.h"
 #include "rules/LocatedEntity.h"
 #include "rules/simulation/BaseWorld.h"

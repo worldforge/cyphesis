@@ -24,7 +24,7 @@
 #include "common/operations/Update.h"
 #include "common/Inheritance.h"
 #include "rules/LocatedEntity.h"
-#include "rules/entityfilter/Providers.h"
+#include "rules/entityfilter/ProviderFactory.h"
 #include <Atlas/Objects/Operation.h>
 
 AttachmentsProperty::AttachmentsProperty(uint32_t flags)

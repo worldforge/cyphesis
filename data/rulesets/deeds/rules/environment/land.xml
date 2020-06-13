@@ -27,6 +27,9 @@
                     </map>
                 </list>
             </map>
+            <map name="contain_constraint">
+                <string name="default">describe("Entity is planted and can't be moved.", not (entity.mode = "planted" and entity.rooted = 1))</string>
+            </map>
             <map name="terrain">
                 <list name="default">
                     <map>

@@ -338,6 +338,8 @@ int main()
 #include "common/Inheritance.h"
 #include "common/Property_impl.h"
 #include "common/PropertyManager.h"
+#include "../stubs/rules/entityfilter/stubFilter.h"
+#include "../stubs/rules/entityfilter/stubProviderFactory.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;

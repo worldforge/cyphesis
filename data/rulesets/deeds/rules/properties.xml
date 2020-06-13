@@ -216,4 +216,19 @@
         <string name="description">Used by the Generic Craft mechanism. An optional name of the thing(s) created. To be emitted as an Imaginary.</string>
     </map>
 
+    <map>
+        <string name="id">rooted</string>
+        <string name="objtype">type</string>
+        <string name="parent">int</string>
+        <string name="description">Put on entities that players shouldn't be allowed to move when they are planted in the 'land'.</string>
+    </map>
+
+    <map>
+        <string name="id">_mover_mass_max</string>
+        <string name="objtype">type</string>
+        <string name="parent">float</string>
+        <string name="description">Used in movement constraints to limit movement of too heavy entities.</string>
+    </map>
+
+
 </atlas>

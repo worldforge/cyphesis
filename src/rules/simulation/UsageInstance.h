@@ -68,6 +68,7 @@ struct UsageParameter
     Type type;
     /**
      * An optional constraint.
+     * A shared_ptr to allow for easier Python bindings.
      */
     std::shared_ptr<EntityFilter::Filter> constraint;
     /*

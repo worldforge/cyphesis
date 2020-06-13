@@ -24,7 +24,7 @@ namespace EntityFilter {
             ~Filter();
 
             ///\brief test given QueryContext for a match
-            bool match(const QueryContext& context);
+            bool match(const QueryContext& context) const;
 
             const std::string& getDeclaration() const;
 

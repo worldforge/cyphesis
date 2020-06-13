@@ -67,6 +67,7 @@
 #include "common/debug.h"
 #include "VisibilityDistanceProperty.h"
 #include "TerrainPointsProperty.h"
+#include "FilterProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -254,6 +255,24 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<ModifyProperty>();
     installProperty<ModifySelfProperty>();
     installProperty<ModifiersProperty>();
+
+    /**
+     * Applies whenever an entity tries to move another entity.
+     */
+    installProperty<FilterProperty>("mover_constraint");
+    /**
+     * Applies whenever an entity is moved.
+     */
+    installProperty<FilterProperty>("move_constraint");
+    /**
+     * Applies whenever an entity has a contained child being moved.
+     */
+    installProperty<FilterProperty>("contain_constraint");
+    /**
+     * Applies whenever an entity has an entity being moved into it.
+     */
+    installProperty<FilterProperty>("destination_constraint");
+
 
 }
 

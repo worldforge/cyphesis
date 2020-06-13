@@ -17,7 +17,7 @@
  */
 
 #include "CyPy_EntityFilter.h"
-#include "rules/entityfilter/Providers.h"
+#include "rules/entityfilter/ProviderFactory.h"
 #include "pycxx/CXX/Objects.hxx"
 #include "rules/python/CyPy_LocatedEntity.h"
 
