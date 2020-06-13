@@ -20,6 +20,7 @@
 #define CYPHESIS_REF_H
 
 #include <memory>
+#include <iostream>
 
 template<typename T>
 class Ref
@@ -179,6 +180,10 @@ class Ref
 };
 
 template<typename T>
+std::ostream& operator<<(std::ostream& s, const Ref<T>& d);
+
+
+template<typename T>
 constexpr Ref<T>::Ref()
     : m_inner(nullptr)
 {
@@ -273,6 +278,17 @@ constexpr Ref<T>::operator T*() const
 {
     return m_inner;
 }
+
+template<typename T>
+std::ostream& operator<<(std::ostream& s, const Ref<T>& d) {
+    if (d) {
+        s << d->describeEntity();
+    } else {
+        s << "[none]";
+    }
+    return s;
+}
+
 
 
 #endif //CYPHESIS_REF_H

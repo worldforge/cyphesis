@@ -127,7 +127,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
                 move->setArgs1(ent);
                 t2->MoveOperation(move, res);
             }
-            ASSERT_EQUAL(t2->m_location.m_pos, WFMath::Point<3>(10, 0, 10));
+            ASSERT_EQUAL(t2->m_location.m_pos, WFMath::Point<3>(10, 0, 10))
 
             //Moving t2 through t1 succeed.
             {
@@ -164,7 +164,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             }
             ASSERT_EQUAL(t2->m_location.m_parent.get(), t3.get())
 
-            //Moving t2 directly to t1 should fail without pos and orientation.
+            //Moving t2 directly to t1 should succeed even without pos and orientation.
             {
                 Move move;
                 Anonymous ent;
@@ -173,21 +173,21 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
                 move->setArgs1(ent);
                 t2->MoveOperation(move, res);
             }
-            ASSERT_EQUAL(t2->m_location.m_parent.get(), t3.get())
+            ASSERT_EQUAL(t2->m_location.m_parent.get(), t1.get())
 
         }
 
-         /**
-           * Move from one domain to another.
-           *
-           * All entities are placed at origo originally.
-           * Hierarchy looks like this:
-           * T1 has a physical domain
-           *
-           *              T1#
-           *          T2*      T3*
-           *          T4       T5
-           */
+        /**
+          * Move from one domain to another.
+          *
+          * All entities are placed at origo originally.
+          * Hierarchy looks like this:
+          * T1 has a physical domain
+          *
+          *              T1#
+          *          T2*      T3*
+          *          T4       T5
+          */
         {
             Ref<Thing> t1 = new Thing(1);
             t1->m_location.setBBox({{-512, -10, -512},
@@ -219,6 +219,52 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
                                     {1,  1, 1}});
             context.testWorld.addEntity(t5, t3);
 
+
+            //Moving t4 directly should succeed.
+            OpVector res;
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t4->getId());
+                ent->setLoc(t3->getId());
+                move->setArgs1(ent);
+                t4->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t4->m_location.m_parent, t3)
+
+            //Moving t4 through t3 (its parent) should succeed.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t4->getId());
+                ent->setLoc(t2->getId());
+                move->setArgs1(ent);
+                t3->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t4->m_location.m_parent, t2)
+
+            //Moving t4 through t3 (its destination) should succeed.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t4->getId());
+                ent->setLoc(t3->getId());
+                move->setArgs1(ent);
+                t3->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t4->m_location.m_parent, t3)
+
+
+            //Moving t4 through t1 (root domain) should fail.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t4->getId());
+                ent->setLoc(t2->getId());
+                move->setArgs1(ent);
+                t1->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t4->m_location.m_parent, t3)
 
         }
 

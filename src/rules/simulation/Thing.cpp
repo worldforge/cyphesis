@@ -738,13 +738,45 @@ void Thing::moveOtherEntity(const Operation& op, const RootEntity& ent, OpVector
 {
     auto otherEntity = BaseWorld::instance().getEntity(ent->getId());
     if (otherEntity) {
-        //Only allow movement if the entity is being moved either into or out of us.
+
+        //All movement checks needs to know if the entity is a child of us, so we'll do that check here.
+        bool isChildOfUs = m_contains && m_contains->find(otherEntity) != m_contains->end();
+
+
+        //Only allow movement if the entity is being moved either into, within or out of us.
         if (ent->isDefaultLoc()) {
             //The entity is being moved within this entity.
-            if (m_contains && m_contains->find(otherEntity) != m_contains->end()) {
+            if (isChildOfUs) {
                 otherEntity->operation(op, res);
             } else {
                 log(WARNING, String::compose("Entity %1 being asked to move entity %2 which is not contained by the first.", describeEntity(), otherEntity->describeEntity()));
+            }
+        } else {
+            //Entity is either being moved into or out of us (or within us, with "loc" being set even though it's already a child).
+            auto& newLoc = ent->getLoc();
+            if (newLoc == getId()) {
+                //Entity is either being moved within ourselves, or being moved to us.
+                if (isChildOfUs) {
+                    //Entity already belongs to us, just send the op on.
+                    otherEntity->operation(op, res);
+                } else {
+                    //Entity is being moved into us.
+                    //TODO: perform checks if moving into us is allowed
+                    otherEntity->operation(op, res);
+                }
+            } else {
+                //Entity is being moved to another parent, check that it's a child of us.
+                if (isChildOfUs) {
+                    //TODO: perform checks if moving out of us is allowed
+                    auto destinationEntity = BaseWorld::instance().getEntity(ent->getLoc());
+                    if (!destinationEntity) {
+                        log(WARNING,
+                            String::compose("Entity %1 being asked to move entity %2 to new parent with id %3, which does not exist.", describeEntity(), otherEntity->describeEntity(), ent->getLoc()));
+                    } else {
+                        //Send move op on to the new destination entity.
+                        destinationEntity->operation(op, res);
+                    }
+                }
             }
         }
     }
