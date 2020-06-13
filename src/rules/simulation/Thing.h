@@ -48,6 +48,10 @@ class Thing : public Entity
                                const Quaternion& newOrientation,
                                const Vector3D& newImpulseVelocity);
 
+        void moveOurselves(const Operation& op, const Atlas::Objects::Entity::RootEntity& ent, OpVector& res);
+
+        void moveOtherEntity(const Operation& op, const Atlas::Objects::Entity::RootEntity& ent, OpVector& res);
+
     public:
 
         explicit Thing(const std::string& id, long intId);

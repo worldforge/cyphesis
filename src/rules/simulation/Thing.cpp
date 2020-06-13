@@ -110,12 +110,12 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 {
     debug_print("Thing::move_operation")
 
-    if (m_location.m_parent == nullptr) {
-        log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
-                                   getType(), getId()));
-        assert(m_location.m_parent != nullptr);
-        return;
-    }
+//    if (m_location.m_parent == nullptr) {
+//        log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
+//                                   getType(), getId()));
+//        assert(m_location.m_parent != nullptr);
+//        return;
+//    }
 
     // Check the validity of the operation.
     const std::vector<Root>& args = op->getArgs();
@@ -128,203 +128,18 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
         error(op, "Move op arg is malformed", res, getId());
         return;
     }
-    if (getId() != ent->getId()) {
-        error(op, "Move op does not have correct id in argument", res, getId());
-        return;
-    }
-
-    Ref<LocatedEntity> new_loc = nullptr;
-    if (!ent->isDefaultLoc()) {
-        const std::string& new_loc_id = ent->getLoc();
-        if (new_loc_id != m_location.m_parent->getId()) {
-            // If the LOC has not changed, we don't need to look it up, or do
-            // any of the following checks.
-            new_loc = BaseWorld::instance().getEntity(new_loc_id);
-            if (new_loc == nullptr) {
-                error(op, "Move op loc does not exist", res, getId());
-                return;
-            }
-            debug_print("LOC: " << new_loc_id)
-            auto test_loc = new_loc;
-            for (; test_loc != nullptr; test_loc = test_loc->m_location.m_parent) {
-                if (test_loc == this) {
-                    error(op, "Attempt to move into itself", res, getId());
-                    return;
-                }
-            }
-            assert(new_loc != nullptr);
-            assert(m_location.m_parent != new_loc);
-        }
-
-    }
-
-
-    // Up until this point nothing should have changed, but the changes
-    // have all now been checked for validity.
-
-    // Move ops often include a mode change, so we handle it here, even
-    // though it is not a special attribute for efficiency. Otherwise
-    // an additional Set op would be required.
-    Element attr_mode;
-    if (ent->copyAttr("mode", attr_mode) == 0) {
-        if (!attr_mode.isString()) {
-            log(ERROR, "Non string 'mode' set in Thing::MoveOperation");
-        } else {
-            // Update the mode
-            setAttrValue("mode", attr_mode);
-        }
-    }
-
-    //If a Move op contains a mode_data prop it should be used.
-    //It's expected that only admins should ever send a "mode_data" as Move ops (to build the world).
-    //In all other cases we want to let regular Domain rules apply
-    Element attr_modeData;
-    if (ent->copyAttr("mode_data", attr_modeData) == 0) {
-        setAttrValue("mode_data", attr_modeData);
-    }
-
-    //Move ops can also alter the "planted_offset" property
-    Element attr_plantedOffset;
-    if (ent->copyAttr("planted_offset", attr_plantedOffset) == 0) {
-        setAttrValue("planted_offset", attr_plantedOffset);
-    }
-
-    Element attr_propel;
-    if (ent->copyAttr("propel", attr_propel) == 0) {
-        setAttrValue("propel", attr_propel);
-    }
-
-    double current_time = BaseWorld::instance().getTime();
-
-    //We can only move if there's a domain
-    Domain* domain = nullptr;
-    if (m_location.m_parent) {
-        domain = m_location.m_parent->getDomain();
-    }
-
-    //Send a Sight of the Move to any current observers. Do this before we might alter location.
-    Operation m = op.copy();
-    RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
-    assert(marg.isValid());
-//        m_location.addToEntity(marg);
-//        {
-//            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
-//            if (modeDataProp) {
-//                if (modeDataProp->hasFlags(prop_flag_unsent)) {
-//                    Element modeDataElem;
-//                    if (modeDataProp->get(modeDataElem) == 0) {
-//                        marg->setAttrValue(ModeDataProperty::property_name, modeDataElem);
-//                    }
-//                }
-//            }
-//        }
-
-    if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
-        m->setSeconds(current_time);
-    }
-
-    Sight s;
-    s->setArgs1(m);
-    broadcast(s, res, Visibility::PUBLIC);
-
-
-    WFMath::Vector<3> newImpulseVelocity;
-    WFMath::Point<3> newPos;
-    WFMath::Quaternion newOrientation;
-
-    bool updatedTransform = false;
-    //It only makes sense to set positional attributes if there's a domain, or we're moving to a new location
-    if (domain || new_loc) {
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-            // Update pos
-            if (fromStdVector(newPos, ent->getPos()) == 0) {
-                updatedTransform = true;
-            }
-        }
-        Element attr_orientation;
-        if (ent->copyAttr("orientation", attr_orientation) == 0) {
-            // Update orientation
-            newOrientation.fromAtlas(attr_orientation.asList());
-            updatedTransform = true;
-        }
-
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
-            // Update impact velocity
-            if (fromStdVector(newImpulseVelocity, ent->getVelocity()) == 0) {
-                if (newImpulseVelocity.isValid()) {
-                    updatedTransform = true;
-                }
-            }
-        }
-    }
-
-    std::set<LocatedEntity*> transformedEntities;
-
-
-    // Check if the location has changed
-    if (new_loc) {
-        moveToNewLocation(new_loc, res, domain, newPos, newOrientation, newImpulseVelocity);
+    if (getId() == ent->getId()) {
+        moveOurselves(op, ent, res);
     } else {
-        if (updatedTransform && domain) {
-
-            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
-            LocatedEntity* plantedOnEntity = nullptr;
-
-            if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
-                auto& plantedOnData = modeDataProp->getPlantedOnData();
-                if (plantedOnData.entityId) {
-                    auto entityRef = BaseWorld::instance().getEntity(*plantedOnData.entityId);
-                    if (entityRef) {
-                        plantedOnEntity = entityRef.get();
-                    }
-                }
-            }
-
-            Domain::TransformData transformData{newOrientation, newPos, plantedOnEntity, newImpulseVelocity};
-            domain->applyTransform(*this, transformData, transformedEntities);
-        }
+        moveOtherEntity(op, ent, res);
     }
 
 
-    m_location.update(current_time);
-    removeFlags(entity_clean);
+//    if (getId() != ent->getId()) {
+//        error(op, "Move op does not have correct id in argument", res, getId());
+//        return;
+//    }
 
-    // At this point the Location data for this entity has been updated.
-
-    //Check if there are any other transformed entities, and send move ops for those.
-    if (transformedEntities.size() > 1) {
-        for (auto& transformedEntity : transformedEntities) {
-            if (transformedEntity != this) {
-
-                Atlas::Objects::Entity::Anonymous setArgs;
-                setArgs->setId(transformedEntity->getId());
-                transformedEntity->m_location.addToEntity(setArgs);
-
-                auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
-                if (modeDataProp) {
-                    if (modeDataProp->hasFlags(prop_flag_unsent)) {
-                        Element modeDataElem;
-                        if (modeDataProp->get(modeDataElem) == 0) {
-                            setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
-                        }
-                    }
-                }
-
-                Set setOp;
-                setOp->setArgs1(setArgs);
-
-                Sight sight;
-                sight->setArgs1(setOp);
-                transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
-
-            }
-        }
-    }
-
-
-    m_seq++;
-
-    onUpdated();
 }
 
 void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
@@ -719,4 +534,219 @@ void Thing::TalkOperation(const Operation& op, OpVector& res)
 void Thing::CreateOperation(const Operation& op, OpVector& res)
 {
     createNewEntity(op, res);
+}
+
+void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& res)
+{
+
+    Ref<LocatedEntity> new_loc = nullptr;
+    if (!ent->isDefaultLoc()) {
+        const std::string& new_loc_id = ent->getLoc();
+        if (new_loc_id != m_location.m_parent->getId()) {
+            // If the LOC has not changed, we don't need to look it up, or do
+            // any of the following checks.
+            new_loc = BaseWorld::instance().getEntity(new_loc_id);
+            if (new_loc == nullptr) {
+                error(op, "Move op loc does not exist", res, getId());
+                return;
+            }
+            debug_print("LOC: " << new_loc_id)
+            auto test_loc = new_loc;
+            for (; test_loc != nullptr; test_loc = test_loc->m_location.m_parent) {
+                if (test_loc == this) {
+                    error(op, "Attempt to move into itself", res, getId());
+                    return;
+                }
+            }
+            assert(new_loc != nullptr);
+            assert(m_location.m_parent != new_loc);
+        }
+
+    }
+
+
+    // Up until this point nothing should have changed, but the changes
+    // have all now been checked for validity.
+
+    // Move ops often include a mode change, so we handle it here, even
+    // though it is not a special attribute for efficiency. Otherwise
+    // an additional Set op would be required.
+    Element attr_mode;
+    if (ent->copyAttr("mode", attr_mode) == 0) {
+        if (!attr_mode.isString()) {
+            log(ERROR, "Non string 'mode' set in Thing::MoveOperation");
+        } else {
+            // Update the mode
+            setAttrValue("mode", attr_mode);
+        }
+    }
+
+    //If a Move op contains a mode_data prop it should be used.
+    //It's expected that only admins should ever send a "mode_data" as Move ops (to build the world).
+    //In all other cases we want to let regular Domain rules apply
+    Element attr_modeData;
+    if (ent->copyAttr("mode_data", attr_modeData) == 0) {
+        setAttrValue("mode_data", attr_modeData);
+    }
+
+    //Move ops can also alter the "planted_offset" property
+    Element attr_plantedOffset;
+    if (ent->copyAttr("planted_offset", attr_plantedOffset) == 0) {
+        setAttrValue("planted_offset", attr_plantedOffset);
+    }
+
+    Element attr_propel;
+    if (ent->copyAttr("propel", attr_propel) == 0) {
+        setAttrValue("propel", attr_propel);
+    }
+
+    double current_time = BaseWorld::instance().getTime();
+
+    //We can only move if there's a domain
+    Domain* domain = nullptr;
+    if (m_location.m_parent) {
+        domain = m_location.m_parent->getDomain();
+    }
+
+    //Send a Sight of the Move to any current observers. Do this before we might alter location.
+    Operation m = op.copy();
+    RootEntity marg = smart_dynamic_cast<RootEntity>(m->getArgs().front());
+    assert(marg.isValid());
+//        m_location.addToEntity(marg);
+//        {
+//            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+//            if (modeDataProp) {
+//                if (modeDataProp->hasFlags(prop_flag_unsent)) {
+//                    Element modeDataElem;
+//                    if (modeDataProp->get(modeDataElem) == 0) {
+//                        marg->setAttrValue(ModeDataProperty::property_name, modeDataElem);
+//                    }
+//                }
+//            }
+//        }
+
+    if (!m->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+        m->setSeconds(current_time);
+    }
+
+    Sight s;
+    s->setArgs1(m);
+    broadcast(s, res, Visibility::PUBLIC);
+
+
+    WFMath::Vector<3> newImpulseVelocity;
+    WFMath::Point<3> newPos;
+    WFMath::Quaternion newOrientation;
+
+    bool updatedTransform = false;
+    //It only makes sense to set positional attributes if there's a domain, or we're moving to a new location
+    if (domain || new_loc) {
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
+            // Update pos
+            if (fromStdVector(newPos, ent->getPos()) == 0) {
+                updatedTransform = true;
+            }
+        }
+        Element attr_orientation;
+        if (ent->copyAttr("orientation", attr_orientation) == 0) {
+            // Update orientation
+            newOrientation.fromAtlas(attr_orientation.asList());
+            updatedTransform = true;
+        }
+
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)) {
+            // Update impact velocity
+            if (fromStdVector(newImpulseVelocity, ent->getVelocity()) == 0) {
+                if (newImpulseVelocity.isValid()) {
+                    updatedTransform = true;
+                }
+            }
+        }
+    }
+
+    std::set<LocatedEntity*> transformedEntities;
+
+
+    // Check if the location has changed
+    if (new_loc) {
+        moveToNewLocation(new_loc, res, domain, newPos, newOrientation, newImpulseVelocity);
+    } else {
+        if (updatedTransform && domain) {
+
+            auto modeDataProp = getPropertyClassFixed<ModeDataProperty>();
+            LocatedEntity* plantedOnEntity = nullptr;
+
+            if (modeDataProp && modeDataProp->getMode() == ModeProperty::Mode::Planted) {
+                auto& plantedOnData = modeDataProp->getPlantedOnData();
+                if (plantedOnData.entityId) {
+                    auto entityRef = BaseWorld::instance().getEntity(*plantedOnData.entityId);
+                    if (entityRef) {
+                        plantedOnEntity = entityRef.get();
+                    }
+                }
+            }
+
+            Domain::TransformData transformData{newOrientation, newPos, plantedOnEntity, newImpulseVelocity};
+            domain->applyTransform(*this, transformData, transformedEntities);
+        }
+    }
+
+
+    m_location.update(current_time);
+    removeFlags(entity_clean);
+
+    // At this point the Location data for this entity has been updated.
+
+    //Check if there are any other transformed entities, and send move ops for those.
+    if (transformedEntities.size() > 1) {
+        for (auto& transformedEntity : transformedEntities) {
+            if (transformedEntity != this) {
+
+                Atlas::Objects::Entity::Anonymous setArgs;
+                setArgs->setId(transformedEntity->getId());
+                transformedEntity->m_location.addToEntity(setArgs);
+
+                auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
+                if (modeDataProp) {
+                    if (modeDataProp->hasFlags(prop_flag_unsent)) {
+                        Element modeDataElem;
+                        if (modeDataProp->get(modeDataElem) == 0) {
+                            setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
+                        }
+                    }
+                }
+
+                Set setOp;
+                setOp->setArgs1(setArgs);
+
+                Sight sight;
+                sight->setArgs1(setOp);
+                transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
+
+            }
+        }
+    }
+
+
+    m_seq++;
+
+    onUpdated();
+}
+
+
+void Thing::moveOtherEntity(const Operation& op, const RootEntity& ent, OpVector& res)
+{
+    auto otherEntity = BaseWorld::instance().getEntity(ent->getId());
+    if (otherEntity) {
+        //Only allow movement if the entity is being moved either into or out of us.
+        if (ent->isDefaultLoc()) {
+            //The entity is being moved within this entity.
+            if (m_contains && m_contains->find(otherEntity) != m_contains->end()) {
+                otherEntity->operation(op, res);
+            } else {
+                log(WARNING, String::compose("Entity %1 being asked to move entity %2 which is not contained by the first.", describeEntity(), otherEntity->describeEntity()));
+            }
+        }
+    }
+
 }

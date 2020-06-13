@@ -26,6 +26,7 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
+#include <wfmath/atlasconv.h>
 #include <rules/simulation/CorePropertyManager.h>
 
 #include <memory>
@@ -34,6 +35,7 @@
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;
+using Atlas::Objects::Operation::Move;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -64,6 +66,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 {
     Tested()
     {
+        ADD_TEST(test_move_entity);
         ADD_TEST(test_delete_entity);
         ADD_TEST(test_modifyWithAttachConstraints);
         ADD_TEST(test_setModify);
@@ -80,6 +83,146 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         set->setArgs1(arg1);
 
         entity->operation(set, resIgnored);
+    }
+
+    void test_move_entity(TestContext& context)
+    {
+        /**
+         * Move within one domain
+         *
+         * All entities are placed at origo originally.
+         * Hierarchy looks like this:
+         * T1 has a physical domain
+         *
+         *              T1#
+         *          T2       T3
+         *
+         */
+        {
+            Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-512, -10, -512},
+                                    {512,  10,  512}});
+            t1->setAttrValue("domain", "physical");
+            context.testWorld.addEntity(t1, context.world);
+            Ref<Thing> t2 = new Thing(2);
+            t2->m_location.m_pos = {0, 0, 0};
+            t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t2->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t2, t1);
+            Ref<Thing> t3 = new Thing(3);
+            t3->m_location.m_pos = {0, 0, 0};
+            t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t3->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t3, t1);
+
+            //Moving t2 directly should succeed.
+            OpVector res;
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setPosAsList({10, 0, 10});
+                move->setArgs1(ent);
+                t2->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t2->m_location.m_pos, WFMath::Point<3>(10, 0, 10));
+
+            //Moving t2 through t1 succeed.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setPosAsList({20, 0, 20});
+                ent->setAttr("orientation", WFMath::Quaternion(1, WFMath::numeric_constants<double>::pi() / 2.0).toAtlas());
+                move->setArgs1(ent);
+                t1->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t2->m_location.m_pos, WFMath::Point<3>(20, 0, 20))
+            ASSERT_EQUAL(t2->m_location.m_orientation, WFMath::Quaternion(1, WFMath::numeric_constants<double>::pi() / 2.0))
+
+            //Moving t2 through t3 should fail.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setPosAsList({30, 0, 30});
+                move->setArgs1(ent);
+                t3->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t2->m_location.m_pos, WFMath::Point<3>(20, 0, 20))
+
+            //Moving t2 directly to t3 should succeed.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setLoc(t3->getId());
+                move->setArgs1(ent);
+                t2->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t2->m_location.m_parent.get(), t3.get())
+
+            //Moving t2 directly to t1 should fail without pos and orientation.
+            {
+                Move move;
+                Anonymous ent;
+                ent->setId(t2->getId());
+                ent->setLoc(t1->getId());
+                move->setArgs1(ent);
+                t2->MoveOperation(move, res);
+            }
+            ASSERT_EQUAL(t2->m_location.m_parent.get(), t3.get())
+
+        }
+
+         /**
+           * Move from one domain to another.
+           *
+           * All entities are placed at origo originally.
+           * Hierarchy looks like this:
+           * T1 has a physical domain
+           *
+           *              T1#
+           *          T2*      T3*
+           *          T4       T5
+           */
+        {
+            Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-512, -10, -512},
+                                    {512,  10,  512}});
+            t1->setAttrValue("domain", "physical");
+            context.testWorld.addEntity(t1, context.world);
+            Ref<Thing> t2 = new Thing(2);
+            t2->m_location.m_pos = {0, 0, 0};
+            t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t2->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            t2->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t2, t1);
+            Ref<Thing> t3 = new Thing(3);
+            t3->m_location.m_pos = {0, 0, 0};
+            t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+            t3->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            t3->setAttrValue("domain", "container");
+            context.testWorld.addEntity(t3, t1);
+
+            Ref<Thing> t4 = new Thing(4);
+            t4->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t4, t2);
+
+            Ref<Thing> t5 = new Thing(5);
+            t5->m_location.setBBox({{-1, 0, -1},
+                                    {1,  1, 1}});
+            context.testWorld.addEntity(t5, t3);
+
+
+        }
+
+
     }
 
 
