@@ -340,9 +340,18 @@ void Entity::operation(const Operation& op, OpVector& res)
         return;
     }
 
-    //TODO: decide on whether we should honour result here?
     for (auto& listener : m_listeners) {
-        listener->operation(this, op, res);
+        HandlerResult hr_call = listener->operation(this, op, res);
+        //We'll record the most blocking of the different results only.
+        if (hr != OPERATION_BLOCKED) {
+            if (hr_call != OPERATION_IGNORED) {
+                hr = hr_call;
+            }
+        }
+    }
+    //If the operation was blocked we shouldn't send it on to the entity.
+    if (hr == OPERATION_BLOCKED) {
+        return;
     }
     return callOperation(op, res);
 }
