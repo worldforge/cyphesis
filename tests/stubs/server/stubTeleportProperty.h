@@ -9,7 +9,7 @@
 
 #ifndef STUB_TeleportProperty_install
 //#define STUB_TeleportProperty_install
-  void TeleportProperty::install(LocatedEntity *, const std::string &)
+  void TeleportProperty::install(LocatedEntity*, const std::string&)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_TeleportProperty_operation
 //#define STUB_TeleportProperty_operation
-  HandlerResult TeleportProperty::operation(LocatedEntity *, const Operation &, OpVector &)
+  HandlerResult TeleportProperty::operation(LocatedEntity*, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -25,11 +25,19 @@
 
 #ifndef STUB_TeleportProperty_teleport_handler
 //#define STUB_TeleportProperty_teleport_handler
-  HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e, const Operation & op, OpVector & res)
+  HandlerResult TeleportProperty::teleport_handler(LocatedEntity* e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_TeleportProperty_teleport_handler
+
+#ifndef STUB_TeleportProperty_copy
+//#define STUB_TeleportProperty_copy
+  TeleportProperty* TeleportProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_TeleportProperty_copy
 
 
 #endif

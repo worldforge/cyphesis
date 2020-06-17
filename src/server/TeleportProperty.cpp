@@ -32,34 +32,34 @@
 static const bool debug_flag = false;
 ServerRouting* TeleportProperty::s_serverRouting = nullptr;
 
-void TeleportProperty::install(LocatedEntity * owner, const std::string & name)
+void TeleportProperty::install(LocatedEntity* owner, const std::string& name)
 {
     owner->installDelegate(Atlas::Objects::Operation::TELEPORT_NO, name);
 }
 
-HandlerResult TeleportProperty::operation(LocatedEntity * ent,
-                                          const Operation & op,
-                                          OpVector & res)
+HandlerResult TeleportProperty::operation(LocatedEntity* ent,
+                                          const Operation& op,
+                                          OpVector& res)
 {
     return TeleportProperty::teleport_handler(ent, op, res);
 }
 
-HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
-                                                 const Operation & op,
-                                                 OpVector & res)
+HandlerResult TeleportProperty::teleport_handler(LocatedEntity* e,
+                                                 const Operation& op,
+                                                 OpVector& res)
 {
     auto* svr = s_serverRouting;
-    if(svr == nullptr) {
+    if (svr == nullptr) {
         log(ERROR, "Unable to access ServerRouting object");
         return OPERATION_IGNORED;
     }
-    Router * obj = svr->getObject(data());
-    if(obj == nullptr) {
+    Router* obj = svr->getObject(data());
+    if (obj == nullptr) {
         log(ERROR, "Unknown peer ID specified");
         return OPERATION_IGNORED;
     }
-    auto* link = dynamic_cast<Juncture *>(obj);
-    if(link == nullptr) {
+    auto* link = dynamic_cast<Juncture*>(obj);
+    if (link == nullptr) {
         log(ERROR, "Non Peer ID specified");
         return OPERATION_IGNORED;
     }
@@ -67,7 +67,7 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
     // Get the ID of the sender
     if (op->isDefaultFrom()) {
         debug_print("ERROR: Operation with no entity to be teleported"
-                       )
+        )
         return OPERATION_IGNORED;
     }
     log(INFO, String::compose("Teleport request sender has ID %1",
@@ -85,3 +85,9 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity * e,
     link->teleportEntity(entity.get());
     return OPERATION_IGNORED;
 }
+
+TeleportProperty* TeleportProperty::copy() const
+{
+    return new TeleportProperty(*this);
+}
+

@@ -33,7 +33,6 @@ class BaseWorld;
 class Lobby;
 
 typedef std::map<long, std::unique_ptr<ConnectableRouter>> ConnectableRouterMap;
-typedef std::map<std::string, Account*> AccountDict;
 
 extern bool restricted_flag;
 
@@ -52,7 +51,7 @@ class ServerRouting : public Router
         ConnectableRouterMap m_objects;
         /// A mapping of ID to object of all the accounts in the server.
         /// All of the accounts are aliases for ConnectableRouter base instances that exists in m_objects.
-        AccountDict m_accounts;
+        std::map<std::string, Account*> m_accounts;
         /// The text name of the ruleset this server is running.
         const std::string m_svrRuleset;
         /// The name of this server.
@@ -117,7 +116,7 @@ class ServerRouting : public Router
             return m_objects;
         }
 
-        const AccountDict& getAccounts() const
+        const std::map<std::string, Account*>& getAccounts() const
         {
             return m_accounts;
         }

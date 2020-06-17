@@ -16,19 +16,23 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "ServerPropertyManager.h"
-#include "TeleportProperty.h"
-#include "MindProperty.h"
-#include "common/PropertyFactory_impl.h"
 #include "AccountProperty.h"
+#include "ServerRouting.h"
+#include "Account.h"
+#include "rules/LocatedEntity.h"
 
-ServerPropertyManager::ServerPropertyManager(Inheritance& inheritance)
-: CorePropertyManager(inheritance)
+ServerRouting* AccountProperty::s_serverRouting;
+
+void AccountProperty::install(LocatedEntity* entity, const std::string&)
 {
-    installProperty<TeleportProperty>("linked");
-    installProperty<MindProperty>();
-    installProperty<AccountProperty>();
-
+    auto account = s_serverRouting->getAccountByName(m_data);
+    if (account) {
+        account->addCharacter(entity);
+    }
 }
 
-ServerPropertyManager::~ServerPropertyManager() = default;
+
+AccountProperty* AccountProperty::copy() const
+{
+    return new AccountProperty(*this);
+}

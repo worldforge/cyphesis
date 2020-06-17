@@ -300,17 +300,9 @@ template
 class PropertyFactory<MinimalProperty>;
 
 
-void TeleportProperty::install(LocatedEntity* owner, const std::string& name)
-{
-}
 
-HandlerResult TeleportProperty::operation(LocatedEntity* ent,
-                                          const Operation& op,
-                                          OpVector& res)
-{
-    return OPERATION_IGNORED;
-}
 
+#include "../stubs/server/stubTeleportProperty.h"
 #include "../stubs/rules/simulation/stubLineProperty.h"
 #include "../stubs/rules/simulation/stubMindProperty.h"
 #include "../stubs/rules/simulation/stubAttachmentsProperty.h"

@@ -33,6 +33,7 @@
 #include "common/debug.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "AccountProperty.h"
 
 #include <wfmath/atlasconv.h>
 
@@ -42,6 +43,7 @@
 #include <sigc++/adaptors/bind.h>
 #include <rules/simulation/MindsProperty.h>
 #include <common/operations/Update.h>
+#include <common/Property.h>
 
 
 using Atlas::Message::Element;
@@ -209,13 +211,12 @@ Ref<LocatedEntity> Account::addNewCharacter(const RootEntity& ent,
     }
     //Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
     ent->setAttr("mind", Atlas::Message::Element());
+    ent->setAttr(AccountProperty::property_name, username());
     debug_print("Account::Add_character")
     auto chr = createCharacterEntity(ent, arg);
     if (!chr) {
         return nullptr;
     }
-
-    addCharacter(chr);
 
     // Inform the client of the newly created character
     Sight sight;

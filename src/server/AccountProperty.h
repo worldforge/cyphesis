@@ -16,19 +16,26 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "ServerPropertyManager.h"
-#include "TeleportProperty.h"
-#include "MindProperty.h"
-#include "common/PropertyFactory_impl.h"
-#include "AccountProperty.h"
+#ifndef CYPHESIS_ACCOUNTPROPERTY_H
+#define CYPHESIS_ACCOUNTPROPERTY_H
 
-ServerPropertyManager::ServerPropertyManager(Inheritance& inheritance)
-: CorePropertyManager(inheritance)
+#include "common/Property.h"
+
+class ServerRouting;
+
+class AccountProperty: public Property<std::string>
 {
-    installProperty<TeleportProperty>("linked");
-    installProperty<MindProperty>();
-    installProperty<AccountProperty>();
+    public:
 
-}
+        static constexpr const char* property_name = "__account";
 
-ServerPropertyManager::~ServerPropertyManager() = default;
+        void install(LocatedEntity *, const std::string &) override;
+
+        AccountProperty* copy() const override;
+
+        static ServerRouting* s_serverRouting;
+
+};
+
+
+#endif //CYPHESIS_ACCOUNTPROPERTY_H

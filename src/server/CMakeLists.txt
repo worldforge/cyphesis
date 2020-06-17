@@ -48,6 +48,7 @@ set(server_files
         MindProperty.cpp
         TypeUpdateCoordinator.cpp
         ScriptReloader.cpp
+        AccountProperty.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
 add_library(server

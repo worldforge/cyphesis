@@ -62,6 +62,7 @@
 #include "TypeUpdateCoordinator.h"
 #include "TeleportProperty.h"
 #include "ScriptReloader.h"
+#include "AccountProperty.h"
 
 #include <varconf/config.h>
 
@@ -482,6 +483,7 @@ namespace {
 
             //Need to register the server routing instance with the Teleport property.
             TeleportProperty::s_serverRouting = &serverRouting;
+            AccountProperty::s_serverRouting = &serverRouting;
 
             TypeUpdateCoordinator typeUpdateCoordinator(inheritance, world, serverRouting);
 

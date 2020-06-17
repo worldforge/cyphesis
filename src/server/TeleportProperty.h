@@ -20,22 +20,26 @@
 #define SERVER_TELEPORT_PROPERTY_H
 
 #include "common/Property.h"
+
 class ServerRouting;
 
 class TeleportProperty : public Property<std::string>
 {
-  public:
-    void install(LocatedEntity *, const std::string &) override;
+    public:
+        void install(LocatedEntity*, const std::string&) override;
 
-    HandlerResult operation(LocatedEntity *,
-                                    const Operation &,
-                                    OpVector &) override;
+        HandlerResult operation(LocatedEntity*,
+                                const Operation&,
+                                OpVector&) override;
 
-    HandlerResult teleport_handler(LocatedEntity * e,
-                                   const Operation & op,
-                                   OpVector & res);
+        HandlerResult teleport_handler(LocatedEntity* e,
+                                       const Operation& op,
+                                       OpVector& res);
 
-    static ServerRouting* s_serverRouting;
+        static ServerRouting* s_serverRouting;
+
+        TeleportProperty* copy() const override;
+
 };
 
 #endif // SERVER_TELEPORT_PROPERTY_H
