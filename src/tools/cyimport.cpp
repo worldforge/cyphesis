@@ -112,10 +112,11 @@ int main(int argc, char** argv)
             return -1;
         }
         auto loginInfo = bridge.getInfoReply();
-        const std::string accountId = loginInfo->getId();
+        std::string accountId = loginInfo->getId();
+        auto accountName = loginInfo->getName();
 
         log(NOTICE, "Attempting creation of agent");
-        auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, "creator");
+        auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, accountName, "creator");
         bridge.runTask(agentCreationTask, "");
         if (bridge.pollUntilTaskComplete() != 0) {
             log(ERROR, "Could not create agent.");
@@ -139,29 +140,29 @@ int main(int argc, char** argv)
 
         if (clear && merge) {
             std::cerr
-                << "'--clear' and '--merge' are mutually exclusive; you can't specify both."
-                << std::endl << std::flush;
+                    << "'--clear' and '--merge' are mutually exclusive; you can't specify both."
+                    << std::endl << std::flush;
             return -1;
         }
 
         if (!clear && !merge) {
             bool isPopulated = false;
             std::function<bool(const RootEntity&)> visitor =
-                [&](const RootEntity& entity) -> bool {
-                    if (entity->getId() != "0" && entity->getId() != agent_id && !entity->hasAttr("transient")) {
-                        isPopulated = true;
-                        return false;
-                    }
-                    return true;
-                };
+                    [&](const RootEntity& entity) -> bool {
+                        if (entity->getId() != "0" && entity->getId() != agent_id && !entity->hasAttr("transient")) {
+                            isPopulated = true;
+                            return false;
+                        }
+                        return true;
+                    };
 
             log(NOTICE, "Checking if world already is populated.");
             auto populationCheck = std::make_shared<EntityTraversalTask>(accountId, visitor);
             bridge.runTask(populationCheck, "0");
             if (bridge.pollUntilTaskComplete() != 0) {
                 std::cerr
-                    << "Error when checking if the server already is populated."
-                    << std::endl << std::flush;
+                        << "Error when checking if the server already is populated."
+                        << std::endl << std::flush;
                 return -1;
             }
 
@@ -204,7 +205,7 @@ int main(int argc, char** argv)
 
             //Once the world has been cleared we need to create a new agent,
             //since the first one got deleted
-            agentCreationTask = std::make_shared<AgentCreationTask>(accountId, "creator");
+            agentCreationTask = std::make_shared<AgentCreationTask>(accountId, accountName, "creator");
             bridge.runTask(agentCreationTask, "");
             if (bridge.pollUntilTaskComplete() != 0) {
                 std::cerr << "Could not create agent." << std::endl

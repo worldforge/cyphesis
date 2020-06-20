@@ -32,6 +32,7 @@
 #include <boost/noncopyable.hpp>
 
 #include <chrono>
+#include <set>
 
 class LocatedEntity;
 
@@ -166,6 +167,12 @@ class BaseWorld : public Singleton<BaseWorld>
         virtual int removeSpawnPoint(LocatedEntity* ent) = 0;
 
         virtual int getSpawnList(Atlas::Message::ListType& data) = 0;
+
+        virtual const std::set<std::string>& getSpawnEntities() const = 0;
+
+        virtual void registerSpawner(const std::string& id) = 0;
+
+        virtual void unregisterSpawner(const std::string& id) = 0;
 
         virtual Ref<LocatedEntity> spawnNewEntity(
             const std::string& name,

@@ -31,10 +31,10 @@ SpawnProperty * SpawnProperty::copy() const
 
 void SpawnProperty::apply(LocatedEntity * ent)
 {
-    BaseWorld::instance().createSpawnPoint(m_data, ent);
+    BaseWorld::instance().registerSpawner(ent->getId());
 }
 
 void SpawnProperty::remove(LocatedEntity * ent, const std::string&)
 {
-    BaseWorld::instance().removeSpawnPoint(ent);
+    BaseWorld::instance().unregisterSpawner(ent->getId());
 }

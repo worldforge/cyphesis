@@ -26,7 +26,7 @@
 /// \ingroup PropertyClasses
 class SpawnProperty : public Property<Atlas::Message::MapType> {
   public:
-    static constexpr const char* property_name = "spawn";
+    static constexpr const char* property_name = "__spawn";
 
     SpawnProperty() = default;
 

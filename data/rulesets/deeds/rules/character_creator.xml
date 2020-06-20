@@ -1,0 +1,67 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="solid">
+                <int name="default">0</int>
+            </map>
+            <map name="mode">
+                <string name="default">planted</string>
+            </map>
+            <map name="visibility">
+                <string name="default">private</string>
+            </map>
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">3</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawn">
+                <map name="default">
+                    <string name="name">Entry to the island</string>
+                    <list name="properties">
+                        <map>
+                            <string name="name">parent</string>
+                            <string name="type">string</string>
+                            <list name="options">
+                                <string>settler</string>
+                                <string>human</string>
+                            </list>
+                        </map>
+                        <map>
+                            <string name="name">name</string>
+                            <string name="type">string</string>
+                        </map>
+                        <map>
+                            <string name="name">sex</string>
+                            <string name="type">string</string>
+                            <string name="description">The sex of the character.</string>
+                            <list name="options">
+                                <string>male</string>
+                                <string>female</string>
+                            </list>
+                        </map>
+                    </list>
+                </map>
+            </map>
+            <map name="__scripts">
+                <list name="default">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.CharacterCreator.CharacterCreator</string>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">character_creator</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+</atlas>

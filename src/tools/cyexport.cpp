@@ -28,20 +28,20 @@
 
 #include <varconf/config.h>
 
-static void usage(char * prg)
+static void usage(char* prg)
 {
     std::cerr << "usage: " << prg << " [options] filepath" << std::endl
-            << std::flush;
+              << std::flush;
 }
 
 BOOL_OPTION(transients, false, "export", "transients",
-        "Flag to control if transients should also be exported");
+            "Flag to control if transients should also be exported");
 BOOL_OPTION(rules, false, "export", "rules",
-        "Flag to control if rules should also be exported");
+            "Flag to control if rules should also be exported");
 BOOL_OPTION(minds, true, "export", "minds",
-        "Flag to control if minds should also be exported");
+            "Flag to control if minds should also be exported");
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
     setLoggingPrefix("EXPORT");
 
@@ -89,17 +89,18 @@ int main(int argc, char ** argv)
     std::cout << "Attempting local connection" << std::endl;
     if (bridge.connectLocal(localSocket) == 0) {
         if (bridge.create("sys", create_session_username(),
-                String::compose("%1%2", ::rand(), ::rand())) != 0) {
+                          String::compose("%1%2", ::rand(), ::rand())) != 0) {
             std::cerr << "Could not create sys account." << std::endl
-                    << std::flush;
+                      << std::flush;
             return -1;
         }
         std::cout << " done." << std::endl << std::flush;
         auto loginInfo = bridge.getInfoReply();
-        const std::string accountId = loginInfo->getId();
+        auto accountId = loginInfo->getId();
+        auto accountName = loginInfo->getName();
 
         std::cout << "Attempting creation of agent" << std::flush;
-        auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, "creator");
+        auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, accountName, "creator");
         bridge.runTask(agentCreationTask, "");
         if (bridge.pollUntilTaskComplete() != 0) {
             std::cerr << "Could not create agent." << std::endl << std::flush;

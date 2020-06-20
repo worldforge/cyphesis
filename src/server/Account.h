@@ -81,7 +81,7 @@ class Account : public ConnectableRouter {
     virtual Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity &,
                                     const Atlas::Objects::Root &);
 
-    void processExternalOperation(const Operation & op, OpVector& res);
+    virtual void processExternalOperation(const Operation & op, OpVector& res);
 
     virtual ExternalMind* createMind(const Ref<LocatedEntity>& entity) const;
 
@@ -129,6 +129,7 @@ class Account : public ConnectableRouter {
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
     virtual void PossessOperation(const Operation &, OpVector &);
+    virtual void SpawnOperation(const Operation &, OpVector &);
 
     void addCharacter(const Ref<LocatedEntity>&);
 

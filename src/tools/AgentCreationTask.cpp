@@ -16,9 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#endif
-
 #include "AgentCreationTask.h"
 
 #include "common/serialno.h"
@@ -28,15 +25,16 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
 
-#include <iostream>
-
 #include <common/operations/Possess.h>
 
 AgentCreationTask::AgentCreationTask(std::string account_id,
+                                     std::string account_name,
                                      std::string agent_type) :
-    m_account_id(std::move(account_id)),
-    m_agent_type(std::move(agent_type)),
-    m_serial_no(0)
+        m_account_name(std::move(account_name)),
+        m_account_id(std::move(account_id)),
+        m_agent_type(std::move(agent_type)),
+        m_serial_no(0),
+        m_state(State::CREATING_CHARACTER)
 {
 }
 
@@ -48,13 +46,15 @@ void AgentCreationTask::setup(const std::string& arg, OpVector& res)
 
     Atlas::Objects::Entity::Anonymous cmap;
     cmap->setParent("creator");
-    cmap->setName("cyexport agent");
+    cmap->setName("cyphesis agent");
     cmap->setObjtype("obj");
-    cmap->setAttr("possess", 1);
+    cmap->setAttr("__account", *m_account_name);
+//    cmap->setAttr("possess", 1);
     c->setArgs1(cmap);
     m_serial_no = newSerialNo();
     c->setSerialno(m_serial_no);
     c->setFrom(m_account_id);
+    c->setTo("0");
     res.push_back(c);
 
 }
@@ -64,28 +64,47 @@ void AgentCreationTask::operation(const Operation& op, OpVector& res)
     if (op->getClassNo() == Atlas::Objects::Operation::ERROR_NO) {
         log(ERROR,
             String::compose(
-                "Got error when creating agent. Message: %1",
-                op->getArgs().front()->getAttr("message").asString()));
+                    "Got error when creating agent. Message: %1",
+                    op->getArgs().front()->getAttr("message").asString()));
     } else if (!op->isDefaultRefno() && op->getRefno() == m_serial_no) {
-        if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+        if (m_state == State::CREATING_CHARACTER) {
             if (!op->getArgs().empty()) {
                 auto arg = op->getArgs().front();
-                m_mind_id = arg->getId();
+                if (!arg->isDefaultId()) {
 
-                Atlas::Message::Element element;
-                if (arg->copyAttr("entity", element) == 0 && element.isMap()) {
-                    auto idElement = element.Map().find("id");
-                    if (idElement != element.Map().end() && idElement->second.isString()) {
-                        m_agent_id = idElement->second.String();
-                    }
+                    Atlas::Objects::Operation::Possess p;
+
+                    Atlas::Objects::Entity::Anonymous cmap;
+                    cmap->setId(arg->getId());
+                    p->setArgs1(cmap);
+                    m_serial_no = newSerialNo();
+                    p->setSerialno(m_serial_no);
+                    p->setFrom(m_account_id);
+                    p->setTo(m_account_id);
+                    res.push_back(p);
+                    m_state = State::POSSESSING_CHARACTER;
                 }
-            } else {
-                log(ERROR, "No id received in response to creation.");
             }
-            m_complete = true;
+        } else {
+            if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+                if (!op->getArgs().empty()) {
+                    auto arg = op->getArgs().front();
+                    m_mind_id = arg->getId();
 
+                    Atlas::Message::Element element;
+                    if (arg->copyAttr("entity", element) == 0 && element.isMap()) {
+                        auto idElement = element.Map().find("id");
+                        if (idElement != element.Map().end() && idElement->second.isString()) {
+                            m_agent_id = idElement->second.String();
+                        }
+                    }
+                } else {
+                    log(ERROR, "No id received in response to creation.");
+                }
+                m_complete = true;
+
+            }
         }
-
     }
 }
 

@@ -53,6 +53,8 @@ class WorldRouter : public BaseWorld
         /// Map of spawns
         SpawnDict m_spawns;
 
+        std::set<std::string> m_spawnEntities;
+
         /// \brief The top level in-game entity in the world.
         Ref<LocatedEntity> m_baseEntity;
         EntityCreator& m_entityCreator;
@@ -90,6 +92,13 @@ class WorldRouter : public BaseWorld
         int removeSpawnPoint(LocatedEntity* ent) override;
 
         int getSpawnList(Atlas::Message::ListType& data) override;
+
+        const std::set<std::string>& getSpawnEntities() const override;
+
+        void registerSpawner(const std::string& id) override;
+
+        void unregisterSpawner(const std::string& id) override;
+
 
         Ref<LocatedEntity> spawnNewEntity(const std::string&,
                                           const std::string&,

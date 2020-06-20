@@ -27,19 +27,18 @@ static const bool debug_flag = false;
 
 using Atlas::Objects::Operation::RootOperation;
 
-AvatarContext::AvatarContext(Interactive & i, const std::string & id) :
-      IdContext(i, id)
+AvatarContext::AvatarContext(Interactive& i, const std::string& id) :
+        IdContext(i, id)
 {
 }
 
 bool AvatarContext::accept(const RootOperation& op) const
 {
-    debug_print("Checking avatar context to see if it matches"
-             )
+    debug_print("Checking avatar context to see if it matches")
     return m_refNo != 0L && !op->isDefaultRefno() && op->getRefno() == m_refNo;
 }
 
-int AvatarContext::dispatch(const RootOperation & op)
+int AvatarContext::dispatch(const RootOperation& op)
 {
     if (op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
         std::cout << "Sight(" << std::endl;
@@ -57,7 +56,7 @@ std::string AvatarContext::repr() const
     return "avatar";
 }
 
-bool AvatarContext::checkContextCommand(const struct command *)
+bool AvatarContext::checkContextCommand(const struct command*)
 {
     return false;
 }

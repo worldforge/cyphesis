@@ -16,19 +16,24 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
+#include <Atlas/Objects/Operation.h>
 #include "server/SystemAccount.h"
+#include "Connection.h"
+#include "ServerRouting.h"
+#include "rules/simulation/BaseWorld.h"
+#include "rules/LocatedEntity.h"
 
-SystemAccount::SystemAccount(Connection * conn,
-                             const std::string & username,
-                             const std::string & passwd,
-                             const std::string & id, long intId) :
-               Admin(conn, username, passwd, id, intId)
+SystemAccount::SystemAccount(Connection* conn,
+                             const std::string& username,
+                             const std::string& passwd,
+                             const std::string& id, long intId) :
+        Admin(conn, username, passwd, id, intId)
 {
 }
 
 SystemAccount::~SystemAccount() = default;
 
-const char * SystemAccount::getType() const
+const char* SystemAccount::getType() const
 {
     return "sys";
 }
@@ -36,4 +41,28 @@ const char * SystemAccount::getType() const
 bool SystemAccount::isPersisted() const
 {
     return false;
+}
+
+void SystemAccount::processExternalOperation(const Operation& op, OpVector& res)
+{
+    if (!op->isDefaultTo()) {
+        if (op->getTo() != getId()) {
+            auto entity = m_connection->m_server.getWorld().getEntity(op->getTo());
+            if (entity) {
+                entity->operation(op, res);
+            }
+            return;
+        }
+    }
+
+    auto op_no = op->getClassNo();
+    switch (op_no) {
+        case Atlas::Objects::Operation::CREATE_NO:
+            //Allow system accounts to create new entities directly.
+            CreateOperation(op, res);
+            break;
+        default:
+            Account::processExternalOperation(op, res);
+            break;
+    }
 }

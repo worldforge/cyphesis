@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "rules/simulation/SpawnProperty.h"
 #include "ServerPropertyManager.h"
 #include "TeleportProperty.h"
 #include "MindProperty.h"
@@ -28,6 +29,7 @@ ServerPropertyManager::ServerPropertyManager(Inheritance& inheritance)
     installProperty<TeleportProperty>("linked");
     installProperty<MindProperty>();
     installProperty<AccountProperty>();
+    installProperty<SpawnProperty>();
 
 }
 

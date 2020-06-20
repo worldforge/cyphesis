@@ -101,7 +101,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<TransientProperty>();
     installProperty<Property<double>>("mass");
     installProperty<ServerBBoxProperty>();
-    installProperty<SpawnProperty>();
     installProperty<AreaProperty>();
     installProperty<VisibilityProperty>();
     installProperty<VisibilityDistanceProperty>();

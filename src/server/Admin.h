@@ -25,53 +25,59 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 /// \brief This is a class for handling users with administrative priveleges
-class Admin : public Account {
-  protected:
-    Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity &,
-                                    const Atlas::Objects::Root &) override;
+class Admin : public Account
+{
+    protected:
+        Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity&,
+                                                 const Atlas::Objects::Root&) override;
 
-    int characterError(const Operation & op,
-                           const Atlas::Objects::Root & ent,
-                           OpVector & res) const override;
+        int characterError(const Operation& op,
+                           const Atlas::Objects::Root& ent,
+                           OpVector& res) const override;
 
-    void createObject(const Atlas::Objects::Root &,
-                          const Operation &,
-                          OpVector &) override;
+        void createObject(const Atlas::Objects::Root&,
+                          const Operation&,
+                          OpVector&) override;
 
-    void opDispatched(const Operation& op);
+        void opDispatched(const Operation& op);
 
-    /// \brief Sets an attribute on the admin instance itself.
-    void setAttribute(const Atlas::Objects::Root& arg);
+        /// \brief Sets an attribute on the admin instance itself.
+        void setAttribute(const Atlas::Objects::Root& arg);
 
-    /// \brief Connection used to monitor the in-game operations
-    sigc::connection m_monitorConnection;
+        /// \brief Connection used to monitor the in-game operations
+        sigc::connection m_monitorConnection;
 
-    ExternalMind* createMind(const Ref<LocatedEntity>& entity) const override;
+        ExternalMind* createMind(const Ref<LocatedEntity>& entity) const override;
+
+        void processExternalOperation(const Operation& op, OpVector& res) override;
 
     public:
-    Admin(Connection * conn, const std::string & username,
-                             const std::string & passwd,
-                             const std::string & id, long intId);
+        Admin(Connection* conn, const std::string& username,
+              const std::string& passwd,
+              const std::string& id, long intId);
 
-    ~Admin() override;
+        ~Admin() override;
 
-    const char * getType() const override;
+        const char* getType() const override;
 
-    void addToMessage(Atlas::Message::MapType &) const override ;
+        void addToMessage(Atlas::Message::MapType&) const override;
 
-    void addToEntity(const Atlas::Objects::Entity::RootEntity &) const override;
+        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
 
-    /**
-     * Allow admin clients to logout other accounts.
-     */
-    void LogoutOperation(const Operation &, OpVector &) override;
-    void GetOperation(const Operation &, OpVector &) override;
-    void SetOperation(const Operation &, OpVector &) override;
-    void OtherOperation(const Operation &, OpVector &) override;
+        /**
+         * Allow admin clients to logout other accounts.
+         */
+        void LogoutOperation(const Operation&, OpVector&) override;
 
-    void customMonitorOperation(const Operation &, OpVector &);
+        void GetOperation(const Operation&, OpVector&) override;
 
-    friend class Admintest;
+        void SetOperation(const Operation&, OpVector&) override;
+
+        void OtherOperation(const Operation&, OpVector&) override;
+
+        void customMonitorOperation(const Operation&, OpVector&);
+
+        friend class Admintest;
 };
 
 #endif // SERVER_ADMIN_H

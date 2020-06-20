@@ -74,9 +74,9 @@ Account::Account(Connection* conn,
                  std::string passwd,
                  const std::string& id,
                  long intId) :
-    ConnectableRouter(id, intId),
-    m_connection(conn),
-    m_username(std::move(uname)), m_password(std::move(passwd))
+        ConnectableRouter(id, intId),
+        m_connection(conn),
+        m_username(std::move(uname)), m_password(std::move(passwd))
 {
 }
 
@@ -342,19 +342,22 @@ void Account::addToMessage(MapType& omap) const
     omap["parent"] = getType();
     if (m_connection != nullptr) {
         BaseWorld& world = m_connection->m_server.m_world;
+
         ListType spawn_list;
-        if (world.getSpawnList(spawn_list) == 0) {
-            //We should only send those spawn areas which allows for characters to be created.
-            for (auto I = spawn_list.begin(); I != spawn_list.end();) {
-                if ((*I).isMap() && (*I).asMap().count("character_types") == 0) {
-                    I = spawn_list.erase(I);
-                } else {
-                    ++I;
+        auto& spawnEntities = world.getSpawnEntities();
+        for (auto& id: spawnEntities) {
+            auto spawnEntity = world.getEntity(id);
+            if (spawnEntity) {
+                auto spawnProp = spawnEntity->getProperty("__spawn");
+                if (spawnProp) {
+                    Element elem;
+                    spawnProp->get(elem);
+                    spawn_list.emplace_back(elem);
                 }
             }
-            if (!spawn_list.empty()) {
-                omap["spawns"] = spawn_list;
-            }
+        }
+        if (!spawn_list.empty()) {
+            omap["spawns"] = std::move(spawn_list);
         }
     }
     ListType char_list;
@@ -379,18 +382,21 @@ void Account::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
     if (m_connection) {
         BaseWorld& world = m_connection->m_server.m_world;
         ListType spawn_list;
-        if (world.getSpawnList(spawn_list) == 0) {
-            //We should only send those spawn areas which allows for characters to be created.
-            for (auto I = spawn_list.begin(); I != spawn_list.end();) {
-                if ((*I).isMap() && (*I).asMap().count("character_types") == 0) {
-                    I = spawn_list.erase(I);
-                } else {
-                    ++I;
+        auto& spawnEntities = world.getSpawnEntities();
+        for (auto& id: spawnEntities) {
+            auto spawnEntity = world.getEntity(id);
+            if (spawnEntity) {
+                auto spawnProp = spawnEntity->getProperty("__spawn");
+                if (spawnProp) {
+                    Element elem;
+                    spawnProp->get(elem);
+                    elem.Map()["id"] = spawnEntity->getId();
+                    spawn_list.emplace_back(elem);
                 }
             }
-            if (!spawn_list.empty()) {
-                ent->setAttr("spawns", spawn_list);
-            }
+        }
+        if (!spawn_list.empty()) {
+            ent->setAttr("spawns", spawn_list);
         }
     }
     ListType char_list;
@@ -471,6 +477,21 @@ void Account::operation(const Operation& op, OpVector& res)
     }
 }
 
+void Account::SpawnOperation(const Operation& op, OpVector& res)
+{
+    BaseWorld& world = m_connection->m_server.m_world;
+    auto& spawnEntities = world.getSpawnEntities();
+    if (!op->isDefaultTo()) {
+        if (spawnEntities.find(op->getTo()) != spawnEntities.end()) {
+            auto entity = world.getEntity(op->getTo());
+            entity->operation(op, res);
+        } else {
+            error(op, "Spawn operation directed to entity which is not registered as spawn", res, getId());
+        }
+    }
+}
+
+
 void Account::CreateOperation(const Operation& op, OpVector& res)
 {
     const std::vector<Root>& args = op->getArgs();
@@ -479,12 +500,24 @@ void Account::CreateOperation(const Operation& op, OpVector& res)
     }
 
     auto& arg = args.front();
-    if (!arg->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-        error(op, "Object to be created has no type", res, getId());
+    if (arg->isDefaultId()) {
+        return;
+    }
+    BaseWorld& world = m_connection->m_server.m_world;
+    if (world.getSpawnEntities().find(arg->getId()) == world.getSpawnEntities().end()) {
+        return;
+    }
+    auto spawnEntity = world.getEntity(arg->getId());
+    if (!spawnEntity) {
         return;
     }
 
-    createObject(arg, op, res);
+    arg->setAttr("__account", getId());
+    Create create;
+    create->setTo(spawnEntity->getId());
+    create->setFrom(getId());
+    create->setArgs1(arg);
+    spawnEntity->operation(create, res);
 }
 
 void Account::createObject(const Root& arg,

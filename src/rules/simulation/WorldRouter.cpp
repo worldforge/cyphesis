@@ -475,3 +475,18 @@ OperationsDispatcher<LocatedEntity>& WorldRouter::getOperationsHandler()
 {
     return m_operationsDispatcher;
 }
+
+const std::set<std::string>& WorldRouter::getSpawnEntities() const
+{
+    return m_spawnEntities;
+}
+
+void WorldRouter::registerSpawner(const std::string& id)
+{
+    m_spawnEntities.insert(id);
+}
+
+void WorldRouter::unregisterSpawner(const std::string& id)
+{
+    m_spawnEntities.erase(id);
+}
