@@ -35,10 +35,6 @@ class AtlasQuery {
         static void find(const Atlas::Message::Element& element, const std::string& name, const std::function<void(const T&)>& callback);
         template <typename T>
         static void find(const Atlas::Message::MapType& map, const std::string& name, const std::function<void(const T&)>& callback);
-        template <typename T>
-        static void find(Atlas::Message::Element& element, const std::string& name, const std::function<void(T&)>& callback);
-        template <typename T>
-        static void find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(T&)>& callback);
 };
 
 template <typename T>
@@ -48,12 +44,6 @@ inline void AtlasQuery::find(const Atlas::Message::Element& element, const std::
     }
 }
 
-template <typename T>
-inline void AtlasQuery::find(Atlas::Message::Element& element, const std::string& name, const std::function<void(T&)>& callback) {
-    if (element.isMap()) {
-        find(element.Map(), name, callback);
-    }
-}
 
 template <>
 inline void AtlasQuery::find(const Atlas::Message::MapType& map, const std::string& name, const std::function<void(const Atlas::Message::MapType&)>& callback) {
@@ -105,36 +95,6 @@ inline void AtlasQuery::find(const Atlas::Message::MapType& map, const std::stri
     }
 }
 
-
-template <>
-inline void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(Atlas::Message::MapType&)>& callback) {
-    auto I = map.find(name);
-    if (I != map.end()) {
-        if (I->second.isMap()) {
-            callback(I->second.Map());
-        }
-    }
-}
-
-template <>
-inline void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(Atlas::Message::ListType&)>& callback) {
-    auto I = map.find(name);
-    if (I != map.end()) {
-        if (I->second.isList()) {
-            callback(I->second.List());
-        }
-    }
-}
-
-template <>
-inline void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(Atlas::Message::StringType&)>& callback) {
-    auto I = map.find(name);
-    if (I != map.end()) {
-        if (I->second.isString()) {
-            callback(I->second.String());
-        }
-    }
-}
 
 
 
