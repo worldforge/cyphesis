@@ -133,6 +133,13 @@ class Account : public ConnectableRouter {
 
     void addCharacter(const Ref<LocatedEntity>&);
 
+    /**
+     * Sends an update to the client, after properties has changed.
+     *
+     * Currently sends the complete account state.
+     */
+    void sendUpdateToClient();
+
     void setConnection(Connection* connection) override;
 
     Connection* getConnection() const override;

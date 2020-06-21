@@ -28,9 +28,9 @@ void AccountProperty::install(LocatedEntity* entity, const std::string&)
     auto account = s_serverRouting->getAccountByName(m_data);
     if (account) {
         account->addCharacter(entity);
+        account->sendUpdateToClient();
     }
 }
-
 
 AccountProperty* AccountProperty::copy() const
 {

@@ -153,22 +153,22 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         mind->linkUp(m_connection);
         m_connection->addObject(mind);
 
-    //Inform the client about the mind.
-    Info mindInfo{};
-    Anonymous mindEntity;
-    mind->addToEntity(mindEntity);
-    mindInfo->setArgs1(mindEntity);
-    res.push_back(mindInfo);
+        //Inform the client about the mind.
+        Info mindInfo{};
+        Anonymous mindEntity;
+        mind->addToEntity(mindEntity);
+        mindInfo->setArgs1(mindEntity);
+        res.push_back(mindInfo);
 
-    m_minds.emplace(entity->getIntId(), mind);
+        m_minds.emplace(entity->getIntId(), mind);
 
-    auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
-    mindsProp->addMind(mind);
-    entity->applyProperty(MindsProperty::property_name, mindsProp);
+        auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
+        mindsProp->addMind(mind);
+        entity->applyProperty(MindsProperty::property_name, mindsProp);
 
-    Atlas::Objects::Operation::Update update;
-    update->setTo(entity->getId());
-    update->setFrom(entity->getId());
+        Atlas::Objects::Operation::Update update;
+        update->setTo(entity->getId());
+        update->setFrom(entity->getId());
 
         //m_connection->addEntity(entity);
         if (isPersisted()) {
@@ -203,6 +203,19 @@ void Account::addCharacter(const Ref<LocatedEntity>& chr)
     m_charactersDict[chr->getIntId()] = chr;
     chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
 }
+
+void Account::sendUpdateToClient()
+{
+    if (m_connection) {
+        Sight s;
+        s->setTo(getId());
+        Anonymous sight_arg;
+        addToEntity(sight_arg);
+        s->setArgs1(sight_arg);
+        m_connection->send(s);
+    }
+}
+
 
 /// \brief Create a new Character and add it to this Account
 ///
@@ -517,7 +530,7 @@ void Account::CreateOperation(const Operation& op, OpVector& res)
         return;
     }
 
-    arg->setAttr("__account", getId());
+    arg->setAttr("__account", m_username);
     Create create;
     create->setTo(spawnEntity->getId());
     create->setFrom(getId());
