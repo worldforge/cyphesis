@@ -28,6 +28,7 @@
                     <list name="properties">
                         <map>
                             <string name="name">parent</string>
+                            <string name="label">Type</string>
                             <string name="type">string</string>
                             <list name="options">
                                 <string>settler</string>
@@ -36,10 +37,12 @@
                         </map>
                         <map>
                             <string name="name">name</string>
+                            <string name="label">Name</string>
                             <string name="type">string</string>
                         </map>
                         <map>
                             <string name="name">sex</string>
+                            <string name="label">Sex</string>
                             <string name="type">string</string>
                             <string name="description">The sex of the character.</string>
                             <list name="options">
