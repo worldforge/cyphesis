@@ -144,10 +144,14 @@ ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const
 /// \return Returns 0 on success and -1 on failure.
 int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 {
-    //Create an external mind and hook it up with the entity
-    auto mind = createMind(entity);
-    mind->linkUp(m_connection);
-    m_connection->addObject(mind);
+    if (m_minds.find(entity->getIntId()) != m_minds.end()) {
+        log(WARNING, String::compose("Entity %1 is already connected to mind of account %2.", entity->describeEntity(), m_username));
+        return 1;
+    } else {
+        //Create an external mind and hook it up with the entity
+        auto mind = createMind(entity);
+        mind->linkUp(m_connection);
+        m_connection->addObject(mind);
 
     //Inform the client about the mind.
     Info mindInfo{};
@@ -166,11 +170,12 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
     update->setTo(entity->getId());
     update->setFrom(entity->getId());
 
-    //m_connection->addEntity(entity);
-    if (isPersisted()) {
-        Persistence::instance().addCharacter(*this, *entity);
+        //m_connection->addEntity(entity);
+        if (isPersisted()) {
+            Persistence::instance().addCharacter(*this, *entity);
+        }
+        return 0;
     }
-    return 0;
 
 //    //Now that we're connected we need to send any thoughts that we've been given to the mind client.
 //    auto thoughts = m_proxyMind->getThoughts();
