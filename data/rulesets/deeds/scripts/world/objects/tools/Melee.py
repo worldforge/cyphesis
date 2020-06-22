@@ -35,6 +35,10 @@ class Melee(StoppableTask):
 
         target = self.usage.get_arg("targets", 0)
         if target:
+            if target.is_destroyed:
+                self.irrelevant("Target is destroyed.")
+                return server.OPERATION_BLOCKED
+
             # Take a swing
             # Check that we can reach the target with our weapon
             extra_reach = 0.0

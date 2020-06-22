@@ -25,6 +25,8 @@ def strike(instance):
     target = instance.get_arg("targets", 0)
     # Ignore pos
     if target:
+        if target.parent and target.parent.is_destroyed:
+            return server.OPERATION_BLOCKED
         if cooldown:
             task = Fight(instance, tick_interval=cooldown, name="Fight")
             task_op = instance.actor.start_task('melee', task)
@@ -60,6 +62,9 @@ class Fight(StoppableTask):
 
         # Ignore pos
         if target:
+            if target.parent and target.parent.is_destroyed:
+                self.irrelevant("Target is destroyed.")
+                return server.OPERATION_BLOCKED
             if instance.actor.can_reach(target):
                 damage = 0
                 damage_attr = getattr(instance.actor.props, "damage_" + instance.op.parent)

@@ -124,6 +124,8 @@ int UsageParameter::countValidArgs(const std::vector<UsageArg>& args, const Ref<
                                 } else {
                                     is_valid = true;
                                 }
+                            } else {
+                                is_valid = false;
                             }
                         },
                         [&](const WFMath::Point<3>& value) {},
@@ -146,6 +148,8 @@ int UsageParameter::countValidArgs(const std::vector<UsageArg>& args, const Ref<
                                 } else {
                                     is_valid = true;
                                 }
+                            } else {
+                                is_valid = false;
                             }
                         },
                         [&](const WFMath::Point<3>& value) {},
