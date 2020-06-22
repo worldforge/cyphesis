@@ -107,7 +107,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<TerrainPointsProperty>();
     installProperty<SuspendedProperty>();
     installProperty<TasksProperty>();
-    installProperty<BoolProperty>("immortal");
     installProperty<DomainProperty>();
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
@@ -154,10 +153,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
      */
     installProperty<QuaternionProperty>("active_rotation");
 
-    /**
-     * Used for things that grows, to limit the size.
-     */
-    installProperty<Vector3Property>("maxsize");
 
     /**
      * Specifies how much the entity is allowed to step onto things when moving, as a factor of the entity's height.
@@ -199,11 +194,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<Property<double>>("reach");
 
     installProperty<ScaleProperty>();
-
-    /**
-     * The max scale of an entity. This is a single value; when enforcing one dimension of the actual scale value will be used (often y).
-     */
-    installProperty<Property<double>>("maxscale");
 
     /**
      * "__scripts" is meant to be installed on the Type, whereas "__scripts_instance" is meant to be installed on the entity instance.
