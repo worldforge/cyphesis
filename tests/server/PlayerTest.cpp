@@ -92,9 +92,6 @@ class Playertest : public Cyphesis::TestBase
     void teardown() override;
 
     void test_getType();
-    void test_characterError_no_name();
-    void test_characterError_admin_name();
-    void test_characterError_playable();
 
 };
 
@@ -105,9 +102,6 @@ Playertest::Playertest() : m_server(nullptr),
                          m_account(nullptr)
 {
     ADD_TEST(Playertest::test_getType);
-    ADD_TEST(Playertest::test_characterError_no_name);
-    ADD_TEST(Playertest::test_characterError_admin_name);
-    ADD_TEST(Playertest::test_characterError_playable);
 }
 
 long Playertest::newId()
@@ -148,53 +142,6 @@ void Playertest::test_getType()
 
     const char * type = m_account->getType();
     ASSERT_EQUAL(std::string("player"), type);
-}
-
-void Playertest::test_characterError_no_name()
-{
-    Atlas::Objects::Operation::Create op;
-    Anonymous description;
-    description->setParent("settler");
-    OpVector res;
-
-    int result = m_account->characterError(op, description, res);
-
-    ASSERT_NOT_EQUAL(result, 0);
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
-}
-
-void Playertest::test_characterError_admin_name()
-{
-
-    Atlas::Objects::Operation::Create op;
-    Anonymous description;
-    description->setName("adminfoo");
-    description->setParent("settler");
-    OpVector res;
-
-    int result = m_account->characterError(op, description, res);
-
-    ASSERT_NOT_EQUAL(result, 0);
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
-}
-
-void Playertest::test_characterError_playable()
-{
-
-    Atlas::Objects::Operation::Create op;
-    Anonymous description;
-    description->setName("13e45264-e512-411b-9f8a-2e5cb6327c87");
-    description->setParent("settler");
-    OpVector res;
-
-    int result = m_account->characterError(op, description, res);
-
-    ASSERT_EQUAL(result, 0);
-    ASSERT_EQUAL(res.size(), 0u);
 }
 
 

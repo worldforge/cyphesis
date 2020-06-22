@@ -29,7 +29,6 @@
 
 #include "server/EntityBuilder.h"
 #include "server/EntityRuleHandler.h"
-#include "rules/simulation/SpawnEntity.h"
 #include "server/EntityFactory.h"
 
 #include "rules/Domain.h"
@@ -211,100 +210,7 @@ void WorldRouterintegration::test_sequence()
     tick->setTo(ent2->getId());
     test_world->message(tick, *ent2);
 
-    {
-        MapType spawn_data;
-        test_world->createSpawnPoint(spawn_data, ent2);
-        ASSERT_EQUAL(test_world->m_spawns.size(), 0u);
 
-        spawn_data["name"] = 1;
-        test_world->createSpawnPoint(spawn_data, ent2);
-        ASSERT_EQUAL(test_world->m_spawns.size(), 0u);
-
-        ASSERT_TRUE(test_world->m_spawns.find("bob") ==
-                    test_world->m_spawns.end());
-
-        spawn_data["name"] = "bob";
-        test_world->createSpawnPoint(spawn_data, ent2);
-        ASSERT_EQUAL(test_world->m_spawns.size(), 1u);
-        ASSERT_TRUE(test_world->m_spawns.find("bob") !=
-                    test_world->m_spawns.end());
-
-        test_world->createSpawnPoint(spawn_data, ent2);
-        ASSERT_EQUAL(test_world->m_spawns.size(), 1u);
-        ASSERT_TRUE(test_world->m_spawns.find("bob") !=
-                    test_world->m_spawns.end());
-    }
-    {
-        ASSERT_EQUAL(test_world->m_spawns.size(), 1u);
-        Atlas::Message::ListType spawn_repr;
-        test_world->getSpawnList(spawn_repr);
-        assert(!spawn_repr.empty());
-        ASSERT_EQUAL(spawn_repr.size(), 1u);
-    }
-
-    auto ent3 = test_world->spawnNewEntity("__no_spawn__",
-                                                     "character",
-                                                     Anonymous());
-    assert(!ent3);
-
-    ent3 = test_world->spawnNewEntity("bob",
-                                      "character",
-                                      Anonymous());
-    assert(!ent3);
-
-    {
-        MapType spawn_data;
-        spawn_data["name"] = "bob";
-        MapType entity;
-        entity["parent"] = "spiddler";
-        MapType entities;
-        entities["spiddler"] = entity;
-        spawn_data["entities"] = entities;
-        test_world->createSpawnPoint(spawn_data, ent2);
-    }
-
-    ent3 = test_world->spawnNewEntity("bob",
-                                      "spiddler",
-                                      Anonymous());
-    assert(!ent3);
-
-    {
-        MapType spawn_data;
-        spawn_data["name"] = "bob";
-        MapType entity;
-        entity["parent"] = "character";
-        MapType entities;
-        entities["character"] = entity;
-        spawn_data["entities"] = entities;
-        test_world->createSpawnPoint(spawn_data, ent2);
-    }
-
-    ent3 = test_world->spawnNewEntity("bob",
-                                      "character",
-                                      Anonymous());
-    assert(ent3);
-
-    //TODO: test creation of archetypes
-//    {
-//        MapType spawn_data;
-//        spawn_data["name"] = "bob";
-//        MapType entity;
-//        entity["parent"] = "character";
-//        MapType entities;
-//        entities["character"] = entity;
-//        spawn_data["entities"] = entities;
-//
-//
-//        spawn_data["character_types"] = Atlas::Message::ListType(1, "character");
-//        spawn_data["contains"] = Atlas::Message::ListType(1, "thing");
-//        test_world->createSpawnPoint(spawn_data, ent2);
-//    }
-//
-//    LocatedEntity * ent4 = test_world->spawnNewEntity("bob",
-//                                                      "character",
-//                                                      Anonymous());
-//    assert(ent4 != 0);
-//
     test_world->delEntity(base.get());
 //    test_world->delEntity(ent4);
 //    ent4 = 0;

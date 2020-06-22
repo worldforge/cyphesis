@@ -28,7 +28,6 @@
 #include "rules/simulation/WorldRouter.h"
 
 #include "server/EntityBuilder.h"
-#include "rules/simulation/SpawnEntity.h"
 
 #include "rules/Domain.h"
 #include "rules/simulation/World.h"
@@ -75,9 +74,6 @@ class WorldRoutertest : public Cyphesis::TestBase
     void test_addEntity();
     void test_addEntity_tick();
     void test_addEntity_tick_get();
-    void test_spawnNewEntity_unknown();
-    void test_spawnNewEntity_thing();
-    void test_createSpawnPoint();
     void test_delEntity();
     void test_delEntity_world();
 
@@ -94,9 +90,6 @@ WorldRoutertest::WorldRoutertest()
     ADD_TEST(WorldRoutertest::test_addEntity);
     ADD_TEST(WorldRoutertest::test_addEntity_tick);
     ADD_TEST(WorldRoutertest::test_addEntity_tick_get);
-    ADD_TEST(WorldRoutertest::test_spawnNewEntity_unknown);
-    ADD_TEST(WorldRoutertest::test_spawnNewEntity_thing);
-    ADD_TEST(WorldRoutertest::test_createSpawnPoint);
     ADD_TEST(WorldRoutertest::test_delEntity);
     ADD_TEST(WorldRoutertest::test_delEntity_world);
 }
@@ -194,69 +187,6 @@ void WorldRoutertest::test_addEntity_tick_get()
 
 }
 
-void WorldRoutertest::test_spawnNewEntity_unknown()
-{
-    auto ent3 = test_world->spawnNewEntity("__no_spawn__",
-                                                      "thing",
-                                                      Anonymous());
-    assert(!ent3);
-}
-
-void WorldRoutertest::test_spawnNewEntity_thing()
-{
-    auto ent3 = test_world->spawnNewEntity("bob",
-                                                      "thing",
-                                                      Anonymous());
-    assert(!ent3);
-}
-
-void WorldRoutertest::test_createSpawnPoint()
-{
-    std::string id;
-    long int_id = newId(id);
-
-    auto  ent2 = new Entity(id, int_id);
-    assert(ent2 != 0);
-    ent2->m_location.m_parent = m_rootEntity;
-    ent2->m_location.m_pos = Point3D(0,0,0);
-    test_world->addEntity(ent2, m_rootEntity);
-
-    {
-        int ret;
-
-        Atlas::Message::MapType spawn_data;
-        ret = test_world->createSpawnPoint(spawn_data, ent2);
-        assert(ret == -1);
-
-        spawn_data["name"] = 1;
-        ret = test_world->createSpawnPoint(spawn_data, ent2);
-        assert(ret == -1);
-
-        spawn_data["name"] = "bob";
-        ret = test_world->createSpawnPoint(spawn_data, ent2);
-        assert(ret == 0);
-
-        ret = test_world->createSpawnPoint(spawn_data, ent2);
-        assert(ret == 0);
-    }
-
-    {
-        Atlas::Message::ListType spawn_repr;
-        test_world->getSpawnList(spawn_repr);
-        assert(!spawn_repr.empty());
-        assert(spawn_repr.size() == 1u);
-    }
-
-    auto ent3 = test_world->spawnNewEntity("bob",
-                                                      "permitted_non_existant",
-                                                      Anonymous());
-    assert(!ent3);
-
-    ent3 = test_world->spawnNewEntity("bob",
-                                      "thing",
-                                      Anonymous());
-    assert(ent3);
-}
 
 void WorldRoutertest::test_delEntity()
 {
@@ -495,31 +425,3 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
 #include "../stubs/server/stubEntityBuilder.h"
 #include "../stubs/modules/stubWeakEntityRef.h"
 
-
-SpawnEntity::SpawnEntity(LocatedEntity *)
-{
-}
-
-int SpawnEntity::setup(const MapType &)
-{
-    return 0;
-}
-
-int SpawnEntity::spawnEntity(const std::string & type,
-                             const RootEntity & dsc) const
-{
-    if (type == "thing" || type == "permitted_non_existant") {
-        return 0;
-    }
-    return -1;
-}
-
-int SpawnEntity::addToMessage(MapType & msg) const
-{
-    return -1;
-}
-
-int SpawnEntity::placeInSpawn(Location&) const
-{
-    return 0;
-}

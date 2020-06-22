@@ -99,18 +99,6 @@ const char * ServerAccount::getType() const
     return "server";
 }
 
-int ServerAccount::characterError(const Operation & op,
-                                  const Root & ent,
-                                  OpVector & res) const
-{
-    return -1;
-}
-
-void ServerAccount::createObject(const Root & arg,
-                                 const Operation & op,
-                                 OpVector & res)
-{
-}
 
 #include "../stubs/server/stubAdmin.h"
 #include "../stubs/server/stubPlayer.h"

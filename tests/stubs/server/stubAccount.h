@@ -7,14 +7,6 @@
 #include "server/Account.h"
 #include "stubAccount_custom.h"
 
-#ifndef STUB_Account_addNewCharacter
-//#define STUB_Account_addNewCharacter
-  Ref<LocatedEntity> Account::addNewCharacter(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &, OpVector& res)
-  {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
-  }
-#endif //STUB_Account_addNewCharacter
-
 #ifndef STUB_Account_characterDestroyed
 //#define STUB_Account_characterDestroyed
   void Account::characterDestroyed(long)
@@ -22,30 +14,6 @@
     
   }
 #endif //STUB_Account_characterDestroyed
-
-#ifndef STUB_Account_characterError
-//#define STUB_Account_characterError
-  int Account::characterError(const Operation & op, const Atlas::Objects::Root & ent, OpVector & res) const
-  {
-    return 0;
-  }
-#endif //STUB_Account_characterError
-
-#ifndef STUB_Account_createObject
-//#define STUB_Account_createObject
-  void Account::createObject(const Atlas::Objects::Root &, const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Account_createObject
-
-#ifndef STUB_Account_createCharacterEntity
-//#define STUB_Account_createCharacterEntity
-  Ref<LocatedEntity> Account::createCharacterEntity(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
-  {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
-  }
-#endif //STUB_Account_createCharacterEntity
 
 #ifndef STUB_Account_processExternalOperation
 //#define STUB_Account_processExternalOperation
@@ -216,14 +184,6 @@
     
   }
 #endif //STUB_Account_PossessOperation
-
-#ifndef STUB_Account_SpawnOperation
-//#define STUB_Account_SpawnOperation
-  void Account::SpawnOperation(const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_Account_SpawnOperation
 
 #ifndef STUB_Account_addCharacter
 //#define STUB_Account_addCharacter

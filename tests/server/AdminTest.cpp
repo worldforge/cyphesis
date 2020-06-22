@@ -140,15 +140,9 @@ class Admintest : public Cyphesis::TestBase
     void test_null();
     void test_getType();
     void test_addToMessage();
-    void test_addToMessage_tree();
-    void test_addToEntity();
-    void test_addToEntity_tree();
     void test_opDispatched();
     void test_opDispatched_unconnected();
     void test_opDispatched_unconnected_monitored();
-    void test_characterError_default_parent();
-    void test_characterError_empty_parent();
-    void test_characterError_valid();
     void test_LogoutOperation_no_args();
     void test_LogoutOperation_no_id();
     void test_LogoutOperation_self();
@@ -271,9 +265,6 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_opDispatched);
     ADD_TEST(Admintest::test_opDispatched_unconnected);
     ADD_TEST(Admintest::test_opDispatched_unconnected_monitored);
-    ADD_TEST(Admintest::test_characterError_default_parent);
-    ADD_TEST(Admintest::test_characterError_empty_parent);
-    ADD_TEST(Admintest::test_characterError_valid);
     ADD_TEST(Admintest::test_LogoutOperation_no_args);
     ADD_TEST(Admintest::test_LogoutOperation_no_id);
     ADD_TEST(Admintest::test_LogoutOperation_self);
@@ -314,7 +305,6 @@ Admintest::Admintest() : m_server(0),
     ADD_TEST(Admintest::test_createObject_juncture_id_fail);
     ADD_TEST(Admintest::test_createObject_juncture);
     ADD_TEST(Admintest::test_createObject_juncture_serialno);
-    ADD_TEST(Admintest::test_createObject_fallthrough);
 }
 
 long Admintest::newId()
@@ -433,50 +423,6 @@ void Admintest::test_opDispatched_unconnected_monitored()
 
     // The operation should not have been sent here
     ASSERT_TRUE(!Link_sent_called);
-}
-
-void Admintest::test_characterError_default_parent()
-{
-    Operation op;
-    Root ent;
-    OpVector res;
-
-    int ret = m_account->characterError(op, ent, res);
-
-    ASSERT_NOT_EQUAL(ret, 0);
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
-}
-
-void Admintest::test_characterError_empty_parent()
-{
-    Operation op;
-    Root ent;
-    OpVector res;
-
-    ent->setParent("");
-
-    int ret = m_account->characterError(op, ent, res);
-
-    ASSERT_NOT_EQUAL(ret, 0);
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(res.front()->getClassNo(),
-                 Atlas::Objects::Operation::ERROR_NO);
-}
-
-void Admintest::test_characterError_valid()
-{
-    Operation op;
-    Root ent;
-    OpVector res;
-
-    ent->setParent("settler");
-
-    int ret = m_account->characterError(op, ent, res);
-
-    ASSERT_EQUAL(ret, 0);
-    ASSERT_EQUAL(res.size(), 0u);
 }
 
 void Admintest::test_LogoutOperation_no_args()
@@ -1126,7 +1072,8 @@ void Admintest::test_createObject_class_no_id()
     arg->setObjtype("class");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1151,7 +1098,8 @@ void Admintest::test_createObject_class_exists()
     arg->setId("character");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1174,7 +1122,8 @@ void Admintest::test_createObject_class_parent_absent()
     arg->setId("character");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1197,7 +1146,8 @@ void Admintest::test_createObject_class_fail()
     arg->setId("character");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1219,8 +1169,9 @@ void Admintest::test_createObject_class_succeed()
     arg->setObjtype("class");
     arg->setId("character");
     arg->setParent(parent);
+    op->setArgs1(arg);
 
-    m_account->createObject(arg, op, res);
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1241,7 +1192,9 @@ void Admintest::test_createObject_juncture_id_fail()
     arg->setObjtype("obj");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1260,7 +1213,9 @@ void Admintest::test_createObject_juncture()
     arg->setObjtype("obj");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
@@ -1281,33 +1236,14 @@ void Admintest::test_createObject_juncture_serialno()
     arg->setObjtype("obj");
     arg->setParent(parent);
 
-    m_account->createObject(arg, op, res);
+    op->setArgs1(arg);
+
+    m_account->CreateOperation(op, res);
 
     ASSERT_EQUAL(res.size(), 1u);
     ASSERT_EQUAL(res.front()->getClassNo(),
                  Atlas::Objects::Operation::INFO_NO);
     ASSERT_TRUE(!res.front()->isDefaultRefno());
-}
-
-void Admintest::test_createObject_fallthrough()
-{
-    Account_createObject_called = 0;
-
-    std::string parent("unimportant_string");
-    Root arg;
-    Atlas::Objects::Operation::Create op;
-    op->setSerialno(m_id_counter++);
-    OpVector res;
-
-    arg->setObjtype("obj");
-    arg->setParent(parent);
-
-    m_account->createObject(arg, op, res);
-
-    ASSERT_EQUAL(res.size(), 0u);
-
-    ASSERT_EQUAL(Account_createObject_called,
-                 m_account);
 }
 
 
@@ -1340,14 +1276,6 @@ int main()
 #include <cstdio>
 #include "../stubs/common/stubProperty.h"
 #include "../stubs/common/stubPropertyManager.h"
-
-#define STUB_Account_createObject
-void Account::createObject(const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
-{
-    Admintest::set_Account_createObject_called(this);
-}
 
 #define STUB_Account_operation
 void Account::operation(const Operation & op, OpVector & res)

@@ -80,30 +80,6 @@
   }
 #endif //STUB_WorldRouter_delEntity
 
-#ifndef STUB_WorldRouter_createSpawnPoint
-//#define STUB_WorldRouter_createSpawnPoint
-  int WorldRouter::createSpawnPoint(const Atlas::Message::MapType&, LocatedEntity*)
-  {
-    return 0;
-  }
-#endif //STUB_WorldRouter_createSpawnPoint
-
-#ifndef STUB_WorldRouter_removeSpawnPoint
-//#define STUB_WorldRouter_removeSpawnPoint
-  int WorldRouter::removeSpawnPoint(LocatedEntity* ent)
-  {
-    return 0;
-  }
-#endif //STUB_WorldRouter_removeSpawnPoint
-
-#ifndef STUB_WorldRouter_getSpawnList
-//#define STUB_WorldRouter_getSpawnList
-  int WorldRouter::getSpawnList(Atlas::Message::ListType& data)
-  {
-    return 0;
-  }
-#endif //STUB_WorldRouter_getSpawnList
-
 #ifndef STUB_WorldRouter_getSpawnEntities
 //#define STUB_WorldRouter_getSpawnEntities
   const std::set<std::string>& WorldRouter::getSpawnEntities() const
@@ -127,22 +103,6 @@
     
   }
 #endif //STUB_WorldRouter_unregisterSpawner
-
-#ifndef STUB_WorldRouter_spawnNewEntity
-//#define STUB_WorldRouter_spawnNewEntity
-  Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string&, const std::string&, const Atlas::Objects::Entity::RootEntity&)
-  {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
-  }
-#endif //STUB_WorldRouter_spawnNewEntity
-
-#ifndef STUB_WorldRouter_moveToSpawn
-//#define STUB_WorldRouter_moveToSpawn
-  int WorldRouter::moveToSpawn(const std::string& name, Location& location)
-  {
-    return 0;
-  }
-#endif //STUB_WorldRouter_moveToSpawn
 
 #ifndef STUB_WorldRouter_operation
 //#define STUB_WorldRouter_operation

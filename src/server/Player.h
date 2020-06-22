@@ -26,9 +26,7 @@
 /// \brief This is a class for handling users who are regular players
 class Player : public Account {
   protected:
-    int characterError(const Operation &,
-                           const Atlas::Objects::Root &,
-                           OpVector &) const override;
+
   public:
     Player(Connection * conn, const std::string & username,
                               const std::string & passwd,

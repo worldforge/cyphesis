@@ -7,30 +7,6 @@
 #include "server/ServerAccount.h"
 #include "stubServerAccount_custom.h"
 
-#ifndef STUB_ServerAccount_characterError
-//#define STUB_ServerAccount_characterError
-  int ServerAccount::characterError(const Operation & op, const Atlas::Objects::Root & ent, OpVector & res) const
-  {
-    return 0;
-  }
-#endif //STUB_ServerAccount_characterError
-
-#ifndef STUB_ServerAccount_addNewEntity
-//#define STUB_ServerAccount_addNewEntity
-  Ref<LocatedEntity> ServerAccount::addNewEntity(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
-  {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
-  }
-#endif //STUB_ServerAccount_addNewEntity
-
-#ifndef STUB_ServerAccount_createObject
-//#define STUB_ServerAccount_createObject
-  void ServerAccount::createObject(const Atlas::Objects::Root &, const Operation &, OpVector &)
-  {
-    
-  }
-#endif //STUB_ServerAccount_createObject
-
 #ifndef STUB_ServerAccount_ServerAccount
 //#define STUB_ServerAccount_ServerAccount
    ServerAccount::ServerAccount(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)

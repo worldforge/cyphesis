@@ -18,8 +18,6 @@
 
 #include "WorldRouter.h"
 
-#include "rules/simulation/SpawnEntity.h"
-
 #include "rules/simulation/World.h"
 #include "rules/Domain.h"
 #include "rules/simulation/Task.h"
@@ -67,9 +65,6 @@ WorldRouter::~WorldRouter()
 {
     m_operationsDispatcher.clearQueues();
     m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
-
-    m_spawns.clear();
-
 }
 
 void WorldRouter::shutdown()
@@ -160,87 +155,6 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
 
     addEntity(ent, loc);
     return ent;
-}
-
-int WorldRouter::createSpawnPoint(const MapType& data, LocatedEntity* ent)
-{
-    auto I = data.find("name");
-    if (I == data.end() || !I->second.isString()) {
-        log(ERROR, "No name on spawn point");
-        return -1;
-    }
-    auto new_spawn = std::make_unique<SpawnEntity>(ent);
-    if (new_spawn->setup(data) != 0) {
-        log(ERROR, "Error setting up spawn point");
-        return -1;
-    }
-
-    const std::string& name = I->second.String();
-    auto J = m_spawns.find(name);
-    if (J != m_spawns.end()) {
-        J->second.first = std::move(new_spawn);
-        J->second.second = ent->getId();
-    } else {
-        m_spawns.insert(std::make_pair(name, std::make_pair(std::move(new_spawn), ent->getId())));
-    }
-    return 0;
-}
-
-int WorldRouter::removeSpawnPoint(LocatedEntity* ent)
-{
-    for (auto I = m_spawns.begin(); I != m_spawns.end(); ++I) {
-        if (I->second.second == ent->getId()) {
-            m_spawns.erase(I);
-            return 0;
-        }
-    }
-    return 1;
-}
-
-
-int WorldRouter::getSpawnList(Atlas::Message::ListType& data)
-{
-    for (const auto& entry : m_spawns) {
-        MapType spawn;
-        spawn.insert(std::make_pair("name", entry.first));
-        entry.second.first->addToMessage(spawn);
-        data.push_back(spawn);
-    }
-    return 0;
-}
-
-Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string& name,
-                                               const std::string& type,
-                                               const RootEntity& desc)
-{
-    auto I = m_spawns.find(name);
-    if (I == m_spawns.end()) {
-        log(ERROR, String::compose("Spawn not found %1", name));
-        return nullptr;
-    }
-    auto& s = I->second.first;
-    int ret = s->spawnEntity(type, desc);
-    if (ret != 0) {
-        log(ERROR, String::compose("Spawn not permitting %1", type));
-        return nullptr;
-    }
-    auto e = addNewEntity(type, desc);
-    if (!e) {
-        log(ERROR, String::compose("Entity creation failed %1", type));
-        return e;
-    }
-
-    return e;
-}
-
-int WorldRouter::moveToSpawn(const std::string& name, Location& location)
-{
-    auto I = m_spawns.find(name);
-    if (I == m_spawns.end()) {
-        log(ERROR, String::compose("Spawn not found %1", name));
-        return -10;
-    }
-    return I->second.first->placeInSpawn(location);
 }
 
 /// \brief Remove an entity from the world.

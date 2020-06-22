@@ -33,8 +33,6 @@ class Spawn;
 
 class EntityBuilder;
 
-typedef std::map<std::string, std::pair<std::unique_ptr<Spawn>, std::string>> SpawnDict;
-
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
 /// This class has one instance which manages the game world.
@@ -50,9 +48,11 @@ class WorldRouter : public BaseWorld
         std::queue<OpQueEntry<LocatedEntity>> m_suspendedQueue;
         /// Count of in world entities
         int m_entityCount;
-        /// Map of spawns
-        SpawnDict m_spawns;
 
+        /**
+         * A set of the entities that are registered to be "spawn" entities.
+         * These are the main entry into the world for new players, and are allowed to receive Create operations directly from Account instances.
+         */
         std::set<std::string> m_spawnEntities;
 
         /// \brief The top level in-game entity in the world.
@@ -87,24 +87,11 @@ class WorldRouter : public BaseWorld
 
         void delEntity(LocatedEntity* obj) override;
 
-        int createSpawnPoint(const Atlas::Message::MapType&, LocatedEntity*) override;
-
-        int removeSpawnPoint(LocatedEntity* ent) override;
-
-        int getSpawnList(Atlas::Message::ListType& data) override;
-
         const std::set<std::string>& getSpawnEntities() const override;
 
         void registerSpawner(const std::string& id) override;
 
         void unregisterSpawner(const std::string& id) override;
-
-
-        Ref<LocatedEntity> spawnNewEntity(const std::string&,
-                                          const std::string&,
-                                          const Atlas::Objects::Entity::RootEntity&) override;
-
-        int moveToSpawn(const std::string& name, Location& location) override;
 
         void operation(const Atlas::Objects::Operation::RootOperation&,
                        Ref<LocatedEntity>);

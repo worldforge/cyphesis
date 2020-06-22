@@ -145,9 +145,6 @@ class Accounttest : public Cyphesis::TestBase
     void test_characterDestroyed_invalid();
     void test_connectCharacter_raw_Entity();
     void test_addCharacter_raw_Entity();
-    void test_addNewCharacter_fail();
-    void test_addNewCharacter_Entity();
-    void test_addNewCharacter_unconnected();
     void test_LogoutOperation_unknown();
     void test_LogoutOperation_no_serialno();
     void test_LogoutOperation_serialno();
@@ -259,9 +256,6 @@ class TestAccount : public Account {
                                const Atlas::Objects::Root & ent,
                                OpVector & res) const;
 
-    Ref<LocatedEntity> testAddNewCharacter(const std::string & typestr,
-                                        const RootEntity & ent,
-                                        const RootEntity & arg);
 
     void test_processExternalOperation(const Operation & op, OpVector& res) {
         processExternalOperation(op, res);
@@ -278,9 +272,6 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_characterDestroyed_invalid);
     ADD_TEST(Accounttest::test_connectCharacter_raw_Entity);
     ADD_TEST(Accounttest::test_addCharacter_raw_Entity);
-    ADD_TEST(Accounttest::test_addNewCharacter_fail);
-    ADD_TEST(Accounttest::test_addNewCharacter_Entity);
-    ADD_TEST(Accounttest::test_addNewCharacter_unconnected);
     ADD_TEST(Accounttest::test_LogoutOperation_unknown);
     ADD_TEST(Accounttest::test_LogoutOperation_no_serialno);
     ADD_TEST(Accounttest::test_LogoutOperation_serialno);
@@ -326,10 +317,6 @@ Accounttest::Accounttest() : m_id_counter(0L),
     ADD_TEST(Accounttest::test_TalkOperation_loc);
     ADD_TEST(Accounttest::test_TalkOperation_unconnected);
     ADD_TEST(Accounttest::test_OtherOperation);
-    ADD_TEST(Accounttest::test_createObject_permission_error);
-    ADD_TEST(Accounttest::test_createObject_add_failed);
-    ADD_TEST(Accounttest::test_createObject_raw_Entity);
-    ADD_TEST(Accounttest::test_createObject_Character);
 }
 
 void Accounttest::setup()
@@ -447,81 +434,6 @@ void Accounttest::test_addCharacter_raw_Entity()
     
 }
 
-void Accounttest::test_addNewCharacter_fail()
-{
-    TestWorld_addNewEntity_ret_value = 0;
-
-    ASSERT_TRUE(m_account->m_charactersDict.empty());
-    ASSERT_NOT_NULL(m_account->m_connection);
-    OpVector res;
-
-    auto te = m_account->addNewCharacter(
-          RootEntity(),
-          Root(), res);
-
-    ASSERT_FALSE(te);
-}
-
-
-void Accounttest::test_addNewCharacter_Entity()
-{
-    long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
-    OpVector res;
-
-    ASSERT_TRUE(m_account->m_charactersDict.empty());
-    ASSERT_NOT_NULL(m_account->m_connection);
-
-    {
-        auto te = m_account->addNewCharacter(
-            RootEntity(),
-            Root(), res);
-
-        ASSERT_FALSE(te);
-
-        ASSERT_EQUAL(m_account->m_charactersDict.find(cid),
-                         m_account->m_charactersDict.end());
-    }
-
-    {
-        auto args = Root();
-        args->setAttr("spawn_name", "foo");
-        auto te = m_account->addNewCharacter(
-            RootEntity(),
-            args, res);
-
-        ASSERT_TRUE(te);
-
-        ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
-                         m_account->m_charactersDict.end());
-        ASSERT_EQUAL(m_account->m_charactersDict.find(cid)->second,
-                     TestWorld_addNewEntity_ret_value.get());
-    }
-
-}
-
-
-void Accounttest::test_addNewCharacter_unconnected()
-{
-    // Make the account disconnected
-    delete m_account->m_connection;
-    m_account->m_connection = 0;
-    OpVector res;
-
-    long cid = m_id_counter++;
-    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
-
-    ASSERT_TRUE(m_account->m_charactersDict.empty());
-    ASSERT_NULL(m_account->m_connection);
-
-    auto te = m_account->addNewCharacter(
-          RootEntity(),
-          Root(), res);
-
-    ASSERT_FALSE(te);
-
-    TestWorld_addNewEntity_ret_value = 0;
-}
 
 void Accounttest::test_LogoutOperation_unknown()
 {
@@ -670,7 +582,9 @@ void Accounttest::test_operation_Create()
 
     m_account->test_processExternalOperation(op, res);
 
-    ASSERT_TRUE(res.empty());
+    ASSERT_EQUAL(res.size(), 1u);
+    ASSERT_EQUAL(res.front()->getClassNo(),
+                 Atlas::Objects::Operation::ERROR_NO);
 }
 
 void Accounttest::test_operation_Get()
@@ -764,27 +678,27 @@ void Accounttest::test_CreateOperation_no_parent()
 
 void Accounttest::test_CreateOperation_good()
 {
-    long cid = m_id_counter++;
-
-    // Set up the creation so it succeeds
-    characterError_ret_value = 0;
-    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
-
-    Atlas::Objects::Operation::Create op;
-    OpVector res;
-
-    Anonymous create_arg;
-    create_arg->setParent("foo");
-    create_arg->setAttr("spawn_name", "foo");
-    op->setArgs1(create_arg);
-
-    m_account->test_processExternalOperation(op, res);
-
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res.front()->getClassNo());
-
-    
-    TestWorld_addNewEntity_ret_value = 0;
+//    long cid = m_id_counter++;
+//
+//    // Set up the creation so it succeeds
+//    characterError_ret_value = 0;
+//    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
+//
+//    Atlas::Objects::Operation::Create op;
+//    OpVector res;
+//
+//    Anonymous create_arg;
+//    create_arg->setParent("foo");
+//    create_arg->setAttr("spawn_name", "foo");
+//    op->setArgs1(create_arg);
+//
+//    m_account->test_processExternalOperation(op, res);
+//
+//    ASSERT_EQUAL(res.size(), 1u);
+//    ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res.front()->getClassNo());
+//
+//
+//    TestWorld_addNewEntity_ret_value = 0;
 }
 
 void Accounttest::test_GetOperation()
@@ -1261,90 +1175,6 @@ void Accounttest::test_OtherOperation()
     m_account->OtherOperation(op, res);
 }
 
-void Accounttest::test_createObject_permission_error()
-{
-    characterError_ret_value = -1;
-
-    Anonymous arg;
-    Atlas::Objects::Operation::Create op;
-    OpVector res;
-
-    m_account->createObject(arg, op, res);
-
-    ASSERT_TRUE(res.empty());
-
-    // addNewCharacter() would have put it here if it was created
-    ASSERT_TRUE(m_account->m_charactersDict.empty());
-}
-
-void Accounttest::test_createObject_add_failed()
-{
-    characterError_ret_value = 0;
-    TestWorld_addNewEntity_ret_value = 0;
-
-    Anonymous arg;
-    Atlas::Objects::Operation::Create op;
-    OpVector res;
-
-    m_account->createObject(arg, op, res);
-
-    ASSERT_EQUAL(res.size(), 1u);
-
-    const RootOperation & reply = res.front();
-    ASSERT_EQUAL(reply->getClassNo(), Atlas::Objects::Operation::ERROR_NO);
-
-    ASSERT_TRUE(m_account->m_charactersDict.empty());
-}
-
-void Accounttest::test_createObject_raw_Entity()
-{
-    long cid = m_id_counter++;
-
-    characterError_ret_value = 0;
-    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
-
-    Anonymous arg;
-    Atlas::Objects::Operation::Create op;
-    OpVector res;
-
-    m_account->createObject(arg, op, res);
-
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_TRUE(m_account->m_charactersDict.empty());
-
-    
-    TestWorld_addNewEntity_ret_value = 0;
-}
-
-void Accounttest::test_createObject_Character()
-{
-    long cid = m_id_counter++;
-
-    characterError_ret_value = 0;
-    TestWorld_addNewEntity_ret_value = new Entity(compose("%1", cid), cid);
-
-    Anonymous arg;
-    arg->setAttr("spawn_name", "foo");
-    Atlas::Objects::Operation::Create op;
-    OpVector res;
-
-    m_account->createObject(arg, op, res);
-
-    ASSERT_EQUAL(res.size(), 1u);
-    ASSERT_EQUAL(m_account->m_charactersDict.size(), 1u);
-    ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res.front()->getClassNo());
-
-    const RootOperation & info = res.front();
-    ASSERT_EQUAL(info->getArgs().size(), 1u);
-
-    const Root & info_arg = info->getArgs().front();
-    ASSERT_TRUE(!info_arg->isDefaultId());
-
-    long info_id = integerId(info_arg->getId());
-    ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(info_id),
-                     m_account->m_charactersDict.end());
-}
-
 
 TestAccount::TestAccount(Connection * conn, const std::string & username,
                          const std::string & passwd,
@@ -1363,14 +1193,6 @@ int TestAccount::characterError(const Operation & op,
                                 OpVector & res) const
 {
     return Accounttest::get_characterError_ret_value();
-}
-
-Ref<LocatedEntity> TestAccount::testAddNewCharacter(const std::string & typestr,
-                                                 const RootEntity & ent,
-                                                 const RootEntity & arg)
-{
-    OpVector res;
-    return addNewCharacter(ent, arg, res);
 }
 
 int main()

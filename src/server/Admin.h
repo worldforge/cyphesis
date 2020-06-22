@@ -28,16 +28,6 @@
 class Admin : public Account
 {
     protected:
-        Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity&,
-                                                 const Atlas::Objects::Root&) override;
-
-        int characterError(const Operation& op,
-                           const Atlas::Objects::Root& ent,
-                           OpVector& res) const override;
-
-        void createObject(const Atlas::Objects::Root&,
-                          const Operation&,
-                          OpVector&) override;
 
         void opDispatched(const Operation& op);
 
@@ -60,16 +50,14 @@ class Admin : public Account
 
         const char* getType() const override;
 
-        void addToMessage(Atlas::Message::MapType&) const override;
-
-        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
-
         /**
          * Allow admin clients to logout other accounts.
          */
         void LogoutOperation(const Operation&, OpVector&) override;
 
         void GetOperation(const Operation&, OpVector&) override;
+
+        void CreateOperation(const Operation&, OpVector&) override;
 
         void SetOperation(const Operation&, OpVector&) override;
 

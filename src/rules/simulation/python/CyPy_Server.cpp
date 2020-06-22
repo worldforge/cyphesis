@@ -30,7 +30,6 @@
 CyPy_Server::CyPy_Server() : ExtensionModule("server")
 {
 
-    add_varargs_method("move_to_spawn", &CyPy_Server::move_to_spawn, "Configures the supplied Location for the named spawn.");
     add_varargs_method("get_alias_entity", &CyPy_Server::get_alias_entity, "Gets an entity registered by an alias, if available.");
 
 
@@ -81,16 +80,4 @@ Py::Object CyPy_Server::get_alias_entity(const Py::Tuple& args)
         return Py::None();
     }
     return CyPy_LocatedEntity::wrap(Ref<LocatedEntity>(entity));
-}
-
-
-Py::Object CyPy_Server::move_to_spawn(const Py::Tuple& args)
-{
-    args.verify_length(2);
-    auto spawnName = verifyString(args.front());
-    auto& location = verifyObject<CyPy_Location>(args[1]);
-
-    BaseWorld::instance().moveToSpawn(spawnName, location);
-
-    return Py::None();
 }

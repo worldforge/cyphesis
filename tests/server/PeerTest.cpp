@@ -72,11 +72,7 @@ class MyTestWorld : public TestWorld {
     void test_delEntity(long intId) { 
         m_eobjects.erase(intId);
     }
-     Ref<LocatedEntity> spawnNewEntity(const std::string & name,
-                                   const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) override {
-        return addNewEntity(type, desc);
-    }
+
 
 };
 

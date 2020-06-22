@@ -145,37 +145,11 @@ class BaseWorld : public Singleton<BaseWorld>
         /// \brief Deletes an entity from the world.
         virtual void delEntity(LocatedEntity* obj) = 0;
 
-        virtual int createSpawnPoint(const Atlas::Message::MapType& data,
-                                     LocatedEntity* ent) = 0;
-
-        /**
-         * \brief Removes a previously registered spawn point.
-         * @param ent The entity to which the spawn point was registered.
-         * @return 0 if successful
-         */
-        virtual int removeSpawnPoint(LocatedEntity* ent) = 0;
-
-        virtual int getSpawnList(Atlas::Message::ListType& data) = 0;
-
         virtual const std::set<std::string>& getSpawnEntities() const = 0;
 
         virtual void registerSpawner(const std::string& id) = 0;
 
         virtual void unregisterSpawner(const std::string& id) = 0;
-
-        virtual Ref<LocatedEntity> spawnNewEntity(
-            const std::string& name,
-            const std::string& type,
-            const Atlas::Objects::Entity::RootEntity&) = 0;
-
-        /**
-         * \brief Moves the location to within the spawn specified by the name.
-         * \param name The name of the spawn.
-         * \param location The location which will be moved.
-         * \return 0 if successful.
-         */
-        virtual int moveToSpawn(const std::string& name,
-                                Location& location) = 0;
 
         /// \brief Pass an operation to the world.
         virtual void message(Atlas::Objects::Operation::RootOperation,

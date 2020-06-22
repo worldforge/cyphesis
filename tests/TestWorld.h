@@ -29,33 +29,41 @@
 #include <functional>
 #include <utility>
 
-struct TestWorldExtension {
-    std::function<void(const Operation & op, LocatedEntity & ent)> messageFn;
-    std::function<Ref<LocatedEntity>(const std::string &, const Atlas::Objects::Entity::RootEntity &)> addNewEntityFn;
+struct TestWorldExtension
+{
+    std::function<void(const Operation& op, LocatedEntity& ent)> messageFn;
+    std::function<Ref<LocatedEntity>(const std::string&, const Atlas::Objects::Entity::RootEntity&)> addNewEntityFn;
 };
 
-struct TestWorld : public BaseWorld {
+struct TestWorld : public BaseWorld
+{
 
     static TestWorldExtension extension;
     TestWorldExtension m_extension;
 
     Ref<LocatedEntity> m_gw;
-    explicit TestWorld() : BaseWorld(), m_gw(nullptr) {
+
+    explicit TestWorld() : BaseWorld(), m_gw(nullptr)
+    {
     }
-    explicit TestWorld(Ref<LocatedEntity> gw) : BaseWorld(), m_gw(std::move(gw)) {
+
+    explicit TestWorld(Ref<LocatedEntity> gw) : BaseWorld(), m_gw(std::move(gw))
+    {
         m_eobjects[m_gw->getIntId()] = m_gw;
     }
 
-    ~TestWorld() override= default;
+    ~TestWorld() override = default;
 
-    void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override {
+    void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override
+    {
         m_eobjects[ent->getIntId()] = ent;
         if (parent) {
             parent->addChild(*ent);
         }
     }
-    Ref<LocatedEntity> addNewEntity(const std::string & id,
-                                         const Atlas::Objects::Entity::RootEntity & op) override
+
+    Ref<LocatedEntity> addNewEntity(const std::string& id,
+                                    const Atlas::Objects::Entity::RootEntity& op) override
     {
         if (m_extension.addNewEntityFn) {
             return m_extension.addNewEntityFn(id, op);
@@ -64,41 +72,40 @@ struct TestWorld : public BaseWorld {
         }
         return nullptr;
     }
-    void delEntity(LocatedEntity * obj) override {}
-    int createSpawnPoint(const Atlas::Message::MapType & data,
-                         LocatedEntity *) override { return 0; }
-    int removeSpawnPoint(LocatedEntity *) override {return 0; }
-    int getSpawnList(Atlas::Message::ListType & data) override { return 0; }
 
-     const std::set<std::string>& getSpawnEntities() const override {
+    void delEntity(LocatedEntity* obj) override
+    {}
+
+    const std::set<std::string>& getSpawnEntities() const override
+    {
         static std::set<std::string> spawns;
         return spawns;
     }
 
-     void registerSpawner(const std::string& id) override {}
+    void registerSpawner(const std::string& id) override
+    {}
 
-     void unregisterSpawner(const std::string& id) override {}
+    void unregisterSpawner(const std::string& id) override
+    {}
 
-    Ref<LocatedEntity> spawnNewEntity(const std::string & name,
-                                   const std::string & type,
-                                   const Atlas::Objects::Entity::RootEntity & desc) override
+
+    void message(Operation op, LocatedEntity& ent) override
     {
-        return addNewEntity(type, desc);
-    }
-    int moveToSpawn(const std::string & name,
-                            Location& location) override{return 0;}
-
-    void message(Operation op, LocatedEntity & ent) override {
         if (m_extension.messageFn) {
             m_extension.messageFn(op, ent);
         } else if (extension.messageFn) {
             extension.messageFn(op, ent);
         }
     }
-    Ref<LocatedEntity> findByName(const std::string & name) override { return nullptr; }
-    Ref<LocatedEntity> findByType(const std::string & type) override { return nullptr; }
 
-    LocatedEntity& getDefaultLocation() const override {return *m_gw;};
+    Ref<LocatedEntity> findByName(const std::string& name) override
+    { return nullptr; }
+
+    Ref<LocatedEntity> findByType(const std::string& type) override
+    { return nullptr; }
+
+    LocatedEntity& getDefaultLocation() const override
+    { return *m_gw; };
 
 };
 

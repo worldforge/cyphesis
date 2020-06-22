@@ -7,30 +7,6 @@
 #include "server/Admin.h"
 #include "stubAdmin_custom.h"
 
-#ifndef STUB_Admin_createCharacterEntity
-//#define STUB_Admin_createCharacterEntity
-  Ref<LocatedEntity> Admin::createCharacterEntity(const Atlas::Objects::Entity::RootEntity&, const Atlas::Objects::Root&)
-  {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
-  }
-#endif //STUB_Admin_createCharacterEntity
-
-#ifndef STUB_Admin_characterError
-//#define STUB_Admin_characterError
-  int Admin::characterError(const Operation& op, const Atlas::Objects::Root& ent, OpVector& res) const
-  {
-    return 0;
-  }
-#endif //STUB_Admin_characterError
-
-#ifndef STUB_Admin_createObject
-//#define STUB_Admin_createObject
-  void Admin::createObject(const Atlas::Objects::Root&, const Operation&, OpVector&)
-  {
-    
-  }
-#endif //STUB_Admin_createObject
-
 #ifndef STUB_Admin_opDispatched
 //#define STUB_Admin_opDispatched
   void Admin::opDispatched(const Operation& op)
@@ -88,22 +64,6 @@
   }
 #endif //STUB_Admin_getType
 
-#ifndef STUB_Admin_addToMessage
-//#define STUB_Admin_addToMessage
-  void Admin::addToMessage(Atlas::Message::MapType&) const
-  {
-    
-  }
-#endif //STUB_Admin_addToMessage
-
-#ifndef STUB_Admin_addToEntity
-//#define STUB_Admin_addToEntity
-  void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity&) const
-  {
-    
-  }
-#endif //STUB_Admin_addToEntity
-
 #ifndef STUB_Admin_LogoutOperation
 //#define STUB_Admin_LogoutOperation
   void Admin::LogoutOperation(const Operation&, OpVector&)
@@ -119,6 +79,14 @@
     
   }
 #endif //STUB_Admin_GetOperation
+
+#ifndef STUB_Admin_CreateOperation
+//#define STUB_Admin_CreateOperation
+  void Admin::CreateOperation(const Operation&, OpVector&)
+  {
+    
+  }
+#endif //STUB_Admin_CreateOperation
 
 #ifndef STUB_Admin_SetOperation
 //#define STUB_Admin_SetOperation

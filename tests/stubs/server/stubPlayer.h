@@ -7,14 +7,6 @@
 #include "server/Player.h"
 #include "stubPlayer_custom.h"
 
-#ifndef STUB_Player_characterError
-//#define STUB_Player_characterError
-  int Player::characterError(const Operation &, const Atlas::Objects::Root &, OpVector &) const
-  {
-    return 0;
-  }
-#endif //STUB_Player_characterError
-
 #ifndef STUB_Player_Player
 //#define STUB_Player_Player
    Player::Player(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)

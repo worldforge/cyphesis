@@ -424,7 +424,6 @@ wf_add_test(server/ArchetypeFactoryIntegrationTest.cpp
         ../src/server/EntityBuilder.cpp
         ../src/server/EntityFactory.cpp
         ../src/server/EntityRuleHandler.cpp
-        ../src/rules/simulation/SpawnEntity.cpp
         ../src/rules/simulation/CorePropertyManager.cpp)
 target_link_libraries(ArchetypeFactoryIntegrationTest modules physics common pycxx rulesbase ${PYTHON_TESTS_LIBS})
 
@@ -449,8 +448,6 @@ wf_add_test(server/TrustedConnectionTest.cpp ../src/server/TrustedConnection.cpp
 wf_add_test(server/WorldRouterTest.cpp ../src/rules/simulation/WorldRouter.cpp)
 wf_add_test(server/PeerTest.cpp ../src/server/Peer.cpp)
 wf_add_test(server/LobbyTest.cpp ../src/server/Lobby.cpp)
-wf_add_test(server/SpawnTest.cpp)
-wf_add_test(server/SpawnEntityTest.cpp ../src/rules/simulation/SpawnEntity.cpp)
 
 
 wf_add_test(server/ServerRoutingTest.cpp ../src/server/ServerRouting.cpp)
@@ -480,7 +477,6 @@ wf_add_test(server/WorldRouterIntegration.cpp ../src/rules/simulation/WorldRoute
     ../src/server/EntityBuilder.cpp
     ../src/server/EntityFactory.cpp
     ../src/server/EntityRuleHandler.cpp
-    ../src/rules/simulation/SpawnEntity.cpp
     ../src/rules/Domain.cpp
     ../src/rules/LocatedEntity.cpp
     ../src/rules/simulation/Entity.cpp

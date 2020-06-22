@@ -121,30 +121,6 @@
   }
 #endif //STUB_BaseWorld_delEntity
 
-#ifndef STUB_BaseWorld_createSpawnPoint
-//#define STUB_BaseWorld_createSpawnPoint
-  int BaseWorld::createSpawnPoint(const Atlas::Message::MapType& data, LocatedEntity* ent)
-  {
-    return 0;
-  }
-#endif //STUB_BaseWorld_createSpawnPoint
-
-#ifndef STUB_BaseWorld_removeSpawnPoint
-//#define STUB_BaseWorld_removeSpawnPoint
-  int BaseWorld::removeSpawnPoint(LocatedEntity* ent)
-  {
-    return 0;
-  }
-#endif //STUB_BaseWorld_removeSpawnPoint
-
-#ifndef STUB_BaseWorld_getSpawnList
-//#define STUB_BaseWorld_getSpawnList
-  int BaseWorld::getSpawnList(Atlas::Message::ListType& data)
-  {
-    return 0;
-  }
-#endif //STUB_BaseWorld_getSpawnList
-
 #ifndef STUB_BaseWorld_getSpawnEntities
 //#define STUB_BaseWorld_getSpawnEntities
   const std::set<std::string>& BaseWorld::getSpawnEntities() const
@@ -168,22 +144,6 @@
     
   }
 #endif //STUB_BaseWorld_unregisterSpawner
-
-#ifndef STUB_BaseWorld_spawnNewEntity
-//#define STUB_BaseWorld_spawnNewEntity
-  Ref<LocatedEntity> BaseWorld::spawnNewEntity(const std::string& name, const std::string& type, const Atlas::Objects::Entity::RootEntity&)
-  {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
-  }
-#endif //STUB_BaseWorld_spawnNewEntity
-
-#ifndef STUB_BaseWorld_moveToSpawn
-//#define STUB_BaseWorld_moveToSpawn
-  int BaseWorld::moveToSpawn(const std::string& name, Location& location)
-  {
-    return 0;
-  }
-#endif //STUB_BaseWorld_moveToSpawn
 
 #ifndef STUB_BaseWorld_message
 //#define STUB_BaseWorld_message

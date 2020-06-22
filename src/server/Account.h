@@ -59,27 +59,7 @@ class Account : public ConnectableRouter {
      */
     std::map<long, std::unique_ptr<ExternalMind>> m_minds;
 
-    Ref<LocatedEntity> addNewCharacter(const Atlas::Objects::Entity::RootEntity &,
-                                    const Atlas::Objects::Root &, OpVector& res);
     void characterDestroyed(long);
-
-    /// \brief Check a character creation op is within the privelege levels
-    /// of this account.
-    ///
-    /// @param op The full operation used for error reporting
-    /// @param ent A RootEntity representing the character to be created
-    /// @param res Any resulting error is returned here
-    virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Root & ent,
-                               OpVector & res) const = 0;
-
-    virtual void createObject(const Atlas::Objects::Root &,
-                              const Operation &,
-                              OpVector &);
-
-    /// \brief Creates a new entity for a character.
-    virtual Ref<LocatedEntity> createCharacterEntity(const Atlas::Objects::Entity::RootEntity &,
-                                    const Atlas::Objects::Root &);
 
     virtual void processExternalOperation(const Operation & op, OpVector& res);
 
@@ -129,7 +109,6 @@ class Account : public ConnectableRouter {
     virtual void GetOperation(const Operation &, OpVector &);
     virtual void OtherOperation(const Operation &, OpVector &);
     virtual void PossessOperation(const Operation &, OpVector &);
-    virtual void SpawnOperation(const Operation &, OpVector &);
 
     void addCharacter(const Ref<LocatedEntity>&);
 

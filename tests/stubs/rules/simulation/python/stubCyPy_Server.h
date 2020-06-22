@@ -40,13 +40,5 @@
   }
 #endif //STUB_CyPy_Server_get_alias_entity
 
-#ifndef STUB_CyPy_Server_move_to_spawn
-//#define STUB_CyPy_Server_move_to_spawn
-  Py::Object CyPy_Server::move_to_spawn(const Py::Tuple& args)
-  {
-    return *static_cast<Py::Object*>(nullptr);
-  }
-#endif //STUB_CyPy_Server_move_to_spawn
-
 
 #endif

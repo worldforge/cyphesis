@@ -105,41 +105,6 @@ ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const {
     return new AdminMind(strId, id, entity);
 }
 
-Ref<LocatedEntity> Admin::createCharacterEntity(const RootEntity & ent,
-                                         const Root & arg)
-{
-    auto& world = m_connection->m_server.m_world;
-    Element spawn;
-    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
-        Location new_loc;
-        world.moveToSpawn(spawn.String(), new_loc);
-        new_loc.addToEntity(ent);
-    }
-    return world.addNewEntity(arg->getParent(), ent);
-}
-
-
-void Admin::addToMessage(MapType & omap) const
-{
-    Account::addToMessage(omap);
-//    ListType & typeList = (omap["character_types"] = ListType()).asList();
-//    Root character_type = Inheritance::instance().getClass("character");
-//    if (character_type.isValid()) {
-//        addTypeToList(character_type, typeList);
-//    }
-}
-
-void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity & ent) const
-{
-    Account::addToEntity(ent);
-//    ListType typeList;
-//    Root character_type = Inheritance::instance().getClass("character");
-//    if (character_type.isValid()) {
-//        addTypeToList(character_type, typeList);
-//    }
-//    ent->setAttrValue("character_types", typeList);
-}
-
 /// \brief Function to monitor server operations
 ///
 /// This function is connected to the WorldRouter operation dispatch
@@ -154,20 +119,6 @@ void Admin::opDispatched(const Operation& op)
             m_monitorConnection.disconnect();
         }
     }
-}
-
-int Admin::characterError(const Operation & op,
-                          const Root & ent, OpVector & res) const
-{
-    if (!ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
-        error(op, "You cannot create a character with no type.", res, getId());
-        return -1;
-    }
-    if (ent->getParent().empty()) {
-        error(op, "You cannot create a character with empty type.", res, getId());
-        return -1;
-    }
-    return 0;
 }
 
 void Admin::LogoutOperation(const Operation & op, OpVector & res)
@@ -318,10 +269,15 @@ void Admin::SetOperation(const Operation & op, OpVector & res)
     }
 }
 
-void Admin::createObject(const Root & arg,
-                           const Operation & op,
-                           OpVector & res)
+
+void Admin::CreateOperation(const Operation& op, OpVector& res)
 {
+    const std::vector<Root>& args = op->getArgs();
+    if (args.empty()) {
+        return;
+    }
+
+    auto& arg = args.front();
     auto& type_str = arg->getParent();
     const std::string & objtype = arg->getObjtype();
     if (objtype == "class" || objtype == "op_definition") {
@@ -375,7 +331,7 @@ void Admin::createObject(const Root & arg,
         }
         res.push_back(info);
     } else {
-        Account::createObject(arg, op, res);
+        Account::CreateOperation(op, res);
     }
 }
 

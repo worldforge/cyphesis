@@ -53,8 +53,6 @@ add_library(rulessimulation
         ModifiersProperty.cpp
         ModifySelfProperty.cpp
         CorePropertyManager.cpp
-        SpawnEntity.cpp
-        Spawn.h
         WorldRouter.cpp
         VisibilityDistanceProperty.cpp
         ContainerAccessProperty.cpp

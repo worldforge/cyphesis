@@ -31,16 +31,9 @@
 class ServerAccount : public Account {
   protected:
 
-    int characterError(const Operation & op,
-                       const Atlas::Objects::Root & ent,
-                       OpVector & res) const override;
+//    Ref<LocatedEntity> addNewEntity(const Atlas::Objects::Entity::RootEntity &,
+//                                 const Atlas::Objects::Root &);
 
-    Ref<LocatedEntity> addNewEntity(const Atlas::Objects::Entity::RootEntity &,
-                                 const Atlas::Objects::Root &);
-
-    void createObject(const Atlas::Objects::Root &,
-                      const Operation &,
-                      OpVector &) override;
   public:
     ServerAccount(Connection * conn, const std::string & username,
                   const std::string & passwd,

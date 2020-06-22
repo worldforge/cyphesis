@@ -216,69 +216,6 @@ void Account::sendUpdateToClient()
     }
 }
 
-
-/// \brief Create a new Character and add it to this Account
-///
-/// @param typestr The type name of the Character to be created
-/// @param ent Atlas description of the Character to be created
-Ref<LocatedEntity> Account::addNewCharacter(const RootEntity& ent,
-                                            const Root& arg, OpVector& res)
-{
-    if (m_connection == nullptr) {
-        return nullptr;
-    }
-    //Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
-    ent->setAttr("mind", Atlas::Message::Element());
-    ent->setAttr(AccountProperty::property_name, username());
-    debug_print("Account::Add_character")
-    auto chr = createCharacterEntity(ent, arg);
-    if (!chr) {
-        return nullptr;
-    }
-
-    // Inform the client of the newly created character
-    Sight sight;
-    sight->setTo(getId());
-    Anonymous sight_arg;
-    chr->addToEntity(sight_arg);
-    sight->setArgs1(sight_arg);
-    res.push_back(sight);
-
-    if (!chr->m_location.isValid()) {
-        log(WARNING, String::compose("Account %1 created character %2 with invalid location.", getId(), chr->describeEntity()));
-    }
-
-    //Check if we also should possess the newly created character.
-    Element possessElem;
-    if (arg->copyAttr("possess", possessElem) == 0 && possessElem.isInt()) {
-        connectCharacter(chr.get(), res);
-    }
-
-    logEvent(TAKE_CHAR, String::compose("%1 %2 %3 Created character (%4) "
-                                        "by account %5",
-                                        m_connection->getId(),
-                                        getId(),
-                                        chr->getId(),
-                                        chr->getType(),
-                                        m_username));
-
-    return chr;
-}
-
-Ref<LocatedEntity> Account::createCharacterEntity(const RootEntity& ent,
-                                                  const Root& arg)
-{
-    Element spawn;
-    if (arg->copyAttr("spawn_name", spawn) == 0 && spawn.isString()) {
-        BaseWorld& world = m_connection->m_server.m_world;
-        return world.spawnNewEntity(spawn.String(), arg->getParent(), ent);
-    } else {
-        log(WARNING, "Client tried to create character out of spawn.");
-        return nullptr;
-    }
-}
-
-
 void Account::LogoutOperation(const Operation& op, OpVector& res)
 {
     if (m_connection == nullptr) {
@@ -495,96 +432,39 @@ void Account::operation(const Operation& op, OpVector& res)
     }
 }
 
-void Account::SpawnOperation(const Operation& op, OpVector& res)
-{
-    BaseWorld& world = m_connection->m_server.m_world;
-    auto& spawnEntities = world.getSpawnEntities();
-    if (!op->isDefaultTo()) {
-        if (spawnEntities.find(op->getTo()) != spawnEntities.end()) {
-            auto entity = world.getEntity(op->getTo());
-            entity->operation(op, res);
-        } else {
-            error(op, "Spawn operation directed to entity which is not registered as spawn", res, getId());
-        }
-    }
-}
-
-
 void Account::CreateOperation(const Operation& op, OpVector& res)
 {
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
+        error(op, "No arguments.", res, getId());
         return;
     }
 
     auto& arg = args.front();
     if (arg->isDefaultId()) {
+        error(op, "No id in first argument.", res, getId());
         return;
     }
     BaseWorld& world = m_connection->m_server.m_world;
+    //Check that the destination is registered as a "spawn entity". Only those entities are allowed to receive Create ops from an Account.
     if (world.getSpawnEntities().find(arg->getId()) == world.getSpawnEntities().end()) {
+        error(op, "Could not find spawn entity.", res, getId());
         return;
     }
     auto spawnEntity = world.getEntity(arg->getId());
     if (!spawnEntity) {
+        error(op, "Could not find spawn entity.", res, getId());
         return;
     }
 
     //"__account" property is important, since when installed it will call back into this account, informing it of the new entity.
-    arg->setAttr("__account", m_username);
+    arg->setAttr(AccountProperty::property_name, m_username);
     Create create;
     create->setTo(spawnEntity->getId());
     create->setArgs1(arg);
     spawnEntity->sendWorld(create);
 }
 
-void Account::createObject(const Root& arg,
-                           const Operation& op,
-                           OpVector& res)
-{
-    if (characterError(op, arg, res) != 0) {
-        return;
-    }
-
-    debug_print("Account creating a " << arg->getParent() << " object")
-
-    Anonymous new_character;
-    new_character->setParent(arg->getParent());
-    if (!arg->isDefaultName()) {
-        new_character->setName(arg->getName());
-    }
-    Atlas::Message::Element sexElement;
-    if (arg->copyAttr("sex", sexElement) == 0 && sexElement.isString()) {
-        if (sexElement.String() == "male" || sexElement.String() == "female") {
-            new_character->setAttr("sex", sexElement);
-        }
-    }
-
-    auto entity = addNewCharacter(new_character, arg, res);
-
-    if (entity == nullptr) {
-        clientError(op, "Character creation failed", res, getId());
-        return;
-    }
-
-//    auto character = dynamic_cast<Character *>(entity.get());
-//    if (character != nullptr) {
-//        // Inform the client that it has successfully subscribed
-//        Info info;
-//        Anonymous info_arg;
-//        entity->addToEntity(info_arg);
-//        info->setArgs1(info_arg);
-//        res.push_back(info);
-//    }
-//
-//    // Inform the client of the newly created character
-//    Sight sight;
-//    sight->setTo(getId());
-//    Anonymous sight_arg;
-//    addToEntity(sight_arg);
-//    sight->setArgs1(sight_arg);
-//    res.push_back(sight);
-}
 
 void Account::SetOperation(const Operation& op, OpVector& res)
 {
