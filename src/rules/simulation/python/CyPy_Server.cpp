@@ -32,6 +32,7 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
 
     add_noargs_method("get_limbo_location", &CyPy_Server::get_limbo_location, "The limbo location, if set.");
     add_varargs_method("move_to_spawn", &CyPy_Server::move_to_spawn, "Configures the supplied Location for the named spawn.");
+    add_varargs_method("get_alias_entity", &CyPy_Server::get_alias_entity, "Gets an entity registered by an alias, if available.");
 
 
     CyPy_Entity::init_type();
@@ -81,6 +82,17 @@ Py::Object CyPy_Server::get_limbo_location()
     }
     return CyPy_LocatedEntity::wrap(Ref<LocatedEntity>(limboLocation));
 }
+
+Py::Object CyPy_Server::get_alias_entity(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto entity = BaseWorld::instance().getAliasEntity(verifyString(args.front()));
+    if (!entity) {
+        return Py::None();
+    }
+    return CyPy_LocatedEntity::wrap(Ref<LocatedEntity>(entity));
+}
+
 
 Py::Object CyPy_Server::move_to_spawn(const Py::Tuple& args)
 {

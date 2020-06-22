@@ -32,10 +32,10 @@ static const bool debug_flag = false;
 ///
 /// Protected as BaseWorld is a base class.
 BaseWorld::BaseWorld() :
-    m_initTime(std::chrono::steady_clock::now()),
-    m_isSuspended(false),
-    m_defaultLocation(nullptr),
-    m_limboLocation(nullptr)
+        m_initTime(std::chrono::steady_clock::now()),
+        m_isSuspended(false),
+        m_defaultLocation(nullptr),
+        m_limboLocation(nullptr)
 {
 }
 
@@ -95,6 +95,40 @@ LocatedEntity* BaseWorld::getLimboLocation() const
 void BaseWorld::setLimboLocation(LocatedEntity* entity)
 {
     m_limboLocation = entity;
+}
+
+
+void BaseWorld::registerAlias(std::string alias, LocatedEntity& entity)
+{
+    auto I = m_entityAliases.emplace(alias, &entity);
+    if (!I.second) {
+        if (I.first->second != &entity) {
+            log(WARNING, String::compose("Tried to register entity %1 with alias %2, which already is connected to entity %3.", entity.describeEntity(), alias, I.first->second->describeEntity()));
+        }
+    }
+}
+
+void BaseWorld::deregisterAlias(const std::string& alias, LocatedEntity& entity)
+{
+    auto I = m_entityAliases.find(alias);
+    if (I != m_entityAliases.end()) {
+        if (I->second == &entity) {
+            m_entityAliases.erase(I);
+        } else {
+            log(WARNING, String::compose("Tried to deregister entity %1 from alias %2, which is connected to entity %3.", entity.describeEntity(), alias, I->second->describeEntity()));
+        }
+    } else {
+        log(WARNING, String::compose("Tried to deregister entity %1 from alias %2, which has no entry.", entity.describeEntity(), alias));
+    }
+}
+
+LocatedEntity* BaseWorld::getAliasEntity(const std::string& alias) const
+{
+    auto I = m_entityAliases.find(alias);
+    if (I != m_entityAliases.end()) {
+        return I->second;
+    }
+    return nullptr;
 }
 
 void BaseWorld::setIsSuspended(bool suspended)

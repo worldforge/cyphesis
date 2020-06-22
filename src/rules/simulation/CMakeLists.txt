@@ -61,7 +61,8 @@ add_library(rulessimulation
         ContainerAccessProperty.cpp
         ContainersActiveProperty.cpp
         TerrainPointsProperty.cpp
-        FilterProperty.cpp)
+        FilterProperty.cpp
+        AliasProperty.cpp)
 
 target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
 

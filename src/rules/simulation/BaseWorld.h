@@ -70,6 +70,8 @@ class BaseWorld : public Singleton<BaseWorld>
 
         LocatedEntity* m_limboLocation;
 
+        std::map<std::string, LocatedEntity*> m_entityAliases;
+
         explicit BaseWorld();
 
         /// \brief Called when the world is resumed.
@@ -123,6 +125,10 @@ class BaseWorld : public Singleton<BaseWorld>
         /// filling up with inactive entities.
         void setLimboLocation(LocatedEntity* entity);
 
+        void registerAlias(std::string alias, LocatedEntity& entity);
+        void deregisterAlias(const std::string& alias, LocatedEntity& entity);
+
+        LocatedEntity* getAliasEntity(const std::string& alias) const;
 
         /// \brief Read only accessor for the in-game time.
         double getTime() const;

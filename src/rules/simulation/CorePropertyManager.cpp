@@ -68,6 +68,7 @@
 #include "VisibilityDistanceProperty.h"
 #include "TerrainPointsProperty.h"
 #include "FilterProperty.h"
+#include "AliasProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 
@@ -272,6 +273,7 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
      */
     installProperty<FilterProperty>("destination_constraint");
 
+    installProperty<AliasProperty>();
 
 }
 
