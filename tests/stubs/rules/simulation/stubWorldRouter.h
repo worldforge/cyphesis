@@ -104,6 +104,30 @@
   }
 #endif //STUB_WorldRouter_getSpawnList
 
+#ifndef STUB_WorldRouter_getSpawnEntities
+//#define STUB_WorldRouter_getSpawnEntities
+  const std::set<std::string>& WorldRouter::getSpawnEntities() const
+  {
+    static std::set<std::string> instance; return instance;
+  }
+#endif //STUB_WorldRouter_getSpawnEntities
+
+#ifndef STUB_WorldRouter_registerSpawner
+//#define STUB_WorldRouter_registerSpawner
+  void WorldRouter::registerSpawner(const std::string& id)
+  {
+    
+  }
+#endif //STUB_WorldRouter_registerSpawner
+
+#ifndef STUB_WorldRouter_unregisterSpawner
+//#define STUB_WorldRouter_unregisterSpawner
+  void WorldRouter::unregisterSpawner(const std::string& id)
+  {
+    
+  }
+#endif //STUB_WorldRouter_unregisterSpawner
+
 #ifndef STUB_WorldRouter_spawnNewEntity
 //#define STUB_WorldRouter_spawnNewEntity
   Ref<LocatedEntity> WorldRouter::spawnNewEntity(const std::string&, const std::string&, const Atlas::Objects::Entity::RootEntity&)

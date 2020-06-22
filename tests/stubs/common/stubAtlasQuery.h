@@ -23,21 +23,5 @@
   }
 #endif //STUB_AtlasQuery_find
 
-#ifndef STUB_AtlasQuery_find
-//#define STUB_AtlasQuery_find
-   void AtlasQuery::find(Atlas::Message::Element& element, const std::string& name, const std::function<void(T&)>& callback)
-  {
-    
-  }
-#endif //STUB_AtlasQuery_find
-
-#ifndef STUB_AtlasQuery_find
-//#define STUB_AtlasQuery_find
-   void AtlasQuery::find(Atlas::Message::MapType& map, const std::string& name, const std::function<void(T&)>& callback)
-  {
-    
-  }
-#endif //STUB_AtlasQuery_find
-
 
 #endif

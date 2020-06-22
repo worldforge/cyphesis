@@ -11,7 +11,7 @@
 //#define STUB_BaseWorld_BaseWorld
    BaseWorld::BaseWorld()
     : Singleton()
-    , m_defaultLocation(nullptr),m_limboLocation(nullptr)
+    , m_defaultLocation(nullptr)
   {
     
   }
@@ -57,21 +57,29 @@
   }
 #endif //STUB_BaseWorld_setDefaultLocation
 
-#ifndef STUB_BaseWorld_getLimboLocation
-//#define STUB_BaseWorld_getLimboLocation
-  LocatedEntity* BaseWorld::getLimboLocation() const
-  {
-    return nullptr;
-  }
-#endif //STUB_BaseWorld_getLimboLocation
-
-#ifndef STUB_BaseWorld_setLimboLocation
-//#define STUB_BaseWorld_setLimboLocation
-  void BaseWorld::setLimboLocation(LocatedEntity* entity)
+#ifndef STUB_BaseWorld_registerAlias
+//#define STUB_BaseWorld_registerAlias
+  void BaseWorld::registerAlias(std::string alias, LocatedEntity& entity)
   {
     
   }
-#endif //STUB_BaseWorld_setLimboLocation
+#endif //STUB_BaseWorld_registerAlias
+
+#ifndef STUB_BaseWorld_deregisterAlias
+//#define STUB_BaseWorld_deregisterAlias
+  void BaseWorld::deregisterAlias(const std::string& alias, LocatedEntity& entity)
+  {
+    
+  }
+#endif //STUB_BaseWorld_deregisterAlias
+
+#ifndef STUB_BaseWorld_getAliasEntity
+//#define STUB_BaseWorld_getAliasEntity
+  LocatedEntity* BaseWorld::getAliasEntity(const std::string& alias) const
+  {
+    return nullptr;
+  }
+#endif //STUB_BaseWorld_getAliasEntity
 
 #ifndef STUB_BaseWorld_getTime
 //#define STUB_BaseWorld_getTime
@@ -136,6 +144,30 @@
     return 0;
   }
 #endif //STUB_BaseWorld_getSpawnList
+
+#ifndef STUB_BaseWorld_getSpawnEntities
+//#define STUB_BaseWorld_getSpawnEntities
+  const std::set<std::string>& BaseWorld::getSpawnEntities() const
+  {
+    static std::set<std::string> instance; return instance;
+  }
+#endif //STUB_BaseWorld_getSpawnEntities
+
+#ifndef STUB_BaseWorld_registerSpawner
+//#define STUB_BaseWorld_registerSpawner
+  void BaseWorld::registerSpawner(const std::string& id)
+  {
+    
+  }
+#endif //STUB_BaseWorld_registerSpawner
+
+#ifndef STUB_BaseWorld_unregisterSpawner
+//#define STUB_BaseWorld_unregisterSpawner
+  void BaseWorld::unregisterSpawner(const std::string& id)
+  {
+    
+  }
+#endif //STUB_BaseWorld_unregisterSpawner
 
 #ifndef STUB_BaseWorld_spawnNewEntity
 //#define STUB_BaseWorld_spawnNewEntity

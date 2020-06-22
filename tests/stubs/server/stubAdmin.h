@@ -9,7 +9,7 @@
 
 #ifndef STUB_Admin_createCharacterEntity
 //#define STUB_Admin_createCharacterEntity
-  Ref<LocatedEntity> Admin::createCharacterEntity(const Atlas::Objects::Entity::RootEntity &, const Atlas::Objects::Root &)
+  Ref<LocatedEntity> Admin::createCharacterEntity(const Atlas::Objects::Entity::RootEntity&, const Atlas::Objects::Root&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_Admin_characterError
 //#define STUB_Admin_characterError
-  int Admin::characterError(const Operation & op, const Atlas::Objects::Root & ent, OpVector & res) const
+  int Admin::characterError(const Operation& op, const Atlas::Objects::Root& ent, OpVector& res) const
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_Admin_createObject
 //#define STUB_Admin_createObject
-  void Admin::createObject(const Atlas::Objects::Root &, const Operation &, OpVector &)
+  void Admin::createObject(const Atlas::Objects::Root&, const Operation&, OpVector&)
   {
     
   }
@@ -55,9 +55,17 @@
   }
 #endif //STUB_Admin_createMind
 
+#ifndef STUB_Admin_processExternalOperation
+//#define STUB_Admin_processExternalOperation
+  void Admin::processExternalOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Admin_processExternalOperation
+
 #ifndef STUB_Admin_Admin
 //#define STUB_Admin_Admin
-   Admin::Admin(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)
+   Admin::Admin(Connection* conn, const std::string& username, const std::string& passwd, const std::string& id, long intId)
     : Account(conn, username, passwd, id, intId)
   {
     
@@ -82,7 +90,7 @@
 
 #ifndef STUB_Admin_addToMessage
 //#define STUB_Admin_addToMessage
-  void Admin::addToMessage(Atlas::Message::MapType &) const
+  void Admin::addToMessage(Atlas::Message::MapType&) const
   {
     
   }
@@ -90,7 +98,7 @@
 
 #ifndef STUB_Admin_addToEntity
 //#define STUB_Admin_addToEntity
-  void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
+  void Admin::addToEntity(const Atlas::Objects::Entity::RootEntity&) const
   {
     
   }
@@ -98,7 +106,7 @@
 
 #ifndef STUB_Admin_LogoutOperation
 //#define STUB_Admin_LogoutOperation
-  void Admin::LogoutOperation(const Operation &, OpVector &)
+  void Admin::LogoutOperation(const Operation&, OpVector&)
   {
     
   }
@@ -106,7 +114,7 @@
 
 #ifndef STUB_Admin_GetOperation
 //#define STUB_Admin_GetOperation
-  void Admin::GetOperation(const Operation &, OpVector &)
+  void Admin::GetOperation(const Operation&, OpVector&)
   {
     
   }
@@ -114,7 +122,7 @@
 
 #ifndef STUB_Admin_SetOperation
 //#define STUB_Admin_SetOperation
-  void Admin::SetOperation(const Operation &, OpVector &)
+  void Admin::SetOperation(const Operation&, OpVector&)
   {
     
   }
@@ -122,7 +130,7 @@
 
 #ifndef STUB_Admin_OtherOperation
 //#define STUB_Admin_OtherOperation
-  void Admin::OtherOperation(const Operation &, OpVector &)
+  void Admin::OtherOperation(const Operation&, OpVector&)
   {
     
   }
@@ -130,7 +138,7 @@
 
 #ifndef STUB_Admin_customMonitorOperation
 //#define STUB_Admin_customMonitorOperation
-  void Admin::customMonitorOperation(const Operation &, OpVector &)
+  void Admin::customMonitorOperation(const Operation&, OpVector&)
   {
     
   }

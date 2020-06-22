@@ -34,8 +34,7 @@ static const bool debug_flag = false;
 BaseWorld::BaseWorld() :
         m_initTime(std::chrono::steady_clock::now()),
         m_isSuspended(false),
-        m_defaultLocation(nullptr),
-        m_limboLocation(nullptr)
+        m_defaultLocation(nullptr)
 {
 }
 
@@ -86,17 +85,6 @@ void BaseWorld::setDefaultLocation(LocatedEntity* entity)
 {
     m_defaultLocation = entity;
 }
-
-LocatedEntity* BaseWorld::getLimboLocation() const
-{
-    return m_limboLocation;
-}
-
-void BaseWorld::setLimboLocation(LocatedEntity* entity)
-{
-    m_limboLocation = entity;
-}
-
 
 void BaseWorld::registerAlias(std::string alias, LocatedEntity& entity)
 {

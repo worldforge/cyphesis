@@ -22,7 +22,6 @@ add_library(rulessimulation
         SuspendedProperty.cpp
         DefaultLocationProperty.cpp
         DomainProperty.cpp
-        LimboProperty.cpp
         PhysicalDomain.cpp
         VoidDomain.cpp
         InventoryDomain.cpp

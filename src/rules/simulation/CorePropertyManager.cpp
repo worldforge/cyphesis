@@ -35,7 +35,6 @@
 #include "rules/simulation/EntityProperty.h"
 #include "rules/simulation/DefaultLocationProperty.h"
 #include "rules/simulation/DomainProperty.h"
-#include "rules/simulation/LimboProperty.h"
 #include "rules/simulation/ModeProperty.h"
 #include "rules/simulation/PropelProperty.h"
 #include "rules/simulation/DensityProperty.h"
@@ -113,7 +112,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<BoolProperty>("immortal");
     installProperty<DefaultLocationProperty>();
     installProperty<DomainProperty>();
-    installProperty<LimboProperty>();
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();
     installProperty<AdminProperty>();

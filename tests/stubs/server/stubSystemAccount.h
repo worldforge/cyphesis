@@ -9,7 +9,7 @@
 
 #ifndef STUB_SystemAccount_SystemAccount
 //#define STUB_SystemAccount_SystemAccount
-   SystemAccount::SystemAccount(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)
+   SystemAccount::SystemAccount(Connection* conn, const std::string& username, const std::string& passwd, const std::string& id, long intId)
     : Admin(conn, username, passwd, id, intId)
   {
     
@@ -39,6 +39,14 @@
     return false;
   }
 #endif //STUB_SystemAccount_isPersisted
+
+#ifndef STUB_SystemAccount_processExternalOperation
+//#define STUB_SystemAccount_processExternalOperation
+  void SystemAccount::processExternalOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_SystemAccount_processExternalOperation
 
 
 #endif

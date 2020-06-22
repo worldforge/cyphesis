@@ -45,24 +45,14 @@ bool SystemAccount::isPersisted() const
 
 void SystemAccount::processExternalOperation(const Operation& op, OpVector& res)
 {
-    if (!op->isDefaultTo()) {
-        if (op->getTo() != getId()) {
+    //Allow system accounts to send operations directly to other entities.
+    if (!op->isDefaultTo() && op->getTo() != getId()) {
             auto entity = m_connection->m_server.getWorld().getEntity(op->getTo());
             if (entity) {
                 entity->operation(op, res);
             }
             return;
-        }
-    }
-
-    auto op_no = op->getClassNo();
-    switch (op_no) {
-        case Atlas::Objects::Operation::CREATE_NO:
-            //Allow system accounts to create new entities directly.
-            CreateOperation(op, res);
-            break;
-        default:
-            Account::processExternalOperation(op, res);
-            break;
+    } else {
+        Account::processExternalOperation(op, res);
     }
 }

@@ -217,6 +217,14 @@
   }
 #endif //STUB_Account_PossessOperation
 
+#ifndef STUB_Account_SpawnOperation
+//#define STUB_Account_SpawnOperation
+  void Account::SpawnOperation(const Operation &, OpVector &)
+  {
+    
+  }
+#endif //STUB_Account_SpawnOperation
+
 #ifndef STUB_Account_addCharacter
 //#define STUB_Account_addCharacter
   void Account::addCharacter(const Ref<LocatedEntity>&)
@@ -224,6 +232,14 @@
     
   }
 #endif //STUB_Account_addCharacter
+
+#ifndef STUB_Account_sendUpdateToClient
+//#define STUB_Account_sendUpdateToClient
+  void Account::sendUpdateToClient()
+  {
+    
+  }
+#endif //STUB_Account_sendUpdateToClient
 
 #ifndef STUB_Account_setConnection
 //#define STUB_Account_setConnection

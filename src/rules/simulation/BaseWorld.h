@@ -68,8 +68,6 @@ class BaseWorld : public Singleton<BaseWorld>
 
         LocatedEntity* m_defaultLocation;
 
-        LocatedEntity* m_limboLocation;
-
         std::map<std::string, LocatedEntity*> m_entityAliases;
 
         explicit BaseWorld();
@@ -109,21 +107,6 @@ class BaseWorld : public Singleton<BaseWorld>
         /// If a null value is provided the default location will revert back
         /// to the root world.
         void setDefaultLocation(LocatedEntity* entity);
-
-        /// \brief Gets the limbo location.
-        ///
-        /// This is where player entities will be moved when they are deleted without
-        /// there being an active connection. This is to prevent the active world from
-        /// filling up with inactive entities.
-        /// \returns A valid limbo entity, or null if none is set.
-        LocatedEntity* getLimboLocation() const;
-
-        /// \brief Sets the limbo location.
-        ///
-        /// This is where player entities will be moved when they are deleted without
-        /// there being an active connection. This is to prevent the active world from
-        /// filling up with inactive entities.
-        void setLimboLocation(LocatedEntity* entity);
 
         void registerAlias(std::string alias, LocatedEntity& entity);
         void deregisterAlias(const std::string& alias, LocatedEntity& entity);

@@ -69,6 +69,16 @@ struct TestWorld : public BaseWorld {
                          LocatedEntity *) override { return 0; }
     int removeSpawnPoint(LocatedEntity *) override {return 0; }
     int getSpawnList(Atlas::Message::ListType & data) override { return 0; }
+
+     const std::set<std::string>& getSpawnEntities() const override {
+        static std::set<std::string> spawns;
+        return spawns;
+    }
+
+     void registerSpawner(const std::string& id) override {}
+
+     void unregisterSpawner(const std::string& id) override {}
+
     Ref<LocatedEntity> spawnNewEntity(const std::string & name,
                                    const std::string & type,
                                    const Atlas::Objects::Entity::RootEntity & desc) override

@@ -32,13 +32,13 @@
   }
 #endif //STUB_CyPy_Server_init
 
-#ifndef STUB_CyPy_Server_get_limbo_location
-//#define STUB_CyPy_Server_get_limbo_location
-  Py::Object CyPy_Server::get_limbo_location()
+#ifndef STUB_CyPy_Server_get_alias_entity
+//#define STUB_CyPy_Server_get_alias_entity
+  Py::Object CyPy_Server::get_alias_entity(const Py::Tuple& args)
   {
     return *static_cast<Py::Object*>(nullptr);
   }
-#endif //STUB_CyPy_Server_get_limbo_location
+#endif //STUB_CyPy_Server_get_alias_entity
 
 #ifndef STUB_CyPy_Server_move_to_spawn
 //#define STUB_CyPy_Server_move_to_spawn

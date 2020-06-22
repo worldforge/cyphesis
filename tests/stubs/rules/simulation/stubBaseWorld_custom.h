@@ -5,7 +5,7 @@
 #define STUB_BaseWorld_BaseWorld
 
 BaseWorld::BaseWorld()
-    : m_defaultLocation(nullptr), m_limboLocation(nullptr) {
+    : m_defaultLocation(nullptr){
 }
 
 #endif //STUB_BaseWorld_BaseWorld

@@ -184,7 +184,6 @@ int main()
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/VisibilityProperty.h"
 #include "rules/simulation/DefaultLocationProperty.h"
-#include "rules/simulation/LimboProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/python/ScriptsProperty.h"
 #include "../stubs/rules/simulation/stubEntity.h"
@@ -203,7 +202,6 @@ int main()
 #include "../stubs/rules/simulation/stubTasksProperty.h"
 #include "../stubs/rules/simulation/stubSpawnProperty.h"
 #include "../stubs/rules/simulation/stubDefaultLocationProperty.h"
-#include "../stubs/rules/simulation/stubLimboProperty.h"
 #include "../stubs/rules/simulation/stubDomainProperty.h"
 #include "../stubs/rules/simulation/stubSuspendedProperty.h"
 #include "../stubs/rules/simulation/stubModeProperty.h"
@@ -232,6 +230,7 @@ int main()
 #include "../stubs/rules/simulation/stubVisibilityDistanceProperty.h"
 #include "../stubs/rules/simulation/stubFilterProperty.h"
 #include "../stubs/rules/entityfilter/stubFilter.h"
+#include "../stubs/rules/simulation/stubAliasProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

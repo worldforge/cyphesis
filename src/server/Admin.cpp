@@ -418,18 +418,14 @@ void Admin::customMonitorOperation(const Operation & op, OpVector & res)
 
 void Admin::processExternalOperation(const Operation& op, OpVector& res)
 {
-    auto op_no = op->getClassNo();
-    switch (op_no) {
-        case Atlas::Objects::Operation::CREATE_NO:
-            //Allow admin accounts to create new entities directly.
-            CreateOperation(op, res);
-            break;
-        default:
-            Account::processExternalOperation(op, res);
-            break;
+    //Allow admin accounts to send operations directly to other entities.
+    if (!op->isDefaultTo() && op->getTo() != getId()) {
+        auto entity = m_connection->m_server.getWorld().getEntity(op->getTo());
+        if (entity) {
+            entity->operation(op, res);
+        }
+        return;
+    } else {
+        Account::processExternalOperation(op, res);
     }
 }
-
-// There used to be a code operation handler here. It may become desirable in
-// the future for the admin account to be able to send script fragments.
-// Think about implementing this.
