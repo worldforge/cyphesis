@@ -51,7 +51,7 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
 {
     assert(!m_wrapper.isNull());
     std::string op_name = op_type + "_operation";
-    debug_print("Got script object for " << op_name);
+    debug_print("Got script " << this->m_wrapper.type().str() << " on object " << this->m_wrapper.str() << " for " << op_name);
     if (!m_wrapper.hasAttr(op_name)) {
         debug_print("No method to be found for " << op_name);
         return OPERATION_IGNORED;
