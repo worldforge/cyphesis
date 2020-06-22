@@ -366,7 +366,11 @@ void BaseMind::ErrorOperation(const Operation& op, OpVector& res)
         Atlas::Message::Element message;
         if (arg->copyAttr("message", message) == 0) {
             if (message.isString()) {
-                log(WARNING, String::compose("Error from server: %1", message.String()));
+                if (getEntity()) {
+                    log(WARNING, String::compose("BaseMind %1, entity %2, error from server: %3", getId(), getEntity()->describeEntity(), message.String()));
+                } else {
+                    log(WARNING, String::compose("BaseMind %1, error from server: %2", getId(), message.String()));
+                }
             }
         }
     }
