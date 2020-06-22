@@ -11,7 +11,6 @@
 //#define STUB_BaseWorld_BaseWorld
    BaseWorld::BaseWorld()
     : Singleton()
-    , m_defaultLocation(nullptr)
   {
     
   }
@@ -40,22 +39,6 @@
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }
 #endif //STUB_BaseWorld_getEntity
-
-#ifndef STUB_BaseWorld_getDefaultLocation
-//#define STUB_BaseWorld_getDefaultLocation
-  LocatedEntity& BaseWorld::getDefaultLocation() const
-  {
-    return *static_cast<LocatedEntity*>(nullptr);
-  }
-#endif //STUB_BaseWorld_getDefaultLocation
-
-#ifndef STUB_BaseWorld_setDefaultLocation
-//#define STUB_BaseWorld_setDefaultLocation
-  void BaseWorld::setDefaultLocation(LocatedEntity* entity)
-  {
-    
-  }
-#endif //STUB_BaseWorld_setDefaultLocation
 
 #ifndef STUB_BaseWorld_registerAlias
 //#define STUB_BaseWorld_registerAlias

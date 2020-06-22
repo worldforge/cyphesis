@@ -27,13 +27,11 @@
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/TransientProperty.h"
 #include "rules/simulation/ServerBBoxProperty.h"
-#include "rules/simulation/SpawnProperty.h"
 #include "rules/simulation/AreaProperty.h"
 #include "rules/simulation/VisibilityProperty.h"
 #include "rules/simulation/SuspendedProperty.h"
 #include "rules/simulation/TasksProperty.h"
 #include "rules/simulation/EntityProperty.h"
-#include "rules/simulation/DefaultLocationProperty.h"
 #include "rules/simulation/DomainProperty.h"
 #include "rules/simulation/ModeProperty.h"
 #include "rules/simulation/PropelProperty.h"
@@ -110,7 +108,6 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<SuspendedProperty>();
     installProperty<TasksProperty>();
     installProperty<BoolProperty>("immortal");
-    installProperty<DefaultLocationProperty>();
     installProperty<DomainProperty>();
     installProperty<PropelProperty>();
     installProperty<DensityProperty>();

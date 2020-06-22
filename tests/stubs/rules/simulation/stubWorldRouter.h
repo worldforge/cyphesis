@@ -136,14 +136,6 @@
   }
 #endif //STUB_WorldRouter_findByType
 
-#ifndef STUB_WorldRouter_getDefaultLocation
-//#define STUB_WorldRouter_getDefaultLocation
-  LocatedEntity& WorldRouter::getDefaultLocation() const
-  {
-    return *static_cast<LocatedEntity*>(nullptr);
-  }
-#endif //STUB_WorldRouter_getDefaultLocation
-
 #ifndef STUB_WorldRouter_getOperationsHandler
 //#define STUB_WorldRouter_getOperationsHandler
   OperationsDispatcher<LocatedEntity>& WorldRouter::getOperationsHandler()

@@ -66,8 +66,6 @@ class BaseWorld : public Singleton<BaseWorld>
         /// without the simulation altering it.
         bool m_isSuspended;
 
-        LocatedEntity* m_defaultLocation;
-
         std::map<std::string, LocatedEntity*> m_entityAliases;
 
         explicit BaseWorld();
@@ -94,19 +92,6 @@ class BaseWorld : public Singleton<BaseWorld>
         {
             return m_eobjects;
         }
-
-        /// \brief Gets the default location.
-        ///
-        /// This is where entities will be created if nothing else is specified.
-        /// This will either return the root gameworld, or another entity if
-        /// setDefaultLocation() has been called.
-        virtual LocatedEntity& getDefaultLocation() const = 0;
-
-        /// \brief Sets the default location.
-        ///
-        /// If a null value is provided the default location will revert back
-        /// to the root world.
-        void setDefaultLocation(LocatedEntity* entity);
 
         void registerAlias(std::string alias, LocatedEntity& entity);
         void deregisterAlias(const std::string& alias, LocatedEntity& entity);

@@ -4,8 +4,7 @@
 #ifndef STUB_BaseWorld_BaseWorld
 #define STUB_BaseWorld_BaseWorld
 
-BaseWorld::BaseWorld()
-    : m_defaultLocation(nullptr){
+BaseWorld::BaseWorld(){
 }
 
 #endif //STUB_BaseWorld_BaseWorld

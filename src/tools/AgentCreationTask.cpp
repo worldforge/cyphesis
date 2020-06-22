@@ -47,9 +47,9 @@ void AgentCreationTask::setup(const std::string& arg, OpVector& res)
     Atlas::Objects::Entity::Anonymous cmap;
     cmap->setParent("creator");
     cmap->setName("cyphesis agent");
+    cmap->setLoc("0");
     cmap->setObjtype("obj");
     cmap->setAttr("__account", *m_account_name);
-//    cmap->setAttr("possess", 1);
     c->setArgs1(cmap);
     m_serial_no = newSerialNo();
     c->setSerialno(m_serial_no);

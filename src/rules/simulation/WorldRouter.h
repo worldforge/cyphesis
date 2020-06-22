@@ -36,7 +36,7 @@ class EntityBuilder;
 /// \brief WorldRouter encapsulates the game world running in the server.
 ///
 /// This class has one instance which manages the game world.
-/// It maintains a list of all ih-game (IG) objects in the server.
+/// It maintains a list of all in-game (IG) objects in the server.
 /// It explicitly also maintains lists of perceptive entities.
 class WorldRouter : public BaseWorld
 {
@@ -109,8 +109,6 @@ class WorldRouter : public BaseWorld
         friend class WorldRoutertest;
 
         friend class WorldRouterintegration;
-
-        LocatedEntity& getDefaultLocation() const override;
 
         OperationsDispatcher<LocatedEntity>& getOperationsHandler();
 };

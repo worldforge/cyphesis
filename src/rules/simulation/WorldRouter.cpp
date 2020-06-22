@@ -143,13 +143,11 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
     // Get location from entity, if it is present
     // The default attributes cannot contain info on location
     if (attrs.isValid() && attrs->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        const std::string& loc_id = attrs->getLoc();
-        loc = getEntity(loc_id);
+        loc = getEntity(attrs->getLoc());
     }
-    if (loc == nullptr) {
-        // If no info was provided, put the entity in the default location world.
-        //TODO: or should we? Perhaps better to require a location always.
-        loc = &getDefaultLocation();
+    if (!loc) {
+        log(ERROR, String::compose("Attempt to create an entity %1 without a valid parent.", ent->describeEntity()));
+        return nullptr;
     }
 
 
@@ -375,14 +373,6 @@ Ref<LocatedEntity> WorldRouter::findByType(const std::string& type)
         }
     }
     return nullptr;
-}
-
-LocatedEntity& WorldRouter::getDefaultLocation() const
-{
-    if (m_defaultLocation) {
-        return *m_defaultLocation;
-    }
-    return *m_baseEntity;
 }
 
 OperationsDispatcher<LocatedEntity>& WorldRouter::getOperationsHandler()
