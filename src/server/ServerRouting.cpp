@@ -36,7 +36,6 @@
 #include <Atlas/Objects/RootEntity.h>
 
 
-
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Objects::Entity::RootEntity;
@@ -53,12 +52,12 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
                              std::string name,
                              const std::string& id, long intId,
                              const std::string& lId, long lIntId) :
-    Router(id, intId),
-    m_svrRuleset(std::move(ruleset)),
-    m_svrName(std::move(name)),
-    m_lobby(new Lobby(*this, lId, lIntId)),
-    m_numClients(0),
-    m_world(wrld)
+        Router(id, intId),
+        m_svrRuleset(std::move(ruleset)),
+        m_svrName(std::move(name)),
+        m_lobby(new Lobby(*this, lId, lIntId)),
+        m_numClients(0),
+        m_world(wrld)
 {
     Monitors& monitors = Monitors::instance();
     monitors.insert("server", "cyphesis");
@@ -130,20 +129,18 @@ ConnectableRouter* ServerRouting::getObject(const std::string& id) const
 /// database.
 Account* ServerRouting::getAccountByName(const std::string& username)
 {
-    Account* account = nullptr;
     auto I = m_accounts.find(username);
     if (I != m_accounts.end()) {
-        account = I->second;
+        return I->second;
     } else {
-        account = Persistence::instance().getAccount(username);
-        if (account != nullptr) {
-            Persistence::instance().registerCharacters(*account,
-                                                       m_world.getEntities());
-            m_accounts[username] = account;
-            addObject(std::unique_ptr<Account>(account));
+        auto account = Persistence::instance().getAccount(username);
+        if (account) {
+            auto J = m_accounts.emplace(username, account.get());
+            addObject(std::move(account));
+            return J.first->second;
         }
     }
-    return account;
+    return nullptr;
 }
 
 void ServerRouting::addToMessage(MapType& omap) const

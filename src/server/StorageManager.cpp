@@ -88,9 +88,6 @@ StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& 
         m_insertQpsRing[i] = 0;
         m_updateQpsRing[i] = 0;
     }
-
-    Persistence::instance().characterAdded.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterAdded));
-    Persistence::instance().characterDeleted.connect(sigc::mem_fun(*this, &StorageManager::persistance_characterDeleted));
 }
 
 StorageManager::~StorageManager() = default;
@@ -134,19 +131,6 @@ void StorageManager::entityUpdated(LocatedEntity* ent)
     m_dirtyEntities.emplace_back(Ref<LocatedEntity>(ent));
     // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
     ent->addFlags(entity_queued);
-}
-
-
-bool StorageManager::persistance_characterAdded(const Persistence::AddCharacterData& data)
-{
-    m_addedCharacters.push_back(data);
-    return true;
-}
-
-bool StorageManager::persistance_characterDeleted(const std::string& entityId)
-{
-    m_deletedCharacters.push_back(entityId);
-    return true;
 }
 
 void StorageManager::encodeProperty(PropertyBase* prop, std::string& store)
@@ -448,18 +432,6 @@ void StorageManager::tick()
             debug(std::cout << "deleted" << std::endl << std::flush;)
         }
         m_unstoredEntities.pop_front();
-    }
-
-    while (!m_addedCharacters.empty()) {
-        auto& data = m_addedCharacters.front();
-        m_db.createRelationRow(Persistence::instance().getCharacterAccountRelationName(), data.account_id, data.entity_id);
-        m_addedCharacters.pop_front();
-    }
-
-    while (!m_deletedCharacters.empty()) {
-        auto& entity_id = m_deletedCharacters.front();
-        m_db.removeRelationRowByOther(Persistence::instance().getCharacterAccountRelationName(), entity_id);
-        m_deletedCharacters.pop_front();
     }
 
     while (!m_dirtyEntities.empty()) {

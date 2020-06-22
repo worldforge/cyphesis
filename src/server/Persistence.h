@@ -29,62 +29,32 @@
 #include <map>
 
 class Account;
+
 class Database;
+
 class LocatedEntity;
 
 typedef std::map<long, Ref<LocatedEntity>> EntityRefDict;
 
 /// \brief Class for managing the required database tables for persisting
 /// in-game entities and server accounts
-class Persistence : public Singleton<Persistence> {
-  private:
+class Persistence : public Singleton<Persistence>
+{
+    private:
 
-    std::string m_characterRelation;
+    public:
+        explicit Persistence(Database& database);
 
-  public:
-    explicit Persistence(Database& database);
+        Database& m_db;
 
-    /// \brief Data about a character being tied to an account.
-    ///
-    /// This is used when signaling that an entity has been tied to an account.
-    /// Since this operation is dependent on the entity having been persisted to the database
-    /// we can't do it here; instead we rely on the StorageManager to do it.
-    /// However, the interface between these two components isn't the smoothest, so we'll
-    /// have to do it through signals.
-    struct AddCharacterData {
-        /// \brief The id of the character entity.
-        std::string entity_id;
+        int init();
 
-        /// \brief The id of the account.
-        std::string account_id;
-    };
+        bool findAccount(const std::string&);
 
-    Database & m_db;
+        std::unique_ptr<Account> getAccount(const std::string&);
 
-    int init();
+        void putAccount(const Account&);
 
-    bool findAccount(const std::string &);
-    Account * getAccount(const std::string &);
-    void putAccount(const Account &);
-    void registerCharacters(Account &, const EntityRefDict & worldObjects);
-    void addCharacter(const Account &, const LocatedEntity &);
-    void delCharacter(const std::string &);
-
-    /// \brief Gets the name of the DB relation tying Accounts to Entities.
-    const std::string& getCharacterAccountRelationName() const;
-
-    /// \brief Emitted when a character has been tied to an account.
-    ///
-    /// It's expected that the StorageManager should handle this.
-    /// Any listener should return "true" if the action was properly handled.
-    sigc::signal<bool, const AddCharacterData&> characterAdded;
-
-    /// \brief Emitted when a character has been deleted, and the
-    /// tie to any account should be removed.
-    ///
-    /// It's expected that the StorageManager should handle this.
-    /// Any listener should return "true" if the action was properly handled.
-    sigc::signal<bool, const std::string&> characterDeleted;
 };
 
 #endif // SERVER_PERSISTENCE_H

@@ -23,7 +23,7 @@
 
 ServerRouting* AccountProperty::s_serverRouting;
 
-void AccountProperty::install(LocatedEntity* entity, const std::string&)
+void AccountProperty::apply(LocatedEntity* entity)
 {
     auto account = s_serverRouting->getAccountByName(m_data);
     if (account) {

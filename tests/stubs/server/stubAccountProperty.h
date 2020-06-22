@@ -7,13 +7,13 @@
 #include "server/AccountProperty.h"
 #include "stubAccountProperty_custom.h"
 
-#ifndef STUB_AccountProperty_install
-//#define STUB_AccountProperty_install
-  void AccountProperty::install(LocatedEntity *, const std::string &)
+#ifndef STUB_AccountProperty_apply
+//#define STUB_AccountProperty_apply
+  void AccountProperty::apply(LocatedEntity*)
   {
     
   }
-#endif //STUB_AccountProperty_install
+#endif //STUB_AccountProperty_apply
 
 #ifndef STUB_AccountProperty_copy
 //#define STUB_AccountProperty_copy

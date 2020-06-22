@@ -283,7 +283,7 @@ int main()
 
 #define STUB_Persistence_getAccount
 
-Account* Persistence::getAccount(const std::string& name)
+std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
 {
     if (!stub_generate_accounts) {
         return 0;
@@ -293,7 +293,7 @@ Account* Persistence::getAccount(const std::string& name)
     int iid = newId(id);
     assert(iid >= 0);
 
-    return new TestAccount(0, name, "", id, iid);
+    return std::make_unique<TestAccount>(nullptr, name, "", id, iid);
 }
 
 #include "../stubs/server/stubPersistence.h"

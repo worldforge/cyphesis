@@ -96,9 +96,6 @@ void Account::characterDestroyed(long id)
         m_minds.erase(I);
     }
     m_charactersDict.erase(id);
-    if (isPersisted()) {
-        Persistence::instance().delCharacter(String::compose("%1", id));
-    }
 }
 
 void Account::setConnection(Connection* connection)
@@ -169,11 +166,6 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         Atlas::Objects::Operation::Update update;
         update->setTo(entity->getId());
         update->setFrom(entity->getId());
-
-        //m_connection->addEntity(entity);
-        if (isPersisted()) {
-            Persistence::instance().addCharacter(*this, *entity);
-        }
         return 0;
     }
 

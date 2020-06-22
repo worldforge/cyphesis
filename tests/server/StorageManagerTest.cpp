@@ -24,6 +24,7 @@
 #endif
 
 #include "server/StorageManager.h"
+#include "server/Persistence.h"
 
 #include "rules/simulation/WorldRouter.h"
 

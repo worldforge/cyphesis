@@ -26,7 +26,7 @@
 
 #ifndef STUB_Persistence_findAccount
 //#define STUB_Persistence_findAccount
-  bool Persistence::findAccount(const std::string &)
+  bool Persistence::findAccount(const std::string&)
   {
     return false;
   }
@@ -34,51 +34,19 @@
 
 #ifndef STUB_Persistence_getAccount
 //#define STUB_Persistence_getAccount
-  Account* Persistence::getAccount(const std::string &)
+  std::unique_ptr<Account> Persistence::getAccount(const std::string&)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<Account>*>(nullptr);
   }
 #endif //STUB_Persistence_getAccount
 
 #ifndef STUB_Persistence_putAccount
 //#define STUB_Persistence_putAccount
-  void Persistence::putAccount(const Account &)
+  void Persistence::putAccount(const Account&)
   {
     
   }
 #endif //STUB_Persistence_putAccount
-
-#ifndef STUB_Persistence_registerCharacters
-//#define STUB_Persistence_registerCharacters
-  void Persistence::registerCharacters(Account &, const EntityRefDict & worldObjects)
-  {
-    
-  }
-#endif //STUB_Persistence_registerCharacters
-
-#ifndef STUB_Persistence_addCharacter
-//#define STUB_Persistence_addCharacter
-  void Persistence::addCharacter(const Account &, const LocatedEntity &)
-  {
-    
-  }
-#endif //STUB_Persistence_addCharacter
-
-#ifndef STUB_Persistence_delCharacter
-//#define STUB_Persistence_delCharacter
-  void Persistence::delCharacter(const std::string &)
-  {
-    
-  }
-#endif //STUB_Persistence_delCharacter
-
-#ifndef STUB_Persistence_getCharacterAccountRelationName
-//#define STUB_Persistence_getCharacterAccountRelationName
-  const std::string& Persistence::getCharacterAccountRelationName() const
-  {
-    static std::string instance; return instance;
-  }
-#endif //STUB_Persistence_getCharacterAccountRelationName
 
 
 #endif

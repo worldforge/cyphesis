@@ -37,9 +37,11 @@ using Atlas::Objects::Root;
 
 static const bool debug_flag = false;
 
-Persistence::Persistence(Database& database) : m_db(database)
+Persistence::Persistence(Database& database)
+        : m_db(database)
 {
 }
+
 int Persistence::init()
 {
     if (m_db.initConnection() != 0) {
@@ -81,10 +83,6 @@ int Persistence::init()
     tableDesc["password"] = "                                                                                ";
     tableDesc["type"] = "          ";
     bool j = m_db.registerSimpleTable("accounts", tableDesc) == 0;
-    bool k = m_db.registerRelation(m_characterRelation,
-                                           "accounts",
-                                           "entities",
-                                   Database::OneToMany) == 0;
 
     if (m_db.registerEntityIdGenerator() != 0) {
         log(ERROR, "Failed to register Id generator in database.");
@@ -92,8 +90,7 @@ int Persistence::init()
     }
 
     if (!findAccount("admin")) {
-        debug_print("Bootstrapping admin account."
-                       )
+        debug_print("Bootstrapping admin account.")
         std::string adminAccountId;
         long adminAccountIntId = m_db.newId(adminAccountId);
         if (adminAccountIntId < 0) {
@@ -110,16 +107,16 @@ int Persistence::init()
                                 adminAccountId, adminAccountIntId);
 
         log(INFO, "Created 'admin' account with randomized password.\n"
-                "In order to use it, use the 'cypasswd' tool from the "
-                "command line to alter the password.");
+                  "In order to use it, use the 'cypasswd' tool from the "
+                  "command line to alter the password.");
 
         putAccount(dummyAdminAccount);
     }
 
-    return (j && k) ? 0 : DATABASE_TABERR;
+    return j ? 0 : DATABASE_TABERR;
 }
 
-bool Persistence::findAccount(const std::string & name)
+bool Persistence::findAccount(const std::string& name)
 {
     std::string namestr = "'" + name + "'";
     DatabaseResult dr = m_db.selectSimpleRowBy("accounts", "username", namestr);
@@ -136,7 +133,7 @@ bool Persistence::findAccount(const std::string & name)
     return true;
 }
 
-Account * Persistence::getAccount(const std::string & name)
+std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
 {
     std::string namestr = "'" + name + "'";
     DatabaseResult dr = m_db.selectSimpleRowBy("accounts", "username", namestr);
@@ -151,7 +148,7 @@ Account * Persistence::getAccount(const std::string & name)
         log(ERROR, String::compose("Duplicate username in accounts database for name '%1'.", name));
     }
     auto first = dr.begin();
-    const char * c = first.column("id");
+    const char* c = first.column("id");
     if (c == nullptr) {
         log(ERROR, "Unable to find id field in accounts database.");
         return nullptr;
@@ -175,15 +172,15 @@ Account * Persistence::getAccount(const std::string & name)
     }
     std::string type = c;
     if (type == "admin") {
-        return new Admin(nullptr, name, passwd, id, intId);
+        return std::make_unique<Admin>(nullptr, name, passwd, id, intId);
     } else if (type == "server") {
-        return new ServerAccount(nullptr, name, passwd, id, intId);
+        return std::make_unique<ServerAccount>(nullptr, name, passwd, id, intId);
     } else {
-        return new Player(nullptr, name, passwd, id, intId);
+        return std::make_unique<Player>(nullptr, name, passwd, id, intId);
     }
 }
 
-void Persistence::putAccount(const Account & ac)
+void Persistence::putAccount(const Account& ac)
 {
     std::string columns = "username, type, password";
     std::string values = "'";
@@ -196,61 +193,5 @@ void Persistence::putAccount(const Account & ac)
     m_db.createSimpleRow("accounts", ac.getId(), columns, values);
 }
 
-void Persistence::registerCharacters(Account & ac,
-                                     const EntityRefDict & worldObjects)
-{
-    DatabaseResult dr = m_db.selectRelation(m_characterRelation,
-                                                    ac.getId());
-    if (dr.error()) {
-        log(ERROR, String::compose("Database query failed while looking for characters for account '%1'.", ac.getId()));
-    }
-    auto Iend = dr.end();
-    for (auto I = dr.begin(); I != Iend; ++I) {
-        const char * id = I.column(0);
-        if (id == nullptr) {
-            log(ERROR, "No ID data in relation when examining characters");
-            continue;
-        }
-
-        long intId = integerId(id);
-
-        auto J = worldObjects.find(intId);
-        if (J == worldObjects.end()) {
-            log(WARNING, String::compose("Persistence: Got character id \"%1\" "
-                                         "from database which does not exist "
-                                         "in world.", id));
-            continue;
-        }
-        ac.addCharacter(J->second.get());
-    }
-}
-
-void Persistence::addCharacter(const Account & ac, const LocatedEntity & e)
-{
-    //We can't insert the connection directly into the database, since the entity row
-    //might not have been created. We'll instead emit a signal and rely on the StorageManager doing this for us.
-    AddCharacterData data;
-    data.account_id = ac.getId();
-    data.entity_id = e.getId();
-
-    bool handled = characterAdded(data);
-    if (!handled) {
-        log(WARNING, String::compose("Nothing handled the character with id %1 connected to account with id %2.", e.getId(), ac.getId()));
-    }
-
-}
-
-void Persistence::delCharacter(const std::string & id)
-{
-    bool handled = characterDeleted(id);
-    if (!handled) {
-        log(WARNING, String::compose("Nothing handled the character with id %1 being deleted.", id));
-    }
-}
-
-const std::string& Persistence::getCharacterAccountRelationName() const
-{
-    return m_characterRelation;
-}
 
 

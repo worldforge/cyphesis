@@ -19,8 +19,6 @@
 #ifndef SERVER_STORAGE_MANAGER_H
 #define SERVER_STORAGE_MANAGER_H
 
-#include "Persistence.h"
-
 #include "common/OperationRouter.h"
 #include "modules/Ref.h"
 
@@ -61,10 +59,6 @@ class StorageManager : public sigc::trackable
         /// \brief Queue of IDs of entities that are destroyed
         Idstore m_destroyedEntities;
 
-        std::deque<Persistence::AddCharacterData> m_addedCharacters;
-
-        std::deque<std::string> m_deletedCharacters;
-
         int m_insertEntityCount;
         int m_updateEntityCount;
 
@@ -101,10 +95,6 @@ class StorageManager : public sigc::trackable
         void updateEntity(LocatedEntity*);
 
         size_t restoreChildren(LocatedEntity*);
-
-        bool persistance_characterAdded(const Persistence::AddCharacterData& data);
-
-        bool persistance_characterDeleted(const std::string& entityId);
 
     public:
         explicit StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder);

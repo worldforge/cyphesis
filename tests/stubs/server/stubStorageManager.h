@@ -71,22 +71,6 @@
   }
 #endif //STUB_StorageManager_restoreChildren
 
-#ifndef STUB_StorageManager_persistance_characterAdded
-//#define STUB_StorageManager_persistance_characterAdded
-  bool StorageManager::persistance_characterAdded(const Persistence::AddCharacterData& data)
-  {
-    return false;
-  }
-#endif //STUB_StorageManager_persistance_characterAdded
-
-#ifndef STUB_StorageManager_persistance_characterDeleted
-//#define STUB_StorageManager_persistance_characterDeleted
-  bool StorageManager::persistance_characterDeleted(const std::string& entityId)
-  {
-    return false;
-  }
-#endif //STUB_StorageManager_persistance_characterDeleted
-
 #ifndef STUB_StorageManager_StorageManager
 //#define STUB_StorageManager_StorageManager
    StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder)
