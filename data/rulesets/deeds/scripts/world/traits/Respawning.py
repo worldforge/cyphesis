@@ -1,10 +1,15 @@
+import math
+import random
+
 import server
 from atlas import Operation, Entity, Oplist
 from rules import Location
 
-
 # Respawns whenever it's destroyed.
-# This relies on the property "_respawning" being set to a spawn area.
+# This relies on the property "_respawning" being set to an aliased entity.
+from world.traits import Spawner
+
+
 class Respawning(server.Thing):
 
     def delete_operation(self, op):
@@ -15,8 +20,15 @@ class Respawning(server.Thing):
             res += Operation("set", Entity(self.id, status=1.0), to=self.id)
 
         # Respawn in a spawn area
-        location = Location()
-        server.move_to_spawn(self.props["_respawning"], location)
-        res += Operation("move", Entity(self.id, location=location), to=self.id)
-        res += Operation("imaginary", Entity(description="You were killed and will be respawned."), to=self.id, from_=self.id)
-        return server.OPERATION_BLOCKED, res
+        respawn_entity = server.get_alias_entity(self.props["_respawning"])
+        if respawn_entity:
+            pos = Spawner.get_spawn_pos(respawn_entity)
+            if pos:
+                location = Location()
+                location.pos = pos
+                # Randomize orientation
+                location.orientation = random.random() * math.pi * 2
+                location.parent = respawn_entity.location.parent
+                res += Operation("move", Entity(self.id, location=location), to=self.id)
+                res += Operation("imaginary", Entity(description="You were killed and will be respawned."), to=self.id, from_=self.id)
+                return server.OPERATION_BLOCKED, res
