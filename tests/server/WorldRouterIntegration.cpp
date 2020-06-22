@@ -81,7 +81,9 @@ struct WorldRouterintegration : public Cyphesis::TestBase
             Ref<LocatedEntity> base = new Entity("", 0);
             std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb));
 
-            auto ent1 = test_world->addNewEntity("thing", Anonymous());
+            Anonymous ent;
+            ent->setLoc("0");
+            auto ent1 = test_world->addNewEntity("thing", ent);
 
             ASSERT_EQUAL(2, test_world->m_entityCount);
 
@@ -95,7 +97,9 @@ struct WorldRouterintegration : public Cyphesis::TestBase
             Ref<LocatedEntity> base = new Entity("", 0);
             std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb));
 
-            auto ent1 = test_world->addNewEntity("thing", Anonymous());
+            Anonymous ent;
+            ent->setLoc("0");
+            auto ent1 = test_world->addNewEntity("thing", ent);
 
             ASSERT_EQUAL(2, test_world->m_entityCount);
 
@@ -194,7 +198,9 @@ void WorldRouterintegration::test_sequence()
                                                    Anonymous());
     assert(!ent1);
 
-    ent1 = test_world->addNewEntity("thing", Anonymous());
+    Anonymous ent;
+    ent->setLoc("0");
+    ent1 = test_world->addNewEntity("thing", ent);
     assert(ent1);
 
     std::string id;

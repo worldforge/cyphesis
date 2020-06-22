@@ -124,7 +124,9 @@ void WorldRoutertest::test_addNewEntity_unknown()
 
 void WorldRoutertest::test_addNewEntity_thing()
 {
-    auto ent1 = test_world->addNewEntity("thing", Anonymous());
+    Anonymous ent;
+    ent->setLoc("0");
+    auto ent1 = test_world->addNewEntity("thing", ent);
     assert(ent1.get() != 0);
 }
 
@@ -133,7 +135,9 @@ void WorldRoutertest::test_addNewEntity_idfail()
 {
     stub_deny_newid = true;
 
-    auto ent1 = test_world->addNewEntity("thing", Anonymous());
+    Anonymous ent;
+    ent->setLoc("0");
+    auto ent1 = test_world->addNewEntity("thing", ent);
     assert(ent1.get() == 0);
 
     stub_deny_newid = false;

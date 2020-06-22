@@ -104,9 +104,6 @@ struct TestWorld : public BaseWorld
     Ref<LocatedEntity> findByType(const std::string& type) override
     { return nullptr; }
 
-    LocatedEntity& getDefaultLocation() const override
-    { return *m_gw; };
-
 };
 
 
