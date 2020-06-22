@@ -1,6 +1,5 @@
 import server
 from atlas import Operation, Entity, Oplist
-from rules import Location
 
 
 # A player controlled entity should be moved to limbo when the user stops controlling it.
@@ -12,7 +11,7 @@ class PlayerControlled(server.Thing):
         self.tick_refno = 0
 
     def respawn(self):
-        limbo_entity = server.get_limbo_location()
+        limbo_entity = server.get_alias_entity("limbo")
         # If we're in limbo we should respawn
         if limbo_entity and self.location.parent == limbo_entity:
             respawn_prop = self.props["__respawn"]
@@ -23,13 +22,16 @@ class PlayerControlled(server.Thing):
                                      to=self.id), set_op
                 elif hasattr(respawn_prop, "spawn") and respawn_prop.spawn:
                     # Respawn in a spawn area
-                    location = Location()
-                    server.move_to_spawn(respawn_prop.spawn, location)
-                    return Operation("move", Entity(self.id, location=location), to=self.id), set_op
+                    respawn_entity = server.get_alias_entity(respawn_prop.spawn)
+                    if respawn_entity:
+                        location = respawn_entity.location
+                        return Operation("move", Entity(self.id, location=location), to=self.id), set_op
+                    else:
+                        print("Could not get any entity with alias '{}'.".format(respawn_prop.spawn))
 
     def _minds_property_update(self):
         if len(self.props._minds) == 0:
-            limbo_entity = server.get_limbo_location()
+            limbo_entity = server.get_alias_entity("limbo")
             if self.location.parent != limbo_entity:
                 self.tick_refno = self.tick_refno + 1
                 # No minds anymore, delay movement to limbo with some time
@@ -48,7 +50,7 @@ class PlayerControlled(server.Thing):
                 if op.refno == self.tick_refno or self.tick_refno == 0:
                     if hasattr(arg, "type") and arg.type == "remove":
                         # Move entity to limbo
-                        limbo_entity = server.get_limbo_location()
+                        limbo_entity = server.get_alias_entity("limbo")
                         if limbo_entity and self.location.parent != limbo_entity:
                             # Store the current position in "__respawn" so we can spawn back there.
                             res += Operation("set", Entity(self.id, __respawn={"loc": self.location.parent.id,
@@ -63,7 +65,7 @@ class PlayerControlled(server.Thing):
 
     def delete_operation(self, op):
         res = Oplist()
-        limbo_entity = server.get_limbo_location()
+        limbo_entity = server.get_alias_entity("limbo")
         if not limbo_entity:
             print("Entity is set to respawn, but there's no limbo entity set in the system.")
         if self.location.parent != limbo_entity:
