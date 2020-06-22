@@ -52,6 +52,9 @@ class CharacterCreator(server.Thing):
             else:
                 ent["__scripts!prepend"] = [{"language": "python", "name": "world.traits.PlayerControlled.PlayerControlled"}]
 
+            # Any entity created as a character should have it's "mind" property disabled; i.e. we don't want AI to control this character.
+            ent["mind"] = None
+
             pos = Spawner.get_spawn_pos(self)
             if pos:
                 # Randomize orientation
