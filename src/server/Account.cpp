@@ -530,12 +530,12 @@ void Account::CreateOperation(const Operation& op, OpVector& res)
         return;
     }
 
+    //"__account" property is important, since when installed it will call back into this account, informing it of the new entity.
     arg->setAttr("__account", m_username);
     Create create;
     create->setTo(spawnEntity->getId());
-    create->setFrom(getId());
     create->setArgs1(arg);
-    spawnEntity->operation(create, res);
+    spawnEntity->sendWorld(create);
 }
 
 void Account::createObject(const Root& arg,

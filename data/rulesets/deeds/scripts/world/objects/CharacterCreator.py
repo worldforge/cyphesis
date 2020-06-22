@@ -10,43 +10,54 @@ from atlas import Operation, Entity
 from world.traits import Spawner
 
 
-def createCharacter(spawn_entity, entity_def):
-    pass
-
-
 class CharacterCreator(server.Thing):
 
-    def spawn_operation(self, op):
+    def create_operation(self, op):
 
         arg = op[0]
         if not arg:
+            print("No argument in Create op.")
             return server.OPERATION_BLOCKED
 
-        spawn_prop = self.props.get_prop_map("spawn")
+        spawn_prop = self.get_prop_map("__spawn")
         if spawn_prop:
+            ent = Entity()
             properties = spawn_prop["properties"]
             for entry in properties:
                 name = entry["name"]
-                providedValue = arg[name]
+                provided_value = arg[name]
+                if provided_value is None:
+                    print("Lacking required value '{}'.".format(name))
+                    # If the required value isn't present in the ones provided, abort
+                    return server.OPERATION_BLOCKED
                 # Check if it's one of the options
                 if "options" in entry:
-                    optionsList = entry["options"]
+                    options_list = entry["options"]
+                    if provided_value in options_list:
+                        ent[name] = provided_value
+                    else:
+                        print("Supplied value {} = {} does not exist in allowed values in '__spawn' property. Someone trying to hack?".format(name, provided_value))
+                else:
+                    ent[name] = provided_value
 
-        ent = Entity()
+            spawn_properties = self.get_prop_map("__spawn_properties")
+            if spawn_properties is not None:
+                # There's a "__spawn_properties" property declared; use its properties directly
+                for key, value in spawn_properties.items():
+                    ent[key] = value
 
-        pos = Spawner.get_spawn_pos(self)
-        if pos:
-            create_op = Operation("create", arg)
+            pos = Spawner.get_spawn_pos(self)
+            if pos:
+                # Randomize orientation
+                rotation = random.random() * math.pi * 2
+                orientation = physics.Quaternion(physics.Vector3D(0, 1, 0), rotation)
+                ent["loc"] = self.location.parent.id
+                ent["pos"] = pos
+                ent["orientation"] = orientation.as_list()
+                ent["__account"] = arg["__account"]
 
-            # Randomize orientation
-            rotation = random.random() * math.pi * 2
-            orientation = physics.Quaternion(physics.Vector3D(0, 1, 0), rotation)
-            entity_map = {"pos": pos,
-                          "orientation": orientation.as_list(),
-                          "parent": "settler",
-                          "__account": arg["__account"],
-                          "loc": self.location.parent.id}
-
-            return server.OPERATION_BLOCKED, Operation("create", entity_map, to=self.id)
-
-        return server.OPERATION_BLOCKED
+                print("creating new character")
+                return server.OPERATION_BLOCKED, Operation("create", ent, to="0")
+        else:
+            print("CharacterCreator script attached to entity without '__spawn' property.")
+            return server.OPERATION_BLOCKED

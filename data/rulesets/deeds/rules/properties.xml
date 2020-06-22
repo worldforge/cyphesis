@@ -231,4 +231,12 @@
     </map>
 
 
+    <map>
+        <string name="id">__spawn_properties</string>
+        <string name="objtype">type</string>
+        <string name="parent">map</string>
+        <string name="description">Used together with "__spawn" property. Declared extra properties which will be installed on any new entities created at the spawn.</string>
+
+    </map>
+
 </atlas>

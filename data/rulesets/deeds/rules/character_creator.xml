@@ -10,6 +10,22 @@
             <map name="visibility">
                 <string name="default">private</string>
             </map>
+            <map name="__scripts">
+                <list name="prepend">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.CharacterCreator.CharacterCreator</string>
+                    </map>
+                </list>
+            </map>
+        </map>
+        <string name="id">character_creator</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+
+    <map>
+        <map name="attributes">
             <map name="__spawner_locations">
                 <list name="default">
                     <map>
@@ -28,11 +44,9 @@
                     <list name="properties">
                         <map>
                             <string name="name">parent</string>
-                            <string name="label">Type</string>
                             <string name="type">string</string>
                             <list name="options">
                                 <string>settler</string>
-                                <string>human</string>
                             </list>
                         </map>
                         <map>
@@ -53,18 +67,15 @@
                     </list>
                 </map>
             </map>
-            <map name="__scripts">
-                <list name="default">
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.objects.CharacterCreator.CharacterCreator</string>
-                    </map>
-                </list>
+            <map name="__spawn_properties">
+                <map name="append">
+                    <string name="foo">bar</string>
+                </map>
             </map>
         </map>
-        <string name="id">character_creator</string>
+        <string name="id">character_creator_default</string>
         <string name="objtype">class</string>
-        <string name="parent">thing</string>
+        <string name="parent">character_creator</string>
     </map>
 
 </atlas>
