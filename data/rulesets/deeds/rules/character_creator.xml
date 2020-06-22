@@ -18,6 +18,16 @@
                     </map>
                 </list>
             </map>
+            <!--            <map name="__spawn_properties">-->
+            <!--                <map name="append">-->
+            <!--                    <list name="__scripts!prepend">-->
+            <!--                        <map>-->
+            <!--                            <string name="language">python</string>-->
+            <!--                            <string name="name">world.traits.PlayerControlled.PlayerControlled</string>-->
+            <!--                        </map>-->
+            <!--                    </list>-->
+            <!--                </map>-->
+            <!--            </map>-->
         </map>
         <string name="id">character_creator</string>
         <string name="objtype">class</string>
@@ -65,11 +75,6 @@
                             </list>
                         </map>
                     </list>
-                </map>
-            </map>
-            <map name="__spawn_properties">
-                <map name="append">
-                    <string name="foo">bar</string>
                 </map>
             </map>
         </map>

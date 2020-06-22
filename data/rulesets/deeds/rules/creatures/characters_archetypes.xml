@@ -17,12 +17,6 @@
                     <string name="$eid">pants</string>
                 </map>
                 <float name="status">1</float>
-                <list name="__scripts!prepend">
-                    <map>
-                        <string name="language">python</string>
-                        <string name="name">world.traits.PlayerControlled.PlayerControlled</string>
-                    </map>
-                </list>
             </map>
             <map>
                 <string name="id">pants</string>

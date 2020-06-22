@@ -46,6 +46,12 @@ class CharacterCreator(server.Thing):
                 for key, value in spawn_properties.items():
                     ent[key] = value
 
+            # Make sure that we prepend a script for player control for the new entity.
+            if "__scripts!prepend" in ent:
+                ent["__scripts!prepend"] = ent["__scripts!prepend"] + [{"language": "python", "name": "world.traits.PlayerControlled.PlayerControlled"}]
+            else:
+                ent["__scripts!prepend"] = [{"language": "python", "name": "world.traits.PlayerControlled.PlayerControlled"}]
+
             pos = Spawner.get_spawn_pos(self)
             if pos:
                 # Randomize orientation
