@@ -735,6 +735,11 @@ bool LocatedEntity::canReach(const EntityLocation& entityLocation, float extraRe
         return true;
     }
 
+    //If either reacher or destination is destroyed then nothing can be reached.
+    if (isDestroyed() || entityLocation.m_parent->isDestroyed()) {
+        return false;
+    }
+
     double reachDistance = 0;
     auto reachProp = reachingEntity->getPropertyType<double>("reach");
     if (reachProp) {
