@@ -53,7 +53,7 @@ class Melee(StoppableTask):
                                    to=target.entity)
                 return server.OPERATION_BLOCKED, hit_op
             else:
-                return server.OPERATION_BLOCKED, self.usage.actor.client_error(self.usage.op, "Too far away")
+                return server.OPERATION_BLOCKED, self.usage.actor.client_error(self.usage.op, "Target can not be reached.")
         else:
             print("No target")
         return server.OPERATION_BLOCKED

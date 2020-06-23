@@ -74,6 +74,6 @@ class Fight(StoppableTask):
                                    to=target.entity)
                 return server.OPERATION_BLOCKED, hit_op, Operation('sight', hit_op)
             else:
-                return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Too far away")
+                return server.OPERATION_BLOCKED, instance.actor.client_error(instance.op, "Target can not be reached.")
         else:
             return server.OPERATION_BLOCKED
