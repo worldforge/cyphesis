@@ -9,4 +9,4 @@ class Survive(Goal):
 
     def __init__(self):
         Goal.__init__(self, desc="Survive by avoiding or fighting enemies",
-                      subgoals=[self.move_to_loc])
+                      sub_goals=[self.move_to_loc])

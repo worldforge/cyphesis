@@ -11,20 +11,25 @@ from common import log
 # \brief Base class for all goals
 # \ingroup PythonGoals
 class Goal:
-    def __init__(self, desc="some goal", fulfilled=None, subgoals=None,
-                 validity=None, time=None, debug=0):
+    def __init__(self,
+                 desc="some goal",
+                 fulfilled=None,
+                 sub_goals=None,
+                 validity=None,
+                 time=None,
+                 debug=0):
         """ Init
             Args:
                 desc (string): A user facing description of the goal
                 fulfilled (func): A function returning a bool whether the goal is fulfilled or not.
                     Fulfilled goals will be skipped by the mind code when determining which goal to run next.
-                subgoals (list): A list of subgoals which will be checked and executed in order.
+                sub_goals (list): A list of sub goals which will be checked and executed in order.
                 validity (func): A function returning bool whether the goal still is valid. Used mainly by other goals.
                 time (object): An optional time object. If set, the goal is only valid if the time has passed.
                 debug (int): A flag declaring whether debug output should be enabled.
         """
-        if subgoals is None:
-            subgoals = []
+        if sub_goals is None:
+            sub_goals = []
         self.desc = desc
         # mind sets these:
         # self.key
@@ -40,7 +45,7 @@ class Goal:
             self.validity = lambda me: True
 
         # filter out any None subgoals
-        self.subgoals = [item for item in subgoals if item is not None]
+        self.sub_goals = [item for item in sub_goals if item is not None]
         self.time = time
         self.debug = debug
         self.vars = []
@@ -68,7 +73,7 @@ class Goal:
 
     def triggering_goals(self):
         goals = []
-        for sub_goal in self.subgoals:
+        for sub_goal in self.sub_goals:
             if hasattr(sub_goal, "triggering_goals"):
                 goals.extend(sub_goal.triggering_goals())
         return goals
@@ -122,7 +127,7 @@ class Goal:
             self.is_fulfilled = 0
         debug_info = debug_info + "." + self.info()
         # Iterate over all sub goals, but break if any goal returns an operation
-        for sg in self.subgoals:
+        for sg in self.sub_goals:
             if sg is None:
                 continue
             if isinstance(sg, types.FunctionType) or isinstance(sg, types.MethodType):
@@ -140,7 +145,7 @@ class Goal:
                     log.thinking("\t" * depth + "GOAL: bef sg: " + sg.desc)
                 # If the subgoal is irrelevant, remove it
                 if sg.irrelevant:
-                    self.subgoals.remove(sg)
+                    self.sub_goals.remove(sg)
                     continue
                 res, debug_info = sg.check_goal_rec(me, time, depth + 1, debug_info)
                 if self.debug:
@@ -158,12 +163,12 @@ class Goal:
         if self.lastProcessedGoals:
             report["lastProcessedGoals"] = self.lastProcessedGoals
 
-        subgoals = []
-        for sg in self.subgoals:
+        sub_goals = []
+        for sg in self.sub_goals:
             if not isinstance(sg, types.FunctionType) and not isinstance(sg, types.MethodType) and sg is not None:
-                subgoals.append(sg.report())
-        if len(subgoals) > 0:
-            report["subgoals"] = subgoals
+                sub_goals.append(sg.report())
+        if len(sub_goals) > 0:
+            report["subgoals"] = sub_goals
 
         if len(self.vars) > 0:
             variables = {}

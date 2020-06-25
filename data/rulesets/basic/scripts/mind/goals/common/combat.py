@@ -1,10 +1,10 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 2019 Erik Ogenvik (See the file COPYING for details).
 
+import ai
 import entity_filter
 from atlas import Operation, Entity, Root
 from physics import square_distance
-import ai
 
 from mind.Goal import Goal
 from mind.goals.common.common import get_reach
@@ -23,19 +23,19 @@ class Fight(Goal):
     # TODO: I.e. when using a ranged weapon the entity should keep range.
 
     def __init__(self, what="", range=30):
-        Goal.__init__(self, "fight something",
-                      self.none_in_range,
-                      [
+        Goal.__init__(self, desc="fight something",
+                      fulfilled=self.none_in_range,
+                      sub_goals=[
                           SpotSomething(what=what, range=range),
-                          Condition(self.should_use_melee,
-                                    [self.equip_melee_weapon,
-                                     self.equip_shield,
-                                     self.attack_melee,
-                                     MoveMeToFocus(what=what, radius=0, speed=0.5)],
-                                    [self.equip_ranged_weapon,
-                                     self.stop_moving,
-                                     self.attack_ranged,
-                                     ])
+                          Condition(condition_fn=self.should_use_melee,
+                                    goals_left=[self.equip_melee_weapon,
+                                                self.equip_shield,
+                                                self.attack_melee,
+                                                MoveMeToFocus(what=what, radius=0, speed=0.5)],
+                                    goals_right=[self.equip_ranged_weapon,
+                                                 self.stop_moving,
+                                                 self.attack_ranged,
+                                                 ])
                           #                       hunt_for(what=what, range=range, proximity=3),
                       ])
         self.what = what
@@ -239,9 +239,9 @@ class FightOrFlight(Goal):
 
     def __init__(self, range=30):
         Goal.__init__(self, desc="fight or flee from enemies",
-                      subgoals=[KeepGrudge(),
-                                Fight(what="memory.disposition <= -1 && memory.threat <= 0", range=range),
-                                Avoid(what="memory.disposition <= -1 && memory.threat > 0", range=range)])
+                      sub_goals=[KeepGrudge(),
+                                 Fight(what="memory.disposition <= -1 && memory.threat <= 0", range=range),
+                                 Avoid(what="memory.disposition <= -1 && memory.threat > 0", range=range)])
 
 
 class KeepGrudge(DynamicGoal):

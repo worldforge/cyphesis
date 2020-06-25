@@ -26,9 +26,9 @@ class Condition(Goal):
         if result is None:
             return True
         if result:
-            self.subgoals = self.goals_left
+            self.sub_goals = self.goals_left
         else:
-            self.subgoals = self.goals_right
+            self.sub_goals = self.goals_right
         return False
 
 

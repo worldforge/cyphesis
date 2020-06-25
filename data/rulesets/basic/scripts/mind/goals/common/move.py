@@ -551,7 +551,7 @@ class Wander(Goal):
     def do_wandering(self, me):
         loc = me.entity.location.copy()
         loc.pos = Point3D([c + uniform(-5, 5) for c in loc.pos])
-        self.subgoals[0].location = loc
+        self.sub_goals[0].location = loc
 
 
 class Search(Goal):
@@ -663,14 +663,14 @@ class Patrol(Goal):
 
     def check_move_valid(self, me):
         """ Checks that the movement goal is reachable; if not we should move on to the next patrol goal """
-        return self.subgoals[0].is_valid(me)
+        return self.sub_goals[0].is_valid(me)
 
     def increment(self, me):
         self.stage = self.stage + 1
         if self.stage >= self.count:
             self.stage = 0
-        self.subgoals[0].location = self.list[self.stage]
-        # print "Moved to next patrol goal: " + str(self.subgoals[0].location)
+        self.sub_goals[0].location = self.list[self.stage]
+        # print "Moved to next patrol goal: " + str(self.sub_goals[0].location)
 
 
 class Accompany(Goal):
@@ -741,13 +741,13 @@ class Roam(Goal):
         self.vars = ["radius", "list"]
 
     def do_roaming(self, me):
-        move_me_goal = self.subgoals[1]
+        move_me_goal = self.sub_goals[1]
         # We need to set a new direction if we've either haven't set one, or if we've arrived.
         if move_me_goal.location is None or move_me_goal.fulfilled(me) or not move_me_goal.is_valid(me):
             self.set_new_target(me, move_me_goal)
 
     def check_move_valid(self, me):
-        move_me_goal = self.subgoals[1]
+        move_me_goal = self.sub_goals[1]
         # Check that the goal is reachable, and if not skip to a new goal
         if not move_me_goal.is_valid(me):
             self.set_new_target(me, move_me_goal)

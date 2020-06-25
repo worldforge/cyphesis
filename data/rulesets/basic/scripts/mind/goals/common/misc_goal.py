@@ -11,7 +11,6 @@ from common import const
 from physics import square_distance, Vector3D, Point3D
 from rules import Location
 
-from mind.Goal import Goal
 from mind.goals.common.common import *
 from mind.goals.common.move import MoveMePlace, MoveMe, PickUpPossession, MoveMeArea, MoveMeToFocus, PickUpFocus, \
     MoveItOutOfMe, HuntFor, MoveIt, Accompany
@@ -213,9 +212,9 @@ class SpotSomething(Goal):
     """Pick out something and focus on it, forgetting things previously focused on after a while."""
 
     def __init__(self, what="", range=30, condition=lambda a: 1, seconds_until_forgotten=30):
-        Goal.__init__(self, "spot a thing",
-                      self.do_I_have,
-                      [self.do])
+        Goal.__init__(self, desc="spot a thing",
+                      fulfilled=self.do_i_have,
+                      sub_goals=[self.do])
         if isinstance(what, str):
             self.what = what
         else:
@@ -233,7 +232,7 @@ class SpotSomething(Goal):
         self.seconds_until_forgotten = seconds_until_forgotten
         self.vars = ["what", "range", "seconds_until_forgotten"]
 
-    def do_I_have(self, me):
+    def do_i_have(self, me):
         something = me.get_knowledge('focus', self.what)
         if something:
             if me.map.get(something) is None:
@@ -277,18 +276,20 @@ class SpotSomethingInArea(Goal):
     """Pick out something in a specified area and focus on it, forgetting things previously focused on after a while."""
 
     def __init__(self, what, location, range=30, condition=lambda a: 1, seconds_until_forgotten=30):
-        Goal.__init__(self, "spot a thing in area",
-                      self.do_I_have,
-                      [self.do])
+        Goal.__init__(self,
+                      desc="spot a thing in area",
+                      fulfilled=self.do_i_have,
+                      sub_goals=[self.do])
         self.range = range
         self.sqr_range = range * range
         self.area_location_name = location
         self.condition = condition
         self.inner_spot_goal = SpotSomething(what, range=range, seconds_until_forgotten=seconds_until_forgotten,
                                              condition=self.is_thing_in_area)
+        self.current_location = None
 
-    def do_I_have(self, me):
-        self.inner_spot_goal.do_I_have(me)
+    def do_i_have(self, me):
+        self.inner_spot_goal.do_i_have(me)
 
     def do(self, me):
         # For performance reasons we'll cache the current location, so we don't have to look it up for each call to is_thing_in_area
@@ -416,9 +417,9 @@ class Feed(Goal):
             if me.food > (self.full * me.mass):
                 return 1
             if me.food < (self.full * me.mass / 4):
-                self.subgoals[0].range = self.range * 2
+                self.sub_goals[0].range = self.range * 2
             else:
-                self.subgoals[0].range = self.range
+                self.sub_goals[0].range = self.range
         return 0
 
 
@@ -1014,7 +1015,7 @@ class Iterate(Goal):
                       goals)
 
     def check_subgoal(self, me):
-        first_goal = self.subgoals[0]
+        first_goal = self.sub_goals[0]
         if first_goal.is_fulfilled:
-            self.subgoals.pop(0)
-            self.subgoals.push(first_goal)
+            self.sub_goals.pop(0)
+            self.sub_goals.push(first_goal)
