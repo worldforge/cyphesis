@@ -28,7 +28,7 @@ class AddUniqueGoal(DynamicGoal):
             if goal:
                 self.sub_goals.append(goal)
         if len(self.sub_goals) != 0:
-            return self.sub_goals[0].check_goal(me, me.time)
+            return self.sub_goals[0].check_goal(me)
 
     def make_goal_instance(self, me, goal_class, original_op, op):
         # override this!

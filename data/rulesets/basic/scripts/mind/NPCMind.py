@@ -531,7 +531,7 @@ class NPCMind(ai.Mind):
 
         Accept queries about what we know. Mostly this is for debugging
         and for the time being it is useful to answer these queries no matter
-        who hasks."""
+        who asks."""
 
         # Ignore messages addressed to others
         if not self.is_talk_op_addressed_to_me_or_none(op):
@@ -809,7 +809,7 @@ class NPCMind(ai.Mind):
 
         self.goals.remove(goal)
 
-    def fulfill_goals(self, time):
+    def fulfill_goals(self):
         """see if all goals are fulfilled: if not try to fulfill them"""
         for g in self.goals[:]:
             if g is None:
@@ -818,7 +818,7 @@ class NPCMind(ai.Mind):
                 # Irrelevant goals should be kept, to match what's in _goals.
                 continue
             try:
-                res = g.check_goal(self, time)
+                res = g.check_goal(self)
                 if res:
                     if isinstance(res, Operation) or isinstance(res, Oplist):
                         return res
@@ -867,7 +867,7 @@ class NPCMind(ai.Mind):
 
     # thinking (needs rewrite)
     def think(self):
-        output = self.fulfill_goals(self.time)
+        output = self.fulfill_goals()
         #        if output and const.debug_thinking:
         #            log.thinking(str(self)+" result at "+str(self.time)+": "+output[-1][0].description)
         return output

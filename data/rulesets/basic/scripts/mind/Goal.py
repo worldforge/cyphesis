@@ -16,7 +16,6 @@ class Goal:
                  fulfilled=None,
                  sub_goals=None,
                  validity=None,
-                 time=None,
                  debug=0):
         """ Init
             Args:
@@ -25,7 +24,6 @@ class Goal:
                     Fulfilled goals will be skipped by the mind code when determining which goal to run next.
                 sub_goals (list): A list of sub goals which will be checked and executed in order.
                 validity (func): A function returning bool whether the goal still is valid. Used mainly by other goals.
-                time (object): An optional time object. If set, the goal is only valid if the time has passed.
                 debug (int): A flag declaring whether debug output should be enabled.
         """
         if sub_goals is None:
@@ -46,7 +44,6 @@ class Goal:
 
         # filter out any None subgoals
         self.sub_goals = [item for item in sub_goals if item is not None]
-        self.time = time
         self.debug = debug
         self.vars = []
         # keeps track of whether the goal is fulfilled or not
@@ -94,25 +91,22 @@ class Goal:
         If no validity function was supplied at goal creation time the goal is always considered valid. """
         return self.validity(me)
 
-    def check_goal(self, me, time):
+    def check_goal(self, me):
         """executes goal. Any response that's not None causes the goal checking code to stop after this goal"""
         if self.debug:
             log.thinking("GOAL desc: " + str(self))
-        res, debug_info = self.check_goal_rec(me, time, 0, "")
+        res, debug_info = self.check_goal_recursively(me, 0, "")
         if len(debug_info) != 0:
             # Keep a copy of the debug info for the "report" method.
             self.lastProcessedGoals = debug_info
         return res
 
-    def check_goal_rec(self, me, time, depth, debug_info):
+    def check_goal_recursively(self, me, depth, debug_info):
         """check (sub)goal recursively. 
         
         This is done by iterating over all sub goals, breaking if any sub goal returns an operation."""
         res = None
         if self.irrelevant:
-            return res, debug_info
-        # is it right time range?
-        if self.time and not time.is_now(self.time):
             return res, debug_info
         if self.debug:
             log.thinking("\t" * depth + "GOAL: bef fulfilled: " + self.desc + " " + repr(self.fulfilled))
@@ -147,7 +141,7 @@ class Goal:
                 if sg.irrelevant:
                     self.sub_goals.remove(sg)
                     continue
-                res, debug_info = sg.check_goal_rec(me, time, depth + 1, debug_info)
+                res, debug_info = sg.check_goal_recursively(me, depth + 1, debug_info)
                 if self.debug:
                     log.thinking("\t" * depth + "GOAL: aft sg: " + sg.desc + ", Result: " + str(res))
                 # If the subgoal generated an op, stop iterating here and return

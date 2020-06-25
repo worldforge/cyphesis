@@ -66,8 +66,8 @@ class NYI(Goal):
 class Imaginary(Goal):
     """Perform a task that should be broadcast without really doing it."""
 
-    def __init__(self, desc, time, place):
-        Goal.__init__(self, desc, false, [MoveMe(place), self.imaginary], time)
+    def __init__(self, desc, place):
+        Goal.__init__(self, desc, false, [MoveMe(place), self.imaginary])
         self.vars = ["desc"]
 
     def imaginary(self, me):
@@ -173,15 +173,15 @@ class AcquireThing(Acquire):
 class Task(Goal):
     """Base class for performing a task with a tool."""
 
-    def __init__(self, desc, time, place, what, tool):
+    def __init__(self, desc, place, what, tool):
         Goal.__init__(self, desc,
                       false,
                       [AcquireThing(tool),
                        MoveMeArea(place),
                        SpotSomething(what),
                        MoveMeToFocus(what),
-                       self.do],
-                      time)
+                       self.do]
+                      )
         self.tool = tool
         self.what = what
         self.vars = ["tool", "what"]
@@ -241,7 +241,7 @@ class SpotSomething(Goal):
                 # Update the time since we last knew about the thing, as we're still actively know about it
                 if self.seconds_until_forgotten > 0:
                     self.spotted[something] = time.time()
-                return 1
+                return True
 
     def do(self, me):
         thing_all = me.map.find_by_filter(self.filter)
@@ -428,20 +428,20 @@ class Feed(Goal):
 class Meal(Feed):
     """Buy a meal from a given location and eat it."""
 
-    def __init__(self, what, time, place, seat=None):
+    def __init__(self, what, place, seat=None):
         if seat == None:
             Goal.__init__(self, "have a meal",
                           self.am_i_full,
                           [MoveMeArea(place, 10),
                            AcquireThing(what),
-                           self.eat], time)
+                           self.eat])
         else:
             Goal.__init__(self, "have a meal",
                           self.am_i_full,
                           [MoveMeArea(place, 10),
                            AcquireThing(what),
                            SitDown(seat),
-                           self.eat], time)
+                           self.eat])
         self.what = what
         self.place = place
         self.full = 0.01
@@ -736,11 +736,11 @@ class Market(Goal):
 class RunShop(Market):
     """Run a market stall."""
 
-    def __init__(self, shop, updown, time):
+    def __init__(self, shop, updown):
         Goal.__init__(self, "run a shop",
                       self.is_it,
                       [SpotSomething(shop),
-                       self.set_it], time)
+                       self.set_it])
         # FIXME This probably does not work, but I'll fix it when we need it
         self.shop = shop
         self.state = updown
