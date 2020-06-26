@@ -123,7 +123,6 @@ int main(int argc, char** argv)
         auto exporter = std::make_shared<EntityExporter>(accountId, mind_id);
         exporter->setExportRules(rules);
         exporter->setExportTransient(transients);
-        exporter->setExportMinds(minds);
 
         bridge.runTask(exporter, filename);
         if (bridge.pollUntilTaskComplete() != 0) {

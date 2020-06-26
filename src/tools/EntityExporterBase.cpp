@@ -96,8 +96,7 @@ EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::
         mOutstandingGetRequestCounter(0),
         mExportTransient(false),
         mPreserveIds(false),
-        mExportRules(false),
-        mExportMinds(true)
+        mExportRules(false)
 {
 }
 
@@ -119,16 +118,6 @@ void EntityExporterBase::setExportTransient(bool exportTransient)
 bool EntityExporterBase::getExportTransient() const
 {
 	return mExportTransient;
-}
-
-void EntityExporterBase::setExportMinds(bool exportMinds)
-{
-    mExportMinds = exportMinds;
-}
-
-bool EntityExporterBase::getExportMinds() const
-{
-    return mExportMinds;
 }
 
 void EntityExporterBase::setPreserveIds(bool preserveIds)
@@ -194,80 +183,11 @@ void EntityExporterBase::dumpEntity(const RootEntity & ent)
 	mEntities.emplace_back(entityMap);
 }
 
-void EntityExporterBase::dumpMind(const std::string& entityId, const Operation & op)
-{
-	auto thoughts = op->getArgsAsList();
-	if (!thoughts.empty()) {
-		Atlas::Message::MapType entityMap;
-		entityMap["id"] = entityId;
-		entityMap["thoughts"] = thoughts;
-		mMinds.emplace_back(entityMap);
-	} else {
-		S_LOG_VERBOSE("Got commune response without any thoughts for entity " << entityId <<".");
-	}
-}
-
-void EntityExporterBase::thoughtOpArrived(const Operation & op)
-{
-
-	auto I = mThoughtsOutstanding.find(op->getRefno());
-	if (I == mThoughtsOutstanding.end()) {
-		S_LOG_WARNING("Got unrecognized thought info.");
-		return;
-	}
-	const std::string entityId = I->second;
-	mThoughtsOutstanding.erase(I);
-
-	//What we receive here has been relayed from the mind of the entity. That means that this op
-	//is potentially unsafe, as it could be of any type (Set, Logout etc.), all depending on what the
-	//mind client decided to send (i.e. someone might want to try to hack). We should therefore treat it
-	//very carefully.
-
-	if (op->getClassNo() == Atlas::Objects::Operation::ROOT_OPERATION_NO) {
-		S_LOG_VERBOSE("Got time out when requesting thoughts for entity " << entityId << ".");
-		//An empty root operation signals a timeout; we never got any answer from the entity.
-		mStats.mindsError++;
-		EventProgress.emit();
-		return;
-	}
-
-	//Since we'll just be iterating over the args we only need to do an extra check that what we got is a
-	//"think" operation.
-	if (op->getParent() != "think") {
-		S_LOG_WARNING("Got think operation with wrong type set for entity " << entityId << ".");
-		mStats.mindsError++;
-		EventProgress.emit();
-		return;
-	}
-
-	if (op->getArgs().empty()) {
-        S_LOG_WARNING("Got think operation with no inner args operations for entity " << entityId << ".");
-        mStats.mindsError++;
-        EventProgress.emit();
-        return;
-	}
-
-	auto setOp = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::Set>(op->getArgs().front());
-
-	if (!setOp.isValid()) {
-        S_LOG_WARNING("Got think operation with no inner Set operation for entity " << entityId << ".");
-        mStats.mindsError++;
-        EventProgress.emit();
-        return;
-	}
-
-	dumpMind(entityId, setOp);
-	mStats.mindsReceived++;
-	S_LOG_VERBOSE("Got commune result for entity " << entityId << ". " << mThoughtsOutstanding.size() << " thoughts requests waiting for response.");
-	EventProgress.emit();
-
-}
-
 void EntityExporterBase::pollQueue()
 {
 	//When we've queried, and gotten responses for all entities, and all types are bound,
 	//and there are no more thoughts we're waiting to receive; then we're done.
-	if (mEntityQueue.empty() && mOutstandingGetRequestCounter == 0 && mThoughtsOutstanding.empty()) {
+	if (mEntityQueue.empty() && mOutstandingGetRequestCounter == 0) {
 		complete();
 		return;
 	}
@@ -360,44 +280,8 @@ void EntityExporterBase::infoArrived(const Operation & op)
 		for (; I != Iend; ++I) {
 			mEntityQueue.push_back(*I);
 		}
-
-		if (mExportMinds) {
-            //Don't request thoughts for ourselves
-            if (ent->getId() != mAvatarId) {
-                if (ent->hasAttr("mind")) {
-                    requestThoughts(ent->getId(), persistedId);
-                } else {
-                    //Check if the mind type perhaps is set on the type instead only.
-                    if (mMindTypes.find(ent->getParent()) != mMindTypes.end()) {
-                        requestThoughts(ent->getId(), persistedId);
-                    }
-                }
-            }
-		}
 	}
 	pollQueue();
-}
-
-void EntityExporterBase::requestThoughts(const std::string& entityId, const std::string& persistedId)
-{
-	Atlas::Objects::Operation::Generic think;
-	think->setParent("think");
-	think->setTo(entityId);
-
-	//By setting it TO an entity and FROM our avatar we'll make the server deliver it as
-	//if it came from the entity itself (the server rewrites the FROM to be of the entity).
-	think->setFrom(mAvatarId);
-	//By setting a serial number we tell the server to "relay" the operation. This means that any
-	//response operation from the target entity will be sent back to us.
-	think->setSerialno(newSerialNumber());
-
-    think->setArgs1(Atlas::Objects::Operation::Get());
-
-	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetThoughtResult);
-	sendAndAwaitResponse(think, slot);
-	mThoughtsOutstanding.insert(std::make_pair(think->getSerialno(), persistedId));
-	S_LOG_VERBOSE("Sending request for thoughts for entity with id " << entityId << " (local id " << persistedId << ").");
-	mStats.mindsQueried++;
 }
 
 void EntityExporterBase::requestRule(const std::string& rule)
@@ -421,83 +305,83 @@ void EntityExporterBase::adjustReferencedEntities()
 {
 	S_LOG_VERBOSE("Adjusting referenced entity ids.");
 	if (!mPreserveIds) {
-		for (auto& mind : mMinds) {
-			//We know that mMinds only contain maps, and that there's always a "thoughts" list
-			auto& thoughts = mind.asMap().find("thoughts")->second.asList();
-			for (auto& thought : thoughts) {
-				//If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
-				if (thought.isMap()) {
-				    auto& thoughtMap = thought.Map();
-					if (thoughtMap.count("things") > 0) {
-						auto& thingsElement = thoughtMap.find("things")->second;
-						if (thingsElement.isMap()) {
-							for (auto& thingI : thingsElement.asMap()) {
-								if (thingI.second.isList()) {
-									Atlas::Message::ListType newList;
-									for (auto& thingId : thingI.second.asList()) {
-										if (thingId.isString()) {
-											auto entityIdLookupI = mIdMapping.find(thingId.asString());
-											//Check if the owned entity has been created with a new id. If so, replace the data.
-											if (entityIdLookupI != mIdMapping.end()) {
-												newList.emplace_back(entityIdLookupI->second);
-											} else {
-												newList.push_back(thingId);
-											}
-										} else {
-											newList.push_back(thingId);
-										}
-									}
-									thingI.second = newList;
-								}
-							}
-						}
-					}
-
-					if (thoughtMap.count("pending_things") > 0) {
-						//things that the entity owns, but haven't yet discovered are expressed as a list of entity ids
-						auto& pendingThingsElement = thoughtMap.find("pending_things")->second;
-						if (pendingThingsElement.isList()) {
-							Atlas::Message::ListType newList;
-							for (auto& thingId : pendingThingsElement.asList()) {
-								if (thingId.isString()) {
-									auto entityIdLookupI = mIdMapping.find(thingId.asString());
-									//Check if the owned entity has been created with a new id. If so, replace the data.
-									if (entityIdLookupI != mIdMapping.end()) {
-										newList.emplace_back(entityIdLookupI->second);
-									} else {
-										newList.push_back(thingId);
-									}
-								} else {
-									newList.push_back(thingId);
-								}
-							}
-							pendingThingsElement = newList;
-						}
-					}
-
-					if (thoughtMap.count("object") > 0) {
-                        auto& objectElement = thoughtMap.find("object")->second;
-                        if (objectElement.isString()) {
-                            std::string& objectString = objectElement.String();
-                            //Other entities are referred to using the syntax "'$eid:...'".
-                            //For example, the entity with id 2 would be "'$eid:2'".
-                            auto pos = objectString.find("$eid:");
-                            if (pos != std::string::npos) {
-                                auto quotePos = objectString.find('\'', pos);
-                                if (quotePos != std::string::npos) {
-                                    auto id = objectString.substr(pos + 5, quotePos - pos - 5);
-                                    auto I = mIdMapping.find(id);
-                                    if (I != mIdMapping.end()) {
-                                        objectString.replace(pos + 5, quotePos - 7, I->second);
-                                    }
-                                }
-                            }
-                        }
-					}
-
-				}
-			}
-		}
+//		for (auto& mind : mMinds) {
+//			//We know that mMinds only contain maps, and that there's always a "thoughts" list
+//			auto& thoughts = mind.asMap().find("thoughts")->second.asList();
+//			for (auto& thought : thoughts) {
+//				//If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
+//				if (thought.isMap()) {
+//				    auto& thoughtMap = thought.Map();
+//					if (thoughtMap.count("things") > 0) {
+//						auto& thingsElement = thoughtMap.find("things")->second;
+//						if (thingsElement.isMap()) {
+//							for (auto& thingI : thingsElement.asMap()) {
+//								if (thingI.second.isList()) {
+//									Atlas::Message::ListType newList;
+//									for (auto& thingId : thingI.second.asList()) {
+//										if (thingId.isString()) {
+//											auto entityIdLookupI = mIdMapping.find(thingId.asString());
+//											//Check if the owned entity has been created with a new id. If so, replace the data.
+//											if (entityIdLookupI != mIdMapping.end()) {
+//												newList.emplace_back(entityIdLookupI->second);
+//											} else {
+//												newList.push_back(thingId);
+//											}
+//										} else {
+//											newList.push_back(thingId);
+//										}
+//									}
+//									thingI.second = newList;
+//								}
+//							}
+//						}
+//					}
+//
+//					if (thoughtMap.count("pending_things") > 0) {
+//						//things that the entity owns, but haven't yet discovered are expressed as a list of entity ids
+//						auto& pendingThingsElement = thoughtMap.find("pending_things")->second;
+//						if (pendingThingsElement.isList()) {
+//							Atlas::Message::ListType newList;
+//							for (auto& thingId : pendingThingsElement.asList()) {
+//								if (thingId.isString()) {
+//									auto entityIdLookupI = mIdMapping.find(thingId.asString());
+//									//Check if the owned entity has been created with a new id. If so, replace the data.
+//									if (entityIdLookupI != mIdMapping.end()) {
+//										newList.emplace_back(entityIdLookupI->second);
+//									} else {
+//										newList.push_back(thingId);
+//									}
+//								} else {
+//									newList.push_back(thingId);
+//								}
+//							}
+//							pendingThingsElement = newList;
+//						}
+//					}
+//
+//					if (thoughtMap.count("object") > 0) {
+//                        auto& objectElement = thoughtMap.find("object")->second;
+//                        if (objectElement.isString()) {
+//                            std::string& objectString = objectElement.String();
+//                            //Other entities are referred to using the syntax "'$eid:...'".
+//                            //For example, the entity with id 2 would be "'$eid:2'".
+//                            auto pos = objectString.find("$eid:");
+//                            if (pos != std::string::npos) {
+//                                auto quotePos = objectString.find('\'', pos);
+//                                if (quotePos != std::string::npos) {
+//                                    auto id = objectString.substr(pos + 5, quotePos - pos - 5);
+//                                    auto I = mIdMapping.find(id);
+//                                    if (I != mIdMapping.end()) {
+//                                        objectString.replace(pos + 5, quotePos - 7, I->second);
+//                                    }
+//                                }
+//                            }
+//                        }
+//					}
+//
+//				}
+//			}
+//		}
 	}
 	for (auto& entity : mEntities) {
 		auto& entityMap = entity.asMap();
@@ -550,11 +434,6 @@ void EntityExporterBase::complete()
 
 	adjustReferencedEntities();
 
-	//Make sure the minds are stored in a deterministic fashion
-	std::sort(mMinds.begin(), mMinds.end(), [](Atlas::Message::Element const & a, Atlas::Message::Element const &b) {
-		return integerId(a.asMap().find("id")->second.asString()) < integerId(b.asMap().find("id")->second.asString());
-	});
-
 	//Make sure the rules are stored in a deterministic fashion
 	std::sort(mRules.begin(), mRules.end(), [](Atlas::Message::Element const & a, Atlas::Message::Element const &b) {
 		return a.asMap().find("id")->second.asString() < b.asMap().find("id")->second.asString();
@@ -577,7 +456,6 @@ void EntityExporterBase::complete()
 	root->setAttr("meta", meta);
 
 	root->setAttr("entities", mEntities);
-	root->setAttr("minds", mMinds);
 	if (!mRules.empty()) {
 		root->setAttr("rules", mRules);
 	}
@@ -597,11 +475,10 @@ void EntityExporterBase::complete()
 
 	//Clear the lists to release the memory allocated
 	mEntities.clear();
-	mMinds.clear();
 
 	mComplete = true;
 	EventCompleted.emit();
-	S_LOG_INFO("Completed exporting " << mStats.entitiesReceived << " entities," << mStats.mindsReceived << " minds and " << mStats.rulesReceived << " rules.");
+	S_LOG_INFO("Completed exporting " << mStats.entitiesReceived << " entities and " << mStats.rulesReceived << " rules.");
 }
 
 void EntityExporterBase::start(const std::string& filename, const std::string& entityId)
@@ -671,14 +548,6 @@ void EntityExporterBase::operationGetResult(const Operation & op)
 	}
 }
 
-void EntityExporterBase::operationGetThoughtResult(const Operation & op)
-{
-	if (!mCancelled) {
-		thoughtOpArrived(op);
-		pollQueue();
-	}
-}
-
 void EntityExporterBase::operationGetRuleResult(const Operation & op)
 {
 	if (!mCancelled) {
@@ -727,7 +596,6 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 
 		Element attributesElem;
         bool foundTransientProperty = false;
-        bool foundMindProperty = false;
 		if (ent->copyAttr("attributes", attributesElem) == 0 && attributesElem.isMap()) {
             mTypeAttributes[ruleId] = attributesElem.Map();
 		    auto transientI = attributesElem.Map().find("transient");
@@ -740,13 +608,6 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		            }
 		        }
 		    }
-
-            auto mindI = attributesElem.Map().find("mind");
-            //We don't care what the default value is; we'll just check that it's a mind
-            if (mindI != attributesElem.Map().end()) {
-                mMindTypes.insert(ruleId);
-                foundMindProperty = true;
-            }
 		}
 
 		if (!foundTransientProperty) {
@@ -758,16 +619,6 @@ void EntityExporterBase::operationGetRuleResult(const Operation & op)
 		        }
 		    }
 		}
-
-        if (!foundMindProperty) {
-            auto parentI = ruleMap.find("parent");
-            if (parentI != ruleMap.end() && parentI->second.isString()) {
-                const std::string& parent = parentI->second.String();
-                if (mMindTypes.find(parent) != mMindTypes.end()) {
-                    mMindTypes.insert(ruleId);
-                }
-            }
-        }
 
 		for (auto& child : children) {
 			requestRule(child);
