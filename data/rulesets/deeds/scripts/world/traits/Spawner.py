@@ -1,7 +1,7 @@
+import math
 import random
 
 import entity_filter
-import math
 import physics
 import server
 from atlas import Oplist, Operation, Entity
@@ -33,7 +33,9 @@ def get_spawn_pos(entity):
                 pos.x = pos.x + x
                 pos.z = pos.z + z
                 return pos
-
+    else:
+        # Fall back to entity position
+        return entity.location.pos
     return None
 
 
