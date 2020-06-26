@@ -11,13 +11,11 @@ from common import log, const
 from physics import Vector3D, distance_to, Quaternion
 from rules import Location
 
-import mind.goals
-import mind.goals.common
 from mind.Goal import goal_create
 from mind.Knowledge import Knowledge
 from mind.Memory import Memory
 from mind.compass import vector_to_compass
-from mind.panlingua import interlinguish, ontology
+from mind.panlingua import interlinguish
 from . import dictlist
 from .goals.common.misc_goal import Transaction
 
@@ -493,19 +491,6 @@ class NPCMind(ai.Mind):
         res = res + operation_method(op, word_object)
         return res
 
-    def interlinguish_be_verb1_operation(self, op, say):
-        """Handle sentences of the form '... is more important that ...'
-
-        Accept instructions about the priority of goals relative to each
-        based on key verbs associated with those goals."""
-        if not self.admin_sound(op):
-            return self.interlinguish_warning(op, say, "You are not admin")
-        res = interlinguish.match_importance(say)
-        if res:
-            return self.add_importance(res['sub'].id, '>', res['obj'].id)
-        else:
-            return self.interlinguish_warning(op, say, "Unknown assertion")
-
     def interlinguish_know_verb1_operation(self, op, say):
         """Handle a sentence of the form 'know subject predicate object'
 
@@ -713,31 +698,6 @@ class NPCMind(ai.Mind):
     def remove_knowledge(self, what, key):
         """remove certain type of knowledge"""
         self.knowledge.remove(what, key)
-
-    # Importance: Knowledge about how things compare in urgency, etc..
-    def add_importance(self, sub, cmp, obj):
-        """add importance: both a>b and b<a"""
-        self.add_knowledge('importance', (sub, obj), cmp)
-        self.add_knowledge('importance', (obj, sub), reverse_cmp[cmp])
-
-    def cmp_goal_importance(self, g1, g2):
-        """which of goals is more important?
-           also handle more generic ones:
-           for example if you are comparing breakfast to sleeping
-           it will note that having breakfast is a (isa) type of eating"""
-        try:
-            id1 = g1.key[1]
-            id2 = g2.key[1]
-        except AttributeError:
-            return 1
-        l1 = ontology.get_isa(id1)
-        l2 = ontology.get_isa(id2)
-        for s1 in l1:
-            for s2 in l2:
-                cmp = self.knowledge.get('importance', (s1.id, s2.id))
-                if cmp:
-                    return cmp == '>'
-        return 1
 
     def thing_name(self, thing):
         """Things we own"""
