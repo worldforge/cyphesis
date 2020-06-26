@@ -44,7 +44,7 @@ class Gather(Goal):
         # A suitably range
         what_all = me.map.find_by_filter(self.filter)
         for thing in what_all:
-            distance_to_thing = me.steering.distance_to(thing, ai.EDGE, ai.EDGE,)
+            distance_to_thing = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
             if distance_to_thing < self.distance:
                 return False
         return True
