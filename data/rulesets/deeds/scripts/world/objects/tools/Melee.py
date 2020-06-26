@@ -35,7 +35,7 @@ class Melee(StoppableTask):
 
         target = self.usage.get_arg("targets", 0)
         if target:
-            if target.is_destroyed:
+            if target.parent and target.parent.is_destroyed:
                 self.irrelevant("Target is destroyed.")
                 return server.OPERATION_BLOCKED
 
