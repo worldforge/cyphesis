@@ -56,6 +56,8 @@ class ExternalMindsManager : public virtual sigc::trackable, public Singleton<Ex
          */
         int requestPossession(LocatedEntity* character);
 
+        void removeRequest(LocatedEntity* character);
+
     private:
         std::map<std::string, ExternalMindsConnection> m_connections;
         std::unordered_set<LocatedEntity*> m_unpossessedEntities;

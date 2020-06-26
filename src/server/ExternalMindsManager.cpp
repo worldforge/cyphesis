@@ -119,8 +119,13 @@ int ExternalMindsManager::requestPossession(LocatedEntity* entity)
         requestPossessionFromRegisteredClients(entity->getId());
     }
     return 0;
-
 }
+
+void ExternalMindsManager::removeRequest(LocatedEntity* character)
+{
+    m_unpossessedEntities.erase(character);
+}
+
 
 int ExternalMindsManager::requestPossessionFromRegisteredClients(const std::string& entity_id)
 {

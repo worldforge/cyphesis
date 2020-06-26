@@ -26,16 +26,16 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Look;
 
-MindProperty::MindProperty(const MindProperty & rhs) = default;
+MindProperty::MindProperty(const MindProperty& rhs) = default;
 
-void MindProperty::set(const Element & val)
+void MindProperty::set(const Element& val)
 {
     m_language.clear();
     m_script.clear();
     if (!val.isMap()) {
         return;
     }
-    const MapType & data = val.Map();
+    const MapType& data = val.Map();
 
     {
         auto I = data.find("name");
@@ -60,7 +60,7 @@ void MindProperty::set(const Element & val)
     }
 }
 
-int MindProperty::get(Atlas::Message::Element & val) const
+int MindProperty::get(Atlas::Message::Element& val) const
 {
     MapType map{};
     if (!m_language.empty()) {
@@ -74,18 +74,26 @@ int MindProperty::get(Atlas::Message::Element & val) const
 }
 
 
-MindProperty * MindProperty::copy() const
+MindProperty* MindProperty::copy() const
 {
     return new MindProperty(*this);
 }
 
-void MindProperty::apply(LocatedEntity * ent)
+void MindProperty::apply(LocatedEntity* ent)
 {
     //Only request possession if there's a value. This allows player controlled entities to be exempted.
     if (isMindEnabled()) {
         ExternalMindsManager::instance().requestPossession(ent);
+    } else {
+        ExternalMindsManager::instance().removeRequest(ent);
     }
 }
+
+void MindProperty::remove(LocatedEntity* ent, const std::string& name)
+{
+    ExternalMindsManager::instance().removeRequest(ent);
+}
+
 
 bool MindProperty::isMindEnabled() const
 {

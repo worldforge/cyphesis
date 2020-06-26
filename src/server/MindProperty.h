@@ -59,6 +59,8 @@ class MindProperty : public PropertyBase
         MindProperty* copy() const override;
 
         void apply(LocatedEntity*) override;
+
+        void remove(LocatedEntity *, const std::string & name) override;
 };
 
 #endif // RULESETS_MIND_PROPERTY_H
