@@ -34,7 +34,7 @@ class SharedTerrain;
 /**
  * @brief A Mind which is aware of its surroundings and thus can steer and navigate in the world.
  */
-class AwareMind : public BaseMind, public MemMap::MapListener
+class AwareMind : public BaseMind
 {
     public:
         AwareMind(const std::string& mind_id,
@@ -45,11 +45,11 @@ class AwareMind : public BaseMind, public MemMap::MapListener
 
         ~AwareMind() override;
 
-        void entityAdded(const MemEntity& entity) override;
+        void entityAdded(MemEntity& entity) override;
 
-        void entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation) override;
+        void entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation) override;
 
-        void entityDeleted(const MemEntity& entity) override;
+        void entityDeleted(MemEntity& entity) override;
 
         void operation(const Operation& op, OpVector& res) override;
 

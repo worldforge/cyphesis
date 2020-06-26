@@ -87,6 +87,11 @@ void CyPy_BaseMind::init_type()
 //    PYCXX_ADD_VARARGS_METHOD(client_error, client_error, "");
 
 
+
+    PYCXX_ADD_VARARGS_METHOD(add_hook_set, add_hook_set, "");
+    PYCXX_ADD_VARARGS_METHOD(update_hook_set, update_hook_set, "");
+    PYCXX_ADD_VARARGS_METHOD(delete_hook_set, delete_hook_set, "");
+
     PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
 
 
@@ -204,6 +209,29 @@ Py::Object CyPy_BaseMind::str()
         return Py::String(String::compose("BaseMind %1, entity %2", m_value->getId(), m_value->getEntity()->describeEntity()));
     }
     return Py::String(String::compose("BaseMind %1", m_value->getId()));
+}
+
+
+
+Py::Object CyPy_BaseMind::add_hook_set(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    m_value->setAddHook(verifyString(args[0]));
+    return Py::None();
+}
+
+Py::Object CyPy_BaseMind::update_hook_set(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    m_value->setUpdateHook(verifyString(args[0]));
+    return Py::None();
+}
+
+Py::Object CyPy_BaseMind::delete_hook_set(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    m_value->setDeleteHook(verifyString(args[0]));
+    return Py::None();
 }
 
 

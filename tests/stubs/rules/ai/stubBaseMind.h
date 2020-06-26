@@ -7,6 +7,38 @@
 #include "rules/ai/BaseMind.h"
 #include "stubBaseMind_custom.h"
 
+#ifndef STUB_BaseMind_removeEntity
+//#define STUB_BaseMind_removeEntity
+  void BaseMind::removeEntity(const std::string& id, OpVector& res)
+  {
+    
+  }
+#endif //STUB_BaseMind_removeEntity
+
+#ifndef STUB_BaseMind_entityAdded
+//#define STUB_BaseMind_entityAdded
+  void BaseMind::entityAdded(MemEntity& entity)
+  {
+    
+  }
+#endif //STUB_BaseMind_entityAdded
+
+#ifndef STUB_BaseMind_entityUpdated
+//#define STUB_BaseMind_entityUpdated
+  void BaseMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
+  {
+    
+  }
+#endif //STUB_BaseMind_entityUpdated
+
+#ifndef STUB_BaseMind_entityDeleted
+//#define STUB_BaseMind_entityDeleted
+  void BaseMind::entityDeleted(MemEntity& entity)
+  {
+    
+  }
+#endif //STUB_BaseMind_entityDeleted
+
 #ifndef STUB_BaseMind_BaseMind
 //#define STUB_BaseMind_BaseMind
    BaseMind::BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager)

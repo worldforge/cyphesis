@@ -118,15 +118,6 @@ int main()
     expect_python_error("m.delete()", PyExc_IndexError);
     expect_python_error("m.delete(1)", PyExc_TypeError);
     run_python_string("m.delete('1')");
-    expect_python_error("m.add_hook_set()", PyExc_IndexError);
-    expect_python_error("m.add_hook_set(1)", PyExc_TypeError);
-    run_python_string("m.add_hook_set('add_map')");
-    expect_python_error("m.update_hook_set()", PyExc_IndexError);
-    expect_python_error("m.update_hook_set(1)", PyExc_TypeError);
-    run_python_string("m.update_hook_set('update_map')");
-    expect_python_error("m.delete_hook_set()", PyExc_IndexError);
-    expect_python_error("m.delete_hook_set(1)", PyExc_TypeError);
-    run_python_string("m.delete_hook_set('delete_map')");
 
     shutdown_python_api();
     return 0;

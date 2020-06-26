@@ -44,10 +44,8 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
 
     protected:
 
-
         Py::Object addPropertyCallback(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, addPropertyCallback);
-
 
         Py::Object matchEntity(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntity);
@@ -55,7 +53,14 @@ class CyPy_BaseMind : public WrapperBase<Ref<BaseMind>, CyPy_BaseMind>
         Py::Object matchEntities(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, matchEntities);
 
+        Py::Object add_hook_set(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, add_hook_set);
 
+        Py::Object update_hook_set(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, update_hook_set);
+
+        Py::Object delete_hook_set(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_BaseMind, delete_hook_set);
 };
 
 

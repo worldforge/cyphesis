@@ -27,7 +27,7 @@
 
 #ifndef STUB_AwareMind_entityAdded
 //#define STUB_AwareMind_entityAdded
-  void AwareMind::entityAdded(const MemEntity& entity)
+  void AwareMind::entityAdded(MemEntity& entity)
   {
     
   }
@@ -35,7 +35,7 @@
 
 #ifndef STUB_AwareMind_entityUpdated
 //#define STUB_AwareMind_entityUpdated
-  void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
+  void AwareMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
   {
     
   }
@@ -43,7 +43,7 @@
 
 #ifndef STUB_AwareMind_entityDeleted
 //#define STUB_AwareMind_entityDeleted
-  void AwareMind::entityDeleted(const MemEntity& entity)
+  void AwareMind::entityDeleted(MemEntity& entity)
   {
     
   }

@@ -41,7 +41,7 @@ int main()
         bool ret = test_script.operation("op", op, res);
         assert(!ret);
 
-        test_script.hook("function", nullptr);
+        test_script.hook("function", nullptr, res);
 
     }
 

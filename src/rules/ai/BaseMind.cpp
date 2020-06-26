@@ -54,6 +54,7 @@ BaseMind::BaseMind(const std::string& mindId, std::string entityId, const Proper
         m_scriptFactory(nullptr)
 {
     m_typeResolver->m_typeProviderId = mindId;
+    m_map.setListener(this);
 }
 
 BaseMind::~BaseMind() = default;
@@ -250,36 +251,56 @@ void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
     }
 }
 
+void BaseMind::removeEntity(const std::string& id, OpVector& res)
+{
+    auto entity = m_map.del(id);
+    //Only call into script if the type previously was resolved.
+    if (entity && entity->getType()) {
+        if (m_script && !m_deleteHook.empty()) {
+            m_script->hook(m_deleteHook, entity.get(), res);
+        }
+    }
+    m_pendingEntitiesOperations.erase(id);
+
+}
+
+
 void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
 {
     if (!isAwake()) { return; }
     auto& args = op->getArgs();
+    if (args.empty()) {
+        debug_print(" no args!")
+        return;
+    }
     for (auto& arg : args) {
         if (!arg->isDefaultId()) {
-            const std::string& id = arg->getId();
+            auto& id = arg->getId();
             if (id.empty()) {
                 continue;
             }
-            m_map.del(id);
+            removeEntity(id, res);
         }
     }
 }
 
 void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
 {
+    if (!isAwake()) { return; }
     auto& args = op->getArgs();
     if (args.empty()) {
         debug_print(" no args!")
         return;
     }
-    auto& arg = args.front();
-    if (arg->isDefaultId()) {
-        log(ERROR, "BaseMind: Unseen op has no arg ID");
-        return;
+    for (auto& arg : args) {
+        if (!arg->isDefaultId()) {
+            auto& id = arg->getId();
+            if (id.empty()) {
+                continue;
+            }
+            removeEntity(id, res);
+        }
     }
-    m_map.del(arg->getId());
-    m_pendingEntitiesOperations.erase(arg->getId());
-
 }
 
 void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
@@ -295,7 +316,7 @@ void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
         if (m_script) {
             auto I = m_propertyScriptCallbacks.find(name);
             if (I != m_propertyScriptCallbacks.end()) {
-                m_script->hook(I->second, m_ownEntity.get());
+                m_script->hook(I->second, m_ownEntity.get(), res);
             }
         }
     });
@@ -304,7 +325,7 @@ void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
         //If there are any property callbacks registered call them now.
         for (auto& entry : m_propertyScriptCallbacks) {
             if (m_ownEntity->hasAttr(entry.first)) {
-                m_script->hook(entry.second, m_ownEntity.get());
+                m_script->hook(entry.second, m_ownEntity.get(), res);
             }
         }
     }
@@ -381,7 +402,9 @@ void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string s
     m_propertyScriptCallbacks.emplace(propertyName, scriptMethod);
     if (m_ownEntity && m_script) {
         if (m_ownEntity->hasAttr(propertyName)) {
-            m_script->hook(scriptMethod, m_ownEntity.get());
+            OpVector res;
+            m_script->hook(scriptMethod, m_ownEntity.get(), res);
+            std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
         }
     }
 }
@@ -469,14 +492,15 @@ void BaseMind::operation(const Operation& op, OpVector& res)
         }
     }
 
+    std::copy(mOutgoingOperations.begin(), mOutgoingOperations.end(), std::back_inserter(res));
+    mOutgoingOperations.clear();
+    m_map.collectTypeResolverOps(res);
 
     for (auto& resOp : res) {
         if (resOp->isDefaultFrom()) {
             resOp->setFrom(getId());
         }
     }
-
-    m_map.collectTypeResolverOps(res);
 
     if (debug_flag) {
         for (const auto& resOp : res) {
@@ -536,15 +560,16 @@ void BaseMind::callSoundOperation(const Operation& op,
 void BaseMind::setScript(std::unique_ptr<Script> scrpt)
 {
     m_script = std::move(scrpt);
-    m_map.setScript(m_script.get());
     if (m_script && m_ownEntity) {
         m_script->attachPropertyCallbacks(*m_ownEntity);
+        OpVector res;
         //If there are any property callbacks registered call them now.
         for (auto& entry : m_propertyScriptCallbacks) {
             if (m_ownEntity->hasAttr(entry.first)) {
-                m_script->hook(entry.second, m_ownEntity.get());
+                m_script->hook(entry.second, m_ownEntity.get(), res);
             }
         }
+        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
     }
 }
 
@@ -559,6 +584,34 @@ std::string BaseMind::describeEntity() const
     ss << *this;
     return ss.str();
 }
+
+void BaseMind::entityAdded(MemEntity& entity)
+{
+    OpVector res;
+    if (!m_addHook.empty() && m_script) {
+        m_script->hook(m_addHook, &entity, res);
+    }
+    std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+}
+
+void BaseMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
+{
+    OpVector res;
+    if (!m_updateHook.empty() && m_script) {
+        m_script->hook(m_updateHook, &entity, res);
+    }
+    std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+}
+
+void BaseMind::entityDeleted(MemEntity& entity)
+{
+    OpVector res;
+    if (!m_deleteHook.empty() && m_script) {
+        m_script->hook(m_deleteHook, &entity, res);
+    }
+    std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+}
+
 
 std::ostream& operator<<(std::ostream& s, const BaseMind& d)
 {

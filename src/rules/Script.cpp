@@ -34,7 +34,7 @@ HandlerResult Script::operation(const std::string& opname,
     return OPERATION_IGNORED;
 }
 
-void Script::hook(const std::string& function, LocatedEntity* entity)
+void Script::hook(const std::string& function, LocatedEntity* entity, OpVector& res)
 {
 }
 

@@ -41,19 +41,12 @@ using Atlas::Objects::Entity::Anonymous;
 
 using String::compose;
 
-
-void MemMap::setScript(Script* script)
-{
-    m_script = script;
-}
-
-
 void MemMap::addEntity(const Ref<MemEntity>& entity)
 {
     assert(entity != nullptr);
     assert(!entity->getId().empty());
 
-    debug_print("MemMap::addEntity " << entity->describeEntity() << " " << entity->getId());
+    debug_print("MemMap::addEntity " << entity->describeEntity() << " " << entity->getId())
     long next = -1;
     if (m_checkIterator != m_entities.end()) {
         next = m_checkIterator->first;
@@ -101,13 +94,6 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
                     applyTypePropertiesToEntity(entity);
 
                     if (entity->getType()) {
-                        if (m_script) {
-                            debug_print(this);
-                            if (!m_addHook.empty()) {
-                                m_script->hook(m_addHook, entity.get());
-                            }
-                        }
-
                         if (m_listener) {
                             m_listener->entityAdded(*entity);
                         }
@@ -126,7 +112,8 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
     addContents(ent);
 }
 
-void MemMap::applyTypePropertiesToEntity(const Ref<MemEntity>& entity) {
+void MemMap::applyTypePropertiesToEntity(const Ref<MemEntity>& entity)
+{
     for (auto& propIter : entity->getType()->defaults()) {
         // The property will have been applied if it has an overridden
         // value, so we only apply if the value is still default.
@@ -144,18 +131,13 @@ void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, d
 {
     assert(entity != nullptr);
 
-    debug_print(" got " << entity->describeEntity());
+    debug_print(" got " << entity->describeEntity())
 
     auto old_loc = entity->m_location.m_parent;
     readEntity(entity, ent, timestamp);
 
     //Only signal for those entities that have resolved types.
     if (entity->getType()) {
-        if (m_script) {
-            if (!m_updateHook.empty()) {
-                m_script->hook(m_updateHook, entity.get());
-            }
-        }
         if (m_listener) {
             m_listener->entityUpdated(*entity, ent, old_loc.get());
         }
@@ -178,10 +160,9 @@ Ref<MemEntity> MemMap::newEntity(const std::string& id, long int_id,
 }
 
 MemMap::MemMap(TypeResolver& typeResolver)
-    : m_checkIterator(m_entities.begin()),
-      m_script(nullptr),
-      m_listener(nullptr),
-      m_typeResolver(typeResolver)
+        : m_checkIterator(m_entities.begin()),
+          m_listener(nullptr),
+          m_typeResolver(typeResolver)
 {
 
 }
@@ -214,12 +195,14 @@ Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
     return entity;
 }
 
-void MemMap::del(const std::string& id)
+Ref<MemEntity> MemMap::del(const std::string& id)
 // Delete an entity from memory
 {
     debug_print("MemMap::del(" << id << ")")
 
     long int_id = integerId(id);
+
+    m_unresolvedEntities.erase(id);
 
     auto I = m_entities.find(int_id);
     if (I != m_entities.end()) {
@@ -240,21 +223,14 @@ void MemMap::del(const std::string& id)
         }
 
         //Only signal for those entities that have resolved types.
-        if (ent->getType()) {
-            if (m_script) {
-                if (!m_deleteHook.empty()) {
-                    m_script->hook(m_deleteHook, ent.get());
-                }
-            }
-
-            if (m_listener) {
-                m_listener->entityDeleted(*ent);
-            }
+        if (ent->getType() && m_listener) {
+            m_listener->entityDeleted(*ent);
         }
         ent->destroy();
+        return ent;
     }
 
-    m_unresolvedEntities.erase(id);
+    return {};
 }
 
 Ref<MemEntity> MemMap::get(const std::string& id) const
@@ -358,7 +334,7 @@ void MemMap::addEntityMemory(const std::string& id,
         entity_memory->second[memory] = value;
     } else {
         m_entityRelatedMemory.insert(
-            std::make_pair(id, std::map<std::string, Element>{{memory, value}}));
+                std::make_pair(id, std::map<std::string, Element>{{memory, value}}));
     }
 }
 
@@ -457,9 +433,9 @@ void MemMap::check(const double& time)
             }
 
         } else {
-            debug(std::cout << me->getId() << "|" << me->getType()->name() << "|"
-                            << me->lastSeen() << "|" << me->isVisible()
-                            << " is fine" << std::endl << std::flush;);
+            debug_print(me->getId() << "|" << me->getType()->name() << "|"
+                                    << me->lastSeen() << "|" << me->isVisible()
+                                    << " is fine")
             ++m_checkIterator;
         }
     }
@@ -468,7 +444,7 @@ void MemMap::check(const double& time)
 void MemMap::flush()
 {
     debug_print("Flushing memory with " << m_entities.size()
-                    << " entities and " << m_entityRelatedMemory.size() << " entity memories.");
+                                        << " entities and " << m_entityRelatedMemory.size() << " entity memories.")
     m_entities.clear();
     m_entityRelatedMemory.clear();
 }
@@ -488,13 +464,6 @@ std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeN
             log(NOTICE, String::compose("Resolved entity %1.", entity->getId()));
             entity->setType(typeNode);
             applyTypePropertiesToEntity(entity);
-
-            if (m_script) {
-                debug_print(this);
-                if (!m_addHook.empty()) {
-                    m_script->hook(m_addHook, entity.get());
-                }
-            }
 
             if (m_listener) {
                 m_listener->entityAdded(*entity);

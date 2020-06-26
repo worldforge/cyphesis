@@ -9,7 +9,7 @@
 
 #ifndef STUB_MemMap_readEntity
 //#define STUB_MemMap_readEntity
-  void MemMap::readEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  void MemMap::readEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity&, double timestamp)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_MemMap_updateEntity
 //#define STUB_MemMap_updateEntity
-  void MemMap::updateEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  void MemMap::updateEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity&, double timestamp)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_MemMap_newEntity
 //#define STUB_MemMap_newEntity
-  Ref<MemEntity> MemMap::newEntity(const std::string &, long, const Atlas::Objects::Entity::RootEntity &, double timestamp)
+  Ref<MemEntity> MemMap::newEntity(const std::string&, long, const Atlas::Objects::Entity::RootEntity&, double timestamp)
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_MemMap_addContents
 //#define STUB_MemMap_addContents
-  void MemMap::addContents(const Atlas::Objects::Entity::RootEntity &)
+  void MemMap::addContents(const Atlas::Objects::Entity::RootEntity&)
   {
     
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_MemMap_addId
 //#define STUB_MemMap_addId
-  Ref<MemEntity> MemMap::addId(const std::string &, long)
+  Ref<MemEntity> MemMap::addId(const std::string&, long)
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }
@@ -58,7 +58,7 @@
 #ifndef STUB_MemMap_MemMap
 //#define STUB_MemMap_MemMap
    MemMap::MemMap(TypeResolver& typeResolver)
-    : m_script(nullptr),m_listener(nullptr)
+    : m_listener(nullptr)
   {
     
   }
@@ -80,17 +80,9 @@
   }
 #endif //STUB_MemMap_addEntity
 
-#ifndef STUB_MemMap_setScript
-//#define STUB_MemMap_setScript
-  void MemMap::setScript(Script* script)
-  {
-    
-  }
-#endif //STUB_MemMap_setScript
-
 #ifndef STUB_MemMap_find
 //#define STUB_MemMap_find
-  bool MemMap::find(const std::string & id) const
+  bool MemMap::find(const std::string& id) const
   {
     return false;
   }
@@ -98,7 +90,7 @@
 
 #ifndef STUB_MemMap_sendLooks
 //#define STUB_MemMap_sendLooks
-  void MemMap::sendLooks(OpVector &)
+  void MemMap::sendLooks(OpVector&)
   {
     
   }
@@ -106,15 +98,15 @@
 
 #ifndef STUB_MemMap_del
 //#define STUB_MemMap_del
-  void MemMap::del(const std::string & id)
+  Ref<MemEntity> MemMap::del(const std::string& id)
   {
-    
+    return *static_cast<Ref<MemEntity>*>(nullptr);
   }
 #endif //STUB_MemMap_del
 
 #ifndef STUB_MemMap_get
 //#define STUB_MemMap_get
-  Ref<MemEntity> MemMap::get(const std::string & id) const
+  Ref<MemEntity> MemMap::get(const std::string& id) const
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }
@@ -122,7 +114,7 @@
 
 #ifndef STUB_MemMap_getAdd
 //#define STUB_MemMap_getAdd
-  Ref<MemEntity> MemMap::getAdd(const std::string & id)
+  Ref<MemEntity> MemMap::getAdd(const std::string& id)
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }
@@ -130,7 +122,7 @@
 
 #ifndef STUB_MemMap_updateAdd
 //#define STUB_MemMap_updateAdd
-  Ref<MemEntity> MemMap::updateAdd(const Atlas::Objects::Entity::RootEntity &, const double &)
+  Ref<MemEntity> MemMap::updateAdd(const Atlas::Objects::Entity::RootEntity&, const double&)
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }
@@ -162,7 +154,7 @@
 
 #ifndef STUB_MemMap_findByType
 //#define STUB_MemMap_findByType
-  EntityVector MemMap::findByType(const std::string & what)
+  EntityVector MemMap::findByType(const std::string& what)
   {
     return *static_cast<EntityVector*>(nullptr);
   }
@@ -170,7 +162,7 @@
 
 #ifndef STUB_MemMap_findByLocation
 //#define STUB_MemMap_findByLocation
-  EntityVector MemMap::findByLocation(const EntityLocation & where, WFMath::CoordType radius, const std::string & what)
+  EntityVector MemMap::findByLocation(const EntityLocation& where, WFMath::CoordType radius, const std::string& what)
   {
     return *static_cast<EntityVector*>(nullptr);
   }
@@ -178,7 +170,7 @@
 
 #ifndef STUB_MemMap_check
 //#define STUB_MemMap_check
-  void MemMap::check(const double &)
+  void MemMap::check(const double&)
   {
     
   }

@@ -132,8 +132,8 @@ int main()
     auto& script = e->m_scripts.front();
     assert(script);
 
-    script->hook("nohookfunction", e.get());
-    script->hook("test_hook", e.get());
+    script->hook("nohookfunction", e.get(), res);
+    script->hook("test_hook", e.get(), res);
     e = nullptr;
 
     shutdown_python_api();

@@ -26,7 +26,7 @@
 
 #ifndef STUB_PythonWrapper_operation
 //#define STUB_PythonWrapper_operation
-  HandlerResult PythonWrapper::operation(const std::string & opname, const Atlas::Objects::Operation::RootOperation & op, OpVector & res)
+  HandlerResult PythonWrapper::operation(const std::string& opname, const Atlas::Objects::Operation::RootOperation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_PythonWrapper_hook
 //#define STUB_PythonWrapper_hook
-  void PythonWrapper::hook(const std::string & function, LocatedEntity * entity)
+  void PythonWrapper::hook(const std::string& function, LocatedEntity* entity, OpVector& res)
   {
     
   }

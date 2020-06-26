@@ -34,7 +34,7 @@ struct TypeStore;
 /// handles most of the AI. The main purpose of this class is to handle
 /// operations and interface to the MemMap used as the core of
 /// the entity's memory.
-class BaseMind : public Router, public ReferenceCounted
+class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListener
 {
     protected:
 
@@ -61,6 +61,23 @@ class BaseMind : public Router, public ReferenceCounted
 
         std::map<std::string, std::string> m_propertyScriptCallbacks;
 
+        std::string m_addHook;
+        std::string m_updateHook;
+        std::string m_deleteHook;
+
+        void removeEntity(const std::string& id, OpVector& res);
+
+        void entityAdded(MemEntity& entity) override;
+
+        void entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation) override;
+
+        void entityDeleted(MemEntity& entity) override;
+
+        /**
+         * A list of outgoing operations as result from script hooks and callbacks.
+         * These should be sent whenever the "operations" method completes (as that's the main entry to any other methods being called).
+         */
+        OpVector mOutgoingOperations;
 
     public:
         BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager);
@@ -149,6 +166,15 @@ class BaseMind : public Router, public ReferenceCounted
         std::string describeEntity() const;
 
         friend std::ostream& operator<<(std::ostream& s, const BaseMind& d);
+
+        void setAddHook(std::string hook)
+        { m_addHook = std::move(hook); }
+
+        void setUpdateHook(std::string hook)
+        { m_updateHook = std::move(hook); }
+
+        void setDeleteHook(std::string hook)
+        { m_deleteHook = std::move(hook); }
 
 };
 

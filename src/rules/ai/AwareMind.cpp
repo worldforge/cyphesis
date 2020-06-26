@@ -47,13 +47,12 @@ AwareMind::AwareMind(const std::string& mind_id,
                      const PropertyManager& propertyManager,
                      SharedTerrain& sharedTerrain,
                      AwarenessStoreProvider& awarenessStoreProvider) :
-    BaseMind(mind_id, std::move(entity_id), propertyManager),
-    mSharedTerrain(sharedTerrain),
-    mAwarenessStoreProvider(awarenessStoreProvider),
-    mAwarenessStore(nullptr),
-    mServerTimeDiff(0)
+        BaseMind(mind_id, std::move(entity_id), propertyManager),
+        mSharedTerrain(sharedTerrain),
+        mAwarenessStoreProvider(awarenessStoreProvider),
+        mAwarenessStore(nullptr),
+        mServerTimeDiff(0)
 {
-    m_map.setListener(this);
 }
 
 AwareMind::~AwareMind()
@@ -188,8 +187,9 @@ const std::shared_ptr<Awareness>& AwareMind::getAwareness() const
 }
 
 
-void AwareMind::entityAdded(const MemEntity& entity)
+void AwareMind::entityAdded(MemEntity& entity)
 {
+    BaseMind::entityAdded(entity);
     if (m_ownEntity) {
         if (mAwareness) {
 //        log(INFO, String::compose("Adding entity %1", entity.getId()));
@@ -229,8 +229,9 @@ void AwareMind::requestAwareness(const MemEntity& entity)
     mSteering->setAwareness(mAwareness.get());
 }
 
-void AwareMind::entityUpdated(const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
+void AwareMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
 {
+    BaseMind::entityUpdated(entity, ent, oldLocation);
     if (mAwareness) {
         //Update the awareness if location, position, velocity, orientation, scale or bbox has changed
         if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)
@@ -306,9 +307,9 @@ void AwareMind::parseTerrain(const Atlas::Message::Element& terrainElement)
                         }
 
                         pointDefs.emplace_back(SharedTerrain::BasePointDefinition{
-                            (int) pointsList[0].asNum(),
-                            (int) pointsList[1].asNum(),
-                            Mercator::BasePoint(static_cast<float>(pointsList[2].asNum()))
+                                (int) pointsList[0].asNum(),
+                                (int) pointsList[1].asNum(),
+                                Mercator::BasePoint(static_cast<float>(pointsList[2].asNum()))
                         });
                     }
                 }
@@ -326,8 +327,9 @@ void AwareMind::parseTerrain(const Atlas::Message::Element& terrainElement)
 
 }
 
-void AwareMind::entityDeleted(const MemEntity& entity)
+void AwareMind::entityDeleted(MemEntity& entity)
 {
+    BaseMind::entityDeleted(entity);
     if (mAwareness) {
         //log(INFO, "Removed entity.");
         mAwareness->removeEntity(*m_ownEntity, entity);

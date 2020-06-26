@@ -3,8 +3,7 @@
 #ifndef STUB_MemMap_MemMap
 #define STUB_MemMap_MemMap
 MemMap::MemMap(TypeResolver& typeResolver)
-    : m_script(nullptr),
-    m_listener(nullptr),
+    : m_listener(nullptr),
     m_typeResolver(typeResolver)
 {
 

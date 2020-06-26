@@ -1,13 +1,14 @@
 # This file is distributed under the terms of the GNU General Public license.
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 # Copyright (C) 2001 Al Riddoch (See the file COPYING for details).
+import string
 
+import ai
 import entity_filter
 from atlas import Operation, Entity
 
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import Keep
-from mind.goals.dynamic.DynamicGoal import DynamicGoal
 from mind.goals.dynamic.add_unique_goal import AddUniqueGoal
 
 
@@ -26,29 +27,24 @@ class KeepLivestock(Keep):
         return Keep.keep_it(self, me)
 
 
-class Welcome(DynamicGoal):
+class Welcome(Goal):
     """Welcome entities of a given type that are created nearby."""
 
-    def __init__(self, message="", what=""):
-        DynamicGoal.__init__(self,
-                             trigger="sight_create",
-                             desc="welcome new players")
+    def __init__(self, message: string, what: string, distance=10):
+        Goal.__init__(self, desc="welcome new players")
         self.what = what
         self.message = message
         self.filter = entity_filter.Filter(self.what)
+        self.distance = distance
 
-    def event(self, me, original_op, op):
-        if not op:
-            return
-        first_op = op[0]
-        if not first_op:
-            return
-
-        entity = me.map.update(first_op, op.get_seconds())
-        if original_op.from_ == me.entity.id:
-            me.add_thing(entity)
+    def entity_appears(self, me, entity):
+        # We need to check that the entity appeared close to us.
+        # That means it was spawned. An existing entity which approached us would send the appearance
+        # when it was much farther away, and can thus be ignored.
         if me.match_entity(self.filter, entity):
-            return Operation("talk", Entity(say=self.message)) + me.face(entity)
+            distance_to_thing = me.steering.distance_to(entity, ai.CENTER, ai.CENTER)
+            if distance_to_thing < self.distance:
+                return Operation("talk", Entity(say=self.message)) + me.face(entity)
 
 
 class Help(Goal):

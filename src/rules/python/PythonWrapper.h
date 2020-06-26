@@ -25,32 +25,34 @@
 
 /// \brief A Python script wrapping a C++ class.
 /// \ingroup Scripts
-class PythonWrapper : public Script {
-  protected:
-    /// \brief Python object that wraps the entity.
-    Py::Object m_wrapper;
-    std::vector<sigc::connection> m_propertyUpdateConnections;
-  public:
-    explicit PythonWrapper(const Py::Object& wrapper);
-    ~PythonWrapper() override;
+class PythonWrapper : public Script
+{
+    protected:
+        /// \brief Python object that wraps the entity.
+        Py::Object m_wrapper;
+        std::vector<sigc::connection> m_propertyUpdateConnections;
+    public:
+        explicit PythonWrapper(const Py::Object& wrapper);
 
-    HandlerResult operation(const std::string & opname,
-                            const Atlas::Objects::Operation::RootOperation & op,
-                            OpVector & res) override;
+        ~PythonWrapper() override;
 
-    void hook(const std::string & function, LocatedEntity * entity) override;
+        HandlerResult operation(const std::string& opname,
+                                const Atlas::Objects::Operation::RootOperation& op,
+                                OpVector& res) override;
 
-    void attachPropertyCallbacks(LocatedEntity& entity) override;
+        void hook(const std::string& function, LocatedEntity* entity, OpVector& res) override;
 
-    static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res);
+        void attachPropertyCallbacks(LocatedEntity& entity) override;
 
+        static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res);
 
 
         /// \brief Accessor for the python object that wraps the entity.
-    const Py::Object& wrapper() const { return m_wrapper; }
+        const Py::Object& wrapper() const
+        { return m_wrapper; }
 };
 
 template<class T>
-Py::Object wrapPython(T * entity);
+Py::Object wrapPython(T* entity);
 
 #endif // RULESETS_PYTHON_WRAPPER_H

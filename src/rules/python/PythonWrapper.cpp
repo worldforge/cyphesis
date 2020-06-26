@@ -127,7 +127,8 @@ void PythonWrapper::attachPropertyCallbacks(LocatedEntity& entity)
 
 
 void PythonWrapper::hook(const std::string& function,
-                         LocatedEntity* entity)
+                         LocatedEntity* entity,
+                         OpVector& res)
 {
     auto wrapper = CyPy_LocatedEntity::wrap(entity);
     if (wrapper.isNull()) {
@@ -139,6 +140,8 @@ void PythonWrapper::hook(const std::string& function,
             return String::compose("%1: ", this->m_wrapper.str());
         });
         auto ret = m_wrapper.callMemberFunction(function, Py::TupleN(wrapper));
+        //Ignore Handler result; it does nothing in this context. But process any ops.
+        processScriptResult(function, ret, res);
     } catch (const Py::BaseException& py_ex) {
         log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, wrapper.type().as_string(), entity->describeEntity()));
         if (PyErr_Occurred()) {
@@ -174,8 +177,7 @@ HandlerResult PythonWrapper::processScriptResult(const std::string& scriptName, 
                 res.push_back(opRes);
             }
         } else {
-            log(ERROR, String::compose("Python script \"%1\" returned an invalid "
-                                       "result.", scriptName));
+            log(ERROR, String::compose("Python script \"%1\" returned an invalid result.", scriptName));
         }
     };
 

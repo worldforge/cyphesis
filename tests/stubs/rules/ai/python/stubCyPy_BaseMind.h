@@ -89,5 +89,29 @@
   }
 #endif //STUB_CyPy_BaseMind_matchEntities
 
+#ifndef STUB_CyPy_BaseMind_add_hook_set
+//#define STUB_CyPy_BaseMind_add_hook_set
+  Py::Object CyPy_BaseMind::add_hook_set(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_add_hook_set
+
+#ifndef STUB_CyPy_BaseMind_update_hook_set
+//#define STUB_CyPy_BaseMind_update_hook_set
+  Py::Object CyPy_BaseMind::update_hook_set(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_update_hook_set
+
+#ifndef STUB_CyPy_BaseMind_delete_hook_set
+//#define STUB_CyPy_BaseMind_delete_hook_set
+  Py::Object CyPy_BaseMind::delete_hook_set(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_BaseMind_delete_hook_set
+
 
 #endif

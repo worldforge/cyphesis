@@ -64,7 +64,7 @@ class Script
         /// used and supported in the mind code.
         /// @param function name of the function to call in the script
         /// @param entity which has triggered this hook
-        virtual void hook(const std::string& function, LocatedEntity* entity);
+        virtual void hook(const std::string& function, LocatedEntity* entity, OpVector& res);
 
         virtual void attachPropertyCallbacks(LocatedEntity& entity);
 

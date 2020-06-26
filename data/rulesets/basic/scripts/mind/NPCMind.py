@@ -56,7 +56,7 @@ class NPCMind(ai.Mind):
         # FIXME: this shouldn't be needed
         self.mind = cppthing
 
-        print('init')
+        # print('init')
 
         self.knowledge = Knowledge()
         self.mem = Memory(a_map=self.map)
@@ -68,6 +68,7 @@ class NPCMind(ai.Mind):
         self.transfers = []
         # A map containing lists of goals which are to be triggered
         self.trigger_goals = {}
+        self.entity_appear_goals = set()
         self.jitter = random.uniform(-0.1, 0.1)
         self.message_queue = None
         self.goal_id_counter = 0
@@ -79,9 +80,9 @@ class NPCMind(ai.Mind):
         for entity in existing_entities:
             self.entities[entity.id] = entity
 
-        self.map.add_hook_set("add_map")
-        self.map.update_hook_set("update_map")
-        self.map.delete_hook_set("delete_map")
+        self.add_hook_set("add_map")
+        self.update_hook_set("update_map")
+        self.delete_hook_set("delete_map")
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
         self.add_property_callback('_relations', 'relations_updated')
@@ -93,7 +94,6 @@ class NPCMind(ai.Mind):
             self.add_knowledge("location", "origin", self.entity.location.copy())
 
     def goals_updated(self, entity):
-        print('Goals updated.')
         # For now just clear and recreate all goals when _goals changes. We would probably rather only recreate those that have changed though.
         goals = entity.props['_goals']
         # First clear all goals
@@ -105,7 +105,6 @@ class NPCMind(ai.Mind):
                 self.insert_goal(goal)
 
     def knowledge_updated(self, entity):
-        print('Knowledge updated.')
         if entity.has_prop_map('_knowledge'):
             knowledge = entity.get_prop_map('_knowledge')
 
@@ -138,7 +137,6 @@ class NPCMind(ai.Mind):
                 self.add_knowledge(predicate, subject, object_word)
 
     def relations_updated(self, entity):
-        print('Relations updated.')
         self.relation_rules.clear()
         if entity.has_prop_list('_relations'):
             relations = entity.get_prop_list('_relations')
@@ -195,6 +193,10 @@ class NPCMind(ai.Mind):
         return True
 
     def update_relation_for_entity(self, entity):
+        """
+        Called when new entities appear or are changed.
+        The "_relations" rules will be used to calculate the "disposition" and "threat" for the entity.
+        """
         disposition = self.map.recall_entity_memory(entity.id, "disposition_base", 0)
         threat = self.map.recall_entity_memory(entity.id, "threat_base", 0)
         for rule in self.relation_rules:
@@ -212,12 +214,22 @@ class NPCMind(ai.Mind):
 
     # Map updates
     def add_map(self, obj):
-        """Hook called by underlying map code when an entity is added."""
-        # print "Map add",obj
-        print('See entity ' + str(obj))
+        """Hook called by underlying map code when an entity is added.
+            This is called when the entity type has been fully resolved
+            (so it might in some cases not be exactly when the Mind received the entity information, if the type at that moment wasn't resolved).
+        """
+        # print('See entity ' + str(obj))
         self.entities[obj.id] = obj
 
         self.update_relation_for_entity(obj)
+
+        res = Oplist()
+
+        for goal in self.entity_appear_goals:
+            opRes = goal.entity_appears(self, obj)
+            if opRes:
+                res += opRes
+        return res
 
     def update_map(self, obj):
         """Hook called by underlying map code when an entity is updated.
@@ -232,8 +244,7 @@ class NPCMind(ai.Mind):
 
     def delete_map(self, obj):
         """Hook called by underlying map code when an entity is deleted."""
-        # print "Map delete",obj
-        print("Removing entity %s" % obj.id)
+        # print("Removing entity %s" % obj.id)
         self.entities.pop(obj.id)
         self.remove_thing(obj)
 
@@ -750,22 +761,28 @@ class NPCMind(ai.Mind):
 
     def insert_goal(self, goal):
         # Collect all triggering goals and add them
-        if hasattr(goal, "triggering_goals"):
+        if hasattr(goal, "triggering_goals") and goal.triggering_goals is not None:
             triggering_goals = goal.triggering_goals()
             for g in triggering_goals:
                 print("Adding trigger goal: {}".format(str(g)))
                 dictlist.add_value(self.trigger_goals, g.trigger(), g)
 
+        if hasattr(goal, "entity_appears") and goal.entity_appears is not None:
+            self.entity_appear_goals.add(goal)
+
         self.goals.append(goal)
 
     def remove_goal(self, goal):
         """Removes a goal."""
-        print('Removing goal')
-        if hasattr(goal, "triggering_goals"):
+        # print('Removing goal')
+        if hasattr(goal, "triggering_goals") and goal.triggering_goals is not None:
             triggering_goals = goal.triggering_goals()
             for g in triggering_goals:
                 print("Removing trigger goal: {}".format(str(g)))
                 dictlist.remove_value(self.trigger_goals, g)
+
+        if hasattr(goal, "entity_appears") and goal.entity_appears is not None:
+            self.entity_appear_goals.remove(goal)
 
         self.goals.remove(goal)
 

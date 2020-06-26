@@ -17,7 +17,7 @@
 
 #ifndef STUB_Script_hook
 //#define STUB_Script_hook
-  void Script::hook(const std::string& function, LocatedEntity* entity)
+  void Script::hook(const std::string& function, LocatedEntity* entity, OpVector& res)
   {
     
   }
