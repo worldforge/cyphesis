@@ -54,13 +54,13 @@ class MindProperty : public PropertyBase
 
         void set(const Atlas::Message::Element& val) override;
 
-        int get(Atlas::Message::Element & val) const override;
+        int get(Atlas::Message::Element& val) const override;
 
         MindProperty* copy() const override;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity* entity) override;
 
-        void remove(LocatedEntity *, const std::string & name) override;
+        void remove(LocatedEntity* entity, const std::string& name) override;
 };
 
 #endif // RULESETS_MIND_PROPERTY_H

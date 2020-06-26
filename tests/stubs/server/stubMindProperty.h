@@ -34,7 +34,7 @@
 
 #ifndef STUB_MindProperty_get
 //#define STUB_MindProperty_get
-  int MindProperty::get(Atlas::Message::Element & val) const
+  int MindProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -50,11 +50,19 @@
 
 #ifndef STUB_MindProperty_apply
 //#define STUB_MindProperty_apply
-  void MindProperty::apply(LocatedEntity*)
+  void MindProperty::apply(LocatedEntity* entity)
   {
     
   }
 #endif //STUB_MindProperty_apply
+
+#ifndef STUB_MindProperty_remove
+//#define STUB_MindProperty_remove
+  void MindProperty::remove(LocatedEntity* entity, const std::string& name)
+  {
+    
+  }
+#endif //STUB_MindProperty_remove
 
 
 #endif

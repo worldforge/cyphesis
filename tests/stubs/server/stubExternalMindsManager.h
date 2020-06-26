@@ -31,6 +31,14 @@
   }
 #endif //STUB_ExternalMindsManager_requestPossession
 
+#ifndef STUB_ExternalMindsManager_removeRequest
+//#define STUB_ExternalMindsManager_removeRequest
+  void ExternalMindsManager::removeRequest(LocatedEntity* character)
+  {
+    
+  }
+#endif //STUB_ExternalMindsManager_removeRequest
+
 #ifndef STUB_ExternalMindsManager_entity_destroyed
 //#define STUB_ExternalMindsManager_entity_destroyed
   void ExternalMindsManager::entity_destroyed(LocatedEntity* character)

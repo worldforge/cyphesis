@@ -350,7 +350,6 @@ Property<T> * Property<T>::copy() const
 
 template class Property<MapType>;
 
-#include "../stubs/rules/simulation/stubMindProperty.h"
 
 
 long forceIntegerId(const std::string & id)

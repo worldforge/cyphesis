@@ -301,7 +301,6 @@ class PropertyFactory<MinimalProperty>;
 
 #include "../stubs/server/stubTeleportProperty.h"
 #include "../stubs/rules/simulation/stubLineProperty.h"
-#include "../stubs/rules/simulation/stubMindProperty.h"
 #include "../stubs/rules/simulation/stubAttachmentsProperty.h"
 #include "../stubs/rules/simulation/stubModeDataProperty.h"
 #include "../stubs/rules/simulation/stubAdminProperty.h"
