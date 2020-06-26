@@ -113,7 +113,7 @@ void PythonWrapper::attachPropertyCallbacks(LocatedEntity& entity)
                             }
                         }
                     } catch (const Py::BaseException& py_ex) {
-                        log(ERROR, String::compose("Could not call property update function %1 on %2 for entity %3", fieldName, m_wrapper.type().as_string(), entity.describeEntity()));
+                        log(ERROR, String::compose("Could not call property update function %1 on %2 for entity %3", fieldName, m_wrapper.str(), entity.describeEntity()));
                         if (PyErr_Occurred()) {
                             PyErr_Print();
                         }
@@ -143,7 +143,7 @@ void PythonWrapper::hook(const std::string& function,
         //Ignore Handler result; it does nothing in this context. But process any ops.
         processScriptResult(function, ret, res);
     } catch (const Py::BaseException& py_ex) {
-        log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, wrapper.type().as_string(), entity->describeEntity()));
+        log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, m_wrapper.str(), entity->describeEntity()));
         if (PyErr_Occurred()) {
             PyErr_Print();
         }
