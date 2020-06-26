@@ -226,9 +226,9 @@ class NPCMind(ai.Mind):
         res = Oplist()
 
         for goal in self.entity_appear_goals:
-            opRes = goal.entity_appears(self, obj)
-            if opRes:
-                res += opRes
+            op_res = goal.entity_appears(self, obj)
+            if op_res:
+                res += op_res
         return res
 
     def update_map(self, obj):
