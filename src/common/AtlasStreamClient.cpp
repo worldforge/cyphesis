@@ -326,7 +326,7 @@ void AtlasStreamClient::operation(const RootOperation& op)
 {
     if (debug_flag) {
         debug_print("Received:");
-        debug_dump(op, std::cout);
+        debug_dump(op, std::cerr);
     }
     if (m_currentTask != nullptr) {
         OpVector res;
@@ -448,7 +448,7 @@ void AtlasStreamClient::send(const RootOperation& op)
 
     if (debug_flag) {
         debug_print("Sending:");
-        debug_dump(op, std::cout);
+        debug_dump(op, std::cerr);
     }
 
     reply_flag = false;
