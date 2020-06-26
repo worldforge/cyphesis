@@ -253,15 +253,8 @@ void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
 
 void BaseMind::removeEntity(const std::string& id, OpVector& res)
 {
-    auto entity = m_map.del(id);
-    //Only call into script if the type previously was resolved.
-    if (entity && entity->getType()) {
-        if (m_script && !m_deleteHook.empty()) {
-            m_script->hook(m_deleteHook, entity.get(), res);
-        }
-    }
+    m_map.del(id);
     m_pendingEntitiesOperations.erase(id);
-
 }
 
 
@@ -356,12 +349,12 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
         auto resolvedTypes = m_typeResolver->InfoOperation(op, res);
         //For any resolved types, find any unresolved entities, set their type and put any pending operations in "res".
         for (auto& type : resolvedTypes) {
-            log(NOTICE, String::compose("%1: Resolved type '%2'.", getId(), type->name()));
+            log(NOTICE, String::compose("Mind %1: Resolved type '%2'.", getId(), type->name()));
 
             auto resolved = m_map.resolveEntitiesForType(type);
             for (auto& entity : resolved) {
 
-                log(NOTICE, String::compose("%1: Resolved entity %2.", getId(), entity->getId()));
+                log(NOTICE, String::compose("Mind %1: Resolved entity %2.", getId(), entity->getId()));
 
                 auto J = m_pendingEntitiesOperations.find(entity->getId());
                 if (J != m_pendingEntitiesOperations.end()) {
@@ -587,29 +580,29 @@ std::string BaseMind::describeEntity() const
 
 void BaseMind::entityAdded(MemEntity& entity)
 {
-    OpVector res;
     if (!m_addHook.empty() && m_script) {
+        OpVector res;
         m_script->hook(m_addHook, &entity, res);
+        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
     }
-    std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
 }
 
 void BaseMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation)
 {
-    OpVector res;
     if (!m_updateHook.empty() && m_script) {
+        OpVector res;
         m_script->hook(m_updateHook, &entity, res);
+        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
     }
-    std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
 }
 
 void BaseMind::entityDeleted(MemEntity& entity)
 {
-    OpVector res;
     if (!m_deleteHook.empty() && m_script) {
+        OpVector res;
         m_script->hook(m_deleteHook, &entity, res);
+        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
     }
-    std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
 }
 
 
