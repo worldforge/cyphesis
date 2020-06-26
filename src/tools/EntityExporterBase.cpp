@@ -289,9 +289,10 @@ void EntityExporterBase::requestRule(const std::string& rule)
 	Get get;
 	Anonymous arg;
 	arg->setId(rule);
+    arg->setObjtype("class");
 	get->setArgs1(arg);
-	get->setObjtype("op");
 	get->setSerialno(newSerialNumber());
+	get->setFrom(mAccountId);
 
 	sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetRuleResult);
 	sendAndAwaitResponse(get, slot);
