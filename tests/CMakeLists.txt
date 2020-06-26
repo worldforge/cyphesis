@@ -9,7 +9,9 @@ link_libraries(${BULLET_LIBRARIES})
 if (AVAHI_FOUND)
     link_libraries(${AVAHI_LIBRARIES} -lavahi-common)
 endif (AVAHI_FOUND)
-link_libraries(${PostgreSQL_LIBRARIES})
+if (PostgreSQL_FOUND)
+    link_libraries(${PostgreSQL_LIBRARIES})
+endif (PostgreSQL_FOUND)
 link_libraries(${READLINE_LIBRARY})
 
 #On platforms which supports it, link the "libSegFault" library which provides nice stack traces
