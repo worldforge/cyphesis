@@ -2753,13 +2753,14 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
 
     auto& queriedLocation = queriedEntity.m_location;
     auto& reachingLocation = reachingEntity.m_location;
-    if (!reachingLocation.m_pos.isValid() || !queriedLocation.m_pos.isValid()) {
+    //Check that locations are valid, unless reaching for something contained in the domain itself (since the domain might not have a valid position).
+    if (!reachingLocation.m_pos.isValid() || (&queriedEntity != &m_entity && !queriedLocation.m_pos.isValid())) {
         return false;
     }
 
-    auto reachingEntityI = m_entries.find(reachingEntity.getIntId());
-    if (reachingEntityI != m_entries.end()) {
-        auto& reachingEntityEntry = reachingEntityI->second;
+    auto reachingEntryI = m_entries.find(reachingEntity.getIntId());
+    if (reachingEntryI != m_entries.end()) {
+        auto& reachingEntityEntry = reachingEntryI->second;
 
         //If a contained entity tries to touch the domain entity we must check the optional position.
         if (&queriedEntity == &m_entity) {

@@ -104,10 +104,10 @@ class Location : public EntityLocation {
     }
 
     void resetTransformAndMovement() {
-        m_pos = WFMath::Point<3>::ZERO();
-        m_orientation = WFMath::Quaternion::IDENTITY();
-        m_velocity = WFMath::Vector<3>::ZERO();
-        m_angularVelocity = WFMath::Vector<3>::ZERO();
+        m_pos = {};
+        m_orientation = {};
+        m_velocity = {};
+        m_angularVelocity = {};
     }
 
     void addToMessage(Atlas::Message::MapType & ent) const;

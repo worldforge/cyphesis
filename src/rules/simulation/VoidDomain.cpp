@@ -46,10 +46,7 @@ void VoidDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
 void VoidDomain::addEntity(LocatedEntity& entity)
 {
 
-    entity.m_location.m_pos = WFMath::Point<3>::ZERO();
-    entity.m_location.m_orientation = WFMath::Quaternion::IDENTITY();
-    entity.m_location.m_velocity = WFMath::Vector<3>::ZERO();
-    entity.m_location.m_angularVelocity = WFMath::Vector<3>::ZERO();
+    entity.m_location.resetTransformAndMovement();
     entity.removeFlags(entity_clean);
 
 
