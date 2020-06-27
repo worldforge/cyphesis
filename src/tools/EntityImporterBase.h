@@ -453,12 +453,6 @@ class EntityImporterBase : public virtual sigc::trackable
         void operation(const Operation& op);
 
         /**
-         * @brief Called when the result of a Think op is received.
-         * @param op
-         */
-        void operationThinkResult(const Operation& op);
-
-        /**
          * @brief Called when the result of a Set op is received.
          * @param op
          */
