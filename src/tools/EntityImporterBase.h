@@ -112,10 +112,6 @@ class EntityImporterBase : public virtual sigc::trackable
              * @brief The number of rules contained in the dump.
              */
             int rulesCount;
-            /**
-             * @brief The number of minds contained in the dump.
-             */
-            int mindsCount;
         };
 
         /**
@@ -143,14 +139,6 @@ class EntityImporterBase : public virtual sigc::trackable
              * The number of failed entity creation ops.
              */
             unsigned int entitiesCreateErrorCount;
-            /**
-             * The total number of minds to restore.
-             */
-            unsigned int mindsCount;
-            /**
-             * The total number of minds processed so far.
-             */
-            unsigned int mindsProcessedCount;
             /**
              * The total number of rules to process.
              */
@@ -269,16 +257,6 @@ class EntityImporterBase : public virtual sigc::trackable
         std::map<std::string, Atlas::Objects::Root> mPersistedEntities;
 
         /**
-         * @brief All minds, which are connected to some of the mPersistedEntities.
-         *
-         * These are sent to the server after all of the entities are restored.
-         * Note that the mind data (i.e. the value) is first transferred to mResolvedMindMapping
-         * before it's sent to the server. This is because the id of the entity might
-         * be different from what's stored if it has to be created first.
-         */
-        std::map<std::string, Atlas::Objects::Root> mPersistedMinds;
-
-        /**
          * @brief All of the persisted rules.
          *
          * When processing these, we first check if there's a rule already on the server.
@@ -294,14 +272,6 @@ class EntityImporterBase : public virtual sigc::trackable
          * This is used to populate m_entityIdMap with mapping data between entity id values found in the dump, and their new id values once they've been created.
          */
         std::map<long, std::string> mCreateEntityMapping;
-
-        /**
-         * @brief Keeps track of minds belonging to entities.
-         *
-         * This is needed (instead of directly accessing mPersistedMinds) since the id
-         * of the entity as created on the server might differ from what's persisted.
-         */
-        std::vector<std::pair<std::string, Atlas::Objects::Root>> mResolvedMindMapping;
 
         struct ReferencedEntry
         {
@@ -362,11 +332,6 @@ class EntityImporterBase : public virtual sigc::trackable
         std::unordered_map<std::string, std::string> mEntityIdMap;
 
         /**
-         * @brief Keeps track of the number of thought ops in transit.
-         */
-        int mThoughtOpsInTransit;
-
-        /**
          * @brief Keeps track of the number of Set ops in transit.
          */
         int mSetOpsInTransit;
@@ -423,11 +388,6 @@ class EntityImporterBase : public virtual sigc::trackable
          * @param res
          */
         void walkRules(OpVector& res);
-
-        /**
-         * @brief Sends all minds.
-         */
-        void sendMinds();
 
         /**
          * @brief Creates a new entity on the server.

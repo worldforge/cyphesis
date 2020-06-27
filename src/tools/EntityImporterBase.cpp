@@ -236,124 +236,6 @@ void EntityImporterBase::walkEntities(OpVector& res)
     }
 }
 
-void EntityImporterBase::sendMinds()
-{
-    if (!mResolvedMindMapping.empty()) {
-        Atlas::Objects::Factories factories;
-        S_LOG_INFO("Sending minds.")
-        for (auto mind : mResolvedMindMapping) {
-            Atlas::Message::MapType message;
-            mind.second->addToMessage(message);
-
-            Atlas::Message::Element thoughtsElem = message["thoughts"];
-            Atlas::Message::ListType thoughtArgs;
-
-            if (thoughtsElem.isList()) {
-                Atlas::Message::ListType thoughtList = thoughtsElem.List();
-
-                for (auto& thought : thoughtList) {
-                    //If the thought is a list of things the entity owns, we should adjust it with the new entity ids.
-                    if (thought.isMap()) {
-                        auto& thoughtMap = thought.Map();
-                        if (thoughtMap.count("things") > 0) {
-                            auto& thingsElement = thoughtMap.find("things")->second;
-                            if (thingsElement.isMap()) {
-                                for (auto& thingI : thingsElement.asMap()) {
-                                    if (thingI.second.isList()) {
-                                        Atlas::Message::ListType newList;
-                                        for (auto& thingId : thingI.second.asList()) {
-                                            if (thingId.isString()) {
-                                                const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
-                                                //Check if the owned entity has been created with a new id. If so, replace the data.
-                                                if (entityIdLookupI != mEntityIdMap.end()) {
-                                                    newList.emplace_back(entityIdLookupI->second);
-                                                } else {
-                                                    newList.push_back(thingId);
-                                                }
-                                            } else {
-                                                newList.push_back(thingId);
-                                            }
-                                        }
-                                        thingI.second = newList;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (thoughtMap.count("pending_things") > 0) {
-                            //things that the entity owns, but haven't yet discovered are expressed as a list of entity ids
-                            auto& pendingThingsElement = thoughtMap.find("pending_things")->second;
-                            if (pendingThingsElement.isList()) {
-                                Atlas::Message::ListType newList;
-                                for (auto& thingId : pendingThingsElement.asList()) {
-                                    if (thingId.isString()) {
-                                        const auto& entityIdLookupI = mEntityIdMap.find(thingId.asString());
-                                        //Check if the owned entity has been created with a new id. If so, replace the data.
-                                        if (entityIdLookupI != mEntityIdMap.end()) {
-                                            newList.emplace_back(entityIdLookupI->second);
-                                        } else {
-                                            newList.push_back(thingId);
-                                        }
-                                    } else {
-                                        newList.push_back(thingId);
-                                    }
-                                }
-                                pendingThingsElement = newList;
-                            }
-                        }
-
-                        if (thoughtMap.count("object") > 0) {
-                            auto& objectElement = thoughtMap.find("object")->second;
-                            if (objectElement.isString()) {
-                                std::string& objectString = objectElement.String();
-                                //Other entities are referred to using the syntax "'$eid:...'".
-                                //For example, the entity with id 2 would be "'$eid:2'".
-                                auto pos = objectString.find("$eid:");
-                                if (pos != std::string::npos) {
-                                    auto quotePos = objectString.find('\'', pos);
-                                    if (quotePos != std::string::npos) {
-                                        auto id = objectString.substr(pos + 5, quotePos - pos - 5);
-                                        auto I = mEntityIdMap.find(id);
-                                        if (I != mEntityIdMap.end()) {
-                                            objectString.replace(pos + 5, quotePos - 7, I->second);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                    thoughtArgs.push_back(thought);
-                }
-            }
-
-            Atlas::Objects::Operation::RootOperation thinkOp;
-            thinkOp->setParent("think");
-            thinkOp->setTo(mind.first);
-            //By setting it TO an entity and FROM our avatar we'll make the server deliver it as
-            //if it came from the entity itself (the server rewrites the FROM to be of the entity).
-            thinkOp->setFrom(mAvatarId);
-            thinkOp->setSerialno(newSerialNumber());
-
-            Atlas::Objects::Operation::Set setOp;
-            setOp->setArgsAsList(thoughtArgs, &factories);
-            thinkOp->setArgs1(setOp);
-
-
-            mStats.mindsProcessedCount++;
-            S_LOG_VERBOSE("Restoring mind of " << mind.first)
-            mThoughtOpsInTransit++;
-
-            sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationThinkResult);
-            sendAndAwaitResponse(thinkOp, slot);
-            EventProgress.emit();
-        }
-        mResolvedMindMapping.clear();
-    } else {
-        complete();
-    }
-}
-
 void EntityImporterBase::sendResolvedEntityReferences()
 {
     if (!mEntitiesWithReferenceAttributes.empty()) {
@@ -389,8 +271,6 @@ void EntityImporterBase::sendResolvedEntityReferences()
             sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
             sendAndAwaitResponse(set, slot);
         }
-    } else {
-        sendMinds();
     }
 }
 
@@ -419,7 +299,7 @@ void EntityImporterBase::resolveEntityReferences(Atlas::Message::Element& elemen
 
 void EntityImporterBase::complete()
 {
-    S_LOG_INFO("Restore done.");
+    S_LOG_INFO("Restore done.")
     S_LOG_INFO("Restored " << mStats.entitiesProcessedCount << ", created: "
                            << mStats.entitiesCreateCount << ", updated: "
                            << mStats.entitiesUpdateCount << ", create errors: "
@@ -644,7 +524,7 @@ void EntityImporterBase::errorArrived(const Operation& op, OpVector& res)
             break;
         default: S_LOG_FAILURE("Unexpected state in state machine: " << m_state << ". Server message: " << errorMessage)
             break;
-    };
+    }
 }
 
 void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
@@ -653,7 +533,7 @@ void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
         return;
     }
     if (op->isDefaultArgs() || op->getArgs().empty()) {
-        S_LOG_FAILURE("Info with no arg.");
+        S_LOG_FAILURE("Info with no arg.")
         return;
     }
     const Root& arg = op->getArgs().front();
@@ -688,11 +568,6 @@ void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
 
         auto I = mCreateEntityMapping.find(op->getRefno());
         if (I != mCreateEntityMapping.end()) {
-            //Check if there's a mind that we should send further on
-            auto mindI = mPersistedMinds.find(I->second);
-            if (mindI != mPersistedMinds.end()) {
-                mResolvedMindMapping.emplace_back(arg->getId(), mindI->second);
-            }
             mEntityIdMap.insert(std::make_pair(I->second, arg->getId()));
             mCreateEntityMapping.erase(op->getRefno());
         } else {
@@ -737,12 +612,6 @@ void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
 
             res.push_back(set);
 
-            //Check if there's a mind, and if so put it in our map of resolved entity-to-mind mappings (since we know the entity id)
-            auto mindI = mPersistedMinds.find(obj->getId());
-            if (mindI != mPersistedMinds.end()) {
-                mResolvedMindMapping.emplace_back(obj->getId(), mindI->second);
-            }
-
             ++mStats.entitiesProcessedCount;
             ++mStats.entitiesUpdateCount;
             EventProgress.emit();
@@ -755,7 +624,7 @@ void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
 void EntityImporterBase::sightArrived(const Operation& op, OpVector& res)
 {
     if (op->isDefaultArgs() || op->getArgs().empty()) {
-        S_LOG_FAILURE("No arg");
+        S_LOG_FAILURE("No arg")
         return;
     }
     const Root& arg = op->getArgs().front();
@@ -793,7 +662,7 @@ void EntityImporterBase::sightArrived(const Operation& op, OpVector& res)
             break;
         default: S_LOG_WARNING("Unexpected state in state machine: " << m_state)
             break;
-    };
+    }
 }
 
 EntityImporterBase::EntityImporterBase(std::string accountId, std::string avatarId) :
@@ -801,8 +670,6 @@ EntityImporterBase::EntityImporterBase(std::string accountId, std::string avatar
     mAvatarId(std::move(avatarId)),
     mStats({}),
     m_state(INIT),
-    mThoughtOpsInTransit(0),
-    mSetOpsInTransit(0),
     mResumeWorld(false),
     mSuspendWorld(false)
 {
@@ -821,11 +688,9 @@ void EntityImporterBase::start(const std::string& filename)
     }
     Atlas::Message::Element metaElem;
     Atlas::Message::Element entitiesElem;
-    Atlas::Message::Element mindsElem;
     Atlas::Message::Element rulesElem;
     rootObj->copyAttr("meta", metaElem);
     rootObj->copyAttr("entities", entitiesElem);
-    rootObj->copyAttr("minds", mindsElem);
     if (rootObj->copyAttr("rules", rulesElem) == 0) {
         if (!rulesElem.isList()) {
             S_LOG_WARNING("Rules element is not list.")
@@ -847,12 +712,7 @@ void EntityImporterBase::start(const std::string& filename)
     }
 
     if (!entitiesElem.isNone() && !entitiesElem.isList()) {
-        S_LOG_WARNING("Entities element is not list.");
-        EventCompleted.emit();
-        return;
-    }
-    if (!mindsElem.isNone() && !mindsElem.isList()) {
-        S_LOG_WARNING("Minds element is not list.");
+        S_LOG_WARNING("Entities element is not list.")
         EventCompleted.emit();
         return;
     }
@@ -895,24 +755,11 @@ void EntityImporterBase::start(const std::string& filename)
         }
     }
 
-    if (!mindsElem.isNone()) {
-        for (auto& mindMessage : mindsElem.asList()) {
-            if (mindMessage.isMap()) {
-                auto object = factories.createObject(mindMessage.asMap());
-                if (object.isValid()) {
-                    if (!object->isDefaultId()) {
-                        mPersistedMinds.insert(std::make_pair(object->getId(), object));
-                    }
-                }
-            }
-        }
-    }
+
 
     S_LOG_INFO("Starting loading of world. Number of entities: " << mPersistedEntities.size() <<
-                                                                 " Number of minds: " << mPersistedMinds.size() <<
                                                                  " Number of rules: " << mPersistedRules.size())
     mStats.entitiesCount = static_cast<unsigned int>(mPersistedEntities.size());
-    mStats.mindsCount = static_cast<unsigned int>(mPersistedMinds.size());
     mStats.rulesCount = static_cast<unsigned int>(mPersistedRules.size());
 
     EventProgress.emit();
@@ -1021,20 +868,9 @@ void EntityImporterBase::setSuspend(bool enabled)
     mSuspendWorld = enabled;
 }
 
-void EntityImporterBase::operationThinkResult(const Operation& op)
-{
-    mThoughtOpsInTransit--;
-    if (mThoughtOpsInTransit == 0) {
-        complete();
-    }
-}
-
 void EntityImporterBase::operationSetResult(const Operation& op)
 {
     mSetOpsInTransit--;
-    if (mSetOpsInTransit == 0) {
-        sendMinds();
-    }
 }
 
 void EntityImporterBase::operation(const Operation& op)
