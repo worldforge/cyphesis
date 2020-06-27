@@ -77,9 +77,6 @@ class Element;
  *   <list name="entities">
  *    all entities in Message form
  *   </list>
- *   <list name="minds">
- *    all minds in Message form
- *   </list>
  *   <list name="rules">
  *    optional rules in Message form
  *   </list>
@@ -217,7 +214,16 @@ public:
 	 */
 	const Stats& getStats() const;
 
-	/**
+	struct ListPrependAppendResult {
+	    Atlas::Message::ListType prepend;
+        Atlas::Message::ListType append;
+	};
+
+	static ListPrependAppendResult extractListPrependAppend(const Atlas::Message::ListType& typeList, const Atlas::Message::ListType& entityList);
+
+	static Atlas::Message::MapType extractMapPrepend(const Atlas::Message::MapType& typeMap, const Atlas::Message::MapType& entityMap);
+
+        /**
 	 * @brief Emitted when the dump is complete.
 	 */
 	sigc::signal<void> EventCompleted;
@@ -328,7 +334,7 @@ protected:
     /**
      * All default type attributes.
      */
-    std::unordered_map<std::string, Atlas::Message::MapType> mTypeAttributes;
+    std::unordered_map<std::string, Atlas::Message::MapType> mTypeProperties;
 
     /**
 	 * @brief Starts the process of requesting entities and walking the entity hierarchy.
@@ -338,7 +344,6 @@ protected:
 	void dumpRule(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
 	void infoArrived(const Operation& op);
-	void thoughtOpArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
     void operationGetRuleResult(const Operation& op);
 	void requestRule(const std::string& rule);

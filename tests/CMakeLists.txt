@@ -552,6 +552,8 @@ wf_add_test(tools/FlusherTest.cpp ../src/tools/Flusher.cpp
     ../src/common/ClientTask.cpp)
 wf_add_test(tools/OperationMonitorTest.cpp ../src/tools/OperationMonitor.cpp
     ../src/common/ClientTask.cpp)
+wf_add_test(tools/EntityExporterTest.cpp ../src/tools/EntityExporterBase.cpp)
+target_link_libraries(EntityExporterTest common)
 
 
 # PYTHON_TESTS
