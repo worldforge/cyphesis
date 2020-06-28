@@ -294,13 +294,15 @@ class EntityImporterBase : public virtual sigc::trackable
 
         enum
         {
-            INIT, RULE_WALKING,
+            INIT,
+            RULE_WALKING,
             RULE_UPDATING,
             RULE_CREATING,
             ENTITY_WALKSTART,
             ENTITY_UPDATING,
             ENTITY_CREATING,
             ENTITY_WALKING,
+            ENTITY_REF_RESOLVING,
             CANCEL,
             CANCELLED
         } m_state;

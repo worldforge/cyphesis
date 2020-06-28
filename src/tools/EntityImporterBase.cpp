@@ -63,13 +63,13 @@ static const bool debug_flag = true;
 
 
 StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity o, const std::list<std::string>::const_iterator& c) :
-    obj(std::move(o)),
-    currentChildIterator(c)
+        obj(std::move(o)),
+        currentChildIterator(c)
 {
 }
 
 StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity o) :
-    obj(std::move(o))
+        obj(std::move(o))
 {
     currentChildIterator = obj->getContains().end();
 }
@@ -238,7 +238,9 @@ void EntityImporterBase::walkEntities(OpVector& res)
 
 void EntityImporterBase::sendResolvedEntityReferences()
 {
+    m_state = ENTITY_REF_RESOLVING;
     if (!mEntitiesWithReferenceAttributes.empty()) {
+        S_LOG_INFO("Resolving entity references for " << mEntitiesWithReferenceAttributes.size() << " entities.")
         for (auto entryI : mEntitiesWithReferenceAttributes) {
             const auto& persistedEntityId = entryI.first;
             const auto& referenceEntries = entryI.second;
@@ -271,6 +273,8 @@ void EntityImporterBase::sendResolvedEntityReferences()
             sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
             sendAndAwaitResponse(set, slot);
         }
+    } else {
+        complete();
     }
 }
 
@@ -658,6 +662,7 @@ void EntityImporterBase::sightArrived(const Operation& op, OpVector& res)
             break;
         case ENTITY_CREATING:
         case ENTITY_WALKING:
+        case ENTITY_REF_RESOLVING:
             //Just ignore sights when creating; these are sights of the actual creation ops.
             break;
         default: S_LOG_WARNING("Unexpected state in state machine: " << m_state)
@@ -666,12 +671,12 @@ void EntityImporterBase::sightArrived(const Operation& op, OpVector& res)
 }
 
 EntityImporterBase::EntityImporterBase(std::string accountId, std::string avatarId) :
-    mAccountId(std::move(accountId)),
-    mAvatarId(std::move(avatarId)),
-    mStats({}),
-    m_state(INIT),
-    mResumeWorld(false),
-    mSuspendWorld(false)
+        mAccountId(std::move(accountId)),
+        mAvatarId(std::move(avatarId)),
+        mStats({}),
+        m_state(INIT),
+        mResumeWorld(false),
+        mSuspendWorld(false)
 {
 }
 
@@ -754,7 +759,6 @@ void EntityImporterBase::start(const std::string& filename)
             S_LOG_INFO("Suspending world.")
         }
     }
-
 
 
     S_LOG_INFO("Starting loading of world. Number of entities: " << mPersistedEntities.size() <<
@@ -871,6 +875,9 @@ void EntityImporterBase::setSuspend(bool enabled)
 void EntityImporterBase::operationSetResult(const Operation& op)
 {
     mSetOpsInTransit--;
+    if (m_state == ENTITY_REF_RESOLVING && mSetOpsInTransit == 0) {
+        complete();
+    }
 }
 
 void EntityImporterBase::operation(const Operation& op)
