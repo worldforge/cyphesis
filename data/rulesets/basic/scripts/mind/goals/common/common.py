@@ -36,7 +36,6 @@ class OneShot(Goal):
     def check_goal_recursively(self, me, depth, debug_info):
         res, debug_info = super().check_goal_recursively(me, depth, debug_info)
         if res:
-            print("Marking one shot goal as irrelevant")
             self.irrelevant = True
         return res, debug_info
 
