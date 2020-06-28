@@ -52,14 +52,6 @@ class Welcome(Goal):
         return Operation("talk", Entity(say=self.message)) + me.face(entity)
 
 
-class SendWelcome(Goal):
-
-    def __init__(self, message: string, entity):
-        Goal.__init__(self, desc="welcome new players")
-        self.entity = entity
-        self.message = message
-
-
 class Help(Goal):
     """Provide a sequence of help messages to a target."""
 
