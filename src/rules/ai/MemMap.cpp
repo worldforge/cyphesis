@@ -461,7 +461,7 @@ std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeN
     auto I = m_unresolvedEntities.find(typeNode->name());
     if (I != m_unresolvedEntities.end()) {
         for (auto& entity : I->second) {
-            log(NOTICE, String::compose("Resolved entity %1.", entity->getId()));
+            //log(NOTICE, String::compose("Resolved entity %1.", entity->getId()));
             entity->setType(typeNode);
             applyTypePropertiesToEntity(entity);
 

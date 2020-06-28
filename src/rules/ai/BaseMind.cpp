@@ -349,12 +349,12 @@ void BaseMind::InfoOperation(const Operation& op, OpVector& res)
         auto resolvedTypes = m_typeResolver->InfoOperation(op, res);
         //For any resolved types, find any unresolved entities, set their type and put any pending operations in "res".
         for (auto& type : resolvedTypes) {
-            log(NOTICE, String::compose("Mind %1: Resolved type '%2'.", getId(), type->name()));
+            //log(NOTICE, String::compose("Mind %1: Resolved type '%2'.", getId(), type->name()));
 
             auto resolved = m_map.resolveEntitiesForType(type);
             for (auto& entity : resolved) {
 
-                log(NOTICE, String::compose("Mind %1: Resolved entity %2.", getId(), entity->getId()));
+                //log(NOTICE, String::compose("Mind %1: Resolved entity %2.", getId(), entity->getId()));
 
                 auto J = m_pendingEntitiesOperations.find(entity->getId());
                 if (J != m_pendingEntitiesOperations.end()) {
