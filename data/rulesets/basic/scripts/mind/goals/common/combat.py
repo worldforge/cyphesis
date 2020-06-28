@@ -14,6 +14,7 @@ from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 # A list of usages which we should look for in weapons.
 weapon_usages = ['strike', 'chop']
+unarmed_usages = ['punch', 'strike', 'chop']
 
 
 class Fight(Goal):
@@ -75,7 +76,7 @@ class Fight(Goal):
             return None
 
         # If possible, shoot with ranged weapons if a bit away
-        if distance > 10:
+        if distance > 5:
             # Check that we have bow and arrows
             # First check if we have any arrows
             has_arrows = False
@@ -183,8 +184,14 @@ class Fight(Goal):
                 return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id,
                                                                                            targets=[Entity(enemy.id)])))
             else:
-                return move_to_face + Operation("use",
-                                                Operation("punch", Entity(me.entity.id, targets=[Entity(enemy.id)])))
+                # See if we have an unarmed action which we can use to strike
+                own_usages = me.entity.get_prop_map("_usages")
+                if own_usages:
+                    for usage, _ in own_usages.items():
+                        if usage in unarmed_usages:
+                            return move_to_face + Operation("use",
+                                                            Operation(usage, Entity(me.entity.id, targets=[Entity(enemy.id)])))
+                print("Could not find any unarmed combat usages for this entity.")
         else:
             print("Out of reach. Reach is {} and distance is {}".format(reach, distance))
             # Check if we should stop hitting
@@ -216,9 +223,7 @@ class Fight(Goal):
                     # print("draw task {}".format(str(draw_task)))
                     usages = draw_task["usages"]
                     for usage in usages:
-                        print(usage.name)
                         if usage.name == "release":
-                            print("release bow")
                             direction = enemy.location.pos - me.entity.location.pos
                             direction.normalize()
                             return move_to_face + Operation("use",
@@ -227,11 +232,9 @@ class Fight(Goal):
                                                                  objtype="task"))
 
                     return True
-                print("Drawing bow")
                 direction = enemy.location.pos - me.entity.location.pos
                 direction.normalize()
-                return move_to_face + \
-                       Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
+                return move_to_face + Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
 
 
 class FightOrFlight(Goal):
@@ -255,7 +258,7 @@ class KeepGrudge(DynamicGoal):
         hit_args = op[0]
         actor_id = hit_args.id
         to_id = op.to
-        print('Got sight of hit from "{}" to "{}"'.format(actor_id, to_id))
+        # print('Got sight of hit from "{}" to "{}"'.format(actor_id, to_id))
         if actor_id and to_id:
             # Check that it's not from ourselves
             if actor_id == me.entity.id:
