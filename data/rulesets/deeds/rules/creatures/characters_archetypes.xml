@@ -265,32 +265,5 @@
     </map>
 
 
-    <map>
-        <string name="id">goblin_basic_npc</string>
-        <string name="objtype">archetype</string>
-        <string name="parent">archetype</string>
-        <list name="entities">
-            <map>
-                <string name="id">main</string>
-                <list name="contains">
-                    <string>axe</string>
-                </list>
-                <map name="attached_hand_primary">
-                    <string name="$eid">axe</string>
-                </map>
-                <string name="parent">goblin</string>
-            </map>
-            <map>
-                <string name="id">axe</string>
-                <string name="parent">axe</string>
-                <map name="mode_data">
-                    <string name="mode">planted</string>
-                    <string name="$eid">main</string>
-                    <string name="attachment">hand_primary</string>
-                </map>
-            </map>
-        </list>
-        <list name="thoughts">
-        </list>
-    </map>
+
 </atlas>

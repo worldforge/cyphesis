@@ -108,4 +108,65 @@
         <string name="parent">mobile</string>
     </map>
 
+    <map>
+        <string name="id">goblin_archer</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="id">main</string>
+                <list name="contains">
+                    <string>bow</string>
+                    <string>arrow</string>
+                </list>
+                <map name="attached_hand_primary">
+                    <string name="$eid">bow</string>
+                </map>
+                <string name="parent">goblin</string>
+            </map>
+            <map>
+                <string name="id">bow</string>
+                <string name="parent">bow</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">hand_primary</string>
+                </map>
+            </map>
+            <map>
+                <string name="id">arrow</string>
+                <string name="parent">arrow</string>
+                <int name="amount">20</int>
+            </map>
+        </list>
+        <list name="thoughts">
+        </list>
+    </map>
+
+    <map>
+        <string name="id">goblin_fighter</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="id">main</string>
+                <list name="contains">
+                    <string>axe</string>
+                </list>
+                <map name="attached_hand_primary">
+                    <string name="$eid">axe</string>
+                </map>
+                <string name="parent">goblin</string>
+            </map>
+            <map>
+                <string name="id">axe</string>
+                <string name="parent">axe</string>
+                <map name="mode_data">
+                    <string name="mode">planted</string>
+                    <string name="$eid">main</string>
+                    <string name="attachment">hand_primary</string>
+                </map>
+            </map>
+        </list>
+    </map>
 </atlas>
