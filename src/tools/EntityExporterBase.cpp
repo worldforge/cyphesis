@@ -76,6 +76,8 @@ namespace {
     {
         return integerId(lhs) < integerId(rhs);
     }
+
+    std::vector<std::string> ignoredProperties{"_modifiers", "_minds"};
 }
 
 EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp) :
@@ -148,7 +150,7 @@ void EntityExporterBase::dumpEntity(const RootEntity& ent)
     ent->addToMessage(entityMap);
 
     //Check if any attribute is the same as the type default, and if so don't persist it.
-    std::vector<std::string> attributesToRemove;
+    std::vector<std::string> attributesToRemove = ignoredProperties;
     Atlas::Message::MapType attributesToAdd;
     auto typeAttributesI = mTypeProperties.find(ent->getParent());
     if (typeAttributesI != mTypeProperties.end()) {
