@@ -63,7 +63,7 @@ class Account : public ConnectableRouter {
 
     virtual void processExternalOperation(const Operation & op, OpVector& res);
 
-    virtual ExternalMind* createMind(const Ref<LocatedEntity>& entity) const;
+    virtual std::unique_ptr<ExternalMind> createMind(const Ref<LocatedEntity>& entity) const;
 
   public:
     /// \brief Connect and add a character to this account

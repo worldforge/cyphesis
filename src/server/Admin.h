@@ -37,7 +37,7 @@ class Admin : public Account
         /// \brief Connection used to monitor the in-game operations
         sigc::connection m_monitorConnection;
 
-        ExternalMind* createMind(const Ref<LocatedEntity>& entity) const override;
+        std::unique_ptr<ExternalMind> createMind(const Ref<LocatedEntity>& entity) const override;
 
         void processExternalOperation(const Operation& op, OpVector& res) override;
 

@@ -32,3 +32,11 @@ Connection* Account::getConnection() const
     return m_connection;
 }
 #endif //STUB_Account_getConnection
+
+#ifndef STUB_Account_createMind
+#define STUB_Account_createMind
+std::unique_ptr<ExternalMind> Account::createMind(const Ref<LocatedEntity>& entity) const
+{
+    return {};
+}
+#endif //STUB_Account_createMind

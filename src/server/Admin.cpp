@@ -97,12 +97,12 @@ static void addTypeToList(const Root & type, ListType & typeList)
     }
 }
 
-ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const {
+std::unique_ptr<ExternalMind> Admin::createMind(const Ref<LocatedEntity>& entity) const {
     std::string strId;
 
     auto id = newId(strId);
 
-    return new AdminMind(strId, id, entity);
+    return std::make_unique<AdminMind>(strId, id, entity);
 }
 
 /// \brief Function to monitor server operations

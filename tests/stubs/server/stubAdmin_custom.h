@@ -16,3 +16,11 @@ const char* Admin::getType() const
     return "admin";
 }
 #endif //STUB_Admin_getType
+
+#ifndef STUB_Admin_createMind
+#define STUB_Admin_createMind
+std::unique_ptr<ExternalMind> Admin::createMind(const Ref<LocatedEntity>& entity) const
+{
+    return {};
+}
+#endif //STUB_Admin_createMind

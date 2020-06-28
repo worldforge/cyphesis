@@ -25,9 +25,9 @@
 
 #ifndef STUB_Account_createMind
 //#define STUB_Account_createMind
-  ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const
+  std::unique_ptr<ExternalMind> Account::createMind(const Ref<LocatedEntity>& entity) const
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ExternalMind>*>(nullptr);
   }
 #endif //STUB_Account_createMind
 

@@ -126,13 +126,13 @@ Connection* Account::getConnection() const
     return m_connection;
 }
 
-ExternalMind* Account::createMind(const Ref<LocatedEntity>& entity) const
+std::unique_ptr<ExternalMind> Account::createMind(const Ref<LocatedEntity>& entity) const
 {
     std::string strId;
 
     auto id = newId(strId);
 
-    return new ExternalMind(strId, id, entity);
+    return std::make_unique<ExternalMind>(strId, id, entity);
 }
 
 /// \brief Connect an existing character to this account
@@ -148,7 +148,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         //Create an external mind and hook it up with the entity
         auto mind = createMind(entity);
         mind->linkUp(m_connection);
-        m_connection->addObject(mind);
+        m_connection->addObject(mind.get());
 
         //Inform the client about the mind.
         Info mindInfo{};
@@ -157,15 +157,15 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         mindInfo->setArgs1(mindEntity);
         res.push_back(mindInfo);
 
-        m_minds.emplace(entity->getIntId(), mind);
 
         auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
-        mindsProp->addMind(mind);
+        mindsProp->addMind(mind.get());
         entity->applyProperty(MindsProperty::property_name, mindsProp);
 
         Atlas::Objects::Operation::Update update;
         update->setTo(entity->getId());
         update->setFrom(entity->getId());
+        m_minds.emplace(entity->getIntId(), std::move(mind));
         return 0;
     }
 

@@ -25,9 +25,9 @@
 
 #ifndef STUB_Admin_createMind
 //#define STUB_Admin_createMind
-  ExternalMind* Admin::createMind(const Ref<LocatedEntity>& entity) const
+  std::unique_ptr<ExternalMind> Admin::createMind(const Ref<LocatedEntity>& entity) const
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<ExternalMind>*>(nullptr);
   }
 #endif //STUB_Admin_createMind
 
