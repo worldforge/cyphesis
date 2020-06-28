@@ -17,7 +17,7 @@
 
 #ifndef STUB_Account_processExternalOperation
 //#define STUB_Account_processExternalOperation
-  void Account::processExternalOperation(const Operation & op, OpVector& res)
+  void Account::processExternalOperation(const Operation& op, OpVector& res)
   {
     
   }
@@ -31,6 +31,14 @@
   }
 #endif //STUB_Account_createMind
 
+#ifndef STUB_Account_removeMindFromEntity
+//#define STUB_Account_removeMindFromEntity
+  void Account::removeMindFromEntity(ExternalMind* mind)
+  {
+    
+  }
+#endif //STUB_Account_removeMindFromEntity
+
 #ifndef STUB_Account_connectCharacter
 //#define STUB_Account_connectCharacter
   int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
@@ -41,7 +49,7 @@
 
 #ifndef STUB_Account_Account
 //#define STUB_Account_Account
-   Account::Account(Connection * conn, std::string username, std::string passwd, const std::string & id, long intId)
+   Account::Account(Connection* conn, std::string username, std::string passwd, const std::string& id, long intId)
     : ConnectableRouter(conn, username, passwd, id, intId)
     , m_connection(nullptr)
   {
@@ -83,7 +91,7 @@
 
 #ifndef STUB_Account_addToMessage
 //#define STUB_Account_addToMessage
-  void Account::addToMessage(Atlas::Message::MapType &) const
+  void Account::addToMessage(Atlas::Message::MapType&) const
   {
     
   }
@@ -91,7 +99,7 @@
 
 #ifndef STUB_Account_addToEntity
 //#define STUB_Account_addToEntity
-  void Account::addToEntity(const Atlas::Objects::Entity::RootEntity &) const
+  void Account::addToEntity(const Atlas::Objects::Entity::RootEntity&) const
   {
     
   }
@@ -99,7 +107,7 @@
 
 #ifndef STUB_Account_externalOperation
 //#define STUB_Account_externalOperation
-  void Account::externalOperation(const Operation & op, Link &)
+  void Account::externalOperation(const Operation& op, Link&)
   {
     
   }
@@ -107,7 +115,7 @@
 
 #ifndef STUB_Account_operation
 //#define STUB_Account_operation
-  void Account::operation(const Operation &, OpVector &)
+  void Account::operation(const Operation&, OpVector&)
   {
     
   }
@@ -115,7 +123,7 @@
 
 #ifndef STUB_Account_LogoutOperation
 //#define STUB_Account_LogoutOperation
-  void Account::LogoutOperation(const Operation &, OpVector &)
+  void Account::LogoutOperation(const Operation&, OpVector&)
   {
     
   }
@@ -123,7 +131,7 @@
 
 #ifndef STUB_Account_CreateOperation
 //#define STUB_Account_CreateOperation
-  void Account::CreateOperation(const Operation &, OpVector &)
+  void Account::CreateOperation(const Operation&, OpVector&)
   {
     
   }
@@ -131,7 +139,7 @@
 
 #ifndef STUB_Account_SetOperation
 //#define STUB_Account_SetOperation
-  void Account::SetOperation(const Operation &, OpVector &)
+  void Account::SetOperation(const Operation&, OpVector&)
   {
     
   }
@@ -139,7 +147,7 @@
 
 #ifndef STUB_Account_ImaginaryOperation
 //#define STUB_Account_ImaginaryOperation
-  void Account::ImaginaryOperation(const Operation &, OpVector &)
+  void Account::ImaginaryOperation(const Operation&, OpVector&)
   {
     
   }
@@ -147,7 +155,7 @@
 
 #ifndef STUB_Account_TalkOperation
 //#define STUB_Account_TalkOperation
-  void Account::TalkOperation(const Operation &, OpVector &)
+  void Account::TalkOperation(const Operation&, OpVector&)
   {
     
   }
@@ -155,7 +163,7 @@
 
 #ifndef STUB_Account_LookOperation
 //#define STUB_Account_LookOperation
-  void Account::LookOperation(const Operation &, OpVector &)
+  void Account::LookOperation(const Operation&, OpVector&)
   {
     
   }
@@ -163,7 +171,7 @@
 
 #ifndef STUB_Account_GetOperation
 //#define STUB_Account_GetOperation
-  void Account::GetOperation(const Operation &, OpVector &)
+  void Account::GetOperation(const Operation&, OpVector&)
   {
     
   }
@@ -171,7 +179,7 @@
 
 #ifndef STUB_Account_OtherOperation
 //#define STUB_Account_OtherOperation
-  void Account::OtherOperation(const Operation &, OpVector &)
+  void Account::OtherOperation(const Operation&, OpVector&)
   {
     
   }
@@ -179,7 +187,7 @@
 
 #ifndef STUB_Account_PossessOperation
 //#define STUB_Account_PossessOperation
-  void Account::PossessOperation(const Operation &, OpVector &)
+  void Account::PossessOperation(const Operation&, OpVector&)
   {
     
   }

@@ -85,16 +85,6 @@ Account::Account(Connection* conn,
 /// @param id Integer identifier of the LocatedEntity destroyed.
 void Account::characterDestroyed(long id)
 {
-    //Delete any mind attached to this character
-    auto I = m_minds.find(id);
-    if (I != m_minds.end()) {
-        if (m_connection) {
-            m_connection->removeObject(I->second->getIntId());
-        } else {
-            log(WARNING, "Account still had minds even after connection had been shut down.");
-        }
-        m_minds.erase(I);
-    }
     m_charactersDict.erase(id);
 }
 
@@ -102,19 +92,7 @@ void Account::setConnection(Connection* connection)
 {
     if (!connection) {
         for (auto& entry : m_minds) {
-            if (m_connection) {
-                m_connection->removeObject(entry.second->getIntId());
-            }
-            auto entity = entry.second->getEntity();
-            auto prop = entity->modPropertyClassFixed<MindsProperty>();
-            if (prop) {
-                prop->removeMind(entry.second.get(), entity.get());
-                entity->applyProperty(MindsProperty::property_name, prop);
-                Atlas::Objects::Operation::Update update;
-                update->setTo(entity->getId());
-                entity->sendWorld(update);
-            }
-            //TODO: remove property if it's empty
+            removeMindFromEntity(entry.second.mind.get());
         }
         m_minds.clear();
     }
@@ -147,6 +125,11 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
     } else {
         //Create an external mind and hook it up with the entity
         auto mind = createMind(entity);
+        auto mindPtr = mind.get();
+        auto destroyedConnection = entity->destroyed.connect([this, mindPtr]() {
+            removeMindFromEntity(mindPtr);
+            m_minds.erase(mindPtr->getEntity()->getIntId());
+        });
         mind->linkUp(m_connection);
         m_connection->addObject(mind.get());
 
@@ -165,7 +148,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         Atlas::Objects::Operation::Update update;
         update->setTo(entity->getId());
         update->setFrom(entity->getId());
-        m_minds.emplace(entity->getIntId(), std::move(mind));
+        m_minds.emplace(entity->getIntId(), MindEntry{std::move(mind), AutoCloseConnection(destroyedConnection)});
         return 0;
     }
 
@@ -208,6 +191,27 @@ void Account::sendUpdateToClient()
     }
 }
 
+void Account::removeMindFromEntity(ExternalMind* mind)
+{
+    //Delete any mind attached to this character
+    if (m_connection) {
+        m_connection->removeObject(mind->getIntId());
+    } else {
+        log(WARNING, "Account still had minds even after connection had been shut down.");
+    }
+    auto& entity = mind->getEntity();
+    if (!entity->isDestroyed()) {
+        auto prop = entity->modPropertyClassFixed<MindsProperty>();
+        if (prop) {
+            prop->removeMind(mind, entity.get());
+            entity->applyProperty(MindsProperty::property_name, prop);
+            Atlas::Objects::Operation::Update update;
+            update->setTo(entity->getId());
+            entity->sendWorld(update);
+        }
+    }
+}
+
 void Account::LogoutOperation(const Operation& op, OpVector& res)
 {
     if (m_connection == nullptr) {
@@ -217,6 +221,7 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
     }
 
     if (!op->getArgs().empty()) {
+        //If there are args it means that we should only log out one specific mind.
         auto arg = op->getArgs().front();
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "No id given on logout op", res, getId());
@@ -224,15 +229,10 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
         }
         auto id = arg->getId();
         for (auto& entry : m_minds) {
-            if (entry.second->getId() == id) {
-                m_connection->removeObject(entry.second->getIntId());
-                auto prop = entry.second->getEntity()->modPropertyClassFixed<MindsProperty>();
-                if (prop) {
-                    prop->removeMind(entry.second.get(), entry.second->getEntity().get());
-                    entry.second->getEntity()->applyProperty(MindsProperty::property_name, prop);
-                }
-                m_minds.erase(entry.first);
-
+            auto& mind = entry.second.mind;
+            if (mind->getId() == id) {
+                removeMindFromEntity(mind.get());
+                m_minds.erase(mind->getEntity()->getIntId());
 
                 Info info;
                 info->setArgs1(op);
