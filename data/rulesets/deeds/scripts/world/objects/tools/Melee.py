@@ -11,9 +11,6 @@ from world.utils import Usage
 def strike(instance):
     """Strike another entity with a weapon."""
 
-    # Send sight even if we miss
-    instance.actor.send_world(Operation("sight", instance.op))
-
     # Melee weapons only handles one target
     tick_interval = instance.tool.get_prop_float("cooldown")
     if tick_interval is not None:
@@ -28,6 +25,7 @@ def strike(instance):
 class Melee(StoppableTask):
 
     def do_strike(self):
+        # Send sight even if we miss
         self.usage.actor.send_world(Operation("sight", self.usage.op))
 
         # If there's a cooldown we need to mark the actor

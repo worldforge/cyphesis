@@ -37,20 +37,21 @@ def delay_task_if_needed(task):
     Use this whenever you want to start a task, and want to honour the cooldown properties.
     """
     # Check that the tool is ready
-    tool_ready_at = task.usage.tool.get_prop_float("read_at")
+    tool_ready_at = task.usage.tool.get_prop_float("ready_at")
     if tool_ready_at and tool_ready_at > server.world.get_time():
-        print("Tool not ready yet.")
-        return PendingTask(task.usage, tick_interval=tool_ready_at - server.world.get_time(), task=task)
+        return PendingTask(task.usage, name=task.name, tick_interval=tool_ready_at - server.world.get_time(), task=task)
     else:
-        # Check if the tools is attached, and if so the attachment is ready
-        actor_ready_at = task.usage.actor.get_prop_map("_ready_at_attached")
-        if actor_ready_at:
-            mode_data = task.usage.tool.get_prop_map("mode_data")
-            if mode_data:
-                if mode_data["mode"] == "planted":
-                    attachment = mode_data["attachment"]
-                    if attachment and attachment in actor_ready_at:
-                        attachment_read_at = actor_ready_at[attachment]
-                        if attachment_read_at > server.world.get_time():
-                            return PendingTask(task.usage, tick_interval=attachment_read_at - server.world.get_time(), task=task)
+        # First just check if we're using a tool
+        if task.usage.tool != task.usage.actor:
+            # Check if the tools is attached, and if so the attachment is ready
+            actor_ready_at = task.usage.actor.get_prop_map("_ready_at_attached")
+            if actor_ready_at:
+                mode_data = task.usage.tool.get_prop_map("mode_data")
+                if mode_data:
+                    if mode_data["mode"] == "planted":
+                        attachment = mode_data["attachment"]
+                        if attachment and attachment in actor_ready_at:
+                            attachment_ready_at = actor_ready_at[attachment]
+                            if attachment_ready_at > server.world.get_time():
+                                return PendingTask(task.usage, name=task.name, tick_interval=attachment_ready_at - server.world.get_time(), task=task)
     return task
