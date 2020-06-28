@@ -12,11 +12,11 @@ from common import log
 # \ingroup PythonGoals
 class Goal:
     def __init__(self,
-                 desc="some goal",
+                 desc="",
                  fulfilled=None,
-                 sub_goals=None,
+                 sub_goals: list = None,
                  validity=None,
-                 debug=0):
+                 debug=False):
         """ Init
             Args:
                 desc (string): A user facing description of the goal
@@ -132,7 +132,7 @@ class Goal:
                     log.thinking("\t" * depth + "GOAL: aft function: " + repr(sg) + " " + repr(res))
                 debug_info = debug_info + "." + sg.__name__ + "()"
                 if res is not None:
-                    # If the function generated an op, stop iterating here and return
+                    # If the function generated something, stop iterating here and return
                     return res, debug_info
             else:
                 if self.debug:
