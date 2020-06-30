@@ -203,9 +203,9 @@ void AwareMind::entityAdded(MemEntity& entity)
                 //log(INFO, "Creating awareness.");
                 requestAwareness(entity);
 
-                Atlas::Message::Element terrainElem;
-                if (entity.getAttr("terrain", terrainElem) == 0) {
-                    parseTerrain(terrainElem);
+                auto terrainElem = entity.getAttr("terrain_points");
+                if (terrainElem) {
+                    parseTerrain(*terrainElem);
                 }
             }
         }
@@ -285,42 +285,36 @@ void AwareMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::R
 void AwareMind::parseTerrain(const Atlas::Message::Element& terrainElement)
 {
     if (terrainElement.isMap()) {
-        const Atlas::Message::MapType& terrainMap = terrainElement.Map();
-        auto pointsI = terrainMap.find("points");
-        if (pointsI != terrainMap.end() && pointsI->second.isMap()) {
-
-            std::vector<SharedTerrain::BasePointDefinition> pointDefs;
-
-            auto& pointsMap = pointsI->second.Map();
-            for (auto& pointEntry : pointsMap) {
-                if (pointEntry.second.isList()) {
-                    auto& pointsList = pointEntry.second.List();
-                    if (pointsList.size() == 3) {
-                        if (!pointsList[0].isNum()) {
-                            continue;
-                        }
-                        if (!pointsList[1].isNum()) {
-                            continue;
-                        }
-                        if (!pointsList[2].isNum()) {
-                            continue;
-                        }
-
-                        pointDefs.emplace_back(SharedTerrain::BasePointDefinition{
-                                (int) pointsList[0].asNum(),
-                                (int) pointsList[1].asNum(),
-                                Mercator::BasePoint(static_cast<float>(pointsList[2].asNum()))
-                        });
+        std::vector<SharedTerrain::BasePointDefinition> pointDefs;
+        auto& pointsMap = terrainElement.Map();
+        for (auto& pointEntry : pointsMap) {
+            if (pointEntry.second.isList()) {
+                auto& pointsList = pointEntry.second.List();
+                if (pointsList.size() == 3) {
+                    if (!pointsList[0].isNum()) {
+                        continue;
                     }
+                    if (!pointsList[1].isNum()) {
+                        continue;
+                    }
+                    if (!pointsList[2].isNum()) {
+                        continue;
+                    }
+
+                    pointDefs.emplace_back(SharedTerrain::BasePointDefinition{
+                            (int) pointsList[0].asNum(),
+                            (int) pointsList[1].asNum(),
+                            Mercator::BasePoint(static_cast<float>(pointsList[2].asNum()))
+                    });
                 }
             }
-            std::vector<SharedTerrain::BasePointDefinition> changedPoints = mSharedTerrain.setBasePoints(pointDefs);
-            if (mAwareness) {
-                int res = mSharedTerrain.getTerrain().getResolution();
-                for (auto& entry : changedPoints) {
-                    WFMath::AxisBox<2> area(WFMath::Point<2>(entry.x - res, entry.y - res), WFMath::Point<2>(entry.x + res, entry.y + res));
-                    mAwareness->markTilesAsDirty(area);
-                }
+        }
+        std::vector<SharedTerrain::BasePointDefinition> changedPoints = mSharedTerrain.setBasePoints(pointDefs);
+        if (mAwareness) {
+            int res = mSharedTerrain.getTerrain().getResolution();
+            for (auto& entry : changedPoints) {
+                WFMath::AxisBox<2> area(WFMath::Point<2>(entry.x - res, entry.y - res), WFMath::Point<2>(entry.x + res, entry.y + res));
+                mAwareness->markTilesAsDirty(area);
             }
         }
     }
