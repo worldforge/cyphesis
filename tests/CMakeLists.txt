@@ -334,23 +334,6 @@ target_link_libraries(PhysicalDomainBenchmark rulessimulation rulesbase physics 
 wf_add_test(server/PhysicalDomainIntegrationTest.cpp ../src/rules/simulation/PhysicalDomain.cpp)
 target_link_libraries(PhysicalDomainIntegrationTest rulessimulation rulesbase physics modules common)
 
-wf_add_test(rules/TerrainPropertyIntegration.cpp ../src/rules/simulation/TerrainModProperty.cpp
-    ../src/rules/simulation/TerrainEffectorProperty.cpp
-    ../src/rules/simulation/TerrainProperty.cpp
-    ../src/rules/simulation/TerrainModTranslator.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/rules/Domain.cpp
-    ../src/rules/AtlasProperties.cpp
-    ../src/rules/simulation/BaseWorld.cpp
-    ../src/common/Property.cpp
-    ../src/common/PropertyManager.cpp
-    ../src/common/Router.cpp
-    ../src/common/operations.cpp
-    ../src/common/id.cpp)
-
-target_link_libraries(TerrainPropertyIntegration modules physics)
-
 wf_add_test(rules/PropertyEntityIntegration.cpp ../src/rules/simulation/Entity.cpp
     ../src/rules/LocatedEntity.cpp
     ../src/common/Property.cpp
@@ -395,6 +378,8 @@ wf_add_test(rules/RulesIntegrationTest.cpp)
 target_link_libraries(RulesIntegrationTest rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
 wf_add_test(rules/ObserverIntegrationTest.cpp)
 target_link_libraries(ObserverIntegrationTest rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
+wf_add_test(rules/TerrainPropertyIntegration.cpp)
+target_link_libraries(TerrainPropertyIntegration rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
 
 
 # CLIENT_TESTS

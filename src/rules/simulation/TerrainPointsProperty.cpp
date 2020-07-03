@@ -52,9 +52,11 @@ void TerrainPointsProperty::apply(LocatedEntity* entity)
             }
             const ListType& point = val.List();
             if (point.size() < 3) {
+                log(WARNING, "Terrain point must be at least size 3.");
                 continue;
             }
             if (!point[0].isNum() || !point[1].isNum() || !point[2].isNum()) {
+                log(WARNING, "Terrain point must be all numbers.");
                 continue;
             }
 
@@ -64,12 +66,20 @@ void TerrainPointsProperty::apply(LocatedEntity* entity)
             double roughness;
             double falloff;
             if (point.size() > 3) {
-                roughness = point[3].asFloat();
+                if (!point[3].isNum()) {
+                    log(WARNING, "Terrain point roughness must be a number.");
+                    continue;
+                }
+                roughness = point[3].asNum();
             } else {
                 roughness = Mercator::BasePoint::ROUGHNESS;
             }
             if (point.size() > 4) {
-                falloff = point[4].asFloat();
+                if (!point[4].isNum()) {
+                    log(WARNING, "Terrain point falloff must be a number.");
+                    continue;
+                }
+                falloff = point[4].asNum();
             } else {
                 falloff = Mercator::BasePoint::FALLOFF;
             }

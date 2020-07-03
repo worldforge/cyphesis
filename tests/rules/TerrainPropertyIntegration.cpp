@@ -23,49 +23,141 @@
 #define DEBUG
 #endif
 
-#include "../PropertyCoverage.h"
 
-#include "rules/simulation/Entity.h"
-#include "rules/simulation/TerrainModProperty.h"
-#include "rules/simulation/TerrainProperty.h"
-#include "rules/simulation/DomainProperty.h"
+#include "../TestBaseWithContext.h"
+#include "../DatabaseNull.h"
+#include "../TestWorld.h"
+#include "common/Monitors.h"
+#include "common/Inheritance.h"
+#include "common/operations/Thought.h"
+#include "rules/simulation/World.h"
+#include "../NullEntityCreator.h"
 
-#include "../stubs/common/stubVariable.h"
-#include "../stubs/common/stubMonitors.h"
-#include "../stubs/common/stubTypeNode.h"
-#include "../stubs/rules/simulation/stubDomainProperty.h"
+#include <Atlas/Objects/Operation.h>
+#include <Atlas/Objects/Entity.h>
+#include <wfmath/atlasconv.h>
+#include <rules/simulation/CorePropertyManager.h>
 
-using Atlas::Message::ListType;
+#include <memory>
+#include <rules/simulation/ModifiersProperty.h>
+#include <rules/simulation/WorldRouter.h>
+#include <rules/simulation/MindsProperty.h>
+#include <rules/simulation/TerrainProperty.h>
+#include <rules/simulation/TerrainPointsProperty.h>
+
+
+using Atlas::Objects::Operation::Set;
+using Atlas::Objects::Operation::Wield;
+using Atlas::Objects::Operation::Move;
+using Atlas::Objects::Entity::Anonymous;
 using Atlas::Message::MapType;
+using Atlas::Message::ListType;
+
+struct TestContext
+{
+
+    Atlas::Objects::Factories factories;
+    DatabaseNull database;
+    Ref<World> world;
+    Inheritance inheritance;
+    WorldRouter testWorld;
+    NullEntityCreator entityCreator;
+    CorePropertyManager propertyManager;
+
+    TestContext() :
+            world(new World()),
+            inheritance(factories),
+            testWorld(world, entityCreator),
+            propertyManager(inheritance)
+    {
+    }
+
+};
+
+
+double epsilon = 0.01;
+
+struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
+{
+    Tested()
+    {
+        ADD_TEST(test_set_terrain);
+    }
+
+
+    void test_set_terrain(TestContext& context)
+    {
+        Ref<Thing> t1 = new Thing(1);
+        t1->m_location.setBBox({{-64, -10, -64},
+                                {64,  10,  64}});
+        t1->setAttrValue("domain", "physical");
+        t1->setAttrValue(TerrainProperty::property_name, ListType{MapType{
+                {"name",    "rock"},
+                {"pattern", "fill"}}});
+
+        t1->setAttrValue(TerrainPointsProperty::property_name, MapType{
+                {"-1x-1", ListType{-1.0, -1.0, 10.0}},
+                {"0x-1",  ListType{0.0, -1.0, 10.0}},
+                {"1x-1",  ListType{1.0, -1.0, 10.0}},
+                {"-1x0",  ListType{-1.0, 0.0, 10.0}},
+                {"0x0",   ListType{0.0, 0.0, 10.0}},
+                {"1x0",   ListType{1.0, 0.0, 10.0}},
+                {"-1x1",  ListType{-1.0, 1.0, 10.0}},
+                {"0x1",   ListType{0.0, 1.0, 10.0}},
+                {"1x1",   ListType{1.0, 1.0, 10.0}},
+        });
+        context.testWorld.addEntity(t1, context.world);
+
+        auto terrainProp = t1->getPropertyClassFixed<TerrainProperty>();
+        ASSERT_NOT_NULL(terrainProp);
+
+        float height;
+        terrainProp->getHeight(*t1, 10, 10, height);
+        ASSERT_FUZZY_EQUAL(10.0, height, epsilon)
+
+        t1->setAttrValue("terrain_points!prepend", MapType{
+                {"0x0", ListType{0.0, 0.0, 20.0}}
+        });
+
+        terrainProp->getHeight(*t1, 10, 10, height);
+        ASSERT_FUZZY_EQUAL(14.6848, height, epsilon)
+
+        //Update roughness
+        t1->setAttrValue("terrain_points!prepend", MapType{
+                {"0x0", ListType{0.0, 0.0, 20.0, 0.75}}
+        });
+
+        terrainProp->getHeight(*t1, 10, 10, height);
+        ASSERT_FUZZY_EQUAL(15.2658, height, epsilon)
+
+        //Set roughness to zero
+        t1->setAttrValue("terrain_points!prepend", MapType{
+                {"0x0", ListType{0.0, 0.0, 20.0, 0.0}}
+        });
+
+        terrainProp->getHeight(*t1, 10, 10, height);
+        ASSERT_FUZZY_EQUAL(16.12, height, epsilon)
+
+        //Handle ints
+        t1->setAttrValue("terrain_points!prepend", MapType{
+                {"0x0", ListType{0, 0, 20, 0}}
+        });
+
+        terrainProp->getHeight(*t1, 10, 10, height);
+        ASSERT_FUZZY_EQUAL(16.12, height, epsilon)
+
+        t1->destroy();
+    }
+
+
+};
+
 
 int main()
 {
-    {
-        TerrainModProperty * ap = new TerrainModProperty;
+    Monitors m;
+    Tested t;
 
-        MapType shape;
-        MapType mod;
-        
-        shape["type"] = "polygon";
-        shape["points"] = ListType(3, ListType(2, 1.1f));
-        mod["shape"] = shape;
-        mod["type"] = "levelmod";
-
-        ap->set(mod);
-
-        // FIXME verify that the mod really takes effect
-        // ap->apply(0);
-    }
-
+    return t.run();
 }
 
-// stubs
-
-#include "common/log.h"
-#include "../stubs/rules/stubLocation.h"
-#include "../stubs/common/stubLink.h"
-#include "../stubs/common/stublog.h"
-#include "../stubs/rules/stubModifier.h"
-
-
-int timeoffset = 0;
