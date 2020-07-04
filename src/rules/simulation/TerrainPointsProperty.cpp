@@ -109,8 +109,8 @@ void TerrainPointsProperty::apply(LocatedEntity* entity)
 
         if (minX != std::numeric_limits<int>::max()) {
             float spacing = terrain.getSpacing();
-            WFMath::Point<2> minCorner((minX * spacing) - (spacing * 0.5f), (minY * spacing) - (spacing * 0.5f));
-            WFMath::Point<2> maxCorner((maxX * spacing) + (spacing * 0.5f), (maxY * spacing) + (spacing * 0.5f));
+            WFMath::Point<2> minCorner(((minX - 1) * spacing), ((minY - 1) * spacing));
+            WFMath::Point<2> maxCorner(((maxX + 1) * spacing), ((maxY + 1) * spacing));
             WFMath::AxisBox<2> changedArea(minCorner, maxCorner);
             changedAreas.push_back(changedArea);
         }

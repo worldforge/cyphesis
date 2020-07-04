@@ -37,7 +37,6 @@ class EntityBuilder;
 ///
 /// This class has one instance which manages the game world.
 /// It maintains a list of all in-game (IG) objects in the server.
-/// It explicitly also maintains lists of perceptive entities.
 class WorldRouter : public BaseWorld
 {
     private:
