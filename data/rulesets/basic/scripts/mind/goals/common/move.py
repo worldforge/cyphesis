@@ -600,13 +600,8 @@ class Pursuit(Goal):
         lst_of_what = me.mem.recall_place(me.entity.location, self.range, self.filter)
         if not lst_of_what or len(lst_of_what) == 0:
             return
-        dist_vect = me.steering.distance_to(lst_of_what[0], ai.EDGE, ai.EDGE).unit_vector()
-        multiply = 1.0 * self.direction * const.basic_tick
-        loc = Location(me.entity.location.parent)
-        loc.pos = me.entity.location.pos + (dist_vect * multiply)
-        ent = Entity(me.entity.id, location=loc)
-        return Operation("move", ent)
-
+        me.steering.set_destination(lst_of_what[0], ai.EDGE, ai.EDGE)
+        return True
 
 class Avoid(Pursuit):
     """avoid something at range"""
