@@ -1558,17 +1558,27 @@ void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, sho
         collisionMask = COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL;
     } else {
         auto modeProp = entity.getPropertyClassFixed<ModeProperty>();
-        if (modeProp && (modeProp->getMode() == ModeProperty::Mode::Fixed
-                         || modeProp->getMode() == ModeProperty::Mode::Planted)) {
+        if (modeProp && modeProp->getMode() == ModeProperty::Mode::Fixed) {
             if (entity.m_location.isSolid()) {
                 collisionGroup = COLLISION_MASK_STATIC;
-                //Planted and fixed entities shouldn't collide with anything themselves.
+                //Fixed entities shouldn't collide with anything themselves.
                 //Other physical entities should however collide with them.
                 collisionMask = COLLISION_MASK_PHYSICAL;
             } else {
-                //The object is both fixed/planted and not solid. It shouldn't collide with anything at all.
+                //The object is both fixed and not solid. It shouldn't collide with anything at all.
                 collisionGroup = 0;
                 collisionMask = 0;
+            }
+        } else if (modeProp && modeProp->getMode() == ModeProperty::Mode::Planted) {
+            if (entity.m_location.isSolid()) {
+                collisionGroup = COLLISION_MASK_STATIC;
+                //Planted entities shouldn't collide with anything themselves except the terrain.
+                //Other physical entities should however collide with them.
+                collisionMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_TERRAIN;
+            } else {
+                //The object is both planted and not solid. It shouldn't collide with anything at all except terrain.
+                collisionGroup = 0;
+                collisionMask = COLLISION_MASK_TERRAIN;
             }
         } else {
             if (entity.m_location.isSolid()) {
@@ -2211,7 +2221,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
         VisibilityCallback callback;
 
         callback.m_collisionFilterGroup = COLLISION_MASK_TERRAIN;
-        callback.m_collisionFilterMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_NON_PHYSICAL;
+        callback.m_collisionFilterMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_STATIC;
 
         auto area = segment->getRect();
         WFMath::Vector<2> size = area.highCorner() - area.lowCorner();

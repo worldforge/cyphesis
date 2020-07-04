@@ -136,6 +136,8 @@ struct OperationsHandler
     virtual void clearQueues() = 0;
 
     virtual size_t getQueueSize() const = 0;
+
+    virtual void dispatchNextOp() = 0;
 };
 
 /// \brief Handles dispatching of operations at suitable time.
@@ -146,6 +148,7 @@ class OperationsDispatcher : public OperationsHandler
     public:
 
         typedef std::function<std::chrono::steady_clock::duration()> TimeProviderFnType;
+
         /**
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
@@ -218,6 +221,9 @@ class OperationsDispatcher : public OperationsHandler
         {
             return m_operationQueue;
         }
+
+        void dispatchNextOp() override;
+
 
     protected:
 

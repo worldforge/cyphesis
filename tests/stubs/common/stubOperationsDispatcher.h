@@ -92,11 +92,19 @@
   }
 #endif //STUB_OperationsHandler_getQueueSize
 
+#ifndef STUB_OperationsHandler_dispatchNextOp
+//#define STUB_OperationsHandler_dispatchNextOp
+  void OperationsHandler::dispatchNextOp()
+  {
+    
+  }
+#endif //STUB_OperationsHandler_dispatchNextOp
+
 
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
   template <typename T>
-   OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, std::function<std::chrono::steady_clock::duration()> timeProviderFn)
+   OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, TimeProviderFnType timeProviderFn)
     : OperationsHandler(operationProcessor, timeProviderFn)
   {
     
@@ -174,6 +182,15 @@
     return 0;
   }
 #endif //STUB_OperationsDispatcher_getQueueSize
+
+#ifndef STUB_OperationsDispatcher_dispatchNextOp
+//#define STUB_OperationsDispatcher_dispatchNextOp
+  template <typename T>
+  void OperationsDispatcher<T>::dispatchNextOp()
+  {
+    
+  }
+#endif //STUB_OperationsDispatcher_dispatchNextOp
 
 #ifndef STUB_OperationsDispatcher_dispatchOperation
 //#define STUB_OperationsDispatcher_dispatchOperation

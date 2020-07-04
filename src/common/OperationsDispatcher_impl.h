@@ -49,16 +49,28 @@ void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T>& oqe)
         m_operationProcessor(oqe.op, std::move(oqe.from));
     }
     catch (const std::exception& ex) {
-        log(ERROR, String::compose("Exception caught in WorldRouter::idle() "
+        log(ERROR, String::compose("Exception caught in OperationsDispatcher::dispatchOperation() "
                                    "thrown while processing operation "
                                    "sent to \"%1\" from \"%2\": %3",
                                    oqe->getTo(), oqe->getFrom(), ex.what()));
     }
     catch (...) {
-        log(ERROR, String::compose("Unspecified exception caught in WorldRouter::idle() "
+        log(ERROR, String::compose("Unspecified exception caught in OperationsDispatcher::dispatchOperation() "
                                    "thrown while processing operation "
                                    "sent to \"%1\" from \"%2\"",
                                    oqe->getTo(), oqe->getFrom()));
+    }
+}
+
+template<typename T>
+void OperationsDispatcher<T>::dispatchNextOp()
+{
+    if (!m_operationQueue.empty()) {
+        auto opQueueEntry = std::move(m_operationQueue.top());
+        //Pop it before we dispatch it, since dispatching might alter the queue.
+        m_operationQueue.pop();
+
+        dispatchOperation(opQueueEntry);
     }
 }
 

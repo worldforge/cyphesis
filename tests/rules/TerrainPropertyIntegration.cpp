@@ -174,6 +174,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         });
         context.testWorld.addEntity(t1, context.world);
 
+        auto terrainProp = t1->getPropertyClassFixed<TerrainProperty>();
 
         Ref<Thing> tPlanted = new Thing(2);
         tPlanted->m_location.setBBox({{-1, 0, -1},
@@ -182,16 +183,36 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         tPlanted->setAttrValue("mode", "planted");
         context.testWorld.addEntity(tPlanted, t1);
 
-        //Height should be adjusted to the height of the terrain.
-        ASSERT_FUZZY_EQUAL(10.0, tPlanted->m_location.m_pos.y(), epsilon)
+
+        Ref<Thing> tFixed = new Thing(3);
+        tFixed->m_location.setBBox({{-1, 0, -1},
+                                    {1,  2, 1}});
+        tFixed->m_location.m_pos = {20, 100, 10};
+        tFixed->setAttrValue("mode", "fixed");
+        context.testWorld.addEntity(tFixed, t1);
+
+        //Height should not be adjusted to the height of the terrain.
+        ASSERT_FUZZY_EQUAL(100.0, tFixed->m_location.m_pos.y(), epsilon)
 
         //Adjust the terrain
         t1->setAttrValue("terrain_points!prepend", MapType{
-                {"0x0", ListType{0.0, 0.0, 20.0}}
+                {"1x1", ListType{1.0, 1.0, 20.0}}
         });
 
-        auto domain = static_cast<PhysicalDomain*>(t1->getDomain());
+        //First process the Tick op for the physical domain
+        context.testWorld.getOperationsHandler().dispatchNextOp();
+        //Then process the Move op generated.
+        context.testWorld.getOperationsHandler().dispatchNextOp();
+        //Process an extra op to catch any incorrect Move ops that would be generated for the fixed entity.
+        context.testWorld.getOperationsHandler().dispatchNextOp();
 
+        float height;
+        terrainProp->getHeight(*t1, tPlanted->m_location.m_pos.x(), tPlanted->m_location.m_pos.z(), height);
+        ASSERT_FUZZY_EQUAL(height, tPlanted->m_location.m_pos.y(), epsilon)
+        ASSERT_FUZZY_EQUAL(100.0, tFixed->m_location.m_pos.y(), epsilon)
+
+
+        tFixed->destroy();
         tPlanted->destroy();
         t1->destroy();
 
