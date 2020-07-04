@@ -19,6 +19,8 @@
 #ifndef CYPHESIS_ASSERTBASE_H
 #define CYPHESIS_ASSERTBASE_H
 
+#include <cmath>
+
 
 namespace Cyphesis {
 
