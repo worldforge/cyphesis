@@ -54,9 +54,9 @@
 
 #ifndef STUB_OperationsHandler_timeUntilNextOp
 //#define STUB_OperationsHandler_timeUntilNextOp
-  std::chrono::microseconds OperationsHandler::timeUntilNextOp() const
+  std::chrono::steady_clock::duration OperationsHandler::timeUntilNextOp() const
   {
-    return *static_cast<std::chrono::microseconds*>(nullptr);
+    return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
   }
 #endif //STUB_OperationsHandler_timeUntilNextOp
 
@@ -124,9 +124,9 @@
 #ifndef STUB_OperationsDispatcher_timeUntilNextOp
 //#define STUB_OperationsDispatcher_timeUntilNextOp
   template <typename T>
-  std::chrono::microseconds OperationsDispatcher<T>::timeUntilNextOp() const
+  std::chrono::steady_clock::duration OperationsDispatcher<T>::timeUntilNextOp() const
   {
-    return *static_cast<std::chrono::microseconds*>(nullptr);
+    return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
   }
 #endif //STUB_OperationsDispatcher_timeUntilNextOp
 

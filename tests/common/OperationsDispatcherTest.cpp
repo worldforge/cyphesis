@@ -151,6 +151,46 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(queue.top().op->getClassNo(), Atlas::Objects::Operation::UPDATE_NO)
         queue.pop();
 
+        {
+            Operation op;
+            op->setSeconds(2.0);
+            op->setRefno(2);
+            dispatcher.addOperationToQueue(op, entity);
+        }
+        {
+            Operation op;
+            op->setSeconds(3.0);
+            op->setRefno(3);
+            dispatcher.addOperationToQueue(op, entity);
+        }
+        {
+            Operation op;
+            op->setSeconds(1.0);
+            op->setRefno(1);
+            dispatcher.addOperationToQueue(op, entity);
+        }
+        {
+            Operation op;
+            op->setRefno(4);
+            dispatcher.addOperationToQueue(op, entity);
+        }
+        {
+            Operation op;
+            op->setRefno(5);
+            dispatcher.addOperationToQueue(op, entity);
+        }
+
+        ASSERT_EQUAL(queue.top().op->getRefno(), 4)
+        queue.pop();
+        ASSERT_EQUAL(queue.top().op->getRefno(), 5)
+        queue.pop();
+        ASSERT_EQUAL(queue.top().op->getRefno(), 1)
+        queue.pop();
+        ASSERT_EQUAL(queue.top().op->getRefno(), 2)
+        queue.pop();
+        ASSERT_EQUAL(queue.top().op->getRefno(), 3)
+        queue.pop();
+
     }
 
 };

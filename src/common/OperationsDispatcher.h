@@ -39,22 +39,23 @@ struct OpQueEntry
 {
     bool operator<(const OpQueEntry& right) const
     {
-        if (op->getSeconds() == right->getSeconds()) {
+        if (time_for_dispatch == right.time_for_dispatch) {
             return sequence < right.sequence;
         }
-        return op->getSeconds() < right->getSeconds();
+        return time_for_dispatch < right.time_for_dispatch;
     }
 
     bool operator>(const OpQueEntry& right) const
     {
-        if (op->getSeconds() == right->getSeconds()) {
+        if (time_for_dispatch == right.time_for_dispatch) {
             return sequence > right.sequence;
         }
-        return op->getSeconds() > right->getSeconds();
+        return time_for_dispatch > right.time_for_dispatch;
     }
 
     Operation op;
     Ref<T> from;
+    std::chrono::milliseconds time_for_dispatch;
     //Sequence number is used to determine ordering when to ops have the exact same time.
     long sequence;
 
@@ -63,6 +64,7 @@ struct OpQueEntry
     OpQueEntry(Operation op_, Ref<T> from_, long sequence_)
             : op(std::move(op_)),
               from(std::move(from_)),
+              time_for_dispatch(std::chrono::milliseconds(static_cast<std::int64_t>(op->getSeconds() * 1000))),
               sequence(sequence_)
     {
     }
@@ -77,6 +79,7 @@ struct OpQueEntry
     {
         this->op = std::move(rhs.op);
         this->from = std::move(rhs.from);
+        this->time_for_dispatch = std::move(rhs.time_for_dispatch);
         this->sequence = std::move(rhs.sequence);
         return *this;
     }
@@ -112,7 +115,7 @@ struct OperationsHandler
      * Gets time until the next operation needs to be dispatched.
      * @return Seconds.
      */
-    virtual std::chrono::microseconds timeUntilNextOp() const = 0;
+    virtual std::chrono::steady_clock::duration timeUntilNextOp() const = 0;
 
     /**
      * @brief Checks if the operation queues have been marked as dirty.
@@ -166,7 +169,7 @@ class OperationsDispatcher : public OperationsHandler
          * Gets the number of seconds until the next operation needs to be dispatched.
          * @return Seconds.
          */
-        std::chrono::microseconds timeUntilNextOp() const override;
+        std::chrono::steady_clock::duration timeUntilNextOp() const override;
 
         /**
          * @brief Checks if the operation queues have been marked as dirty.

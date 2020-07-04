@@ -68,7 +68,7 @@ bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& 
     bool opsAvailableRightNow;
     do {
         double realtime = getTime();
-        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= realtime;
+        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= std::chrono::milliseconds(static_cast<std::int64_t>(realtime * 1000));
 
         if (opsAvailableRightNow) {
             auto opQueueEntry = std::move(m_operationQueue.top());
@@ -117,14 +117,13 @@ double OperationsDispatcher<T>::getTime() const
 }
 
 template<typename T>
-std::chrono::microseconds OperationsDispatcher<T>::timeUntilNextOp() const
+std::chrono::steady_clock::duration OperationsDispatcher<T>::timeUntilNextOp() const
 {
     if (m_operationQueue.empty()) {
         //600 is a fairly large number of seconds
         return std::chrono::seconds(600);
     }
-    auto milliseconds = static_cast<std::uint64_t>((m_operationQueue.top()->getSeconds() - getTime()) * 1000000.0);
-    return std::chrono::microseconds(milliseconds);
+    return std::chrono::steady_clock::time_point(m_operationQueue.top().time_for_dispatch) - std::chrono::steady_clock::now();
 }
 
 
@@ -132,6 +131,7 @@ template<typename T>
 OpQueEntry<T>::OpQueEntry(Operation o, T& f, long sequence_) :
         op(std::move(o)),
         from(&f),
+        time_for_dispatch(std::chrono::milliseconds(static_cast<std::int64_t>(op->getSeconds() * 1000))),
         sequence(sequence_)
 {
 }
@@ -140,6 +140,7 @@ template<typename T>
 OpQueEntry<T>::OpQueEntry(const OpQueEntry& o) :
         op(o.op),
         from(o.from),
+        time_for_dispatch(std::chrono::milliseconds(static_cast<std::int64_t>(op->getSeconds() * 1000))),
         sequence(o.sequence)
 {
 }
@@ -148,6 +149,7 @@ template<typename T>
 OpQueEntry<T>::OpQueEntry(OpQueEntry&& o) noexcept
         : op(std::move(o.op)),
           from(std::move(o.from)),
+          time_for_dispatch(std::chrono::milliseconds(static_cast<std::int64_t>(op->getSeconds() * 1000))),
           sequence(std::move(o.sequence))
 {
 
