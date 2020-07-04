@@ -53,7 +53,7 @@ class PossessionClient : public BaseClient
 
         void operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity);
 
-        double getTime() const;
+        std::chrono::steady_clock::duration getTime() const;
 
         void scheduleDispatch();
 

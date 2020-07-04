@@ -585,7 +585,7 @@ namespace {
             //Initially there are a couple of pent up operations we need to run to get up to speed. 10 seconds is a suitable large number.
             world.getOperationsHandler().idle(std::chrono::steady_clock::now() + std::chrono::seconds(10));
             //Report to log when time diff between when an operation should have been handled and when it actually was
-            world.getOperationsHandler().m_time_diff_report = 0.2f;
+            world.getOperationsHandler().m_time_diff_report = std::chrono::milliseconds(200);
 
             //Inner loop, where listeners are active.
             {

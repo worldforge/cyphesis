@@ -96,7 +96,7 @@
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
   template <typename T>
-   OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, std::function<double()> timeProviderFn)
+   OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, std::function<std::chrono::steady_clock::duration()> timeProviderFn)
     : OperationsHandler(operationProcessor, timeProviderFn)
   {
     
@@ -187,9 +187,9 @@
 #ifndef STUB_OperationsDispatcher_getTime
 //#define STUB_OperationsDispatcher_getTime
   template <typename T>
-  double OperationsDispatcher<T>::getTime() const
+  std::chrono::steady_clock::duration OperationsDispatcher<T>::getTime() const
   {
-    return 0;
+    return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
   }
 #endif //STUB_OperationsDispatcher_getTime
 

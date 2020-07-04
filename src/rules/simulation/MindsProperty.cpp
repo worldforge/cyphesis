@@ -520,7 +520,7 @@ void MindsProperty::moveOurselves(LocatedEntity* ent, const Operation& op, OpVec
     // Create move operation
     Move moveOp;
     moveOp->setTo(ent->getId());
-    moveOp->setSeconds(BaseWorld::instance().getTime());
+    moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
     moveOp->setArgs1(move_arg);
 
     res.push_back(moveOp);

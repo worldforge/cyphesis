@@ -76,7 +76,7 @@ void ModeProperty::apply(LocatedEntity* entity)
 
                 Atlas::Objects::Operation::Move moveOp;
                 moveOp->setTo(entity->getId());
-                moveOp->setSeconds(BaseWorld::instance().getTime());
+                moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
                 moveOp->setArgs1(move_arg);
                 entity->sendWorld(moveOp);
             }
@@ -103,7 +103,7 @@ void ModeProperty::apply(LocatedEntity* entity)
 
                 Atlas::Objects::Operation::Move moveOp;
                 moveOp->setTo(entity->getId());
-                moveOp->setSeconds(BaseWorld::instance().getTime());
+                moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
                 moveOp->setArgs1(move_arg);
                 entity->sendWorld(moveOp);
 

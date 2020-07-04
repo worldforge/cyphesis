@@ -31,7 +31,7 @@ WorldTimeProperty * WorldTimeProperty::copy() const
 
 int WorldTimeProperty::get(Atlas::Message::Element& val) const
 {
-    val = BaseWorld::instance().getTime();
+    val = BaseWorld::instance().getTimeAsSeconds();
     return 0;
 }
 

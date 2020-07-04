@@ -600,7 +600,7 @@ void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& 
         setAttrValue("propel", attr_propel);
     }
 
-    double current_time = BaseWorld::instance().getTime();
+    double current_time = BaseWorld::instance().getTimeAsSeconds();
 
     //We can only move if there's a domain
     Domain* domain = nullptr;

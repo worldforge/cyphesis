@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <chrono>
 
 
 static const bool opdispatcher_debug_flag = false;
@@ -43,7 +44,7 @@ void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T>& oqe)
 {
     //Set the time of when this op is dispatched. That way, other components in the system can
     //always use the seconds set on the op to know the current time.
-    oqe.op->setSeconds(getTime());
+    oqe.op->setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count());
     try {
         m_operationProcessor(oqe.op, std::move(oqe.from));
     }
@@ -67,21 +68,21 @@ bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& 
 {
     bool opsAvailableRightNow;
     do {
-        double realtime = getTime();
-        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= std::chrono::milliseconds(static_cast<std::int64_t>(realtime * 1000));
+        auto realtime = getTime();
+        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= realtime;
 
         if (opsAvailableRightNow) {
             auto opQueueEntry = std::move(m_operationQueue.top());
             //Pop it before we dispatch it, since dispatching might alter the queue.
             m_operationQueue.pop();
 
-            if (m_time_diff_report > 0) {
+            if (m_time_diff_report.count() > 0) {
                 //Check if there's too large a difference in time
-                auto timeDiff = realtime - opQueueEntry->getSeconds();
+                auto timeDiff = realtime - opQueueEntry.time_for_dispatch;
                 if (timeDiff > m_time_diff_report) {
                     log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4 seconds. Ops in queue: %5",
                                                  opQueueEntry->getParent(), opQueueEntry.from->describeEntity(),
-                                                 opQueueEntry->getTo(), timeDiff, m_operationQueue.size()));
+                                                 opQueueEntry->getTo(), std::chrono::duration_cast<std::chrono::duration<float>>(timeDiff).count(), m_operationQueue.size()));
                 }
             }
             dispatchOperation(opQueueEntry);
@@ -94,7 +95,7 @@ bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& 
     // that we keep processing ops at a the maximum rate without leaving
     // clients unattended.
     Monitors::instance().insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
-    return !m_operationQueue.empty() && m_operationQueue.top()->getSeconds() <= getTime();
+    return !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= std::chrono::duration_cast<std::chrono::milliseconds>(getTime());
 }
 
 
@@ -111,7 +112,7 @@ void OperationsDispatcher<T>::markQueueAsClean()
 }
 
 template<typename T>
-double OperationsDispatcher<T>::getTime() const
+std::chrono::steady_clock::duration OperationsDispatcher<T>::getTime() const
 {
     return m_timeProviderFn();
 }
@@ -161,7 +162,7 @@ OpQueEntry<T>::~OpQueEntry() = default;
 
 template<typename T>
 OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor,
-                                              std::function<double()> timeProviderFn)
+                                              TimeProviderFnType timeProviderFn)
         :       m_time_diff_report(0),
                 m_operationProcessor(std::move(operationProcessor)),
                 m_timeProviderFn(std::move(timeProviderFn)),
@@ -191,10 +192,11 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
     m_operation_queues_dirty = true;
     op->setFrom(ent->getId());
     if (!op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+        auto seconds = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count();
         if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
-            op->setSeconds(getTime());
+            op->setSeconds(seconds);
         } else {
-            double t = getTime() + (op->getFutureSeconds() * consts::time_multiplier);
+            double t = seconds + (op->getFutureSeconds() * consts::time_multiplier);
             op->setSeconds(t);
             op->removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
         }

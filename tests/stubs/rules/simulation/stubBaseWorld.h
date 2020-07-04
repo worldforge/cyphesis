@@ -66,11 +66,19 @@
 
 #ifndef STUB_BaseWorld_getTime
 //#define STUB_BaseWorld_getTime
-  double BaseWorld::getTime() const
+  std::chrono::steady_clock::duration BaseWorld::getTime() const
+  {
+    return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
+  }
+#endif //STUB_BaseWorld_getTime
+
+#ifndef STUB_BaseWorld_getTimeAsSeconds
+//#define STUB_BaseWorld_getTimeAsSeconds
+  float BaseWorld::getTimeAsSeconds() const
   {
     return 0;
   }
-#endif //STUB_BaseWorld_getTime
+#endif //STUB_BaseWorld_getTimeAsSeconds
 
 #ifndef STUB_BaseWorld_setIsSuspended
 //#define STUB_BaseWorld_setIsSuspended

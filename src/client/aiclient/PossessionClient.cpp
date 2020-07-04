@@ -51,7 +51,7 @@ PossessionClient::PossessionClient(CommSocket& commSocket,
     m_reconnectFn(std::move(reconnectFn)),
     m_account(nullptr),
     m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
-                           [&]() -> double { return getTime(); }),
+                           [&]() -> std::chrono::steady_clock::duration { return getTime(); }),
     m_inheritance(std::move(inheritance)),
     m_dispatcherTimer(commSocket.m_io_context)
 {
@@ -125,9 +125,9 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
     }
 }
 
-double PossessionClient::getTime() const
+std::chrono::steady_clock::duration PossessionClient::getTime() const
 {
-    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() / 1000000.0;
+    return std::chrono::steady_clock::now().time_since_epoch();
 }
 
 

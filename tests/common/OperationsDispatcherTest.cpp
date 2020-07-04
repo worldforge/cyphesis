@@ -64,9 +64,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
     void test_dispatchInOrder(TestContext& context)
     {
 
-        double time = 0.0;
+        std::chrono::milliseconds time(0);
         auto processorFn = [](const Operation&, Ref<TestEntity>) {};
-        auto timeProviderFn = [&time]() -> double { return time; };
+        auto timeProviderFn = [&time]() -> std::chrono::steady_clock::duration { return time; };
 
         OperationsDispatcher<TestEntity> dispatcher(processorFn, timeProviderFn);
         auto& queue = dispatcher.getQueue();

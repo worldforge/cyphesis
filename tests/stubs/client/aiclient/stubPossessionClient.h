@@ -50,9 +50,9 @@
 
 #ifndef STUB_PossessionClient_getTime
 //#define STUB_PossessionClient_getTime
-  double PossessionClient::getTime() const
+  std::chrono::steady_clock::duration PossessionClient::getTime() const
   {
-    return 0;
+    return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
   }
 #endif //STUB_PossessionClient_getTime
 

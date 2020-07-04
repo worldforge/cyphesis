@@ -144,12 +144,14 @@ template<typename T>
 class OperationsDispatcher : public OperationsHandler
 {
     public:
+
+        typedef std::function<std::chrono::steady_clock::duration()> TimeProviderFnType;
         /**
          * @brief Ctor.
          * @param operationProcessor A processor function called each time an operation needs to be processed.
          */
         OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor,
-                             std::function<double()> timeProviderFn);
+                             TimeProviderFnType timeProviderFn);
 
         virtual ~OperationsDispatcher();
 
@@ -205,7 +207,7 @@ class OperationsDispatcher : public OperationsHandler
         /**
          * If set to >
          */
-        float m_time_diff_report;
+        std::chrono::milliseconds m_time_diff_report;
 
         const std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>>& getQueue() const
         {
@@ -220,7 +222,7 @@ class OperationsDispatcher : public OperationsHandler
     protected:
 
         std::function<void(const Operation&, Ref<T>)> m_operationProcessor;
-        const std::function<double()> m_timeProviderFn;
+        const TimeProviderFnType m_timeProviderFn;
 
         /// An ordered queue of operations to be dispatched in the future
         std::priority_queue<OpQueEntry<T>, std::vector<OpQueEntry<T>>, std::greater<OpQueEntry<T>>> m_operationQueue;
@@ -237,7 +239,7 @@ class OperationsDispatcher : public OperationsHandler
          */
         void dispatchOperation(OpQueEntry<T>& opQueueEntry);
 
-        double getTime() const;
+        std::chrono::steady_clock::duration getTime() const;
 
 };
 

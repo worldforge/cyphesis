@@ -24,7 +24,9 @@
 #endif
 
 #ifdef HAVE_CONFIG_H
+
 #include "config.h"
+
 #endif
 
 #include "server/CommMDNSPublisher.h"
@@ -38,9 +40,9 @@
 int main()
 {
 #ifndef HAVE_AVAHI
-}
+    }
 #else // HAVE_AVAHI
-    ServerRouting test_server(*(BaseWorld*)0, "", "", "1", 1, "2", 2);
+    ServerRouting test_server(*(BaseWorld*) 0, "", "", "1", 1, "2", 2);
     {
 
     }
@@ -57,10 +59,14 @@ int main()
 #include "../stubs/common/stubRouter.h"
 
 
-
-double BaseWorld::getTime() const
+std::chrono::steady_clock::duration BaseWorld::getTime() const
 {
-    return .0;
+    return std::chrono::milliseconds(0);
+}
+
+float BaseWorld::getTimeAsSeconds() const
+{
+    return 0;
 }
 
 int CommSocket::flush()
@@ -73,8 +79,8 @@ int CommSocket::flush()
 
 namespace consts {
 
-  const int buildId = -1;
-  const char * version = "test_version";
+    const int buildId = -1;
+    const char* version = "test_version";
 }
 
 int timeoffset = 0;
@@ -84,43 +90,43 @@ int client_port_num = 6767;
 #include <avahi-client/client.h>
 #include <avahi-client/publish.h>
 
-AvahiStringList *avahi_string_list_new(const char *txt, ...)
+AvahiStringList* avahi_string_list_new(const char* txt, ...)
 {
     return 0;
 }
 
-void avahi_string_list_free(AvahiStringList *l)
+void avahi_string_list_free(AvahiStringList* l)
 {
 }
 
-const char *avahi_strerror(int error)
+const char* avahi_strerror(int error)
 {
     static const char error_message[] = "test_stub_error";
     return &error_message[0];
 }
 
-AvahiClient * avahi_client_new(const AvahiPoll *poll_api,
-                               AvahiClientFlags flags,
-                               AvahiClientCallback callback,
-                               void *userdata,
-                               int *ret_error)
+AvahiClient* avahi_client_new(const AvahiPoll* poll_api,
+                              AvahiClientFlags flags,
+                              AvahiClientCallback callback,
+                              void* userdata,
+                              int* ret_error)
 {
     static char dummy_object[sizeof(int)];
 
     // The object is opaque, so it probably doesn't even need to be non-null
-    return (AvahiClient*)&dummy_object[0];
+    return (AvahiClient*) &dummy_object[0];
 }
 
-int avahi_entry_group_add_service_strlst(AvahiEntryGroup *group,
+int avahi_entry_group_add_service_strlst(AvahiEntryGroup* group,
                                          AvahiIfIndex interface,
                                          AvahiProtocol protocol,
                                          AvahiPublishFlags flags,
-                                         const char *name,
-                                         const char *type,
-                                         const char *domain,
-                                         const char *host,
+                                         const char* name,
+                                         const char* type,
+                                         const char* domain,
+                                         const char* host,
                                          uint16_t port,
-                                         AvahiStringList *txt)
+                                         AvahiStringList* txt)
 {
     return 0;
 }
@@ -130,17 +136,17 @@ int avahi_entry_group_commit(AvahiEntryGroup*)
     return 0;
 }
 
-AvahiEntryGroup * avahi_entry_group_new(AvahiClient* c,
-                                        AvahiEntryGroupCallback callback,
-                                        void *userdata)
+AvahiEntryGroup* avahi_entry_group_new(AvahiClient* c,
+                                       AvahiEntryGroupCallback callback,
+                                       void* userdata)
 {
     static char dummy_object[sizeof(int)];
 
     // The object is opaque, so it probably doesn't even need to be non-null
-    return (AvahiEntryGroup*)&dummy_object[0];
+    return (AvahiEntryGroup*) &dummy_object[0];
 }
 
-int avahi_client_errno(AvahiClient *)
+int avahi_client_errno(AvahiClient*)
 {
     return 0;
 }
@@ -151,6 +157,7 @@ Shaker::Shaker()
 
 std::string Shaker::generateSalt(size_t length)
 {
-   return "";
+    return "";
 }
+
 #endif // HAVE_AVAHI

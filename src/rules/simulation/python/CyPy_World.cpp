@@ -51,7 +51,7 @@ void CyPy_World::init_type()
 
 Py::Object CyPy_World::get_time()
 {
-    return Py::Float(m_value->getTime());
+    return Py::Float(m_value->getTimeAsSeconds());
 }
 
 Py::Object CyPy_World::get_entity(const Py::Tuple& args)

@@ -50,7 +50,7 @@ class BaseWorld : public Singleton<BaseWorld>
 
     protected:
         /// The system time when the server was started.
-        std::chrono::time_point<std::chrono::steady_clock> m_initTime;
+        std::chrono::steady_clock::time_point m_initTime;
 
         /// \brief Dictionary of all the objects in the world.
         ///
@@ -94,17 +94,20 @@ class BaseWorld : public Singleton<BaseWorld>
         }
 
         void registerAlias(std::string alias, LocatedEntity& entity);
+
         void deregisterAlias(const std::string& alias, LocatedEntity& entity);
 
         LocatedEntity* getAliasEntity(const std::string& alias) const;
 
         /// \brief Read only accessor for the in-game time.
-        double getTime() const;
+        std::chrono::steady_clock::duration getTime() const;
+
+        float getTimeAsSeconds() const;
 
         /// \brief Get the time the world has been running since the server started.
         double upTime() const
         {
-            return getTime() - timeoffset;
+            return getTimeAsSeconds();
         }
 
         /// \brief Gets whether the world is suspended or not.

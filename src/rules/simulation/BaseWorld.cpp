@@ -125,9 +125,13 @@ void BaseWorld::setIsSuspended(bool suspended)
     }
 }
 
-double BaseWorld::getTime() const
+std::chrono::steady_clock::duration BaseWorld::getTime() const
 {
-    auto diff = (std::chrono::steady_clock::now() - m_initTime);
-    return std::chrono::duration_cast<std::chrono::microseconds>(diff).count() / 1000000.0;
+    return (std::chrono::steady_clock::now() - m_initTime);
+}
+
+float BaseWorld::getTimeAsSeconds() const
+{
+    return std::chrono::duration_cast<std::chrono::microseconds>(getTime()).count() / 1000000.0;
 }
 

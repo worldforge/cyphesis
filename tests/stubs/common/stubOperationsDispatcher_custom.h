@@ -3,7 +3,7 @@
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 #define STUB_OperationsDispatcher_OperationsDispatcher
 template <typename T>
-OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, std::function<double()> timeProviderFn)
+OperationsDispatcher<T>::OperationsDispatcher(std::function<void(const Operation&, Ref<T>)> operationProcessor, TimeProviderFnType timeProviderFn)
     : m_operationProcessor(operationProcessor), m_timeProviderFn(timeProviderFn)
 {
 

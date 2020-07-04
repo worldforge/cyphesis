@@ -398,7 +398,7 @@ void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& 
     for (auto& op : res) {
         entity->sendWorld(op);
     }
-    auto tickOp = scheduleTick(*entity, BaseWorld::instance().getTime());
+    auto tickOp = scheduleTick(*entity, BaseWorld::instance().getTimeAsSeconds());
     entity->sendWorld(tickOp);
 }
 
@@ -1423,7 +1423,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
         }
     } else if (name == "planted_offset" || name == "planted_scaled_offset") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity.m_location.m_pos);
-        bulletEntry->entity.m_location.update(BaseWorld::instance().getTime());
+        bulletEntry->entity.m_location.update(BaseWorld::instance().getTimeAsSeconds());
         bulletEntry->entity.removeFlags(entity_clean);
         if (bulletEntry->collisionObject) {
             m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject.get());
@@ -1439,7 +1439,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
         bulletEntry->speedFlight = dynamic_cast<const Property<double>*>(&prop)->data();
     } else if (name == "floats") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity.m_location.m_pos);
-        bulletEntry->entity.m_location.update(BaseWorld::instance().getTime());
+        bulletEntry->entity.m_location.update(BaseWorld::instance().getTimeAsSeconds());
         bulletEntry->entity.removeFlags(entity_clean);
         if (bulletEntry->collisionObject) {
             m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject.get());
@@ -2293,7 +2293,7 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
             setOp->setArgs1(move_arg);
             setOp->setFrom(entity.getId());
             setOp->setTo(entity.getId());
-            double seconds = BaseWorld::instance().getTime();
+            double seconds = BaseWorld::instance().getTimeAsSeconds();
             setOp->setSeconds(seconds);
 
             for (BulletEntry* observer : entry.observingThis) {

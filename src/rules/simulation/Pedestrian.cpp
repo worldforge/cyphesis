@@ -79,7 +79,7 @@ double Pedestrian::getTickAddition(const Point3D & coordinates,
 /// @return 1 if no update was made, or 0 otherwise
 int Pedestrian::getUpdatedLocation(Location & return_location)
 {
-    WFMath::CoordType time_diff = (WFMath::CoordType)(BaseWorld::instance().getTime() - m_body.m_location.timeStamp());
+    WFMath::CoordType time_diff = (WFMath::CoordType)(BaseWorld::instance().getTimeAsSeconds() - m_body.m_location.timeStamp());
 
     if (!updateNeeded(m_body.m_location)) {
         debug( std::cout << "No update" << std::endl << std::flush;);
@@ -141,7 +141,7 @@ Operation Pedestrian::generateMove(const Location & new_location)
     // Create move operation
     Move moveOp;
     moveOp->setTo(m_body.getId());
-    moveOp->setSeconds(BaseWorld::instance().getTime());
+    moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
 
     // Set up argument for operation
     Anonymous move_arg;
