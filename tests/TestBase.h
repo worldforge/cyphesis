@@ -27,6 +27,7 @@
 #endif
 
 #include "common/compose.hpp"
+#include "AssertBase.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -66,90 +67,29 @@ class Test
     boost::function<void()> method;
 };
 
-class TestBase
+class TestBase : public AssertBase
 {
   protected:
-    int m_error_count;
-    // Need to track not just counts, but also details of the failures,
-    // which basically requires macros.
-    std::list<std::string> m_errorReports;
 
     std::list<Test> m_tests;
 
-    void addFailure(const std::string & s)
-    {
-        m_errorReports.push_back(s);
-    }
+
   public:
     virtual ~TestBase();
 
     virtual void setup() = 0;
     virtual void teardown() = 0;
 
-    std::size_t errorCount() const;
-
-    const std::list<std::string> & errorReports() const;
-
     void addTest(Test t);
 
     int run();
 
-    template <typename V>
-    int assertTrue(const char * n, const V & val,
-                   const char * func, const char * file, int line);
 
-    template <typename V>
-    int assertFalse(const char * n, const V & val,
-                   const char * func, const char * file, int line);
-
-    template <typename L, typename R>
-    int assertEqual(const char * l, const L & lval,
-                    const char * r, const R & rval,
-                    const char * func, const char * file, int line);
-
-    template <typename L, typename R, typename E>
-    int assertFuzzyEqual(const char * l, const L & lval,
-                    const char * r, const R & rval,
-                    const char * e, const E & epsilon,
-                    const char * func, const char * file, int line);
-
-    template <typename L, typename R>
-    int assertNotEqual(const char * l, const L & lval,
-                       const char * r, const R & rval,
-                       const char * func, const char * file, int line);
-
-    template <typename L, typename R>
-    int assertGreater(const char * l, const L & lval,
-                      const char * r, const R & rval,
-                      const char * func, const char * file, int line);
-
-    template <typename L, typename R>
-    int assertLess(const char * l, const L & lval,
-                   const char * r, const R & rval,
-                   const char * func, const char * file, int line);
-
-    template <typename T>
-    int assertNull(const char * n, const T * ptr,
-                   const char * func, const char * file, int line);
-
-    template <typename T>
-    int assertNotNull(const char * n, const T * ptr,
-                      const char * func, const char * file, int line);
 };
 
 inline
 TestBase::~TestBase()
 {
-}
-
-std::size_t TestBase::errorCount() const
-{
-    return m_errorReports.size();
-}
-
-const std::list<std::string> & TestBase::errorReports() const
-{
-    return m_errorReports;
 }
 
 void TestBase::addTest(Test t)
@@ -188,125 +128,6 @@ int TestBase::run()
     return error_count;
 }
 
-template <typename V>
-int TestBase::assertTrue(const char * n, const V & val,
-                         const char * func, const char * file, int line)
-{
-    if (!val) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
-                                   file, line, func, n));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename V>
-int TestBase::assertFalse(const char * n, const V & val,
-                         const char * func, const char * file, int line)
-{
-    if (val) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
-                                   file, line, func, n));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename L, typename R>
-int TestBase::assertEqual(const char * l, const L & lval,
-                          const char * r, const R & rval,
-                          const char * func, const char * file, int line)
-{
-    if (lval != rval) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4 == %5' failed. "
-                                   "%6 != %7",
-                                   file, line, func, l, r, lval, rval));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename L, typename R, typename E>
-int TestBase::assertFuzzyEqual(const char * l, const L & lval,
-                          const char * r, const R & rval,
-                          const char * e, const E & epsilon,
-                          const char * func, const char * file, int line)
-{
-    if (std::abs(lval - rval) > epsilon) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4 ~= %5' failed. "
-                                       "%6 != %7",
-                                   file, line, func, l, r, lval, rval));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename L, typename R>
-int TestBase::assertNotEqual(const char * l, const L & lval,
-                             const char * r, const R & rval,
-                             const char * func, const char * file, int line)
-{
-    if (lval == rval) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4 != %5' failed. "
-                                   "%6 == %7",
-                                   file, line, func, l, r, lval, rval));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename L, typename R>
-int TestBase::assertGreater(const char * l, const L & lval,
-                            const char * r, const R & rval,
-                            const char * func, const char * file, int line)
-{
-    if (lval <= rval) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4 > %5' failed. "
-                                   "%6 <= %7",
-                                   file, line, func, l, r, lval, rval));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename L, typename R>
-int TestBase::assertLess(const char * l, const L & lval,
-                         const char * r, const R & rval,
-                         const char * func, const char * file, int line)
-{
-    if (lval >= rval) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4 < %5' failed. "
-                                   "%6 >= %7",
-                                   file, line, func, l, r, lval, rval));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename T>
-int TestBase::assertNull(const char * n, const T * ptr,
-                         const char * func, const char * file, int line)
-{
-    if (ptr != 0) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4' null failed.",
-                                   file, line, func, n));
-        return -1;
-    }
-    return 0;
-}
-
-template <typename T>
-int TestBase::assertNotNull(const char * n, const T * ptr,
-                            const char * func, const char * file, int line)
-{
-    if (ptr == 0) {
-        addFailure(String::compose("%1:%2: %3: Assertion '%4' not null failed.",
-                                   file, line, func, n));
-        return -1;
-    }
-    return 0;
-}
-
 
 }
 
@@ -314,51 +135,6 @@ int TestBase::assertNotNull(const char * n, const T * ptr,
     Cyphesis::Test _function_test = { #_function,\
                                       boost::bind(&_function, this) };\
     this->addTest(_function_test);\
-}
-
-#define ASSERT_TRUE(_expr) {\
-    if (this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_FALSE(_expr) {\
-    if (this->assertFalse(#_expr, _expr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_EQUAL(_lval, _rval) {\
-    if (this->assertEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                          __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_FUZZY_EQUAL(_lval, _rval, _epsilon) {\
-    if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
-                          __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_NOT_EQUAL(_lval, _rval) {\
-    if (this->assertNotEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                             __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_GREATER(_lval, _rval) {\
-    if (this->assertGreater(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                            __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_LESS(_lval, _rval) {\
-    if (this->assertLess(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_NULL(_ptr) {\
-    if (this->assertNull(#_ptr, _ptr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_NOT_NULL(_ptr) {\
-    if (this->assertNotNull(#_ptr, _ptr, __PRETTY_FUNCTION__,\
-                            __FILE__, __LINE__) != 0) return;\
 }
 
 #endif // TESTS_TEST_BASE_H

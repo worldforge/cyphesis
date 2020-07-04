@@ -183,6 +183,7 @@ void Entity::destroy()
                 Atlas::Objects::Operation::Move moveOp;
                 RootEntity ent;
                 ent->setId(entity->getId());
+                ent->setAttr("mode_data", {});
                 m_location.addToEntity(ent);
                 moveOp->setArgs1(std::move(ent));
                 OpVector res;

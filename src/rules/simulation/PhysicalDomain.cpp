@@ -1171,10 +1171,25 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         }
     }
 
+    //We need to first extract the list of attached entities before we erase the instance.
+    //Otherwise the entity will still be there when we apply new positions for the attached entities.
+    auto attachedEntities = std::move(entry->attachedEntities);
+
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
     m_steppingEntries.erase(entity.getIntId());
+
+    std::set<LocatedEntity*> transformedEntities;
+    for (auto* attachedEntry : attachedEntities) {
+        applyTransformInternal(attachedEntry->entity,
+                               {},
+                               attachedEntry->entity.m_location.m_pos,
+                               {},
+                               transformedEntities,
+                               true);
+    }
+
 }
 
 void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry)
@@ -2081,55 +2096,53 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
         rigidBody = btRigidBody::upcast(entry->collisionObject.get());
     }
     WFMath::Quaternion rotationChange = WFMath::Quaternion::IDENTITY();
-    if (orientation.isValid() || pos.isValid()) {
-        if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
-            debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation)
+    if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
+        debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation)
 
-            if (entry->collisionShape) {
-                btTransform& transform = entry->collisionObject->getWorldTransform();
+        if (entry->collisionShape) {
+            btTransform& transform = entry->collisionObject->getWorldTransform();
 
-                transform.setRotation(Convert::toBullet(orientation));
-                transform.setOrigin(Convert::toBullet(entry->entity.m_location.pos()));
-                transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
+            transform.setRotation(Convert::toBullet(orientation));
+            transform.setOrigin(Convert::toBullet(entry->entity.m_location.pos()));
+            transform *= btTransform(btQuaternion::getIdentity(), entry->centerOfMassOffset).inverse();
 
-                entry->collisionObject->setWorldTransform(transform);
-            }
-            if (entity.m_location.m_orientation.isValid()) {
-                rotationChange = orientation * entity.m_location.m_orientation.inverse();
-            } else {
-                rotationChange = orientation;
-            }
-            entity.m_location.m_orientation = orientation;
-            entity.removeFlags(entity_orient_clean);
-            hadChange = true;
+            entry->collisionObject->setWorldTransform(transform);
         }
-        if (pos.isValid()) {
-            applyNewPositionForEntity(entry.get(), pos, calculatePosition);
-            if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
-                entity.removeFlags(entity_pos_clean);
-                hadChange = true;
-                //Check if there previously wasn't any valid pos, and thus no valid collision instances.
-                if (entity.m_location.m_pos.isValid() && !oldPos.isValid()) {
-                    if (entry->collisionObject) {
-                        short collisionMask;
-                        short collisionGroup;
-                        getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
-                        if (rigidBody) {
-                            m_dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
-                        } else {
-                            m_dynamicsWorld->addCollisionObject(entry->collisionObject.get(), collisionGroup, collisionMask);
-                        }
+        if (entity.m_location.m_orientation.isValid()) {
+            rotationChange = orientation * entity.m_location.m_orientation.inverse();
+        } else {
+            rotationChange = orientation;
+        }
+        entity.m_location.m_orientation = orientation;
+        entity.removeFlags(entity_orient_clean);
+        hadChange = true;
+    }
+    if (pos.isValid()) {
+        applyNewPositionForEntity(entry.get(), pos, calculatePosition);
+        if (!oldPos.isEqualTo(entity.m_location.m_pos)) {
+            entity.removeFlags(entity_pos_clean);
+            hadChange = true;
+            //Check if there previously wasn't any valid pos, and thus no valid collision instances.
+            if (entity.m_location.m_pos.isValid() && !oldPos.isValid()) {
+                if (entry->collisionObject) {
+                    short collisionMask;
+                    short collisionGroup;
+                    getCollisionFlagsForEntity(entity, collisionGroup, collisionMask);
+                    if (rigidBody) {
+                        m_dynamicsWorld->addRigidBody(rigidBody, collisionGroup, collisionMask);
+                    } else {
+                        m_dynamicsWorld->addCollisionObject(entry->collisionObject.get(), collisionGroup, collisionMask);
                     }
-                    if (entry->viewSphere) {
-                        m_visibilityWorld->addCollisionObject(entry->viewSphere.get(),
-                                                              entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
-                                                              VISIBILITY_MASK_OBSERVER);
-                    }
-                    if (entry->visibilitySphere) {
-                        m_visibilityWorld->addCollisionObject(entry->visibilitySphere.get(), VISIBILITY_MASK_OBSERVER,
-                                                              entity.hasFlags(entity_visibility_protected) || entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
-                                                                                                                                                         : VISIBILITY_MASK_OBSERVABLE);
-                    }
+                }
+                if (entry->viewSphere) {
+                    m_visibilityWorld->addCollisionObject(entry->viewSphere.get(),
+                                                          entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+                                                          VISIBILITY_MASK_OBSERVER);
+                }
+                if (entry->visibilitySphere) {
+                    m_visibilityWorld->addCollisionObject(entry->visibilitySphere.get(), VISIBILITY_MASK_OBSERVER,
+                                                          entity.hasFlags(entity_visibility_protected) || entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
+                                                                                                                                                     : VISIBILITY_MASK_OBSERVABLE);
                 }
             }
         }
@@ -2145,7 +2158,6 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
             transformedEntities.insert(&entry->entity);
             transformRestingEntities(entry.get(), entry->entity.m_location.m_pos - oldPos, rotationChange, transformedEntities);
         }
-        updateTerrainMod(entity);
         if (entry->collisionShape) {
             //Since we've deactivated automatic updating of all aabbs each tick we need to do it ourselves when updating the position.
             m_dynamicsWorld->updateSingleAabb(entry->collisionObject.get());

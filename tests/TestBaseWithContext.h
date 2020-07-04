@@ -27,6 +27,7 @@
 #endif
 
 #include "common/compose.hpp"
+#include "AssertBase.h"
 
 #include <Atlas/Message/Element.h>
 
@@ -72,27 +73,14 @@ namespace Cyphesis {
      * @tparam ContextT
      */
     template<typename ContextT>
-    class TestBaseWithContext
+    class TestBaseWithContext : public AssertBase
     {
         protected:
-            int m_error_count;
-            // Need to track not just counts, but also details of the failures,
-            // which basically requires macros.
-            std::list<std::string> m_errorReports;
 
             std::list<Test<ContextT>> m_tests;
 
-            void addFailure(std::string s)
-            {
-                m_errorReports.emplace_back(std::move(s));
-            }
-
         public:
             virtual ~TestBaseWithContext();
-
-            std::size_t errorCount() const;
-
-            const std::list<std::string>& errorReports() const;
 
             void addTest(Test<ContextT> t);
 
@@ -100,64 +88,11 @@ namespace Cyphesis {
 
             int run();
 
-            template<typename V>
-            int assertTrue(const char* n, const V& val,
-                           const char* func, const char* file, int line);
-
-            template<typename V>
-            int assertFalse(const char* n, const V& val,
-                            const char* func, const char* file, int line);
-
-            template<typename L, typename R>
-            int assertEqual(const char* l, const L& lval,
-                            const char* r, const R& rval,
-                            const char* func, const char* file, int line);
-
-            template<typename L, typename R, typename E>
-            int assertFuzzyEqual(const char* l, const L& lval,
-                                 const char* r, const R& rval,
-                                 const char* e, const E& epsilon,
-                                 const char* func, const char* file, int line);
-
-            template<typename L, typename R>
-            int assertNotEqual(const char* l, const L& lval,
-                               const char* r, const R& rval,
-                               const char* func, const char* file, int line);
-
-            template<typename L, typename R>
-            int assertGreater(const char* l, const L& lval,
-                              const char* r, const R& rval,
-                              const char* func, const char* file, int line);
-
-            template<typename L, typename R>
-            int assertLess(const char* l, const L& lval,
-                           const char* r, const R& rval,
-                           const char* func, const char* file, int line);
-
-            template<typename T>
-            int assertNull(const char* n, const T* ptr,
-                           const char* func, const char* file, int line);
-
-            template<typename T>
-            int assertNotNull(const char* n, const T* ptr,
-                              const char* func, const char* file, int line);
     };
 
     template<typename ContextT>
     inline TestBaseWithContext<ContextT>::~TestBaseWithContext()
     {
-    }
-
-    template<typename ContextT>
-    std::size_t TestBaseWithContext<ContextT>::errorCount() const
-    {
-        return m_errorReports.size();
-    }
-
-    template<typename ContextT>
-    const std::list<std::string>& TestBaseWithContext<ContextT>::errorReports() const
-    {
-        return m_errorReports;
     }
 
     template<typename ContextT>
@@ -171,7 +106,6 @@ namespace Cyphesis {
     {
         m_tests.emplace_back(Test<ContextT>{test_name, method});
     }
-
 
     template<typename ContextT>
     int TestBaseWithContext<ContextT>::run()
@@ -201,185 +135,10 @@ namespace Cyphesis {
 
         return error_count;
     }
-
-    template<typename ContextT>
-    template<typename V>
-    int TestBaseWithContext<ContextT>::assertTrue(const char* n, const V& val,
-                                                  const char* func, const char* file, int line)
-    {
-        if (!val) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
-                                       file, line, func, n));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename V>
-    int TestBaseWithContext<ContextT>::assertFalse(const char* n, const V& val,
-                                                   const char* func, const char* file, int line)
-    {
-        if (val) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4' failed.",
-                                       file, line, func, n));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename L, typename R>
-    int TestBaseWithContext<ContextT>::assertEqual(const char* l, const L& lval,
-                                                   const char* r, const R& rval,
-                                                   const char* func, const char* file, int line)
-    {
-        if (lval != rval) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4 == %5' failed. "
-                                       "%6 != %7",
-                                       file, line, func, l, r, lval, rval));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename L, typename R, typename E>
-    int TestBaseWithContext<ContextT>::assertFuzzyEqual(const char* l, const L& lval,
-                                                        const char* r, const R& rval,
-                                                        const char* e, const E& epsilon,
-                                                        const char* func, const char* file, int line)
-    {
-        if (std::abs(lval - rval) > epsilon) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4 ~= %5' failed. "
-                                       "%6 != %7",
-                                       file, line, func, l, r, lval, rval));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename L, typename R>
-    int TestBaseWithContext<ContextT>::assertNotEqual(const char* l, const L& lval,
-                                                      const char* r, const R& rval,
-                                                      const char* func, const char* file, int line)
-    {
-        if (lval == rval) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4 != %5' failed. "
-                                       "%6 == %7",
-                                       file, line, func, l, r, lval, rval));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename L, typename R>
-    int TestBaseWithContext<ContextT>::assertGreater(const char* l, const L& lval,
-                                                     const char* r, const R& rval,
-                                                     const char* func, const char* file, int line)
-    {
-        if (lval <= rval) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4 > %5' failed. "
-                                       "%6 <= %7",
-                                       file, line, func, l, r, lval, rval));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename L, typename R>
-    int TestBaseWithContext<ContextT>::assertLess(const char* l, const L& lval,
-                                                  const char* r, const R& rval,
-                                                  const char* func, const char* file, int line)
-    {
-        if (lval >= rval) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4 < %5' failed. "
-                                       "%6 >= %7",
-                                       file, line, func, l, r, lval, rval));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename T>
-    int TestBaseWithContext<ContextT>::assertNull(const char* n, const T* ptr,
-                                                  const char* func, const char* file, int line)
-    {
-        if (ptr != 0) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4' null failed.",
-                                       file, line, func, n));
-            return -1;
-        }
-        return 0;
-    }
-
-    template<typename ContextT>
-    template<typename T>
-    int TestBaseWithContext<ContextT>::assertNotNull(const char* n, const T* ptr,
-                                                     const char* func, const char* file, int line)
-    {
-        if (ptr == 0) {
-            addFailure(String::compose("%1:%2: %3: Assertion '%4' not null failed.",
-                                       file, line, func, n));
-            return -1;
-        }
-        return 0;
-    }
-
-
 }
 
 #define ADD_TEST(_function) {\
     this->addTest(#_function, [&](auto& context){this->_function(context);});\
-}
-
-#define ASSERT_TRUE(_expr) {\
-    if (this->assertTrue(#_expr, _expr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_FALSE(_expr) {\
-    if (this->assertFalse(#_expr, _expr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_EQUAL(_lval, _rval) {\
-    if (this->assertEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                          __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_FUZZY_EQUAL(_lval, _rval, _epsilon) {\
-    if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
-                          __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_NOT_EQUAL(_lval, _rval) {\
-    if (this->assertNotEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                             __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_GREATER(_lval, _rval) {\
-    if (this->assertGreater(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                            __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_LESS(_lval, _rval) {\
-    if (this->assertLess(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_NULL(_ptr) {\
-    if (this->assertNull(#_ptr, _ptr, __PRETTY_FUNCTION__,\
-                         __FILE__, __LINE__) != 0) return;\
-}
-
-#define ASSERT_NOT_NULL(_ptr) {\
-    if (this->assertNotNull(#_ptr, _ptr, __PRETTY_FUNCTION__,\
-                            __FILE__, __LINE__) != 0) return;\
 }
 
 #endif // TESTS_TEST_BASE_H

@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "../TestBase.h"
+#include "../TestBaseWithContext.h"
 #include "../TestWorld.h"
 
 #include "server/Ruleset.h"
@@ -68,10 +68,10 @@ using String::compose;
 
 namespace Cyphesis {
     template<>
-    int TestBase::assertFuzzyEqual(const char* l, const WFMath::Point<3>& lval,
-                                   const char* r, const WFMath::Point<3>& rval,
-                                   const char* e, const WFMath::CoordType& epsilon,
-                                   const char* func, const char* file, int line)
+    int AssertBase::assertFuzzyEqual(const char* l, const WFMath::Point<3>& lval,
+                                     const char* r, const WFMath::Point<3>& rval,
+                                     const char* e, const WFMath::CoordType& epsilon,
+                                     const char* func, const char* file, int line)
     {
         if (!lval.isEqualTo(rval, epsilon)) {
             addFailure(String::compose("%1:%2: %3: Assertion '%4 ~= %5' failed. "
@@ -117,50 +117,46 @@ double epsilon = 0.0001;
                           __FILE__, __LINE__) != 0) {_fn(); return;}\
 }
 
-
-struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
+struct TestContext
 {
-    static long m_id_counter;
+    long m_id_counter;
 
-    PhysicalDomainIntegrationTest()
-    {
-        ADD_TEST(PhysicalDomainIntegrationTest::test_scaleBbox);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_movePlantedAndResting);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_plantedOn);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_terrainMods);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_lake_rotated);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_lake);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_ocean);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_placement);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_convert);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_terrainPrecision);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_fallToBottom);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_standOnFixed);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_fallToTerrain);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_collision);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_mode);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_determinism);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_zoffset);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_zscaledoffset);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_visibility);
-        ADD_TEST(PhysicalDomainIntegrationTest::test_stairs);
-    }
-
-    static long newId()
+    long newId()
     {
         return ++m_id_counter;
     }
+};
 
-    void setup() override
+
+struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
+{
+    Tested()
     {
-        m_id_counter = 0;
+        ADD_TEST(Tested::test_deleteWithPlanted);
+        ADD_TEST(Tested::test_scaleBbox);
+        ADD_TEST(Tested::test_movePlantedAndResting);
+        ADD_TEST(Tested::test_plantedOn);
+        ADD_TEST(Tested::test_terrainMods);
+        ADD_TEST(Tested::test_lake_rotated);
+        ADD_TEST(Tested::test_lake);
+        ADD_TEST(Tested::test_ocean);
+        ADD_TEST(Tested::test_placement);
+        ADD_TEST(Tested::test_convert);
+        ADD_TEST(Tested::test_terrainPrecision);
+        ADD_TEST(Tested::test_fallToBottom);
+        ADD_TEST(Tested::test_standOnFixed);
+        ADD_TEST(Tested::test_fallToTerrain);
+        ADD_TEST(Tested::test_collision);
+        ADD_TEST(Tested::test_mode);
+        ADD_TEST(Tested::test_determinism);
+        ADD_TEST(Tested::test_zoffset);
+        ADD_TEST(Tested::test_zscaledoffset);
+        ADD_TEST(Tested::test_visibility);
+        ADD_TEST(Tested::test_stairs);
     }
 
-    void teardown() override
-    {
-    }
 
-    void test_scaleBbox()
+    void test_scaleBbox(TestContext& context)
     {
         double tickSize = 1.0 / 15.0;
         double time = 0;
@@ -178,13 +174,13 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ModeProperty* freeProperty = new ModeProperty();
         freeProperty->set("free");
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
 
-        long id = newId();
+        long id = context.newId();
         Entity* plantedEntity = new Entity(std::to_string(id), id);
         plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
         plantedEntity->setType(rockType);
@@ -212,7 +208,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ASSERT_FUZZY_EQUAL(1.0f, callback.m_hitPointWorld.y(), 0.1f);
 
         //Add a box and let it fall on the planted entity
-        id = newId();
+        id = context.newId();
         Entity* freeEntity = new Entity(std::to_string(id), id);
         freeEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(freeProperty));
         freeEntity->setType(rockType);
@@ -263,7 +259,105 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
     }
 
-    void test_convert()
+    void test_deleteWithPlanted(TestContext& context)
+    {
+
+        //Place four boxes, all "planted", and all on top of each others.
+        //Now first delete the third box from the bottom. The top box should now be placed on the second box.
+        //Then delete the first box. The second box should now be placed on the ground, and the top box should be on top of it.
+
+        auto id = context.newId();
+        Entity* rootEntity = new Entity(std::to_string(id), id);
+        rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
+        rootEntity->m_location.setBBox({{-64, 0,  -64},
+                                        {64,  64, 64}});
+        std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
+
+        ModeProperty* plantedProperty = new ModeProperty();
+        plantedProperty->set("planted");
+        auto massProp = new Property<double>();
+        massProp->data() = 10000;
+
+        OpVector res;
+
+        id = context.newId();
+        Entity* planted1 = new Entity(std::to_string(id), id);
+        planted1->m_location.m_pos = {1, 1, 0};
+        planted1->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+        planted1->m_location.setBBox({{-2, 0, -2},
+                                      {2,  1,  2}});
+        planted1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
+
+        domain->addEntity(*planted1);
+
+        domain->tick(0, res);
+
+        ASSERT_EQUAL(rootEntity->getIntId(), *planted1->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+
+        id = context.newId();
+        Entity* planted2 = new Entity(std::to_string(id), id);
+        planted2->m_location.m_pos = {0, 2, 1};
+        planted2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+        planted2->m_location.setBBox({{-2, 0, -2},
+                                      {2,  1,  2}});
+        planted2->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
+
+        domain->addEntity(*planted2);
+
+        domain->tick(0, res);
+
+        ASSERT_EQUAL(planted1->getIntId(), *planted2->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+        ASSERT_FUZZY_EQUAL(1.0f, planted2->m_location.m_pos.y(), 0.1f);
+
+        id = context.newId();
+        Entity* planted3 = new Entity(std::to_string(id), id);
+        planted3->m_location.m_pos = {0, 4, 1};
+        planted3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+        planted3->m_location.setBBox({{-2, 0, -2},
+                                      {2,  1,  2}});
+        planted3->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
+
+        domain->addEntity(*planted3);
+
+        domain->tick(0, res);
+
+        ASSERT_EQUAL(planted2->getIntId(), *planted3->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+        ASSERT_FUZZY_EQUAL(2.0f, planted3->m_location.m_pos.y(), 0.1f);
+
+        id = context.newId();
+        Entity* planted4 = new Entity(std::to_string(id), id);
+        planted4->m_location.m_pos = {0, 6, 1};
+        planted4->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+        planted4->m_location.setBBox({{-2, 0, -2},
+                                      {2,  1,  2}});
+        planted4->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProperty));
+
+        domain->addEntity(*planted4);
+
+        domain->tick(0, res);
+
+        ASSERT_EQUAL(planted3->getIntId(), *planted4->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+        ASSERT_FUZZY_EQUAL(3.0f, planted4->m_location.m_pos.y(), 0.1f);
+
+        //Now delete planted3, which should place planted4 on top of planted2
+
+        domain->removeEntity(*planted3);
+        domain->tick(0, res);
+
+        ASSERT_EQUAL(planted2->getIntId(), *planted4->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+        ASSERT_FUZZY_EQUAL(2.0f, planted4->m_location.m_pos.y(), 0.1f);
+
+        domain->removeEntity(*planted1);
+        domain->tick(0, res);
+
+        ASSERT_EQUAL(rootEntity->getIntId(), *planted2->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+        ASSERT_FUZZY_EQUAL(0.0f, planted2->m_location.m_pos.y(), 0.1f);
+        ASSERT_EQUAL(planted2->getIntId(), *planted4->getPropertyClassFixed<ModeDataProperty>()->getPlantedOnData().entityId)
+        ASSERT_FUZZY_EQUAL(1.0f, planted4->m_location.m_pos.y(), 0.1f);
+    }
+
+
+    void test_convert(TestContext& context)
     {
         WFMath::AxisBox<3> wfBox(WFMath::Point<3>(-1, -3, -5), WFMath::Point<3>(1, 3, 5));
 
@@ -316,13 +410,13 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
     }
 
-    void test_movePlantedAndResting()
+    void test_movePlantedAndResting(TestContext& context)
     {
 
         //Place a box, "planted". On top of that, place another box, also "planted". And on top of that, place a box which is "free".
         //Then move the first box. The two boxes on top should move along with it.
 
-        auto id = newId();
+        auto id = context.newId();
         Entity* rootEntity = new Entity(std::to_string(id), id);
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox({{-64, 0,  -64},
@@ -339,7 +433,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         auto massProp = new Property<double>();
         massProp->data() = 10000;
 
-        id = newId();
+        id = context.newId();
         Entity* fixed1 = new Entity(std::to_string(id), id);
         fixed1->m_location.m_pos = {0, 0, 0};
         fixed1->m_location.setBBox({{-2, -1, -2},
@@ -355,7 +449,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ASSERT_EQUAL(0, fixed1->m_location.m_pos.y());
 
 
-        id = newId();
+        id = context.newId();
         Entity* planted1 = new Entity(std::to_string(id), id);
         planted1->m_location.m_pos = {1, 1, 0};
         planted1->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
@@ -367,7 +461,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         domain->tick(0, res);
 
-        id = newId();
+        id = context.newId();
         Entity* planted2 = new Entity(std::to_string(id), id);
         planted2->m_location.m_pos = {0, 2, 1};
         planted2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
@@ -381,7 +475,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         ASSERT_FUZZY_EQUAL(2.0f, planted2->m_location.m_pos.y(), 0.1f);
 
-        id = newId();
+        id = context.newId();
         Entity* freeEntity = new Entity(std::to_string(id), id);
         freeEntity->m_location.m_pos = {1, 4, 0};
         freeEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
@@ -464,14 +558,14 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_plantedOn()
+    void test_plantedOn(TestContext& context)
     {
         std::vector<std::string> shapes{"box", "cylinder-x", "cylinder-y", "cylinder-z", "capsule-x", "capsule-y", "capsule-z"};
 
         for (auto plantedShape : shapes) {
             for (auto plantedOnTopShape : shapes) {
 
-                auto id = newId();
+                auto id = context.newId();
                 Entity rootEntity{std::to_string(id), id};
                 TerrainProperty* terrainProperty = new TerrainProperty();
                 rootEntity.setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
@@ -486,7 +580,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
                 TestPhysicalDomain domain{rootEntity};
 
 
-                id = newId();
+                id = context.newId();
                 std::unique_ptr<Entity> planted1(new Entity(std::to_string(id), id));
                 planted1->m_location.m_pos = WFMath::Point<3>(0, 10, 0);
                 planted1->m_location.setBBox({{-1, -1, -1},
@@ -519,7 +613,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
                 }
 
-                id = newId();
+                id = context.newId();
                 std::unique_ptr<Entity> planted2(new Entity(std::to_string(id), id));
                 planted2->m_location.m_pos = WFMath::Point<3>(0, 15, 0);
                 planted2->m_location.setBBox({{-1, -1, -1},
@@ -552,7 +646,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
                 }
 
 
-                id = newId();
+                id = context.newId();
                 std::unique_ptr<Entity> plantedOn(new Entity(std::to_string(id), id));
                 plantedOn->m_location.m_pos = {0, 15, 0};
                 {
@@ -593,10 +687,10 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         }
     }
 
-    void test_terrainMods()
+    void test_terrainMods(TestContext& context)
     {
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -611,7 +705,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ModeProperty* modeProperty = new ModeProperty();
         modeProperty->set("planted");
 
-        Entity* terrainModEntity = new Entity("1", newId());
+        Entity* terrainModEntity = new Entity("1", context.newId());
         terrainModEntity->m_location.m_pos = WFMath::Point<3>(32, 10, 32);
         terrainModEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
         TerrainModProperty* terrainModProperty = new TerrainModProperty();
@@ -700,7 +794,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_lake_rotated()
+    void test_lake_rotated(TestContext& context)
     {
         class TestEntity : public Entity
         {
@@ -732,12 +826,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         modeFixedProperty->set("fixed");
 
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-        long id = newId();
+        long id = context.newId();
         TestEntity* lake = new TestEntity(std::to_string(id), id);
         lake->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
         lake->setType(lakeType);
@@ -749,7 +843,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*lake);
 
         //Should be in water
-        id = newId();
+        id = context.newId();
         Entity* freeEntity = new Entity("freeEntity", id);
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setType(rockType);
@@ -758,7 +852,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*freeEntity);
 
         //Should not be in water
-        id = newId();
+        id = context.newId();
         Entity* freeEntity2 = new Entity("freeEntity2", id);
         freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity2->setType(rockType);
@@ -766,7 +860,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         freeEntity2->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1)));
         domain->addEntity(*freeEntity2);
 
-        id = newId();
+        id = context.newId();
         ModeProperty* plantedProp = new ModeProperty();
         plantedProp->set("planted");
         auto modeDataProp = new ModeDataProperty();
@@ -790,7 +884,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_lake()
+    void test_lake(TestContext& context)
     {
         class TestEntity : public Entity
         {
@@ -825,12 +919,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         modeFixedProperty->set("fixed");
 
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-        long id = newId();
+        long id = context.newId();
         TestEntity* lake = new TestEntity(std::to_string(id), id);
         lake->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
         lake->setType(lakeType);
@@ -840,7 +934,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         lake->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         domain->addEntity(*lake);
 
-        id = newId();
+        id = context.newId();
         Entity* freeEntity = new Entity(std::to_string(id), id);
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setType(rockType);
@@ -849,7 +943,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*freeEntity);
 
         //The second entity is placed in water, and should be submerged from the start
-        id = newId();
+        id = context.newId();
         Entity* freeEntity2 = new Entity(std::to_string(id), id);
         freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity2->setType(rockType);
@@ -858,7 +952,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*freeEntity2);
 
         //The third entity is placed outside of the lake, and should never be submerged.
-        id = newId();
+        id = context.newId();
         Entity* freeEntity3 = new Entity(std::to_string(id), id);
         freeEntity3->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity3->setType(rockType);
@@ -930,7 +1024,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
     }
 
-    void test_ocean()
+    void test_ocean(TestContext& context)
     {
         double tickSize = 1.0 / 15.0;
         double time = 0;
@@ -952,12 +1046,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         rockType->injectProperty("mode", std::unique_ptr<PropertyBase>(modeFreeProperty));
 
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
-        long id = newId();
+        long id = context.newId();
         Entity* ocean = new Entity(std::to_string(id), id);
         ocean->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
         ocean->setType(oceanType);
@@ -966,7 +1060,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ocean->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         domain->addEntity(*ocean);
 
-        id = newId();
+        id = context.newId();
         Entity* freeEntity = new Entity(std::to_string(id), id);
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setType(rockType);
@@ -975,7 +1069,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*freeEntity);
 
         //The second entity is placed in water, and should be submerged from the start
-        id = newId();
+        id = context.newId();
         Entity* freeEntity2 = new Entity(std::to_string(id), id);
         freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity2->setType(rockType);
@@ -1017,7 +1111,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_placement()
+    void test_placement(TestContext& context)
     {
 
         TypeNode* rockType = new TypeNode("rock");
@@ -1029,7 +1123,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         modeProperty->set("fixed");
 
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1100,7 +1194,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         //Start with a box centered at origo, with no orientation
         {
-            long id = newId();
+            long id = context.newId();
             Entity* entity = new Entity(std::to_string(id), id);
             entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
             entity->setType(rockType);
@@ -1114,7 +1208,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         //Start with a box centered at origo, with 45 degrees orientation
         {
-            long id = newId();
+            long id = context.newId();
             Entity* entity = new Entity(std::to_string(id), id);
             entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
             entity->setType(rockType);
@@ -1130,7 +1224,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         //A box not centered at origo, with no orientation
         {
-            long id = newId();
+            long id = context.newId();
             Entity* entity = new Entity(std::to_string(id), id);
             entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
             entity->setType(rockType);
@@ -1144,7 +1238,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         //A box not centered at origo, with 45 degrees orientation
         {
-            long id = newId();
+            long id = context.newId();
             Entity* entity = new Entity(std::to_string(id), id);
             entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeProperty));
             entity->setType(rockType);
@@ -1159,13 +1253,13 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         }
     }
 
-    void test_fallToBottom()
+    void test_fallToBottom(TestContext& context)
     {
 
         double tickSize = 1.0 / 15.0;
         double time = 0;
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1176,14 +1270,14 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         TypeNode* rockType = new TypeNode("rock");
 
 
-        Entity* freeEntity = new Entity("1", newId());
+        Entity* freeEntity = new Entity("1", context.newId());
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setType(rockType);
         freeEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
         domain->addEntity(*freeEntity);
 
-        Entity* fixedEntity = new Entity("2", newId());
+        Entity* fixedEntity = new Entity("2", context.newId());
         fixedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
         ModeProperty* modeProperty = new ModeProperty();
@@ -1212,12 +1306,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_standOnFixed()
+    void test_standOnFixed(TestContext& context)
     {
 
         double tickSize = 1.0 / 15.0;
         double time = 0;
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, -64, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1228,14 +1322,14 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         TypeNode* rockType = new TypeNode("rock");
 
 
-        Entity* freeEntity = new Entity("1", newId());
+        Entity* freeEntity = new Entity("1", context.newId());
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setType(rockType);
         freeEntity->m_location.m_pos = WFMath::Point<3>(0, 1, 0);
         freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
         domain->addEntity(*freeEntity);
 
-        Entity* fixedEntity = new Entity("2", newId());
+        Entity* fixedEntity = new Entity("2", context.newId());
         fixedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
         ModeProperty* modeProperty = new ModeProperty();
@@ -1256,12 +1350,12 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos, WFMath::Point<3>(0, 1, 0), epsilon);
     }
 
-    void test_fallToTerrain()
+    void test_fallToTerrain(TestContext& context)
     {
 
         double tickSize = 1.0 / 15.0;
         double time = 0;
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1279,14 +1373,14 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         TypeNode* rockType = new TypeNode("rock");
 
 
-        Entity* freeEntity = new Entity("1", newId());
+        Entity* freeEntity = new Entity("1", context.newId());
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setType(rockType);
         freeEntity->m_location.m_pos = WFMath::Point<3>(10, 20, 10);
         freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-1, 0, -1), WFMath::Point<3>(1, 1, 1)));
         domain->addEntity(*freeEntity);
 
-        Entity* plantedEntity = new Entity("2", newId());
+        Entity* plantedEntity = new Entity("2", context.newId());
         plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
         ModeProperty* modeProperty = new ModeProperty();
@@ -1325,7 +1419,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_collision()
+    void test_collision(TestContext& context)
     {
 
         double tickSize = 1.0 / 15.0;
@@ -1336,7 +1430,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         speedGroundProperty->data() = 5.0;
 
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1363,7 +1457,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         angularZeroFactorProperty->data() = WFMath::Vector<3>::ZERO();
 
 
-        Entity* freeEntity = new Entity("1", newId());
+        Entity* freeEntity = new Entity("1", context.newId());
         freeEntity->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty));
         freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity->setProperty("friction", std::unique_ptr<PropertyBase>(zeroFrictionProperty));
@@ -1375,7 +1469,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         domain->addEntity(*freeEntity);
 
-        Entity* plantedEntity = new Entity("2", newId());
+        Entity* plantedEntity = new Entity("2", context.newId());
         plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
 
         ModeProperty* modeProperty = new ModeProperty();
@@ -1419,7 +1513,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_mode()
+    void test_mode(TestContext& context)
     {
 
         double tickSize = 1.0 / 15.0;
@@ -1432,7 +1526,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         modeFreeProperty->set("");
         TypeNode* rockType = new TypeNode("rock");
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1447,7 +1541,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         Property<double>* massProp = new Property<double>();
         massProp->data() = 100;
 
-        Entity* freeEntity1 = new Entity("free1", newId());
+        Entity* freeEntity1 = new Entity("free1", context.newId());
         freeEntity1->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity1->setType(rockType);
         freeEntity1->m_location.m_pos = WFMath::Point<3>(10, 30, 10);
@@ -1457,7 +1551,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ASSERT_EQUAL(freeEntity1->m_location.m_pos, WFMath::Point<3>(10, 30, 10));
 
         //The other free entity is placed below the terrain; it's expected to then be clamped to the terrain
-        Entity* freeEntity2 = new Entity("free2", newId());
+        Entity* freeEntity2 = new Entity("free2", context.newId());
         freeEntity2->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         freeEntity2->setType(rockType);
         freeEntity2->m_location.m_pos = WFMath::Point<3>(20, -10, 20);
@@ -1465,7 +1559,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*freeEntity2);
         ASSERT_FUZZY_EQUAL(freeEntity2->m_location.m_pos, WFMath::Point<3>(20, 22.6006, 20), epsilon);
 
-        Entity* plantedEntity = new Entity("planted", newId());
+        Entity* plantedEntity = new Entity("planted", context.newId());
         plantedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
         plantedEntity->setType(rockType);
@@ -1475,7 +1569,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         ASSERT_FUZZY_EQUAL(plantedEntity->m_location.m_pos, WFMath::Point<3>(30, 18.4325, 30), epsilon);
 
 
-        Entity* fixedEntity = new Entity("fixed", newId());
+        Entity* fixedEntity = new Entity("fixed", context.newId());
         fixedEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
         fixedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modeFixedProperty));
         fixedEntity->setType(rockType);
@@ -1499,16 +1593,17 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_static_entities_no_move();
+    void test_static_entities_no_move(TestContext& context)
+    {}
 
-    void test_determinism()
+    void test_determinism(TestContext& context)
     {
 
         double tickSize = 1.0 / 15.0;
 
         TypeNode* rockType = new TypeNode("rock");
 
-        Entity* rootEntity = new Entity("0", newId());
+        Entity* rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1527,7 +1622,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         for (size_t i = 0; i < 10; ++i) {
             for (size_t j = 0; j < 10; ++j) {
-                long id = newId();
+                long id = context.newId();
                 std::stringstream ss;
                 ss << "free" << id;
                 Entity* freeEntity = new Entity(ss.str(), id);
@@ -1560,7 +1655,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_zoffset()
+    void test_zoffset(TestContext& context)
     {
 
 
@@ -1571,7 +1666,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         Property<double>* plantedOffset = new Property<double>();
         plantedOffset->data() = -2;
 
-        Ref<Entity> rootEntity = new Entity("0", newId());
+        Ref<Entity> rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1586,7 +1681,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         TestWorld testWorld(rootEntity);
 
 
-        Ref<Entity> plantedEntity = new Entity("planted", newId());
+        Ref<Entity> plantedEntity = new Entity("planted", context.newId());
         plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
         plantedEntity->setType(rockType);
         plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
@@ -1603,7 +1698,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_zscaledoffset()
+    void test_zscaledoffset(TestContext& context)
     {
         TypeNode* rockType = new TypeNode("rock");
         ModeProperty* modePlantedProperty = new ModeProperty();
@@ -1612,7 +1707,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         Property<double>* plantedScaledOffset = new Property<double>();
         plantedScaledOffset->data() = -0.2;
 
-        Ref<Entity> rootEntity = new Entity("0", newId());
+        Ref<Entity> rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1627,7 +1722,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         TestWorld testWorld(rootEntity);
 
 
-        Ref<Entity> plantedEntity = new Entity("planted", newId());
+        Ref<Entity> plantedEntity = new Entity("planted", context.newId());
         plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
         plantedEntity->setType(rockType);
         plantedEntity->m_location.m_pos = WFMath::Point<3>(30, 10, 30);
@@ -1644,7 +1739,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_visibility()
+    void test_visibility(TestContext& context)
     {
         TypeNode* rockType = new TypeNode("rock");
         TypeNode* humanType = new TypeNode("human");
@@ -1655,21 +1750,21 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         visibilityProperty->set(1000.f);
 
 
-        Ref<Entity> rootEntity = new Entity("0", newId());
+        Ref<Entity> rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
 
         TestWorld testWorld(rootEntity);
 
-        Ref<Entity> smallEntity1 = new Entity("small1", newId());
+        Ref<Entity> smallEntity1 = new Entity("small1", context.newId());
         smallEntity1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
         smallEntity1->setType(rockType);
         smallEntity1->m_location.m_pos = WFMath::Point<3>(30, 0, 30);
         smallEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2)));
         domain->addEntity(*smallEntity1);
 
-        Ref<Entity> smallEntity2 = new Entity("small2", newId());
+        Ref<Entity> smallEntity2 = new Entity("small2", context.newId());
         smallEntity2->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
         smallEntity2->setType(rockType);
         smallEntity2->m_location.m_pos = WFMath::Point<3>(-31, 0, -31);
@@ -1677,7 +1772,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         domain->addEntity(*smallEntity2);
 
         //This entity should always be seen, as "visibility" is specified.
-        Ref<Entity> smallVisibleEntity = new Entity("smallVisible", newId());
+        Ref<Entity> smallVisibleEntity = new Entity("smallVisible", context.newId());
         smallVisibleEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
         smallVisibleEntity->setType(rockType);
         smallVisibleEntity->m_location.m_pos = WFMath::Point<3>(-63, 0, -63);
@@ -1685,14 +1780,14 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         smallVisibleEntity->setProperty(VisibilityDistanceProperty::property_name, std::unique_ptr<PropertyBase>(visibilityProperty));
         domain->addEntity(*smallVisibleEntity);
 
-        Ref<Entity> largeEntity1 = new Entity("large1", newId());
+        Ref<Entity> largeEntity1 = new Entity("large1", context.newId());
         largeEntity1->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
         largeEntity1->setType(rockType);
         largeEntity1->m_location.m_pos = WFMath::Point<3>(0, 0, 0);
         largeEntity1->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-10.f, 0, -10.f), WFMath::Point<3>(10, 20, 10)));
         domain->addEntity(*largeEntity1);
 
-        Ref<Entity> observerEntity = new Entity("observer", newId());
+        Ref<Entity> observerEntity = new Entity("observer", context.newId());
         observerEntity->setType(humanType);
         observerEntity->m_location.m_pos = WFMath::Point<3>(-30, 0, -30);
         observerEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 2, 0.2)));
@@ -1745,9 +1840,9 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 
 
-    void test_visibilityPerformance();
+    void test_visibilityPerformance(TestContext& context);
 
-    void test_stairs()
+    void test_stairs(TestContext& context)
     {
         TypeNode* rockType = new TypeNode("rock");
         TypeNode* humanType = new TypeNode("human");
@@ -1769,7 +1864,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         humanType->injectProperty("speed_ground", std::unique_ptr<PropertyBase>(speedGroundProperty));
 
 
-        Ref<Entity> rootEntity = new Entity("0", newId());
+        Ref<Entity> rootEntity = new Entity("0", context.newId());
         rootEntity->m_location.m_pos = WFMath::Point<3>::ZERO();
         rootEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-64, 0, -64), WFMath::Point<3>(64, 64, 64)));
         std::unique_ptr<TestPhysicalDomain> domain(new TestPhysicalDomain(*rootEntity));
@@ -1780,7 +1875,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         //Create 10 entities at increasing height, forming a stair.
         for (int i = 0; i < 10; ++i) {
             std::stringstream ss;
-            long id = newId();
+            long id = context.newId();
             ss << "step" << id;
             Ref<Entity> stepElement = new Entity(ss.str(), id);
             stepElement->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
@@ -1798,7 +1893,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         //First with an entity which doesn't step; it should collide and be kept in place
         {
-            Ref<Entity> human = new Entity("human", newId());
+            Ref<Entity> human = new Entity("human", context.newId());
             human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
             human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp->copy()));
             human->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty->copy()));
@@ -1816,7 +1911,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
         //Then with an entity with a capsule geometry, it should step
         {
-            Ref<Entity> human = new Entity("human", newId());
+            Ref<Entity> human = new Entity("human", context.newId());
             //human->setProperty("step_factor", stepFactorProp));
             human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
             human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp->copy()));
@@ -1838,7 +1933,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
         //The human entity shouldn't step up on the tilted entity
         {
 
-            long id = newId();
+            long id = context.newId();
             Ref<Entity> stepElement = new Entity("tilted", id);
             stepElement->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty->copy()));
             WFMath::Point<3> pos(20, 0, 0);
@@ -1851,7 +1946,7 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
             domain->addEntity(*stepElement);
 
-            Ref<Entity> human = new Entity("human", newId());
+            Ref<Entity> human = new Entity("human", context.newId());
             //human->setProperty("step_factor", stepFactorProp));
             human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
             human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
@@ -1872,10 +1967,10 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
 
     }
 
-    void test_terrainPrecision()
+    void test_terrainPrecision(TestContext& context)
     {
 
-        Ref<Entity> rootEntity = new Entity("0", newId());
+        Ref<Entity> rootEntity = new Entity("0", context.newId());
         TerrainProperty* terrainProperty = new TerrainProperty();
         rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
         Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -1922,12 +2017,10 @@ struct PhysicalDomainIntegrationTest : public Cyphesis::TestBase
     }
 };
 
-long PhysicalDomainIntegrationTest::m_id_counter = 0L;
-
 
 int main()
 {
-    PhysicalDomainIntegrationTest t;
+    Tested t;
 
     return t.run();
 }
