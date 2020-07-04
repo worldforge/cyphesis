@@ -161,7 +161,6 @@ class Fight(Goal):
         return enemy
 
     def attack_melee(self, me):
-        print("attack melee")
         enemy = self.get_enemy(me)
         # check that we can reach the target, and if so attack it
         distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
@@ -180,7 +179,6 @@ class Fight(Goal):
                     return True
 
             if attached_current:
-                print("Hitting with a weapon")
                 return move_to_face + Operation("use", Operation(self.weapon_usage, Entity(attached_current.id,
                                                                                            targets=[Entity(enemy.id)])))
             else:
@@ -201,7 +199,6 @@ class Fight(Goal):
                                      Root(args=[Entity("stop")], id="melee", objtype="task"))
 
     def attack_ranged(self, me):
-        print("attack ranged")
         enemy = self.get_enemy(me)
         # check that we can reach the target, and if so attack it
         distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
@@ -212,7 +209,6 @@ class Fight(Goal):
         tasks_prop = me.entity.get_prop_map('tasks')
 
         if distance < 50:
-            print("in range")
             move_to_face = me.face(enemy)
 
             if attached_current:
