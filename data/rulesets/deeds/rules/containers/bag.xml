@@ -2,21 +2,17 @@
 
     <map>
         <map name="attributes">
-            <map name="bbox">
-                <list name="default">
-                    <float>-0.2</float>
-                    <float>0</float>
-                    <float>-0.1</float>
-                    <float>0.2</float>
-                    <float>0.4</float>
-                    <float>0.1</float>
-                </list>
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/containers/bag/model/bag.mesh</string>
+                    <string name="type">box</string>
+                </map>
             </map>
             <map name="mass">
                 <float name="default">0.5</float>
             </map>
             <map name="present">
-                <string name="default">common/primitives/placeholder.modeldef</string>
+                <string name="default">dural/items/containers/bag/model/bag.mesh</string>
             </map>
             <map name="domain">
                 <string name="default">container</string>

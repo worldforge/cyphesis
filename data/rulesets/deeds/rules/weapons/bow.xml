@@ -4,12 +4,12 @@
         <map name="attributes">
             <map name="geometry">
                 <map name="default">
-                    <string name="path">dural/creatures/biped/paladin/model/paladin_bow.mesh</string>
+                    <string name="path">dural/items/weapons/bow/model/bow.mesh</string>
                     <string name="type">box</string>
                 </map>
             </map>
             <map name="present">
-                <string name="default">dural/creatures/biped/paladin/model/paladin_bow.mesh</string>
+                <string name="default">dural/items/weapons/bow/model/bow.mesh</string>
             </map>
 <!--            <map name="ammo">-->
 <!--                <string name="default">arrow</string>-->
