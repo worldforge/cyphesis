@@ -210,7 +210,7 @@ int main(int argc, char** argv)
             mindFactory.m_scriptFactory->refreshClass();
         });
 
-        log(INFO, "Trying to connect to server.");
+        log(INFO, String::compose("Trying to connect to server at %1.", client_socket_name));
         connectToServer(io_context, mindFactory);
 
         /// \brief Use a "work" instance to make sure the io_context never runs out of work and is stopped.
