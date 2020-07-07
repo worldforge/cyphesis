@@ -31,7 +31,7 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
@@ -89,15 +89,11 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
             auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
 
             if (type) {
-                if (entity->getType() != type) {
-                    entity->setType(type);
-                    applyTypePropertiesToEntity(entity);
+                entity->setType(type);
+                applyTypePropertiesToEntity(entity);
 
-                    if (entity->getType()) {
-                        if (m_listener) {
-                            m_listener->entityAdded(*entity);
-                        }
-                    }
+                if (m_listener) {
+                    m_listener->entityAdded(*entity);
                 }
             } else {
                 m_unresolvedEntities[parent].insert(entity);
@@ -170,14 +166,12 @@ MemMap::MemMap(TypeResolver& typeResolver)
 void MemMap::sendLooks(OpVector& res)
 {
     debug_print("MemMap::sendLooks")
-    auto I = m_additionsById.begin();
-    auto Iend = m_additionsById.end();
-    for (; I != Iend; ++I) {
+    for (auto& id : m_additionsById) {
         Look l;
         Anonymous look_arg;
-        look_arg->setId(*I);
-        l->setArgs1(look_arg);
-        res.push_back(l);
+        look_arg->setId(id);
+        l->setArgs1(std::move(look_arg));
+        res.push_back(std::move(l));
     }
     m_additionsById.clear();
 }
@@ -190,7 +184,7 @@ Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
 
     debug_print("MemMap::add_id")
     m_additionsById.push_back(id);
-    Ref<MemEntity> entity = new MemEntity(id, int_id);
+    Ref<MemEntity> entity(new MemEntity(id, int_id));
     addEntity(entity);
     return entity;
 }
@@ -327,14 +321,13 @@ Ref<MemEntity> MemMap::updateAdd(const RootEntity& ent, const double& d)
 
 void MemMap::addEntityMemory(const std::string& id,
                              const std::string& memory,
-                             const Element& value)
+                             Element value)
 {
     auto entity_memory = m_entityRelatedMemory.find(id);
     if (entity_memory != m_entityRelatedMemory.end()) {
-        entity_memory->second[memory] = value;
+        entity_memory->second[memory] = std::move(value);
     } else {
-        m_entityRelatedMemory.insert(
-                std::make_pair(id, std::map<std::string, Element>{{memory, value}}));
+        m_entityRelatedMemory.emplace(id, std::map<std::string, Element>{{memory, std::move(value)}});
     }
 }
 
@@ -362,12 +355,11 @@ EntityVector MemMap::findByType(const std::string& what)
 {
     EntityVector res;
 
-    auto Iend = m_entities.end();
-    for (auto I = m_entities.begin(); I != Iend; ++I) {
-        auto item = I->second;
-        debug_print("F" << what << ":" << item->getType() << ":" << item->getId())
-        if (item->isVisible() && item->getType()->name() == what) {
-            res.push_back(I->second.get());
+    for (auto& entry : m_entities) {
+        auto item = entry.second;
+        debug_print("Found" << what << ":" << item->describeEntity())
+        if (item->isVisible() && item->getType() && item->getType()->name() == what) {
+            res.push_back(item.get());
         }
     }
     return res;
@@ -386,18 +378,16 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
     auto place_by_id = get(place->getId());
     if (place != place_by_id) {
         log(ERROR, compose("MemMap consistency check failure: find location "
-                           "has LOC %1(%2) which is different in dict (%3)",
-                           place->getId(), place->getType()->name(),
-                           place_by_id->getType()->name()));
+                           "has LOC %1 which is different in dict (%2)",
+                           place->describeEntity(),
+                           place_by_id->describeEntity()));
         return res;
     }
 #endif // NDEBUG
-    auto I = place->m_contains->begin();
-    auto Iend = place->m_contains->end();
+
     WFMath::CoordType square_range = radius * radius;
-    for (; I != Iend; ++I) {
-        assert(*I != nullptr);
-        auto item = *I;
+    for (auto& item : *place->m_contains) {
+        assert(item != nullptr);
         if (!item) {
             log(ERROR, "Weird entity in memory");
             continue;
@@ -405,7 +395,8 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
         if (!item->isVisible()) {
             continue;
         }
-        if (item->getType()->name() != what) {
+
+        if (item->getType() && item->getType()->name() != what) {
             continue;
         }
         if (squareDistance(loc.pos(), item->m_location.pos()) < square_range) {
@@ -433,9 +424,9 @@ void MemMap::check(const double& time)
             }
 
         } else {
-            debug_print(me->getId() << "|" << me->getType()->name() << "|"
-                                    << me->lastSeen() << "|" << me->isVisible()
-                                    << " is fine")
+            debug_print(me->describeEntity() << "|"
+                                             << me->lastSeen() << "|" << me->isVisible()
+                                             << " is fine")
             ++m_checkIterator;
         }
     }

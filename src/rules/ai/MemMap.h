@@ -133,7 +133,7 @@ class MemMap
         ///@param val - value of the memory in Element (i.e. 25)
         void addEntityMemory(const std::string& id,
                              const std::string& memory,
-                             const Atlas::Message::Element& value);
+                             Atlas::Message::Element value);
 
         ///\brief Recall a memory about an entity if it exists. Do nothing otherwise.
         ///@param id - the id of entity to which we relate the memory

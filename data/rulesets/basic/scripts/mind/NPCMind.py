@@ -294,16 +294,6 @@ class NPCMind(ai.Mind):
                     self.message_queue = None
                 return op_tick + result
 
-    # Sight operations
-    def sight_create_operation(self, op):
-        """Note our ownership of entities we created.
-        
-        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
-        # BaseMind version overridden!
-        obj = self.map.add(op[0], op.get_seconds())
-        if op.to == self.id:
-            self.add_thing(obj)
-
     def sight_move_operation(self, op):
         """change position in our local map
         
