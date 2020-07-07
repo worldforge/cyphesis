@@ -279,7 +279,9 @@ void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
 
 void BaseMind::UnseenOperation(const Operation& op, OpVector& res)
 {
-    if (!isAwake()) { return; }
+    if (!isAwake()) {
+        return;
+    }
     auto& args = op->getArgs();
     if (args.empty()) {
         debug_print(" no args!")
@@ -378,13 +380,17 @@ void BaseMind::ErrorOperation(const Operation& op, OpVector& res)
     if (!args.empty()) {
         const Atlas::Objects::Root& arg = args.front();
         Atlas::Message::Element message;
-        if (arg->copyAttr("message", message) == 0) {
-            if (message.isString()) {
-                if (getEntity()) {
-                    log(WARNING, String::compose("BaseMind %1, entity %2, error from server: %3", getId(), getEntity()->describeEntity(), message.String()));
-                } else {
-                    log(WARNING, String::compose("BaseMind %1, error from server: %2", getId(), message.String()));
-                }
+        if (arg->copyAttr("message", message) == 0 && message.isString()) {
+            if (getEntity()) {
+                log(WARNING, String::compose("BaseMind %1, entity %2, error from server: %3", getId(), getEntity()->describeEntity(), message.String()));
+            } else {
+                log(WARNING, String::compose("BaseMind %1, error from server: %2", getId(), message.String()));
+            }
+        } else {
+            if (getEntity()) {
+                log(WARNING, String::compose("BaseMind %1, entity %2, unspecified error from server", getId(), getEntity()->describeEntity()));
+            } else {
+                log(WARNING, String::compose("BaseMind %1, unspecified error from server.", getId()));
             }
         }
     }
@@ -444,7 +450,8 @@ void BaseMind::operation(const Operation& op, OpVector& res)
 
         bool isPending = false;
         //Unless it's an Unseen op, we should add the entity the op was from.
-        if (op_no != Atlas::Objects::Operation::UNSEEN_NO && !op->isDefaultFrom()) {
+        //Note that we might get an op from the account itself, so we need to check for that.
+        if (op_no != Atlas::Objects::Operation::UNSEEN_NO && !op->isDefaultFrom() && op->getFrom() != getId()) {
             auto entity = m_map.getAdd(op->getFrom());
             if (!entity) {
                 m_pendingEntitiesOperations[op->getFrom()].push_back(op);

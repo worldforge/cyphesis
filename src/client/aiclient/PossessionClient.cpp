@@ -110,14 +110,16 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
         if ((!resOp->isDefaultTo() && !resOp->isDefaultFrom())) {
             auto mind = m_account->findMindForId(resOp->getTo());
             if (mind) {
-                m_operationsDispatcher.addOperationToQueue(resOp, std::move(mind));
+                m_operationsDispatcher.addOperationToQueue(std::move(resOp), std::move(mind));
                 updatedDispatcher = true;
             } else {
                 log(WARNING, String::compose("Resulting op of type '%1' is set to the mind with id '%2', which can't be found.", resOp->getParent(), resOp->getTo()));
             }
         } else {
-            //log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
-            res.push_back(resOp);
+            if (resOp->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
+                log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
+            }
+            res.emplace_back(std::move(resOp));
         }
     }
     if (updatedDispatcher) {

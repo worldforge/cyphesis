@@ -117,8 +117,13 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
             return;
         }
 
+        if (getId() != op->getTo()) {
+            log(WARNING, String::compose("Received operation %1 directed at %2 which isn't anything recognized by the account.", op->getParent(), op->getTo()));
+            return;
+        }
     }
 
+    //The operation had no id, or the id was this account, so it's directed at this account.
     if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
         PossessOperation(op, res);
     } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
