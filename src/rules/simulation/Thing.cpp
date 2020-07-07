@@ -86,6 +86,15 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
         sToEntity->setArgs1(op);
         sToEntity->setTo(getId());
         operation(sToEntity, res);
+
+        Disappearance disappearanceOp;
+        Anonymous anonymous;
+        anonymous->setId(getId());
+        anonymous->setAttr("destroyed", 1); //Add attribute clarifying that this entity is destroyed.
+        disappearanceOp->setArgs1(std::move(anonymous));
+        disappearanceOp->setTo(getId());
+        operation(disappearanceOp, res);
+
     }
 
     Sight s;

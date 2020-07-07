@@ -40,7 +40,7 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-static const bool debug_flag = false;
+static const bool debug_flag = true;
 
 BaseMind::BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager) :
         Router(mindId, std::stol(mindId)),
@@ -255,12 +255,17 @@ void BaseMind::removeEntity(const std::string& id, OpVector& res)
 {
     m_map.del(id);
     m_pendingEntitiesOperations.erase(id);
+    if (m_ownEntity && m_ownEntity->getId() == id) {
+        destroy();
+    }
 }
 
 
 void BaseMind::DisappearanceOperation(const Operation& op, OpVector& res)
 {
-    if (!isAwake()) { return; }
+    if (!isAwake()) {
+        return;
+    }
     auto& args = op->getArgs();
     if (args.empty()) {
         debug_print(" no args!")

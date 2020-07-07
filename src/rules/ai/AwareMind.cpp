@@ -40,7 +40,7 @@
 #include <wfmath/atlasconv.h>
 #include <chrono>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 AwareMind::AwareMind(const std::string& mind_id,
                      std::string entity_id,
