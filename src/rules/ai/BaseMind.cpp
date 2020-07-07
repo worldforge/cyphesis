@@ -40,7 +40,7 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 BaseMind::BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager) :
         Router(mindId, std::stol(mindId)),

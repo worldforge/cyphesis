@@ -266,9 +266,9 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
             if (fromEntity) {
                 message(resOp, *fromEntity);
             } else {
-                log(WARNING, String::compose("Resulting operation %1, from sending op of type %2 to entity '%3' was marked as being from entity %4 which doesn't exist.",
-                                             resOp->getClassNo(),
-                                             op->getClassNo(),
+                log(WARNING, String::compose("Resulting operation %1, from sending op of type %2 to entity '%3' was marked as being from entity with id '%4' which doesn't exist.",
+                                             resOp->getParent(),
+                                             op->getParent(),
                                              ent->describeEntity(),
                                              resOp->getFrom()));
             }

@@ -11,7 +11,7 @@ class Embeddable(server.Thing):
             # It should now be planted on the thing it hit
             if len(op.args):
                 first_arg = op.args[0]
-                print("embedded in {}".format(first_arg.id))
+                # print("embedded in {}".format(first_arg.id))
                 mode_data = {"mode": "planted", "$eid": first_arg.id}
                 return server.OPERATION_HANDLED, \
                        Operation("move", Entity(self.id, mode="planted", mode_data=mode_data), to=self.id)

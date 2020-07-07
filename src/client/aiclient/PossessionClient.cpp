@@ -116,9 +116,9 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
                 log(WARNING, String::compose("Resulting op of type '%1' is set to the mind with id '%2', which can't be found.", resOp->getParent(), resOp->getTo()));
             }
         } else {
-            if (resOp->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
-                log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
-            }
+//            if (resOp->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
+//                log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
+//            }
             res.emplace_back(std::move(resOp));
         }
     }

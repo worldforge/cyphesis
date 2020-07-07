@@ -31,7 +31,7 @@
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
-static const bool debug_flag = true;
+static const bool debug_flag = false;
 
 using Atlas::Message::Element;
 using Atlas::Message::MapType;
