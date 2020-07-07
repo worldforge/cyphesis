@@ -136,6 +136,9 @@ Py::Object CyPy_Axisbox::getattro(const Py::String& name)
     if (nameStr == "high_corner") {
         return CyPy_Point3D::wrap(m_value.highCorner());
     }
+    if (nameStr == "center") {
+        return CyPy_Point3D::wrap(m_value.getCenter());
+    }
 
     return PythonExtensionBase::getattro(name);
 }

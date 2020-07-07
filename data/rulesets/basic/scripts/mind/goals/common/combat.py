@@ -220,7 +220,7 @@ class Fight(Goal):
                     usages = draw_task["usages"]
                     for usage in usages:
                         if usage.name == "release":
-                            direction = enemy.location.pos - me.entity.location.pos
+                            direction = (enemy.location.pos + enemy.location.bbox.center) - (me.entity.location.pos + me.entity.location.bbox.center)
                             direction.normalize()
                             return move_to_face + Operation("use",
                                                             Root(args=[Entity("release", direction=[direction])],

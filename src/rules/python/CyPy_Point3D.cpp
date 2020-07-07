@@ -22,13 +22,13 @@
 #include "CoordHelper.h"
 
 CyPy_Point3D::CyPy_Point3D(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+        : WrapperBase(self, args, kwds)
 {
     CoordHelper::init(m_value, args);
 }
 
 CyPy_Point3D::CyPy_Point3D(Py::PythonClassInstance* self, WFMath::Point<3> value)
-    : WrapperBase(self, std::move(value))
+        : WrapperBase(self, std::move(value))
 {
 
 }
@@ -99,10 +99,15 @@ int CyPy_Point3D::sequence_ass_item(Py_ssize_t pos, const Py::Object& other)
 
 Py::Object CyPy_Point3D::number_add(const Py::Object& other)
 {
-    if (!CyPy_Vector3D::check(other)) {
-        throw Py::TypeError("Can only add Vector3D to Point3D");
+    if (CyPy_Vector3D::check(other)) {
+        return CyPy_Point3D::wrap(m_value + CyPy_Vector3D::value(other));
     }
-    return CyPy_Point3D::wrap(m_value + CyPy_Vector3D::value(other));
+    if (CyPy_Point3D::check(other)) {
+        return CyPy_Point3D::wrap(m_value + WFMath::Vector<3>(CyPy_Point3D::value(other)));
+    }
+
+    throw Py::TypeError("Can only add Vector3D or Point3D to Point3D");
+
 }
 
 Py::Object CyPy_Point3D::number_subtract(const Py::Object& other)
