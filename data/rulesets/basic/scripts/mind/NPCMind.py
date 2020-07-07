@@ -254,7 +254,6 @@ class NPCMind(ai.Mind):
            send first tick operation to object
            
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
-        # CHEAT!: add memory, etc... initialization (or some of it to __init__)
 
         # Setup a tick operation for thinking
         think_tick_op = Operation("tick")
@@ -263,7 +262,7 @@ class NPCMind(ai.Mind):
 
         # Setup a tick operation for moving
         move_tick_op = Operation("tick")
-        think_tick_op.set_to(self.id)
+        move_tick_op.set_to(self.id)
         move_tick_op.set_args([Entity(name="move")])
         move_tick_op.set_future_seconds(0.2)
 
