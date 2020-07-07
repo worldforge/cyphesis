@@ -40,13 +40,13 @@
 #include <cassert>
 #include <boost/filesystem/operations.hpp>
 
-const char * const CYPHESIS = "cyphesis";
-const char * const SLAVE = "slave";
+const char* const CYPHESIS = "cyphesis";
+const char* const SLAVE = "slave";
 
-static const char * const DEFAULT_RULESET = "deeds";
-static const char * const DEFAULT_INSTANCE = "cyphesis";
+static const char* const DEFAULT_RULESET = "deeds";
+static const char* const DEFAULT_INSTANCE = "cyphesis";
 
-varconf::Config * global_conf = nullptr;
+varconf::Config* global_conf = nullptr;
 std::string instance(DEFAULT_INSTANCE);
 std::string bin_directory(BINDIR);
 std::string share_directory(DATADIR);
@@ -67,7 +67,7 @@ int client_port_num = 6767;
 int dynamic_port_start = 6800;
 int dynamic_port_end = 6899;
 
-static const char * const FALLBACK_LOCALSTATEDIR = "/var";
+static const char* const FALLBACK_LOCALSTATEDIR = "/var";
 
 static const unsigned int S = USAGE_SERVER;
 static const unsigned int C = USAGE_CLIENT;
@@ -77,45 +77,54 @@ static const unsigned int P = USAGE_CYPYTHON;
 static const unsigned int A = USAGE_AICLIENT;
 
 /// \brief Structure for holding data about varconf options
-typedef struct {
-    const char * section;
-    const char * option;
-    const char * value;
-    const char * dflt;
-    const char * description;
+typedef struct
+{
+    const char* section;
+    const char* option;
+    const char* value;
+    const char* dflt;
+    const char* description;
     unsigned int flags;
 } usage_data;
 
 static const usage_data usage_options[] = {
-    { "", "help", "", "", "Display usage information and exit", S|C|M|D|A },
-    { "", "version", "", "", "Display the version information and exit", S|C|M|D|A },
-    { "", "instance", "<short_name>", "\"cyphesis\"", "Unique short name for the server instance", S|C|M|D },
-    { "", "interactive", "", "", "Run in interactive mode, giving a Python prompt", C },
-    { CYPHESIS, "dynamicpaths", "true|false", "false", "Enables dynamic paths, calculated from the current executable", S|D|C|M|A },
-    { CYPHESIS, "directory", "<directory>", "", "Directory where server data and scripts can be found", S|C },
-    { CYPHESIS, "confdir", "<directory>", "", "Directory where server config can be found", S|C|M|D|A },
-    { CYPHESIS, "bindir", "<directory>", "", "Directory where Cyphesis binaries can be found", S|C|M|D|A },
-    { CYPHESIS, "vardir", "<directory>", "", "Directory where temporary files can be stored", S|C|M|A },
-    { CYPHESIS, "assetsdir", "<directory>", "", "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S },
-    { CYPHESIS, "ruleset", "<name>", DEFAULT_RULESET, "Ruleset name", S|C|D|A },
-    { CYPHESIS, "servername", "<name>", "<hostname>", "Published name of the server", S|C },
-    { CYPHESIS, "tcpport", "<portnumber>", "6767", "Network listen port for client connections", S|C|M },
-    { CYPHESIS, "dynamic_port_start", "<portnumber>", "6800", "Lowest port to try and used for dyanmic ports", S },
-    { CYPHESIS, "dynamic_port_end", "<portnumber>", "6899", "Highest port to try and used for dyanmic ports", S },
-    { CYPHESIS, "usedatabase", "true|false", "true", "Flag to control whether to use a database for persistent storage", S },
-    { CYPHESIS, "daemon", "true|false", "false", "Flag to control running the server in daemon mode", S },
-    { CYPHESIS, "nice", "<level>", "1", "Reduce the priority level of the server", S },
-    { CYPHESIS, "useaiclient", "true|false", "false", "Flag to control whether AI is to be driven by a client", S },
-    { CYPHESIS, "dbserver", "<hostname>", "", "Hostname for the PostgreSQL RDBMS", S|D },
-    { CYPHESIS, "dbname", "<name>", "\"cyphesis\"", "Name of the database to use", S|D },
-    { CYPHESIS, "dbuser", "<dbusername>", "<username>", "Database user name for access", S|D },
-    { CYPHESIS, "dbpasswd", "<dbusername>", "", "Database password for access", S|D },
-    { SLAVE, "tcpport", "<portnumber>", "6768", "Network listen port for client connections to the AI slave server", M },
-    { SLAVE, "server", "<hostname>", "localhost", "Master server to connect the slave to", M },
-    {nullptr, nullptr, nullptr, nullptr }
+        {"",       "help",               "",             "",              "Display usage information and exit",                                                                             S | C | M |
+                                                                                                                                                                                            D | A},
+        {"",       "version",            "",             "",              "Display the version information and exit",                                                                       S | C | M |
+                                                                                                                                                                                            D | A},
+        {"",       "instance",           "<short_name>", "\"cyphesis\"",  "Unique short name for the server instance",                                                                      S | C | M |
+                                                                                                                                                                                            D},
+        {"",       "interactive",        "",             "",              "Run in interactive mode, giving a Python prompt",                                                                C},
+        {CYPHESIS, "dynamicpaths",       "true|false",   "false",         "Enables dynamic paths, calculated from the current executable",                                                  S | D | C |
+                                                                                                                                                                                            M | A},
+        {CYPHESIS, "directory",          "<directory>",  "",              "Directory where server data and scripts can be found",                                                           S | C},
+        {CYPHESIS, "confdir",            "<directory>",  "",              "Directory where server config can be found",                                                                     S | C | M |
+                                                                                                                                                                                            D | A},
+        {CYPHESIS, "bindir",             "<directory>",  "",              "Directory where Cyphesis binaries can be found",                                                                 S | C | M |
+                                                                                                                                                                                            D | A},
+        {CYPHESIS, "vardir",             "<directory>",  "",              "Directory where temporary files can be stored",                                                                  S | C | M |
+                                                                                                                                                                                            A},
+        {CYPHESIS, "assetsdir",          "<directory>",  "",              "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S},
+        {CYPHESIS, "ruleset",            "<name>",       DEFAULT_RULESET, "Ruleset name",                                                                                                   S | C | D |
+                                                                                                                                                                                            A},
+        {CYPHESIS, "servername",         "<name>",       "<hostname>",    "Published name of the server",                                                                                   S | C},
+        {CYPHESIS, "tcpport",            "<portnumber>", "6767",          "Network listen port for client connections",                                                                     S | C | M},
+        {CYPHESIS, "dynamic_port_start", "<portnumber>", "6800",          "Lowest port to try and used for dyanmic ports",                                                                  S},
+        {CYPHESIS, "dynamic_port_end",   "<portnumber>", "6899",          "Highest port to try and used for dyanmic ports",                                                                 S},
+        {CYPHESIS, "usedatabase",        "true|false",   "true",          "Flag to control whether to use a database for persistent storage",                                               S},
+        {CYPHESIS, "daemon",             "true|false",   "false",         "Flag to control running the server in daemon mode",                                                              S},
+        {CYPHESIS, "nice",               "<level>",      "1",             "Reduce the priority level of the server",                                                                        S},
+        {CYPHESIS, "useaiclient",        "true|false",   "false",         "Flag to control whether AI is to be driven by a client",                                                         S},
+        {CYPHESIS, "dbserver",           "<hostname>",   "",              "Hostname for the PostgreSQL RDBMS",                                                                              S | D},
+        {CYPHESIS, "dbname",             "<name>",       "\"cyphesis\"",  "Name of the database to use",                                                                                    S | D},
+        {CYPHESIS, "dbuser",             "<dbusername>", "<username>",    "Database user name for access",                                                                                  S | D},
+        {CYPHESIS, "dbpasswd",           "<dbusername>", "",              "Database password for access",                                                                                   S | D},
+        {SLAVE,    "tcpport",            "<portnumber>", "6768",          "Network listen port for client connections to the AI slave server",                                              M},
+        {SLAVE,    "server",             "<hostname>",   "localhost",     "Master server to connect the slave to",                                                                          M},
+        {nullptr,  nullptr,              nullptr,        nullptr}
 };
 
-static int check_tmp_path(const std::string & dir)
+static int check_tmp_path(const std::string& dir)
 {
     std::string tmp_directory = dir + "/tmp";
     if (!boost::filesystem::exists(tmp_directory)) {
@@ -136,7 +145,7 @@ static int check_tmp_path(const std::string & dir)
     return 0;
 }
 
-static int force_simple_name(const std::string & in, std::string & out)
+static int force_simple_name(const std::string& in, std::string& out)
 {
     out = std::string(in.size(), ' ');
 
@@ -155,18 +164,18 @@ static int force_simple_name(const std::string & in, std::string & out)
     return 0;
 }
 
-template <typename T>
-int readConfigItem(const std::string & section, const std::string & key, T & storage)
+template<typename T>
+int readConfigItem(const std::string& section, const std::string& key, T& storage)
 {
     if (global_conf->findItem(section, key)) {
-        storage = (T)global_conf->getItem(section, key);
+        storage = (T) global_conf->getItem(section, key);
         return 0;
     }
     return -1;
 }
 
 template<>
-int readConfigItem<std::string>(const std::string & section, const std::string & key, std::string & storage)
+int readConfigItem<std::string>(const std::string& section, const std::string& key, std::string& storage)
 {
     if (global_conf->findItem(section, key)) {
         storage = global_conf->getItem(section, key).as_string();
@@ -175,69 +184,81 @@ int readConfigItem<std::string>(const std::string & section, const std::string &
     return -1;
 }
 
-template int readConfigItem<bool>(const std::string & section, const std::string & key, bool & storage);
-template int readConfigItem<int>(const std::string & section, const std::string & key, int & storage);
+template int readConfigItem<bool>(const std::string& section, const std::string& key, bool& storage);
+
+template int readConfigItem<int>(const std::string& section, const std::string& key, int& storage);
 
 /// \brief Base class for handling varconf options declared inline.
-class Option {
-  protected:
-    const std::string m_value;
-    const std::string m_description;
+class Option
+{
+    protected:
+        const std::string m_value;
+        const std::string m_description;
 
-    Option(std::string val, std::string descr);
-  public:
-    virtual ~Option() = 0;
+        Option(std::string val, std::string descr);
 
-    const std::string & value() const { return m_value; }
-    const std::string & description() const { return m_description; }
+    public:
+        virtual ~Option() = 0;
 
-    virtual void read(varconf::Variable var) = 0;
+        const std::string& value() const
+        { return m_value; }
 
-    virtual std::string repr() const = 0;
+        const std::string& description() const
+        { return m_description; }
 
-    virtual size_t size() const = 0;
+        virtual void read(varconf::Variable var) = 0;
 
-    virtual void missing() { }
+        virtual std::string repr() const = 0;
 
-    virtual void postProcess() { }
+        virtual size_t size() const = 0;
+
+        virtual void missing()
+        {}
+
+        virtual void postProcess()
+        {}
 };
 
 /// \brief Basic varconf option which does not require any processing
-class DumbOption : public Option {
-  protected:
-    const std::string m_default;
-  public:
-    DumbOption(const std::string & val, const std::string & descr,
-               std::string deflt);
+class DumbOption : public Option
+{
+    protected:
+        const std::string m_default;
+    public:
+        DumbOption(const std::string& val, const std::string& descr,
+                   std::string deflt);
 
-    ~DumbOption() override = default;
+        ~DumbOption() override = default;
 
-    void read(varconf::Variable var) override { }
+        void read(varconf::Variable var) override
+        {}
 
-    std::string repr() const override;
+        std::string repr() const override;
 
-    size_t size() const override;
+        size_t size() const override;
 };
 
 /// \brief Basic varconf option declared as a variable inline
 template<typename ValueT>
-class StaticOption : public Option {
-  protected:
-    ValueT & m_data;
-    const ValueT m_default;
+class StaticOption : public Option
+{
+    protected:
+        ValueT& m_data;
+        const ValueT m_default;
 
-  public:
-    StaticOption(const std::string & val,
-                 const std::string & descr,
-                 ValueT & data) :
-        Option(val, descr), m_data(data), m_default(data) { }
+    public:
+        StaticOption(const std::string& val,
+                     const std::string& descr,
+                     ValueT& data) :
+                Option(val, descr), m_data(data), m_default(data)
+        {}
 
-    void read(varconf::Variable var) override;
+        void read(varconf::Variable var) override;
 
-    std::string repr() const override;
+        std::string repr() const override;
 
-    size_t size() const override;
-    
+        size_t size() const override;
+
 };
 
 Option::Option(std::string val, std::string descr) :
@@ -247,10 +268,10 @@ Option::Option(std::string val, std::string descr) :
 
 Option::~Option() = default;
 
-DumbOption::DumbOption(const std::string & val,
-                       const std::string & descr,
+DumbOption::DumbOption(const std::string& val,
+                       const std::string& descr,
                        std::string deflt) :
-            Option(val, descr), m_default(std::move(deflt))
+        Option(val, descr), m_default(std::move(deflt))
 {
 }
 
@@ -273,7 +294,7 @@ void StaticOption<std::string>::read(varconf::Variable var)
 template<typename ValueT>
 void StaticOption<ValueT>::read(varconf::Variable var)
 {
-    m_data = (ValueT)var;
+    m_data = (ValueT) var;
 }
 
 template<typename ValueT>
@@ -288,23 +309,25 @@ size_t StaticOption<ValueT>::size() const
     return String::compose("%1", m_default).size();
 }
 
-template class StaticOption<int>;
+template
+class StaticOption<int>;
 
 /// \brief Handle the processing required for a unix socket option
 class UnixSockOption : public StaticOption<std::string>
 {
-  protected:
-    const char * const m_format;
-  public:
-    UnixSockOption(const std::string & val,
-                   const std::string & descr,
-                   std::string & data,
-                   const char * format) :
-        StaticOption<std::string>(val, descr, data), m_format(format) { }
+    protected:
+        const char* const m_format;
+    public:
+        UnixSockOption(const std::string& val,
+                       const std::string& descr,
+                       std::string& data,
+                       const char* format) :
+                StaticOption<std::string>(val, descr, data), m_format(format)
+        {}
 
-    void missing() override;
+        void missing() override;
 
-    void postProcess() override;
+        void postProcess() override;
 };
 
 void UnixSockOption::missing()
@@ -325,60 +348,64 @@ typedef std::map<std::string, std::unique_ptr<Option> > OptionMap;
 typedef std::map<std::string, OptionMap> SectionMap;
 
 /// \brief Singleton to manage all information about varconf options.
-class Options {
-  protected:
-    SectionMap m_sectionMap;
+class Options
+{
+    protected:
+        SectionMap m_sectionMap;
 
-    static Options * m_instance;
+        static Options* m_instance;
 
-    explicit Options();
-  public:
-    static Options * instance() {
-        if (m_instance == nullptr) {
-            m_instance = new Options;
+        explicit Options();
+
+    public:
+        static Options* instance()
+        {
+            if (m_instance == nullptr) {
+                m_instance = new Options;
+            }
+            return m_instance;
         }
-        return m_instance;
-    }
 
-    const SectionMap & sectionMap() const {
-        return m_sectionMap;
-    }
+        const SectionMap& sectionMap() const
+        {
+            return m_sectionMap;
+        }
 
-    int check_config(varconf::Config &, unsigned int usage_groups = USAGE_SERVER|
-                                                           USAGE_CLIENT|
-                                                           USAGE_CYCMD|
-                                                           USAGE_DBASE) const;
+        int check_config(varconf::Config&, unsigned int usage_groups = USAGE_SERVER |
+                                                                       USAGE_CLIENT |
+                                                                       USAGE_CYCMD |
+                                                                       USAGE_DBASE) const;
 
-    void addOption(const std::string & section,
-                   const std::string & setting,
-                   Option *);
+        void addOption(const std::string& section,
+                       const std::string& setting,
+                       std::unique_ptr<Option> option);
 };
 
-Options * Options::m_instance = nullptr;
+Options* Options::m_instance = nullptr;
 
 Options::Options()
 {
-    const usage_data * ud = &usage_options[0];
+    const usage_data* ud = &usage_options[0];
     for (; ud->section != nullptr; ++ud) {
-        m_sectionMap[ud->section].insert(std::make_pair(ud->option,
-              std::unique_ptr<Option>(new DumbOption(ud->value, ud->description, ud->dflt))));
+        m_sectionMap[ud->section].emplace(ud->option,
+                                          std::make_unique<DumbOption>(ud->value, ud->description, ud->dflt));
     }
 }
 
-int Options::check_config(varconf::Config & config,
+int Options::check_config(varconf::Config& config,
                           unsigned int) const
 {
     auto I = m_sectionMap.begin();
     auto Iend = m_sectionMap.end();
     for (; I != Iend; ++I) {
-        const std::string & section_name = I->first;
-        const OptionMap & section_help = I->second;
-        const varconf::sec_map & section = config.getSection(section_name);
+        const std::string& section_name = I->first;
+        const OptionMap& section_help = I->second;
+        const varconf::sec_map& section = config.getSection(section_name);
 
         auto J = section.begin();
         auto Jend = section.end();
         for (; J != Jend; ++J) {
-            const std::string & option_name = J->first;
+            const std::string& option_name = J->first;
             if (section_help.find(J->first) == section_help.end() &&
                 J->second->scope() == varconf::INSTANCE) {
                 log(WARNING, String::compose("Invalid option -- %1:%2",
@@ -389,64 +416,64 @@ int Options::check_config(varconf::Config & config,
     return 0;
 }
 
-void Options::addOption(const std::string & section,
-                        const std::string & setting,
-                        Option * option)
+void Options::addOption(const std::string& section,
+                        const std::string& setting,
+                        std::unique_ptr<Option> option)
 {
-    OptionMap & config_section = m_sectionMap[section];
+    OptionMap& config_section = m_sectionMap[section];
     if (config_section.find(setting) != config_section.end()) {
         log(ERROR, String::compose("Config option %1:%2 already defined",
                                    section, setting));
         return;
     }
-    m_sectionMap[section].insert(std::make_pair(setting, std::unique_ptr<Option>(option)));
+    m_sectionMap[section].emplace(setting, std::move(option));
 }
 
-int_config_register::int_config_register(int & var,
-                                         const char * section,
-                                         const char * setting,
-                                         const char * help)
+int_config_register::int_config_register(int& var,
+                                         const char* section,
+                                         const char* setting,
+                                         const char* help)
 {
     Options::instance()->addOption(section, setting,
-                                   new StaticOption<int>("<foo>", help, var));
+                                   std::make_unique<StaticOption<int>>("<foo>", help, var));
 }
 
-bool_config_register::bool_config_register(bool & var,
-                                           const char * section,
-                                           const char * setting,
-                                           const char * help)
+bool_config_register::bool_config_register(bool& var,
+                                           const char* section,
+                                           const char* setting,
+                                           const char* help)
 {
     Options::instance()->addOption(section, setting,
-                                   new StaticOption<bool>("<foo>", help, var));
+                                   std::make_unique<StaticOption<bool>>("<foo>", help, var));
 }
 
-string_config_register::string_config_register(std::string & var,
-                                               const char * section,
-                                               const char * setting,
-                                               const char * help)
+string_config_register::string_config_register(std::string& var,
+                                               const char* section,
+                                               const char* setting,
+                                               const char* help)
 {
     Options::instance()->addOption(section, setting,
-                                   new StaticOption<std::string>("<foo>", help, var));
+                                   std::make_unique<StaticOption<std::string>>("<foo>", help, var));
 }
 
-unixsock_config_register::unixsock_config_register(std::string & var,
-                                                   const char * section,
-                                                   const char * setting,
-                                                   const char * help,
-                                                   const char * format)
+unixsock_config_register::unixsock_config_register(std::string& var,
+                                                   const char* section,
+                                                   const char* setting,
+                                                   const char* help,
+                                                   const char* format)
 {
     Options::instance()->addOption(section, setting,
-                                   new UnixSockOption("<filename>", help, var, format));
+                                   std::make_unique<UnixSockOption>("<filename>", help, var, format));
 }
 
-void readInstanceConfiguration(const std::string & section);
+void readInstanceConfiguration(const std::string& section);
 
-int loadConfig(int argc, char ** argv, int usage)
+int loadConfig(int argc, char** argv, int usage)
 {
     global_conf = varconf::Config::inst();
 
     //Listen for errors from Varconf and write to the log.
-    global_conf->sige.connect([](const char* error){
+    global_conf->sige.connect([](const char* error) {
         log(ERROR, error);
     });
 
@@ -464,7 +491,7 @@ int loadConfig(int argc, char ** argv, int usage)
 
     // See if the user has set the install directory on the command line
     bool home_dir_config = false;
-    char * home = getenv("HOME");
+    char* home = getenv("HOME");
 
     // Read in only the users settings, and the commandline settings.
     if (home != nullptr && boost::filesystem::exists(std::string(home) + "/.cyphesis.vconf")) {
@@ -504,8 +531,8 @@ int loadConfig(int argc, char ** argv, int usage)
                                                  varconf::GLOBAL);
     if (!main_config) {
         log(ERROR, String::compose("Unable to read main config file \"%1\"",
-                                      etc_directory +
-                                      "/cyphesis/cyphesis.vconf"));
+                                   etc_directory +
+                                   "/cyphesis/cyphesis.vconf"));
         if (home_dir_config) {
             log(INFO, "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis.");
         } else {
@@ -539,7 +566,7 @@ int loadConfig(int argc, char ** argv, int usage)
     readConfigItem("cyphesis", "dynamic_port_start", dynamic_port_start);
     readConfigItem("cyphesis", "dynamic_port_end", dynamic_port_end);
 
-    Options * options = Options::instance();
+    Options* options = Options::instance();
 
     auto I = options->sectionMap().begin();
     auto Iend = options->sectionMap().end();
@@ -573,7 +600,7 @@ int loadConfig(int argc, char ** argv, int usage)
 
 void updateUserConfiguration()
 {
-    char * home = getenv("HOME");
+    char* home = getenv("HOME");
 
     // Write out any changes that have been overridden at user scope. It
     // may be a good idea to do this at shutdown.
@@ -583,7 +610,7 @@ void updateUserConfiguration()
 
 }
 
-void readInstanceConfiguration(const std::string & section)
+void readInstanceConfiguration(const std::string& section)
 {
     // Config is now loaded. Now set the values of some globals.
 
@@ -650,18 +677,18 @@ void readInstanceConfiguration(const std::string & section)
 
 }
 
-void reportVersion(const char * prgname)
+void reportVersion(const char* prgname)
 {
     std::cout << prgname << " (cyphesis) " << consts::version
               << " (WorldForge)" << std::endl << std::flush;
 }
 
-void showUsage(const char * prgname, unsigned int usage_flags, const char * extras)
+void showUsage(const char* prgname, unsigned int usage_flags, const char* extras)
 {
     //Create a lookup table of the commands and flags in "usage"
     std::map<std::string, unsigned int> default_commands_flags;
 
-    const usage_data * ud = &usage_options[0];
+    const usage_data* ud = &usage_options[0];
     for (; ud->section != nullptr; ++ud) {
         std::stringstream ss;
         ss << ud->section << ":" << ud->option;
@@ -679,7 +706,6 @@ void showUsage(const char * prgname, unsigned int usage_flags, const char * extr
     };
 
 
-
     std::cout << "Usage: " << prgname << " [options]";
     if (extras != nullptr) {
         std::cout << " " << extras;
@@ -689,7 +715,7 @@ void showUsage(const char * prgname, unsigned int usage_flags, const char * extr
 
     size_t column_width = 0;
 
-    Options * options = Options::instance();
+    Options* options = Options::instance();
 
     auto I = options->sectionMap().begin();
     auto Iend = options->sectionMap().end();
@@ -722,7 +748,7 @@ void showUsage(const char * prgname, unsigned int usage_flags, const char * extr
                 } else {
                     std::cout << "  --" << J->first;
                 }
-                const Option * opt = J->second.get();
+                const Option* opt = J->second.get();
                 if (!opt->value().empty()) {
                     std::cout << "=" << opt->value();
                 }
