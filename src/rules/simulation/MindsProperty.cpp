@@ -794,32 +794,18 @@ void MindsProperty::removeMind(Router* mind, LocatedEntity* entity)
         m_data.erase(I);
     }
 
-    //If there are no more minds controlling we should either remove a transient entity, or stop a moving one.
+    //If there are no more minds controlling we should stop all propelling movement.
     if (m_data.empty()) {
-        //If the entity is marked as "transient" we should remove it from the world once it's not controlled anymore.
-        if (entity->getProperty(TransientProperty::property_name)) {
-            log(NOTICE, "Removing entity marked as transient when mind disconnected. " + entity->describeEntity());
+        // Send a move op stopping the current movement
+        Atlas::Objects::Entity::Anonymous move_arg;
+        move_arg->setId(entity->getId());
+        move_arg->setAttr("propel", Vector3D::ZERO().toAtlas());
 
-            Atlas::Objects::Operation::Delete delOp;
-            delOp->setTo(entity->getId());
-            Atlas::Objects::Entity::Anonymous anon;
-            anon->setId(entity->getId());
-            delOp->setArgs1(anon);
-
-            entity->sendWorld(delOp);
-        } else {
-            // Send a move op stopping the current movement
-            Atlas::Objects::Entity::Anonymous move_arg;
-            move_arg->setId(entity->getId());
-            move_arg->setAttr("propel", Vector3D::ZERO().toAtlas());
-            ::addToEntity(Vector3D::ZERO(), move_arg->modifyVelocity());
-
-            Atlas::Objects::Operation::Move move;
-            move->setFrom(entity->getId());
-            move->setTo(entity->getId());
-            move->setArgs1(move_arg);
-            entity->sendWorld(move);
-        }
+        Atlas::Objects::Operation::Move move;
+        move->setFrom(entity->getId());
+        move->setTo(entity->getId());
+        move->setArgs1(move_arg);
+        entity->sendWorld(move);
     }
 }
 

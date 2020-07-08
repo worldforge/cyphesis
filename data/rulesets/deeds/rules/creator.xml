@@ -73,6 +73,14 @@
             <map name="visibility">
                 <string name="default">private</string>
             </map>
+            <map name="__scripts">
+                <list name="prepend">
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.objects.characters.Creator.Creator</string>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">creator</string>
         <string name="objtype">class</string>
