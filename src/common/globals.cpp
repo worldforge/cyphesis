@@ -107,6 +107,7 @@ static const usage_data usage_options[] = {
         {CYPHESIS, "assetsdir",          "<directory>",  "",              "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S},
         {CYPHESIS, "ruleset",            "<name>",       DEFAULT_RULESET, "Ruleset name",                                                                                                   S | C | D |
                                                                                                                                                                                             A},
+        {CYPHESIS, "autoimport",         "<path>",       "",              "Path to world file to import if world is empty",                                                                  S},
         {CYPHESIS, "servername",         "<name>",       "<hostname>",    "Published name of the server",                                                                                   S | C},
         {CYPHESIS, "tcpport",            "<portnumber>", "6767",          "Network listen port for client connections",                                                                     S | C | M},
         {CYPHESIS, "dynamic_port_start", "<portnumber>", "6800",          "Lowest port to try and used for dyanmic ports",                                                                  S},
@@ -123,6 +124,7 @@ static const usage_data usage_options[] = {
         {SLAVE,    "server",             "<hostname>",   "localhost",     "Master server to connect the slave to",                                                                          M},
         {nullptr,  nullptr,              nullptr,        nullptr}
 };
+
 
 static int check_tmp_path(const std::string& dir)
 {
@@ -395,19 +397,15 @@ Options::Options()
 int Options::check_config(varconf::Config& config,
                           unsigned int) const
 {
-    auto I = m_sectionMap.begin();
-    auto Iend = m_sectionMap.end();
-    for (; I != Iend; ++I) {
-        const std::string& section_name = I->first;
-        const OptionMap& section_help = I->second;
+    for (auto& section_entry : m_sectionMap) {
+        const std::string& section_name = section_entry.first;
+        const OptionMap& section_help = section_entry.second;
         const varconf::sec_map& section = config.getSection(section_name);
 
-        auto J = section.begin();
-        auto Jend = section.end();
-        for (; J != Jend; ++J) {
-            const std::string& option_name = J->first;
-            if (section_help.find(J->first) == section_help.end() &&
-                J->second->scope() == varconf::INSTANCE) {
+        for (auto& entry : section) {
+            const std::string& option_name = entry.first;
+            if (section_help.find(option_name) == section_help.end() &&
+                entry.second->scope() == varconf::INSTANCE) {
                 log(WARNING, String::compose("Invalid option -- %1:%2",
                                              section_name, option_name));
             }
@@ -568,30 +566,22 @@ int loadConfig(int argc, char** argv, int usage)
 
     Options* options = Options::instance();
 
-    auto I = options->sectionMap().begin();
-    auto Iend = options->sectionMap().end();
-    OptionMap::const_iterator J;
-    OptionMap::const_iterator Jend;
-    for (; I != Iend; ++I) {
-        J = I->second.begin();
-        Jend = I->second.end();
-        for (; J != Jend; ++J) {
-            if (global_conf->findItem(I->first, J->first)) {
-                J->second->read(global_conf->getItem(I->first, J->first));
+
+    for (auto& section_entry : options->sectionMap()) {
+        for (auto& entry: section_entry.second) {
+            if (global_conf->findItem(section_entry.first, entry.first)) {
+                entry.second->read(global_conf->getItem(section_entry.first, entry.first));
             } else {
-                J->second->missing();
+                entry.second->missing();
             }
         }
     }
 
     readInstanceConfiguration(instance);
 
-    I = options->sectionMap().begin();
-    for (; I != Iend; ++I) {
-        J = I->second.begin();
-        Jend = I->second.end();
-        for (; J != Jend; ++J) {
-            J->second->postProcess();
+    for (auto& section_entry : options->sectionMap()) {
+        for (auto& entry: section_entry.second) {
+            entry.second->postProcess();
         }
     }
 
@@ -717,16 +707,11 @@ void showUsage(const char* prgname, unsigned int usage_flags, const char* extras
 
     Options* options = Options::instance();
 
-    auto I = options->sectionMap().begin();
-    auto Iend = options->sectionMap().end();
-    OptionMap::const_iterator J;
-    OptionMap::const_iterator Jend;
-    for (; I != Iend; ++I) {
-        J = I->second.begin();
-        Jend = I->second.end();
-        for (; J != Jend; ++J) {
-            if (isAllowed(I->first, J->first)) {
-                column_width = std::max(column_width, I->first.size() + J->first.size() + J->second->value().size() + 2);
+
+    for (auto& section_entry : options->sectionMap()) {
+        for (auto& entry: section_entry.second) {
+            if (isAllowed(section_entry.first, entry.first)) {
+                column_width = std::max(column_width, section_entry.first.size() + entry.first.size() + entry.second->value().size() + 2);
             }
         }
     }
@@ -737,23 +722,20 @@ void showUsage(const char* prgname, unsigned int usage_flags, const char* extras
     std::cout << "  --version, -v     Display the version information and exit"
               << std::endl << std::endl;
 
-    I = options->sectionMap().begin();
-    for (; I != Iend; ++I) {
-        J = I->second.begin();
-        Jend = I->second.end();
-        for (; J != Jend; ++J) {
-            if (isAllowed(I->first, J->first)) {
-                if (!I->first.empty()) {
-                    std::cout << "  --" << I->first << ":" << J->first;
+    for (auto& section_entry : options->sectionMap()) {
+        for (auto& entry: section_entry.second) {
+            if (isAllowed(section_entry.first, entry.first)) {
+                if (!section_entry.first.empty()) {
+                    std::cout << "  --" << section_entry.first << ":" << entry.first;
                 } else {
-                    std::cout << "  --" << J->first;
+                    std::cout << "  --" << entry.first;
                 }
-                const Option* opt = J->second.get();
+                const Option* opt = entry.second.get();
                 if (!opt->value().empty()) {
                     std::cout << "=" << opt->value();
                 }
                 if (opt->size() != 0) {
-                    size_t len = I->first.size() + 1 + J->first.size();
+                    size_t len = section_entry.first.size() + 1 + entry.first.size();
                     if (!opt->value().empty()) {
                         len += (opt->value().size() + 1);
                     }
@@ -765,5 +747,6 @@ void showUsage(const char* prgname, unsigned int usage_flags, const char* extras
             }
         }
     }
+    
     std::cout << std::flush;
 }
