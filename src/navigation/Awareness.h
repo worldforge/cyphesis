@@ -145,6 +145,7 @@ class Awareness
         Awareness(const LocatedEntity& domainEntity,
                   float agentRadius,
                   float agentHeight,
+                  float stepHeight,
                   IHeightProvider& heightProvider,
                   const WFMath::AxisBox<3>& extent,
                   int tileSize = 64);
@@ -332,6 +333,7 @@ class Awareness
          */
         float mAgentRadius;
 
+        float mStepHeight;
 
         /**
          * @brief The desired number of tiles for one observer.

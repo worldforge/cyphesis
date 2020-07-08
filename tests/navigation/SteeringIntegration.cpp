@@ -165,7 +165,7 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
         } heightProvider;
 
-        Awareness awareness(*worldEntity, avatarHorizontalRadius, 2, heightProvider, extent, tileSize);
+        Awareness awareness(*worldEntity, avatarHorizontalRadius, 2, 0.5, heightProvider, extent, tileSize);
         steering.setAwareness(&awareness);
         auto rebuildAllTilesFn = [&]() {
             while (true) {
@@ -244,7 +244,7 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
         } heightProvider;
 
-        Awareness awareness(*worldEntity, avatarHorizontalRadius, 2, heightProvider, extent, tileSize);
+        Awareness awareness(*worldEntity, avatarHorizontalRadius, 2, 0.5, heightProvider, extent, tileSize);
         steering.setAwareness(&awareness);
         auto rebuildAllTilesFn = [&]() {
             while (true) {
@@ -378,13 +378,21 @@ struct SteeringIntegration : public Cyphesis::TestBase
         Ref<MemEntity> avatarChildEntity(new MemEntity("4", 4));
         Ref<MemEntity> obstacleEntity(new MemEntity("5", 5));
         obstacleEntity->m_location.m_bBox = {{-1, 0, -1},
-                                             {1,  1, 1}};
+                                             {1,  2, 1}};
         obstacleEntity->m_location.m_pos = {0, 0, 0};
         obstacleEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+
+        Ref<MemEntity> smallObstacleEntity(new MemEntity("6", 6));
+        smallObstacleEntity->m_location.m_pos = {0, 0, 0};
+        smallObstacleEntity->m_location.m_bBox = {{0.2, 0, 0.2},
+                                          {0.2,  0.2, 0.2}};
+        smallObstacleEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
+
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
         worldEntity->addChild(*obstacleEntity);
+        worldEntity->addChild(*smallObstacleEntity);
         avatarEntity->addChild(*avatarChildEntity);
         Steering steering(*avatarEntity);
         WFMath::AxisBox<3> extent = {{-64, -64, -64},
@@ -400,7 +408,7 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
         } heightProvider;
 
-        Awareness awareness(*worldEntity, avatarHorizontalRadius, 2, heightProvider, extent, tileSize);
+        Awareness awareness(*worldEntity, avatarHorizontalRadius, 2, 0.5, heightProvider, extent, tileSize);
         steering.setAwareness(&awareness);
         auto rebuildAllTilesFn = [&]() {
             while (true) {
@@ -498,6 +506,16 @@ struct SteeringIntegration : public Cyphesis::TestBase
         ASSERT_EQUAL(1, result); //Should be one vert since it's a straight line
         ASSERT_EQUAL(WFMath::Point<2>(20, 0), to2D(steering.getPath()[0]))
         ASSERT_FALSE(steering.isAtCurrentDestination(0))
+
+        //Add the small obstacle entity between the avatar and the destination.
+        // Since it can be stepped over/on it should not affect the path
+
+        smallObstacleEntity->m_location.m_pos = {10,0,0};
+        awareness.addEntity(*avatarEntity, *smallObstacleEntity, false);
+        steering.setDestination({{EntityLocation(worldEntity, {20, 0, 0})}, Steering::MeasureType::CENTER, Steering::MeasureType::CENTER, desiredDistance}, 0);
+        rebuildAllTilesFn();
+        result = steering.updatePath(0);
+        ASSERT_EQUAL(1, result); //Should be one vert since it's a straight line
 
 
     }

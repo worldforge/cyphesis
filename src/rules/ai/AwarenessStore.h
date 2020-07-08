@@ -35,7 +35,11 @@ class LocatedEntity;
 class AwarenessStore
 {
     public:
-        AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize = 64);
+        AwarenessStore(float agentRadius,
+                       float agentHeight,
+                       float stepHeight,
+                       IHeightProvider& heightProvider,
+                       int tileSize = 64);
 
         virtual ~AwarenessStore() = default;
 
@@ -47,6 +51,7 @@ class AwarenessStore
          */
         float mAgentRadius;
         float mAgentHeight;
+        float mStepHeight;
 
         IHeightProvider& mHeightProvider;
 

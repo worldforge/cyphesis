@@ -158,6 +158,7 @@ class AwarenessContext : public rcContext
 Awareness::Awareness(const LocatedEntity& domainEntity,
                      float agentRadius,
                      float agentHeight,
+                     float stepHeight,
                      IHeightProvider& heightProvider,
                      const WFMath::AxisBox<3>& extent,
                      int tileSize) :
@@ -167,6 +168,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity,
         mTcomp(nullptr),
         mTmproc(nullptr),
         mAgentRadius(agentRadius),
+        mStepHeight(stepHeight),
         mBaseTileAmount(128),
         mDesiredTilesAmount(128),
         mCtx(new AwarenessContext()),
@@ -184,7 +186,7 @@ Awareness::Awareness(const LocatedEntity& domainEntity,
         validExtent = {{-100, -100, -100},
                        {100,  100,  100}};
     }
-    debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius);
+    debug_print("Creating awareness with extent " << extent << " and agent radius " << agentRadius)
     try {
         auto talloc = std::make_unique<LinearAllocator>(128000);
         auto tcomp = std::make_unique<FastLZCompressor>();
@@ -227,8 +229,8 @@ Awareness::Awareness(const LocatedEntity& domainEntity,
         mCfg.cs = cellsize;
         mCfg.ch = mCfg.cs / 2.0f; //Height of one voxel; should really only come into play when doing 3d traversal
         //	m_cfg.ch = std::max(upper.z() - lower.z(), 100.0f); //For 2d traversal make the voxel size as large as possible
-        mCfg.walkableHeight = std::ceil(agentHeight / mCfg.ch); //This is in voxels
-        mCfg.walkableClimb = 100; //TODO: implement proper system for limiting climbing; for now just use a large voxel number
+        mCfg.walkableHeight = std::max(3, static_cast<int>(std::ceil(agentHeight / mCfg.ch))); //This is in voxels
+        mCfg.walkableClimb = std::ceil(stepHeight / mCfg.ch); //This is in voxels
         mCfg.walkableRadius = std::ceil(mAgentRadius / mCfg.cs);
         mCfg.walkableSlopeAngle = 70; //TODO: implement proper system for limiting climbing; for now just use 70 degrees
 
@@ -370,7 +372,7 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
             mMovingEntities.insert(entityEntry.get());
         }
         I = mObservedEntities.insert(std::make_pair(entity.getIntId(), std::move(entityEntry))).first;
-        debug_print("Creating new entry for " << entity.getId());
+        debug_print("Creating new entry for " << entity.getId())
     } else {
         I->second->numberOfObservers++;
     }
@@ -390,7 +392,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
 {
     auto I = mObservedEntities.find(entity.getIntId());
     if (I != mObservedEntities.end()) {
-        debug_print("Removing entity " << entity.getId());
+        debug_print("Removing entity " << entity.getId())
         //Decrease the number of observers, and delete entry if there's none left
         auto& entityEntry = I->second;
         if (entityEntry->numberOfObservers == 0) {
@@ -431,7 +433,7 @@ void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEnt
         if (!entityEntry->isActorOwned || entityEntry->entityId == observer.getIntId()) {
             //If an entity was ignored previously because it didn't have a bbox, but now has, it shouldn't be ignored anymore.
             if (entityEntry->isIgnored && entity.m_location.bBox().isValid()) {
-                debug_print("Stopped ignoring entity " << entity.getId());
+                debug_print("Stopped ignoring entity " << entity.getId())
 
                 entityEntry->isIgnored = false;
             }
@@ -450,7 +452,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
     } else if (!entityEntry.isIgnored) {
         //Check if the bbox now is invalid
         if (!entity.m_location.bBox().isValid()) {
-            debug_print("Ignoring entity " << entity.getId());
+            debug_print("Ignoring entity " << entity.getId())
             entityEntry.location = entity.m_location;
             entityEntry.isIgnored = true;
 
@@ -473,11 +475,11 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                 || ((entityEntry.location.orientation().isValid() || entity.m_location.orientation().isValid()) && entityEntry.location.orientation() != entity.m_location.orientation())) {
                 entityEntry.location = entity.m_location;
 
-                debug_print("Updating entity location for entity " << entityEntry.entityId);
+                debug_print("Updating entity location for entity " << entityEntry.entityId)
 
                 //If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
                 if (entity.m_location.m_velocity.isValid() && entity.m_location.m_velocity != WFMath::Vector<3>::ZERO()) {
-                    debug_print("Entity is now moving.");
+                    debug_print("Entity is now moving.")
                     mMovingEntities.insert(&entityEntry);
                     entityEntry.isMoving = true;
                     auto existingI = mEntityAreas.find(&entityEntry);
@@ -502,7 +504,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                             mEntityAreas.insert(entry);
                         }
                     }
-                    debug_print("Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size());
+                    debug_print("Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size())
                 }
             }
         }
@@ -630,7 +632,7 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
             }
         }
     }
-    debug_print("Marking tiles as dirty. Aware: " << mDirtyAwareTiles.size() << " Unaware: " << mDirtyUnwareTiles.size());
+    debug_print("Marking tiles as dirty. Aware: " << mDirtyAwareTiles.size() << " Unaware: " << mDirtyUnwareTiles.size())
     if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
         EventTileDirty();
     }
@@ -639,7 +641,7 @@ void Awareness::markTilesAsDirty(int tileMinXIndex, int tileMaxXIndex, int tileM
 size_t Awareness::rebuildDirtyTile()
 {
     if (!mDirtyAwareTiles.empty()) {
-        debug_print("Rebuilding aware tiles. Number of dirty aware tiles: " << mDirtyAwareTiles.size());
+        debug_print("Rebuilding aware tiles. Number of dirty aware tiles: " << mDirtyAwareTiles.size())
         const auto tileIndexI = mDirtyAwareOrderedTiles.begin();
         const auto& tileIndex = *tileIndexI;
 
@@ -949,7 +951,7 @@ void Awareness::setAwarenessArea(const std::string& areaId, const WFMath::RotBox
 
     debug_print(
             "Awareness area set: " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size() << " Aware tile count: "
-                                   << mAwareTiles.size());
+                                   << mAwareTiles.size())
 
     if (!wereDirtyTiles && !mDirtyAwareTiles.empty()) {
         EventTileDirty();
@@ -1044,6 +1046,12 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
         //we now have to get the location of the entity in world space
         const WFMath::Point<3>& pos = entity.location.pos();
         const WFMath::Quaternion& orientation = entity.location.orientation();
+        const BBox& bbox = entity.location.m_bBox;
+
+        //If it's below walkable height just skip it.
+        if (bbox.highCorner().y() - bbox.lowCorner().y() < mStepHeight) {
+            return;
+        }
 
         if (pos.isValid() && orientation.isValid()) {
 
@@ -1053,7 +1061,6 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
             WFMath::RotMatrix<2> rm;
             rm.rotation(theta);
 
-            const BBox& bbox = entity.location.m_bBox;
 
             WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().z());
             WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().z());

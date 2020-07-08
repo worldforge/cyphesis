@@ -31,7 +31,7 @@ static const bool debug_flag = false;
 
 
 AwarenessStoreProvider::AwarenessStoreProvider(IHeightProvider& heightProvider)
-    : m_heightProvider(heightProvider)
+        : m_heightProvider(heightProvider)
 {
 }
 
@@ -58,8 +58,17 @@ AwarenessStore& AwarenessStoreProvider::getStore(const TypeNode* type, int tileS
         WFMath::AxisBox<2> agent2dBbox(WFMath::Point<2>(bbox.lowCorner().x(), bbox.lowCorner().z()), WFMath::Point<2>(bbox.highCorner().x(), bbox.highCorner().z()));
         agentRadius = std::max(0.2, agent2dBbox.boundingSphere().radius()); //Don't make the radius smaller than 0.2 meters, to avoid too many cells
     }
+    double stepHeight = 0.2;
+    auto stepFactorI = type->defaults().find("step_factor");
+    if (stepFactorI != type->defaults().end()) {
+        Atlas::Message::Element data;
+        stepFactorI->second->get(data);
+        if (data.isNum()) {
+            stepHeight = agentHeight * data.asNum();
+        }
+    }
 
-    return m_awarenessStores.emplace(type->name(), AwarenessStore(agentRadius, (float)agentHeight, m_heightProvider, tileSize)).first->second;
+    return m_awarenessStores.emplace(type->name(), AwarenessStore(agentRadius, (float) agentHeight, stepHeight, m_heightProvider, tileSize)).first->second;
 
 }
 

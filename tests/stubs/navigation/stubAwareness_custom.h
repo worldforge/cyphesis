@@ -15,7 +15,7 @@ class MRUList
 
 #ifndef STUB_Awareness_Awareness
 #define STUB_Awareness_Awareness
-Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float agentHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize )
+Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float agentHeight, float stepHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize )
     : mHeightProvider(heightProvider), mDomainEntity(domainEntity)
 {
 

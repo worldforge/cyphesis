@@ -9,7 +9,7 @@
 
 #ifndef STUB_AwarenessStore_AwarenessStore
 //#define STUB_AwarenessStore_AwarenessStore
-   AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, IHeightProvider& heightProvider, int tileSize )
+   AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, float stepHeight, IHeightProvider& heightProvider, int tileSize )
   {
     
   }
