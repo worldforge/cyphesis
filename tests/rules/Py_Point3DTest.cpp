@@ -79,7 +79,7 @@ int main()
     run_python_string("from physics import Vector3D");
     run_python_string("v=Vector3D(1,0,0)");
     run_python_string("print(p + v)");
-    expect_python_error("print(p + p1)", PyExc_TypeError);
+    run_python_string("print(p + p1)");
     run_python_string("print(p - v)");
     run_python_string("print(p - p1)");
     expect_python_error("print(p - 1.0)", PyExc_TypeError);

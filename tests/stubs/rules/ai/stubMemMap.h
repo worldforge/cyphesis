@@ -130,7 +130,7 @@
 
 #ifndef STUB_MemMap_addEntityMemory
 //#define STUB_MemMap_addEntityMemory
-  void MemMap::addEntityMemory(const std::string& id, const std::string& memory, const Atlas::Message::Element& value)
+  void MemMap::addEntityMemory(const std::string& id, const std::string& memory, Atlas::Message::Element value)
   {
     
   }
