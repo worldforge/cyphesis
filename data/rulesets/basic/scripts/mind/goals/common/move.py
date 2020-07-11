@@ -603,6 +603,7 @@ class Pursuit(Goal):
         me.steering.set_destination(lst_of_what[0], ai.EDGE, ai.EDGE)
         return True
 
+
 class Avoid(Pursuit):
     """avoid something at range"""
 
@@ -753,7 +754,7 @@ class Roam(Goal):
         waypoint = me.get_knowledge("location", waypoint_name)
 
         if not waypoint:
-            print("Could not location with name '%s'." % waypoint_name)
+            print("Could not find location with name '%s'." % waypoint_name)
             return
 
         loc = me.entity.location.copy()

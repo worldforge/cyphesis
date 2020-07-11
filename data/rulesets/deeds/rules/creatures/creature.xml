@@ -61,11 +61,11 @@
              This way of limiting inventory might not be perfect though. It might be revisited.
              For now it's disabled.
              -->
-<!--            <map name="destination_constraint">-->
-<!--                <string name="default">describe("Entity is too large to fit in inventory.", (entity.bbox = none or (entity.bbox.width &lt; 2.5 and entity.bbox.height &lt; 2.5 and entity.bbox.depth-->
-<!--                    &lt; 2.5)))-->
-<!--                </string>-->
-<!--            </map>-->
+            <!--            <map name="destination_constraint">-->
+            <!--                <string name="default">describe("Entity is too large to fit in inventory.", (entity.bbox = none or (entity.bbox.width &lt; 2.5 and entity.bbox.height &lt; 2.5 and entity.bbox.depth-->
+            <!--                    &lt; 2.5)))-->
+            <!--                </string>-->
+            <!--            </map>-->
             <!-- By default don't allow it to move much. This is overridden in sub types. -->
             <map name="_mover_mass_max">
                 <float name="default">1.0</float>
@@ -103,6 +103,10 @@
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.Immortality.Immortality</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.OriginRecording.OriginRecording</string>
                     </map>
                 </list>
             </map>

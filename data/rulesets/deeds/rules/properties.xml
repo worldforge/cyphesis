@@ -251,5 +251,12 @@
         <string name="description">The max scale of an entity. This is a single value; when enforcing one dimension of the actual scale value will be used (often y).</string>
     </map>
 
+    <map>
+        <string name="id">_origin</string>
+        <string name="objtype">type</string>
+        <string name="parent">map</string>
+        <string name="description">Records the location into which the entity is spawned. This is used by NPCs to allow for rules where they wander close to where they are spawned.</string>
+    </map>
+
 
 </atlas>

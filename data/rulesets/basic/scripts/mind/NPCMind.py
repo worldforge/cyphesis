@@ -8,7 +8,7 @@ import ai
 import entity_filter
 from atlas import Operation, Entity, Oplist
 from common import log, const
-from physics import Vector3D, distance_to, Quaternion
+from physics import Vector3D, Point3D, distance_to, Quaternion
 from rules import Location
 
 from mind.Goal import goal_create
@@ -86,12 +86,7 @@ class NPCMind(ai.Mind):
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
         self.add_property_callback('_relations', 'relations_updated')
-
-        # Check if there's an "origin" location, if not add one.
-        if not self.get_knowledge("location", "origin"):
-            # TODO: store in server
-            print('Adding origin location.')
-            self.add_knowledge("location", "origin", self.entity.location.copy())
+        self.add_property_callback('_origin', 'origin_updated')
 
     def goals_updated(self, entity):
         # For now just clear and recreate all goals when _goals changes. We would probably rather only recreate those that have changed though.
@@ -103,6 +98,11 @@ class NPCMind(ai.Mind):
             for goal_element in goals:
                 goal = goal_create(goal_element)
                 self.insert_goal(goal)
+
+    def origin_updated(self, entity):
+        origin = entity.get_prop_map("_origin")
+        if origin:
+            self.add_knowledge("location", "origin", Location(self.map.get_add(origin["$eid"]), Point3D(origin["pos"])))
 
     def knowledge_updated(self, entity):
         if entity.has_prop_map('_knowledge'):
