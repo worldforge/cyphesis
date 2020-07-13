@@ -25,6 +25,10 @@
                         <string name="language">python</string>
                         <string name="name">world.traits.PlantNourishing.PlantNourishing</string>
                     </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.GrazeNourishing.GrazeNourishing</string>
+                    </map>
                 </list>
             </map>
             <map name="contain_constraint">
