@@ -15,6 +15,38 @@
             <map name="_modifier_consume_type_meat">
                 <float name="default">0</float>
             </map>
+            <map name="_usages">
+                <map name="default">
+                    <map name="consume">
+                        <string name="name">Graze</string>
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity_location</string>
+                                <string name="constraint">describe('Target must be land.', entity instance_of types.land) &amp;&amp; describe('Too far away.', actor can_reach entity_location)</string>
+                                <int name="min">1</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="handler">world.tasks.Graze.graze</string>
+                    </map>
+                </map>
+            </map>
+            <map name="_goals">
+                <list name="append">
+                    <map>
+                        <string name="class">mind.goals.common.misc_goal.Graze</string>
+                    </map>
+                    <map>
+                        <string name="class">mind.goals.common.move.Roam</string>
+                        <map name="params">
+                            <float name="radius">5</float>
+                            <list name="locations">
+                                <string>origin</string>
+                            </list>
+                        </map>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">donkey</string>
         <string name="objtype">class</string>
