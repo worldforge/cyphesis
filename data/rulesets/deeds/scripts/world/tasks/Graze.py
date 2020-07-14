@@ -10,7 +10,7 @@ from world.StoppableTask import StoppableTask
 def graze(instance):
     usage_name = instance.op.parent
 
-    task = Graze(instance, duration=2, tick_interval=1, name=usage_name.capitalize())
+    task = Graze(instance, duration=5, tick_interval=1, name=usage_name.capitalize())
 
     instance.actor.send_world(Operation("sight", instance.op))
 

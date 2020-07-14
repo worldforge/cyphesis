@@ -2,7 +2,6 @@
 # Copyright (C) 1999 Aloril (See the file COPYING for details).
 # Al Riddoch - Added transport_something() goal
 
-import time
 from random import *
 
 import entity_filter
@@ -407,20 +406,21 @@ class Feed(Goal):
 
     def eat(self, me):
         me.remove_knowledge('focus', self.what)
-        if (self.what in me.things) == 0: return
+        if (self.what in me.things) == 0:
+            return
         food = me.find_thing(self.what)[0]
         ent = Entity(food.id)
         return Operation("eat", ent)
 
     def am_i_full(self, me):
-        if hasattr(me, "food") and hasattr(me, "mass"):
-            if me.food > (self.full * me.mass):
-                return 1
-            if me.food < (self.full * me.mass / 4):
-                self.sub_goals[0].range = self.range * 2
-            else:
-                self.sub_goals[0].range = self.range
-        return 0
+        # if hasattr(me, "food") and hasattr(me, "mass"):
+        #     if me.food > (self.full * me.mass):
+        #         return True
+        #     if me.food < (self.full * me.mass / 4):
+        #         self.sub_goals[0].range = self.range * 2
+        #     else:
+        #         self.sub_goals[0].range = self.range
+        return False
 
 
 ########################## BUY AND EAT A MEAL #################################
@@ -429,7 +429,7 @@ class Meal(Feed):
     """Buy a meal from a given location and eat it."""
 
     def __init__(self, what, place, seat=None):
-        if seat == None:
+        if seat is None:
             Goal.__init__(self, "have a meal",
                           self.am_i_full,
                           [MoveMeArea(place, 10),
@@ -470,26 +470,45 @@ class Forage(Feed):
 
 ############################ PECK ###########################################
 
-class Peck(Feed):
-    """Peck at food in a given location."""
+class Graze(Feed):
+    """Graze food from the ground at interval."""
 
     def __init__(self):
-        Goal.__init__(self, "forage for food by name and eat randomly",
-                      self.am_i_full,
-                      [self.do_peck])
-        self.what = "world"
+        Goal.__init__(self,
+                      desc="graze from ground at interval",
+                      fulfilled=self.am_i_full_or_grazing,
+                      sub_goals=[self.continue_task, self.do_peck],
+                      validity=self.have_i_consume_usage)
+        self.what = "land"
+        self.last_time = None
         self.full = 0.2
-        self.vars = ["full"]
+        self.interval = 10
+        self.vars = ["full", "last_time", "interval"]
+
+    def have_i_consume_usage(self, me):
+        usages = me.entity.get_prop_map("_usages")
+        return usages and "consume" in usages
+
+    def am_i_full_or_grazing(self, me):
+        consume_task = get_task(me, "consume")
+        if consume_task:
+            return False
+        return self.am_i_full(me)
+
+    def continue_task(self, me):
+        consume_task = get_task(me, "consume")
+        if consume_task:
+            print("should continue task")
+            return True
 
     def do_peck(self, me):
-        # world =
-        # ground = world.id
-        # op = Operation("eat", ground)
-        target = Location(me.entity.location.parent, me.entity.location.pos)
-        target.pos = Vector3D(target.pos.x + uniform(-1.5, 1.5), target.pos.y, target.pos.z + uniform(-1.5, 1.5))
-        target.velocity = Vector3D(1, 0, 0)
-        # op += Operation("move",  Entity(me.entity.id, location=target))
-        return Operation("move", Entity(me.entity.id, location=target))
+        if not self.last_time or time.time() - self.last_time > self.interval:
+            self.last_time = time.time()
+            # stop moving
+            me.steering.set_destination()
+            print("do graze")
+            return Operation("use", Operation("consume",
+                                              Entity(me.entity.id, targets=[Entity(me.entity.location.parent.id, pos=me.entity.location.pos)])))
 
 
 ############################ BROWSE (FIND FOOD, EAT SOME, MOVE ON) ###########

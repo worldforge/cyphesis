@@ -98,3 +98,10 @@ def get_focused_thing(me, what):
         me.remove_knowledge('focus', what)
         return None
     return thing
+
+
+def get_task(me, task_name):
+    """Gets the task by the name from the 'tasks' property, if it exists."""
+    tasks_prop = me.entity.get_prop_map('tasks')
+    if tasks_prop and task_name in tasks_prop:
+        return tasks_prop[task_name]
