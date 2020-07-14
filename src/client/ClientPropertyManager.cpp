@@ -33,6 +33,7 @@ ClientPropertyManager::ClientPropertyManager()
     installFactory(BBoxProperty::property_name, std::make_unique<PropertyFactory<BBoxProperty>>());
     installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
     installFactory(SolidProperty::property_name, std::make_unique<PropertyFactory<SolidProperty>>());
+    installFactory("propel", std::make_unique<PropertyFactory<Vector3Property>>());
 }
 
 std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name) const

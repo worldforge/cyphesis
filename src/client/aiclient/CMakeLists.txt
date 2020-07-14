@@ -12,9 +12,9 @@ target_link_libraries(cyaiclient
     rulesai
     entityfilter_python
     entityfilter
+    navigation
     rulesbase_python
     rulesbase
-    navigation
     modules
     common
     physics

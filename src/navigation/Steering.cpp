@@ -29,6 +29,7 @@
 #include <wfmath/segment.h>
 
 #include <iostream>
+#include <rules/Vector3Property.h>
 
 static const bool debug_flag = true;
 
@@ -379,7 +380,12 @@ bool Steering::isAtCurrentDestination(double currentTimestamp) const
 SteeringResult Steering::update(double currentTimestamp)
 {
     SteeringResult result{};
-    if (mSteeringEnabled && mAwareness) {
+    if (!mSteeringEnabled) {
+        auto propelProperty = mAvatar.getPropertyClass<Vector3Property>("propel");
+        if (propelProperty && propelProperty->data().isValid() && propelProperty->data() != WFMath::Vector<3>::ZERO()) {
+            result.direction = WFMath::Vector<3>::ZERO();
+        }
+    } else if (mAwareness) {
 
         auto currentEntityPos = getCurrentAvatarPosition(currentTimestamp);
 

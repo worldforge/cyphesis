@@ -42,11 +42,20 @@ int PropelProperty::get(Element& val) const
 
 void PropelProperty::set(const Element& val)
 {
-    try {
-        mData.fromAtlas(val.asList());
-    } catch (Atlas::Message::WrongTypeException&) {
+    if (val.isList()) {
+        try {
+            mData.fromAtlas(val.List());
+        } catch (...) {
+            mData = {};
+            log(ERROR, "PropelProperty::set: Data was not in format which could be parsed into 3d vector.");
+        }
+    } else if (val.isNone()) {
+        mData = {};
+    } else {
+        mData = {};
         log(ERROR, "PropelProperty::set: Data was not in format which could be parsed into 3d vector.");
     }
+
 }
 
 void PropelProperty::add(const std::string& key, MapType& map) const

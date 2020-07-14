@@ -18,6 +18,7 @@
 #include "Vector3Property.h"
 
 #include <wfmath/atlasconv.h>
+#include "common/log.h"
 
 
 Vector3Property::Vector3Property(const Vector3Property& rhs) = default;
@@ -35,7 +36,17 @@ int Vector3Property::get(Atlas::Message::Element& val) const
 void Vector3Property::set(const Atlas::Message::Element& val)
 {
     if (val.isList()) {
-        m_data.fromAtlas(val.List());
+        try {
+            m_data.fromAtlas(val.List());
+        } catch (...) {
+            m_data = {};
+            log(ERROR, "Vector3Property::set: Data was not in format which could be parsed into 3d vector.");
+        }
+    } else if (val.isNone()) {
+        m_data = {};
+    } else {
+        m_data = {};
+        log(ERROR, "Vector3Property::set: Data was not in format which could be parsed into 3d vector.");
     }
 }
 

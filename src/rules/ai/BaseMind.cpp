@@ -104,7 +104,17 @@ void BaseMind::sightCreateOperation(const Operation& op, OpVector& res)
 /// @param res The result of the operation is returned here.
 void BaseMind::sightMoveOperation(const Operation& op, OpVector& res)
 {
-    debug_print("BaseMind::sightOperation(Sight, Move)")
+    const std::vector<Root>& args = op->getArgs();
+    if (args.empty()) {
+        debug_print(" no args!")
+        return;
+    }
+    RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
+    if (!ent.isValid()) {
+        log(ERROR, "Got sight(move) of non-entity");
+        return;
+    }
+    m_map.updateAdd(ent, op->getSeconds());
 }
 
 /// \brief Process the Sight of a Set operation.
