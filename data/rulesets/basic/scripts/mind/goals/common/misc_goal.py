@@ -498,7 +498,6 @@ class Graze(Feed):
     def continue_task(self, me):
         consume_task = get_task(me, "consume")
         if consume_task:
-            print("should continue task")
             return True
 
     def do_peck(self, me):
@@ -506,7 +505,6 @@ class Graze(Feed):
             self.last_time = time.time()
             # stop moving
             me.steering.set_destination()
-            print("do graze")
             return Operation("use", Operation("consume",
                                               Entity(me.entity.id, targets=[Entity(me.entity.location.parent.id, pos=me.entity.location.pos)])))
 
