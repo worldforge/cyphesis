@@ -4,7 +4,7 @@
 #ifndef STUB_COMMON_ENTITYKIT_H
 #define STUB_COMMON_ENTITYKIT_H
 
-#include "common/EntityKit.h"
+#include "server/EntityKit.h"
 #include "stubEntityKit_custom.h"
 
 #ifndef STUB_EntityKit_EntityKit

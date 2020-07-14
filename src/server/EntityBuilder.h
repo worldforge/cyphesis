@@ -19,7 +19,7 @@
 #ifndef SERVER_ENTITY_BUILDER_H
 #define SERVER_ENTITY_BUILDER_H
 
-#include "common/EntityKit.h"
+#include "EntityKit.h"
 #include "rules/simulation/EntityCreator.h"
 
 #include <Atlas/Objects/Root.h>

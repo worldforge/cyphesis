@@ -19,7 +19,7 @@
 #ifndef SERVER_ENTITY_FACTORY_H
 #define SERVER_ENTITY_FACTORY_H
 
-#include "common/EntityKit.h"
+#include "EntityKit.h"
 
 /**
  * An attribute of a class.

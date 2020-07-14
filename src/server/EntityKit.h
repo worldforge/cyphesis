@@ -19,14 +19,14 @@
 #ifndef COMMON_ENTITY_KIT_H
 #define COMMON_ENTITY_KIT_H
 
-#include "TypeNode.h"
+#include "../common/TypeNode.h"
 
-#include <Atlas/Objects/ObjectsFwd.h>
+#include "../../../../../opt/x86_64_debug/include/Atlas-0.7/Atlas/Objects/ObjectsFwd.h"
 
-#include <set>
-#include <map>
-#include <string>
-#include "modules/Ref.h"
+#include "../../../../../../../usr/include/c++/10/set"
+#include "../../../../../../../usr/include/c++/10/map"
+#include "../../../../../../../usr/include/c++/10/string"
+#include "../modules/Ref.h"
 
 namespace Atlas {
     namespace Message {

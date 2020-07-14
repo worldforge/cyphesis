@@ -25,7 +25,7 @@
 
 #include "../TestBase.h"
 
-#include "common/EntityKit.h"
+#include "server/EntityKit.h"
 
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"

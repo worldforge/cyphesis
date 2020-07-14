@@ -19,7 +19,7 @@
 #ifndef SERVER_ARCHETYPE_FACTORY_H
 #define SERVER_ARCHETYPE_FACTORY_H
 
-#include "common/EntityKit.h"
+#include "EntityKit.h"
 
 #include <Atlas/Objects/Entity.h>
 
