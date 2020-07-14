@@ -120,9 +120,9 @@ class EntityFactory : public EntityFactoryBase
 
         ~EntityFactory() override;
 
-        Ref<LocatedEntity> newEntity(const std::string& id,
-                                     long intId,
-                                     const Atlas::Objects::Entity::RootEntity& attributes) override;
+        Ref<Entity> newEntity(const std::string& id,
+                              long intId,
+                              const Atlas::Objects::Entity::RootEntity& attributes) override;
 
         std::unique_ptr<EntityFactoryBase> duplicateFactory() override;
 

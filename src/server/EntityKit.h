@@ -19,14 +19,15 @@
 #ifndef COMMON_ENTITY_KIT_H
 #define COMMON_ENTITY_KIT_H
 
-#include "../common/TypeNode.h"
+#include "common/TypeNode.h"
 
-#include "../../../../../opt/x86_64_debug/include/Atlas-0.7/Atlas/Objects/ObjectsFwd.h"
+#include <Atlas/Objects/ObjectsFwd.h>
 
-#include "../../../../../../../usr/include/c++/10/set"
-#include "../../../../../../../usr/include/c++/10/map"
-#include "../../../../../../../usr/include/c++/10/string"
-#include "../modules/Ref.h"
+#include <set>
+#include <map>
+#include <string>
+#include "modules/Ref.h"
+#include "rules/simulation/Entity.h"
 
 namespace Atlas {
     namespace Message {
@@ -36,7 +37,7 @@ namespace Atlas {
     }
 }
 
-class LocatedEntity;
+class Entity;
 
 template<class T>
 class ScriptKit;
@@ -68,9 +69,9 @@ class EntityKit
         /// @param intId an integer giving the identifier of the Entity.
         /// @param attributes custom attributes set for the new instance
         /// @param attributes the location of the entity
-        virtual Ref<LocatedEntity> newEntity(const std::string& id,
-                                             long intId,
-                                             const Atlas::Objects::Entity::RootEntity& attributes) = 0;
+        virtual Ref<Entity> newEntity(const std::string& id,
+                                      long intId,
+                                      const Atlas::Objects::Entity::RootEntity& attributes) = 0;
 
         virtual void addProperties(const PropertyManager& propertyManager) = 0;
 

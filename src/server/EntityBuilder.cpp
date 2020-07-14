@@ -20,7 +20,7 @@
 #include "EntityFactory.h"
 #include "ArchetypeFactory.h"
 
-#include "rules/LocatedEntity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/debug.h"
 #include "common/Inheritance.h"
@@ -56,7 +56,7 @@ EntityBuilder::~EntityBuilder() = default;
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes) const
+Ref<Entity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes) const
 {
     try {
         return newChildEntity(id, intId, type, attributes);
@@ -67,7 +67,7 @@ Ref<LocatedEntity> EntityBuilder::newEntity(const std::string& id, long intId, c
     }
 }
 
-Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string& id,
+Ref<Entity> EntityBuilder::newChildEntity(const std::string& id,
                                                  long intId,
                                                  const std::string& type,
                                                  const Atlas::Objects::Entity::RootEntity& attributes) const

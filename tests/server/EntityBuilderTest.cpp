@@ -339,7 +339,7 @@ int main(int argc, char** argv)
 #define STUB_EntityFactory_newEntity
 
 template<class T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId,
+Ref<Entity> EntityFactory<T>::newEntity(const std::string& id, long intId,
                                                const Atlas::Objects::Entity::RootEntity& attributes)
 {
     ++m_createdCount;
@@ -374,7 +374,7 @@ std::unique_ptr<ArchetypeFactory> ArchetypeFactory::duplicateFactory()
 class World;
 
 template<>
-Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string& id, long intId,
+Ref<Entity> EntityFactory<World>::newEntity(const std::string& id, long intId,
                                                    const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return 0;

@@ -46,7 +46,7 @@ EntityFactoryBase::~EntityFactoryBase() = default;
 
 
 template<>
-Ref<LocatedEntity> EntityFactory<World>::newEntity(const std::string& id,
+Ref<Entity> EntityFactory<World>::newEntity(const std::string& id,
                                                    long intId,
                                                    const Atlas::Objects::Entity::RootEntity& attributes)
 {

@@ -33,7 +33,7 @@ template<class T>
 EntityFactory<T>::~EntityFactory() = default;
 
 template<class T>
-Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id,
+Ref<Entity> EntityFactory<T>::newEntity(const std::string& id,
                                                long intId,
                                                const Atlas::Objects::Entity::RootEntity& attributes)
 {

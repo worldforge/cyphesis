@@ -32,6 +32,7 @@
 
 class LocatedEntity;
 class EntityKit;
+class Entity;
 
 
 /// \brief Builder to handle the creation of all entities for the world.
@@ -48,11 +49,11 @@ class EntityBuilder : public EntityCreator {
                        const Atlas::Objects::Root & class_desc,
                        std::unique_ptr<EntityKit> factory);
     EntityKit * getClassFactory(const std::string & class_name) const;
-    Ref<LocatedEntity> newEntity(const std::string & id,
+    Ref<Entity> newEntity(const std::string & id,
                               long intId,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs) const override;
-    Ref<LocatedEntity> newChildEntity(const std::string & id,
+    Ref<Entity> newChildEntity(const std::string & id,
                               long intId,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs) const;

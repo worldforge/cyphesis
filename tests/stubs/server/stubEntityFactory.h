@@ -99,7 +99,7 @@
 #ifndef STUB_EntityFactory_newEntity
 //#define STUB_EntityFactory_newEntity
   template <typename T>
-  Ref<LocatedEntity> EntityFactory<T>::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
+Ref<Entity> EntityFactory<T>::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

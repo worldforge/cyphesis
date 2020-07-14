@@ -317,7 +317,7 @@ std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string
 
 #define STUB_ArchetypeFactory_newEntity
 
-Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
+Ref<Entity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return new Entity(id, intId);
 }

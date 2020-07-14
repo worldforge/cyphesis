@@ -18,7 +18,7 @@
 #include "ArchetypeFactory.h"
 #include "EntityBuilder.h"
 
-#include "rules/LocatedEntity.h"
+#include "rules/simulation/Entity.h"
 
 #include "common/TypeNode.h"
 #include "common/id.h"
@@ -57,7 +57,7 @@ ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& o)
 
 ArchetypeFactory::~ArchetypeFactory() = default;
 
-Ref<LocatedEntity> ArchetypeFactory::createEntity(const std::string& id,
+Ref<Entity> ArchetypeFactory::createEntity(const std::string& id,
                                                   long intId,
                                                   EntityCreation& entityCreation,
                                                   std::map<std::string, EntityCreation>& entities)
@@ -151,7 +151,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
     return true;
 }
 
-Ref<LocatedEntity> ArchetypeFactory::newEntity(const std::string& id, long intId, const RootEntity& attributes)
+Ref<Entity> ArchetypeFactory::newEntity(const std::string& id, long intId, const RootEntity& attributes)
 {
     //parse entities into RootEntity instances first
     std::map<std::string, EntityCreation> entities;
