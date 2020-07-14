@@ -529,44 +529,6 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
     return {};
 }
 
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-void PropertyBase::install(LocatedEntity*, const std::string& name)
-{
-}
-
-void PropertyBase::install(TypeNode*, const std::string& name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity*, const std::string& name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity*)
-{
-}
-
-void PropertyBase::add(const std::string& s,
-                       Atlas::Message::MapType& ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string& s,
-                       const Atlas::Objects::Entity::RootEntity& ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity*,
-                                      const Operation&,
-                                      OpVector&)
-{
-    return OPERATION_IGNORED;
-}
-
 template<>
 void Property<int>::set(const Atlas::Message::Element& e)
 {

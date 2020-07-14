@@ -172,13 +172,13 @@ boost::optional<Atlas::Message::Element> LocatedEntity::getAttrType(const std::s
 
 PropertyBase* LocatedEntity::setAttrValue(const std::string& name, Element attr)
 {
-    auto parsedPropertyName = PropertyBase::parsePropertyModification(name);
+    auto parsedPropertyName = PropertyUtil::parsePropertyModification(name);
     return setAttr(parsedPropertyName.second, Modifier::createModifier(parsedPropertyName.first, std::move(attr)).get());
 }
 
 PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* modifier)
 {
-    if (!PropertyBase::isValidName(name)) {
+    if (!PropertyUtil::isValidName(name)) {
         log(WARNING, String::compose("Tried to add a property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
         return nullptr;
     }
@@ -252,7 +252,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
     if (hasFlags(entity_modifiers_not_allowed)) {
         return;
     }
-    if (!PropertyBase::isValidName(propertyName)) {
+    if (!PropertyUtil::isValidName(propertyName)) {
         log(WARNING, String::compose("Tried to add a modifier for property '%1' to entity '%2', which has an invalid name.", propertyName, describeEntity()));
         return;
     }
@@ -823,7 +823,7 @@ void LocatedEntity::merge(const MapType& ent)
             continue;
         }
 
-        auto parsedPropertyName = PropertyBase::parsePropertyModification(key);
+        auto parsedPropertyName = PropertyUtil::parsePropertyModification(key);
         auto modifier = Modifier::createModifier(parsedPropertyName.first, entry.second);
 
         if (s_immutable.find(parsedPropertyName.second) != s_immutable.end()) {

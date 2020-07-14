@@ -31,8 +31,6 @@
 #include <string>
 #include <memory>
 
-class PropertyBase;
-
 
 /// \brief Entry in the type hierarchy for in-game entity classes.
 class TypeNode

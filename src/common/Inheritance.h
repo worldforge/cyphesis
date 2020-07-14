@@ -31,7 +31,6 @@
 
 #include <memory>
 
-class PropertyBase;
 class PropertyManager;
 
 typedef std::map<std::string, std::unique_ptr<PropertyBase>> PropertyDict;

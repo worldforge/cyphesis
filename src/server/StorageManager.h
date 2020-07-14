@@ -20,6 +20,7 @@
 #define SERVER_STORAGE_MANAGER_H
 
 #include "common/OperationRouter.h"
+#include "common/Property.h"
 #include "modules/Ref.h"
 
 #include <sigc++/trackable.h>
@@ -33,7 +34,6 @@
 class Entity;
 class EntityBuilder;
 class Database;
-class PropertyBase;
 class WorldRouter;
 
 /// \brief StorageManager represents the subsystem which stores world storage

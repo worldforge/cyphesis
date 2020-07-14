@@ -21,24 +21,73 @@
 
 #include "modules/Flags.h"
 #include "OperationRouter.h"
+#include "common/ModifierType.h"
 
 #include <Atlas/Message/Element.h>
-#include <common/ModifierType.h>
 
 class LocatedEntity;
 class TypeNode;
 
+struct PropertyUtil {
+
+    /**
+     * Extract the property visibility flags from the name.
+     * Names that starts with "__" are "private". Only visible to the simulation and to administrators.
+     * Names that starts with "_" are "protected". Only visible to the entity it belongs, the simulation and to administrators.
+     * All other properties are "public", i.e. visible to everyone.
+     * @param name A property name.
+     * @return
+     */
+    static std::uint32_t flagsForPropertyName(const std::string& name);
+
+    /**
+     * Checks if the name supplied is a valid property name.
+     *
+     * It should not be more than 32 characters, and can only contain ascii characters or numbers, dollar sign ("$"), underscores ("_") or hyphens ("-").
+     */
+    static bool isValidName(const std::string& name);
+
+    static std::pair<ModifierType, std::string> parsePropertyModification(const std::string& propertyName);
+};
+
+
+/// \brief Classes that define properties on in world entities
+///
+/// Property classes handle the values of Atlas attributes on in
+/// game entities, ensuring type safety, and encapsulating certain
+/// behaviors related to the presence and value of the attribute.
+/// A property instance can be associated with an Entity instance
+/// or a class, so it should not store any data specific to any of
+/// the Entity instances it has been applied to. When it is taking effect
+/// on an Entity for the first time, PropertyBase::install() is called
+/// to allow the property to do any setup required, such as install one
+/// or more operation handlers. When the property value must be applied
+/// to an Entity, PropertyBase::apply() is called so that any side effect
+/// of the value can be taken care of.
+/// \defgroup PropertyClasses Entity Property Classes
+
+/// \brief Flags used to control properties
+///
+/// The base class PropertyBase has a flag member which can be used to
+/// control or track the property in various ways. The constants in this
+/// group define the masks for these flags.
+/// \defgroup PropertyFlags Entity Property Flags
+
+
 /// \brief Interface for Entity properties
 ///
 /// \ingroup PropertyClasses
-class PropertyBase : public OperationsListener {
+template<typename EntityT>
+class PropertyCore : public OperationsListener {
   protected:
     /// \brief Flags indicating how this Property should be handled
     Flags m_flags;
-    explicit PropertyBase(std::uint32_t flags = 0);
-    PropertyBase(const PropertyBase &) = default;
+    /// \brief Constructor called from classes which inherit from Property
+    /// @param flags default value for the Property flags
+    explicit PropertyCore(std::uint32_t flags = 0);
+        PropertyCore(const PropertyCore &) = default;
   public:
-    virtual ~PropertyBase() = default;
+    virtual ~PropertyCore() = default;
 
     /// \brief Accessor for Property flags
     const Flags& flags() const { return m_flags; }
@@ -63,7 +112,7 @@ class PropertyBase : public OperationsListener {
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
-    virtual void install(LocatedEntity *, const std::string &);
+    virtual void install(EntityT *, const std::string &);
     /// \brief Install this property on a type
     ///
     /// Called whenever a TypeNode gains this property for the first time
@@ -71,11 +120,11 @@ class PropertyBase : public OperationsListener {
     /// \brief Remove this property from an entity.
     ///
     /// Called whenever the property is removed or the entity is shutting down.
-    virtual void remove(LocatedEntity *, const std::string & name);
+    virtual void remove(EntityT *, const std::string & name);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity
-    virtual void apply(LocatedEntity *);
+    virtual void apply(EntityT *);
 
 
     /// \brief Copy the value of the property into an Atlas Message
@@ -93,30 +142,13 @@ class PropertyBase : public OperationsListener {
     /// \brief Create a copy of this instance
     ///
     /// The copy should have exactly the same type, and the same value
-    virtual PropertyBase * copy() const = 0;
+    virtual PropertyCore * copy() const = 0;
 
-    /**
-     * Extract the property visibility flags from the name.
-     * Names that starts with "__" are "private". Only visible to the simulation and to administrators.
-     * Names that starts with "_" are "protected". Only visible to the entity it belongs, the simulation and to administrators.
-     * All other properties are "public", i.e. visible to everyone.
-     * @param name A property name.
-     * @return
-     */
-    static std::uint32_t flagsForPropertyName(const std::string& name);
-
-    /**
-     * Checks if the name supplied is a valid property name.
-     *
-     * It should not be more than 32 characters, and can only contain ascii characters or numbers, dollar sign ("$"), underscores ("_") or hyphens ("-").
-     */
-    static bool isValidName(const std::string& name);
-
-    static std::pair<ModifierType, std::string> parsePropertyModification(const std::string& propertyName);
-
-    bool operator==(const PropertyBase& rhs) const;
-    bool operator!=(const PropertyBase& rhs) const;
+    bool operator==(const PropertyCore& rhs) const;
+    bool operator!=(const PropertyCore& rhs) const;
 };
+
+typedef PropertyCore<LocatedEntity> PropertyBase;
 
 /// \brief Flag indicating data has been written to permanent store
 /// \ingroup PropertyFlags

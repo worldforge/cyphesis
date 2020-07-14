@@ -9,55 +9,33 @@
 #define STUB_Property_copy
 
 
-#ifndef STUB_PropertyBase_PropertyBase
-#define STUB_PropertyBase_PropertyBase
-PropertyBase::PropertyBase(unsigned int flags )
-    : m_flags(flags)
-{
+#define STUB_PropertyCore_install
+#define STUB_PropertyCore_remove
+#define STUB_PropertyCore_PropertyCore
+#define STUB_PropertyCore_apply
+#define STUB_PropertyCore_add
+#define STUB_PropertyCore_operation
+#define STUB_PropertyCore_copy
+#define STUB_PropertyCore_operator_EQUALS
 
-}
-#endif //STUB_PropertyBase_PropertyBase
 
-#ifndef STUB_PropertyBase_parsePropertyModification
-#define STUB_PropertyBase_parsePropertyModification
-std::pair<ModifierType, std::string> PropertyBase::parsePropertyModification(const std::string& propertyName)
+#ifndef STUB_PropertyUtil_parsePropertyModification
+#define STUB_PropertyUtil_parsePropertyModification
+std::pair<ModifierType, std::string> PropertyUtil::parsePropertyModification(const std::string& propertyName)
 {
     return std::make_pair(ModifierType::Default, propertyName);
 }
-#endif //STUB_PropertyBase_parsePropertyModification
+#endif //STUB_PropertyUtil_parsePropertyModification
 
-#ifndef STUB_PropertyBase_add
-#define STUB_PropertyBase_add
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
 
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
 
-#endif //STUB_PropertyBase_add
-
-#ifndef STUB_PropertyBase_operation
-#define STUB_PropertyBase_operation
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-   return OPERATION_IGNORED;
-}
-#endif //STUB_PropertyBase_add
-
-#ifndef STUB_PropertyBase_isValidName
-#define STUB_PropertyBase_isValidName
-bool PropertyBase::isValidName(const std::string& name)
+#ifndef STUB_PropertyUtil_isValidName
+#define STUB_PropertyUtil_isValidName
+bool PropertyUtil::isValidName(const std::string& name)
 {
     return true;
 }
-#endif //STUB_PropertyBase_isValidName
+#endif //STUB_PropertyUtil_isValidName
 
 
 #ifndef STUB_Property_set

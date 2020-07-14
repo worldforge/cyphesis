@@ -20,6 +20,7 @@
 #define COMMON_PROPERTY_FACTORY_IMPL_H
 
 #include "PropertyFactory.h"
+#include "Property.h"
 
 template <class T>
 std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()

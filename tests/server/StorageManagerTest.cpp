@@ -32,6 +32,7 @@
 #include "server/MindProperty.h"
 
 #include "common/SystemTime.h"
+#include "common/Property_impl.h"
 #include "../DatabaseNull.h"
 
 #include <cassert>
@@ -272,81 +273,10 @@ template class Variable<std::string>;
 #include "../stubs/common/stubMonitors.h"
 #include "../stubs/common/stubOperationsDispatcher.h"
 
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-void PropertyBase::install(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::install(TypeNode *, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity *)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       Atlas::Message::MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity *,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template <typename T>
-Property<T>::Property(unsigned int flags) :
-                      PropertyBase(flags)
-{
-}
-
-template <typename T>
-int Property<T>::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-// The following two are obsolete.
-template <typename T>
-void Property<T>::add(const std::string & s,
-                               Atlas::Message::MapType & ent) const
-{
-}
-
-template <typename T>
-void Property<T>::add(const std::string & s,
-                               const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
 template <typename T>
 void Property<T>::set(const Atlas::Message::Element & e)
 {
 }
-
-template <typename T>
-Property<T> * Property<T>::copy() const
-{
-    return new Property<T>(*this);
-}
-
 
 template class Property<MapType>;
 

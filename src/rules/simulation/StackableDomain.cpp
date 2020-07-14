@@ -30,6 +30,7 @@
 #include <unordered_set>
 #include <common/operations/Update.h>
 #include <Atlas/Objects/Operation.h>
+#include "common/Property_impl.h"
 
 static const bool debug_flag = true;
 

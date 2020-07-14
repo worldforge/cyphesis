@@ -70,7 +70,7 @@ PropertyFactory<PropertyT>* CorePropertyManager::installProperty(const std::stri
 {
     auto factory = new PropertyFactory<PropertyT>{};
     //Attach visibility flags. Properties that starts with "__" are private, "_" are protected and the rest are public.
-    factory->m_flags = PropertyBase::flagsForPropertyName(type_name);
+    factory->m_flags = PropertyUtil::flagsForPropertyName(type_name);
     installFactory(type_name,
                    atlasType(type_name, parent),
                    std::unique_ptr<PropertyFactory<PropertyT>>(factory));

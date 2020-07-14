@@ -25,84 +25,7 @@
 
 
 
-/// \brief Classes that define properties on in world entities
-///
-/// Property classes handle the values of Atlas attributes on in
-/// game entities, ensuring type safety, and encapsulating certain
-/// behaviors related to the presence and value of the attribute.
-/// A property instance can be associated with an Entity instance
-/// or a class, so it should not store any data specific to any of
-/// the Entity instances it has been applied to. When it is taking effect
-/// on an Entity for the first time, PropertyBase::install() is called
-/// to allow the property to do any setup required, such as install one
-/// or more operation handlers. When the property value must be applied
-/// to an Entity, PropertyBase::apply() is called so that any side effect
-/// of the value can be taken care of.
-/// \defgroup PropertyClasses Entity Property Classes
 
-/// \brief Flags used to control properties
-///
-/// The base class PropertyBase has a flag member which can be used to
-/// control or track the property in various ways. The constants in this
-/// group define the masks for these flags.
-/// \defgroup PropertyFlags Entity Property Flags
-
-/// \brief Constructor called from classes which inherit from Property
-/// @param flags default value for the Property flags
-PropertyBase::PropertyBase(std::uint32_t flags) : m_flags(flags)
-{
-}
-
-void PropertyBase::install(LocatedEntity*, const std::string& name)
-{
-}
-
-void PropertyBase::install(TypeNode*, const std::string& name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity*, const std::string& name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity*)
-{
-}
-
-void PropertyBase::add(const std::string& s,
-                       Atlas::Message::MapType& ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string& s,
-                       const Atlas::Objects::Entity::RootEntity& ent) const
-{
-    Atlas::Message::Element val;
-    get(val);
-    ent->setAttr(s, val);
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity*,
-                                      const Operation&,
-                                      OpVector& res)
-{
-    return OPERATION_IGNORED;
-}
-
-bool PropertyBase::operator==(const PropertyBase& rhs) const
-{
-    Atlas::Message::Element thisElement;
-    get(thisElement);
-    Atlas::Message::Element thatElement;
-    rhs.get(thatElement);
-    return thisElement == thatElement;
-}
-
-bool PropertyBase::operator!=(const PropertyBase& rhs) const
-{
-    return !operator==(rhs);
-}
 
 template<>
 void Property<int>::set(const Atlas::Message::Element& e)
@@ -270,7 +193,7 @@ template<> const std::string Property<std::string>::property_atlastype = "string
 template<> const std::string Property<Atlas::Message::ListType>::property_atlastype = "list";
 template<> const std::string Property<Atlas::Message::MapType>::property_atlastype = "map";
 
-std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
+std::uint32_t PropertyUtil::flagsForPropertyName(const std::string& name)
 {
     if (name.size() > 1 && name[0] == '_' && name[1] == '_') {
         return prop_flag_visibility_private;
@@ -280,7 +203,7 @@ std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
     return 0;
 }
 
-bool PropertyBase::isValidName(const std::string& name)
+bool PropertyUtil::isValidName(const std::string& name)
 {
     if (name.empty() || name.size() > 32) {
         return false;
@@ -294,7 +217,7 @@ bool PropertyBase::isValidName(const std::string& name)
     return true;
 }
 
-std::pair<ModifierType, std::string> PropertyBase::parsePropertyModification(const std::string& propertyName)
+std::pair<ModifierType, std::string> PropertyUtil::parsePropertyModification(const std::string& propertyName)
 {
     auto pos = propertyName.find('!');
     if (pos != std::string::npos) {

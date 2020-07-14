@@ -23,6 +23,73 @@
 
 #include <Atlas/Objects/RootEntity.h>
 
+
+
+template<typename EntityT>
+PropertyCore<EntityT>::PropertyCore(std::uint32_t flags) : m_flags(flags)
+{
+}
+
+template<typename EntityT>
+void PropertyCore<EntityT>::install(EntityT*, const std::string& name)
+{
+}
+
+template<typename EntityT>
+void PropertyCore<EntityT>::install(TypeNode*, const std::string& name)
+{
+}
+
+template<typename EntityT>
+void PropertyCore<EntityT>::remove(EntityT*, const std::string& name)
+{
+}
+
+template<typename EntityT>
+void PropertyCore<EntityT>::apply(EntityT*)
+{
+}
+
+template<typename EntityT>
+void PropertyCore<EntityT>::add(const std::string& s,
+                                Atlas::Message::MapType& ent) const
+{
+    get(ent[s]);
+}
+
+template<typename EntityT>
+void PropertyCore<EntityT>::add(const std::string& s,
+                                const Atlas::Objects::Entity::RootEntity& ent) const
+{
+    Atlas::Message::Element val;
+    get(val);
+    ent->setAttr(s, val);
+}
+
+template<typename EntityT>
+HandlerResult PropertyCore<EntityT>::operation(LocatedEntity*,
+                                               const Operation&,
+                                               OpVector& res)
+{
+    return OPERATION_IGNORED;
+}
+
+template<typename EntityT>
+bool PropertyCore<EntityT>::operator==(const PropertyCore& rhs) const
+{
+    Atlas::Message::Element thisElement;
+    get(thisElement);
+    Atlas::Message::Element thatElement;
+    rhs.get(thatElement);
+    return thisElement == thatElement;
+}
+
+template<typename EntityT>
+bool PropertyCore<EntityT>::operator!=(const PropertyCore& rhs) const
+{
+    return !operator==(rhs);
+}
+
 /// \brief Constructor for immutable Properties
 template <typename T>
 Property<T>::Property(unsigned int flags) :

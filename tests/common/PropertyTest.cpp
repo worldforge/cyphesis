@@ -81,63 +81,63 @@ int main()
 
     assert((prop_flag_visibility_non_public & prop_flag_persistence_mask) == 0);
 
-    assert(!PropertyBase::isValidName("abcdefghijklmnopqrstuvwxyzabcdefg")); //33 characters
-    assert(PropertyBase::isValidName("abcdefghijklmnopqrstuvwxyzabcdef")); //32 characters
-    assert(!PropertyBase::isValidName(""));
-    assert(PropertyBase::isValidName("1"));
-    assert(PropertyBase::isValidName("a1"));
-    assert(PropertyBase::isValidName("$"));
-    assert(!PropertyBase::isValidName("Ö"));
-    assert(PropertyBase::isValidName("a"));
-    assert(PropertyBase::isValidName("A"));
-    assert(PropertyBase::isValidName("_a"));
-    assert(PropertyBase::isValidName("__a"));
-    assert(PropertyBase::isValidName("___a"));
-    assert(PropertyBase::isValidName("$eid"));
-    assert(PropertyBase::isValidName("foo-"));
-    assert(PropertyBase::isValidName("-"));
-    assert(!PropertyBase::isValidName("@"));
-    assert(!PropertyBase::isValidName(":"));
-    assert(!PropertyBase::isValidName(";"));
-    assert(!PropertyBase::isValidName("!"));
-    assert(!PropertyBase::isValidName("foo!append"));
+    assert(!PropertyUtil::isValidName("abcdefghijklmnopqrstuvwxyzabcdefg")); //33 characters
+    assert(PropertyUtil::isValidName("abcdefghijklmnopqrstuvwxyzabcdef")); //32 characters
+    assert(!PropertyUtil::isValidName(""));
+    assert(PropertyUtil::isValidName("1"));
+    assert(PropertyUtil::isValidName("a1"));
+    assert(PropertyUtil::isValidName("$"));
+    assert(!PropertyUtil::isValidName("Ö"));
+    assert(PropertyUtil::isValidName("a"));
+    assert(PropertyUtil::isValidName("A"));
+    assert(PropertyUtil::isValidName("_a"));
+    assert(PropertyUtil::isValidName("__a"));
+    assert(PropertyUtil::isValidName("___a"));
+    assert(PropertyUtil::isValidName("$eid"));
+    assert(PropertyUtil::isValidName("foo-"));
+    assert(PropertyUtil::isValidName("-"));
+    assert(!PropertyUtil::isValidName("@"));
+    assert(!PropertyUtil::isValidName(":"));
+    assert(!PropertyUtil::isValidName(";"));
+    assert(!PropertyUtil::isValidName("!"));
+    assert(!PropertyUtil::isValidName("foo!append"));
 
 
-    assert(PropertyBase::flagsForPropertyName("foo") == 0);
-    assert(PropertyBase::flagsForPropertyName("_foo") == prop_flag_visibility_protected);
-    assert(PropertyBase::flagsForPropertyName("__foo") == prop_flag_visibility_private);
-    assert(PropertyBase::flagsForPropertyName("foo_") == 0);
-    assert(PropertyBase::flagsForPropertyName("f_oo") == 0);
+    assert(PropertyUtil::flagsForPropertyName("foo") == 0);
+    assert(PropertyUtil::flagsForPropertyName("_foo") == prop_flag_visibility_protected);
+    assert(PropertyUtil::flagsForPropertyName("__foo") == prop_flag_visibility_private);
+    assert(PropertyUtil::flagsForPropertyName("foo_") == 0);
+    assert(PropertyUtil::flagsForPropertyName("f_oo") == 0);
 
-    auto parsed = PropertyBase::parsePropertyModification("foo");
+    auto parsed = PropertyUtil::parsePropertyModification("foo");
     assert(parsed.first == ModifierType::Default);
     assert(parsed.second == "foo");
 
-    parsed = PropertyBase::parsePropertyModification("foo!");
+    parsed = PropertyUtil::parsePropertyModification("foo!");
     assert(parsed.first == ModifierType::Default);
     assert(parsed.second == "foo!");
 
-    parsed = PropertyBase::parsePropertyModification("foo!fdsfds");
+    parsed = PropertyUtil::parsePropertyModification("foo!fdsfds");
     assert(parsed.first == ModifierType::Default);
     assert(parsed.second == "foo!fdsfds");
 
-    parsed = PropertyBase::parsePropertyModification("foo!default");
+    parsed = PropertyUtil::parsePropertyModification("foo!default");
     assert(parsed.first == ModifierType::Default);
     assert(parsed.second == "foo");
 
-    parsed = PropertyBase::parsePropertyModification("foo!append");
+    parsed = PropertyUtil::parsePropertyModification("foo!append");
     assert(parsed.first == ModifierType::Append);
     assert(parsed.second == "foo");
 
-    parsed = PropertyBase::parsePropertyModification("foo!prepend");
+    parsed = PropertyUtil::parsePropertyModification("foo!prepend");
     assert(parsed.first == ModifierType::Prepend);
     assert(parsed.second == "foo");
 
-    parsed = PropertyBase::parsePropertyModification("foo!subtract");
+    parsed = PropertyUtil::parsePropertyModification("foo!subtract");
     assert(parsed.first == ModifierType::Subtract);
     assert(parsed.second == "foo");
 
-    parsed = PropertyBase::parsePropertyModification("foo!add-fraction");
+    parsed = PropertyUtil::parsePropertyModification("foo!add-fraction");
     assert(parsed.first == ModifierType::AddFraction);
     assert(parsed.second == "foo");
 

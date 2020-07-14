@@ -25,7 +25,6 @@
 #include <memory>
 #include <common/Inheritance.h>
 
-class PropertyBase;
 
 class PropertyExerciser {
   private:

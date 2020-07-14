@@ -27,7 +27,6 @@
 #include <string>
 #include <memory>
 
-class PropertyBase;
 class PropertyKit;
 
 /// \brief Base class for classes that handle creating Entity properties.

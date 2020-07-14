@@ -7,126 +7,139 @@
 #include "common/Property.h"
 #include "stubProperty_custom.h"
 
-#ifndef STUB_PropertyBase_PropertyBase
-//#define STUB_PropertyBase_PropertyBase
-   PropertyBase::PropertyBase(std::uint32_t flags )
+#ifndef STUB_PropertyUtil_flagsForPropertyName
+//#define STUB_PropertyUtil_flagsForPropertyName
+   std::uint32_t PropertyUtil::flagsForPropertyName(const std::string& name)
+  {
+    return 0;
+  }
+#endif //STUB_PropertyUtil_flagsForPropertyName
+
+#ifndef STUB_PropertyUtil_isValidName
+//#define STUB_PropertyUtil_isValidName
+   bool PropertyUtil::isValidName(const std::string& name)
+  {
+    return false;
+  }
+#endif //STUB_PropertyUtil_isValidName
+
+#ifndef STUB_PropertyUtil_parsePropertyModification
+//#define STUB_PropertyUtil_parsePropertyModification
+   std::pair<ModifierType, std::string> PropertyUtil::parsePropertyModification(const std::string& propertyName)
+  {
+    return *static_cast< std::pair<ModifierType, std::string>*>(nullptr);
+  }
+#endif //STUB_PropertyUtil_parsePropertyModification
+
+
+#ifndef STUB_PropertyCore_PropertyCore
+//#define STUB_PropertyCore_PropertyCore
+  template <typename EntityT>
+   PropertyCore<EntityT>::PropertyCore(std::uint32_t flags )
     : OperationsListener(flags)
   {
     
   }
-#endif //STUB_PropertyBase_PropertyBase
+#endif //STUB_PropertyCore_PropertyCore
 
-#ifndef STUB_PropertyBase_install
-//#define STUB_PropertyBase_install
-  void PropertyBase::install(LocatedEntity *, const std::string &)
+#ifndef STUB_PropertyCore_install
+//#define STUB_PropertyCore_install
+  template <typename EntityT>
+  void PropertyCore<EntityT>::install(EntityT *, const std::string &)
   {
     
   }
-#endif //STUB_PropertyBase_install
+#endif //STUB_PropertyCore_install
 
-#ifndef STUB_PropertyBase_install
-//#define STUB_PropertyBase_install
-  void PropertyBase::install(TypeNode *, const std::string &)
+#ifndef STUB_PropertyCore_install
+//#define STUB_PropertyCore_install
+  template <typename EntityT>
+  void PropertyCore<EntityT>::install(TypeNode *, const std::string &)
   {
     
   }
-#endif //STUB_PropertyBase_install
+#endif //STUB_PropertyCore_install
 
-#ifndef STUB_PropertyBase_remove
-//#define STUB_PropertyBase_remove
-  void PropertyBase::remove(LocatedEntity *, const std::string & name)
+#ifndef STUB_PropertyCore_remove
+//#define STUB_PropertyCore_remove
+  template <typename EntityT>
+  void PropertyCore<EntityT>::remove(EntityT *, const std::string & name)
   {
     
   }
-#endif //STUB_PropertyBase_remove
+#endif //STUB_PropertyCore_remove
 
-#ifndef STUB_PropertyBase_apply
-//#define STUB_PropertyBase_apply
-  void PropertyBase::apply(LocatedEntity *)
+#ifndef STUB_PropertyCore_apply
+//#define STUB_PropertyCore_apply
+  template <typename EntityT>
+  void PropertyCore<EntityT>::apply(EntityT *)
   {
     
   }
-#endif //STUB_PropertyBase_apply
+#endif //STUB_PropertyCore_apply
 
-#ifndef STUB_PropertyBase_get
-//#define STUB_PropertyBase_get
-  int PropertyBase::get(Atlas::Message::Element & val) const
+#ifndef STUB_PropertyCore_get
+//#define STUB_PropertyCore_get
+  template <typename EntityT>
+  int PropertyCore<EntityT>::get(Atlas::Message::Element & val) const
   {
     return 0;
   }
-#endif //STUB_PropertyBase_get
+#endif //STUB_PropertyCore_get
 
-#ifndef STUB_PropertyBase_set
-//#define STUB_PropertyBase_set
-  void PropertyBase::set(const Atlas::Message::Element & val)
+#ifndef STUB_PropertyCore_set
+//#define STUB_PropertyCore_set
+  template <typename EntityT>
+  void PropertyCore<EntityT>::set(const Atlas::Message::Element & val)
   {
     
   }
-#endif //STUB_PropertyBase_set
+#endif //STUB_PropertyCore_set
 
-#ifndef STUB_PropertyBase_add
-//#define STUB_PropertyBase_add
-  void PropertyBase::add(const std::string & key, Atlas::Message::MapType & map) const
+#ifndef STUB_PropertyCore_add
+//#define STUB_PropertyCore_add
+  template <typename EntityT>
+  void PropertyCore<EntityT>::add(const std::string & key, Atlas::Message::MapType & map) const
   {
     
   }
-#endif //STUB_PropertyBase_add
+#endif //STUB_PropertyCore_add
 
-#ifndef STUB_PropertyBase_add
-//#define STUB_PropertyBase_add
-  void PropertyBase::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+#ifndef STUB_PropertyCore_add
+//#define STUB_PropertyCore_add
+  template <typename EntityT>
+  void PropertyCore<EntityT>::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
   {
     
   }
-#endif //STUB_PropertyBase_add
+#endif //STUB_PropertyCore_add
 
-#ifndef STUB_PropertyBase_operation
-//#define STUB_PropertyBase_operation
-  HandlerResult PropertyBase::operation(LocatedEntity *, const Operation &, OpVector &)
+#ifndef STUB_PropertyCore_operation
+//#define STUB_PropertyCore_operation
+  template <typename EntityT>
+  HandlerResult PropertyCore<EntityT>::operation(LocatedEntity *, const Operation &, OpVector &)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
-#endif //STUB_PropertyBase_operation
+#endif //STUB_PropertyCore_operation
 
-#ifndef STUB_PropertyBase_copy
-//#define STUB_PropertyBase_copy
-  PropertyBase* PropertyBase::copy() const
+#ifndef STUB_PropertyCore_copy
+//#define STUB_PropertyCore_copy
+  template <typename EntityT>
+  PropertyCore* PropertyCore<EntityT>::copy() const
   {
     return nullptr;
   }
-#endif //STUB_PropertyBase_copy
+#endif //STUB_PropertyCore_copy
 
-#ifndef STUB_PropertyBase_flagsForPropertyName
-//#define STUB_PropertyBase_flagsForPropertyName
-   std::uint32_t PropertyBase::flagsForPropertyName(const std::string& name)
-  {
-    return 0;
-  }
-#endif //STUB_PropertyBase_flagsForPropertyName
-
-#ifndef STUB_PropertyBase_isValidName
-//#define STUB_PropertyBase_isValidName
-   bool PropertyBase::isValidName(const std::string& name)
+#ifndef STUB_PropertyCore_operator_EQUALS
+//#define STUB_PropertyCore_operator_EQUALS
+  template <typename EntityT>
+  bool PropertyCore<EntityT>::operator==(const PropertyCore& rhs) const
   {
     return false;
   }
-#endif //STUB_PropertyBase_isValidName
-
-#ifndef STUB_PropertyBase_parsePropertyModification
-//#define STUB_PropertyBase_parsePropertyModification
-   std::pair<ModifierType, std::string> PropertyBase::parsePropertyModification(const std::string& propertyName)
-  {
-    return *static_cast< std::pair<ModifierType, std::string>*>(nullptr);
-  }
-#endif //STUB_PropertyBase_parsePropertyModification
-
-#ifndef STUB_PropertyBase_operator_EQUALS
-//#define STUB_PropertyBase_operator_EQUALS
-  bool PropertyBase::operator==(const PropertyBase& rhs) const
-  {
-    return false;
-  }
-#endif //STUB_PropertyBase_operator_EQUALS
+#endif //STUB_PropertyCore_operator_EQUALS
 
 
 #ifndef STUB_Property_Property

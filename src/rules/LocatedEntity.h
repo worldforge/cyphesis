@@ -46,8 +46,6 @@ class Domain;
 
 class LocatedEntity;
 
-class PropertyBase;
-
 class Script;
 
 class TypeNode;
@@ -421,7 +419,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         template<class PropertyT>
         const PropertyT* getPropertyClass(const std::string& name) const
         {
-            const PropertyBase* p = getProperty(name);
+            const auto* p = getProperty(name);
             if (p != nullptr) {
                 return dynamic_cast<const PropertyT*>(p);
             }
@@ -441,7 +439,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         template<typename T>
         const Property<T>* getPropertyType(const std::string& name) const
         {
-            const PropertyBase* p = getProperty(name);
+            const auto* p = getProperty(name);
             if (p != nullptr) {
                 return dynamic_cast<const Property<T>*>(p);
             }
@@ -452,7 +450,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         template<class PropertyT>
         PropertyT* modPropertyClass(const std::string& name)
         {
-            PropertyBase* p = modProperty(name);
+            auto* p = modProperty(name);
             if (p != nullptr) {
                 return dynamic_cast<PropertyT*>(p);
             }
@@ -476,7 +474,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         template<typename T>
         Property<T>* modPropertyType(const std::string& name)
         {
-            PropertyBase* p = modProperty(name);
+            auto* p = modProperty(name);
             if (p != nullptr) {
                 return dynamic_cast<Property<T>*>(p);
             }
@@ -495,12 +493,12 @@ class LocatedEntity : public Router, public ReferenceCounted
                                         const Atlas::Message::Element& def_val
                                         = Atlas::Message::Element())
         {
-            if (!PropertyBase::isValidName(name)) {
+            if (!PropertyUtil::isValidName(name)) {
                 log(WARNING, String::compose("Tried to add property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
                 return nullptr;
             }
 
-            PropertyBase* p = modProperty(name, def_val);
+            auto* p = modProperty(name, def_val);
             PropertyT* sp = nullptr;
             if (p != nullptr) {
                 sp = dynamic_cast<PropertyT*>(p);
@@ -509,7 +507,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                 // If it is not of the right type, delete it and a new
                 // one of the right type will be inserted.
                 sp = new PropertyT;
-                sp->flags().addFlags(PropertyBase::flagsForPropertyName(name));
+                sp->flags().addFlags(PropertyUtil::flagsForPropertyName(name));
                 m_properties[name].property.reset(sp);
                 sp->install(this, name);
                 if (p != nullptr) {

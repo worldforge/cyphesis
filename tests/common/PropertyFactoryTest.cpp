@@ -27,6 +27,7 @@
 
 #include "common/PropertyFactory_impl.h"
 #include "common/Property.h"
+#include "common/Property_impl.h"
 
 #include <cassert>
 

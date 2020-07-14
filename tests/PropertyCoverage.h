@@ -19,11 +19,11 @@
 #ifndef TESTS_PROPERTY_COVERAGE_H
 #define TESTS_PROPERTY_COVERAGE_H
 
+#include "common/Property.h"
 #include <Atlas/Message/Element.h>
 #include <modules/Ref.h>
 #include <cassert>
 
-class PropertyBase;
 class Entity;
 class BaseWorld;
 

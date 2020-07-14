@@ -70,7 +70,7 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
                                                     std::unique_ptr<PropertyBase> prop)
 {
     TypeNode::PropertiesUpdate update;
-    if (!PropertyBase::isValidName(name)) {
+    if (!PropertyUtil::isValidName(name)) {
         log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", name, m_name));
         return update;
     }
@@ -115,7 +115,7 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
 void TypeNode::addProperties(const MapType& attributes, const PropertyManager& propertyManager)
 {
     for (const auto& entry : attributes) {
-        if (!PropertyBase::isValidName(entry.first)) {
+        if (!PropertyUtil::isValidName(entry.first)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", entry.first, m_name));
             continue;
         }
@@ -167,7 +167,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes,
     // Update the values of existing class properties, and add new class
     // properties for added default attributes.
     for (auto& entry : attributes) {
-        if (!PropertyBase::isValidName(entry.first)) {
+        if (!PropertyUtil::isValidName(entry.first)) {
             log(WARNING, String::compose("Tried to add a property '%1' to type '%2', which has an invalid name.", entry.first, m_name));
             continue;
         }

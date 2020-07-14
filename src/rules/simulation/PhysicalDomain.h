@@ -61,8 +61,6 @@ class btSphereShape;
 
 class btCollisionObject;
 
-class PropertyBase;
-
 /**
  * @brief A regular physical domain, behaving very much like the real world.
  *

@@ -21,8 +21,7 @@
 
 #include <cinttypes>
 #include <memory>
-
-class PropertyBase;
+#include "Property.h"
 
 /// \brief Kit interface for factories to create Property objects.
 class PropertyKit {
