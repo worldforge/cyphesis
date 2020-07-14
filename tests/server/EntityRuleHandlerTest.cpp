@@ -207,7 +207,7 @@ Root atlasOpDefinition(const std::string & name, const std::string & parent)
     return Root();
 }
 #include "../stubs/common/stublog.h"
-#include "../stubs/common/stubEntityKit.h"
+#include "../stubs/server/stubEntityKit.h"
 #include "../stubs/server/stubEntityFactory.h"
 #include "../stubs/rules/simulation/stubCorePropertyManager.h"
 #include "../stubs/common/stubPropertyManager.h"

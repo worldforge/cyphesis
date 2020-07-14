@@ -648,7 +648,7 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "../stubs/server/stubArchetypeFactory.h"
 #include "../stubs/rules/python/stubScriptsProperty.h"
 #include "../stubs/server/stubEntityFactory.h"
-#include "../stubs/common/stubEntityKit.h"
+#include "../stubs/server/stubEntityKit.h"
 
 Root atlasClass(const std::string& name, const std::string& parent)
 {

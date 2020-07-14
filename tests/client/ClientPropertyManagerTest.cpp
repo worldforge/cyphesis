@@ -47,4 +47,5 @@ int main()
 #include "../stubs/rules/stubAtlasProperties.h"
 #include "../stubs/rules/stubScaleProperty.h"
 #include "../stubs/rules/stubSolidProperty.h"
+#include "../stubs/rules/stubVector3Property.h"
 #include "../stubs/common/stubProperty.h"

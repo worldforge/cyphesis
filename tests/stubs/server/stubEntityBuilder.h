@@ -42,17 +42,17 @@
 
 #ifndef STUB_EntityBuilder_newEntity
 //#define STUB_EntityBuilder_newEntity
-  Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs) const
+  Ref<Entity> EntityBuilder::newEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs) const
   {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
+    return *static_cast<Ref<Entity>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_newEntity
 
 #ifndef STUB_EntityBuilder_newChildEntity
 //#define STUB_EntityBuilder_newChildEntity
-  Ref<LocatedEntity> EntityBuilder::newChildEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs) const
+  Ref<Entity> EntityBuilder::newChildEntity(const std::string & id, long intId, const std::string & type, const Atlas::Objects::Entity::RootEntity & attrs) const
   {
-    return *static_cast<Ref<LocatedEntity>*>(nullptr);
+    return *static_cast<Ref<Entity>*>(nullptr);
   }
 #endif //STUB_EntityBuilder_newChildEntity
 

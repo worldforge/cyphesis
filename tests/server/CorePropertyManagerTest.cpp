@@ -319,7 +319,7 @@ bool_config_register::bool_config_register(bool& var,
 }
 
 
-#include "../stubs/common/stubEntityKit.h"
+#include "../stubs/server/stubEntityKit.h"
 #include "../stubs/server/stubEntityFactory.h"
 #include "../stubs/server/stubJuncture.h"
 

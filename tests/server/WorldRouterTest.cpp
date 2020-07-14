@@ -414,7 +414,7 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 #include "common/Property_impl.h"
 
 #define STUB_EntityBuilder_newEntity
-Ref<LocatedEntity> EntityBuilder::newEntity(const std::string & id, long intId,
+Ref<Entity> EntityBuilder::newEntity(const std::string & id, long intId,
                                          const std::string & type,
                                          const RootEntity & attributes) const
 {

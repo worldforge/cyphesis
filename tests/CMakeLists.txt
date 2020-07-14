@@ -29,8 +29,8 @@ set(PYTHON_TESTS_LIBS
     rulesai
     rulessimulation
     entityfilter
-    rulesbase
     stubnavigation
+    rulesbase
     modules
     physics
     common)
@@ -354,11 +354,12 @@ wf_add_test(rules/simulation/ContainedVisibilityPropertyIntegration.cpp ../src/r
     ../src/rules/LocatedEntity.cpp)
 wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
     ../src/rules/ai/BaseMind.cpp
-        ../src/rules/MemEntity.cpp
-        ../src/rules/LocatedEntity.cpp
+    ../src/rules/MemEntity.cpp
+    ../src/rules/LocatedEntity.cpp
     ../src/rules/ai/MemMap.cpp
     ../src/rules/BBoxProperty.cpp
     ../src/rules/SolidProperty.cpp
+    ../src/rules/Vector3Property.cpp
     ../src/rules/Location.cpp
     ../src/rules/EntityLocation.cpp
     ../src/common/Property.cpp
@@ -546,8 +547,8 @@ target_link_libraries(EntityExporterTest common)
 
 wf_add_test(navigation/SteeringIntegration.cpp)
 target_link_libraries(SteeringIntegration
-        rulesbase
         navigation
+        rulesbase
         modules
         common
         physics

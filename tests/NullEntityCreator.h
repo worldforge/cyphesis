@@ -25,7 +25,7 @@
 
 struct NullEntityCreator : public EntityCreator
 {
-    Ref<LocatedEntity> newEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attrs) const override
+    Ref<Entity> newEntity(const std::string& id, long intId, const std::string& type, const Atlas::Objects::Entity::RootEntity& attrs) const override
     {
         return {};
     }
