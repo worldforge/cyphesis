@@ -111,7 +111,7 @@ wf_add_test(common/utilsTest.cpp ../src/common/utils.cpp)
 wf_add_test(common/SystemTimeTest.cpp)
 wf_add_test(common/ShakerTest.cpp ../src/common/Shaker.cpp)
 wf_add_test(common/ScriptKitTest.cpp)
-wf_add_test(rules/EntityKitTest.cpp ../src/common/EntityKit.cpp)
+wf_add_test(rules/EntityKitTest.cpp)
 wf_add_test(common/LinkTest.cpp ../src/common/Link.cpp)
 wf_add_test(common/CommSocketTest.cpp)
 wf_add_test(common/composeTest.cpp)
@@ -428,7 +428,7 @@ wf_add_test(server/ServerAccountTest.cpp ../src/server/ServerAccount.cpp)
 wf_add_test(server/PlayerTest.cpp ../src/server/Player.cpp
     ../src/common/debug.cpp)
 wf_add_test(server/EntityFactoryTest.cpp ../src/server/EntityFactory.cpp
-    ../src/common/EntityKit.cpp ../src/rules/Modifier.cpp)
+    ../src/rules/Modifier.cpp)
 wf_add_test(common/buildidTest.cpp ${PROJECT_BINARY_DIR}/src/server/buildid.cpp)
 wf_add_test(server/ConnectionTest.cpp ../src/server/Connection.cpp)
 wf_add_test(server/TrustedConnectionTest.cpp ../src/server/TrustedConnection.cpp)
@@ -500,7 +500,6 @@ wf_add_test(server/AccountIntegration.cpp)
 target_link_libraries(AccountIntegration server ${PYTHON_TESTS_LIBS})
 
 wf_add_test(server/EntityFactoryTypeNodeIntegration.cpp TestPropertyManager.cpp ../src/server/EntityFactory.cpp
-    ../src/common/EntityKit.cpp
     ../src/common/TypeNode.cpp
     ../src/common/PropertyManager.cpp
     ../src/common/Property.cpp

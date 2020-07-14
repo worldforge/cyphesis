@@ -27,7 +27,6 @@ add_library(common
         Variable.cpp
         AtlasStreamClient.cpp
         ClientTask.cpp
-        EntityKit.cpp
         ScriptKit.h
         Link.cpp
         Shaker.cpp

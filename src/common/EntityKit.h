@@ -49,7 +49,10 @@ class ScriptKit;
 class EntityKit
 {
     protected:
-        EntityKit();
+        EntityKit() : m_type(nullptr),
+                      m_createdCount(0)
+        {
+        }
 
     public:
         /// Inheritance type of this class.
