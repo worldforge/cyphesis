@@ -640,7 +640,7 @@ std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedE
 class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback
 {
     public:
-        std::set<BulletEntry*> m_entries;
+        std::unordered_set<BulletEntry*> m_entries;
 
         btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
                                  int partId1, int index1) override

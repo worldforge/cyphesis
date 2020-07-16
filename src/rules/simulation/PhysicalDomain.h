@@ -31,6 +31,7 @@
 #include <tuple>
 #include <array>
 #include <set>
+#include <unordered_set>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 namespace Mercator {
@@ -130,11 +131,11 @@ class PhysicalDomain : public Domain
             /**
              * Set of entries which are observing by this.
              */
-            std::set<BulletEntry*> observedByThis;
+            std::unordered_set<BulletEntry*> observedByThis;
             /**
              * Set of entries which are observing this.
              */
-            std::set<BulletEntry*> observingThis;
+            std::unordered_set<BulletEntry*> observingThis;
 
             btVector3 centerOfMassOffset;
 
