@@ -170,46 +170,50 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 
         ///synchronizes world transform from physics to user
         ///Bullet only calls the update of worldtransform for active objects
-        void setWorldTransform(const btTransform& /* centerOfMassWorldTrans */) override
+        void setWorldTransform(const btTransform& centerOfMassWorldTrans) override
         {
-            LocatedEntity& entity = m_bulletEntry.entity;
-            m_domain.m_movingEntities.insert(&m_bulletEntry);
-            m_domain.m_dirtyEntries.insert(&m_bulletEntry);
+            if (!(m_bulletEntry.lastTransform == centerOfMassWorldTrans)) {
+                m_bulletEntry.lastTransform = centerOfMassWorldTrans;
 
-            //            debug_print(
-            //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
+                LocatedEntity& entity = m_bulletEntry.entity;
+                m_domain.m_movingEntities.insert(&m_bulletEntry);
+                m_domain.m_dirtyEntries.insert(&m_bulletEntry);
 
-            auto& bulletTransform = m_rigidBody.getCenterOfMassTransform();
-            btTransform newTransform = bulletTransform * m_centerOfMassOffset;
+                //            debug_print(
+                //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
 
-            entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
-            entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
-            entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getAngularVelocity());
-            entity.m_location.m_velocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getLinearVelocity());
+                auto& bulletTransform = m_rigidBody.getCenterOfMassTransform();
+                btTransform newTransform = bulletTransform * m_centerOfMassOffset;
 
-            //If the magnitude is small enough, consider the velocity to be zero.
-            if (entity.m_location.m_velocity.sqrMag() < 0.001f) {
-                entity.m_location.m_velocity.zero();
-            }
-            if (entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
-                entity.m_location.m_angularVelocity.zero();
-            }
-            entity.removeFlags(entity_pos_clean | entity_orient_clean);
-            //entity.addFlags(entity_dirty_location);
+                entity.m_location.m_pos = Convert::toWF<WFMath::Point<3>>(newTransform.getOrigin());
+                entity.m_location.m_orientation = Convert::toWF(newTransform.getRotation());
+                entity.m_location.m_angularVelocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getAngularVelocity());
+                entity.m_location.m_velocity = Convert::toWF<WFMath::Vector<3>>(m_rigidBody.getLinearVelocity());
 
-            auto& visibilitySphere = m_bulletEntry.visibilitySphere;
-            if (visibilitySphere) {
-                visibilitySphere->setWorldTransform(
-                        btTransform(visibilitySphere->getWorldTransform().getBasis(),
-                                    m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
-                m_domain.m_visibilityWorld->updateSingleAabb(visibilitySphere.get());
-            }
+                //If the magnitude is small enough, consider the velocity to be zero.
+                if (entity.m_location.m_velocity.sqrMag() < 0.001f) {
+                    entity.m_location.m_velocity.zero();
+                }
+                if (entity.m_location.m_angularVelocity.sqrMag() < 0.001f) {
+                    entity.m_location.m_angularVelocity.zero();
+                }
+                entity.removeFlags(entity_pos_clean | entity_orient_clean);
+                //entity.addFlags(entity_dirty_location);
 
-            auto& viewSphere = m_bulletEntry.viewSphere;
-            if (viewSphere) {
-                viewSphere->setWorldTransform(btTransform(viewSphere->getWorldTransform().getBasis(),
-                                                          m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
-                m_domain.m_visibilityWorld->updateSingleAabb(viewSphere.get());
+                auto& visibilitySphere = m_bulletEntry.visibilitySphere;
+                if (visibilitySphere) {
+                    visibilitySphere->setWorldTransform(
+                            btTransform(visibilitySphere->getWorldTransform().getBasis(),
+                                        m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
+                    m_domain.m_visibilityWorld->updateSingleAabb(visibilitySphere.get());
+                }
+
+                auto& viewSphere = m_bulletEntry.viewSphere;
+                if (viewSphere) {
+                    viewSphere->setWorldTransform(btTransform(viewSphere->getWorldTransform().getBasis(),
+                                                              m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
+                    m_domain.m_visibilityWorld->updateSingleAabb(viewSphere.get());
+                }
             }
         }
 };
@@ -2437,6 +2441,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 //    CProfileManager::Reset();
 //    CProfileManager::Increment_Frame_Counter();
 
+    auto start = std::chrono::steady_clock::now();
     struct BulletCollisionEntry
     {
         BulletEntry* bulletEntry;
@@ -2465,9 +2470,10 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     }
 
     projectileCollisions.clear();
-    auto start = std::chrono::steady_clock::now();
+
     //Step simulations with 60 hz.
     m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
+    auto interim = std::chrono::steady_clock::now() - start;
 
     if (debug_flag) {
         std::stringstream ss;
@@ -2516,6 +2522,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         }
     }
 
+    auto visStart = std::chrono::steady_clock::now();
     //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
     m_visibilityCheckCountdown -= tickSize;
     if (m_visibilityCheckCountdown <= 0) {
@@ -2523,6 +2530,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         m_visibilityCheckCountdown = VISIBILITY_CHECK_INTERVAL_SECONDS;
     }
 
+    auto visDuration = std::chrono::steady_clock::now() - visStart;
     processWaterBodies();
 
     //Check all entities that moved this tick.
@@ -2555,6 +2563,17 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     m_movingEntities.clear();
 
     processDirtyTerrainAreas();
+
+    auto duration = std::chrono::steady_clock::now() - start;
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    if (milliseconds > 3) {
+        log(WARNING,
+            String::compose("Physics took %1 milliseconds (just stepSimulation %2 ms, visibility %3 ms, tick size %4 ms).",
+                            milliseconds,
+                            std::chrono::duration_cast<std::chrono::milliseconds>(interim).count(),
+                            std::chrono::duration_cast<std::chrono::milliseconds>(visDuration).count(),
+                            tickSize * 1000));
+    }
 }
 
 void PhysicalDomain::processWaterBodies()

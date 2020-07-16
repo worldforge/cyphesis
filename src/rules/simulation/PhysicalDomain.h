@@ -173,6 +173,12 @@ class PhysicalDomain : public Domain
 
             std::set<ClosenessObserverEntry*> closenessObservations;
 
+            /**
+             * Keeps track of last received transform. This allows us to quickly check if we should mark the entity as dirty or not
+             * (which we only do if position or orientation has changed)
+             */
+            btTransform lastTransform;
+
         };
 
         struct TerrainEntry
