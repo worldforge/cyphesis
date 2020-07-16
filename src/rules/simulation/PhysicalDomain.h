@@ -131,11 +131,11 @@ class PhysicalDomain : public Domain
             /**
              * Set of entries which are observing by this.
              */
-            std::unordered_set<BulletEntry*> observedByThis;
+            std::set<BulletEntry*> observedByThis;
             /**
              * Set of entries which are observing this.
              */
-            std::unordered_set<BulletEntry*> observingThis;
+            std::set<BulletEntry*> observingThis;
 
             btVector3 centerOfMassOffset;
 

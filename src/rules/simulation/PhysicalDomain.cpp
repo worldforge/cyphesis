@@ -640,7 +640,7 @@ std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedE
 class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback
 {
     public:
-        std::unordered_set<BulletEntry*> m_entries;
+        std::set<BulletEntry*> m_entries;
 
         btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
                                  int partId1, int index1) override
@@ -680,39 +680,8 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
 
         std::vector<Atlas::Objects::Root> appearArgs;
         std::vector<Atlas::Objects::Root> disappearArgs;
-        //See which entities became visible, and which sight was lost of.
-        for (BulletEntry* viewedEntry : callback.m_entries) {
-            if (viewedEntry == bulletEntry) {
-                continue;
-            }
-            auto I = observed.find(viewedEntry);
-            if (I != observed.end()) {
-                //It was already seen; do nothing special
-                observed.erase(I);
-            } else {
-                //Send Appear
-                // debug_print(" appear: " << viewedEntry->entity.describeEntity() << " for " << bulletEntry->entity.describeEntity());
-                Anonymous that_ent;
-                that_ent->setId(viewedEntry->entity.getId());
-                that_ent->setStamp(viewedEntry->entity.getSeq());
-                appearArgs.push_back(std::move(that_ent));
 
-                viewedEntry->observingThis.insert(bulletEntry);
-            }
-        }
-        if (!appearArgs.empty()) {
-            Appearance appear;
-            appear->setTo(bulletEntry->entity.getId());
-            appear->setArgs(std::move(appearArgs));
-            res.push_back(std::move(appear));
-        }
-
-        for (BulletEntry* disappearedEntry : observed) {
-            if (disappearedEntry == bulletEntry) {
-                continue;
-            }
-            //Send disappearence
-            //debug_print(" disappear: " << disappearedEntry->entity.describeEntity() << " for " << bulletEntry->entity.describeEntity());
+        auto disappearFn = [&](BulletEntry* disappearedEntry) {
             Anonymous that_ent;
             that_ent->setId(disappearedEntry->entity.getId());
             that_ent->setStamp(disappearedEntry->entity.getSeq());
@@ -720,18 +689,66 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             disappearArgs.push_back(std::move(that_ent));
 
             disappearedEntry->observingThis.erase(bulletEntry);
+        };
+
+        auto appearFn = [&](BulletEntry* appearedEntry) {
+            //Send Appear
+            // debug_print(" appear: " << viewedEntry->entity.describeEntity() << " for " << bulletEntry->entity.describeEntity());
+            Anonymous that_ent;
+            that_ent->setId(appearedEntry->entity.getId());
+            that_ent->setStamp(appearedEntry->entity.getSeq());
+            appearArgs.push_back(std::move(that_ent));
+
+            appearedEntry->observingThis.insert(bulletEntry);
+        };
+
+        //See which entities became visible, and which sight was lost of.
+        auto existingI = observed.begin();
+        auto newI = callback.m_entries.begin();
+
+        //Since the entries are sorted pointers we can check the difference by iterating over both sets.
+        while (existingI != observed.end() && newI != callback.m_entries.end()) {
+            if (*existingI == *newI) {
+                //elements are equal, the entity was already observed
+                ++existingI;
+                ++newI;
+            } else if (*existingI < *newI) {
+                //an element is missing from the new observation. We lost sight of this one.
+
+                disappearFn(*existingI);
+                existingI = observed.erase(existingI);
+            } else {
+                //an element wasn't present in the existing observing entities. We gained sight of this one.
+                appearFn(*newI);
+                existingI = observed.insert(*newI).first;
+            }
         }
 
+        //Check if there were more entries in the existing observation set.
+        for (; existingI != observed.end();) {
+            disappearFn(*existingI);
+            existingI = observed.erase(existingI);
+        }
+
+        //Check if there were more new entries.
+        for (; newI != callback.m_entries.end(); ++newI) {
+            appearFn(*newI);
+            observed.insert(*newI);
+        }
+
+
+        if (!appearArgs.empty()) {
+            Appearance appear;
+            appear->setTo(bulletEntry->entity.getId());
+            appear->setArgs(std::move(appearArgs));
+            res.push_back(std::move(appear));
+        }
         if (!disappearArgs.empty()) {
             Disappearance disappear;
             disappear->setTo(bulletEntry->entity.getId());
             disappear->setArgs(std::move(disappearArgs));
             res.push_back(std::move(disappear));
         }
-
-        bulletEntry->observedByThis = std::move(callback.m_entries);
-        //Make sure ourselves is in the list
-        bulletEntry->observedByThis.insert(bulletEntry);
     }
 }
 
@@ -755,30 +772,8 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
         debug_print(" observing " << bulletEntry->entity.describeEntity() << ": " << callback.m_entries.size())
 
         auto& observing = bulletEntry->observingThis;
-        //See which entities got sight of this, and for which sight was lost.
-        for (BulletEntry* viewingEntry : callback.m_entries) {
-            auto I = observing.find(viewingEntry);
-            if (I != observing.end()) {
-                //It was already seen; do nothing special
-                observing.erase(I);
-            } else {
-                if (generateOps) {
-                    //Send appear
-                    // debug_print(" appear: " << bulletEntry->entity.describeEntity() << " for " << viewingEntry->entity.describeEntity());
-                    Appearance appear;
-                    Anonymous that_ent;
-                    that_ent->setId(bulletEntry->entity.getId());
-                    that_ent->setStamp(bulletEntry->entity.getSeq());
-                    appear->setArgs1(std::move(that_ent));
-                    appear->setTo(viewingEntry->entity.getId());
-                    res.push_back(std::move(appear));
-                }
 
-                viewingEntry->observedByThis.insert(bulletEntry);
-            }
-        }
-
-        for (BulletEntry* noLongerObservingEntry : observing) {
+        auto disappearFn = [&](BulletEntry* existingObserverEntry) {
             if (generateOps) {
                 //Send disappearence
                 // debug_print(" disappear: " << bulletEntry->entity.describeEntity() << " for " << noLongerObservingEntry->entity.describeEntity());
@@ -787,14 +782,59 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
                 that_ent->setId(bulletEntry->entity.getId());
                 that_ent->setStamp(bulletEntry->entity.getSeq());
                 disappear->setArgs1(std::move(that_ent));
-                disappear->setTo(noLongerObservingEntry->entity.getId());
+                disappear->setTo(existingObserverEntry->entity.getId());
                 res.push_back(std::move(disappear));
             }
 
-            noLongerObservingEntry->observedByThis.erase(bulletEntry);
+            existingObserverEntry->observedByThis.erase(bulletEntry);
+        };
+
+        auto appearFn = [&](BulletEntry* newObserverEntry) {
+            if (generateOps) {
+                //Send appear
+                // debug_print(" appear: " << bulletEntry->entity.describeEntity() << " for " << viewingEntry->entity.describeEntity());
+                Appearance appear;
+                Anonymous that_ent;
+                that_ent->setId(bulletEntry->entity.getId());
+                that_ent->setStamp(bulletEntry->entity.getSeq());
+                appear->setArgs1(std::move(that_ent));
+                appear->setTo(newObserverEntry->entity.getId());
+                res.push_back(std::move(appear));
+            }
+
+            newObserverEntry->observedByThis.insert(bulletEntry);
+        };
+
+        //Since the entries are sorted pointers we can check the difference by iterating over both sets.
+        auto existingI = observing.begin();
+        auto newI = callback.m_entries.begin();
+        while (existingI != observing.end() && newI != callback.m_entries.end()) {
+            if (*existingI == *newI) {
+                //elements are equal, the entity was already observing
+                ++existingI;
+                ++newI;
+            } else if (*existingI < *newI) {
+                //an element is missing from the new observation. This entity lost sight of the observed entity.
+                disappearFn(*existingI);
+                existingI = observing.erase(existingI);
+            } else {
+                //an element wasn't present in the existing observing entities. This entity gained sight of the observed entity.
+                appearFn(*newI);
+                existingI = observing.insert(*newI).first;
+            }
+        }
+        //Check if there were more entries in the existing observation set.
+        for (; existingI != observing.end();) {
+            disappearFn(*existingI);
+            existingI = observing.erase(existingI);
         }
 
-        bulletEntry->observingThis = std::move(callback.m_entries);
+        //Check if there were more new entries.
+        for (; newI != callback.m_entries.end(); ++newI) {
+            appearFn(*newI);
+            observing.insert(*newI);
+        }
+
     }
 }
 
