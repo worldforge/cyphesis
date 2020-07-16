@@ -695,7 +695,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
                 Anonymous that_ent;
                 that_ent->setId(viewedEntry->entity.getId());
                 that_ent->setStamp(viewedEntry->entity.getSeq());
-                appearArgs.push_back(that_ent);
+                appearArgs.push_back(std::move(that_ent));
 
                 viewedEntry->observingThis.insert(bulletEntry);
             }
@@ -703,8 +703,8 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
         if (!appearArgs.empty()) {
             Appearance appear;
             appear->setTo(bulletEntry->entity.getId());
-            appear->setArgs(appearArgs);
-            res.push_back(appear);
+            appear->setArgs(std::move(appearArgs));
+            res.push_back(std::move(appear));
         }
 
         for (BulletEntry* disappearedEntry : observed) {
@@ -717,7 +717,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             that_ent->setId(disappearedEntry->entity.getId());
             that_ent->setStamp(disappearedEntry->entity.getSeq());
 
-            disappearArgs.push_back(that_ent);
+            disappearArgs.push_back(std::move(that_ent));
 
             disappearedEntry->observingThis.erase(bulletEntry);
         }
@@ -725,8 +725,8 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
         if (!disappearArgs.empty()) {
             Disappearance disappear;
             disappear->setTo(bulletEntry->entity.getId());
-            disappear->setArgs(disappearArgs);
-            res.push_back(disappear);
+            disappear->setArgs(std::move(disappearArgs));
+            res.push_back(std::move(disappear));
         }
 
         bulletEntry->observedByThis = std::move(callback.m_entries);
@@ -769,9 +769,9 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
                     Anonymous that_ent;
                     that_ent->setId(bulletEntry->entity.getId());
                     that_ent->setStamp(bulletEntry->entity.getSeq());
-                    appear->setArgs1(that_ent);
+                    appear->setArgs1(std::move(that_ent));
                     appear->setTo(viewingEntry->entity.getId());
-                    res.push_back(appear);
+                    res.push_back(std::move(appear));
                 }
 
                 viewingEntry->observedByThis.insert(bulletEntry);
@@ -786,9 +786,9 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
                 Anonymous that_ent;
                 that_ent->setId(bulletEntry->entity.getId());
                 that_ent->setStamp(bulletEntry->entity.getSeq());
-                disappear->setArgs1(that_ent);
+                disappear->setArgs1(std::move(that_ent));
                 disappear->setTo(noLongerObservingEntry->entity.getId());
-                res.push_back(disappear);
+                res.push_back(std::move(disappear));
             }
 
             noLongerObservingEntry->observedByThis.erase(bulletEntry);
