@@ -800,12 +800,15 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
 void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
-    for (auto& bulletEntry : m_dirtyEntries) {
+    size_t i = 0;
+    //Handle max 20 entities each time.
+    for (auto I = m_dirtyEntries.begin(); I != m_dirtyEntries.end() && i < 20; ++i) {
+        auto& bulletEntry = *I;
         updateObservedEntry(bulletEntry, res);
         updateObserverEntry(bulletEntry, res);
         bulletEntry->entity.onUpdated();
+        I = m_dirtyEntries.erase(I);
     }
-    m_dirtyEntries.clear();
 }
 
 float PhysicalDomain::getMassForEntity(const LocatedEntity& entity) const
