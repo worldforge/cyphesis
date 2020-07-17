@@ -637,20 +637,19 @@ std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedE
     return entityList;
 }
 
-class PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback
+struct PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback
 {
-    public:
-        std::set<BulletEntry*> m_entries;
+    std::vector<BulletEntry*> m_entries;
 
-        btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
-                                 int partId1, int index1) override
-        {
-            auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
-            if (bulletEntry) {
-                m_entries.insert(bulletEntry);
-            }
-            return btScalar(1.0);
+    btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                             int partId1, int index1) override
+    {
+        auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+        if (bulletEntry) {
+            m_entries.emplace_back(bulletEntry);
         }
+        return btScalar(1.0);
+    }
 };
 
 void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res)
@@ -672,7 +671,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
         }
 
         //Insert the container entity, which should be seen by the observer.
-        callback.m_entries.insert(&mContainingEntityEntry);
+        callback.m_entries.emplace_back(&mContainingEntityEntry);
 
         debug_print(" observed by " << bulletEntry->entity.describeEntity() << ": " << callback.m_entries.size())
 
@@ -704,6 +703,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
 
         //See which entities became visible, and which sight was lost of.
         auto existingI = observed.begin();
+        std::sort(callback.m_entries.begin(), callback.m_entries.end());
         auto newI = callback.m_entries.begin();
 
         //Since the entries are sorted pointers we can check the difference by iterating over both sets.
@@ -807,6 +807,7 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
         //Since the entries are sorted pointers we can check the difference by iterating over both sets.
         auto existingI = observing.begin();
+        std::sort(callback.m_entries.begin(), callback.m_entries.end());
         auto newI = callback.m_entries.begin();
         while (existingI != observing.end() && newI != callback.m_entries.end()) {
             if (*existingI == *newI) {
@@ -2286,7 +2287,20 @@ void PhysicalDomain::processDirtyTerrainAreas()
 #endif
         }
 
-        VisibilityCallback callback;
+        struct : public btCollisionWorld::ContactResultCallback
+        {
+            std::vector<PhysicalDomain::BulletEntry*> m_entries;
+
+            btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
+                                     int partId1, int index1) override
+            {
+                auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
+                if (bulletEntry && (m_entries.empty() || *m_entries.rbegin() != bulletEntry)) {
+                    m_entries.emplace_back(bulletEntry);
+                }
+                return btScalar(1.0);
+            }
+        } callback;
 
         callback.m_collisionFilterGroup = COLLISION_MASK_TERRAIN;
         callback.m_collisionFilterMask = COLLISION_MASK_PHYSICAL | COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_STATIC;
@@ -2566,12 +2580,8 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     }
 
     auto visStart = std::chrono::steady_clock::now();
-    //Don't do visibility checks each tick; instead use m_visibilityCheckCountdown to count down to next
-    m_visibilityCheckCountdown -= tickSize;
-    if (m_visibilityCheckCountdown <= 0) {
-        updateVisibilityOfDirtyEntities(res);
-        m_visibilityCheckCountdown = VISIBILITY_CHECK_INTERVAL_SECONDS;
-    }
+    updateVisibilityOfDirtyEntities(res);
+
 
     auto visDuration = std::chrono::steady_clock::now() - visStart;
     processWaterBodies();
