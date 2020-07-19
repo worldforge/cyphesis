@@ -148,6 +148,12 @@ namespace {
 float VISIBILITY_SCALING_FACTOR = 100;
 
 /**
+ * The amount of time between each tick, in seconds.
+ * The simulation will happen at 60hz, but the tick size determines how often entities are processed and operations are sent.
+ */
+double TICK_SIZE = 1.0 / 15.0;
+
+/**
  * Mask used by visibility checks for observing entries (i.e. creatures etc.).
  */
 short VISIBILITY_MASK_OBSERVER = 1u << 1u;
@@ -451,8 +457,7 @@ void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& 
 {
     entity->installDelegate(Atlas::Objects::Operation::TICK_NO, propertyName);
     OpVector res;
-    double tickSize = 1.0 / 15.0;
-    tick(tickSize, res);
+    tick(TICK_SIZE, res);
     for (auto& op : res) {
         entity->sendWorld(op);
     }
@@ -466,7 +471,7 @@ Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEnt
     tick_arg->setName("domain");
     Atlas::Objects::Operation::Tick tickOp;
     tickOp->setTo(entity.getId());
-    tickOp->setSeconds(timeNow + ((1.0 / 15.0) / consts::time_multiplier));
+    tickOp->setSeconds(timeNow + (TICK_SIZE / consts::time_multiplier));
     tickOp->setAttr("lastTick", timeNow);
     tickOp->setArgs1(tick_arg);
 
@@ -482,7 +487,7 @@ HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operatio
 {
     if (!op->getArgs().empty() && !op->getArgs().front()->isDefaultName() && op->getArgs().front()->getName() == "domain") {
         double timeNow = op->getSeconds();
-        double tickSize = 1.0 / 15.0;
+        double tickSize = TICK_SIZE;
         Atlas::Message::Element elem;
         if (op->copyAttr("lastTick", elem) == 0 && elem.isFloat()) {
             tickSize = timeNow - elem.Float();
