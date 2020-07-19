@@ -94,6 +94,53 @@ namespace {
     {
         return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
     }
+
+    /**
+     * Processes an existing set and a new sorted vector, checking which elements are new, which are removed and which are kept.
+     * The supplied set will be altered so that it contains the content of the vector.
+     * @tparam T The type of items.
+     * @tparam FunctorRemove Called when an item was removed.
+     * @tparam FunctorAdd Called when an item was added.
+     * @param newCollection The vector of new items. Must be sorted.
+     * @param previousCollection The set of existing items. This will be altered to match the vector.
+     * @param removedFn Called when an item has been removed.
+     * @param addedFn Called when an item has been added.
+     */
+    template<typename T, typename FunctorRemove, typename FunctorAdd>
+    void processDifferences(std::vector<T>& newCollection, std::set<T>& previousCollection, FunctorRemove removedFn, FunctorAdd addedFn)
+    {
+        auto existingI = previousCollection.begin();
+        std::sort(newCollection.begin(), newCollection.end());
+        auto newI = newCollection.begin();
+        while (existingI != previousCollection.end() && newI != newCollection.end()) {
+            if (*existingI == *newI) {
+                //elements are equal, the entity was already in previousCollection
+                //existedFn(*existingI);
+                ++existingI;
+                ++newI;
+            } else if (*existingI < *newI) {
+                //an element is missing from the new collection. This entity was removed.
+                removedFn(*existingI);
+                existingI = previousCollection.erase(existingI);
+            } else {
+                //an element wasn't present in the existing previousCollection entities. This entity was added.
+                addedFn(*newI);
+                existingI = previousCollection.insert(*newI).first;
+            }
+        }
+        //Check if there were more entries in the existing collection.
+        for (; existingI != previousCollection.end();) {
+            removedFn(*existingI);
+            existingI = previousCollection.erase(existingI);
+        }
+
+        //Check if there were more new entries.
+        for (; newI != newCollection.end(); ++newI) {
+            addedFn(*newI);
+            previousCollection.insert(*newI);
+        }
+    }
+
 }
 /**
  * How much the visibility sphere should be scaled against the size of the bbox.
@@ -708,41 +755,10 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             appearedEntry->observingThis.insert(bulletEntry);
         };
 
-        //See which entities became visible, and which sight was lost of.
-        auto existingI = observed.begin();
         std::sort(callback.m_entries.begin(), callback.m_entries.end());
-        auto newI = callback.m_entries.begin();
-
+        //See which entities became visible, and which sight was lost of.
         //Since the entries are sorted pointers we can check the difference by iterating over both sets.
-        while (existingI != observed.end() && newI != callback.m_entries.end()) {
-            if (*existingI == *newI) {
-                //elements are equal, the entity was already observed
-                ++existingI;
-                ++newI;
-            } else if (*existingI < *newI) {
-                //an element is missing from the new observation. We lost sight of this one.
-
-                disappearFn(*existingI);
-                existingI = observed.erase(existingI);
-            } else {
-                //an element wasn't present in the existing observing entities. We gained sight of this one.
-                appearFn(*newI);
-                existingI = observed.insert(*newI).first;
-            }
-        }
-
-        //Check if there were more entries in the existing observation set.
-        for (; existingI != observed.end();) {
-            disappearFn(*existingI);
-            existingI = observed.erase(existingI);
-        }
-
-        //Check if there were more new entries.
-        for (; newI != callback.m_entries.end(); ++newI) {
-            appearFn(*newI);
-            observed.insert(*newI);
-        }
-
+        processDifferences<BulletEntry*>(callback.m_entries, observed, disappearFn, appearFn);
 
         if (!appearArgs.empty()) {
             Appearance appear;
@@ -813,35 +829,8 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
         };
 
         //Since the entries are sorted pointers we can check the difference by iterating over both sets.
-        auto existingI = observing.begin();
         std::sort(callback.m_entries.begin(), callback.m_entries.end());
-        auto newI = callback.m_entries.begin();
-        while (existingI != observing.end() && newI != callback.m_entries.end()) {
-            if (*existingI == *newI) {
-                //elements are equal, the entity was already observing
-                ++existingI;
-                ++newI;
-            } else if (*existingI < *newI) {
-                //an element is missing from the new observation. This entity lost sight of the observed entity.
-                disappearFn(*existingI);
-                existingI = observing.erase(existingI);
-            } else {
-                //an element wasn't present in the existing observing entities. This entity gained sight of the observed entity.
-                appearFn(*newI);
-                existingI = observing.insert(*newI).first;
-            }
-        }
-        //Check if there were more entries in the existing observation set.
-        for (; existingI != observing.end();) {
-            disappearFn(*existingI);
-            existingI = observing.erase(existingI);
-        }
-
-        //Check if there were more new entries.
-        for (; newI != callback.m_entries.end(); ++newI) {
-            appearFn(*newI);
-            observing.insert(*newI);
-        }
+        processDifferences<BulletEntry*>(callback.m_entries, observing, disappearFn, appearFn);
 
     }
 }
