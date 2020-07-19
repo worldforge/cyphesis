@@ -615,6 +615,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          */
         {
             Ref<Thing> t1 = new Thing("1", 1);
+            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
             Ref<Thing> t2 = new Thing("2", 2);

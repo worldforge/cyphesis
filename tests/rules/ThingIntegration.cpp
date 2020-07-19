@@ -184,6 +184,7 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          */
         {
             Ref<ThingExt> t1 = new ThingExt("1", 1);
+            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
             t1->domain = new PhysicalDomain(*t1);
             t1->addFlags(entity_domain);
             Ref<ThingExt> t2 = new ThingExt("2", 2);

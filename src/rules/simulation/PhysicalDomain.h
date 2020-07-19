@@ -126,7 +126,7 @@ class PhysicalDomain : public Domain
             std::unique_ptr<btCollisionObject> visibilitySphere;
             std::unique_ptr<btSphereShape> visibilityShape;
             std::unique_ptr<btCollisionObject> viewSphere;
-            std::unique_ptr<btCollisionShape> viewShape;
+            std::unique_ptr<btSphereShape> viewShape;
 
             /**
              * Set of entries which are observing by this.

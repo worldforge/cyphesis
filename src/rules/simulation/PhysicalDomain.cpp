@@ -154,6 +154,11 @@ float VISIBILITY_SCALING_FACTOR = 100;
 double TICK_SIZE = 1.0 / 15.0;
 
 /**
+ * The base size of the view sphere for a perceptive entity. Everything within this radius will be visible.
+ */
+double VIEW_SPHERE_RADIUS = 0.5;
+
+/**
  * Mask used by visibility checks for observing entries (i.e. creatures etc.).
  */
 short VISIBILITY_MASK_OBSERVER = 1u << 1u;
@@ -287,9 +292,14 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         m_constraintSolver(new btSequentialImpulseConstraintSolver()),
         //We'll use a dynamic broadphase for the main world. It's not as fast as SAP variants, but it's faster when dynamic objects are at rest.
         m_broadphase(new btDbvtBroadphase()),
+        // m_broadphase(new btAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()),
+        //                                              Convert::toBullet(entity.m_location.bBox().highCorner()))),
         m_dynamicsWorld(new PhysicalWorld(m_dispatcher.get(), m_broadphase.get(), m_constraintSolver.get(), m_collisionConfiguration.get())),
         m_visibilityDispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
-        m_visibilityBroadphase(new btDbvtBroadphase()),
+        //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
+        //TODO: how to handle the limit for 16384 entries? Perhaps use the bt32BitAxisSweep3 with a custom max entries setting (to avoid it eating all memory).
+        m_visibilityBroadphase(new btAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()) / VISIBILITY_SCALING_FACTOR,
+                                                Convert::toBullet(entity.m_location.bBox().highCorner()) / VISIBILITY_SCALING_FACTOR)),
         m_visibilityWorld(new btCollisionWorld(m_visibilityDispatcher.get(),
                                                m_visibilityBroadphase.get(),
                                                m_collisionConfiguration.get())),
@@ -696,45 +706,58 @@ std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedE
     return entityList;
 }
 
-struct PhysicalDomain::VisibilityCallback : public btCollisionWorld::ContactResultCallback
-{
-    std::vector<BulletEntry*> m_entries;
-
-    btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap,
-                             int partId1, int index1) override
-    {
-        auto* bulletEntry = static_cast<BulletEntry*>(colObj1Wrap->m_collisionObject->getUserPointer());
-        if (bulletEntry) {
-            m_entries.emplace_back(bulletEntry);
-        }
-        return btScalar(1.0);
-    }
-};
-
 void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res)
 {
     if (bulletEntry->viewSphere) {
         //This entry is an observer; check what it can see after it has moved
-        VisibilityCallback callback;
+        auto& observed = bulletEntry->observedByThis;
 
-        //callback.m_filterOutEntry = bulletEntry;
+        struct : public btBroadphaseAabbCallback
+        {
+            short group;
+            btVector3 observerPos;
+            float observerRadiusSqr;
+            std::vector<BulletEntry*> observed;
+
+            bool process(const btBroadphaseProxy* proxy) override
+            {
+                if ((proxy->m_collisionFilterGroup & VISIBILITY_MASK_OBSERVER) != 0 && (group & proxy->m_collisionFilterMask)) {
+                    auto collisionObject = (btCollisionObject*) proxy->m_clientObject;
+                    auto sphereShape = (btSphereShape*) collisionObject->getCollisionShape();
+                    if (collisionObject->getWorldTransform().getOrigin().distance2(observerPos) < (observerRadiusSqr + (sphereShape->getRadius() * sphereShape->getRadius()))) {
+                        auto* bulletEntry = static_cast<BulletEntry*>(collisionObject->getUserPointer());
+                        observed.emplace_back(bulletEntry);
+                    }
+                }
+                return true;
+            }
+
+        } callback;
+        //Check if the observer is an admin and should be allowed to view anything.
+        callback.group = bulletEntry->entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE;
+        callback.observerPos = bulletEntry->viewSphere->getWorldTransform().getOrigin();
+        callback.observerRadiusSqr = bulletEntry->viewShape->getRadius() * bulletEntry->viewShape->getRadius();
+        //We'll assume we can see the same amount as before, so reserve upfront.
+        callback.observed.reserve(observed.size() * 1.1);
+
+
         debug_print("Updating what can be observed by entity " << bulletEntry->entity.describeEntity())
-        callback.m_entries.clear();
 
         debug_print(" " << bulletEntry->entity.describeEntity() << " viewSphere: " << bulletEntry->viewSphere->getWorldTransform().getOrigin())
 
         if (bulletEntry->entity.m_location.m_pos.isValid()) {
-            callback.m_collisionFilterGroup = bulletEntry->entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE;
-            callback.m_collisionFilterMask = VISIBILITY_MASK_OBSERVER;
-            m_visibilityWorld->contactTest(bulletEntry->viewSphere.get(), callback);
+            btVector3 aabbMin, aabbMax;
+            bulletEntry->viewSphere->getCollisionShape()->getAabb(bulletEntry->viewSphere->getWorldTransform(), aabbMin, aabbMax);
+
+            m_visibilityBroadphase->aabbTest(aabbMin, aabbMax, callback);
+
         }
 
         //Insert the container entity, which should be seen by the observer.
-        callback.m_entries.emplace_back(&mContainingEntityEntry);
+        callback.observed.emplace_back(&mContainingEntityEntry);
 
-        debug_print(" observed by " << bulletEntry->entity.describeEntity() << ": " << callback.m_entries.size())
+        debug_print(" observed by " << bulletEntry->entity.describeEntity() << ": " << callback.observed.size())
 
-        auto& observed = bulletEntry->observedByThis;
 
         std::vector<Atlas::Objects::Root> appearArgs;
         std::vector<Atlas::Objects::Root> disappearArgs;
@@ -760,10 +783,10 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             appearedEntry->observingThis.insert(bulletEntry);
         };
 
-        std::sort(callback.m_entries.begin(), callback.m_entries.end());
+        std::sort(callback.observed.begin(), callback.observed.end());
         //See which entities became visible, and which sight was lost of.
         //Since the entries are sorted pointers we can check the difference by iterating over both sets.
-        processDifferences<BulletEntry*>(callback.m_entries, observed, disappearFn, appearFn);
+        processDifferences<BulletEntry*>(callback.observed, observed, disappearFn, appearFn);
 
         if (!appearArgs.empty()) {
             Appearance appear;
@@ -783,23 +806,51 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
 void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res, bool generateOps)
 {
     if (bulletEntry->visibilitySphere) {
-        //This entry is something which can be observed; check what can see it after it has moved
+        auto& observing = bulletEntry->observingThis;
 
-        VisibilityCallback callback;
+        //This entry is something which can be observed; check what can see it after it has moved
+        struct : public btBroadphaseAabbCallback
+        {
+            short mask;
+            btVector3 observedPos;
+            float observedRadiusSqr;
+            std::vector<BulletEntry*> observers;
+
+            bool process(const btBroadphaseProxy* proxy) override
+            {
+
+                if ((proxy->m_collisionFilterGroup & mask) != 0 && (VISIBILITY_MASK_OBSERVER & proxy->m_collisionFilterMask)) {
+                    auto collisionObject = (btCollisionObject*) proxy->m_clientObject;
+                    auto sphereShape = (btSphereShape*) collisionObject->getCollisionShape();
+                    if (collisionObject->getWorldTransform().getOrigin().distance2(observedPos) < (observedRadiusSqr + (sphereShape->getRadius() * sphereShape->getRadius()))) {
+                        auto* bulletEntry = static_cast<BulletEntry*>(collisionObject->getUserPointer());
+                        observers.emplace_back(bulletEntry);
+                    }
+                }
+                return true;
+            }
+
+        } callback;
+        //If the observable is marked as either "protected" or "private" we should only match with observers which are allowed to see it.
+        callback.mask =
+                bulletEntry->entity.hasFlags(entity_visibility_protected) || bulletEntry->entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE;
+        callback.observedPos = bulletEntry->visibilitySphere->getWorldTransform().getOrigin();
+        callback.observedRadiusSqr = bulletEntry->visibilityShape->getRadius() * bulletEntry->visibilityShape->getRadius();
+        //We'll assume this can be seen by the same amount as before, so reserve upfront.
+        callback.observers.reserve(observing.size() * 1.1);
 
         debug_print("Updating what is observing entity " << bulletEntry->entity.describeEntity())
         debug_print(" " << bulletEntry->entity.describeEntity() << " visibilitySphere: " << bulletEntry->visibilitySphere->getWorldTransform().getOrigin())
 
         if (bulletEntry->entity.m_location.m_pos.isValid()) {
-            callback.m_collisionFilterGroup = VISIBILITY_MASK_OBSERVER;
-            callback.m_collisionFilterMask = bulletEntry->entity.hasFlags(entity_visibility_protected) || bulletEntry->entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
-                                                                                                                                                                  : VISIBILITY_MASK_OBSERVABLE;
-            m_visibilityWorld->contactTest(bulletEntry->visibilitySphere.get(), callback);
+            btVector3 aabbMin, aabbMax;
+            bulletEntry->visibilitySphere->getCollisionShape()->getAabb(bulletEntry->visibilitySphere->getWorldTransform(), aabbMin, aabbMax);
+
+            m_visibilityBroadphase->aabbTest(aabbMin, aabbMax, callback);
         }
 
-        debug_print(" observing " << bulletEntry->entity.describeEntity() << ": " << callback.m_entries.size())
+        debug_print(" observing " << bulletEntry->entity.describeEntity() << ": " << callback.observers.size())
 
-        auto& observing = bulletEntry->observingThis;
 
         auto disappearFn = [&](BulletEntry* existingObserverEntry) {
             if (generateOps) {
@@ -834,8 +885,8 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
         };
 
         //Since the entries are sorted pointers we can check the difference by iterating over both sets.
-        std::sort(callback.m_entries.begin(), callback.m_entries.end());
-        processDifferences<BulletEntry*>(callback.m_entries, observing, disappearFn, appearFn);
+        std::sort(callback.observers.begin(), callback.observers.end());
+        processDifferences<BulletEntry*>(callback.observers, observing, disappearFn, appearFn);
 
     }
 }
@@ -1073,17 +1124,17 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->visibilityShape = std::move(visSphere);
     }
     if (entity.isPerceptive()) {
-        auto viewSphere = std::make_unique<btSphereShape>(0.5f / VISIBILITY_SCALING_FACTOR);
-        auto visObject = std::make_unique<btCollisionObject>();
-        visObject->setCollisionShape(viewSphere.get());
-        visObject->setUserPointer(entry);
+        auto viewShape = std::make_unique<btSphereShape>(VIEW_SPHERE_RADIUS / VISIBILITY_SCALING_FACTOR);
+        auto viewSphere = std::make_unique<btCollisionObject>();
+        viewSphere->setCollisionShape(viewShape.get());
+        viewSphere->setUserPointer(entry);
         if (entity.m_location.m_pos.isValid()) {
-            visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
-            m_visibilityWorld->addCollisionObject(visObject.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+            viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+            m_visibilityWorld->addCollisionObject(viewSphere.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
                                                   VISIBILITY_MASK_OBSERVER);
         }
-        entry->viewSphere = std::move(visObject);
-        entry->viewShape = std::move(viewSphere);
+        entry->viewSphere = std::move(viewSphere);
+        entry->viewShape = std::move(viewShape);
         mContainingEntityEntry.observingThis.insert(entry);
     }
 
@@ -1111,16 +1162,16 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
             mContainingEntityEntry.observingThis.insert(entry.get());
-            auto viewSphere = std::make_unique<btSphereShape>(0.5f / VISIBILITY_SCALING_FACTOR);
-            auto visObject = std::make_unique<btCollisionObject>();
-            visObject->setCollisionShape(viewSphere.get());
-            visObject->setUserPointer(entry.get());
+            auto viewShape = std::make_unique<btSphereShape>(VIEW_SPHERE_RADIUS / VISIBILITY_SCALING_FACTOR);
+            auto viewSphere = std::make_unique<btCollisionObject>();
+            viewSphere->setCollisionShape(viewShape.get());
+            viewSphere->setUserPointer(entry.get());
             if (entity.m_location.m_pos.isValid()) {
-                visObject->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
-                m_visibilityWorld->addCollisionObject(visObject.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
+                viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+                m_visibilityWorld->addCollisionObject(viewSphere.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
                                                       VISIBILITY_MASK_OBSERVER);
             }
-            entry->viewSphere = std::move(visObject);
+            entry->viewSphere = std::move(viewSphere);
             OpVector res;
             updateObserverEntry(entry.get(), res);
             for (auto& op : res) {
@@ -2670,15 +2721,13 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     auto duration = std::chrono::steady_clock::now() - start;
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-    if (milliseconds > 3) {
-        log(WARNING,
-            String::compose("Physics took %1 milliseconds (just stepSimulation %2 ms, visibility %3 ms, tick size %4 ms, visibility queue: %5).",
-                            milliseconds,
-                            std::chrono::duration_cast<std::chrono::milliseconds>(interim).count(),
-                            std::chrono::duration_cast<std::chrono::milliseconds>(visDuration).count(),
-                            tickSize * 1000,
-                            m_visibilityRecalculateQueue.size()));
-    }
+    log(milliseconds > 3 ? WARNING : INFO,
+        String::compose("Physics took %1 milliseconds (just stepSimulation %2 ms, visibility %3 ms, tick size %4 ms, visibility queue: %5).",
+                        milliseconds,
+                        std::chrono::duration_cast<std::chrono::milliseconds>(interim).count(),
+                        std::chrono::duration_cast<std::chrono::milliseconds>(visDuration).count(),
+                        static_cast<long>(tickSize * 1000),
+                        m_visibilityRecalculateQueue.size()));
 }
 
 void PhysicalDomain::processWaterBodies()

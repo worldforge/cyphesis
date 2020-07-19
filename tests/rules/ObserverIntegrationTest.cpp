@@ -146,6 +146,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         {
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
             t1->setAttrValue("domain", "physical");
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             context.testWorld.addEntity(t1, context.world);
@@ -253,6 +254,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         {
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
             t1->setAttrValue("domain", "physical");
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             context.testWorld.addEntity(t1, context.world);
@@ -331,6 +333,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
+            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
             t1->setAttrValue("domain", "physical");
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             context.testWorld.addEntity(t1, context.world);
