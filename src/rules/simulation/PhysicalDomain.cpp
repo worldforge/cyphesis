@@ -2536,7 +2536,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         btVector3 pos;
     };
 
-  //  static std::map<BulletEntry*, BulletCollisionEntry> projectileCollisions;
+    //  static std::map<BulletEntry*, BulletCollisionEntry> projectileCollisions;
     static std::vector<std::pair<BulletEntry*, BulletCollisionEntry>> projectileCollisions;
 
     gContactProcessedCallback = [](btManifoldPoint& cp, void* body0, void* body1) -> bool {
@@ -2576,40 +2576,40 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     //CProfileManager::dumpAll();
 
     for (const auto& entry : projectileCollisions) {
-        const auto modeDataProperty = entry.first->entity.getPropertyClassFixed<ModeDataProperty>();
-
-        //const auto projectileDataProp = entry.first->entity.getProperty("projectile_data");
-        {
-            Atlas::Objects::Entity::Anonymous ent;
-            if (modeDataProperty && modeDataProperty->getProjectileData().entity) {
-                ent->setId(modeDataProperty->getProjectileData().entity->getId());
-            } else {
-                ent->setId(entry.second.bulletEntry->entity.getId());
-            }
-            std::vector<double> posList;
-            addToEntity(Convert::toWF<WFMath::Point<3>>(entry.second.pos), posList);
-            ent->setPos(posList);
-            ent->setLoc(m_entity.getId());
-            if (modeDataProperty && modeDataProperty->getMode() == ModeProperty::Mode::Projectile) {
-                auto& projectileData = modeDataProperty->getProjectileData();
-                //Copy any data found in "mode_data".
-                for (const auto& projectile_entry : projectileData.extra) {
-                    ent->setAttr(projectile_entry.first, projectile_entry.second, &Inheritance::instance().getFactories());
-                }
-            }
-            Atlas::Objects::Operation::Hit hit;
-            hit->setArgs1(ent);
-            hit->setTo(entry.first->entity.getId());
-            hit->setFrom(entry.second.bulletEntry->entity.getId());
-
-            auto hitCopy = hit.copy();
-            hitCopy->setTo(entry.second.bulletEntry->entity.getId());
-            hitCopy->setFrom(entry.first->entity.getId());
-
-            //We need to make sure that Hit ops gets their correct "from".
-            entry.second.bulletEntry->entity.sendWorld(hit);
-            entry.first->entity.sendWorld(hitCopy);
+        auto projectileEntry = entry.first;
+        auto& collisionEntry = entry.second;
+        const auto modeDataProperty = projectileEntry->entity.getPropertyClassFixed<ModeDataProperty>();
+        Atlas::Objects::Entity::Anonymous ent;
+        //If the projectile data contained information on which entity caused the projectile to fly away, copy that.
+        //This is needed for game rules to determine which entity hit another.
+        if (modeDataProperty && modeDataProperty->getProjectileData().entity) {
+            ent->setId(modeDataProperty->getProjectileData().entity->getId());
+        } else {
+            ent->setId(collisionEntry.bulletEntry->entity.getId());
         }
+        std::vector<double> posList;
+        addToEntity(Convert::toWF<WFMath::Point<3>>(collisionEntry.pos), posList);
+        ent->setPos(std::move(posList));
+        ent->setLoc(m_entity.getId());
+        if (modeDataProperty && modeDataProperty->getMode() == ModeProperty::Mode::Projectile) {
+            auto& projectileData = modeDataProperty->getProjectileData();
+            //Copy any data found in "mode_data".
+            for (const auto& projectile_entry : projectileData.extra) {
+                ent->setAttr(projectile_entry.first, projectile_entry.second, &Inheritance::instance().getFactories());
+            }
+        }
+        Atlas::Objects::Operation::Hit hit;
+        hit->setArgs1(std::move(ent));
+        hit->setTo(projectileEntry->entity.getId());
+        hit->setFrom(collisionEntry.bulletEntry->entity.getId());
+
+        auto hitCopy = hit.copy();
+        hitCopy->setTo(collisionEntry.bulletEntry->entity.getId());
+        hitCopy->setFrom(projectileEntry->entity.getId());
+
+        //We need to make sure that Hit ops gets their correct "from".
+        collisionEntry.bulletEntry->entity.sendWorld(std::move(hit));
+        projectileEntry->entity.sendWorld(std::move(hitCopy));
     }
 
     auto visStart = std::chrono::steady_clock::now();
@@ -2618,6 +2618,10 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     processWaterBodies();
 
+    //We process the vector of moving entities as efficient as possible by don't doing
+    //any reallocations during the processing. If any entry should be removed (because it's
+    //not moving any more) we relocate the last entry to the position we're at.
+    //Once we're done with processing we'll shrink the vector if any element was removed.
     size_t movingSize = m_movingEntities.size();
     for (size_t i = 0; i < movingSize;) {
         auto movedEntry = m_movingEntities[i];
