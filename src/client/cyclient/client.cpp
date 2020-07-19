@@ -33,7 +33,7 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/entityfilter/python/CyPy_EntityFilter.h>
 #include <rules/python/CyPy_Rules.h>
-
+#include "common/Property_impl.h"
 static void usage(const char * prgname)
 {
     std::cout << "usage: " << prgname << " [ [package.]function ]"

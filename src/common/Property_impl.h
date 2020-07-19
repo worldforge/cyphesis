@@ -127,4 +127,7 @@ Property<T> * Property<T>::copy() const
     return new Property<T>(*this);
 }
 
+
+template class PropertyCore<LocatedEntity>;
+
 #endif // COMMON_PROPERTY_IMPL_H
