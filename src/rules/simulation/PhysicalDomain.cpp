@@ -2521,13 +2521,23 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 //    CProfileManager::Increment_Frame_Counter();
 
     auto start = std::chrono::steady_clock::now();
+    /**
+     * An entry of a projectile hitting another entry.
+     */
     struct BulletCollisionEntry
     {
+        /**
+         * The entry that was hit.
+         */
         BulletEntry* bulletEntry;
+        /**
+         * The position in the world where the hit occurred.
+         */
         btVector3 pos;
     };
 
-    static std::map<BulletEntry*, BulletCollisionEntry> projectileCollisions;
+  //  static std::map<BulletEntry*, BulletCollisionEntry> projectileCollisions;
+    static std::vector<std::pair<BulletEntry*, BulletCollisionEntry>> projectileCollisions;
 
     gContactProcessedCallback = [](btManifoldPoint& cp, void* body0, void* body1) -> bool {
         auto object0 = static_cast<btCollisionObject*>(body0);
@@ -2536,10 +2546,10 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         auto bulletEntry1 = static_cast<BulletEntry*>(object1->getUserPointer());
 
         if (bulletEntry0->mode == ModeProperty::Mode::Projectile) {
-            projectileCollisions.emplace(bulletEntry0, BulletCollisionEntry{bulletEntry1, cp.getPositionWorldOnB()});
+            projectileCollisions.emplace_back(bulletEntry0, BulletCollisionEntry{bulletEntry1, cp.getPositionWorldOnB()});
         }
         if (bulletEntry1->mode == ModeProperty::Mode::Projectile) {
-            projectileCollisions.emplace(bulletEntry1, BulletCollisionEntry{bulletEntry0, cp.getPositionWorldOnA()});
+            projectileCollisions.emplace_back(bulletEntry1, BulletCollisionEntry{bulletEntry0, cp.getPositionWorldOnA()});
         }
         return true;
     };
