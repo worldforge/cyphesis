@@ -40,7 +40,6 @@
 #include "ModeDataProperty.h"
 #include "VisibilityDistanceProperty.h"
 
-#include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/TerrainMod.h>
 
@@ -177,7 +176,10 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
 
                 LocatedEntity& entity = m_bulletEntry.entity;
                 m_domain.m_movingEntities.insert(&m_bulletEntry);
-                m_domain.m_dirtyEntries.insert(&m_bulletEntry);
+                if (!m_bulletEntry.markedForVisibilityRecalculation) {
+                    m_domain.m_visibilityRecalulateQueue.emplace_back(&m_bulletEntry);
+                    m_bulletEntry.markedForVisibilityRecalculation = true;
+                }
 
                 //            debug_print(
                 //                    "setWorldTransform: "<< m_entity.describeEntity() << " (" << centerOfMassWorldTrans.getOrigin().x() << "," << centerOfMassWorldTrans.getOrigin().y() << "," << centerOfMassWorldTrans.getOrigin().z() << ")");
@@ -841,14 +843,18 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
 void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
-    size_t i = 0;
-    //Handle max 20 entities each time.
-    for (auto I = m_dirtyEntries.begin(); I != m_dirtyEntries.end() && i < 20; ++i) {
-        auto& bulletEntry = *I;
-        updateObservedEntry(bulletEntry, res);
-        updateObserverEntry(bulletEntry, res);
-        bulletEntry->entity.onUpdated();
-        I = m_dirtyEntries.erase(I);
+    if (!m_visibilityRecalulateQueue.empty()) {
+        size_t i = 0;
+        //Handle max 20 entities each time.
+        auto I = m_visibilityRecalulateQueue.begin();
+        for (; I != m_visibilityRecalulateQueue.end() && i < 20; ++i, ++I) {
+            auto& bulletEntry = *I;
+            updateObservedEntry(bulletEntry, res);
+            updateObserverEntry(bulletEntry, res);
+            bulletEntry->markedForVisibilityRecalculation = false;
+            bulletEntry->entity.onUpdated();
+        }
+        m_visibilityRecalulateQueue.erase(m_visibilityRecalulateQueue.begin(), I);
     }
 }
 
@@ -1194,7 +1200,13 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         observedEntry->observingThis.erase(entry.get());
     }
 
-    m_dirtyEntries.erase(entry.get());
+    if (entry->markedForVisibilityRecalculation) {
+        auto J = std::find(m_visibilityRecalulateQueue.begin(), m_visibilityRecalulateQueue.end(), entry.get());
+        if (J != m_visibilityRecalulateQueue.end()) {
+            m_visibilityRecalulateQueue.erase(J);
+        }
+    }
+
     mContainingEntityEntry.observingThis.erase(entry.get());
 
     //The entity owning the domain should normally not be perceptive, so we'll check first to optimize a bit.
@@ -1998,7 +2010,10 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     }
 
     // m_movingEntities.insert(entry);
-    m_dirtyEntries.insert(entry);
+    if (!entry->markedForVisibilityRecalculation) {
+        m_visibilityRecalulateQueue.emplace_back(entry);
+        entry->markedForVisibilityRecalculation = true;
+    }
 }
 
 void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel)
@@ -2621,11 +2636,12 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     if (milliseconds > 3) {
         log(WARNING,
-            String::compose("Physics took %1 milliseconds (just stepSimulation %2 ms, visibility %3 ms, tick size %4 ms).",
+            String::compose("Physics took %1 milliseconds (just stepSimulation %2 ms, visibility %3 ms, tick size %4 ms, visibility queue: %5).",
                             milliseconds,
                             std::chrono::duration_cast<std::chrono::milliseconds>(interim).count(),
                             std::chrono::duration_cast<std::chrono::milliseconds>(visDuration).count(),
-                            tickSize * 1000));
+                            tickSize * 1000,
+                            m_visibilityRecalulateQueue.size()));
     }
 }
 

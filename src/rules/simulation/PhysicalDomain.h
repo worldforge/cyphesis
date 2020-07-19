@@ -162,6 +162,8 @@ class PhysicalDomain : public Domain
              */
             bool modeChanged;
 
+            bool markedForVisibilityRecalculation;
+
             /**
              * A set of entities which are planted on this. They move along.
              */
@@ -206,7 +208,10 @@ class PhysicalDomain : public Domain
 
         std::set<BulletEntry*> m_movingEntities;
         std::set<BulletEntry*> m_lastMovingEntities;
-        std::set<BulletEntry*> m_dirtyEntries;
+        /**
+         * Contains entities which needs to have their visibility recalculated, either because they moved or they changed size.
+         */
+        std::vector<BulletEntry*> m_visibilityRecalulateQueue;
         /**
          * A map of all submerged entities, and the water body they currently are submerged into.
          */
