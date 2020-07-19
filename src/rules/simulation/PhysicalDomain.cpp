@@ -2537,7 +2537,8 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
         if (bulletEntry0->mode == ModeProperty::Mode::Projectile) {
             projectileCollisions.emplace(bulletEntry0, BulletCollisionEntry{bulletEntry1, cp.getPositionWorldOnB()});
-        } else if (bulletEntry1->mode == ModeProperty::Mode::Projectile) {
+        }
+        if (bulletEntry1->mode == ModeProperty::Mode::Projectile) {
             projectileCollisions.emplace(bulletEntry1, BulletCollisionEntry{bulletEntry0, cp.getPositionWorldOnA()});
         }
         return true;
