@@ -25,6 +25,7 @@
 #include <sigc++/connection.h>
 
 #include <LinearMath/btVector3.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 #include <map>
 #include <unordered_map>
@@ -32,7 +33,6 @@
 #include <array>
 #include <set>
 #include <unordered_set>
-#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 namespace Mercator {
     class Segment;
@@ -110,7 +110,7 @@ class PhysicalDomain : public Domain
 
         class PhysicalMotionState;
 
-        class VisibilityCallback;
+        struct VisibilityCallback;
 
         struct ClosenessObserverEntry;
 
@@ -162,7 +162,25 @@ class PhysicalDomain : public Domain
              */
             bool modeChanged;
 
+            /**
+             * Set to true if the entry already has been added to m_visibilityRecalculateQueue
+             */
             bool markedForVisibilityRecalculation;
+
+            /**
+             * Set to true if the entry has been added to m_movingEntities
+             */
+            bool addedToMovingList;
+
+            /**
+             * Set to true if the entity moved the current frame. This is used to detect entities that stopped or started moving.
+             */
+            bool markedAsMovingThisFrame;
+
+            /**
+             * Set to true if the entity moved the last frame. This is used to detect entities that stopped or started moving.
+             */
+            bool markedAsMovingLastFrame;
 
             /**
              * A set of entities which are planted on this. They move along.
@@ -206,12 +224,12 @@ class PhysicalDomain : public Domain
 
         std::unordered_map<long, std::unique_ptr<BulletEntry>> m_entries;
 
-        std::set<BulletEntry*> m_movingEntities;
-        std::set<BulletEntry*> m_lastMovingEntities;
+        std::vector<BulletEntry*> m_movingEntities;
+
         /**
          * Contains entities which needs to have their visibility recalculated, either because they moved or they changed size.
          */
-        std::vector<BulletEntry*> m_visibilityRecalulateQueue;
+        std::vector<BulletEntry*> m_visibilityRecalculateQueue;
         /**
          * A map of all submerged entities, and the water body they currently are submerged into.
          */

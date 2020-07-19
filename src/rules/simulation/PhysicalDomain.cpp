@@ -175,9 +175,14 @@ class PhysicalDomain::PhysicalMotionState : public btMotionState
                 m_bulletEntry.lastTransform = centerOfMassWorldTrans;
 
                 LocatedEntity& entity = m_bulletEntry.entity;
-                m_domain.m_movingEntities.insert(&m_bulletEntry);
+                if (!m_bulletEntry.addedToMovingList) {
+                    m_domain.m_movingEntities.emplace_back(&m_bulletEntry);
+                    m_bulletEntry.addedToMovingList = true;
+                    m_bulletEntry.markedAsMovingLastFrame = false;
+                }
+                m_bulletEntry.markedAsMovingThisFrame = true;
                 if (!m_bulletEntry.markedForVisibilityRecalculation) {
-                    m_domain.m_visibilityRecalulateQueue.emplace_back(&m_bulletEntry);
+                    m_domain.m_visibilityRecalculateQueue.emplace_back(&m_bulletEntry);
                     m_bulletEntry.markedForVisibilityRecalculation = true;
                 }
 
@@ -843,18 +848,18 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
 void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
-    if (!m_visibilityRecalulateQueue.empty()) {
+    if (!m_visibilityRecalculateQueue.empty()) {
         size_t i = 0;
         //Handle max 20 entities each time.
-        auto I = m_visibilityRecalulateQueue.begin();
-        for (; I != m_visibilityRecalulateQueue.end() && i < 20; ++i, ++I) {
+        auto I = m_visibilityRecalculateQueue.begin();
+        for (; I != m_visibilityRecalculateQueue.end() && i < 20; ++i, ++I) {
             auto& bulletEntry = *I;
             updateObservedEntry(bulletEntry, res);
             updateObserverEntry(bulletEntry, res);
             bulletEntry->markedForVisibilityRecalculation = false;
             bulletEntry->entity.onUpdated();
         }
-        m_visibilityRecalulateQueue.erase(m_visibilityRecalulateQueue.begin(), I);
+        m_visibilityRecalculateQueue.erase(m_visibilityRecalculateQueue.begin(), I);
     }
 }
 
@@ -1154,8 +1159,11 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         m_terrainMods.erase(modI);
     }
 
-    m_lastMovingEntities.erase(entry.get());
-    m_movingEntities.erase(entry.get());
+    //m_lastMovingEntities.erase(entry.get());
+    if (entry->addedToMovingList) {
+        m_movingEntities.erase(std::find(m_movingEntities.begin(), m_movingEntities.end(), entry.get()));
+    }
+
 
     //Remove it from the map of submerged entities.
     auto submergedEntryI = m_submergedEntities.find(entry.get());
@@ -1201,9 +1209,9 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     }
 
     if (entry->markedForVisibilityRecalculation) {
-        auto J = std::find(m_visibilityRecalulateQueue.begin(), m_visibilityRecalulateQueue.end(), entry.get());
-        if (J != m_visibilityRecalulateQueue.end()) {
-            m_visibilityRecalulateQueue.erase(J);
+        auto J = std::find(m_visibilityRecalculateQueue.begin(), m_visibilityRecalculateQueue.end(), entry.get());
+        if (J != m_visibilityRecalculateQueue.end()) {
+            m_visibilityRecalculateQueue.erase(J);
         }
     }
 
@@ -1401,7 +1409,12 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 
             //sendMoveSight(*bulletEntry);
         }
-        m_movingEntities.insert(bulletEntry);
+        if (!bulletEntry->addedToMovingList) {
+            m_movingEntities.emplace_back(bulletEntry);
+            bulletEntry->addedToMovingList = true;
+            bulletEntry->markedAsMovingThisFrame = false;
+            bulletEntry->markedAsMovingLastFrame = false;
+        }
         return;
     } else if (name == SolidProperty::property_name) {
         if (bulletEntry->collisionObject) {
@@ -2011,7 +2024,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
 
     // m_movingEntities.insert(entry);
     if (!entry->markedForVisibilityRecalculation) {
-        m_visibilityRecalulateQueue.emplace_back(entry);
+        m_visibilityRecalculateQueue.emplace_back(entry);
         entry->markedForVisibilityRecalculation = true;
     }
 }
@@ -2596,39 +2609,53 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     auto visStart = std::chrono::steady_clock::now();
     updateVisibilityOfDirtyEntities(res);
-
-
     auto visDuration = std::chrono::steady_clock::now() - visStart;
+
     processWaterBodies();
 
-    //Check all entities that moved this tick.
-    for (BulletEntry* entry : m_movingEntities) {
-        //Check if the entity also moved last tick.
-        if (m_lastMovingEntities.find(entry) == m_lastMovingEntities.end()) {
-            //Didn't move before
-            processMovedEntity(*entry);
+    size_t movingSize = m_movingEntities.size();
+    for (size_t i = 0; i < movingSize;) {
+        auto movedEntry = m_movingEntities[i];
+        if (!movedEntry->markedAsMovingThisFrame) {
+            //Stopped moving
+            if (movedEntry->entity.m_location.m_angularVelocity.isValid()) {
+                movedEntry->entity.m_location.m_angularVelocity.zero();
+            }
+            if (movedEntry->entity.m_location.m_velocity.isValid()) {
+                debug_print("Stopped moving " << movedEntry->entity.describeEntity())
+                movedEntry->entity.m_location.m_velocity.zero();
+            }
+            processMovedEntity(*movedEntry);
+            movedEntry->markedAsMovingLastFrame = false;
+            movedEntry->addedToMovingList = false;
+
+            //If we're removing the last entry just skip
+            if (i == movingSize - 1) {
+                --movingSize;
+                ++i;
+            } else {
+                //Move the last element to this position and don't advance i
+                m_movingEntities[i] = m_movingEntities[movingSize - 1];
+                --movingSize;
+            }
+        } else if (!movedEntry->markedAsMovingLastFrame) {
+            //Started moving
+            movedEntry->markedAsMovingLastFrame = true;
+            movedEntry->markedAsMovingThisFrame = false;
+            processMovedEntity(*movedEntry);
+            ++i;
         } else {
-            processMovedEntity(*entry);
-            //Erase from last moving entities, so we can find those that moved last tick, but not this.
-            m_lastMovingEntities.erase(entry);
+            //Moved previously and has continued to move
+            movedEntry->markedAsMovingLastFrame = true;
+            movedEntry->markedAsMovingThisFrame = false;
+            processMovedEntity(*movedEntry);
+            ++i;
         }
     }
-
-    for (BulletEntry* entry : m_lastMovingEntities) {
-        //Stopped moving
-        if (entry->entity.m_location.m_angularVelocity.isValid()) {
-            entry->entity.m_location.m_angularVelocity.zero();
-        }
-        if (entry->entity.m_location.m_velocity.isValid()) {
-            debug_print("Stopped moving " << entry->entity.describeEntity())
-            entry->entity.m_location.m_velocity.zero();
-        }
-        processMovedEntity(*entry);
+    //If we've removed any entries we need to shrink the vector
+    if (movingSize != m_movingEntities.size()) {
+        m_movingEntities.resize(movingSize);
     }
-
-    //Stash those entities that moved this tick for checking next tick.
-    std::swap(m_movingEntities, m_lastMovingEntities);
-    m_movingEntities.clear();
 
     processDirtyTerrainAreas();
 
@@ -2641,7 +2668,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
                             std::chrono::duration_cast<std::chrono::milliseconds>(interim).count(),
                             std::chrono::duration_cast<std::chrono::milliseconds>(visDuration).count(),
                             tickSize * 1000,
-                            m_visibilityRecalulateQueue.size()));
+                            m_visibilityRecalculateQueue.size()));
     }
 }
 
@@ -2679,7 +2706,12 @@ void PhysicalDomain::processWaterBodies()
                 auto prop = bulletEntry->entity.requirePropertyClassFixed<ModeProperty>("submerged");
                 prop->set("submerged");
                 bulletEntry->modeChanged = true;
-                m_movingEntities.insert(bulletEntry);
+                if (!bulletEntry->addedToMovingList) {
+                    m_movingEntities.emplace_back(bulletEntry);
+                    bulletEntry->addedToMovingList = true;
+                    bulletEntry->markedAsMovingThisFrame = false;
+                    bulletEntry->markedAsMovingLastFrame = false;
+                }
             }
             return true;
         } else {
@@ -2693,7 +2725,12 @@ void PhysicalDomain::processWaterBodies()
                 auto prop = bulletEntry->entity.requirePropertyClassFixed<ModeProperty>("free");
                 prop->set("free");
                 bulletEntry->modeChanged = true;
-                m_movingEntities.insert(bulletEntry);
+                if (!bulletEntry->addedToMovingList) {
+                    m_movingEntities.emplace_back(bulletEntry);
+                    bulletEntry->addedToMovingList = true;
+                    bulletEntry->markedAsMovingThisFrame = false;
+                    bulletEntry->markedAsMovingLastFrame = false;
+                }
             }
             return false;
         }
