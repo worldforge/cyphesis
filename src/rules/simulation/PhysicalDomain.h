@@ -62,6 +62,7 @@ class btSphereShape;
 
 class btCollisionObject;
 
+class btAxisSweep3;
 /**
  * @brief A regular physical domain, behaving very much like the real world.
  *
@@ -108,7 +109,9 @@ class PhysicalDomain : public Domain
 
     protected:
 
-        class PhysicalMotionState;
+        struct PhysicalMotionState;
+
+        struct VisibilityPairCallback;
 
         struct VisibilityCallback;
 
@@ -132,10 +135,15 @@ class PhysicalDomain : public Domain
              * Set of entries which are observing by this.
              */
             std::set<BulletEntry*> observedByThis;
+            std::vector<BulletEntry*> addObservedByThis;
+            std::vector<BulletEntry*> removeObservedByThis;
+
             /**
              * Set of entries which are observing this.
              */
             std::set<BulletEntry*> observingThis;
+            std::vector<BulletEntry*> addObservingThis;
+            std::vector<BulletEntry*> removeObservingThis;
 
             btVector3 centerOfMassOffset;
 
@@ -275,8 +283,9 @@ class PhysicalDomain : public Domain
         std::unique_ptr<btBroadphaseInterface> m_broadphase;
         std::unique_ptr<PhysicalWorld> m_dynamicsWorld;
 
+        std::unique_ptr<btOverlappingPairCallback> m_visibilityPairCallback;
         std::unique_ptr<btCollisionDispatcher> m_visibilityDispatcher;
-        std::unique_ptr<btBroadphaseInterface> m_visibilityBroadphase;
+        std::unique_ptr<btAxisSweep3> m_visibilityBroadphase;
         std::unique_ptr<btCollisionWorld> m_visibilityWorld;
 
         sigc::connection m_propertyAppliedConnection;
