@@ -657,9 +657,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         // Make another observer, which we'll add to the void domain
         Ref<Thing> observer_void(new Thing(counter++));
-        observer->setAttrValue("mode", "fixed");
-        observer->setAttrValue("perception_sight", 1);
-        observer->m_location.m_pos = {0, 0, 0};
+        observer_void->setAttrValue("mode", "fixed");
+        observer_void->setAttrValue("perception_sight", 1);
+        observer_void->m_location.m_pos = {0, 0, 0};
         context.testWorld.addEntity(observer_void, domainVoid);
 
         // Clear ops queue
@@ -684,6 +684,44 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         opsHandler.clearQueues();
 
         OpVector res;
+
+        //Just doing a physics tick should not result in any extra ops.
+        res = domainTickFn();
+        ops = collectQueue(queue);
+        ASSERT_EQUAL(0u, ops.size())
+        ASSERT_EQUAL(1u, res.size())  // Should only contain Tick
+
+        opsHandler.clearQueues();
+        res.clear();
+
+
+        // Move object1 just slightly, which should not result in any Appear or Disappear op.
+        {
+            Atlas::Objects::Operation::Move move;
+
+            Anonymous arg1;
+            arg1->setId(object1->getId());
+            arg1->setPosAsList({10.1, 0, 10});
+            move->setArgs1(arg1);
+            object1->MoveOperation(move, res);
+        }
+        ops = collectQueue(queue);
+        ASSERT_EQUAL(1u, ops.size())
+        ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, ops[0]->getClassNo())
+        ASSERT_EQUAL(1u, res.size())
+        ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
+
+        opsHandler.clearQueues();
+        res.clear();
+        res = domainTickFn();
+        ops = collectQueue(queue);
+        ASSERT_EQUAL(0u, ops.size())
+        ASSERT_EQUAL(1u, res.size())  // Should only contain Tick
+
+        opsHandler.clearQueues();
+        res.clear();
+
+
         // Move object1 to the void domain
         {
             Atlas::Objects::Operation::Move move;
