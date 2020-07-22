@@ -191,9 +191,9 @@ short COLLISION_MASK_TERRAIN = 4;
 short COLLISION_MASK_STATIC = 8;
 
 /**
- * Interval, in seconds, for doing visibility checks.
+ * The max amount of entities to do visibility checks for each tick.
  */
-float VISIBILITY_CHECK_INTERVAL_SECONDS = 2.0f;
+size_t VISIBILITY_CHECK_MAX_ENTRIES = 20;
 
 float CCD_MOTION_FACTOR = 0.2f;
 
@@ -239,6 +239,8 @@ struct PhysicalDomain::PhysicalMotionState : public btMotionState
             }
             m_bulletEntry.markedAsMovingThisFrame = true;
             if (!m_bulletEntry.markedForVisibilityRecalculation) {
+                //Mark the entity for visibility recalculation, but don't move the visibility and view sphere here.
+                //Instead rely on that being done by the calling code.
                 m_domain.m_visibilityRecalculateQueue.emplace_back(&m_bulletEntry);
                 m_bulletEntry.markedForVisibilityRecalculation = true;
             }
@@ -262,22 +264,6 @@ struct PhysicalDomain::PhysicalMotionState : public btMotionState
                 entity.m_location.m_angularVelocity.zero();
             }
             entity.removeFlags(entity_pos_clean | entity_orient_clean);
-            //entity.addFlags(entity_dirty_location);
-
-//            auto& visibilitySphere = m_bulletEntry.visibilitySphere;
-//            if (visibilitySphere) {
-//                visibilitySphere->setWorldTransform(
-//                        btTransform(visibilitySphere->getWorldTransform().getBasis(),
-//                                    m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
-//                m_domain.m_visibilityWorld->updateSingleAabb(visibilitySphere.get());
-//            }
-//
-//            auto& viewSphere = m_bulletEntry.viewSphere;
-//            if (viewSphere) {
-//                viewSphere->setWorldTransform(btTransform(viewSphere->getWorldTransform().getBasis(),
-//                                                          m_bulletEntry.collisionObject->getWorldTransform().getOrigin() / VISIBILITY_SCALING_FACTOR));
-//                m_domain.m_visibilityWorld->updateSingleAabb(viewSphere.get());
-//            }
         }
     }
 };
@@ -295,25 +281,12 @@ struct PhysicalDomain::VisibilityPairCallback : public btOverlappingPairCallback
             auto otherEntry = (BulletEntry*) otherObject->getUserPointer();
             if (movedObject == movedEntry->viewSphere.get()) {
                 //An observer was moved
-                movedEntry->addObservedByThis.emplace_back(otherEntry);
+                movedEntry->observedByThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Add);
             } else {
                 //An observable was moved
-                movedEntry->addObservingThis.emplace_back(otherEntry);
+                movedEntry->observingThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Add);
             }
         }
-//        btCollisionObject* colObj0 = (btCollisionObject*) proxy0->m_clientObject;
-//        btCollisionObject* colObj1 = (btCollisionObject*) proxy1->m_clientObject;
-//        //Start by guessing that the first is the observer, and the second the observed
-//        auto observer = (BulletEntry*)colObj0->getUserPointer();
-//        auto observed = (BulletEntry*)colObj1->getUserPointer();
-//
-//        //Check if our guess was correct, otherwise just swap the observer and observed.
-//        if (observer->visibilitySphere.get() == colObj0) {
-//            std::swap(observer, observed);
-//        }
-//
-//        observer->observedByThis.insert(observed);
-//        observed->observingThis.insert(observer);
         return nullptr;
     }
 
@@ -328,25 +301,12 @@ struct PhysicalDomain::VisibilityPairCallback : public btOverlappingPairCallback
             auto otherEntry = (BulletEntry*) otherObject->getUserPointer();
             if (movedObject == movedEntry->viewSphere.get()) {
                 //An observer was moved
-                movedEntry->removeObservedByThis.emplace_back(otherEntry);
+                movedEntry->observedByThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Remove);
             } else {
                 //An observable was moved
-                movedEntry->removeObservingThis.emplace_back(otherEntry);
+                movedEntry->observingThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Remove);
             }
         }
-//        btCollisionObject* colObj0 = (btCollisionObject*) proxy0->m_clientObject;
-//        btCollisionObject* colObj1 = (btCollisionObject*) proxy1->m_clientObject;
-//        //Start by guessing that the first is the observer, and the second the observed
-//        auto observer = (BulletEntry*)colObj0->getUserPointer();
-//        auto observed = (BulletEntry*)colObj1->getUserPointer();
-//
-//        //Check if our guess was correct, otherwise just swap the observer and observed.
-//        if (observer->visibilitySphere.get() == colObj0) {
-//            std::swap(observer, observed);
-//        }
-//
-//        observer->observedByThis.erase(observed);
-//        observed->observingThis.erase(observer);
         return nullptr;
     }
 
@@ -783,66 +743,11 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
 {
     if (bulletEntry->viewSphere) {
         //This entry is an observer; check what it can see after it has moved
-        auto& observed = bulletEntry->observedByThis;
-
         auto& viewSphere = bulletEntry->viewSphere;
         if (viewSphere) {
             viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(bulletEntry->entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->updateSingleAabb(viewSphere.get());
         }
-//
-//        struct : public btBroadphaseAabbCallback
-//        {
-//            short group;
-//            btVector3 observerPos;
-//            float observerRadiusSqr;
-//            std::vector<BulletEntry*> observed;
-//
-//            bool process(const btBroadphaseProxy* proxy) override
-//            {
-//                if ((proxy->m_collisionFilterGroup & VISIBILITY_MASK_OBSERVER) != 0 && (group & proxy->m_collisionFilterMask)) {
-//                    auto collisionObject = (btCollisionObject*) proxy->m_clientObject;
-//                    auto sphereShape = (btSphereShape*) collisionObject->getCollisionShape();
-//                    if (collisionObject->getWorldTransform().getOrigin().distance2(observerPos) < (observerRadiusSqr + (sphereShape->getRadius() * sphereShape->getRadius()))) {
-//                        auto* bulletEntry = static_cast<BulletEntry*>(collisionObject->getUserPointer());
-//                        observed.emplace_back(bulletEntry);
-//                    }
-//                }
-//                return true;
-//            }
-//
-//        } callback;
-//        //Check if the observer is an admin and should be allowed to view anything.
-//        callback.group = bulletEntry->entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE;
-//        callback.observerPos = bulletEntry->viewSphere->getWorldTransform().getOrigin();
-//        callback.observerRadiusSqr = bulletEntry->viewShape->getRadius() * bulletEntry->viewShape->getRadius();
-//        //We'll assume we can see the same amount as before, so reserve upfront.
-//        callback.observed.reserve(observed.size() * 1.1);
-//
-//
-//        debug_print("Updating what can be observed by entity " << bulletEntry->entity.describeEntity())
-//
-//        debug_print(" " << bulletEntry->entity.describeEntity() << " viewSphere: " << bulletEntry->viewSphere->getWorldTransform().getOrigin())
-//
-//        if (bulletEntry->entity.m_location.m_pos.isValid()) {
-//            btVector3 aabbMin, aabbMax;
-//            bulletEntry->viewSphere->getCollisionShape()->getAabb(bulletEntry->viewSphere->getWorldTransform(), aabbMin, aabbMax);
-//
-//            m_visibilityBroadphase->aabbTest(aabbMin, aabbMax, callback);
-//
-//        }
-
-//        std::vector<BulletEntry*> newObserved;
-//        newObserved.reserve(bulletEntry->viewSphere->getNumOverlappingObjects() + 1);
-//        for (int i = 0; i < bulletEntry->viewSphere->getNumOverlappingObjects(); ++i) {
-//            newObserved[i] = static_cast<BulletEntry*>(bulletEntry->viewSphere->getOverlappingObject(i)->getUserPointer());
-//        }
-//
-//        //Insert the container entity, which should be seen by the observer.
-//        newObserved.emplace_back(&mContainingEntityEntry);
-
-//        debug_print(" observed by " << bulletEntry->entity.describeEntity() << ": " << newObserved.size())
-
 
         std::vector<Atlas::Objects::Root> appearArgs;
         std::vector<Atlas::Objects::Root> disappearArgs;
@@ -868,20 +773,17 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             appearedEntry->observingThis.insert(bulletEntry);
         };
 
-        for (auto& appearEntity : bulletEntry->addObservedByThis) {
-            appearFn(appearEntity);
-            bulletEntry->observedByThis.insert(appearEntity);
+        for (auto& entry : bulletEntry->observedByThisChanges) {
+            if (entry.second == BulletEntry::VisibilityQueueOperationType::Add) {
+                appearFn(entry.first);
+                bulletEntry->observedByThis.insert(entry.first);
+            } else {
+                disappearFn(entry.first);
+                bulletEntry->observedByThis.erase(entry.first);
+            }
         }
-        for (auto& disappearEntity : bulletEntry->removeObservedByThis) {
-            disappearFn(disappearEntity);
-            bulletEntry->observedByThis.erase(disappearEntity);
-        }
-//        std::sort(newObserved.begin(), newObserved.end());
-//        //See which entities became visible, and which sight was lost of.
-//        //Since the entries are sorted pointers we can check the difference by iterating over both sets.
-//        processDifferences<BulletEntry*>(newObserved, observed, disappearFn, appearFn);
 
-        if (!appearArgs.empty()) {
+       if (!appearArgs.empty()) {
             Appearance appear;
             appear->setTo(bulletEntry->entity.getId());
             appear->setArgs(std::move(appearArgs));
@@ -894,8 +796,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             res.push_back(std::move(disappear));
         }
 
-        bulletEntry->addObservedByThis.clear();
-        bulletEntry->removeObservedByThis.clear();
+        bulletEntry->observedByThisChanges.clear();
 
     }
 }
@@ -903,63 +804,13 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
 void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res, bool generateOps)
 {
     if (bulletEntry->visibilitySphere) {
+        //This entry is an observable; check what can see it after it has moved
 
         auto& visibilitySphere = bulletEntry->visibilitySphere;
         if (visibilitySphere) {
             visibilitySphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(bulletEntry->entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->updateSingleAabb(visibilitySphere.get());
         }
-
-        auto& observing = bulletEntry->observingThis;
-
-//        //This entry is something which can be observed; check what can see it after it has moved
-//        struct : public btBroadphaseAabbCallback
-//        {
-//            short mask;
-//            btVector3 observedPos;
-//            float observedRadiusSqr;
-//            std::vector<BulletEntry*> observers;
-//
-//            bool process(const btBroadphaseProxy* proxy) override
-//            {
-//
-//                if ((proxy->m_collisionFilterGroup & mask) != 0 && (VISIBILITY_MASK_OBSERVER & proxy->m_collisionFilterMask)) {
-//                    auto collisionObject = (btCollisionObject*) proxy->m_clientObject;
-//                    auto sphereShape = (btSphereShape*) collisionObject->getCollisionShape();
-//                    if (collisionObject->getWorldTransform().getOrigin().distance2(observedPos) < (observedRadiusSqr + (sphereShape->getRadius() * sphereShape->getRadius()))) {
-//                        auto* bulletEntry = static_cast<BulletEntry*>(collisionObject->getUserPointer());
-//                        observers.emplace_back(bulletEntry);
-//                    }
-//                }
-//                return true;
-//            }
-//
-//        } callback;
-//        //If the observable is marked as either "protected" or "private" we should only match with observers which are allowed to see it.
-//        callback.mask =
-//                bulletEntry->entity.hasFlags(entity_visibility_protected) || bulletEntry->entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE;
-//        callback.observedPos = bulletEntry->visibilitySphere->getWorldTransform().getOrigin();
-//        callback.observedRadiusSqr = bulletEntry->visibilityShape->getRadius() * bulletEntry->visibilityShape->getRadius();
-//        //We'll assume this can be seen by the same amount as before, so reserve upfront.
-//        callback.observers.reserve(observing.size() * 1.1);
-//
-//        debug_print("Updating what is observing entity " << bulletEntry->entity.describeEntity())
-//        debug_print(" " << bulletEntry->entity.describeEntity() << " visibilitySphere: " << bulletEntry->visibilitySphere->getWorldTransform().getOrigin())
-//
-//        if (bulletEntry->entity.m_location.m_pos.isValid()) {
-//            btVector3 aabbMin, aabbMax;
-//            bulletEntry->visibilitySphere->getCollisionShape()->getAabb(bulletEntry->visibilitySphere->getWorldTransform(), aabbMin, aabbMax);
-//
-//            m_visibilityBroadphase->aabbTest(aabbMin, aabbMax, callback);
-//        }
-//        std::vector<BulletEntry*> newObservers;
-//        newObservers.reserve(bulletEntry->visibilitySphere->getNumOverlappingObjects());
-//        for (int i = 0; i < bulletEntry->visibilitySphere->getNumOverlappingObjects(); ++i) {
-//            newObservers[i] = static_cast<BulletEntry*>(bulletEntry->visibilitySphere->getOverlappingObject(i)->getUserPointer());
-//        }
-
-        // debug_print(" observing " << bulletEntry->entity.describeEntity() << ": " << newObservers.size())
-
 
         auto disappearFn = [&](BulletEntry* existingObserverEntry) {
             if (generateOps) {
@@ -993,20 +844,17 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
             newObserverEntry->observedByThis.insert(bulletEntry);
         };
 
-        for (auto& newObserverEntity : bulletEntry->addObservingThis) {
-            appearFn(newObserverEntity);
-            bulletEntry->observingThis.insert(newObserverEntity);
+        for (auto& entry : bulletEntry->observingThisChanges) {
+            if (entry.second == BulletEntry::VisibilityQueueOperationType::Add) {
+                appearFn(entry.first);
+                bulletEntry->observingThis.insert(entry.first);
+            } else {
+                disappearFn(entry.first);
+                bulletEntry->observingThis.erase(entry.first);
+            }
         }
-        for (auto& removedObserverEntity : bulletEntry->removeObservingThis) {
-            disappearFn(removedObserverEntity);
-            bulletEntry->observingThis.erase(removedObserverEntity);
-        }
-        bulletEntry->addObservingThis.clear();
-        bulletEntry->removeObservingThis.clear();
-//        //Since the entries are sorted pointers we can check the difference by iterating over both sets.
-//        std::sort(newObservers.begin(), newObservers.end());
-//        processDifferences<BulletEntry*>(newObservers, observing, disappearFn, appearFn);
 
+        bulletEntry->observingThisChanges.clear();
     }
 }
 
@@ -1014,9 +862,9 @@ void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
     if (!m_visibilityRecalculateQueue.empty()) {
         size_t i = 0;
-        //Handle max 20 entities each time.
+        //Handle max VISIBILITY_CHECK_MAX_ENTRIES entities each time.
         auto I = m_visibilityRecalculateQueue.begin();
-        for (; I != m_visibilityRecalculateQueue.end() && i < 20; ++i, ++I) {
+        for (; I != m_visibilityRecalculateQueue.end() && i < VISIBILITY_CHECK_MAX_ENTRIES; ++i, ++I) {
             auto& bulletEntry = *I;
             updateObservedEntry(bulletEntry, res);
             updateObserverEntry(bulletEntry, res);
@@ -1253,7 +1101,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->viewShape = std::move(viewShape);
 
         //Should always be able to observe the domain entity.
-        entry->addObservedByThis.emplace_back(&mContainingEntityEntry);
+        entry->observedByThisChanges.emplace_back(&mContainingEntityEntry, BulletEntry::VisibilityQueueOperationType::Add);
 
         if (entity.m_location.m_pos.isValid()) {
             viewSpherePtr->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));

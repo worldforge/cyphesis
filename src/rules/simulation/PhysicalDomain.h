@@ -63,6 +63,7 @@ class btSphereShape;
 class btCollisionObject;
 
 class btAxisSweep3;
+
 /**
  * @brief A regular physical domain, behaving very much like the real world.
  *
@@ -119,6 +120,11 @@ class PhysicalDomain : public Domain
 
         struct BulletEntry
         {
+            enum class VisibilityQueueOperationType
+            {
+                    Add,
+                    Remove
+            };
             LocatedEntity& entity;
             std::shared_ptr<btCollisionShape> collisionShape;
             std::unique_ptr<btCollisionObject> collisionObject;
@@ -135,15 +141,21 @@ class PhysicalDomain : public Domain
              * Set of entries which are observing by this.
              */
             std::set<BulletEntry*> observedByThis;
-            std::vector<BulletEntry*> addObservedByThis;
-            std::vector<BulletEntry*> removeObservedByThis;
+            /**
+             * Changes to the entities that are observed by this are recorded here, and then
+             * moved to observedByThis along with generating Appear and Disappear ops.
+             */
+            std::vector<std::pair<BulletEntry*, VisibilityQueueOperationType>> observedByThisChanges;
 
             /**
              * Set of entries which are observing this.
              */
             std::set<BulletEntry*> observingThis;
-            std::vector<BulletEntry*> addObservingThis;
-            std::vector<BulletEntry*> removeObservingThis;
+            /**
+             * Changes to the entities that are observing this are recorded here, and then
+             * moved to observedByThis along with generating Appear and Disappear ops.
+             */
+            std::vector<std::pair<BulletEntry*, VisibilityQueueOperationType>> observingThisChanges;
 
             btVector3 centerOfMassOffset;
 
