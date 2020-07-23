@@ -1086,10 +1086,10 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             domain->tick(tickSize, res);
         }
 
-        ASSERT_TRUE(freeEntity->m_location.pos().y() < 0);
+        ASSERT_LESS(freeEntity->m_location.pos().y(), 0)
         ASSERT_TRUE(freeEntity->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
 
-        ASSERT_TRUE(freeEntity2->m_location.pos().y() < 0);
+        ASSERT_LESS(freeEntity2->m_location.pos().y(), 0);
         ASSERT_TRUE(freeEntity2->getPropertyClassFixed<ModeProperty>()->getMode() == ModeProperty::Mode::Submerged);
 
         //Move outside
