@@ -355,12 +355,14 @@ struct PhysicalDomain::VisibilityPairCallback : public btOverlappingPairCallback
             auto movedEntry = (BulletEntry*) movedObject->getUserPointer();
             btCollisionObject* otherObject = (btCollisionObject*) proxy1->m_clientObject;
             auto otherEntry = (BulletEntry*) otherObject->getUserPointer();
-            if (movedObject == movedEntry->viewSphere.get()) {
-                //An observer was moved
-                movedEntry->observedByThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Add);
-            } else {
-                //An observable was moved
-                movedEntry->observingThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Add);
+            if (movedEntry != otherEntry) {
+                if (movedObject == movedEntry->viewSphere.get()) {
+                    //An observer was moved
+                    movedEntry->observedByThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Add);
+                } else {
+                    //An observable was moved
+                    movedEntry->observingThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Add);
+                }
             }
         }
         return nullptr;
@@ -375,12 +377,14 @@ struct PhysicalDomain::VisibilityPairCallback : public btOverlappingPairCallback
             auto movedEntry = (BulletEntry*) movedObject->getUserPointer();
             btCollisionObject* otherObject = (btCollisionObject*) proxy1->m_clientObject;
             auto otherEntry = (BulletEntry*) otherObject->getUserPointer();
-            if (movedObject == movedEntry->viewSphere.get()) {
-                //An observer was moved
-                movedEntry->observedByThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Remove);
-            } else {
-                //An observable was moved
-                movedEntry->observingThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Remove);
+            if (movedEntry != otherEntry) {
+                if (movedObject == movedEntry->viewSphere.get()) {
+                    //An observer was moved
+                    movedEntry->observedByThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Remove);
+                } else {
+                    //An observable was moved
+                    movedEntry->observingThisChanges.emplace_back(otherEntry, BulletEntry::VisibilityQueueOperationType::Remove);
+                }
             }
         }
         return nullptr;
@@ -1185,6 +1189,10 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
                                                   VISIBILITY_MASK_OBSERVER);
         }
         mContainingEntityEntry.observingThis.insert(entry);
+
+        //We are observing ourselves, and we are being observed by ourselves.
+        entry->observedByThis.insert(entry);
+        entry->observingThis.insert(entry);
     }
 
     if (m_entity.isPerceptive()) {
@@ -1221,6 +1229,11 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
                                                       VISIBILITY_MASK_OBSERVER);
             }
             entry->viewSphere = std::move(viewSphere);
+
+            //We are observing ourselves, and we are being observed by ourselves.
+            entry->observedByThis.insert(entry.get());
+            entry->observingThis.insert(entry.get());
+
             OpVector res;
             updateObserverEntry(entry.get(), res);
             for (auto& op : res) {
