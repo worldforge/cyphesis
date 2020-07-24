@@ -2086,6 +2086,13 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
             m_collisionFilterMask = body.getBroadphaseHandle()->m_collisionFilterMask;
         }
 
+        bool needsCollision(btBroadphaseProxy* proxy0) const override
+        {
+            bool collides = (proxy0->m_collisionFilterGroup & m_collisionFilterMask) != 0;
+            collides = collides && (m_collisionFilterGroup & proxy0->m_collisionFilterMask);
+            //Discount water bodies.
+            return collides && ((btCollisionObject*) proxy0->m_clientObject)->getUserIndex() != USER_INDEX_WATER_BODY;
+        }
 
         btScalar addSingleResult(btManifoldPoint& cp,
                                  const btCollisionObjectWrapper* colObj0, int partId0, int index0,
