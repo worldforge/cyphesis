@@ -199,6 +199,11 @@ float CCD_MOTION_FACTOR = 0.2f;
 
 float CCD_SPHERE_FACTOR = 0.2f;
 
+/**
+ * Set on btCollisionObjects which are water bodies.
+ */
+const int USER_INDEX_WATER_BODY = 1;
+
 struct PhysicalDomain::PhysicalMotionState : public btMotionState
 {
     BulletEntry& m_bulletEntry;
@@ -265,6 +270,86 @@ struct PhysicalDomain::PhysicalMotionState : public btMotionState
             }
             entity.removeFlags(entity_pos_clean | entity_orient_clean);
         }
+    }
+};
+
+struct PhysicalDomain::WaterCollisionCallback : public btOverlappingPairCallback
+{
+    PhysicalDomain* m_domain;
+
+    void addToWater(BulletEntry* waterEntry, BulletEntry* otherEntry)
+    {
+        auto waterBodyI = m_domain->m_waterBodies.find(waterEntry);
+        if (waterBodyI != m_domain->m_waterBodies.end()) {
+            waterBodyI->second.insert(otherEntry);
+        }
+        otherEntry->waterNearby = waterEntry;
+        if (!otherEntry->addedToMovingList) {
+            m_domain->m_movingEntities.emplace_back(otherEntry);
+            otherEntry->addedToMovingList = true;
+            otherEntry->markedAsMovingThisFrame = false;
+            otherEntry->markedAsMovingLastFrame = false;
+        }
+    }
+
+    void removeFromWater(BulletEntry* waterEntry, BulletEntry* otherEntry)
+    {
+        if (otherEntry->waterNearby == waterEntry) {
+            auto waterBodyI = m_domain->m_waterBodies.find(waterEntry);
+            if (waterBodyI != m_domain->m_waterBodies.end()) {
+                waterBodyI->second.erase(otherEntry);
+            }
+
+            otherEntry->waterNearby = otherEntry;
+            if (!otherEntry->addedToMovingList) {
+                m_domain->m_movingEntities.emplace_back(otherEntry);
+                otherEntry->addedToMovingList = true;
+                otherEntry->markedAsMovingThisFrame = false;
+                otherEntry->markedAsMovingLastFrame = false;
+            }
+        }
+    }
+
+    virtual btBroadphasePair* addOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1)
+    {
+        btCollisionObject* colObj0 = (btCollisionObject*) proxy0->m_clientObject;
+        btCollisionObject* colObj1 = (btCollisionObject*) proxy1->m_clientObject;
+        if (colObj0->getUserIndex() == USER_INDEX_WATER_BODY) {
+            //Don't let two water bodies affect each other
+            if (colObj1->getUserIndex() != USER_INDEX_WATER_BODY) {
+                auto waterBodyEntry = (BulletEntry*) colObj0->getUserPointer();
+                auto otherEntry = (BulletEntry*) colObj1->getUserPointer();
+                addToWater(waterBodyEntry, otherEntry);
+            }
+        } else if (colObj1->getUserIndex() == USER_INDEX_WATER_BODY) {
+            auto waterBodyEntry = (BulletEntry*) colObj1->getUserPointer();
+            auto otherEntry = (BulletEntry*) colObj0->getUserPointer();
+            addToWater(waterBodyEntry, otherEntry);
+        }
+        return 0;
+    }
+
+    virtual void* removeOverlappingPair(btBroadphaseProxy* proxy0, btBroadphaseProxy* proxy1, btDispatcher* dispatcher)
+    {
+        btCollisionObject* colObj0 = (btCollisionObject*) proxy0->m_clientObject;
+        btCollisionObject* colObj1 = (btCollisionObject*) proxy1->m_clientObject;
+        if (colObj0->getUserIndex() == USER_INDEX_WATER_BODY) {
+            //Don't let two water bodies affect each other
+            if (colObj1->getUserIndex() != USER_INDEX_WATER_BODY) {
+                auto waterBodyEntry = (BulletEntry*) colObj0->getUserPointer();
+                auto otherEntry = (BulletEntry*) colObj1->getUserPointer();
+                removeFromWater(waterBodyEntry, otherEntry);
+            }
+        } else if (colObj1->getUserIndex() == USER_INDEX_WATER_BODY) {
+            auto waterBodyEntry = (BulletEntry*) colObj1->getUserPointer();
+            auto otherEntry = (BulletEntry*) colObj0->getUserPointer();
+            removeFromWater(waterBodyEntry, otherEntry);
+        }
+        return 0;
+    }
+
+    virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy* /*proxy0*/, btDispatcher* /*dispatcher*/)
+    {
     }
 };
 
@@ -338,8 +423,9 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         m_visibilityCheckCountdown(0),
         mContainingEntityEntry{entity},
         m_terrain(nullptr),
-        m_ghostPairCallback(new btGhostPairCallback())
+        m_ghostPairCallback(new WaterCollisionCallback())
 {
+    m_ghostPairCallback->m_domain = this;
     m_dynamicsWorld->getPairCache()->setInternalGhostPairCallback(m_ghostPairCallback.get());
     m_visibilityBroadphase->setOverlappingPairUserCallback(m_visibilityPairCallback.get());
 
@@ -783,7 +869,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
             }
         }
 
-       if (!appearArgs.empty()) {
+        if (!appearArgs.empty()) {
             Appearance appear;
             appear->setTo(bulletEntry->entity.getId());
             appear->setArgs(std::move(appearArgs));
@@ -947,11 +1033,11 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     auto waterBodyProp = entity.getPropertyClass<BoolProperty>("water_body");
     if (waterBodyProp && waterBodyProp->isTrue()) {
-        {
-            auto ghostObject = std::make_unique<btPairCachingGhostObject>();
-            m_waterBodies.emplace_back(ghostObject.get());
-            entry->collisionObject = std::move(ghostObject);
-        }
+
+        auto ghostObject = std::make_unique<btGhostObject>();
+        m_waterBodies[entry] = {};
+        entry->collisionObject = std::move(ghostObject);
+        entry->collisionObject->setUserIndex(USER_INDEX_WATER_BODY);
         entry->collisionObject->setUserPointer(entry);
 
         //If there's a valid bbox, use that to create a contained body of water.
@@ -1189,28 +1275,15 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         m_submergedEntities.erase(submergedEntryI);
     }
 
-    //Check if the entity is a water body, and if so remove it and detach any submerged entities.
-    auto waterBodyProp = entity.getPropertyClass<BoolProperty>("water_body");
-    if (waterBodyProp && waterBodyProp->isTrue()) {
-        for (auto waterIterator = m_waterBodies.begin(); waterIterator != m_waterBodies.end(); ++waterIterator) {
-            auto waterBody = *waterIterator;
-            auto* waterBodyEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
-            if (&waterBodyEntry->entity == &entity) {
-                //Also check that any entities that are submerged into the body are detached
-                for (auto& submergedEntry : m_submergedEntities) {
-                    if (submergedEntry.second == waterBody) {
-                        submergedEntry.second = nullptr;
-                    }
-                }
-                m_waterBodies.erase(waterIterator);
-                break;
-            }
-        }
-    }
-
     if (entry->collisionObject) {
         m_dynamicsWorld->removeCollisionObject(entry->collisionObject.get());
     }
+
+    //Check if the entity is a water body, and if so remove it.
+    if (entry->collisionObject->getUserIndex() == USER_INDEX_WATER_BODY) {
+        m_waterBodies.erase(entry.get());
+    }
+
 
     entry->propertyUpdatedConnection.disconnect();
     if (entry->viewSphere) {
@@ -1806,8 +1879,8 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                 //Check if entity is mark to float, which should make us first check if it's in any body of water.
                 auto floatsProp = entity.getPropertyClass<BoolProperty>("floats");
                 if (floatsProp && floatsProp->isTrue()) {
-                    for (auto waterBody : m_waterBodies) {
-                        auto waterEntry = static_cast<BulletEntry*>(waterBody->getUserPointer());
+                    for (auto& waterEntryIterator : m_waterBodies) {
+                        auto waterEntry = waterEntryIterator.first;
                         if (waterEntry->entity.m_location.bBox().isValid()) {
                             auto bbox = waterEntry->entity.m_location.bBox();
                             bbox.shift(WFMath::Vector<3>(waterEntry->entity.m_location.m_pos));
@@ -2255,6 +2328,21 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
     }
 
     if (hadChange) {
+
+        if (entry->collisionObject && entry->collisionObject->getUserIndex() == USER_INDEX_WATER_BODY) {
+            //We moved a water body, check with all entities that might be contained.
+            auto waterBodyI = m_waterBodies.find(entry.get());
+            if (waterBodyI != m_waterBodies.end()) {
+                for (auto possibleContainedBody : waterBodyI->second) {
+                    if (!possibleContainedBody->addedToMovingList) {
+                        m_movingEntities.emplace_back(possibleContainedBody);
+                        possibleContainedBody->addedToMovingList = true;
+                        possibleContainedBody->markedAsMovingThisFrame = false;
+                        possibleContainedBody->markedAsMovingLastFrame = false;
+                    }
+                }
+            }
+        }
 
         //Only check for resting entities if the entity has been moved; not if the velocity has changed.
         if (pos.isValid() || orientation.isValid()) {
@@ -2705,12 +2793,16 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
 void PhysicalDomain::processWaterBodies()
 {
-    auto testEntityIsSubmergedFn = [&](BulletEntry* bulletEntry, btGhostObject* waterBody) -> bool {
+    auto testEntityIsSubmergedFn = [&](BulletEntry* bulletEntry, BulletEntry* waterEntry) -> bool {
         bool isInside;
         //If the water body entity has been deleted it will have been set to null.
-        if (waterBody == nullptr) {
+        if (waterEntry == nullptr) {
             isInside = false;
+        } else if (waterEntry == bulletEntry) {
+            isInside = false;
+            bulletEntry->waterNearby = nullptr;
         } else {
+            auto waterBody = waterEntry->collisionObject.get();
             auto shapeType = waterBody->getCollisionShape()->getShapeType();
             auto overlappingObject = bulletEntry->collisionObject.get();
             if (shapeType == BOX_SHAPE_PROXYTYPE) {
@@ -2767,26 +2859,32 @@ void PhysicalDomain::processWaterBodies()
         }
     };
 
-    auto lastSubmergedEntities = std::move(m_submergedEntities);
-    for (auto waterBody : m_waterBodies) {
-
-        //If any object overlaps, it's either moving in or out of the water.
-        int numberOfOverlappingObjects = waterBody->getNumOverlappingObjects();
-        for (int i = 0; i < numberOfOverlappingObjects; ++i) {
-            auto overlappingObject = waterBody->getOverlappingObject(i);
-            auto* bulletEntry = static_cast<BulletEntry*>(overlappingObject->getUserPointer());
-            if (bulletEntry) {
-                if (testEntityIsSubmergedFn(bulletEntry, waterBody)) {
-                    m_submergedEntities.emplace(bulletEntry, waterBody);
-                }
-                lastSubmergedEntities.erase(bulletEntry);
-            }
+    for (auto entry : m_movingEntities) {
+        if (entry->waterNearby) {
+            testEntityIsSubmergedFn(entry, entry->waterNearby);
         }
     }
-
-    for (auto entry : lastSubmergedEntities) {
-        testEntityIsSubmergedFn(entry.first, entry.second);
-    }
+//
+//    auto lastSubmergedEntities = std::move(m_submergedEntities);
+//    for (auto waterBody : m_waterBodies) {
+//
+//        //If any object overlaps, it's either moving in or out of the water.
+//        int numberOfOverlappingObjects = waterBody->getNumOverlappingObjects();
+//        for (int i = 0; i < numberOfOverlappingObjects; ++i) {
+//            auto overlappingObject = waterBody->getOverlappingObject(i);
+//            auto* bulletEntry = static_cast<BulletEntry*>(overlappingObject->getUserPointer());
+//            if (bulletEntry) {
+//                if (testEntityIsSubmergedFn(bulletEntry, waterBody)) {
+//                    m_submergedEntities.emplace(bulletEntry, waterBody);
+//                }
+//                lastSubmergedEntities.erase(bulletEntry);
+//            }
+//        }
+//    }
+//
+//    for (auto entry : lastSubmergedEntities) {
+//        testEntityIsSubmergedFn(entry.first, entry.second);
+//    }
 }
 
 bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const

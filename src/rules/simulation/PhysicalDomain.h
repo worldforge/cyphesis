@@ -114,7 +114,7 @@ class PhysicalDomain : public Domain
 
         struct VisibilityPairCallback;
 
-        struct VisibilityCallback;
+        struct WaterCollisionCallback;
 
         struct ClosenessObserverEntry;
 
@@ -220,6 +220,15 @@ class PhysicalDomain : public Domain
              */
             btTransform lastTransform;
 
+            /**
+             * Set to a bullet entry for a water body if the entry and the water body are close enough for the broadphase to consider them.
+             * This does not mean that the entity actually is contained in the water; this needs to be checked closer through collision checks.
+             *
+             * When the entity is moved out of the water body this is set to the bullet entry itself (instead of setting it to null). This way
+             * we have a way of knowing that the entity has been moved out.
+             */
+            BulletEntry* waterNearby;
+
         };
 
         struct TerrainEntry
@@ -254,6 +263,17 @@ class PhysicalDomain : public Domain
          * A map of all submerged entities, and the water body they currently are submerged into.
          */
         std::map<BulletEntry*, btGhostObject*> m_submergedEntities;
+
+        /**
+         * Keeps track of all water bodies, and the entities that currently are near them (as determined by the broadphase proxy).
+         * The entities contained in the set are thus _possibly_ contained in the water, but not necessarily. The main reason
+         * for keeping this structure is for when a water body is moved (which would be _very_ seldom).
+         * In those cases we also need to move the entities that are contained, which is what the set is for.
+         * A std::set is an expensive container, but as we anticipate entities rarely moveing in and out of water, and even more
+         * rarely a water entity being moved instead, we can probably afford it in this case.
+         */
+        std::map<BulletEntry*, std::set<BulletEntry*>> m_waterBodies;
+
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
         std::unordered_map<long, std::tuple<std::unique_ptr<Mercator::TerrainMod>, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
@@ -308,7 +328,11 @@ class PhysicalDomain : public Domain
 
         Mercator::Terrain* m_terrain;
 
-        std::unique_ptr<btGhostPairCallback> m_ghostPairCallback;
+        /**
+         * Looks for broadphase collisions with water entities. These are candidates for later checking
+         * if the entity actually is contained in the water.
+         */
+        std::unique_ptr<WaterCollisionCallback> m_ghostPairCallback;
 
         /**
          * @brief Contains all terrain segments, as height fields.
@@ -323,10 +347,6 @@ class PhysicalDomain : public Domain
          */
         std::vector<std::pair<std::unique_ptr<btRigidBody>, std::unique_ptr<btCollisionShape>>> m_borderPlanes;
 
-        /**
-         * Keeps track of all water bodies, which are ghost objects which we use to detect when entities move in and out of the water.
-         */
-        std::vector<btGhostObject*> m_waterBodies;
 
         /**
          * @brief Creates borders around the domain, which prevents entities from "escaping".
