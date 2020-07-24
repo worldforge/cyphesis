@@ -279,10 +279,6 @@ struct PhysicalDomain::WaterCollisionCallback : public btOverlappingPairCallback
 
     void addToWater(BulletEntry* waterEntry, BulletEntry* otherEntry)
     {
-        auto waterBodyI = m_domain->m_waterBodies.find(waterEntry);
-        if (waterBodyI != m_domain->m_waterBodies.end()) {
-            waterBodyI->second.insert(otherEntry);
-        }
         otherEntry->waterNearby = waterEntry;
         if (!otherEntry->addedToMovingList) {
             m_domain->m_movingEntities.emplace_back(otherEntry);
@@ -295,11 +291,6 @@ struct PhysicalDomain::WaterCollisionCallback : public btOverlappingPairCallback
     void removeFromWater(BulletEntry* waterEntry, BulletEntry* otherEntry)
     {
         if (otherEntry->waterNearby == waterEntry) {
-            auto waterBodyI = m_domain->m_waterBodies.find(waterEntry);
-            if (waterBodyI != m_domain->m_waterBodies.end()) {
-                waterBodyI->second.erase(otherEntry);
-            }
-
             otherEntry->waterNearby = otherEntry;
             if (!otherEntry->addedToMovingList) {
                 m_domain->m_movingEntities.emplace_back(otherEntry);
@@ -1035,7 +1026,6 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     if (waterBodyProp && waterBodyProp->isTrue()) {
 
         auto ghostObject = std::make_unique<btGhostObject>();
-        m_waterBodies[entry] = {};
         entry->collisionObject = std::move(ghostObject);
         entry->collisionObject->setUserIndex(USER_INDEX_WATER_BODY);
         entry->collisionObject->setUserPointer(entry);
@@ -1278,12 +1268,6 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     if (entry->collisionObject) {
         m_dynamicsWorld->removeCollisionObject(entry->collisionObject.get());
     }
-
-    //Check if the entity is a water body, and if so remove it.
-    if (entry->collisionObject->getUserIndex() == USER_INDEX_WATER_BODY) {
-        m_waterBodies.erase(entry.get());
-    }
-
 
     entry->propertyUpdatedConnection.disconnect();
     if (entry->viewSphere) {
@@ -1617,13 +1601,14 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
     } else if (name == "speed_flight") {
         bulletEntry->speedFlight = dynamic_cast<const Property<double>*>(&prop)->data();
     } else if (name == "floats") {
-        applyNewPositionForEntity(bulletEntry, bulletEntry->entity.m_location.m_pos);
-        bulletEntry->entity.m_location.update(BaseWorld::instance().getTimeAsSeconds());
-        bulletEntry->entity.removeFlags(entity_clean);
-        if (bulletEntry->collisionObject) {
-            m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject.get());
-        }
-        sendMoveSight(*bulletEntry, true, false, false, false, false);
+        //TODO: find a better way to handle entities which are set to float. Perhaps it should just be handled by density?
+//        applyNewPositionForEntity(bulletEntry, bulletEntry->entity.m_location.m_pos);
+//        bulletEntry->entity.m_location.update(BaseWorld::instance().getTimeAsSeconds());
+//        bulletEntry->entity.removeFlags(entity_clean);
+//        if (bulletEntry->collisionObject) {
+//            m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject.get());
+//        }
+//        sendMoveSight(*bulletEntry, true, false, false, false, false);
     } else if (name == "step_factor") {
         auto stepFactorProp = dynamic_cast<const Property<double>*>(&prop);
         auto I = m_steppingEntries.find(bulletEntry->entity.getIntId());
@@ -1876,37 +1861,6 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
             bool plantedOn = false;
             if (collisionObject) {
 
-                //Check if entity is mark to float, which should make us first check if it's in any body of water.
-                auto floatsProp = entity.getPropertyClass<BoolProperty>("floats");
-                if (floatsProp && floatsProp->isTrue()) {
-                    for (auto& waterEntryIterator : m_waterBodies) {
-                        auto waterEntry = waterEntryIterator.first;
-                        if (waterEntry->entity.m_location.bBox().isValid()) {
-                            auto bbox = waterEntry->entity.m_location.bBox();
-                            bbox.shift(WFMath::Vector<3>(waterEntry->entity.m_location.m_pos));
-                            if (WFMath::Contains(pos, bbox, true)) {
-                                if (h < bbox.highCorner().y()) {
-                                    pos.y() = bbox.highCorner().y();
-                                    plantedOn = true;
-
-                                    plantOnEntity(entry, waterEntry);
-                                    break;
-                                }
-                            }
-                        } else {
-                            //check if we're below the water surface, and above the ground
-                            if (pos.y() <= waterEntry->entity.m_location.m_pos.y() && h < waterEntry->entity.m_location.m_pos.y()) {
-                                pos.y() = waterEntry->entity.m_location.m_pos.y();
-                                plantedOn = true;
-
-                                plantOnEntity(entry, waterEntry);
-
-                                break;
-                            }
-                        }
-                    }
-                }
-
                 if (!plantedOn) {
 
                     auto modeDataProp = entity.getPropertyClassFixed<ModeDataProperty>();
@@ -1930,24 +1884,19 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                         auto& plantedOnBulletEntry = I->second;
 
                                         //Check if it's a water body it's planted on first.
-                                        if (dynamic_cast<btGhostObject*>(plantedOnBulletEntry->collisionObject.get())) {
+                                        if (plantedOnBulletEntry->collisionObject->getUserIndex() == USER_INDEX_WATER_BODY) {
 
-                                            //Check if we've explicitly disabled floating.
+                                            //We're planted on a water body, we should place ourselves on top of it.
+                                            float newHeight = plantedOnBulletEntry->entity.m_location.pos().y();
+                                            if (plantedOnBulletEntry->entity.m_location.bBox().isValid()) {
+                                                newHeight += plantedOnBulletEntry->entity.m_location.bBox().highCorner().y();
+                                            }
 
-                                            if (floatsProp == nullptr || floatsProp->isTrue()) {
-
-                                                //We're planted on a water body, we should place ourself on top of it.
-                                                float newHeight = plantedOnBulletEntry->entity.m_location.pos().y();
-                                                if (plantedOnBulletEntry->entity.m_location.bBox().isValid()) {
-                                                    newHeight += plantedOnBulletEntry->entity.m_location.bBox().highCorner().y();
-                                                }
-
-                                                if (newHeight > h) {
-                                                    //Make sure it's not under the terrain.
-                                                    pos.y() = newHeight;
-                                                    plantedOn = true;
-                                                    plantOnEntity(entry, plantedOnBulletEntry.get());
-                                                }
+                                            if (newHeight > h) {
+                                                //Make sure it's not under the terrain.
+                                                pos.y() = newHeight;
+                                                plantedOn = true;
+                                                plantOnEntity(entry, plantedOnBulletEntry.get());
                                             }
                                         } else {
 
@@ -2331,14 +2280,17 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
 
         if (entry->collisionObject && entry->collisionObject->getUserIndex() == USER_INDEX_WATER_BODY) {
             //We moved a water body, check with all entities that might be contained.
-            auto waterBodyI = m_waterBodies.find(entry.get());
-            if (waterBodyI != m_waterBodies.end()) {
-                for (auto possibleContainedBody : waterBodyI->second) {
-                    if (!possibleContainedBody->addedToMovingList) {
-                        m_movingEntities.emplace_back(possibleContainedBody);
-                        possibleContainedBody->addedToMovingList = true;
-                        possibleContainedBody->markedAsMovingThisFrame = false;
-                        possibleContainedBody->markedAsMovingLastFrame = false;
+            //This is quite expensive since we're iterating through all entities (on an unordered map).
+            //However, since we normally never expect a water body to move on a live server we do it this way, since we then avoid
+            //having to keep track of which entities are in water and not.
+            for (auto& entityEntry : m_entries) {
+                auto childEntry = entityEntry.second.get();
+                if (childEntry->waterNearby == entry.get()) {
+                    if (!childEntry->addedToMovingList) {
+                        m_movingEntities.emplace_back(childEntry);
+                        childEntry->addedToMovingList = true;
+                        childEntry->markedAsMovingThisFrame = false;
+                        childEntry->markedAsMovingLastFrame = false;
                     }
                 }
             }

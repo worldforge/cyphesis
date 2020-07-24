@@ -272,7 +272,7 @@ class PhysicalDomain : public Domain
          * A std::set is an expensive container, but as we anticipate entities rarely moveing in and out of water, and even more
          * rarely a water entity being moved instead, we can probably afford it in this case.
          */
-        std::map<BulletEntry*, std::set<BulletEntry*>> m_waterBodies;
+        //std::map<BulletEntry*, std::set<BulletEntry*>> m_waterBodies;
 
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
