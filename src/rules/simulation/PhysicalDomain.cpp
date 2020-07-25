@@ -141,6 +141,22 @@ namespace {
         }
     }
 
+    template<typename T>
+    bool removeAndShift(std::vector<T>& collection, const T& entry)
+    {
+        for (size_t i = 0; i < collection.size(); ++i) {
+            //Find the entry in collection and do a quick delete by moving the last entry and decreasing the size.
+            if (collection[i] == entry) {
+                if (i < collection.size() - 1) {
+                    collection[i] = collection[collection.size() - 1];
+                    collection.resize(collection.size() - 1);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 /**
@@ -1290,14 +1306,7 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     }
 
     if (entry->addedToMovingList) {
-        m_movingEntities.erase(std::find(m_movingEntities.begin(), m_movingEntities.end(), entry.get()));
-    }
-
-
-    //Remove it from the map of submerged entities.
-    auto submergedEntryI = m_submergedEntities.find(entry.get());
-    if (submergedEntryI != m_submergedEntities.end()) {
-        m_submergedEntities.erase(submergedEntryI);
+        removeAndShift(m_movingEntities, entry.get());
     }
 
     if (entry->collisionObject) {
@@ -1319,10 +1328,7 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     }
 
     if (entry->markedForVisibilityRecalculation) {
-        auto J = std::find(m_visibilityRecalculateQueue.begin(), m_visibilityRecalculateQueue.end(), entry.get());
-        if (J != m_visibilityRecalculateQueue.end()) {
-            m_visibilityRecalculateQueue.erase(J);
-        }
+        removeAndShift(m_visibilityRecalculateQueue, entry.get());
     }
 
     mContainingEntityEntry.observingThis.erase(entry.get());
@@ -2860,27 +2866,7 @@ void PhysicalDomain::processWaterBodies()
             testEntityIsSubmergedFn(entry, entry->waterNearby);
         }
     }
-//
-//    auto lastSubmergedEntities = std::move(m_submergedEntities);
-//    for (auto waterBody : m_waterBodies) {
-//
-//        //If any object overlaps, it's either moving in or out of the water.
-//        int numberOfOverlappingObjects = waterBody->getNumOverlappingObjects();
-//        for (int i = 0; i < numberOfOverlappingObjects; ++i) {
-//            auto overlappingObject = waterBody->getOverlappingObject(i);
-//            auto* bulletEntry = static_cast<BulletEntry*>(overlappingObject->getUserPointer());
-//            if (bulletEntry) {
-//                if (testEntityIsSubmergedFn(bulletEntry, waterBody)) {
-//                    m_submergedEntities.emplace(bulletEntry, waterBody);
-//                }
-//                lastSubmergedEntities.erase(bulletEntry);
-//            }
-//        }
-//    }
-//
-//    for (auto entry : lastSubmergedEntities) {
-//        testEntityIsSubmergedFn(entry.first, entry.second);
-//    }
+
 }
 
 bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const

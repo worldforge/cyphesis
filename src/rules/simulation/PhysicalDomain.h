@@ -259,10 +259,6 @@ class PhysicalDomain : public Domain
          * Contains entities which needs to have their visibility recalculated, either because they moved or they changed size.
          */
         std::vector<BulletEntry*> m_visibilityRecalculateQueue;
-        /**
-         * A map of all submerged entities, and the water body they currently are submerged into.
-         */
-        std::map<BulletEntry*, btGhostObject*> m_submergedEntities;
 
         /**
          * Keeps track of all water bodies, and the entities that currently are near them (as determined by the broadphase proxy).
