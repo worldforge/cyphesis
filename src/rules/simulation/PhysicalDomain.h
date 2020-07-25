@@ -180,27 +180,27 @@ class PhysicalDomain : public Domain
             /**
              * Set to true if the mode has been changed in a tick, which should be communicated in a Move op.
              */
-            bool modeChanged;
+            bool modeChanged = false;
 
             /**
              * Set to true if the entry already has been added to m_visibilityRecalculateQueue
              */
-            bool markedForVisibilityRecalculation;
+            bool markedForVisibilityRecalculation = false;
 
             /**
              * Set to true if the entry has been added to m_movingEntities
              */
-            bool addedToMovingList;
+            bool addedToMovingList = false;
 
             /**
              * Set to true if the entity moved the current frame. This is used to detect entities that stopped or started moving.
              */
-            bool markedAsMovingThisFrame;
+            bool markedAsMovingThisFrame = false;
 
             /**
              * Set to true if the entity moved the last frame. This is used to detect entities that stopped or started moving.
              */
-            bool markedAsMovingLastFrame;
+            bool markedAsMovingLastFrame = false;
 
             /**
              * A set of entities which are planted on this. They move along.
@@ -227,7 +227,7 @@ class PhysicalDomain : public Domain
              * When the entity is moved out of the water body this is set to the bullet entry itself (instead of setting it to null). This way
              * we have a way of knowing that the entity has been moved out.
              */
-            BulletEntry* waterNearby;
+            BulletEntry* waterNearby = nullptr;
 
         };
 

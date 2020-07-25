@@ -790,7 +790,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         object2->m_location.setBBox({{-0.1, -0.1, -0.1},
                                      {0.1,  0.1,  0.1}});
         object2->setAttrValue("mode", "fixed");
-        object2->m_location.m_pos = {10, 0, 10};
+        object2->m_location.m_pos = {5, 0, 5};
         context.testWorld.addEntity(object2, domainPhysical);
 
         ops = collectQueue(queue);

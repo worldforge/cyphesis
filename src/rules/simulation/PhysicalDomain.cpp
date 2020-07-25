@@ -157,9 +157,20 @@ const double VISIBILITY_ANGULAR_DEGREE = 1.0;
 const double VISIBILITY_RATIO = 1.0 / std::tan((WFMath::numeric_constants<double>::pi() / 180.0) * VISIBILITY_ANGULAR_DEGREE);
 
 /**
- * How much the visibility sphere should be scaled against the size of the bbox.
+ * How much objects in the visibility world should be scaled.
+ *
+ * The Bullet system is designed to handle "normal" sized things, measured in meters.
+ * The visibility system uses much larger spheres. Therefore we should scale them down to make them better fit the
+ * "normal" world.
+ * We'll base this on VISIBILITY_RATIO.
  */
-const float VISIBILITY_SCALING_FACTOR = 100;
+const float VISIBILITY_SCALING_FACTOR = 1.0f / VISIBILITY_RATIO;
+
+/**
+ * A list of "thresholds" for visibility distance into which any visibility sphere's radius will be slotted into.
+ * The main reason is to improve performance, so visibility checks aren't redone each time an entity changes size.
+ */
+const std::array<double, 10> VISIBILITY_DISTANCE_THRESHOLDS = {10.0, 20, 30, 50, 75, 100, 300, 500, 1000, 2000};
 
 /**
  * The amount of time between each tick, in seconds.
@@ -426,8 +437,8 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         m_visibilityDispatcher(new btCollisionDispatcher(m_collisionConfiguration.get())),
         //We'll use a SAP broadphase for the visibility. This is more efficient than a dynamic one.
         //TODO: how to handle the limit for 16384 entries? Perhaps use the bt32BitAxisSweep3 with a custom max entries setting (to avoid it eating all memory).
-        m_visibilityBroadphase(new btAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()) / VISIBILITY_SCALING_FACTOR,
-                                                Convert::toBullet(entity.m_location.bBox().highCorner()) / VISIBILITY_SCALING_FACTOR)),
+        m_visibilityBroadphase(new btAxisSweep3(Convert::toBullet(entity.m_location.bBox().lowCorner()) * VISIBILITY_SCALING_FACTOR,
+                                                Convert::toBullet(entity.m_location.bBox().highCorner()) * VISIBILITY_SCALING_FACTOR)),
         m_visibilityWorld(new btCollisionWorld(m_visibilityDispatcher.get(),
                                                m_visibilityBroadphase.get(),
                                                m_collisionConfiguration.get())),
@@ -846,7 +857,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res
         //This entry is an observer; check what it can see after it has moved
         auto& viewSphere = bulletEntry->viewSphere;
         if (viewSphere) {
-            viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(bulletEntry->entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+            viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(bulletEntry->entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->updateSingleAabb(viewSphere.get());
         }
 
@@ -909,7 +920,7 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
         auto& visibilitySphere = bulletEntry->visibilitySphere;
         if (visibilitySphere) {
-            visibilitySphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(bulletEntry->entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+            visibilitySphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(bulletEntry->entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->updateSingleAabb(visibilitySphere.get());
         }
 
@@ -1177,14 +1188,14 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->visibilitySphere = std::move(visObject);
         entry->visibilityShape = std::move(visSphere);
         if (entity.m_location.m_pos.isValid()) {
-            visibilityObjectPtr->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+            visibilityObjectPtr->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->addCollisionObject(visibilityObjectPtr, VISIBILITY_MASK_OBSERVER,
                                                   entity.hasFlags(entity_visibility_protected) || entity.hasFlags(entity_visibility_private) ? VISIBILITY_MASK_OBSERVABLE_PRIVATE
                                                                                                                                              : VISIBILITY_MASK_OBSERVABLE);
         }
     }
     if (entity.isPerceptive()) {
-        auto viewShape = std::make_unique<btSphereShape>(VIEW_SPHERE_RADIUS / VISIBILITY_SCALING_FACTOR);
+        auto viewShape = std::make_unique<btSphereShape>(VIEW_SPHERE_RADIUS * VISIBILITY_SCALING_FACTOR);
         auto viewSphere = std::make_unique<btCollisionObject>();
         viewSphere->setCollisionShape(viewShape.get());
         viewSphere->setUserPointer(entry);
@@ -1196,7 +1207,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
         entry->observedByThisChanges.emplace_back(&mContainingEntityEntry, BulletEntry::VisibilityQueueOperationType::Add);
 
         if (entity.m_location.m_pos.isValid()) {
-            viewSpherePtr->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+            viewSpherePtr->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
             m_visibilityWorld->addCollisionObject(viewSpherePtr, entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
                                                   VISIBILITY_MASK_OBSERVER);
         }
@@ -1231,12 +1242,12 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
     if (entity.isPerceptive()) {
         if (!entry->viewSphere) {
             mContainingEntityEntry.observingThis.insert(entry.get());
-            auto viewShape = std::make_unique<btSphereShape>(VIEW_SPHERE_RADIUS / VISIBILITY_SCALING_FACTOR);
+            auto viewShape = std::make_unique<btSphereShape>(VIEW_SPHERE_RADIUS * VISIBILITY_SCALING_FACTOR);
             auto viewSphere = std::make_unique<btCollisionObject>();
             viewSphere->setCollisionShape(viewShape.get());
             viewSphere->setUserPointer(entry.get());
             if (entity.m_location.m_pos.isValid()) {
-                viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+                viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
                 m_visibilityWorld->addCollisionObject(viewSphere.get(), entity.hasFlags(entity_admin) ? VISIBILITY_MASK_OBSERVABLE | VISIBILITY_MASK_OBSERVABLE_PRIVATE : VISIBILITY_MASK_OBSERVABLE,
                                                       VISIBILITY_MASK_OBSERVER);
             }
@@ -1278,7 +1289,6 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         m_terrainMods.erase(modI);
     }
 
-    //m_lastMovingEntities.erase(entry.get());
     if (entry->addedToMovingList) {
         m_movingEntities.erase(std::find(m_movingEntities.begin(), m_movingEntities.end(), entry.get()));
     }
@@ -2083,11 +2093,11 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
     }
 
     if (entry->viewSphere) {
-        entry->viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+        entry->viewSphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
         m_visibilityWorld->updateSingleAabb(entry->viewSphere.get());
     }
     if (entry->visibilitySphere) {
-        entry->visibilitySphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) / VISIBILITY_SCALING_FACTOR));
+        entry->visibilitySphere->setWorldTransform(btTransform(btQuaternion::getIdentity(), Convert::toBullet(entity.m_location.m_pos) * VISIBILITY_SCALING_FACTOR));
         m_visibilityWorld->updateSingleAabb(entry->visibilitySphere.get());
     }
 
@@ -3187,17 +3197,28 @@ float PhysicalDomain::calculateVisibilitySphereRadius(const LocatedEntity& entit
 {
     auto visProp = entity.getPropertyClassFixed<VisibilityDistanceProperty>();
 
+    double radius;
     //If there's a vis_dist prop set, use that directly to set the radius.
     //If not, check the radius of the entity as apply the VISIBILITY_RATIO, unless there's no physical object.
     //In that case apply a default settings based on the entity having a radius of 0.25 meters
     if (visProp) {
-        return visProp->data() / VISIBILITY_SCALING_FACTOR;
+        radius = visProp->data();
     } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
-        float radius = entity.m_location.radius();
-        return (radius * VISIBILITY_RATIO) / VISIBILITY_SCALING_FACTOR;
+        radius = (entity.m_location.radius() * VISIBILITY_RATIO);
     } else {
         //Handle it as if it was 0.25 meter in radius
-        return (0.25f * VISIBILITY_RATIO) / VISIBILITY_SCALING_FACTOR;
+        radius = (0.25f * VISIBILITY_RATIO);
     }
+    for (size_t i = 0; i < VISIBILITY_DISTANCE_THRESHOLDS.size(); ++i) {
+        if (radius < VISIBILITY_DISTANCE_THRESHOLDS[i]) {
+            if (i == 0) {
+                return VISIBILITY_DISTANCE_THRESHOLDS[0] * VISIBILITY_SCALING_FACTOR;
+            } else {
+                return VISIBILITY_DISTANCE_THRESHOLDS[i - 1] * VISIBILITY_SCALING_FACTOR;
+            }
+        }
+    }
+    //If we get here the visibility is beyond the largest threshold, so return that.
+    return VISIBILITY_DISTANCE_THRESHOLDS.back() * VISIBILITY_SCALING_FACTOR;
 
 }
