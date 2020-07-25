@@ -109,8 +109,12 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
         try {
             bool busy = operationsHandler.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(2));
             operationsHandler.markQueueAsClean();
+            boost::system::error_code ec;
             //Even if the world is busy we should interleave with a poll, to make sure we always do some IO.
-            io_context.poll_one();
+            io_context.poll_one(ec);
+            if (ec) {
+                log(ERROR, String::compose("Error when polling IO: %1", ec.message()));
+            }
             if (!busy) {
                 //If it's not busy however we should run until we get a task.
                 //We will either get an io task, or we will be triggered by the timer
