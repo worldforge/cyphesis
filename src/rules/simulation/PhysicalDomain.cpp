@@ -537,7 +537,9 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 }
             }
         }
-        postDuration += std::chrono::steady_clock::now() - start;
+        if (debug_flag) {
+            postDuration += std::chrono::steady_clock::now() - start;
+        }
     };
 
     m_dynamicsWorld->setInternalTickCallback(preTickCallback, &mWorldInfo, true);
@@ -2654,14 +2656,6 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
     auto interim = std::chrono::steady_clock::now() - start;
 
-    if (debug_flag) {
-        std::stringstream ss;
-        ss << "Tick: " << (tickSize * 1000) << " ms Time: "
-           << (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - start).count() / 1000.f)
-           << " ms";
-        debug_print(ss.str())
-    }
-
     //CProfileManager::dumpAll();
 
     for (const auto& entry : projectileCollisions) {
@@ -2757,18 +2751,20 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     processDirtyTerrainAreas();
 
-    auto duration = std::chrono::steady_clock::now() - start;
-    auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
-    log(microseconds > 3000 ? WARNING : INFO,
-        String::compose("Physics took %1 μs (just stepSimulation %2 μs, visibility %3 μs, tick size %4 μs, visibility queue: %5, postTick: %6 μs, moving count: %7).",
-                        microseconds,
-                        std::chrono::duration_cast<std::chrono::microseconds>(interim).count(),
-                        std::chrono::duration_cast<std::chrono::microseconds>(visDuration).count(),
-                        static_cast<long>(tickSize * 1000000),
-                        m_visibilityRecalculateQueue.size(),
-                        std::chrono::duration_cast<std::chrono::microseconds>(postDuration).count(),
-                        movingSize)
-    );
+    if (debug_flag) {
+        auto duration = std::chrono::steady_clock::now() - start;
+        auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+        log(microseconds > 3000 ? WARNING : INFO,
+            String::compose("Physics took %1 μs (just stepSimulation %2 μs, visibility %3 μs, tick size %4 μs, visibility queue: %5, postTick: %6 μs, moving count: %7).",
+                            microseconds,
+                            std::chrono::duration_cast<std::chrono::microseconds>(interim).count(),
+                            std::chrono::duration_cast<std::chrono::microseconds>(visDuration).count(),
+                            static_cast<long>(tickSize * 1000000),
+                            m_visibilityRecalculateQueue.size(),
+                            std::chrono::duration_cast<std::chrono::microseconds>(postDuration).count(),
+                            movingSize)
+        );
+    }
 }
 
 void PhysicalDomain::processWaterBodies()
