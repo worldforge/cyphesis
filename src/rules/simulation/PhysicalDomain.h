@@ -445,6 +445,14 @@ class PhysicalDomain : public Domain
 
         bool isWithinReach(BulletEntry& reacherEntry, BulletEntry& targetEntry, float reach, const WFMath::Point<3>& positionOnQueriedEntity) const;
 
+
+        /**
+         * Calculate the radius of a visibility sphere, taking both any "vis_dist" property as
+         * well as the entity's size into account.
+         * @param entity
+         * @return
+         */
+        float calculateVisibilitySphereRadius(const LocatedEntity& entity) const;
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

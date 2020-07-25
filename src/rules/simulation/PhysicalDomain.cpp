@@ -142,6 +142,20 @@ namespace {
     }
 
 }
+
+/**
+ * The minimum angular resolution of visibility, expressed as degrees.
+ *
+ * The "angular resolution" describes the minimum size an object needs to be in order to be viewed, as a degree of the
+ * "viewing sphere" that would surround an observer.
+ */
+double VISIBILITY_ANGULAR_DEGREE = 1.0;
+
+/**
+ * The ratio between the size of an object and how far away it can be seen, based on the minimum angular resolution.
+ */
+double VISIBILITY_RATIO = 1.0 / std::tan((WFMath::numeric_constants<double>::pi() / 180.0) * VISIBILITY_ANGULAR_DEGREE);
+
 /**
  * How much the visibility sphere should be scaled against the size of the bbox.
  */
@@ -1154,15 +1168,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
     {
         auto visSphere = std::make_unique<btSphereShape>(0);
-        auto visProp = entity.getPropertyClassFixed<VisibilityDistanceProperty>();
-        if (visProp) {
-            visSphere->setUnscaledRadius(visProp->data() / VISIBILITY_SCALING_FACTOR);
-        } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
-            float radius = entity.m_location.radius();
-            visSphere->setUnscaledRadius(radius);
-        } else {
-            visSphere->setUnscaledRadius(0.25f);
-        }
+        visSphere->setUnscaledRadius(calculateVisibilitySphereRadius(entity));
 
         auto visObject = std::make_unique<btCollisionObject>();
         visObject->setCollisionShape(visSphere.get());
@@ -1557,6 +1563,20 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
     } else if (name == BBoxProperty::property_name || name == ScaleProperty::property_name) {
         const auto& bbox = bulletEntry->entity.m_location.bBox();
         if (bbox.isValid()) {
+
+            if (bulletEntry->visibilitySphere) {
+                auto& entity = bulletEntry->entity;
+                auto radius = calculateVisibilitySphereRadius(entity);
+
+                if (radius != bulletEntry->visibilityShape->getImplicitShapeDimensions().x()) {
+                    bulletEntry->visibilityShape->setUnscaledRadius(radius);
+                    if (!bulletEntry->markedForVisibilityRecalculation) {
+                        m_visibilityRecalculateQueue.emplace_back(bulletEntry);
+                        bulletEntry->markedForVisibilityRecalculation = true;
+                    }
+                }
+            }
+
             if (bulletEntry->collisionObject) {
                 //When changing shape dimensions we must first remove the object, do the change, and then add it back again.
 
@@ -1591,17 +1611,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
                 m_dynamicsWorld->updateSingleAabb(bulletEntry->collisionObject.get());
             }
 
-            if (bulletEntry->visibilitySphere) {
-                auto& entity = bulletEntry->entity;
-                auto visProp = entity.getPropertyClassFixed<VisibilityDistanceProperty>();
-                if (!visProp) {
-                    if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
-                        bulletEntry->visibilityShape->setUnscaledRadius(entity.m_location.radius());
-                    } else {
-                        bulletEntry->visibilityShape->setUnscaledRadius(0.25f);
-                    }
-                }
-            }
+
         }
     } else if (name == "planted_offset" || name == "planted_scaled_offset") {
         applyNewPositionForEntity(bulletEntry, bulletEntry->entity.m_location.m_pos);
@@ -3171,4 +3181,23 @@ void PhysicalDomain::removed()
     for (auto& entry : observations) {
         entry.second->callback();
     }
+}
+
+float PhysicalDomain::calculateVisibilitySphereRadius(const LocatedEntity& entity) const
+{
+    auto visProp = entity.getPropertyClassFixed<VisibilityDistanceProperty>();
+
+    //If there's a vis_dist prop set, use that directly to set the radius.
+    //If not, check the radius of the entity as apply the VISIBILITY_RATIO, unless there's no physical object.
+    //In that case apply a default settings based on the entity having a radius of 0.25 meters
+    if (visProp) {
+        return visProp->data() / VISIBILITY_SCALING_FACTOR;
+    } else if (entity.m_location.bBox().isValid() && entity.m_location.radius() > 0) {
+        float radius = entity.m_location.radius();
+        return (radius * VISIBILITY_RATIO) / VISIBILITY_SCALING_FACTOR;
+    } else {
+        //Handle it as if it was 0.25 meter in radius
+        return (0.25f * VISIBILITY_RATIO) / VISIBILITY_SCALING_FACTOR;
+    }
+
 }
