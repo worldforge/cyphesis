@@ -9,7 +9,9 @@ class Growing(server.Thing):
     tick_interval = 30
 
     def __init__(self, cpp):
-        init_ticks(self, self.tick_interval)
+        # Use a large jitter so not all entities grow at the same time, as they are
+        # initialized at the same time when the world is created.
+        init_ticks(self, self.tick_interval, self.tick_interval)
 
     def tick_operation(self, op):
         res = Oplist()
@@ -18,21 +20,23 @@ class Growing(server.Thing):
             max_scale = 1.0
             if self.props.maxscale:
                 max_scale = self.props.maxscale
-            if self.props.mass and self.props.density and self.props.bbox \
-                    and self.props._nutrients and self.props._nutrients > 0:
+            nutrients = self.get_prop_float("_nutrients", 0)
+            density = self.get_prop_float("density")
+            mass = self.get_prop_float("mass", 0)
+            if density and self.props.bbox and nutrients > 0:
                 # Use half of the nutrients to grow
-                new_mass = self.props.mass + (self.props._nutrients * 0.5)
+                new_mass = mass + (nutrients * 0.5)
                 bbox_unscaled = self.props.bbox
                 volume_vector = bbox_unscaled.high_corner - bbox_unscaled.low_corner
                 volume_unscaled = volume_vector.x * volume_vector.y * volume_vector.z
-                volume_new = new_mass / self.props.density
+                volume_new = new_mass / density
                 new_scale = min(pow(volume_new / volume_unscaled, 0.33333), max_scale)
 
                 if not self.props.scale or new_scale != self.props.scale:
                     set_ent = Entity(scale=[new_scale])
                     # check how much nutrient really was used
-                    final_new_mass = new_scale * volume_new * self.props.density
-                    set_ent["_nutrients!subtract"] = final_new_mass - self.props.mass
+                    final_new_mass = new_scale * volume_new * density
+                    set_ent["_nutrients!subtract"] = final_new_mass - mass
 
                     res += Operation("set", set_ent, to=self)
 
