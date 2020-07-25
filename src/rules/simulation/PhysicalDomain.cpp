@@ -149,69 +149,69 @@ namespace {
  * The "angular resolution" describes the minimum size an object needs to be in order to be viewed, as a degree of the
  * "viewing sphere" that would surround an observer.
  */
-double VISIBILITY_ANGULAR_DEGREE = 1.0;
+const double VISIBILITY_ANGULAR_DEGREE = 1.0;
 
 /**
  * The ratio between the size of an object and how far away it can be seen, based on the minimum angular resolution.
  */
-double VISIBILITY_RATIO = 1.0 / std::tan((WFMath::numeric_constants<double>::pi() / 180.0) * VISIBILITY_ANGULAR_DEGREE);
+const double VISIBILITY_RATIO = 1.0 / std::tan((WFMath::numeric_constants<double>::pi() / 180.0) * VISIBILITY_ANGULAR_DEGREE);
 
 /**
  * How much the visibility sphere should be scaled against the size of the bbox.
  */
-float VISIBILITY_SCALING_FACTOR = 100;
+const float VISIBILITY_SCALING_FACTOR = 100;
 
 /**
  * The amount of time between each tick, in seconds.
  * The simulation will happen at 60hz, but the tick size determines how often entities are processed and operations are sent.
  */
-double TICK_SIZE = 1.0 / 15.0;
+const double TICK_SIZE = 1.0 / 15.0;
 
 /**
  * The base size of the view sphere for a perceptive entity. Everything within this radius will be visible.
  */
-double VIEW_SPHERE_RADIUS = 0.5;
+const double VIEW_SPHERE_RADIUS = 0.5;
 
 /**
  * Mask used by visibility checks for observing entries (i.e. creatures etc.).
  */
-short VISIBILITY_MASK_OBSERVER = 1u << 1u;
+const short VISIBILITY_MASK_OBSERVER = 1u << 1u;
 
 /**
  * Mask used by visibility checks for entries that can be observed (i.e. most entities).
  */
-short VISIBILITY_MASK_OBSERVABLE = 1u << 2u;
+const short VISIBILITY_MASK_OBSERVABLE = 1u << 2u;
 
 /**
  * Mask used by visibility checks for entries that only can be observed by admin entities.
  */
-short VISIBILITY_MASK_OBSERVABLE_PRIVATE = 1u << 3u;
+const short VISIBILITY_MASK_OBSERVABLE_PRIVATE = 1u << 3u;
 
 /**
  * Mask used by all physical items. They should collide with other physical items, and with the terrain.
  */
-short COLLISION_MASK_PHYSICAL = 1;
+const short COLLISION_MASK_PHYSICAL = 1;
 /**
  * Mask used by the terrain. It's static.
  */
-short COLLISION_MASK_NON_PHYSICAL = 2;
+const short COLLISION_MASK_NON_PHYSICAL = 2;
 /**
  * Mask used by all non-physical items. These should only collide with the terrain.
  */
-short COLLISION_MASK_TERRAIN = 4;
+const short COLLISION_MASK_TERRAIN = 4;
 /**
  * Mask used by static items (i.e. those with mode "fixed" and "planted").
  */
-short COLLISION_MASK_STATIC = 8;
+const short COLLISION_MASK_STATIC = 8;
 
 /**
  * The max amount of entities to do visibility checks for each tick.
  */
-size_t VISIBILITY_CHECK_MAX_ENTRIES = 20;
+const size_t VISIBILITY_CHECK_MAX_ENTRIES = 20;
 
-float CCD_MOTION_FACTOR = 0.2f;
+const float CCD_MOTION_FACTOR = 0.2f;
 
-float CCD_SPHERE_FACTOR = 0.2f;
+const float CCD_SPHERE_FACTOR = 0.2f;
 
 /**
  * Set on btCollisionObjects which are water bodies.
