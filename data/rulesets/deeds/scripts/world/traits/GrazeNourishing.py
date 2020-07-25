@@ -29,7 +29,7 @@ class GrazeNourishing(server.Thing):
                 if terrain_prop:
                     material = terrain_prop.get_surface_name(arg.pos[0], arg.pos[2])
                     if material != "grass":
-                        print("Could not graze because there's no grass.")
+                        # print("Could not graze because there's no grass.")
                         # No earth here
                         return server.OPERATION_BLOCKED
                     else:
