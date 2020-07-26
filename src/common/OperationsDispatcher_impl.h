@@ -201,7 +201,11 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
 {
     assert(op.isValid());
 
-    m_operation_queues_dirty = true;
+    //Check the sequence number of the first op at start.
+    long topSequenceNr = 0;
+    if (!m_operationQueue.empty()) {
+        topSequenceNr = m_operationQueue.top().sequence;
+    }
     op->setFrom(ent->getId());
     if (!op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
         auto seconds = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count();
@@ -219,6 +223,10 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
         std::cout << "}" << std::endl << std::flush;
     }
     m_operationQueue.emplace(std::move(op), std::move(ent), ++m_sequence);
+    //Only mark the queue as dirty if the first entry has changed.
+    if (topSequenceNr != m_operationQueue.top().sequence) {
+        m_operation_queues_dirty = true;
+    }
 }
 
 template<typename T>
