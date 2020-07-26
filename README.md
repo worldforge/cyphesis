@@ -6,6 +6,18 @@
 
 Cyphesis is the server for the [WorldForge](http://worldforge.org/ "The main Worldforge site") system.
 
+It provides a complete solution for running an MMORPG server. Amongst its features are
+
+* Fully scriptable through Python
+* Live reload of both rules and world entitites; edit your world without having to shut down or reload
+* Complete 3d physics simulation
+* Complex AI system, using Behavorial Trees and Python scripts
+* Out-of-process AI, allowing for distributed AI clients
+* Persistance through either SQLite or PostgreSQL
+* Powerful built in rules for visibility and containment of entities
+* Emergent gameplay through multiple simple systems interacting
+* Quick and powerful procedural terrain generation  
+
 ## Installation
 
 The easiest way to build the server is to use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool.
@@ -36,6 +48,8 @@ make check
 ### Documentation
 
 Documentation describing how the system works can be found [here](docs/dox/index.md).
+
+There's also a collection of design documents found in the ["docs/design" directory](docs/design)
 
 ### API documentation
 
