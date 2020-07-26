@@ -147,10 +147,11 @@ namespace {
         for (size_t i = 0; i < collection.size(); ++i) {
             //Find the entry in collection and do a quick delete by moving the last entry and decreasing the size.
             if (collection[i] == entry) {
+                //If it's the last entry just decrease the size without moving anything.
                 if (i < collection.size() - 1) {
                     collection[i] = collection[collection.size() - 1];
-                    collection.resize(collection.size() - 1);
                 }
+                collection.resize(collection.size() - 1);
                 return true;
             }
         }
@@ -1305,12 +1306,12 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         m_terrainMods.erase(modI);
     }
 
-    if (entry->addedToMovingList) {
-        removeAndShift(m_movingEntities, entry.get());
-    }
-
     if (entry->collisionObject) {
         m_dynamicsWorld->removeCollisionObject(entry->collisionObject.get());
+    }
+
+    if (entry->addedToMovingList) {
+        removeAndShift(m_movingEntities, entry.get());
     }
 
     entry->propertyUpdatedConnection.disconnect();
@@ -2107,7 +2108,6 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         m_visibilityWorld->updateSingleAabb(entry->visibilitySphere.get());
     }
 
-    // m_movingEntities.insert(entry);
     if (!entry->markedForVisibilityRecalculation) {
         m_visibilityRecalculateQueue.emplace_back(entry);
         entry->markedForVisibilityRecalculation = true;
@@ -2750,7 +2750,6 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
             //If we're removing the last entry just skip
             if (i == movingSize - 1) {
                 --movingSize;
-                ++i;
             } else {
                 //Move the last element to this position and don't advance i
                 m_movingEntities[i] = m_movingEntities[movingSize - 1];
