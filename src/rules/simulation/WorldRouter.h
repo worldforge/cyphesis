@@ -73,7 +73,8 @@ class WorldRouter : public BaseWorld
 
 
         explicit WorldRouter(Ref<LocatedEntity> baseEntity,
-                             EntityCreator& entityCreator);
+                             EntityCreator& entityCreator,
+                             TimeProviderFnType timeProviderFn);
 
         ~WorldRouter() override;
 

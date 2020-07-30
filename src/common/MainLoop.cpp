@@ -75,7 +75,7 @@ namespace {
     }
 }
 
-void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks)
+void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks, std::chrono::steady_clock::time_point& time)
 {
 
     boost::asio::signal_set signalSet(io_context);
@@ -103,70 +103,104 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
     boost::asio::steady_timer nextOpTimer(io_context);
     //This timer will set a deadline for any mind persistence during soft exits.
     boost::asio::steady_timer softExitTimer(io_context);
+
+    std::chrono::steady_clock::duration tick_size = std::chrono::milliseconds(10);
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
-        try {
-            bool busy = operationsHandler.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(2));
-            operationsHandler.markQueueAsClean();
-            boost::system::error_code poll_ec;
-            //Even if the world is busy we should interleave with a poll, to make sure we always do some IO.
-            io_context.poll_one(poll_ec);
-            if (poll_ec) {
-                log(ERROR, String::compose("Error when polling IO: %1", poll_ec.message()));
+        bool nextOpTimeExpired = false;
+        nextOpTimer.expires_from_now(tick_size);
+        nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
+            if (ec != boost::asio::error::operation_aborted) {
+                nextOpTimeExpired = true;
             }
-            if (!busy) {
-                //If it's not busy however we should run until we get a task.
-                //We will either get an io task, or we will be triggered by the timer
-                //which is set to expire when the next op should be dispatched.
-                auto timeUntilNextOp = operationsHandler.timeUntilNextOp();
-                bool nextOpTimeExpired = false;
-                nextOpTimer.expires_from_now(timeUntilNextOp);
-                nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
-                    if (ec != boost::asio::error::operation_aborted) {
-                        nextOpTimeExpired = true;
-                    }
-                });
-                //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
-                //any new operation) or the timer has expired.
-                do {
-                    io_context.run_one();
-                } while (!operationsHandler.isQueueDirty() && !nextOpTimeExpired &&
-                         !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
-                nextOpTimer.cancel();
+        });
+
+        time += tick_size;
+
+        //Dispatch any incoming messages first
+
+        operationsHandler.processUntil(time);
+
+        do {
+            try {
+                io_context.run_one();
+            } catch (const std::exception& ex) {
+                log(ERROR, String::compose("Exception caught in main loop: %1", ex.what()));
             }
-            if (soft_exit_in_progress) {
-                //If we're in soft exit mode and either the deadline has been exceeded
-                //or we've persisted all minds we should shut down normally.
-                if (!callbacks.softExitPoll || callbacks.softExitPoll()) {
-                    exit_flag = true;
-                    softExitTimer.cancel();
-                }
-            } else if (exit_flag_soft) {
-                exit_flag_soft = false;
-                soft_exit_in_progress = true;
-                if (callbacks.softExitStart) {
-                    auto duration = callbacks.softExitStart();
-                    softExitTimer.expires_from_now(duration);
-                    softExitTimer.async_wait([&](boost::system::error_code ec) {
-                        if (!ec) {
-                            if (callbacks.softExitTimeout) {
-                                callbacks.softExitTimeout();
-                            }
-                            exit_flag = true;
-                        }
-                    });
-                }
-            }
-            // It is hoped that commonly thrown exception, particularly
-            // exceptions that can be caused  by external influences
-            // should be caught close to where they are thrown. If
-            // an exception makes it here then it should be debugged.
-        } catch (const std::exception& e) {
-            log(ERROR, String::compose("Exception caught in main loop: %1", e.what()));
-        } catch (...) {
-            log(ERROR, "Exception caught in main()");
-        }
+        } while (!nextOpTimeExpired);
+
+        nextOpTimer.cancel();
+
+
+//
+//
+//
+//
+//
+//
+//
+//        try {
+//            bool busy = operationsHandler.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(2));
+//            operationsHandler.markQueueAsClean();
+//            boost::system::error_code poll_ec;
+//            //Even if the world is busy we should interleave with a poll, to make sure we always do some IO.
+//            io_context.poll_one(poll_ec);
+//            if (poll_ec) {
+//                log(ERROR, String::compose("Error when polling IO: %1", poll_ec.message()));
+//            }
+//            if (!busy) {
+//                //If it's not busy however we should run until we get a task.
+//                //We will either get an io task, or we will be triggered by the timer
+//                //which is set to expire when the next op should be dispatched.
+//                auto timeUntilNextOp = operationsHandler.timeUntilNextOp();
+//                bool nextOpTimeExpired = false;
+//                nextOpTimer.expires_from_now(timeUntilNextOp);
+//                nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
+//                    if (ec != boost::asio::error::operation_aborted) {
+//                        nextOpTimeExpired = true;
+//                    }
+//                });
+//                //Keep on running IO handlers until either the queue is dirty (i.e. we need to handle
+//                //any new operation) or the timer has expired.
+//                do {
+//                    io_context.run_one();
+//                } while (!operationsHandler.isQueueDirty() && !nextOpTimeExpired &&
+//                         !exit_flag_soft && !exit_flag && !soft_exit_in_progress);
+//                nextOpTimer.cancel();
+//            }
+//            if (soft_exit_in_progress) {
+//                //If we're in soft exit mode and either the deadline has been exceeded
+//                //or we've persisted all minds we should shut down normally.
+//                if (!callbacks.softExitPoll || callbacks.softExitPoll()) {
+//                    exit_flag = true;
+//                    softExitTimer.cancel();
+//                }
+//            } else if (exit_flag_soft) {
+//                exit_flag_soft = false;
+//                soft_exit_in_progress = true;
+//                if (callbacks.softExitStart) {
+//                    auto duration = callbacks.softExitStart();
+//                    softExitTimer.expires_from_now(duration);
+//                    softExitTimer.async_wait([&](boost::system::error_code ec) {
+//                        if (!ec) {
+//                            if (callbacks.softExitTimeout) {
+//                                callbacks.softExitTimeout();
+//                            }
+//                            exit_flag = true;
+//                        }
+//                    });
+//                }
+//            }
+//            // It is hoped that commonly thrown exception, particularly
+//            // exceptions that can be caused  by external influences
+//            // should be caught close to where they are thrown. If
+//            // an exception makes it here then it should be debugged.
+//        } catch (const std::exception& e) {
+//            log(ERROR, String::compose("Exception caught in main loop: %1", e.what()));
+//        } catch (...) {
+//            log(ERROR, "Exception caught in main()");
+//        }
     }
     // exit flag has been set so we close down the databases, and indicate
     // to the metaserver (if we are using one) that this server is going down.

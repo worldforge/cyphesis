@@ -34,7 +34,7 @@ class MainLoop
             std::function<void()> softExitTimeout;
         };
 
-        static void run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks);
+        static void run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks, std::chrono::steady_clock::time_point& time);
 
 
 };

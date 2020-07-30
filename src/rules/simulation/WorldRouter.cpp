@@ -44,9 +44,10 @@ static const bool debug_flag = false;
 
 /// \brief Constructor for the world object.
 WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity,
-                         EntityCreator& entityCreator) :
-        BaseWorld(),
-        m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, [&]() -> std::chrono::steady_clock::duration { return getTime(); }),
+                         EntityCreator& entityCreator,
+                         TimeProviderFnType timeProviderFn) :
+        BaseWorld(timeProviderFn),
+        m_operationsDispatcher([&](const Operation& op, Ref<LocatedEntity> from) { this->operation(op, std::move(from)); }, timeProviderFn),
         m_entityCount(1),
         m_baseEntity(std::move(baseEntity)),
         m_entityCreator(entityCreator)
