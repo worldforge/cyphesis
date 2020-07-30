@@ -28,13 +28,19 @@ class MainLoop
 {
     public:
 
-        struct Callbacks {
+        struct Callbacks
+        {
             std::function<std::chrono::steady_clock::duration()> softExitStart;
             std::function<bool()> softExitPoll;
             std::function<void()> softExitTimeout;
+            std::function<void()> dispatchOperations;
         };
 
-        static void run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks);
+        static void run(bool daemon,
+                        boost::asio::io_context& io_context,
+                        OperationsHandler& operationsHandler,
+                        const Callbacks& callbacks,
+                        std::chrono::steady_clock::time_point& time);
 
 
 };

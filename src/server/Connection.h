@@ -24,14 +24,29 @@
 #include <sigc++/trackable.h>
 
 #include <list>
+#include <deque>
 
 class Account;
+
 class CommSocket;
+
 class LocatedEntity;
+
 class ServerRouting;
+
 struct ConnectableRouter;
 
-typedef std::map<long, Router *> RouterMap;
+
+struct RouterWithQueue
+{
+    Router* router;
+    /**
+     * Operations send by the router, to be processed by calls to "dispatch".
+     */
+    std::deque<Operation> opsQueue;
+};
+
+typedef std::map<long, RouterWithQueue> RouterMap;
 
 /// \brief Class representing connections from a client at the Atlas level.
 ///
@@ -41,60 +56,86 @@ typedef std::map<long, Router *> RouterMap;
 /// and any other entities that that are associated with those accounts,
 /// like in-game characters. Clients specify which entity should handle
 /// an operation using the from attribute.
-class Connection : public Link, virtual public sigc::trackable {
-  protected:
-    RouterMap m_objects;
+class Connection : public Link, virtual public sigc::trackable
+{
+    protected:
 
-    std::map<long, ConnectableRouter *> m_connectableRouters;
+        /**
+         * A queue of incoming ops.
+         * Entries are put here by "externalOperation" and processed by calls to "dispatch".
+         */
+        std::deque<Operation> m_operationsQueue;
+        RouterMap m_objects;
 
-    std::list<std::string> m_possessionRouters;
+        std::map<long, ConnectableRouter*> m_connectableRouters;
 
-    Account * addNewAccount(const std::string & account,
-                            const std::string & username,
-                            const std::string & password);
-    void disconnectObject(ConnectableRouter* router,
-                          const std::string & event);
+        std::list<std::string> m_possessionRouters;
 
-    virtual Account * newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & passwd,
-                                 const std::string & id, long intId);
-    virtual int verifyCredentials(const Account &,
-                                  const Atlas::Objects::Root &) const;
-  public:
-    ServerRouting & m_server;
+        Account* addNewAccount(const std::string& account,
+                               const std::string& username,
+                               const std::string& password);
 
-    Connection(CommSocket & commSocket, ServerRouting & svr,
-               const std::string & addr, const std::string & id, long iid);
+        void disconnectObject(ConnectableRouter* router,
+                              const std::string& event);
 
-    ~Connection() override;
+        virtual Account* newAccount(const std::string& type,
+                                    const std::string& username,
+                                    const std::string& passwd,
+                                    const std::string& id, long intId);
 
-    RouterMap & objects() { return m_objects; }
+        virtual int verifyCredentials(const Account&,
+                                      const Atlas::Objects::Root&) const;
 
-    /**
-     * Turns on and off possession ability for the specified router id.
-     *
-     * Typically a router id is an Account instance.
-     *
-     * @param enabled
-     */
-    void setPossessionEnabled(bool enabled, const std::string& routerId);
+    public:
+        ServerRouting& m_server;
 
-    void addObject(Router * obj);
-    void addConnectableRouter(ConnectableRouter * obj);
-    void removeObject(long id);
+        Connection(CommSocket& commSocket, ServerRouting& svr,
+                   const std::string& addr, const std::string& id, long iid);
 
-    void externalOperation(const Operation & op, Link &) override;
-    void operation(const Operation &, OpVector &) override;
+        ~Connection() override;
 
-    virtual void LoginOperation(const Operation &, OpVector &);
-    virtual void LogoutOperation(const Operation &, OpVector &);
-    virtual void CreateOperation(const Operation &, OpVector &);
-    virtual void GetOperation(const Operation &, OpVector &);
+        RouterMap& objects()
+        { return m_objects; }
 
-    friend class Connectiontest;
-    friend class ConnectionShakerintegration;
-    friend class AccountConnectionCharacterintegration;
+        /**
+         * Turns on and off possession ability for the specified router id.
+         *
+         * Typically a router id is an Account instance.
+         *
+         * @param enabled
+         */
+        void setPossessionEnabled(bool enabled, const std::string& routerId);
+
+        void addObject(Router* obj);
+
+        void addConnectableRouter(ConnectableRouter* obj);
+
+        void removeObject(long id);
+
+        void externalOperation(const Operation& op, Link&) override;
+
+        void operation(const Operation&, OpVector&) override;
+
+        virtual void LoginOperation(const Operation&, OpVector&);
+
+        virtual void LogoutOperation(const Operation&, OpVector&);
+
+        virtual void CreateOperation(const Operation&, OpVector&);
+
+        virtual void GetOperation(const Operation&, OpVector&);
+
+        /**
+         * Dispatches incoming ops.
+         * @param numberOfOps
+         * @return
+         */
+        size_t dispatch(size_t numberOfOps);
+
+        friend class Connectiontest;
+
+        friend class ConnectionShakerintegration;
+
+        friend class AccountConnectionCharacterintegration;
 };
 
 #endif // SERVER_CONNECTION_H

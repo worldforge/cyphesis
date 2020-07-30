@@ -25,13 +25,15 @@
 #include "rules/LocatedEntity.h"
 
 #include <cassert>
+#include <utility>
 
 static const bool debug_flag = false;
 
 /// \brief BaseWorld constructor.
 ///
 /// Protected as BaseWorld is a base class.
-BaseWorld::BaseWorld() :
+BaseWorld::BaseWorld(TimeProviderFnType timeProviderFn) :
+        m_timeProviderFn(std::move(timeProviderFn)),
         m_initTime(std::chrono::steady_clock::now()),
         m_isSuspended(false)
 {
@@ -127,11 +129,12 @@ void BaseWorld::setIsSuspended(bool suspended)
 
 std::chrono::steady_clock::duration BaseWorld::getTime() const
 {
-    return (std::chrono::steady_clock::now() - m_initTime);
+    return m_timeProviderFn();
+//    return (std::chrono::steady_clock::now() - m_initTime);
 }
 
 float BaseWorld::getTimeAsSeconds() const
 {
-    return std::chrono::duration_cast<std::chrono::microseconds>(getTime()).count() / 1000000.0;
+    return std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count();
 }
 

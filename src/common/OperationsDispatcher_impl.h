@@ -110,6 +110,41 @@ bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& 
     return !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= std::chrono::duration_cast<std::chrono::milliseconds>(getTime());
 }
 
+template<typename T>
+size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_point time_point)
+{
+    size_t count = 0;
+    auto duration = time_point - std::chrono::steady_clock::time_point{};
+
+    while (!m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch < duration) {
+        count++;
+        auto opQueueEntry = std::move(m_operationQueue.top());
+        //Pop it before we dispatch it, since dispatching might alter the queue.
+        m_operationQueue.pop();
+
+        //Set the time of when this op is dispatched. That way, other components in the system can
+        //always use the seconds set on the op to know the current time.
+        opQueueEntry.op->setSeconds(  std::chrono::duration_cast<std::chrono::duration<float>>(time_point.time_since_epoch()).count());
+        try {
+            m_operationProcessor(opQueueEntry.op, std::move(opQueueEntry.from));
+        }
+        catch (const std::exception& ex) {
+            log(ERROR, String::compose("Exception caught in OperationsDispatcher::dispatchOperation() "
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\": %3",
+                                       opQueueEntry->getTo(), opQueueEntry->getFrom(), ex.what()));
+        }
+        catch (...) {
+            log(ERROR, String::compose("Unspecified exception caught in OperationsDispatcher::dispatchOperation() "
+                                       "thrown while processing operation "
+                                       "sent to \"%1\" from \"%2\"",
+                                       opQueueEntry->getTo(), opQueueEntry->getFrom()));
+        }
+    }
+    return count;
+}
+
+
 
 template<typename T>
 bool OperationsDispatcher<T>::isQueueDirty() const

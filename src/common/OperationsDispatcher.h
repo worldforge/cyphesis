@@ -138,6 +138,8 @@ struct OperationsHandler
     virtual size_t getQueueSize() const = 0;
 
     virtual void dispatchNextOp() = 0;
+
+    virtual size_t processUntil(std::chrono::steady_clock::time_point time_point) = 0;
 };
 
 /// \brief Handles dispatching of operations at suitable time.
@@ -224,6 +226,7 @@ class OperationsDispatcher : public OperationsHandler
 
         void dispatchNextOp() override;
 
+        size_t processUntil(std::chrono::steady_clock::time_point time_point) override;
 
     protected:
 

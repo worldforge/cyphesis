@@ -25,10 +25,10 @@
 #include "ExternalMindsManager.h"
 
 #include "rules/simulation/ExternalMind.h"
+#include "rules/simulation/BaseWorld.h"
 
 #include "common/id.h"
 #include "common/debug.h"
-#include "common/operations/Update.h"
 #include "common/Inheritance.h"
 #include "common/system.h"
 #include "common/TypeNode.h"
@@ -46,18 +46,17 @@
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Info;
-using Atlas::Objects::Operation::Update;
 using Atlas::Objects::Entity::Anonymous;
 
 using String::compose;
 
 static const bool debug_flag = false;
 
-Connection::Connection(CommSocket & socket,
-                       ServerRouting & svr,
-                       const std::string & addr,
-                       const std::string & id, long iid) :
-            Link(socket, id, iid), m_server(svr)
+Connection::Connection(CommSocket& socket,
+                       ServerRouting& svr,
+                       const std::string& addr,
+                       const std::string& id, long iid) :
+        Link(socket, id, iid), m_server(svr)
 {
     m_server.registerConnection(this);
     logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr));
@@ -83,23 +82,23 @@ Connection::~Connection()
     }
 }
 
-Account * Connection::newAccount(const std::string & type,
-                                 const std::string & username,
-                                 const std::string & hash,
-                                 const std::string & id, long intId)
+Account* Connection::newAccount(const std::string& type,
+                                const std::string& username,
+                                const std::string& hash,
+                                const std::string& id, long intId)
 {
     return new Player(this, username, hash, id, intId);
 }
 
 static const int hash_salt_size = 8;
 
-Account * Connection::addNewAccount(const std::string & type,
-                                    const std::string & username,
-                                    const std::string & password)
+Account* Connection::addNewAccount(const std::string& type,
+                                   const std::string& username,
+                                   const std::string& password)
 {
     std::string hash;
     std::string salt = m_server.getShaker().generateSalt(hash_salt_size);
-    hash_password(password,salt,hash);
+    hash_password(password, salt, hash);
     std::string newAccountId;
 
     long intId = newId(newAccountId);
@@ -108,7 +107,7 @@ Account * Connection::addNewAccount(const std::string & type,
         return nullptr;
     }
 
-    Account * account = newAccount(type, username, hash, newAccountId, intId);
+    Account* account = newAccount(type, username, hash, newAccountId, intId);
     if (account == nullptr) {
         return nullptr;
     }
@@ -124,7 +123,7 @@ Account * Connection::addNewAccount(const std::string & type,
 /// The object being removed may be a player, or another type of object such
 /// as an avatar.
 void Connection::disconnectObject(ConnectableRouter* router,
-                                  const std::string & event)
+                                  const std::string& event)
 {
     m_server.getLobby().removeAccount(router);
     router->setConnection(nullptr);
@@ -149,12 +148,13 @@ void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
 }
 
 
-void Connection::addObject(Router * obj)
+void Connection::addObject(Router* obj)
 {
-    m_objects[obj->getIntId()] = obj;
+    m_objects[obj->getIntId()].router = obj;
 }
 
-void Connection::addConnectableRouter(ConnectableRouter * obj) {
+void Connection::addConnectableRouter(ConnectableRouter* obj)
+{
     obj->setConnection(this);
     addObject(obj);
     m_connectableRouters[obj->getIntId()] = obj;
@@ -166,33 +166,38 @@ void Connection::removeObject(long id)
     m_objects.erase(id);
 }
 
-int Connection::verifyCredentials(const Account & account,
-                                  const Root & creds) const
+int Connection::verifyCredentials(const Account& account,
+                                  const Root& creds) const
 {
     Element passwd_attr;
     if (creds->copyAttr("password", passwd_attr) != 0 || !passwd_attr.isString()) {
         return -1;
     }
-    const std::string & passwd = passwd_attr.String();
+    const std::string& passwd = passwd_attr.String();
 
     return check_password(passwd, account.password());
 }
 
-
-void Connection::externalOperation(const Operation & op, Link & link)
+size_t Connection::dispatch(size_t numberOfOps)
 {
-    debug_print("Connection::externalOperation"
-                   )
-    //log(INFO, String::compose("externalOperation in %1", getId()));
+    size_t processed = 0;
 
-    if (op->isDefaultFrom()) {
+    while (!m_operationsQueue.empty() && processed < numberOfOps) {
+        auto op = std::move(m_operationsQueue.front());
+        m_operationsQueue.pop_front();
         debug_print("deliver locally")
         OpVector reply;
         long serialno = op->getSerialno();
+        if (debug_flag) {
+            auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
+            if (timeDiff > 0.02) {
+                log(WARNING, String::compose("Time diff for connection %1: %2", getId(), timeDiff));
+            }
+        }
         operation(op, reply);
 
         if (!reply.empty()) {
-            for(auto& replyOp : reply) {
+            for (auto& replyOp : reply) {
                 if (!op->isDefaultSerialno()) {
                     // Should we respect existing refnos?
                     if (replyOp->isDefaultRefno()) {
@@ -203,21 +208,55 @@ void Connection::externalOperation(const Operation & op, Link & link)
             // FIXME detect socket failure here
             send(reply);
         }
-        return;
     }
-    const std::string & from = op->getFrom();
-    debug_print("send on to " << from)
-    RouterMap::const_iterator I = m_objects.find(integerId(from));
-    if (I == m_objects.end()) {
-        sendError(op, String::compose("Client \"%1\" op from \"%2\" is from "
-                                      "non-existant object.",
-                                      op->getParent(), from), from);
-        return;
+
+    for (auto& entry: m_objects) {
+        size_t processedOps = 0;
+        while (!entry.second.opsQueue.empty() && processedOps < numberOfOps) {
+            auto op = std::move(entry.second.opsQueue.front());
+            entry.second.opsQueue.pop_front();
+            if (debug_flag) {
+                auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
+                if (timeDiff > 0.02) {
+                    log(WARNING, String::compose("Time diff for router %1:  %2", entry.second.router->getId(), timeDiff));
+                }
+            }
+
+            entry.second.router->externalOperation(op, *this);
+        }
+        processed += processedOps;
     }
-    I->second->externalOperation(op, link);
+
+
+    return processed;
 }
 
-void Connection::operation(const Operation & op, OpVector & res)
+void Connection::externalOperation(const Operation& op, Link& link)
+{
+    debug_print("Connection::externalOperation")
+    //log(INFO, String::compose("externalOperation in %1", getId()));
+
+    //Set the receive time to the current simulation time.
+    op->setSeconds(BaseWorld::instance().getTimeAsSeconds());
+
+    if (op->isDefaultFrom()) {
+        m_operationsQueue.emplace_back(op);
+
+    } else {
+        const std::string& from = op->getFrom();
+        debug_print("send on to " << from)
+        auto I = m_objects.find(integerId(from));
+        if (I == m_objects.end()) {
+            sendError(op, String::compose("Client \"%1\" op from \"%2\" is from non-existent object.",
+                                          op->getParent(), from), from);
+            return;
+        } else {
+            I->second.opsQueue.emplace_back(op);
+        }
+    }
+}
+
+void Connection::operation(const Operation& op, OpVector& res)
 {
     debug_print("Connection::operation")
     auto op_no = op->getClassNo();
@@ -243,16 +282,16 @@ void Connection::operation(const Operation & op, OpVector & res)
     }
 }
 
-void Connection::LoginOperation(const Operation & op, OpVector & res)
+void Connection::LoginOperation(const Operation& op, OpVector& res)
 {
     debug_print("Got login op")
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         error(op, "Login has no argument", res);
         return;
     }
     // Account should be the first argument of the op
-    const Root & arg = args.front();
+    const Root& arg = args.front();
     // Check for username, and if its not there, then check for
     // id in case we are dealing with an old client.
     Element user_attr;
@@ -274,7 +313,7 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
 
     // We now have username, so can check whether we know this
     // account, either from existing account ....
-    Account * account = m_server.getAccountByName(username);
+    Account* account = m_server.getAccountByName(username);
     // or if not, from the database
     if (account == nullptr || verifyCredentials(*account, arg) != 0) {
         clientError(op, "Login is invalid", res);
@@ -302,19 +341,19 @@ void Connection::LoginOperation(const Operation & op, OpVector & res)
                                     account->getType()));
 }
 
-void Connection::CreateOperation(const Operation & op, OpVector & res)
+void Connection::CreateOperation(const Operation& op, OpVector& res)
 {
     debug_print("Got create op")
     if (!m_objects.empty()) {
         clientError(op, "This connection is already logged in", res);
         return;
     }
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         error(op, "Create has no argument", res);
         return;
     }
-    const Root & arg = args.front();
+    const Root& arg = args.front();
 
     if (restricted_flag) {
         error(op, "Account creation on this server is restricted", res);
@@ -335,7 +374,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
         error(op, "No account password given", res);
         return;
     }
-    const std::string & password = passwd_attr.String();
+    const std::string& password = passwd_attr.String();
 
     if (username.empty() || password.empty() ||
         (nullptr != m_server.getAccountByName(username))) {
@@ -347,7 +386,7 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
     if (!arg->isDefaultParent()) {
         type = arg->getParent();
     }
-    Account * account = addNewAccount(type, username, password);
+    Account* account = addNewAccount(type, username, password);
     if (account == nullptr) {
         clientError(op, "Account creation failed", res);
         return;
@@ -366,9 +405,9 @@ void Connection::CreateOperation(const Operation & op, OpVector & res)
                                     account->getType()));
 }
 
-void Connection::LogoutOperation(const Operation & op, OpVector & res)
+void Connection::LogoutOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         // Logging self out
         Info info;
@@ -380,8 +419,8 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
         disconnect();
         return;
     }
-    const Root & arg = args.front();
-    
+    const Root& arg = args.front();
+
     if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         error(op, "Got logout for entity with no ID", res);
         return;
@@ -408,9 +447,9 @@ void Connection::LogoutOperation(const Operation & op, OpVector & res)
     res.push_back(info);
 }
 
-void Connection::GetOperation(const Operation & op, OpVector & res)
+void Connection::GetOperation(const Operation& op, OpVector& res)
 {
-    const std::vector<Root> & args = op->getArgs();
+    const std::vector<Root>& args = op->getArgs();
 
     Info info;
     if (args.empty()) {
@@ -419,12 +458,12 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         info->setArgs1(info_arg);
         debug_print("Replying to empty get")
     } else {
-        const Root & arg = args.front();
+        const Root& arg = args.front();
         if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
             error(op, "Type definition requested with no id", res);
             return;
         }
-        const std::string & id = arg->getId();
+        const std::string& id = arg->getId();
         debug_print("Get got for " << id)
         Atlas::Objects::Root o = Inheritance::instance().getClass(id, Visibility::PUBLIC);
         if (!o.isValid()) {
@@ -435,6 +474,6 @@ void Connection::GetOperation(const Operation & op, OpVector & res)
         }
         info->setArgs1(o);
     }
-    
+
     res.push_back(info);
 }

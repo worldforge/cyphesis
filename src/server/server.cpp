@@ -453,7 +453,10 @@ namespace {
             Ref<LocatedEntity> baseEntity = new World();
             baseEntity->setType(inheritance.getType("world"));
 
-            WorldRouter world(baseEntity, entityBuilder);
+            std::chrono::steady_clock::time_point time{};
+            auto timeProviderFn =  [&]() -> std::chrono::steady_clock::duration { return time - std::chrono::steady_clock::time_point{}; };
+
+            WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
 
             CyPy_Server::registerWorld(&world);
 
@@ -581,6 +584,10 @@ namespace {
             auto softExitTimeout = [&]() {
             };
 
+            auto dispatchOperationsFn = [&](){
+                serverRouting.dispatch(2);
+            };
+
 
             //Initially there are a couple of pent up operations we need to run to get up to speed. 10 seconds is a suitable large number.
             world.getOperationsHandler().idle(std::chrono::steady_clock::now() + std::chrono::seconds(10));
@@ -597,7 +604,7 @@ namespace {
                 IdleConnector storage_idle(*io_context);
                 storage_idle.idling.connect([&store]() { store.tick(); });
 
-                MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout});
+                MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout, dispatchOperationsFn}, time);
                 if (metaClient) {
                     metaClient->metaserverTerminate();
                 }

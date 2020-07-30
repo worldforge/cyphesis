@@ -33,6 +33,7 @@
 
 #include <chrono>
 #include <set>
+#include <functional>
 
 class LocatedEntity;
 
@@ -47,8 +48,12 @@ typedef std::map<long, Ref<LocatedEntity>> EntityRefDict;
 /// inherit from this provide the core game world system.
 class BaseWorld : public Singleton<BaseWorld>
 {
+    public:
+        typedef std::function<std::chrono::steady_clock::duration()> TimeProviderFnType;
 
     protected:
+
+        TimeProviderFnType m_timeProviderFn;
         /// The system time when the server was started.
         std::chrono::steady_clock::time_point m_initTime;
 
@@ -68,13 +73,15 @@ class BaseWorld : public Singleton<BaseWorld>
 
         std::map<std::string, LocatedEntity*> m_entityAliases;
 
-        explicit BaseWorld();
+        explicit BaseWorld(TimeProviderFnType timeProviderFn);
 
         /// \brief Called when the world is resumed.
         virtual void resumeWorld()
         {}
 
     public:
+
+
 
         ~BaseWorld() override = default;
 
