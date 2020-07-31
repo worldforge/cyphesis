@@ -79,7 +79,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
     void test_creationAndDeletion() {
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb));
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, {}));
 
             Anonymous ent;
             ent->setLoc("0");
@@ -95,7 +95,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb));
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, {}));
 
             Anonymous ent;
             ent->setLoc("0");
@@ -192,7 +192,7 @@ void WorldRouterintegration::teardown()
 void WorldRouterintegration::test_sequence()
 {
     Ref<Entity> base = new Entity("", 0);
-    WorldRouter* test_world = new WorldRouter(base, *m_eb);
+    WorldRouter* test_world = new WorldRouter(base, *m_eb, {});
 
     auto ent1 = test_world->addNewEntity("__no_such_type__",
                                                    Anonymous());

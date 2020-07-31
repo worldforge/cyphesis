@@ -9,8 +9,8 @@
 
 #ifndef STUB_BaseWorld_BaseWorld
 //#define STUB_BaseWorld_BaseWorld
-   BaseWorld::BaseWorld()
-    : Singleton()
+   BaseWorld::BaseWorld(TimeProviderFnType timeProviderFn)
+    : Singleton(timeProviderFn)
   {
     
   }

@@ -4,7 +4,7 @@
 #ifndef STUB_BaseWorld_BaseWorld
 #define STUB_BaseWorld_BaseWorld
 
-BaseWorld::BaseWorld(){
+BaseWorld::BaseWorld(TimeProviderFnType timeProviderFn){
 }
 
 #endif //STUB_BaseWorld_BaseWorld

@@ -31,7 +31,7 @@ struct TestWorldRouter : public WorldRouter
     TestWorldTestWorldRouter m_extension;
 
     explicit TestWorldRouter(Ref<LocatedEntity> gw, EntityCreator& entityCreator)
-            : WorldRouter(std::move(gw), entityCreator)
+            : WorldRouter(std::move(gw), entityCreator, {})
     {
     }
 

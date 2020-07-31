@@ -298,32 +298,8 @@ std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
 
 #include "../stubs/server/stubPersistence.h"
 #include "../stubs/common/stubTypeNode.h"
-Lobby::Lobby(ServerRouting& s, const std::string& id, long intId) :
-    Router(id, intId),
-    m_server(s)
-{
-}
-
-Lobby::~Lobby()
-{
-}
-
-void Lobby::externalOperation(const Operation&, Link&)
-{
-}
-
-void Lobby::operation(const Operation& op, OpVector& res)
-{
-}
-
-void Lobby::addToMessage(Atlas::Message::MapType& omap) const
-{
-}
-
-void Lobby::addToEntity(const Atlas::Objects::Entity::RootEntity& ent) const
-{
-}
-
+#include "../stubs/server/stubConnection.h"
+#include "../stubs/server/stubLobby.h"
 #include "../stubs/common/stubVariable.h"
 #include "../stubs/common/stubMonitors.h"
 #include "../stubs/server/stubBuildid.h"

@@ -383,7 +383,7 @@ void Connectiontest::test_disconnectObject_empty()
                               "4", 4);
 
     ac->setConnection(m_connection);
-    m_connection->m_objects[ac->getIntId()] = ac;
+    m_connection->m_objects[ac->getIntId()].router = ac;
     m_connection->m_connectableRouters[ac->getIntId()] = ac;
 
     auto I = m_connection->m_connectableRouters.find(ac->getIntId());
@@ -404,14 +404,14 @@ void Connectiontest::test_disconnectObject_unused_Entity()
                               "4", 4);
 
     ac->setConnection(m_connection);
-    m_connection->m_objects[ac->getIntId()] = ac;
+    m_connection->m_objects[ac->getIntId()].router = ac;
     m_connection->m_connectableRouters[ac->getIntId()] = ac;
 
     auto I = m_connection->m_connectableRouters.find(ac->getIntId());
     assert(I != m_connection->m_connectableRouters.end());
 
     Entity * avatar = new Entity("5", 5);
-    m_connection->m_objects[avatar->getIntId()] = avatar;
+    m_connection->m_objects[avatar->getIntId()].router = avatar;
     ac->addCharacter(avatar);
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");
@@ -433,7 +433,7 @@ void Connectiontest::test_disconnectObject_used_Entity()
                               "4", 4);
 
     ac->setConnection(m_connection);
-    m_connection->m_objects[ac->getIntId()] = ac;
+    m_connection->m_objects[ac->getIntId()].router = ac;
     m_connection->m_connectableRouters[ac->getIntId()] = ac;
 
     auto I = m_connection-> m_connectableRouters.find(ac->getIntId());
@@ -443,7 +443,7 @@ void Connectiontest::test_disconnectObject_used_Entity()
     auto mind = new ExternalMind("6", 6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
-    m_connection->m_objects[avatar->getIntId()] = avatar;
+    m_connection->m_objects[avatar->getIntId()].router = avatar;
     ac->addCharacter(avatar);
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");
@@ -465,7 +465,7 @@ void Connectiontest::test_disconnectObject_others_used_Entity()
                               "4", 4);
 
     ac->setConnection(m_connection);
-    m_connection->m_objects[ac->getIntId()] = ac;
+    m_connection->m_objects[ac->getIntId()].router = ac;
     m_connection->m_connectableRouters[ac->getIntId()] = ac;
 
     auto I = m_connection-> m_connectableRouters.find(ac->getIntId());
@@ -478,7 +478,7 @@ void Connectiontest::test_disconnectObject_others_used_Entity()
     auto mind = new ExternalMind("6", 6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(mind);
     mind->linkUp(m_connection);
-    m_connection->m_objects[avatar->getIntId()] = avatar;
+    m_connection->m_objects[avatar->getIntId()].router = avatar;
     ac->addCharacter(avatar);
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");
@@ -503,7 +503,7 @@ void Connectiontest::test_disconnectObject_unlinked_Entity()
                               "4", 4);
 
     ac->setConnection(m_connection);
-    m_connection->m_objects[ac->getIntId()] = ac;
+    m_connection->m_objects[ac->getIntId()].router = ac;
     m_connection->m_connectableRouters[ac->getIntId()] = ac;
 
     auto I = m_connection-> m_connectableRouters.find(ac->getIntId());
@@ -512,7 +512,7 @@ void Connectiontest::test_disconnectObject_unlinked_Entity()
     Entity * avatar = new Entity("5", 5);
     auto mind = new ExternalMind("6", 6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(mind);
-    m_connection->m_objects[avatar->getIntId()] = avatar;
+    m_connection->m_objects[avatar->getIntId()].router = avatar;
     ac->addCharacter(avatar);
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");
@@ -535,14 +535,14 @@ void Connectiontest::test_disconnectObject_non_Entity()
                               "4", 4);
 
     ac->setConnection(m_connection);
-    m_connection->m_objects[ac->getIntId()] = ac;
+    m_connection->m_objects[ac->getIntId()].router = ac;
     m_connection->m_connectableRouters[ac->getIntId()] = ac;
 
     auto I = m_connection-> m_connectableRouters.find(ac->getIntId());
     assert(I != m_connection->m_connectableRouters.end());
 
     Ref<Entity>  avatar = new Entity("5", 5);
-    m_connection->m_objects[avatar->getIntId()] = avatar.get();
+    m_connection->m_objects[avatar->getIntId()].router = avatar.get();
     ac->addCharacter(avatar.get());
 
     m_connection->disconnectObject(I->second, "test_disconnect_account");

@@ -191,7 +191,7 @@ void Accountintegration::setup()
     m_propertyManager = new TestPropertyManager();
     auto entityRuleHandler = new EntityRuleHandler(*m_eb, *m_propertyManager);
 
-    m_world = new WorldRouter(m_rootEntity, *m_eb);
+    m_world = new WorldRouter(m_rootEntity, *m_eb, {});
 
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
                          "1", 1, "2", 2);

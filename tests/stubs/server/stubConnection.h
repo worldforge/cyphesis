@@ -7,9 +7,10 @@
 #include "server/Connection.h"
 #include "stubConnection_custom.h"
 
+
 #ifndef STUB_Connection_addNewAccount
 //#define STUB_Connection_addNewAccount
-  Account* Connection::addNewAccount(const std::string & account, const std::string & username, const std::string & password)
+  Account* Connection::addNewAccount(const std::string& account, const std::string& username, const std::string& password)
   {
     return nullptr;
   }
@@ -17,7 +18,7 @@
 
 #ifndef STUB_Connection_disconnectObject
 //#define STUB_Connection_disconnectObject
-  void Connection::disconnectObject(ConnectableRouter* router, const std::string & event)
+  void Connection::disconnectObject(ConnectableRouter* router, const std::string& event)
   {
     
   }
@@ -25,7 +26,7 @@
 
 #ifndef STUB_Connection_newAccount
 //#define STUB_Connection_newAccount
-  Account* Connection::newAccount(const std::string & type, const std::string & username, const std::string & passwd, const std::string & id, long intId)
+  Account* Connection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, const std::string& id, long intId)
   {
     return nullptr;
   }
@@ -33,7 +34,7 @@
 
 #ifndef STUB_Connection_verifyCredentials
 //#define STUB_Connection_verifyCredentials
-  int Connection::verifyCredentials(const Account &, const Atlas::Objects::Root &) const
+  int Connection::verifyCredentials(const Account&, const Atlas::Objects::Root&) const
   {
     return 0;
   }
@@ -41,7 +42,7 @@
 
 #ifndef STUB_Connection_Connection
 //#define STUB_Connection_Connection
-   Connection::Connection(CommSocket & commSocket, ServerRouting & svr, const std::string & addr, const std::string & id, long iid)
+   Connection::Connection(CommSocket& commSocket, ServerRouting& svr, const std::string& addr, const std::string& id, long iid)
     : Link(commSocket, svr, addr, id, iid)
   {
     
@@ -66,7 +67,7 @@
 
 #ifndef STUB_Connection_addObject
 //#define STUB_Connection_addObject
-  void Connection::addObject(Router * obj)
+  void Connection::addObject(Router* obj)
   {
     
   }
@@ -74,7 +75,7 @@
 
 #ifndef STUB_Connection_addConnectableRouter
 //#define STUB_Connection_addConnectableRouter
-  void Connection::addConnectableRouter(ConnectableRouter * obj)
+  void Connection::addConnectableRouter(ConnectableRouter* obj)
   {
     
   }
@@ -90,7 +91,7 @@
 
 #ifndef STUB_Connection_externalOperation
 //#define STUB_Connection_externalOperation
-  void Connection::externalOperation(const Operation & op, Link &)
+  void Connection::externalOperation(const Operation& op, Link&)
   {
     
   }
@@ -98,7 +99,7 @@
 
 #ifndef STUB_Connection_operation
 //#define STUB_Connection_operation
-  void Connection::operation(const Operation &, OpVector &)
+  void Connection::operation(const Operation&, OpVector&)
   {
     
   }
@@ -106,7 +107,7 @@
 
 #ifndef STUB_Connection_LoginOperation
 //#define STUB_Connection_LoginOperation
-  void Connection::LoginOperation(const Operation &, OpVector &)
+  void Connection::LoginOperation(const Operation&, OpVector&)
   {
     
   }
@@ -114,7 +115,7 @@
 
 #ifndef STUB_Connection_LogoutOperation
 //#define STUB_Connection_LogoutOperation
-  void Connection::LogoutOperation(const Operation &, OpVector &)
+  void Connection::LogoutOperation(const Operation&, OpVector&)
   {
     
   }
@@ -122,7 +123,7 @@
 
 #ifndef STUB_Connection_CreateOperation
 //#define STUB_Connection_CreateOperation
-  void Connection::CreateOperation(const Operation &, OpVector &)
+  void Connection::CreateOperation(const Operation&, OpVector&)
   {
     
   }
@@ -130,11 +131,19 @@
 
 #ifndef STUB_Connection_GetOperation
 //#define STUB_Connection_GetOperation
-  void Connection::GetOperation(const Operation &, OpVector &)
+  void Connection::GetOperation(const Operation&, OpVector&)
   {
     
   }
 #endif //STUB_Connection_GetOperation
+
+#ifndef STUB_Connection_dispatch
+//#define STUB_Connection_dispatch
+  size_t Connection::dispatch(size_t numberOfOps)
+  {
+    return 0;
+  }
+#endif //STUB_Connection_dispatch
 
 
 #endif

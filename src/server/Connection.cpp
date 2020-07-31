@@ -24,8 +24,8 @@
 #include "ExternalMindsConnection.h"
 #include "ExternalMindsManager.h"
 
-#include "rules/simulation/ExternalMind.h"
-#include "rules/simulation/BaseWorld.h"
+//#include "rules/simulation/ExternalMind.h"
+//#include "rules/simulation/BaseWorld.h"
 
 #include "common/id.h"
 #include "common/debug.h"
@@ -188,12 +188,12 @@ size_t Connection::dispatch(size_t numberOfOps)
         debug_print("deliver locally")
         OpVector reply;
         long serialno = op->getSerialno();
-        if (debug_flag) {
-            auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
-            if (timeDiff > 0.02) {
-                log(WARNING, String::compose("Time diff for connection %1: %2", getId(), timeDiff));
-            }
-        }
+//        if (debug_flag) {
+//            auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
+//            if (timeDiff > 0.02) {
+//                log(WARNING, String::compose("Time diff for connection %1: %2", getId(), timeDiff));
+//            }
+//        }
         operation(op, reply);
 
         if (!reply.empty()) {
@@ -215,12 +215,12 @@ size_t Connection::dispatch(size_t numberOfOps)
         while (!entry.second.opsQueue.empty() && processedOps < numberOfOps) {
             auto op = std::move(entry.second.opsQueue.front());
             entry.second.opsQueue.pop_front();
-            if (debug_flag) {
-                auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
-                if (timeDiff > 0.02) {
-                    log(WARNING, String::compose("Time diff for router %1:  %2", entry.second.router->getId(), timeDiff));
-                }
-            }
+//            if (debug_flag) {
+//                auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
+//                if (timeDiff > 0.02) {
+//                    log(WARNING, String::compose("Time diff for router %1:  %2", entry.second.router->getId(), timeDiff));
+//                }
+//            }
 
             entry.second.router->externalOperation(op, *this);
         }
@@ -237,7 +237,7 @@ void Connection::externalOperation(const Operation& op, Link& link)
     //log(INFO, String::compose("externalOperation in %1", getId()));
 
     //Set the receive time to the current simulation time.
-    op->setSeconds(BaseWorld::instance().getTimeAsSeconds());
+    //op->setSeconds(BaseWorld::instance().getTimeAsSeconds());
 
     if (op->isDefaultFrom()) {
         m_operationsQueue.emplace_back(op);
