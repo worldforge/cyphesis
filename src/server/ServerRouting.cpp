@@ -188,8 +188,20 @@ void ServerRouting::addToEntity(const RootEntity& ent) const
 
 void ServerRouting::externalOperation(const Operation& op, Link&)
 {
+    //TODO: should this really be a router?
 }
 
 void ServerRouting::operation(const Operation&, OpVector&)
 {
+    //TODO: should this really be a router?
 }
+
+size_t ServerRouting::dispatch(size_t numberOfOps)
+{
+    size_t processed = 0;
+    for (auto& entry: m_connections) {
+        processed += entry->dispatch(numberOfOps);
+    }
+    return processed;
+}
+

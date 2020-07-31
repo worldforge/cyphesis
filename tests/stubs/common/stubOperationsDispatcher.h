@@ -100,6 +100,14 @@
   }
 #endif //STUB_OperationsHandler_dispatchNextOp
 
+#ifndef STUB_OperationsHandler_processUntil
+//#define STUB_OperationsHandler_processUntil
+  size_t OperationsHandler::processUntil(std::chrono::steady_clock::time_point time_point)
+  {
+    return 0;
+  }
+#endif //STUB_OperationsHandler_processUntil
+
 
 #ifndef STUB_OperationsDispatcher_OperationsDispatcher
 //#define STUB_OperationsDispatcher_OperationsDispatcher
@@ -191,6 +199,15 @@
     
   }
 #endif //STUB_OperationsDispatcher_dispatchNextOp
+
+#ifndef STUB_OperationsDispatcher_processUntil
+//#define STUB_OperationsDispatcher_processUntil
+  template <typename T>
+  size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_point time_point)
+  {
+    return 0;
+  }
+#endif //STUB_OperationsDispatcher_processUntil
 
 #ifndef STUB_OperationsDispatcher_dispatchOperation
 //#define STUB_OperationsDispatcher_dispatchOperation

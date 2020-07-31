@@ -146,6 +146,13 @@ class ServerRouting : public Router
         void externalOperation(const Operation& op, Link&) override;
 
         void operation(const Operation&, OpVector&) override;
+
+        /**
+         * Performs dispatch of any queues operations.
+         * @param numberOfOps The max number of operations to dispatch per "actor".
+         * @return The total number of dispatched operations.
+         */
+        size_t dispatch(size_t numberOfOps);
 };
 
 #endif // SERVER_SERVER_ROUTING_H

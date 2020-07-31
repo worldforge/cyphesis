@@ -75,7 +75,11 @@ namespace {
     }
 }
 
-void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks, std::chrono::steady_clock::time_point& time)
+void MainLoop::run(bool daemon,
+                   boost::asio::io_context& io_context,
+                   OperationsHandler& operationsHandler,
+                   const Callbacks& callbacks,
+                   std::chrono::steady_clock::time_point& time)
 {
 
     boost::asio::signal_set signalSet(io_context);
@@ -119,6 +123,7 @@ void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsH
         time += tick_size;
 
         //Dispatch any incoming messages first
+        callbacks.dispatchOperations();
 
         operationsHandler.processUntil(time);
 
