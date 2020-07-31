@@ -104,5 +104,13 @@
   }
 #endif //STUB_ServerRouting_operation
 
+#ifndef STUB_ServerRouting_dispatch
+//#define STUB_ServerRouting_dispatch
+  size_t ServerRouting::dispatch(size_t numberOfOps)
+  {
+    return 0;
+  }
+#endif //STUB_ServerRouting_dispatch
+
 
 #endif

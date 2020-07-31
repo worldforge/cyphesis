@@ -82,13 +82,13 @@ int main()
     Ref<LocatedEntity> le = new Entity("", 0);
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         StorageManager store(world, database, eb);
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         StorageManager store(world, database, eb);
 
@@ -96,7 +96,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         StorageManager store(world, database, eb);
 
@@ -104,7 +104,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         StorageManager store(world, database, eb);
 
@@ -112,7 +112,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 
@@ -120,7 +120,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 
@@ -128,7 +128,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 
@@ -138,7 +138,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 
@@ -146,7 +146,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 
@@ -154,7 +154,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 
@@ -162,7 +162,7 @@ int main()
     }
 
     {
-        WorldRouter world(le, eb);
+        WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
 

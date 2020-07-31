@@ -68,7 +68,7 @@ struct TestContext
     TestContext() :
             world(new World()),
             inheritance(factories),
-            testWorld(world, entityCreator),
+            testWorld(world, entityCreator, {}),
             propertyManager(inheritance)
     {
     }
