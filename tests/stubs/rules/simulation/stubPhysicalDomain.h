@@ -353,5 +353,13 @@
   }
 #endif //STUB_PhysicalDomain_isWithinReach
 
+#ifndef STUB_PhysicalDomain_calculateVisibilitySphereRadius
+//#define STUB_PhysicalDomain_calculateVisibilitySphereRadius
+  float PhysicalDomain::calculateVisibilitySphereRadius(const LocatedEntity& entity) const
+  {
+    return 0;
+  }
+#endif //STUB_PhysicalDomain_calculateVisibilitySphereRadius
+
 
 #endif

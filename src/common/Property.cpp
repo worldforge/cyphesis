@@ -159,6 +159,8 @@ bool BoolProperty::isTrue() const
     return m_flags.hasFlags(prop_flag_bool);
 }
 
+template
+class PropertyCore<LocatedEntity>;
 
 template
 class Property<int>;
