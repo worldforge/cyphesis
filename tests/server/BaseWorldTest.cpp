@@ -88,7 +88,7 @@ int main()
     }
 
     {
-        // Test retrieving non existant entity by string ID is ok
+        // Test retrieving non existent entity by string ID is ok
         Ref<Entity> wrld(new Entity("1", 1));
         MyTestWorld tw(wrld);
 
@@ -96,7 +96,7 @@ int main()
     }
 
     {
-        // Test retrieving existant entity by string ID is ok
+        // Test retrieving existent entity by string ID is ok
         Ref<Entity> wrld(new Entity("1", 1));
         MyTestWorld tw(wrld);
 
@@ -108,7 +108,7 @@ int main()
     }
 
     {
-        // Test retrieving existant entity by integer ID is ok
+        // Test retrieving existent entity by integer ID is ok
         Ref<Entity> wrld(new Entity("1", 1));
         MyTestWorld tw(wrld);
 
@@ -120,7 +120,7 @@ int main()
     }
 
     {
-        // Test retrieving non existant entity by integer ID is ok
+        // Test retrieving non existent entity by integer ID is ok
         Ref<Entity> wrld(new Entity("1", 1));
         MyTestWorld tw(wrld);
 

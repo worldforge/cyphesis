@@ -295,7 +295,7 @@ void Admin::CreateOperation(const Operation& op, OpVector& res)
         }
         const Root & o = Inheritance::instance().getClass(type_str, Visibility::PRIVATE);
         if (!o.isValid()) {
-            error(op, compose("Attempt to install type with non-existant "
+            error(op, compose("Attempt to install type with non-existent "
                               "parent \"%1\"", type_str), res, getId());
             return;
         }

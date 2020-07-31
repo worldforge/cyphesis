@@ -254,7 +254,7 @@ int main(int argc, char ** argv)
             assert(ret == 0);
         }
 
-        // Make sure than attempting to modify a non-existant type fails
+        // Make sure than attempting to modify a non-existent type fails
         {
             Anonymous nonexistant_description;
             nonexistant_description->setObjtype("class");

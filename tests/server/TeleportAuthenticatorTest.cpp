@@ -146,7 +146,7 @@ void TeleportAuthenticatortest::test_authenticatePossession_nonexist()
 
     PossessionAuthenticator::instance().addPossession("101", "test_possess_key");
 
-    // Test ID authentication request, that we added, for a non existant
+    // Test ID authentication request, that we added, for a non existent
     // entity
     assert(PossessionAuthenticator::instance().authenticatePossession(
                    "101", "test_possess_key") == nullptr);

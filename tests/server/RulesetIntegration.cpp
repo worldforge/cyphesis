@@ -285,7 +285,7 @@ struct Rulesetintegration : public Cyphesis::TestBase
 
             // FIXME TODO Modify a type, and ensure attribute propagate to inherited types.
 
-            // Make sure than attempting to modify a non-existant type fails
+            // Make sure than attempting to modify a non-existent type fails
             {
                 Anonymous nonexistant_description;
                 MapType attrs;

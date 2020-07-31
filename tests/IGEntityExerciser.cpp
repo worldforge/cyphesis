@@ -340,7 +340,7 @@ void IGEntityExerciser::runOperations()
         this->m_ent->operation(op, ov);
         this->flushOperations(ov);
 
-        tick_arg->setName("non-existant-subsystem");
+        tick_arg->setName("non-existent-subsystem");
         this->m_ent->operation(op, ov);
         this->flushOperations(ov);
     }
