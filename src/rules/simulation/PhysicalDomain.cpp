@@ -28,7 +28,6 @@
 
 #include "physics/Convert.h"
 
-#include "common/const.h"
 #include "common/debug.h"
 #include "common/operations/Tick.h"
 #include "rules/simulation/BaseWorld.h"
@@ -631,23 +630,16 @@ PhysicalDomain::~PhysicalDomain()
 void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
 {
     entity->installDelegate(Atlas::Objects::Operation::TICK_NO, propertyName);
-    OpVector res;
-    tick(TICK_SIZE, res);
-    for (auto& op : res) {
-        entity->sendWorld(op);
-    }
-    auto tickOp = scheduleTick(*entity, BaseWorld::instance().getTimeAsSeconds());
+    auto tickOp = scheduleTick(*entity);
     entity->sendWorld(tickOp);
 }
 
-Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
+Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity)
 {
     Atlas::Objects::Entity::Anonymous tick_arg;
     tick_arg->setName("domain");
     Atlas::Objects::Operation::Tick tickOp;
     tickOp->setTo(entity.getId());
-    tickOp->setSeconds(timeNow + (TICK_SIZE / consts::time_multiplier));
-    tickOp->setAttr("lastTick", timeNow);
     tickOp->setArgs1(tick_arg);
 
     return tickOp;
@@ -669,7 +661,9 @@ HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operatio
         }
 
         tick(tickSize, res);
-        auto tickOp = scheduleTick(*entity, timeNow);
+        auto tickOp = scheduleTick(*entity);
+        tickOp->setSeconds(timeNow + TICK_SIZE);
+        tickOp->setAttr("lastTick", timeNow);
         res.emplace_back(std::move(tickOp));
 
         return OPERATION_BLOCKED;

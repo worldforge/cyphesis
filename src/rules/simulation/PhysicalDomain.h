@@ -435,7 +435,7 @@ class PhysicalDomain : public Domain
                                     std::set<LocatedEntity*>& transformedEntities,
                                     bool calculatePosition);
 
-        Atlas::Objects::Operation::RootOperation scheduleTick(LocatedEntity& entity, double timeNow);
+        Atlas::Objects::Operation::RootOperation scheduleTick(LocatedEntity& entity);
 
         HandlerResult tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res);
 
