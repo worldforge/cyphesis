@@ -39,6 +39,8 @@
 #include "SimulationSpeedProperty.h"
 #include "ModeDataProperty.h"
 #include "VisibilityDistanceProperty.h"
+#include "common/Inheritance.h"
+#include "Remotery/Remotery.h"
 
 #include <Mercator/Segment.h>
 #include <Mercator/TerrainMod.h>
@@ -58,7 +60,6 @@
 #include <unordered_set>
 #include <chrono>
 #include <boost/optional.hpp>
-#include <common/Inheritance.h>
 
 static const bool debug_flag = false;
 
@@ -485,6 +486,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     //Update the linear velocity of all self propelling entities each tick.
     auto preTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
+        rmt_ScopedCPUSample(PhysicalDomain_preTickCallback, 0)
         auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
         auto propellingEntries = worldInfo->propellingEntries;
         for (auto& entry : *propellingEntries) {
@@ -514,6 +516,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
     };
 
     auto postTickCallback = [](btDynamicsWorld* world, btScalar timeStep) {
+        rmt_ScopedCPUSample(PhysicalDomain_postTickCallback, 0)
         auto start = std::chrono::steady_clock::now();
         auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
         auto steppingEntries = worldInfo->steppingEntries;
@@ -989,6 +992,8 @@ void PhysicalDomain::updateObservedEntry(BulletEntry* bulletEntry, OpVector& res
 
 void PhysicalDomain::updateVisibilityOfDirtyEntities(OpVector& res)
 {
+    rmt_ScopedCPUSample(PhysicalDomain_updateVisibilityOfDirtyEntities, 0)
+
     if (!m_visibilityRecalculateQueue.empty()) {
         size_t i = 0;
         //Handle max VISIBILITY_CHECK_MAX_ENTRIES entities each time.
@@ -2381,6 +2386,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
     if (m_dirtyTerrainAreas.empty()) {
         return;
     }
+    rmt_ScopedCPUSample(PhysicalDomain_processDirtyTerrainAreas, 0)
 
     std::set<Mercator::Segment*> dirtySegments;
     for (auto& area : m_dirtyTerrainAreas) {
@@ -2635,6 +2641,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 {
 //    CProfileManager::Reset();
 //    CProfileManager::Increment_Frame_Counter();
+    rmt_ScopedCPUSample(PhysicalDomain_tick, 0);
 
     auto start = std::chrono::steady_clock::now();
     /**

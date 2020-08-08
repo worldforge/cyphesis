@@ -22,18 +22,19 @@ if (SEGFAULT_LIBRARY)
 endif (SEGFAULT_LIBRARY)
 
 set(PYTHON_TESTS_LIBS
-    rulesai_python
-    rulessimulation_python
-    entityfilter_python
-    rulesbase_python
-    rulesai
-    rulessimulation
-    entityfilter
-    stubnavigation
-    rulesbase
-    modules
-    physics
-    common)
+        rulesai_python
+        rulessimulation_python
+        entityfilter_python
+        rulesbase_python
+        rulesai
+        rulessimulation
+        entityfilter
+        stubnavigation
+        rulesbase
+        modules
+        physics
+        common
+        remotery)
 
 
 #Macro for adding a test
@@ -43,7 +44,7 @@ macro(wf_add_test TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES})
+    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery)
 
 endmacro()
 
@@ -53,7 +54,7 @@ macro(wf_add_benchmark TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(benchmark ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES})
+    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery)
 
 endmacro()
 
@@ -150,62 +151,62 @@ wf_add_test(rules/ThingupdatePropertiesTest.cpp ../src/rules/simulation/Thing.cp
 wf_add_test(rules/TaskTest.cpp ../src/rules/simulation/Task.cpp)
 wf_add_test(rules/simulation/EntityPropertyTest.cpp ../src/rules/simulation/EntityProperty.cpp ../src/modules/WeakEntityRef.cpp ../src/common/Property.cpp)
 wf_add_test(rules/simulation/AllPropertyTest.cpp PropertyExerciser.cpp ../src/rules/simulation/AreaProperty.cpp
-    ../src/rules/AtlasProperties.cpp
-    ../src/rules/simulation/CalendarProperty.cpp
-    ../src/rules/simulation/EntityProperty.cpp
-    ../src/rules/simulation/LineProperty.cpp
-    ../src/rules/simulation/TerrainProperty.cpp
-    ../src/rules/simulation/TerrainEffectorProperty.cpp
-    ../src/modules/WeakEntityRef.cpp
-    ../src/modules/DateTime.cpp
-    ../src/modules/TerrainContext.cpp
-    ../src/common/Property.cpp
-    ../src/common/Inheritance.cpp
-    ../src/common/custom.cpp
-    ../src/common/operations.cpp
-    ../src/physics/Shape.cpp
-    ../src/physics/Course.cpp)
+        ../src/rules/AtlasProperties.cpp
+        ../src/rules/simulation/CalendarProperty.cpp
+        ../src/rules/simulation/EntityProperty.cpp
+        ../src/rules/simulation/LineProperty.cpp
+        ../src/rules/simulation/TerrainProperty.cpp
+        ../src/rules/simulation/TerrainEffectorProperty.cpp
+        ../src/modules/WeakEntityRef.cpp
+        ../src/modules/DateTime.cpp
+        ../src/modules/TerrainContext.cpp
+        ../src/common/Property.cpp
+        ../src/common/Inheritance.cpp
+        ../src/common/custom.cpp
+        ../src/common/operations.cpp
+        ../src/physics/Shape.cpp
+        ../src/physics/Course.cpp)
 wf_add_test(rules/ScriptTest.cpp ../src/rules/Script.cpp)
 wf_add_test(rules/simulation/AreaPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/AreaProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/BBoxPropertyTest.cpp PropertyCoverage.cpp ../src/rules/BBoxProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/simulation/CalendarPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/CalendarProperty.cpp
-    ../src/modules/DateTime.cpp
-    ../src/common/Property.cpp)
+        ../src/modules/DateTime.cpp
+        ../src/common/Property.cpp)
 wf_add_test(rules/simulation/LinePropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/LineProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(server/MindPropertyTest.cpp PropertyCoverage.cpp ../src/server/MindProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 target_link_libraries(MindPropertyTest pycxx)
 
 wf_add_test(rules/ModePropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/ModeProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/SolidPropertyTest.cpp PropertyCoverage.cpp ../src/rules/SolidProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/StatusPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/StatusProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/SuspendedPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/SuspendedProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/TerrainModPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TerrainModProperty.cpp
-    ../src/rules/simulation/TerrainProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/rules/simulation/TerrainProperty.cpp
+        ../src/common/Property.cpp)
 wf_add_test(rules/PythonClassTest.cpp python_testers.cpp ../src/rules/python/PythonClass.cpp)
 target_link_libraries(PythonClassTest pycxx)
 wf_add_test(rules/TerrainPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TerrainProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/TransientPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TransientProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/TasksPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TasksProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(common/EntityPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/EntityProperties.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/AtlasPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/AtlasProperties.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/SpawnPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/SpawnProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 wf_add_test(rules/VisibilityPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/VisibilityProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 
 wf_add_test(rules/ai/BaseMindTest.cpp ../src/rules/ai/BaseMind.cpp ../src/rules/ai/MemMap.cpp)
 wf_add_test(rules/MemEntityTest.cpp ../src/rules/MemEntity.cpp)
@@ -218,7 +219,7 @@ wf_add_test(rules/PythonContextTest.cpp ../src/rules/python/PythonContext.cpp)
 wf_add_test(rules/TerrainModTest.cpp ../src/rules/simulation/TerrainModTranslator.cpp)
 wf_add_test(rules/TerrainEffectorPropertyTest.cpp ../src/rules/simulation/TerrainEffectorProperty.cpp)
 wf_add_test(rules/simulation/GeometryPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/GeometryProperty.cpp
-    ../src/common/Property.cpp)
+        ../src/common/Property.cpp)
 
 #Python ruleset tests
 
@@ -288,90 +289,90 @@ target_link_libraries(PythonWrapperTest ${PYTHON_TESTS_LIBS})
 #Entity filter tests
 
 wf_add_test(rules/entityfilter/EntityFilterTest.cpp
-    ../src/rules/simulation/EntityProperty.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/BBoxProperty.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/rules/simulation/ModeDataProperty.cpp
-    ../src/modules/WeakEntityRef.cpp
-    ../src/common/Property.cpp
-    ../src/common/TypeNode.cpp
-    ../src/common/PropertyManager.cpp)
+        ../src/rules/simulation/EntityProperty.cpp
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/BBoxProperty.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/rules/simulation/ModeDataProperty.cpp
+        ../src/modules/WeakEntityRef.cpp
+        ../src/common/Property.cpp
+        ../src/common/TypeNode.cpp
+        ../src/common/PropertyManager.cpp)
 target_link_libraries(EntityFilterTest entityfilter)
 target_compile_definitions(EntityFilterTest PRIVATE -DBOOST_SPIRIT_DEBUG)
 
 wf_add_test(rules/entityfilter/EntityFilterParserTest.cpp
-    ../src/rules/simulation/EntityProperty.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/BBoxProperty.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/modules/WeakEntityRef.cpp
-    ../src/common/Property.cpp
-    ../src/common/TypeNode.cpp
-    ../src/common/PropertyManager.cpp)
+        ../src/rules/simulation/EntityProperty.cpp
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/BBoxProperty.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/modules/WeakEntityRef.cpp
+        ../src/common/Property.cpp
+        ../src/common/TypeNode.cpp
+        ../src/common/PropertyManager.cpp)
 target_link_libraries(EntityFilterParserTest entityfilter)
 
 wf_add_test(rules/entityfilter/EntityFilterProvidersTest.cpp ../src/rules/simulation/EntityProperty.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/BBoxProperty.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/rules/simulation/ModeDataProperty.cpp
-    ../src/modules/WeakEntityRef.cpp
-    ../src/common/Property.cpp
-    ../src/common/TypeNode.cpp
-    ../src/common/PropertyManager.cpp)
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/BBoxProperty.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/rules/simulation/ModeDataProperty.cpp
+        ../src/modules/WeakEntityRef.cpp
+        ../src/common/Property.cpp
+        ../src/common/TypeNode.cpp
+        ../src/common/PropertyManager.cpp)
 target_link_libraries(EntityFilterProvidersTest entityfilter)
 
 
 # RULESETS_INTEGRATION
 
 wf_add_test(rules/simulation/GeometryPropertyIntegration.cpp ../src/rules/simulation/GeometryProperty.cpp)
-target_link_libraries(GeometryPropertyIntegration rulessimulation rulesbase physics modules common)
+target_link_libraries(GeometryPropertyIntegration ${PYTHON_TESTS_LIBS})
 
 wf_add_benchmark(server/PhysicalDomainBenchmark.cpp ../src/rules/simulation/PhysicalDomain.cpp)
-target_link_libraries(PhysicalDomainBenchmark rulessimulation rulesbase physics modules common)
+target_link_libraries(PhysicalDomainBenchmark ${PYTHON_TESTS_LIBS})
 
 wf_add_test(server/PhysicalDomainIntegrationTest.cpp ../src/rules/simulation/PhysicalDomain.cpp)
-target_link_libraries(PhysicalDomainIntegrationTest rulessimulation rulesbase physics modules common)
+target_link_libraries(PhysicalDomainIntegrationTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(rules/PropertyEntityIntegration.cpp ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/common/Property.cpp
-    ../src/common/TypeNode.cpp
-    ../src/rules/Modifier.cpp)
+        ../src/rules/LocatedEntity.cpp
+        ../src/common/Property.cpp
+        ../src/common/TypeNode.cpp
+        ../src/rules/Modifier.cpp)
 wf_add_test(rules/TerrainModPropertyIntegration.cpp ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/rules/simulation/TerrainEffectorProperty.cpp
-    ../src/rules/simulation/TerrainModProperty.cpp
-    ../src/rules/simulation/TerrainModTranslator.cpp
-    ../src/rules/simulation/TerrainProperty.cpp
-    ../src/modules/WeakEntityRef.cpp
-    ../src/modules/TerrainContext.cpp
-    ../src/common/Property.cpp
-    ../src/common/TypeNode.cpp)
+        ../src/rules/LocatedEntity.cpp
+        ../src/rules/simulation/TerrainEffectorProperty.cpp
+        ../src/rules/simulation/TerrainModProperty.cpp
+        ../src/rules/simulation/TerrainModTranslator.cpp
+        ../src/rules/simulation/TerrainProperty.cpp
+        ../src/modules/WeakEntityRef.cpp
+        ../src/modules/TerrainContext.cpp
+        ../src/common/Property.cpp
+        ../src/common/TypeNode.cpp)
 wf_add_test(rules/simulation/ContainedVisibilityPropertyIntegration.cpp ../src/rules/simulation/ContainedVisibilityProperty.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp)
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/LocatedEntity.cpp)
 wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
-    ../src/rules/ai/BaseMind.cpp
-    ../src/rules/MemEntity.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/rules/ai/MemMap.cpp
-    ../src/rules/BBoxProperty.cpp
-    ../src/rules/SolidProperty.cpp
-    ../src/rules/Vector3Property.cpp
-    ../src/rules/Location.cpp
-    ../src/rules/EntityLocation.cpp
-    ../src/common/Property.cpp
-    ../src/client/ClientPropertyManager.cpp)
+        ../src/rules/ai/BaseMind.cpp
+        ../src/rules/MemEntity.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/rules/ai/MemMap.cpp
+        ../src/rules/BBoxProperty.cpp
+        ../src/rules/SolidProperty.cpp
+        ../src/rules/Vector3Property.cpp
+        ../src/rules/Location.cpp
+        ../src/rules/EntityLocation.cpp
+        ../src/common/Property.cpp
+        ../src/client/ClientPropertyManager.cpp)
 wf_add_test(rules/simulation/AreaPropertyIntegration.cpp ../src/rules/simulation/AreaProperty.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/physics/Course.cpp
-    ../src/physics/Shape.cpp)
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/physics/Course.cpp
+        ../src/physics/Shape.cpp)
 wf_add_test(rules/SuspendedPropertyIntegration.cpp ../src/rules/simulation/SuspendedProperty.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp)
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/LocatedEntity.cpp)
 target_link_libraries(SuspendedPropertyIntegration common)
 wf_add_test(rules/ThingIntegration.cpp)
 target_link_libraries(ThingIntegration rulessimulation rulesbase modules common physics ${PYTHON_TESTS_LIBS})
@@ -385,24 +386,24 @@ target_link_libraries(TerrainPropertyIntegration rulessimulation rulesbase modul
 
 # CLIENT_TESTS
 wf_add_test(client/Py_CreatorClientTest.cpp python_testers.cpp ../src/client/cyclient/CyPy_CreatorClient.cpp
-    ../src/client/cyclient/CyPy_ObserverClient.cpp
-    ../src/client/cyclient/Python_ClientAPI.cpp)
+        ../src/client/cyclient/CyPy_ObserverClient.cpp
+        ../src/client/cyclient/Python_ClientAPI.cpp)
 target_link_libraries(Py_CreatorClientTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(client/Py_ObserverClientTest.cpp python_testers.cpp ../src/client/cyclient/CyPy_CreatorClient.cpp
-    ../src/client/cyclient/CyPy_ObserverClient.cpp
-    ../src/client/cyclient/Python_ClientAPI.cpp)
+        ../src/client/cyclient/CyPy_ObserverClient.cpp
+        ../src/client/cyclient/Python_ClientAPI.cpp)
 target_link_libraries(Py_ObserverClientTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(client/ClientConnectionTest.cpp ../src/client/cyclient/ClientConnection.cpp)
 wf_add_test(client/BaseClientTest.cpp ../src/client/cyclient/BaseClient.cpp)
 wf_add_test(client/ClientPropertyManagerTest.cpp ../src/client/ClientPropertyManager.cpp
-    ../src/common/PropertyManager.cpp)
+        ../src/common/PropertyManager.cpp)
 
 
 # CLIENT_INTEGRATION_TESTS
 wf_add_test(client/ClientConnectionIntegration.cpp ../src/client/cyclient/ClientConnection.cpp
-    ../src/common/AtlasStreamClient.cpp)
+        ../src/common/AtlasStreamClient.cpp)
 
 # SERVER_TESTS
 
@@ -413,23 +414,23 @@ wf_add_test(server/ArchetypeFactoryIntegrationTest.cpp
         ../src/server/EntityFactory.cpp
         ../src/server/EntityRuleHandler.cpp
         ../src/rules/simulation/CorePropertyManager.cpp)
-target_link_libraries(ArchetypeFactoryIntegrationTest modules physics common pycxx rulesbase ${PYTHON_TESTS_LIBS})
+target_link_libraries(ArchetypeFactoryIntegrationTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(server/RulesetTest.cpp ../src/server/Ruleset.cpp)
 wf_add_test(server/EntityBuilderTest.cpp ../src/server/EntityBuilder.cpp)
 wf_add_test(common/PropertyFlagTest.cpp TestPropertyManager.cpp ../src/rules/simulation/Thing.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/common/Property.cpp)
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/common/Property.cpp)
 wf_add_test(server/AccountTest.cpp ../src/server/Account.cpp
-    ../src/common/debug.cpp)
+        ../src/common/debug.cpp)
 wf_add_test(server/AdminTest.cpp ../src/server/Admin.cpp
-    ../src/common/debug.cpp)
+        ../src/common/debug.cpp)
 wf_add_test(server/ServerAccountTest.cpp ../src/server/ServerAccount.cpp)
 wf_add_test(server/PlayerTest.cpp ../src/server/Player.cpp
-    ../src/common/debug.cpp)
+        ../src/common/debug.cpp)
 wf_add_test(server/EntityFactoryTest.cpp ../src/server/EntityFactory.cpp
-    ../src/rules/Modifier.cpp)
+        ../src/rules/Modifier.cpp)
 wf_add_test(common/buildidTest.cpp ${PROJECT_BINARY_DIR}/src/server/buildid.cpp)
 wf_add_test(server/ConnectionTest.cpp ../src/server/Connection.cpp)
 wf_add_test(server/TrustedConnectionTest.cpp ../src/server/TrustedConnection.cpp)
@@ -462,68 +463,68 @@ wf_add_test(server/CorePropertyManagerTest.cpp ../src/rules/simulation/CorePrope
 # SERVER_INTEGRATION_TESTS
 
 wf_add_test(server/WorldRouterIntegration.cpp ../src/rules/simulation/WorldRouter.cpp
-    ../src/server/EntityBuilder.cpp
-    ../src/server/EntityFactory.cpp
-    ../src/server/EntityRuleHandler.cpp
-    ../src/rules/Domain.cpp
-    ../src/rules/LocatedEntity.cpp
-    ../src/rules/simulation/Entity.cpp
-    ../src/rules/simulation/Thing.cpp
-    ../src/rules/simulation/World.cpp
-    ../src/rules/simulation/BaseWorld.cpp
-    ../src/rules/Modifier.cpp)
+        ../src/server/EntityBuilder.cpp
+        ../src/server/EntityFactory.cpp
+        ../src/server/EntityRuleHandler.cpp
+        ../src/rules/Domain.cpp
+        ../src/rules/LocatedEntity.cpp
+        ../src/rules/simulation/Entity.cpp
+        ../src/rules/simulation/Thing.cpp
+        ../src/rules/simulation/World.cpp
+        ../src/rules/simulation/BaseWorld.cpp
+        ../src/rules/Modifier.cpp)
 target_link_libraries(WorldRouterIntegration modules physics common pycxx)
 wf_add_test(server/RulesetIntegration.cpp ../src/server/Ruleset.cpp
-    ../src/server/EntityBuilder.cpp
-    ../src/server/EntityFactory.cpp
-    ../src/server/OpRuleHandler.cpp
-    ../src/server/EntityRuleHandler.cpp
-    ../src/server/ArchetypeRuleHandler.cpp
-    ../src/server/PropertyRuleHandler.cpp
-    ../src/server/Persistence.cpp
-    ../src/rules/simulation/BaseWorld.cpp
-    ../src/rules/Modifier.cpp)
+        ../src/server/EntityBuilder.cpp
+        ../src/server/EntityFactory.cpp
+        ../src/server/OpRuleHandler.cpp
+        ../src/server/EntityRuleHandler.cpp
+        ../src/server/ArchetypeRuleHandler.cpp
+        ../src/server/PropertyRuleHandler.cpp
+        ../src/server/Persistence.cpp
+        ../src/rules/simulation/BaseWorld.cpp
+        ../src/rules/Modifier.cpp)
 target_link_libraries(RulesetIntegration common pycxx)
 #Rulesetintegration_LDFLAGS = $(PYTHON_LINKER_FLAGS)
 wf_add_test(server/ConnectionShakerIntegration.cpp ../src/server/Connection.cpp
-    ../src/common/Shaker.cpp)
+        ../src/common/Shaker.cpp)
 wf_add_test(server/ConnectionCreatorIntegration.cpp
-    ../src/server/Connection.cpp)
-target_link_libraries(ConnectionCreatorIntegration rulessimulation rulesbase modules physics common pycxx)
+        ../src/server/Connection.cpp)
+target_link_libraries(ConnectionCreatorIntegration ${PYTHON_TESTS_LIBS})
 wf_add_test(server/TrustedConnectionCreatorIntegration.cpp
-    ../src/server/Connection.cpp)
-target_link_libraries(TrustedConnectionCreatorIntegration rulessimulation rulesbase modules physics common pycxx)
+        ../src/server/Connection.cpp)
+target_link_libraries(TrustedConnectionCreatorIntegration ${PYTHON_TESTS_LIBS})
 wf_add_test(server/AccountConnectionCharacterIntegration.cpp
-    ../src/server/Account.cpp
-    ../src/server/Connection.cpp)
-target_link_libraries(AccountConnectionCharacterIntegration rulessimulation rulesbase modules physics common pycxx)
+        ../src/server/Account.cpp
+        ../src/server/Connection.cpp)
+target_link_libraries(AccountConnectionCharacterIntegration ${PYTHON_TESTS_LIBS})
 wf_add_test(server/AccountIntegration.cpp)
 target_link_libraries(AccountIntegration server ${PYTHON_TESTS_LIBS})
 
 wf_add_test(server/EntityFactoryTypeNodeIntegration.cpp TestPropertyManager.cpp ../src/server/EntityFactory.cpp
-    ../src/common/TypeNode.cpp
-    ../src/common/PropertyManager.cpp
-    ../src/common/Property.cpp
-    ../src/rules/Modifier.cpp)
+        ../src/common/TypeNode.cpp
+        ../src/common/PropertyManager.cpp
+        ../src/common/Property.cpp
+        ../src/rules/Modifier.cpp)
 wf_add_test(server/AccountConnectionIntegration.cpp ../src/server/Account.cpp
-    ../src/server/Admin.cpp
-    ../src/server/Connection.cpp
-    ../src/server/Lobby.cpp
-    ../src/server/Player.cpp
-    ../src/server/ServerAccount.cpp
-    ../src/server/ServerRouting.cpp
-    ../src/server/SystemAccount.cpp
-    ../src/rules/simulation/BaseWorld.cpp
-    ../src/common/Inheritance.cpp
-    ../src/common/Property.cpp
-    ../src/common/Router.cpp
-    ../src/common/TypeNode.cpp
-    ../src/common/custom.cpp
-    ../src/common/operations.cpp)
+        ../src/server/Admin.cpp
+        ../src/server/Connection.cpp
+        ../src/server/Lobby.cpp
+        ../src/server/Player.cpp
+        ../src/server/ServerAccount.cpp
+        ../src/server/ServerRouting.cpp
+        ../src/server/SystemAccount.cpp
+        ../src/rules/simulation/BaseWorld.cpp
+        ../src/common/Inheritance.cpp
+        ../src/common/Property.cpp
+        ../src/common/Router.cpp
+        ../src/common/TypeNode.cpp
+        ../src/common/custom.cpp
+        ../src/common/operations.cpp)
 target_link_libraries(AccountConnectionIntegration physics)
 wf_add_test(server/AccountServerLobbyIntegration.cpp ../src/server/Account.cpp
-    ../src/server/ServerRouting.cpp
-    ../src/server/Lobby.cpp)
+        ../src/server/ServerRouting.cpp
+        ../src/server/Lobby.cpp)
 
 
 # Other TESTS
@@ -534,9 +535,9 @@ wf_add_test(server/AccountServerLobbyIntegration.cpp ../src/server/Account.cpp
 # TOOLS_TESTS
 wf_add_test(tools/AdminClientTest.cpp ../src/tools/AdminClient.cpp)
 wf_add_test(tools/FlusherTest.cpp ../src/tools/Flusher.cpp
-    ../src/common/ClientTask.cpp)
+        ../src/common/ClientTask.cpp)
 wf_add_test(tools/OperationMonitorTest.cpp ../src/tools/OperationMonitor.cpp
-    ../src/common/ClientTask.cpp)
+        ../src/common/ClientTask.cpp)
 wf_add_test(tools/EntityExporterTest.cpp ../src/tools/EntityExporterBase.cpp)
 target_link_libraries(EntityExporterTest common)
 

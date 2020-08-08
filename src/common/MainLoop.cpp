@@ -25,6 +25,7 @@
 #include "log.h"
 #include <boost/asio/signal_set.hpp>
 #include <boost/asio/steady_timer.hpp>
+#include "Remotery/Remotery.h"
 
 namespace {
     void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
@@ -112,6 +113,9 @@ void MainLoop::run(bool daemon,
     // Loop until the exit flag is set. The exit flag can be set anywhere in
     // the code easily.
     while (!exit_flag) {
+
+        rmt_ScopedCPUSample(MainLoop, 0)
+
         bool nextOpTimeExpired = false;
         nextOpTimer.expires_from_now(tick_size);
         nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
@@ -123,18 +127,25 @@ void MainLoop::run(bool daemon,
         time += tick_size;
 
         //Dispatch any incoming messages first
-        callbacks.dispatchOperations();
+        {
+            rmt_ScopedCPUSample(dispatchOperations, 0)
+            callbacks.dispatchOperations();
+        }
+        {
+            rmt_ScopedCPUSample(processOps, 0)
+            operationsHandler.processUntil(time);
+        }
+        {
+            rmt_ScopedCPUSample(runIO, 0)
 
-        operationsHandler.processUntil(time);
-
-        do {
-            try {
-                io_context.run_one();
-            } catch (const std::exception& ex) {
-                log(ERROR, String::compose("Exception caught in main loop: %1", ex.what()));
-            }
-        } while (!nextOpTimeExpired);
-
+            do {
+                try {
+                    io_context.run_one();
+                } catch (const std::exception& ex) {
+                    log(ERROR, String::compose("Exception caught in main loop: %1", ex.what()));
+                }
+            } while (!nextOpTimeExpired);
+        }
         nextOpTimer.cancel();
 
 

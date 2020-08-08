@@ -29,6 +29,8 @@
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
 
+#include "Remotery/Remotery.h"
+
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
 
@@ -286,6 +288,8 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
 /// that it is possible that this entity has been destroyed.
 void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
 {
+    rmt_ScopedCPUSample(WorldRouter_operation, 0)
+
     debug_print("WorldRouter::operation {"
                         << op->getParent() << ":"
                         << op->getFrom() << ":" << op->getTo() << "}")

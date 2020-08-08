@@ -40,6 +40,7 @@
 #include <sigc++/adaptors/bind.h>
 
 #include <unordered_set>
+#include "Remotery/Remotery.h"
 
 using Atlas::Message::MapType;
 using Atlas::Message::Element;
@@ -412,6 +413,7 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
 
 void StorageManager::tick()
 {
+    rmt_ScopedCPUSample(StorageManager_tick, 0)
     int inserts = 0, updates = 0;
     int old_insert_queries = m_insertEntityCount + m_insertPropertyCount;
     int old_update_queries = m_updateEntityCount + m_updatePropertyCount;

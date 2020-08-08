@@ -75,6 +75,7 @@ target_link_libraries(cyphesis
         physics
         comm
         metaserverapi
+        remotery
         )
 
 install(TARGETS cyphesis DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})

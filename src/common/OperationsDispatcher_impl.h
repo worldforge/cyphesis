@@ -124,7 +124,7 @@ size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_poi
 
         //Set the time of when this op is dispatched. That way, other components in the system can
         //always use the seconds set on the op to know the current time.
-        opQueueEntry.op->setSeconds(  std::chrono::duration_cast<std::chrono::duration<float>>(time_point.time_since_epoch()).count());
+        opQueueEntry.op->setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(time_point.time_since_epoch()).count());
         try {
             m_operationProcessor(opQueueEntry.op, std::move(opQueueEntry.from));
         }
@@ -143,7 +143,6 @@ size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_poi
     }
     return count;
 }
-
 
 
 template<typename T>

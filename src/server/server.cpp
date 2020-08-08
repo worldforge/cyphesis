@@ -85,6 +85,7 @@
 #include <memory>
 #include <thread>
 #include <fstream>
+#include <Remotery/Remotery.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -349,6 +350,15 @@ namespace {
 
     int run()
     {
+        Remotery* rmt;
+        auto error = rmt_CreateGlobalInstance(&rmt);
+        if (RMT_ERROR_NONE != error) {
+            printf("Error launching Remotery %d\n", error);
+            return -1;
+        } else {
+            log(INFO, "Remotery enabled.");
+        }
+
         Monitors monitors;
         monitors.watch("minds", new Variable<int>(ExternalMind::s_numberOfMinds));
         monitors.watch("players", new Variable<int>(Player::s_numberOfPlayers));
@@ -454,7 +464,7 @@ namespace {
             baseEntity->setType(inheritance.getType("world"));
 
             std::chrono::steady_clock::time_point time{};
-            auto timeProviderFn =  [&]() -> std::chrono::steady_clock::duration { return time - std::chrono::steady_clock::time_point{}; };
+            auto timeProviderFn = [&]() -> std::chrono::steady_clock::duration { return time - std::chrono::steady_clock::time_point{}; };
 
             WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
 
@@ -584,7 +594,7 @@ namespace {
             auto softExitTimeout = [&]() {
             };
 
-            auto dispatchOperationsFn = [&](){
+            auto dispatchOperationsFn = [&]() {
                 serverRouting.dispatch(2);
             };
 
@@ -651,6 +661,7 @@ namespace {
 
         //The global_conf instance is created at loadConfig(...), so we'll destroy it here
         delete global_conf;
+        rmt_DestroyGlobalInstance(rmt);
 
         return 0;
     }

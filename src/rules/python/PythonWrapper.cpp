@@ -28,6 +28,7 @@
 #include "common/debug.h"
 #include "common/log.h"
 #include "Python_API.h"
+#include "Remotery/Remotery.h"
 
 static const bool debug_flag = false;
 
@@ -49,6 +50,8 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
                                        const Operation& op,
                                        OpVector& res)
 {
+    rmt_ScopedCPUSample(Python_operation, 0)
+
     assert(!m_wrapper.isNull());
     std::string op_name = op_type + "_operation";
     debug_print("Got script " << this->m_wrapper.type().str() << " on object " << this->m_wrapper.str() << " for " << op_name);

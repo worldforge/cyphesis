@@ -18,6 +18,7 @@
 
 #include "PhysicalWorld.h"
 #include <BulletDynamics/Dynamics/btRigidBody.h>
+#include "Remotery/Remotery.h"
 
 PhysicalWorld::PhysicalWorld(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration)
     : btDiscreteDynamicsWorld(dispatcher, pairCache, constraintSolver, collisionConfiguration)
@@ -30,6 +31,8 @@ void PhysicalWorld::synchronizeMotionStates()
 
 int PhysicalWorld::stepSimulation(btScalar timeStep, int maxSubSteps, btScalar fixedTimeStep)
 {
+    rmt_ScopedCPUSample(PhysicalWorld_stepSimulation, 0)
+
     int steps = btDiscreteDynamicsWorld::stepSimulation(timeStep, maxSubSteps, fixedTimeStep);
 
     //iterate over all active rigid bodies
