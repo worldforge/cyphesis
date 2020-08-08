@@ -43,11 +43,15 @@ struct TestWorld : public BaseWorld
 
     Ref<LocatedEntity> m_gw;
 
-    explicit TestWorld() : BaseWorld({}), m_gw(nullptr)
+    explicit TestWorld()
+            : BaseWorld([]() { return std::chrono::steady_clock::now().time_since_epoch(); }),
+              m_gw(nullptr)
     {
     }
 
-    explicit TestWorld(Ref<LocatedEntity> gw) : BaseWorld({}), m_gw(std::move(gw))
+    explicit TestWorld(Ref<LocatedEntity> gw)
+            : BaseWorld([]() { return std::chrono::steady_clock::now().time_since_epoch(); }),
+              m_gw(std::move(gw))
     {
         m_eobjects[m_gw->getIntId()] = m_gw;
     }

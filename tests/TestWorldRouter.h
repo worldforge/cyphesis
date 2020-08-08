@@ -23,15 +23,16 @@
 
 struct TestWorldRouter : public WorldRouter
 {
-    struct TestWorldTestWorldRouter {
-        std::function<void(const Operation & op, LocatedEntity & ent)> messageFn;
-        std::function<Ref<LocatedEntity>(const std::string &, const Atlas::Objects::Entity::RootEntity &)> addNewEntityFn;
+    struct TestWorldTestWorldRouter
+    {
+        std::function<void(const Operation& op, LocatedEntity& ent)> messageFn;
+        std::function<Ref<LocatedEntity>(const std::string&, const Atlas::Objects::Entity::RootEntity&)> addNewEntityFn;
     };
 
     TestWorldTestWorldRouter m_extension;
 
     explicit TestWorldRouter(Ref<LocatedEntity> gw, EntityCreator& entityCreator)
-            : WorldRouter(std::move(gw), entityCreator, {})
+            : WorldRouter(std::move(gw), entityCreator, [] { return std::chrono::steady_clock::now().time_since_epoch(); })
     {
     }
 
@@ -55,4 +56,5 @@ struct TestWorldRouter : public WorldRouter
         }
     }
 };
+
 #endif //CYPHESIS_TESTWORLDROUTER_H

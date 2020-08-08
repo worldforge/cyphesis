@@ -68,7 +68,7 @@ struct TestContext
     TestContext() :
             world(new World()),
             inheritance(factories),
-            testWorld(world, entityCreator, {}),
+            testWorld(world, entityCreator, [] { return std::chrono::steady_clock::now().time_since_epoch(); }),
             propertyManager(inheritance)
     {
     }

@@ -34,23 +34,17 @@
 #include "rules/Domain.h"
 #include "rules/simulation/World.h"
 
-#include "common/const.h"
 #include "common/globals.h"
 #include "common/id.h"
 #include "common/Inheritance.h"
-#include "common/log.h"
-#include "common/Monitors.h"
-#include "common/SystemTime.h"
+
 #include "common/operations/Tick.h"
 #include "common/Variable.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
-#include <cstdio>
-#include <cstdlib>
 
 #include <cassert>
-#include <server/Ruleset.h>
 
 #include "../DatabaseNull.h"
 #include "../TestPropertyManager.h"
@@ -62,6 +56,8 @@ using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Operation::Tick;
 
 Atlas::Objects::Factories factories;
+
+auto timeProviderFn = [] { return std::chrono::steady_clock::now().time_since_epoch(); };
 
 struct WorldRouterintegration : public Cyphesis::TestBase
 {
@@ -76,10 +72,11 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
     void test_sequence();
 
-    void test_creationAndDeletion() {
+    void test_creationAndDeletion()
+    {
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, {}));
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, timeProviderFn));
 
             Anonymous ent;
             ent->setLoc("0");
@@ -95,7 +92,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, {}));
+            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, timeProviderFn));
 
             Anonymous ent;
             ent->setLoc("0");
@@ -120,7 +117,8 @@ struct WorldRouterintegration : public Cyphesis::TestBase
     }
 
 
-    WorldRouterintegration() {
+    WorldRouterintegration()
+    {
         ADD_TEST(WorldRouterintegration::test_sequence);
         ADD_TEST(WorldRouterintegration::test_creationAndDeletion);
 
@@ -165,7 +163,7 @@ void WorldRouterintegration::setup()
         Atlas::Message::MapType composed;
         for (const auto& entry : rawAttributes) {
             composed[entry.first] = Atlas::Message::MapType{
-                {"default", entry.second}
+                    {"default", entry.second}
             };
         }
 
@@ -192,10 +190,10 @@ void WorldRouterintegration::teardown()
 void WorldRouterintegration::test_sequence()
 {
     Ref<Entity> base = new Entity("", 0);
-    WorldRouter* test_world = new WorldRouter(base, *m_eb, {});
+    WorldRouter* test_world = new WorldRouter(base, *m_eb, timeProviderFn);
 
     auto ent1 = test_world->addNewEntity("__no_such_type__",
-                                                   Anonymous());
+                                         Anonymous());
     assert(!ent1);
 
     Anonymous ent;
@@ -263,7 +261,7 @@ int main()
 template<>
 PythonScriptFactory<LocatedEntity>::PythonScriptFactory(const std::string& p,
                                                         const std::string& t) :
-    PythonClass(p, t)
+        PythonClass(p, t)
 {
 }
 
@@ -307,7 +305,8 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "../stubs/rules/python/stubScriptsProperty.h"
 
 #define STUB_CorePropertyManager_addProperty
-std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string & name) const
+
+std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string& name) const
 {
     return std::make_unique<Property<float>>();
 }

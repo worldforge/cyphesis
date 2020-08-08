@@ -206,6 +206,7 @@ void TrustedConnectionCreatorintegration::test_external_op()
     op->setFrom(mind->getId());
 
     m_connection->externalOperation(op, *m_connection);
+    m_connection->dispatch(1);
 
     // BaseWorld::message should have been called from Enitty::sendWorld
     // with the Talk operation, modified to have TO set to the character.
@@ -234,6 +235,7 @@ void TrustedConnectionCreatorintegration::test_external_op_override()
     op->setTo(m_creator->getId());
 
     m_connection->externalOperation(op, *m_connection);
+    m_connection->dispatch(1);
 
     // The operation should have been passed to Entity::callOperation for
     // dispatch, completely unfiltered.
@@ -264,6 +266,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     op->setTo(other->getId());
 
     m_connection->externalOperation(op, *m_connection);
+    m_connection->dispatch(1);
 
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.
@@ -300,6 +303,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     Atlas::Objects::ObjectsEncoder encoder(decoder);
     m_connection->setEncoder(&encoder);
     m_connection->externalOperation(op, *m_connection);
+    m_connection->dispatch(1);
 
     // Operation should be via world dispatch, as if it was from the Entity
     // we are puppeting.

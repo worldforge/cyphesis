@@ -108,7 +108,7 @@ class WorldRouter : public BaseWorld
 
         friend class WorldRoutertest;
 
-        friend class WorldRouterintegration;
+        friend struct WorldRouterintegration;
 
         OperationsDispatcher<LocatedEntity>& getOperationsHandler();
 };

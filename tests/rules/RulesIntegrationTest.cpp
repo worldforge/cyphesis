@@ -56,7 +56,7 @@ struct TestContext
     TestContext() :
             world(new World()),
             inheritance(factories),
-            testWorld(world, entityCreator, {}),
+            testWorld(world, entityCreator, [] { return std::chrono::steady_clock::now().time_since_epoch(); }),
             propertyManager(inheritance)
     {
     }
@@ -615,7 +615,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          */
         {
             Ref<Thing> t1 = new Thing("1", 1);
-            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
+            t1->m_location.setBBox({{-128, -128, -128},
+                                    {128,  128,  128}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
             Ref<Thing> t2 = new Thing("2", 2);

@@ -175,6 +175,7 @@ void AccountConnectionintegration::test_account_creation()
 
         // Send the operation to create the account
         m_connection->externalOperation(op, *m_connection);
+        m_connection->dispatch(1);
 
         // There should be a response op
         ASSERT_TRUE(!test_sent_ops.empty());
@@ -221,6 +222,7 @@ void AccountConnectionintegration::test_account_creation()
         // account creations.
         test_sent_ops.clear();
         m_connection->externalOperation(op, *m_connection);
+        m_connection->dispatch(1);
         ASSERT_TRUE(!test_sent_ops.empty());
         ASSERT_EQUAL(test_sent_ops.size(), 1u);
 
