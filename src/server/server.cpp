@@ -350,6 +350,8 @@ namespace {
 
     int run()
     {
+        rmtSettings* settings = rmt_Settings();
+        settings->reuse_open_port = true;
         Remotery* rmt;
         auto error = rmt_CreateGlobalInstance(&rmt);
         if (RMT_ERROR_NONE != error) {
