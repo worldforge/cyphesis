@@ -187,6 +187,7 @@ void Account::sendUpdateToClient()
         Anonymous sight_arg;
         addToEntity(sight_arg);
         s->setArgs1(sight_arg);
+        s->setSeconds(BaseWorld::instance().getTimeAsSeconds());
         m_connection->send(s);
     }
 }
@@ -241,6 +242,7 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
                 }
                 info->setFrom(getId());
                 info->setTo(getId());
+                info->setSeconds(BaseWorld::instance().getTimeAsSeconds());
                 m_connection->send(info);
 
                 return;
@@ -256,6 +258,7 @@ void Account::LogoutOperation(const Operation& op, OpVector& res)
         }
         info->setFrom(getId());
         info->setTo(getId());
+        info->setSeconds(BaseWorld::instance().getTimeAsSeconds());
         m_connection->send(info);
         m_connection->disconnect();
     }
@@ -373,8 +376,8 @@ void Account::externalOperation(const Operation& op, Link& link)
                     replyOp->setRefno(op->getSerialno());
                 }
             }
+            replyOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
         }
-        // FIXME detect socket failure here
         m_connection->send(res);
     }
 }
@@ -420,6 +423,7 @@ void Account::processExternalOperation(const Operation& op, OpVector& res)
 void Account::operation(const Operation& op, OpVector& res)
 {
     if (m_connection) {
+        op->setSeconds(BaseWorld::instance().getTimeAsSeconds());
         m_connection->send(op);
     }
 }

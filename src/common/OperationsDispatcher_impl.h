@@ -220,17 +220,12 @@ void OperationsDispatcher<T>::clearQueues()
     m_operationQueue = decltype(m_operationQueue)();
 }
 
-/// \brief Add an operation to the ordered op queue.
-///
-/// Any time adjustment required is made to the operation, and it
-/// is added to the appropriate place in the chronologically ordered
-/// queue. The From attribute of the operation is set to the id of
-/// the entity that is responsible for adding the operation to the
-/// queue.
+
 template<typename T>
 void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
 {
     assert(op.isValid());
+    assert(!op->isDefaultSeconds());
 
     //Check the sequence number of the first op at start.
     long topSequenceNr = 0;
@@ -238,16 +233,6 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
         topSequenceNr = m_operationQueue.top().sequence;
     }
     op->setFrom(ent->getId());
-    if (!op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
-        auto seconds = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count();
-        if (!op->hasAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG)) {
-            op->setSeconds(seconds);
-        } else {
-            double t = seconds + (op->getFutureSeconds() * consts::time_multiplier);
-            op->setSeconds(t);
-            op->removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
-        }
-    }
     if (opdispatcher_debug_flag) {
         std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
         debug_dump(op, std::cout);

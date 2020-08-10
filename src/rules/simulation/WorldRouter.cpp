@@ -188,6 +188,17 @@ void WorldRouter::resumeWorld()
     }
 }
 
+void WorldRouter::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op)
+{
+    if (!op.isDefaultFutureSeconds()) {
+        double t = getTimeAsSeconds() + (op.getFutureSeconds() * consts::time_multiplier);
+        op.setSeconds(t);
+        op.removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
+    } else if (op.isDefaultSeconds()) {
+        op.setSeconds(getTimeAsSeconds());
+    }
+}
+
 
 /// \brief Pass an operation to the World.
 ///
@@ -204,7 +215,9 @@ void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
     if (op->isDefaultTo()) {
         if (shouldBroadcastPerception(op)) {
             OpVector res;
+            resolveDispatchTimeForOp(*op);
             fromEntity.broadcast(op, res, Visibility::PUBLIC);
+
             for (auto& broadcastedOp : res) {
                 m_operationsDispatcher.addOperationToQueue(std::move(broadcastedOp), Ref<LocatedEntity>(&fromEntity));
             }
@@ -216,6 +229,7 @@ void WorldRouter::message(Operation op, LocatedEntity& fromEntity)
 
         }
     } else {
+        resolveDispatchTimeForOp(*op);
         m_operationsDispatcher.addOperationToQueue(std::move(op), Ref<LocatedEntity>(&fromEntity));
     }
 

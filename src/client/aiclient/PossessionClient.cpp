@@ -99,6 +99,17 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
     processOperation(op, res);
 }
 
+void PossessionClient::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op)
+{
+    if (!op.isDefaultFutureSeconds()) {
+        double t = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count() + (op.getFutureSeconds() * consts::time_multiplier);
+        op.setSeconds(t);
+        op.removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
+    } else if (op.isDefaultSeconds()) {
+        op.setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count());
+    }
+}
+
 void PossessionClient::processOperation(const Operation& op, OpVector& res)
 {
     if (debug_flag) {
@@ -121,6 +132,7 @@ void PossessionClient::processOperation(const Operation& op, OpVector& res)
         if ((!resOp->isDefaultTo() && !resOp->isDefaultFrom())) {
             auto mind = m_account->findMindForId(resOp->getTo());
             if (mind) {
+                resolveDispatchTimeForOp(*resOp);
                 m_operationsDispatcher.addOperationToQueue(std::move(resOp), std::move(mind));
                 updatedDispatcher = true;
             } else {

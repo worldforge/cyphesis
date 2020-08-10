@@ -31,6 +31,14 @@
   }
 #endif //STUB_WorldRouter_resumeWorld
 
+#ifndef STUB_WorldRouter_resolveDispatchTimeForOp
+//#define STUB_WorldRouter_resolveDispatchTimeForOp
+  void WorldRouter::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op)
+  {
+    
+  }
+#endif //STUB_WorldRouter_resolveDispatchTimeForOp
+
 #ifndef STUB_WorldRouter_WorldRouter
 //#define STUB_WorldRouter_WorldRouter
    WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity, EntityCreator& entityCreator, TimeProviderFnType timeProviderFn)

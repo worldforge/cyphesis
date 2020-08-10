@@ -424,13 +424,13 @@ void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string s
 }
 
 void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::RootOperationData& op) {
+    //It's ok if the server sends an op without 'seconds' set.
     if (!op.isDefaultSeconds()) {
-        if (op.getSeconds() < mServerTime) {
+        //Alert if there's a too large difference in time.
+        if (op.getSeconds() - mServerTime < -30 ) {
             log(WARNING, String::compose("Operation %1 has seconds set (%2) earlier than already recorded seconds (%3).", op.getParent(), op.getSeconds(), mServerTime));
         }
         mServerTime = op.getSeconds();
-    } else {
-        log(WARNING, String::compose("Got '%1' operation from server without 'seconds' specified.", op.getParent()));
     }
 }
 

@@ -37,7 +37,6 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Sight;
 
 InventoryDomain::InventoryDomain(LocatedEntity& entity) :
         Domain(entity)

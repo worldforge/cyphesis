@@ -196,14 +196,9 @@ class OperationsDispatcher : public OperationsHandler
          */
         void clearQueues() override;
 
-        /**
-         * @brief Adds an operation to the queue.
-         *
-         * This will increase the reference count of the supplied LocatedEntity until the operation is handled.
-         *
-         * @param The operation to add.
-         * @param The located entity it belongs to.
-         */
+        /// \brief Add an operation to the ordered op queue.
+        ///
+        /// The op *must* have "seconds" set before calling this method.
         void addOperationToQueue(Operation, Ref<T>);
 
         size_t getQueueSize() const override;

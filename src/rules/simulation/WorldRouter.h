@@ -69,6 +69,8 @@ class WorldRouter : public BaseWorld
 
         void resumeWorld() override;
 
+        void resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op);
+
     public:
 
 

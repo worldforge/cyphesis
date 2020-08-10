@@ -71,11 +71,7 @@ using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Appearance;
 using Atlas::Objects::Operation::Disappearance;
-using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Operation::Move;
-using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Info;
-using Atlas::Objects::Operation::Wield;
 
 using Atlas::Objects::smart_dynamic_cast;
 

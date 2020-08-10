@@ -40,7 +40,6 @@ using Atlas::Objects::Root;
 using Atlas::Objects::smart_dynamic_cast;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 
@@ -141,6 +140,7 @@ void ExternalMind::operation(const Operation& op, OpVector& res)
     } else {
         //Only sent ops that inherit from "Info" to the client.
         if (op->instanceOf(Atlas::Objects::Operation::INFO_NO)) {
+            op->setSeconds(BaseWorld::instance().getTimeAsSeconds());
             m_link->send(op);
         }
     }

@@ -80,5 +80,13 @@
   }
 #endif //STUB_PossessionClient_notifyAccountCreated
 
+#ifndef STUB_PossessionClient_resolveDispatchTimeForOp
+//#define STUB_PossessionClient_resolveDispatchTimeForOp
+  void PossessionClient::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op)
+  {
+    
+  }
+#endif //STUB_PossessionClient_resolveDispatchTimeForOp
+
 
 #endif

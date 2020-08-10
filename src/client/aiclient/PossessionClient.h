@@ -61,6 +61,8 @@ class PossessionClient : public BaseClient
 
         void notifyAccountCreated(const std::string& accountId) override;
 
+        void resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op);
+
         MindKit& m_mindFactory;
 
         std::function<void()> m_reconnectFn;

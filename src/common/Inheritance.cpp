@@ -38,7 +38,6 @@ using Atlas::Objects::Operation::Affect;
 using Atlas::Objects::Operation::Create;
 using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
-using Atlas::Objects::Operation::Info;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Get;
 using Atlas::Objects::Operation::Sight;
