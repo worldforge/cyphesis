@@ -39,6 +39,14 @@
   }
 #endif //STUB_BaseMind_entityDeleted
 
+#ifndef STUB_BaseMind_updateServerTimeFromOperation
+//#define STUB_BaseMind_updateServerTimeFromOperation
+  void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::RootOperationData& op)
+  {
+    
+  }
+#endif //STUB_BaseMind_updateServerTimeFromOperation
+
 #ifndef STUB_BaseMind_BaseMind
 //#define STUB_BaseMind_BaseMind
    BaseMind::BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager)

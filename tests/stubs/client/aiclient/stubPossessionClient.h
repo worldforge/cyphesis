@@ -40,6 +40,14 @@
   }
 #endif //STUB_PossessionClient_operation
 
+#ifndef STUB_PossessionClient_processOperation
+//#define STUB_PossessionClient_processOperation
+  void PossessionClient::processOperation(const Operation& op, OpVector& res)
+  {
+    
+  }
+#endif //STUB_PossessionClient_processOperation
+
 #ifndef STUB_PossessionClient_operationFromEntity
 //#define STUB_PossessionClient_operationFromEntity
   void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity)

@@ -46,14 +46,14 @@ PossessionClient::PossessionClient(CommSocket& commSocket,
                                    MindKit& mindFactory,
                                    std::unique_ptr<Inheritance> inheritance,
                                    std::function<void()> reconnectFn) :
-    BaseClient(commSocket),
-    m_mindFactory(mindFactory),
-    m_reconnectFn(std::move(reconnectFn)),
-    m_account(nullptr),
-    m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
-                           [&]() -> std::chrono::steady_clock::duration { return getTime(); }),
-    m_inheritance(std::move(inheritance)),
-    m_dispatcherTimer(commSocket.m_io_context)
+        BaseClient(commSocket),
+        m_mindFactory(mindFactory),
+        m_reconnectFn(std::move(reconnectFn)),
+        m_account(nullptr),
+        m_operationsDispatcher([&](const Operation& op, Ref<BaseMind> from) { this->operationFromEntity(op, std::move(from)); },
+                               [&]() -> std::chrono::steady_clock::duration { return getTime(); }),
+        m_inheritance(std::move(inheritance)),
+        m_dispatcherTimer(commSocket.m_io_context)
 {
 
 
@@ -83,12 +83,23 @@ void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> lo
 {
     if (!locatedEntity->isDestroyed()) {
         OpVector res;
-        operation(op, res);
+        //Adjust the time of the operation to fit with the server's time
+        op->setSeconds(op->getSeconds() - m_serverLocalTimeDiff);
+        processOperation(op, res);
         send(res);
     }
 }
 
 void PossessionClient::operation(const Operation& op, OpVector& res)
+{
+    if (!op->isDefaultSeconds()) {
+        //Store the difference between server time and local time, so we can properly adjust the time of any locally scheduled ops when they are dispatched.
+        m_serverLocalTimeDiff = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count() - op->getSeconds();
+    }
+    processOperation(op, res);
+}
+
+void PossessionClient::processOperation(const Operation& op, OpVector& res)
 {
     if (debug_flag) {
         std::cout << "PossessionClient::operation received {" << std::endl;
@@ -147,7 +158,7 @@ void PossessionClient::scheduleDispatch()
 
     m_dispatcherTimer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {
-            m_operationsDispatcher.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(10));
+            m_operationsDispatcher.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
             scheduleDispatch();
         }
     });

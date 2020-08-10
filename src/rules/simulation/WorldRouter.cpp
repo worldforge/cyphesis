@@ -245,6 +245,10 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
             return;
         }
     }
+    //Set the time of when this op is dispatched. That way, other components in the system can
+    //always use the seconds set on the op to know the current time.
+    op->setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count());
+
     OpVector res;
     debug(std::cout << "WorldRouter::deliverTo begin {"
                     << op->getParent() << ":"

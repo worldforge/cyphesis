@@ -169,9 +169,10 @@ Py::Object CyPy_BaseMind::getattro(const Py::String& name)
     }
 
 
-    if (nameStr == "time") {
-        return CyPy_WorldTime::wrap(m_value->getTime());
-    }
+    //TODO: remove CyPy_WorldTime
+//    if (nameStr == "time") {
+//        return CyPy_WorldTime::wrap(m_value->getTime());
+//    }
 
     return PythonExtensionBase::getattro(name);
 }

@@ -149,9 +149,9 @@ Py::Object CyPy_CreatorClient::getattro(const Py::String& name)
 //    if (nameStr == "location") {
 //        return CyPy_Location::wrap(m_value->m_location);
 //    }
-    if (nameStr == "time") {
-        return CyPy_WorldTime::wrap(m_value->getTime());
-    }
+//    if (nameStr == "time") {
+//        return CyPy_WorldTime::wrap(m_value->getTime());
+//    }
 //    Atlas::Message::Element attr;
 //    if (m_value->getAttr(nameStr, attr) == 0) {
 //        return CyPy_Element::wrap(std::move(attr));

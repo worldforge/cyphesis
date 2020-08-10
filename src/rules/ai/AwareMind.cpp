@@ -50,8 +50,7 @@ AwareMind::AwareMind(const std::string& mind_id,
         BaseMind(mind_id, std::move(entity_id), propertyManager),
         mSharedTerrain(sharedTerrain),
         mAwarenessStoreProvider(awarenessStoreProvider),
-        mAwarenessStore(nullptr),
-        mServerTimeDiff(0)
+        mAwarenessStore(nullptr)
 {
 }
 
@@ -73,23 +72,25 @@ AwareMind::~AwareMind()
 void AwareMind::operation(const Operation& op, OpVector& res)
 {
 
+
     //If it's a "move" tick we'll process it here and won't send it on to the mind.
     if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
         if (!op->getArgs().empty()) {
             auto arg = op->getArgs().front();
             if (arg->getName() == "move") {
+                updateServerTimeFromOperation(*op);
                 processMoveTick(op, res);
                 return;
             }
         }
     }
 
-    if (mServerTimeDiff == 0 && op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-        if (op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
-            double stamp = op->getSeconds();
-            mServerTimeDiff = getCurrentLocalTime() - stamp;
-        }
-    }
+//    if (mServerTimeDiff == 0 && op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
+//        if (op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
+//            double stamp = op->getSeconds();
+//            mServerTimeDiff = getCurrentLocalTime() - stamp;
+//        }
+//    }
 
     BaseMind::operation(op, res);
 }
@@ -101,7 +102,7 @@ double AwareMind::getCurrentLocalTime() const
 
 double AwareMind::getCurrentServerTime() const
 {
-    return getCurrentLocalTime() - mServerTimeDiff;
+    return mServerTime;
 }
 
 void AwareMind::processMoveTick(const Operation& op, OpVector& res)
@@ -124,7 +125,7 @@ void AwareMind::processMoveTick(const Operation& op, OpVector& res)
     }
 
     if (mSteering) {
-        SteeringResult result = mSteering->update(getCurrentServerTime());
+        SteeringResult result = mSteering->update(op->getSeconds());
         if (result.direction.isValid()) {
             Atlas::Objects::Operation::Move move;
             Atlas::Objects::Entity::Anonymous what;
@@ -330,10 +331,10 @@ void AwareMind::entityDeleted(MemEntity& entity)
     }
 }
 
-double AwareMind::getServerTimeDiff() const
-{
-    return mServerTimeDiff;
-}
+//double AwareMind::getServerTimeDiff() const
+//{
+//    return mServerTimeDiff;
+//}
 
 void AwareMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
 {

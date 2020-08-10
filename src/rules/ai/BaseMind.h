@@ -48,7 +48,7 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         /// \brief Memory map of world entities this mind knows about
         MemMap m_map;
         /// \brief World time as far as this mind is aware
-        std::shared_ptr<WorldTime> m_time;
+        double mServerTime;
 
         std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
         std::vector<Operation> m_pendingOperations;
@@ -72,6 +72,8 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         void entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, LocatedEntity* oldLocation) override;
 
         void entityDeleted(MemEntity& entity) override;
+
+        void updateServerTimeFromOperation(const Atlas::Objects::Operation::RootOperationData& op);
 
         /**
          * A list of outgoing operations as result from script hooks and callbacks.
@@ -98,9 +100,9 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         MemMap* getMap()
         { return &m_map; }
 
-        /// \brief Accessor for the world time
-        std::shared_ptr<WorldTime> getTime() const
-        { return m_time; }
+//        /// \brief Accessor for the world time
+//        std::shared_ptr<WorldTime> getTime() const
+//        { return m_time; }
 
         const Ref<MemEntity>& getEntity() const
         {

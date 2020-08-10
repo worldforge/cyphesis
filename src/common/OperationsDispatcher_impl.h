@@ -42,9 +42,6 @@ OperationsDispatcher<T>::~OperationsDispatcher()
 template<typename T>
 void OperationsDispatcher<T>::dispatchOperation(OpQueEntry<T>& oqe)
 {
-    //Set the time of when this op is dispatched. That way, other components in the system can
-    //always use the seconds set on the op to know the current time.
-    oqe.op->setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count());
     try {
         m_operationProcessor(oqe.op, std::move(oqe.from));
     }

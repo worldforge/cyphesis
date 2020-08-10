@@ -331,7 +331,7 @@
 
 #ifndef STUB_PhysicalDomain_scheduleTick
 //#define STUB_PhysicalDomain_scheduleTick
-  Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity, double timeNow)
+  Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity)
   {
     return *static_cast<Atlas::Objects::Operation::RootOperation*>(nullptr);
   }

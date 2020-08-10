@@ -59,7 +59,7 @@ class AwareMind : public BaseMind
 
         const std::shared_ptr<Awareness>& getAwareness() const;
 
-        double getServerTimeDiff() const;
+        //double getServerTimeDiff() const;
 
         double getCurrentLocalTime() const;
 
@@ -81,7 +81,8 @@ class AwareMind : public BaseMind
          *
          * The value is calculated by subtracting the timestamp received from the server from the current local time.
          */
-        double mServerTimeDiff;
+        //double mServerTimeDiff;
+
 
         void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 

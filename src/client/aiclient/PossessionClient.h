@@ -51,6 +51,8 @@ class PossessionClient : public BaseClient
 
         void operation(const Operation& op, OpVector& res) override;
 
+        void processOperation(const Operation& op, OpVector& res);
+
         void operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity);
 
         std::chrono::steady_clock::duration getTime() const;
@@ -70,6 +72,13 @@ class PossessionClient : public BaseClient
         std::unique_ptr<Inheritance> m_inheritance;
 
         boost::asio::steady_timer m_dispatcherTimer;
+
+        /**
+         * Keep track of the difference between the server time and our local time.
+         * This is needed when scheduling operations locally. When they are later dispatched
+         * their "seconds" needs to match the time it would be on the server.
+         */
+        double m_serverLocalTimeDiff;
 
 
 };

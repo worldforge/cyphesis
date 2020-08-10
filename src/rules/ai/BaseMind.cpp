@@ -49,7 +49,7 @@ BaseMind::BaseMind(const std::string& mindId, std::string entityId, const Proper
         m_typeStore(new SimpleTypeStore(propertyManager)),
         m_typeResolver(new TypeResolver(*m_typeStore)),
         m_map(*m_typeResolver),
-        m_time(new WorldTime()),
+        mServerTime(0),
         m_serialNoCounter(0),
         m_scriptFactory(nullptr)
 {
@@ -423,6 +423,17 @@ void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string s
     }
 }
 
+void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::RootOperationData& op) {
+    if (!op.isDefaultSeconds()) {
+        if (op.getSeconds() < mServerTime) {
+            log(WARNING, String::compose("Operation %1 has seconds set (%2) earlier than already recorded seconds (%3).", op.getParent(), op.getSeconds(), mServerTime));
+        }
+        mServerTime = op.getSeconds();
+    } else {
+        log(WARNING, String::compose("Got '%1' operation from server without 'seconds' specified.", op.getParent()));
+    }
+}
+
 
 void BaseMind::operation(const Operation& op, OpVector& res)
 {
@@ -439,8 +450,7 @@ void BaseMind::operation(const Operation& op, OpVector& res)
     }
 
     int op_no = op->getClassNo();
-    m_time->update((int) op->getSeconds());
-
+    updateServerTimeFromOperation(*op);
 
     if (op_no == Atlas::Objects::Operation::INFO_NO) {
         InfoOperation(op, res);
