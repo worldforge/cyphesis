@@ -81,14 +81,6 @@
   }
 #endif //STUB_AwareMind_getAwareness
 
-#ifndef STUB_AwareMind_getCurrentLocalTime
-//#define STUB_AwareMind_getCurrentLocalTime
-  double AwareMind::getCurrentLocalTime() const
-  {
-    return 0;
-  }
-#endif //STUB_AwareMind_getCurrentLocalTime
-
 #ifndef STUB_AwareMind_getCurrentServerTime
 //#define STUB_AwareMind_getCurrentServerTime
   double AwareMind::getCurrentServerTime() const

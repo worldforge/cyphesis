@@ -59,10 +59,6 @@ class AwareMind : public BaseMind
 
         const std::shared_ptr<Awareness>& getAwareness() const;
 
-        //double getServerTimeDiff() const;
-
-        double getCurrentLocalTime() const;
-
         double getCurrentServerTime() const;
 
     protected:
@@ -73,16 +69,6 @@ class AwareMind : public BaseMind
         AwarenessStore* mAwarenessStore;
         std::shared_ptr<Awareness> mAwareness;
         std::unique_ptr<Steering> mSteering;
-
-        /**
-         * @brief Difference in time between server time and local time.
-         *
-         * This is used to correctly calculate position of entities when handling steering.
-         *
-         * The value is calculated by subtracting the timestamp received from the server from the current local time.
-         */
-        //double mServerTimeDiff;
-
 
         void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 

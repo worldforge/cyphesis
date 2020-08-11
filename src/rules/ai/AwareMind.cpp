@@ -84,20 +84,7 @@ void AwareMind::operation(const Operation& op, OpVector& res)
             }
         }
     }
-
-//    if (mServerTimeDiff == 0 && op->getClassNo() == Atlas::Objects::Operation::SIGHT_NO) {
-//        if (op->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
-//            double stamp = op->getSeconds();
-//            mServerTimeDiff = getCurrentLocalTime() - stamp;
-//        }
-//    }
-
     BaseMind::operation(op, res);
-}
-
-double AwareMind::getCurrentLocalTime() const
-{
-    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count() / 1000000.0;
 }
 
 double AwareMind::getCurrentServerTime() const
@@ -330,11 +317,6 @@ void AwareMind::entityDeleted(MemEntity& entity)
         mAwareness->removeEntity(*m_ownEntity, entity);
     }
 }
-
-//double AwareMind::getServerTimeDiff() const
-//{
-//    return mServerTimeDiff;
-//}
 
 void AwareMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
 {

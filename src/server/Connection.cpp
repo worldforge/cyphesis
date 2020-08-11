@@ -23,10 +23,6 @@
 #include "Player.h"
 #include "ExternalMindsConnection.h"
 #include "ExternalMindsManager.h"
-
-//#include "rules/simulation/ExternalMind.h"
-//#include "rules/simulation/BaseWorld.h"
-
 #include "common/id.h"
 #include "common/debug.h"
 #include "common/Inheritance.h"
@@ -236,12 +232,8 @@ void Connection::externalOperation(const Operation& op, Link& link)
     debug_print("Connection::externalOperation")
     //log(INFO, String::compose("externalOperation in %1", getId()));
 
-    //Set the receive time to the current simulation time.
-    //op->setSeconds(BaseWorld::instance().getTimeAsSeconds());
-
     if (op->isDefaultFrom()) {
         m_operationsQueue.emplace_back(op);
-
     } else {
         const std::string& from = op->getFrom();
         debug_print("send on to " << from)
