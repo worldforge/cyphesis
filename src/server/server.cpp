@@ -485,8 +485,7 @@ namespace {
             std::string server_id, lobby_id;
             long int_id, lobby_int_id;
 
-            if (((int_id = newId(server_id)) < 0)
-                || ((lobby_int_id = newId(lobby_id)) < 0)) {
+            if (((int_id = newId(server_id)) < 0) || ((lobby_int_id = newId(lobby_id)) < 0)) {
                 log(CRITICAL, "Unable to get server IDs from Database");
                 return EXIT_DATABASE_ERROR;
             }
@@ -557,8 +556,7 @@ namespace {
                         //Populate the server through separate process (mainly because it's easier as we've
                         //already written the importer tool; we might also do it in-process, but that would
                         //require some rewriting of code).
-                        log(INFO,
-                            compose("Trying to import world from %1.", importPath));
+                        log(INFO, compose("Trying to import world from %1.", importPath));
                         std::stringstream ss;
                         ss << bin_directory << "/cyimport";
                         ss << " --cyphesis:confdir=\"" << etc_directory << "\"";
@@ -577,9 +575,7 @@ namespace {
                         importer.detach();
                     }
                 } else {
-                    log(NOTICE,
-                        compose("Not importing as \"%1\" could not be found",
-                                importPath));
+                    log(NOTICE, compose("Not importing as \"%1\" could not be found", importPath));
                     file.close();
                 }
             }
@@ -635,9 +631,7 @@ namespace {
                     log(ERROR, "Error when shutting down");
                 }
             } catch (const std::exception& e) {
-                log(ERROR,
-                    String::compose("Exception caught when shutting down: %1",
-                                    e.what()));
+                log(ERROR, String::compose("Exception caught when shutting down: %1", e.what()));
             } catch (...) {
                 //Ignore this error and carry on with shutting down.
                 log(ERROR, "Exception caught when shutting down");
