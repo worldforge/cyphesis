@@ -46,7 +46,6 @@ class BaseMindtest : public Cyphesis::TestBase
     void teardown();
 
     void test_getMap();
-    void test_getTime();
     void test_sleep();
     void test_awake();
     void test_operation();
@@ -64,7 +63,6 @@ class BaseMindtest : public Cyphesis::TestBase
 BaseMindtest::BaseMindtest()
 {
     ADD_TEST(BaseMindtest::test_getMap);
-    ADD_TEST(BaseMindtest::test_getTime);
     ADD_TEST(BaseMindtest::test_sleep);
     ADD_TEST(BaseMindtest::test_awake);
     ADD_TEST(BaseMindtest::test_operation);
@@ -94,11 +92,6 @@ void BaseMindtest::teardown()
 void BaseMindtest::test_getMap()
 {
     (void)bm->getMap();
-}
-
-void BaseMindtest::test_getTime()
-{
-    (void)bm->getTime();
 }
 
 void BaseMindtest::test_sleep()

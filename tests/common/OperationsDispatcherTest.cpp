@@ -172,11 +172,13 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         {
             Operation op;
             op->setRefno(4);
+            op->setSeconds(0);
             dispatcher.addOperationToQueue(op, entity);
         }
         {
             Operation op;
             op->setRefno(5);
+            op->setSeconds(0);
             dispatcher.addOperationToQueue(op, entity);
         }
 

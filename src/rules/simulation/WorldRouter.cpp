@@ -306,60 +306,74 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
 /// that it is possible that this entity has been destroyed.
 void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
 {
-    rmt_ScopedCPUSample(WorldRouter_operation, 0)
+    try {
+        rmt_ScopedCPUSample(WorldRouter_operation, 0)
 
-    debug_print("WorldRouter::operation {"
-                        << op->getParent() << ":"
-                        << op->getFrom() << ":" << op->getTo() << "}")
-    assert(op->getFrom() == from->getId());
-    assert(!op->getParent().empty());
+        debug_print("WorldRouter::operation {"
+                            << op->getParent() << ":"
+                            << op->getFrom() << ":" << op->getTo() << "}")
+        assert(op->getFrom() == from->getId());
+        assert(!op->getParent().empty());
 
-    Dispatching.emit(op);
+        Dispatching.emit(op);
 
-    if (!op->isDefaultTo()) {
-        const std::string& to = op->getTo();
-        if (to.empty()) {
-            log(ERROR, String::compose("Op with 'to' set to an empty string. From %1. Op: %2", from->describeEntity(), debug_tostring(op)));
-            return;
-        }
-        Ref<LocatedEntity> to_entity;
-
-        if (to == from->getId()) {
-            if (from->isDestroyed()) {
-                // Entity no longer exists, don't send anything
+        if (!op->isDefaultTo()) {
+            const std::string& to = op->getTo();
+            if (to.empty()) {
+                log(ERROR, String::compose("Op with 'to' set to an empty string. From %1. Op: %2", from->describeEntity(), debug_tostring(op)));
                 return;
             }
-            to_entity = std::move(from);
-        } else {
-            to_entity = getEntity(to);
+            Ref<LocatedEntity> to_entity;
 
-            if (to_entity == nullptr || to_entity->isDestroyed()) {
-                // Entity has been removed, send an Unseen op back to the observer
-                // But check that the observer hasn't been destroyed (to avoid infinite loops)
-                if (!from->isDestroyed()) {
-                    Atlas::Objects::Operation::Unseen unseen;
-                    Atlas::Objects::Entity::Anonymous ent;
-                    ent->setId(to);
-                    ent->setAttr("destroyed", 1); //Add attribute clarifying that this entity is destroyed.
-                    unseen->setArgs1(ent);
-                    unseen->setTo(from->getId());
-                    if (!op->isDefaultSerialno()) {
-                        unseen->setRefno(op->getSerialno());
-                    }
-                    message(unseen, *from);
+            if (to == from->getId()) {
+                if (from->isDestroyed()) {
+                    // Entity no longer exists, don't send anything
+                    return;
                 }
-                return;
+                to_entity = std::move(from);
+            } else {
+                to_entity = getEntity(to);
+
+                if (to_entity == nullptr || to_entity->isDestroyed()) {
+                    // Entity has been removed, send an Unseen op back to the observer
+                    // But check that the observer hasn't been destroyed (to avoid infinite loops)
+                    if (!from->isDestroyed()) {
+                        Atlas::Objects::Operation::Unseen unseen;
+                        Atlas::Objects::Entity::Anonymous ent;
+                        ent->setId(to);
+                        ent->setAttr("destroyed", 1); //Add attribute clarifying that this entity is destroyed.
+                        unseen->setArgs1(ent);
+                        unseen->setTo(from->getId());
+                        if (!op->isDefaultSerialno()) {
+                            unseen->setRefno(op->getSerialno());
+                        }
+                        message(unseen, *from);
+                    }
+                    return;
+                }
+            }
+
+            deliverTo(op, std::move(to_entity));
+
+        } else {
+            //This will send an op to all entities in the system. Perhaps we should add some more checks for when we want to allow for this?
+            for (auto& entry : m_eobjects) {
+                op->setTo(entry.second->getId());
+                deliverTo(op, entry.second);
             }
         }
-
-        deliverTo(op, std::move(to_entity));
-
-    } else {
-        //This will send an op to all entities in the system. Perhaps we should add some more checks for when we want to allow for this?
-        for (auto& entry : m_eobjects) {
-            op->setTo(entry.second->getId());
-            deliverTo(op, entry.second);
-        }
+    }
+    catch (const std::exception& ex) {
+        log(ERROR, String::compose("Exception caught in OperationsDispatcher::dispatchOperation() "
+                                   "thrown while processing operation "
+                                   "sent to \"%1\" from \"%2\": %3",
+                                   op->getTo(), op->getFrom(), ex.what()));
+    }
+    catch (...) {
+        log(ERROR, String::compose("Unspecified exception caught in OperationsDispatcher::dispatchOperation() "
+                                   "thrown while processing operation "
+                                   "sent to \"%1\" from \"%2\"",
+                                   op->getTo(), op->getFrom()));
     }
 }
 

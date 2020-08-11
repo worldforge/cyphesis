@@ -76,69 +76,85 @@ Atlas::Objects::Factories factories;
 
 class TestCommSocket : public CommSocket
 {
-  public:
-    TestCommSocket() : CommSocket(*(boost::asio::io_context*)0)
-    {
-    }
+    public:
+        TestCommSocket() : CommSocket(*(boost::asio::io_context*) 0)
+        {
+        }
 
-    virtual void disconnect()
-    {
-    }
+        virtual void disconnect()
+        {
+        }
 
-    virtual int flush()
-    {
-        return 0;
-    }
+        virtual int flush()
+        {
+            return 0;
+        }
 
 };
 
-class TestAccount : public Account {
-  public:
-    TestAccount(Connection * conn, const std::string & username,
-                                   const std::string & passwd,
-                                   const std::string & id, long intId) :
-        Account(conn, username, passwd, id, intId) {
-    }
+class TestAccount : public Account
+{
+    public:
+        TestAccount(Connection* conn, const std::string& username,
+                    const std::string& passwd,
+                    const std::string& id, long intId) :
+                Account(conn, username, passwd, id, intId)
+        {
+        }
 
-    virtual int characterError(const Operation & op,
-                               const Atlas::Objects::Root & ent,
-                               OpVector & res) const {
-        return 0;
-    }
+        virtual int characterError(const Operation& op,
+                                   const Atlas::Objects::Root& ent,
+                                   OpVector& res) const
+        {
+            return 0;
+        }
 };
 
 class Accountintegration : public Cyphesis::TestBase
 {
-    DatabaseNull m_database;
-    Persistence* m_persistence;
+        DatabaseNull m_database;
+        Persistence* m_persistence;
 
-    WorldRouter * m_world;
+        WorldRouter* m_world;
 
-    ServerRouting * m_server;
+        ServerRouting* m_server;
 
-    CommSocket * m_tc;
-    Connection * m_c;
-    TestAccount * m_ac;
+        CommSocket* m_tc;
+        Connection* m_c;
+        TestAccount* m_ac;
 
-  public:
-    Accountintegration();
+    public:
+        Accountintegration();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_addNewCharacter();
-    void test_getType();
-    void test_addToMessage();
-    void test_addToEntity();
-    void test_CreateOperation();
-    void test_GetOperation();
-    void test_ImaginaryOperation();
-    void test_LookOperation();
-    void test_SetOperation();
-    void test_TalkOperation();
-    void test_LogoutOperation();
-    void test_connectCharacter_entity();
-    void test_connectCharacter_character();
+        void teardown();
+
+        void test_addNewCharacter();
+
+        void test_getType();
+
+        void test_addToMessage();
+
+        void test_addToEntity();
+
+        void test_CreateOperation();
+
+        void test_GetOperation();
+
+        void test_ImaginaryOperation();
+
+        void test_LookOperation();
+
+        void test_SetOperation();
+
+        void test_TalkOperation();
+
+        void test_LogoutOperation();
+
+        void test_connectCharacter_entity();
+
+        void test_connectCharacter_character();
 
         Inheritance* m_inheritance;
         Ref<Entity> m_rootEntity;
@@ -163,7 +179,8 @@ Accountintegration::Accountintegration()
     ADD_TEST(Accountintegration::test_connectCharacter_character);
 }
 
-Atlas::Objects::Root composeDeclaration(std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes) {
+Atlas::Objects::Root composeDeclaration(std::string class_name, std::string parent, Atlas::Message::MapType rawAttributes)
+{
 
     Atlas::Objects::Root decl;
     decl->setObjtype("class");
@@ -173,7 +190,7 @@ Atlas::Objects::Root composeDeclaration(std::string class_name, std::string pare
     Atlas::Message::MapType composed;
     for (const auto& entry : rawAttributes) {
         composed[entry.first] = Atlas::Message::MapType{
-            {"default",    entry.second}
+                {"default", entry.second}
         };
     }
 
@@ -191,10 +208,10 @@ void Accountintegration::setup()
     m_propertyManager = new TestPropertyManager();
     auto entityRuleHandler = new EntityRuleHandler(*m_eb, *m_propertyManager);
 
-    m_world = new WorldRouter(m_rootEntity, *m_eb, {});
+    m_world = new WorldRouter(m_rootEntity, *m_eb, []() { return std::chrono::milliseconds(0); });
 
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
-                         "1", 1, "2", 2);
+                                 "1", 1, "2", 2);
 
     m_tc = new TestCommSocket();
     m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);

@@ -102,7 +102,7 @@
 
 #ifndef STUB_OperationsHandler_processUntil
 //#define STUB_OperationsHandler_processUntil
-  size_t OperationsHandler::processUntil(std::chrono::steady_clock::time_point time_point)
+  size_t OperationsHandler::processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock)
   {
     return 0;
   }
@@ -203,7 +203,7 @@
 #ifndef STUB_OperationsDispatcher_processUntil
 //#define STUB_OperationsDispatcher_processUntil
   template <typename T>
-  size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_point time_point)
+  size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock)
   {
     return 0;
   }
