@@ -133,7 +133,6 @@ wf_add_test(physics/CourseTest.cpp ../src/physics/Course.cpp)
 wf_add_test(modules/DateTimeTest.cpp ../src/modules/DateTime.cpp)
 wf_add_test(rules/LocationTest.cpp ../src/rules/Location.cpp ../src/rules/EntityLocation.cpp)
 target_link_libraries(LocationTest physics)
-wf_add_test(modules/WorldTimeTest.cpp ../src/modules/WorldTime.cpp ../src/modules/DateTime.cpp)
 wf_add_test(rules/EntityRefTest.cpp ../src/modules/WeakEntityRef.cpp)
 wf_add_test(modules/TerrainContextTest.cpp ../src/modules/TerrainContext.cpp)
 
@@ -264,9 +263,6 @@ target_link_libraries(Py_WorldTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(rules/Py_MessageTest.cpp python_testers.cpp)
 target_link_libraries(Py_MessageTest ${PYTHON_TESTS_LIBS})
-
-wf_add_test(rules/Py_WorldTimeTest.cpp python_testers.cpp)
-target_link_libraries(Py_WorldTimeTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(rules/Py_PropertyTest.cpp python_testers.cpp)
 target_link_libraries(Py_PropertyTest ${PYTHON_TESTS_LIBS})

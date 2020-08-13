@@ -290,19 +290,6 @@ int main()
 
 #include "../../stubs/rules/stubScript.h"
 #include "../../stubs/rules/stubLocation.h"
-
-DateTime::DateTime(int t)
-{
-}
-
-void DateTime::update(int t)
-{
-}
-
-void WorldTime::initTimeInfo()
-{
-}
-
 #include "../../stubs/common/stubTypeNode.h"
 #include "../../stubs/rules/ai/stubTypeResolver.h"
 #include "../../stubs/rules/stubSimpleTypeStore.h"

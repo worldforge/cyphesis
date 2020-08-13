@@ -24,7 +24,6 @@
 #include "rules/python/CyPy_Point3D.h"
 #include "rules/python/CyPy_Props.h"
 #include "rules/python/PythonScriptFactory.h"
-#include "rules/python/CyPy_WorldTime.h"
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 #include "rules/entityfilter/Providers.h"
 #include "rules/ai/AwareMind.h"

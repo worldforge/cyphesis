@@ -348,20 +348,6 @@ int main()
 #include "../../stubs/common/stubTypeNode.h"
 #include "../../stubs/rules/ai/stubTypeResolver.h"
 #include "../../stubs/rules/stubSimpleTypeStore.h"
-
-
-DateTime::DateTime(int t)
-{
-}
-
-void DateTime::update(int t)
-{
-}
-
-void WorldTime::initTimeInfo()
-{
-}
-
 #include "../../stubs/common/stublog.h"
 #include "../../stubs/common/stubid.h"
 

@@ -18,7 +18,6 @@
 
 #include <modules/WorldTime.h>
 #include "CyPy_World.h"
-#include "rules/python/CyPy_WorldTime.h"
 #include "rules/python/CyPy_LocatedEntity.h"
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 #include "rules/entityfilter/Providers.h"

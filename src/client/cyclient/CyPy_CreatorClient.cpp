@@ -23,7 +23,6 @@
 #include "rules/python/CyPy_LocatedEntity.h"
 #include "rules/python/CyPy_Operation.h"
 #include "rules/ai/python/CyPy_MemMap.h"
-#include "rules/python/CyPy_WorldTime.h"
 #include "rules/python/CyPy_Location.h"
 
 #include "common/TypeNode.h"

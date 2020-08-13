@@ -131,11 +131,3 @@ std::string create_session_username()
 #include "../stubs/rules/stubLocatedEntity.h"
 #include "../stubs/common/stubRouter.h"
 #include "../stubs/rules/stubLocation.h"
-
-void WorldTime::initTimeInfo()
-{
-}
-
-DateTime::DateTime(int t)
-{
-}

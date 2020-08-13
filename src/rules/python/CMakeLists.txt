@@ -23,8 +23,7 @@ add_library(rulesbase_python
     CyPy_Physics.cpp
     CyPy_EntityLocation.cpp
     CyPy_Props.cpp
-    CyPy_WorldTime.cpp
-    CyPy_Rules.cpp
+        CyPy_Rules.cpp
     CyPy_Root.cpp
     CyPy_Ball.cpp
     CyPy_MemEntity.cpp)
