@@ -198,6 +198,14 @@ import pydevd
 pydevd.settrace('localhost', port=9999, stdoutToServer=False, stderrToServer=False, suspend=False)
 ```
 
+## Performance measuring through Remotery
+
+Performance tracking through [Remotery](https://github.com/Celtoys/Remotery) is built in, 
+but not enabled by default. You need to set the option "--cyphesis:remotery=true" to enable it.
+
+After that's done you can open the file found at [external/Remotery/vis/index.html]() to see
+real time measurements.
+
 ## Copyright notices
 
 The server code in C++ is distributed under the GNU General Public
