@@ -350,16 +350,20 @@ namespace {
 
     int run()
     {
-//        rmtSettings* settings = rmt_Settings();
-//        settings->reuse_open_port = true;
-//        Remotery* rmt;
-//        auto error = rmt_CreateGlobalInstance(&rmt);
-//        if (RMT_ERROR_NONE != error) {
-//            printf("Error launching Remotery %d\n", error);
-//            return -1;
-//        } else {
-//            log(INFO, "Remotery enabled.");
-//        }
+        Remotery* rmt = nullptr;
+        auto remoteryEnabled = global_conf->getItem(CYPHESIS, "remotery");
+        if (remoteryEnabled.is_bool() && ((bool) remoteryEnabled)) {
+            rmtSettings* settings = rmt_Settings();
+            settings->reuse_open_port = true;
+            auto error = rmt_CreateGlobalInstance(&rmt);
+            if (RMT_ERROR_NONE != error) {
+                printf("Error launching Remotery %d\n", error);
+                return -1;
+            } else {
+                log(INFO, "Remotery enabled.");
+            }
+        }
+
 
         Monitors monitors;
         monitors.watch("minds", new Variable<int>(ExternalMind::s_numberOfMinds));
@@ -657,7 +661,9 @@ namespace {
 
         //The global_conf instance is created at loadConfig(...), so we'll destroy it here
         delete global_conf;
-      //  rmt_DestroyGlobalInstance(rmt);
+        if (rmt) {
+            rmt_DestroyGlobalInstance(rmt);
+        }
 
         return 0;
     }

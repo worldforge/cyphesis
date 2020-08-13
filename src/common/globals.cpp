@@ -105,9 +105,11 @@ static const usage_data usage_options[] = {
         {CYPHESIS, "vardir",             "<directory>",  "",              "Directory where temporary files can be stored",                                                                  S | C | M |
                                                                                                                                                                                             A},
         {CYPHESIS, "assetsdir",          "<directory>",  "",              "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S},
-        {CYPHESIS, "ruleset",            "<name>",       DEFAULT_RULESET, "Ruleset name",                                                                                                   S | C | D |
+        {CYPHESIS, "ruleset",            "<name>",       DEFAULT_RULESET,       "Ruleset name",                                                                                                   S | C | D |
                                                                                                                                                                                             A},
         {CYPHESIS, "autoimport",         "<path>",       "",              "Path to world file to import if world is empty",                                                                  S},
+        {CYPHESIS, "remotery",          "true|false",    "false",         "Set to true to enable Remotery",                                                                                 S},
+
         {CYPHESIS, "servername",         "<name>",       "<hostname>",    "Published name of the server",                                                                                   S | C},
         {CYPHESIS, "tcpport",            "<portnumber>", "6767",          "Network listen port for client connections",                                                                     S | C | M},
         {CYPHESIS, "dynamic_port_start", "<portnumber>", "6800",          "Lowest port to try and used for dyanmic ports",                                                                  S},
