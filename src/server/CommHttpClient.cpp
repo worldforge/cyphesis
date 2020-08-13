@@ -16,13 +16,15 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "CommHttpClient.h"
-#include "HttpCache.h"
 
 static const bool debug_flag = false;
 
 CommHttpClient::CommHttpClient(const std::string& name,
-                               boost::asio::io_context& io_context) :
-    mSocket(io_context), mStream(&mBuffer)
+                               boost::asio::io_context& io_context,
+                               HttpRequestProcessor& requestProcessor) :
+    mSocket(io_context),
+    mStream(&mBuffer),
+    m_requestProcessor(requestProcessor)
 {
 }
 
@@ -56,7 +58,7 @@ void CommHttpClient::do_read()
 
 void CommHttpClient::write()
 {
-    HttpCache::instance().processQuery(mStream, m_headers);
+    m_requestProcessor.processQuery(mStream, m_headers);
     auto self(this->shared_from_this());
     boost::asio::async_write(mSocket, mBuffer.data(),
                              [this, self](boost::system::error_code ec, std::size_t length) {

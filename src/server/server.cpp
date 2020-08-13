@@ -232,7 +232,7 @@ namespace {
         std::unique_ptr<CommAsioListener<ip::tcp, CommHttpClient>> httpListener;
     };
 
-    SocketListeners createListeners(io_context& io_context, ServerRouting& serverRouting, Atlas::Objects::Factories& atlasFactories)
+    SocketListeners createListeners(io_context& io_context, ServerRouting& serverRouting, Atlas::Objects::Factories& atlasFactories, HttpRequestProcessor& httpRequestProcessor)
     {
 
         SocketListeners socketListeners;
@@ -327,7 +327,7 @@ namespace {
 
 
         auto httpCreator = [&]() -> std::shared_ptr<CommHttpClient> {
-            return std::make_shared<CommHttpClient>(serverRouting.getName(), io_context);
+            return std::make_shared<CommHttpClient>(serverRouting.getName(), io_context, httpRequestProcessor);
         };
 
         auto httpStarter = [&](CommHttpClient& client) {
@@ -604,7 +604,7 @@ namespace {
 
             //Inner loop, where listeners are active.
             {
-                auto socketListeners = createListeners(*io_context, serverRouting, atlasFactories);
+                auto socketListeners = createListeners(*io_context, serverRouting, atlasFactories, httpCache);
 
                 auto metaClient = createMetaClient(*io_context);
                 auto mdnsClient = createMDNSClient(*io_context, serverRouting);

@@ -21,11 +21,11 @@
 
 #include <list>
 #include <string>
-#include <common/Singleton.h>
+#include "CommHttpClient.h"
 
 /// \brief A caching generator for the results of http requests.
 ///
-class HttpCache : public Singleton<HttpCache> {
+class HttpCache : public HttpRequestProcessor {
   protected:
 
     void sendHeaders(std::ostream &,

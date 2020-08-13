@@ -54,7 +54,6 @@ int main()
 
     {
         HttpCache httpCache;
-        HttpCache::instance();
     }
 
     // No header, invalid

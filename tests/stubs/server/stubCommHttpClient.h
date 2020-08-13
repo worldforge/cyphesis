@@ -7,6 +7,15 @@
 #include "server/CommHttpClient.h"
 #include "stubCommHttpClient_custom.h"
 
+#ifndef STUB_HttpRequestProcessor_processQuery
+//#define STUB_HttpRequestProcessor_processQuery
+  void HttpRequestProcessor::processQuery(std::ostream& body, const std::list<std::string>& headers)
+  {
+    
+  }
+#endif //STUB_HttpRequestProcessor_processQuery
+
+
 #ifndef STUB_CommHttpClient_do_read
 //#define STUB_CommHttpClient_do_read
   void CommHttpClient::do_read()
@@ -33,8 +42,8 @@
 
 #ifndef STUB_CommHttpClient_CommHttpClient
 //#define STUB_CommHttpClient_CommHttpClient
-   CommHttpClient::CommHttpClient(const std::string & name, boost::asio::io_context& io_context)
-    : std::enable_shared_from_this(name, io_context)
+   CommHttpClient::CommHttpClient(const std::string& name, boost::asio::io_context& io_context, HttpRequestProcessor& requestProcessor)
+    : std::enable_shared_from_this(name, io_context, requestProcessor)
   {
     
   }
