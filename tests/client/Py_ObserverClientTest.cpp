@@ -161,5 +161,4 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
 }
 
 #include "../stubs/client/cyclient/stubClientConnection.h"
-#include "../stubs/common/stubProperty.h"
-#include "../stubs/common/stubPropertyManager.h"
+

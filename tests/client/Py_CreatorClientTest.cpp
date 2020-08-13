@@ -169,5 +169,4 @@ Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
 #include "../stubs/client/cyclient/stubObserverClient.h"
 #include "../stubs/client/cyclient/stubBaseClient.h"
 #include "../stubs/client/cyclient/stubClientConnection.h"
-#include "../stubs/common/stubProperty.h"
-#include "../stubs/common/stubPropertyManager.h"
+

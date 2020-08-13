@@ -133,7 +133,8 @@ bool BoolProperty::isTrue() const
 }
 #endif //STUB_BoolProperty_isTrue
 
-
+template
+class PropertyCore<LocatedEntity>;
 template class Property<int>;
 template class Property<double>;
 template class Property<float>;
