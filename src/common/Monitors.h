@@ -43,8 +43,8 @@ class Monitors : public Singleton<Monitors>{
 
     void insert(const std::string &, const Atlas::Message::Element &);
     void watch(const std::string &, VariableBase *);
-    void send(std::ostream &);
-    void sendNumerics(std::ostream &);
+    void send(std::ostream &) const;
+    void sendNumerics(std::ostream &) const;
     int readVariable(const std::string& key, std::ostream& out_stream) const;
 
 };

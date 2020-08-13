@@ -21,24 +21,30 @@
 
 #include <list>
 #include <string>
+#include "common/Monitors.h"
 #include "CommHttpClient.h"
 
 /// \brief A caching generator for the results of http requests.
 ///
-class HttpCache : public HttpRequestProcessor {
-  protected:
+class HttpCache : public HttpRequestProcessor
+{
+    protected:
+        const Monitors& m_monitors;
 
-    void sendHeaders(std::ostream &,
-                     int status = 200,
-                     const std::string & type = "text/plain",
-                     const std::string & mesg = "OK");
+        void sendHeaders(std::ostream&,
+                         int status = 200,
+                         const std::string& type = "text/plain",
+                         const std::string& mesg = "OK");
 
-    void reportBadRequest(std::ostream &,
-                          int status = 400,
-                          const std::string & mesg = "Bad Request");
-  public:
+        void reportBadRequest(std::ostream&,
+                              int status = 400,
+                              const std::string& mesg = "Bad Request");
 
-    void processQuery(std::ostream &, const std::list<std::string> &);
+    public:
+
+        HttpCache(const Monitors& monitors);
+
+        void processQuery(std::ostream&, const std::list<std::string>&);
 };
 
 #endif // SERVER_HTTP_CACHE_H

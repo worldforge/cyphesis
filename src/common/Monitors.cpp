@@ -58,7 +58,7 @@ static std::ostream& operator<<(std::ostream& s, const Element& e)
     return s;
 }
 
-void Monitors::send(std::ostream& io)
+void Monitors::send(std::ostream& io) const
 {
     auto I = m_pairs.begin();
     auto Iend = m_pairs.end();
@@ -75,7 +75,7 @@ void Monitors::send(std::ostream& io)
     }
 }
 
-void Monitors::sendNumerics(std::ostream& io)
+void Monitors::sendNumerics(std::ostream& io) const
 {
     auto I = m_pairs.begin();
     auto Iend = m_pairs.end();

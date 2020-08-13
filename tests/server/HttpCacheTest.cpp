@@ -34,6 +34,9 @@
 class TestHttpCache : public HttpCache
 {
   public:
+        TestHttpCache(const Monitors& m): HttpCache(m)
+        { }
+
     void test_sendHeaders(std::ostream & io,
                           int status,
                           const std::string & type,
@@ -53,12 +56,12 @@ int main()
     global_conf = varconf::Config::inst();
 
     {
-        HttpCache httpCache;
+        HttpCache httpCache(Monitors::instance());
     }
 
     // No header, invalid
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         hc.processQuery(std::cout, std::list<std::string>());
 
@@ -66,7 +69,7 @@ int main()
 
     // Bad request header
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("boo");
@@ -77,7 +80,7 @@ int main()
 
     // Legacy HTTP (0.9??)
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET foo");
@@ -88,7 +91,7 @@ int main()
 
     // HTTP (n.m??)
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET foo HTTP/1.0");
@@ -99,7 +102,7 @@ int main()
 
     // HTTP get /config
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET /config HTTP/1.0");
@@ -110,7 +113,7 @@ int main()
 
     // HTTP get /config with some config
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         global_conf->setItem(instance, "bar", "value");
 
@@ -123,7 +126,7 @@ int main()
 
     // HTTP get /monitors
     {
-        HttpCache hc;
+        HttpCache hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET /monitors HTTP/1.0");
@@ -133,13 +136,13 @@ int main()
     }
 
     {
-        TestHttpCache hc;
+        TestHttpCache hc(Monitors::instance());
 
         hc.test_sendHeaders(std::cout, 200, "test/html", "OK");
     }
 
     {
-        TestHttpCache hc;
+        TestHttpCache hc(Monitors::instance());
 
         hc.test_reportBadRequest(std::cout, 200, "Bad request");
     }

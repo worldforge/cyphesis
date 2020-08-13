@@ -42,7 +42,7 @@
 
 #ifndef STUB_Monitors_send
 //#define STUB_Monitors_send
-  void Monitors::send(std::ostream &)
+  void Monitors::send(std::ostream &) const
   {
     
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_Monitors_sendNumerics
 //#define STUB_Monitors_sendNumerics
-  void Monitors::sendNumerics(std::ostream &)
+  void Monitors::sendNumerics(std::ostream &) const
   {
     
   }

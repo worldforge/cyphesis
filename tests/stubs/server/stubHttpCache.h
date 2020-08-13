@@ -9,7 +9,7 @@
 
 #ifndef STUB_HttpCache_sendHeaders
 //#define STUB_HttpCache_sendHeaders
-  void HttpCache::sendHeaders(std::ostream &, int status , const std::string & type , const std::string & mesg )
+  void HttpCache::sendHeaders(std::ostream&, int status , const std::string& type , const std::string& mesg )
   {
     
   }
@@ -17,15 +17,24 @@
 
 #ifndef STUB_HttpCache_reportBadRequest
 //#define STUB_HttpCache_reportBadRequest
-  void HttpCache::reportBadRequest(std::ostream &, int status , const std::string & mesg )
+  void HttpCache::reportBadRequest(std::ostream&, int status , const std::string& mesg )
   {
     
   }
 #endif //STUB_HttpCache_reportBadRequest
 
+#ifndef STUB_HttpCache_HttpCache
+//#define STUB_HttpCache_HttpCache
+   HttpCache::HttpCache(const Monitors& monitors)
+    : HttpRequestProcessor(monitors)
+  {
+    
+  }
+#endif //STUB_HttpCache_HttpCache
+
 #ifndef STUB_HttpCache_processQuery
 //#define STUB_HttpCache_processQuery
-  void HttpCache::processQuery(std::ostream &, const std::list<std::string> &)
+  void HttpCache::processQuery(std::ostream&, const std::list<std::string>&)
   {
     
   }

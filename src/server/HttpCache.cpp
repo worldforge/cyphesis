@@ -24,10 +24,15 @@
 
 #include <varconf/config.h>
 
-void HttpCache::sendHeaders(std::ostream & io,
+HttpCache::HttpCache(const Monitors& monitors)
+        : m_monitors(monitors)
+{
+}
+
+void HttpCache::sendHeaders(std::ostream& io,
                             int status,
-                            const std::string & type,
-                            const std::string & msg)
+                            const std::string& type,
+                            const std::string& msg)
 {
     io << "HTTP/1.1 " << status << " " << msg << std::endl;
     io << "Content-Type: " << type << std::endl;
@@ -35,9 +40,9 @@ void HttpCache::sendHeaders(std::ostream & io,
     io << std::flush;
 }
 
-void HttpCache::reportBadRequest(std::ostream & io,
+void HttpCache::reportBadRequest(std::ostream& io,
                                  int status,
-                                 const std::string & msg)
+                                 const std::string& msg)
 {
     sendHeaders(io, status, "text/html", msg);
     io << "<html><head><title>" << status << " " << msg
@@ -45,14 +50,14 @@ void HttpCache::reportBadRequest(std::ostream & io,
        << "</h1></body></html>" << std::endl << std::flush;
 }
 
-void HttpCache::processQuery(std::ostream & io,
-                             const std::list<std::string> & headers)
+void HttpCache::processQuery(std::ostream& io,
+                             const std::list<std::string>& headers)
 {
     if (headers.empty()) {
         reportBadRequest(io);
         return;
     }
-    const std::string & request = headers.front();
+    const std::string& request = headers.front();
     std::string::size_type i = request.find(" ");
 
     if (i == std::string::npos) {
@@ -73,7 +78,7 @@ void HttpCache::processQuery(std::ostream & io,
 
     if (path == "/config") {
         sendHeaders(io);
-        const varconf::sec_map & conf = global_conf->getSection(::instance);
+        const varconf::sec_map& conf = global_conf->getSection(::instance);
 
         auto I = conf.begin();
         auto Iend = conf.end();
@@ -82,10 +87,10 @@ void HttpCache::processQuery(std::ostream & io,
         }
     } else if (path == "/monitors") {
         sendHeaders(io);
-        Monitors::instance().send(io);
+        m_monitors.send(io);
     } else if (path == "/monitors/numerics") {
         sendHeaders(io);
-        Monitors::instance().sendNumerics(io);
+        m_monitors.sendNumerics(io);
     } else {
         reportBadRequest(io, 404, "Not Found");
     }
