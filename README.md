@@ -134,53 +134,6 @@ been installed.
 
 The default ruleset for this version is called Deeds.
 
-### Setup as a System Service
-
-Running cyphesis as a service is the simplest way to get the server up and
-running. If you are using rpm packages, the cyphesis rpm handles creating
-a user account so that cyphesis does not run as the superuser. In order to
-run the server correctly, the cyphesis service must be started, followed
-by the cyclient service. This can be handled by configuring the system to
-start these services at boot time, or by running the init scripts manually
-as root as follows:
-
-```
-# /etc/init.d/cyphesis start
-# /etc/init.d/cyclient start
-```
-
-If you are not using the packaged version of cyphesis, but wish to run it
-as a system service, the init script is included in the top directory of
-the source package and is called cyphesis.init. 
-This file should be installed in the init script directory on your
-system, usually /etc/rc.d/init.d/. The procedure for enabling system
-services varies from system to system. One command used for controlling
-services is the chkconfig command, found on most Linux systems, and some
-Unix variants. Once installed the script can be activated as follows:
-
-```
-# chkconfig --add cyphesis
-```
-
-The service is then enabled as follows:
-
-```
-# chkconfig cyphesis on
-```
-
-For further details please see the chkconfig documentation. By default the
-cyphesis init scripts attempt to run the server and client as a user
-called cyphesis. An account with this username will need to be created
-before the service will work. The file called cyphesis.sysconfig can
-optionally be installed as /etc/sysconfig/cyphesis and edited to control
-the username used to run the cyphesis server and client processes.
-
-When cyphesis has been run as a system service, any error message or other
-information are sent to the syslog. On most Linux systems this means that
-you can see these message by looking at /var/log/messages. Please see the
-syslog documentation for information about how to control these log
-messages.
-
 ## User provided Python scripts
 
 When both the "cyphesis" server and the "cyaiclient" AI process starts they look
