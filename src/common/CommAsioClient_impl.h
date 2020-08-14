@@ -371,8 +371,8 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
             Atlas::Objects::Operation::RootOperation>(obj);
     if (!op.isValid()) {
         log(ERROR,
-            String::compose("Object of type \"%1\" with parent "
-                            "\"%2\" arrived from client at '%1'", obj->getObjtype(),
+            String::compose("Invalid object of type \"%1\" with parent "
+                            "\"%2\" arrived from client at '%3'", obj->getObjtype(),
                             obj->getParent(), socketName(mSocket)));
         return;
     }
