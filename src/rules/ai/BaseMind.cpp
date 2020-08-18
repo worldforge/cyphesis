@@ -164,6 +164,11 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
     debug_print("BaseMind::SightOperation(Sight)");
     // Deliver argument to sight things
     if (!isAwake()) { return; }
+    if (op->isDefaultSeconds()) {
+        log(ERROR, "Sight operation had no seconds set, ignoring it.");
+        return;
+    }
+
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         debug_print(" no args!");
@@ -178,9 +183,8 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
 
         //Check that the argument had seconds set; if not the timestamp of the updates will be wrong.
         if (!op2->hasAttrFlag(Atlas::Objects::Operation::SECONDS_FLAG)) {
-            //Copy from wrapping op to fix this. This indicates an error in the server.
+            //Copy from wrapping op to fix this.
             op2->setSeconds(op->getSeconds());
-            log(WARNING, String::compose("Sight op argument ('%1') had no seconds set.", op2->getParent()));
         }
 
         if (!m_script || m_script->operation(event_name, op2, res) != OPERATION_BLOCKED) {
