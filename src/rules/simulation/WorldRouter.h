@@ -57,6 +57,7 @@ class WorldRouter : public BaseWorld
         /// \brief The top level in-game entity in the world.
         Ref<LocatedEntity> m_baseEntity;
         EntityCreator& m_entityCreator;
+
     protected:
         /// \brief Determine if the broadcast is allowed.
         ///
@@ -113,6 +114,10 @@ class WorldRouter : public BaseWorld
         friend struct WorldRouterintegration;
 
         OperationsDispatcher<LocatedEntity>& getOperationsHandler();
+
+        /// Count of number of operations handled.
+        int m_operationsCount;
+
 };
 
 #endif // SERVER_WORLD_ROUTER_H

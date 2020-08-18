@@ -153,8 +153,9 @@ namespace {
         }
         return false;
     }
-
 }
+
+int PhysicalDomain::s_processTimeUs = 0;
 
 /**
  * The minimum angular resolution of visibility, expressed as degrees.
@@ -2773,9 +2774,9 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     processDirtyTerrainAreas();
 
+    auto duration = std::chrono::steady_clock::now() - start;
+    auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
     if (debug_flag) {
-        auto duration = std::chrono::steady_clock::now() - start;
-        auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
         log(microseconds > 3000 ? WARNING : INFO,
             String::compose("Physics took %1 μs (just stepSimulation %2 μs, visibility %3 μs, tick size %4 μs, visibility queue: %5, postTick: %6 μs, moving count: %7).",
                             microseconds,
@@ -2787,6 +2788,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
                             movingSize)
         );
     }
+    s_processTimeUs += microseconds;
 }
 
 void PhysicalDomain::processWaterBodies()

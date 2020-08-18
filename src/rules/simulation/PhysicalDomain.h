@@ -73,6 +73,8 @@ class btAxisSweep3;
 class PhysicalDomain : public Domain
 {
     public:
+        static int s_processTimeUs;
+
         explicit PhysicalDomain(LocatedEntity& entity);
 
         ~PhysicalDomain() override;
@@ -249,6 +251,7 @@ class PhysicalDomain : public Domain
              */
             std::function<void()> callback;
         };
+
         std::map<ClosenessObserverEntry*, std::unique_ptr<ClosenessObserverEntry>> m_closenessObservations;
 
         std::unordered_map<long, std::unique_ptr<BulletEntry>> m_entries;

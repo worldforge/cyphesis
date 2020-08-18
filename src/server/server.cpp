@@ -86,6 +86,7 @@
 #include <thread>
 #include <fstream>
 #include <Remotery/Remotery.h>
+#include <rules/simulation/PhysicalDomain.h>
 
 using String::compose;
 using namespace boost::asio;
@@ -368,6 +369,8 @@ namespace {
         Monitors monitors;
         monitors.watch("minds", new Variable<int>(ExternalMind::s_numberOfMinds));
         monitors.watch("players", new Variable<int>(Player::s_numberOfPlayers));
+        monitors.watch("physic_processing_us", new Variable<int>(PhysicalDomain::s_processTimeUs));
+
 
         //Check if we should spawn AI clients.
         if (ai_clients) {
@@ -473,6 +476,18 @@ namespace {
             auto timeProviderFn = [&]() -> std::chrono::steady_clock::duration { return time - std::chrono::steady_clock::time_point{}; };
 
             WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
+
+            std::map<int, int> operationsMap;
+            monitors.watch("operations_processed", new Variable<int>(world.m_operationsCount));
+            world.Dispatching.connect([&](const Operation& op) {
+                auto I = operationsMap.find(op->getClassNo());
+                if (I == operationsMap.end()) {
+                    auto result = operationsMap.emplace(op->getClassNo(), 1);
+                    monitors.watch(String::compose("operation_count{type=\"%1\"}", op->getParent()), new Variable<int>(result.first->second));
+                } else {
+                    I->second++;
+                }
+            });
 
             CyPy_Server::registerWorld(&world);
 

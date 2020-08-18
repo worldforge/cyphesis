@@ -306,6 +306,7 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
 /// that it is possible that this entity has been destroyed.
 void WorldRouter::operation(const Operation& op, Ref<LocatedEntity> from)
 {
+    m_operationsCount++;
     try {
         rmt_ScopedCPUSample(WorldRouter_operation, 0)
 

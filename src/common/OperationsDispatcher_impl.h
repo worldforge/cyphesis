@@ -110,6 +110,7 @@ size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_poi
         opQueueEntry.op->setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(time_point.time_since_epoch()).count());
         dispatchOperation(opQueueEntry);
     }
+    Monitors::instance().insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
     return count;
 }
 
