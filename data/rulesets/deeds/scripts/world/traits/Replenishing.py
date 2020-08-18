@@ -12,17 +12,18 @@ class Replenishing(server.Thing):
     The property "__replenish_max" determines the max value which the property defined in "__replenish_property" can contain.
     """
     tick_interval = 300  # Default to five minutes
-    jitter = 60
 
     def __init__(self, cpp):
         self.send_world(Operation("setup", to=self.id))
 
     def setup_operation(self, op):
-        init_ticks(self, self.get_prop_int("__replenish_interval", self.tick_interval), self.jitter)
+        interval = self.get_prop_int("__replenish_interval", self.tick_interval)
+        init_ticks(self, interval, interval * 0.2)
 
     def tick_operation(self, op):
         res = Oplist()
-        if verify_tick(self, op, res, self.get_prop_int("__replenish_interval", self.tick_interval), self.jitter):
+        interval = self.get_prop_int("__replenish_interval", self.tick_interval)
+        if verify_tick(self, op, res, interval, interval * 0.2):
             property_name = self.get_prop_string("__replenish_property")
             if property_name:
                 max_amount = self.get_prop_int("__replenish_max", 0)

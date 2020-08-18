@@ -1,13 +1,11 @@
 import server
 
-from world.utils.Ticks import *
-
 
 # Used for an entity with an area which scales along when the entity scales
 class ScalableArea(server.Thing):
 
-    def __init__(self, cpp):
-        init_ticks(self, self.tick_interval)
+    #    def __init__(self, cpp):
+    #        init_ticks(self, self.tick_interval)
 
     def set_operation(self, op):
         # TODO: implement

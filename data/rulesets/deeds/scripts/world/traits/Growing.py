@@ -6,7 +6,8 @@ from world.utils.Ticks import *
 
 # Growing entities that consume nutrients to increase in size.
 class Growing(server.Thing):
-    tick_interval = 30
+    # Grow each 15 minutes
+    tick_interval = 900
 
     def __init__(self, cpp):
         # Use a large jitter so not all entities grow at the same time, as they are

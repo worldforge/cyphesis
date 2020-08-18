@@ -12,11 +12,12 @@ class FruitPlant(server.Thing):
     When touched will drop fruits randomly, if there are fruits.
     In addition there's a tick handler which randomly drops any fruits.
     """
-    tick_interval = 60
-    jitter = 20
+
+    # Check each 10 minutes
+    tick_interval = 600
 
     def __init__(self, cpp):
-        init_ticks(self, self.tick_interval, self.jitter)
+        init_ticks(self, self.tick_interval, self.tick_interval * 0.5)
 
     def drop_fruit(self, res, parent):
         height = self.location.bbox.high_corner.y
@@ -29,7 +30,7 @@ class FruitPlant(server.Thing):
 
     def tick_operation(self, op):
         res = Oplist()
-        if verify_tick(self, op, res, self.tick_interval, self.jitter):
+        if verify_tick(self, op, res, self.tick_interval):
 
             fruits = 0
             if self.props.fruits:

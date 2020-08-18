@@ -8,7 +8,8 @@ from world.utils import Ticks
 
 
 class PlantFeeding(server.Thing):
-    tick_interval = 30
+    # Feed each 15 minutes
+    tick_interval = 900
 
     def __init__(self, cpp):
         Ticks.init_ticks(self, self.tick_interval)

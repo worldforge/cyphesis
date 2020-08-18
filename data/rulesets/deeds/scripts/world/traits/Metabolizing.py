@@ -18,9 +18,7 @@ class Metabolizing(server.Thing):
             # The simple case is that nutrient will only be consumed to fill up status
             if self.props.status:
                 status = self.props.status
-                nutrients = 0
-                if self.props._nutrients:
-                    nutrients = self.props._nutrients
+                nutrients = self.get_prop_float("_nutrients", 0.0)
                 # If no nutrient, we're starving and should decrease status, but only if "starveable" is set.
                 if nutrients <= 0:
                     if self.props.starveable == 1:
