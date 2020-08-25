@@ -312,15 +312,20 @@ void Entity::operation(const Operation& op, OpVector& res)
 {
     HandlerResult hr = OPERATION_IGNORED;
 
-    if (!m_scripts.empty()) {
-        for (auto& script: m_scripts) {
-            auto hr_call = script->operation(op->getParent(), op, res);
-            //Stop on the first blocker. Only change "hr" value if it's "handled".
-            if (hr_call != OPERATION_IGNORED) {
-                if (hr_call == OPERATION_BLOCKED) {
-                    return;
+    //Skip calling scripts for perception ops, since we don't expect any rule scripts ever acting on that kind of data.
+    //TODO: switch the scripts calling feature over to using a system where each script at registration time registers what kind
+    // of op they are listening to. That way we can actually let them listen to perception ops.
+    if (!op->instanceOf(Atlas::Objects::Operation::PERCEPTION_NO)) {
+        if (!m_scripts.empty()) {
+            for (auto& script: m_scripts) {
+                auto hr_call = script->operation(op->getParent(), op, res);
+                //Stop on the first blocker. Only change "hr" value if it's "handled".
+                if (hr_call != OPERATION_IGNORED) {
+                    if (hr_call == OPERATION_BLOCKED) {
+                        return;
+                    }
+                    hr = hr_call;
                 }
-                hr = hr_call;
             }
         }
     }
