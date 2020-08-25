@@ -2269,7 +2269,7 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
         rigidBody = btRigidBody::upcast(entry->collisionObject.get());
     }
     WFMath::Quaternion rotationChange = WFMath::Quaternion::IDENTITY();
-    if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation)) {
+    if (orientation.isValid() && !orientation.isEqualTo(entity.m_location.m_orientation, 0.001)) {
         debug_print("PhysicalDomain::new orientation " << entity.describeEntity() << " " << orientation)
 
         if (entry->collisionShape) {
@@ -2357,7 +2357,7 @@ void PhysicalDomain::applyTransformInternal(LocatedEntity& entity,
                 rigidBody->activate();
             }
         }
-        processMovedEntity(*I->second);
+        processMovedEntity(*I->second, 0);
     }
 }
 
@@ -2489,7 +2489,8 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
             shouldSendOp = true;
             lastSentLocation.m_orientation = entity.m_location.m_orientation;
         }
-        if (posChange) {
+        //If the velocity changes we should also send the position, to make it easier for clients to project position.
+        if (posChange || velocityChange) {
             ::addToEntity(entity.m_location.pos(), move_arg->modifyPos());
             shouldSendOp = true;
             lastSentLocation.m_pos = entity.m_location.m_pos;
@@ -2536,14 +2537,28 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
     }
 }
 
-void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
+void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSinceLastUpdate)
 {
     LocatedEntity& entity = bulletEntry.entity;
     Location& lastSentLocation = bulletEntry.lastSentLocation;
     const Location& location = entity.m_location;
+    //This should normally not happen, but let's check nonetheless.
+    if (!location.m_pos.isValid()) {
+        return;
+    }
 
     bool orientationChange = location.m_orientation.isValid() && (!lastSentLocation.m_orientation.isValid() || !location.m_orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f));
-    bool posChange = location.m_pos.isValid() && (!lastSentLocation.isValid() || !fuzzyEquals(location.m_pos, lastSentLocation.m_pos, 0.01f));
+    bool posChange = false;
+    if (!lastSentLocation.m_pos.isValid()) {
+        posChange = true;
+    } else {
+        if (lastSentLocation.m_velocity.isValid()) {
+            auto projectedPosition = lastSentLocation.m_pos + (lastSentLocation.m_velocity * timeSinceLastUpdate);
+            if ( WFMath::Distance(location.m_pos, projectedPosition) > 0.5) {
+                posChange = true;
+            }
+        }
+    }
 
     if (false) {
         sendMoveSight(bulletEntry, true, true, true, true, true);
@@ -2741,7 +2756,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
                 debug_print("Stopped moving " << movedEntry->entity.describeEntity())
                 movedEntry->entity.m_location.m_velocity.zero();
             }
-            processMovedEntity(*movedEntry);
+            processMovedEntity(*movedEntry, tickSize);
             movedEntry->markedAsMovingLastFrame = false;
             movedEntry->addedToMovingList = false;
 
@@ -2757,13 +2772,13 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
             //Started moving
             movedEntry->markedAsMovingLastFrame = true;
             movedEntry->markedAsMovingThisFrame = false;
-            processMovedEntity(*movedEntry);
+            processMovedEntity(*movedEntry, tickSize);
             ++i;
         } else {
             //Moved previously and has continued to move
             movedEntry->markedAsMovingLastFrame = true;
             movedEntry->markedAsMovingThisFrame = false;
-            processMovedEntity(*movedEntry);
+            processMovedEntity(*movedEntry, tickSize);
             ++i;
         }
     }

@@ -387,7 +387,7 @@ class PhysicalDomain : public Domain
 
         void sendMoveSight(BulletEntry& bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange, bool modeChanged);
 
-        void processMovedEntity(BulletEntry& bulletEntry);
+        void processMovedEntity(BulletEntry& bulletEntry, double timeSinceLastUpdate);
 
         void updateVisibilityOfDirtyEntities(OpVector& res);
 
