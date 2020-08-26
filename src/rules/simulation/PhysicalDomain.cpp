@@ -2552,10 +2552,15 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
     if (!lastSentLocation.m_pos.isValid()) {
         posChange = true;
     } else {
-        if (lastSentLocation.m_velocity.isValid()) {
-            auto projectedPosition = lastSentLocation.m_pos + (lastSentLocation.m_velocity * timeSinceLastUpdate);
-            if ( WFMath::Distance(location.m_pos, projectedPosition) > 0.5) {
-                posChange = true;
+        //If position differs from last sent position, and there's no velocity, then send position update
+        if (lastSentLocation.m_pos != location.m_pos && (!location.m_velocity.isValid() || location.m_velocity == WFMath::Vector<3>::ZERO())) {
+            posChange = true;
+        } else {
+            if (lastSentLocation.m_velocity.isValid()) {
+                auto projectedPosition = lastSentLocation.m_pos + (lastSentLocation.m_velocity * timeSinceLastUpdate);
+                if (WFMath::Distance(location.m_pos, projectedPosition) > 0.5) {
+                    posChange = true;
+                }
             }
         }
     }
