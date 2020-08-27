@@ -211,7 +211,7 @@
 
 #ifndef STUB_PhysicalDomain_processMovedEntity
 //#define STUB_PhysicalDomain_processMovedEntity
-  void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry)
+  void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSinceLastUpdate)
   {
     
   }

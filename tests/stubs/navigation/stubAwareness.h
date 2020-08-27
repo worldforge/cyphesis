@@ -212,9 +212,9 @@
 
 #ifndef STUB_Awareness_buildEntityAreas
 //#define STUB_Awareness_buildEntityAreas
-  void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const EntityEntry*, WFMath::RotBox<2>>& entityAreas)
+  WFMath::RotBox<2> Awareness::buildEntityAreas(const EntityEntry& entity)
   {
-    
+    return *static_cast<WFMath::RotBox<2>*>(nullptr);
   }
 #endif //STUB_Awareness_buildEntityAreas
 
