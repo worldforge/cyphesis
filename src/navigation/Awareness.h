@@ -467,9 +467,8 @@ class Awareness
         /**
          * @brief Calculates the 2d rotbox area of the entity and adds it to the supplied map of areas.
          * @param entity An entity.
-         * @param entityAreas A map of areas.
          */
-        void buildEntityAreas(const EntityEntry& entity, std::map<const EntityEntry*, WFMath::RotBox<2>>& entityAreas);
+        WFMath::RotBox<2> buildEntityAreas(const EntityEntry& entity);
 
         /**
          * Find entity 2d rotbox areas within the supplied extent.

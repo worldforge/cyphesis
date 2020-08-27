@@ -406,10 +406,10 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
                 } else {
                     std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
 
-                    buildEntityAreas(*entityEntry, areas);
+                    auto area = buildEntityAreas(*entityEntry);
 
-                    for (auto& entry : areas) {
-                        markTilesAsDirty(entry.second.boundingBox());
+                    if(area.isValid()) {
+                        markTilesAsDirty(area.boundingBox());
                     }
                     mEntityAreas.erase(entityEntry.get());
                 }
@@ -457,12 +457,11 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
             entityEntry.isIgnored = true;
 
             //We must now mark those areas that the entities used to touch as dirty, as well as remove the entity areas
-            std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
 
-            buildEntityAreas(entityEntry, areas);
+            auto area = buildEntityAreas(entityEntry);
 
-            for (auto& entry : areas) {
-                markTilesAsDirty(entry.second.boundingBox());
+            if (area.isValid()) {
+                markTilesAsDirty(area.boundingBox());
             }
             mEntityAreas.erase(&entityEntry);
 
@@ -489,22 +488,20 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                         mEntityAreas.erase(&entityEntry);
                     }
                 } else {
-                    std::map<const EntityEntry*, WFMath::RotBox<2>> areas;
+                    auto area = buildEntityAreas(entityEntry);
 
-                    buildEntityAreas(entityEntry, areas);
-
-                    for (auto& entry : areas) {
-                        markTilesAsDirty(entry.second.boundingBox());
-                        auto existingI = mEntityAreas.find(entry.first);
+                    if (area.isValid()) {
+                        markTilesAsDirty(area.boundingBox());
+                        auto existingI = mEntityAreas.find(&entityEntry);
                         if (existingI != mEntityAreas.end()) {
                             //The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
                             markTilesAsDirty(existingI->second.boundingBox());
-                            existingI->second = entry.second;
+                            existingI->second = area;
                         } else {
-                            mEntityAreas.insert(entry);
+                            mEntityAreas.emplace(&entityEntry, area);
                         }
                     }
-                    debug_print("Entity affects " << areas.size() << " areas. Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size())
+                    debug_print("Entity affects " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size())
                 }
             }
         }
@@ -1036,7 +1033,7 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
 
 }
 
-void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const EntityEntry*, WFMath::RotBox<2>>& entityAreas)
+WFMath::RotBox<2> Awareness::buildEntityAreas(const EntityEntry& entity)
 {
 
     //The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
@@ -1050,35 +1047,39 @@ void Awareness::buildEntityAreas(const EntityEntry& entity, std::map<const Entit
 
         //If it's below walkable height just skip it.
         if (bbox.highCorner().y() - bbox.lowCorner().y() < mStepHeight) {
-            return;
+            return {};
         }
 
-        if (pos.isValid() && orientation.isValid()) {
-
-            WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
-            auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
-
+        if (pos.isValid()) {
             WFMath::RotMatrix<2> rm;
-            rm.rotation(theta);
+            if (orientation.isValid()) {
+                WFMath::Vector<3> xVec = WFMath::Vector<3>(1.0, 0.0, 0.0).rotate(orientation);
+                auto theta = std::atan2(xVec.z(), xVec.x()); // rotation about Y
+
+                rm.rotation(theta);
+            }
 
 
             WFMath::Point<2> highCorner(bbox.highCorner().x(), bbox.highCorner().z());
             WFMath::Point<2> lowCorner(bbox.lowCorner().x(), bbox.lowCorner().z());
 
             //Expand the box a little so that we can navigate around it without being stuck on it.
-            //We'll the radius of the avatar.
+            //We'll use the radius of the avatar.
             highCorner += WFMath::Vector<2>(mAgentRadius, mAgentRadius);
             lowCorner -= WFMath::Vector<2>(mAgentRadius, mAgentRadius);
 
             WFMath::RotBox<2> rotbox(WFMath::Point<2>::ZERO(), highCorner - lowCorner, WFMath::RotMatrix<2>().identity());
             rotbox.shift(WFMath::Vector<2>(lowCorner.x(), lowCorner.y()));
-            rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
+            if (rm.isValid()) {
+                rotbox.rotatePoint(rm, WFMath::Point<2>::ZERO());
+            }
 
             rotbox.shift(WFMath::Vector<2>(pos.x(), pos.z()));
 
-            entityAreas.insert(std::make_pair(&entity, rotbox));
+            return rotbox;
         }
     }
+    return {};
 }
 
 void Awareness::findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WFMath::RotBox<2> >& areas)
