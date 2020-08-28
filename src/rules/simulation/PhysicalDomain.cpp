@@ -847,9 +847,9 @@ void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
     }
 }
 
-std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+std::vector<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
-    std::list<LocatedEntity*> entityList;
+    std::vector<LocatedEntity*> entityList;
 
     auto observedI = m_entries.find(observedEntity.getIntId());
     if (observedI != m_entries.end()) {

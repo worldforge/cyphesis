@@ -119,9 +119,9 @@ void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
     }
 }
 
-std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+std::vector<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
-    std::list<LocatedEntity*> list;
+    std::vector<LocatedEntity*> list;
     for (auto& entry: m_reachingEntities) {
         if (entry.second.observer->hasFlags(entity_admin) || observedEntity.hasFlags(entity_contained_visible)) {
             list.push_back(entry.second.observer.get());

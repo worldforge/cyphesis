@@ -89,22 +89,6 @@
   }
 #endif //STUB_BaseMind_getTypeStore
 
-#ifndef STUB_BaseMind_sightCreateOperation
-//#define STUB_BaseMind_sightCreateOperation
-  void BaseMind::sightCreateOperation(const Operation&, OpVector&)
-  {
-    
-  }
-#endif //STUB_BaseMind_sightCreateOperation
-
-#ifndef STUB_BaseMind_sightMoveOperation
-//#define STUB_BaseMind_sightMoveOperation
-  void BaseMind::sightMoveOperation(const Operation&, OpVector&)
-  {
-    
-  }
-#endif //STUB_BaseMind_sightMoveOperation
-
 #ifndef STUB_BaseMind_sightSetOperation
 //#define STUB_BaseMind_sightSetOperation
   void BaseMind::sightSetOperation(const Operation&, OpVector&)

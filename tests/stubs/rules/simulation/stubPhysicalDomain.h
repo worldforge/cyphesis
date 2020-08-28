@@ -43,9 +43,9 @@
 
 #ifndef STUB_PhysicalDomain_getObservingEntitiesFor
 //#define STUB_PhysicalDomain_getObservingEntitiesFor
-  std::list<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+  std::vector<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
   {
-    return std::list<LocatedEntity*>();
+    return std::vector<LocatedEntity*>();
   }
 #endif //STUB_PhysicalDomain_getObservingEntitiesFor
 

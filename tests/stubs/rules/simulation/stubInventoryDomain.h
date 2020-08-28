@@ -34,9 +34,9 @@
 
 #ifndef STUB_InventoryDomain_getObservingEntitiesFor
 //#define STUB_InventoryDomain_getObservingEntitiesFor
-  std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+  std::vector<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
   {
-    return std::list<LocatedEntity*>();
+    return std::vector<LocatedEntity*>();
   }
 #endif //STUB_InventoryDomain_getObservingEntitiesFor
 

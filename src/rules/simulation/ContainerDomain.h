@@ -61,7 +61,7 @@ class ContainerDomain : public Domain
 
         void getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const override;
 
-        std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const override;
+        std::vector<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const override;
 
         void addEntity(LocatedEntity& entity) override;
 

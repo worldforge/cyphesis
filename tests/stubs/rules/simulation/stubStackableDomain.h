@@ -34,9 +34,9 @@
 
 #ifndef STUB_StackableDomain_getObservingEntitiesFor
 //#define STUB_StackableDomain_getObservingEntitiesFor
-  std::list<LocatedEntity*> StackableDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+  std::vector<LocatedEntity*> StackableDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
   {
-    return std::list<LocatedEntity*>();
+    return std::vector<LocatedEntity*>();
   }
 #endif //STUB_StackableDomain_getObservingEntitiesFor
 

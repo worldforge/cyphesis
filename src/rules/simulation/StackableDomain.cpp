@@ -247,11 +247,9 @@ void StackableDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
     }
 }
 
-std::list<LocatedEntity*> StackableDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+std::vector<LocatedEntity*> StackableDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
-    std::list<LocatedEntity*> list;
-//    list.push_back(&m_entity);
-    return list;
+    return {};
 }
 
 bool StackableDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const

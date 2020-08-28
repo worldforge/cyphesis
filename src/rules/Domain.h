@@ -127,9 +127,9 @@ class Domain
          * @param observedEntity The entity which is being observed.
          * @return A list of entities.
          */
-        virtual std::list<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+        virtual std::vector<LocatedEntity*> getObservingEntitiesFor(const LocatedEntity& observedEntity) const
         {
-            return std::list<LocatedEntity*>();
+            return {};
         }
 
         /**

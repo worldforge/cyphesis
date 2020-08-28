@@ -35,9 +35,9 @@
 
 #ifndef STUB_ContainerDomain_getObservingEntitiesFor
 //#define STUB_ContainerDomain_getObservingEntitiesFor
-  std::list<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+  std::vector<LocatedEntity*> ContainerDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
   {
-    return std::list<LocatedEntity*>();
+    return std::vector<LocatedEntity*>();
   }
 #endif //STUB_ContainerDomain_getObservingEntitiesFor
 

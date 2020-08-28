@@ -123,9 +123,9 @@ void InventoryDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity
     }
 }
 
-std::list<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
+std::vector<LocatedEntity*> InventoryDomain::getObservingEntitiesFor(const LocatedEntity& observedEntity) const
 {
-    std::list<LocatedEntity*> list;
+    std::vector<LocatedEntity*> list;
     list.push_back(&m_entity);
     return list;
 }
