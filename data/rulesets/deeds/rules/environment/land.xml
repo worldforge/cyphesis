@@ -11,6 +11,9 @@
             <map name="friction_roll">
                 <float name="default">0.1</float>
             </map>
+            <map name="immortal">
+                <int name="default">1</int>
+            </map>
             <map name="__scripts">
                 <list name="default">
                     <map>
@@ -28,6 +31,10 @@
                     <map>
                         <string name="language">python</string>
                         <string name="name">world.traits.GrazeNourishing.GrazeNourishing</string>
+                    </map>
+                    <map>
+                        <string name="language">python</string>
+                        <string name="name">world.traits.Immortality.Immortality</string>
                     </map>
                 </list>
             </map>
