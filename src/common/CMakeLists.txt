@@ -35,7 +35,6 @@ add_library(common
         AtlasQuery.h
         compose.hpp
         nls.h
-        op_switch.h
         Property_impl.h
         PropertyFactory_impl.h
         PropertyInstanceState.h

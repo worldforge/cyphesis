@@ -122,10 +122,6 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         void awake()
         { m_flags.removeFlags(entity_asleep); }
 
-        void sightCreateOperation(const Operation&, OpVector&);
-
-        void sightMoveOperation(const Operation&, OpVector&);
-
         void sightSetOperation(const Operation&, OpVector&);
 
         void addPropertyScriptCallback(std::string propertyName, std::string scriptMethod);

@@ -24,7 +24,6 @@
 
 #include "common/custom.h"
 #include "common/debug.h"
-#include "common/op_switch.h"
 #include "common/TypeNode.h"
 #include "common/operations/Setup.h"
 
@@ -75,46 +74,6 @@ void BaseMind::destroy()
     m_map.flush();
     m_flags.addFlags(entity_destroyed);
     setScript(nullptr);
-}
-
-/// \brief Process the Sight of a Create operation.
-///
-/// @param op The Create operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseMind::sightCreateOperation(const Operation& op, OpVector& res)
-{
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        debug_print(" no args!")
-        return;
-    }
-    RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
-    if (!ent.isValid()) {
-        log(ERROR, "Got sight(create) of non-entity");
-        return;
-    }
-    // This does not send a look, so anything added this way will not
-    // get flagged as visible until we get an appearance. This is important.
-    m_map.updateAdd(ent, op->getSeconds());
-}
-
-/// \brief Process the Sight of a Move operation.
-///
-/// @param op The Move operation to be processed.
-/// @param res The result of the operation is returned here.
-void BaseMind::sightMoveOperation(const Operation& op, OpVector& res)
-{
-    const std::vector<Root>& args = op->getArgs();
-    if (args.empty()) {
-        debug_print(" no args!")
-        return;
-    }
-    RootEntity ent(smart_dynamic_cast<RootEntity>(args.front()));
-    if (!ent.isValid()) {
-        log(ERROR, "Got sight(move) of non-entity");
-        return;
-    }
-    m_map.updateAdd(ent, op->getSeconds());
 }
 
 /// \brief Process the Sight of a Set operation.
@@ -556,7 +515,9 @@ void BaseMind::callSightOperation(const Operation& op,
                         << op->getParent()
                         << std::endl << std::flush;);
     }
-    SUB_OP_SWITCH(op, op_no, res, sight)
+    if (op_no == Atlas::Objects::Operation::SET_NO) {
+        sightSetOperation(op, res);
+    }
 }
 
 void BaseMind::callSoundOperation(const Operation& op,
@@ -598,7 +559,9 @@ void BaseMind::setScript(std::unique_ptr<Script> scrpt)
                 m_script->hook(entry.second, m_ownEntity.get(), res);
             }
         }
-        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+        for (auto& resOp: res) {
+            mOutgoingOperations.emplace_back(std::move(resOp));
+        }
     }
 }
 
@@ -619,7 +582,9 @@ void BaseMind::entityAdded(MemEntity& entity)
     if (!m_addHook.empty() && m_script) {
         OpVector res;
         m_script->hook(m_addHook, &entity, res);
-        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+        for (auto& resOp: res) {
+            mOutgoingOperations.emplace_back(std::move(resOp));
+        }
     }
 }
 
@@ -628,7 +593,9 @@ void BaseMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::Ro
     if (!m_updateHook.empty() && m_script) {
         OpVector res;
         m_script->hook(m_updateHook, &entity, res);
-        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+        for (auto& resOp: res) {
+            mOutgoingOperations.emplace_back(std::move(resOp));
+        }
     }
 }
 
@@ -637,7 +604,9 @@ void BaseMind::entityDeleted(MemEntity& entity)
     if (!m_deleteHook.empty() && m_script) {
         OpVector res;
         m_script->hook(m_deleteHook, &entity, res);
-        std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+        for (auto& resOp: res) {
+            mOutgoingOperations.emplace_back(std::move(resOp));
+        }
     }
 }
 
