@@ -215,6 +215,8 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
     }
 
     changeContainer(new_loc);
+    processAppearDisappear(std::move(previousObserving), res);
+
     //If the entity is stackable it might have been deleted as a result of changing container. If so bail out now.
     if (isDestroyed()) {
         return;
@@ -226,7 +228,6 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
     update->setTo(getId());
     res.push_back(std::move(update));
 
-    processAppearDisappear(std::move(previousObserving), res);
 
     auto newDomain = new_loc->getDomain();
     if (!previousObserved.empty()) {

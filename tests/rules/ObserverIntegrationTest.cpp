@@ -738,11 +738,11 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(0u, ops.size())
         ASSERT_EQUAL(3u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
-        ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, res[1]->getClassNo())
-        ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[2]->getClassNo())
+        ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, res[1]->getClassNo())
+        ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, res[2]->getClassNo())
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
-        ASSERT_EQUAL(object1->getId(), res[2]->getArgs().front()->getId())
-        ASSERT_EQUAL(observer->getId(), res[2]->getTo())
+        ASSERT_EQUAL(object1->getId(), res[1]->getArgs().front()->getId())
+        ASSERT_EQUAL(observer->getId(), res[1]->getTo())
 
         res.clear();
 
@@ -762,10 +762,10 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         // We now expect to get an Appearance op sent to the observer (but nothing sent to the observer in the void). The first op should be an Update op
         ASSERT_EQUAL(0u, ops.size())
         ASSERT_EQUAL(2u, res.size())
-        ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, res[0]->getClassNo())
-        ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, res[1]->getClassNo())
-        ASSERT_EQUAL(object1->getId(), res[1]->getArgs().front()->getId())
-        ASSERT_EQUAL(observer->getId(), res[1]->getTo())
+        ASSERT_EQUAL(Atlas::Objects::Operation::APPEARANCE_NO, res[0]->getClassNo())
+        ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, res[1]->getClassNo())
+        ASSERT_EQUAL(object1->getId(), res[0]->getArgs().front()->getId())
+        ASSERT_EQUAL(observer->getId(), res[0]->getTo())
 
         res.clear();
 
