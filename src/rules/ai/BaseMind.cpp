@@ -205,10 +205,10 @@ void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
             continue;
         }
         const std::string& id = arg->getId();
-        auto me = m_map.getAdd(id);
-        if (me) {
+        auto entity = m_map.getAdd(id);
+        if (entity) {
             if (arg->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
-                if ((int) arg->getStamp() != me->getSeq()) {
+                if ((int) arg->getStamp() != entity->getSeq()) {
                     Look l;
                     Anonymous m;
                     m->setId(id);
@@ -218,8 +218,8 @@ void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
             } else {
                 log(ERROR, "BaseMind: Appearance op does not have stamp");
             }
-            me->update(op->getSeconds());
-            me->setVisible();
+            entity->update(op->getSeconds());
+            entity->setVisible();
         }
     }
 }

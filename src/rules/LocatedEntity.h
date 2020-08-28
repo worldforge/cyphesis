@@ -255,6 +255,10 @@ class LocatedEntity : public Router, public ReferenceCounted
         int getSeq() const
         { return m_seq; }
 
+        void increaseSequenceNumber() {
+            m_seq++;
+        }
+
         /// \brief Accessor for entity type property
         const TypeNode* getType() const
         { return m_type; }

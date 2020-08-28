@@ -2607,6 +2607,8 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
         }
 
         if (posChange || velocityChange || orientationChange || angularChange || bulletEntry.modeChanged) {
+            //Increase sequence number as properties have changed.
+            entity.increaseSequenceNumber();
             sendMoveSight(bulletEntry, posChange, velocityChange, orientationChange, angularChange, bulletEntry.modeChanged);
             lastSentLocation.m_pos = entity.m_location.m_pos;
             bulletEntry.modeChanged = false;
