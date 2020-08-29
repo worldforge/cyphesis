@@ -600,12 +600,14 @@ class Pursuit(Goal):
         lst_of_what = me.mem.recall_place(me.entity.location, self.range, self.filter)
         if not lst_of_what or len(lst_of_what) == 0:
             return
-        me.steering.set_destination(lst_of_what[0], ai.EDGE, ai.EDGE)
+        me.steering.set_destination(lst_of_what[0], ai.EDGE, ai.EDGE, 0)
         return True
 
 
 class Avoid(Pursuit):
-    """avoid something at range"""
+    """avoid something at range
+    TODO: remake to use steering; currently it doesn't work
+    """
 
     def __init__(self, what='', range=0):
         Pursuit.__init__(self, desc="avoid something", what=what, range=range, direction=-1)

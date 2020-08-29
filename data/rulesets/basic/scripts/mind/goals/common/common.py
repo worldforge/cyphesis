@@ -48,23 +48,33 @@ class DelayedOneShot(Goal):
 
 
 class Condition(Goal):
-    """A conditional goal which first executes a method, and then sets the subgoals to one of two possibilities."""
+    """
+    A conditional goal which first executes a function, and then sets the subgoals to one of two possibilities.
+    If the condition function returns None then none of the subgoals will be executed.
+    """
 
-    def __init__(self, condition_fn, goals_left, goals_right, desc="condition"):
+    def __init__(self, condition_fn, goals_true, goals_false, desc="condition"):
         Goal.__init__(self, desc=desc, fulfilled=self.assess_condition)
         self.condition_fn = condition_fn
-        self.goals_left = goals_left
-        self.goals_right = goals_right
+        self.goals_true = goals_true
+        self.goals_false = goals_false
 
     def assess_condition(self, me):
         result = self.condition_fn(me)
         if result is None:
             return True
         if result:
-            self.sub_goals = self.goals_left
+            self.sub_goals = self.goals_true
         else:
-            self.sub_goals = self.goals_right
+            self.sub_goals = self.goals_false
         return False
+
+
+class Sequence(Goal):
+    """A goal which will check on all subgoals in order."""
+
+    def __init__(self, sub_goals, desc="Sequence of goals"):
+        Goal.__init__(self, desc=desc, sub_goals=sub_goals)
 
 
 def get_reach(me):

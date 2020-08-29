@@ -754,7 +754,13 @@ class NPCMind(ai.Mind):
             triggering_goals = goal.triggering_goals()
             for g in triggering_goals:
                 print("Adding trigger goal: {}".format(str(g)))
-                dictlist.add_value(self.trigger_goals, g.trigger(), g)
+                # Allow the trigger to either be a single string, or a list of strings
+                trigger = g.trigger()
+                if isinstance(trigger, list):
+                    for trigger_instance in trigger:
+                        dictlist.add_value(self.trigger_goals, trigger_instance, g)
+                else:
+                    dictlist.add_value(self.trigger_goals, trigger, g)
 
         if hasattr(goal, "entity_appears") and goal.entity_appears is not None:
             self.entity_appear_goals.add(goal)

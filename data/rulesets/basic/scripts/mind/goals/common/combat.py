@@ -4,12 +4,10 @@
 import ai
 import entity_filter
 from atlas import Operation, Entity, Root
-from physics import square_distance
 
 from mind.Goal import Goal
 from mind.goals.common.common import get_reach
-from mind.goals.common.misc_goal import SpotSomething
-from mind.goals.common.move import Avoid, MoveMeToFocus, Condition
+from mind.goals.common.move import Avoid, Condition, MoveMe
 from mind.goals.dynamic.DynamicGoal import DynamicGoal
 
 # A list of usages which we should look for in weapons.
@@ -18,26 +16,26 @@ unarmed_usages = ['punch', 'strike', 'chop']
 
 
 class Fight(Goal):
-    """Fight enemies in range"""
-
-    # TODO: Make entity first select weapon, and then adjust strategy depending on weapon.
-    # TODO: I.e. when using a ranged weapon the entity should keep range.
+    """Fight enemies in range."""
 
     def __init__(self, what="", range=30):
-        Goal.__init__(self, desc="fight something",
-                      fulfilled=self.none_in_range,
+        Goal.__init__(self, desc="Fight something.",
                       sub_goals=[
-                          SpotSomething(what=what, range=range),
-                          Condition(condition_fn=self.should_use_melee,
-                                    goals_left=[self.equip_melee_weapon,
-                                                self.equip_shield,
-                                                self.attack_melee,
-                                                MoveMeToFocus(what=what, radius=0, speed=0.5)],
-                                    goals_right=[self.equip_ranged_weapon,
-                                                 self.stop_moving,
-                                                 self.attack_ranged,
-                                                 ])
-                          #                       hunt_for(what=what, range=range, proximity=3),
+                          Condition(condition_fn=self.has_enemy_in_range,
+                                    goals_true=[
+                                        Condition(condition_fn=self.should_use_melee,
+                                                  goals_true=[
+                                                      self.equip_melee_weapon,
+                                                      self.equip_shield,
+                                                      self.attack_melee,
+                                                      MoveMe(location=self.get_enemy, radius=0, speed=0.5)
+                                                  ],
+                                                  goals_false=[
+                                                      self.equip_ranged_weapon,
+                                                      self.stop_moving,
+                                                      self.attack_ranged,
+                                                  ])],
+                                    goals_false=[self.stop_attack_task])
                       ])
         self.what = what
         self.filter = entity_filter.Filter(what)
@@ -46,37 +44,46 @@ class Fight(Goal):
         self.vars = ["what", "range"]
         self.weapon_usage = None
         self.use_ranged = False
+        self.closest_enemy = None
+        self.distance_to_enemy = None
 
     def stop_moving(self, me):
         me.steering.set_destination()
 
-    def none_in_range(self, me):
+    def stop_attack_task(self, me):
+        tasks_prop = me.entity.get_prop_map('tasks')
+        if tasks_prop:
+            if "melee" in tasks_prop:
+                return Operation("use", Root(args=[Entity("stop")], id="melee", objtype="task"))
+            if "draw" in tasks_prop:
+                return Operation("use", Root(args=[Entity("stop")], id="draw", objtype="task"))
+
+        # if self.active_attack_task:
+        #     print("stopping attack task")
+        #     self.active_attack_task = None
+        #     return Operation("use", Root(args=[Entity("stop")], id=self.active_attack_task, objtype="task"))
+
+    def has_enemy_in_range(self, me):
+        closest_distance = self.range
+        closest_enemy = None
         thing_all = me.map.find_by_filter(self.filter)
         for thing in thing_all:
-            distance = square_distance(me.entity.location, thing.location)
-            if distance and distance < self.square_range:
-                return False
-        return True
+            distance = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
+            if distance is not None and distance <= closest_distance:
+                closest_distance = distance
+                closest_enemy = thing
+
+        self.closest_enemy = closest_enemy
+        if self.closest_enemy:
+            self.distance_to_enemy = closest_distance
+            return True
+        else:
+            self.distance_to_enemy = None
+            return False
 
     def should_use_melee(self, me):
-        target_id = me.get_knowledge('focus', self.what)
-        if target_id is None:
-            print("No focus target")
-            return None
-        enemy = me.map.get(target_id)
-        if enemy is None:
-            print("No target")
-            me.remove_knowledge('focus', self.what)
-            return None
-
-        # check that we can reach the target, and if so attack it
-        distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
-        if distance is None:
-            print("Could not calculate distance.")
-            return None
-
         # If possible, shoot with ranged weapons if a bit away
-        if distance > 5:
+        if self.distance_to_enemy > 5:
             # Check that we have bow and arrows
             # First check if we have any arrows
             has_arrows = False
@@ -150,27 +157,15 @@ class Fight(Goal):
         return None
 
     def get_enemy(self, me):
-        target_id = me.get_knowledge('focus', self.what)
-        if target_id is None:
-            print("No focus target")
-            return
-        enemy = me.map.get(target_id)
-        if enemy is None:
-            print("No target")
-            me.remove_knowledge('focus', self.what)
-        return enemy
+        return self.closest_enemy
 
     def attack_melee(self, me):
         enemy = self.get_enemy(me)
-        # check that we can reach the target, and if so attack it
-        distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
-        if distance is None:
-            print("Could not calculate distance.")
-            return
+
         reach = get_reach(me)
         attached_current = me.get_attached_entity("hand_primary")
         tasks_prop = me.entity.get_prop_map('tasks')
-        if distance - reach <= 0:
+        if self.distance_to_enemy - reach <= 0:
             move_to_face = me.face(enemy)
 
             # Check if we're already hitting
@@ -191,7 +186,7 @@ class Fight(Goal):
                                                             Operation(usage, Entity(me.entity.id, targets=[Entity(enemy.id)])))
                 print("Could not find any unarmed combat usages for this entity.")
         else:
-            print("Out of reach. Reach is {} and distance is {}".format(reach, distance))
+            print("Out of reach. Reach is {} and distance is {}".format(reach, self.distance_to_enemy))
             # Check if we should stop hitting
             if tasks_prop:
                 if "melee" in tasks_prop:
@@ -200,15 +195,10 @@ class Fight(Goal):
 
     def attack_ranged(self, me):
         enemy = self.get_enemy(me)
-        # check that we can reach the target, and if so attack it
-        distance = me.steering.distance_to(enemy, ai.EDGE, ai.EDGE)
-        if distance is None:
-            print("Could not calculate distance.")
-            return
         attached_current = me.get_attached_entity("hand_primary")
         tasks_prop = me.entity.get_prop_map('tasks')
 
-        if distance < 50:
+        if self.distance_to_enemy < 50:
             move_to_face = me.face(enemy)
 
             if attached_current:
@@ -244,9 +234,13 @@ class FightOrFlight(Goal):
 
 
 class ClearGrudge(DynamicGoal):
+    """
+    A dynamic goal which clears any entity specific when an entity is deleted or defeated.
+    This is useful to avoid NPC being hostile to players even after they have killed the player.
+    """
 
-    def __init__(self, op_trigger):
-        DynamicGoal.__init__(self, trigger=op_trigger, desc="Clear grudge data when entity defeated or deleted.")
+    def __init__(self):
+        DynamicGoal.__init__(self, trigger=["sight_defeated", "sight_delete"], desc="Clear grudge data when entity defeated or deleted.")
 
     def event(self, me, original_op, op):
         inner_args = op[0]
@@ -267,10 +261,10 @@ class KeepGrudge(DynamicGoal):
 
     def __init__(self):
         DynamicGoal.__init__(self, trigger="sight_hit", desc="React when being hit.")
-        self.sub_goals = [ClearGrudge("sight_defeated"), ClearGrudge("sight_delete")]
+        self.clear_goal = ClearGrudge()
 
     def triggering_goals(self):
-        return [self] + self.sub_goals
+        return [self, self.clear_goal]
 
     def event(self, me, original_op, op):
         # The args of the hit op contains the originating entity for the hit (i.e. the actual attacker).
