@@ -69,6 +69,8 @@ class PlayerControlled(server.Thing):
         if not limbo_entity:
             print("Entity is set to respawn, but there's no limbo entity set in the system.")
         if self.location.parent != limbo_entity:
+            # Emit a sight of this entity being defeated
+            res += Operation("sight", Operation("defeated", Entity(self.id)))
             res += Operation("imaginary", Entity(
                 description="You were killed. You need to wait 30 seconds before you will be returned to the world."),
                              to=self.id, from_=self.id)

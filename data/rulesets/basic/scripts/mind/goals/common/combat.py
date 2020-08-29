@@ -243,11 +243,34 @@ class FightOrFlight(Goal):
                                  Avoid(what="memory.disposition <= -1 && memory.threat > 0", range=range)])
 
 
+class ClearGrudge(DynamicGoal):
+
+    def __init__(self, op_trigger):
+        DynamicGoal.__init__(self, trigger=op_trigger, desc="Clear grudge data when entity defeated or deleted.")
+
+    def event(self, me, original_op, op):
+        inner_args = op[0]
+        entity_id = inner_args.id
+        # Check that it's not from ourselves
+        if entity_id == me.entity.id:
+            return
+
+        me.map.remove_entity_memory(entity_id, "disposition_base")
+        # print("Updated base disposition of entity {} to {}.".format(actor_id, disposition_base - 0.4))
+        if entity_id in me.entities:
+            entity = me.entities[entity_id]
+            me.update_relation_for_entity(entity)
+
+
 class KeepGrudge(DynamicGoal):
     """React to other entities hitting us and lower their disposition."""
 
     def __init__(self):
         DynamicGoal.__init__(self, trigger="sight_hit", desc="React when being hit.")
+        self.sub_goals = [ClearGrudge("sight_defeated"), ClearGrudge("sight_delete")]
+
+    def triggering_goals(self):
+        return [self] + self.sub_goals
 
     def event(self, me, original_op, op):
         # The args of the hit op contains the originating entity for the hit (i.e. the actual attacker).
@@ -259,7 +282,7 @@ class KeepGrudge(DynamicGoal):
             # Check that it's not from ourselves
             if actor_id == me.entity.id:
                 return
-            # Ignore it it's us being hit
+            # Ignore if it's not us being hit
             if to_id != me.entity.id:
                 return
 

@@ -67,6 +67,9 @@ class CyPy_MemMap : public WrapperBase<MemMap*, CyPy_MemMap>
         Py::Object add_entity_memory(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, add_entity_memory);
 
+        Py::Object remove_entity_memory(const Py::Tuple& args);
+        PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, remove_entity_memory);
+
         Py::Object recall_entity_memory(const Py::Tuple& args);
         PYCXX_VARARGS_METHOD_DECL(CyPy_MemMap, recall_entity_memory);
 

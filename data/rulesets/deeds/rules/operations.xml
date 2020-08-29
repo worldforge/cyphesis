@@ -180,4 +180,10 @@
         <string name="parent">activity</string>
     </map>
 
+    <!-- Emitted when an entity is "defeated", i.e. killed but not deleted. -->
+    <map>
+        <string name="id">defeated</string>
+        <string name="objtype">op_definition</string>
+        <string name="parent">action</string>
+    </map>
 </atlas>

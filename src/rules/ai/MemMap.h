@@ -135,6 +135,9 @@ class MemMap
                              const std::string& memory,
                              Atlas::Message::Element value);
 
+        void removeEntityMemory(const std::string& id,
+                                const std::string& memory);
+
         ///\brief Recall a memory about an entity if it exists. Do nothing otherwise.
         ///@param id - the id of entity to which we relate the memory
         ///@param memory - the name of the memory (i.e. "disposition")
@@ -155,6 +158,7 @@ class MemMap
         void check(const double&);
 
         void flush();
+
         void setListener(MapListener* listener);
 
         void collectTypeResolverOps(OpVector& res);

@@ -331,6 +331,22 @@ void MemMap::addEntityMemory(const std::string& id,
     }
 }
 
+void MemMap::removeEntityMemory(const std::string& id,
+                             const std::string& memory)
+{
+    auto entity_memory = m_entityRelatedMemory.find(id);
+    if (entity_memory != m_entityRelatedMemory.end()) {
+        if (memory.empty()) {
+            m_entityRelatedMemory.erase(entity_memory);
+        } else {
+            auto specific_memory_iter = entity_memory->second.find(memory);
+            if (specific_memory_iter != entity_memory->second.end()) {
+                entity_memory->second.erase(specific_memory_iter);
+            }
+        }
+    }
+}
+
 void MemMap::recallEntityMemory(const std::string& id,
                                 const std::string& memory,
                                 Element& value) const

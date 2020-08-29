@@ -43,6 +43,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/ai/python/CyPy_Ai.h>
+
 Atlas::Objects::Factories factories;
 
 int main()
@@ -118,6 +119,17 @@ int main()
     expect_python_error("m.delete()", PyExc_IndexError);
     expect_python_error("m.delete(1)", PyExc_TypeError);
     run_python_string("m.delete('1')");
+
+    run_python_string("m.add_entity_memory('1', 'foo', 'bar')")
+    run_python_string("m.add_entity_memory('1', 'foo1', 'baz')")
+    run_python_string("assert(m.recall_entity_memory('1', 'foo') == 'bar')")
+    run_python_string("assert(m.recall_entity_memory('1', 'foo1') == 'baz')")
+    run_python_string("m.remove_entity_memory('1', 'foo')")
+    run_python_string("assert(m.recall_entity_memory('1', 'foo') == None)")
+    run_python_string("assert(m.recall_entity_memory('1', 'foo1') == 'baz')")
+    //This should remove all memories for '1'
+    run_python_string("m.remove_entity_memory('1')")
+    run_python_string("assert(m.recall_entity_memory('1', 'foo1') == None)")
 
     shutdown_python_api();
     return 0;

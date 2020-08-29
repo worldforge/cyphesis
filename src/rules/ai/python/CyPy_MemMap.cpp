@@ -28,13 +28,13 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+        : WrapperBase(self, args, kwds)
 {
     throw Py::TypeError("MemMap() can't be instanced from Python.");
 }
 
 CyPy_MemMap::CyPy_MemMap(Py::PythonClassInstance* self, MemMap* value)
-    : WrapperBase(self, value)
+        : WrapperBase(self, value)
 {
 
 }
@@ -64,7 +64,10 @@ void CyPy_MemMap::init_type()
 
     PYCXX_ADD_VARARGS_METHOD(find_by_location_query, find_by_location_query, "");
 
-    PYCXX_ADD_VARARGS_METHOD(add_entity_memory, add_entity_memory, "");
+    PYCXX_ADD_VARARGS_METHOD(add_entity_memory, add_entity_memory, "Adds memory for an entity. First parameter is entity id, second is memory name, and third is the memory contents.");
+
+    PYCXX_ADD_VARARGS_METHOD(remove_entity_memory, remove_entity_memory,
+                             "Removes memory for an entity. First parameter is entity id, second is memory name. If no memory name is supplied all memory for that entity will be removed");
 
     PYCXX_ADD_VARARGS_METHOD(recall_entity_memory, recall_entity_memory, "");
 
@@ -237,6 +240,20 @@ Py::Object CyPy_MemMap::add_entity_memory(const Py::Tuple& args)
     auto memory_name = verifyString(args[1]);
 
     m_value->addEntityMemory(id, memory_name, CyPy_Element::asElement(args[2]));
+
+    return Py::None();
+}
+
+Py::Object CyPy_MemMap::remove_entity_memory(const Py::Tuple& args)
+{
+
+    args.verify_length(1, 2);
+    auto id = verifyString(args[0]);
+    if (args.length() == 2) {
+        m_value->removeEntityMemory(id, verifyString(args[1]));
+    } else {
+        m_value->removeEntityMemory(id, "");
+    }
 
     return Py::None();
 }
