@@ -2704,8 +2704,15 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     //CProfileManager::dumpAll();
 
+    //The list of projectilecollisions will contain duplicates, so we need to keep track of the last
+    //processed and check that it does not repeat.
+    BulletEntry* lastCollisionEntry = nullptr;
     for (const auto& entry : projectileCollisions) {
         auto projectileEntry = entry.first;
+        if (lastCollisionEntry == projectileEntry) {
+            continue;
+        }
+        lastCollisionEntry = projectileEntry;
         auto& collisionEntry = entry.second;
         const auto modeDataProperty = projectileEntry->entity.getPropertyClassFixed<ModeDataProperty>();
         Atlas::Objects::Entity::Anonymous ent;
