@@ -48,17 +48,20 @@ class PlayerControlled(server.Thing):
                 res = Oplist()
                 # Handle the world being recreated by checking for 0
                 if op.refno == self.tick_refno or self.tick_refno == 0:
+                    minds_prop = self.get_prop_list("_minds")
                     if hasattr(arg, "type") and arg.type == "remove":
-                        # Move entity to limbo
-                        limbo_entity = server.get_alias_entity("limbo")
-                        if limbo_entity and self.location.parent != limbo_entity:
-                            # Store the current position in "__respawn" so we can spawn back there.
-                            res += Operation("set", Entity(self.id, __respawn={"loc": self.location.parent.id,
-                                                                               "pos": self.location.pos}), to=self.id)
-                            res += Operation("move", Entity(self.id, loc=limbo_entity.id), to=self.id)
+                        # Check that the entity hasn't gotten a new mind in the meantime
+                        if minds_prop is None or len(minds_prop) == 0:
+                            # Move entity to limbo
+                            limbo_entity = server.get_alias_entity("limbo")
+                            if limbo_entity and self.location.parent != limbo_entity:
+                                # Store the current position in "__respawn" so we can spawn back there.
+                                res += Operation("set", Entity(self.id, __respawn={"loc": self.location.parent.id,
+                                                                                   "pos": self.location.pos}), to=self.id)
+                                res += Operation("move", Entity(self.id, loc=limbo_entity.id), to=self.id)
                     else:
                         # Only respawn if there's a mind
-                        if self.props._minds and len(self.props._minds) != 0:
+                        if minds_prop is not None and len(minds_prop) > 0:
                             res += self.respawn()
 
                 return server.OPERATION_BLOCKED, res
