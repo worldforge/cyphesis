@@ -59,6 +59,7 @@
 #include <unordered_set>
 #include <chrono>
 #include <boost/optional.hpp>
+#include <algorithm>
 
 static const bool debug_flag = false;
 

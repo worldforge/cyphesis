@@ -24,12 +24,13 @@
 #include "StackableDomain.h"
 #include "ModeDataProperty.h"
 #include "ContainersActiveProperty.h"
+#include "BaseWorld.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
 #include <unordered_set>
 #include <common/operations/Update.h>
-#include "BaseWorld.h"
+#include <algorithm>
 
 ContainerDomain::ContainerDomain(LocatedEntity& entity) :
         Domain(entity),
