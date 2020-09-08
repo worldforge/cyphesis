@@ -23,28 +23,28 @@
             <map name="attachments">
                 <map name="default">
                     <!-- Requirements for things wielded are that they are contained in the entity's inventory. Also check if there's a required level. -->
-                    <string name="hand_primary">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; (tool.level_required = none || describe("You lack required
-                        level.", tool.level_required &lt; actor.level))
+                    <string name="hand_primary">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
                     <!-- The "secondary hand" only allows things that are specifically designed to be worn on the secondary hand. Also check if there's a required level. -->
-                    <string name="hand_secondary">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'hand_secondary' &amp;&amp; (tool.level_required
-                        = none || describe("You lack required level.", tool.level_required &lt; actor.level))
+                    <string name="hand_secondary">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'hand_secondary' &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
                     <!-- Requirements for things worn are that they are contained in the entity's inventory and have the appropriate "worn" property. Also check if there's a required level. -->
-                    <string name="torso">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'torso' &amp;&amp; (tool.level_required = none ||
-                        describe("You lack required level.", tool.level_required &lt; actor.level))
+                    <string name="torso">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'torso' &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
-                    <string name="legs">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'legs' &amp;&amp; (tool.level_required = none ||
-                        describe("You lack required level.", tool.level_required &lt; actor.level))
+                    <string name="legs">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'legs' &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
-                    <string name="feet">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'feet' &amp;&amp; (tool.level_required = none ||
-                        describe("You lack required level.", tool.level_required &lt; actor.level))
+                    <string name="feet">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'feet' &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
-                    <string name="head">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'head' &amp;&amp; (tool.level_required = none ||
-                        describe("You lack required level.", tool.level_required &lt; actor.level))
+                    <string name="head">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'head' &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
-                    <string name="back">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'back' &amp;&amp; (tool.level_required = none ||
-                        describe("You lack required level.", tool.level_required &lt; actor.level))
+                    <string name="back">describe("Needs to be in inventory.", contains(actor.contains, child = tool)) &amp;&amp; tool.worn = 'back' &amp;&amp;
+                        (tool.level_required = none || describe("You lack required level.", tool.level_required &lt; actor.level))
                     </string>
                 </map>
             </map>
