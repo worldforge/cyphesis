@@ -1,0 +1,21 @@
+<atlas>
+    <map>
+        <map name="attributes">
+            <map name="geometry">
+                <map name="default">
+                    <string name="path">dural/items/containers/bucket/model/bucket.mesh</string>
+                    <string name="type">cylinder-y</string>
+                </map>
+            </map>
+            <map name="present">
+                <string name="default">dural/items/containers/bucket/bucket.modeldef</string>
+            </map>
+            <map name="density">
+                <float name="default">200</float>
+            </map>
+        </map>
+        <string name="id">bucket</string>
+        <string name="objtype">class</string>
+        <string name="parent">thing</string>
+    </map>
+</atlas>
