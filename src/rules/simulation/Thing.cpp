@@ -473,7 +473,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
         //If the observed entity has a domain, let it decide child visibility.
         //Otherwise show all children.
         const Domain* observedEntityDomain = getDomain();
-        std::list<std::string>& contlist = sarg->modifyContains();
+        auto& contlist = sarg->modifyContains();
         if (observedEntityDomain) {
             contlist.clear();
             std::list<LocatedEntity*> entityList;
