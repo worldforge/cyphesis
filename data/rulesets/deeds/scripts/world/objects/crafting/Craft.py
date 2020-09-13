@@ -19,8 +19,9 @@ def general_crafting(instance):
 
     task = Craft(instance, duration=duration, tick_interval=min(1, duration), name="Crafting")
 
-    if not task.is_valid():
-        return server.OPERATION_BLOCKED
+    (valid, err) = task.is_valid()
+    if not valid:
+        return server.OPERATION_BLOCKED, task.irrelevant(err)
 
     instance.actor.send_world(Operation("sight", instance.op))
 
@@ -62,7 +63,8 @@ class Craft(StoppableTask):
 
     def completed(self):
         res = Oplist()
-        if self.is_valid():
+        valid, err = self.is_valid()
+        if valid:
             for input_def in self.temporaries["inputs"]:
                 input_entities = self.usage.actor.find_in_contains(input_def["criteria"])
                 needed_amount = input_def["amount"]
@@ -90,5 +92,5 @@ class Craft(StoppableTask):
                 if found_amount >= input_def["amount"]:
                     continue
             if found_amount < input_def["amount"]:
-                return False
-        return True
+                return False, "You are missing all required items for crafting"
+        return True, None
