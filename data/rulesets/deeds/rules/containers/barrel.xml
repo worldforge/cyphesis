@@ -17,6 +17,9 @@
             <map name="domain">
                 <string name="default">container</string>
             </map>
+            <map name="description">
+                <string name="default">A sturdy barrel. It's a bit unclear what it contains.</string>
+            </map>
             <map name="usages">
                 <map name="append">
                     <map name="open_container">

@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">200</float>
             </map>
+            <map name="description">
+                <string name="default">A wooden bucket.</string>
+            </map>
         </map>
         <string name="id">bucket</string>
         <string name="objtype">class</string>

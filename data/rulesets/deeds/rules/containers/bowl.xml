@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">100</float>
             </map>
+            <map name="description">
+                <string name="default">A simple clay bowl.</string>
+            </map>
         </map>
         <string name="id">bowl</string>
         <string name="objtype">class</string>
