@@ -18,7 +18,7 @@
                 <string name="default">__deposits</string>
             </map>
             <map name="__replenish_interval">
-                <int name="default">10</int>
+                <int name="default">3600</int>
             </map>
             <map name="__replenish_max">
                 <int name="default">5</int>
