@@ -67,11 +67,11 @@ class EntityTraversalTask: public ClientTask
                 /**
                  * @brief The ids of the children of the rule.
                  */
-                std::list<std::string> children;
+                std::vector<std::string> children;
                 /**
                  * @brief The current children iterator. This is an iterator of the "children" field.
                  */
-                std::list<std::string>::const_iterator currentChildIterator;
+                std::vector<std::string>::const_iterator currentChildIterator;
         };
 
         /**

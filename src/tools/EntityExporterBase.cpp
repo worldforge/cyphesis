@@ -77,7 +77,7 @@ namespace {
         return integerId(lhs) < integerId(rhs);
     }
 
-    std::vector<std::string> ignoredProperties{"_modifiers", "_minds"};
+    std::vector<std::string> ignoredProperties{"_modifiers", "_minds", "velocity", "loc", "stamp", "contains"};
 }
 
 EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::string& avatarId, const std::string& currentTimestamp) :
@@ -144,8 +144,23 @@ void EntityExporterBase::cancel()
     mCancelled = true;
 }
 
-void EntityExporterBase::dumpEntity(const RootEntity& ent)
+void EntityExporterBase::dumpEntity(RootEntity ent)
 {
+    std::string loc;
+    if (!ent->isDefaultLoc()) {
+        loc = ent->getLoc();
+    }
+    auto id = ent->getId();
+    auto persistedId = id;
+    if (!mPreserveIds && persistedId != "0") {
+        std::stringstream ss;
+        ss << mEntityMap.size();
+        persistedId = ss.str();
+        ent->setId(persistedId);
+    }
+    mIdMapping.insert(std::make_pair(id, persistedId));
+
+
     Atlas::Message::MapType entityMap;
     ent->addToMessage(entityMap);
 
@@ -231,7 +246,28 @@ void EntityExporterBase::dumpEntity(const RootEntity& ent)
     for (auto& entry : attributesToAdd) {
         entityMap.insert(std::move(entry));
     }
-    mEntities.emplace_back(entityMap);
+   // mEntities.emplace_back(entityMap);
+    mEntityMap[id].entity = entityMap;
+    mEntityMap[id].loc = loc;
+    if (!loc.empty()) {
+        mEntityMap[loc].children.emplace_back(id);
+    }
+
+//    auto entityMapI = mEntityMap.find(loc);
+//    if (entityMapI != mEntityMap.end()) {
+//        auto I = entityMapI->second->find("$contains");
+//        if (I != entityMapI->second->end()) {
+//            auto result = I->second.asMap().emplace(id, entityMap);
+//            mEntityMap[id] = &result.first->second.asMap();
+//        }else {
+//            auto result = entityMapI->second->emplace("$contains", MapType{{id, entityMap}});
+//            mEntityMap[id] = &result.first->second.asMap();
+//        }
+//    } else {
+//        auto result = mTopLevelEntities.emplace(id, entityMap);
+//        mEntityMap[id] = &result.first->second;
+//    }
+
 }
 
 void EntityExporterBase::pollQueue()
@@ -306,30 +342,15 @@ void EntityExporterBase::infoArrived(const Operation& op)
         //Make a copy so that we can sort the contains list and update it in the
         //entity
         RootEntity entityCopy(ent->copy());
-        std::list<std::string> contains = ent->getContains();
+        auto contains = ent->getContains();
         //Sort the contains list so it's deterministic
-        contains.sort(idSorter);
+        std::sort(contains.begin(), contains.end(), idSorter);
         entityCopy->setContains(contains);
 
-        std::string persistedId = entityCopy->getId();
-
-        if (!mPreserveIds && persistedId != "0") {
-            std::stringstream ss;
-            ss << mEntities.size();
-            persistedId = ss.str();
-            entityCopy->setId(persistedId);
-        }
-        mIdMapping.insert(std::make_pair(ent->getId(), persistedId));
-
         //Remove attributes which shouldn't be persisted
-        entityCopy->removeAttr(Atlas::Objects::Entity::VELOCITY_ATTR);
-        entityCopy->removeAttr(Atlas::Objects::Entity::LOC_ATTR);
-        entityCopy->removeAttr(Atlas::Objects::STAMP_ATTR);
-        dumpEntity(entityCopy);
-        std::list<std::string>::const_iterator I = contains.begin();
-        std::list<std::string>::const_iterator Iend = contains.end();
-        for (; I != Iend; ++I) {
-            mEntityQueue.push_back(*I);
+        dumpEntity(std::move(entityCopy));
+        for (auto& id : contains) {
+            mEntityQueue.push_back(id);
         }
     }
     pollQueue();
@@ -435,8 +456,8 @@ void EntityExporterBase::adjustReferencedEntities()
 //			}
 //		}
     }
-    for (auto& entity : mEntities) {
-        auto& entityMap = entity.asMap();
+    for (auto& entry : mEntityMap) {
+        auto& entityMap = entry.second.entity;
         //We know that mEntities only contain maps
         auto containsIElem = entityMap.find("contains");
         if (containsIElem != entityMap.end()) {
@@ -455,7 +476,9 @@ void EntityExporterBase::adjustReferencedEntities()
                 contains = newContains;
             }
         }
-        resolveEntityReferences(entity);
+        for (auto& I : entityMap) {
+            resolveEntityReferences(I.second);
+        }
     }
 }
 
@@ -507,7 +530,20 @@ void EntityExporterBase::complete()
 
     root->setAttr("meta", meta);
 
-    root->setAttr("entities", mEntities);
+
+    std::vector<Atlas::Message::Element> entities;
+    //First find all top level entities.
+    std::vector<EntityEntry*> topLevelEntities;
+
+    for (auto& entry: mEntityMap) {
+        if (entry.second.loc.empty()) {
+            auto containsResult = entry.second.entity.emplace("~contains", ListType{});
+            populateChildEntities(containsResult.first->second.asList(), entry.second.children);
+            entities.emplace_back(std::move(entry.second.entity));
+        }
+    }
+
+    root->setAttr("entities", std::move(entities));
     if (!mRules.empty()) {
         root->setAttr("rules", mRules);
     }
@@ -526,12 +562,29 @@ void EntityExporterBase::complete()
     filestream.close();
 
     //Clear the lists to release the memory allocated
-    mEntities.clear();
+    mEntityMap.clear();
 
     mComplete = true;
     EventCompleted.emit();
     S_LOG_INFO("Completed exporting " << mStats.entitiesReceived << " entities and " << mStats.rulesReceived << " rules.");
 }
+
+void EntityExporterBase::populateChildEntities(Atlas::Message::ListType& contains, const std::vector<std::string>& children) {
+    for (auto& childId : children) {
+        auto I = mEntityMap.find(childId);
+        if (I == mEntityMap.end()) {
+            S_LOG_CRITICAL("Could not find child with id " << childId)
+            throw std::runtime_error("Could not find child.");
+        }
+        auto& childEntity = I->second;
+        if (!childEntity.children.empty()) {
+            auto containsResult = childEntity.entity.emplace("~contains", ListType{});
+            populateChildEntities(containsResult.first->second.asList(), childEntity.children);
+        }
+        contains.emplace_back(childEntity.entity);
+    }
+}
+
 
 void EntityExporterBase::start(const std::string& filename, const std::string& entityId)
 {

@@ -62,7 +62,7 @@ static const bool debug_flag = true;
     log(CRITICAL, ss.str()); }
 
 
-StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity o, const std::list<std::string>::const_iterator& c) :
+StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity o, const std::vector<std::string>::const_iterator& c) :
         obj(std::move(o)),
         currentChildIterator(c)
 {

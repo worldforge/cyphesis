@@ -270,10 +270,18 @@ protected:
 	 */
 	std::unordered_map<std::string, std::string> mIdMapping;
 
-	/**
-	 * @brief All entities as received from the server.
-	 */
-	std::vector<Atlas::Message::Element> mEntities;
+	struct EntityEntry {
+	    std::string loc;
+	    std::vector<std::string> children;
+	    Atlas::Message::MapType entity;
+	};
+
+    /**
+    * @brief All entities as received from the server.
+    */
+    std::map<std::string, EntityEntry> mEntityMap;
+
+
 	/**
 	 * @brief All rules received from the server.
 	 */
@@ -342,7 +350,7 @@ protected:
 	void startRequestingEntities();
 
 	void dumpRule(const Atlas::Objects::Entity::RootEntity& ent);
-	void dumpEntity(const Atlas::Objects::Entity::RootEntity& ent);
+	void dumpEntity(Atlas::Objects::Entity::RootEntity ent);
 	void infoArrived(const Operation& op);
 	void operationGetResult(const Operation& op);
     void operationGetRuleResult(const Operation& op);
@@ -413,6 +421,9 @@ protected:
 	 * @param serverMap An empty map.
 	 */
 	virtual void fillWithServerData(Atlas::Message::MapType& serverMap) = 0;
+
+	void populateChildEntities(Atlas::Message::ListType& contains, const std::vector<std::string>& children);
+
 
 };
 
