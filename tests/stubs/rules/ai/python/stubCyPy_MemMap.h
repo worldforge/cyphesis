@@ -113,6 +113,14 @@
   }
 #endif //STUB_CyPy_MemMap_add_entity_memory
 
+#ifndef STUB_CyPy_MemMap_remove_entity_memory
+//#define STUB_CyPy_MemMap_remove_entity_memory
+  Py::Object CyPy_MemMap::remove_entity_memory(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_MemMap_remove_entity_memory
+
 #ifndef STUB_CyPy_MemMap_recall_entity_memory
 //#define STUB_CyPy_MemMap_recall_entity_memory
   Py::Object CyPy_MemMap::recall_entity_memory(const Py::Tuple& args)

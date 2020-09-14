@@ -139,26 +139,6 @@ class EntityImporterBase : public virtual sigc::trackable
              * The number of failed entity creation ops.
              */
             unsigned int entitiesCreateErrorCount;
-            /**
-             * The total number of rules to process.
-             */
-            unsigned int rulesCount;
-            /**
-             * The number of rules processed so far.
-             */
-            unsigned int rulesProcessedCount;
-            /**
-             * The number of rule update ops sent.
-             */
-            unsigned int rulesUpdateCount;
-            /**
-             * The number of rule creation ops sent.
-             */
-            unsigned int rulesCreateCount;
-            /**
-             * The number of failed rule creation ops.
-             */
-            unsigned int rulesCreateErrorCount;
         };
 
         /**
@@ -256,15 +236,6 @@ class EntityImporterBase : public virtual sigc::trackable
          */
         std::map<std::string, Atlas::Objects::Root> mPersistedEntities;
 
-        /**
-         * @brief All of the persisted rules.
-         *
-         * When processing these, we first check if there's a rule already on the server.
-         * If there's not, we create a new one.
-         * If there already is one, we then compare the existing rule with the new one
-         * and only send a SET operation if there's any difference.
-         */
-        std::map<std::string, Atlas::Objects::Root> mPersistedRules;
 
         /**
          * @brief Keeps track of the responses from the server for create operations.
@@ -295,9 +266,6 @@ class EntityImporterBase : public virtual sigc::trackable
         enum
         {
             INIT,
-            RULE_WALKING,
-            RULE_UPDATING,
-            RULE_CREATING,
             ENTITY_WALKSTART,
             ENTITY_UPDATING,
             ENTITY_CREATING,
@@ -311,11 +279,6 @@ class EntityImporterBase : public virtual sigc::trackable
          * @brief Keeps track of the hierarchy of entities that are to be created or updated.
          */
         std::deque<StackEntry> mTreeStack;
-
-        /**
-         * @brief Keeps track of the hierarchy of rules that are to be created or updated.
-         */
-        std::deque<RuleStackEntry> mRuleStack;
 
         /**
          * @brief Records all newly created ids.
@@ -362,22 +325,9 @@ class EntityImporterBase : public virtual sigc::trackable
         bool getEntity(const std::string& id, OpVector& res);
 
         /**
-         * @brief Gets a rule from the server.
-         * @param id
-         * @param res
-         * @return
-         */
-        bool getRule(const std::string& id, OpVector& res);
-
-        /**
          * @brief Start walking through the entities, updating or creating them.
          */
         void startEntityWalking();
-
-        /**
-         * @brief Start walking through the rules, updating or creating them.
-         */
-        void startRuleWalking();
 
         /**
          * @brief Walks on the next entity in line to be created or updated on the server.
@@ -386,34 +336,11 @@ class EntityImporterBase : public virtual sigc::trackable
         void walkEntities(OpVector& res);
 
         /**
-         * @brief Walks on the next rule in line to be created or updated on the server.
-         * @param res
-         */
-        void walkRules(OpVector& res);
-
-        /**
          * @brief Creates a new entity on the server.
          * @param obj The entity specification.
          * @param res
          */
         void createEntity(const Atlas::Objects::Entity::RootEntity& obj, OpVector& res);
-
-        /**
-         * @brief Creates a new rule on the server.
-         * @param obj The rule specification.
-         * @param res
-         */
-        void createRule(const Atlas::Objects::Root& obj, OpVector& res);
-
-        /**
-         * @brief Updates an existing rule.
-         *
-         * Note that the rule will only be updated if there's a difference between the new rule and the existing one.
-         * @param existingDefinition The existing rule, as received from the server.
-         * @param newDefinition The new rule.
-         * @param res
-         */
-        void updateRule(const Atlas::Objects::Root& existingDefinition, const Atlas::Objects::Root& newDefinition, OpVector& res);
 
         /**
          * @brief Register any entity referencing attributes, if found, in mEntitiesWithReferenceAttributes.

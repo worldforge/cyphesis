@@ -65,12 +65,12 @@ The <command>cypasswd</command> tool is used to administrate the accounts table
 in the server database.
   </para>
   <para>
-The <command>cyexport</command> tool exports entities (and optionally rules) from 
+The <command>cyexport</command> tool exports entities from
 a running server into a file. The file generated can be imported into a server
 through the tool <command>cyimport</command>.
   </para>
   <para>
-The <command>cyimport</command> tool imports entities and rules from a file, 
+The <command>cyimport</command> tool imports entities from a file,
 previously exported through the <command>cyexport</command> tool, into a
 running server.
   </para>
@@ -82,7 +82,7 @@ is presented with an interactive console into which Python code can be entered.
 Commands are sent to the server by pressing enter.
   </para>
   <para>
-The <command>cydb</command> tool is used to perform maintanence on the server
+The <command>cydb</command> tool is used to perform maintenance on the server
 database. Use only when the server is offline.
 The first argument specified which dataset to work with, and the second argument 
 specifies the action for that data set.
@@ -126,10 +126,8 @@ password entered do not match, the operation is aborted, and no changes are
 made to the database.
   </para>
   <para>
-The <command>cyexport</command> by default only exports entities, but can also 
-export rules through the option <option>--export:rules=1</option>.
-By default no transient entities are exported. This can be changed by the 
-option <option>--export:transients=1</option>
+The <command>cyexport</command> by default don't export transient entities.
+This can be changed by the option <option>--export:transients=1</option>
   </para>
  </refsect1>
  <refsect1><title>Author</title>

@@ -136,6 +136,14 @@
   }
 #endif //STUB_MemMap_addEntityMemory
 
+#ifndef STUB_MemMap_removeEntityMemory
+//#define STUB_MemMap_removeEntityMemory
+  void MemMap::removeEntityMemory(const std::string& id, const std::string& memory)
+  {
+    
+  }
+#endif //STUB_MemMap_removeEntityMemory
+
 #ifndef STUB_MemMap_recallEntityMemory
 //#define STUB_MemMap_recallEntityMemory
   void MemMap::recallEntityMemory(const std::string& id, const std::string& memory, Atlas::Message::Element& value) const

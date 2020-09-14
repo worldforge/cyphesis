@@ -89,8 +89,7 @@ EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::
         mCancelled(false),
         mOutstandingGetRequestCounter(0),
         mExportTransient(false),
-        mPreserveIds(false),
-        mExportRules(false)
+        mPreserveIds(false)
 {
 }
 
@@ -122,16 +121,6 @@ void EntityExporterBase::setPreserveIds(bool preserveIds)
 bool EntityExporterBase::getPreserveIds() const
 {
     return mPreserveIds;
-}
-
-void EntityExporterBase::setExportRules(bool exportRules)
-{
-    mExportRules = exportRules;
-}
-
-bool EntityExporterBase::getExportRules() const
-{
-    return mExportRules;
 }
 
 const EntityExporterBase::Stats& EntityExporterBase::getStats() const
@@ -294,7 +283,7 @@ void EntityExporterBase::pollQueue()
 
         sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
         sendAndAwaitResponse(get, slot);
-        S_LOG_VERBOSE("Requesting info about entity with id " << get_arg->getId());
+        S_LOG_VERBOSE("Requesting info about entity with id " << get_arg->getId())
 
         mOutstandingGetRequestCounter++;
 
@@ -314,12 +303,12 @@ void EntityExporterBase::infoArrived(const Operation& op)
     }
     RootEntity ent = smart_dynamic_cast<RootEntity>(args.front());
     if (!ent.isValid()) {
-        S_LOG_WARNING("Malformed OURS when dumping.");
+        S_LOG_WARNING("Malformed OURS when dumping.")
         mStats.entitiesError++;
         EventProgress.emit();
         return;
     }
-    S_LOG_VERBOSE("Got info when dumping about entity " << ent->getId() << ". Outstanding requests: " << mOutstandingGetRequestCounter);
+    S_LOG_VERBOSE("Got info when dumping about entity " << ent->getId() << ". Outstanding requests: " << mOutstandingGetRequestCounter)
     mStats.entitiesReceived++;
     EventProgress.emit();
     //If the entity is transient and we've been told not to export transient ones, we should skip this one (and all of its children).
@@ -376,7 +365,7 @@ void EntityExporterBase::requestRule(const std::string& rule)
 
 void EntityExporterBase::adjustReferencedEntities()
 {
-    S_LOG_VERBOSE("Adjusting referenced entity ids.");
+    S_LOG_VERBOSE("Adjusting referenced entity ids.")
     if (!mPreserveIds) {
 //		for (auto& mind : mMinds) {
 //			//We know that mMinds only contain maps, and that there's always a "thoughts" list
@@ -509,11 +498,6 @@ void EntityExporterBase::complete()
 
     adjustReferencedEntities();
 
-    //Make sure the rules are stored in a deterministic fashion
-    std::sort(mRules.begin(), mRules.end(), [](Atlas::Message::Element const& a, Atlas::Message::Element const& b) {
-        return a.asMap().find("id")->second.asString() < b.asMap().find("id")->second.asString();
-    });
-
     Anonymous root;
     Atlas::Message::MapType meta;
 
@@ -544,9 +528,6 @@ void EntityExporterBase::complete()
     }
 
     root->setAttr("entities", std::move(entities));
-    if (!mRules.empty()) {
-        root->setAttr("rules", mRules);
-    }
 
     std::fstream filestream(mFilename, std::ios::out);
     Atlas::Message::QueuedDecoder decoder;
@@ -566,7 +547,7 @@ void EntityExporterBase::complete()
 
     mComplete = true;
     EventCompleted.emit();
-    S_LOG_INFO("Completed exporting " << mStats.entitiesReceived << " entities and " << mStats.rulesReceived << " rules.");
+    S_LOG_INFO("Completed exporting " << mStats.entitiesReceived << " entities and " << mStats.rulesReceived << " rules.")
 }
 
 void EntityExporterBase::populateChildEntities(Atlas::Message::ListType& contains, const std::vector<std::string>& children) {
@@ -589,11 +570,11 @@ void EntityExporterBase::populateChildEntities(Atlas::Message::ListType& contain
 void EntityExporterBase::start(const std::string& filename, const std::string& entityId)
 {
     if (mComplete || mCancelled) {
-        S_LOG_FAILURE("Can not restart an already completed or cancelled export instance.");
+        S_LOG_FAILURE("Can not restart an already completed or cancelled export instance.")
         return;
     }
 
-    S_LOG_INFO("Starting entity dump to file '" << filename << "'.");
+    S_LOG_INFO("Starting entity dump to file '" << filename << "'.")
     mFilename = filename;
     mRootEntityId = entityId;
 
@@ -645,8 +626,8 @@ void EntityExporterBase::operationGetResult(const Operation& op)
                     }
                 }
             }
-            S_LOG_WARNING("Got unexpected response on a GET request with operation of type " << op->getParent());
-            S_LOG_WARNING("Error message: " << errorMessage);
+            S_LOG_WARNING("Got unexpected response on a GET request with operation of type " << op->getParent())
+            S_LOG_WARNING("Error message: " << errorMessage)
             mStats.entitiesError++;
             EventProgress.emit();
         }
@@ -657,7 +638,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation& op)
 {
     if (!mCancelled) {
         if (op->getArgs().empty()) {
-            S_LOG_WARNING("Got response to GET for rule with no args.");
+            S_LOG_WARNING("Got response to GET for rule with no args.")
             mStats.rulesError++;
             cancel();
             return;
@@ -665,7 +646,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation& op)
 
         Root ent = smart_dynamic_cast<Root>(op->getArgs().front());
         if (!ent.isValid()) {
-            S_LOG_WARNING("Malformed rule arg when dumping.");
+            S_LOG_WARNING("Malformed rule arg when dumping.")
             mStats.rulesError++;
             cancel();
             return;
@@ -681,7 +662,7 @@ void EntityExporterBase::operationGetRuleResult(const Operation& op)
                         if (childElem.isString()) {
                             children.push_back(childElem.asString());
                         } else {
-                            S_LOG_WARNING("Child was not a string.");
+                            S_LOG_WARNING("Child was not a string.")
                         }
                     }
                 }
@@ -690,12 +671,6 @@ void EntityExporterBase::operationGetRuleResult(const Operation& op)
 
         MapType ruleMap;
         ent->addToMessage(ruleMap);
-
-        //Check if we're actually exporting rules; we might also be getting rules if we're set to ignore
-        //transients, since we then need to get the types in order to know what entities are transient.
-        if (mExportRules) {
-            mRules.emplace_back(ruleMap);
-        }
 
         std::string ruleId = ruleMap.find("id")->second.asString();
 

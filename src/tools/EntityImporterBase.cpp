@@ -118,81 +118,6 @@ void EntityImporterBase::extractChildren(const Root& op, std::list<std::string>&
     }
 }
 
-bool EntityImporterBase::getRule(const std::string& id, OpVector& res)
-{
-    auto I = mPersistedRules.find(id);
-    if (I == mPersistedRules.end()) {
-        S_LOG_WARNING("Could not find rule with id " << id << ".")
-        return false;
-    }
-
-    auto definition = I->second;
-
-    m_state = RULE_WALKING;
-
-    std::list<std::string> children;
-    extractChildren(definition, children);
-
-    RuleStackEntry entry = {id, definition, children};
-    mRuleStack.push_back(entry);
-
-    Get get;
-    Anonymous arg;
-    arg->setId(id);
-    get->setArgs1(arg);
-//  get->setObjtype("op");
-    get->setSerialno(newSerialNumber());
-
-    res.push_back(get);
-
-    Anonymous get_arg;
-    get_arg->setId(id);
-    get_arg->setObjtype("obj");
-
-    return true;
-}
-
-void EntityImporterBase::walkRules(OpVector& res)
-{
-    if (mRuleStack.empty()) {
-        startEntityWalking();
-    } else {
-        auto& current = mRuleStack.back();
-        auto definition = current.definition;
-        //Check if there are any children. If not, we should pop the stack and
-
-        if (current.children.empty()) {
-            // Pop: Go back to WALKING parent
-            assert(!mRuleStack.empty());
-            mRuleStack.pop_back();
-            while (!mRuleStack.empty()) {
-                auto& se = mRuleStack.back();
-                //Try to get the next child rule (unless we've reached the end of the list of children).
-                for (; ++se.currentChildIterator, se.currentChildIterator != se.children.end();) {
-                    if (getRule(*se.currentChildIterator, res)) {
-                        //We've sent a request for a rule; we should break out and await a response from the server.
-                        return;
-                    }
-                }
-
-                //If we've reached the end of the contained rules we should pop the current stack entry.
-                mRuleStack.pop_back();
-            }
-        } else {
-            for (auto I = current.children.begin(); I != current.children.end(); ++I) {
-                current.currentChildIterator = I;
-                bool foundRule = getRule(*current.currentChildIterator, res);
-                if (foundRule) {
-                    return;
-                }
-            }
-        }
-        if (mRuleStack.empty()) {
-            startEntityWalking();
-        }
-    }
-}
-
 void EntityImporterBase::walkEntities(OpVector& res)
 {
     if (mTreeStack.empty()) {
@@ -385,62 +310,6 @@ void EntityImporterBase::createEntity(const RootEntity& obj, OpVector& res)
     res.push_back(create);
 }
 
-void EntityImporterBase::createRule(const Atlas::Objects::Root& obj, OpVector& res)
-{
-    m_state = RULE_CREATING;
-    Atlas::Objects::Operation::Create createOp;
-    createOp->setFrom(mAccountId);
-    createOp->setArgs1(obj);
-
-    createOp->setSerialno(newSerialNumber());
-    S_LOG_INFO("Creating new rule '" << obj->getId() << "' on server.")
-    res.push_back(createOp);
-}
-
-void EntityImporterBase::updateRule(const Root& existingDefinition, const Root& newDefinition, OpVector& res)
-{
-
-    m_state = RULE_UPDATING;
-    Root updatedDefinition = newDefinition.copy();
-
-    //If the existing definition had any children that aren't part of the import, we should preserve those
-    std::list<std::string> existingChildren, newChildren;
-    extractChildren(existingDefinition, existingChildren);
-    extractChildren(newDefinition, newChildren);
-
-    for (auto& child : newChildren) {
-        existingChildren.remove(child);
-    }
-
-    for (auto& child : existingChildren) {
-        if (mPersistedRules.find(child) == mPersistedRules.end()) {
-            newChildren.push_back(child);
-        }
-    }
-
-    if (!newChildren.empty() && !existingChildren.empty()) {
-        Atlas::Message::ListType childrenElement;
-        for (auto& child : newChildren) {
-            childrenElement.emplace_back(child);
-        }
-        updatedDefinition->setAttr("children", childrenElement);
-    }
-
-    if (updatedDefinition->asMessage() != existingDefinition->asMessage()) {
-        S_LOG_INFO("Updating server rule '" << updatedDefinition->getId() << "'.")
-        Atlas::Objects::Operation::Set setOp;
-        setOp->setFrom(mAccountId);
-        setOp->setArgs1(updatedDefinition);
-
-        setOp->setSerialno(newSerialNumber());
-        res.push_back(setOp);
-    } else {
-        mStats.rulesProcessedCount++;
-        EventProgress.emit();
-        S_LOG_VERBOSE("Not updating server rule '" << updatedDefinition->getId() << "' as nothing is changed.")
-        walkRules(res);
-    }
-}
 
 void EntityImporterBase::errorArrived(const Operation& op, OpVector& res)
 {
@@ -456,43 +325,6 @@ void EntityImporterBase::errorArrived(const Operation& op, OpVector& res)
     }
 
     switch (m_state) {
-        case RULE_WALKING: {
-            //An error here just means that the rule we asked for didn't exist on the server, and we need
-            //to create it. This is an expected result.
-            auto& current = mRuleStack.back();
-            auto definition = current.definition;
-            assert(definition.isValid());
-
-            createRule(definition, res);
-
-        }
-            break;
-        case RULE_CREATING: {
-            mStats.rulesProcessedCount++;
-            mStats.rulesCreateErrorCount++;
-            //An error here means that something went wrong when trying to create a rule. This is wrong.
-            //It probably means that there's something wrong with the data we're sending.
-            auto& current = mRuleStack.back();
-
-            std::string ruleId = current.definition->getId();
-            S_LOG_FAILURE("Could not create rule with id '" << ruleId << "', continuing with next. Server message: " << errorMessage)
-            EventProgress.emit();
-            walkRules(res);
-        }
-            break;
-        case RULE_UPDATING: {
-            mStats.rulesProcessedCount++;
-            //An error here means that something went wrong when trying to update a rule. This is wrong.
-            //It probably means that there's something wrong with the data we're sending.
-            auto& current = mRuleStack.back();
-
-            std::string ruleId = current.definition->getId();
-            S_LOG_FAILURE("Could not update rule with id '" << ruleId << "', continuing with next. Server message: " << errorMessage)
-            mStats.rulesCreateErrorCount++;
-            EventProgress.emit();
-            walkRules(res);
-        }
-            break;
         case ENTITY_WALKING: {
             //An error here just means that the entity we asked for didn't exist on the server, and we need
             //to create it. This is an expected result.
@@ -542,26 +374,7 @@ void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
     }
     const Root& arg = op->getArgs().front();
 
-    if (m_state == RULE_WALKING) {
-        auto& current = mRuleStack.back();
-        if (arg->getId() != current.definition->getId()) {
-            S_LOG_WARNING("Got info on rule " << arg->getId() << " when expecting " << current.definition->getId() << ".")
-            return;
-        }
-
-        updateRule(arg, current.definition, res);
-
-    } else if (m_state == RULE_CREATING) {
-        mStats.rulesProcessedCount++;
-        mStats.rulesCreateCount++;
-        EventProgress.emit();
-        walkRules(res);
-    } else if (m_state == RULE_UPDATING) {
-        mStats.rulesProcessedCount++;
-        mStats.rulesUpdateCount++;
-        EventProgress.emit();
-        walkRules(res);
-    } else if (m_state == ENTITY_CREATING) {
+    if (m_state == ENTITY_CREATING) {
         if (!op.isValid()) {
             return;
         }
@@ -696,25 +509,6 @@ void EntityImporterBase::start(const std::string& filename)
     Atlas::Message::Element rulesElem;
     rootObj->copyAttr("meta", metaElem);
     rootObj->copyAttr("entities", entitiesElem);
-    if (rootObj->copyAttr("rules", rulesElem) == 0) {
-        if (!rulesElem.isList()) {
-            S_LOG_WARNING("Rules element is not list.")
-            EventCompleted.emit();
-            return;
-        } else {
-            for (auto& ruleMessage : rulesElem.asList()) {
-                if (ruleMessage.isMap()) {
-                    auto object = factories.createObject(ruleMessage.asMap());
-                    if (object.isValid()) {
-                        if (!object->isDefaultId()) {
-                            mPersistedRules.insert(std::make_pair(object->getId(), object));
-                        }
-                    }
-                }
-            }
-
-        }
-    }
 
     if (!entitiesElem.isNone() && !entitiesElem.isList()) {
         S_LOG_WARNING("Entities element is not list.")
@@ -761,18 +555,12 @@ void EntityImporterBase::start(const std::string& filename)
     }
 
 
-    S_LOG_INFO("Starting loading of world. Number of entities: " << mPersistedEntities.size() <<
-                                                                 " Number of rules: " << mPersistedRules.size())
+    S_LOG_INFO("Starting loading of world. Number of entities: " << mPersistedEntities.size())
     mStats.entitiesCount = static_cast<unsigned int>(mPersistedEntities.size());
-    mStats.rulesCount = static_cast<unsigned int>(mPersistedRules.size());
 
     EventProgress.emit();
 
-    if (mPersistedRules.empty()) {
-        startEntityWalking();
-    } else {
-        startRuleWalking();
-    }
+    startEntityWalking();
 
 }
 
@@ -824,22 +612,6 @@ void EntityImporterBase::startEntityWalking()
 
     sendOperation(l);
 
-}
-
-void EntityImporterBase::startRuleWalking()
-{
-    auto ruleI = mPersistedRules.find("root");
-    if (ruleI == mPersistedRules.end()) {
-        S_LOG_WARNING("Rules exist, but there's no root rule.")
-        startEntityWalking();
-    }
-    m_state = RULE_WALKING;
-
-    OpVector res;
-    getRule("root", res);
-    for (auto& op : res) {
-        sendOperation(op);
-    }
 }
 
 void EntityImporterBase::sendOperation(const Operation& op)

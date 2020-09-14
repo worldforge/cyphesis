@@ -196,19 +196,6 @@ public:
 	bool getPreserveIds() const;
 
 	/**
-	 * @brief Sets whether we should export rules.
-	 *
-	 * @param exportRules Whether we should export rules.
-	 */
-	void setExportRules(bool exportRules);
-
-	/**
-	 * @brief Gets whether we should export rules.
-	 * @return Whether we should export rules.
-	 */
-	bool getExportRules() const;
-
-	/**
 	 * @brief Gets stats about the export process.
 	 * @return Stats about the process.
 	 */
@@ -281,12 +268,6 @@ protected:
     */
     std::map<std::string, EntityEntry> mEntityMap;
 
-
-	/**
-	 * @brief All rules received from the server.
-	 */
-	std::vector<Atlas::Message::Element> mRules;
-
 	/**
 	 * @brief The full file name of the dump.
 	 */
@@ -328,11 +309,6 @@ protected:
 	bool mPreserveIds;
 
 	/**
-	 * @brief True if rules also should be exported.
-	 */
-	bool mExportRules;
-
-	/**
 	 * @brief Keeps track of all types that have the "transient" property set by default.
 	 *
 	 * This is required when we're not exporting any transient entities (which is the default).
@@ -349,7 +325,6 @@ protected:
 	 */
 	void startRequestingEntities();
 
-	void dumpRule(const Atlas::Objects::Entity::RootEntity& ent);
 	void dumpEntity(Atlas::Objects::Entity::RootEntity ent);
 	void infoArrived(const Operation& op);
 	void operationGetResult(const Operation& op);

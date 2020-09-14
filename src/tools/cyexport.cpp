@@ -36,8 +36,6 @@ static void usage(char* prg)
 
 BOOL_OPTION(transients, false, "export", "transients",
             "Flag to control if transients should also be exported");
-BOOL_OPTION(rules, false, "export", "rules",
-            "Flag to control if rules should also be exported");
 BOOL_OPTION(minds, true, "export", "minds",
             "Flag to control if minds should also be exported");
 
@@ -121,7 +119,6 @@ int main(int argc, char** argv)
 
         //Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
         auto exporter = std::make_shared<EntityExporter>(accountId, mind_id);
-        exporter->setExportRules(rules);
         exporter->setExportTransient(transients);
 
         bridge.runTask(exporter, filename);
