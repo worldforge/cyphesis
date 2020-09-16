@@ -76,13 +76,13 @@ StackEntry::StackEntry(Atlas::Objects::Entity::RootEntity o) :
 
 bool EntityImporterBase::getEntity(const std::string& id, OpVector& res)
 {
-    std::map<std::string, Root>::const_iterator I = mPersistedEntities.find(id);
+    auto I = mPersistedEntities.find(id);
     if (I == mPersistedEntities.end()) {
         S_LOG_VERBOSE("Could not find entity with id " << id << "; this one was probably transient.")
         //This will often happen if the child entity was transient, and therefore wasn't exported (but is still references from the parent entity).
         return false;
     }
-    const RootEntity& obj = smart_dynamic_cast<RootEntity>(I->second);
+    const RootEntity& obj = smart_dynamic_cast<RootEntity>(I->second.obj);
     if (!obj.isValid()) {
         S_LOG_FAILURE("Corrupt dump - non entity found " << id << ".")
         return false;
@@ -100,7 +100,7 @@ bool EntityImporterBase::getEntity(const std::string& id, OpVector& res)
     get->setFrom(mAccountId);
     get->setSerialno(newSerialNumber());
     res.push_back(get);
-    S_LOG_VERBOSE("EntityImporterBase: Getting entity with id " << id)
+    //S_LOG_VERBOSE("EntityImporterBase: Getting entity with id " << id)
     return true;
 }
 
@@ -183,7 +183,7 @@ void EntityImporterBase::sendResolvedEntityReferences()
             RootEntity entity;
 
             for (const auto& referenceEntry : referenceEntries) {
-                Element element = persistedEntity->getAttr(referenceEntry.propertyName);
+                Element element = persistedEntity.obj->getAttr(referenceEntry.propertyName);
                 resolveEntityReferences(element);
                 entity->setAttr(referenceEntry.propertyName, element);
             }
@@ -349,7 +349,7 @@ void EntityImporterBase::errorArrived(const Operation& op, OpVector& res)
                 auto J = mPersistedEntities.find(I->second);
                 if (J != mPersistedEntities.end()) {
                     auto& entity = J->second;
-                    entityType = entity->getParent();
+                    entityType = entity.obj->getParent();
                 }
             }
             S_LOG_FAILURE("Could not create entity of type '" << entityType << "', continuing with next. Server message: " << errorMessage)
@@ -517,18 +517,9 @@ void EntityImporterBase::start(const std::string& filename)
     }
 
     if (!entitiesElem.isNone()) {
-        for (auto& entityMessage : entitiesElem.asList()) {
-            if (entityMessage.isMap()) {
-                auto& entityMap = entityMessage.asMap();
-                auto object = factories.createObject(entityMap);
-                if (object.isValid()) {
-                    if (!object->isDefaultId()) {
-                        registerEntityReferences(object->getId(), entityMap);
-                        mPersistedEntities.insert(std::make_pair(object->getId(), object));
-                    }
-                }
-            }
-        }
+        auto& topEntitiesList = entitiesElem.asList();
+
+        auto topChildIds = extractChildEntities(factories, topEntitiesList);
     }
 
     if (mResumeWorld && mSuspendWorld) {
@@ -540,8 +531,8 @@ void EntityImporterBase::start(const std::string& filename)
     if (mResumeWorld) {
         auto I = mPersistedEntities.find("0");
         if (I != mPersistedEntities.end()) {
-            if (I->second->hasAttr("suspended")) {
-                I->second->setAttr("suspended", 0);
+            if (I->second.obj->hasAttr("suspended")) {
+                I->second.obj->setAttr("suspended", 0);
                 S_LOG_INFO("Resuming suspended world.")
             }
         }
@@ -549,7 +540,7 @@ void EntityImporterBase::start(const std::string& filename)
     if (mSuspendWorld) {
         auto I = mPersistedEntities.find("0");
         if (I != mPersistedEntities.end()) {
-            I->second->setAttr("suspended", 1);
+            I->second.obj->setAttr("suspended", 1);
             S_LOG_INFO("Suspending world.")
         }
     }
@@ -564,11 +555,47 @@ void EntityImporterBase::start(const std::string& filename)
 
 }
 
+std::vector<std::string> EntityImporterBase::extractChildEntities(Atlas::Objects::Factories& factories, Atlas::Message::ListType contains) {
+    std::vector<std::string> ids;
+
+    for (auto& entityMessage : contains) {
+        if (entityMessage.isMap()) {
+            auto& entityMap = entityMessage.asMap();
+            auto containsI = entityMap.find("~contains");
+            Atlas::Message::ListType containsList;
+            if (containsI != entityMap.end()) {
+                containsList = std::move(containsI->second.asList());
+                entityMap.erase(containsI);
+            }
+            auto object = smart_dynamic_cast<RootEntity>(factories.createObject(entityMap));
+            if (object.isValid()) {
+                if (!object->isDefaultId()) {
+                    ids.emplace_back(object->getId());
+                    registerEntityReferences(object->getId(), entityMap);
+
+                    auto childIds = extractChildEntities(factories, containsList);
+                    if (!childIds.empty()) {
+                        auto& containsProp = object->modifyContains();
+                        for (auto& childId : childIds) {
+                            containsProp.emplace_back(childId);
+                        }
+                    }
+                    mPersistedEntities.insert(std::make_pair(object->getId(), EntityEntry{object, childIds}));
+                }
+            }
+        }
+
+    }
+
+    return ids;
+}
+
+
 void EntityImporterBase::registerEntityReferences(const std::string& id, const Atlas::Message::MapType& element)
 {
     for (const auto& I : element) {
         const auto& name = I.first;
-        if (name == "id" || name == "parent" || name == "contains") {
+        if (name == "id" || name == "parent" || name == "contains" || name == "~contains") {
             continue;
         }
         auto res = extractEntityReferences(I.second);

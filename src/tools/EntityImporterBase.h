@@ -142,29 +142,6 @@ class EntityImporterBase : public virtual sigc::trackable
         };
 
         /**
-         * One entry on the stack of rules processed.
-         */
-        struct RuleStackEntry
-        {
-            /**
-             * @brief The id of the rule.
-             */
-            std::string id;
-            /**
-             * @brief The definition of the rule.
-             */
-            Atlas::Objects::Root definition;
-            /**
-             * @brief The ids of the children of the rule.
-             */
-            std::list<std::string> children;
-            /**
-             * @brief The current children iterator. This is an iterator of the "children" field.
-             */
-            std::list<std::string>::const_iterator currentChildIterator;
-        };
-
-        /**
          * @brief Ctor.
          * @param accountId The id of the account.
          * @param avatarId The id of the avatar.
@@ -231,10 +208,15 @@ class EntityImporterBase : public virtual sigc::trackable
          */
         Stats mStats;
 
+        struct EntityEntry {
+            Atlas::Objects::Entity::RootEntity obj;
+            std::vector<std::string> children;
+        };
+
         /**
          * @brief All of the persisted entities, which are to be created on the server.
          */
-        std::map<std::string, Atlas::Objects::Root> mPersistedEntities;
+        std::map<std::string, EntityEntry> mPersistedEntities;
 
 
         /**
@@ -398,6 +380,8 @@ class EntityImporterBase : public virtual sigc::trackable
          * @param children
          */
         void extractChildren(const Atlas::Objects::Root& op, std::list<std::string>& children);
+
+        std::vector<std::string> extractChildEntities(Atlas::Objects::Factories& factories, Atlas::Message::ListType contains);
 
         typedef sigc::slot<void, const Atlas::Objects::Operation::RootOperation&> CallbackFunction;
 
