@@ -72,9 +72,9 @@ class StackEntry
          */
         std::vector<std::string>::const_iterator currentChildIterator;
 
-        StackEntry(Atlas::Objects::Entity::RootEntity  o, const std::vector<std::string>::const_iterator& c);
+        StackEntry(Atlas::Objects::Entity::RootEntity o, const std::vector<std::string>::const_iterator& c);
 
-        explicit StackEntry(Atlas::Objects::Entity::RootEntity  o);
+        explicit StackEntry(Atlas::Objects::Entity::RootEntity o);
 };
 
 /**
@@ -180,6 +180,8 @@ class EntityImporterBase : public virtual sigc::trackable
          */
         void setSuspend(bool enabled);
 
+        void setAlwaysCreateNewEntities(bool alwaysCreateNew);
+
         /**
          * @brief Emitted when the load has been completed.
          */
@@ -208,7 +210,8 @@ class EntityImporterBase : public virtual sigc::trackable
          */
         Stats mStats;
 
-        struct EntityEntry {
+        struct EntityEntry
+        {
             Atlas::Objects::Entity::RootEntity obj;
             std::vector<std::string> children;
         };
@@ -293,6 +296,8 @@ class EntityImporterBase : public virtual sigc::trackable
        */
         bool mSuspendWorld;
 
+        bool mAlwaysCreateNewEntities;
+
         /**
          * @brief Sends an operation to the server.
          */
@@ -316,6 +321,9 @@ class EntityImporterBase : public virtual sigc::trackable
          * @param res
          */
         void walkEntities(OpVector& res);
+
+        bool getOrCreateEntity(const std::string& id, OpVector& res);
+
 
         /**
          * @brief Creates a new entity on the server.
@@ -373,13 +381,6 @@ class EntityImporterBase : public virtual sigc::trackable
          * @brief Called when the import is complete.
          */
         void complete();
-
-        /**
-         * @brief Helper method for extracting a list of children from a definition.
-         * @param op
-         * @param children
-         */
-        void extractChildren(const Atlas::Objects::Root& op, std::list<std::string>& children);
 
         std::vector<std::string> extractChildEntities(Atlas::Objects::Factories& factories, Atlas::Message::ListType contains);
 

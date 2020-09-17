@@ -227,6 +227,7 @@ int main(int argc, char** argv)
 
         importer->setResume(resume);
         importer->setSuspend(suspend);
+        importer->setAlwaysCreateNewEntities(clear);
 
         bridge.runTask(importer, filename);
         if (bridge.pollUntilTaskComplete() != 0) {

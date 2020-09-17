@@ -100,21 +100,26 @@ bool EntityImporterBase::getEntity(const std::string& id, OpVector& res)
     get->setFrom(mAccountId);
     get->setSerialno(newSerialNumber());
     res.push_back(get);
-    //S_LOG_VERBOSE("EntityImporterBase: Getting entity with id " << id)
+    S_LOG_VERBOSE("EntityImporterBase: Getting entity with id " << id)
     return true;
 }
 
-void EntityImporterBase::extractChildren(const Root& op, std::list<std::string>& children)
+bool EntityImporterBase::getOrCreateEntity(const std::string& id, OpVector& res)
 {
-    Element childElem;
-    if (op->copyAttr("children", childElem) == 0) {
-        if (childElem.isList()) {
-            for (auto child : childElem.asList()) {
-                if (child.isString()) {
-                    children.push_back(child.String());
-                }
-            }
+    if (mAlwaysCreateNewEntities && id != "0") {
+        auto createI = mPersistedEntities.find(id);
+        if (createI == mPersistedEntities.end()) {
+            S_LOG_FAILURE("Could not find entity " << id << ".")
+            return false;
+        } else {
+            const RootEntity& obj = smart_dynamic_cast<RootEntity>(createI->second.obj);
+            m_state = ENTITY_WALKING;
+            mTreeStack.emplace_back(obj);
+            createEntity(obj, res);
+            return true;
         }
+    } else {
+        return getEntity(id, res);
     }
 }
 
@@ -134,8 +139,7 @@ void EntityImporterBase::walkEntities(OpVector& res)
                 //Try to get the next child entity (unless we've reached the end of the list of children).
                 //Since some entities are references but not persisted we need to loop until we find one that we know of.
                 for (; ++se.currentChildIterator, se.currentChildIterator != se.obj->getContains().end();) {
-                    if (getEntity(*se.currentChildIterator, res)) {
-                        //We've sent a request for an entity; we should break out and await a response from the server.
+                    if (getOrCreateEntity(*se.currentChildIterator, res)) {
                         return;
                     }
                 }
@@ -149,8 +153,7 @@ void EntityImporterBase::walkEntities(OpVector& res)
             //in the list of entities; this happens with transient entities.
             for (auto I = current.obj->getContains().begin(); I != current.obj->getContains().end(); ++I) {
                 current.currentChildIterator = I;
-                bool foundEntity = getEntity(*current.currentChildIterator, res);
-                if (foundEntity) {
+                if (getOrCreateEntity(*current.currentChildIterator, res)) {
                     return;
                 }
             }
@@ -489,7 +492,8 @@ EntityImporterBase::EntityImporterBase(std::string accountId, std::string avatar
         mStats({}),
         m_state(INIT),
         mResumeWorld(false),
-        mSuspendWorld(false)
+        mSuspendWorld(false),
+        mAlwaysCreateNewEntities(false)
 {
 }
 
@@ -555,7 +559,8 @@ void EntityImporterBase::start(const std::string& filename)
 
 }
 
-std::vector<std::string> EntityImporterBase::extractChildEntities(Atlas::Objects::Factories& factories, Atlas::Message::ListType contains) {
+std::vector<std::string> EntityImporterBase::extractChildEntities(Atlas::Objects::Factories& factories, Atlas::Message::ListType contains)
+{
     std::vector<std::string> ids;
 
     for (auto& entityMessage : contains) {
@@ -669,6 +674,11 @@ void EntityImporterBase::setResume(bool enabled)
 void EntityImporterBase::setSuspend(bool enabled)
 {
     mSuspendWorld = enabled;
+}
+
+void EntityImporterBase::setAlwaysCreateNewEntities(bool alwaysCreateNew)
+{
+    mAlwaysCreateNewEntities = alwaysCreateNew;
 }
 
 void EntityImporterBase::operationSetResult(const Operation& op)
