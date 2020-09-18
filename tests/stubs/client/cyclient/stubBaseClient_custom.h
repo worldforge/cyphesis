@@ -8,3 +8,11 @@ BaseClient::BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Fact
 {
 }
 #endif //STUB_BaseClient_BaseClient
+
+#ifndef STUB_BaseClient_extractFirstArg
+#define STUB_BaseClient_extractFirstArg
+Atlas::Objects::Entity::RootEntity BaseClient::extractFirstArg(Atlas::Objects::Operation::RootOperation op)
+{
+    return {};
+}
+#endif //STUB_BaseClient_extractFirstArg

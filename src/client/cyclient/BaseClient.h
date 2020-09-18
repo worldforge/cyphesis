@@ -19,73 +19,96 @@
 #ifndef CLIENT_BASE_CLIENT_H
 #define CLIENT_BASE_CLIENT_H
 
-#include <modules/Ref.h>
+#include "modules/Ref.h"
 #include "ClientConnection.h"
 
+#include <Atlas/Objects/Entity.h>
+
 class CreatorClient;
+
 class PropertyManager;
 
 /// \brief Base class for classes that implement clients used to connect to a
 /// cyphesis server
 /// TODO: remove in favour of common/BaseClient which uses the asio event loop
-class BaseClient {
-  protected:
-    const PropertyManager& m_propertyManager;
-    /// \brief Low level connection to the server
-    ClientConnection m_connection;
-    /// \brief Client object that manages the creator avatar
-    Ref<CreatorClient> m_character;
-    /// \brief Store for details of the account after login
-    Atlas::Objects::Root m_player;
-    /// \brief Name used for the username of the account and the name of avatars
-    std::string m_playerName;
-    /// \brief Identifier of the Account on the server after login
-    std::string m_playerId;
+class BaseClient
+{
+    protected:
+        const PropertyManager& m_propertyManager;
+        /// \brief Low level connection to the server
+        ClientConnection m_connection;
+        /// \brief Client object that manages the creator avatar
+        Ref<CreatorClient> m_character;
+        /// \brief Store for details of the account after login
+        Atlas::Objects::Root m_player;
+        /// \brief Name used for the username of the account and the name of avatars
+        std::string m_playerName;
+        /// \brief Identifier of the Account on the server after login
+        std::string m_playerId;
 
-  public:
-    explicit BaseClient(boost::asio::io_context& io_context,
-                        Atlas::Objects::Factories& factories,
-                        const PropertyManager& propertyManager);
-    virtual ~BaseClient();
+        Atlas::Objects::Entity::RootEntity extractFirstArg(Atlas::Objects::Operation::RootOperation op);
 
-    CreatorClient * character() {
-        return m_character.get();
-    }
+    public:
+        explicit BaseClient(boost::asio::io_context& io_context,
+                            Atlas::Objects::Factories& factories,
+                            const PropertyManager& propertyManager);
 
-    const std::string & id() const {
-        return m_playerId;
-    }
+        virtual ~BaseClient();
 
-    Atlas::Objects::Root createSystemAccount();
-    Atlas::Objects::Root createAccount(const std::string & name,
-                                       const std::string & pword);
-    Ref<CreatorClient> createCharacter(const std::string & name);
-    void logout();
-    void handleNet();
+        CreatorClient* character()
+        {
+            return m_character.get();
+        }
 
-    /// \brief Function called when nothing else is going on
-    virtual void idle() = 0;
+        const std::string& id() const
+        {
+            return m_playerId;
+        }
 
-    /// \brief Connect to a local server via a unix socket
-    int connectLocal(const std::string & socket) {
-        return m_connection.connectLocal(socket);
-    }
+        Atlas::Objects::Root createSystemAccount();
 
-    /// \brief Connect to a remote server using a network socket
-    int connect(const std::string & server, int port) {
-        return m_connection.connect(server, static_cast<unsigned short>(port));
-    }
+        Atlas::Objects::Root createAccount(const std::string& name,
+                                           const std::string& pword);
 
-    /// \brief Send an operation to the server
-    void send(const Atlas::Objects::Operation::RootOperation & op);
+        Ref<CreatorClient> createCharacter(const std::string& name);
 
-    int wait() {
-        return m_connection.wait();
-    }
+        void logout();
 
-    int sendAndWaitReply(const Operation & op, OpVector & res) {
-        return m_connection.sendAndWaitReply(op, res);
-    }
+        void handleNet();
+
+        /// \brief Function called when nothing else is going on
+        virtual void idle() = 0;
+
+        /// \brief Connect to a local server via a unix socket
+        int connectLocal(const std::string& socket)
+        {
+            return m_connection.connectLocal(socket);
+        }
+
+        /// \brief Connect to a remote server using a network socket
+        int connect(const std::string& server, int port)
+        {
+            return m_connection.connect(server, static_cast<unsigned short>(port));
+        }
+
+        /// \brief Send an operation to the server
+        void send(const Atlas::Objects::Operation::RootOperation& op);
+
+        int wait()
+        {
+            return m_connection.wait();
+        }
+
+        Atlas::Objects::Operation::RootOperation sendAndWaitReply(const Operation& op)
+        {
+            OpVector res;
+            m_connection.sendAndWaitReply(op, res);
+            if (res.empty()) {
+                return {};
+            } else {
+                return res.front();
+            }
+        }
 
 };
 

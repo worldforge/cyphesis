@@ -25,6 +25,7 @@
 #include "common/system.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <common/operations/Possess.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -43,16 +44,16 @@ static const bool debug_flag = false;
 BaseClient::BaseClient(boost::asio::io_context& io_context,
                        Atlas::Objects::Factories& factories,
                        const PropertyManager& propertyManager) :
-    m_propertyManager(propertyManager),
-    m_connection(io_context, factories),
-    m_character(nullptr)
+        m_propertyManager(propertyManager),
+        m_connection(io_context, factories),
+        m_character(nullptr)
 {
 }
 
 BaseClient::~BaseClient() = default;
 
 /// \brief Send an operation to the server
-void BaseClient::send(const Operation & op)
+void BaseClient::send(const Operation& op)
 {
     m_connection.send(op);
 }
@@ -68,7 +69,7 @@ Root BaseClient::createSystemAccount()
     player_ent->setAttr("username", create_session_username());
     player_ent->setAttr("password", compose("%1%2", ::rand(), ::rand()));
     player_ent->setParent("sys");
-    
+
     Create createAccountOp;
     createAccountOp->setArgs1(player_ent);
     createAccountOp->setSerialno(m_connection.newSerialNo());
@@ -80,14 +81,14 @@ Root BaseClient::createSystemAccount()
         return Root(nullptr);
     }
 
-    const Root & ent = m_connection.getInfoReply();
+    const Root& ent = m_connection.getInfoReply();
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
                   << std::flush;
     } else {
         m_playerId = ent->getId();
-        // m_playerName = name;
+        m_playerName = ent->getName();
     }
 
     return ent;
@@ -97,8 +98,8 @@ Root BaseClient::createSystemAccount()
 ///
 /// @param name User name of the new account
 /// @param password Password of the new account
-Root BaseClient::createAccount(const std::string & name,
-                               const std::string & password)
+Root BaseClient::createAccount(const std::string& name,
+                               const std::string& password)
 {
     m_playerName = name;
 
@@ -106,10 +107,10 @@ Root BaseClient::createAccount(const std::string & name,
     player_ent->setAttr("username", name);
     player_ent->setAttr("password", password);
     player_ent->setParent("player");
-    
+
     debug(std::cout << "Loggin " << name << " in with " << password << " as password"
-               << std::endl << std::flush;);
-    
+                    << std::endl << std::flush;);
+
     Login loginAccountOp;
     loginAccountOp->setArgs1(player_ent);
     loginAccountOp->setSerialno(m_connection.newSerialNo());
@@ -127,7 +128,7 @@ Root BaseClient::createAccount(const std::string & name,
         }
     }
 
-    const Root & ent = m_connection.getInfoReply();
+    const Root& ent = m_connection.getInfoReply();
 
     if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
         std::cerr << "ERROR: Logged in, but account has no id" << std::endl
@@ -141,79 +142,107 @@ Root BaseClient::createAccount(const std::string & name,
     return ent;
 }
 
+Atlas::Objects::Entity::RootEntity BaseClient::extractFirstArg(Atlas::Objects::Operation::RootOperation op)
+{
+    if (!op->getArgs().empty()) {
+        return smart_dynamic_cast<RootEntity>(op->getArgs().front());
+    }
+    return {};
+}
+
+
 /// \brief Create a new Character or avatar on the server
 ///
 /// Requires that an account is already logged in.
 /// @param type The type of avatar to be created
 /// @return The CreatorClient object used to directly interact with the avatar
-Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
+Ref<CreatorClient> BaseClient::createCharacter(const std::string& type)
 {
 
     Anonymous character;
-    character->setName(m_playerName);
     character->setParent(type);
     character->setObjtype("obj");
     character->setAttr("possess", 1);
+    character->setAttr("__account", m_playerName);
+    character->setLoc("0");
 
     Create createOp;
     createOp->setFrom(m_playerId);
     createOp->setArgs1(character);
-    createOp->setSerialno(m_connection.newSerialNo());
-    send(createOp);
+    createOp->setTo("0");
 
-    if (m_connection.wait() != 0) {
+    auto createRes = sendAndWaitReply(createOp);
+    if (!createRes.isValid()) {
         std::cerr << "ERROR: Failed to create character type: "
-                  << type << std::endl << std::flush;
+                  << type << std::endl;
+        return nullptr;
+    }
+
+    auto arg = extractFirstArg(createRes);
+    if (arg->isDefaultId()) {
+        std::cerr << "ERROR: Failed to create character type: "
+                  << type << std::endl;
         return nullptr;
     }
 
 
-    RootEntity ent = smart_dynamic_cast<RootEntity>(m_connection.getInfoReply());
+    Atlas::Objects::Operation::Possess p;
 
-    if (!ent.isValid()) {
-        log(ERROR, "malformed character possession response");
+    Atlas::Objects::Entity::Anonymous cmap;
+    cmap->setId(arg->getId());
+    p->setArgs1(cmap);
+    p->setSerialno(m_connection.newSerialNo());
+    p->setFrom(m_playerId);
+    p->setTo(m_playerId);
+
+    auto possessRes = sendAndWaitReply(p);
+    if (!possessRes.isValid()) {
+        std::cerr << "ERROR: Failed to create character type: "
+                  << type << std::endl;
         return nullptr;
     }
 
-    if (!ent->hasAttr("entity")) {
-        log(ERROR, "malformed character possession response");
-        return nullptr;
-    }
-    auto entityElem = ent->getAttr("entity");
-    if (!entityElem.isMap()) {
-        log(ERROR, "malformed character possession response");
-        return nullptr;
-    }
+    arg = extractFirstArg(possessRes);
 
-    auto I = entityElem.Map().find("id");
-    if (I == entityElem.Map().end() || !I->second.isString()) {
-        log(ERROR, "malformed character possession response");
+    if (arg->isDefaultId()) {
+        std::cerr << "ERROR: Failed to create character type: "
+                  << type << std::endl;
         return nullptr;
     }
 
-    auto entityId = I->second.String();
 
-    if (!ent->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        log(ERROR, "Character created, but has no id");
+    std::string entityId;
+
+    Atlas::Message::Element element;
+    if (arg->copyAttr("entity", element) == 0 && element.isMap()) {
+        auto idElement = element.Map().find("id");
+        if (idElement != element.Map().end() && idElement->second.isString()) {
+            entityId = idElement->second.String();
+        }
+    }
+
+    if (entityId.empty()) {
+        std::cerr << "ERROR: Failed to create character type: "
+                  << type << std::endl;
         return nullptr;
     }
 
-    const std::string & id = ent->getId();
+    auto mind_id = arg->getId();
 
-    long intId = integerId(id);
+    long intId = integerId(mind_id);
 
     if (intId == -1) {
-        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", id));
+        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", mind_id));
     }
 
-    auto obj = Ref<CreatorClient>(new CreatorClient(ent->getId(), entityId, m_connection, m_propertyManager));
+    Ref<CreatorClient> obj(new CreatorClient(mind_id, entityId, m_connection, m_propertyManager));
 
-    Ref<MemEntity> ownEntity = new MemEntity(id, intId);
+    Ref<MemEntity> ownEntity = new MemEntity(mind_id, intId);
 
-    ownEntity->merge(ent->asMessage());
+    ownEntity->merge(arg->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to
     // set it to.
-    ownEntity->m_location.readFromEntity(ent);
+    ownEntity->m_location.readFromEntity(arg);
     OpVector res; //Ignored
     obj->setOwnEntity(res, std::move(ownEntity));
 

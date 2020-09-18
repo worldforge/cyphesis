@@ -7,6 +7,14 @@
 #include "client/cyclient/BaseClient.h"
 #include "stubBaseClient_custom.h"
 
+#ifndef STUB_BaseClient_extractFirstArg
+//#define STUB_BaseClient_extractFirstArg
+  Atlas::Objects::Entity::RootEntity BaseClient::extractFirstArg(Atlas::Objects::Operation::RootOperation op)
+  {
+    return *static_cast<Atlas::Objects::Entity::RootEntity*>(nullptr);
+  }
+#endif //STUB_BaseClient_extractFirstArg
+
 #ifndef STUB_BaseClient_BaseClient
 //#define STUB_BaseClient_BaseClient
    BaseClient::BaseClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories, const PropertyManager& propertyManager)
@@ -33,7 +41,7 @@
 
 #ifndef STUB_BaseClient_createAccount
 //#define STUB_BaseClient_createAccount
-  Atlas::Objects::Root BaseClient::createAccount(const std::string & name, const std::string & pword)
+  Atlas::Objects::Root BaseClient::createAccount(const std::string& name, const std::string& pword)
   {
     return *static_cast<Atlas::Objects::Root*>(nullptr);
   }
@@ -41,7 +49,7 @@
 
 #ifndef STUB_BaseClient_createCharacter
 //#define STUB_BaseClient_createCharacter
-  Ref<CreatorClient> BaseClient::createCharacter(const std::string & name)
+  Ref<CreatorClient> BaseClient::createCharacter(const std::string& name)
   {
     return *static_cast<Ref<CreatorClient>*>(nullptr);
   }
@@ -73,7 +81,7 @@
 
 #ifndef STUB_BaseClient_send
 //#define STUB_BaseClient_send
-  void BaseClient::send(const Atlas::Objects::Operation::RootOperation & op)
+  void BaseClient::send(const Atlas::Objects::Operation::RootOperation& op)
   {
     
   }

@@ -138,16 +138,16 @@ Py::Object CyPy_ObserverClient::send(const Py::Tuple& args)
 Py::Object CyPy_ObserverClient::send_wait(const Py::Tuple& args)
 {
     args.verify_length(1);
-    OpVector res;
-    m_value->sendAndWaitReply(CyPy_Operation::value(args.front()), res);
+    auto resOp = m_value->sendAndWaitReply(CyPy_Operation::value(args.front()));
     //FIXME: We should always return an Oplist
-    if (res.empty()) {
+    if (!resOp.isValid()) {
         return Py::None();
-    } else if (res.size() == 1) {
-        return CyPy_Operation::wrap(std::move(res.front()));
-    } else {
-        return CyPy_Oplist::wrap(std::move(res));
+    } else  {
+        return CyPy_Operation::wrap(std::move(resOp));
     }
+//    else {
+//        return CyPy_Oplist::wrap(std::move(res));
+//    }
 }
 
 Py::Object CyPy_ObserverClient::wait()

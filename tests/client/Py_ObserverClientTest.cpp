@@ -85,8 +85,7 @@ int main()
     stub_send_wait_results = 1;
     run_python_string("assert type(o.send_wait(atlas.Operation('get'))) == atlas.Operation");
     stub_send_wait_results = 2;
-    run_python_string("assert type(o.send_wait(atlas.Operation('get'))) == atlas.Oplist");
-    run_python_string("assert len(o.send_wait(atlas.Operation('get'))) == 2");
+    run_python_string("assert type(o.send_wait(atlas.Operation('get'))) == atlas.Operation");
     stub_send_wait_fail = true;
     // FIXME This really should fail
     // expect_python_error("o.send_wait(atlas.Operation('get'))",
