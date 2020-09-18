@@ -2105,10 +2105,20 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath:
         m_visibilityWorld->updateSingleAabb(entry->visibilitySphere.get());
     }
 
+    //If the entity is an admin make a special case and do an observer check immediately.
+    //This is to allow admin clients to move around the map even when the world is suspended.
+    if (entry->entity.hasFlags(entity_admin)) {
+        OpVector res;
+        updateObserverEntry(entry, res);
+        for (auto& op : res) {
+            BaseWorld::instance().message(op, m_entity);
+        }
+    }
     if (!entry->markedForVisibilityRecalculation) {
         m_visibilityRecalculateQueue.emplace_back(entry);
         entry->markedForVisibilityRecalculation = true;
     }
+
 }
 
 void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel)
