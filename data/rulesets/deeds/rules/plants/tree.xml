@@ -1,9 +1,6 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="height">
-                <float name="default">6</float>
-            </map>
             <map name="density">
                 <float name="default">600</float>
             </map>

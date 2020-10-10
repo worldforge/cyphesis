@@ -54,45 +54,47 @@
                 </map>
             </map>
             <map name="terrainmod">
-                <float name="heightoffset">0</float>
-                <map name="shape">
-                    <list name="points">
-                        <list>
-                            <float>0.091949</float>
-                            <float>-1.00925</float>
+                <map name="default">
+                    <float name="heightoffset">0</float>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>0.091949</float>
+                                <float>-1.00925</float>
+                            </list>
+                            <list>
+                                <float>-0.137837</float>
+                                <float>-10.2827</float>
+                            </list>
+                            <list>
+                                <float>-9.6361</float>
+                                <float>-10.269</float>
+                            </list>
+                            <list>
+                                <float>-9.65017</float>
+                                <float>-0.645141</float>
+                            </list>
+                            <list>
+                                <float>-11.0888</float>
+                                <float>-0.442382</float>
+                            </list>
+                            <list>
+                                <float>-11.207</float>
+                                <float>6.24856</float>
+                            </list>
+                            <list>
+                                <float>6.92925</float>
+                                <float>6.11902</float>
+                            </list>
+                            <list>
+                                <float>6.46924</float>
+                                <float>-0.419333</float>
+                            </list>
                         </list>
-                        <list>
-                            <float>-0.137837</float>
-                            <float>-10.2827</float>
-                        </list>
-                        <list>
-                            <float>-9.6361</float>
-                            <float>-10.269</float>
-                        </list>
-                        <list>
-                            <float>-9.65017</float>
-                            <float>-0.645141</float>
-                        </list>
-                        <list>
-                            <float>-11.0888</float>
-                            <float>-0.442382</float>
-                        </list>
-                        <list>
-                            <float>-11.207</float>
-                            <float>6.24856</float>
-                        </list>
-                        <list>
-                            <float>6.92925</float>
-                            <float>6.11902</float>
-                        </list>
-                        <list>
-                            <float>6.46924</float>
-                            <float>-0.419333</float>
-                        </list>
-                    </list>
-                    <string name="type">polygon</string>
+                        <string name="type">polygon</string>
+                    </map>
+                    <string name="type">levelmod</string>
                 </map>
-                <string name="type">levelmod</string>
             </map>
         </map>
         <string name="id">castle_smithy</string>
