@@ -45,7 +45,7 @@
 #include "common/asio.h"
 #include "common/asio.h"
 #include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/array.hpp>
 #include <fcntl.h>

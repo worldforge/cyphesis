@@ -33,11 +33,6 @@ int main()
         TerrainContext * tc = new TerrainContext;
         delete tc;
     }
-
-    {
-        TerrainContext * tc = new TerrainContext(0);
-        delete tc;
-    }
     return 0;
 }
 

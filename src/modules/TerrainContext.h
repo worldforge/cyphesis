@@ -23,19 +23,9 @@
 
 #include <Mercator/TerrainMod.h>
 
-class TerrainContext : public Mercator::Effector::Context
+struct TerrainContext : public Mercator::Effector::Context
 {
-  protected:
     WeakEntityRef m_entity;
-
-  public:
-    TerrainContext();
-
-    explicit TerrainContext(LocatedEntity*);
-
-    ~TerrainContext() override;
-
-    WeakEntityRef & entity() { return m_entity; }
 };
 
 #endif // MODULES_TERRAIN_CONTEXT_H

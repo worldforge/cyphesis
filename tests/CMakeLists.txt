@@ -134,7 +134,7 @@ wf_add_test(modules/DateTimeTest.cpp ../src/modules/DateTime.cpp)
 wf_add_test(rules/LocationTest.cpp ../src/rules/Location.cpp ../src/rules/EntityLocation.cpp)
 target_link_libraries(LocationTest physics)
 wf_add_test(rules/EntityRefTest.cpp ../src/modules/WeakEntityRef.cpp)
-wf_add_test(modules/TerrainContextTest.cpp ../src/modules/TerrainContext.cpp)
+wf_add_test(modules/TerrainContextTest.cpp)
 
 # RULESETS_TESTS
 
@@ -158,7 +158,6 @@ wf_add_test(rules/simulation/AllPropertyTest.cpp PropertyExerciser.cpp ../src/ru
         ../src/rules/simulation/TerrainEffectorProperty.cpp
         ../src/modules/WeakEntityRef.cpp
         ../src/modules/DateTime.cpp
-        ../src/modules/TerrainContext.cpp
         ../src/common/Property.cpp
         ../src/common/Inheritance.cpp
         ../src/common/custom.cpp
@@ -343,7 +342,6 @@ wf_add_test(rules/TerrainModPropertyIntegration.cpp ../src/rules/simulation/Enti
         ../src/rules/simulation/TerrainModTranslator.cpp
         ../src/rules/simulation/TerrainProperty.cpp
         ../src/modules/WeakEntityRef.cpp
-        ../src/modules/TerrainContext.cpp
         ../src/common/Property.cpp
         ../src/common/TypeNode.cpp)
 wf_add_test(rules/simulation/ContainedVisibilityPropertyIntegration.cpp ../src/rules/simulation/ContainedVisibilityProperty.cpp

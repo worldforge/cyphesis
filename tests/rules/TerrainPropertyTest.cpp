@@ -88,13 +88,5 @@ int main()
 
 #include "modules/TerrainContext.h"
 
-TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
-{
-}
-
-TerrainContext::~TerrainContext()
-{
-}
-
 #include "../stubs/modules/stubWeakEntityRef.h"
 

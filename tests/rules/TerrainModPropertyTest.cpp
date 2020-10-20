@@ -157,11 +157,4 @@ std::unique_ptr<Mercator::TerrainMod> TerrainModTranslator::parseData(const WFMa
     return std::make_unique<Mercator::LevelTerrainMod<WFMath::Polygon>>(1.f, p);
 }
 
-TerrainContext::TerrainContext(LocatedEntity * e) : m_entity(e)
-{
-}
-
-TerrainContext::~TerrainContext()
-{
-}
 #include "../stubs/modules/stubWeakEntityRef.h"

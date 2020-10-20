@@ -236,15 +236,11 @@ boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEn
                 log(WARNING, "Terrrain mod with no context");
                 continue;
             }
-            debug(std::cout << "Context has id" << c->id() << std::endl;);
-            auto tc = dynamic_cast<TerrainContext*>(c);
-            if (tc == nullptr) {
-                log(WARNING, "Terrrain mod with non Cyphesis context");
-                continue;
-            }
-            debug(std::cout << "Context has pointer " << tc->entity().get()
+            debug(std::cout << "Context has id" << c->m_id << std::endl;);
+            auto tc = static_cast<TerrainContext*>(c);
+            debug(std::cout << "Context has pointer " << tc->m_entity.get()
                             << std::endl;);
-            ret.push_back(tc->entity().get());
+            ret.push_back(tc->m_entity.get());
         }
     }
     return ret;
