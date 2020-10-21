@@ -28,10 +28,7 @@
 #include <Mercator/Terrain.h>
 #include <Mercator/Segment.h>
 #include <Mercator/Surface.h>
-#include <Mercator/FillShader.h>
-#include <Mercator/ThresholdShader.h>
-#include <Mercator/DepthShader.h>
-#include <Mercator/GrassShader.h>
+#include <Mercator/ShaderFactory.h>
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -49,7 +46,7 @@ PropertyInstanceState<TerrainProperty::State> TerrainProperty::sInstanceState;
 void TerrainProperty::applyToState(LocatedEntity& entity, State& state) const
 {
 
-    auto& terrain = state.terrain;
+    auto& terrain = *state.terrain;
 
     auto shaderResult = createShaders(m_data);
     if (state.tileShader) {
@@ -66,7 +63,7 @@ void TerrainProperty::applyToState(LocatedEntity& entity, State& state) const
 
 void TerrainProperty::install(LocatedEntity* owner, const std::string& name)
 {
-    auto state = std::make_unique<TerrainProperty::State>(TerrainProperty::State{Mercator::Terrain(Mercator::Terrain::SHADED), {}});
+    auto state = std::make_unique<TerrainProperty::State>(TerrainProperty::State{std::make_unique<Mercator::Terrain>(Mercator::Terrain::SHADED), {}});
 
     sInstanceState.addState(owner, std::move(state));
 }
@@ -122,21 +119,10 @@ std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>> Terra
             }
 
             auto& pattern = patternI->second.String();
-            Mercator::Shader* shader = nullptr;
-            if (pattern == "fill") {
-                shader = new Mercator::FillShader(shaderParams);
-            } else if (pattern == "band") {
-                shader = new Mercator::BandShader(shaderParams);
-            } else if (pattern == "grass") {
-                shader = new Mercator::GrassShader(shaderParams);
-            } else if (pattern == "depth") {
-                shader = new Mercator::DepthShader(shaderParams);
-            } else if (pattern == "high") {
-                shader = new Mercator::HighShader(shaderParams);
-            }
+            auto shader = Mercator::ShaderFactories().newShader(pattern, {});
 
             if (shader) {
-                tileShader->addShader(shader, layer);
+                tileShader->addShader(std::move(shader), layer);
             } else {
                 log(WARNING, String::compose("Could not recognize surface with pattern '%1'", pattern));
             }
@@ -159,7 +145,7 @@ bool TerrainProperty::getHeightAndNormal(LocatedEntity& entity,
                                          float& height,
                                          Vector3D& normal) const
 {
-    auto& terrain = sInstanceState.getState(&entity)->terrain;
+    auto& terrain = *sInstanceState.getState(&entity)->terrain;
     auto s = terrain.getSegmentAtPos(x, y);
     if (s && !s->isValid()) {
         s->populate();
@@ -169,7 +155,7 @@ bool TerrainProperty::getHeightAndNormal(LocatedEntity& entity,
 
 bool TerrainProperty::getHeight(LocatedEntity& entity, float x, float y, float& height) const
 {
-    auto& terrain = sInstanceState.getState(&entity)->terrain;
+    auto& terrain = *sInstanceState.getState(&entity)->terrain;
     auto s = terrain.getSegmentAtPos(x, y);
     if (s && !s->isValid()) {
         s->populate();
@@ -185,8 +171,8 @@ bool TerrainProperty::getHeight(LocatedEntity& entity, float x, float y, float& 
 /// material identifier at this location.
 boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x, float z) const
 {
-    auto& terrain = sInstanceState.getState(&entity)->terrain;
-    Mercator::Segment* segment = terrain.getSegmentAtPos(x, z);
+    auto& terrain = *sInstanceState.getState(&entity)->terrain;
+    auto segment = terrain.getSegmentAtPos(x, z);
     if (segment == nullptr) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
         return boost::none;
@@ -198,7 +184,7 @@ boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x,
     z -= segment->getZRef();
     assert(x <= segment->getSize());
     assert(z <= segment->getSize());
-    const Mercator::Segment::Surfacestore& surfaces = segment->getSurfaces();
+    auto& surfaces = segment->getSurfaces();
     WFMath::Vector<3> normal;
     float height = -23;
     segment->getHeightAndNormal(x, z, height, normal);
@@ -219,8 +205,8 @@ boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x,
 
 boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEntity& entity, float x, float z) const
 {
-    auto& terrain = sInstanceState.getState(&entity)->terrain;
-    Mercator::Segment* seg = terrain.getSegmentAtPos(x, z);
+    auto& terrain = *sInstanceState.getState(&entity)->terrain;
+    auto seg = terrain.getSegmentAtPos(x, z);
     if (seg == nullptr) {
         return boost::none;
     }
@@ -249,13 +235,13 @@ boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEn
 Mercator::Terrain& TerrainProperty::getData(const LocatedEntity& entity)
 {
     auto* state = sInstanceState.getState(&entity);
-    return state->terrain;
+    return *state->terrain;
 }
 
 Mercator::Terrain& TerrainProperty::getData(const LocatedEntity& entity) const
 {
     auto* state = sInstanceState.getState(&entity);
-    return state->terrain;
+    return *state->terrain;
 }
 
 const std::vector<std::string>& TerrainProperty::getSurfaceNames(const LocatedEntity& entity) const

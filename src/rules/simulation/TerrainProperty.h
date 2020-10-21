@@ -48,7 +48,7 @@ class TerrainProperty : public Property<Atlas::Message::ListType>
 
         struct State
         {
-            Mercator::Terrain terrain;
+            std::unique_ptr<Mercator::Terrain> terrain;
             std::unique_ptr<Mercator::TileShader> tileShader;
             std::vector<std::string> surfaceNames;
         };

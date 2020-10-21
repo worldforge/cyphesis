@@ -701,10 +701,10 @@ void PhysicalDomain::buildTerrainPages()
     const auto* terrainProperty = m_entity.getPropertyClassFixed<TerrainProperty>();
     if (terrainProperty) {
         auto& terrain = terrainProperty->getData(m_entity);
-        auto segments = terrain.getTerrain();
+        auto& segments = terrain.getTerrain();
         for (auto& row : segments) {
             for (auto& entry : row.second) {
-                Mercator::Segment* segment = entry.second;
+                auto& segment = entry.second;
                 auto& terrainEntry = buildTerrainPage(*segment);
                 if (friction) {
                     terrainEntry.rigidBody->setFriction(*friction);
