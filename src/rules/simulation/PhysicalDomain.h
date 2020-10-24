@@ -275,7 +275,12 @@ class PhysicalDomain : public Domain
 
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
-        std::unordered_map<long, std::tuple<std::unique_ptr<Mercator::TerrainMod>, WFMath::Point<3>, WFMath::Quaternion, WFMath::AxisBox<2>>> m_terrainMods;
+        struct TerrainModEntry {
+            WFMath::Point<3> modPos;
+            WFMath::Quaternion modOrientation;
+            WFMath::AxisBox<2> area;
+        };
+        std::map<long, TerrainModEntry> m_terrainMods;
 
 
         struct PropelEntry

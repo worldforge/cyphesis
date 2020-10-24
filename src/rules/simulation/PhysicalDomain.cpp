@@ -1707,13 +1707,13 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
 
                     auto I = m_terrainMods.find(entity.getIntId());
                     if (I != m_terrainMods.end()) {
-                        const WFMath::Point<3>& oldPos = std::get<1>(I->second);
-                        const WFMath::Quaternion& oldOrient = std::get<2>(I->second);
+                        auto& oldPos = I->second.modPos;
+                        auto& oldOrient = I->second.modOrientation;
 
                         if (!oldOrient.isEqualTo(entity.m_location.m_orientation) || !oldPos.isEqualTo(modPos)) {
                             //Need to update terrain mod
                             forceUpdate = true;
-                            const WFMath::AxisBox<2>& oldArea = std::get<3>(I->second);
+                            const WFMath::AxisBox<2>& oldArea = I->second.area;
                             if (oldArea.isValid()) {
                                 terrainAreas.push_back(oldArea);
                             }
@@ -1725,15 +1725,17 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
                     if (forceUpdate) {
                         auto modifier = terrainModProperty->parseModData(modPos, entity.m_location.m_orientation);
 
-                        m_terrain->updateMod(entity.getIntId(), modifier.get());
                         if (modifier) {
                             auto bbox = modifier->bbox();
                             terrainAreas.push_back(bbox);
-                            m_terrainMods[entity.getIntId()] = std::make_tuple(std::move(modifier), modPos, entity.m_location.m_orientation, bbox);
+                            m_terrainMods[entity.getIntId()] = TerrainModEntry{modPos, entity.m_location.m_orientation, bbox};
                         } else {
                             m_terrainMods.erase(entity.getIntId());
                         }
-
+                        auto oldAreas = m_terrain->updateMod(entity.getIntId(), std::move(modifier));
+                        if (oldAreas.isValid()) {
+                            terrainAreas.emplace_back(oldAreas);
+                        }
                         refreshTerrain(terrainAreas);
                     }
                 }
@@ -1743,7 +1745,7 @@ void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpd
             auto I = m_terrainMods.find(entity.getIntId());
             if (I != m_terrainMods.end()) {
                 std::vector<WFMath::AxisBox<2>> terrainAreas;
-                terrainAreas.emplace_back(std::get<0>(I->second)->bbox());
+                terrainAreas.emplace_back(I->second.area);
                 m_terrain->updateMod(entity.getIntId(), nullptr);
                 m_terrainMods.erase(I);
                 refreshTerrain(terrainAreas);
