@@ -1,5 +1,8 @@
 <atlas>
     <map>
+        <string name="id">goblin</string>
+        <string name="objtype">class</string>
+        <string name="parent">mobile</string>
         <map name="attributes">
             <map name="attachments">
                 <map name="default">
@@ -103,9 +106,6 @@
                 <float name="default">10</float>
             </map>
         </map>
-        <string name="id">goblin</string>
-        <string name="objtype">class</string>
-        <string name="parent">mobile</string>
     </map>
 
     <map>
@@ -168,5 +168,101 @@
                 </map>
             </map>
         </list>
+    </map>
+
+    <map>
+        <string name="id">goblin_spawner</string>
+        <string name="objtype">class</string>
+        <string name="parent">spawner_instances</string>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">10</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">300</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">goblin</string>
+                </map>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">1</int>
+            </map>
+        </map>
+    </map>
+
+    <map>
+        <string name="id">goblin_archer_spawner</string>
+        <string name="objtype">class</string>
+        <string name="parent">spawner_instances</string>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">10</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">300</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">goblin_archer</string>
+                </map>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">1</int>
+            </map>
+        </map>
+    </map>
+
+    <map>
+        <string name="id">goblin_fighter_spawner</string>
+        <string name="objtype">class</string>
+        <string name="parent">spawner_instances</string>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">10</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">300</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">goblin_fighter</string>
+                </map>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">1</int>
+            </map>
+        </map>
     </map>
 </atlas>

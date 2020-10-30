@@ -52,4 +52,36 @@
         <string name="objtype">class</string>
         <string name="parent">mobile</string>
     </map>
+
+    <map>
+        <string name="id">rabbit_spawner</string>
+        <string name="objtype">class</string>
+        <string name="parent">spawner_instances</string>
+        <map name="attributes">
+            <map name="__spawner_locations">
+                <list name="default">
+                    <map>
+                        <list name="pos">
+                            <float>0</float>
+                            <float>0</float>
+                            <float>0</float>
+                        </list>
+                        <float name="radius">5</float>
+                    </map>
+                </list>
+            </map>
+            <map name="__spawner_interval">
+                <int name="default">300</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">rabbit</string>
+                </map>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">4</int>
+            </map>
+        </map>
+    </map>
 </atlas>

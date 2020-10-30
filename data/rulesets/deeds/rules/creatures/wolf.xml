@@ -43,9 +43,9 @@
             </map>
             <map name="_relations">
                 <list name="default">
-                    <!-- Fight humans. -->
+                    <!-- Fight humans, pigs and rabbits. -->
                     <map>
-                        <string name="filter">entity.type=types.human</string>
+                        <string name="filter">entity.type=types.human || entity.type=types.pig || entity.type=types.rabbit</string>
                         <float name="disposition">-10</float>
                         <float name="threat">-10</float>
                     </map>
@@ -75,9 +75,40 @@
             <map name="xp_provided">
                 <float name="default">5</float>
             </map>
+            <list name="_goals!append">
+                <map>
+                    <string name="class">mind.goals.common.move.Roam</string>
+                    <map name="params">
+                        <float name="radius">20</float>
+                        <list name="locations">
+                            <string>origin</string>
+                        </list>
+                    </map>
+                </map>
+            </list>
         </map>
         <string name="id">wolf</string>
         <string name="objtype">class</string>
         <string name="parent">mobile</string>
+    </map>
+
+    <map>
+        <string name="id">wolf_spawner</string>
+        <string name="objtype">class</string>
+        <string name="parent">spawner_instances</string>
+        <map name="attributes">
+            <map name="__spawner_interval">
+                <int name="default">300</int>
+            </map>
+            <map name="__spawner_entity">
+                <map name="default">
+                    <string name="objtype">obj</string>
+                    <string name="parent">wolf</string>
+                </map>
+            </map>
+            <map name="__spawner_amount">
+                <int name="default">2</int>
+            </map>
+        </map>
     </map>
 </atlas>
