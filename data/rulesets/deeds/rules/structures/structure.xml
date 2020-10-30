@@ -2,9 +2,6 @@
 
     <map>
         <map name="attributes">
-            <map name="simple">
-                <int name="default">0</int>
-            </map>
             <map name="density">
                 <float name="default">2000</float>
             </map>
