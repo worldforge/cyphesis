@@ -431,7 +431,7 @@ void OgreMeshDeserializer::deserialize()
 
 void OgreMeshDeserializer::readGeometry()
 {
-    std::vector<char> vertexBuffer;
+    std::vector<std::vector<char>> vertexBuffers;
     std::vector<OgreMeshDeserializer::VertexElement> elements;
 
     unsigned int vertexCount = 0;
@@ -448,7 +448,7 @@ void OgreMeshDeserializer::readGeometry()
                     elements = readGeometryVertexDeclaration();
                     break;
                 case M_GEOMETRY_VERTEX_BUFFER:
-                    vertexBuffer = readGeometryVertexBuffer(vertexCount);
+                    vertexBuffers.emplace_back(readGeometryVertexBuffer(vertexCount));
                     break;
                 default:
                     skipChunk(m_stream);
@@ -462,6 +462,7 @@ void OgreMeshDeserializer::readGeometry()
         if (!elements.empty()) {
             for (auto& element : elements) {
                 if (element.vSemantic == VertexElementSemantic::VES_POSITION) {
+                    auto& vertexBuffer = vertexBuffers[element.source];
                     size_t vertexSize = vertexBuffer.size() / vertexCount;
 
                     for (size_t i = 0; i < vertexCount; ++i) {
