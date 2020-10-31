@@ -135,19 +135,11 @@ std::string EntityExporter::getCurrentTime()
 void EntityExporter::fillWithServerData(Atlas::Message::MapType& serverMap)
 {
     Element e;
-    if (m_server_info->copyAttr("name", e) == 0 && e.isString()) {
-        serverMap["name"] = e.asString();
-        //TODO: get the hostname in a different way
-        serverMap["host"] = e.asString();
-    }
     if (m_server_info->copyAttr("ruleset", e) == 0 && e.isString()) {
         serverMap["ruleset"] = e.asString();
     }
     if (m_server_info->copyAttr("version", e) == 0 && e.isString()) {
         serverMap["version"] = e.asString();
-    }
-    if (m_server_info->copyAttr("name", e) == 0 && e.isString()) {
-        serverMap["name"] = e.asString();
     }
 }
 
