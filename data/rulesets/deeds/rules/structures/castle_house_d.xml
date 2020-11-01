@@ -19,26 +19,52 @@
                     <string>shale</string>
                 </list>
             </map>
+            <map name="area">
+                <map name="default">
+                    <int name="layer">7</int>
+                    <map name="shape">
+                        <list name="points">
+                            <list>
+                                <float>-5.63955</float>
+                                <float>-4.51809</float>
+                            </list>
+                            <list>
+                                <float>-5.52903</float>
+                                <float>11.1439</float>
+                            </list>
+                            <list>
+                                <float>5.40398</float>
+                                <float>10.7456</float>
+                            </list>
+                            <list>
+                                <float>5.62161</float>
+                                <float>-4.62329</float>
+                            </list>
+                        </list>
+                        <string name="type">polygon</string>
+                    </map>
+                </map>
+            </map>
             <map name="terrainmod">
                 <map name="default">
                     <float name="heightoffset">0</float>
                     <map name="shape">
                         <list name="points">
                             <list>
-                                <float>-7.19509</float>
-                                <float>-9.13097</float>
+                                <float>-5.63955</float>
+                                <float>-4.51809</float>
                             </list>
                             <list>
-                                <float>-9.16889</float>
-                                <float>-1.08151</float>
+                                <float>-5.52903</float>
+                                <float>11.1439</float>
                             </list>
                             <list>
-                                <float>6.1259</float>
-                                <float>-3.07852</float>
+                                <float>5.40398</float>
+                                <float>10.7456</float>
                             </list>
                             <list>
-                                <float>5.87794</float>
-                                <float>-6.96846</float>
+                                <float>5.62161</float>
+                                <float>-4.62329</float>
                             </list>
                         </list>
                         <string name="type">polygon</string>
