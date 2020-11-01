@@ -105,9 +105,19 @@ struct EntityEntry
 
     Location location;
 
+    /**
+     * True if this entity is owned by an actor. These entities should not be updated by sights by other actors: only the actor itself should update it.
+     */
     bool isActorOwned;
 
+    /**
+     * True if the entity is moving. Moving entities should be treated as moving actors, and should not be part of the navmesh.
+     */
     bool isMoving;
+
+    /**
+     * True if this entity is ignored.
+     */
     bool isIgnored;
 };
 

@@ -382,10 +382,15 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
         I->second->isActorOwned = true;
     }
 
-    //Only process those entities that aren't owned by another actor, of if that's the case if the entity is ourself
-    if (!I->second->isActorOwned || I->first == observer.getIntId()) {
+    bool isNotActorAndFirstSeen = !I->second->isActorOwned && I->second->numberOfObservers == 1;
+    bool isOwnEntity = I->first == observer.getIntId();
+
+    //Only do movement change processing if this is the first observer; otherwise that should already have been done
+    //Or if the entity is the actor`s own entity.
+    if (isNotActorAndFirstSeen || isOwnEntity) {
         processEntityMovementChange(*I->second, entity);
     }
+
 }
 
 void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& entity)
@@ -408,7 +413,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
 
                     auto area = buildEntityAreas(*entityEntry);
 
-                    if(area.isValid()) {
+                    if (area.isValid()) {
                         markTilesAsDirty(area.boundingBox());
                     }
                     mEntityAreas.erase(entityEntry.get());
