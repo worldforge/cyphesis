@@ -33,9 +33,6 @@
             <map name="maxscale">
                 <float name="default">1</float>
             </map>
-            <map name="sizeAdult">
-                <int name="default">4</int>
-            </map>
         </map>
         <string name="id">appletree</string>
         <string name="objtype">class</string>
