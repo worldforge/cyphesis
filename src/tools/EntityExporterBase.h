@@ -282,16 +282,6 @@ protected:
 	bool mCancelled;
 
 	/**
-	 * @brief An optional name of the dump.
-	 */
-	std::string mName;
-
-	/**
-	 * @brief An optional description of the dump.
-	 */
-	std::string mDescription;
-
-	/**
 	 * @brief Keeps track of the number of outstanding get requests.
 	 */
 	size_t mOutstandingGetRequestCounter;

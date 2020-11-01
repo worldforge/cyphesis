@@ -93,16 +93,6 @@ EntityExporterBase::EntityExporterBase(const std::string& accountId, const std::
 {
 }
 
-void EntityExporterBase::setDescription(const std::string& description)
-{
-    mDescription = description;
-}
-
-void EntityExporterBase::setName(const std::string& name)
-{
-    mName = name;
-}
-
 void EntityExporterBase::setExportTransient(bool exportTransient)
 {
     mExportTransient = exportTransient;
@@ -501,8 +491,6 @@ void EntityExporterBase::complete()
     Anonymous root;
     Atlas::Message::MapType meta;
 
-    meta["name"] = mName;
-    meta["description"] = mDescription;
     meta["timestamp"] = mCurrentTimestamp;
     meta["transients"] = mExportTransient;
     meta["preserved_ids"] = mPreserveIds;
