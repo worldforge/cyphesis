@@ -66,7 +66,7 @@
         </map>
         <string name="id">mycelium_amanita</string>
         <string name="objtype">class</string>
-        <string name="parent">thing</string>
+        <string name="parent">mycelium</string>
     </map>
 
     <map>
@@ -80,7 +80,7 @@
         </map>
         <string name="id">mycelium_bluemoon</string>
         <string name="objtype">class</string>
-        <string name="parent">thing</string>
+        <string name="parent">mycelium</string>
     </map>
 
     <map>
@@ -94,7 +94,7 @@
         </map>
         <string name="id">mycelium_galerina</string>
         <string name="objtype">class</string>
-        <string name="parent">thing</string>
+        <string name="parent">mycelium</string>
     </map>
 
 
