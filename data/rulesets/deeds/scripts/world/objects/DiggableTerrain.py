@@ -10,7 +10,7 @@ from rules import Location
 
 class DiggableTerrain(server.Thing):
     """
-    Applied on terrain which can be digged.
+    Applied on terrain which can be dug.
     """
 
     materials = {'sand': 'sand', 'grass': 'earth'}
@@ -29,13 +29,13 @@ class DiggableTerrain(server.Thing):
         if not terrain_prop:
             print('No terrain prop on diggable terrain entity')
             actor = server.world.get_entity(op.from_)
-            return server.OPERATION_BLOCKED, actor.client_error(op, "Cannot dig here.")
+            return server.OPERATION_BLOCKED, actor and actor.client_error(op, "Cannot dig here.")
 
         surface = self.props.terrain.get_surface_name(arg.pos[0], arg.pos[2])
         if surface not in DiggableTerrain.materials:
             actor = server.world.get_entity(op.from_)
-            print("The surface couldn't be digged here. Material {}.".format(surface))
-            return server.OPERATION_BLOCKED, actor.client_error(op, "The surface couldn't be digged here.")
+            print("The surface couldn't be dug here. Material {}.".format(surface))
+            return server.OPERATION_BLOCKED, actor and actor.client_error(op, "The surface couldn't be dug here.")
 
         material = DiggableTerrain.materials[surface]
 
