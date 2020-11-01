@@ -37,7 +37,6 @@
                             </map>
                         </map>
                         <string name="handler">world.objects.tools.Unarmed.strike</string>
-                        <string name="constraint">get_entity(actor.attached_hand_primary) = none</string>
                     </map>
                 </map>
             </map>

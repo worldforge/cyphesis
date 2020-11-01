@@ -28,11 +28,27 @@
                 <float name="default">0</float>
             </map>
             <map name="usages">
-                <map name="default">
+                <map name="append">
                     <map name="consume">
                         <string name="name">Eat</string>
                         <string name="handler">world.objects.Consumable.consume</string>
-                        <string name="constraint">actor can_reach tool &amp;&amp; tool.props.status &lt;= 0</string>
+                        <string name="constraint">describe("Too far away.", actor can_reach tool) &amp;&amp; describe("You can't eat it while it's alive.", tool.props.status &lt;= 0)</string>
+                    </map>
+                </map>
+            </map>
+            <map name="_usages">
+                <map name="append">
+                    <map name="strike">
+                        <string name="name">Pinch</string>
+                        <map name="params">
+                            <map name="targets">
+                                <string name="type">entity</string>
+                                <string name="constraint">entity instance_of types.game_entity</string>
+                                <int name="min">0</int>
+                                <int name="max">1</int>
+                            </map>
+                        </map>
+                        <string name="handler">world.objects.tools.Unarmed.strike</string>
                     </map>
                 </map>
             </map>
@@ -48,6 +64,12 @@
                         </map>
                     </map>
                 </list>
+            </map>
+            <map name="damage_strike">
+                <float name="default">3</float>
+            </map>
+            <map name="cooldown_strike">
+                <float name="default">1</float>
             </map>
         </map>
         <string name="id">crab</string>
