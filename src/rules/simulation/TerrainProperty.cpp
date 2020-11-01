@@ -119,7 +119,7 @@ std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>> Terra
             }
 
             auto& pattern = patternI->second.String();
-            auto shader = Mercator::ShaderFactories().newShader(pattern, {});
+            auto shader = Mercator::ShaderFactories().newShader(pattern, shaderParams);
 
             if (shader) {
                 tileShader->addShader(std::move(shader), layer);
