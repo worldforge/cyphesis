@@ -28,12 +28,14 @@ class DiggableTerrain(server.Thing):
         terrain_prop = self.props.terrain
         if not terrain_prop:
             print('No terrain prop on diggable terrain entity')
-            return server.OPERATION_IGNORED
+            actor = server.world.get_entity(op.from_)
+            return server.OPERATION_BLOCKED, actor.client_error(op, "Cannot dig here.")
 
         surface = self.props.terrain.get_surface_name(arg.pos[0], arg.pos[2])
         if surface not in DiggableTerrain.materials:
+            actor = server.world.get_entity(op.from_)
             print("The surface couldn't be digged here. Material {}.".format(surface))
-            return server.OPERATION_IGNORED
+            return server.OPERATION_BLOCKED, actor.client_error(op, "The surface couldn't be digged here.")
 
         material = DiggableTerrain.materials[surface]
 
