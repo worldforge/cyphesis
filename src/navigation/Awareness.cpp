@@ -1017,7 +1017,7 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
         }
         dtStatus status = mTileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0); // Add compressed tiles to tileCache
         if (dtStatusFailed(status)) {
-            log(WARNING, String::compose("Failed to add tile in awareness. x: %1 y: %2 Reason: %3", tx, ty, status));
+            log(WARNING, String::compose("Failed to add tile in awareness. x: %1 y: %2 Reason: %3", tx, ty, status & DT_STATUS_DETAIL_MASK));
             dtFree(tile->data);
             tile->data = 0;
             continue;
@@ -1026,7 +1026,7 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
 
     dtStatus status = mTileCache->buildNavMeshTilesAt(tx, ty, mNavMesh);
     if (dtStatusFailed(status)) {
-        log(WARNING, String::compose("Failed to build nav mesh tile in awareness. x: %1 y: %2 Reason: %3", tx, ty, status));
+        log(WARNING, String::compose("Failed to build nav mesh tile in awareness. x: %1 y: %2 Reason: %3", tx, ty, status & DT_STATUS_DETAIL_MASK));
     }
 
     EventTileUpdated(tx, ty);
