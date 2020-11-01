@@ -36,6 +36,19 @@
                     </map>
                 </map>
             </map>
+            <map name="_goals">
+                <list name="append">
+                    <map>
+                        <string name="class">mind.goals.common.move.Roam</string>
+                        <map name="params">
+                            <float name="radius">5</float>
+                            <list name="locations">
+                                <string>origin</string>
+                            </list>
+                        </map>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">crab</string>
         <string name="objtype">class</string>

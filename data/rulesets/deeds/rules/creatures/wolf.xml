@@ -75,17 +75,19 @@
             <map name="xp_provided">
                 <float name="default">5</float>
             </map>
-            <list name="_goals!append">
-                <map>
-                    <string name="class">mind.goals.common.move.Roam</string>
-                    <map name="params">
-                        <float name="radius">20</float>
-                        <list name="locations">
-                            <string>origin</string>
-                        </list>
+            <map name="_goals">
+                <list name="append">
+                    <map>
+                        <string name="class">mind.goals.common.move.Roam</string>
+                        <map name="params">
+                            <float name="radius">20</float>
+                            <list name="locations">
+                                <string>origin</string>
+                            </list>
+                        </map>
                     </map>
-                </map>
-            </list>
+                </list>
+            </map>
         </map>
         <string name="id">wolf</string>
         <string name="objtype">class</string>

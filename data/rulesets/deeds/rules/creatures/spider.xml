@@ -75,6 +75,19 @@
             <map name="xp_provided">
                 <float name="default">15</float>
             </map>
+            <map name="_goals">
+                <list name="append">
+                    <map>
+                        <string name="class">mind.goals.common.move.Roam</string>
+                        <map name="params">
+                            <float name="radius">10</float>
+                            <list name="locations">
+                                <string>origin</string>
+                            </list>
+                        </map>
+                    </map>
+                </list>
+            </map>
         </map>
         <string name="id">spider</string>
         <string name="objtype">class</string>
