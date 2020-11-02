@@ -71,6 +71,9 @@
             <map name="cooldown_strike">
                 <float name="default">1</float>
             </map>
+            <map name="warmup_strike">
+                <float name="default">0.2</float>
+            </map>
         </map>
         <string name="id">crab</string>
         <string name="objtype">class</string>

@@ -49,6 +49,9 @@
             <map name="cooldown_punch">
                 <float name="default">1</float>
             </map>
+            <map name="warmup_punch">
+                <float name="default">0.2</float>
+            </map>
             <map name="_usages">
                 <map name="default">
                     <map name="punch">

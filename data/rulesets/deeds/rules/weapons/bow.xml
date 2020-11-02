@@ -20,6 +20,9 @@
             <map name="cooldown">
                 <float name="default">2</float>
             </map>
+            <map name="warmup">
+                <float name="default">0.8</float>
+            </map>
             <map name="usages">
                 <map name="default">
                     <map name="draw">

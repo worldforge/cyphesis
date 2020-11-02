@@ -22,6 +22,9 @@
             <map name="cooldown">
                 <float name="default">1.5</float>
             </map>
+            <map name="warmup">
+                <float name="default">0.1</float>
+            </map>
             <map name="usages">
                 <map name="default">
                     <map name="strike">

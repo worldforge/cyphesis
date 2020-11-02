@@ -24,12 +24,21 @@ def strike(instance):
 
 class Melee(StoppableTask):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Start in the cool down state; i.e. right after there has been a cooldown and there should either be a warmup or a direct strike.
+        self.state = "cooldown"
+
     def do_strike(self):
         # Send sight even if we miss
         self.usage.actor.send_world(Operation("sight", self.usage.op))
 
         # If there's a cooldown we need to mark the actor
-        Usage.set_cooldown_on_attached(self.usage.tool, self.usage.actor)
+        cooldown = Usage.set_cooldown_on_attached(self.usage.tool, self.usage.actor)
+        if cooldown and cooldown > 0.0:
+            # Schedule next tick to cooldown time, and set in state "cooldown".
+            self.tick_interval = cooldown
+            self.state = "cooldown"
 
         target = self.usage.get_arg("targets", 0)
         if target:
@@ -57,7 +66,33 @@ class Melee(StoppableTask):
         return server.OPERATION_BLOCKED
 
     def setup(self, task_id):
-        return self.do_strike()
+        warmup = self.usage.tool.get_prop_float("warmup", 0.0)
+        if warmup > 0:
+            print("first warmup")
+            self.tick_interval = warmup
+            self.state = "warmup"
+        else:
+            return self.do_strike()
+
+    def do_warmup_or_strike(self):
+        if self.state == "cooldown":
+            # Check if we should either wait a little for warmup phase, or if we should do the strike directly
+            warmup = self.usage.tool.get_prop_float("warmup", 0.0)
+            if warmup > 0:
+                print("warmup")
+                self.tick_interval = warmup
+                self.state = "warmup"
+                return self.do_warmup()
+            else:
+                print("strike")
+                return self.do_strike()
+        else:
+            # We have already done warmup; do the strike
+            print("strike")
+            return self.do_strike()
+
+    def do_warmup(self):
+        pass
 
     def tick(self):
 
@@ -65,4 +100,4 @@ class Melee(StoppableTask):
         if not valid:
             return self.irrelevant(err)
 
-        return self.do_strike()
+        return self.do_warmup_or_strike()

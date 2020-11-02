@@ -52,7 +52,8 @@ def shoot(instance):
 def draw(instance):
     usage_name = instance.op.parent
 
-    task = Usage.delay_task_if_needed(DrawBow(instance, tick_interval=1, name="Draw"))
+    warmup = instance.tool.get_prop_float("warmup", 1.0)
+    task = Usage.delay_task_if_needed(DrawBow(instance, tick_interval=warmup, name="Draw"))
 
     instance.actor.send_world(Operation("sight", instance.op))
 

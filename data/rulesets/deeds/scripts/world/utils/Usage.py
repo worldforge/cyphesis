@@ -22,6 +22,7 @@ def set_cooldown_on_attached(tool, actor):
                 ready_at_attached_prop[attachment_name] = server.world.get_time() + cooldown
                 actor.send_world(Operation('set',
                                            Entity(actor.id, _ready_at_attached=ready_at_attached_prop), to=actor.id))
+    return cooldown
 
 
 def set_cooldown_on_tool(tool):

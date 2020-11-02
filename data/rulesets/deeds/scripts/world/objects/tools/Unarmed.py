@@ -23,6 +23,11 @@ def strike(instance):
 
 class Fight(StoppableTask):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Start in the cool down state; i.e. right after there has been a cooldown and there should either be a warmup or a direct strike.
+        self.state = "cooldown"
+
     def do_strike(self):
         # Send sight even if we miss
         self.usage.actor.send_world(Operation("sight", self.usage.op))
@@ -34,6 +39,8 @@ class Fight(StoppableTask):
                                                  Entity(self.usage.tool.id,
                                                         ready_at=server.world.get_time() + cooldown),
                                                  to=self.usage.tool.id))
+            self.tick_interval = cooldown
+            self.state = "cooldown"
 
         target = self.usage.get_arg("targets", 0)
         if target:
@@ -55,7 +62,33 @@ class Fight(StoppableTask):
         return server.OPERATION_BLOCKED
 
     def setup(self, task_id):
-        return self.do_strike()
+        warmup = self.usage.actor.get_prop_float("warmup_" + self.usage.op.parent, 0.0)
+        if warmup > 0:
+            print("first warmup")
+            self.tick_interval = warmup
+            self.state = "warmup"
+        else:
+            return self.do_strike()
+
+    def do_warmup(self):
+        pass
+
+    def do_warmup_or_strike(self):
+        if self.state == "cooldown":
+            # Check if we should either wait a little for warmup phase, or if we should do the strike directly
+            warmup = self.usage.actor.get_prop_float("warmup_" + self.usage.op.parent, 0.0)
+            if warmup > 0:
+                print("warmup")
+                self.tick_interval = warmup
+                self.state = "warmup"
+                return self.do_warmup()
+            else:
+                print("strike")
+                return self.do_strike()
+        else:
+            # We have already done warmup; do the strike
+            print("strike")
+            return self.do_strike()
 
     def tick(self):
 
@@ -63,4 +96,4 @@ class Fight(StoppableTask):
         if not valid:
             return self.irrelevant(err)
 
-        return self.do_strike()
+        return self.do_warmup_or_strike()
