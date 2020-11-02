@@ -26,13 +26,10 @@ def consume(instance):
 
     effects_prop = instance.tool.props["__effects"]
     if effects_prop is not None:
+        # Copy over all props in "__effects" to a "set" op.
         for prop_name, effect in effects_prop.items():
-            actual_value = effect
-            effect_prop = instance.actor.props[prop_name]
-            if effect_prop is not None:
-                actual_value = effect_prop + effect
             ent = Entity(instance.actor.id)
-            ent[str(prop_name)] = actual_value
+            ent[str(prop_name)] = effect
             op_list += Operation("set", ent, to=instance.actor.id)
 
     msg_prop = instance.tool.props["__message"]

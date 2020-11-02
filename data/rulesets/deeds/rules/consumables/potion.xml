@@ -44,7 +44,7 @@
                     suspended within. Drinking it will make you feel much better.
                 </string>
                 <map name="__effects">
-                    <float name="status">1.0</float>
+                    <float name="status!append">1.0</float>
                 </map>
                 <string name="__message">You feel much better.</string>
             </map>
