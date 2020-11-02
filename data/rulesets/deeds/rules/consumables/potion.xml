@@ -106,4 +106,22 @@
         </map>
       </list>
     </map>
+
+    <map>
+        <string name="id">potion_level</string>
+        <string name="objtype">archetype</string>
+        <string name="parent">archetype</string>
+        <list name="entities">
+            <map>
+                <string name="parent">potion</string>
+                <string name="name">Potion of levelling</string>
+                <string name="description">The liquid within emits a faint golden glow.
+                </string>
+                <map name="__effects">
+                    <int name="level!append">1</int>
+                </map>
+                <string name="__message">You gain one level.</string>
+            </map>
+        </list>
+    </map>
 </atlas>
