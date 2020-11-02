@@ -26,6 +26,7 @@
 #include "ScriptUtils.h"
 
 #include <Atlas/Objects/Anonymous.h>
+#include <rules/python/Python_API.h>
 
 
 #include "pycxx/CXX/Objects.hxx"
@@ -153,6 +154,9 @@ void Task::callScriptFunction(const std::string& function, const Py::Tuple& args
 {
     if (m_script.hasAttr(function)) {
         try {
+            PythonLogGuard logGuard([this, function]() {
+                return String::compose("Task '%1', entity %2, function %3: ", m_script.str(), m_usageInstance.actor->describeEntity(), function);
+            });
             auto ret = m_script.callMemberFunction(function, args);
             //Ignore any return codes
             ScriptUtils::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor.get());
@@ -174,6 +178,9 @@ void Task::callUsageScriptFunction(const std::string& function, const std::map<s
             py_args = argsCreator(args);
         }
         try {
+            PythonLogGuard logGuard([this, function]() {
+                return String::compose("Task '%1', entity %2, function %3: ", m_script.str(), m_usageInstance.actor->describeEntity(), function);
+            });
             auto ret = m_script.callMemberFunction(function, Py::TupleN(py_args));
             //Ignore any return codes
             ScriptUtils::processScriptResult(m_script.str(), ret, res, m_usageInstance.actor.get());
