@@ -41,7 +41,6 @@
 
 class Entity;
 
-static bool stub_deny_newid = false;
 static bool stub_generate_accounts = false;
 
 #include "../TestWorld.h"

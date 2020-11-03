@@ -3,6 +3,8 @@
 #include "string.h"
 #include <iostream>
 
+std::function<std::string()> s_logPrefixFn;
+
 std::ostream & operator<<(std::ostream & s, LogLevel lvl)
 {
     switch (lvl) {
