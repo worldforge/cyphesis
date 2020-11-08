@@ -17,36 +17,36 @@
                     <map name="shape">
                         <list name="points">
                             <list>
-                                <float>0.091949</float>
-                                <float>-1.00925</float>
+                                <float>0.846432</float>
+                                <float>-1.05163</float>
                             </list>
                             <list>
-                                <float>-0.137837</float>
-                                <float>-10.2827</float>
+                                <float>0.702834</float>
+                                <float>-7.68035</float>
                             </list>
                             <list>
-                                <float>-9.6361</float>
-                                <float>-10.269</float>
+                                <float>-7.06029</float>
+                                <float>-8.26479</float>
                             </list>
                             <list>
-                                <float>-9.65017</float>
-                                <float>-0.645141</float>
+                                <float>-7.0986</float>
+                                <float>-1.02287</float>
                             </list>
                             <list>
-                                <float>-11.0888</float>
-                                <float>-0.442382</float>
+                                <float>-8.56834</float>
+                                <float>-0.416192</float>
                             </list>
                             <list>
-                                <float>-11.207</float>
-                                <float>6.24856</float>
+                                <float>-8.43746</float>
+                                <float>4.39172</float>
                             </list>
                             <list>
-                                <float>6.92925</float>
-                                <float>6.11902</float>
+                                <float>5.13564</float>
+                                <float>4.68302</float>
                             </list>
                             <list>
-                                <float>6.46924</float>
-                                <float>-0.419333</float>
+                                <float>5.12089</float>
+                                <float>-0.463925</float>
                             </list>
                         </list>
                         <string name="type">polygon</string>
@@ -59,36 +59,36 @@
                     <map name="shape">
                         <list name="points">
                             <list>
-                                <float>0.091949</float>
-                                <float>-1.00925</float>
+                                <float>0.846432</float>
+                                <float>-1.05163</float>
                             </list>
                             <list>
-                                <float>-0.137837</float>
-                                <float>-10.2827</float>
+                                <float>0.702834</float>
+                                <float>-7.68035</float>
                             </list>
                             <list>
-                                <float>-9.6361</float>
-                                <float>-10.269</float>
+                                <float>-7.06029</float>
+                                <float>-8.26479</float>
                             </list>
                             <list>
-                                <float>-9.65017</float>
-                                <float>-0.645141</float>
+                                <float>-7.0986</float>
+                                <float>-1.02287</float>
                             </list>
                             <list>
-                                <float>-11.0888</float>
-                                <float>-0.442382</float>
+                                <float>-8.56834</float>
+                                <float>-0.416192</float>
                             </list>
                             <list>
-                                <float>-11.207</float>
-                                <float>6.24856</float>
+                                <float>-8.43746</float>
+                                <float>4.39172</float>
                             </list>
                             <list>
-                                <float>6.92925</float>
-                                <float>6.11902</float>
+                                <float>5.13564</float>
+                                <float>4.68302</float>
                             </list>
                             <list>
-                                <float>6.46924</float>
-                                <float>-0.419333</float>
+                                <float>5.12089</float>
+                                <float>-0.463925</float>
                             </list>
                         </list>
                         <string name="type">polygon</string>
