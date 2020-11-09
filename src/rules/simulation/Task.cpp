@@ -63,6 +63,7 @@ Task::~Task() = default;
 void Task::irrelevant()
 {
     m_obsolete = true;
+    m_script = Py::None();
 }
 
 Operation Task::nextTick(const std::string& id, const Operation& op)
@@ -181,9 +182,11 @@ void Task::callUsageScriptFunction(const std::string& function, const std::map<s
             PythonLogGuard logGuard([this, function]() {
                 return String::compose("Task '%1', entity %2, function %3: ", m_script.type().str(), m_usageInstance.actor->describeEntity(), function);
             });
-            auto ret = m_script.callMemberFunction(function, Py::TupleN(py_args));
+            //Make a copy if the script should be removed as part of a call to "irrelevant".
+            auto script = m_script;
+            auto ret = script.callMemberFunction(function, Py::TupleN(py_args));
             //Ignore any return codes
-            ScriptUtils::processScriptResult(m_script.type().str(), ret, res, m_usageInstance.actor.get());
+            ScriptUtils::processScriptResult(script.type().str(), ret, res, m_usageInstance.actor.get());
         } catch (const Py::BaseException& e) {
             log(ERROR, String::compose("Error when calling '%1' on task '%2' on entity '%3'.", function, m_script.str(), m_usageInstance.actor->describeEntity()));
             if (PyErr_Occurred() != nullptr) {

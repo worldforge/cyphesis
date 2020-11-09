@@ -29,7 +29,30 @@
 class TasksProperty : public PropertyBase
 {
     protected:
-        std::map<std::string, Ref<Task>> m_tasks;
+
+        struct TaskEntry
+        {
+            TaskEntry() = delete;
+
+            TaskEntry(TaskEntry&&) noexcept = default;
+
+            TaskEntry& operator=(TaskEntry&&) noexcept = default;
+
+            TaskEntry(const TaskEntry&) noexcept = delete;
+
+            TaskEntry& operator=(const TaskEntry&) noexcept = delete;
+
+            explicit TaskEntry(Ref<Task> _task) noexcept
+                    : task(_task)
+            {
+            }
+
+            ~TaskEntry();
+
+            Ref<Task> task;
+        };
+
+        std::map<std::string, TaskEntry> m_tasks;
     public:
         static constexpr const char* property_name = "tasks";
         static constexpr const char* property_atlastype = "map";

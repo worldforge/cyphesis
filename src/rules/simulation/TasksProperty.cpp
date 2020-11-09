@@ -49,7 +49,7 @@ int TasksProperty::get(Atlas::Message::Element& val) const
 {
     MapType tasks;
     for (const auto& entry : m_tasks) {
-        auto& task = entry.second;
+        auto& task = entry.second.task;
         MapType taskMap;
         taskMap.emplace("name", task->name());
         auto progress = task->progress();
@@ -111,7 +111,8 @@ void TasksProperty::set(const Atlas::Message::Element& val)
 
 TasksProperty* TasksProperty::copy() const
 {
-    return new TasksProperty(*this);
+    //No copy ctor for this.
+    return new TasksProperty();
 }
 
 int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
@@ -143,7 +144,7 @@ int TasksProperty::startTask(const std::string& id, Ref<Task> task,
 
     if (!task->obsolete()) {
         assert(!res.empty());
-        m_tasks.emplace(id, task);
+        m_tasks.emplace(id, TaskEntry{task});
         update_required = true;
     } else {
         task = nullptr;
@@ -206,7 +207,7 @@ HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
 
     //Make a copy, because the task might be removed as a result of the tick, and the ref count will make it still be alive.
     auto id = taskI->first;
-    auto task = taskI->second;
+    auto task = taskI->second.task;
 
     Element serialno;
     if (arg->copyAttr(SERIALNO, serialno) == 0 && (serialno.isInt())) {
@@ -447,3 +448,15 @@ void TasksProperty::remove(LocatedEntity* owner, const std::string& name)
     owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
 
+TasksProperty::TaskEntry::~TaskEntry()
+{
+    if (task) {
+        task->irrelevant();
+    }
+}
+
+//TasksProperty::TaskEntry::TaskEntry(Ref<Task> _task) noexcept
+//        : task(_task)
+//{
+//
+//}
