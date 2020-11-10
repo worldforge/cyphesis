@@ -49,32 +49,31 @@ typedef std::vector<Atlas::Objects::Operation::RootOperation> OpVector;
 /**
  * @brief Represents one entry on the hierarchy of entities which are to be created on the server.
  */
-class StackEntry
+struct StackEntry
 {
-    public:
-        /**
-         * @brief The persisted entity data.
-         *
-         * This should be sent to the server.
-         */
-        const Atlas::Objects::Entity::RootEntity obj;
+    /**
+     * @brief The persisted entity data.
+     *
+     * This should be sent to the server.
+     */
+    const Atlas::Objects::Entity::RootEntity obj;
 
-        /**
-         * @brief The id of the entity on the server, after it's either been created or updated.
-         */
-        std::string restored_id;
+    /**
+     * @brief The id of the entity on the server, after it's either been created or updated.
+     */
+    std::string restored_id;
 
-        /**
-         * @brief Keeps track of the what child we're currently handling.
-         *
-         * As we walk through the children of entity this is updated, thus keeping track
-         * of what child needs to be updated next.
-         */
-        std::vector<std::string>::const_iterator currentChildIterator;
+    /**
+     * @brief Keeps track of the what child we're currently handling.
+     *
+     * As we walk through the children of entity this is updated, thus keeping track
+     * of what child needs to be updated next.
+     */
+    std::vector<std::string>::const_iterator currentChildIterator;
 
-        StackEntry(Atlas::Objects::Entity::RootEntity o, const std::vector<std::string>::const_iterator& c);
+    StackEntry(Atlas::Objects::Entity::RootEntity o, const std::vector<std::string>::const_iterator& c);
 
-        explicit StackEntry(Atlas::Objects::Entity::RootEntity o);
+    explicit StackEntry(Atlas::Objects::Entity::RootEntity o);
 };
 
 /**

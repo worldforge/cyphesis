@@ -466,10 +466,10 @@ void OgreMeshDeserializer::readGeometry()
                     size_t vertexSize = vertexBuffer.size() / vertexCount;
 
                     for (size_t i = 0; i < vertexCount; ++i) {
-                        char* vertexStart = vertexBuffer.data() + (i * vertexSize);
-                        char* positionStart = vertexStart + element.offset;
                         if (element.vType == VertexElementType::VET_FLOAT3) {
-                            auto* positions = reinterpret_cast<float*>(positionStart);
+                            char* vertexStart = vertexBuffer.data() + (i * vertexSize);
+                            char* positionStart = vertexStart + element.offset;
+                            auto positions = reinterpret_cast<float*>(positionStart);
                             m_vertices.push_back(*positions);
                             positions++;
                             m_vertices.push_back(*positions);

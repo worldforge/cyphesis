@@ -90,6 +90,7 @@ static int security_new_key(const std::string & key_filename)
 
     if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
         std::cout << "GENKEY FAIL" << std::endl << std::flush;
+        ::fclose(key_file);
         return -1;
     }
 
@@ -99,6 +100,7 @@ static int security_new_key(const std::string & key_filename)
 
     if (gcry_err_code(ret) != GPG_ERR_NO_ERROR) {
         std::cout << "TESTKEY FAIL" << std::endl << std::flush;
+        ::fclose(key_file);
         return -1;
     }
 

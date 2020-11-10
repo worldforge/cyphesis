@@ -491,6 +491,7 @@ EntityImporterBase::EntityImporterBase(std::string accountId, std::string avatar
         mAvatarId(std::move(avatarId)),
         mStats({}),
         m_state(INIT),
+        mSetOpsInTransit(0),
         mResumeWorld(false),
         mSuspendWorld(false),
         mAlwaysCreateNewEntities(false)

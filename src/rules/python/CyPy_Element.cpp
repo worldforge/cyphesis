@@ -69,7 +69,7 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
         if (iterator != m_element->m_value.end()) {
             auto wrapper = CyPy_Element::wrap(*iterator);
             wrapper.increment_reference_count();
-            *(iterator)++;
+            iterator++;
             return wrapper.ptr();
         } else {
             return nullptr;

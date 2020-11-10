@@ -147,7 +147,8 @@ Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           m_address(nullptr),
           m_socket(),
           m_peer(nullptr),
-          m_connectRef(0)
+          m_connectRef(0),
+          m_port(0)
 {
 }
 

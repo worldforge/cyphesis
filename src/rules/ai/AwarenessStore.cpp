@@ -25,11 +25,11 @@
 #include "AwarenessStore.h"
 
 AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, float stepHeight, IHeightProvider& heightProvider, int tileSize) :
-    mAgentRadius(agentRadius),
-    mAgentHeight(agentHeight),
-    mStepHeight(stepHeight),
-    mHeightProvider(heightProvider),
-    mTileSize(tileSize)
+        mAgentRadius(agentRadius),
+        mAgentHeight(agentHeight),
+        mStepHeight(stepHeight),
+        mHeightProvider(heightProvider),
+        mTileSize(tileSize)
 {
 }
 
@@ -49,7 +49,7 @@ std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity&
     auto bbox = domainEntity.m_location.bBox();
 
     auto awareness = std::make_shared<Awareness>(domainEntity, mAgentRadius, mAgentHeight, mStepHeight, mHeightProvider, bbox, mTileSize);
-    m_awarenesses.insert(std::make_pair(domainEntity.getIntId(), std::weak_ptr<Awareness>(awareness)));
+    m_awarenesses.emplace(domainEntity.getIntId(), std::weak_ptr<Awareness>(awareness));
     return awareness;
 }
 
