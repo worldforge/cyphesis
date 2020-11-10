@@ -304,7 +304,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
             return OPERATION_IGNORED;
         }
 
-        auto& task = taskI->second;
+        auto task = taskI->second.task;
 
         if (!arg->hasAttr("args")) {
             actor->error(op, "Use arg for task has no args", res, actor->getId());
