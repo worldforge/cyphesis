@@ -447,16 +447,3 @@ void TasksProperty::remove(LocatedEntity* owner, const std::string& name)
     owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
     owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
-
-TasksProperty::TaskEntry::~TaskEntry()
-{
-    if (task) {
-        task->irrelevant();
-    }
-}
-
-//TasksProperty::TaskEntry::TaskEntry(Ref<Task> _task) noexcept
-//        : task(_task)
-//{
-//
-//}

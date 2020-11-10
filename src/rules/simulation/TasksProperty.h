@@ -47,7 +47,13 @@ class TasksProperty : public PropertyBase
             {
             }
 
-            ~TaskEntry();
+            ~TaskEntry()
+            {
+                if (task) {
+                    task->irrelevant();
+                }
+            }
+
 
             Ref<Task> task;
         };
