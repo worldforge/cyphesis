@@ -505,7 +505,6 @@ PythonType::PythonType( size_t basic_size, int itemsize, const char *default_nam
 
     // Methods to implement standard operations
     table->tp_dealloc = (destructor)standard_dealloc;
-    table->tp_print = 0;
     table->tp_getattr = 0;
     table->tp_setattr = 0;
     table->tp_repr = 0;
