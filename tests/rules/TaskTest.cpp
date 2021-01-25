@@ -75,7 +75,6 @@ HandlerResult Tasktest::get_Script_operation_ret()
 
 Tasktest::Tasktest()
 {
-    Py_InitializeEx(0);
 
     ADD_TEST(Tasktest::test_obsolete);
     ADD_TEST(Tasktest::test_irrelevant);
@@ -206,6 +205,7 @@ void Tasktest::test_initTask_script_fail()
 
 int main()
 {
+    Py_InitializeEx(0);
     Tasktest t;
     return t.run();
 }

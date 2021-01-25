@@ -54,71 +54,73 @@ static bool stub_lookfor_fail = false;
 
 int main()
 {
-    NullPropertyManager propertyManager;
-    boost::asio::io_context io_context;
+    {
+        NullPropertyManager propertyManager;
 
-    init_python_api({&CyPy_Server::init,
-                     &CyPy_Rules::init,
-                     &CyPy_Atlas::init,
-                     &CyPy_Physics::init,
-                     &CyPy_Common::init,
-                     &CyPy_Ai::init});
-    extend_client_python_api();
+        boost::asio::io_context io_context;
 
-    auto client = new CreatorClient("1", "2", *new ClientConnection(io_context, factories), propertyManager);
-    Ref<MemEntity> entity = new MemEntity("1", 1);
-    OpVector res;
-    client->setOwnEntity(res, entity);
+        init_python_api({&CyPy_Server::init,
+                         &CyPy_Rules::init,
+                         &CyPy_Atlas::init,
+                         &CyPy_Physics::init,
+                         &CyPy_Common::init,
+                         &CyPy_Ai::init});
+        extend_client_python_api();
 
-    Py::Module module("server");
-    module.setAttr("testclient", CyPy_CreatorClient::wrap(client));
+        auto client = new CreatorClient("1", "2", *new ClientConnection(io_context, factories), propertyManager);
+        Ref<MemEntity> entity = new MemEntity("1", 1);
+        OpVector res;
+        client->setOwnEntity(res, entity);
 
-    run_python_string("import server");
-    run_python_string("import ai");
-    run_python_string("import rules");
-    run_python_string("import atlas");
-    expect_python_error("server.CreatorClient(1)", PyExc_RuntimeError);
-    expect_python_error("server.CreatorClient(\"one\")", PyExc_RuntimeError);
-    run_python_string("c=server.testclient");
-    run_python_string("c.as_entity()");
-    expect_python_error("c.make()", PyExc_IndexError);
-    expect_python_error("c.make('1')", PyExc_TypeError);
-    run_python_string("c.make(atlas.Entity('1'))");
-    stub_make_fail = true;
-    expect_python_error("c.make(atlas.Entity('1'))", PyExc_RuntimeError);
-    stub_make_fail = false;
-    run_python_string("c.set('1', atlas.Entity('1'))");
-    expect_python_error("c.set('1', 'not an entity')", PyExc_TypeError);
-    expect_python_error("c.set(1, atlas.Entity('1'))", PyExc_TypeError);
-    run_python_string("c.look('1')");
-    stub_look_fail = true;
-    expect_python_error("c.look('1')", PyExc_RuntimeError);
-    stub_look_fail = false;
-    expect_python_error("c.look(1)", PyExc_TypeError);
-    run_python_string("e=c.look('1')");
-    run_python_string("assert type(e) == server.Thing");
-    run_python_string("c.look_for(atlas.Entity('1'))");
-    stub_lookfor_fail = true;
-    run_python_string("c.look_for(atlas.Entity('1'))");
-    stub_lookfor_fail = false;
-    expect_python_error("c.look_for('1')", PyExc_TypeError);
-    run_python_string("c.send(atlas.Operation('info'))");
-    expect_python_error("c.send('info')", PyExc_TypeError);
-    expect_python_error("c.send()", PyExc_IndexError);
-    run_python_string("c.delete('1')");
-    expect_python_error("c.delete(1)", PyExc_TypeError);
-    expect_python_error("c.delete()", PyExc_IndexError);
-    run_python_string("assert c == server.testclient");
+        Py::Module module("server");
+        module.setAttr("testclient", CyPy_CreatorClient::wrap(client));
 
-    run_python_string("assert type(c.map) == ai.MemMap");
-    run_python_string("assert type(c.entity.location) == rules.Location");
-    expect_python_error("c.foo", PyExc_AttributeError);
-    expect_python_error("c.foo_operation", PyExc_AttributeError);
-    run_python_string("c.foo = 1");
-    run_python_string("assert c.foo == 1");
-    run_python_string("c.foo = [1,2]");
-    expect_python_error("c.map = 1", PyExc_AttributeError);
+        run_python_string("import server");
+        run_python_string("import ai");
+        run_python_string("import rules");
+        run_python_string("import atlas");
+        expect_python_error("server.CreatorClient(1)", PyExc_RuntimeError);
+        expect_python_error("server.CreatorClient(\"one\")", PyExc_RuntimeError);
+        run_python_string("c=server.testclient");
+        run_python_string("c.as_entity()");
+        expect_python_error("c.make()", PyExc_IndexError);
+        expect_python_error("c.make('1')", PyExc_TypeError);
+        run_python_string("c.make(atlas.Entity('1'))");
+        stub_make_fail = true;
+        expect_python_error("c.make(atlas.Entity('1'))", PyExc_RuntimeError);
+        stub_make_fail = false;
+        run_python_string("c.set('1', atlas.Entity('1'))");
+        expect_python_error("c.set('1', 'not an entity')", PyExc_TypeError);
+        expect_python_error("c.set(1, atlas.Entity('1'))", PyExc_TypeError);
+        run_python_string("c.look('1')");
+        stub_look_fail = true;
+        expect_python_error("c.look('1')", PyExc_RuntimeError);
+        stub_look_fail = false;
+        expect_python_error("c.look(1)", PyExc_TypeError);
+        run_python_string("e=c.look('1')");
+        run_python_string("assert type(e) == server.Thing");
+        run_python_string("c.look_for(atlas.Entity('1'))");
+        stub_lookfor_fail = true;
+        run_python_string("c.look_for(atlas.Entity('1'))");
+        stub_lookfor_fail = false;
+        expect_python_error("c.look_for('1')", PyExc_TypeError);
+        run_python_string("c.send(atlas.Operation('info'))");
+        expect_python_error("c.send('info')", PyExc_TypeError);
+        expect_python_error("c.send()", PyExc_IndexError);
+        run_python_string("c.delete('1')");
+        expect_python_error("c.delete(1)", PyExc_TypeError);
+        expect_python_error("c.delete()", PyExc_IndexError);
+        run_python_string("assert c == server.testclient");
 
+        run_python_string("assert type(c.map) == ai.MemMap");
+        run_python_string("assert type(c.entity.location) == rules.Location");
+        expect_python_error("c.foo", PyExc_AttributeError);
+        expect_python_error("c.foo_operation", PyExc_AttributeError);
+        run_python_string("c.foo = 1");
+        run_python_string("assert c.foo == 1");
+        run_python_string("c.foo = [1,2]");
+        expect_python_error("c.map = 1", PyExc_AttributeError);
+    }
     shutdown_python_api();
     return 0;
 }
