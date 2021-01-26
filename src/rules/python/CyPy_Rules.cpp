@@ -50,8 +50,8 @@ Py::Object CyPy_Rules::is_location(const Py::Tuple& args)
 std::string CyPy_Rules::init()
 {
     PyImport_AppendInittab("rules", []() {
-        static auto module = new CyPy_Rules();
-        return module->module().ptr();
+        static CyPy_Rules module;
+        return module.module().ptr();
     });
     return "rules";
 }

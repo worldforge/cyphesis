@@ -1409,7 +1409,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         //If we now change the bbox of the free entity it should not fall through the terrain. The y-position should be the same
         freeEntity->m_location.setBBox(WFMath::AxisBox<3>(WFMath::Point<3>(-0.5, 0, -0.5), WFMath::Point<3>(0.5, 0.5, 0.5)));
-        PropertyBase* ptr;
+        PropertyBase* ptr{};
         freeEntity->propertyApplied("bbox", *ptr);
         ASSERT_FUZZY_EQUAL(freeEntity->m_location.m_pos.y(), 10.0087f, 0.01f);
         //Make sure that everything is correct even after ticking through the simulation

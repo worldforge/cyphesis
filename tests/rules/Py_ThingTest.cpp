@@ -117,13 +117,13 @@ int main()
         auto wrap_c = CyPy_LocatedEntity::wrap(c);
         assert(CyPy_LocatedEntity::check(wrap_c));
 
-        Py::Module module("server");
+        Py::Module module("__main__");
         module.setAttr("testentity", wrap_e);
 
         run_python_string("import server")
-        run_python_string("assert server.testentity is not None");
-        run_python_string("assert server.testentity.props.foo == 'bar'");
-        run_python_string("assert server.testentity.is_destroyed == False");
+        run_python_string("assert testentity is not None");
+        run_python_string("assert testentity.props.foo == 'bar'");
+        run_python_string("assert testentity.is_destroyed == False");
 
         expect_python_error("Thing()", PyExc_IndexError);
         expect_python_error("Thing('s')", PyExc_TypeError);
@@ -175,6 +175,9 @@ int main()
         run_python_string("print(t.location)");
         run_python_string("print(t.contains)");
 
+        module.getDict().clear();
+
+        e->destroy();
     }
     shutdown_python_api();
     return 0;

@@ -2,4 +2,4 @@
 #include "common/Variable.h"
 
 //Always just create a singleton
-Monitors* monitors = new Monitors();
+static Monitors monitors;
