@@ -220,7 +220,7 @@ class PhysicalDomain : public Domain
              * Keeps track of last received transform. This allows us to quickly check if we should mark the entity as dirty or not
              * (which we only do if position or orientation has changed)
              */
-            btTransform lastTransform;
+            btTransform lastTransform{};
 
             /**
              * Set to a bullet entry for a water body if the entry and the water body are close enough for the broadphase to consider them.
@@ -275,7 +275,8 @@ class PhysicalDomain : public Domain
 
         std::vector<WFMath::AxisBox<2>> m_dirtyTerrainAreas;
 
-        struct TerrainModEntry {
+        struct TerrainModEntry
+        {
             WFMath::Point<3> modPos;
             WFMath::Quaternion modOrientation;
             WFMath::AxisBox<2> area;
