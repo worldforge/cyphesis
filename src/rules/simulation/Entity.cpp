@@ -50,7 +50,7 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-std::unordered_map<const TypeNode*, std::unique_ptr<int>> Entity::s_monitorsMap;
+std::unordered_map<const TypeNode*, int> Entity::s_monitorsMap;
 
 /// \brief Flags used to control entities
 ///
@@ -73,8 +73,7 @@ Entity::~Entity()
     if (m_type) {
         auto I = s_monitorsMap.find(m_type);
         if (I != s_monitorsMap.end()) {
-            int* ptr = I->second.get();
-            *ptr = *ptr - 1;
+            I->second--;
         }
     }
 }
@@ -86,12 +85,11 @@ void Entity::setType(const TypeNode* t)
     if (t) {
         auto I = s_monitorsMap.find(t);
         if (I == s_monitorsMap.end()) {
-            auto result = s_monitorsMap.insert(std::make_pair(t, std::make_unique<int>(1)));
+            auto result = s_monitorsMap.emplace(t, 1);
 
-            Monitors::instance().watch(String::compose("entity_count{type=\"%1\"}", t->name()), new Variable<int>(*result.first->second));
+            Monitors::instance().watch(String::compose("entity_count{type=\"%1\"}", t->name()), new Variable<int>(result.first->second));
         } else {
-            int* ptr = I->second.get();
-            *ptr = *ptr + 1;
+            I->second++;
         }
     }
 }

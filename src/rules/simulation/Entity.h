@@ -44,7 +44,7 @@ class Entity : public LocatedEntity
         /// A static map tracking the number of existing entities per type.
         /// A monitor by the name of "entity_count{type=*}" will be created
         /// per type.
-        static std::unordered_map<const TypeNode*, std::unique_ptr<int>> s_monitorsMap;
+        static std::unordered_map<const TypeNode*, int> s_monitorsMap;
 
         std::unique_ptr<Domain> m_domain;
 
