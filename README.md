@@ -9,11 +9,11 @@ Cyphesis is the server for the [WorldForge](http://worldforge.org/ "The main Wor
 It provides a complete solution for running an MMORPG server. Amongst its features are
 
 * Fully scriptable through Python
-* Live reload of both rules and world entitites; edit your world without having to shut down or reload
+* Live reload of both rules and world entities; edit your world without having to shut down or reload
 * Complete 3d physics simulation
-* Complex AI system, using Behavorial Trees and Python scripts
+* Complex AI system, using Behavioral Trees and Python scripts
 * Out-of-process AI, allowing for distributed AI clients
-* Persistance through either SQLite or PostgreSQL
+* Persistence through either SQLite or PostgreSQL
 * Powerful built in rules for visibility and containment of entities
 * Emergent gameplay through multiple simple systems interacting
 * Quick and powerful procedural terrain generation  
