@@ -38,7 +38,11 @@ public:
         inotify_work_(new boost::asio::io_context::work(inotify_io_context_)),
         inotify_work_thread_([&](){
 #ifndef _WIN32
+#ifdef __APPLE__
+            pthread_setname_np("dir_mon");
+#else
             pthread_setname_np(pthread_self(), "dir_mon");
+#endif
 #endif
 			inotify_io_context_.run();
         }),

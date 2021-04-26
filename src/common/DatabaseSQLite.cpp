@@ -70,7 +70,11 @@ DatabaseSQLite::~DatabaseSQLite()
 void DatabaseSQLite::poll_tasks()
 {
 #ifndef _WIN32
+#ifdef __APPLE__
+    pthread_setname_np("SQLite task processor");
+#else
     pthread_setname_np(pthread_self(), "SQLite task processor");
+#endif
 #endif
     while (true) {
         std::unique_lock<std::mutex> lock(m_pendingQueriesMutex);

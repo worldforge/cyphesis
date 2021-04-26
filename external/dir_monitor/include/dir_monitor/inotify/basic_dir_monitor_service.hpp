@@ -38,7 +38,11 @@ public:
         async_monitor_work_(new boost::asio::io_context::work(async_monitor_io_context_)),
           async_monitor_thread_([&]() {
 #ifndef _WIN32
+#ifdef __APPLE__
+              pthread_setname_np("dir_mon_svc");
+#else
               pthread_setname_np(pthread_self(), "dir_mon_svc");
+#endif
 #endif
               async_monitor_io_context_.run();
           })
