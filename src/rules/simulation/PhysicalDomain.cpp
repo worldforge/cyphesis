@@ -589,7 +589,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     mContainingEntityEntry.mode = ModeProperty::Mode::Fixed;
 
-    m_entries.insert(std::make_pair(entity.getIntId(), &mContainingEntityEntry));
+    m_entries.emplace(entity.getIntId(), std::unique_ptr<BulletEntry>(&mContainingEntityEntry));
 
     buildTerrainPages();
 
