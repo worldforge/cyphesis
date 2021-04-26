@@ -1041,8 +1041,8 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     WFMath::AxisBox<3> bbox = entity.m_location.bBox();
     btVector3 angularFactor(1, 1, 1);
 
-    auto entry = new BulletEntry{entity};
-    m_entries.insert(std::make_pair(entity.getIntId(), entry));
+    auto result = m_entries.emplace(entity.getIntId(), std::unique_ptr<BulletEntry>(new BulletEntry{entity}));
+    auto entry = result.first->second.get();
 
     auto angularFactorProp = entity.getPropertyClassFixed<AngularFactorProperty>();
     if (angularFactorProp && angularFactorProp->data().isValid()) {
