@@ -1,0 +1,23 @@
+[requires]
+boost/1.75.0
+bullet3/2.89
+atlas/0.7.0@worldforge/testing
+mercator/0.4.0@worldforge/testing
+varconf/1.0.3@worldforge/testing
+wfmath/1.0.3@worldforge/testing
+libxdg-basedir/1.2.0@worldforge/stable
+sigc++/2.10.0@worldforge/stable
+libgcrypt/1.8.4@worldforge/stable
+zlib/1.2.11
+bzip2/1.0.8
+sqlite3/3.35.5
+readline/8.0
+
+[generators]
+cmake
+
+[options]
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.dylib* -> ./bin

@@ -20,8 +20,18 @@ It provides a complete solution for running an MMORPG server. Amongst its featur
 
 ## Installation
 
-The easiest way to build the server is to use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool.
-This is script provided by the Worldforge project which will download and install all of the required libraries and 
+The simplest way to install all required dependencies is by using [Conan](https://www.conan.io).
+
+```bash
+conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
+mkdir build && cd build
+conan install .. --build missing
+cmake ..
+make -j all assets-download install
+```
+
+Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool.
+This is script provided by the Worldforge project which will download and install all of the required libraries and
 components used by Worldforge.
 
 Otherwise the server can most easily be built through the following commands.
