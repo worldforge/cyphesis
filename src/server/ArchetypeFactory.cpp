@@ -124,7 +124,7 @@ bool ArchetypeFactory::parseEntities(const ListType& entitiesElement, std::map<s
             if (I != entityElem.asMap().end() && I->second.isString()) {
                 id = I->second.asString();
             }
-            entityMap.insert(std::make_pair(id, entityElem.asMap()));
+            entityMap.emplace(id, entityElem.asMap());
         }
     }
     return parseEntities(entityMap, entities);
@@ -140,7 +140,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
             return false;
         }
 
-        auto result = entities.insert(std::make_pair(entity->getId(), EntityCreation{entity, nullptr, Atlas::Message::MapType()}));
+        auto result = entities.emplace(entity->getId(), EntityCreation{entity, nullptr, Atlas::Message::MapType()});
         if (!result.second) {
             //it already existed; we should update with the attributes
             for (auto& I : entityI.second) {
@@ -399,8 +399,8 @@ void ArchetypeFactory::addProperties(const PropertyManager& propertyManager)
     for (const auto& item : m_entities) {
         entities.push_back(item.second);
     }
-    attributes.insert(std::make_pair("entities", entities));
-    attributes.insert(std::make_pair("thoughts", m_thoughts));
+    attributes.emplace("entities", entities);
+    attributes.emplace("thoughts", m_thoughts);
     m_type->addProperties(attributes, propertyManager);
 
 }
@@ -414,8 +414,8 @@ void ArchetypeFactory::updateProperties(std::map<const TypeNode*, TypeNode::Prop
     for (const auto& item : m_entities) {
         entities.push_back(item.second);
     }
-    attributes.insert(std::make_pair("entities", entities));
-    attributes.insert(std::make_pair("thoughts", m_thoughts));
+    attributes.emplace("entities", entities);
+    attributes.emplace("thoughts", m_thoughts);
     changes.emplace(m_type, m_type->updateProperties(attributes, propertyManager));
 
     for (auto& child_factory : m_children) {

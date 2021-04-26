@@ -137,7 +137,7 @@ void EntityExporterBase::dumpEntity(RootEntity ent)
         persistedId = ss.str();
         ent->setId(persistedId);
     }
-    mIdMapping.insert(std::make_pair(id, persistedId));
+    mIdMapping.emplace(id, persistedId);
 
 
     Atlas::Message::MapType entityMap;

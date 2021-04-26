@@ -260,7 +260,7 @@ void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc
     Relay relay;
     relay.entityId = to.getId();
     relay.callback = std::move(callback);
-    m_relays.insert(std::make_pair(serialNo, relay));
+    m_relays.emplace(serialNo, relay);
 
     sendWorld(relayOp);
 

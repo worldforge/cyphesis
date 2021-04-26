@@ -371,7 +371,7 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
         if (isDynamic) {
             mMovingEntities.insert(entityEntry.get());
         }
-        I = mObservedEntities.insert(std::make_pair(entity.getIntId(), std::move(entityEntry))).first;
+        I = mObservedEntities.emplace(entity.getIntId(), std::move(entityEntry)).first;
         debug_print("Creating new entry for " << entity.getId())
     } else {
         I->second->numberOfObservers++;

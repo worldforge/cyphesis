@@ -41,7 +41,7 @@ PropertyKit * PropertyManager::getPropertyFactory(const std::string & name) cons
 void PropertyManager::installFactory(const std::string & name,
                                      std::unique_ptr<PropertyKit> factory)
 {
-    m_propertyFactories.insert(std::make_pair(name, std::move(factory)));
+    m_propertyFactories.emplace(name, std::move(factory));
 }
 
 int PropertyManager::installFactory(const std::string & type_name,

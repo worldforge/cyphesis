@@ -220,7 +220,7 @@ void ExternalMind::RelayOperation(const Operation& op, OpVector& res)
             //we'll check the refno and match it against what we've stored
             long int serialNo = ++s_serialNumberNext;
             relayedOp->setSerialno(serialNo);
-            m_relays.insert(std::make_pair(serialNo, relay));
+            m_relays.emplace(serialNo, relay);
 
             m_link->send(relayedOp);
 

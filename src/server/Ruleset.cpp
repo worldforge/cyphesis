@@ -160,7 +160,7 @@ void Ruleset::installItem(const std::string& class_name,
     for (; I != Iend; ++I) {
         const std::string& wClassName = I->second.name;
         const Root& wClassDesc = I->second.desc;
-        readyRules.insert(std::make_pair(wClassName, wClassDesc));
+        readyRules.emplace(wClassName, wClassDesc);
         debug(std::cout << "WAITING rule " << wClassName
                         << " now ready from " << class_name
                         << std::endl << std::flush;);
@@ -291,7 +291,7 @@ void Ruleset::waitForRule(const std::string& rulename,
     rule.desc = ruledesc;
     rule.reason = reason;
 
-    m_waitingRules.insert(std::make_pair(dependent, rule));
+    m_waitingRules.emplace(dependent, rule);
 }
 
 void Ruleset::getRulesFromFiles(boost::filesystem::path directory,

@@ -308,7 +308,7 @@ void EntityImporterBase::createEntity(const RootEntity& obj, OpVector& res)
     create->setFrom(mAvatarId);
     create->setSerialno(newSerialNumber());
 
-    mCreateEntityMapping.insert(std::make_pair(create->getSerialno(), obj->getId()));
+    mCreateEntityMapping.emplace(create->getSerialno(), obj->getId());
 
     res.push_back(create);
 }
@@ -388,7 +388,7 @@ void EntityImporterBase::infoArrived(const Operation& op, OpVector& res)
 
         auto I = mCreateEntityMapping.find(op->getRefno());
         if (I != mCreateEntityMapping.end()) {
-            mEntityIdMap.insert(std::make_pair(I->second, arg->getId()));
+            mEntityIdMap.emplace(I->second, arg->getId());
             mCreateEntityMapping.erase(op->getRefno());
         } else {
             S_LOG_WARNING("Got info about create for an entity which we didn't seem to have sent.")
@@ -586,7 +586,7 @@ std::vector<std::string> EntityImporterBase::extractChildEntities(Atlas::Objects
                             containsProp.emplace_back(childId);
                         }
                     }
-                    mPersistedEntities.insert(std::make_pair(object->getId(), EntityEntry{object, childIds}));
+                    mPersistedEntities.emplace(object->getId(), EntityEntry{object, childIds});
                 }
             }
         }

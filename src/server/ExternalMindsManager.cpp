@@ -45,7 +45,7 @@ static const bool debug_flag = false;
 int ExternalMindsManager::addConnection(
     const ExternalMindsConnection& connection)
 {
-    auto result = m_connections.insert(std::make_pair(connection.getRouterId(), connection));
+    auto result = m_connections.emplace(connection.getRouterId(), connection);
     if (!result.second) {
         log(WARNING, String::compose(
             "Tried to register a external mind connection for "

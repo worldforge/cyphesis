@@ -2207,9 +2207,9 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
                         const Property<double>* stepFactorProp = entity.getPropertyType<double>("step_factor");
                         if (stepFactorProp && entity.m_location.bBox().isValid()) {
                             auto height = entity.m_location.bBox().upperBound(1) - entity.m_location.bBox().lowerBound(1);
-                            m_propellingEntries.insert(std::make_pair(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float) (height * stepFactorProp->data())}));
+                            m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float) (height * stepFactorProp->data())});
                         } else {
-                            m_propellingEntries.insert(std::make_pair(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0}));
+                            m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0});
                         }
                     } else {
                         K->second.velocity = btPropel;

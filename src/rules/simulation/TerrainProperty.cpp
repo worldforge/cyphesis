@@ -111,7 +111,7 @@ std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>> Terra
                 auto params = paramsI->second.Map();
                 for (auto& entry : params) {
                     if (entry.second.isNum()) {
-                        shaderParams.insert(std::make_pair(entry.first, (float) entry.second.asNum()));
+                        shaderParams.emplace(entry.first, (float) entry.second.asNum());
                     } else {
                         log(WARNING, "'terrain.shaders...params' entry must be a map of floats..");
                     }

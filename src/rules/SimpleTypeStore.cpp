@@ -98,7 +98,7 @@ TypeNode* SimpleTypeStore::addChild(const Atlas::Objects::Root& obj)
     }
 
 
-    auto result = m_types.insert(std::make_pair(child, std::move(type)));
+    auto result = m_types.emplace(child, std::move(type));
     return result.first->second.get();
 }
 

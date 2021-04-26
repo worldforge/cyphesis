@@ -113,7 +113,7 @@ void EntityExporter::sendAndAwaitResponse(
         CallbackFunction& callback)
 {
     if (mCurrentRes) {
-        mCallbacks.insert(std::make_pair(op->getSerialno(), callback));
+        mCallbacks.emplace(op->getSerialno(), callback);
         mCurrentRes->push_back(op);
     }
 }
