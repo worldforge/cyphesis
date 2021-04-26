@@ -95,9 +95,9 @@ Inheritance::Inheritance(Atlas::Objects::Factories& factories)
     root_desc->setObjtype("meta");
     root_desc->setId(Atlas::Objects::RootData::default_parent);
 
-    auto root = new TypeNode(root_desc->getId(), root_desc);
+    auto root = std::make_unique<TypeNode>(root_desc->getId(), root_desc);
 
-    atlasObjects.emplace("root", root);
+    atlasObjects.emplace("root", std::move(root));
 
     installStandardObjects(*this);
     installCustomOperations(*this);
