@@ -1,6 +1,7 @@
 # Cyphesis, the Worldforge server
 
 [![Join us on Gitter!](https://badges.gitter.im/Worldforge.svg)](https://gitter.im/Worldforge/Lobby)
+[![Build all](https://github.com/worldforge/cyphesis/actions/workflows/cmake.yml/badge.svg)](https://github.com/worldforge/cyphesis/actions/workflows/cmake.yml)
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/cyphesis)
 
