@@ -16,5 +16,6 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "stubfastlz.h"
 #include "stubAwareness.h"
 #include "stubSteering.h"

@@ -27,11 +27,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install autotools
+      - name: Install tools
         shell: bash
         run: |
           if [[ "$ImageOS" == "macos1015" ]]; then
             brew install autoconf automake
+          else
+            sudo apt install ccache
           fi
 
       - name: Install Conan
