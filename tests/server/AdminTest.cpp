@@ -818,7 +818,7 @@ void Admintest::test_SetOperation_obj_IG()
     long cid = m_id_counter++;
     Ref<Entity>  c = new Entity(compose("%1", cid), cid);
 
-    m_account->m_charactersDict.insert(std::make_pair(cid, c.get()));
+    m_account->m_charactersDict.emplace(cid, c);
 
     Atlas::Objects::Operation::Set op;
     OpVector res;

@@ -185,28 +185,28 @@ PropertyExerciser::PropertyExerciser()
         Iend = integer_values.end();
         for (; I != Iend; ++I) {
             map_values.push_back(MapType());
-            map_values.back().insert(std::make_pair(*K, *I));
+            map_values.back().emplace(*K, *I);
         }
 
         // A number of maps of floats
         F = float_values.begin();
         Fend = float_values.end();
         for (; F != Fend; ++F) {
-            map_values.back().insert(std::make_pair(*K, *F));
+            map_values.back().emplace(*K, *F);
         }
 
         // A number of maps of strings
         S = string_values.begin();
         Send = string_values.end();
         for (; S != Send; ++S) {
-            map_values.back().insert(std::make_pair(*K, *S));
+            map_values.back().emplace(*K, *S);
         }
 
         // A number of maps of pointers
         P = ptr_values.begin();
         Pend = ptr_values.end();
         for (; P != Pend; ++P) {
-            map_values.back().insert(std::make_pair(*K, *P));
+            map_values.back().emplace(*K, *P);
         }
 
     }
@@ -215,35 +215,35 @@ PropertyExerciser::PropertyExerciser()
     map_values.push_back(MapType());
     I = integer_values.begin();
     for (; I != Iend; ++I) {
-        map_values.back().insert(std::make_pair(randomString(), *I));
+        map_values.back().emplace(randomString(), *I);
     }
 
     // A list of all the floats
     map_values.push_back(MapType());
     F = float_values.begin();
     for (; F != Fend; ++F) {
-        map_values.back().insert(std::make_pair(randomString(), *F));
+        map_values.back().emplace(randomString(), *F);
     }
 
     // A list of all the strings
     map_values.push_back(MapType());
     S = string_values.begin();
     for (; S != Send; ++S) {
-        map_values.back().insert(std::make_pair(randomString(), *S));
+        map_values.back().emplace(randomString(), *S);
     }
 
     // A list of all the pointers
     map_values.push_back(MapType());
     P = ptr_values.begin();
     for (; P != Pend; ++P) {
-        map_values.back().insert(std::make_pair(randomString(), *P));
+        map_values.back().emplace(randomString(), *P);
     }
 
     // A map full of random crap
     for (int i = 0; i < 64; ++i) {
         map_values.push_back(MapType());
         for (int j = 0; j < 64; ++j) {
-            map_values.back().insert(std::make_pair(randomString(), randomAtlasValue()));
+            map_values.back().emplace(randomString(), randomAtlasValue());
         }
     }
 

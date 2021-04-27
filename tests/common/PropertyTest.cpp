@@ -239,7 +239,7 @@ int main()
 
     {
         MapType m;
-        m.insert(std::make_pair("foo", "bar"));
+        m.emplace("foo", "bar");
         PropertyBase* pb = new Property<MapType>(5);
         assert(pb->flags().m_flags == 5);
         pb->set(m);

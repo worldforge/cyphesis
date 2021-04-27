@@ -54,7 +54,7 @@ class MyTestWorld : public TestWorld {
     explicit MyTestWorld() {
     }
 
-    LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) { 
+    LocatedEntity * test_addEntity(LocatedEntity * ent, long intId) {
         m_eobjects[intId] = ent;
         return ent;
     }
@@ -156,8 +156,7 @@ void TeleportAuthenticatortest::test_removePossession_id()
 {
     PossessionAuthenticator * ta = PossessionAuthenticator::instancePtr();
 
-    ta->m_possessions.insert(std::make_pair("1",
-          new PendingPossession("1", "e146db28-1058-46e6-a9b3-601ab6ef07a7")));
+    ta->m_possessions.emplace("1", std::make_unique<PendingPossession>("1", "e146db28-1058-46e6-a9b3-601ab6ef07a7"));
 
     ASSERT_TRUE(ta->m_possessions.find("1") != ta->m_possessions.end());
 
@@ -171,12 +170,11 @@ void TeleportAuthenticatortest::test_removePossession_iterator()
 {
     PossessionAuthenticator * ta = PossessionAuthenticator::instancePtr();
 
-    ta->m_possessions.insert(std::make_pair("2",
-          new PendingPossession("2", "b769b7a4-32d3-477d-9803-a53fd9ad49c7")));
+    ta->m_possessions.emplace("2", std::make_unique<PendingPossession>("2", "b769b7a4-32d3-477d-9803-a53fd9ad49c7"));
 
     ASSERT_TRUE(ta->m_possessions.find("2") != ta->m_possessions.end());
 
-    PendingPossessionsMap::iterator I = ta->m_possessions.find("2");
+    auto I = ta->m_possessions.find("2");
 
     ta->removePossession(I);
 

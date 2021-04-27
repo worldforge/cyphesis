@@ -49,7 +49,7 @@ inline TestPropertyManager::~TestPropertyManager() = default;
 inline void TestPropertyManager::installPropertyFactory(const std::string & name,
                                                  PropertyKit * factory)
 {
-    m_propertyFactories.insert(std::make_pair(name, factory));
+    m_propertyFactories.emplace(name, factory);
 }
 
 inline std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name) const

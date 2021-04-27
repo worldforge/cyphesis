@@ -375,7 +375,7 @@ void Accounttest::test_characterDestroyed()
 
     ASSERT_TRUE(m_account->m_charactersDict.empty());
 
-    m_account->m_charactersDict.insert(std::make_pair(cid, c.get()));
+    m_account->m_charactersDict.emplace(cid, c);
 
     ASSERT_NOT_EQUAL(m_account->m_charactersDict.find(cid),
                      m_account->m_charactersDict.end());
@@ -526,7 +526,7 @@ void Accounttest::test_addToMessage()
 {
     long cid = m_id_counter++;
     Ref<Entity>  c = new Entity(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
+    m_account->m_charactersDict.emplace(c->getIntId(), c);
 
     MapType data;
 
@@ -551,7 +551,7 @@ void Accounttest::test_addToEntity()
 {
     long cid = m_id_counter++;
     Ref<Entity>  c = new Entity(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
+    m_account->m_charactersDict.emplace(c->getIntId(), c);
 
     Anonymous data;
 
@@ -840,7 +840,7 @@ void Accounttest::test_LookOperation_known_character()
 {
     long cid = m_id_counter++;
     Ref<Entity>  c = new Entity(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
+    m_account->m_charactersDict.emplace(c->getIntId(), c);
 
     Atlas::Objects::Operation::Look op;
     OpVector res;
@@ -1062,7 +1062,7 @@ void Accounttest::test_SetOperation_empty()
     long cid = m_id_counter++;
 
     Ref<Entity> c = new Entity(compose("%1", cid), cid);
-    m_account->m_charactersDict.insert(std::make_pair(c->getIntId(), c.get()));
+    m_account->m_charactersDict.emplace(c->getIntId(), c);
 
     Atlas::Objects::Operation::Set op;
     OpVector res;

@@ -152,7 +152,7 @@ void Entity::addToEntity(const RootEntity& ent) const
 /// @param delegate The name of the property to delegate it to.
 void Entity::installDelegate(int class_no, const std::string& delegate)
 {
-    m_delegates.insert(std::make_pair(class_no, delegate));
+    m_delegates.emplace(class_no, delegate);
 }
 
 void Entity::removeDelegate(int class_no, const std::string& delegate)

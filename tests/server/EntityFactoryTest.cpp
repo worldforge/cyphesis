@@ -330,7 +330,7 @@ struct EntityFactorytest : public Cyphesis::TestBase
         TestPropertyManager propertyManager{};
         auto* ekc = new EntityFactory<Thing>;
         ekc->m_type = m_ek->m_type;
-        ekc->m_classAttributes.insert(std::make_pair("foo", ClassAttribute{"value"}));
+        ekc->m_classAttributes.emplace("foo", ClassAttribute{"value"});
 
         m_ek->m_children.insert(ekc);
 
