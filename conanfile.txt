@@ -5,7 +5,7 @@ atlas/0.7.0@worldforge/testing
 mercator/0.4.0@worldforge/testing
 varconf/1.0.3@worldforge/testing
 wfmath/1.0.3@worldforge/testing
-libxdg-basedir/1.2.0@worldforge/stable
+libxdg-basedir/1.2.3@worldforge/stable
 sigc++/2.10.0@worldforge/stable
 libgcrypt/1.8.7@worldforge/stable
 zlib/1.2.11
