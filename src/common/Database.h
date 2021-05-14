@@ -266,6 +266,8 @@ class DatabaseResult
         struct const_iterator_worker
         {
 
+            virtual ~const_iterator_worker() = default;
+
             virtual const char* column(int column) const = 0;
 
             virtual const char* column(const char* column) const = 0;
