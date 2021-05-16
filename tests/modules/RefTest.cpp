@@ -28,7 +28,7 @@ struct RefTest : public Cyphesis::TestBase
         long& count;
 
         RefCounted(long& count_ref)
-            : count(count_ref)
+                : count(count_ref)
         {
 
         }
@@ -51,11 +51,13 @@ struct RefTest : public Cyphesis::TestBase
 
     };
 
-    struct RefCountedDeleteMarker : public  RefCounted
+    struct RefCountedDeleteMarker : public RefCounted
     {
         bool& delete_marker;
+
         RefCountedDeleteMarker(long& count_ref, bool& delete_marker)
-        : RefCounted(count_ref), delete_marker(delete_marker) {
+                : RefCounted(count_ref), delete_marker(delete_marker)
+        {
 
         }
 
@@ -67,6 +69,7 @@ struct RefTest : public Cyphesis::TestBase
             }
         }
     };
+
     void setup()
     {
     }
@@ -77,42 +80,44 @@ struct RefTest : public Cyphesis::TestBase
 
     void test_refcount()
     {
-        Ref<RefCounted> t0{};
-        ASSERT_NULL(t0.get());
-
         long count1 = 0;
         auto r1 = new RefCounted(count1);
-        Ref<RefCounted> t1(r1);
-        ASSERT_EQUAL(1, count1);
         {
+            Ref<RefCounted> t0{};
+            ASSERT_NULL(t0.get());
 
-            auto t1_1 = t1;
+            Ref<RefCounted> t1(r1);
+            ASSERT_EQUAL(1, count1);
+            {
+
+                auto t1_1 = t1;
+                ASSERT_EQUAL(2, count1);
+            }
+            ASSERT_EQUAL(1, count1);
+            t1 = nullptr;
+            ASSERT_EQUAL(0, count1);
+            t1 = nullptr;
+            ASSERT_EQUAL(0, count1);
+            t1 = r1;
+            ASSERT_EQUAL(1, count1);
+            t1 = r1;
+            ASSERT_EQUAL(1, count1);
+            ASSERT_EQUAL(r1, t1.get());
+
+            auto t2 = std::move(t1);
+            ASSERT_EQUAL(1, count1);
+            ASSERT_NULL(t1.get());
+
+            ASSERT_FALSE(t1 == t2);
+            ASSERT_FALSE(t1.get() == r1);
+            ASSERT_TRUE(t2.get() == r1);
+            Ref<RefCounted> t3(r1);
             ASSERT_EQUAL(2, count1);
+            ASSERT_TRUE(t2 == t3);
+            ASSERT_EQUAL(2, t2->count)
+            ASSERT_EQUAL(2, (*t2).count)
         }
-        ASSERT_EQUAL(1, count1);
-        t1 = nullptr;
-        ASSERT_EQUAL(0, count1);
-        t1 = nullptr;
-        ASSERT_EQUAL(0, count1);
-        t1 = r1;
-        ASSERT_EQUAL(1, count1);
-        t1 = r1;
-        ASSERT_EQUAL(1, count1);
-        ASSERT_EQUAL(r1, t1.get());
-
-        auto t2 = std::move(t1);
-        ASSERT_EQUAL(1, count1);
-        ASSERT_NULL(t1.get());
-
-        ASSERT_FALSE(t1 == t2);
-        ASSERT_FALSE(t1.get() == r1);
-        ASSERT_TRUE(t2.get() == r1);
-        Ref<RefCounted> t3(r1);
-        ASSERT_EQUAL(2, count1);
-        ASSERT_TRUE(t2 == t3);
-        ASSERT_EQUAL(2, t2->count)
-        ASSERT_EQUAL(2, (*t2).count)
-
+        delete r1;
     }
 
 
@@ -120,38 +125,43 @@ struct RefTest : public Cyphesis::TestBase
     {
         long count1 = 0;
         auto r1 = new RefCountedChild(count1);
-        Ref<RefCountedChild> t1(r1);
-        ASSERT_EQUAL(1, count1);
+        {
+            Ref<RefCountedChild> t1(r1);
+            ASSERT_EQUAL(1, count1);
 
-        Ref<RefCounted> parent1 = r1;
-        ASSERT_EQUAL(2, count1);
+            Ref<RefCounted> parent1 = r1;
+            ASSERT_EQUAL(2, count1);
 
-        Ref<RefCounted> parent2 = t1;
-        ASSERT_EQUAL(3, count1);
+            Ref<RefCounted> parent2 = t1;
+            ASSERT_EQUAL(3, count1);
 
-        Ref<RefCounted> parent3;
-        parent3 = t1;
+            Ref<RefCounted> parent3;
+            parent3 = t1;
 
-        ASSERT_TRUE(parent3 == parent2);
-        ASSERT_TRUE(parent3 == t1);
-        ASSERT_FALSE(parent3 != parent2);
-        ASSERT_FALSE(parent3 != t1);
+            ASSERT_TRUE(parent3 == parent2);
+            ASSERT_TRUE(parent3 == t1);
+            ASSERT_FALSE(parent3 != parent2);
+            ASSERT_FALSE(parent3 != t1);
+        }
+        delete r1;
     }
 
     void test_container()
     {
         long count1 = 0;
         auto r1 = new RefCounted(count1);
-        std::set<Ref<RefCounted>> set;
-        set.insert(r1);
-        ASSERT_EQUAL(1u, set.size());
-        set.insert(r1);
-        ASSERT_EQUAL(1u, set.size());
-        set.insert(Ref<RefCounted>(r1));
-        ASSERT_EQUAL(1u, set.size());
-        set.erase(r1);
-        ASSERT_TRUE(set.empty());
-
+        {
+            std::set<Ref<RefCounted>> set;
+            set.insert(r1);
+            ASSERT_EQUAL(1u, set.size());
+            set.insert(r1);
+            ASSERT_EQUAL(1u, set.size());
+            set.insert(Ref<RefCounted>(r1));
+            ASSERT_EQUAL(1u, set.size());
+            set.erase(r1);
+            ASSERT_TRUE(set.empty());
+        }
+        delete r1;
     }
 
     void test_deletion()
@@ -159,10 +169,12 @@ struct RefTest : public Cyphesis::TestBase
         {
             long count1 = 0;
             bool delete_marker1 = false;
+            auto m1 = new RefCountedDeleteMarker(count1, delete_marker1);
             {
-                Ref<RefCountedDeleteMarker> r1(new RefCountedDeleteMarker(count1, delete_marker1));
+                Ref<RefCountedDeleteMarker> r1(m1);
                 ASSERT_FALSE(delete_marker1);
             }
+            delete m1;
             ASSERT_TRUE(delete_marker1);
             ASSERT_EQUAL(0, count1);
         }
@@ -170,33 +182,38 @@ struct RefTest : public Cyphesis::TestBase
         {
             long count1 = 0;
             bool delete_marker1 = false;
+            auto m1 = new RefCountedDeleteMarker(count1, delete_marker1);
             {
-                Ref<RefCountedDeleteMarker> r1(new RefCountedDeleteMarker(count1, delete_marker1));
+                Ref<RefCountedDeleteMarker> r1(m1);
                 ASSERT_FALSE(delete_marker1);
                 r1 = r1;
                 ASSERT_FALSE(delete_marker1);
                 r1 = std::move(r1);
                 ASSERT_FALSE(delete_marker1);
             }
+            delete m1;
             ASSERT_TRUE(delete_marker1);
             ASSERT_EQUAL(0, count1);
         }
         {
             long count1 = 0;
             bool delete_marker1 = false;
+            auto m1 = new RefCountedDeleteMarker(count1, delete_marker1);
             {
-                Ref<RefCountedDeleteMarker> r1(new RefCountedDeleteMarker(count1, delete_marker1));
+                Ref<RefCountedDeleteMarker> r1(m1);
                 ASSERT_FALSE(delete_marker1);
                 Ref<RefCounted> r2 = r1;
                 ASSERT_FALSE(delete_marker1);
                 Ref<RefCounted> r3 = std::move(r1);
                 ASSERT_FALSE(delete_marker1);
             }
+            delete m1;
             ASSERT_TRUE(delete_marker1);
             ASSERT_EQUAL(0, count1);
         }
 
     }
+
     RefTest()
     {
         ADD_TEST(RefTest::test_refcount);
