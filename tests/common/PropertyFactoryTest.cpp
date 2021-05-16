@@ -69,10 +69,10 @@ void PropertyFactorytest::test_factory()
     ASSERT_TRUE(p);
     ASSERT_NOT_NULL(dynamic_cast<PropertyT *>(p.get()));
 
-    PropertyKit * pk = pf.duplicateFactory();
+    auto pk = pf.duplicateFactory();
 
-    ASSERT_NOT_NULL(pk);
-    ASSERT_NOT_NULL(dynamic_cast<PropertyFactory<PropertyT> *>(pk));
+    ASSERT_NOT_NULL(pk.get());
+    ASSERT_NOT_NULL(dynamic_cast<PropertyFactory<PropertyT> *>(pk.get()));
 }
 
 int main()

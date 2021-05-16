@@ -64,9 +64,9 @@ int PropertyRuleHandler::install(const std::string& name,
                          "not exist.", name, parent);
         return 1;
     }
-    auto* factory = parent_factory->duplicateFactory();
-    assert(factory != nullptr);
-    pm.installFactory(name, desc, std::unique_ptr<PropertyKit>(factory));
+    auto factory = parent_factory->duplicateFactory();
+    assert(factory.get() != nullptr);
+    pm.installFactory(name, desc, std::move(factory));
     return 0;
 }
 

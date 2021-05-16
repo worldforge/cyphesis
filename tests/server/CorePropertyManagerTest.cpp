@@ -288,9 +288,9 @@ std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
 }
 
 template<class T>
-PropertyFactory<T>* PropertyFactory<T>::duplicateFactory() const
+std::unique_ptr<PropertyKit> PropertyFactory<T>::duplicateFactory() const
 {
-    return new PropertyFactory<T>;
+    return std::make_unique<PropertyFactory<T>>();
 }
 
 template

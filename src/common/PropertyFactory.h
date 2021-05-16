@@ -32,7 +32,7 @@ class PropertyKit {
     virtual std::unique_ptr<PropertyBase> newProperty() = 0;
 
     /// \brief Create a copy of this factory.
-    virtual PropertyKit * duplicateFactory() const = 0;
+    virtual std::unique_ptr<PropertyKit> duplicateFactory() const = 0;
 };
 
 /// \brief Factory template to create standard Property objects.
@@ -42,7 +42,7 @@ class PropertyFactory : public PropertyKit {
     std::uint32_t m_flags;
     PropertyFactory() : m_flags(0) {}
     std::unique_ptr<PropertyBase> newProperty() override;
-    PropertyFactory<T> * duplicateFactory() const override;
+    std::unique_ptr<PropertyKit> duplicateFactory() const override;
 };
 
 #endif // COMMON_PROPERTY_FACTORY_H

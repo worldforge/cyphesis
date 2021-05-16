@@ -31,9 +31,9 @@ std::unique_ptr<PropertyBase> PropertyFactory<T>::newProperty()
 }
 
 template <class T>
-PropertyFactory<T> * PropertyFactory<T>::duplicateFactory() const
+std::unique_ptr<PropertyKit> PropertyFactory<T>::duplicateFactory() const
 {
-    auto copy = new PropertyFactory<T>{};
+    auto copy = std::make_unique<PropertyFactory<T>>();
     copy->m_flags = m_flags;
     return copy;
 }

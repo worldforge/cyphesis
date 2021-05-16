@@ -32,7 +32,8 @@ class OperationExerciser {
         }
 
         {
-            new Op;
+            auto op = new Op();
+            delete op;
         }
     }
 
