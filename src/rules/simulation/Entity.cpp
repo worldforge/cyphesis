@@ -93,7 +93,7 @@ void Entity::setType(const TypeNode* t)
         if (I == s_monitorsMap.end()) {
             auto result = s_monitorsMap.emplace(t, 1);
 
-            Monitors::instance().watch(String::compose("entity_count{type=\"%1\"}", t->name()), new Variable<int>(result.first->second));
+            Monitors::instance().watch(String::compose("entity_count{type=\"%1\"}", t->name()), std::make_unique<Variable<int>>(result.first->second));
         } else {
             I->second++;
         }

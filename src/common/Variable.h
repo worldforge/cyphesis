@@ -27,7 +27,7 @@
 /// referenced by subclasses this interface
 class VariableBase {
   public:
-    virtual ~VariableBase() = 0;
+    virtual ~VariableBase() = default;
     virtual void send(std::ostream &) = 0;
     virtual bool isNumeric() const = 0;
 };

@@ -33,8 +33,7 @@ using Atlas::Message::MapType;
 
 AreaProperty::AreaProperty(const AreaProperty& other)
     : TerrainEffectorProperty(other),
-      m_layer(other.m_layer),
-      m_shape(nullptr)
+      m_layer(other.m_layer)
 {
     if (other.m_shape) {
         m_shape.reset(other.m_shape->copy());
@@ -45,8 +44,7 @@ AreaProperty::AreaProperty(const AreaProperty& other)
 ///
 /// @param flags Flags used to persist this property
 AreaProperty::AreaProperty() :
-    m_layer(0),
-    m_shape(nullptr)
+    m_layer(0)
 {
 }
 

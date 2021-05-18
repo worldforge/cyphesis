@@ -67,23 +67,23 @@ StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& 
                                          &StorageManager::entityInserted));
 
     Monitors::instance().watch("storage_entity_inserts",
-                               new Variable<int>(m_insertEntityCount));
+                               std::make_unique<Variable<int>>(m_insertEntityCount));
     Monitors::instance().watch("storage_entity_updates",
-                               new Variable<int>(m_updateEntityCount));
+                               std::make_unique<Variable<int>>(m_updateEntityCount));
     Monitors::instance().watch("storage_property_inserts",
-                               new Variable<int>(m_insertPropertyCount));
+                               std::make_unique<Variable<int>>(m_insertPropertyCount));
     Monitors::instance().watch("storage_property_updates",
-                               new Variable<int>(m_updatePropertyCount));
+                               std::make_unique<Variable<int>>(m_updatePropertyCount));
 
     Monitors::instance().watch(R"(storage_qps{qtype="inserts",t="1"})",
-                               new Variable<int>(m_insertQpsNow));
+                               std::make_unique<Variable<int>>(m_insertQpsNow));
     Monitors::instance().watch(R"(storage_qps{qtype="updates",t="1"})",
-                               new Variable<int>(m_updateQpsNow));
+                               std::make_unique<Variable<int>>(m_updateQpsNow));
 
     Monitors::instance().watch(R"(storage_qps{qtype="inserts",t="32"})",
-                               new Variable<int>(m_insertQpsAvg));
+                               std::make_unique<Variable<int>>(m_insertQpsAvg));
     Monitors::instance().watch(R"(storage_qps{qtype="updates",t="32"})",
-                               new Variable<int>(m_updateQpsAvg));
+                               std::make_unique<Variable<int>>(m_updateQpsAvg));
 
     for (int i = 0; i < 32; ++i) {
         m_insertQpsRing[i] = 0;

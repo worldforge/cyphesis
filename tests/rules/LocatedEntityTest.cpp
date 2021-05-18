@@ -206,7 +206,7 @@ int main()
     TestPropertyManager propertyManager;
     // Test constructor
     {
-        new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
     }
 
     // Test destructor
@@ -253,86 +253,86 @@ int main()
 
     // Test setAttrValue()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
 
-        e->setAttrValue("foo", "bar");
+        e.setAttrValue("foo", "bar");
     }
 
     // Test setAttrValue()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
 
-        e->setAttrValue("foo", "bar");
-        e->setAttrValue("foo", 23);
+        e.setAttrValue("foo", "bar");
+        e.setAttrValue("foo", 23);
     }
 
     // Test getAttr()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        int ret = e->getAttr("foo", val);
+        int ret = e.getAttr("foo", val);
         assert(ret == -1);
         assert(val.isNone());
     }
 
     // Test getAttr()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        e->setAttrValue("foo", "bar");
-        int ret = e->getAttr("foo", val);
+        e.setAttrValue("foo", "bar");
+        int ret = e.getAttr("foo", val);
         assert(ret == 0);
         assert(val.isString());
     }
 
     // Test getAttrType()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        int ret = e->getAttrType("foo", val, Element::TYPE_STRING);
+        int ret = e.getAttrType("foo", val, Element::TYPE_STRING);
         assert(ret == -1);
         assert(val.isNone());
     }
 
     // Test getAttrType()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        int ret = e->getAttrType("id", val, Element::TYPE_STRING);
+        int ret = e.getAttrType("id", val, Element::TYPE_STRING);
         assert(ret == 0);
         assert(val.isString());
     }
 
     // Test getAttrType()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        int ret = e->getAttrType("id", val, Element::TYPE_FLOAT);
+        int ret = e.getAttrType("id", val, Element::TYPE_FLOAT);
         assert(ret != 0);
         assert(val.isString());
     }
 
     // Test hasAttr()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        bool ret = e->hasAttr("foo");
+        bool ret = e.hasAttr("foo");
         assert(ret == false);
     }
 
     // Test hasAttr()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest e("1", 1);
         Atlas::Message::Element val;
 
-        e->setAttrValue("foo", "bar");
-        bool ret = e->hasAttr("foo");
+        e.setAttrValue("foo", "bar");
+        bool ret = e.hasAttr("foo");
         assert(ret == true);
     }
 

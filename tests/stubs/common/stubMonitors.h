@@ -26,7 +26,7 @@
 
 #ifndef STUB_Monitors_insert
 //#define STUB_Monitors_insert
-  void Monitors::insert(const std::string &, const Atlas::Message::Element &)
+  void Monitors::insert(const std::string&, const Atlas::Message::Element&)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_Monitors_watch
 //#define STUB_Monitors_watch
-  void Monitors::watch(const std::string &, VariableBase *)
+  void Monitors::watch(const std::string&, std::unique_ptr<VariableBase>)
   {
     
   }
@@ -42,7 +42,7 @@
 
 #ifndef STUB_Monitors_send
 //#define STUB_Monitors_send
-  void Monitors::send(std::ostream &) const
+  void Monitors::send(std::ostream&) const
   {
     
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_Monitors_sendNumerics
 //#define STUB_Monitors_sendNumerics
-  void Monitors::sendNumerics(std::ostream &) const
+  void Monitors::sendNumerics(std::ostream&) const
   {
     
   }

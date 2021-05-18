@@ -47,9 +47,6 @@ class TestCommSocket : public CommSocket
 
 int main()
 {
-    {
-        new TestCommSocket();
-    }
 
     {
         CommSocket * cs = new TestCommSocket();

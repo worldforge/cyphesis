@@ -101,6 +101,8 @@ class MemMap
 
         explicit MemMap(TypeResolver& typeResolver);
 
+        ~MemMap();
+
         std::vector<Ref<MemEntity>> resolveEntitiesForType(const TypeNode* typeNode);
 
         void addEntity(const Ref<MemEntity>&);
@@ -164,8 +166,6 @@ class MemMap
         void collectTypeResolverOps(OpVector& res);
 
         const TypeStore& getTypeStore() const;
-
-        friend class MemMaptest;
 
         friend class BaseMindMapEntityintegration;
 };

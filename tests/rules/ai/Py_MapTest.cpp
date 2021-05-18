@@ -27,10 +27,10 @@
 
 #include <Python.h>
 
-#include "../python_testers.h"
+#include "../../python_testers.h"
 
 #include "rules/python/Python_API.h"
-#include "../TestPropertyManager.h"
+#include "../../TestPropertyManager.h"
 
 #include <cassert>
 #include <rules/ai/python/CyPy_MemMap.h>

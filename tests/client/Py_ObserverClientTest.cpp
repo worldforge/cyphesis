@@ -56,10 +56,10 @@ int main()
     init_python_api({&CyPy_Server::init, &CyPy_Atlas::init});
     extend_client_python_api();
 
-    auto client = new ObserverClient(io_context, factories, propertyManager);
+    ObserverClient client(io_context, factories, propertyManager);
 
     Py::Module module("server");
-    module.setAttr("testclient", CyPy_ObserverClient::wrap(client));
+    module.setAttr("testclient", CyPy_ObserverClient::wrap(&client));
 
     run_python_string("import atlas");
     run_python_string("import server");

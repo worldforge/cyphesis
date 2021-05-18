@@ -39,7 +39,7 @@ using Atlas::Message::MapType;
 
 static int run_coverage()
 {
-    TerrainModProperty * ap = new TerrainModProperty;
+    TerrainModProperty ap;
 
     PropertyChecker<TerrainModProperty> pc(ap);
 
@@ -112,7 +112,7 @@ static TerrainProperty * stub_getTerrain_return = 0;
 int main()
 {
     {
-        TerrainModProperty * ap = new TerrainModProperty;
+        TerrainModProperty ap;
 
         MapType shape;
         MapType mod;
@@ -122,7 +122,7 @@ int main()
         mod["shape"] = shape;
         mod["type"] = "levelmod";
 
-        ap->set(mod);
+        ap.set(mod);
 
         // FIXME verify that the mod really takes effect
         // ap->apply(0);

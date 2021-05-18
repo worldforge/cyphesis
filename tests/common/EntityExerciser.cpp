@@ -66,9 +66,9 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
         e->m_location.m_parent->m_contains->insert(e);
     }
     if (e->getType() == 0) {
-        TypeNode * test_type = new TypeNode("test_type");
-        test_type->injectProperty("test_default", std::unique_ptr<PropertyBase>(new SoftProperty));
-        e->setType(test_type);
+        test_type = std::make_unique<TypeNode>("test_type");
+        test_type->injectProperty("test_default", std::make_unique<SoftProperty>());
+        e->setType(test_type.get());
     }
     attr_types.insert(Atlas::Message::Element::TYPE_INT);
     attr_types.insert(Atlas::Message::Element::TYPE_FLOAT);
@@ -77,7 +77,15 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
     attr_types.insert(Atlas::Message::Element::TYPE_LIST);
 }
 
-EntityExerciser::~EntityExerciser() = default;
+EntityExerciser::~EntityExerciser()
+{
+    if (m_ent->getIntId() != 0) {
+        m_ent->m_location.m_parent.reset();
+    }
+    if (test_type) {
+        m_ent->setType(nullptr);
+    }
+}
 
 void EntityExerciser::dispatchOp(const Atlas::Objects::Operation::RootOperation&op)
 {

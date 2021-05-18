@@ -30,15 +30,13 @@ class PropertyKit;
 typedef std::map<std::string, PropertyKit *> PropertyFactoryDict;
 
 class TestPropertyManager : public PropertyManager {
-  private:
-    std::map<std::string, PropertyKit *> m_propertyFactories;
   public:
     TestPropertyManager();
     ~TestPropertyManager() override;
 
     std::unique_ptr<PropertyBase> addProperty(const std::string & name) const override;
 
-    void installPropertyFactory(const std::string &, PropertyKit *);
+    void installPropertyFactory(const std::string &, std::unique_ptr<PropertyKit>);
 };
 
 
@@ -47,9 +45,9 @@ inline TestPropertyManager::TestPropertyManager() = default;
 inline TestPropertyManager::~TestPropertyManager() = default;
 
 inline void TestPropertyManager::installPropertyFactory(const std::string & name,
-                                                 PropertyKit * factory)
+                                                        std::unique_ptr<PropertyKit> factory)
 {
-    m_propertyFactories.emplace(name, factory);
+    m_propertyFactories.emplace(name, std::move(factory));
 }
 
 inline std::unique_ptr<PropertyBase> TestPropertyManager::addProperty(const std::string & name) const

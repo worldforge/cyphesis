@@ -29,7 +29,7 @@
 
 int main()
 {
-    CalendarProperty * ap = new CalendarProperty;
+    CalendarProperty ap;
 
     PropertyChecker<CalendarProperty> pc(ap);
 

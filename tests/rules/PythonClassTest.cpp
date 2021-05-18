@@ -82,8 +82,8 @@ struct TestMod : public Py::ExtensionModule<TestMod>
 int main()
 {
     PyImport_AppendInittab("testmod", []() {
-        auto module = new TestMod();
-        return module->module().ptr();
+        static TestMod testMod;
+        return testMod.module().ptr();
     });
 
     Py_Initialize();
@@ -130,6 +130,7 @@ int main()
         int ret = pc->test_load();
 
         assert(ret == -1);
+        delete pc;
     }
 
     {
@@ -144,6 +145,7 @@ int main()
         int ret = pc->test_load();
 
         assert(ret == -1);
+        delete pc;
     }
 
     {
@@ -158,6 +160,7 @@ int main()
         int ret = pc->test_load();
 
         assert(ret == 0);
+        delete pc;
     }
 
     return 0;

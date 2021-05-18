@@ -34,7 +34,7 @@
 int main()
 {
     ExternalMindsManager mindsManager;
-    MindProperty * ap = new MindProperty;
+    MindProperty ap;
 
     PropertyChecker<MindProperty> pc(ap);
 

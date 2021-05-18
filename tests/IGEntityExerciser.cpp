@@ -44,17 +44,16 @@
 
 IGEntityExerciser::IGEntityExerciser(const Ref<Entity>& e) :
                            EntityExerciser(e), m_ent(e) {
-    new TestPropertyManager;
     Ref<LocatedEntity> parent;
     if (e->getIntId() == 0) {
-        new TestWorld(e);
+        m_testWorld = std::make_unique<TestWorld>(e);
     } else {
         assert(e->m_location.m_parent != nullptr);
-        parent = new Entity("0", 0);
+        parent.reset(new Entity("0", 0));
         e->m_location.m_parent->makeContainer();
         assert(e->m_location.m_parent->m_contains != nullptr);
         e->m_location.m_parent->m_contains->insert(e);
-        new TestWorld(e->m_location.m_parent);
+        m_testWorld = std::make_unique<TestWorld>(e->m_location.m_parent);
     }
     BaseWorld::instance().addEntity(e, parent);
 }

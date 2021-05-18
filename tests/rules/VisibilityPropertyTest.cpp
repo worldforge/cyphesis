@@ -29,7 +29,7 @@
 
 int main()
 {
-    VisibilityProperty * ap = new VisibilityProperty;
+    VisibilityProperty ap;
 
     PropertyChecker<VisibilityProperty> pc(ap);
 

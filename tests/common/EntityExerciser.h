@@ -41,6 +41,7 @@ class LocatedEntityTest : public LocatedEntity {
 
 class EntityExerciser {
   protected:
+        std::unique_ptr<TypeNode> test_type;
     Ref<LocatedEntity> m_ent;
     std::set<int> attr_types;
   public:

@@ -36,7 +36,7 @@ int main(int argc, char ** argv)
     TestPropertyManager tpm;
     // database_flag = false;
 
-    Ref<Entity>  thing = new Thing("1", 1);
+    Ref<Entity>  thing(new Thing("1", 1));
 
     // Check no flags are set
     assert(thing->flags().m_flags == 0);

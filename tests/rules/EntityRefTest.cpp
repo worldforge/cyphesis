@@ -96,9 +96,6 @@ void checkSignal()
         // Make sure the container has a contains structure, as destroy
         // requires it.
         container->m_contains.reset(new LocatedEntitySet);
-        // Increment the refcount on the container, else the tested Entity's
-        // destructor will delete it.
-        container->incRef();
 
         WeakEntityRef ref(&e);
 
@@ -274,9 +271,6 @@ int main()
         // Make sure the container has a contains structure, as destroy
         // requires it.
         container->m_contains.reset(new LocatedEntitySet);
-        // Increment the refcount on the container, else the tested Entity's
-        // destructor will delete it.
-        container->incRef();
 
         WeakEntityRef ref(&e);
 

@@ -7,14 +7,6 @@
 #include "common/Variable.h"
 #include "stubVariable_custom.h"
 
-#ifndef STUB_VariableBase_VariableBase_DTOR
-//#define STUB_VariableBase_VariableBase_DTOR
-   VariableBase::~VariableBase()
-  {
-    
-  }
-#endif //STUB_VariableBase_VariableBase_DTOR
-
 #ifndef STUB_VariableBase_send
 //#define STUB_VariableBase_send
   void VariableBase::send(std::ostream &)

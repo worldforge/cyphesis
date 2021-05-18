@@ -42,7 +42,7 @@ int main()
 {
     Py_InitializeEx(0);
 
-    TasksProperty * ap = new TasksProperty;
+    TasksProperty ap;
 
     PropertyChecker<TasksProperty> pc(ap);
 

@@ -32,7 +32,7 @@ int main()
 {
     {
         std::string id;
-        IdProperty * ip = new IdProperty(id);
+        IdProperty ip(id);
 
         PropertyChecker<IdProperty> pc(ip);
 
@@ -42,7 +42,7 @@ int main()
     }
 
     {
-        NameProperty * np = new NameProperty(0);
+        NameProperty np(0);
 
         PropertyCoverage pc(np);
 
@@ -53,7 +53,7 @@ int main()
 
     {
         LocatedEntitySet les;
-        ContainsProperty * cp = new ContainsProperty(les);
+        ContainsProperty cp(les);
 
         PropertyCoverage pc(cp);
 

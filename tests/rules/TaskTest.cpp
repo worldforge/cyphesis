@@ -37,13 +37,21 @@
 
 #include <cassert>
 
+struct TestTask : public Task {
+    TestTask(UsageInstance usageInstance, Py::Object script): Task(usageInstance, script) {}
+    bool getObsolete() const {
+        return m_obsolete;
+    }
+};
+
+
 class Tasktest : public Cyphesis::TestBase
 {
   private:
     Ref<LocatedEntity> chr;
     UsageInstance usageInstance;
     Py::Dict script;
-    Ref<Task> m_task;
+    Ref<TestTask> m_task;
 
     static bool Script_operation_called;
     static HandlerResult Script_operation_ret;
@@ -94,7 +102,7 @@ void Tasktest::setup()
     usageInstance.actor = chr;
     script = Py::Dict();
 
-    m_task = new Task(usageInstance, script);
+    m_task = new TestTask(usageInstance, script);
 }
 
 void Tasktest::teardown()
@@ -103,16 +111,16 @@ void Tasktest::teardown()
 
 void Tasktest::test_obsolete()
 {
-    ASSERT_EQUAL(m_task->m_obsolete, false);
+    ASSERT_EQUAL(m_task->getObsolete(), false);
     ASSERT_EQUAL(m_task->obsolete(), false);
 }
 
 void Tasktest::test_irrelevant()
 {
-    ASSERT_EQUAL(m_task->m_obsolete, false);
+    ASSERT_EQUAL(m_task->getObsolete(), false);
     ASSERT_EQUAL(m_task->obsolete(), false);
     m_task->irrelevant();
-    ASSERT_EQUAL(m_task->m_obsolete, true);
+    ASSERT_EQUAL(m_task->getObsolete(), true);
     ASSERT_EQUAL(m_task->obsolete(), true);
 }
 
@@ -220,6 +228,9 @@ int main()
 #include "../stubs/common/stubRouter.h"
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/rules/simulation/stubScriptUtils.h"
+#include "../stubs/common/stubProperty.h"
+#include "../stubs/rules/simulation/stubActionsProperty.h"
+#include "../stubs/rules/simulation/stubBaseWorld.h"
 
 #define STUB_Script_operation
 HandlerResult Script::operation(const std::string & opname,

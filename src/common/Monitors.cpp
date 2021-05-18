@@ -35,9 +35,9 @@ void Monitors::insert(const std::string& key, const Element& val)
     m_pairs[key] = val;
 }
 
-void Monitors::watch(const ::std::string& name, VariableBase* monitor)
+void Monitors::watch(const ::std::string& name, std::unique_ptr<VariableBase> monitor)
 {
-    m_variableMonitors[name] = std::unique_ptr<VariableBase>(monitor);
+    m_variableMonitors[name] = std::move(monitor);
 }
 
 static std::ostream& operator<<(std::ostream& s, const Element& e)

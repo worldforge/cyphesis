@@ -38,7 +38,7 @@ int main()
     int foo = 7;
     std::stringstream ss;
 
-    m.watch("foo", new Variable<int>(foo));
+    m.watch("foo", std::make_unique<Variable<int>>(foo));
 
     m.insert("bar", 3);
     m.insert("mim", 3.f);

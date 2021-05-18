@@ -49,12 +49,12 @@ static int test_reparse()
         shape_desc["points"] = ListType(3, ListType(2, 1.));
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
-        auto tm1 = titm->parseData(pos, orientation);
+        TerrainModTranslator titm(mod);
+        auto tm1 = titm.parseData(pos, orientation);
         assert(tm1 != 0);
 
         // Re-parse the same data. Should create new instance.
-        auto tm2 = titm->parseData(pos, orientation);
+        auto tm2 = titm.parseData(pos, orientation);
         assert(tm2 != 0);
         assert(tm2 != tm1);
 
@@ -64,19 +64,18 @@ static int test_reparse()
         shape_desc["position"] = ListType(2, 1.);
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
-        titm = new TerrainModTranslator(mod);
-        auto tm3 = titm->parseData(pos, orientation);
+        titm = TerrainModTranslator(mod);
+        auto tm3 = titm.parseData(pos, orientation);
         assert(tm3 != 0);
         assert(tm3 != tm1);
 
         // Change it to an adjustmod. This requires a new mod
         mod["type"] = "adjustmod";
-        titm = new TerrainModTranslator(mod);
-        auto tm4 = titm->parseData(pos, orientation);
+        titm = TerrainModTranslator(mod);
+        auto tm4 = titm.parseData(pos, orientation);
         assert(tm4 != 0);
         assert(tm4 != tm1);
 
-        delete titm;
     }
 
     return 0;
@@ -168,14 +167,13 @@ int main()
 
     // Call parseData with empty map
     {
-        TerrainModTranslator * titm = new TerrainModTranslator(MapType());
+        TerrainModTranslator titm(MapType{});
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(!ret);
 
-        delete titm;
     }
 
     // Call parseData with unknown shape
@@ -185,15 +183,13 @@ int main()
         shape_desc["type"] = "unknown_shape";
         mod["shape"] = shape_desc;
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(!ret);
 
-
-        delete titm;
     }
 
     // Call parseData with ball shape
@@ -203,14 +199,13 @@ int main()
         shape_desc["type"] = "ball";
         mod["shape"] = shape_desc;
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(!ret);
 
-        delete titm;
     }
 
     // Call parseData with ball shape and valid ball params
@@ -242,14 +237,13 @@ int main()
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation(0,0,0,1);
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(ret);
 
-        delete titm;
     }
 
     // Call parseData with polygon shape and valid polygon params
@@ -261,14 +255,13 @@ int main()
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(ret);
 
-        delete titm;
     }
 
     // Call parseData with rotbox shape and valid rotbox params
@@ -281,14 +274,13 @@ int main()
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(ret);
 
-        delete titm;
     }
 
     // Call parseData with ball shape and invalid ball params
@@ -301,14 +293,13 @@ int main()
         mod["shape"] = shape_desc;
         mod["type"] = "levelmod";
 
-        TerrainModTranslator * titm = new TerrainModTranslator(mod);
+        TerrainModTranslator titm(mod);
         WFMath::Point<3> pos(0, -1, 0);
         WFMath::Quaternion orientation;
 
-        auto ret = titm->parseData(pos, orientation);
+        auto ret = titm.parseData(pos, orientation);
         assert(!ret);
 
-        delete titm;
     }
 
     return test_reparse();

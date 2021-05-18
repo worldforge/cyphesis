@@ -37,7 +37,7 @@ using Atlas::Message::MapType;
 
 int main()
 {
-    TerrainProperty * ap = new TerrainProperty;
+    TerrainProperty ap;
 
     PropertyChecker<TerrainProperty> pc(ap);
 

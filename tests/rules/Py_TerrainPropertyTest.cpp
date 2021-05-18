@@ -50,7 +50,7 @@ class TestProp : public Py::ExtensionModule<TestProp>
         {
             auto ent = CyPy_Entity::value(args.front());
 
-            PropertyBase * p = ent->setProperty("terrain", std::unique_ptr<PropertyBase>(new TerrainProperty));
+            PropertyBase * p = ent->setProperty("terrain", std::make_unique<TerrainProperty>());
             p->install(ent.get(), "terrain");
             p->apply(ent.get());
             ent->propertyApplied("terrain", *p);
@@ -70,8 +70,8 @@ class TestProp : public Py::ExtensionModule<TestProp>
 int main()
 {
     PyImport_AppendInittab("testprop", [](){
-        auto module = new TestProp();
-        return module->module().ptr();
+        static TestProp testProp;
+        return testProp.module().ptr();
     });
     init_python_api({&CyPy_Server::init,
                      &CyPy_Rules::init,

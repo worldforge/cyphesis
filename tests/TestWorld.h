@@ -44,8 +44,7 @@ struct TestWorld : public BaseWorld
     Ref<LocatedEntity> m_gw;
 
     explicit TestWorld()
-            : BaseWorld([]() { return std::chrono::steady_clock::now().time_since_epoch(); }),
-              m_gw(nullptr)
+            : BaseWorld([]() { return std::chrono::steady_clock::now().time_since_epoch(); })
     {
     }
 
@@ -56,7 +55,19 @@ struct TestWorld : public BaseWorld
         m_eobjects[m_gw->getIntId()] = m_gw;
     }
 
-    ~TestWorld() override = default;
+    ~TestWorld() override {
+        //Make sure that no entity references are retained.
+        for (const auto& entry : m_eobjects) {
+            entry.second->destroy();
+            entry.second->m_location.m_parent = nullptr;
+            if (entry.second->m_contains) {
+                entry.second->m_contains->clear();
+            }
+//            entry.second->clearProperties();
+            //Set the type to null so we won't clear properties again in the destructor.
+            entry.second->setType(nullptr);
+        }
+    }
 
     void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override
     {

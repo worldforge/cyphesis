@@ -51,20 +51,20 @@ using WFMath::RotBox;
 using WFMath::RotMatrix;
 using WFMath::Vector;
 
-void test_conversion(Shape * s)
+void test_conversion(Shape& s)
 {
     Atlas::Message::MapType data;
 
-    s->toAtlas(data);
+    s.toAtlas(data);
     assert(!data.empty());
     assert(data.find("type") != data.end());
     assert(data["type"] != "unknown");
 
     auto copy = Shape::newFromAtlas(data);
     assert(copy);
-    std::cout << "A: " << *s << std::endl
+    std::cout << "A: " << s << std::endl
               << "B: " << *copy << std::endl;
-    assert(*s == *copy);
+    assert(s == *copy);
 }
 
 // FIXME Use a C++11 template typedef once the are supported
@@ -85,202 +85,183 @@ int main()
     // The AxisBox is a little different, and is not covered by the
     // name constructor
     {
-        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
+        MathShape<AxisBox, 2> s(AxisBox<2>{});
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
 
     }
 
     {
-        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(0,0),
+        MathShape<AxisBox, 2> s(AxisBox<2>(Point<2>(0,0),
                                                          Point<2>(1,1)));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
 
     }
 
     {
-        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(0,0),
+        MathShape<AxisBox, 2> s(AxisBox<2>(Point<2>(0,0),
                                                         Point<2>(1,1)));
 
-        assert(s != 0);
-        assert(s->isValid());
-        assert(s->intersect(Point<2>(0.5, 0.5)));
-        assert(!s->intersect(Point<2>(1.5, 0.5)));
-        assert(!s->intersect(Point<2>(1.5, 1.5)));
-        assert(!s->intersect(Point<2>(0.5, 1.5)));
-        assert(!s->intersect(Point<2>(-0.5, 1.5)));
-        assert(!s->intersect(Point<2>(-0.5, 0.5)));
-        assert(!s->intersect(Point<2>(-0.5, -0.5)));
-        assert(!s->intersect(Point<2>(0.5, -0.5)));
-        assert(!s->intersect(Point<2>(1.5, -0.5)));
+        assert(s.isValid());
+        assert(s.intersect(Point<2>(0.5, 0.5)));
+        assert(!s.intersect(Point<2>(1.5, 0.5)));
+        assert(!s.intersect(Point<2>(1.5, 1.5)));
+        assert(!s.intersect(Point<2>(0.5, 1.5)));
+        assert(!s.intersect(Point<2>(-0.5, 1.5)));
+        assert(!s.intersect(Point<2>(-0.5, 0.5)));
+        assert(!s.intersect(Point<2>(-0.5, -0.5)));
+        assert(!s.intersect(Point<2>(0.5, -0.5)));
+        assert(!s.intersect(Point<2>(1.5, -0.5)));
     }
 
     {
         MapType m;
 
-        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
-        s->fromAtlas(m);
+        MathShape<AxisBox, 2> s(AxisBox<2>{});
+        s.fromAtlas(m);
 
-        assert(s != 0);
-        assert(!s->isValid());
-
-    }
-
-    {
-        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
-        s->fromAtlas(ListType(2, 1.));
-
-        assert(s != 0);
-        assert(s->isValid());
+        assert(!s.isValid());
 
     }
 
     {
-        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
-        s->fromAtlas(ListType(2, 1.));
+        MathShape<AxisBox, 2> s(AxisBox<2>{});
+        s.fromAtlas(ListType(2, 1.));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
+
+    }
+
+    {
+        MathShape<AxisBox, 2> s(AxisBox<2>{});
+        s.fromAtlas(ListType(2, 1.));
+
+        assert(s.isValid());
 
         MapType dest;
-        s->toAtlas(dest);
+        s.toAtlas(dest);
     }
 
     {
-        Shape * s = new MathShape<AxisBox, 2>(AxisBox<2>());
-        s->fromAtlas(std::string("bad_string_value"));
+        MathShape<AxisBox, 2> s(AxisBox<2>{});
+        s.fromAtlas(std::string("bad_string_value"));
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
-        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>());
-        s->fromAtlas(ListType(2, 1.));
+        MathShape<AxisBox, 2> s(AxisBox<2>{});
+        s.fromAtlas(ListType(2, 1.));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
 
-        Point<2> low = s->lowCorner();
-        Point<2> high = s->highCorner();
+        Point<2> low = s.lowCorner();
+        Point<2> high = s.highCorner();
         assert(low.isValid());
         assert(high.isValid());
     }
 
     {
-        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(0,0),
+        MathShape<AxisBox, 2> s(AxisBox<2>(Point<2>(0,0),
                                                         Point<2>(2,2)));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
   
-        Point<2> centre = s->centre();
+        Point<2> centre = s.centre();
         assert(Equal(centre, Point<2>(1,1)));
     }
 
     {
-        Area * s = new MathShape<AxisBox, 2>(AxisBox<2>(Point<2>(1,1),
+        MathShape<AxisBox, 2> s(AxisBox<2>(Point<2>(1,1),
                                                         Point<2>(2,2)));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
   
         test_conversion(s);
     }
 
     // Point
     {
-        Shape * s = new MathShape<Point, 2>();
+        MathShape<Point, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
-        Shape * s = new MathShape<Point, 2>(Point<2>(1,2));
+        MathShape<Point, 2> s(Point<2>(1,2));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
     }
 
     {
         MapType m;
         m["pos"] = ListType(2, 2.0);
 
-        Shape * s = new MathShape<Point, 2>();
+        MathShape<Point, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
 
-        s->fromAtlas(m);
-        assert(s->isValid());
+        s.fromAtlas(m);
+        assert(s.isValid());
     }
 
     {
         ListType l(2, 2.0);
 
-        Shape * s = new MathShape<Point, 2>();
+        MathShape<Point, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
 
-        s->fromAtlas(l);
-        assert(s->isValid());
+        s.fromAtlas(l);
+        assert(s.isValid());
     }
 
     {
         ListType l(1, 2.0); // Wrong length
 
-        Shape * s = new MathShape<Point, 2>();
+        MathShape<Point, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
 
-        s->fromAtlas(l);
-        assert(!s->isValid());
+        s.fromAtlas(l);
+        assert(!s.isValid());
     }
 
     {
         ListType l(2, "bad_string"); // Wrong type
 
-        Shape * s = new MathShape<Point, 2>();
+        MathShape<Point, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
 
-        s->fromAtlas(l);
-        assert(!s->isValid());
+        s.fromAtlas(l);
+        assert(!s.isValid());
     }
 
     {
-        Shape * s = new MathShape<Point, 2>(Point<2>(1,2));
+        MathShape<Point, 2> s(Point<2>(1,2));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
 
         test_conversion(s);
     }
 
     {
-        Form<2> * s = new MathShape<Point, 2>(Point<2>(1,2));
+        MathShape<Point, 2> s(Point<2>(1,2));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
 
-        assert(s->intersect(Point<2>(1, 2)));
-        assert(!s->intersect(Point<2>(0.75, 0.25)));
+        assert(s.intersect(Point<2>(1, 2)));
+        assert(!s.intersect(Point<2>(0.75, 0.25)));
     }
 
     // The Polygon conversion functions throw if there isn't complete valid
     // polygon data
     {
-        Shape * s = new MathShape<Polygon, 2>(Polygon<2>());
+        MathShape<Polygon, 2> s(Polygon<2>{});
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
     }
 
     {
@@ -288,10 +269,9 @@ int main()
         p.addCorner(0, Point<2>(1,1));
         p.addCorner(0, Point<2>(1,0));
         p.addCorner(0, Point<2>(0,0));
-        Shape * s = new MathShape<Polygon, 2>(p);
+        MathShape<Polygon, 2> s(p);
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
     }
 
     {
@@ -302,19 +282,18 @@ int main()
         // Make sure the underlying Intersect works
         assert(Intersect(p, Point<2>(0.75, 0.25), true));
 
-        Area * s = new MathShape<Polygon, 2>(p);
+        MathShape<Polygon, 2> s(p);
 
-        assert(s != 0);
-        assert(s->isValid());
-        assert(s->intersect(Point<2>(0.75, 0.25)));
-        assert(!s->intersect(Point<2>(1.5, 0.5)));
-        assert(!s->intersect(Point<2>(1.5, 1.5)));
-        assert(!s->intersect(Point<2>(0.5, 1.5)));
-        assert(!s->intersect(Point<2>(-0.5, 1.5)));
-        assert(!s->intersect(Point<2>(-0.5, 0.5)));
-        assert(!s->intersect(Point<2>(-0.5, -0.5)));
-        assert(!s->intersect(Point<2>(0.5, -0.5)));
-        assert(!s->intersect(Point<2>(1.5, -0.5)));
+        assert(s.isValid());
+        assert(s.intersect(Point<2>(0.75, 0.25)));
+        assert(!s.intersect(Point<2>(1.5, 0.5)));
+        assert(!s.intersect(Point<2>(1.5, 1.5)));
+        assert(!s.intersect(Point<2>(0.5, 1.5)));
+        assert(!s.intersect(Point<2>(-0.5, 1.5)));
+        assert(!s.intersect(Point<2>(-0.5, 0.5)));
+        assert(!s.intersect(Point<2>(-0.5, -0.5)));
+        assert(!s.intersect(Point<2>(0.5, -0.5)));
+        assert(!s.intersect(Point<2>(1.5, -0.5)));
     }
 
     {
@@ -324,10 +303,9 @@ int main()
         p.addCorner(0, Point<2>(0,0));
         // Make sure the underlying Intersect works
 
-        Area * s = new MathShape<Polygon, 2>(p);
+        MathShape<Polygon, 2> s(p);
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
         test_conversion(s);
     }
 
@@ -451,18 +429,16 @@ int main()
     // The Ball conversion functions don't seem to require valid Atlas
     // data
     {
-        Shape * s = new MathShape<Ball, 2>(Ball<2>());
+        MathShape<Ball, 2> s(Ball<2>{});
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
-        Shape * s = new MathShape<Ball, 2>(
+        MathShape<Ball, 2> s(
               Ball<2>(Point<2>(1,1), 23.f));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
     }
 
     {
@@ -480,11 +456,10 @@ int main()
         m["radius"] = 23.9;
         m["position"] = ListType(2, 1.f);
 
-        Shape * s = new MathShape<Ball, 2>;
-        s->fromAtlas(m);
+        MathShape<Ball, 2> s;
+        s.fromAtlas(m);
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
     }
 
     {
@@ -492,21 +467,19 @@ int main()
         m["radius"] = 23.9;
         m["position"] = ListType(2, "bad_string"); // bad type here
 
-        Shape * s = new MathShape<Ball, 2>;
-        s->fromAtlas(m);
+        MathShape<Ball, 2> s;
+        s.fromAtlas(m);
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
         ListType l(2, 1.f); // Wrong type
 
-        Shape * s = new MathShape<Ball, 2>;
-        s->fromAtlas(l);
+        MathShape<Ball, 2> s;
+        s.fromAtlas(l);
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
@@ -562,26 +535,24 @@ int main()
         auto s = Shape::newFromAtlas(m);
         assert(s != 0);
         
-        test_conversion(s.get());
+        test_conversion(*s);
     }
 
     // The RotBox conversion functions throw if there isn't complete valid
     // polygon data
     {
-        Shape * s = new MathShape<RotBox, 2>(RotBox<2>());
+        MathShape<RotBox, 2> s((RotBox<2>()));
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
-        Shape * s = new MathShape<RotBox, 2>(
+        MathShape<RotBox, 2> s(
             RotBox<2>(Point<2>(0,0),
                               Vector<2>(1,1),
                               RotMatrix<2>().identity()));
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
     }
 
     {
@@ -649,46 +620,23 @@ int main()
         
         // FIXME This doesn't work with an actual rotated box, as the underlying
         // wfmath functions don't support them yet
-        test_conversion(s.get());
+        test_conversion(*s);
     }
 
     // Line functions
     {
-        Shape * s = new MathShape<Line, 2>;
+        MathShape<Line, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
 
     {
         Line<2> p;
         p.addCorner(0, Point<2>(1,0));
         p.addCorner(0, Point<2>(0,0));
-        Shape * s = new MathShape<Line, 2>(p);
+        MathShape<Line, 2> s(p);
 
-        assert(s != 0);
-        assert(s->isValid());
-    }
-
-    {
-        Line<2> p;
-        p.addCorner(0, Point<2>(1,1));
-        p.addCorner(0, Point<2>(1,0));
-        p.addCorner(0, Point<2>(0,0));
-
-        Area * s = new MathShape<Line, 2>(p);
-
-        assert(s != 0);
-        assert(s->isValid());
-        assert(!s->intersect(Point<2>(0.75, 0.25)));
-        assert(!s->intersect(Point<2>(1.5, 0.5)));
-        assert(!s->intersect(Point<2>(1.5, 1.5)));
-        assert(!s->intersect(Point<2>(0.5, 1.5)));
-        assert(!s->intersect(Point<2>(-0.5, 1.5)));
-        assert(!s->intersect(Point<2>(-0.5, 0.5)));
-        assert(!s->intersect(Point<2>(-0.5, -0.5)));
-        assert(!s->intersect(Point<2>(0.5, -0.5)));
-        assert(!s->intersect(Point<2>(1.5, -0.5)));
+        assert(s.isValid());
     }
 
     {
@@ -697,10 +645,29 @@ int main()
         p.addCorner(0, Point<2>(1,0));
         p.addCorner(0, Point<2>(0,0));
 
-        Area * s = new MathShape<Line, 2>(p);
+        MathShape<Line, 2> s(p);
 
-        assert(s != 0);
-        assert(s->isValid());
+        assert(s.isValid());
+        assert(!s.intersect(Point<2>(0.75, 0.25)));
+        assert(!s.intersect(Point<2>(1.5, 0.5)));
+        assert(!s.intersect(Point<2>(1.5, 1.5)));
+        assert(!s.intersect(Point<2>(0.5, 1.5)));
+        assert(!s.intersect(Point<2>(-0.5, 1.5)));
+        assert(!s.intersect(Point<2>(-0.5, 0.5)));
+        assert(!s.intersect(Point<2>(-0.5, -0.5)));
+        assert(!s.intersect(Point<2>(0.5, -0.5)));
+        assert(!s.intersect(Point<2>(1.5, -0.5)));
+    }
+
+    {
+        Line<2> p;
+        p.addCorner(0, Point<2>(1,1));
+        p.addCorner(0, Point<2>(1,0));
+        p.addCorner(0, Point<2>(0,0));
+
+        MathShape<Line, 2> s(p);
+
+        assert(s.isValid());
 
         test_conversion(s);
     }
@@ -819,10 +786,9 @@ int main()
     // Course functions
 
     {
-        Shape * s = new MathShape<LinearCourse, 2>;
+        MathShape<LinearCourse, 2> s;
 
-        assert(s != 0);
-        assert(!s->isValid());
+        assert(!s.isValid());
     }
     return 0;
 }

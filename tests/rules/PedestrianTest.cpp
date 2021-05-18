@@ -27,11 +27,9 @@
 
 #include "rules/simulation/Entity.h"
 #include "rules/Domain.h"
-#include "rules/simulation/TerrainProperty.h"
 
 #include "rules/simulation/BaseWorld.h"
 
-#include <Atlas/Objects/RootOperation.h>
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
@@ -39,8 +37,8 @@
 
 int main()
 {
-    Ref<Entity> e = new Entity("1", 1);
-    Ref<Entity>  wrld = new Entity("0", 0);
+    Ref<Entity> e(new Entity("1", 1));
+    Ref<Entity> wrld(new Entity("0", 0));
 
     e->m_location.m_parent = wrld;
     e->m_location.m_parent->makeContainer();

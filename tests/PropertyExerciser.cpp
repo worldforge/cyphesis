@@ -48,7 +48,7 @@ using Atlas::Objects::Entity::Anonymous;
 
 Atlas::Objects::Factories factories;
 PropertyExerciser::PropertyExerciser()
-: m_inheritance(new Inheritance(factories))
+: m_inheritance(std::make_unique<Inheritance>(factories))
 {
     integer_values.push_back(0);
     integer_values.push_back(-1);

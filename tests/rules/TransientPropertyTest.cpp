@@ -29,7 +29,7 @@
 
 int main()
 {
-    TransientProperty * ap = new TransientProperty;
+    TransientProperty ap;
 
     PropertyChecker<TransientProperty> pc(ap);
 

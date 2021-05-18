@@ -17,9 +17,9 @@
 
 #ifndef STUB_PropertyKit_duplicateFactory
 //#define STUB_PropertyKit_duplicateFactory
-  PropertyKit* PropertyKit::duplicateFactory() const
+  std::unique_ptr<PropertyKit> PropertyKit::duplicateFactory() const
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyKit>*>(nullptr);
   }
 #endif //STUB_PropertyKit_duplicateFactory
 
@@ -36,9 +36,9 @@
 #ifndef STUB_PropertyFactory_duplicateFactory
 //#define STUB_PropertyFactory_duplicateFactory
   template <typename T>
-  PropertyFactory<T>* PropertyFactory<T>::duplicateFactory() const
+  std::unique_ptr<PropertyKit> PropertyFactory<T>::duplicateFactory() const
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<PropertyKit>*>(nullptr);
   }
 #endif //STUB_PropertyFactory_duplicateFactory
 

@@ -35,7 +35,7 @@
 
 int main()
 {
-    GeometryProperty * ap = new GeometryProperty;
+    GeometryProperty ap;
 
     PropertyChecker<GeometryProperty> pc(ap);
 

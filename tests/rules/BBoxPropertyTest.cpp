@@ -32,7 +32,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    BBoxProperty * ap = new BBoxProperty;
+    BBoxProperty ap;
 
     PropertyChecker<BBoxProperty> pc(ap);
 

@@ -29,7 +29,7 @@ class BaseWorld;
 
 class PropertyCoverage {
   protected:
-    PropertyBase * const m_prop;
+    PropertyBase & m_prop;
     Ref<Entity> m_tlve;
     BaseWorld * const m_wrld;
     Ref<Entity> m_ent;
@@ -39,7 +39,7 @@ class PropertyCoverage {
     virtual void interfaceCoverage();
   public:
 
-    explicit PropertyCoverage(PropertyBase * pb);
+    explicit PropertyCoverage(PropertyBase & pb);
 
     ~PropertyCoverage();
 
@@ -56,15 +56,15 @@ template<class PropertyT>
 class PropertyChecker : public PropertyCoverage
 {
   protected:
-    PropertyT * m_sub_prop;
+    PropertyT & m_sub_prop;
 
     virtual void interfaceCoverage();
   public:
-    explicit PropertyChecker(PropertyT * p);
+    explicit PropertyChecker(PropertyT & p);
 };
 
 template<class PropertyT>
-PropertyChecker<PropertyT>::PropertyChecker(PropertyT * p) :
+PropertyChecker<PropertyT>::PropertyChecker(PropertyT & p) :
       PropertyCoverage(p), m_sub_prop(p)
 {
 }
@@ -74,7 +74,7 @@ PropertyChecker<PropertyT>::PropertyChecker(PropertyT * p) :
 template<class PropertyT>
 void PropertyChecker<PropertyT>::interfaceCoverage()
 {
-    PropertyT * copy = m_sub_prop->copy();
+    auto copy = m_sub_prop.copy();
     // The above line generates an unused variable warning without the line
     // below. The purpose of this test is not to care about the value, just
     // to ensure the subclass has implemented this method to return its own
@@ -82,6 +82,7 @@ void PropertyChecker<PropertyT>::interfaceCoverage()
     // know its unused.
     (void)copy;
     assert(dynamic_cast<PropertyT*>(copy));
+    delete copy;
 }
 
 #endif // TESTS_PROPERTY_COVERAGE_H

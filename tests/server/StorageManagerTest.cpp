@@ -239,11 +239,6 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
 #include "../stubs/rules/stubScript.h"
 #include "../stubs/modules/stubWeakEntityRef.h"
 
-
-VariableBase::~VariableBase()
-{
-}
-
 template <typename T>
 Variable<T>::Variable(const T & variable) : m_variable(variable)
 {

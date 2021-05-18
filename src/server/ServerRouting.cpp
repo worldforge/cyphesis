@@ -24,9 +24,7 @@
 #include "Connection.h"
 
 #include "rules/simulation/BaseWorld.h"
-#include "common/compose.hpp"
 #include "common/const.h"
-#include "common/debug.h"
 #include "common/id.h"
 #include "common/Monitors.h"
 #include "common/Variable.h"
@@ -61,12 +59,12 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
 {
     Monitors& monitors = Monitors::instance();
     monitors.insert("server", "cyphesis");
-    monitors.watch("instance", new Variable<std::string>(::instance));
-    monitors.watch("name", new Variable<std::string>(m_svrName));
-    monitors.watch("ruleset", new Variable<std::string>(m_svrRuleset));
-    monitors.watch("version", new Variable<const char*>(consts::version));
-    monitors.watch("buildid", new Variable<const char*>(consts::buildId));
-    monitors.watch("clients", new Variable<int>(m_numClients));
+    monitors.insert("instance", ::instance);
+    monitors.insert("name", m_svrName);
+    monitors.insert("ruleset", m_svrRuleset);
+    monitors.insert("version", consts::version);
+    monitors.insert("buildid", consts::buildId);
+    monitors.watch("clients", std::make_unique<Variable<int>>(m_numClients));
 
 }
 

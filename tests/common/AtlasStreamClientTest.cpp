@@ -75,113 +75,113 @@ int main()
         delete asc;
     }
 
-    TestAtlasStreamClient * asc = new TestAtlasStreamClient{io_context};
+    TestAtlasStreamClient asc{io_context};
 
     {
         Atlas::Objects::Root obj;
-        asc->test_objectArrived(obj);
+        asc.test_objectArrived(obj);
         obj->setParent("");
-        asc->test_objectArrived(obj);
+        asc.test_objectArrived(obj);
         obj->setParent("foo");
-        asc->test_objectArrived(obj);
+        asc.test_objectArrived(obj);
         obj->setObjtype("foo");
-        asc->test_objectArrived(obj);
+        asc.test_objectArrived(obj);
     }
 
     Operation op;
-    asc->test_objectArrived(op);
-    asc->test_operation(op);
+    asc.test_objectArrived(op);
+    asc.test_operation(op);
 
     auto tct = std::make_shared<TestClientTask>();
     // Test starting a task
-    asc->runTask(tct, "foo");
-    assert(asc->test_currentTask() == tct);
+    asc.runTask(tct, "foo");
+    assert(asc.test_currentTask() == tct);
     // Try and start it again will busy, as one is running
-    asc->runTask(std::make_shared<TestClientTask>(), "foo");
-    assert(asc->test_currentTask() == tct);
+    asc.runTask(std::make_shared<TestClientTask>(), "foo");
+    assert(asc.test_currentTask() == tct);
     
-    asc->endTask();
-    assert(asc->test_currentTask() == 0);
-    asc->endTask();
-    assert(asc->test_currentTask() == 0);
+    asc.endTask();
+    assert(asc.test_currentTask() == 0);
+    asc.endTask();
+    assert(asc.test_currentTask() == 0);
 
-    tct.reset(new TestClientTask());
-    asc->runTask(tct, "foo");
+    tct = std::make_unique<TestClientTask>();
+    asc.runTask(tct, "foo");
     // Pass in an operation while a task is running.
-    asc->test_operation(op);
-    assert(asc->test_currentTask() == tct);
+    asc.test_operation(op);
+    assert(asc.test_currentTask() == tct);
     tct->make_complete();
-    asc->test_operation(op);
-    assert(asc->test_currentTask() == 0);
+    asc.test_operation(op);
+    assert(asc.test_currentTask() == 0);
 
-    tct.reset(new TestClientTask());
-    asc->runTask(tct, "foo");
-    assert(asc->test_currentTask() == tct);
+    tct = std::make_unique<TestClientTask>();
+    asc.runTask(tct, "foo");
+    assert(asc.test_currentTask() == tct);
     // Pass in an operation while a task is running.
-    asc->test_operation(op);
-    assert(asc->test_currentTask() == tct);
+    asc.test_operation(op);
+    assert(asc.test_currentTask() == tct);
 
     {
         Atlas::Objects::Operation::Info op;
 
-        asc->test_operation(op);
+        asc.test_operation(op);
         Atlas::Objects::Entity::Anonymous arg;
         op->setArgs1(arg);
-        asc->test_operation(op);
+        asc.test_operation(op);
         op->setRefno(23);
-        asc->test_operation(op);
-        op->setRefno(asc->newSerialNo());
-        asc->test_operation(op);
+        asc.test_operation(op);
+        op->setRefno(asc.newSerialNo());
+        asc.test_operation(op);
         op->setFrom("1");
-        asc->test_operation(op);
+        asc.test_operation(op);
     }
 
     {
         Atlas::Objects::Operation::Error op;
 
-        asc->test_operation(op);
+        asc.test_operation(op);
         Atlas::Objects::Entity::Anonymous arg;
         op->setArgs1(arg);
-        asc->test_operation(op);
+        asc.test_operation(op);
         arg->setAttr("message", 1);
-        asc->test_operation(op);
+        asc.test_operation(op);
         arg->setAttr("message", "Real message");
-        asc->test_operation(op);
+        asc.test_operation(op);
     }
 
     {
         Atlas::Objects::Operation::Appearance op;
 
-        asc->test_operation(op);
+        asc.test_operation(op);
     }
 
     {
         Atlas::Objects::Operation::Disappearance op;
 
-        asc->test_operation(op);
+        asc.test_operation(op);
     }
 
     {
         Atlas::Objects::Operation::Sight op;
 
-        asc->test_operation(op);
+        asc.test_operation(op);
     }
 
     {
         Atlas::Objects::Operation::Sound op;
 
-        asc->test_operation(op);
+        asc.test_operation(op);
     }
-    assert(asc->test_currentTask() == tct);
+    assert(asc.test_currentTask() == tct);
 
     // Verify these bail out cleanly when unconnected
-    asc->poll(std::chrono::seconds::zero());
-    asc->login("foo", "bar");
-    asc->create("player", "foo", "bar");
+    asc.poll(std::chrono::seconds::zero());
+    asc.login("foo", "bar");
+    asc.create("player", "foo", "bar");
 
-    int ret = asc->connect("localhost", 2323);
+    int ret = asc.connect("localhost", 2323);
     assert(ret != 0);
-    ret = asc->connectLocal("/sys/thereisnofilehere");
+    ret = asc.connectLocal("/sys/thereisnofilehere");
     assert(ret != 0);
 
 }

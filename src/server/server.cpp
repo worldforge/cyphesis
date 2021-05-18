@@ -367,9 +367,9 @@ namespace {
 
 
         Monitors monitors;
-        monitors.watch("minds", new Variable<int>(ExternalMind::s_numberOfMinds));
-        monitors.watch("players", new Variable<int>(Player::s_numberOfPlayers));
-        monitors.watch("physic_processing_us", new Variable<int>(PhysicalDomain::s_processTimeUs));
+        monitors.watch("minds", std::make_unique<Variable<int>>(ExternalMind::s_numberOfMinds));
+        monitors.watch("players", std::make_unique<Variable<int>>(Player::s_numberOfPlayers));
+        monitors.watch("physic_processing_us", std::make_unique<Variable<int>>(PhysicalDomain::s_processTimeUs));
 
 
         //Check if we should spawn AI clients.
@@ -478,12 +478,12 @@ namespace {
             WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
 
             std::map<int, int> operationsMap;
-            monitors.watch("operations_processed", new Variable<int>(world.m_operationsCount));
+            monitors.watch("operations_processed", std::make_unique<Variable<int>>(world.m_operationsCount));
             world.Dispatching.connect([&](const Operation& op) {
                 auto I = operationsMap.find(op->getClassNo());
                 if (I == operationsMap.end()) {
                     auto result = operationsMap.emplace(op->getClassNo(), 1);
-                    monitors.watch(String::compose("operation_count{type=\"%1\"}", op->getParent()), new Variable<int>(result.first->second));
+                    monitors.watch(String::compose("operation_count{type=\"%1\"}", op->getParent()), std::make_unique<Variable<int>>(result.first->second));
                 } else {
                     I->second++;
                 }

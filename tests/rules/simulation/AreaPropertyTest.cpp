@@ -32,7 +32,7 @@ using Atlas::Message::MapType;
 
 int main()
 {
-    AreaProperty * ap = new AreaProperty();
+    AreaProperty ap;
 
     PropertyChecker<AreaProperty> pc(ap);
 

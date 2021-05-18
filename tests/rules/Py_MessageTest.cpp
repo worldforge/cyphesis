@@ -68,8 +68,8 @@ int main()
 
     };
     PyImport_AppendInittab("test", []() {
-        auto module = new Test();
-        return module->module().ptr();
+        static Test testModule;
+        return testModule.module().ptr();
     });
 
     init_python_api({&CyPy_Rules::init,

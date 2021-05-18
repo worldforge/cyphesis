@@ -23,19 +23,17 @@
 #define DEBUG
 #endif
 
-#include "../TestBase.h"
+#include "../../TestBase.h"
 
 #include "rules/ai/MemMap.h"
 
 #include "rules/MemEntity.h"
 #include "rules/Script.h"
 
-#include "common/log.h"
 #include "common/TypeNode.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <Atlas/Objects/SmartPtr.h>
 
 #include <cstdlib>
 
@@ -46,6 +44,25 @@
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
 
+struct TestMemMap : public MemMap {
+    std::map<std::string, std::map<std::string, Atlas::Message::Element>>& _m_entityRelatedMemory;
+
+    explicit TestMemMap(TypeResolver& typeResolver) : MemMap(typeResolver), _m_entityRelatedMemory(m_entityRelatedMemory) {
+    }
+
+    Ref<MemEntity> _addId(const std::string& id, long intId) {
+        return addId(id, intId);
+    }
+
+    void _readEntity(const Ref<MemEntity>& ent, const Atlas::Objects::Entity::RootEntity& rootEntity, double timestamp)
+    {
+        readEntity(ent, rootEntity, timestamp);
+    }
+
+    void injectEntity(const Ref<MemEntity>& entity) {
+        m_entities[entity->getIntId()] = entity;
+    }
+};
 
 struct TestTypeStore : public TypeStore
 {
@@ -87,7 +104,6 @@ class MemMaptest : public Cyphesis::TestBase
     TypeNode * m_sampleType;
     TypeStore* m_typeStore;
     TypeResolver* m_typeResolver;
-    MemMap * m_memMap;
 
     static std::string m_Script_hook_called;
     static LocatedEntity * m_Script_hook_called_with;
@@ -171,12 +187,10 @@ void MemMaptest::setup()
     m_sampleType = m_typeStore->addChild(type_desc);
 
 
-    m_memMap = new MemMap(*m_typeResolver);
 }
 
 void MemMaptest::teardown()
 {
-    delete m_memMap;
     delete m_typeResolver;
     delete m_typeStore;
     delete m_sampleType;
@@ -184,36 +198,42 @@ void MemMaptest::teardown()
 
 void MemMaptest::test_addId()
 {
-    m_memMap->addId("2", 2);
+    TestMemMap tested(*m_typeResolver);
+
+    tested._addId("2", 2);
 }
 
 void MemMaptest::test_sendLooks()
 {
+    TestMemMap tested(*m_typeResolver);
     OpVector res;
-    m_memMap->sendLooks(res);
+    tested.sendLooks(res);
 }
 
 void MemMaptest::test_del()
 {
-    m_memMap->del("2");
+    TestMemMap tested(*m_typeResolver);
+    tested.del("2");
 }
 
 void MemMaptest::test_addEntity()
 {
+    TestMemMap tested(*m_typeResolver);
     const std::string new_id("3");
-    ASSERT_FALSE(m_memMap->get(new_id));
+    ASSERT_FALSE(tested.get(new_id));
 
     Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
-    m_memMap->addEntity(ent);
+    tested.addEntity(ent);
 
-    ASSERT_TRUE(m_memMap->get(new_id));
+    ASSERT_TRUE(tested.get(new_id));
     ASSERT_NULL(m_Script_hook_called_with);
 }
 
 
 void MemMaptest::test_readEntity()
 {
+    TestMemMap tested(*m_typeResolver);
     const std::string new_id("3");
 
     Anonymous data;
@@ -221,11 +241,12 @@ void MemMaptest::test_readEntity()
     Ref<MemEntity> ent = new MemEntity(new_id, 3);
     ent->setType(m_sampleType);
 
-    m_memMap->readEntity(ent, data, 0);
+    tested._readEntity(ent, data, 0);
 }
 
 void MemMaptest::test_readEntity_type()
 {
+    TestMemMap tested(*m_typeResolver);
     const std::string new_id("3");
 
     Anonymous data;
@@ -233,13 +254,14 @@ void MemMaptest::test_readEntity_type()
 
     Ref<MemEntity> ent = new MemEntity(new_id, 3);
 
-    m_memMap->readEntity(ent, data, 0);
+    tested._readEntity(ent, data, 0);
 
     ASSERT_EQUAL(ent->getType(), m_sampleType);
 }
 
 void MemMaptest::test_readEntity_type_nonexist()
 {
+    TestMemMap tested(*m_typeResolver);
     const std::string new_id("3");
 
     Anonymous data;
@@ -247,76 +269,80 @@ void MemMaptest::test_readEntity_type_nonexist()
 
     Ref<MemEntity> ent = new MemEntity(new_id, 3);
 
-    m_memMap->readEntity(ent, data, 0);
+    tested._readEntity(ent, data, 0);
 
     ASSERT_NULL(ent->getType());
 }
 
 void MemMaptest::test_addEntityMemory(){
     using Atlas::Message::Element;
+    TestMemMap tested(*m_typeResolver);
 
     //The entities that we have memories about don't actually have to exist
 
     //Add some new memories
-    m_memMap->addEntityMemory("1", "disposition", 25);
-    m_memMap->addEntityMemory("1", "have_met", true);
+    tested.addEntityMemory("1", "disposition", 25);
+    tested.addEntityMemory("1", "have_met", true);
 
     //Check if they were added properly
-    assert(m_memMap->m_entityRelatedMemory["1"]["disposition"] == Element(25));
-    assert(m_memMap->m_entityRelatedMemory["1"]["have_met"] == Element(true));
+    assert(tested._m_entityRelatedMemory["1"]["disposition"] == Element(25));
+    assert(tested._m_entityRelatedMemory["1"]["have_met"] == Element(true));
 
     //update an existing memory
-    m_memMap->addEntityMemory("1", "disposition", 30);
-    assert(m_memMap->m_entityRelatedMemory["1"]["disposition"] == Element(30));
+    tested.addEntityMemory("1", "disposition", 30);
+    assert(tested._m_entityRelatedMemory["1"]["disposition"] == Element(30));
 }
 
 void MemMaptest::test_recallEntityMemory(){
     using Atlas::Message::Element;
+    TestMemMap tested(*m_typeResolver);
 
     //set up a map with 1 memory: disposition with value 25 related to entity with id 1
     std::map<std::string, std::map<std::string, Element>> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
     Element val1, val2;
-    m_memMap->m_entityRelatedMemory = memories;
+    tested._m_entityRelatedMemory = memories;
 
     //try recalling an existing memory
-    m_memMap->recallEntityMemory("1", "disposition", val1);
+    tested.recallEntityMemory("1", "disposition", val1);
     assert(val1 == Element(25));
 
     //try recalling a non-existing memory about known entity
-    m_memMap->recallEntityMemory("1", "foo", val2);
+    tested.recallEntityMemory("1", "foo", val2);
     assert(val2.isNone());
     //try recalling about an unknown entity
-    m_memMap->recallEntityMemory("2", "disposition", val2);
+    tested.recallEntityMemory("2", "disposition", val2);
     assert(val2.isNone());
 }
 
 void MemMaptest::test_getEntityRelatedMemory(){
     using Atlas::Message::Element;
+    TestMemMap tested(*m_typeResolver);
 
     std::map<std::string, std::map<std::string, Element>> memories{{"1", std::map<std::string, Element>{{"disposition", 25}}}};
-    m_memMap->m_entityRelatedMemory = memories;
-    assert(m_memMap->getEntityRelatedMemory() == memories);
+    tested._m_entityRelatedMemory = memories;
+    assert(tested.getEntityRelatedMemory() == memories);
 }
 
 void MemMaptest::test_findByLoc()
 {
+    TestMemMap tested(*m_typeResolver);
     Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
-    m_memMap->m_entities[3] = tlve;
+    tested.injectEntity(tlve);
     tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
-    m_memMap->m_entities[4] = tlve;
+    tested.injectEntity(e4);
     e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
-    Ref<MemEntity> e5 = new MemEntity("5", 5);
+    Ref<MemEntity> e5(new MemEntity("5", 5));
     e5->setVisible();
     e5->setType(m_sampleType);
-    m_memMap->m_entities[5] = tlve;
+    tested.injectEntity(e5);
     e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
@@ -324,7 +350,7 @@ void MemMaptest::test_findByLoc()
     Location find_here(tlve);
 
     // Radius too small
-    EntityVector res = m_memMap->findByLocation(find_here,
+    EntityVector res = tested.findByLocation(find_here,
                                                 1.f,
                                                 "sample_type");
 
@@ -333,15 +359,16 @@ void MemMaptest::test_findByLoc()
 
 void MemMaptest::test_findByLoc_results()
 {
+    TestMemMap tested(*m_typeResolver);
     Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
-    m_memMap->m_entities[3] = tlve;
+    tested.injectEntity(tlve);
     tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
-    m_memMap->m_entities[4] = tlve;
+    tested.injectEntity(e4);
     e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
@@ -349,14 +376,14 @@ void MemMaptest::test_findByLoc_results()
     Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
-    m_memMap->m_entities[5] = tlve;
+    tested.injectEntity(e5);
     e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     EntityLocation find_here(tlve);
 
-    EntityVector res = m_memMap->findByLocation(find_here,
+    EntityVector res = tested.findByLocation(find_here,
                                                 5.f,
                                                 "sample_type");
 
@@ -366,15 +393,16 @@ void MemMaptest::test_findByLoc_results()
 
 void MemMaptest::test_findByLoc_invalid()
 {
-    Ref<MemEntity> tlve = new MemEntity("3", 3);
+    TestMemMap tested(*m_typeResolver);
+    Ref<MemEntity> tlve(new MemEntity("3", 3));
     tlve->setVisible();
-    m_memMap->m_entities[3] = tlve;
+    tested.injectEntity(tlve);
     tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
-    m_memMap->m_entities[4] = tlve;
+    tested.injectEntity(e4);
     e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
@@ -382,7 +410,7 @@ void MemMaptest::test_findByLoc_invalid()
     Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
-    m_memMap->m_entities[5] = tlve;
+    tested.injectEntity(e5);
     e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
@@ -390,25 +418,27 @@ void MemMaptest::test_findByLoc_invalid()
     // Look in a location where these is nothing - no contains at all
     Location find_here(e4);
 
-    EntityVector res = m_memMap->findByLocation(find_here,
+    EntityVector res = tested.findByLocation(find_here,
                                                 5.f,
                                                 "sample_type");
 
     ASSERT_TRUE(res.empty());
+    tlve->destroy();
 }
 
 void MemMaptest::test_findByLoc_consistency_check()
 {
+    TestMemMap tested(*m_typeResolver);
     Ref<MemEntity> tlve = new MemEntity("3", 3);
     tlve->setVisible();
     tlve->setType(m_sampleType);
-    m_memMap->m_entities[3] = tlve;
+    tested.injectEntity(tlve);
     tlve->m_contains.reset(new LocatedEntitySet);
 
     Ref<MemEntity> e4 = new MemEntity("4", 4);
     e4->setVisible();
     e4->setType(m_sampleType);
-    m_memMap->m_entities[4] = tlve;
+    tested.injectEntity(e4);
     e4->m_location.m_parent = tlve;
     e4->m_location.m_pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
@@ -416,7 +446,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
-    m_memMap->m_entities[5] = tlve;
+    tested.injectEntity(e5);
     e5->m_location.m_parent = tlve;
     e5->m_location.m_pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
@@ -432,7 +462,7 @@ void MemMaptest::test_findByLoc_consistency_check()
 
     Location find_here(e3_dup);
 
-    EntityVector res = m_memMap->findByLocation(find_here,
+    EntityVector res = tested.findByLocation(find_here,
                                                 5.f,
                                                 "sample_type");
 
@@ -448,11 +478,11 @@ int main()
 
 // stubs
 
-#include "../stubs/rules/stubMemEntity.h"
-#include "../stubs/rules/stubLocatedEntity.h"
-#include "../stubs/common/stubRouter.h"
-#include "../stubs/common/stubTypeNode.h"
-#include "../stubs/rules/stubLocation.h"
+//#include "../../stubs/rules/stubMemEntity.h"
+#include "../../stubs/rules/stubLocatedEntity.h"
+#include "../../stubs/common/stubRouter.h"
+#include "../../stubs/common/stubTypeNode.h"
+#include "../../stubs/rules/stubLocation.h"
 
 
 #define STUB_TypeResolver_requestType
@@ -467,15 +497,13 @@ const TypeStore& TypeResolver::getTypeStore() const
     return m_typeStore;
 }
 
-#include "../stubs/rules/ai/stubTypeResolver.h"
-
-
-#include "../stubs/rules/stubScript.h"
+#include "../../stubs/rules/ai/stubTypeResolver.h"
+#include "../../stubs/rules/stubScript.h"
 
 
 WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 {
     return 1.0;
 }
-#include "../stubs/common/stublog.h"
-#include "../stubs/common/stubid.h"
+#include "../../stubs/common/stublog.h"
+#include "../../stubs/common/stubid.h"

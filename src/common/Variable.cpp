@@ -20,8 +20,6 @@
 
 #include <iostream>
 
-VariableBase::~VariableBase() = default;
-
 template <typename T>
 Variable<T>::Variable(const T & variable) : m_variable(variable)
 {

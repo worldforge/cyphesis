@@ -29,7 +29,7 @@
 
 int main()
 {
-    StatusProperty * ap = new StatusProperty;
+    StatusProperty ap;
 
     PropertyChecker<StatusProperty> pc(ap);
 

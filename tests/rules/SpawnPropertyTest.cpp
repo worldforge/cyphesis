@@ -32,7 +32,7 @@ using Atlas::Message::MapType;
 
 int main()
 {
-    SpawnProperty * sp = new SpawnProperty();
+    SpawnProperty sp;
 
     PropertyChecker<SpawnProperty> pc(sp);
 

@@ -31,7 +31,7 @@ using Atlas::Message::ListType;
 
 int main()
 {
-    LineProperty * ap = new LineProperty;
+    LineProperty ap;
 
     PropertyChecker<LineProperty> pc(ap);
 

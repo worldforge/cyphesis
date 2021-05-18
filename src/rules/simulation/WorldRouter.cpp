@@ -55,7 +55,7 @@ WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity,
         m_entityCreator(entityCreator)
 {
     m_eobjects[m_baseEntity->getIntId()] = m_baseEntity;
-    Monitors::instance().watch("entities", new Variable<int>(m_entityCount));
+    Monitors::instance().watch("entities", std::make_unique<Variable<int>>(m_entityCount));
 
 
 }

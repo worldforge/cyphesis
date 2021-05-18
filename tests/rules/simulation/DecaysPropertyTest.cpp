@@ -29,7 +29,7 @@
 
 int main()
 {
-    DecaysProperty * ap = new DecaysProperty;
+    DecaysProperty ap;
 
     PropertyChecker<DecaysProperty> pc(ap);
 

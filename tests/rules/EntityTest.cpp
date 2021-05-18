@@ -114,7 +114,7 @@ Entitytest::Entitytest()
 void Entitytest::setup()
 {
     m_pm = new TestPropertyManager;
-    m_pm->installPropertyFactory("test_int_property", new PropertyFactory<TestProperty>);
+    m_pm->installPropertyFactory("test_int_property", std::make_unique<PropertyFactory<TestProperty>>());
     m_type = new TypeNode("test_type");
     m_entity = new Entity("1", 1);
     m_entity->setType(m_type);

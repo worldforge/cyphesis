@@ -30,7 +30,7 @@
 
 static void test_Property_IdList()
 {
-    Property<IdList> * ap = new Property<IdList>;
+    Property<IdList> ap;
 
     PropertyChecker<Property<IdList>> pc(ap);
 

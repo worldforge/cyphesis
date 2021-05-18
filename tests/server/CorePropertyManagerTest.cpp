@@ -229,6 +229,7 @@ int main()
 #include "../stubs/rules/simulation/stubFilterProperty.h"
 #include "../stubs/rules/entityfilter/stubFilter.h"
 #include "../stubs/rules/simulation/stubAliasProperty.h"
+#include "../stubs/rules/simulation/stubActionsProperty.h"
 
 
 #define STUB_EntityFactory_newEntity

@@ -29,7 +29,7 @@
 
 int main()
 {
-    ModeProperty * ap = new ModeProperty;
+    ModeProperty ap;
 
     PropertyChecker<ModeProperty> pc(ap);
 

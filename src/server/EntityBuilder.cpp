@@ -107,7 +107,7 @@ int EntityBuilder::installFactory(const std::string& class_name, const Root& cla
         return -1;
     }
 
-    Monitors::instance().watch(compose("created_count{type=\"%1\"}", class_name), new Variable<int>(factory->m_createdCount));
+    Monitors::instance().watch(compose("created_count{type=\"%1\"}", class_name), std::make_unique<Variable<int>>(factory->m_createdCount));
 
     m_entityFactories.emplace(class_name, std::move(factory));
 

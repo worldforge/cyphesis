@@ -29,7 +29,7 @@
 
 int main()
 {
-    SolidProperty * ap = new SolidProperty;
+    SolidProperty ap;
 
     PropertyChecker<SolidProperty> pc(ap);
 

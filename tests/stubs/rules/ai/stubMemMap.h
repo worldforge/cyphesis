@@ -64,6 +64,14 @@
   }
 #endif //STUB_MemMap_MemMap
 
+#ifndef STUB_MemMap_MemMap_DTOR
+//#define STUB_MemMap_MemMap_DTOR
+   MemMap::~MemMap()
+  {
+    
+  }
+#endif //STUB_MemMap_MemMap_DTOR
+
 #ifndef STUB_MemMap_resolveEntitiesForType
 //#define STUB_MemMap_resolveEntitiesForType
   std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeNode)

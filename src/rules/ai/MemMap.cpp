@@ -160,8 +160,15 @@ MemMap::MemMap(TypeResolver& typeResolver)
           m_listener(nullptr),
           m_typeResolver(typeResolver)
 {
-
 }
+
+MemMap::~MemMap() {
+    //Since we own all entities we need to destroy them when shutting down, to avoid circular ref-counts.
+    for (auto& entity : m_entities) {
+        entity.second->destroy();
+    }
+}
+
 
 void MemMap::sendLooks(OpVector& res)
 {

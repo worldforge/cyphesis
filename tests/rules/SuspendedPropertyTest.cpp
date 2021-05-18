@@ -30,7 +30,7 @@
 
 int main()
 {
-    SuspendedProperty * ap = new SuspendedProperty;
+    SuspendedProperty ap;
 
     PropertyChecker<SuspendedProperty> pc(ap);
 

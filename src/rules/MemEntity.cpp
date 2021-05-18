@@ -52,17 +52,12 @@ void MemEntity::destroy()
     }
     this->m_location.m_parent.reset();
 
-//     if (this->m_contains) {
-//         // Add deleted entity's children into its parents contains
-//         for (auto& child_ent : *this->m_contains) {
-//             child_ent->m_location.m_parent = ent_loc;
-//             // FIXME adjust pos and:
-//             // FIXME take account of orientation
-//             if (ent_loc != nullptr) {
-//                 ent_loc->m_contains->insert(child_ent);
-//             }
-//         }
-//     }
+     if (this->m_contains) {
+         for (auto& child_ent : *this->m_contains) {
+             //Detach all child entities from parent.
+             child_ent->m_location.m_parent = nullptr;
+         }
+     }
     m_flags.addFlags(entity_destroyed);
 }
 

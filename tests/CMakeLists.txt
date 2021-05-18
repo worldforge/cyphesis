@@ -208,7 +208,7 @@ wf_add_test(rules/VisibilityPropertyTest.cpp PropertyCoverage.cpp ../src/rules/s
 
 wf_add_test(rules/ai/BaseMindTest.cpp ../src/rules/ai/BaseMind.cpp ../src/rules/ai/MemMap.cpp)
 wf_add_test(rules/MemEntityTest.cpp ../src/rules/MemEntity.cpp)
-wf_add_test(rules/MemMapTest.cpp ../src/rules/ai/MemMap.cpp)
+wf_add_test(rules/ai/MemMapTest.cpp ../src/rules/ai/MemMap.cpp ../src/rules/MemEntity.cpp)
 wf_add_test(rules/MovementTest.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(rules/PedestrianTest.cpp ../src/rules/simulation/Pedestrian.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(server/ExternalMindTest.cpp ../src/rules/simulation/ExternalMind.cpp)
@@ -251,7 +251,7 @@ target_link_libraries(Py_OplistTest ${PYTHON_TESTS_LIBS})
 wf_add_test(rules/Py_ThingTest.cpp python_testers.cpp TestPropertyManager.cpp)
 target_link_libraries(Py_ThingTest ${PYTHON_TESTS_LIBS})
 
-wf_add_test(rules/Py_MapTest.cpp python_testers.cpp TestPropertyManager.cpp)
+wf_add_test(rules/ai/Py_MapTest.cpp python_testers.cpp TestPropertyManager.cpp)
 target_link_libraries(Py_MapTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(rules/Py_TaskTest.cpp python_testers.cpp)

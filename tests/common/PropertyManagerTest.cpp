@@ -50,9 +50,9 @@ class TestPropertyFactory : public PropertyKit
         return {};
     }
 
-    TestPropertyFactory * duplicateFactory() const override
+    std::unique_ptr<PropertyKit> duplicateFactory() const override
     {
-        return new TestPropertyFactory;
+        return std::make_unique<TestPropertyFactory>();
     }
 };
 
