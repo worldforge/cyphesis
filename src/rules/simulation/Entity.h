@@ -50,6 +50,7 @@ class Entity : public LocatedEntity
 
 
     public:
+        explicit Entity(long intId);
         explicit Entity(const std::string& id, long intId);
 
         ~Entity() override;

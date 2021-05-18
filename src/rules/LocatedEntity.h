@@ -212,6 +212,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         // A representation of this instance used by the scripting system. This is opaque to this class.
         boost::any m_scriptEntity;
 
+        explicit LocatedEntity(long intId);
         explicit LocatedEntity(const std::string& id, long intId);
 
         ~LocatedEntity() override;
