@@ -105,12 +105,13 @@ void SuspendedPropertyintegration::setup()
 void SuspendedPropertyintegration::teardown()
 {
     delete world;
+    world_entity->destroy();
     //skip deleting entity
 }
 
 void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
 {
-    auto* entity = new TestEntity("1", 1);
+    Ref<TestEntity> entity = new TestEntity("1", 1);
     struct TickListener : OperationsListener
     {
         bool wasCalled = false;

@@ -179,6 +179,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
 
 AttachmentsProperty* AttachmentsProperty::copy() const
 {
+    //Don't copy values.
     return new AttachmentsProperty();
 }
 

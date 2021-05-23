@@ -61,6 +61,7 @@ int main()
             auto copy = prop->copy();
             ASSERT_NOT_NULL(copy);
             ASSERT_NOT_NULL(dynamic_cast<ContainedVisibilityProperty*>(copy));
+            delete copy;
         }
 
         void test_apply()

@@ -36,15 +36,34 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Entity::RootEntity;
 
+struct ThingExt;
+
+//Keep track of all created things and make sure they are destroyed when the Context is destroyed.
+//This is needed to avoid recursive references, where an entity refers to its children, and the children to their parent.
+//This might be removed if we instead store "parent" as a simple pointer.
+static std::vector<Ref<ThingExt>> things;
+
 struct ThingExt : public Thing
 {
-    Domain* domain;
+    std::unique_ptr<Domain> domain;
+
+    explicit ThingExt(long intId)
+            : ThingExt::ThingExt(std::to_string(intId), intId)
+    {
+    }
 
     explicit ThingExt(const std::string& id, long intId)
-            : Thing::Thing(id, intId), domain(nullptr)
+            : Thing::Thing(id, intId)
     {
         m_type = new TypeNode(id);
         addFlags(entity_perceptive);
+        things.emplace_back(Ref<ThingExt>(this));
+    }
+
+    ~ThingExt() {
+        delete m_type;
+        m_type = nullptr;
+        clearProperties();
     }
 
     bool test_lookAtEntity(const Operation& op, OpVector& res, LocatedEntity* watcher) const
@@ -59,21 +78,36 @@ struct ThingExt : public Thing
 
     Domain* getDomain() override
     {
-        return domain;
+        return domain.get();
     }
 
     const Domain* getDomain() const override
     {
-        return domain;
+        return domain.get();
     }
 
     void sendWorld(Operation op) override
     {
     }
+
+    void destroy() override
+    {
+        m_location.m_parent.reset();
+        if (m_contains) {
+            m_contains->clear();
+        }
+    }
 };
 
 struct Context
 {
+    ~Context()
+    {
+        for (auto thing : things) {
+            thing->destroy();
+        }
+        things.clear();
+    }
 };
 
 struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
@@ -105,19 +139,19 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
            *
            */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
+            Ref<ThingExt> t4(new ThingExt(4));
             t4->addFlags(entity_visibility_private);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t5(new ThingExt(5));
             t5->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
+            Ref<ThingExt> t6(new ThingExt(6));
             t6->addFlags(entity_admin);
-            Ref<ThingExt> t7 = new ThingExt("7", 7);
-            Ref<ThingExt> t8 = new ThingExt("8", 8);
+            Ref<ThingExt> t7(new ThingExt(7));
+            Ref<ThingExt> t8(new ThingExt(8));
             t1->addChild(*t2);
             t1->addChild(*t5);
             t1->addChild(*t6);
@@ -164,6 +198,7 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
             ASSERT_TRUE(t4->test_lookAtEntity(sightOp, res, t6.get()));
             ASSERT_TRUE(t5->test_lookAtEntity(sightOp, res, t6.get()));
             ASSERT_TRUE(t7->test_lookAtEntity(sightOp, res, t6.get()));
+
         }
 
         /**
@@ -183,54 +218,55 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          *         T4       T5*   T7*  T8** T9
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
-            t1->domain = new PhysicalDomain(*t1);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            t1->m_location.setBBox({{-128, -128, -128},
+                                    {128,  128,  128}});
+            t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
             t2->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
             t4->m_location.m_pos = WFMath::Point<3>::ZERO();
             t4->m_location.setBBox(bbox);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
             t5->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
+            Ref<ThingExt> t6(new ThingExt("6", 6));
             t6->m_location.m_pos = WFMath::Point<3>::ZERO();
             t6->m_location.setBBox(bbox);
-            t6->domain = new InventoryDomain(*t6);
+            t6->domain = std::make_unique<InventoryDomain>(*t6);
             t6->addFlags(entity_domain);
-            Ref<ThingExt> t7 = new ThingExt("7", 7);
+            Ref<ThingExt> t7(new ThingExt("7", 7));
             t7->m_location.m_pos = WFMath::Point<3>::ZERO();
             t7->m_location.setBBox(bbox);
             t7->addFlags(entity_visibility_protected);
             {
-                auto modeDataProp = new ModeDataProperty();
+                auto modeDataProp = std::make_unique<ModeDataProperty>();
                 modeDataProp->setPlantedData({t6->getIntId()});
-                t7->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
+                t7->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
             }
-            Ref<ThingExt> t8 = new ThingExt("8", 8);
+            Ref<ThingExt> t8(new ThingExt("8", 8));
             t8->m_location.m_pos = WFMath::Point<3>::ZERO();
             t8->m_location.setBBox(bbox);
             t8->addFlags(entity_visibility_private);
             {
-                auto modeDataProp = new ModeDataProperty();
+                auto modeDataProp = std::make_unique<ModeDataProperty>();
                 modeDataProp->setPlantedData({t6->getIntId()});
-                t8->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
+                t8->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
             }
-            Ref<ThingExt> t9 = new ThingExt("9", 9);
+            Ref<ThingExt> t9(new ThingExt("9", 9));
             t9->m_location.m_pos = WFMath::Point<3>::ZERO();
             t9->m_location.setBBox(bbox);
             {
-                auto modeDataProp = new ModeDataProperty();
+                auto modeDataProp = std::make_unique<ModeDataProperty>();
                 modeDataProp->setPlantedData({t6->getIntId()});
-                t9->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
+                t9->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
             }
 
             t1->addChild(*t2);
@@ -312,11 +348,11 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          *
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t1->addChild(*t2);
             t1->addChild(*t5);
             t2->addChild(*t3);
@@ -359,13 +395,13 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * With T2 having a void domain.
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t1->addChild(*t2);
             t2->addChild(*t3);
 
-            t2->domain = new VoidDomain(*t2);
+            t2->domain = std::make_unique<VoidDomain>(*t2);
             t2->addFlags(entity_domain);
 
             Operation sightOp;
@@ -407,28 +443,28 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * T8 is not perceptive.
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
             //        t1->setAttrValue()
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
             t4->m_location.m_pos = WFMath::Point<3>::ZERO();
             t4->m_location.setBBox(bbox);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
-            Ref<ThingExt> t7 = new ThingExt("7", 7);
-            Ref<ThingExt> t8 = new ThingExt("8", 8);
+            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t7(new ThingExt("7", 7));
+            Ref<ThingExt> t8(new ThingExt("8", 8));
             t8->m_location.m_pos = WFMath::Point<3>::ZERO();
             t8->m_location.setBBox(bbox);
             t8->removeFlags(entity_perceptive);
 
-            t2->domain = new PhysicalDomain(*t2);
+            t2->domain = std::make_unique<PhysicalDomain>(*t2);
             t2->addFlags(entity_domain);
 
             t1->addChild(*t2);
@@ -495,12 +531,12 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T3 being wielded
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t6(new ThingExt("6", 6));
 
             t1->addChild(*t2);
             t1->addChild(*t6);
@@ -508,12 +544,12 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
             t2->addChild(*t5);
             t3->addChild(*t4);
 
-            t2->domain = new InventoryDomain(*t2);
+            t2->domain = std::make_unique<InventoryDomain>(*t2);
             t2->addFlags(entity_domain);
 
-            auto modeDataProp = new ModeDataProperty();
+            auto modeDataProp = std::make_unique<ModeDataProperty>();
             modeDataProp->setPlantedData({t2->getIntId()});
-            t3->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
+            t3->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
 
             Operation sightOp;
             OpVector res;
@@ -559,23 +595,23 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
+            Ref<ThingExt> t6(new ThingExt("6", 6));
 
-            t2->domain = new PhysicalDomain(*t2);
+            t2->domain = std::make_unique<PhysicalDomain>(*t2);
             t2->addFlags(entity_domain);
 
-            t3->domain = new InventoryDomain(*t3);
+            t3->domain = std::make_unique<InventoryDomain>(*t3);
             t3->addFlags(entity_domain);
 
             t1->addChild(*t2);
@@ -584,9 +620,9 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
             t3->addChild(*t4);
             t3->addChild(*t6);
 
-            auto modeDataProp = new ModeDataProperty();
+            auto modeDataProp = std::make_unique<ModeDataProperty>();
             modeDataProp->setPlantedData({t3->getIntId()});
-            t4->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
+            t4->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
 
             Operation sightOp;
             OpVector res;
@@ -630,27 +666,27 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             t1->m_location.setBBox(bbox);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
-            Ref<ThingExt> creator = new ThingExt("creator", 10);
+            Ref<ThingExt> creator(new ThingExt("creator", 10));
             creator->m_location.m_pos = WFMath::Point<3>::ZERO();
             creator->m_location.setBBox(bbox);
             creator->addFlags(entity_admin);
 
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
 
-            t1->domain = new PhysicalDomain(*t1);
+            t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
 
-            t2->domain = new InventoryDomain(*t2);
+            t2->domain = std::make_unique<InventoryDomain>(*t2);
             t2->addFlags(entity_domain);
 
             t1->addChild(*t2);
@@ -659,9 +695,9 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
             t2->addChild(*t4);
             t2->addChild(*t5);
 
-            auto modeDataProp = new ModeDataProperty();
+            auto modeDataProp = std::make_unique<ModeDataProperty>();
             modeDataProp->setPlantedData({t2->getIntId()});
-            t4->setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp));
+            t4->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
 
             Operation sightOp;
             OpVector res;
@@ -702,11 +738,11 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          *
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t1->addChild(*t2);
             t1->addChild(*t5);
             t2->addChild(*t3);
@@ -741,13 +777,13 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * With T2 having a void domain.
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t1->addChild(*t2);
             t2->addChild(*t3);
 
-            t2->domain = new VoidDomain(*t2);
+            t2->domain = std::make_unique<VoidDomain>(*t2);
             t2->addFlags(entity_domain);
 
             // T1 can reach itself
@@ -783,28 +819,28 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * T8 is not perceptive.
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
             t4->m_location.m_pos = WFMath::Point<3>::ZERO();
             t4->m_location.setBBox(bbox);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
             t5->setProperty("reach", createReachPropFn(10));
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
-            Ref<ThingExt> t7 = new ThingExt("7", 7);
-            Ref<ThingExt> t8 = new ThingExt("8", 8);
+            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t7(new ThingExt("7", 7));
+            Ref<ThingExt> t8(new ThingExt("8", 8));
             t8->m_location.m_pos = WFMath::Point<3>::ZERO();
             t8->m_location.setBBox(bbox);
             t8->removeFlags(entity_perceptive);
 
-            t2->domain = new PhysicalDomain(*t2);
+            t2->domain = std::make_unique<PhysicalDomain>(*t2);
             t2->addFlags(entity_domain);
 
             t1->addChild(*t2);
@@ -859,12 +895,12 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T3 being wielded
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t6(new ThingExt("6", 6));
 
             t1->addChild(*t2);
             t1->addChild(*t6);
@@ -872,7 +908,7 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
             t2->addChild(*t5);
             t3->addChild(*t4);
 
-            t2->domain = new InventoryDomain(*t2);
+            t2->domain = std::make_unique<InventoryDomain>(*t2);
             t2->addFlags(entity_domain);
             auto entityProp = new EntityProperty();
             entityProp->data() = WeakEntityRef(t3);
@@ -913,24 +949,24 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
             t5->setProperty("reach", createReachPropFn(10));
-            Ref<ThingExt> t6 = new ThingExt("6", 6);
+            Ref<ThingExt> t6(new ThingExt("6", 6));
 
-            t2->domain = new PhysicalDomain(*t2);
+            t2->domain = std::make_unique<PhysicalDomain>(*t2);
             t2->addFlags(entity_domain);
 
-            t3->domain = new InventoryDomain(*t3);
+            t3->domain = std::make_unique<InventoryDomain>(*t3);
             t3->addFlags(entity_domain);
 
             t1->addChild(*t2);
@@ -976,26 +1012,26 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             t1->m_location.setBBox(bbox);
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = WFMath::Point<3>::ZERO();
             t2->m_location.setBBox(bbox);
-            Ref<ThingExt> creator = new ThingExt("creator", 10);
+            Ref<ThingExt> creator(new ThingExt("creator", 10));
             creator->addFlags(entity_admin);
             creator->m_location.m_pos = WFMath::Point<3>::ZERO();
             creator->m_location.setBBox(bbox);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = WFMath::Point<3>::ZERO();
             t3->m_location.setBBox(bbox);
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
-            Ref<ThingExt> t5 = new ThingExt("5", 5);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t5(new ThingExt("5", 5));
 
-            t1->domain = new PhysicalDomain(*t1);
+            t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
 
-            t2->domain = new InventoryDomain(*t2);
+            t2->domain = std::make_unique<InventoryDomain>(*t2);
             t2->addFlags(entity_domain);
 
             t1->addChild(*t2);
@@ -1033,24 +1069,24 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
         {
             WFMath::AxisBox<3> smallBbox = {{-1, -1, -1},
                                             {1,  1,  1}};
-            Ref<ThingExt> t1 = new ThingExt("1", 1);
+            Ref<ThingExt> t1(new ThingExt("1", 1));
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             t1->m_location.setBBox({{-200, -200, -200},
                                     {200,  200,  200}});
-            Ref<ThingExt> t2 = new ThingExt("2", 2);
+            Ref<ThingExt> t2(new ThingExt("2", 2));
             t2->m_location.m_pos = {5, 0, 5};
             t2->m_location.setBBox(smallBbox);
-            Ref<ThingExt> t3 = new ThingExt("3", 3);
+            Ref<ThingExt> t3(new ThingExt("3", 3));
             t3->m_location.m_pos = {10, 0, 10};
             t3->m_location.setBBox(smallBbox);
             auto reachProp = new Property<double>();
             reachProp->data() = 20.f;
             t3->setProperty("reach", std::unique_ptr<PropertyBase>(reachProp));
-            Ref<ThingExt> t4 = new ThingExt("4", 4);
+            Ref<ThingExt> t4(new ThingExt("4", 4));
             t4->m_location.m_pos = {100, 0, 100};
             t4->m_location.setBBox(smallBbox);
 
-            t1->domain = new PhysicalDomain(*t1);
+            t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
 
             t1->addChild(*t2);

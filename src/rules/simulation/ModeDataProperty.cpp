@@ -25,7 +25,7 @@ ModeDataProperty::ModeDataProperty() : mMode(ModeProperty::Mode::Unknown)
 
 ModeDataProperty* ModeDataProperty::copy() const
 {
-    return new ModeDataProperty();
+    return new ModeDataProperty(*this);
 }
 
 void ModeDataProperty::set(const Atlas::Message::Element& val)

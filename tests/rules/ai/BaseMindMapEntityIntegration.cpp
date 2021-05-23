@@ -302,7 +302,6 @@ void BaseMindMapEntityintegration::test_MemMapcheck()
 
     m_mind->m_map.m_checkIterator = m_mind->m_map.m_entities.find(3);
     e3->setVisible(false);
-    e3->incRef();
     double time = e3->lastSeen() + 900;
 
     // We have set up e3 so it is due to be purged from memory.

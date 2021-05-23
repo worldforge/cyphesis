@@ -46,6 +46,7 @@ void ContainersActiveProperty::set(const Atlas::Message::Element& element)
 
 ContainersActiveProperty* ContainersActiveProperty::copy() const
 {
+    //Don't copy values
     return new ContainersActiveProperty();
 }
 
