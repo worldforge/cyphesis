@@ -45,6 +45,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <common/Inheritance.h>
+#include <common/PythonMalloc.h>
 
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);
@@ -59,6 +60,7 @@ struct TestMod : public Py::ExtensionModule<TestMod>
 
 int main()
 {
+    setupPythonMalloc();
     PyImport_AppendInittab("testmod", []() {
         auto module = new TestMod();
         return module->module().ptr();

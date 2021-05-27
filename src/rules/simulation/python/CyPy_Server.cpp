@@ -66,8 +66,8 @@ void CyPy_Server::registerWorld(BaseWorld* world)
 std::string CyPy_Server::init()
 {
     PyImport_AppendInittab("server", []() {
-        static auto server = new CyPy_Server();
-        return server->module().ptr();
+        static CyPy_Server server{};
+        return server.module().ptr();
     });
     return "server";
 }

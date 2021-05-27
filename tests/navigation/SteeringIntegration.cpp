@@ -23,6 +23,36 @@
 #include "../TestBase.h"
 #include "../TestWorld.h"
 
+
+struct MemEntityExt;
+//Keep track of all created things and make sure they are destroyed when the Context is destroyed.
+//This is needed to avoid recursive references, where an entity refers to its children, and the children to their parent.
+//This might be removed if we instead store "parent" as a simple pointer.
+static std::vector<Ref<MemEntityExt>> things;
+
+struct MemEntityExt : public MemEntity
+{
+    explicit MemEntityExt(long intId)
+            : MemEntityExt::MemEntityExt(std::to_string(intId), intId)
+    {
+    }
+
+    explicit MemEntityExt(const std::string& id, long intId)
+            : MemEntity::MemEntity(id, intId)
+    {
+        things.emplace_back(Ref<MemEntityExt>(this));
+    }
+    
+    void destroy() override
+    {
+        m_location.m_parent.reset();
+        if (m_contains) {
+            m_contains->clear();
+        }
+    }
+};
+
+
 double epsilon = 0.00001;
 
 bool operator==(const Location& lhs, const Location& rhs)
@@ -67,12 +97,15 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void teardown()
     {
-
+        for (auto thing : things) {
+            thing->destroy();
+        }
+        things.clear();
     }
 
     void test_create()
     {
-        Ref<MemEntity> avatarEntity(new MemEntity("1", 1));
+        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
         avatarEntity->m_location.m_bBox = {{-1, -1, -1},
                                            {1,  1,  1}};
         Steering steering(*avatarEntity);
@@ -80,16 +113,16 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_resolveDestination()
     {
-        Ref<MemEntity> worldEntity(new MemEntity("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntity("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
         avatarEntity->m_location.m_pos = {0, 0, 0};
         avatarEntity->m_location.m_bBox = {{-1, 0, -1},
                                            {1,  1, 1}};
-        Ref<MemEntity> otherEntity(new MemEntity("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
         otherEntity->m_location.m_pos = {10, 0, 0};
-        Ref<MemEntity> outOfWorldEntity(new MemEntity("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntity("4", 4));
-        Ref<MemEntity> otherChildEntity(new MemEntity("5", 5));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
+        Ref<MemEntity> otherChildEntity(new MemEntityExt("5", 5));
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
@@ -124,24 +157,24 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_steering()
     {
-        Ref<MemEntity> worldEntity(new MemEntity("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntity("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
         avatarEntity->m_location.m_pos = {0, 0, 0};
         avatarEntity->m_location.m_bBox = {{-1, 0, -1},
                                            {1,  1, 1}};
         avatarEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntity("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
         otherEntity->m_location.m_pos = {10, 0, 0};
         otherEntity->m_location.m_bBox = {{-2, 0, -2},
                                           {2,  3, 2}};
         otherEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntity("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntity("4", 4));
-        Ref<MemEntity> obstacleEntity(new MemEntity("5", 5));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
+        Ref<MemEntity> obstacleEntity(new MemEntityExt("5", 5));
         obstacleEntity->m_location.m_bBox = {{-1, 0, -1},
                                              {1,  1, 1}};
         obstacleEntity->m_location.m_pos = {5, 0, 0};
@@ -209,23 +242,23 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_prediction()
     {
-        Ref<MemEntity> worldEntity(new MemEntity("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntity("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
         avatarEntity->m_location.m_pos = {0, 0, 0};
         avatarEntity->m_location.m_bBox = {{-1, 0, -1},
                                            {1,  1, 1}};
         avatarEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntity("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
         otherEntity->m_location.m_pos = {10, 0, 0};
         otherEntity->m_location.m_bBox = {{-2, 0, -2},
                                           {2,  3, 2}};
         otherEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntity("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntity("4", 4));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
@@ -290,21 +323,21 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_distance()
     {
-        Ref<MemEntity> worldEntity(new MemEntity("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntity("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
         avatarEntity->m_location.m_pos = {0, 0, 0};
         avatarEntity->m_location.m_bBox = {{-1, 0, -1},
                                            {1,  1, 1}};
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntity("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
         otherEntity->m_location.m_pos = {10, 0, 0};
         otherEntity->m_location.m_bBox = {{-2, 0, -2},
                                           {2,  3, 2}};
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntity("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntity("4", 4));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
@@ -359,30 +392,30 @@ struct SteeringIntegration : public Cyphesis::TestBase
     void test_navigation()
     {
 
-        Ref<MemEntity> worldEntity(new MemEntity("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntity("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
         avatarEntity->m_location.m_pos = {0, 0, 0};
         avatarEntity->m_location.m_bBox = {{-1, 0, -1},
                                            {1,  1, 1}};
         avatarEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntity("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
         otherEntity->m_location.m_pos = {10, 0, 0};
         otherEntity->m_location.m_bBox = {{-2, 0, -2},
                                           {2,  3, 2}};
         otherEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->m_location.m_bBox));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntity("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntity("4", 4));
-        Ref<MemEntity> obstacleEntity(new MemEntity("5", 5));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
+        Ref<MemEntity> obstacleEntity(new MemEntityExt("5", 5));
         obstacleEntity->m_location.m_bBox = {{-1, 0, -1},
                                              {1,  2, 1}};
         obstacleEntity->m_location.m_pos = {0, 0, 0};
         obstacleEntity->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
 
-        Ref<MemEntity> smallObstacleEntity(new MemEntity("6", 6));
+        Ref<MemEntity> smallObstacleEntity(new MemEntityExt("6", 6));
         smallObstacleEntity->m_location.m_pos = {0, 0, 0};
         smallObstacleEntity->m_location.m_bBox = {{0.2, 0, 0.2},
                                           {0.2,  0.2, 0.2}};

@@ -9,6 +9,15 @@
 
 #ifndef STUB_Entity_Entity
 //#define STUB_Entity_Entity
+   Entity::Entity(long intId)
+    : LocatedEntity(intId)
+  {
+    
+  }
+#endif //STUB_Entity_Entity
+
+#ifndef STUB_Entity_Entity
+//#define STUB_Entity_Entity
    Entity::Entity(const std::string& id, long intId)
     : LocatedEntity(id, intId)
   {

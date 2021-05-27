@@ -39,6 +39,7 @@
 #include <rules/python/CyPy_Element.h>
 #include <Atlas/Objects/Factories.h>
 #include <common/Inheritance.h>
+#include <common/PythonMalloc.h>
 #include "common/debug.h"
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);
@@ -48,6 +49,7 @@ using Atlas::Message::Element;
 int main()
 {
 
+    setupPythonMalloc();
     class Test : public Py::ExtensionModule<Test>
     {
         public:

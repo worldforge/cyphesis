@@ -37,12 +37,14 @@
 #include <rules/python/CyPy_Rules.h>
 #include <Atlas/Objects/Factories.h>
 #include <common/Inheritance.h>
+#include <common/PythonMalloc.h>
 
-Atlas::Objects::Factories factories;
-Inheritance inheritance(factories);
 int main()
 {
+    Atlas::Objects::Factories factories;
+    Inheritance inheritance(factories);
 
+    setupPythonMalloc();
     init_python_api({&CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,

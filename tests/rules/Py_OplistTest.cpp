@@ -35,12 +35,14 @@
 #include <rules/python/CyPy_Atlas.h>
 #include <Atlas/Objects/Factories.h>
 #include <common/Inheritance.h>
+#include <common/PythonMalloc.h>
 
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);
 
 int main()
 {
+    setupPythonMalloc();
     init_python_api({&CyPy_Atlas::init});
 
     run_python_string("from atlas import Oplist");

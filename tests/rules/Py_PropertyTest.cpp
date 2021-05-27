@@ -29,6 +29,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Atlas.h>
 #include <rules/python/CyPy_Common.h>
+#include <common/PythonMalloc.h>
 
 #include "../python_testers.h"
 
@@ -75,6 +76,7 @@ class TestProp : public Py::ExtensionModule<TestProp>
 
 int main()
 {
+    setupPythonMalloc();
     PyImport_AppendInittab("testprop", [](){
         static TestProp testProp;
         return testProp.module().ptr();

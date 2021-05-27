@@ -163,6 +163,16 @@ struct Tested : public Cyphesis::TestBase
             entityRuleHandler.install("thing1", "thing", fromXml(thing1), dependents, reasons, changes);
         }
 
+        ~TestContext()
+        {
+            if (world->m_contains) {
+                for (auto child : *world->m_contains) {
+                    child->destroy();
+                }
+                world->m_contains->clear();
+            }
+            world->destroy();
+        }
     };
 
 
@@ -241,6 +251,11 @@ struct Tested : public Cyphesis::TestBase
         (*(++entity->m_contains->begin()))->getAttr("name", element);
         ASSERT_EQUAL(element, "second child");
 
+        for (auto child : *entity->m_contains) {
+            child->destroy();
+        }
+        entity->destroy();
+
     }
 
     void test_createFromArchetypeWithModifiers()
@@ -290,6 +305,7 @@ struct Tested : public Cyphesis::TestBase
         entity->getAttr("property2", element);
         ASSERT_EQUAL(element, 50);
 
+        entity->destroy();
     }
 
     void test_createFromArchetype()
@@ -347,6 +363,7 @@ struct Tested : public Cyphesis::TestBase
 
         entity->getAttr("property3", element);
         ASSERT_EQUAL(element, 30);
+        entity->destroy();
 
     }
 

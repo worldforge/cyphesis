@@ -61,6 +61,15 @@ struct TestContext
     {
     }
 
+    ~TestContext() {
+        if (world->m_contains) {
+            for (auto child : *world->m_contains) {
+                child->destroy();
+            }
+            world->m_contains->clear();
+        }
+        world->destroy();
+    }
 };
 
 OpVector resIgnored;

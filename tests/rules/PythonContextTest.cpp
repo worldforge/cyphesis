@@ -28,10 +28,12 @@
 #include "rules/python/PythonContext.h"
 
 #include <cassert>
+#include <common/PythonMalloc.h>
 
 int main()
 {
-    Py_Initialize();
+    setupPythonMalloc();
+    Py_InitializeEx(0);
 
     {
         PythonContext pc;
@@ -39,7 +41,7 @@ int main()
         pc.runCommand("1");
         pc.runCommand("foo()");
     }
-    Py_Finalize();
+    Py_FinalizeEx();
 
     return 0;
 }

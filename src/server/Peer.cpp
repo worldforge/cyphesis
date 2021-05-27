@@ -21,7 +21,6 @@
 #include "ServerRouting.h"
 #include "Lobby.h"
 #include "TeleportState.h"
-#include "rules/simulation/ExternalMind.h"
 
 #include "rules/simulation/BaseWorld.h"
 #include "common/CommSocket.h"
@@ -156,7 +155,7 @@ int Peer::teleportEntity(const LocatedEntity* ent)
     auto teleport_time = std::chrono::steady_clock::now();
 
     // Add a teleport state object to identify this teleport request
-    auto* s = new TeleportState(teleport_time);
+    TeleportState s(teleport_time);
 
     // Check if the entity has a mind
 
@@ -183,7 +182,7 @@ int Peer::teleportEntity(const LocatedEntity* ent)
             key += ch;
         }
 
-        s->setKey(key);
+        s.setKey(key);
         // Add an additional possess key argument
         log(INFO, String::compose("Adding possess key %1 to Create op", key));
         Anonymous key_arg;
@@ -196,8 +195,8 @@ int Peer::teleportEntity(const LocatedEntity* ent)
     log(INFO, "Sent Create op to peer");
 
     // Set it as validated and add to the list of teleports
-    s->setRequested();
-    m_teleports[iid] = s;
+    s.setRequested();
+    m_teleports.emplace(iid, s);
     log(INFO, "Added new teleport state");
 
     return 0;
@@ -231,10 +230,9 @@ void Peer::peerTeleportResponse(const Operation& op, OpVector& res)
         return;
     }
 
-    TeleportState* s = I->second;
-    assert (s != nullptr);
+    auto& s = I->second;
 
-    s->setCreated();
+    s.setCreated();
     log(INFO, String::compose("Entity with ID %1 replicated on peer", iid));
 
     // This is the sender entity. This is retreived again rather than
@@ -249,7 +247,7 @@ void Peer::peerTeleportResponse(const Operation& op, OpVector& res)
     }
 
     // If entity has a mind, add extra information in the Logout op
-    if (s->isMind()) {
+    if (s.isMind()) {
         auto mindsProperty = entity->getPropertyClassFixed<MindsProperty>();
         if (mindsProperty->getMinds().empty()) {
             log(ERROR, "No external mind (though teleport state claims it)");
@@ -264,7 +262,7 @@ void Peer::peerTeleportResponse(const Operation& op, OpVector& res)
         Anonymous ip_arg;
         ip_arg->setAttr("teleport_host", m_host);
         ip_arg->setAttr("teleport_port", m_port);
-        ip_arg->setAttr("possess_key", s->getPossessKey());
+        ip_arg->setAttr("possess_key", s.getPossessKey());
         ip_arg->setAttr("possess_entity_id", arg->getId());
         logout_args.push_back(ip_arg);
 
@@ -303,9 +301,9 @@ void Peer::cleanTeleports()
     auto curr_time = std::chrono::steady_clock::now();
 
     for (auto I = m_teleports.begin(); I != m_teleports.end();) {
-        auto time_passed = curr_time - I->second->getCreateTime();
+        auto time_passed = curr_time - I->second.getCreateTime();
         // If 5 seconds have passed, the teleport has failed
-        if (std::chrono::duration_cast<std::chrono::seconds>(time_passed).count() >= 10 && I->second->isRequested()) {
+        if (std::chrono::duration_cast<std::chrono::seconds>(time_passed).count() >= 10 && I->second.isRequested()) {
             log(INFO, String::compose("Teleport timed out for entity (ID %1)",
                                       I->first));
             I = m_teleports.erase(I);

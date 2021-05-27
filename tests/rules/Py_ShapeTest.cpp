@@ -72,6 +72,7 @@ static PyObject* init_sabotage() {
 
 int main()
 {
+    setupPythonMalloc();
     PyImport_AppendInittab("sabotage", &init_sabotage);
 
     init_python_api("3f71a0b3-8b4c-4efc-9835-e32928c049c3");

@@ -23,31 +23,40 @@
 
 class TeleportState
 {
-  protected:
-    /// \brief Specifies the possess key generated for this specific teleport
-    std::string m_possessKey;
-    enum {
-        TELEPORT_NONE,      /// \brief Initial state
-        TELEPORT_REQUESTED, /// \brief Teleport has been requested
-        TELEPORT_CREATED    /// \brief Teleport has succeeded
-    } m_state;
+    protected:
+        /// \brief Specifies the possess key generated for this specific teleport
+        std::string m_possessKey;
+        enum
+        {
+            TELEPORT_NONE,      /// \brief Initial state
+            TELEPORT_REQUESTED, /// \brief Teleport has been requested
+            TELEPORT_CREATED    /// \brief Teleport has succeeded
+        } m_state;
 
-    std::chrono::steady_clock::time_point m_teleportTime;  /// \brief The time the teleport took place
+        std::chrono::steady_clock::time_point m_teleportTime;  /// \brief The time the teleport took place
 
-  public:
-    explicit TeleportState(std::chrono::steady_clock::time_point time);
-    
-    void setRequested();
-    void setCreated();
-    void setKey(const std::string & key);
+    public:
+        TeleportState(const TeleportState& rhs) = default;
 
-    bool isCreated() const;
-    bool isRequested() const;
+        explicit TeleportState(std::chrono::steady_clock::time_point time);
 
-    bool isMind() const;
-    const std::string & getPossessKey() const;
+        TeleportState& operator=(const TeleportState& rhs) = default;
 
-    std::chrono::steady_clock::time_point getCreateTime() const;
+        void setRequested();
+
+        void setCreated();
+
+        void setKey(const std::string& key);
+
+        bool isCreated() const;
+
+        bool isRequested() const;
+
+        bool isMind() const;
+
+        const std::string& getPossessKey() const;
+
+        std::chrono::steady_clock::time_point getCreateTime() const;
 };
 
 /// \brief Check if the teleported entity has been create on the remote end
@@ -77,7 +86,7 @@ inline bool TeleportState::isMind() const
 /// \brief Get the possess key generated for this teleport
 ///
 /// @return The randomly generated possess key for this teleport
-inline const std::string & TeleportState::getPossessKey() const
+inline const std::string& TeleportState::getPossessKey() const
 {
     return m_possessKey;
 }

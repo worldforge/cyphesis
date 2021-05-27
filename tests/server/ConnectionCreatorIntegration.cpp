@@ -78,65 +78,70 @@ class StubSocket : public CommSocket
 };
 
 
-struct TestDecoder : public Atlas::Objects::ObjectsDecoder {
+struct TestDecoder : public Atlas::Objects::ObjectsDecoder
+{
     Atlas::Objects::Root m_obj;
 
-    TestDecoder(const Atlas::Objects::Factories& factories):
-        ObjectsDecoder(factories){}
+    TestDecoder(const Atlas::Objects::Factories& factories) :
+            ObjectsDecoder(factories)
+    {}
 
-    void objectArrived(const Atlas::Objects::Root & obj) override
+    void objectArrived(const Atlas::Objects::Root& obj) override
     {
-       m_obj = obj;
+        m_obj = obj;
     }
 };
 
 class ConnectionCreatorintegration : public Cyphesis::TestBase
 {
-  protected:
-    long m_id_counter;
+    protected:
+        long m_id_counter;
 
-    StubSocket* m_commSocket;
-    ServerRouting * m_server;
-    Connection * m_connection;
-    Ref<Entity> m_gw;
-    Ref<Entity> m_creator;
-    TypeNode * m_creatorType;
-    std::unique_ptr<TestWorld> m_world;
-  public:
+        StubSocket* m_commSocket;
+        ServerRouting* m_server;
+        Connection* m_connection;
+        Ref<Entity> m_gw;
+        Ref<Entity> m_creator;
+        TypeNode* m_creatorType;
+        std::unique_ptr<TestWorld> m_world;
+    public:
 
-    static Operation m_BaseWorld_message_called;
-    static Ref<LocatedEntity> m_BaseWorld_message_called_from;
+        static Operation m_BaseWorld_message_called;
+        static Ref<LocatedEntity> m_BaseWorld_message_called_from;
 
-    ConnectionCreatorintegration();
+        ConnectionCreatorintegration();
 
-    void setup();
+        void setup();
 
-    void teardown();
+        void teardown();
 
-    void test_external_op();
-    void test_external_op_override();
-    void test_external_op_puppet();
-    void test_external_op_puppet_nonexistant();
+        void test_external_op();
 
-    static void BaseWorld_message_called(const Operation & op, LocatedEntity &);
+        void test_external_op_override();
+
+        void test_external_op_puppet();
+
+        void test_external_op_puppet_nonexistant();
+
+        static void BaseWorld_message_called(const Operation& op, LocatedEntity&);
 };
 
 Operation ConnectionCreatorintegration::m_BaseWorld_message_called(0);
 Ref<LocatedEntity> ConnectionCreatorintegration::m_BaseWorld_message_called_from(0);
 
 void ConnectionCreatorintegration::BaseWorld_message_called(
-      const Operation & op,
-      LocatedEntity & ent)
+        const Operation& op,
+        LocatedEntity& ent)
 {
     m_BaseWorld_message_called = op;
     m_BaseWorld_message_called_from = &ent;
 }
 
 ConnectionCreatorintegration::ConnectionCreatorintegration() :
-    m_id_counter(0L),
-    m_connection(0),
-    m_creator(0),
-    m_creatorType(0)
+        m_id_counter(0L),
+        m_connection(0),
+        m_creator(0),
+        m_creatorType(0)
 {
 
     new Monitors();
@@ -151,10 +156,9 @@ void ConnectionCreatorintegration::setup()
 {
     boost::asio::io_context io_context;
 
-    m_gw = new Entity(compose("%1", m_id_counter),
-                             m_id_counter++);
+    m_gw = new Entity(m_id_counter++);
     m_world = std::make_unique<TestWorld>(m_gw);
-    TestWorld::extension.messageFn = [](const Operation & op, LocatedEntity & ent) {
+    TestWorld::extension.messageFn = [](const Operation& op, LocatedEntity& ent) {
         ConnectionCreatorintegration::BaseWorld_message_called(op, ent);
     };
     m_server = new ServerRouting(*m_world,
@@ -170,7 +174,7 @@ void ConnectionCreatorintegration::setup()
     m_creator = new Entity(compose("%1", m_id_counter), m_id_counter++);
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
-    BaseWorld::instance().addEntity(m_creator, m_gw);
+    m_world->addEntity(m_creator, m_gw);
 
     m_connection->addObject(m_creator.get());
 
@@ -184,6 +188,7 @@ void ConnectionCreatorintegration::teardown()
     m_creator = nullptr;
 
     m_gw.reset();
+    m_world->shutdown();
     m_world.reset();
 
     delete m_connection;
@@ -199,13 +204,13 @@ void ConnectionCreatorintegration::test_external_op()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    auto mind = new AdminMind("1", 1, m_creator);
-    m_connection->addObject(mind);
-    mind->linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
+    AdminMind mind("1", 1, m_creator);
+    m_connection->addObject(&mind);
+    mind.linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
 
     m_connection->externalOperation(op, *m_connection);
     m_connection->dispatch(1);
@@ -227,13 +232,13 @@ void ConnectionCreatorintegration::test_external_op_override()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    auto mind = new AdminMind("1", 1, m_creator);
-    m_connection->addObject(mind);
-    mind->linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
+    AdminMind mind("1", 1, m_creator);
+    m_connection->addObject(&mind);
+    mind.linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
     op->setTo(m_creator->getId());
 
     m_connection->externalOperation(op, *m_connection);
@@ -254,17 +259,17 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    auto mind = new AdminMind("1", 1, m_creator);
-    m_connection->addObject(mind);
-    mind->linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
+    AdminMind mind("1", 1, m_creator);
+    m_connection->addObject(&mind);
+    mind.linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
 
     Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
     op->setTo(other->getId());
 
     m_connection->externalOperation(op, *m_connection);
@@ -287,17 +292,17 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    auto mind = new AdminMind("1", 1, m_creator);
-    m_connection->addObject(mind);
-    mind->linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
+    AdminMind mind("1", 1, m_creator);
+    m_connection->addObject(&mind);
+    mind.linkUp(m_connection);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
 
-    Ref<Entity>  other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
     op->setTo(compose("%1", m_id_counter++));
 
 
@@ -313,7 +318,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     ASSERT_EQUAL(decoder.m_obj->getParent(),
                  "unseen");
     ASSERT_TRUE(!Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->isDefaultTo());
-    ASSERT_EQUAL(Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->getTo(), mind->getId());
+    ASSERT_EQUAL(Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->getTo(), mind.getId());
 }
 
 int main()

@@ -33,7 +33,7 @@
 
 #ifndef STUB_TeleportState_setKey
 //#define STUB_TeleportState_setKey
-  void TeleportState::setKey(const std::string & key)
+  void TeleportState::setKey(const std::string& key)
   {
     
   }

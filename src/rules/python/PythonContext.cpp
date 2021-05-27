@@ -15,53 +15,42 @@
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+#include "PythonContext.h"
 
+
+#include "common/log.h"
 #include <Python.h>
 #include <Python-ast.h>
 
-#include "PythonContext.h"
-
-#include "common/log.h"
-
 PythonContext::PythonContext()
+        : m_module("__main__"),
+          m_globals(m_module.getDict()),
+          m_locals(),
+          m_arena(PyArena_New())
 {
-    m_module = PyImport_AddModule("__main__");
-    if (m_module == nullptr) {
-        log(ERROR, "Could not import __main__");
-        return;
-    }
-    m_globals = PyModule_GetDict(m_module);
-    m_locals = PyDict_New();
-    m_arena = PyArena_New();
 }
 
 PythonContext::~PythonContext()
 {
     PyArena_Free(m_arena);
-    //PyObject_Free(m_locals);
-    //PyObject_Free(m_module);
-
 }
 
-static PyObject *
-run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
-         PyCompilerFlags *flags, PyArena *arena)
+static Py::Object
+run_mod(mod_ty mod, const char* filename, const Py::Object& globals, const Py::Object& locals,
+        PyCompilerFlags* flags, PyArena* arena)
 {
-    PyCodeObject *co;
-    PyObject *v;
-    co = PyAST_Compile(mod, filename, flags, arena);
-    if (co == nullptr)
-        return nullptr;
-    v = PyEval_EvalCode((PyObject*)co, globals, locals);
-    Py_DECREF(co);
-    return v;
+    Py::Object co((PyObject*) PyAST_Compile(mod, filename, flags, arena), true);
+    if (co.isNull()) {
+        return Py::None();
+    }
+
+    return Py::Object(PyEval_EvalCode(*co, *globals, *locals));
 }
 
-std::string PythonContext::runCommand(const std::string & s)
+std::string PythonContext::runCommand(const std::string& s)
 {
     // This is expanded from PyRun_SimpleString in the Python library
     // so that we can report errors better at the parsing stage
-    PyObject *ret = nullptr;
     mod_ty mod;
 
     mod = PyParser_ASTFromString(s.c_str(),
@@ -73,16 +62,12 @@ std::string PythonContext::runCommand(const std::string & s)
         PyErr_Print();
         return "[parseerror]";
     }
-    ret = run_mod(mod, "<string>", m_globals, m_locals, nullptr, m_arena);
-    if (ret == nullptr) {
+    auto ret = run_mod(mod, "<string>", m_globals, m_locals, nullptr, m_arena);
+    if (ret.isNull()) {
         PyErr_Print();
         return "ERROR";
     }
-    PyObject * repr = PyObject_Repr(ret);
-    if (repr == 0) {
-        return "[undecodable]";
-    }
-    return PyUnicode_AsUTF8(repr);
+    return ret.repr().as_std_string();
 
 #if 0
     PyObject * res = PyRun_String(s.c_str(),

@@ -47,6 +47,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Rules.h>
+#include <common/PythonMalloc.h>
 
 #include "../stubs/common/stubMonitors.h"
 
@@ -55,6 +56,7 @@ Atlas::Objects::Factories factories;
 int main()
 {
 
+    setupPythonMalloc();
     {
         Inheritance inheritance(factories);
         TestPropertyManager testPropertyManager;

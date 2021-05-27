@@ -42,6 +42,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
 #include <common/Inheritance.h>
+#include <common/PythonMalloc.h>
 #include "pycxx/CXX/Objects.hxx"
 #include "../NullPropertyManager.h"
 
@@ -54,6 +55,7 @@ static bool stub_lookfor_fail = false;
 
 int main()
 {
+    setupPythonMalloc();
     {
         NullPropertyManager propertyManager;
 
@@ -68,13 +70,14 @@ int main()
         extend_client_python_api();
 
         ClientConnection conn(io_context, factories);
-        CreatorClient client("1", "2", conn, propertyManager);
+        Ref<CreatorClient> client(new CreatorClient("1", "2", conn, propertyManager));
         Ref<MemEntity> entity(new MemEntity("1", 1));
         OpVector res;
-        client.setOwnEntity(res, entity);
+        client->setOwnEntity(res, entity);
 
         Py::Module module("server");
-        module.setAttr("testclient", CyPy_CreatorClient::wrap(&client));
+        //Moves ownership to Python.
+        module.setAttr("testclient", CyPy_CreatorClient::wrap(std::move(client)));
 
         run_python_string("import server");
         run_python_string("import ai");
@@ -121,8 +124,8 @@ int main()
         run_python_string("assert c.foo == 1");
         run_python_string("c.foo = [1,2]");
         expect_python_error("c.map = 1", PyExc_AttributeError);
+        shutdown_python_api();
     }
-    shutdown_python_api();
     return 0;
 }
 
@@ -141,7 +144,8 @@ int main()
 using Atlas::Objects::Entity::RootEntity;
 
 #define STUB_CharacterClient_look
-Ref<LocatedEntity> CharacterClient::look(const std::string & id)
+
+Ref<LocatedEntity> CharacterClient::look(const std::string& id)
 {
     if (stub_look_fail) {
         return nullptr;
@@ -150,7 +154,8 @@ Ref<LocatedEntity> CharacterClient::look(const std::string & id)
 }
 
 #define STUB_CharacterClient_lookFor
-Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & entity)
+
+Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity& entity)
 {
     if (stub_lookfor_fail) {
         return nullptr;
@@ -159,7 +164,8 @@ Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity & entity)
 }
 
 #define STUB_CreatorClient_make
-Ref<LocatedEntity> CreatorClient::make(const RootEntity & entity)
+
+Ref<LocatedEntity> CreatorClient::make(const RootEntity& entity)
 {
     if (stub_make_fail) {
         return nullptr;

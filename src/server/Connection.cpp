@@ -78,12 +78,12 @@ Connection::~Connection()
     }
 }
 
-Account* Connection::newAccount(const std::string& type,
+std::unique_ptr<Account> Connection::newAccount(const std::string& type,
                                 const std::string& username,
                                 const std::string& hash,
                                 const std::string& id, long intId)
 {
-    return new Player(this, username, hash, id, intId);
+    return std::make_unique<Player>(this, username, hash, id, intId);
 }
 
 static const int hash_salt_size = 8;
@@ -103,15 +103,16 @@ Account* Connection::addNewAccount(const std::string& type,
         return nullptr;
     }
 
-    Account* account = newAccount(type, username, hash, newAccountId, intId);
-    if (account == nullptr) {
+    auto account = newAccount(type, username, hash, newAccountId, intId);
+    if (!account) {
         return nullptr;
     }
-    addConnectableRouter(account);
+    addConnectableRouter(account.get());
     assert(account->getConnection() == this);
-    m_server.addAccount(std::unique_ptr<Account>(account));
-    m_server.getLobby().addAccount(account);
-    return account;
+    m_server.getLobby().addAccount(account.get());
+    auto accountPtr = account.get();
+    m_server.addAccount(std::move(account));
+    return accountPtr;
 }
 
 /// \brief Remove an object from this connection.

@@ -50,10 +50,6 @@ using String::compose;
 
 static const bool debug_flag = false;
 
-class PeerAddress {
-  public:
-    boost::asio::ip::tcp::resolver::iterator i;
-};
 
 void Juncture::onSocketConnected()
 {
@@ -85,11 +81,10 @@ void Juncture::onSocketConnected()
 
 void Juncture::onSocketFailed()
 {
-    assert(m_address != nullptr);
     assert(m_peer == nullptr);
     assert(!m_socket.expired());
     if (m_connection != nullptr) {
-        if (++m_address->i != boost::asio::ip::tcp::resolver::iterator()) {
+        if (++m_address.i != boost::asio::ip::tcp::resolver::iterator()) {
             if (attemptConnect("foo", 6767) == 0) {
                 return;
             }
@@ -127,7 +122,7 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
             Inheritance::instance().getFactories());
     m_socket = std::weak_ptr<CommPeer>(peer);
 
-    peer->connect(*m_address->i);
+    peer->connect(*m_address.i);
 
     m_host = hostname;
     m_port = port;
@@ -144,7 +139,6 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
 Juncture::Juncture(Connection * c, const std::string & id, long iid) :
           ConnectableRouter(id, iid),
           m_connection(c),
-          m_address(nullptr),
           m_socket(),
           m_peer(nullptr),
           m_connectRef(0),
@@ -294,13 +288,13 @@ void Juncture::customConnectOperation(const Operation & op, OpVector & res)
     auto port = port_attr.Int();
 
     debug_print("Connecting to " << hostname)
-    m_address = new PeerAddress;
+    m_address = PeerAddress{};
 
     boost::asio::ip::tcp::resolver resolver(m_connection->m_commSocket.m_io_context);
     boost::asio::ip::tcp::resolver::query query(hostname, compose("%1", port));
 
     try {
-        m_address->i = resolver.resolve(query);
+        m_address.i = resolver.resolve(query);
     } catch (const std::exception& e) {
         error(op, "Could not connect to peer host.", res, getId());
         return;

@@ -62,6 +62,13 @@ class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
          * This is meant to be used for instance specific temporary data which can be recreated at instance creation time.
          */
         Py::Dict mTemporaries;
+
+        /**
+         * True if the Task instance is created and owned by this instance. In that case the reference count of this
+         * instance has been decreased, since the Task holds a Py::Object reference to it.
+         * This needs to happen to avoid circular references.
+         */
+        bool mOwned;
 };
 
 

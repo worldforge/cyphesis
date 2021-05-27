@@ -195,6 +195,7 @@ void EntityBuildertest::test_sequence3()
 
 void EntityBuildertest::test_sequence4()
 {
+    TypeNode factoryType("custom_type");
     // Attributes for test entities being created
     Anonymous attributes;
 
@@ -221,14 +222,14 @@ void EntityBuildertest::test_sequence4()
         ret = eb->installFactory("custom_type",
                                  atlasClass("custom_type", "thing"),
                                  std::unique_ptr<EntityFactoryBase>(custom_type_factory));
-        custom_type_factory->m_type = new TypeNode("custom_type");
+        custom_type_factory->m_type = &factoryType;
 
         ASSERT_EQUAL(ret, 0);
     }
 
     PropertyBase* p = new Property<std::string>;
-    custom_type_factory->m_type->injectProperty("test_custom_type_attr", std::unique_ptr<PropertyBase>(p));
     p->set("test_value");
+    custom_type_factory->m_type->injectProperty("test_custom_type_attr", std::unique_ptr<PropertyBase>(p));
 
     // Check that the factory dictionary now contains a factory for
     // the custom type we just installed.
@@ -261,6 +262,7 @@ void EntityBuildertest::test_sequence4()
 
 void EntityBuildertest::test_sequence5()
 {
+    TypeNode factoryType("custom_scripted_type");
     Anonymous attributes;
 
     // Get a reference to the internal dictionary of entity factories.
@@ -282,7 +284,7 @@ void EntityBuildertest::test_sequence5()
         eb->installFactory("custom_scripted_type",
                            atlasClass("custom_scripted_type", "thing"),
                            std::unique_ptr<EntityFactoryBase>(custom_type_factory));
-        custom_type_factory->m_type = new TypeNode("custom_scripted_type");
+        custom_type_factory->m_type = &factoryType;
     }
 
     // Check that the factory dictionary now contains a factory for
@@ -296,6 +298,7 @@ void EntityBuildertest::test_sequence5()
     assert(test_ent);
 
     assert(test_ent->getType() == custom_type_factory->m_type);
+    test_ent->destroy();
 }
 
 void EntityBuildertest::test_installFactory_duplicate()

@@ -95,6 +95,7 @@ class TestProp : public Py::ExtensionModule<TestProp>
 
 int main()
 {
+    setupPythonMalloc();
     PyImport_AppendInittab("testprop", [](){
         auto module = new TestProp();
         return module->module().ptr();

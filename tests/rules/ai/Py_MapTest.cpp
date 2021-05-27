@@ -43,6 +43,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/ai/python/CyPy_Ai.h>
+#include <common/PythonMalloc.h>
 
 Atlas::Objects::Factories factories;
 
@@ -50,6 +51,7 @@ int main()
 {
 
     {
+        setupPythonMalloc();
         TestPropertyManager propertyManager;
 
         init_python_api({&CyPy_Server::init,

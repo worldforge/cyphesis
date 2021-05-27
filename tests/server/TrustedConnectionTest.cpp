@@ -87,7 +87,7 @@ class TestConnection : public TrustedConnection {
       
     }
 
-    Account * test_newAccount(const std::string & type,
+    std::unique_ptr<Account> test_newAccount(const std::string & type,
                               const std::string & username,
                               const std::string & passwd,
                               const std::string & id, long intId)
@@ -125,56 +125,54 @@ int main()
     ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",
                          "1", 1, "2", 2);
 
-    TestCommSocket * tcc = new TestCommSocket();
-    TestConnection * tc = new TestConnection(*tcc, server, "addr", "3", 3);
+    TestCommSocket tcc{};
+    TestConnection tc(tcc, server, "addr", "3", 3);
 
     {
-        Account * ac = tc->test_newAccount("_non_type_",
+        auto ac = tc.test_newAccount("_non_type_",
                                            "bob",
                                            "unit_test_hash",
                                            "1", 1);
 
-        assert(ac != 0);
+        assert(ac.get() != 0);
     }
     
     {
-        Account * ac = tc->test_newAccount("sys",
+        auto ac = tc.test_newAccount("sys",
                                            "bob",
                                            "unit_test_hash",
                                            "1", 1);
 
-        assert(ac != 0);
+        assert(ac.get() != 0);
     }
     
     {
-        Account * ac = tc->test_newAccount("admin",
+        auto ac = tc.test_newAccount("admin",
                                            "bob",
                                            "unit_test_hash",
                                            "1", 1);
 
-        assert(ac != 0);
+        assert(ac.get() != 0);
     }
     
     {
-        Account * ac = tc->test_newAccount("player",
+        auto ac = tc.test_newAccount("player",
                                            "bob",
                                            "unit_test_hash",
                                            "1", 1);
 
-        assert(ac != 0);
+        assert(ac.get() != 0);
     }
 
     {
         Account * ac = new Player(0, "bill", "unit_test_password", "2", 2);
         Atlas::Objects::Root creds;
 
-        int ret = tc->test_verifyCredentials(*ac, creds);
+        int ret = tc.test_verifyCredentials(*ac, creds);
 
         assert(ret == 0);
+        delete ac;
     }
-    
-
-    delete tc;
 }
 
 // Stubs

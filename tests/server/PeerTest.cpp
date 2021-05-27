@@ -96,68 +96,65 @@ int main()
     MyTestWorld world;
 
     {
-        Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
-        delete p;
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
     }
 
     {
-        Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
         Atlas::Objects::Operation::RootOperation op;
         OpVector res;
-        p->operation(op, res);
+        p.operation(op, res);
 
-        delete p;
     }
 
     {
         // Test the setting of authentiaction states
-        Peer * p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
-        assert(p->getAuthState() == PEER_INIT);
-        p->setAuthState(PEER_AUTHENTICATED);
-        assert(p->getAuthState() == PEER_AUTHENTICATED);
+        assert(p.getAuthState() == PEER_INIT);
+        p.setAuthState(PEER_AUTHENTICATED);
+        assert(p.getAuthState() == PEER_AUTHENTICATED);
 
-        delete p;
     }
 
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
-        p->operation(op, res);
+        p.operation(op, res);
     }
 
     // Authenticating (no args)
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
-        p->setAuthState(PEER_AUTHENTICATING);
+        p.setAuthState(PEER_AUTHENTICATING);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
-        p->operation(op, res);
+        p.operation(op, res);
     }
 
     // Authenticating (empty arg)
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
-        p->setAuthState(PEER_AUTHENTICATING);
+        p.setAuthState(PEER_AUTHENTICATING);
         
         Atlas::Objects::Operation::Info op;
         Atlas::Objects::Root arg;
         op->setArgs1(arg);
         OpVector res;
-        p->operation(op, res);
+        p.operation(op, res);
     }
 
     // Authenticating (full arg)
     {
-        TestPeer *p = new TestPeer(*(CommSocket*)0, *(ServerRouting*)0, "addr", "1", 1);
+        TestPeer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", "1", 1);
 
-        p->setAuthState(PEER_AUTHENTICATING);
+        p.setAuthState(PEER_AUTHENTICATING);
         
         Atlas::Objects::Operation::Info op;
         Atlas::Objects::Root arg;
@@ -165,47 +162,47 @@ int main()
         arg->setParent("server");
         op->setArgs1(arg);
         OpVector res;
-        p->operation(op, res);
-        assert(p->getAccountType() == "server");
+        p.operation(op, res);
+        assert(p.getAccountType() == "server");
     }
 
     // Authenticated (no args)
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
 
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
-        p->operation(op, res);
+        p.operation(op, res);
     }
 
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Error op;
         OpVector res;
-        p->operation(op, res);
+        p.operation(op, res);
     }
 
     // Not authenticated
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == -1);
     }
 
     // Authenticated
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -214,29 +211,29 @@ int main()
     // Re-teleport same entity
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
 
-        ret = p->teleportEntity(e.get());
+        ret = p.teleportEntity(e.get());
         assert(ret != 0);
     }
 
     // Entity (no mind)
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("3", 3));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -245,14 +242,15 @@ int main()
     // Entity (external mind, unconnected)
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("3", 3));
+        ExternalMind mind("1", 1, e);
         auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
-        mindsProp->addMind(new ExternalMind("1", 1, e));
-        int ret = p->teleportEntity(e.get());
+        mindsProp->addMind(&mind);
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -261,18 +259,18 @@ int main()
     // Entity (external mind, connected)
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
 
 
         Ref<Entity> e(new Entity("3", 3));
-        ExternalMind * mind = new ExternalMind("1", 1, e);
-        mind->linkUp((Link*)23);
+        ExternalMind mind("1", 1, e);
+        mind.linkUp((Link*)23);
         auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
-        mindsProp->addMind(mind);
+        mindsProp->addMind(&mind);
 
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
         assert(stub_CommClient_sent_op.isValid());
         assert(stub_CommClient_sent_op->getArgs().size() == 1);
@@ -280,17 +278,17 @@ int main()
 
     // No arg
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
     }
 
     // Empty arg, no refno
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -298,13 +296,13 @@ int main()
         Atlas::Objects::Root arg;
         op->setArgs1(arg);
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
     }
 
     // Empty arg, made up refno, not CommPeer
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -313,13 +311,13 @@ int main()
         op->setArgs1(arg);
         op->setRefno(23);
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
     }
 
     // Empty arg, made up refno
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
         Atlas::Objects::Operation::Info op;
         OpVector res;
@@ -328,18 +326,18 @@ int main()
         op->setArgs1(arg);
         op->setRefno(23);
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
     }
 
     // Empty arg, refno that matches earlier teleport, not in world
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
 
         Atlas::Objects::Operation::Info op;
@@ -349,18 +347,18 @@ int main()
         op->setArgs1(arg);
         op->setRefno(23);
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
     }
 
     // Empty arg, refno that matches earlier teleport, in world
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
 
         world.test_addEntity(e.get(), 23);
@@ -372,7 +370,7 @@ int main()
         op->setArgs1(arg);
         op->setRefno(23);
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
 
         world.test_delEntity(23);
     }
@@ -380,16 +378,16 @@ int main()
     // Empty arg, refno that matches earlier teleport, with mind
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        ExternalMind * mind = new ExternalMind("1", 1, e);
-        mind->linkUp((Link*)23);
+        ExternalMind mind("1", 1, e);
+        mind.linkUp((Link*)23);
         auto mindsProp = e->modPropertyClassFixed<MindsProperty>();
-        mindsProp->addMind(mind);
-        int ret = p->teleportEntity(e.get());
+        mindsProp->addMind(&mind);
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
 
         world.test_addEntity(e.get(), 23);
@@ -401,30 +399,30 @@ int main()
         op->setArgs1(arg);
         op->setRefno(23);
          
-        p->peerTeleportResponse(op, res);
+        p.peerTeleportResponse(op, res);
 
         world.test_delEntity(23);
     }
 
     // No teleports to clear
     {
-        Peer *p = new Peer(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(*(CommSocket*)0, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->cleanTeleports();
+        p.cleanTeleports();
     }
 
     // One teleport to clear
     {
         TestCommSocket client;
-        Peer *p = new Peer(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
+        Peer p(client, *(ServerRouting*)0, "addr", 6767, "1", 1);
         
-        p->setAuthState(PEER_AUTHENTICATED);
+        p.setAuthState(PEER_AUTHENTICATED);
         
         Ref<Entity> e(new Entity("23", 23));
-        int ret = p->teleportEntity(e.get());
+        int ret = p.teleportEntity(e.get());
         assert(ret == 0);
 
-        p->cleanTeleports();
+        p.cleanTeleports();
     }
 
     return 0;

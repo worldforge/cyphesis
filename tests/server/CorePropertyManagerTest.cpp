@@ -356,7 +356,8 @@ const Atlas::Objects::Root& Inheritance::getClass(const std::string& parent, Vis
 
 TypeNode* Inheritance::addChild(const Root& obj)
 {
-    return new TypeNode(obj->getId());
+    auto result = atlasObjects.emplace(obj->getId(), std::make_unique<TypeNode>(obj->getId()));
+    return result.first->second.get();
 }
 
 

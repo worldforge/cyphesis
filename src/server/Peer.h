@@ -20,13 +20,12 @@
 #define SERVER_PEER_H
 
 #include "common/Link.h"
-
+#include "TeleportState.h"
 #include <sigc++/signal.h>
 
 class CommSocket;
 class LocatedEntity;
 class ServerRouting;
-class TeleportState;
 
 enum PeerAuthState {
     PEER_INIT,            /// \brief Peer has just been connected to
@@ -35,9 +34,7 @@ enum PeerAuthState {
     PEER_FAILED,          /// \brief We have failed to authenticate
 };
 
-typedef std::map<long, TeleportState *> TeleportMap;
-
-/// \brief Class represening connections from another server that is peered to
+/// \brief Class representing connections from another server that is peered to
 /// to this one
 ///
 /// This is the main point of dispatch for any operation from the peer.
@@ -56,7 +53,7 @@ class Peer : public Link {
     /// The authentication state of the peer object
     PeerAuthState m_state;
     /// The states of the various active teleports
-    TeleportMap m_teleports;
+    std::map<long, TeleportState> m_teleports;
     
   public:
     /// The server routing object of this server.

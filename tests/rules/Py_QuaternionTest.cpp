@@ -31,9 +31,11 @@
 
 #include <cassert>
 #include <rules/python/CyPy_Physics.h>
+#include <common/PythonMalloc.h>
 
 int main()
 {
+    setupPythonMalloc();
     init_python_api({&CyPy_Physics::init});
 
     run_python_string("from physics import Quaternion");

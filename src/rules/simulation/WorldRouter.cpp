@@ -114,7 +114,7 @@ void WorldRouter::addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEnti
     app->setArgs1(arg);
     message(app, *ent);
 
-    inserted.emit(ent.get());
+    inserted.emit(*ent);
 }
 
 /// \brief Create a new entity and add to the world.

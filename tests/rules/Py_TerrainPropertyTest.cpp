@@ -42,6 +42,7 @@
 #include <rules/python/CyPy_Rules.h>
 
 #include <cassert>
+#include <common/PythonMalloc.h>
 
 class TestProp : public Py::ExtensionModule<TestProp>
 {
@@ -69,6 +70,7 @@ class TestProp : public Py::ExtensionModule<TestProp>
 
 int main()
 {
+    setupPythonMalloc();
     PyImport_AppendInittab("testprop", [](){
         static TestProp testProp;
         return testProp.module().ptr();

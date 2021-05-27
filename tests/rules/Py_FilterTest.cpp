@@ -15,9 +15,11 @@
 
 #include <cassert>
 #include <rules/entityfilter/python/CyPy_EntityFilter.h>
+#include <common/PythonMalloc.h>
 
 int main()
 {
+    setupPythonMalloc();
     init_python_api({&CyPy_EntityFilter::init});
 
     run_python_string("import entity_filter");

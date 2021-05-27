@@ -25,6 +25,7 @@
 
 #include <list>
 #include <deque>
+#include <memory>
 
 class Account;
 
@@ -78,7 +79,7 @@ class Connection : public Link, virtual public sigc::trackable
         void disconnectObject(ConnectableRouter* router,
                               const std::string& event);
 
-        virtual Account* newAccount(const std::string& type,
+        virtual std::unique_ptr<Account> newAccount(const std::string& type,
                                     const std::string& username,
                                     const std::string& passwd,
                                     const std::string& id, long intId);

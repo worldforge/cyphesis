@@ -38,51 +38,51 @@ int main()
     TestPropertyManager tpm;
     std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
-    EntityFactoryBase * ek;
-    ek = new EntityFactory<Thing>;
+    TypeNode typeNode("thing");
+    EntityFactory<Thing> ek;
 
-    ek->m_type = new TypeNode("thing");
+    ek.m_type = &typeNode;
 
-    assert(ek->m_type->defaults().empty());
+    assert(ek.m_type->defaults().empty());
 
-    ek->m_attributes["test1"] = Atlas::Message::StringType("foo");
-    ek->m_classAttributes["test1"] = {Atlas::Message::StringType("foo")};
+    ek.m_attributes["test1"] = Atlas::Message::StringType("foo");
+    ek.m_classAttributes["test1"] = {Atlas::Message::StringType("foo")};
 
-    assert(ek->m_type->defaults().empty());
+    assert(ek.m_type->defaults().empty());
 
-    ek->updateProperties(changes, tpm);
+    ek.updateProperties(changes, tpm);
 
-    assert(ek->m_type->defaults().size() == 1);
+    assert(ek.m_type->defaults().size() == 1);
 
-    EntityFactoryBase * subclass_ek = new EntityFactory<Thing>;
+    TypeNode subType("subclass");
+    EntityFactory<Thing> subclass_ek;
+    subclass_ek.m_type = &subType;
+    subclass_ek.m_type->setParent(ek.m_type);
+    ek.m_children.insert(&subclass_ek);
 
-    subclass_ek->m_type = new TypeNode("subclass");
-    subclass_ek->m_type->setParent(ek->m_type);
-    ek->m_children.insert(subclass_ek);
+    assert(subclass_ek.m_type->defaults().empty());
 
-    assert(subclass_ek->m_type->defaults().empty());
+    subclass_ek.m_attributes["test2"] = Atlas::Message::StringType("bar");
+    subclass_ek.m_classAttributes["test2"] = {Atlas::Message::StringType("bar")};
 
-    subclass_ek->m_attributes["test2"] = Atlas::Message::StringType("bar");
-    subclass_ek->m_classAttributes["test2"] = {Atlas::Message::StringType("bar")};
+    assert(subclass_ek.m_type->defaults().empty());
 
-    assert(subclass_ek->m_type->defaults().empty());
+    subclass_ek.updateProperties(changes, tpm);
 
-    subclass_ek->updateProperties(changes, tpm);
+    assert(subclass_ek.m_type->defaults().size() == 1);
 
-    assert(subclass_ek->m_type->defaults().size() == 1);
+    ek.updateProperties(changes, tpm);
 
-    ek->updateProperties(changes, tpm);
+    assert(ek.m_type->defaults().size() == 1);
+    assert(subclass_ek.m_type->defaults().size() == 2);
 
-    assert(ek->m_type->defaults().size() == 1);
-    assert(subclass_ek->m_type->defaults().size() == 2);
+    subclass_ek.m_attributes["test1"] = Atlas::Message::StringType("bar");
+    subclass_ek.m_classAttributes["test1"] = {Atlas::Message::StringType("bar")};
 
-    subclass_ek->m_attributes["test1"] = Atlas::Message::StringType("bar");
-    subclass_ek->m_classAttributes["test1"] = {Atlas::Message::StringType("bar")};
+    ek.updateProperties(changes, tpm);
 
-    ek->updateProperties(changes, tpm);
-
-    assert(ek->m_type->defaults().size() == 1);
-    assert(subclass_ek->m_type->defaults().size() == 2);
+    assert(ek.m_type->defaults().size() == 1);
+    assert(subclass_ek.m_type->defaults().size() == 2);
 
     return 0;
 }

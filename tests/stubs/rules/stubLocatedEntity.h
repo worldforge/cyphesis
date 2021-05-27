@@ -26,6 +26,16 @@
 
 #ifndef STUB_LocatedEntity_LocatedEntity
 //#define STUB_LocatedEntity_LocatedEntity
+   LocatedEntity::LocatedEntity(long intId)
+    : Router(intId)
+    , m_type(nullptr)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_LocatedEntity
+
+#ifndef STUB_LocatedEntity_LocatedEntity
+//#define STUB_LocatedEntity_LocatedEntity
    LocatedEntity::LocatedEntity(const std::string& id, long intId)
     : Router(id, intId)
     , m_type(nullptr)

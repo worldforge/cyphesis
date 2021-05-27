@@ -31,7 +31,7 @@
 class TrustedConnection : public Connection
 {
     protected:
-        Account* newAccount(const std::string& type,
+        std::unique_ptr<Account> newAccount(const std::string& type,
                             const std::string& username,
                             const std::string& passwd,
                             const std::string& id, long intId) override;

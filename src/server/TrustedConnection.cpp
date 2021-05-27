@@ -40,21 +40,21 @@ TrustedConnection::TrustedConnection(CommSocket& client,
 
 TrustedConnection::~TrustedConnection() = default;
 
-Account* TrustedConnection::newAccount(const std::string& type,
+std::unique_ptr<Account> TrustedConnection::newAccount(const std::string& type,
                                        const std::string& username,
                                        const std::string& hash,
                                        const std::string& id, long intId)
 {
     if (type == "sys") {
-        return new SystemAccount(this, username, hash, id, intId);
+        return std::make_unique<SystemAccount>(this, username, hash, id, intId);
     } else if (type == "admin") {
-        return new Admin(this, username, hash, id, intId);
+        return std::make_unique<Admin>(this, username, hash, id, intId);
     } else {
         if (type != "player") {
             log(WARNING, String::compose("Local client tried to create "
                                          "account of unknown type \"%1\". "
                                          "Creating Player.", type));
         }
-        return new Player(this, username, hash, id, intId);
+        return std::make_unique<Player>(this, username, hash, id, intId);
     }
 }

@@ -122,6 +122,7 @@ class Accountintegration : public Cyphesis::TestBase
         CommSocket* m_tc;
         Connection* m_c;
         TestAccount* m_ac;
+        EntityRuleHandler* m_entityRuleHandler;
 
     public:
         Accountintegration();
@@ -206,7 +207,7 @@ void Accountintegration::setup()
     m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
     m_propertyManager = new TestPropertyManager();
-    auto entityRuleHandler = new EntityRuleHandler(*m_eb, *m_propertyManager);
+    m_entityRuleHandler = new EntityRuleHandler(*m_eb, *m_propertyManager);
 
     m_world = new WorldRouter(m_rootEntity, *m_eb, []() { return std::chrono::milliseconds(0); });
 
@@ -222,14 +223,18 @@ void Accountintegration::setup()
     {
         auto decl = composeDeclaration("thing", "game_entity", {});
         std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
-        entityRuleHandler->install(decl->getId(), decl->getParent(), decl, dependent, reason, changes);
+        m_entityRuleHandler->install(decl->getId(), decl->getParent(), decl, dependent, reason, changes);
     }
 }
 
 void Accountintegration::teardown()
 {
+    delete m_entityRuleHandler;
+    delete m_c;
     delete m_server;
     delete m_ac;
+    delete m_tc;
+    m_world->shutdown();
     delete m_world;
     m_rootEntity = nullptr;
     delete m_eb;

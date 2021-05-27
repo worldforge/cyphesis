@@ -28,13 +28,15 @@
 #define DEBUG
 #endif
 
-#include <Python.h>
-#include <Python-ast.h>
+#include "pycxx/CXX/Objects.hxx"
+
 
 #include "python_testers.h"
 
 #include <iostream>
 
+#include <Python.h>
+#include <Python-ast.h>
 // This function is directly lifted from Python 2.6.7, pythonrun.c. It
 // forms part of the implementation of PyRun_SimpleStringFlags() as replicated
 // below, with modifications to treat parse errors differently.
@@ -60,10 +62,10 @@ run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
 int CyPyRun_SimpleString(const char * command, PyObject * exception)
 {
     PyCompilerFlags *flags = nullptr;
-    PyObject * m = PyImport_AddModule("__main__");
-    if (m == nullptr)
+    Py::Module  m("__main__");
+    if (m.isNull())
         return -1;
-    PyObject * d = PyModule_GetDict(m);
+    Py::Dict d = m.getDict();
     // v = PyRun_StringFlags(command, Py_file_input, d, d, flags);
     PyArena *arena = PyArena_New();
     if (arena == nullptr)
@@ -76,7 +78,7 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
         return -2;
     }
 
-    PyObject *ret = run_mod(mod, "<string>", d, d, flags, arena);
+    PyObject *ret = run_mod(mod, "<string>", *d, *d, flags, arena);
     PyArena_Free(arena);
 
     if (ret == nullptr) {

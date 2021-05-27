@@ -78,45 +78,41 @@ int stub_CommPeer_connect_return = 0;
 int main()
 {
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
-        delete j;
     }
 
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Operation op;
-        j->operation(op, res);
+        j.operation(op, res);
 
-        delete j;
     }
 
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Atlas::Objects::Operation::Login op;
-        j->operation(op, res);
+        j.operation(op, res);
 
-        delete j;
     }
 
     // Login op, no args
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Operation op;
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, empty arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
 
@@ -124,14 +120,13 @@ int main()
         Atlas::Objects::Root arg;
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, username in arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
 
@@ -140,14 +135,13 @@ int main()
         arg->setAttr("username", "69e362c6-03a4-11e0-9608-001ec93e7c08");
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, bad username in arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
 
@@ -156,14 +150,13 @@ int main()
         arg->setAttr("username", 0x69e362c6);
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, username & password in arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
 
@@ -173,14 +166,13 @@ int main()
         arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, username & bad password in arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
 
@@ -190,18 +182,18 @@ int main()
         arg->setAttr("password", 0x12a2f3aL);
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, username & password in arg, connected
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
         boost::asio::io_context io_context;
-        CommPeer * cp = new CommPeer("", io_context, factories);
-        j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
+        CommPeer cp("", io_context, factories);
+        Peer peer(cp, sr, "", 6767, "4", 4);
+        j.test_addPeer(&peer);
 
         OpVector res;
 
@@ -211,23 +203,22 @@ int main()
         arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, username & password in arg, connected already authenticating
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
 
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
 
         boost::asio::io_context io_context;
-        CommPeer * cp = new CommPeer("", io_context, factories);
-        Peer * p = new Peer(*cp, sr, "", 6767, "4", 4);
-        j->test_addPeer(p);
+        CommPeer cp("", io_context, factories);
+        Peer p(cp, sr, "", 6767, "4", 4);
+        j.test_addPeer(&p);
 
-        p->setAuthState(PEER_AUTHENTICATING);
+        p.setAuthState(PEER_AUTHENTICATING);
 
         OpVector res;
 
@@ -237,20 +228,20 @@ int main()
         arg->setAttr("password", "a12a2f3a-03a4-11e0-8379-001ec93e7c08");
         op->setArgs1(arg);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     // Login op, username & password in arg, connected, with serialno
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
 
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
 
         boost::asio::io_context io_context;
-        CommPeer * cp = new CommPeer("", io_context, factories);
-        j->test_addPeer(new Peer(*cp, sr, "", 6767, "4", 4));
+        CommPeer cp("", io_context, factories);
+        Peer p(cp, sr, "", 6767, "4", 4);
+        j.test_addPeer(&p);
 
         OpVector res;
 
@@ -261,58 +252,57 @@ int main()
         op->setArgs1(arg);
         op->setSerialno(0x6dc5b5eaL);
         
-        j->LoginOperation(op, res);
+        j.LoginOperation(op, res);
 
-        delete j;
     }
 
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Operation op;
-        j->OtherOperation(op, res);
+        j.OtherOperation(op, res);
 
-        delete j;
     }
 
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Atlas::Objects::Operation::Connect op;
-        j->OtherOperation(op, res);
+        j.OtherOperation(op, res);
 
-        delete j;
     }
 
     // Connect op, no args
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Operation op;
-        j->customConnectOperation(op, res);
+        j.customConnectOperation(op, res);
 
-        delete j;
     }
 
     // Connect op, no args, already connected
     {
-        TestJuncture * j = new TestJuncture(0);
+        ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
+        TestJuncture j(0);
 
-        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", 6767, "4", 4));
+        boost::asio::io_context io_context;
+        CommPeer cp("", io_context, factories);
+        Peer p(cp, sr, "", 6767, "4", 4);
+        j.test_addPeer(&p);
 
         OpVector res;
         Operation op;
-        j->customConnectOperation(op, res);
+        j.customConnectOperation(op, res);
 
-        delete j;
     }
 
     // Connect op, hostname in arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Operation op;
@@ -321,14 +311,13 @@ int main()
 
         op->setArgs1(arg);
 
-        j->customConnectOperation(op, res);
+        j.customConnectOperation(op, res);
 
-        delete j;
     }
 
     // Connect op, bad hostname in arg
     {
-        Juncture * j = new Juncture(0, "1", 1);
+        Juncture j(0, "1", 1);
 
         OpVector res;
         Operation op;
@@ -337,19 +326,18 @@ int main()
 
         op->setArgs1(arg);
 
-        j->customConnectOperation(op, res);
+        j.customConnectOperation(op, res);
 
-        delete j;
     }
 
     // Connect op, hostname and port in arg, connected this end
     {
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         boost::asio::io_context io_context;
-        CommSocket * cc = new StubSocket(io_context);
-        Connection * c = new Connection(*cc, sr, "", "4", 4);
+        StubSocket cc(io_context);
+        Connection c(cc, sr, "", "4", 4);
 
-        Juncture * j = new Juncture(c, "1", 1);
+        Juncture j(&c, "1", 1);
 
         OpVector res;
         Operation op;
@@ -359,9 +347,8 @@ int main()
 
         op->setArgs1(arg);
 
-        j->customConnectOperation(op, res);
+        j.customConnectOperation(op, res);
 
-        delete j;
     }
 
     // Connect op, hostname and port in arg, connected this end, connect fails
@@ -370,10 +357,10 @@ int main()
 
         ServerRouting sr(*(BaseWorld*)0, "", "", "2", 2, "3", 3);
         boost::asio::io_context io_context;
-        CommSocket * cc = new StubSocket(io_context);
-        Connection * c = new Connection(*cc, sr, "", "4", 4);
+        StubSocket cc(io_context);
+        Connection c(cc, sr, "", "4", 4);
 
-        Juncture * j = new Juncture(c, "1", 1);
+        Juncture j(&c, "1", 1);
 
         OpVector res;
         Operation op;
@@ -383,61 +370,55 @@ int main()
 
         op->setArgs1(arg);
 
-        j->customConnectOperation(op, res);
+        j.customConnectOperation(op, res);
 
         stub_CommPeer_connect_return = 0;
 
-        delete j;
     }
 
     // Teleport unconnected
     {
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
 
-        j->teleportEntity(0);
+        j.teleportEntity(0);
 
-        delete j;
     }
 
     // Teleport connected
     {
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
+        Peer peer(*(CommPeer*)0, *(ServerRouting*)0, "", 6767, "4", 4);
+        j.test_addPeer(&peer);
+        j.teleportEntity(0);
 
-        j->test_addPeer(new Peer(*(CommPeer*)0, *(ServerRouting*)0, "", 6767, "4", 4));
-        j->teleportEntity(0);
-
-        delete j;
     }
 
     {
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
 
-        j->test_onPeerLost();
+        j.test_onPeerLost();
 
-        delete j;
     }
 
     // Peer replied, unconnected this end
     {
-        TestJuncture * j = new TestJuncture(0);
+        TestJuncture j(0);
 
         Operation op;
-        j->test_onPeerReplied(op);
+        j.test_onPeerReplied(op);
 
-        delete j;
     }
 
     // Peer replied, connected this end
     {
-        Connection * c = new Connection(*(CommSocket*)0,
+        Connection c(*(CommSocket*)0,
                                         *(ServerRouting*)0, "", "4", 4);
 
-        TestJuncture * j = new TestJuncture(c);
+        TestJuncture j(&c);
 
         Operation op;
-        j->test_onPeerReplied(op);
+        j.test_onPeerReplied(op);
 
-        delete j;
     }
 
     return 0;

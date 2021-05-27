@@ -37,10 +37,12 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Rules.h>
+#include <common/PythonMalloc.h>
 
 
 int main()
 {
+    setupPythonMalloc();
     init_python_api({&CyPy_Atlas::init,
                      &CyPy_Physics::init,
                      &CyPy_Common::init,

@@ -94,50 +94,50 @@ StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& 
 StorageManager::~StorageManager() = default;
 
 /// \brief Called when a new Entity is inserted in the world
-void StorageManager::entityInserted(LocatedEntity* ent)
+void StorageManager::entityInserted(LocatedEntity& ent)
 {
-    if (ent->hasFlags(entity_ephem)) {
+    if (ent.hasFlags(entity_ephem)) {
         // This entity is not persisted.
         return;
     }
-    if (ent->hasFlags(entity_clean)) {
+    if (ent.hasFlags(entity_clean)) {
         // This entity has just been restored from the database, so does
         // not need to be inserted, but will need to be updated.
         // For non-restored entities that have been newly created this
         // signal will be connected later once the initial database insert
         // has been done.
-        ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-        ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
+        ent.updated.connect([&]() { entityUpdated(ent); });
+        ent.containered.connect([&](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
         return;
     }
     // Queue the entity to be inserted into the persistence tables.
-    m_unstoredEntities.emplace_back(Ref<LocatedEntity>(ent));
-    ent->addFlags(entity_queued);
+    m_unstoredEntities.emplace_back(Ref<LocatedEntity>(&ent));
+    ent.addFlags(entity_queued);
 }
 
 /// \brief Called when an Entity is modified
-void StorageManager::entityUpdated(LocatedEntity* ent)
+void StorageManager::entityUpdated(LocatedEntity& ent)
 {
-    if (ent->isDestroyed()) {
-        m_destroyedEntities.push_back(ent->getIntId());
+    if (ent.isDestroyed()) {
+        m_destroyedEntities.push_back(ent.getIntId());
         return;
     }
     // Is it already in the dirty Entities queue?
     // Perhaps we need to modify the semantics of the updated signal
     // so it is only emitted if the entity was not marked as dirty.
-    if (ent->hasFlags(entity_queued)) {
-        // std::cout << "Already queued " << ent->getId() << std::endl << std::flush;
+    if (ent.hasFlags(entity_queued)) {
+        // std::cout << "Already queued " << ent.getId() << std::endl << std::flush;
         return;
     }
-    m_dirtyEntities.emplace_back(Ref<LocatedEntity>(ent));
-    // std::cout << "Updated fired " << ent->getId() << std::endl << std::flush;
-    ent->addFlags(entity_queued);
+    m_dirtyEntities.emplace_back(Ref<LocatedEntity>(&ent));
+    // std::cout << "Updated fired " << ent.getId() << std::endl << std::flush;
+    ent.addFlags(entity_queued);
 }
 
-void StorageManager::encodeProperty(PropertyBase* prop, std::string& store)
+void StorageManager::encodeProperty(const PropertyBase& prop, std::string& store)
 {
     Atlas::Message::MapType map;
-    prop->get(map["val"]);
+    prop.get(map["val"]);
     m_db.encodeObject(map, store);
 }
 
@@ -147,9 +147,9 @@ void StorageManager::encodeElement(const Atlas::Message::Element& element, std::
     m_db.encodeObject(map, store);
 }
 
-void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
+void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
 {
-    DatabaseResult res = m_db.selectProperties(ent->getId());
+    DatabaseResult res = m_db.selectProperties(ent.getId());
 
     //Keep track of those properties that have been set on the instance, so we'll know what
     //type properties we should ignore.
@@ -161,13 +161,13 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
         const std::string name = I.column("name");
         if (name.empty()) {
             log(ERROR, compose("No name column in property row for %1",
-                               ent->describeEntity()));
+                               ent.describeEntity()));
             continue;
         }
         const std::string val_string = I.column("value");
         if (name.empty()) {
             log(ERROR, compose("No value column in property row for %1,%2",
-                               ent->describeEntity(), name));
+                               ent.describeEntity(), name));
             continue;
         }
         MapType prop_data;
@@ -175,14 +175,14 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
         auto J = prop_data.find("val");
         if (J == prop_data.end()) {
             log(ERROR, compose("No property value data for %1:%2",
-                               ent->describeEntity(), name));
+                               ent.describeEntity(), name));
             continue;
         }
-        assert(ent->getType() != nullptr);
+        assert(ent.getType() != nullptr);
         auto& val = J->second;
 
         Element existingVal;
-        if (ent->getAttr(name, existingVal) == 0) {
+        if (ent.getAttr(name, existingVal) == 0) {
             if (existingVal == val) {
                 //If the existing property, either on the instance or the type, is equal to the persisted one just skip it.
                 continue;
@@ -190,86 +190,86 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity* ent)
         }
 
 
-        auto* prop = ent->modProperty(name, val);
+        auto* prop = ent.modProperty(name, val);
         if (!prop) {
             auto newProp = PropertyManager::instance().addProperty(name);
             //This transfers ownership of the property to the entity.
-            prop = ent->setProperty(name, std::move(newProp));
+            prop = ent.setProperty(name, std::move(newProp));
         }
 
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
         prop->set(val);
         prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
-        prop->apply(ent);
-        ent->propertyApplied(name, *prop);
+        prop->apply(&ent);
+        ent.propertyApplied(name, *prop);
         instanceProperties.insert(name);
     }
 
-    if (ent->getType()) {
-        for (auto& propIter : ent->getType()->defaults()) {
+    if (ent.getType()) {
+        for (auto& propIter : ent.getType()->defaults()) {
             if (instanceProperties.find(propIter.first) == instanceProperties.end()) {
                 auto& prop = propIter.second;
                 // If a property is in the class it won't have been installed
                 // as setAttrValue() checks
-                prop->install(ent, propIter.first);
+                prop->install(&ent, propIter.first);
                 // The property will have been applied if it has an overridden
                 // value, so we only apply it the value is still default.
-                prop->apply(ent);
-                ent->propertyApplied(propIter.first, *prop);
+                prop->apply(&ent);
+                ent.propertyApplied(propIter.first, *prop);
             }
         }
     }
 
-    if (ent->m_location.m_parent) {
-        auto domain = ent->m_location.m_parent->getDomain();
+    if (ent.m_location.m_parent) {
+        auto domain = ent.m_location.m_parent->getDomain();
         if (domain) {
-            domain->addEntity(*ent);
+            domain->addEntity(ent);
         }
     }
 
 
     //Now restore all properties of the child entities.
-    if (ent->m_contains) {
+    if (ent.m_contains) {
         //It might be that the contains field gets altered by restoring of children, so we need to operate on a copy.
-        auto contains = *ent->m_contains;
+        auto contains = *ent.m_contains;
         for (auto& childEntity : contains) {
-            restorePropertiesRecursively(childEntity.get());
+            restorePropertiesRecursively(*childEntity);
         }
     }
 
 //    //We should also send a sight op to the parent entity which owns the entity.
 //    //TODO: should this really be necessary or should we rely on other Sight functionality?
-//    if (ent->m_location.m_parent) {
+//    if (ent.m_location.m_parent) {
 //        Atlas::Objects::Operation::Sight sight;
-//        sight->setTo(ent->m_location.m_parent->getId());
+//        sight->setTo(ent.m_location.m_parent.getId());
 //        Atlas::Objects::Entity::Anonymous args;
-//        ent->addToEntity(args);
+//        ent.addToEntity(args);
 //        sight->setArgs1(args);
-//        ent->m_location.m_parent->sendWorld(sight);
+//        ent.m_location.m_parent.sendWorld(sight);
 //    }
 
 }
 
-void StorageManager::insertEntity(LocatedEntity* ent)
+void StorageManager::insertEntity(LocatedEntity& ent)
 {
     std::string location;
     Atlas::Message::MapType map;
-    if (ent->m_location.pos().isValid()) {
-        map["pos"] = ent->m_location.pos().toAtlas();
+    if (ent.m_location.pos().isValid()) {
+        map["pos"] = ent.m_location.pos().toAtlas();
     }
-    if (ent->m_location.orientation().isValid()) {
-        map["orientation"] = ent->m_location.orientation().toAtlas();
+    if (ent.m_location.orientation().isValid()) {
+        map["orientation"] = ent.m_location.orientation().toAtlas();
     }
     m_db.encodeObject(map, location);
 
-    m_db.insertEntity(ent->getId(),
-                      ent->m_location.m_parent->getId(),
-                      ent->getType()->name(),
-                      ent->getSeq(),
+    m_db.insertEntity(ent.getId(),
+                      ent.m_location.m_parent->getId(),
+                      ent.getType()->name(),
+                      ent.getSeq(),
                       location);
     ++m_insertEntityCount;
     KeyValues property_tuples;
-    const auto& properties = ent->getProperties();
+    const auto& properties = ent.getProperties();
     for (auto& entry : properties) {
         auto& prop = entry.second.property;
         //The property might be empty if there's only modifiers but no property.
@@ -280,49 +280,49 @@ void StorageManager::insertEntity(LocatedEntity* ent)
             continue;
         }
         if (entry.second.modifiers.empty()) {
-            encodeProperty(prop.get(), property_tuples[entry.first]);
+            encodeProperty(*prop, property_tuples[entry.first]);
         } else {
             encodeElement(entry.second.baseValue, property_tuples[entry.first]);
         }
         prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
     }
     if (!property_tuples.empty()) {
-        m_db.insertProperties(ent->getId(), property_tuples);
+        m_db.insertProperties(ent.getId(), property_tuples);
         ++m_insertPropertyCount;
     }
-    ent->removeFlags(entity_queued);
-    ent->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
-    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent));
-    ent->containered.connect([&, ent](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
+    ent.removeFlags(entity_queued);
+    ent.addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+    ent.updated.connect([&]() { entityUpdated(ent); });
+    ent.containered.connect([&](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
 }
 
-void StorageManager::updateEntity(LocatedEntity* ent)
+void StorageManager::updateEntity(LocatedEntity& ent)
 {
     std::string location;
     Atlas::Message::MapType map;
-    if (ent->m_location.pos().isValid()) {
-        map["pos"] = ent->m_location.pos().toAtlas();
+    if (ent.m_location.pos().isValid()) {
+        map["pos"] = ent.m_location.pos().toAtlas();
     }
-    if (ent->m_location.orientation().isValid()) {
-        map["orientation"] = ent->m_location.orientation().toAtlas();
+    if (ent.m_location.orientation().isValid()) {
+        map["orientation"] = ent.m_location.orientation().toAtlas();
     }
     m_db.encodeObject(map, location);
 
     //Under normal circumstances only the top world won't have a location.
-    if (ent->m_location.m_parent) {
-        m_db.updateEntity(ent->getId(),
-                          ent->getSeq(),
+    if (ent.m_location.m_parent) {
+        m_db.updateEntity(ent.getId(),
+                          ent.getSeq(),
                           location,
-                          ent->m_location.m_parent->getId());
+                          ent.m_location.m_parent->getId());
     } else {
-        m_db.updateEntityWithoutLoc(ent->getId(),
-                                    ent->getSeq(),
+        m_db.updateEntityWithoutLoc(ent.getId(),
+                                    ent.getSeq(),
                                     location);
     }
     ++m_updateEntityCount;
     KeyValues new_property_tuples;
     KeyValues upd_property_tuples;
-    auto& properties = ent->getProperties();
+    auto& properties = ent.getProperties();
     for (const auto& property : properties) {
         auto& prop = property.second.property;
         //There might not be a property if only modifiers are set.
@@ -365,20 +365,20 @@ void StorageManager::updateEntity(LocatedEntity* ent)
         prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
     }
     if (!new_property_tuples.empty()) {
-        m_db.insertProperties(ent->getId(),
+        m_db.insertProperties(ent.getId(),
                               new_property_tuples);
     }
     if (!upd_property_tuples.empty()) {
-        m_db.updateProperties(ent->getId(),
+        m_db.updateProperties(ent.getId(),
                               upd_property_tuples);
     }
-    ent->addFlags(entity_clean_mask);
+    ent.addFlags(entity_clean_mask);
 }
 
-size_t StorageManager::restoreChildren(LocatedEntity* parent)
+size_t StorageManager::restoreChildren(LocatedEntity& parent)
 {
     size_t childCount = 0;
-    DatabaseResult res = m_db.selectEntities(parent->getId());
+    DatabaseResult res = m_db.selectEntities(parent.getId());
 
     // Iterate over res creating entities, and sorting out position, location
     // and orientation. Restore children, but don't restore any properties yet.
@@ -405,8 +405,8 @@ size_t StorageManager::restoreChildren(LocatedEntity* parent)
         m_db.decodeMessage(location_string, loc_data);
         child->m_location.readFromMessage(loc_data);
         child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
-        m_world.addEntity(child, parent);
-        childCount += restoreChildren(child.get());
+        m_world.addEntity(child, &parent);
+        childCount += restoreChildren(*child);
     }
     return childCount;
 }
@@ -428,7 +428,7 @@ void StorageManager::tick()
         auto& ent = m_unstoredEntities.front();
         if (ent && !ent->isDestroyed()) {
             debug(std::cout << "storing " << ent->getId() << std::endl << std::flush;)
-            insertEntity(ent.get());
+            insertEntity(*ent);
             ++inserts;
         } else {
             debug(std::cout << "deleted" << std::endl << std::flush;)
@@ -444,17 +444,17 @@ void StorageManager::tick()
         auto& ent = m_dirtyEntities.front();
         if (ent) {
             if ((ent->flags().m_flags & entity_clean_mask) != entity_clean_mask) {
-                debug(std::cout << "updating " << ent->getId() << std::endl << std::flush;)
-                updateEntity(ent.get());
+                debug_print("updating " << ent->getId())
+                updateEntity(*ent);
                 ++updates;
             }
             if (ent->hasFlags(entity_dirty_thoughts)) {
-                debug(std::cout << "updating thoughts " << ent->getId() << std::endl << std::flush;)
+                debug_print("updating thoughts " << ent->getId())
                 ++updates;
             }
             ent->removeFlags(entity_queued);
         } else {
-            debug(std::cout << "deleted" << std::endl << std::flush;)
+            debug_print("deleted")
         }
         m_dirtyEntities.pop_front();
     }
@@ -500,7 +500,8 @@ void StorageManager::tick()
 
 int StorageManager::initWorld(const Ref<LocatedEntity>& ent)
 {
-    ent->updated.connect(sigc::bind(sigc::mem_fun(this, &StorageManager::entityUpdated), ent.get()));
+    auto entPtr = ent.get();
+    ent->updated.connect([this, entPtr]() { entityUpdated(*entPtr); });
     ent->addFlags(entity_clean);
     // FIXME queue it so the initial state gets persisted.
     return 0;
@@ -515,9 +516,9 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
     //the child isn't present when the property is installed there will be issues.
     //We do this by first restoring the children, without any properties, and the assigning the properties to
     //all entities in order.
-    auto childCount = restoreChildren(ent.get());
+    auto childCount = restoreChildren(*ent);
 
-    restorePropertiesRecursively(ent.get());
+    restorePropertiesRecursively(*ent);
 
     if (childCount > 0) {
         log(INFO, "Completed restoring world from storage.");

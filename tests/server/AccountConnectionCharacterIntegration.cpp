@@ -51,6 +51,8 @@
 using Atlas::Objects::Operation::RootOperation;
 using String::compose;
 
+Monitors monitors;
+
 /// Test code paths between account, connection and avatar classes
 class AccountConnectionCharacterintegration : public Cyphesis::TestBase
 {
@@ -89,7 +91,6 @@ AccountConnectionCharacterintegration::AccountConnectionCharacterintegration() :
     m_character(0),
     m_characterType(0)
 {
-    new Monitors();
 
     ADD_TEST(AccountConnectionCharacterintegration::test_subscribe);
     ADD_TEST(AccountConnectionCharacterintegration::test_connect_existing);
@@ -126,8 +127,11 @@ void AccountConnectionCharacterintegration::setup()
 
 void AccountConnectionCharacterintegration::teardown()
 {
+    m_character.reset();
+    m_world->shutdown();
+    m_world.reset();
     delete m_connection;
-    m_character = nullptr;
+    delete m_account;
     delete m_characterType;
     delete m_server;
     delete m_persistence;
@@ -226,22 +230,21 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     m_connection->m_connectableRouters[m_account->getIntId()] = m_account;
     m_connection->m_objects[m_character->getIntId()].router = m_character.get();
 
-    Connection * other_connection =
-          new Connection(*(CommSocket*)0,
+    Connection  other_connection(*(CommSocket*)0,
                          *m_server,
                          "242eedae-6a2e-4c5b-9901-711b14d7e851",
                          compose("%1", m_id_counter), m_id_counter++);
 
 
-    auto mind = new ExternalMind("6", 6, m_character);
-    m_character->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
-    mind->linkUp(other_connection);
+    ExternalMind mind("6", 6, m_character);
+    m_character->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    mind.linkUp(&other_connection);
 
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())
-    ASSERT_TRUE(mind->isLinked())
-    ASSERT_TRUE(!mind->isLinkedTo(m_connection))
-    ASSERT_TRUE(mind->isLinkedTo(other_connection))
+    ASSERT_TRUE(mind.isLinked())
+    ASSERT_TRUE(!mind.isLinkedTo(m_connection))
+    ASSERT_TRUE(mind.isLinkedTo(&other_connection))
 
     m_connection->disconnectObject(
         m_connection->m_connectableRouters.find(m_account->getIntId())->second,
@@ -249,9 +252,9 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     );
 
     //ASSERT_NOT_EQUAL(m_logEvent_logged, DROP_CHAR);
-    ASSERT_TRUE(mind->isLinked())
-    ASSERT_TRUE(!mind->isLinkedTo(m_connection))
-    ASSERT_TRUE(mind->isLinkedTo(other_connection))
+    ASSERT_TRUE(mind.isLinked())
+    ASSERT_TRUE(!mind.isLinkedTo(m_connection))
+    ASSERT_TRUE(mind.isLinkedTo(&other_connection))
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
                 m_connection->m_objects.end())
 }

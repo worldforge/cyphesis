@@ -80,21 +80,21 @@ class StorageManager : public sigc::trackable
         std::array<int, 32> m_insertQpsRing;
         std::array<int, 32> m_updateQpsRing;
 
-        void entityInserted(LocatedEntity*);
+        void entityInserted(LocatedEntity&);
 
-        void entityUpdated(LocatedEntity*);
+        void entityUpdated(LocatedEntity&);
 
-        void encodeProperty(PropertyBase*, std::string&);
+        void encodeProperty(const PropertyBase&, std::string&);
 
         void encodeElement(const Atlas::Message::Element& element, std::string& store);
 
-        void restorePropertiesRecursively(LocatedEntity*);
+        void restorePropertiesRecursively(LocatedEntity&);
 
-        void insertEntity(LocatedEntity*);
+        void insertEntity(LocatedEntity&);
 
-        void updateEntity(LocatedEntity*);
+        void updateEntity(LocatedEntity&);
 
-        size_t restoreChildren(LocatedEntity*);
+        size_t restoreChildren(LocatedEntity&);
 
     public:
         explicit StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder);

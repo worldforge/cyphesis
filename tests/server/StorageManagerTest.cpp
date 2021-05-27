@@ -40,33 +40,44 @@
 
 using Atlas::Message::Element;
 
-class TestStorageManager : public StorageManager
+struct TestStorageManager : public StorageManager
 {
-  public:
-    TestStorageManager(WorldRouter&w, Database& db, EntityBuilder& eb) : StorageManager(w, db, eb) { }
+    TestStorageManager(WorldRouter& w, Database& db, EntityBuilder& eb) : StorageManager(w, db, eb)
+    {}
 
-    
-    void test_entityInserted(LocatedEntity * e) {
+
+    void test_entityInserted(LocatedEntity& e)
+    {
         entityInserted(e);
     }
-    void test_entityUpdated(LocatedEntity * e) {
+
+    void test_entityUpdated(LocatedEntity& e)
+    {
         entityUpdated(e);
     }
 
-    void test_encodeProperty(PropertyBase * p, std::string & s) {
+    void test_encodeProperty(PropertyBase& p, std::string& s)
+    {
         encodeProperty(p, s);
     }
-    void test_restoreProperties(LocatedEntity * e) {
+
+    void test_restoreProperties(LocatedEntity& e)
+    {
         restorePropertiesRecursively(e);
     }
 
-    void test_insertEntity(LocatedEntity * e) {
+    void test_insertEntity(LocatedEntity& e)
+    {
         insertEntity(e);
     }
-    void test_updateEntity(LocatedEntity * e) {
+
+    void test_updateEntity(LocatedEntity& e)
+    {
         updateEntity(e);
     }
-    void test_restoreChildren(LocatedEntity * e) {
+
+    void test_restoreChildren(LocatedEntity& e)
+    {
         restoreChildren(e);
     }
 
@@ -79,7 +90,7 @@ int main()
     DatabaseNull database;
     Persistence persistence(database);
 
-    Ref<LocatedEntity> le = new Entity("", 0);
+    Ref<LocatedEntity> le(new Entity("", 0));
 
     {
         WorldRouter world(le, eb, {});
@@ -115,16 +126,16 @@ int main()
         WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
-
-        store.test_entityInserted(new Entity("1", 1));
+        Ref<Entity> e1(new Entity("1", 1));
+        store.test_entityInserted(*e1);
     }
 
     {
         WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb);
-
-        store.test_entityUpdated(new Entity("1", 1));
+        Ref<Entity> e1(new Entity("1", 1));
+        store.test_entityUpdated(*e1);
     }
 
     {
@@ -142,7 +153,8 @@ int main()
 
         TestStorageManager store(world, database, eb);
 
-        store.test_restoreProperties(new Entity("1", 1));
+        Ref<Entity> e1(new Entity("1", 1));
+        store.test_restoreProperties(*e1);
     }
 
     {
@@ -150,7 +162,8 @@ int main()
 
         TestStorageManager store(world, database, eb);
 
-        store.test_insertEntity(new Entity("1", 1));
+        Ref<Entity> e1(new Entity("1", 1));
+        store.test_insertEntity(*e1);
     }
 
     {
@@ -158,7 +171,8 @@ int main()
 
         TestStorageManager store(world, database, eb);
 
-        store.test_updateEntity(new Entity("1", 1));
+        Ref<Entity> e1(new Entity("1", 1));
+        store.test_updateEntity(*e1);
     }
 
     {
@@ -166,9 +180,9 @@ int main()
 
         TestStorageManager store(world, database, eb);
 
-        store.test_restoreChildren(new Entity("1", 1));
+        Ref<Entity> e1(new Entity("1", 1));
+        store.test_restoreChildren(*e1);
     }
-
 
 
     return 0;
@@ -214,21 +228,24 @@ using Atlas::Objects::Entity::RootEntity;
 #include "../stubs/common/stubRouter.h"
 
 #define STUB_Database_selectEntities
-DatabaseResult Database::selectEntities(const std::string & loc)
+
+DatabaseResult Database::selectEntities(const std::string& loc)
 {
-    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+    return DatabaseResult(std::make_unique<DatabaseNullResultWorker>());
 }
 
 #define STUB_Database_selectProperties
+
 DatabaseResult Database::selectProperties(const std::string& loc)
 {
-    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+    return DatabaseResult(std::make_unique<DatabaseNullResultWorker>());
 }
 
 #define STUB_Database_selectThoughts
+
 DatabaseResult Database::selectThoughts(const std::string& loc)
 {
-    return DatabaseResult(std::unique_ptr<DatabaseNullResultWorker>(new DatabaseNullResultWorker()));
+    return DatabaseResult(std::make_unique<DatabaseNullResultWorker>());
 }
 
 #include "../stubs/common/stubDatabase.h"
@@ -239,45 +256,50 @@ DatabaseResult Database::selectThoughts(const std::string& loc)
 #include "../stubs/rules/stubScript.h"
 #include "../stubs/modules/stubWeakEntityRef.h"
 
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
+template<typename T>
+Variable<T>::Variable(const T& variable) : m_variable(variable)
 {
 }
 
-template <typename T>
+template<typename T>
 Variable<T>::~Variable()
 {
 }
 
-template <typename T>
-void Variable<T>::send(std::ostream & o)
+template<typename T>
+void Variable<T>::send(std::ostream& o)
 {
     o << m_variable;
 }
 
-template <typename T>
+template<typename T>
 bool Variable<T>::isNumeric() const
 {
     return false;
 }
 
-template class Variable<int>;
-template class Variable<const char *>;
-template class Variable<std::string>;
+template
+class Variable<int>;
+
+template
+class Variable<const char*>;
+
+template
+class Variable<std::string>;
 
 #include "../stubs/common/stubMonitors.h"
 #include "../stubs/common/stubOperationsDispatcher.h"
 
-template <typename T>
-void Property<T>::set(const Atlas::Message::Element & e)
+template<typename T>
+void Property<T>::set(const Atlas::Message::Element& e)
 {
 }
 
-template class Property<MapType>;
+template
+class Property<MapType>;
 
 
-
-long forceIntegerId(const std::string & id)
+long forceIntegerId(const std::string& id)
 {
     long intId = strtol(id.c_str(), 0, 10);
     if (intId == 0 && id != "0") {
@@ -286,16 +308,17 @@ long forceIntegerId(const std::string & id)
 
     return intId;
 }
+
 #include "../stubs/common/stublog.h"
 
 bool database_flag = true;
 
 namespace consts {
 
-  // Id of root world entity
-  const char * rootWorldId = "0";
-  // Integer id of root world entity
-  const long rootWorldIntId = 0L;
+    // Id of root world entity
+    const char* rootWorldId = "0";
+    // Integer id of root world entity
+    const long rootWorldIntId = 0L;
 
 }
 

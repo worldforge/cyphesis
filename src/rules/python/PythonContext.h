@@ -16,23 +16,26 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef RULESETS_PYTHON_CONTEXT_H
-#define RULESETS_PYTHON_CONTEXT_H
+#ifndef RULES_PYTHON_CONTEXT_H
+#define RULES_PYTHON_CONTEXT_H
 
 #include <string>
+#include "pycxx/CXX/Objects.hxx"
 
 /// \brief Handle running python commands in the servers interpreter context
-class PythonContext {
-  protected:
-    struct _object * m_module;
-    struct _object * m_globals;
-    struct _object * m_locals;
-    struct _arena * m_arena;
-  public:
-    PythonContext();
-    ~PythonContext();
+class PythonContext
+{
+    protected:
+        Py::Module m_module;
+        Py::Dict m_globals;
+        Py::Dict m_locals;
+        struct _arena* m_arena;
+    public:
+        PythonContext();
 
-    std::string runCommand(const std::string &);
+        ~PythonContext();
+
+        std::string runCommand(const std::string&);
 };
 
-#endif // RULESETS_PYTHON_CONTEXT_H
+#endif // RULES_PYTHON_CONTEXT_H

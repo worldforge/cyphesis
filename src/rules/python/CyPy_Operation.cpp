@@ -42,7 +42,7 @@ CyPy_Operation::CyPy_Operation(Py::PythonClassInstance* self, Py::Tuple& args, P
 
     auto parent = verifyString(args.front());
     Root r = Inheritance::instance().getFactories().createObject(parent);
-    m_value = Atlas::Objects::smart_dynamic_cast<RootOperation>(r);
+    m_value = std::move(Atlas::Objects::smart_dynamic_cast<RootOperation>(r));
     if (!m_value) {
         m_value = Generic();
         m_value->setParent(parent);
@@ -448,7 +448,7 @@ int CyPy_Operation::setattro(const Py::String& name, const Py::Object& attr)
 
 Py::Object CyPy_Operation::copy()
 {
-    auto copy = m_value->copy();
+    Atlas::Objects::Operation::RootOperation copy(m_value->copy());
     return CyPy_Operation::wrap(copy);
 }
 

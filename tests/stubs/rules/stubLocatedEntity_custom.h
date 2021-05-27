@@ -5,6 +5,11 @@
 
 #ifndef STUB_LocatedEntity_LocatedEntity
 #define STUB_LocatedEntity_LocatedEntity
+LocatedEntity::LocatedEntity(long intId)
+        : LocatedEntity(std::to_string(intId), intId)
+{
+}
+
 LocatedEntity::LocatedEntity(const std::string & id, long intId)
     : Router(id, intId)
     , m_seq(0)

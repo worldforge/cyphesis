@@ -1,6 +1,7 @@
 add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 add_library(stubnavigation stubs/navigation/libstub.cpp DatabaseNull.h ../src/navigation/fastlz.c)
+add_library(pythonMalloc ../src/common/PythonMalloc.cpp)
 target_link_libraries(stubnavigation PUBLIC Detour)
 
 link_libraries(${PYTHON_LIBRARIES})
@@ -44,7 +45,7 @@ macro(wf_add_test TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery)
+    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery pythonMalloc)
 
 endmacro()
 

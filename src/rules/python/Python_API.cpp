@@ -27,7 +27,9 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/AssetsManager.h"
-
+#ifdef PYTHON_MALLOC
+#include "common/PythonMalloc.h"
+#endif
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 #include "rules/python/CyPy_Common.h"
 #include "rules/python/CyPy_Atlas.h"
@@ -251,37 +253,6 @@ void observe_python_directories(boost::asio::io_context& io_context, AssetsManag
     }
 }
 
-
-#ifdef PYTHON_MALLOC
-
-static void* Python_Malloc(void* ctx, size_t size)
-{
-    return malloc(size ? size : 1);
-}
-
-static void* Python_Realloc(void* ctx, void* ptr, size_t size)
-{
-    if (size == 0) {
-        size = 1;
-    }
-    return realloc(ptr, size ? size : 1);
-}
-
-static void* Python_Calloc(void* ctx, size_t nelem, size_t elsize)
-{
-    if (nelem == 0 || elsize == 0) {
-        nelem = 1;
-        elsize = 1;
-    }
-    return calloc(nelem, elsize);
-}
-
-static void Python_Free(void*, void* ptr)
-{
-    free(ptr);
-}
-#endif
-
 void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories, bool log_stdout)
 {
 
@@ -293,10 +264,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
     }
 
 #ifdef PYTHON_MALLOC
-    PyMemAllocatorEx alloc = {NULL, Python_Malloc, Python_Calloc, Python_Realloc, Python_Free};
-    PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &alloc);
-    PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &alloc);
-    PyMem_SetAllocator(PYMEM_DOMAIN_OBJ, &alloc);
+    setupPythonMalloc();
     log(INFO, "Python is using malloc for memory allocation.");
 #endif
 
@@ -346,7 +314,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
 void shutdown_python_api()
 {
 
-    Py_Finalize();
+    Py_FinalizeEx();
 }
 
 void run_user_scripts(const std::string& prefix)

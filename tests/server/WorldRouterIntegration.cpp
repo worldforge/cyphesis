@@ -76,42 +76,44 @@ struct WorldRouterintegration : public Cyphesis::TestBase
     {
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, timeProviderFn));
+            WorldRouter test_world(base, *m_eb, timeProviderFn);
 
             Anonymous ent;
             ent->setLoc("0");
-            auto ent1 = test_world->addNewEntity("thing", ent);
+            auto ent1 = test_world.addNewEntity("thing", ent);
 
-            ASSERT_EQUAL(2, test_world->m_entityCount);
+            ASSERT_EQUAL(2, test_world.m_entityCount);
 
-            test_world->delEntity(ent1.get());
+            test_world.delEntity(ent1.get());
             //A single entity when removed should have all references removed too.
-            ASSERT_EQUAL(1, test_world->m_entityCount);
+            ASSERT_EQUAL(1, test_world.m_entityCount);
             ASSERT_EQUAL(1, ent1->checkRef());
+            test_world.shutdown();
         }
 
         {
             Ref<LocatedEntity> base = new Entity("", 0);
-            std::unique_ptr<WorldRouter> test_world(new WorldRouter(base, *m_eb, timeProviderFn));
+            WorldRouter test_world(base, *m_eb, timeProviderFn);
 
             Anonymous ent;
             ent->setLoc("0");
-            auto ent1 = test_world->addNewEntity("thing", ent);
+            auto ent1 = test_world.addNewEntity("thing", ent);
 
-            ASSERT_EQUAL(2, test_world->m_entityCount);
+            ASSERT_EQUAL(2, test_world.m_entityCount);
 
             Anonymous ent2_arg{};
             ent2_arg->setLoc(ent1->getId());
-            auto ent2 = test_world->addNewEntity("thing", ent2_arg);
+            auto ent2 = test_world.addNewEntity("thing", ent2_arg);
 
-            ASSERT_EQUAL(3, test_world->m_entityCount);
+            ASSERT_EQUAL(3, test_world.m_entityCount);
             //Make sure ent2 is a child of ent1.
             ASSERT_EQUAL(ent2->m_location.m_parent.get(), ent1.get());
 
             //Make sure that a child when removed has all references removed too.
-            test_world->delEntity(ent2.get());
-            ASSERT_EQUAL(2, test_world->m_entityCount);
+            test_world.delEntity(ent2.get());
+            ASSERT_EQUAL(2, test_world.m_entityCount);
             ASSERT_EQUAL(1, ent2->checkRef());
+            test_world.shutdown();
 
         }
     }
@@ -190,36 +192,36 @@ void WorldRouterintegration::teardown()
 void WorldRouterintegration::test_sequence()
 {
     Ref<Entity> base = new Entity("", 0);
-    WorldRouter* test_world = new WorldRouter(base, *m_eb, timeProviderFn);
+    WorldRouter test_world(base, *m_eb, timeProviderFn);
 
-    auto ent1 = test_world->addNewEntity("__no_such_type__",
+    auto ent1 = test_world.addNewEntity("__no_such_type__",
                                          Anonymous());
     assert(!ent1);
 
     Anonymous ent;
     ent->setLoc("0");
-    ent1 = test_world->addNewEntity("thing", ent);
+    ent1 = test_world.addNewEntity("thing", ent);
     assert(ent1);
 
     std::string id;
     long int_id = newId(id);
 
-    Entity* ent2 = new Thing(id, int_id);
+    Ref<Entity> ent2 = new Thing(id, int_id);
     assert(ent2 != 0);
     ent2->m_location.m_pos = Point3D(0, 0, 0);
-    test_world->addEntity(ent2, base);
+    test_world.addEntity(ent2, base);
 
     Tick tick;
     tick->setFutureSeconds(0);
     tick->setTo(ent2->getId());
-    test_world->message(tick, *ent2);
+    test_world.message(tick, *ent2);
 
 
-    test_world->delEntity(base.get());
-//    test_world->delEntity(ent4);
+    test_world.delEntity(base.get());
+//    test_world.delEntity(ent4);
 //    ent4 = 0;
 
-    delete test_world;
+    test_world.shutdown();
 }
 
 int main()

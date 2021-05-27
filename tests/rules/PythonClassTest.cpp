@@ -30,6 +30,7 @@
 #include "rules/python/PythonClass.h"
 #include "pycxx/CXX/Extensions.hxx"
 #include <cassert>
+#include <common/PythonMalloc.h>
 
 Py::Object* stub_Get_PyClass_return = nullptr;
 Py::Module* stub_Get_PyModule_return = nullptr;
@@ -81,6 +82,7 @@ struct TestMod : public Py::ExtensionModule<TestMod>
 
 int main()
 {
+    setupPythonMalloc();
     PyImport_AppendInittab("testmod", []() {
         static TestMod testMod;
         return testMod.module().ptr();
@@ -88,80 +90,82 @@ int main()
 
     Py_Initialize();
 
-
-    run_python_string("import testmod");
-
-    run_python_string("class BadClass:\n"
-                      " pass\n");
-    run_python_string("class GoodClass(object):\n"
-                      " pass\n");
-    run_python_string("testmod.BadClass=BadClass");
-    run_python_string("testmod.GoodClass=GoodClass");
-
-    Py::Module testmod("testmod");
-    auto good_class = Py::Callable(testmod.getAttr("GoodClass"));
-
     {
-        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+        run_python_string("import testmod");
 
-        TestPythonClass* pc = new TestPythonClass(package, type);
+        run_python_string("class BadClass:\n"
+                          " pass\n");
+        run_python_string("class GoodClass(object):\n"
+                          " pass\n");
+        run_python_string("testmod.BadClass=BadClass");
+        run_python_string("testmod.GoodClass=GoodClass");
 
-        assert(pc != nullptr);
+        Py::Module testmod("testmod");
+        auto good_class = Py::Callable(testmod.getAttr("GoodClass"));
 
-        assert(pc->access_package() == package);
-        assert(pc->access_type() == type);
+        {
+            const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+            const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
 
-        assert(pc->access_module().isNull());
-        assert(!pc->access_class());
+            TestPythonClass* pc = new TestPythonClass(package, type);
 
-        delete pc;
+            assert(pc != nullptr);
+
+            assert(pc->access_package() == package);
+            assert(pc->access_type() == type);
+
+            assert(pc->access_module().isNull());
+            assert(!pc->access_class());
+
+            delete pc;
+        }
+
+        {
+            const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+            const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+
+            TestPythonClass* pc = new TestPythonClass(package, type);
+
+            stub_Get_PyModule_return = nullptr;
+            stub_Get_PyClass_return = nullptr;
+
+            int ret = pc->test_load();
+
+            assert(ret == -1);
+            delete pc;
+        }
+
+        {
+            const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+            const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+
+            TestPythonClass* pc = new TestPythonClass(package, type);
+
+            stub_Get_PyModule_return = &testmod;
+            stub_Get_PyClass_return = nullptr;
+
+            int ret = pc->test_load();
+
+            assert(ret == -1);
+            delete pc;
+        }
+
+        {
+            const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
+            const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
+
+            TestPythonClass* pc = new TestPythonClass(package, type);
+
+            stub_Get_PyModule_return = &testmod;
+            stub_Get_PyClass_return = &good_class;
+
+            int ret = pc->test_load();
+
+            assert(ret == 0);
+            delete pc;
+        }
     }
-
-    {
-        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
-
-        TestPythonClass* pc = new TestPythonClass(package, type);
-
-        stub_Get_PyModule_return = nullptr;
-        stub_Get_PyClass_return = nullptr;
-
-        int ret = pc->test_load();
-
-        assert(ret == -1);
-        delete pc;
-    }
-
-    {
-        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
-
-        TestPythonClass* pc = new TestPythonClass(package, type);
-
-        stub_Get_PyModule_return = &testmod;
-        stub_Get_PyClass_return = nullptr;
-
-        int ret = pc->test_load();
-
-        assert(ret == -1);
-        delete pc;
-    }
-
-    {
-        const char* package = "acfd44fd-dccb-4a63-98c3-6facd580ca5f";
-        const char* type = "3265e96a-28a0-417c-ad30-2970c1777c50";
-
-        TestPythonClass* pc = new TestPythonClass(package, type);
-
-        stub_Get_PyModule_return = &testmod;
-        stub_Get_PyClass_return = &good_class;
-
-        int ret = pc->test_load();
-
-        assert(ret == 0);
-        delete pc;
-    }
+    Py_FinalizeEx();
 
     return 0;
 }

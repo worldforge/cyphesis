@@ -33,6 +33,7 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
+#include <common/PythonMalloc.h>
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;
@@ -40,6 +41,7 @@ using Atlas::Message::Element;
 
 int main()
 {
+    setupPythonMalloc();
     Py_InitializeEx(0);
 
     TasksProperty ap;

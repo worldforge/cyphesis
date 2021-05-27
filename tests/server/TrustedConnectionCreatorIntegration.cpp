@@ -181,6 +181,7 @@ void TrustedConnectionCreatorintegration::teardown()
     m_BaseWorld_message_called = nullptr;
     m_BaseWorld_message_called_from = nullptr;
     m_gw.reset();
+    m_world->shutdown();
     m_world.reset();
 
 
@@ -197,13 +198,13 @@ void TrustedConnectionCreatorintegration::test_external_op()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    auto mind = new AdminMind("6", 6, m_creator);
-    m_connection->addObject(mind);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
-    mind->linkUp(m_connection);
+    AdminMind mind("6", 6, m_creator);
+    m_connection->addObject(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    mind.linkUp(m_connection);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
 
     m_connection->externalOperation(op, *m_connection);
     m_connection->dispatch(1);
@@ -225,13 +226,13 @@ void TrustedConnectionCreatorintegration::test_external_op_override()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    auto mind = new AdminMind("6", 6, m_creator);
-    m_connection->addObject(mind);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
-    mind->linkUp(m_connection);
+    AdminMind mind("6", 6, m_creator);
+    m_connection->addObject(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    mind.linkUp(m_connection);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
     op->setTo(m_creator->getId());
 
     m_connection->externalOperation(op, *m_connection);
@@ -252,17 +253,17 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    auto mind = new AdminMind("6", 6, m_creator);
-    m_connection->addObject(mind);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
-    mind->linkUp(m_connection);
+    AdminMind mind("6", 6, m_creator);
+    m_connection->addObject(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    mind.linkUp(m_connection);
 
     Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
     op->setTo(other->getId());
 
     m_connection->externalOperation(op, *m_connection);
@@ -285,17 +286,17 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    auto mind = new AdminMind("6", 6, m_creator);
-    m_connection->addObject(mind);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
-    mind->linkUp(m_connection);
+    AdminMind mind("6", 6, m_creator);
+    m_connection->addObject(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    mind.linkUp(m_connection);
 
     Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other, m_gw);
 
     Atlas::Objects::Operation::Talk op;
-    op->setFrom(mind->getId());
+    op->setFrom(mind.getId());
     op->setTo(compose("%1", m_id_counter++));
 
     TestDecoder decoder{factories};
@@ -310,7 +311,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     ASSERT_TRUE(decoder.m_obj.isValid());
     ASSERT_EQUAL(decoder.m_obj->getParent(), "unseen");
     ASSERT_TRUE(!Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->isDefaultTo());
-    ASSERT_EQUAL(Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->getTo(), mind->getId());
+    ASSERT_EQUAL(Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(decoder.m_obj)->getTo(), mind.getId());
 }
 
 int main()

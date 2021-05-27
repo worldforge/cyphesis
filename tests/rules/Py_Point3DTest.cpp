@@ -32,9 +32,11 @@
 #include <cassert>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Atlas.h>
+#include <common/PythonMalloc.h>
 
 int main()
 {
+    setupPythonMalloc();
     init_python_api({&CyPy_Atlas::init, &CyPy_Physics::init});
 
     run_python_string("from physics import Point3D");

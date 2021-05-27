@@ -24,13 +24,16 @@
 #include <sigc++/trackable.h>
 
 #include <memory>
+#include <boost/asio/ip/tcp.hpp>
 
 class CommPeer;
 class Connection;
 class LocatedEntity;
 class Peer;
 
-class PeerAddress;
+struct PeerAddress {
+    boost::asio::ip::tcp::resolver::iterator i;
+};
 
 /// \brief Class managing and persisting connections to another server that
 /// is peered to this one
@@ -45,7 +48,7 @@ class Juncture : public ConnectableRouter, virtual public sigc::trackable {
 
     /// \brief The network connection currently subscribed to this object
     Connection * m_connection;
-    PeerAddress * m_address;
+    PeerAddress m_address;
 
     std::weak_ptr<CommPeer> m_socket;
     Peer * m_peer;

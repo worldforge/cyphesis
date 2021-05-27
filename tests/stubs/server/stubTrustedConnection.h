@@ -9,9 +9,9 @@
 
 #ifndef STUB_TrustedConnection_newAccount
 //#define STUB_TrustedConnection_newAccount
-  Account* TrustedConnection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, const std::string& id, long intId)
+  std::unique_ptr<Account> TrustedConnection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, const std::string& id, long intId)
   {
-    return nullptr;
+    return *static_cast<std::unique_ptr<Account>*>(nullptr);
   }
 #endif //STUB_TrustedConnection_newAccount
 

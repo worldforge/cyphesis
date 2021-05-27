@@ -16,7 +16,6 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <Python.h>
 
 #include "PythonClass.h"
 
@@ -24,6 +23,7 @@
 
 #include "common/log.h"
 #include "common/compose.hpp"
+#include <Python.h>
 
 /// \brief ScriptKit constructor
 /// 

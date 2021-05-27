@@ -38,6 +38,7 @@
 #include <rules/simulation/python/CyPy_Server.h>
 #include <rules/python/CyPy_Atlas.h>
 #include <common/Inheritance.h>
+#include <common/PythonMalloc.h>
 
 Atlas::Objects::Factories factories;
 
@@ -49,6 +50,7 @@ static bool stub_wait_fail = false;
 
 int main()
 {
+    setupPythonMalloc();
     NullPropertyManager propertyManager;
     Inheritance inheritance(factories);
     boost::asio::io_context io_context;

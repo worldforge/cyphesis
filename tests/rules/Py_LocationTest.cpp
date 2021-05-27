@@ -41,9 +41,11 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Rules.h>
 #include <rules/ai/python/CyPy_Ai.h>
+#include <common/PythonMalloc.h>
 
 int main()
 {
+    setupPythonMalloc();
     init_python_api({&CyPy_Server::init,
                      &CyPy_Rules::init,
                      &CyPy_Atlas::init,

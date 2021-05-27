@@ -107,7 +107,7 @@ class WorldRouter : public BaseWorld
         Ref<LocatedEntity> findByType(const std::string& type) override;
 
         /// \brief Signal that a new Entity has been inserted.
-        sigc::signal<void, LocatedEntity*> inserted;
+        sigc::signal<void, LocatedEntity&> inserted;
 
         friend class WorldRoutertest;
 
