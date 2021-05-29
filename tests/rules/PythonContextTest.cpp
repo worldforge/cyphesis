@@ -41,7 +41,7 @@ int main()
         pc.runCommand("1");
         pc.runCommand("foo()");
     }
-    Py_FinalizeEx();
+    Py_Finalize();
 
     return 0;
 }

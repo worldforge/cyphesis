@@ -314,7 +314,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
 void shutdown_python_api()
 {
 
-    Py_FinalizeEx();
+    Py_Finalize();
 }
 
 void run_user_scripts(const std::string& prefix)

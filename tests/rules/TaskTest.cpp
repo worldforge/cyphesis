@@ -220,7 +220,7 @@ int main()
 
     Py_InitializeEx(0);
     auto result = Tasktest{}.run();
-    Py_FinalizeEx();
+    Py_Finalize();
     return result;
 }
 

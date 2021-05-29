@@ -165,7 +165,7 @@ int main()
             delete pc;
         }
     }
-    Py_FinalizeEx();
+    Py_Finalize();
 
     return 0;
 }
