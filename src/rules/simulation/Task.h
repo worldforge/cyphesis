@@ -43,7 +43,10 @@ struct TaskUsage
 };
 
 /// \brief Interface class for handling tasks which take a short while to
-/// complete
+/// complete.
+/// If you create an instance of this though Python you must be careful to call "irrelevant"
+/// when shutting down it. This is to make sure it releases its script reference. If not there's
+/// a risk of having a cyclic relationship between Python objects, with the effect of memory not being reclaimed.
 class Task : public boost::noncopyable, public ReferenceCounted
 {
     protected:

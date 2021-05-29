@@ -66,7 +66,6 @@ int main()
         run_python_string("assert t.tick_interval == 11.0");
         run_python_string("assert t.duration == 12.0");
         run_python_string("assert t.progress == 0.5");
-        run_python_string("t==Task(server.usageInstance)");
         run_python_string("assert t.actor == c");
         run_python_string("print(t.progress)");
         expect_python_error("print(t.foo)", PyExc_AttributeError);
@@ -87,7 +86,10 @@ int main()
         run_python_string("t2.foo = 1.1");
         run_python_string("t2.foo = 'foois1'");
         run_python_string("assert t2.foo == 'foois1'");
-        run_python_string("assert t!=Task(server.usageInstance)");
+        run_python_string("t_temp = Task(server.usageInstance)");
+        run_python_string("assert t!=t_temp");
+        run_python_string("t_temp.irrelevant()");
+        run_python_string("t2.irrelevant()");
 
 
         // Tasks do not permit wrappers of core server objects

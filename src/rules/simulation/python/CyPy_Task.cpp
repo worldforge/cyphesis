@@ -39,7 +39,7 @@ Py::Object wrapPython(Task* value)
 }
 
 CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-        : WrapperBase(self, args, kwds), mOwned(false)
+        : WrapperBase(self, args, kwds)
 {
     args.verify_length(1);
     auto arg = args.front();
@@ -47,9 +47,6 @@ CyPy_Task::CyPy_Task(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& k
         m_value = CyPy_Task::value(arg);
     } else if (CyPy_UsageInstance::check(arg)) {
         m_value = new Task(CyPy_UsageInstance::value(arg), this->self());
-        //Avoid circular references (and memory leaks) by decrementing reference count on this instance, since a copy is passed to the Task instance.
-        this->self().decrement_reference_count();
-        mOwned = true;
     } else {
         throw Py::TypeError("Task requires a Task, or UsageInstance");
     }
@@ -116,11 +113,6 @@ void CyPy_Task::init_type()
 Py::Object CyPy_Task::irrelevant(const Py::Tuple& args)
 {
     if (!m_value->obsolete()) {
-        if (mOwned) {
-            //If the Task instance was created and owned by this instance calling "irrelevant" will zero out the script reference, and delete this instance.
-            //We therefore need to increment it again.
-            this->self().increment_reference_count();
-        }
         m_value->irrelevant();
         if (args.size() > 0) {
             args.verify_length(1);
