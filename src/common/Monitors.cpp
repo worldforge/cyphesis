@@ -106,5 +106,11 @@ int Monitors::readVariable(const std::string& key, std::ostream& out_stream) con
         return 0;
     }
 
+    auto I = m_pairs.find(key);
+    if (I != m_pairs.end()) {
+        out_stream << I->second;
+        return 0;
+    }
+
     return 1;
 }
