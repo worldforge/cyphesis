@@ -235,7 +235,7 @@ int main()
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/rules/simulation/stubScriptUtils.h"
 #include "../stubs/common/stubProperty.h"
-#include "../stubs/rules/simulation/stubActionsProperty.h"
+//#include "../stubs/rules/simulation/stubActionsProperty.h"
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 
 #define STUB_Script_operation
