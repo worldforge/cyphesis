@@ -146,7 +146,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         {
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
-            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
+            t1->m_location.setBBox({{-128, -128, -128},
+                                    {128,  128,  128}});
             t1->setAttrValue("domain", "physical");
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             context.testWorld.addEntity(t1, context.world);
@@ -254,7 +255,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         {
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
-            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
+            t1->m_location.setBBox({{-128, -128, -128},
+                                    {128,  128,  128}});
             t1->setAttrValue("domain", "physical");
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             context.testWorld.addEntity(t1, context.world);
@@ -333,7 +335,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-1, -1, -1), WFMath::Point<3>(1, 1, 1));
             Ref<Thing> t1 = new Thing(1);
-            t1->m_location.setBBox({{-128, -128, -128}, {128, 128, 128}});
+            t1->m_location.setBBox({{-128, -128, -128},
+                                    {128,  128,  128}});
             t1->setAttrValue("domain", "physical");
             t1->m_location.m_pos = WFMath::Point<3>::ZERO();
             context.testWorld.addEntity(t1, context.world);
@@ -491,9 +494,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
 
                 ASSERT_EQUAL(t3->getId(), secondOp->getTo())
-                ASSERT_EQUAL(2u, secondOp->getArgs().size()) //From both t4 and t5
-                ASSERT_EQUAL(t4->getId(), secondOp->getArgs()[0]->getId());
-                ASSERT_EQUAL(t5->getId(), secondOp->getArgs()[1]->getId());
+                ASSERT_EQUAL(2u, secondOp->getArgs().size()) //From both t4 and t5, could be in any order
+                ASSERT_TRUE(t4->getId() == secondOp->getArgs()[0]->getId() || t5->getId() == secondOp->getArgs()[0]->getId());
+                ASSERT_TRUE(t4->getId() == secondOp->getArgs()[1]->getId() || t5->getId() == secondOp->getArgs()[1]->getId());
             }
 
             //Move t3 closer again
