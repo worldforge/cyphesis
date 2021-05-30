@@ -91,6 +91,7 @@ void WorldRouter::addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEnti
 {
     debug_print("WorldRouter::addEntity(" << ent->describeEntity() << ")")
     assert(ent->getIntId() != 0);
+    assert(m_eobjects.find(ent->getIntId()) == m_eobjects.end());
     m_eobjects[ent->getIntId()] = ent;
     ++m_entityCount;
 

@@ -55,8 +55,12 @@ IGEntityExerciser::IGEntityExerciser(const Ref<Entity>& e) :
         e->m_location.m_parent->m_contains->insert(e);
         m_testWorld = std::make_unique<TestWorld>(e->m_location.m_parent);
     }
-    BaseWorld::instance().addEntity(e, parent);
+    m_testWorld->addEntity(e, parent);
 }
+
+IGEntityExerciser::~IGEntityExerciser() {
+    m_testWorld->shutdown();
+};
 
 bool IGEntityExerciser::checkProperties(const std::set<std::string> & prop_names)
 {

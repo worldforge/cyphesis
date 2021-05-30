@@ -35,6 +35,7 @@ class IGEntityExerciser : public EntityExerciser {
     Ref<Entity> m_ent;
   public:
     explicit IGEntityExerciser(const Ref<Entity>& e);
+    ~IGEntityExerciser() override;
 
     bool checkProperties(const std::set<std::string> & prop_names) override;
 

@@ -140,8 +140,10 @@ int ModifyProperty::get(Atlas::Message::Element& val) const
 void ModifyProperty::remove(LocatedEntity* owner, const std::string& name)
 {
     auto* state = sInstanceState.getState(owner);
-    newLocation(*state, *owner, nullptr);
-    state->updatedConnection.disconnect();
+    if (state) {
+        newLocation(*state, *owner, nullptr);
+        state->updatedConnection.disconnect();
+    }
     sInstanceState.removeState(owner);
 }
 

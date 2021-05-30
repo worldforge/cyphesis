@@ -33,7 +33,7 @@ class InventoryDomain : public Domain
     public:
         explicit InventoryDomain(LocatedEntity& entity);
 
-        ~InventoryDomain() override = default;
+        ~InventoryDomain() override;
 
         bool isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const override;
 
@@ -63,6 +63,8 @@ class InventoryDomain : public Domain
         };
 
         std::map<std::string, std::map<ClosenessObserverEntry*, std::unique_ptr<ClosenessObserverEntry>>> m_closenessObservations;
+
+        void removeClosenessObservation(const std::string& entityId);
 //        std::map<ClosenessObserverEntry*, std::unique_ptr<ClosenessObserverEntry>> m_closenessObservations;
 
 //        std::multimap<std::string, std::function<void()>> m_closenessObservations;

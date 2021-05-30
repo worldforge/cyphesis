@@ -1347,7 +1347,8 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         }
     }
 
-    for (auto& observation : entry->closenessObservations) {
+    auto closenessObservationsCopy = entry->closenessObservations;
+    for (auto& observation : closenessObservationsCopy) {
         if (observation->callback) {
             observation->callback();
         }

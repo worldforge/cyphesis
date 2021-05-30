@@ -44,6 +44,20 @@ InventoryDomain::InventoryDomain(LocatedEntity& entity) :
     entity.makeContainer();
 }
 
+InventoryDomain::~InventoryDomain()
+{
+    //Clean up observers in a safe manner (as they will alter the m_closenessObservations map on deletion).
+    std::vector<std::string> observingIds;
+    observingIds.reserve(m_closenessObservations.size());
+    for (auto& entry : m_closenessObservations) {
+        observingIds.emplace_back(entry.first);
+    }
+    for (auto& entityId : observingIds) {
+        removeClosenessObservation(entityId);
+    }
+}
+
+
 void InventoryDomain::addEntity(LocatedEntity& entity)
 {
     //Check if entity should be stacked.
@@ -70,10 +84,10 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
     }
 }
 
-void InventoryDomain::removeEntity(LocatedEntity& entity)
+void InventoryDomain::removeClosenessObservation(const std::string& entityId)
 {
     //Since closeness observation callbacks can trigger alterations to the collections we need to extra precautions to iterate in a safe manner, which allows outside modifications.
-    auto I = m_closenessObservations.find(entity.getId());
+    auto I = m_closenessObservations.find(entityId);
     while (I != m_closenessObservations.end()) {
         auto& observations = I->second;
         if (observations.empty()) {
@@ -85,8 +99,15 @@ void InventoryDomain::removeEntity(LocatedEntity& entity)
             observations.erase(J);
             obs->callback();
         }
-        I = m_closenessObservations.find(entity.getId());
+        I = m_closenessObservations.find(entityId);
     }
+
+}
+
+
+void InventoryDomain::removeEntity(LocatedEntity& entity)
+{
+    removeClosenessObservation(entity.getId());
 }
 
 bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const

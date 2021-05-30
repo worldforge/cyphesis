@@ -423,6 +423,7 @@ void LocatedEntity::destroy()
 
     if (m_location.m_parent) {
         m_location.m_parent->removeChild(*this);
+        m_location.m_parent = nullptr;
     }
 
     clearProperties();

@@ -52,23 +52,20 @@ struct TestContext
     WorldRouter testWorld;
     NullEntityCreator entityCreator;
     CorePropertyManager propertyManager;
+    long entityId;
 
     TestContext() :
             world(new World()),
             inheritance(factories),
             testWorld(world, entityCreator, [] { return std::chrono::steady_clock::now().time_since_epoch(); }),
-            propertyManager(inheritance)
+            propertyManager(inheritance),
+            entityId(1)
     {
     }
 
-    ~TestContext() {
-        if (world->m_contains) {
-            for (auto child : *world->m_contains) {
-                child->destroy();
-            }
-            world->m_contains->clear();
-        }
-        world->destroy();
+    ~TestContext()
+    {
+        testWorld.shutdown();
     }
 };
 
@@ -125,18 +122,18 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          *
          */
         {
-            Ref<Thing> t1 = new Thing(1);
+            Ref<Thing> t1 = new Thing(context.entityId++);
             t1->m_location.setBBox({{-512, -10, -512},
                                     {512,  10,  512}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
-            Ref<Thing> t2 = new Thing(2);
+            Ref<Thing> t2 = new Thing(context.entityId++);
             t2->m_location.m_pos = {0, 0, 0};
             t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t2->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             context.testWorld.addEntity(t2, t1);
-            Ref<Thing> t3 = new Thing(3);
+            Ref<Thing> t3 = new Thing(context.entityId++);
             t3->m_location.m_pos = {0, 0, 0};
             t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t3->m_location.setBBox({{-1, 0, -1},
@@ -216,19 +213,19 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
           *          T4       T5
           */
         {
-            Ref<Thing> t1 = new Thing(1);
+            Ref<Thing> t1 = new Thing(context.entityId++);
             t1->m_location.setBBox({{-512, -10, -512},
                                     {512,  10,  512}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
-            Ref<Thing> t2 = new Thing(2);
+            Ref<Thing> t2 = new Thing(context.entityId++);
             t2->m_location.m_pos = {0, 0, 0};
             t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t2->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             t2->setAttrValue("domain", "container");
             context.testWorld.addEntity(t2, t1);
-            Ref<Thing> t3 = new Thing(3);
+            Ref<Thing> t3 = new Thing(context.entityId++);
             t3->m_location.m_pos = {0, 0, 0};
             t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t3->m_location.setBBox({{-1, 0, -1},
@@ -236,12 +233,12 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t3->setAttrValue("domain", "container");
             context.testWorld.addEntity(t3, t1);
 
-            Ref<Thing> t4 = new Thing(4);
+            Ref<Thing> t4 = new Thing(context.entityId++);
             t4->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             context.testWorld.addEntity(t4, t2);
 
-            Ref<Thing> t5 = new Thing(5);
+            Ref<Thing> t5 = new Thing(context.entityId++);
             t5->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             context.testWorld.addEntity(t5, t3);
@@ -309,35 +306,35 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
           *          T4       T5
           */
         {
-            Ref<Thing> t1 = new Thing(1);
+            Ref<Thing> t1 = new Thing(context.entityId++);
             t1->m_location.setBBox({{-512, -10, -512},
                                     {512,  10,  512}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
-            Ref<Thing> t2 = new Thing(2);
+            Ref<Thing> t2 = new Thing(context.entityId++);
             t2->m_location.m_pos = {0, 0, 0};
             t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t2->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             t2->setAttrValue("domain", "container");
             context.testWorld.addEntity(t2, t1);
-            Ref<Thing> t3 = new Thing(3);
+            Ref<Thing> t3 = new Thing(context.entityId++);
             t3->m_location.m_pos = {0, 0, 0};
             t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t3->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             context.testWorld.addEntity(t3, t1);
 
-            Ref<Thing> t4 = new Thing(4);
+            Ref<Thing> t4 = new Thing(context.entityId++);
             t4->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             context.testWorld.addEntity(t4, t2);
 
-            Ref<Thing> t5 = new Thing(5);
+            Ref<Thing> t5 = new Thing(context.entityId++);
             t5->m_location.setBBox({{-1, 0, -1},
                                     {1,  1, 1}});
             context.testWorld.addEntity(t5, t3);
-            Ref<Thing> t6 = new Thing(6);
+            Ref<Thing> t6 = new Thing(context.entityId++);
             t6->m_location.m_pos = {0, 0, 0};
             t6->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t6->m_location.setBBox({{-1, 0, -1},
@@ -459,7 +456,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             }
             ASSERT_EQUAL(t3->m_location.m_parent, t1)
 
-            t6->setAttrValue("mover_constraint", "entity.id = 3");
+            t6->setAttrValue("mover_constraint", std::string("entity.id = ") + t3->getId());
 
             //A Thought about a Move for moving t3 to t6 should be allowed if the "mover_constraint" matches.
             {
@@ -484,7 +481,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             }
             ASSERT_EQUAL(t3->m_location.m_parent, t6)
 
-            t3->setAttrValue("move_constraint", "entity.id = 3");
+            t3->setAttrValue("move_constraint", std::string("entity.id = ") + t3->getId());
             //A Thought about a Move for moving t3 to t1 should be allowed if "move_constraint" matches
             {
                 Anonymous ent;
@@ -555,12 +552,12 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         *          T2*      T3
         */
         {
-            Ref<Thing> t1 = new Thing(1);
+            Ref<Thing> t1 = new Thing(context.entityId++);
             t1->m_location.setBBox({{-512, -10, -512},
                                     {512,  10,  512}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
-            Ref<Thing> t2 = new Thing(2);
+            Ref<Thing> t2 = new Thing(context.entityId++);
             t2->m_location.m_pos = {0, 0, 0};
             t2->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t2->m_location.setBBox({{-1, 0, -1},
@@ -570,7 +567,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t2->setAttrValue(MindsProperty::property_name, {});
             t2->setAttrValue("mover_constraint", "entity.mass = none or entity.mass < 20");
             context.testWorld.addEntity(t2, t1);
-            Ref<Thing> t3 = new Thing(3);
+            Ref<Thing> t3 = new Thing(context.entityId++);
             t3->m_location.m_pos = {0, 0, 0};
             t3->m_location.m_orientation = WFMath::Quaternion::IDENTITY();
             t3->m_location.setBBox({{-1, 0, -1},
@@ -623,27 +620,27 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
          *         T4        T5
          */
         {
-            Ref<Thing> t1 = new Thing("1", 1);
+            Ref<Thing> t1 = new Thing(context.entityId++);
             t1->m_location.setBBox({{-128, -128, -128},
                                     {128,  128,  128}});
             t1->setAttrValue("domain", "physical");
             context.testWorld.addEntity(t1, context.world);
-            Ref<Thing> t2 = new Thing("2", 2);
+            Ref<Thing> t2 = new Thing(context.entityId++);
             t2->m_location.m_pos = {10, 0, 20};
             t2->m_location.setBBox(bbox);
             t2->m_location.m_orientation = WFMath::Quaternion(1, 2.0);
             t2->setAttrValue("domain", "container");
             context.testWorld.addEntity(t2, t1);
-            Ref<Thing> t3 = new Thing("3", 3);
+            Ref<Thing> t3 = new Thing(context.entityId++);
             t3->m_location.m_pos = {20, 0, 20};
             t3->m_location.setBBox(bbox);
             context.testWorld.addEntity(t3, t1);
-            Ref<Thing> t4 = new Thing("4", 4);
+            Ref<Thing> t4 = new Thing(context.entityId++);
             t4->m_location.m_pos = WFMath::Point<3>::ZERO();
             t4->m_location.setBBox(bbox);
             t4->m_location.m_pos = {30, 0, 20};
             context.testWorld.addEntity(t4, t2);
-            Ref<Thing> t5 = new Thing("5", 5);
+            Ref<Thing> t5 = new Thing(context.entityId++);
             t5->m_location.m_pos = WFMath::Point<3>::ZERO();
             t5->m_location.setBBox(bbox);
             t5->m_location.m_pos = {40, 0, 20};
@@ -664,9 +661,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         }
     }
 
-    void test_setProps(const TestContext& context)
+    void test_setProps(TestContext& context)
     {
-        Ref<Thing> entity(new Thing("1", 1));
+        Ref<Thing> entity(new Thing(context.entityId++));
 
         ASSERT_FALSE(entity->getAttr("foo"));
 
@@ -685,9 +682,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(*entity->getAttr("foo"), 2);
     }
 
-    void test_setModifySelf(const TestContext& context)
+    void test_setModifySelf(TestContext& context)
     {
-        Ref<Thing> entity(new Thing("1", 1));
+        Ref<Thing> entity(new Thing(context.entityId++));
         sendSetOp(entity, "modify_self", MapType{{"set_by_test",
                                                          MapType{
                                                                  {"constraint", "true = true"},
@@ -722,10 +719,10 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
     }
 
-    void test_setModify(const TestContext& context)
+    void test_setModify(TestContext& context)
     {
-        Ref<Thing> entity(new Thing("1", 1));
-        Ref<Thing> entityChild(new Thing("2", 2));
+        Ref<Thing> entity(new Thing(context.entityId++));
+        Ref<Thing> entityChild(new Thing(context.entityId++));
         entity->addChild(*entityChild);
         sendSetOp(entityChild, "modify", ListType{
                 MapType{
@@ -772,11 +769,11 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
     void test_modifyWithAttachConstraints(TestContext& context)
     {
-        Ref<Thing> entity(new Thing("1", 1));
+        Ref<Thing> entity(new Thing(context.entityId++));
         context.testWorld.addEntity(entity, context.world);
         sendSetOp(entity, "attachments", MapType{{"hand_primary", "contains(actor.contains, child = tool)"}});
 
-        Ref<Thing> entityChild(new Thing("2", 2));
+        Ref<Thing> entityChild(new Thing(context.entityId++));
         context.testWorld.addEntity(entityChild, entity);
         sendSetOp(entityChild, "modify", ListType{
                 MapType{
