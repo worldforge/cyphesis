@@ -38,50 +38,51 @@
 int main()
 {
     setupPythonMalloc();
-    init_python_api({&CyPy_Atlas::init,
-                     &CyPy_Physics::init,
-                     &CyPy_Common::init});
+    {
+        init_python_api({&CyPy_Atlas::init,
+                         &CyPy_Physics::init,
+                         &CyPy_Common::init});
 
-    run_python_string("from physics import BBox");
-    run_python_string("b=BBox()");
-    expect_python_error("b=BBox([1])", PyExc_ValueError);
-    run_python_string("b=BBox([1,1,1])");
-    run_python_string("b=BBox([1.0,1.0,1.0])");
-    run_python_string("b=BBox([1,1,1])");
-    expect_python_error("b=BBox(['1','1','1'])", PyExc_TypeError);
-    run_python_string("from atlas import ElementList");
-    run_python_string("b=BBox(ElementList(1,1,1))");
-    expect_python_error("b=BBox(ElementList('1', '1','1'))",
-                        PyExc_TypeError);
-    expect_python_error("b=BBox(1)", PyExc_TypeError);
-    expect_python_error("b=BBox(1,1)", PyExc_TypeError);
-    run_python_string("b=BBox(1,1,1)");
-    run_python_string("b=BBox(1.0,1.0,1.0)");
-    expect_python_error("b=BBox('1','1','1')", PyExc_TypeError);
-    run_python_string("b=BBox(0.0,0.0,0.0,1.0,1.0,1.0)");
-    run_python_string("from physics import Point3D");
-    run_python_string("assert b.low_corner == Point3D(0.0,0.0,0.0)");
-    run_python_string("assert b.high_corner == Point3D(1.0,1.0,1.0)");
-    run_python_string("assert b.as_sequence() == [0.0,0.0,0.0,1.0,1.0,1.0]");
-    run_python_string("assert b.square_bounding_radius() > 1");
-    expect_python_error("b.low_corner=1", PyExc_TypeError);
-    expect_python_error("b.low_corner=Point3D()", PyExc_ValueError);
-    expect_python_error("b.high_corner=Point3D()", PyExc_ValueError);
-    run_python_string("b.low_corner=Point3D(0,0,0)");
-    run_python_string("b.high_corner=Point3D(2,2,2)");
-    expect_python_error("b.other=Point3D(0,0,0)", PyExc_AttributeError);
-    run_python_string("assert b.high_corner == Point3D(2,2,2)");
-    run_python_string("assert b.square_bounding_radius() > 2");
-    run_python_string("b2=BBox()");
-    run_python_string("assert not b == b2");
-    run_python_string("assert b != b2");
-    run_python_string("b2.low_corner=Point3D(0,0,0)");
-    run_python_string("b2.high_corner=Point3D(2,2,2)");
-    run_python_string("assert b == b2");
-    run_python_string("assert not b != b2");
-    run_python_string("assert not b == '0'");
-    
+        run_python_string("from physics import BBox");
+        run_python_string("b=BBox()");
+        expect_python_error("b=BBox([1])", PyExc_ValueError);
+        run_python_string("b=BBox([1,1,1])");
+        run_python_string("b=BBox([1.0,1.0,1.0])");
+        run_python_string("b=BBox([1,1,1])");
+        expect_python_error("b=BBox(['1','1','1'])", PyExc_TypeError);
+        run_python_string("from atlas import ElementList");
+        run_python_string("b=BBox(ElementList(1,1,1))");
+        expect_python_error("b=BBox(ElementList('1', '1','1'))",
+                            PyExc_TypeError);
+        expect_python_error("b=BBox(1)", PyExc_TypeError);
+        expect_python_error("b=BBox(1,1)", PyExc_TypeError);
+        run_python_string("b=BBox(1,1,1)");
+        run_python_string("b=BBox(1.0,1.0,1.0)");
+        expect_python_error("b=BBox('1','1','1')", PyExc_TypeError);
+        run_python_string("b=BBox(0.0,0.0,0.0,1.0,1.0,1.0)");
+        run_python_string("from physics import Point3D");
+        run_python_string("assert b.low_corner == Point3D(0.0,0.0,0.0)");
+        run_python_string("assert b.high_corner == Point3D(1.0,1.0,1.0)");
+        run_python_string("assert b.as_sequence() == [0.0,0.0,0.0,1.0,1.0,1.0]");
+        run_python_string("assert b.square_bounding_radius() > 1");
+        expect_python_error("b.low_corner=1", PyExc_TypeError);
+        expect_python_error("b.low_corner=Point3D()", PyExc_ValueError);
+        expect_python_error("b.high_corner=Point3D()", PyExc_ValueError);
+        run_python_string("b.low_corner=Point3D(0,0,0)");
+        run_python_string("b.high_corner=Point3D(2,2,2)");
+        expect_python_error("b.other=Point3D(0,0,0)", PyExc_AttributeError);
+        run_python_string("assert b.high_corner == Point3D(2,2,2)");
+        run_python_string("assert b.square_bounding_radius() > 2");
+        run_python_string("b2=BBox()");
+        run_python_string("assert not b == b2");
+        run_python_string("assert b != b2");
+        run_python_string("b2.low_corner=Point3D(0,0,0)");
+        run_python_string("b2.high_corner=Point3D(2,2,2)");
+        run_python_string("assert b == b2");
+        run_python_string("assert not b != b2");
+        run_python_string("assert not b == '0'");
 
+    }
     shutdown_python_api();
     return 0;
 }

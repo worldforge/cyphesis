@@ -96,32 +96,33 @@ class TestProp : public Py::ExtensionModule<TestProp>
 int main()
 {
     setupPythonMalloc();
-    PyImport_AppendInittab("testprop", [](){
-        auto module = new TestProp();
-        return module->module().ptr();
-    });
-    init_python_api("db35f202-3ebb-4df6-bf9e-4e840f6d7eb3");
+    {
+        PyImport_AppendInittab("testprop", []() {
+            auto module = new TestProp();
+            return module->module().ptr();
+        });
+        init_python_api("db35f202-3ebb-4df6-bf9e-4e840f6d7eb3");
 
-    run_python_string("from server import *");
-    run_python_string("import physics");
-    run_python_string("import testprop");
-    run_python_string("t=Thing('1')");
-    run_python_string("t.props.terrainmod == None");
-    run_python_string("testprop.add_properties(t)");
-    run_python_string("terrainmod = t.props.terrainmod");
-    expect_python_error("terrainmod.foo = 1", PyExc_AttributeError);
-    expect_python_error("terrainmod.foo", PyExc_AttributeError);
-    expect_python_error("terrainmod.shape", PyExc_AttributeError);
-    expect_python_error("terrainmod.nonshape", PyExc_AttributeError);
-    run_python_string("testprop.add_terrainmod_shape(terrainmod)");
-    run_python_string("assert type(terrainmod.shape) == physics.Area");
-    run_python_string("assert terrainmod.nonshape == 'testval'");
-    run_python_string("print('test1')");
-    run_python_string("terrainmod.shape = physics.Polygon([[ -0.7, -0.7],"
-                                                          "[ -1.0,  0.0],"
-                                                          "[ -0.7,  0.7]])");
+        run_python_string("from server import *");
+        run_python_string("import physics");
+        run_python_string("import testprop");
+        run_python_string("t=Thing('1')");
+        run_python_string("t.props.terrainmod == None");
+        run_python_string("testprop.add_properties(t)");
+        run_python_string("terrainmod = t.props.terrainmod");
+        expect_python_error("terrainmod.foo = 1", PyExc_AttributeError);
+        expect_python_error("terrainmod.foo", PyExc_AttributeError);
+        expect_python_error("terrainmod.shape", PyExc_AttributeError);
+        expect_python_error("terrainmod.nonshape", PyExc_AttributeError);
+        run_python_string("testprop.add_terrainmod_shape(terrainmod)");
+        run_python_string("assert type(terrainmod.shape) == physics.Area");
+        run_python_string("assert terrainmod.nonshape == 'testval'");
+        run_python_string("print('test1')");
+        run_python_string("terrainmod.shape = physics.Polygon([[ -0.7, -0.7],"
+                          "[ -1.0,  0.0],"
+                          "[ -0.7,  0.7]])");
 
-
+    }
     shutdown_python_api();
     return 0;
 }

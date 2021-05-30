@@ -77,32 +77,33 @@ class TestProp : public Py::ExtensionModule<TestProp>
 int main()
 {
     setupPythonMalloc();
-    PyImport_AppendInittab("testprop", [](){
-        static TestProp testProp;
-        return testProp.module().ptr();
-    });
-    init_python_api({&CyPy_Server::init,
-                     &CyPy_Rules::init,
-                     &CyPy_Atlas::init,
-                     &CyPy_Physics::init,
-                     &CyPy_Common::init});
+    {
+        PyImport_AppendInittab("testprop", []() {
+            static TestProp testProp;
+            return testProp.module().ptr();
+        });
+        init_python_api({&CyPy_Server::init,
+                         &CyPy_Rules::init,
+                         &CyPy_Atlas::init,
+                         &CyPy_Physics::init,
+                         &CyPy_Common::init});
 
 
-    Ref<Entity> wrld(new Entity("0", 0));
-    TestWorld tw(wrld);
+        Ref<Entity> wrld(new Entity("0", 0));
+        TestWorld tw(wrld);
 
-    run_python_string("from server import *");
-    run_python_string("import testprop");
-    run_python_string("t=Thing('1')");
-    run_python_string("t.props.line == None");
-    run_python_string("t.props.statistics == None");
-    run_python_string("t.props.terrain == None");
-    run_python_string("testprop.add_properties(t)");
-    run_python_string("t.props.line");
-    run_python_string("t.props.statistics");
-    run_python_string("t.props.terrain");
+        run_python_string("from server import *");
+        run_python_string("import testprop");
+        run_python_string("t=Thing('1')");
+        run_python_string("t.props.line == None");
+        run_python_string("t.props.statistics == None");
+        run_python_string("t.props.terrain == None");
+        run_python_string("testprop.add_properties(t)");
+        run_python_string("t.props.line");
+        run_python_string("t.props.statistics");
+        run_python_string("t.props.terrain");
 
-
+    }
     shutdown_python_api();
     return 0;
 }

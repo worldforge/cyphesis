@@ -124,8 +124,8 @@ int main()
         run_python_string("assert c.foo == 1");
         run_python_string("c.foo = [1,2]");
         expect_python_error("c.map = 1", PyExc_AttributeError);
-        shutdown_python_api();
     }
+    shutdown_python_api();
     return 0;
 }
 

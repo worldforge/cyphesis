@@ -104,8 +104,8 @@ int main()
         run_python_string("assert t.obsolete()");
 
         entity->destroy();
-        shutdown_python_api();
     }
+    shutdown_python_api();
 
     return 0;
 }

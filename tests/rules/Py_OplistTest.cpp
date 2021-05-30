@@ -43,45 +43,46 @@ Inheritance inheritance(factories);
 int main()
 {
     setupPythonMalloc();
-    init_python_api({&CyPy_Atlas::init});
+    {
+        init_python_api({&CyPy_Atlas::init});
 
-    run_python_string("from atlas import Oplist");
-    run_python_string("from atlas import Operation");
-    run_python_string("m=Oplist()");
-    run_python_string("m.append(None)");
-    expect_python_error("m.append(1)", PyExc_TypeError);
-    run_python_string("m.append(Operation('get'))");
-    run_python_string("m.append(Oplist())");
-    run_python_string("m.append(Oplist(Operation('get')))");
-    run_python_string("len(m)");
-    run_python_string("lenm = len(m)");
-    run_python_string("m += None");
-    run_python_string("len(m) == lenm");
-    expect_python_error("m += 1", PyExc_TypeError);
-    run_python_string("len(m) == lenm");
-    run_python_string("m += Operation('get')");
-    run_python_string("len(m) == lenm + 1");
-    run_python_string("m += Oplist()");
-    run_python_string("len(m) == lenm + 1");
-    run_python_string("m += Oplist(Operation('get'))");
-    run_python_string("len(m) == lenm + 2");
+        run_python_string("from atlas import Oplist");
+        run_python_string("from atlas import Operation");
+        run_python_string("m=Oplist()");
+        run_python_string("m.append(None)");
+        expect_python_error("m.append(1)", PyExc_TypeError);
+        run_python_string("m.append(Operation('get'))");
+        run_python_string("m.append(Oplist())");
+        run_python_string("m.append(Oplist(Operation('get')))");
+        run_python_string("len(m)");
+        run_python_string("lenm = len(m)");
+        run_python_string("m += None");
+        run_python_string("len(m) == lenm");
+        expect_python_error("m += 1", PyExc_TypeError);
+        run_python_string("len(m) == lenm");
+        run_python_string("m += Operation('get')");
+        run_python_string("len(m) == lenm + 1");
+        run_python_string("m += Oplist()");
+        run_python_string("len(m) == lenm + 1");
+        run_python_string("m += Oplist(Operation('get'))");
+        run_python_string("len(m) == lenm + 2");
 
-    run_python_string("n = m + None");
-    expect_python_error("m + 1", PyExc_TypeError);
-    run_python_string("n = m + Operation('get')");
-    run_python_string("assert len(n) == len(m) + 1");
-    run_python_string("n = m + Oplist()");
-    run_python_string("assert len(n) == len(m)");
-    run_python_string("n = m + Oplist(Operation('get'))");
-    run_python_string("assert len(n) == len(m) + 1");
-    
-    expect_python_error("Oplist(1)", PyExc_TypeError);
-    expect_python_error("Oplist(Operation('get'), 1)", PyExc_TypeError);
-    expect_python_error("Oplist(Operation('get'), Operation('get'), 1)",
-                        PyExc_TypeError);
-    expect_python_error("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)",
-                        PyExc_TypeError);
+        run_python_string("n = m + None");
+        expect_python_error("m + 1", PyExc_TypeError);
+        run_python_string("n = m + Operation('get')");
+        run_python_string("assert len(n) == len(m) + 1");
+        run_python_string("n = m + Oplist()");
+        run_python_string("assert len(n) == len(m)");
+        run_python_string("n = m + Oplist(Operation('get'))");
+        run_python_string("assert len(n) == len(m) + 1");
 
+        expect_python_error("Oplist(1)", PyExc_TypeError);
+        expect_python_error("Oplist(Operation('get'), 1)", PyExc_TypeError);
+        expect_python_error("Oplist(Operation('get'), Operation('get'), 1)",
+                            PyExc_TypeError);
+        expect_python_error("Oplist(Operation('get'), Operation('get'), Operation('get'), 1)",
+                            PyExc_TypeError);
+    }
     shutdown_python_api();
     return 0;
 }
