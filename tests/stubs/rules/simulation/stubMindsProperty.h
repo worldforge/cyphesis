@@ -66,7 +66,7 @@
 
 #ifndef STUB_MindsProperty_install
 //#define STUB_MindsProperty_install
-  void MindsProperty::install(LocatedEntity*, const std::string& name)
+  void MindsProperty::install(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_MindsProperty_remove
 //#define STUB_MindsProperty_remove
-  void MindsProperty::remove(LocatedEntity*, const std::string& name)
+  void MindsProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -90,7 +90,7 @@
 
 #ifndef STUB_MindsProperty_removeMind
 //#define STUB_MindsProperty_removeMind
-  void MindsProperty::removeMind(Router* mind, LocatedEntity* entity)
+  void MindsProperty::removeMind(Router* mind, LocatedEntity& entity)
   {
     
   }
@@ -106,7 +106,7 @@
 
 #ifndef STUB_MindsProperty_operation
 //#define STUB_MindsProperty_operation
-  HandlerResult MindsProperty::operation(LocatedEntity*, const Operation&, OpVector&)
+  HandlerResult MindsProperty::operation(LocatedEntity&, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -130,7 +130,7 @@
 
 #ifndef STUB_MindsProperty_ThoughtOperation
 //#define STUB_MindsProperty_ThoughtOperation
-  HandlerResult MindsProperty::ThoughtOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const
+  HandlerResult MindsProperty::ThoughtOperation(LocatedEntity& ent, const Operation& op, OpVector& res) const
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -138,7 +138,7 @@
 
 #ifndef STUB_MindsProperty_RelayOperation
 //#define STUB_MindsProperty_RelayOperation
-  HandlerResult MindsProperty::RelayOperation(LocatedEntity* ent, const Operation& op, OpVector& res)
+  HandlerResult MindsProperty::RelayOperation(LocatedEntity& ent, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -146,7 +146,7 @@
 
 #ifndef STUB_MindsProperty_mindCreateOperation
 //#define STUB_MindsProperty_mindCreateOperation
-  void MindsProperty::mindCreateOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindCreateOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -154,7 +154,7 @@
 
 #ifndef STUB_MindsProperty_mindDeleteOperation
 //#define STUB_MindsProperty_mindDeleteOperation
-  void MindsProperty::mindDeleteOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindDeleteOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -162,7 +162,7 @@
 
 #ifndef STUB_MindsProperty_mindGoalInfoOperation
 //#define STUB_MindsProperty_mindGoalInfoOperation
-  void MindsProperty::mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindGoalInfoOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -170,7 +170,7 @@
 
 #ifndef STUB_MindsProperty_mindImaginaryOperation
 //#define STUB_MindsProperty_mindImaginaryOperation
-  void MindsProperty::mindImaginaryOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindImaginaryOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -178,7 +178,7 @@
 
 #ifndef STUB_MindsProperty_mindLookOperation
 //#define STUB_MindsProperty_mindLookOperation
-  void MindsProperty::mindLookOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindLookOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -186,7 +186,7 @@
 
 #ifndef STUB_MindsProperty_mindMoveOperation
 //#define STUB_MindsProperty_mindMoveOperation
-  void MindsProperty::mindMoveOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindMoveOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -194,7 +194,7 @@
 
 #ifndef STUB_MindsProperty_mindSetOperation
 //#define STUB_MindsProperty_mindSetOperation
-  void MindsProperty::mindSetOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindSetOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -202,7 +202,7 @@
 
 #ifndef STUB_MindsProperty_mindTalkOperation
 //#define STUB_MindsProperty_mindTalkOperation
-  void MindsProperty::mindTalkOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindTalkOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -210,7 +210,7 @@
 
 #ifndef STUB_MindsProperty_mindThoughtOperation
 //#define STUB_MindsProperty_mindThoughtOperation
-  void MindsProperty::mindThoughtOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindThoughtOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -218,7 +218,7 @@
 
 #ifndef STUB_MindsProperty_mindThinkOperation
 //#define STUB_MindsProperty_mindThinkOperation
-  void MindsProperty::mindThinkOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindThinkOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -226,7 +226,7 @@
 
 #ifndef STUB_MindsProperty_mindTickOperation
 //#define STUB_MindsProperty_mindTickOperation
-  void MindsProperty::mindTickOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindTickOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -234,7 +234,7 @@
 
 #ifndef STUB_MindsProperty_mindTouchOperation
 //#define STUB_MindsProperty_mindTouchOperation
-  void MindsProperty::mindTouchOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindTouchOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -242,7 +242,7 @@
 
 #ifndef STUB_MindsProperty_mindUpdateOperation
 //#define STUB_MindsProperty_mindUpdateOperation
-  void MindsProperty::mindUpdateOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindUpdateOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -250,7 +250,7 @@
 
 #ifndef STUB_MindsProperty_mindUseOperation
 //#define STUB_MindsProperty_mindUseOperation
-  void MindsProperty::mindUseOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindUseOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -258,7 +258,7 @@
 
 #ifndef STUB_MindsProperty_mindWieldOperation
 //#define STUB_MindsProperty_mindWieldOperation
-  void MindsProperty::mindWieldOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindWieldOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -266,7 +266,7 @@
 
 #ifndef STUB_MindsProperty_mindOtherOperation
 //#define STUB_MindsProperty_mindOtherOperation
-  void MindsProperty::mindOtherOperation(LocatedEntity*, const Operation&, OpVector&) const
+  void MindsProperty::mindOtherOperation(LocatedEntity&, const Operation&, OpVector&) const
   {
     
   }
@@ -274,7 +274,7 @@
 
 #ifndef STUB_MindsProperty_mind2body
 //#define STUB_MindsProperty_mind2body
-  void MindsProperty::mind2body(LocatedEntity*, const Operation& op, OpVector&) const
+  void MindsProperty::mind2body(LocatedEntity&, const Operation& op, OpVector&) const
   {
     
   }
@@ -282,7 +282,7 @@
 
 #ifndef STUB_MindsProperty_moveOtherEntity
 //#define STUB_MindsProperty_moveOtherEntity
-  void MindsProperty::moveOtherEntity(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg, const std::string& other_id) const
+  void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg, const std::string& other_id) const
   {
     
   }
@@ -290,7 +290,7 @@
 
 #ifndef STUB_MindsProperty_moveOurselves
 //#define STUB_MindsProperty_moveOurselves
-  void MindsProperty::moveOurselves(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
+  void MindsProperty::moveOurselves(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
   {
     
   }

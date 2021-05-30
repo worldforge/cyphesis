@@ -47,7 +47,7 @@ class TestScriptFactory : public ScriptKit<LocatedEntity>
             return m_package;
         }
 
-        int addScript(LocatedEntity* entity) const override
+        int addScript(LocatedEntity& entity) const override
         {
             return 0;
         }

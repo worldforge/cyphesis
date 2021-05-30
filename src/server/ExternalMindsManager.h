@@ -54,21 +54,21 @@ class ExternalMindsManager : public virtual sigc::trackable, public Singleton<Ex
          * @param script The preferred script to use for the mind.
          * @return
          */
-        int requestPossession(LocatedEntity* character);
+        int requestPossession(LocatedEntity& character);
 
-        void removeRequest(LocatedEntity* character);
+        void removeRequest(LocatedEntity& character);
 
     private:
         std::map<std::string, ExternalMindsConnection> m_connections;
         std::unordered_set<LocatedEntity*> m_unpossessedEntities;
         std::unordered_set<LocatedEntity*> m_possessedEntities;
 
-        void entity_destroyed(LocatedEntity* character);
-        void entity_mindsChanged(LocatedEntity* character, const MindsProperty* mindsProp);
+        void entity_destroyed(LocatedEntity& character);
+        void entity_mindsChanged(LocatedEntity& character, const MindsProperty& mindsProp);
 
         int requestPossessionFromRegisteredClients(const std::string& character_id);
 
-        void addPossessionEntryForCharacter(LocatedEntity* character);
+        void addPossessionEntryForCharacter(LocatedEntity& character);
 
 
 };

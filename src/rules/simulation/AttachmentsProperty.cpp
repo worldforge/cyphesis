@@ -33,17 +33,17 @@ AttachmentsProperty::AttachmentsProperty(uint32_t flags)
 
 }
 
-void AttachmentsProperty::install(LocatedEntity* entity, const std::string& name)
+void AttachmentsProperty::install(LocatedEntity& entity, const std::string& name)
 {
-    entity->installDelegate(Atlas::Objects::Operation::WIELD_NO, name);
+    entity.installDelegate(Atlas::Objects::Operation::WIELD_NO, name);
 }
 
-void AttachmentsProperty::remove(LocatedEntity* entity, const std::string& name)
+void AttachmentsProperty::remove(LocatedEntity& entity, const std::string& name)
 {
-    entity->removeDelegate(Atlas::Objects::Operation::WIELD_NO, name);
+    entity.removeDelegate(Atlas::Objects::Operation::WIELD_NO, name);
 }
 
-HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operation& op, OpVector& res)
+HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operation& op, OpVector& res)
 {
     if (!op->getArgs().empty()) {
         auto& arg = op->getArgs().front();
@@ -64,7 +64,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
 
                 Ref<LocatedEntity> existing_entity;
 
-                auto attachedProp = entity->getPropertyClass<SoftProperty>(attached_prop_name);
+                auto attachedProp = entity.getPropertyClass<SoftProperty>(attached_prop_name);
                 if (attachedProp) {
                     existing_entity = extractEntityRef(attachedProp->data());
                 }
@@ -95,14 +95,14 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                 if (entity_id.empty()) {
                     //Unwielding
 
-                    entity->setAttr(attached_prop_name, {});
+                    entity.setAttr(attached_prop_name, {});
 
                     //Check if there was another entity attached to the attachment, and if so reset it's attachment.
                     resetExistingEntityPlantedOn();
 
                     Atlas::Objects::Operation::Update update;
-                    update->setTo(entity->getId());
-                    entity->sendWorld(update);
+                    update->setTo(entity.getId());
+                    entity.sendWorld(update);
 
                 } else {
 
@@ -112,16 +112,16 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
 
                         //Check that the attached entity matches the constraint filter
                         if (attachment.filter) {
-                            EntityFilter::QueryContext queryContext{*entity, entity, new_entity.get()};
+                            EntityFilter::QueryContext queryContext{entity, &entity, new_entity.get()};
                             std::vector<std::string> errors;
                             queryContext.report_error_fn = [&](const std::string& error) { errors.push_back(error); };
                             queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
                             queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                             if (!attachment.filter->match(queryContext)) {
                                 if (errors.empty()) {
-                                    entity->clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity->getId());
+                                    entity.clientError(op, String::compose("Attached entity failed the constraint '%1'.", attachment.contraint), res, entity.getId());
                                 } else {
-                                    entity->clientError(op, errors.front(), res, entity->getId());
+                                    entity.clientError(op, errors.front(), res, entity.getId());
                                 }
                                 return OPERATION_BLOCKED;
                             }
@@ -132,23 +132,23 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             auto& plantedOnData = modeDataProp->getPlantedOnData();
                             //Check if the entity is attached to ourselves; if so we can just detach it from ourselves.
                             //Otherwise we need to abort, since we don't allow ourselves to detach it from another entity.
-                            if (plantedOnData.entityId && plantedOnData.entityId == entity->getIntId()) {
+                            if (plantedOnData.entityId && plantedOnData.entityId == entity.getIntId()) {
                                 if (plantedOnData.attachment) {
                                     //We need to reset the old attached value for the attached entity
                                     auto old_attached_prop_name = std::string("attached_") + *plantedOnData.attachment;
-                                    auto oldAttachedProp = entity->modPropertyClass<SoftProperty>(old_attached_prop_name);
+                                    auto oldAttachedProp = entity.modPropertyClass<SoftProperty>(old_attached_prop_name);
                                     if (oldAttachedProp) {
                                         oldAttachedProp->data() = Atlas::Message::Element();
-                                        entity->applyProperty(old_attached_prop_name, oldAttachedProp);
+                                        entity.applyProperty(old_attached_prop_name, oldAttachedProp);
                                     }
                                 }
                             } else {
-                                entity->clientError(op, "The entity is already attached to another entity.", res, entity->getId());
+                                entity.clientError(op, "The entity is already attached to another entity.", res, entity.getId());
                                 return OPERATION_BLOCKED;
                             }
                         }
 
-                        modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{entity->getIntId(), attachment_name.String()});
+                        modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{entity.getIntId(), attachment_name.String()});
 
                         new_entity->applyProperty(ModeDataProperty::property_name, modeDataProp);
                         {
@@ -157,17 +157,17 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity* entity, const Operat
                             new_entity->sendWorld(update);
                         }
 
-                        entity->setAttrValue(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
+                        entity.setAttrValue(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
 
                         //Check if there was another entity attached to the attachment, and if so reset it's attachment.
                         resetExistingEntityPlantedOn();
 
                         Atlas::Objects::Operation::Update update;
-                        update->setTo(entity->getId());
-                        entity->sendWorld(update);
+                        update->setTo(entity.getId());
+                        entity.sendWorld(update);
 
                     } else {
-                        entity->clientError(op, "Could not find wielded entity.", res, entity->getId());
+                        entity.clientError(op, "Could not find wielded entity.", res, entity.getId());
                     }
                 }
                 return OPERATION_BLOCKED;

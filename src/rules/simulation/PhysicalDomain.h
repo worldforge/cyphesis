@@ -98,9 +98,9 @@ class PhysicalDomain : public Domain
 
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
 
-        void installDelegates(LocatedEntity* entity, const std::string& propertyName) override;
+        void installDelegates(LocatedEntity& entity, const std::string& propertyName) override;
 
-        HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
+        HandlerResult operation(LocatedEntity& e, const Operation& op, OpVector& res) override;
 
         void tick(double t, OpVector& res);
 
@@ -446,7 +446,7 @@ class PhysicalDomain : public Domain
 
         Atlas::Objects::Operation::RootOperation scheduleTick(LocatedEntity& entity);
 
-        HandlerResult tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res);
+        HandlerResult tick_handler(LocatedEntity& entity, const Operation& op, OpVector& res);
 
         bool isWithinReach(BulletEntry& reacherEntry, BulletEntry& targetEntry, float reach, const WFMath::Point<3>& positionOnQueriedEntity) const;
 

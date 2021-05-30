@@ -25,7 +25,7 @@
 
 #ifndef STUB_TerrainProperty_install
 //#define STUB_TerrainProperty_install
-  void TerrainProperty::install(LocatedEntity* owner, const std::string& name)
+  void TerrainProperty::install(LocatedEntity& owner, const std::string& name)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_TerrainProperty_remove
 //#define STUB_TerrainProperty_remove
-  void TerrainProperty::remove(LocatedEntity* owner, const std::string& name)
+  void TerrainProperty::remove(LocatedEntity& owner, const std::string& name)
   {
     
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_TerrainProperty_apply
 //#define STUB_TerrainProperty_apply
-  void TerrainProperty::apply(LocatedEntity* entity)
+  void TerrainProperty::apply(LocatedEntity& entity)
   {
     
   }

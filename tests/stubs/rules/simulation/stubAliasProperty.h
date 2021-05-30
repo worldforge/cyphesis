@@ -17,7 +17,7 @@
 
 #ifndef STUB_AliasProperty_apply
 //#define STUB_AliasProperty_apply
-  void AliasProperty::apply(LocatedEntity* entity)
+  void AliasProperty::apply(LocatedEntity& entity)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_AliasProperty_remove
 //#define STUB_AliasProperty_remove
-  void AliasProperty::remove(LocatedEntity*, const std::string& name)
+  void AliasProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }

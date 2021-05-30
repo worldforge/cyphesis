@@ -36,7 +36,6 @@
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
-#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include <BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h>
@@ -76,13 +75,13 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
                         {
                             GeometryProperty* prop;
 
-                            void operator()(LocatedEntity* entity) const
+                            void operator()(LocatedEntity*) const
                             {
                             }
 
                             void operator()(TypeNode* typeNode) const
                             {
-                                prop->install(typeNode, "");
+                                prop->install(*typeNode, "");
                             }
                         };
 
@@ -459,15 +458,15 @@ GeometryProperty* GeometryProperty::copy() const
 }
 
 
-void GeometryProperty::install(TypeNode* typeNode, const std::string&)
+void GeometryProperty::install(TypeNode& typeNode, const std::string&)
 {
-    m_owner = typeNode;
+    m_owner = &typeNode;
 
     //If there are valid mesh bounds read, and there's no bbox property already, add one.
     if (m_meshBounds.isValid()) {
-        auto I = typeNode->defaults().find(BBoxProperty::property_name);
+        auto I = typeNode.defaults().find(BBoxProperty::property_name);
         //Create a new property if either there isn't one, or the existing one is calculated from geometry (which we detect by checking if it's ephemeral).
-        if (I == typeNode->defaults().end() || I->second->flags().hasFlags(prop_flag_persistence_ephem)) {
+        if (I == typeNode.defaults().end() || I->second->flags().hasFlags(prop_flag_persistence_ephem)) {
             //Update the bbox property of the type if there are valid bounds from the mesh.
             auto bBoxProperty = std::make_unique<BBoxProperty>();
             bBoxProperty->data() = m_meshBounds;
@@ -475,9 +474,9 @@ void GeometryProperty::install(TypeNode* typeNode, const std::string&)
             bBoxProperty->addFlags(prop_flag_class | prop_flag_persistence_ephem);
             bBoxProperty->flags().addFlags(PropertyUtil::flagsForPropertyName(BBoxProperty::property_name));
             bBoxProperty->install(typeNode, BBoxProperty::property_name);
-            auto update = typeNode->injectProperty(BBoxProperty::property_name, std::move(bBoxProperty));
+            auto update = typeNode.injectProperty(BBoxProperty::property_name, std::move(bBoxProperty));
 
-            Inheritance::instance().typesUpdated({{typeNode, update}});
+            Inheritance::instance().typesUpdated({{&typeNode, update}});
         }
     }
 }

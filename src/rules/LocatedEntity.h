@@ -514,7 +514,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                 sp = new PropertyT;
                 sp->flags().addFlags(PropertyUtil::flagsForPropertyName(name));
                 m_properties[name].property.reset(sp);
-                sp->install(this, name);
+                sp->install(*this, name);
                 if (p != nullptr) {
                     log(WARNING, String::compose("Property %1 on entity with id %2 "
                                                  "reinstalled with new class."
@@ -528,7 +528,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                 } else if (!def_val.isNone()) {
                     sp->set(def_val);
                 }
-                sp->apply(this);
+                sp->apply(*this);
             }
             return sp;
         }

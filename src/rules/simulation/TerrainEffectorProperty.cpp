@@ -22,10 +22,10 @@
 
 #include "modules/TerrainContext.h"
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity** terrainHolder)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity& owner, LocatedEntity** terrainHolder)
 {
     const TerrainProperty * terr;
-    LocatedEntity * ent = owner;
+    LocatedEntity * ent = &owner;
 
     while ((terr = ent->getPropertyClassFixed<TerrainProperty>()) == nullptr) {
         ent = ent->m_location.m_parent.get();

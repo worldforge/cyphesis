@@ -631,7 +631,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             tick->setArgs1(arg1);
             tick->setAttr("lastTick", 0.0f);
             tick->setSeconds(2.0f);  // This should trigger a visibility.
-            domainPhysical->getDomain()->operation(domainPhysical.get(), tick, res);
+            domainPhysical->getDomain()->operation(*domainPhysical, tick, res);
             return res;
         };
 

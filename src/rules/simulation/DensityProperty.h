@@ -33,11 +33,11 @@ class DensityProperty: public Property<double>
 
         static constexpr const char* property_name = "density";
 
-        void apply(LocatedEntity *) override;
+        void apply(LocatedEntity&) override;
 
         DensityProperty * copy() const override;
 
-        void updateMass(LocatedEntity *entity) const;
+        void updateMass(LocatedEntity& entity) const;
 
 };
 

@@ -17,7 +17,7 @@
 
 #ifndef STUB_AmountProperty_apply
 //#define STUB_AmountProperty_apply
-  void AmountProperty::apply(LocatedEntity* entity)
+  void AmountProperty::apply(LocatedEntity& entity)
   {
     
   }

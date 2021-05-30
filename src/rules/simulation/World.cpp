@@ -25,7 +25,6 @@
 #include "rules/simulation/BaseWorld.h"
 #include "common/debug.h"
 #include "common/TypeNode.h"
-#include "common/custom.h"
 
 #include "WorldTimeProperty.h"
 #include "VoidDomain.h"
@@ -172,7 +171,7 @@ void World::clearWorld(OpVector& res)
     while (propIter != m_properties.end()) {
         if (propIter->first != "id") {
             auto& prop = propIter->second;
-            prop.property->remove(this, propIter->first);
+            prop.property->remove(*this, propIter->first);
             m_properties.erase(propIter++);
         } else {
             ++propIter;

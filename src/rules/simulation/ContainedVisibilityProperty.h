@@ -35,9 +35,9 @@ class ContainedVisibilityProperty : public BoolProperty
 
         ContainedVisibilityProperty* copy() const override;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
-        void remove(LocatedEntity*, const std::string&) override;
+        void remove(LocatedEntity&, const std::string&) override;
 };
 
 

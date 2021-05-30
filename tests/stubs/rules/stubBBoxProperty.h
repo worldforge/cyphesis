@@ -9,7 +9,7 @@
 
 #ifndef STUB_BBoxProperty_apply
 //#define STUB_BBoxProperty_apply
-  void BBoxProperty::apply(LocatedEntity *)
+  void BBoxProperty::apply(LocatedEntity&)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_BBoxProperty_get
 //#define STUB_BBoxProperty_get
-  int BBoxProperty::get(Atlas::Message::Element & val) const
+  int BBoxProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_BBoxProperty_set
 //#define STUB_BBoxProperty_set
-  void BBoxProperty::set(const Atlas::Message::Element & val)
+  void BBoxProperty::set(const Atlas::Message::Element& val)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_BBoxProperty_add
 //#define STUB_BBoxProperty_add
-  void BBoxProperty::add(const std::string & key, Atlas::Message::MapType & map) const
+  void BBoxProperty::add(const std::string& key, Atlas::Message::MapType& map) const
   {
     
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_BBoxProperty_add
 //#define STUB_BBoxProperty_add
-  void BBoxProperty::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+  void BBoxProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
   {
     
   }
@@ -57,7 +57,7 @@
 
 #ifndef STUB_BBoxProperty_updateBboxOnEntity
 //#define STUB_BBoxProperty_updateBboxOnEntity
-  void BBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
+  void BBoxProperty::updateBboxOnEntity(LocatedEntity& entity) const
   {
     
   }

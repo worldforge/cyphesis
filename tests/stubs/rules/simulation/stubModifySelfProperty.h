@@ -27,7 +27,7 @@
 
 #ifndef STUB_ModifySelfProperty_remove
 //#define STUB_ModifySelfProperty_remove
-  void ModifySelfProperty::remove(LocatedEntity*, const std::string& name)
+  void ModifySelfProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -35,7 +35,7 @@
 
 #ifndef STUB_ModifySelfProperty_install
 //#define STUB_ModifySelfProperty_install
-  void ModifySelfProperty::install(LocatedEntity* owner, const std::string& name)
+  void ModifySelfProperty::install(LocatedEntity& owner, const std::string& name)
   {
     
   }
@@ -67,7 +67,7 @@
 
 #ifndef STUB_ModifySelfProperty_apply
 //#define STUB_ModifySelfProperty_apply
-  void ModifySelfProperty::apply(LocatedEntity* e)
+  void ModifySelfProperty::apply(LocatedEntity& e)
   {
     
   }

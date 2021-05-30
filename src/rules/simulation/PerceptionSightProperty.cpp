@@ -19,14 +19,14 @@
 #include "PerceptionSightProperty.h"
 #include "rules/LocatedEntity.h"
 
-void PerceptionSightProperty::apply(LocatedEntity* entity)
+void PerceptionSightProperty::apply(LocatedEntity& entity)
 {
     PropertyBase::apply(entity);
 
     if (m_data > 0) {
-        entity->addFlags(entity_perceptive);
+        entity.addFlags(entity_perceptive);
     } else {
-        entity->removeFlags(entity_perceptive);
+        entity.removeFlags(entity_perceptive);
     }
 }
 

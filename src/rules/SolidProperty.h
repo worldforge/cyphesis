@@ -30,7 +30,7 @@ class SolidProperty : public BoolProperty {
 
     SolidProperty * copy() const override;
 
-    void apply(LocatedEntity *) override;
+    void apply(LocatedEntity &) override;
 };
 
 #endif // RULESETS_SOLID_PROPERTY_H

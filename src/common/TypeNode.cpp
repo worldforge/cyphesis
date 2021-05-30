@@ -127,7 +127,7 @@ void TypeNode::addProperties(const MapType& attributes, const PropertyManager& p
         assert(p != nullptr);
         p->set(entry.second);
         p->addFlags(prop_flag_class);
-        p->install(this, entry.first);
+        p->install(*this, entry.first);
         m_defaults[entry.first] = std::move(p);
     }
 }
@@ -180,7 +180,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes,
                 continue;
             }
             p->addFlags(prop_flag_class);
-            p->install(this, entry.first);
+            p->install(*this, entry.first);
             propertiesUpdate.newProps.emplace(entry.first);
             p->set(entry.second);
 

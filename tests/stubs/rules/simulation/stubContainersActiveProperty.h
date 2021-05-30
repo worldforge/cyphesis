@@ -42,7 +42,7 @@
 
 #ifndef STUB_ContainersActiveProperty_apply
 //#define STUB_ContainersActiveProperty_apply
-  void ContainersActiveProperty::apply(LocatedEntity*)
+  void ContainersActiveProperty::apply(LocatedEntity&)
   {
     
   }

@@ -34,7 +34,7 @@ class AmountProperty : public Property<int>
 
         AmountProperty* copy() const override;
 
-        void apply(LocatedEntity* entity) override;
+        void apply(LocatedEntity& entity) override;
 
 };
 

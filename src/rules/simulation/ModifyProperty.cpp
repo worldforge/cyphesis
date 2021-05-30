@@ -79,13 +79,13 @@ ModifyProperty::ModifyProperty(const ModifyProperty& rhs)
 }
 
 
-void ModifyProperty::apply(LocatedEntity* entity)
+void ModifyProperty::apply(LocatedEntity& entity)
 {
     auto* state = sInstanceState.getState(entity);
     //Whenever a the value is changed and the property is applied we need to clear out all applied modifiers.
     if (state->parentEntity) {
         auto& activeModifiers = state->parentEntity->getActiveModifiers();
-        auto I = activeModifiers.find(entity);
+        auto I = activeModifiers.find(&entity);
         if (I != activeModifiers.end()) {
             auto modifiers = I->second;
             //Important that we copy the modifiers since we'll be modifying them.
@@ -96,7 +96,7 @@ void ModifyProperty::apply(LocatedEntity* entity)
         }
     }
 
-    checkIfActive(*state, *entity);
+    checkIfActive(*state, entity);
 }
 
 
@@ -137,29 +137,29 @@ int ModifyProperty::get(Atlas::Message::Element& val) const
     return 0;
 }
 
-void ModifyProperty::remove(LocatedEntity* owner, const std::string& name)
+void ModifyProperty::remove(LocatedEntity& owner, const std::string& name)
 {
     auto* state = sInstanceState.getState(owner);
     if (state) {
-        newLocation(*state, *owner, nullptr);
+        newLocation(*state, owner, nullptr);
         state->updatedConnection.disconnect();
     }
     sInstanceState.removeState(owner);
 }
 
-void ModifyProperty::install(LocatedEntity* owner, const std::string& name)
+void ModifyProperty::install(LocatedEntity& owner, const std::string& name)
 {
     auto state = new ModifyProperty::State();
-    state->parentEntity = owner->m_location.m_parent.get();
+    state->parentEntity = owner.m_location.m_parent.get();
     state->updatedConnection.disconnect();
-    state->updatedConnection = owner->updated.connect([&, state, owner]() {
-        if (state->parentEntity == owner->m_location.m_parent.get()) {
-            newLocation(*state, *owner, owner->m_location.m_parent.get());
-            checkIfActive(*state, *owner);
+    state->updatedConnection = owner.updated.connect([&owner, this, state]() {
+        if (state->parentEntity == owner.m_location.m_parent.get()) {
+            newLocation(*state, owner, owner.m_location.m_parent.get());
+            checkIfActive(*state, owner);
         }
     });
-    if (owner->m_location.m_parent) {
-        newLocation(*state, *owner, owner->m_location.m_parent.get());
+    if (owner.m_location.m_parent) {
+        newLocation(*state, owner, owner.m_location.m_parent.get());
     }
 
     sInstanceState.addState(owner, std::unique_ptr<ModifyProperty::State>(state));

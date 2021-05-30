@@ -33,26 +33,26 @@ ModifySelfProperty::ModifySelfProperty(const ModifySelfProperty& rhs)
     setData(rhs.m_data);
 }
 
-void ModifySelfProperty::apply(LocatedEntity* entity)
+void ModifySelfProperty::apply(LocatedEntity& entity)
 {
     //Whenever a the value is changed and the property is applied we need to clear out all applied modifiers.
-    auto& activeModifiers = entity->getActiveModifiers();
-    auto I = activeModifiers.find(entity);
+    auto& activeModifiers = entity.getActiveModifiers();
+    auto I = activeModifiers.find(&entity);
     if (I != activeModifiers.end()) {
         auto modifiers = I->second;
         for (auto& entry: modifiers) {
             //Note that the modifier pointer points to an invalid memory location! We can only remove it; not touch it otherwise.
-            entity->removeModifier(entry.first, entry.second);
+            entity.removeModifier(entry.first, entry.second);
         }
     }
 
-    checkIfActive(*entity);
+    checkIfActive(entity);
 
 }
 
-void ModifySelfProperty::remove(LocatedEntity* owner, const std::string& name)
+void ModifySelfProperty::remove(LocatedEntity& owner, const std::string& name)
 {
-    checkIfActive(*owner);
+    checkIfActive(owner);
     auto* state = sInstanceState.getState(owner);
     if (state) {
         state->updatedConnection.disconnect();
@@ -60,10 +60,10 @@ void ModifySelfProperty::remove(LocatedEntity* owner, const std::string& name)
     sInstanceState.removeState(owner);
 }
 
-void ModifySelfProperty::install(LocatedEntity* owner, const std::string& name)
+void ModifySelfProperty::install(LocatedEntity& owner, const std::string& name)
 {
     auto state = std::make_unique<ModifySelfProperty::State>();
-    checkIfActive(*owner);
+    checkIfActive(owner);
 
     sInstanceState.addState(owner, std::move(state));
 }

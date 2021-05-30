@@ -56,20 +56,20 @@ void VisibilityProperty::set(const Atlas::Message::Element& e)
     }
 }
 
-void VisibilityProperty::apply(LocatedEntity* entity)
+void VisibilityProperty::apply(LocatedEntity& entity)
 {
     switch (mData) {
         case Visibility::Public: {
-            entity->removeFlags(entity_visibility_private);
-            entity->removeFlags(entity_visibility_protected);
+            entity.removeFlags(entity_visibility_private);
+            entity.removeFlags(entity_visibility_protected);
         } break;
         case Visibility::Protected: {
-            entity->removeFlags(entity_visibility_private);
-            entity->addFlags(entity_visibility_protected);
+            entity.removeFlags(entity_visibility_private);
+            entity.addFlags(entity_visibility_protected);
         } break;
         case Visibility::Private: {
-            entity->addFlags(entity_visibility_private);
-            entity->removeFlags(entity_visibility_protected);
+            entity.addFlags(entity_visibility_private);
+            entity.removeFlags(entity_visibility_protected);
         } break;
     }
 }

@@ -63,13 +63,13 @@ class TerrainProperty : public Property<Atlas::Message::ListType>
 
         static constexpr const char* property_name = "terrain";
 
-        void install(LocatedEntity* owner, const std::string& name) override;
+        void install(LocatedEntity& owner, const std::string& name) override;
 
-        void remove(LocatedEntity* owner, const std::string& name) override;
+        void remove(LocatedEntity& owner, const std::string& name) override;
 
         TerrainProperty* copy() const override;
 
-        void apply(LocatedEntity* entity) override;
+        void apply(LocatedEntity& entity) override;
 
         bool getHeightAndNormal(LocatedEntity& entity, float x, float z, float&, Vector3D&) const;
 

@@ -19,7 +19,7 @@
 #ifndef STUB_ScriptKit_addScript
 //#define STUB_ScriptKit_addScript
   template <typename T>
-  int ScriptKit<T>::addScript(T * entity) const
+  int ScriptKit<T>::addScript(T& entity) const
   {
     return 0;
   }

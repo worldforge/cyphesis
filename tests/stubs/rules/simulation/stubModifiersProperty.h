@@ -37,7 +37,7 @@
 
 #ifndef STUB_ModifiersProperty_install
 //#define STUB_ModifiersProperty_install
-  void ModifiersProperty::install(LocatedEntity *, const std::string &)
+  void ModifiersProperty::install(LocatedEntity&, const std::string &)
   {
     
   }

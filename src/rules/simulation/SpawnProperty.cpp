@@ -29,12 +29,12 @@ SpawnProperty * SpawnProperty::copy() const
     return new SpawnProperty(*this);
 }
 
-void SpawnProperty::apply(LocatedEntity * ent)
+void SpawnProperty::apply(LocatedEntity& ent)
 {
-    BaseWorld::instance().registerSpawner(ent->getId());
+    BaseWorld::instance().registerSpawner(ent.getId());
 }
 
-void SpawnProperty::remove(LocatedEntity * ent, const std::string&)
+void SpawnProperty::remove(LocatedEntity& ent, const std::string&)
 {
-    BaseWorld::instance().unregisterSpawner(ent->getId());
+    BaseWorld::instance().unregisterSpawner(ent.getId());
 }

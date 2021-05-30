@@ -115,12 +115,12 @@ TasksProperty* TasksProperty::copy() const
     return new TasksProperty();
 }
 
-int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
+int TasksProperty::updateTask(LocatedEntity& owner, OpVector& res)
 {
     m_flags.addFlags(prop_flag_unsent);
 
     Update update;
-    update->setTo(owner->getId());
+    update->setTo(owner.getId());
 
     res.push_back(update);
 
@@ -128,7 +128,7 @@ int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
 }
 
 int TasksProperty::startTask(const std::string& id, Ref<Task> task,
-                             LocatedEntity* owner,
+                             LocatedEntity& owner,
                              OpVector& res)
 {
     bool update_required = false;
@@ -158,12 +158,12 @@ int TasksProperty::startTask(const std::string& id, Ref<Task> task,
 
 }
 
-int TasksProperty::clearTask(const std::string& id, LocatedEntity* owner, OpVector& res)
+int TasksProperty::clearTask(const std::string& id, LocatedEntity& owner, OpVector& res)
 {
     if (m_tasks.empty()) {
         // This function should never be called when there is no task,
         // except during Entity destruction
-        assert(owner->hasFlags(entity_destroyed));
+        assert(owner.hasFlags(entity_destroyed));
         return -1;
     }
     m_tasks.erase(id);
@@ -171,7 +171,7 @@ int TasksProperty::clearTask(const std::string& id, LocatedEntity* owner, OpVect
     return updateTask(owner, res);
 }
 
-void TasksProperty::stopTask(const std::string& id, LocatedEntity* owner, OpVector& res)
+void TasksProperty::stopTask(const std::string& id, LocatedEntity& owner, OpVector& res)
 {
     // This is just clearTask without an assert
     if (m_tasks.find(id) == m_tasks.end()) {
@@ -184,7 +184,7 @@ void TasksProperty::stopTask(const std::string& id, LocatedEntity* owner, OpVect
     updateTask(owner, res);
 }
 
-HandlerResult TasksProperty::TickOperation(LocatedEntity* owner,
+HandlerResult TasksProperty::TickOperation(LocatedEntity& owner,
                                            const Operation& op,
                                            OpVector& res)
 {
@@ -269,7 +269,7 @@ namespace {
     }
 }
 
-HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
+HandlerResult TasksProperty::UseOperation(LocatedEntity& e,
                                           const Operation& op,
                                           OpVector& res)
 {
@@ -283,7 +283,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
 
         auto actor = BaseWorld::instance().getEntity(op->getFrom());
         if (!actor) {
-            e->error(op, "Could not find 'from' entity.", res, e->getId());
+            e.error(op, "Could not find 'from' entity.", res, e.getId());
             return OPERATION_BLOCKED;
         }
 
@@ -416,7 +416,7 @@ HandlerResult TasksProperty::UseOperation(LocatedEntity* e,
 }
 
 
-HandlerResult TasksProperty::operation(LocatedEntity* owner,
+HandlerResult TasksProperty::operation(LocatedEntity& owner,
                                        const Operation& op,
                                        OpVector& res)
 {
@@ -436,14 +436,14 @@ HandlerResult TasksProperty::operation(LocatedEntity* owner,
     return OPERATION_IGNORED;
 }
 
-void TasksProperty::install(LocatedEntity* owner, const std::string& name)
+void TasksProperty::install(LocatedEntity& owner, const std::string& name)
 {
-    owner->installDelegate(Atlas::Objects::Operation::TICK_NO, name);
-    owner->installDelegate(Atlas::Objects::Operation::USE_NO, name);
+    owner.installDelegate(Atlas::Objects::Operation::TICK_NO, name);
+    owner.installDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
 
-void TasksProperty::remove(LocatedEntity* owner, const std::string& name)
+void TasksProperty::remove(LocatedEntity& owner, const std::string& name)
 {
-    owner->removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
-    owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
+    owner.removeDelegate(Atlas::Objects::Operation::TICK_NO, name);
+    owner.removeDelegate(Atlas::Objects::Operation::USE_NO, name);
 }

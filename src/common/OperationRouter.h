@@ -38,7 +38,7 @@ typedef enum {
 class LocatedEntity;
 struct OperationsListener
 {
-    virtual HandlerResult operation(LocatedEntity *, const Operation&, OpVector & res) = 0;
+    virtual HandlerResult operation(LocatedEntity &, const Operation&, OpVector & res) = 0;
 };
 
 #endif // COMMON_OPERATION_ROUTER_H

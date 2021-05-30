@@ -17,7 +17,7 @@
 
 #ifndef STUB_ContainedVisibilityProperty_apply
 //#define STUB_ContainedVisibilityProperty_apply
-  void ContainedVisibilityProperty::apply(LocatedEntity*)
+  void ContainedVisibilityProperty::apply(LocatedEntity&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_ContainedVisibilityProperty_remove
 //#define STUB_ContainedVisibilityProperty_remove
-  void ContainedVisibilityProperty::remove(LocatedEntity*, const std::string&)
+  void ContainedVisibilityProperty::remove(LocatedEntity&, const std::string&)
   {
     
   }

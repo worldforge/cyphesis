@@ -54,9 +54,9 @@ class StackableDomain : public Domain
 
         bool isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const override;
 
-        void installDelegates(LocatedEntity* entity, const std::string& propertyName) override;
+        void installDelegates(LocatedEntity& entity, const std::string& propertyName) override;
 
-        HandlerResult operation(LocatedEntity* entity, const Operation& op, OpVector& res) override;
+        HandlerResult operation(LocatedEntity& entity, const Operation& op, OpVector& res) override;
 
         static bool checkEntitiesStackable(const LocatedEntity& first, const LocatedEntity& second);
 
@@ -67,8 +67,8 @@ class StackableDomain : public Domain
     protected:
         static std::vector<std::string> sIgnoredProps;
 
-        HandlerResult DeleteOperation(LocatedEntity* owner, const Operation& op, OpVector& res);
-        HandlerResult MoveOperation(LocatedEntity* owner, const Operation& op, OpVector& res);
+        HandlerResult DeleteOperation(LocatedEntity& owner, const Operation& op, OpVector& res);
+        HandlerResult MoveOperation(LocatedEntity& owner, const Operation& op, OpVector& res);
 };
 
 

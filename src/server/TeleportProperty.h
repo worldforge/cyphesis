@@ -26,13 +26,13 @@ class ServerRouting;
 class TeleportProperty : public Property<std::string>
 {
     public:
-        void install(LocatedEntity*, const std::string&) override;
+        void install(LocatedEntity&, const std::string&) override;
 
-        HandlerResult operation(LocatedEntity*,
+        HandlerResult operation(LocatedEntity&,
                                 const Operation&,
                                 OpVector&) override;
 
-        HandlerResult teleport_handler(LocatedEntity* e,
+        HandlerResult teleport_handler(LocatedEntity& e,
                                        const Operation& op,
                                        OpVector& res);
 

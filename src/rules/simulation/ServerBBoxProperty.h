@@ -31,7 +31,7 @@
 class ServerBBoxProperty : public BBoxProperty
 {
     public:
-        void updateBboxOnEntity(LocatedEntity* entity) const override;
+        void updateBboxOnEntity(LocatedEntity& entity) const override;
 
 };
 

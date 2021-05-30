@@ -115,8 +115,8 @@ void MemMap::applyTypePropertiesToEntity(const Ref<MemEntity>& entity)
         // value, so we only apply if the value is still default.
         if (entity->getProperties().find(propIter.first) == entity->getProperties().end()) {
             auto& prop = propIter.second;
-            prop->install(entity.get(), propIter.first);
-            prop->apply(entity.get());
+            prop->install(*entity, propIter.first);
+            prop->apply(*entity);
             entity->propertyApplied(propIter.first, *prop);
         }
     }

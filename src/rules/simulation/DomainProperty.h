@@ -45,21 +45,21 @@ class DomainProperty: public Property<std::string> {
 
         DomainProperty(const DomainProperty& rhs) = default;
 
-        void install(LocatedEntity *, const std::string &) override;
+        void install(LocatedEntity&, const std::string &) override;
 
-        void remove(LocatedEntity *, const std::string &) override;
+        void remove(LocatedEntity&, const std::string &) override;
 
         DomainProperty * copy() const override;
 
-        void apply(LocatedEntity *) override;
+        void apply(LocatedEntity&) override;
 
-        HandlerResult operation(LocatedEntity * e, const Operation & op, OpVector & res) override;
+        HandlerResult operation(LocatedEntity& e, const Operation & op, OpVector & res) override;
 
     private:
 
 
-        void scheduleTick(LocatedEntity& entity, double timeNow);
-        HandlerResult tick_handler(LocatedEntity * e, const Operation & op, OpVector & res);
+        //void scheduleTick(LocatedEntity& entity, double timeNow);
+        //HandlerResult tick_handler(LocatedEntity& e, const Operation & op, OpVector & res);
 
 };
 

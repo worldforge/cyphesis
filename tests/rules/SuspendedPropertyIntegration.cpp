@@ -116,7 +116,7 @@ void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
     {
         bool wasCalled = false;
 
-        HandlerResult operation(LocatedEntity*, const Operation& op, OpVector& res)
+        HandlerResult operation(LocatedEntity&, const Operation& op, OpVector& res)
         {
             if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
                 wasCalled = true;

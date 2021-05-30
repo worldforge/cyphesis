@@ -43,7 +43,7 @@
 
 #ifndef STUB_TerrainModProperty_apply
 //#define STUB_TerrainModProperty_apply
-  void TerrainModProperty::apply(LocatedEntity*)
+  void TerrainModProperty::apply(LocatedEntity&)
   {
     
   }

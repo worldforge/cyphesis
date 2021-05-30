@@ -39,7 +39,7 @@ class ModifiersProperty : public PropertyBase
 
         ModifiersProperty* copy() const override;
 
-         void install(LocatedEntity *, const std::string &) override;
+         void install(LocatedEntity&, const std::string &) override;
 
         void set(const Atlas::Message::Element& val) override;
 

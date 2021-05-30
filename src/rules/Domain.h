@@ -186,9 +186,9 @@ class Domain
         }
 
 
-        virtual void installDelegates(LocatedEntity* entity, const std::string& propertyName);
+        virtual void installDelegates(LocatedEntity& entity, const std::string& propertyName);
 
-        virtual HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res);
+        virtual HandlerResult operation(LocatedEntity& e, const Operation& op, OpVector& res);
 
         virtual std::vector<CollisionEntry> queryCollision(const WFMath::Ball<3>& sphere) const
         {

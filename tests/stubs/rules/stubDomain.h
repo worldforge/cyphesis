@@ -57,7 +57,7 @@
 
 #ifndef STUB_Domain_installDelegates
 //#define STUB_Domain_installDelegates
-  void Domain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+  void Domain::installDelegates(LocatedEntity& entity, const std::string& propertyName)
   {
     
   }
@@ -65,7 +65,7 @@
 
 #ifndef STUB_Domain_operation
 //#define STUB_Domain_operation
-  HandlerResult Domain::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  HandlerResult Domain::operation(LocatedEntity& e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

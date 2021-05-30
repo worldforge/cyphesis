@@ -66,7 +66,7 @@
 
 #ifndef STUB_StackableDomain_installDelegates
 //#define STUB_StackableDomain_installDelegates
-  void StackableDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+  void StackableDomain::installDelegates(LocatedEntity& entity, const std::string& propertyName)
   {
     
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_StackableDomain_operation
 //#define STUB_StackableDomain_operation
-  HandlerResult StackableDomain::operation(LocatedEntity* entity, const Operation& op, OpVector& res)
+  HandlerResult StackableDomain::operation(LocatedEntity& entity, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -106,7 +106,7 @@
 
 #ifndef STUB_StackableDomain_DeleteOperation
 //#define STUB_StackableDomain_DeleteOperation
-  HandlerResult StackableDomain::DeleteOperation(LocatedEntity* owner, const Operation& op, OpVector& res)
+  HandlerResult StackableDomain::DeleteOperation(LocatedEntity& owner, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -114,7 +114,7 @@
 
 #ifndef STUB_StackableDomain_MoveOperation
 //#define STUB_StackableDomain_MoveOperation
-  HandlerResult StackableDomain::MoveOperation(LocatedEntity* owner, const Operation& op, OpVector& res)
+  HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

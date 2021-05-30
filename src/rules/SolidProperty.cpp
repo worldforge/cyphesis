@@ -34,7 +34,7 @@ SolidProperty * SolidProperty::copy() const
     return new SolidProperty(*this);
 }
 
-void SolidProperty::apply(LocatedEntity * owner)
+void SolidProperty::apply(LocatedEntity & owner)
 {
-    owner->m_location.setSolid(isTrue());
+    owner.m_location.setSolid(isTrue());
 }

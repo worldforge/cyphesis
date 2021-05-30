@@ -24,6 +24,7 @@
 #endif
 
 #include "common/Property.h"
+#include "../TestEntity.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -50,10 +51,10 @@ class MinimalProperty : public PropertyBase
         { return new MinimalProperty; }
 };
 
-static void exerciseProperty(PropertyBase* pb)
+static void exerciseProperty(PropertyBase* pb, LocatedEntity& entity)
 {
-    pb->install((LocatedEntity*) nullptr, "test_prop");
-    pb->apply(nullptr);
+    pb->install(entity, "test_prop");
+    pb->apply(entity);
     MapType map;
     pb->add("test_name", map);
     Anonymous ent;
@@ -62,6 +63,7 @@ static void exerciseProperty(PropertyBase* pb)
 
 int main()
 {
+    TestEntity entity{};
     // Assertions to verify the flags have the desired properties.
     assert((prop_flag_persistence_clean | prop_flag_persistence_mask) == prop_flag_persistence_mask);
     assert((prop_flag_persistence_ephem | prop_flag_persistence_mask) == prop_flag_persistence_mask);
@@ -146,7 +148,7 @@ int main()
 
     {
         PropertyBase* pb = new MinimalProperty;
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -157,7 +159,7 @@ int main()
         pb->set(i);
         pb->get(val);
         assert(val == i);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -167,7 +169,7 @@ int main()
         assert(pb->flags().m_flags == 0);
         pb->get(val);
         assert(val == i);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -178,7 +180,7 @@ int main()
         pb->set(i);
         pb->get(val);
         assert(val == i);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -189,7 +191,7 @@ int main()
         pb->set(i);
         pb->get(val);
         assert(val == i);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -200,7 +202,7 @@ int main()
         pb->set(f);
         pb->get(val);
         assert(val == f);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -211,7 +213,7 @@ int main()
         pb->set(d);
         pb->get(val);
         assert(val == d);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -222,7 +224,7 @@ int main()
         pb->set(s);
         pb->get(val);
         assert(val == s);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -233,7 +235,7 @@ int main()
         pb->set(i);
         pb->get(val);
         assert(val == i);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -245,7 +247,7 @@ int main()
         pb->set(m);
         pb->get(val);
         assert(val == m);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 
@@ -259,9 +261,12 @@ int main()
         pb->set(200);
         pb->get(val);
         assert(val == 1L);
-        exerciseProperty(pb);
+        exerciseProperty(pb, entity);
         delete pb;
     }
 }
 
 #include "../stubs/common/stublog.h"
+#include "../stubs/rules/stubLocatedEntity.h"
+#include "../stubs/common/stubRouter.h"
+#include "../stubs/rules/stubLocation.h"

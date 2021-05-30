@@ -31,22 +31,22 @@ PropertyCore<EntityT>::PropertyCore(std::uint32_t flags) : m_flags(flags)
 }
 
 template<typename EntityT>
-void PropertyCore<EntityT>::install(EntityT*, const std::string& name)
+void PropertyCore<EntityT>::install(EntityT&, const std::string& name)
 {
 }
 
 template<typename EntityT>
-void PropertyCore<EntityT>::install(TypeNode*, const std::string& name)
+void PropertyCore<EntityT>::install(TypeNode&, const std::string& name)
 {
 }
 
 template<typename EntityT>
-void PropertyCore<EntityT>::remove(EntityT*, const std::string& name)
+void PropertyCore<EntityT>::remove(EntityT&, const std::string& name)
 {
 }
 
 template<typename EntityT>
-void PropertyCore<EntityT>::apply(EntityT*)
+void PropertyCore<EntityT>::apply(EntityT&)
 {
 }
 
@@ -67,7 +67,7 @@ void PropertyCore<EntityT>::add(const std::string& s,
 }
 
 template<typename EntityT>
-HandlerResult PropertyCore<EntityT>::operation(LocatedEntity*,
+HandlerResult PropertyCore<EntityT>::operation(LocatedEntity&,
                                                const Operation&,
                                                OpVector& res)
 {

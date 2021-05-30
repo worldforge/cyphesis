@@ -61,22 +61,22 @@ void TerrainProperty::applyToState(LocatedEntity& entity, State& state) const
 }
 
 
-void TerrainProperty::install(LocatedEntity* owner, const std::string& name)
+void TerrainProperty::install(LocatedEntity& owner, const std::string& name)
 {
     auto state = std::make_unique<TerrainProperty::State>(TerrainProperty::State{std::make_unique<Mercator::Terrain>(Mercator::Terrain::SHADED), {}});
 
     sInstanceState.addState(owner, std::move(state));
 }
 
-void TerrainProperty::remove(LocatedEntity* owner, const std::string& name)
+void TerrainProperty::remove(LocatedEntity& owner, const std::string& name)
 {
     sInstanceState.removeState(owner);
 }
 
-void TerrainProperty::apply(LocatedEntity* entity)
+void TerrainProperty::apply(LocatedEntity& entity)
 {
     auto* state = sInstanceState.getState(entity);
-    applyToState(*entity, *state);
+    applyToState(entity, *state);
 
 }
 
@@ -145,7 +145,7 @@ bool TerrainProperty::getHeightAndNormal(LocatedEntity& entity,
                                          float& height,
                                          Vector3D& normal) const
 {
-    auto& terrain = *sInstanceState.getState(&entity)->terrain;
+    auto& terrain = *sInstanceState.getState(entity)->terrain;
     auto s = terrain.getSegmentAtPos(x, y);
     if (s && !s->isValid()) {
         s->populate();
@@ -155,7 +155,7 @@ bool TerrainProperty::getHeightAndNormal(LocatedEntity& entity,
 
 bool TerrainProperty::getHeight(LocatedEntity& entity, float x, float y, float& height) const
 {
-    auto& terrain = *sInstanceState.getState(&entity)->terrain;
+    auto& terrain = *sInstanceState.getState(entity)->terrain;
     auto s = terrain.getSegmentAtPos(x, y);
     if (s && !s->isValid()) {
         s->populate();
@@ -171,7 +171,7 @@ bool TerrainProperty::getHeight(LocatedEntity& entity, float x, float y, float& 
 /// material identifier at this location.
 boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x, float z) const
 {
-    auto& terrain = *sInstanceState.getState(&entity)->terrain;
+    auto& terrain = *sInstanceState.getState(entity)->terrain;
     auto segment = terrain.getSegmentAtPos(x, z);
     if (segment == nullptr) {
         debug(std::cerr << "No terrain at this point" << std::endl << std::flush;);
@@ -205,7 +205,7 @@ boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x,
 
 boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEntity& entity, float x, float z) const
 {
-    auto& terrain = *sInstanceState.getState(&entity)->terrain;
+    auto& terrain = *sInstanceState.getState(entity)->terrain;
     auto seg = terrain.getSegmentAtPos(x, z);
     if (seg == nullptr) {
         return boost::none;
@@ -234,17 +234,17 @@ boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEn
 
 Mercator::Terrain& TerrainProperty::getData(const LocatedEntity& entity)
 {
-    auto* state = sInstanceState.getState(&entity);
+    auto* state = sInstanceState.getState(entity);
     return *state->terrain;
 }
 
 Mercator::Terrain& TerrainProperty::getData(const LocatedEntity& entity) const
 {
-    auto* state = sInstanceState.getState(&entity);
+    auto* state = sInstanceState.getState(entity);
     return *state->terrain;
 }
 
 const std::vector<std::string>& TerrainProperty::getSurfaceNames(const LocatedEntity& entity) const
 {
-    return sInstanceState.getState(&entity)->surfaceNames;
+    return sInstanceState.getState(entity)->surfaceNames;
 }

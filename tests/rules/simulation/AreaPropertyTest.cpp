@@ -61,7 +61,7 @@ int main()
 
 #include "physics/Shape.h"
 
-const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity**)
+const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity & owner, LocatedEntity**)
 {
     return 0;
 }

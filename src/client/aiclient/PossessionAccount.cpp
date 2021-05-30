@@ -60,7 +60,7 @@ PossessionAccount::PossessionAccount(const std::string& id, long intId, const Mi
     m_python_connection = python_reload_scripts.connect([&]() {
         for (auto& entry : m_minds) {
             auto entity = entry.second;
-            m_mindFactory.m_scriptFactory->addScript(entity.get());
+            m_mindFactory.m_scriptFactory->addScript(*entity);
         }
 
     });
@@ -164,7 +164,7 @@ void PossessionAccount::externalOperation(const Operation& op, Link&)
 
 void PossessionAccount::PossessOperation(const Operation& op, OpVector& res)
 {
-    debug(std::cout << "Got possession request." << std::endl;);
+    debug_print("Got possession request.");
 
     auto args = op->getArgs();
     if (!args.empty()) {

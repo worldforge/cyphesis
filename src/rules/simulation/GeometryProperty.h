@@ -74,7 +74,7 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
 
         void set(const Atlas::Message::Element&) override;
 
-        void install(TypeNode*, const std::string&) override;
+        void install(TypeNode&, const std::string&) override;
 
         GeometryProperty* copy() const override;
 

@@ -37,7 +37,7 @@ class TerrainPointsProperty : public Property<Atlas::Message::MapType>
 
         TerrainPointsProperty* copy() const override;
 
-        void apply(LocatedEntity* entity) override;
+        void apply(LocatedEntity& entity) override;
 
 };
 

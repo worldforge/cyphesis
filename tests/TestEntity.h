@@ -23,12 +23,18 @@
 
 struct TestEntity : LocatedEntity
 {
+    static long idGenerator;
 
     static std::function<void(TestEntity&, const Operation&, Link&)> externalOperationFn;
     static std::function<void(TestEntity&, const Operation&, OpVector&)> operationFn;
     static std::function<void(TestEntity&)> destroyFn;
 
-
+    TestEntity() : LocatedEntity(idGenerator++)
+    {
+    }
+    TestEntity(long intId) : LocatedEntity(std::to_string(intId), intId)
+    {
+    }
     TestEntity(const std::string& id, long intId) : LocatedEntity(id, intId)
     {
     }
@@ -54,6 +60,7 @@ struct TestEntity : LocatedEntity
         }
     }
 };
+long TestEntity::idGenerator = 0;
 
 std::function<void(TestEntity&, const Operation&, Link&)> TestEntity::externalOperationFn;
 std::function<void(TestEntity&, const Operation&, OpVector&)> TestEntity::operationFn;

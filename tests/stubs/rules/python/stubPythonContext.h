@@ -10,7 +10,7 @@
 #ifndef STUB_PythonContext_PythonContext
 //#define STUB_PythonContext_PythonContext
    PythonContext::PythonContext()
-    : m_module(nullptr),m_globals(nullptr),m_locals(nullptr),m_arena(nullptr)
+    : m_arena(nullptr)
   {
     
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_PythonContext_runCommand
 //#define STUB_PythonContext_runCommand
-  std::string PythonContext::runCommand(const std::string &)
+  std::string PythonContext::runCommand(const std::string&)
   {
     return "";
   }

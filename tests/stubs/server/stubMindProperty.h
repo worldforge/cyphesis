@@ -50,7 +50,7 @@
 
 #ifndef STUB_MindProperty_apply
 //#define STUB_MindProperty_apply
-  void MindProperty::apply(LocatedEntity* entity)
+  void MindProperty::apply(LocatedEntity& entity)
   {
     
   }
@@ -58,7 +58,7 @@
 
 #ifndef STUB_MindProperty_remove
 //#define STUB_MindProperty_remove
-  void MindProperty::remove(LocatedEntity* entity, const std::string& name)
+  void MindProperty::remove(LocatedEntity& entity, const std::string& name)
   {
     
   }

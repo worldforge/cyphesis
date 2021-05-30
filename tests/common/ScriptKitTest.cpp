@@ -32,7 +32,7 @@ class TestScriptKit : public ScriptKit<LocatedEntity>
   public:
     std::string m_package;
     virtual const std::string & package() const { return m_package; }
-    virtual int addScript(LocatedEntity * entity) const { return 0; }
+    virtual int addScript(LocatedEntity & entity) const { return 0; }
     virtual int refreshClass() { return 0; }
 };
 

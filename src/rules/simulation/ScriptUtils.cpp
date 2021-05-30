@@ -25,7 +25,7 @@
 static const bool debug_flag = false;
 
 
-HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e)
+HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity& e)
 {
     HandlerResult result = OPERATION_IGNORED;
 
@@ -39,7 +39,7 @@ HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, co
             } else if (numRet == 2) {
                 result = OPERATION_BLOCKED;
             } else {
-                log(ERROR, String::compose("Unrecognized return code %1 for script '%2' attached to entity '%3'", numRet, scriptName, e->describeEntity()));
+                log(ERROR, String::compose("Unrecognized return code %1 for script '%2' attached to entity '%3'", numRet, scriptName, e.describeEntity()));
             }
 
         } else if (CyPy_Operation::check(pythonResult)) {
@@ -47,7 +47,7 @@ HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, co
             assert(operation);
             //If nothing is set the operation is from the entity containing the usages.
             if (operation->isDefaultFrom()) {
-                operation->setFrom(e->getId());
+                operation->setFrom(e.getId());
             }
             res.push_back(std::move(operation));
         } else if (CyPy_Oplist::check(pythonResult)) {
@@ -55,7 +55,7 @@ HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, co
             for (auto& opRes : o) {
                 //If nothing is set the operation is from the entity containing the usages.
                 if (opRes->isDefaultFrom()) {
-                    opRes->setFrom(e->getId());
+                    opRes->setFrom(e.getId());
                 }
                 res.push_back(opRes);
             }

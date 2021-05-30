@@ -33,12 +33,12 @@ TransientProperty * TransientProperty::copy() const
     return new TransientProperty(*this);
 }
 
-void TransientProperty::install(LocatedEntity * ent, const std::string & name)
+void TransientProperty::install(LocatedEntity& ent, const std::string & name)
 {
-    ent->addFlags(entity_ephem);
+    ent.addFlags(entity_ephem);
 }
 
-void TransientProperty::apply(LocatedEntity * ent)
+void TransientProperty::apply(LocatedEntity& ent)
 {
     // If data is less than zero we don't ever delete it.
     if (m_data < 0) {
@@ -46,12 +46,12 @@ void TransientProperty::apply(LocatedEntity * ent)
     }
 
     Delete deleteOp;
-    deleteOp->setTo(ent->getId());
+    deleteOp->setTo(ent.getId());
     deleteOp->setFutureSeconds(m_data);
 
     Anonymous entity_arg;
-    entity_arg->setId(ent->getId());
+    entity_arg->setId(ent.getId());
     deleteOp->setArgs1(entity_arg);
 
-    ent->sendWorld(deleteOp);
+    ent.sendWorld(deleteOp);
 }

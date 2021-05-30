@@ -42,7 +42,7 @@
 
 #ifndef STUB_VisibilityProperty_apply
 //#define STUB_VisibilityProperty_apply
-  void VisibilityProperty::apply(LocatedEntity* entity)
+  void VisibilityProperty::apply(LocatedEntity& entity)
   {
     
   }

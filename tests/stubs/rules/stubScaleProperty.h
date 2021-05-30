@@ -9,7 +9,7 @@
 
 #ifndef STUB_ScaleProperty_apply
 //#define STUB_ScaleProperty_apply
-  void ScaleProperty::apply(LocatedEntity *)
+  void ScaleProperty::apply(LocatedEntity&)
   {
     
   }

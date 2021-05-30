@@ -31,31 +31,31 @@
 ///
 /// @param package Name of the script package where the script type is
 /// @param type Name of the script types instanced by this factory
-template <>
+template<>
 Py::Object wrapPython(LocatedEntity* value)
 {
     return CyPy_LocatedEntity::wrap(value);
 }
 
-template <class T>
+template<class T>
 int PythonScriptFactory<T>::setup()
 {
     return load();
 }
 
-template <class T>
-const std::string & PythonScriptFactory<T>::package() const
+template<class T>
+const std::string& PythonScriptFactory<T>::package() const
 {
     return m_package;
 }
 
 template<class T>
-Py::Object PythonScriptFactory<T>::createScript(T* entity) const
+Py::Object PythonScriptFactory<T>::createScript(T& entity) const
 {
     if (!this->m_class || this->m_class->isNull()) {
         return Py::Null();
     }
-    auto wrapper = wrapPython(entity);
+    auto wrapper = wrapPython(&entity);
     if (wrapper.isNull()) {
         return Py::Null();
     }
@@ -74,18 +74,18 @@ Py::Object PythonScriptFactory<T>::createScript(T* entity) const
     }
 }
 
-template <class T>
-int PythonScriptFactory<T>::addScript(T * entity) const
+template<class T>
+int PythonScriptFactory<T>::addScript(T& entity) const
 {
     auto script = createScript(entity);
     if (!script.isNone() && !script.isNull()) {
-        entity->setScript(std::make_unique<PythonWrapper>(script));
+        entity.setScript(std::make_unique<PythonWrapper>(script));
     }
 
     return (script.isNull()) ? -1 : 0;
 }
 
-template <class T>
+template<class T>
 int PythonScriptFactory<T>::refreshClass()
 {
     return refresh();

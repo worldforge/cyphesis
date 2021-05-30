@@ -404,15 +404,15 @@ PropertyBase::~PropertyBase()
 {
 }
 
-void PropertyBase::install(LocatedEntity *, const std::string & name)
+void PropertyBase::install(LocatedEntity&, const std::string & name)
 {
 }
 
-void PropertyBase::remove(LocatedEntity *, const std::string & name)
+void PropertyBase::remove(LocatedEntity&, const std::string & name)
 {
 }
 
-void PropertyBase::apply(LocatedEntity *)
+void PropertyBase::apply(LocatedEntity&)
 {
 }
 
@@ -427,7 +427,7 @@ void PropertyBase::add(const std::string & s,
 {
 }
 
-HandlerResult PropertyBase::operation(LocatedEntity *,
+HandlerResult PropertyBase::operation(LocatedEntity&,
                                       const Operation &,
                                       OpVector &)
 {

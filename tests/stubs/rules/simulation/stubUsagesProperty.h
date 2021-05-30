@@ -17,7 +17,7 @@
 
 #ifndef STUB_UsagesProperty_install
 //#define STUB_UsagesProperty_install
-  void UsagesProperty::install(LocatedEntity* owner, const std::string& name)
+  void UsagesProperty::install(LocatedEntity& owner, const std::string& name)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_UsagesProperty_remove
 //#define STUB_UsagesProperty_remove
-  void UsagesProperty::remove(LocatedEntity* owner, const std::string& name)
+  void UsagesProperty::remove(LocatedEntity& owner, const std::string& name)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_UsagesProperty_operation
 //#define STUB_UsagesProperty_operation
-  HandlerResult UsagesProperty::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  HandlerResult UsagesProperty::operation(LocatedEntity& e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_UsagesProperty_use_handler
 //#define STUB_UsagesProperty_use_handler
-  HandlerResult UsagesProperty::use_handler(LocatedEntity* e, const Operation& op, OpVector& res)
+  HandlerResult UsagesProperty::use_handler(LocatedEntity& e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

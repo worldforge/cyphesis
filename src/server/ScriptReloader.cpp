@@ -46,11 +46,11 @@ ScriptReloader::ScriptReloader(BaseWorld& world)
         for (auto& entry : entities) {
             auto scriptsProp = entry.second->getPropertyClass<ScriptsProperty>("__scripts");
             if (scriptsProp) {
-                scriptsProp->applyScripts(entry.second.get());
+                scriptsProp->applyScripts(*entry.second);
             }
             auto scriptsInstanceProp = entry.second->getPropertyClass<ScriptsProperty>("__scripts_instance");
             if (scriptsInstanceProp) {
-                scriptsInstanceProp->applyScripts(entry.second.get());
+                scriptsInstanceProp->applyScripts(*entry.second);
             }
         }
 

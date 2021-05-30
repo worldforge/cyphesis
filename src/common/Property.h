@@ -112,19 +112,19 @@ class PropertyCore : public OperationsListener {
     /// \brief Install this property on an entity
     ///
     /// Called whenever an Entity gains this property for the first time
-    virtual void install(EntityT *, const std::string &);
+    virtual void install(EntityT &, const std::string &);
     /// \brief Install this property on a type
     ///
     /// Called whenever a TypeNode gains this property for the first time
-    virtual void install(TypeNode *, const std::string &);
+    virtual void install(TypeNode &, const std::string &);
     /// \brief Remove this property from an entity.
     ///
     /// Called whenever the property is removed or the entity is shutting down.
-    virtual void remove(EntityT *, const std::string & name);
+    virtual void remove(EntityT &, const std::string & name);
     /// \brief Apply whatever effect this property has on an Entity
     ///
     /// Called whenever the value of this property should affect an Entity
-    virtual void apply(EntityT *);
+    virtual void apply(EntityT &);
 
 
     /// \brief Copy the value of the property into an Atlas Message
@@ -136,7 +136,7 @@ class PropertyCore : public OperationsListener {
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;
     /// \brief Handle an operation
-    HandlerResult operation(LocatedEntity *,
+    HandlerResult operation(LocatedEntity &,
                                     const Operation &,
                                     OpVector &) override;
     /// \brief Create a copy of this instance

@@ -27,14 +27,12 @@
 #include "common/log.h"
 #include "common/compose.hpp"
 #include "common/debug.h"
-#include "rules/simulation/ExternalMind.h"
 #include "rules/LocatedEntity.h"
 
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/MersenneTwister.h>
 
-#include <sigc++/bind.h>
 #include <rules/simulation/MindsProperty.h>
 
 #include <iostream>
@@ -43,20 +41,20 @@ static const bool debug_flag = false;
 
 
 int ExternalMindsManager::addConnection(
-    const ExternalMindsConnection& connection)
+        const ExternalMindsConnection& connection)
 {
     auto result = m_connections.emplace(connection.getRouterId(), connection);
     if (!result.second) {
         log(WARNING, String::compose(
-            "Tried to register a external mind connection for "
-            "router %1 for which there's already a connection registered.",
-            connection.getRouterId()));
+                "Tried to register a external mind connection for "
+                "router %1 for which there's already a connection registered.",
+                connection.getRouterId()));
         return -1;
     }
     log(INFO, String::compose(
-        "New external mind connection registered for router %1. "
-        "There are now %2 connections.",
-        connection.getRouterId(), m_connections.size()));
+            "New external mind connection registered for router %1. "
+            "There are now %2 connections.",
+            connection.getRouterId(), m_connections.size()));
 
     //As we now have a new connection we'll see if there are any minds in waiting
 
@@ -74,56 +72,56 @@ int ExternalMindsManager::removeConnection(const std::string& routerId)
     if (result == 0) {
         log(WARNING,
             String::compose(
-                "Tried to deregister a external mind connection for "
-                "router %1 for which there's no connection registered.",
-                routerId));
+                    "Tried to deregister a external mind connection for "
+                    "router %1 for which there's no connection registered.",
+                    routerId));
         return -1;
     } else {
-        debug(std::cout << String::compose(
-            "Deregistered external mind connection registered for router %1. "
-            "There are now %2 connections.", routerId,
-            m_connections.size()) << std::endl;);
+        debug_print(String::compose(
+                "Deregistered external mind connection registered for router %1. "
+                "There are now %2 connections.", routerId,
+                m_connections.size()));
         return 0;
     }
 }
 
-void ExternalMindsManager::addPossessionEntryForCharacter(LocatedEntity* entity)
+void ExternalMindsManager::addPossessionEntryForCharacter(LocatedEntity& entity)
 {
-    std::string key = entity->getId() + "_";
+    std::string key = entity.getId() + "_";
     WFMath::MTRand generator;
     for (int i = 0; i < 32; i++) {
         char ch = (char) ((int) 'a' + generator.rand(25));
         key += ch;
     }
 
-    PossessionAuthenticator::instance().addPossession(entity->getId(), key);
+    PossessionAuthenticator::instance().addPossession(entity.getId(), key);
 }
 
-int ExternalMindsManager::requestPossession(LocatedEntity* entity)
+int ExternalMindsManager::requestPossession(LocatedEntity& entity)
 {
     addPossessionEntryForCharacter(entity);
-    entity->destroyed.connect(sigc::bind(sigc::mem_fun(*this, &ExternalMindsManager::entity_destroyed), entity));
-    m_unpossessedEntities.insert(entity);
+    entity.destroyed.connect([this, &entity]() { entity_destroyed(entity); });
+    m_unpossessedEntities.insert(&entity);
 
-    entity->propertyApplied.connect([this, entity](const std::string& propName, const PropertyBase& prop) {
+    entity.propertyApplied.connect([this, &entity](const std::string& propName, const PropertyBase& prop) {
         if (propName == MindsProperty::property_name) {
             auto changedMindsProp = dynamic_cast<const MindsProperty*>(&prop);
             if (changedMindsProp) {
-                entity_mindsChanged(entity, changedMindsProp);
+                entity_mindsChanged(entity, *changedMindsProp);
             }
         }
     });
 
-    auto mindsProperty = entity->getPropertyClassFixed<MindsProperty>();
+    auto mindsProperty = entity.getPropertyClassFixed<MindsProperty>();
     if (!mindsProperty || mindsProperty->getMinds().empty()) {
-        requestPossessionFromRegisteredClients(entity->getId());
+        requestPossessionFromRegisteredClients(entity.getId());
     }
     return 0;
 }
 
-void ExternalMindsManager::removeRequest(LocatedEntity* character)
+void ExternalMindsManager::removeRequest(LocatedEntity& character)
 {
-    m_unpossessedEntities.erase(character);
+    m_unpossessedEntities.erase(&character);
 }
 
 
@@ -146,10 +144,10 @@ int ExternalMindsManager::requestPossessionFromRegisteredClients(const std::stri
             possessOp->setArgs1(possess_args);
             possessOp->setTo(connection.getRouterId());
 
-            debug(std::cout << String::compose(
-                "Requesting possession of mind for entity %1 from link with id %2 and router with id %3.",
-                entity_id, connection.getLink()->getId(),
-                connection.getRouterId()) << std::endl;);
+            debug_print(String::compose(
+                    "Requesting possession of mind for entity %1 from link with id %2 and router with id %3.",
+                    entity_id, connection.getLink()->getId(),
+                    connection.getRouterId()));
 
             connection.getLink()->send(possessOp);
             return 0;
@@ -160,28 +158,28 @@ int ExternalMindsManager::requestPossessionFromRegisteredClients(const std::stri
     return 1;
 }
 
-void ExternalMindsManager::entity_destroyed(LocatedEntity* entity)
+void ExternalMindsManager::entity_destroyed(LocatedEntity& entity)
 {
-    m_unpossessedEntities.erase(entity);
-    m_possessedEntities.erase(entity);
+    m_unpossessedEntities.erase(&entity);
+    m_possessedEntities.erase(&entity);
 }
 
-void ExternalMindsManager::entity_mindsChanged(LocatedEntity* entity, const MindsProperty* mindsProp)
+void ExternalMindsManager::entity_mindsChanged(LocatedEntity& entity, const MindsProperty& mindsProp)
 {
     //If there are no minds controlling the entity we should try to possess it
-    if (mindsProp->getMinds().empty()) {
-        m_possessedEntities.erase(entity);
-        m_unpossessedEntities.insert(entity);
+    if (mindsProp.getMinds().empty()) {
+        m_possessedEntities.erase(&entity);
+        m_unpossessedEntities.insert(&entity);
 
         //The possession entry was removed when the character was possessed last, so we need to add one back.
         addPossessionEntryForCharacter(entity);
 
         //We'll now check for any registered possessive clients and ask them for possession of the newly unpossessed character.
-        requestPossessionFromRegisteredClients(entity->getId());
+        requestPossessionFromRegisteredClients(entity.getId());
     } else {
         //Mark that the entity now is possessed (although it might not be by us).
-        m_unpossessedEntities.erase(entity);
-        m_possessedEntities.insert(entity);
+        m_unpossessedEntities.erase(&entity);
+        m_possessedEntities.insert(&entity);
 
     }
 }

@@ -42,7 +42,7 @@
 
 #ifndef STUB_ContainerAccessProperty_operation
 //#define STUB_ContainerAccessProperty_operation
-  HandlerResult ContainerAccessProperty::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  HandlerResult ContainerAccessProperty::operation(LocatedEntity& e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -50,7 +50,7 @@
 
 #ifndef STUB_ContainerAccessProperty_install
 //#define STUB_ContainerAccessProperty_install
-  void ContainerAccessProperty::install(LocatedEntity*, const std::string&)
+  void ContainerAccessProperty::install(LocatedEntity&, const std::string&)
   {
     
   }
@@ -58,7 +58,7 @@
 
 #ifndef STUB_ContainerAccessProperty_remove
 //#define STUB_ContainerAccessProperty_remove
-  void ContainerAccessProperty::remove(LocatedEntity*, const std::string& name)
+  void ContainerAccessProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }

@@ -17,7 +17,7 @@
 
 #ifndef STUB_SolidProperty_apply
 //#define STUB_SolidProperty_apply
-  void SolidProperty::apply(LocatedEntity *)
+  void SolidProperty::apply(LocatedEntity &)
   {
     
   }

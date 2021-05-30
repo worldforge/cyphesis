@@ -25,7 +25,7 @@
 
 #ifndef STUB_ScriptsProperty_apply
 //#define STUB_ScriptsProperty_apply
-  void ScriptsProperty::apply(LocatedEntity*)
+  void ScriptsProperty::apply(LocatedEntity&)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_ScriptsProperty_remove
 //#define STUB_ScriptsProperty_remove
-  void ScriptsProperty::remove(LocatedEntity*, const std::string& name)
+  void ScriptsProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_ScriptsProperty_applyScripts
 //#define STUB_ScriptsProperty_applyScripts
-  void ScriptsProperty::applyScripts(LocatedEntity*) const
+  void ScriptsProperty::applyScripts(LocatedEntity&) const
   {
     
   }

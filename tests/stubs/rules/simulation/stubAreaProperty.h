@@ -35,7 +35,7 @@
 
 #ifndef STUB_AreaProperty_apply
 //#define STUB_AreaProperty_apply
-  void AreaProperty::apply(LocatedEntity *)
+  void AreaProperty::apply(LocatedEntity&)
   {
     
   }

@@ -160,7 +160,7 @@ void Task::callScriptFunction(const std::string& function, const Py::Tuple& args
             });
             auto ret = m_script.callMemberFunction(function, args);
             //Ignore any return codes
-            ScriptUtils::processScriptResult(m_script.type().str(), ret, res, m_usageInstance.actor.get());
+            ScriptUtils::processScriptResult(m_script.type().str(), ret, res, *m_usageInstance.actor);
         } catch (const Py::BaseException& e) {
             log(ERROR, String::compose("Error when calling '%1' on task '%2' on entity '%3'.", function, m_script.str(), m_usageInstance.actor->describeEntity()));
             if (PyErr_Occurred() != nullptr) {
@@ -186,7 +186,7 @@ void Task::callUsageScriptFunction(const std::string& function, const std::map<s
             auto script = m_script;
             auto ret = script.callMemberFunction(function, Py::TupleN(py_args));
             //Ignore any return codes
-            ScriptUtils::processScriptResult(script.type().str(), ret, res, m_usageInstance.actor.get());
+            ScriptUtils::processScriptResult(script.type().str(), ret, res, *m_usageInstance.actor);
         } catch (const Py::BaseException& e) {
             log(ERROR, String::compose("Error when calling '%1' on task '%2' on entity '%3'.", function, m_script.str(), m_usageInstance.actor->describeEntity()));
             if (PyErr_Occurred() != nullptr) {

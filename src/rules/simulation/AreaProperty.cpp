@@ -18,14 +18,10 @@
 
 #include "AreaProperty.h"
 
-#include "common/debug.h"
 #include <common/log.h>
 
 #include "physics/Shape.h"
 
-#include <wfmath/atlasconv.h>
-
-#include <sstream>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -50,7 +46,7 @@ AreaProperty::AreaProperty() :
 
 AreaProperty::~AreaProperty() = default;
 
-void AreaProperty::apply(LocatedEntity* owner)
+void AreaProperty::apply(LocatedEntity& owner)
 {
     if (!m_shape) {
         log(ERROR, "Terrain area has no shape to apply");

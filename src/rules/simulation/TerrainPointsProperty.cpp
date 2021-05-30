@@ -29,11 +29,11 @@ using Atlas::Message::MapType;
 using Atlas::Message::ListType;
 using Atlas::Message::FloatType;
 
-void TerrainPointsProperty::apply(LocatedEntity* entity)
+void TerrainPointsProperty::apply(LocatedEntity& entity)
 {
-    auto terrainProp = entity->modPropertyClassFixed<TerrainProperty>();
+    auto terrainProp = entity.modPropertyClassFixed<TerrainProperty>();
     if (terrainProp) {
-        auto& terrain = terrainProp->getData(*entity);
+        auto& terrain = terrainProp->getData(entity);
 
         auto& base_points = terrain.getPoints();
 
@@ -115,7 +115,7 @@ void TerrainPointsProperty::apply(LocatedEntity* entity)
             changedAreas.push_back(changedArea);
         }
         if (!changedAreas.empty()) {
-            Domain* domain = entity->getDomain();
+            Domain* domain = entity.getDomain();
             if (domain) {
                 domain->refreshTerrain(changedAreas);
             }

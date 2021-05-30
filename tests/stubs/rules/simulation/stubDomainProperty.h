@@ -9,7 +9,7 @@
 
 #ifndef STUB_DomainProperty_install
 //#define STUB_DomainProperty_install
-  void DomainProperty::install(LocatedEntity *, const std::string &)
+  void DomainProperty::install(LocatedEntity&, const std::string &)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_DomainProperty_remove
 //#define STUB_DomainProperty_remove
-  void DomainProperty::remove(LocatedEntity *, const std::string &)
+  void DomainProperty::remove(LocatedEntity&, const std::string &)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_DomainProperty_apply
 //#define STUB_DomainProperty_apply
-  void DomainProperty::apply(LocatedEntity *)
+  void DomainProperty::apply(LocatedEntity&)
   {
     
   }
@@ -41,27 +41,11 @@
 
 #ifndef STUB_DomainProperty_operation
 //#define STUB_DomainProperty_operation
-  HandlerResult DomainProperty::operation(LocatedEntity * e, const Operation & op, OpVector & res)
+  HandlerResult DomainProperty::operation(LocatedEntity& e, const Operation & op, OpVector & res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
 #endif //STUB_DomainProperty_operation
-
-#ifndef STUB_DomainProperty_scheduleTick
-//#define STUB_DomainProperty_scheduleTick
-  void DomainProperty::scheduleTick(LocatedEntity& entity, double timeNow)
-  {
-    
-  }
-#endif //STUB_DomainProperty_scheduleTick
-
-#ifndef STUB_DomainProperty_tick_handler
-//#define STUB_DomainProperty_tick_handler
-  HandlerResult DomainProperty::tick_handler(LocatedEntity * e, const Operation & op, OpVector & res)
-  {
-    return *static_cast<HandlerResult*>(nullptr);
-  }
-#endif //STUB_DomainProperty_tick_handler
 
 
 #endif

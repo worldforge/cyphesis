@@ -9,7 +9,7 @@
 
 #ifndef STUB_DensityProperty_apply
 //#define STUB_DensityProperty_apply
-  void DensityProperty::apply(LocatedEntity *)
+  void DensityProperty::apply(LocatedEntity&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_DensityProperty_updateMass
 //#define STUB_DensityProperty_updateMass
-  void DensityProperty::updateMass(LocatedEntity *entity) const
+  void DensityProperty::updateMass(LocatedEntity& entity) const
   {
     
   }

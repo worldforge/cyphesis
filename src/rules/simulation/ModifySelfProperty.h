@@ -35,9 +35,9 @@ class ModifySelfProperty : public PropertyBase
         ~ModifySelfProperty() override = default;
 
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
-        void install(LocatedEntity* owner, const std::string& name) override;
+        void install(LocatedEntity& owner, const std::string& name) override;
 
         ModifySelfProperty* copy() const override;
 
@@ -45,7 +45,7 @@ class ModifySelfProperty : public PropertyBase
 
         int get(Atlas::Message::Element& val) const override;
 
-        void apply(LocatedEntity* e) override;
+        void apply(LocatedEntity& e) override;
 
     protected:
 

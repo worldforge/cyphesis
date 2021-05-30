@@ -353,7 +353,7 @@ void Entity::operation(const Operation& op, OpVector& res)
     }
 
     for (auto& listener : m_listeners) {
-        HandlerResult hr_call = listener->operation(this, op, res);
+        HandlerResult hr_call = listener->operation(*this, op, res);
         //We'll record the most blocking of the different results only.
         if (hr != OPERATION_BLOCKED) {
             if (hr_call != OPERATION_IGNORED) {
@@ -383,7 +383,7 @@ HandlerResult Entity::callDelegate(const std::string& name,
         }
     }
     if (p != nullptr) {
-        return p->operation(this, op, res);
+        return p->operation(*this, op, res);
     }
     return OPERATION_IGNORED;
 }

@@ -98,12 +98,12 @@ void PropertyCoverage::basicCoverage()
 
     m_prop.get(val);
 
-    m_prop.install(m_ent.get(), "test_prop");
+    m_prop.install(*m_ent, "test_prop");
 
     I = m_testData.begin();
     for (; I != Iend; ++I) {
         m_prop.set(*I);
-        m_prop.apply(m_ent.get());
+        m_prop.apply(*m_ent);
         m_ent->propertyApplied("test_prop", m_prop);
     }
 

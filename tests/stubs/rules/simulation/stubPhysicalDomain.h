@@ -99,7 +99,7 @@
 
 #ifndef STUB_PhysicalDomain_installDelegates
 //#define STUB_PhysicalDomain_installDelegates
-  void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+  void PhysicalDomain::installDelegates(LocatedEntity& entity, const std::string& propertyName)
   {
     
   }
@@ -107,7 +107,7 @@
 
 #ifndef STUB_PhysicalDomain_operation
 //#define STUB_PhysicalDomain_operation
-  HandlerResult PhysicalDomain::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+  HandlerResult PhysicalDomain::operation(LocatedEntity& e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -339,7 +339,7 @@
 
 #ifndef STUB_PhysicalDomain_tick_handler
 //#define STUB_PhysicalDomain_tick_handler
-  HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res)
+  HandlerResult PhysicalDomain::tick_handler(LocatedEntity& entity, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

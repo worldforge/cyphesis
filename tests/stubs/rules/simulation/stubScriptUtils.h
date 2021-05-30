@@ -9,7 +9,7 @@
 
 #ifndef STUB_ScriptUtils_processScriptResult
 //#define STUB_ScriptUtils_processScriptResult
-   HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e)
+   HandlerResult ScriptUtils::processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity& e)
   {
     return *static_cast< HandlerResult*>(nullptr);
   }

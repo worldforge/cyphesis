@@ -625,11 +625,11 @@ PhysicalDomain::~PhysicalDomain()
     m_propertyAppliedConnection.disconnect();
 }
 
-void PhysicalDomain::installDelegates(LocatedEntity* entity, const std::string& propertyName)
+void PhysicalDomain::installDelegates(LocatedEntity& entity, const std::string& propertyName)
 {
-    entity->installDelegate(Atlas::Objects::Operation::TICK_NO, propertyName);
-    auto tickOp = scheduleTick(*entity);
-    entity->sendWorld(tickOp);
+    entity.installDelegate(Atlas::Objects::Operation::TICK_NO, propertyName);
+    auto tickOp = scheduleTick(entity);
+    entity.sendWorld(tickOp);
 }
 
 Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEntity& entity)
@@ -643,12 +643,12 @@ Atlas::Objects::Operation::RootOperation PhysicalDomain::scheduleTick(LocatedEnt
     return tickOp;
 }
 
-HandlerResult PhysicalDomain::operation(LocatedEntity* entity, const Operation& op, OpVector& res)
+HandlerResult PhysicalDomain::operation(LocatedEntity& entity, const Operation& op, OpVector& res)
 {
     return tick_handler(entity, op, res);
 }
 
-HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operation& op, OpVector& res)
+HandlerResult PhysicalDomain::tick_handler(LocatedEntity& entity, const Operation& op, OpVector& res)
 {
     if (!op->getArgs().empty() && !op->getArgs().front()->isDefaultName() && op->getArgs().front()->getName() == "domain") {
         double timeNow = op->getSeconds();
@@ -659,7 +659,7 @@ HandlerResult PhysicalDomain::tick_handler(LocatedEntity* entity, const Operatio
         }
 
         tick(tickSize, res);
-        auto tickOp = scheduleTick(*entity);
+        auto tickOp = scheduleTick(entity);
         tickOp->setSeconds(timeNow + TICK_SIZE);
         tickOp->setAttr("lastTick", timeNow);
         res.emplace_back(std::move(tickOp));

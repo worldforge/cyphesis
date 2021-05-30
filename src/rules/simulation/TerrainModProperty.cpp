@@ -60,7 +60,7 @@ TerrainModProperty* TerrainModProperty::copy() const
     return new TerrainModProperty(*this);
 }
 
-void TerrainModProperty::apply(LocatedEntity* owner)
+void TerrainModProperty::apply(LocatedEntity& owner)
 {
     m_translator = std::make_unique<TerrainModTranslator>(m_data);
 }

@@ -18,7 +18,7 @@
 
 #ifndef STUB_TasksProperty_install
 //#define STUB_TasksProperty_install
-  void TasksProperty::install(LocatedEntity*, const std::string&)
+  void TasksProperty::install(LocatedEntity&, const std::string&)
   {
     
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_TasksProperty_remove
 //#define STUB_TasksProperty_remove
-  void TasksProperty::remove(LocatedEntity*, const std::string& name)
+  void TasksProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -58,7 +58,7 @@
 
 #ifndef STUB_TasksProperty_updateTask
 //#define STUB_TasksProperty_updateTask
-  int TasksProperty::updateTask(LocatedEntity* owner, OpVector& res)
+  int TasksProperty::updateTask(LocatedEntity& owner, OpVector& res)
   {
     return 0;
   }
@@ -66,7 +66,7 @@
 
 #ifndef STUB_TasksProperty_startTask
 //#define STUB_TasksProperty_startTask
-  int TasksProperty::startTask(const std::string& id, Ref<Task> task, LocatedEntity* owner, OpVector& res)
+  int TasksProperty::startTask(const std::string& id, Ref<Task> task, LocatedEntity& owner, OpVector& res)
   {
     return 0;
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_TasksProperty_clearTask
 //#define STUB_TasksProperty_clearTask
-  int TasksProperty::clearTask(const std::string& id, LocatedEntity* owner, OpVector& res)
+  int TasksProperty::clearTask(const std::string& id, LocatedEntity& owner, OpVector& res)
   {
     return 0;
   }
@@ -82,7 +82,7 @@
 
 #ifndef STUB_TasksProperty_stopTask
 //#define STUB_TasksProperty_stopTask
-  void TasksProperty::stopTask(const std::string& id, LocatedEntity* owner, OpVector& res)
+  void TasksProperty::stopTask(const std::string& id, LocatedEntity& owner, OpVector& res)
   {
     
   }
@@ -90,7 +90,7 @@
 
 #ifndef STUB_TasksProperty_TickOperation
 //#define STUB_TasksProperty_TickOperation
-  HandlerResult TasksProperty::TickOperation(LocatedEntity* owner, const Operation& op, OpVector&)
+  HandlerResult TasksProperty::TickOperation(LocatedEntity& owner, const Operation& op, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -98,7 +98,7 @@
 
 #ifndef STUB_TasksProperty_UseOperation
 //#define STUB_TasksProperty_UseOperation
-  HandlerResult TasksProperty::UseOperation(LocatedEntity* owner, const Operation& op, OpVector&)
+  HandlerResult TasksProperty::UseOperation(LocatedEntity& owner, const Operation& op, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }
@@ -106,7 +106,7 @@
 
 #ifndef STUB_TasksProperty_operation
 //#define STUB_TasksProperty_operation
-  HandlerResult TasksProperty::operation(LocatedEntity* owner, const Operation& op, OpVector&)
+  HandlerResult TasksProperty::operation(LocatedEntity& owner, const Operation& op, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

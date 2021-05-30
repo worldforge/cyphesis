@@ -29,7 +29,7 @@ class AccountProperty : public Property<std::string>
 
         static constexpr const char* property_name = "__account";
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
         AccountProperty* copy() const override;
 

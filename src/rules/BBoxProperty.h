@@ -28,34 +28,38 @@
 
 /// \brief Class to handle Entity bbox property
 /// \ingroup PropertyClasses
-class BBoxProperty : public PropertyBase {
-  protected:
-    BBox m_data;
-  public:
+class BBoxProperty : public PropertyBase
+{
+    protected:
+        BBox m_data;
+    public:
 
-    static constexpr const char* property_name = "bbox";
-    static constexpr const char* property_atlastype = "list";
+        static constexpr const char* property_name = "bbox";
+        static constexpr const char* property_atlastype = "list";
 
-    explicit BBoxProperty() = default;
+        explicit BBoxProperty() = default;
 
-    const BBox & data() const { return m_data; }
-    BBox & data() { return m_data; }
+        const BBox& data() const
+        { return m_data; }
 
-    void apply(LocatedEntity *) override;
+        BBox& data()
+        { return m_data; }
 
-    int get(Atlas::Message::Element & val) const override;
+        void apply(LocatedEntity&) override;
 
-    void set(const Atlas::Message::Element & val) override;
+        int get(Atlas::Message::Element& val) const override;
 
-    void add(const std::string & key,
-                 Atlas::Message::MapType & map) const override;
+        void set(const Atlas::Message::Element& val) override;
 
-    void add(const std::string & key,
-                 const Atlas::Objects::Entity::RootEntity & ent) const override;
+        void add(const std::string& key,
+                 Atlas::Message::MapType& map) const override;
 
-    BBoxProperty * copy() const override;
+        void add(const std::string& key,
+                 const Atlas::Objects::Entity::RootEntity& ent) const override;
 
-    virtual void updateBboxOnEntity(LocatedEntity* entity) const;
+        BBoxProperty* copy() const override;
+
+        virtual void updateBboxOnEntity(LocatedEntity& entity) const;
 };
 
 #endif // RULESETS_B_BOX_PROPERTY_H

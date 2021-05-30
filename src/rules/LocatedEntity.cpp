@@ -79,13 +79,13 @@ void LocatedEntity::clearProperties()
         for (auto& entry : m_type->defaults()) {
             //Only remove if there's no instance specific property.
             if (m_properties.find(entry.first) == m_properties.end()) {
-                entry.second->remove(this, entry.first);
+                entry.second->remove(*this, entry.first);
             }
         }
     }
 
     for (auto& entry : m_properties) {
-        entry.second.property->remove(this, entry.first);
+        entry.second.property->remove(*this, entry.first);
     }
 }
 
@@ -187,7 +187,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* mo
     }
 
     bool propNeedsInstalling = false;
-    PropertyBase* prop = nullptr;
+    PropertyBase* prop;
     Atlas::Message::Element attr;
     // If it is an existing property, just update the value.
     auto I = m_properties.find(name);
@@ -242,7 +242,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* mo
 
     //We deferred any installation until after the prop has had its value set.
     if (propNeedsInstalling) {
-        prop->install(this, name);
+        prop->install(*this, name);
     }
 
     // Allow the value to take effect.
@@ -375,10 +375,10 @@ PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::M
             if (!def_val.isNone()) {
                 new_prop->set(def_val);
             }
-            J->second->remove(this, name);
+            J->second->remove(*this, name);
             new_prop->removeFlags(prop_flag_class);
             m_properties[name].property.reset(new_prop);
-            new_prop->install(this, name);
+            new_prop->install(*this, name);
             applyProperty(name, new_prop);
             return new_prop;
         }
@@ -391,7 +391,7 @@ PropertyBase* LocatedEntity::setProperty(const std::string& name,
 {
     auto p = prop.get();
     m_properties[name].property = std::move(prop);
-    p->install(this, name);
+    p->install(*this, name);
     return p;
 }
 
@@ -595,7 +595,7 @@ void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previo
 void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
 {
     // Allow the value to take effect.
-    prop->apply(this);
+    prop->apply(*this);
     prop->addFlags(prop_flag_unsent);
     propertyApplied(name, *prop);
     // Mark the Entity as unclean

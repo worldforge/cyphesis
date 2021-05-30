@@ -35,12 +35,12 @@ class PythonScriptFactory : public ScriptKit<T>, private PythonClass {
     int setup();
 
     const std::string & package() const;
-    int addScript(T * entity) const;
+    int addScript(T& entity) const;
     int refreshClass();
 
   protected:
 
-    Py::Object createScript(T * entity) const;
+    Py::Object createScript(T& entity) const;
 };
 
 #endif // RULESETS_PYTHON_SCRIPT_FACTORY_H

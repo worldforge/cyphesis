@@ -200,7 +200,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
         //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
         prop->set(val);
         prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
-        prop->apply(&ent);
+        prop->apply(ent);
         ent.propertyApplied(name, *prop);
         instanceProperties.insert(name);
     }
@@ -211,10 +211,10 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
                 auto& prop = propIter.second;
                 // If a property is in the class it won't have been installed
                 // as setAttrValue() checks
-                prop->install(&ent, propIter.first);
+                prop->install(ent, propIter.first);
                 // The property will have been applied if it has an overridden
                 // value, so we only apply it the value is still default.
-                prop->apply(&ent);
+                prop->apply(ent);
                 ent.propertyApplied(propIter.first, *prop);
             }
         }

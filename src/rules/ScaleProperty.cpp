@@ -23,9 +23,9 @@
 #include <wfmath/atlasconv.h>
 
 
-void ScaleProperty::apply(LocatedEntity* ent)
+void ScaleProperty::apply(LocatedEntity& ent)
 {
-    auto bboxProp = ent->getPropertyClassFixed<BBoxProperty>();
+    auto bboxProp = ent.getPropertyClassFixed<BBoxProperty>();
     if (bboxProp) {
         bboxProp->updateBboxOnEntity(ent);
     }

@@ -33,26 +33,26 @@ ModeProperty::ModeProperty()
 {
 }
 
-void ModeProperty::apply(LocatedEntity* entity)
+void ModeProperty::apply(LocatedEntity& entity)
 {
-    auto modeDataProp = entity->getPropertyClassFixed<ModeDataProperty>();
+    auto modeDataProp = entity.getPropertyClassFixed<ModeDataProperty>();
     if (modeDataProp) {
         if (modeDataProp->getMode() != m_mode && modeDataProp->getMode() != Mode::Unknown) {
-            auto mutableModeDataProp = entity->modPropertyClassFixed<ModeDataProperty>();
+            auto mutableModeDataProp = entity.modPropertyClassFixed<ModeDataProperty>();
             mutableModeDataProp->clearData();
-            entity->applyProperty(ModeDataProperty::property_name, mutableModeDataProp);
+            entity.applyProperty(ModeDataProperty::property_name, mutableModeDataProp);
             mutableModeDataProp->removeFlags(prop_flag_persistence_clean);
         }
     }
 
     if (m_mode == Mode::Planted) {
         //See if there's a rotation we should apply
-        const auto* plantedRotation = entity->getPropertyClass<QuaternionProperty>("planted_rotation");
+        const auto* plantedRotation = entity.getPropertyClass<QuaternionProperty>("planted_rotation");
         if (plantedRotation && plantedRotation->data().isValid()) {
             //Check that the rotation is applied already, otherwise apply it.
-            auto* activeRotationProp = entity->requirePropertyClass<QuaternionProperty>("active_rotation");
+            auto* activeRotationProp = entity.requirePropertyClass<QuaternionProperty>("active_rotation");
             if (activeRotationProp->data() != plantedRotation->data()) {
-                WFMath::Quaternion currentOrientation = entity->m_location.orientation();
+                WFMath::Quaternion currentOrientation = entity.m_location.orientation();
 
                 if (activeRotationProp->data().isValid() && activeRotationProp->data() != WFMath::Quaternion::Identity()) {
                     WFMath::Quaternion rotation = activeRotationProp->data().inverse();
@@ -67,25 +67,25 @@ void ModeProperty::apply(LocatedEntity* entity)
                 currentOrientation = rotation * currentOrientation;
 
                 activeRotationProp->data() = plantedRotation->data();
-                entity->applyProperty("active_rotation", activeRotationProp);
+                entity.applyProperty("active_rotation", activeRotationProp);
                 activeRotationProp->removeFlags(prop_flag_persistence_clean);
 
                 Atlas::Objects::Entity::Anonymous move_arg;
-                move_arg->setId(entity->getId());
+                move_arg->setId(entity.getId());
                 move_arg->setAttr("orientation", currentOrientation.toAtlas());
 
                 Atlas::Objects::Operation::Move moveOp;
-                moveOp->setTo(entity->getId());
+                moveOp->setTo(entity.getId());
                 moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
                 moveOp->setArgs1(move_arg);
-                entity->sendWorld(moveOp);
+                entity.sendWorld(moveOp);
             }
         }
     } else {
-        if (entity->hasAttr("active_rotation")) {
-            auto* activeRotationProp = entity->modPropertyClass<QuaternionProperty>("active_rotation");
+        if (entity.hasAttr("active_rotation")) {
+            auto* activeRotationProp = entity.modPropertyClass<QuaternionProperty>("active_rotation");
             if (activeRotationProp->data().isValid()) {
-                WFMath::Quaternion currentOrientation = entity->m_location.orientation();
+                WFMath::Quaternion currentOrientation = entity.m_location.orientation();
 
                 WFMath::Quaternion rotation = activeRotationProp->data().inverse();
                 //normalize to avoid drift
@@ -98,14 +98,14 @@ void ModeProperty::apply(LocatedEntity* entity)
                 activeRotationProp->addFlags(prop_flag_unsent);
 
                 Atlas::Objects::Entity::Anonymous move_arg;
-                move_arg->setId(entity->getId());
+                move_arg->setId(entity.getId());
                 move_arg->setAttr("orientation", currentOrientation.toAtlas());
 
                 Atlas::Objects::Operation::Move moveOp;
-                moveOp->setTo(entity->getId());
+                moveOp->setTo(entity.getId());
                 moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
                 moveOp->setArgs1(move_arg);
-                entity->sendWorld(moveOp);
+                entity.sendWorld(moveOp);
 
             }
         }

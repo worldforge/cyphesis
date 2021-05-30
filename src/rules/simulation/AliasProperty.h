@@ -36,9 +36,9 @@ class AliasProperty : public Property<std::string>
 
         AliasProperty* copy() const override;
 
-        void apply(LocatedEntity* entity) override;
+        void apply(LocatedEntity& entity) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
 };
 

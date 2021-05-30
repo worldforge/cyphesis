@@ -56,7 +56,7 @@ class LocatedEntitytest : public Cyphesis::TestBase
     class TestProperty : public PropertyBase
     {
       public:
-        virtual void remove(LocatedEntity *, const std::string & name);
+        virtual void remove(LocatedEntity&, const std::string & name);
         virtual TestProperty * copy() const;
         virtual int get(Atlas::Message::Element&) const;
         virtual void set(const Atlas::Message::Element&);
@@ -71,7 +71,7 @@ class LocatedEntitytest : public Cyphesis::TestBase
 
 bool LocatedEntitytest::m_TestProperty_remove_called;
 
-void LocatedEntitytest::TestProperty::remove(LocatedEntity *, const std::string & name)
+void LocatedEntitytest::TestProperty::remove(LocatedEntity&, const std::string & name)
 {
     LocatedEntitytest::TestProperty_remove_called();
 }

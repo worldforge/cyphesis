@@ -104,7 +104,7 @@ int main()
         assert(ret == 0);
         Ref<Entity> e = new Entity("1", 1);
         new TestWorld(e);
-        ret = psf.addScript(e.get());
+        ret = psf.addScript(*e);
         assert(ret == 0);
 
         assert(e->m_scripts.size() == 1);

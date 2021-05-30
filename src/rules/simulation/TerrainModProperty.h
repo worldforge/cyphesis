@@ -47,7 +47,7 @@ class TerrainModProperty : public TerrainEffectorProperty
 
         TerrainModProperty* copy() const override;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
         /// \brief Constructs a Mercator::TerrainMod from Atlas data
         std::unique_ptr<Mercator::TerrainMod> parseModData(const WFMath::Point<3>& pos,

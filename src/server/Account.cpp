@@ -204,7 +204,7 @@ void Account::removeMindFromEntity(ExternalMind* mind)
     if (!entity->isDestroyed()) {
         auto prop = entity->modPropertyClassFixed<MindsProperty>();
         if (prop) {
-            prop->removeMind(mind, entity.get());
+            prop->removeMind(mind, *entity);
             entity->applyProperty(MindsProperty::property_name, prop);
             Atlas::Objects::Operation::Update update;
             update->setTo(entity->getId());

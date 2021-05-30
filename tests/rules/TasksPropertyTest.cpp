@@ -57,7 +57,7 @@ int main()
     Ref<Task> task = new Task(usageInstance, fake);
     task->progress() = .1;
     task->rate() = .1;
-    actor->requirePropertyClassFixed<TasksProperty>()->startTask("", task, actor.get(), res);
+    actor->requirePropertyClassFixed<TasksProperty>()->startTask("", task, *actor, res);
 
     MapType map;
     map["one"] = 23;

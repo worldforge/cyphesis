@@ -17,7 +17,7 @@
 
 #ifndef STUB_GeometryProperty_install
 //#define STUB_GeometryProperty_install
-  void GeometryProperty::install(TypeNode*, const std::string&)
+  void GeometryProperty::install(TypeNode&, const std::string&)
   {
     
   }

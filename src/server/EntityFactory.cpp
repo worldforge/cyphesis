@@ -20,7 +20,6 @@
 
 #include "rules/simulation/World.h"
 
-#include "common/debug.h"
 #include "common/ScriptKit.h"
 #include "common/TypeNode.h"
 #include "EntityFactory.h"
@@ -68,7 +67,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
         //First make sure that all properties are installed, since Entity::setAttr won't install props if they exist in the type.
         for (auto& propIter : m_type->defaults()) {
             auto& prop = propIter.second;
-            prop->install(&thing, propIter.first);
+            prop->install(thing, propIter.first);
         }
 
         // Apply the attribute values
@@ -79,7 +78,7 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
             // value, so we only apply if the value is still default.
             if (thing.getProperties().find(propIter.first) == thing.getProperties().end()) {
                 auto& prop = propIter.second;
-                prop->apply(&thing);
+                prop->apply(thing);
                 thing.propertyApplied(propIter.first, *prop);
             }
         }

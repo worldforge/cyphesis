@@ -9,7 +9,7 @@
 
 #ifndef STUB_AdminProperty_apply
 //#define STUB_AdminProperty_apply
-  void AdminProperty::apply(LocatedEntity* entity)
+  void AdminProperty::apply(LocatedEntity& entity)
   {
     
   }

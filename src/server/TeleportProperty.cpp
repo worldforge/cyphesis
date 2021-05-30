@@ -32,19 +32,19 @@
 static const bool debug_flag = false;
 ServerRouting* TeleportProperty::s_serverRouting = nullptr;
 
-void TeleportProperty::install(LocatedEntity* owner, const std::string& name)
+void TeleportProperty::install(LocatedEntity& owner, const std::string& name)
 {
-    owner->installDelegate(Atlas::Objects::Operation::TELEPORT_NO, name);
+    owner.installDelegate(Atlas::Objects::Operation::TELEPORT_NO, name);
 }
 
-HandlerResult TeleportProperty::operation(LocatedEntity* ent,
+HandlerResult TeleportProperty::operation(LocatedEntity& ent,
                                           const Operation& op,
                                           OpVector& res)
 {
     return TeleportProperty::teleport_handler(ent, op, res);
 }
 
-HandlerResult TeleportProperty::teleport_handler(LocatedEntity* e,
+HandlerResult TeleportProperty::teleport_handler(LocatedEntity& e,
                                                  const Operation& op,
                                                  OpVector& res)
 {
@@ -76,8 +76,7 @@ HandlerResult TeleportProperty::teleport_handler(LocatedEntity* e,
     // This is the sender entity
     auto entity = BaseWorld::instance().getEntity(op->getFrom());
     if (!entity) {
-        debug(std::cout << "No entity found with the specified ID: "
-                        << op->getFrom(););
+        debug_print("No entity found with the specified ID: "<< op->getFrom());
         return OPERATION_IGNORED;
     }
 

@@ -17,7 +17,7 @@
 
 #ifndef STUB_TerrainPointsProperty_apply
 //#define STUB_TerrainPointsProperty_apply
-  void TerrainPointsProperty::apply(LocatedEntity* entity)
+  void TerrainPointsProperty::apply(LocatedEntity& entity)
   {
     
   }

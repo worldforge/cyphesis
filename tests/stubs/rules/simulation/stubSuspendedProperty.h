@@ -17,7 +17,7 @@
 
 #ifndef STUB_SuspendedProperty_apply
 //#define STUB_SuspendedProperty_apply
-  void SuspendedProperty::apply(LocatedEntity *)
+  void SuspendedProperty::apply(LocatedEntity&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_SuspendedProperty_install
 //#define STUB_SuspendedProperty_install
-  void SuspendedProperty::install(LocatedEntity *, const std::string &)
+  void SuspendedProperty::install(LocatedEntity&, const std::string&)
   {
     
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_SuspendedProperty_remove
 //#define STUB_SuspendedProperty_remove
-  void SuspendedProperty::remove(LocatedEntity *, const std::string & name)
+  void SuspendedProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_SuspendedProperty_operation
 //#define STUB_SuspendedProperty_operation
-  HandlerResult SuspendedProperty::operation(LocatedEntity * e, const Operation & op, OpVector & res)
+  HandlerResult SuspendedProperty::operation(LocatedEntity& e, const Operation& op, OpVector& res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

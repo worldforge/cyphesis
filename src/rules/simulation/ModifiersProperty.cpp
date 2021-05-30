@@ -18,7 +18,6 @@
 
 #include "ModifiersProperty.h"
 #include "rules/LocatedEntity.h"
-#include "rules/Modifier.h"
 
 ModifiersProperty::ModifiersProperty() :
         PropertyBase(prop_flag_instance | prop_flag_persistence_ephem),
@@ -31,9 +30,9 @@ ModifiersProperty* ModifiersProperty::copy() const
     return new ModifiersProperty(*this);
 }
 
-void ModifiersProperty::install(LocatedEntity* entity, const std::string&)
+void ModifiersProperty::install(LocatedEntity& entity, const std::string&)
 {
-    m_entity = entity;
+    m_entity = &entity;
 }
 
 void ModifiersProperty::set(const Atlas::Message::Element& val)

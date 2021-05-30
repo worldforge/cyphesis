@@ -17,7 +17,7 @@
 
 #ifndef STUB_SpawnProperty_apply
 //#define STUB_SpawnProperty_apply
-  void SpawnProperty::apply(LocatedEntity *)
+  void SpawnProperty::apply(LocatedEntity&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_SpawnProperty_remove
 //#define STUB_SpawnProperty_remove
-  void SpawnProperty::remove(LocatedEntity *, const std::string&)
+  void SpawnProperty::remove(LocatedEntity&, const std::string&)
   {
     
   }

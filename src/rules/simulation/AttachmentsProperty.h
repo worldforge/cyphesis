@@ -52,11 +52,11 @@ class AttachmentsProperty : public PropertyBase
 
         explicit AttachmentsProperty(std::uint32_t flags = 0);
 
-        void install(LocatedEntity*, const std::string&) override;
+        void install(LocatedEntity&, const std::string&) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
-        HandlerResult operation(LocatedEntity*,
+        HandlerResult operation(LocatedEntity&,
                                 const Operation&,
                                 OpVector&) override;
 

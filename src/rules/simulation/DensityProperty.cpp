@@ -31,29 +31,29 @@ using Atlas::Objects::Operation::Set;
 static const bool debug_flag = false;
 
 
-void DensityProperty::apply(LocatedEntity *entity)
+void DensityProperty::apply(LocatedEntity&entity)
 {
     updateMass(entity);
 }
 
-void DensityProperty::updateMass(LocatedEntity *entity) const
+void DensityProperty::updateMass(LocatedEntity& entity) const
 {
 
-    const auto& bbox = entity->m_location.bBox();
+    const auto& bbox = entity.m_location.bBox();
     if (bbox.isValid()) {
         WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
         float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
 
         double mass = volume * m_data;
 
-        auto massProp = entity->requirePropertyClass<Property<double>>("mass", 0);
+        auto massProp = entity.requirePropertyClass<Property<double>>("mass", 0);
 
         if (massProp->data() != mass) {
             massProp->set(mass);
             massProp->apply(entity);
             massProp->removeFlags(prop_flag_persistence_clean);
             massProp->addFlags(prop_flag_unsent);
-            entity->propertyApplied("mass", *massProp);
+            entity.propertyApplied("mass", *massProp);
         }
 
     }

@@ -9,7 +9,7 @@
 
 #ifndef STUB_AccountProperty_apply
 //#define STUB_AccountProperty_apply
-  void AccountProperty::apply(LocatedEntity*)
+  void AccountProperty::apply(LocatedEntity&)
   {
     
   }

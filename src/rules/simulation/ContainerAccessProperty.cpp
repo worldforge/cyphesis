@@ -60,7 +60,7 @@ void ContainerAccessProperty::set(const Element& ent)
 }
 
 
-HandlerResult ContainerAccessProperty::operation(LocatedEntity* e,
+HandlerResult ContainerAccessProperty::operation(LocatedEntity& e,
                                                  const Operation& op, OpVector& res)
 {
     auto& args = op->getArgs();
@@ -84,13 +84,13 @@ ContainerAccessProperty* ContainerAccessProperty::copy() const
     //return new ContainerAccessProperty(*this);
 }
 
-void ContainerAccessProperty::install(LocatedEntity* entity, const std::string& name)
+void ContainerAccessProperty::install(LocatedEntity& entity, const std::string& name)
 {
-    entity->installDelegate(Atlas::Objects::Operation::USE_NO, ContainerAccessProperty::property_name);
+    entity.installDelegate(Atlas::Objects::Operation::USE_NO, ContainerAccessProperty::property_name);
 }
 
-void ContainerAccessProperty::remove(LocatedEntity* entity, const std::string& name)
+void ContainerAccessProperty::remove(LocatedEntity& entity, const std::string& name)
 {
-    entity->removeDelegate(Atlas::Objects::Operation::USE_NO, ContainerAccessProperty::property_name);
+    entity.removeDelegate(Atlas::Objects::Operation::USE_NO, ContainerAccessProperty::property_name);
 }
 

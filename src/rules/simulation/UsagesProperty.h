@@ -40,17 +40,17 @@ class UsagesProperty : public Property<Atlas::Message::MapType>
 
         void set(const Atlas::Message::Element& val) override;
 
-        void install(LocatedEntity* owner, const std::string& name) override;
+        void install(LocatedEntity& owner, const std::string& name) override;
 
-        void remove(LocatedEntity* owner, const std::string& name) override;
+        void remove(LocatedEntity& owner, const std::string& name) override;
 
-        HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
+        HandlerResult operation(LocatedEntity& e, const Operation& op, OpVector& res) override;
 
     private:
 
         std::map<std::string, Usage> m_usages;
 
-        HandlerResult use_handler(LocatedEntity* e, const Operation& op, OpVector& res);
+        HandlerResult use_handler(LocatedEntity& e, const Operation& op, OpVector& res);
 
 
 

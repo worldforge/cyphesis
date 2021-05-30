@@ -167,7 +167,7 @@ const std::string & PythonScriptFactory<T>::package() const
 }
 
 template <class T>
-int PythonScriptFactory<T>::addScript(T * entity) const
+int PythonScriptFactory<T>::addScript(T& entity) const
 {
     return 0;
 }

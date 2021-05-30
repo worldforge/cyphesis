@@ -50,7 +50,7 @@
 
 #ifndef STUB_MindProperty_apply
 //#define STUB_MindProperty_apply
-  void MindProperty::apply(LocatedEntity*)
+  void MindProperty::apply(LocatedEntity&)
   {
     
   }

@@ -9,7 +9,7 @@
 
 #ifndef STUB_OperationsListener_operation
 //#define STUB_OperationsListener_operation
-  HandlerResult OperationsListener::operation(LocatedEntity *, const Operation&, OpVector & res)
+  HandlerResult OperationsListener::operation(LocatedEntity &, const Operation&, OpVector & res)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

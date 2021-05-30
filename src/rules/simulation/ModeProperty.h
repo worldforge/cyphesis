@@ -79,7 +79,7 @@ class ModeProperty : public PropertyBase
 
         ~ModeProperty() override = default;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
         ModeProperty* copy() const override;
 

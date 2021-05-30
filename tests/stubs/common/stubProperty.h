@@ -45,7 +45,7 @@
 #ifndef STUB_PropertyCore_install
 //#define STUB_PropertyCore_install
   template <typename EntityT>
-  void PropertyCore<EntityT>::install(EntityT *, const std::string &)
+  void PropertyCore<EntityT>::install(EntityT &, const std::string &)
   {
     
   }
@@ -54,7 +54,7 @@
 #ifndef STUB_PropertyCore_install
 //#define STUB_PropertyCore_install
   template <typename EntityT>
-  void PropertyCore<EntityT>::install(TypeNode *, const std::string &)
+  void PropertyCore<EntityT>::install(TypeNode &, const std::string &)
   {
     
   }
@@ -63,7 +63,7 @@
 #ifndef STUB_PropertyCore_remove
 //#define STUB_PropertyCore_remove
   template <typename EntityT>
-  void PropertyCore<EntityT>::remove(EntityT *, const std::string & name)
+  void PropertyCore<EntityT>::remove(EntityT &, const std::string & name)
   {
     
   }
@@ -72,7 +72,7 @@
 #ifndef STUB_PropertyCore_apply
 //#define STUB_PropertyCore_apply
   template <typename EntityT>
-  void PropertyCore<EntityT>::apply(EntityT *)
+  void PropertyCore<EntityT>::apply(EntityT &)
   {
     
   }
@@ -117,7 +117,7 @@
 #ifndef STUB_PropertyCore_operation
 //#define STUB_PropertyCore_operation
   template <typename EntityT>
-  HandlerResult PropertyCore<EntityT>::operation(LocatedEntity *, const Operation &, OpVector &)
+  HandlerResult PropertyCore<EntityT>::operation(LocatedEntity &, const Operation &, OpVector &)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

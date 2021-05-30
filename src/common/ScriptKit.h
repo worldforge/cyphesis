@@ -31,7 +31,7 @@ class ScriptKit {
     /// \brief Accessor for package name
     virtual const std::string & package() const = 0;
     /// \brief Add a script to an entity
-    virtual int addScript(T * entity) const = 0;
+    virtual int addScript(T& entity) const = 0;
     /// \brief Reload the underlying class object from the script on disk
     virtual int refreshClass() = 0;
 };

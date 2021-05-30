@@ -79,7 +79,7 @@ MindProperty* MindProperty::copy() const
     return new MindProperty(*this);
 }
 
-void MindProperty::apply(LocatedEntity* ent)
+void MindProperty::apply(LocatedEntity& ent)
 {
     //Only request possession if there's a value. This allows player controlled entities to be exempted.
     if (isMindEnabled()) {
@@ -89,7 +89,7 @@ void MindProperty::apply(LocatedEntity* ent)
     }
 }
 
-void MindProperty::remove(LocatedEntity* ent, const std::string& name)
+void MindProperty::remove(LocatedEntity& ent, const std::string& name)
 {
     ExternalMindsManager::instance().removeRequest(ent);
 }

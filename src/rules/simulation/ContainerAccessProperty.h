@@ -41,11 +41,11 @@ class ContainerAccessProperty : public PropertyBase
 
         ContainerAccessProperty* copy() const override;
 
-        HandlerResult operation(LocatedEntity* e, const Operation& op, OpVector& res) override;
+        HandlerResult operation(LocatedEntity& e, const Operation& op, OpVector& res) override;
 
-        void install(LocatedEntity*, const std::string&) override;
+        void install(LocatedEntity&, const std::string&) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
     protected:
 

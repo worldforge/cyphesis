@@ -281,7 +281,7 @@ void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
     m_ownEntity = std::move(ownEntity);
 
     if (m_scriptFactory) {
-        m_scriptFactory->addScript(this);
+        m_scriptFactory->addScript(*this);
     }
 
 

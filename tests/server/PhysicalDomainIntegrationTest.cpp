@@ -187,8 +187,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         BBoxProperty bBoxProperty{};
         bBoxProperty.data() = {{-1, 0, -1},
                                {1,  1, 1}};
-        bBoxProperty.install(&plantedEntity, "bbox");
-        bBoxProperty.apply(&plantedEntity);
+        bBoxProperty.install(plantedEntity, "bbox");
+        bBoxProperty.apply(plantedEntity);
         plantedEntity.setProperty("bbox", std::unique_ptr<PropertyBase>(bBoxProperty.copy()));
 
 
@@ -226,7 +226,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         //Make the bbox larger and test that it adjust itself against the terrain.
         bBoxProperty.data() = {{-1, 0, -1},
                                {1,  2, 1}};
-        bBoxProperty.apply(&plantedEntity);
+        bBoxProperty.apply(plantedEntity);
 
         domain->test_childEntityPropertyApplied("bbox", bBoxProperty, plantedEntity.getIntId());
 
@@ -714,7 +714,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         };
 
         terrainModProperty.set(modElement);
-        terrainModProperty.apply(&terrainModEntity);
+        terrainModProperty.apply(terrainModEntity);
         terrainModEntity.setProperty(TerrainModProperty::property_name, std::unique_ptr<PropertyBase>(terrainModProperty.copy()));
 
         domain->addEntity(terrainModEntity);
@@ -759,7 +759,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         //Now change "mode" to "free", which should remove the mod.
 
         modeProperty->set("free");
-        modeProperty->apply(&terrainModEntity);
+        modeProperty->apply(terrainModEntity);
         terrainModEntity.propertyApplied.emit("mode", *modeProperty);
 
         domain->tick(0, res);
@@ -770,7 +770,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         //And back to "planted" which should bring it back
         modeProperty->set("planted");
-        modeProperty->apply(&terrainModEntity);
+        modeProperty->apply(terrainModEntity);
         terrainModEntity.propertyApplied.emit("mode", *modeProperty);
 
         domain->tick(0, res);
@@ -996,7 +996,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         BBoxProperty bBoxProperty{};
         bBoxProperty.set(newBbox.toAtlas());
         lake.setProperty("bbox", std::unique_ptr<PropertyBase>(bBoxProperty.copy()));
-        bBoxProperty.apply(&lake);
+        bBoxProperty.apply(lake);
         lake.test_propertyApplied().emit("bbox", bBoxProperty);
 
         domain->tick(0, res);
@@ -1676,7 +1676,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_FUZZY_EQUAL(plantedEntity.m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30), epsilon);
 
         plantedOffset->data() = -3;
-        plantedOffset->apply(&plantedEntity);
+        plantedOffset->apply(plantedEntity);
         plantedEntity.propertyApplied.emit("planted_offset", *plantedOffset);
         ASSERT_FUZZY_EQUAL(plantedEntity.m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30), epsilon);
 
@@ -1718,7 +1718,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_FUZZY_EQUAL(plantedEntity.m_location.m_pos, WFMath::Point<3>(30, 8.01695, 30), epsilon);
 
         plantedScaledOffset->data() = -0.3;
-        plantedScaledOffset->apply(&plantedEntity);
+        plantedScaledOffset->apply(plantedEntity);
         plantedEntity.propertyApplied.emit("planted_offset", *plantedScaledOffset);
         ASSERT_FUZZY_EQUAL(plantedEntity.m_location.m_pos, WFMath::Point<3>(30, 7.01695, 30), epsilon);
 

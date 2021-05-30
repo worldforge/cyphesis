@@ -65,9 +65,9 @@ class TasksProperty : public PropertyBase
 
         explicit TasksProperty();
 
-        void install(LocatedEntity*, const std::string&) override;
+        void install(LocatedEntity&, const std::string&) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
         int get(Atlas::Message::Element& val) const override;
 
@@ -75,21 +75,21 @@ class TasksProperty : public PropertyBase
 
         TasksProperty* copy() const override;
 
-        int updateTask(LocatedEntity* owner, OpVector& res);
+        int updateTask(LocatedEntity& owner, OpVector& res);
 
         int startTask(const std::string& id, Ref<Task> task,
-                      LocatedEntity* owner,
+                      LocatedEntity& owner,
                       OpVector& res);
 
-        int clearTask(const std::string& id, LocatedEntity* owner, OpVector& res);
+        int clearTask(const std::string& id, LocatedEntity& owner, OpVector& res);
 
-        void stopTask(const std::string& id, LocatedEntity* owner, OpVector& res);
+        void stopTask(const std::string& id, LocatedEntity& owner, OpVector& res);
 
-        HandlerResult TickOperation(LocatedEntity* owner, const Operation& op, OpVector&);
+        HandlerResult TickOperation(LocatedEntity& owner, const Operation& op, OpVector&);
 
-        HandlerResult UseOperation(LocatedEntity* owner, const Operation& op, OpVector&);
+        HandlerResult UseOperation(LocatedEntity& owner, const Operation& op, OpVector&);
 
-        HandlerResult operation(LocatedEntity* owner,
+        HandlerResult operation(LocatedEntity& owner,
                                 const Operation& op,
                                 OpVector&) override;
 };

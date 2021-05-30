@@ -7,6 +7,7 @@
 #include "server/Juncture.h"
 #include "stubJuncture_custom.h"
 
+
 #ifndef STUB_Juncture_onSocketConnected
 //#define STUB_Juncture_onSocketConnected
   void Juncture::onSocketConnected()
@@ -51,7 +52,7 @@
 //#define STUB_Juncture_Juncture
    Juncture::Juncture(Connection *, const std::string & id, long iid)
     : ConnectableRouter(Connection, id, iid)
-    , m_connection(nullptr),m_address(nullptr),m_peer(nullptr)
+    , m_connection(nullptr),m_peer(nullptr)
   {
     
   }

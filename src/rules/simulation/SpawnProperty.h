@@ -34,9 +34,9 @@ class SpawnProperty : public Property<Atlas::Message::MapType> {
 
     SpawnProperty * copy() const override;
 
-    void apply(LocatedEntity *) override;
+    void apply(LocatedEntity&) override;
 
-    void remove(LocatedEntity *, const std::string&) override;
+    void remove(LocatedEntity&, const std::string&) override;
 };
 
 #endif // RULESETS_SPAWN_PROPERTY_H

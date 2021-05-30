@@ -18,7 +18,7 @@
 
 #ifndef STUB_ModeProperty_apply
 //#define STUB_ModeProperty_apply
-  void ModeProperty::apply(LocatedEntity*)
+  void ModeProperty::apply(LocatedEntity&)
   {
     
   }

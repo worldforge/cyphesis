@@ -52,12 +52,12 @@ class TestProp : public Py::ExtensionModule<TestProp>
             auto ent = CyPy_Entity::value(args.front());
 
             auto p = ent->setProperty("terrain", std::make_unique<TerrainProperty>());
-            p->install(ent.get(), "terrain");
-            p->apply(ent.get());
+            p->install(*ent, "terrain");
+            p->apply(*ent);
             ent->propertyApplied("terrain", *p);
             p = ent->setProperty("line", std::make_unique<LineProperty>());
-            p->install(ent.get(), "line");
-            p->apply(ent.get());
+            p->install(*ent, "line");
+            p->apply(*ent);
             ent->propertyApplied("line", *p);
 
             return Py::None();

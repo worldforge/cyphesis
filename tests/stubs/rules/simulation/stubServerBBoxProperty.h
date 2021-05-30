@@ -9,7 +9,7 @@
 
 #ifndef STUB_ServerBBoxProperty_updateBboxOnEntity
 //#define STUB_ServerBBoxProperty_updateBboxOnEntity
-  void ServerBBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
+  void ServerBBoxProperty::updateBboxOnEntity(LocatedEntity& entity) const
   {
     
   }

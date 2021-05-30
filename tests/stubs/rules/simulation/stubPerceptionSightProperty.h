@@ -9,7 +9,7 @@
 
 #ifndef STUB_PerceptionSightProperty_apply
 //#define STUB_PerceptionSightProperty_apply
-  void PerceptionSightProperty::apply(LocatedEntity*)
+  void PerceptionSightProperty::apply(LocatedEntity&)
   {
     
   }

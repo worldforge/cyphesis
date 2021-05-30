@@ -42,7 +42,7 @@ class AreaProperty : public TerrainEffectorProperty {
 
     const Form<2> * shape() const { return m_shape.get(); }
 
-    void apply(LocatedEntity *) override;
+    void apply(LocatedEntity&) override;
 
     void set(const Atlas::Message::Element & val) override;
     AreaProperty * copy() const override;

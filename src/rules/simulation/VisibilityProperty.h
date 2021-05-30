@@ -42,7 +42,7 @@ class VisibilityProperty : public PropertyBase
 
     void set(const Atlas::Message::Element&) override;
 
-    void apply(LocatedEntity* entity) override;
+    void apply(LocatedEntity& entity) override;
 
   protected:
     enum class Visibility { Public, Protected, Private };

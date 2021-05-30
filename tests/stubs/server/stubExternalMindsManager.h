@@ -25,7 +25,7 @@
 
 #ifndef STUB_ExternalMindsManager_requestPossession
 //#define STUB_ExternalMindsManager_requestPossession
-  int ExternalMindsManager::requestPossession(LocatedEntity* character)
+  int ExternalMindsManager::requestPossession(LocatedEntity& character)
   {
     return 0;
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_ExternalMindsManager_removeRequest
 //#define STUB_ExternalMindsManager_removeRequest
-  void ExternalMindsManager::removeRequest(LocatedEntity* character)
+  void ExternalMindsManager::removeRequest(LocatedEntity& character)
   {
     
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_ExternalMindsManager_entity_destroyed
 //#define STUB_ExternalMindsManager_entity_destroyed
-  void ExternalMindsManager::entity_destroyed(LocatedEntity* character)
+  void ExternalMindsManager::entity_destroyed(LocatedEntity& character)
   {
     
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_ExternalMindsManager_entity_mindsChanged
 //#define STUB_ExternalMindsManager_entity_mindsChanged
-  void ExternalMindsManager::entity_mindsChanged(LocatedEntity* character, const MindsProperty* mindsProp)
+  void ExternalMindsManager::entity_mindsChanged(LocatedEntity& character, const MindsProperty& mindsProp)
   {
     
   }
@@ -65,7 +65,7 @@
 
 #ifndef STUB_ExternalMindsManager_addPossessionEntryForCharacter
 //#define STUB_ExternalMindsManager_addPossessionEntryForCharacter
-  void ExternalMindsManager::addPossessionEntryForCharacter(LocatedEntity* character)
+  void ExternalMindsManager::addPossessionEntryForCharacter(LocatedEntity& character)
   {
     
   }

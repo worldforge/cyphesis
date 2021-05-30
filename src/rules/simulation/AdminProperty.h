@@ -34,7 +34,7 @@ class AdminProperty : public BoolProperty
 
         explicit AdminProperty() = default;
 
-        void apply(LocatedEntity* entity) override;
+        void apply(LocatedEntity& entity) override;
         AdminProperty * copy() const override;
 
 };

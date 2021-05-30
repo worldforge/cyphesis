@@ -368,7 +368,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             //Add a listener which blocks all operations to t1
             struct : public OperationsListener
             {
-                HandlerResult operation(LocatedEntity*, const Operation& op, OpVector& res) override
+                HandlerResult operation(LocatedEntity&, const Operation& op, OpVector& res) override
                 {
                     if (op->getClassNo() == Atlas::Objects::Operation::MOVE_NO) {
                         return OPERATION_BLOCKED;

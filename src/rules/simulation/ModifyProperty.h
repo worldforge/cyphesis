@@ -69,11 +69,11 @@ class ModifyProperty : public PropertyBase
 
         ~ModifyProperty() override = default;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
-        void install(LocatedEntity* owner, const std::string& name) override;
+        void install(LocatedEntity& owner, const std::string& name) override;
 
         ModifyProperty* copy() const override;
 

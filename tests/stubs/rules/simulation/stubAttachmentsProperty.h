@@ -18,7 +18,7 @@
 
 #ifndef STUB_AttachmentsProperty_install
 //#define STUB_AttachmentsProperty_install
-  void AttachmentsProperty::install(LocatedEntity*, const std::string&)
+  void AttachmentsProperty::install(LocatedEntity&, const std::string&)
   {
     
   }
@@ -26,7 +26,7 @@
 
 #ifndef STUB_AttachmentsProperty_remove
 //#define STUB_AttachmentsProperty_remove
-  void AttachmentsProperty::remove(LocatedEntity*, const std::string& name)
+  void AttachmentsProperty::remove(LocatedEntity&, const std::string& name)
   {
     
   }
@@ -34,7 +34,7 @@
 
 #ifndef STUB_AttachmentsProperty_operation
 //#define STUB_AttachmentsProperty_operation
-  HandlerResult AttachmentsProperty::operation(LocatedEntity*, const Operation&, OpVector&)
+  HandlerResult AttachmentsProperty::operation(LocatedEntity&, const Operation&, OpVector&)
   {
     return *static_cast<HandlerResult*>(nullptr);
   }

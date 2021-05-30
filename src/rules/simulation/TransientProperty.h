@@ -33,9 +33,9 @@ class TransientProperty : public Property<double> {
 
     TransientProperty * copy() const override;
 
-    void install(LocatedEntity *, const std::string &) override;
+    void install(LocatedEntity&, const std::string &) override;
 
-    void apply(LocatedEntity *) override;
+    void apply(LocatedEntity&) override;
 };
 
 #endif // RULESETS_TRANSIENT_PROPERTY_H

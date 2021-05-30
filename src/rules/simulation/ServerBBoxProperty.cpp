@@ -20,10 +20,10 @@
 #include "DensityProperty.h"
 #include "rules/LocatedEntity.h"
 
-void ServerBBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
+void ServerBBoxProperty::updateBboxOnEntity(LocatedEntity& entity) const
 {
     BBoxProperty::updateBboxOnEntity(entity);
-    auto densityProp = entity->getPropertyClassFixed<DensityProperty>();
+    auto densityProp = entity.getPropertyClassFixed<DensityProperty>();
     if (densityProp) {
         densityProp->updateMass(entity);
     }

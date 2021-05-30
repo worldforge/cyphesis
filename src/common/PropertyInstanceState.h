@@ -56,8 +56,8 @@ class PropertyInstanceState {
          * @param entity An entity.
          * @param state A new state instance.
          */
-        void addState(const LocatedEntity* entity, std::unique_ptr<T> state) {
-            mStates.emplace(entity, std::move(state));
+        void addState(const LocatedEntity& entity, std::unique_ptr<T> state) {
+            mStates.emplace(&entity, std::move(state));
         }
 
         /**
@@ -65,8 +65,8 @@ class PropertyInstanceState {
          * @param entity An entity.
          * @return The registered state, or null.
          */
-        T* getState(const LocatedEntity* entity) const {
-            auto I = mStates.find(entity);
+        T* getState(const LocatedEntity& entity) const {
+            auto I = mStates.find(&entity);
             if (I != mStates.end()) {
                 return I->second.get();
             }
@@ -79,8 +79,8 @@ class PropertyInstanceState {
          * Calling this will delete the state instance.
          * @param entity An entity.
          */
-        void removeState(const LocatedEntity* entity) {
-            auto I = mStates.find(entity);
+        void removeState(const LocatedEntity& entity) {
+            auto I = mStates.find(&entity);
             if (I != mStates.end()) {
                 mStates.erase(I);
             }
@@ -93,8 +93,8 @@ class PropertyInstanceState {
          * @param entity An entity.
          * @param state A new state.
          */
-        void replaceState(const LocatedEntity* entity, std::unique_ptr<T> state) {
-            mStates[entity] = std::move(state);
+        void replaceState(const LocatedEntity& entity, std::unique_ptr<T> state) {
+            mStates[&entity] = std::move(state);
         }
 };
 

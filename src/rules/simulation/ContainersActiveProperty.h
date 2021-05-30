@@ -43,7 +43,7 @@ class ContainersActiveProperty : public PropertyBase
 
         ContainersActiveProperty* copy() const override;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
         const std::set<std::string>& getActiveContainers() const
         {

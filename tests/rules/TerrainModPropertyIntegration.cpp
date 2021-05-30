@@ -80,15 +80,15 @@ void TerrainModPropertyintegration::setup()
     PropertyFactory<TerrainModProperty> terrainmod_property_factory;
 
     auto terrainProperty = new TerrainProperty;
-    terrainProperty->install(m_rootEntity.get(), "terrain");
+    terrainProperty->install(*m_rootEntity, "terrain");
     auto tProp = m_rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
-    tProp->apply(m_rootEntity.get());
+    tProp->apply(*m_rootEntity);
     m_rootEntity->propertyApplied("terrain", *tProp);
 
     auto terrainModProp = terrainmod_property_factory.newProperty();
-    terrainModProp->install(m_entity.get(), "terrainmod");
+    terrainModProp->install(*m_entity, "terrainmod");
     auto prop = m_entity->setProperty("terrainmod", std::move(terrainModProp));
-    prop->apply(m_entity.get());
+    prop->apply(*m_entity);
     m_entity->propertyApplied("terrainmod", *prop);
 }
 

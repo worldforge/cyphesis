@@ -24,7 +24,6 @@
 #include "common/debug.h"
 #include "common/AtlasQuery.h"
 #include "ScriptUtils.h"
-#include "ModeDataProperty.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
@@ -92,24 +91,24 @@ void UsagesProperty::set(const Atlas::Message::Element& val)
     }
 }
 
-void UsagesProperty::install(LocatedEntity* owner, const std::string& name)
+void UsagesProperty::install(LocatedEntity& owner, const std::string& name)
 {
-    owner->installDelegate(Atlas::Objects::Operation::USE_NO, name);
+    owner.installDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
 
 
-void UsagesProperty::remove(LocatedEntity* owner, const std::string& name)
+void UsagesProperty::remove(LocatedEntity& owner, const std::string& name)
 {
-    owner->removeDelegate(Atlas::Objects::Operation::USE_NO, name);
+    owner.removeDelegate(Atlas::Objects::Operation::USE_NO, name);
 }
 
-HandlerResult UsagesProperty::operation(LocatedEntity* e,
+HandlerResult UsagesProperty::operation(LocatedEntity& e,
                                         const Operation& op, OpVector& res)
 {
     return use_handler(e, op, res);
 }
 
-HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
+HandlerResult UsagesProperty::use_handler(LocatedEntity& e,
                                           const Operation& op, OpVector& res)
 {
 
@@ -123,7 +122,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
 
         auto actor = BaseWorld::instance().getEntity(op->getFrom());
         if (!actor) {
-            e->error(op, "Could not find 'from' entity.", res, e->getId());
+            e.error(op, "Could not find 'from' entity.", res, e.getId());
             return OPERATION_IGNORED;
         }
 
@@ -153,7 +152,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             return OPERATION_IGNORED;
         }
         rop->setFrom(actor->getId());
-        rop->setTo(e->getId());
+        rop->setTo(e.getId());
         rop->setSeconds(op->getSeconds());
 
         if (argOp->getArgs().empty()) {
@@ -222,7 +221,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
             }
 
 
-            UsageInstance usageInstance{usage, actor, e, std::move(usage_instance_args), rop};
+            UsageInstance usageInstance{usage, actor, &e, std::move(usage_instance_args), rop};
             //Check that the usage is valid before continuing
             auto validRes = usageInstance.isValid();
             if (!validRes.first) {
@@ -249,7 +248,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity* e,
                         auto ret = Py::Callable(functionObject).apply(Py::TupleN(UsageInstance::scriptCreator(std::move(usageInstance))));
                         return ScriptUtils::processScriptResult(usage.handler, ret, res, e);
                     } catch (const Py::BaseException& py_ex) {
-                        log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e->describeEntity()));
+                        log(ERROR, String::compose("Python error calling \"%1\" for entity %2", usage.handler, e.describeEntity()));
                         if (PyErr_Occurred()) {
                             PyErr_Print();
                         }

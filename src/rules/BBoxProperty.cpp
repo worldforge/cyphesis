@@ -30,12 +30,12 @@ using Atlas::Message::Element;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-void BBoxProperty::apply(LocatedEntity * ent)
+void BBoxProperty::apply(LocatedEntity& ent)
 {
     updateBboxOnEntity(ent);
 }
 
-int BBoxProperty::get(Element & val) const
+int BBoxProperty::get(Element& val) const
 {
     if (m_data.isValid()) {
         val = m_data.toAtlas();
@@ -44,40 +44,40 @@ int BBoxProperty::get(Element & val) const
     return -1;
 }
 
-void BBoxProperty::set(const Element & val)
+void BBoxProperty::set(const Element& val)
 {
     try {
         m_data.fromAtlas(val.asList());
     }
-    catch (Atlas::Message::WrongTypeException &) {
+    catch (Atlas::Message::WrongTypeException&) {
         log(ERROR, "BBoxProperty::set: Box bbox data");
     }
 }
 
-void BBoxProperty::add(const std::string & key,
-                       MapType & map) const
+void BBoxProperty::add(const std::string& key,
+                       MapType& map) const
 {
     if (m_data.isValid()) {
         map[key] = m_data.toAtlas();
     }
 }
 
-void BBoxProperty::add(const std::string & key,
-                       const RootEntity & ent) const
+void BBoxProperty::add(const std::string& key,
+                       const RootEntity& ent) const
 {
     if (m_data.isValid()) {
         ent->setAttr(key, m_data.toAtlas());
     }
 }
 
-BBoxProperty * BBoxProperty::copy() const
+BBoxProperty* BBoxProperty::copy() const
 {
     return new BBoxProperty(*this);
 }
 
-void BBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
+void BBoxProperty::updateBboxOnEntity(LocatedEntity& entity) const
 {
-    auto scaleProp = entity->getPropertyClassFixed<ScaleProperty>();
+    auto scaleProp = entity.getPropertyClassFixed<ScaleProperty>();
     if (scaleProp && scaleProp->data().isValid()) {
         auto& scale = scaleProp->data();
         auto bbox = m_data;
@@ -87,11 +87,10 @@ void BBoxProperty::updateBboxOnEntity(LocatedEntity* entity) const
         bbox.highCorner().x() *= scale.x();
         bbox.highCorner().y() *= scale.y();
         bbox.highCorner().z() *= scale.z();
-        entity->m_location.setBBox(bbox);
+        entity.m_location.setBBox(bbox);
     } else {
-        entity->m_location.setBBox(m_data);
+        entity.m_location.setBBox(m_data);
     }
-
 
 
 }

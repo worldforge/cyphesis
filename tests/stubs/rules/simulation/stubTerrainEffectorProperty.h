@@ -9,7 +9,7 @@
 
 #ifndef STUB_TerrainEffectorProperty_getTerrain
 //#define STUB_TerrainEffectorProperty_getTerrain
-  const TerrainProperty* TerrainEffectorProperty::getTerrain(LocatedEntity * owner, LocatedEntity** terrainHolder )
+  const TerrainProperty* TerrainEffectorProperty::getTerrain(LocatedEntity& owner, LocatedEntity** terrainHolder )
   {
     return nullptr;
   }

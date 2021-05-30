@@ -9,7 +9,7 @@
 
 #ifndef STUB_StorageManager_entityInserted
 //#define STUB_StorageManager_entityInserted
-  void StorageManager::entityInserted(LocatedEntity*)
+  void StorageManager::entityInserted(LocatedEntity&)
   {
     
   }
@@ -17,7 +17,7 @@
 
 #ifndef STUB_StorageManager_entityUpdated
 //#define STUB_StorageManager_entityUpdated
-  void StorageManager::entityUpdated(LocatedEntity*)
+  void StorageManager::entityUpdated(LocatedEntity&)
   {
     
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_StorageManager_encodeProperty
 //#define STUB_StorageManager_encodeProperty
-  void StorageManager::encodeProperty(PropertyBase*, std::string&)
+  void StorageManager::encodeProperty(const PropertyBase&, std::string&)
   {
     
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_StorageManager_restorePropertiesRecursively
 //#define STUB_StorageManager_restorePropertiesRecursively
-  void StorageManager::restorePropertiesRecursively(LocatedEntity*)
+  void StorageManager::restorePropertiesRecursively(LocatedEntity&)
   {
     
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_StorageManager_insertEntity
 //#define STUB_StorageManager_insertEntity
-  void StorageManager::insertEntity(LocatedEntity*)
+  void StorageManager::insertEntity(LocatedEntity&)
   {
     
   }
@@ -57,7 +57,7 @@
 
 #ifndef STUB_StorageManager_updateEntity
 //#define STUB_StorageManager_updateEntity
-  void StorageManager::updateEntity(LocatedEntity*)
+  void StorageManager::updateEntity(LocatedEntity&)
   {
     
   }
@@ -65,7 +65,7 @@
 
 #ifndef STUB_StorageManager_restoreChildren
 //#define STUB_StorageManager_restoreChildren
-  size_t StorageManager::restoreChildren(LocatedEntity*)
+  size_t StorageManager::restoreChildren(LocatedEntity&)
   {
     return 0;
   }

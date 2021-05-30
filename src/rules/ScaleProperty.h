@@ -35,7 +35,7 @@ class ScaleProperty : public PropertyBase
         static constexpr const char* property_name = "scale";
         static constexpr const char* property_atlastype = "list";
 
-        void apply(LocatedEntity *) override;
+        void apply(LocatedEntity&) override;
 
         int get(Atlas::Message::Element & val) const override;
 

@@ -28,7 +28,10 @@
 class ScriptUtils
 {
     public:
-        static HandlerResult processScriptResult(const std::string& scriptName, const Py::Object& ret, OpVector& res, LocatedEntity* e);
+        static HandlerResult processScriptResult(const std::string& scriptName,
+                                                 const Py::Object& ret,
+                                                 OpVector& res,
+                                                 LocatedEntity& e);
 };
 
 

@@ -50,7 +50,7 @@ ContainersActiveProperty* ContainersActiveProperty::copy() const
     return new ContainersActiveProperty();
 }
 
-void ContainersActiveProperty::apply(LocatedEntity*)
+void ContainersActiveProperty::apply(LocatedEntity&)
 {
 }
 

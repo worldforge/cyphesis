@@ -30,14 +30,14 @@ class ScriptsProperty : public Property<Atlas::Message::ListType>
 
         void set(const Atlas::Message::Element&) override;
 
-        void apply(LocatedEntity*) override;
+        void apply(LocatedEntity&) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
         /**
          * Applies the scripts to the entity.
          */
-        void applyScripts(LocatedEntity*) const;
+        void applyScripts(LocatedEntity&) const;
 
         ScriptsProperty* copy() const override;
 

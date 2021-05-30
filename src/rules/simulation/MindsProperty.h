@@ -58,17 +58,17 @@ class MindsProperty : public PropertyBase
 
         MindsProperty* copy() const override;
 
-        void install(LocatedEntity*, const std::string& name) override;
+        void install(LocatedEntity&, const std::string& name) override;
 
-        void remove(LocatedEntity*, const std::string& name) override;
+        void remove(LocatedEntity&, const std::string& name) override;
 
         void addMind(Router* mind);
 
-        void removeMind(Router* mind, LocatedEntity* entity);
+        void removeMind(Router* mind, LocatedEntity& entity);
 
         const std::vector<Router*>& getMinds() const;
 
-        HandlerResult operation(LocatedEntity*,
+        HandlerResult operation(LocatedEntity&,
                                 const Operation&,
                                 OpVector&) override;
 
@@ -83,48 +83,48 @@ class MindsProperty : public PropertyBase
         bool world2mind(const Operation& op) const;
 
 
-        HandlerResult ThoughtOperation(LocatedEntity* ent, const Operation& op, OpVector& res) const;
+        HandlerResult ThoughtOperation(LocatedEntity& ent, const Operation& op, OpVector& res) const;
 
-        HandlerResult RelayOperation(LocatedEntity* ent, const Operation& op, OpVector& res);
+        HandlerResult RelayOperation(LocatedEntity& ent, const Operation& op, OpVector& res);
 
 
-        void mindCreateOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindCreateOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindDeleteOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindDeleteOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindGoalInfoOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindGoalInfoOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindImaginaryOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindImaginaryOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindLookOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindLookOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindMoveOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindMoveOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindSetOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindSetOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindTalkOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindTalkOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindThoughtOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindThoughtOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindThinkOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindThinkOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindTickOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindTickOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindTouchOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindTouchOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindUpdateOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindUpdateOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindUseOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindUseOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindWieldOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindWieldOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mindOtherOperation(LocatedEntity*, const Operation&, OpVector&) const;
+        void mindOtherOperation(LocatedEntity&, const Operation&, OpVector&) const;
 
-        void mind2body(LocatedEntity*, const Operation& op, OpVector&) const;
+        void mind2body(LocatedEntity&, const Operation& op, OpVector&) const;
 
-        void moveOtherEntity(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg, const std::string& other_id) const;
+        void moveOtherEntity(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg, const std::string& other_id) const;
 
-        void moveOurselves(LocatedEntity* ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const;
+        void moveOurselves(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const;
 
 
 };

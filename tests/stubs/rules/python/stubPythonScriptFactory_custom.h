@@ -33,7 +33,7 @@ const std::string& PythonScriptFactory<T>::package() const
 #ifndef STUB_PythonScriptFactory_addScript
 #define STUB_PythonScriptFactory_addScript
 template <typename T>
-int PythonScriptFactory<T>::addScript(T * entity) const
+int PythonScriptFactory<T>::addScript(T & entity) const
 {
     return 0;
 }
@@ -51,7 +51,7 @@ int PythonScriptFactory<T>::refreshClass()
 #ifndef STUB_PythonScriptFactory_createScript
 #define STUB_PythonScriptFactory_createScript
 template <typename T>
-Py::Object PythonScriptFactory<T>::createScript(T * entity) const
+Py::Object PythonScriptFactory<T>::createScript(T & entity) const
 {
     return Py::Object();
 }

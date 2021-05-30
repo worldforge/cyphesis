@@ -33,40 +33,40 @@
 #include <rules/simulation/BaseWorld.h>
 
 
-void DomainProperty::install(LocatedEntity* entity, const std::string& name)
+void DomainProperty::install(LocatedEntity& entity, const std::string& name)
 {
 }
 
-void DomainProperty::remove(LocatedEntity* entity, const std::string& name)
+void DomainProperty::remove(LocatedEntity& entity, const std::string& name)
 {
-    if (entity->getDomain()) {
-        entity->setDomain(nullptr);
+    if (entity.getDomain()) {
+        entity.setDomain(nullptr);
     }
 }
 
-void DomainProperty::apply(LocatedEntity* entity)
+void DomainProperty::apply(LocatedEntity& entity)
 {
     if (!m_data.empty()) {
-        if (!entity->getDomain()) {
+        if (!entity.getDomain()) {
             std::unique_ptr<Domain> domain;
             if (m_data == "physical") {
-                domain = std::make_unique<PhysicalDomain>(*entity);
+                domain = std::make_unique<PhysicalDomain>(entity);
             } else if (m_data == "void") {
-                domain = std::make_unique<VoidDomain>(*entity);
+                domain = std::make_unique<VoidDomain>(entity);
             } else if (m_data == "inventory") {
-                domain = std::make_unique<InventoryDomain>(*entity);
+                domain = std::make_unique<InventoryDomain>(entity);
             } else if (m_data == "stackable") {
-                domain = std::make_unique<StackableDomain>(*entity);
+                domain = std::make_unique<StackableDomain>(entity);
             } else if (m_data == "container") {
-                domain = std::make_unique<ContainerDomain>(*entity);
+                domain = std::make_unique<ContainerDomain>(entity);
             }
             if (domain) {
                 domain->installDelegates(entity, property_name);
             }
-            entity->setDomain(std::move(domain));
+            entity.setDomain(std::move(domain));
         }
     } else {
-        entity->setDomain(nullptr);
+        entity.setDomain(nullptr);
     }
 }
 
@@ -75,9 +75,9 @@ DomainProperty* DomainProperty::copy() const
     return new DomainProperty(*this);
 }
 
-HandlerResult DomainProperty::operation(LocatedEntity* e, const Operation& op, OpVector& res)
+HandlerResult DomainProperty::operation(LocatedEntity& e, const Operation& op, OpVector& res)
 {
-    return e->getDomain()->operation(e, op, res);
+    return e.getDomain()->operation(e, op, res);
 }
 
 

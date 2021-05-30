@@ -23,11 +23,11 @@
 
 ServerRouting* AccountProperty::s_serverRouting;
 
-void AccountProperty::apply(LocatedEntity* entity)
+void AccountProperty::apply(LocatedEntity& entity)
 {
     auto account = s_serverRouting->getAccountByName(m_data);
     if (account) {
-        account->addCharacter(entity);
+        account->addCharacter(&entity);
         account->sendUpdateToClient();
     }
 }

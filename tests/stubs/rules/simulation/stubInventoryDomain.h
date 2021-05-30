@@ -16,6 +16,14 @@
   }
 #endif //STUB_InventoryDomain_InventoryDomain
 
+#ifndef STUB_InventoryDomain_InventoryDomain_DTOR
+//#define STUB_InventoryDomain_InventoryDomain_DTOR
+   InventoryDomain::~InventoryDomain()
+  {
+    
+  }
+#endif //STUB_InventoryDomain_InventoryDomain_DTOR
+
 #ifndef STUB_InventoryDomain_isEntityVisibleFor
 //#define STUB_InventoryDomain_isEntityVisibleFor
   bool InventoryDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, const LocatedEntity& observedEntity) const
@@ -79,6 +87,14 @@
     return *static_cast<boost::optional<std::function<()>>*>(nullptr);
   }
 #endif //STUB_InventoryDomain_observeCloseness
+
+#ifndef STUB_InventoryDomain_removeClosenessObservation
+//#define STUB_InventoryDomain_removeClosenessObservation
+  void InventoryDomain::removeClosenessObservation(const std::string& entityId)
+  {
+    
+  }
+#endif //STUB_InventoryDomain_removeClosenessObservation
 
 
 #endif

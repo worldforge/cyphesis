@@ -47,16 +47,15 @@ void ScriptsProperty::set(const Atlas::Message::Element& element)
     }
 }
 
-void ScriptsProperty::apply(LocatedEntity* entity)
+void ScriptsProperty::apply(LocatedEntity& entity)
 {
-
     applyScripts(entity);
 }
 
-void ScriptsProperty::applyScripts(LocatedEntity* entity) const
+void ScriptsProperty::applyScripts(LocatedEntity& entity) const
 {
 
-    entity->m_scripts.clear();
+    entity.m_scripts.clear();
     for (auto& scriptFactory : m_scripts) {
         scriptFactory->addScript(entity);
     }
@@ -69,9 +68,9 @@ void ScriptsProperty::reloadAllScriptFactories()
     }
 }
 
-void ScriptsProperty::remove(LocatedEntity* entity, const std::string& name)
+void ScriptsProperty::remove(LocatedEntity& entity, const std::string& name)
 {
-    entity->m_scripts.clear();
+    entity.m_scripts.clear();
 }
 
 ScriptsProperty* ScriptsProperty::copy() const

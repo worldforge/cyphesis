@@ -20,12 +20,12 @@
 
 #include "rules/LocatedEntity.h"
 
-void AdminProperty::apply(LocatedEntity* entity)
+void AdminProperty::apply(LocatedEntity& entity)
 {
     if (isTrue()) {
-        entity->flags().addFlags(entity_admin);
+        entity.flags().addFlags(entity_admin);
     } else {
-        entity->flags().removeFlags(entity_admin);
+        entity.flags().removeFlags(entity_admin);
     }
 }
 
