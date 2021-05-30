@@ -245,7 +245,8 @@ struct Tested : public Cyphesis::TestBase
         (*(++entity->m_contains->begin()))->getAttr("name", element);
         ASSERT_EQUAL(element, "second child");
 
-        for (auto child : *entity->m_contains) {
+        auto contains = *entity->m_contains;
+        for (auto child : contains) {
             child->destroy();
         }
         entity->destroy();
