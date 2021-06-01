@@ -17,7 +17,7 @@
 
 #ifndef STUB_Thing_lookAtEntity
 //#define STUB_Thing_lookAtEntity
-  bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity* watcher) const
+  bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity& watcher) const
   {
     return false;
   }

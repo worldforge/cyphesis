@@ -35,7 +35,7 @@ class Thing : public Entity
 
         bool lookAtEntity(const Operation& op,
                           OpVector& res,
-                          const LocatedEntity* watcher) const;
+                          const LocatedEntity& watcher) const;
 
         void generateSightOp(const LocatedEntity& observingEntity,
                              const Operation& originalLookOp,

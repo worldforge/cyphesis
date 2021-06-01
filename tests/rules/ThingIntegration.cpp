@@ -68,12 +68,12 @@ struct ThingExt : public Thing
 
     bool test_lookAtEntity(const Operation& op, OpVector& res, LocatedEntity* watcher) const
     {
-        return lookAtEntity(op, res, watcher);
+        return lookAtEntity(op, res, *watcher);
     }
 
     bool test_lookAtEntity(const Operation& op, OpVector& res, const Ref<LocatedEntity>& watcher) const
     {
-        return lookAtEntity(op, res, watcher.get());
+        return lookAtEntity(op, res, *watcher);
     }
 
     Domain* getDomain() override

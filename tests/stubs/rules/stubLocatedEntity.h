@@ -286,7 +286,7 @@
 
 #ifndef STUB_LocatedEntity_applyProperty
 //#define STUB_LocatedEntity_applyProperty
-  void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
+  void LocatedEntity::applyProperty(const std::string& name, PropertyBase& prop)
   {
     
   }
@@ -326,7 +326,7 @@
 
 #ifndef STUB_LocatedEntity_isVisibleForOtherEntity
 //#define STUB_LocatedEntity_isVisibleForOtherEntity
-  bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
+  bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity& observer) const
   {
     return false;
   }

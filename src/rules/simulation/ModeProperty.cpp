@@ -40,7 +40,7 @@ void ModeProperty::apply(LocatedEntity& entity)
         if (modeDataProp->getMode() != m_mode && modeDataProp->getMode() != Mode::Unknown) {
             auto mutableModeDataProp = entity.modPropertyClassFixed<ModeDataProperty>();
             mutableModeDataProp->clearData();
-            entity.applyProperty(ModeDataProperty::property_name, mutableModeDataProp);
+            entity.applyProperty(*mutableModeDataProp);
             mutableModeDataProp->removeFlags(prop_flag_persistence_clean);
         }
     }
@@ -67,7 +67,7 @@ void ModeProperty::apply(LocatedEntity& entity)
                 currentOrientation = rotation * currentOrientation;
 
                 activeRotationProp->data() = plantedRotation->data();
-                entity.applyProperty("active_rotation", activeRotationProp);
+                entity.applyProperty("active_rotation", *activeRotationProp);
                 activeRotationProp->removeFlags(prop_flag_persistence_clean);
 
                 Atlas::Objects::Entity::Anonymous move_arg;

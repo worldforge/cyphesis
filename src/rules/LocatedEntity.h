@@ -213,6 +213,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         boost::any m_scriptEntity;
 
         explicit LocatedEntity(long intId);
+
         explicit LocatedEntity(const std::string& id, long intId);
 
         ~LocatedEntity() override;
@@ -256,7 +257,8 @@ class LocatedEntity : public Router, public ReferenceCounted
         int getSeq() const
         { return m_seq; }
 
-        void increaseSequenceNumber() {
+        void increaseSequenceNumber()
+        {
             m_seq++;
         }
 
@@ -370,7 +372,18 @@ class LocatedEntity : public Router, public ReferenceCounted
          * @param name
          * @param prop
          */
-        void applyProperty(const std::string& name, PropertyBase* prop);
+        void applyProperty(const std::string& name, PropertyBase& prop);
+
+        /**
+         * Applies a property where the property name is fixed (through the "property_name" type trait).
+         * @tparam T
+         * @param prop
+         */
+        template<typename T>
+        void applyProperty(T& prop)
+        {
+            applyProperty(T::property_name, prop);
+        }
 
         /**
          * Collects all entities that are observing this entity.
@@ -406,7 +419,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         * @param observer The other entity observing this entity, for which we want to determine visibility.
         * @return True if this entity is visible to another entity.
         */
-        bool isVisibleForOtherEntity(const LocatedEntity* observer) const;
+        bool isVisibleForOtherEntity(const LocatedEntity& observer) const;
 
         /**
         * @brief Determines if this entity can be reached by another entity (i.e. physically interacted with).

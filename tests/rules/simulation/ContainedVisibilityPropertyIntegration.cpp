@@ -69,7 +69,7 @@ int main()
             auto prop = std::make_unique<ContainedVisibilityProperty>();
             prop->set(1);
             auto setProp = m_char1->setProperty(ContainedVisibilityProperty::property_name, std::move(prop));
-            m_char1->applyProperty(ContainedVisibilityProperty::property_name, setProp);
+            m_char1->applyProperty(ContainedVisibilityProperty::property_name, *setProp);
 
             ASSERT_TRUE(m_char1->hasFlags(entity_contained_visible));
         }

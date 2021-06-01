@@ -66,10 +66,10 @@ void StackableDomain::addEntity(LocatedEntity& entity)
             auto stackProp = m_entity.requirePropertyClassFixed<AmountProperty>(1);
             stackProp->data() += newEntityStackProp->data();
             stackProp->removeFlags(prop_flag_persistence_clean);
-            m_entity.applyProperty(AmountProperty::property_name, stackProp);
+            m_entity.applyProperty(*stackProp);
 
             newEntityStackProp->data() = 0;
-            entity.applyProperty(AmountProperty::property_name, newEntityStackProp);
+            entity.applyProperty(*newEntityStackProp);
 
             Atlas::Objects::Operation::Update update;
             update->setTo(m_entity.getId());
@@ -131,7 +131,7 @@ HandlerResult StackableDomain::DeleteOperation(LocatedEntity& owner, const Opera
 
     if (amountProperty->data() - amount > 0) {
         amountProperty->data() -= amount;
-        owner.applyProperty(AmountProperty::property_name, amountProperty);
+        owner.applyProperty(*amountProperty);
 
         Atlas::Objects::Operation::Update update;
         update->setTo(owner.getId());
@@ -198,7 +198,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
 
     //We now need to decrease the amount of the original entity with as much.
     amountProperty->data() -= amount;
-    owner.applyProperty(AmountProperty::property_name, amountProperty);
+    owner.applyProperty(*amountProperty);
 
     Atlas::Objects::Operation::Update update;
     update->setTo(owner.getId());
@@ -305,10 +305,10 @@ bool StackableDomain::stackIfPossible(const LocatedEntity& domainEntity, Located
                     auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
                     stackProp->data() += newEntityStackProp->data();
                     stackProp->removeFlags(prop_flag_persistence_clean);
-                    child->applyProperty(AmountProperty::property_name, stackProp);
+                    child->applyProperty(*stackProp);
 
                     newEntityStackProp->data() = 0;
-                    entity.applyProperty(AmountProperty::property_name, newEntityStackProp);
+                    entity.applyProperty(*newEntityStackProp);
 
                     Atlas::Objects::Operation::Update update;
                     update->setTo(child->getId());

@@ -82,7 +82,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                         auto existing_entity_mode_data_prop = existing_entity->modPropertyClassFixed<ModeDataProperty>();
                         if (existing_entity_mode_data_prop) {
                             existing_entity_mode_data_prop->clearData();
-                            existing_entity->applyProperty(ModeDataProperty::property_name, existing_entity_mode_data_prop);
+                            existing_entity->applyProperty(*existing_entity_mode_data_prop);
                             {
                                 Atlas::Objects::Operation::Update update;
                                 update->setTo(existing_entity->getId());
@@ -139,7 +139,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                                     auto oldAttachedProp = entity.modPropertyClass<SoftProperty>(old_attached_prop_name);
                                     if (oldAttachedProp) {
                                         oldAttachedProp->data() = Atlas::Message::Element();
-                                        entity.applyProperty(old_attached_prop_name, oldAttachedProp);
+                                        entity.applyProperty(old_attached_prop_name, *oldAttachedProp);
                                     }
                                 }
                             } else {
@@ -150,7 +150,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
 
                         modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{entity.getIntId(), attachment_name.String()});
 
-                        new_entity->applyProperty(ModeDataProperty::property_name, modeDataProp);
+                        new_entity->applyProperty(*modeDataProp);
                         {
                             Atlas::Objects::Operation::Update update;
                             update->setTo(new_entity->getId());

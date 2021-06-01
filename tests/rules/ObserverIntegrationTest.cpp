@@ -178,15 +178,15 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             context.testWorld.addEntity(t8, t7);
 
             //Initially only t3 is visible to t2, since it's in its inventory
-            ASSERT_TRUE(t3->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t3->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t3}))
-            ASSERT_FALSE(t4->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t4->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t4}))
-            ASSERT_FALSE(t5->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t5}))
-            ASSERT_FALSE(t6->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t6}))
-            ASSERT_FALSE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t8->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t8}))
 
             //Open containers
@@ -194,40 +194,40 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t4->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
             t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t2->getId()});
-            ASSERT_TRUE(t4->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t4->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t4}))
-            ASSERT_TRUE(t5->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t5->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t5}))
-            ASSERT_TRUE(t6->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t6->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t6}))
-            ASSERT_TRUE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t8->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t8}))
 
             //Now move t4 to t1, which should sever the connection to t5 and t6
             moveFn(t4, {0, 0, 0}, t1);
 
             ASSERT_TRUE(t4->m_location.m_parent == t1)
-            ASSERT_TRUE(t4->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t4->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t4}))
-            ASSERT_FALSE(t5->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t5}))
-            ASSERT_FALSE(t6->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t6}))
             ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t4->getId()))
             ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             //Should not affect t8
             ASSERT_TRUE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t3->getId()))
             ASSERT_TRUE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t7->getId()))
-            ASSERT_TRUE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_TRUE(t8->isVisibleForOtherEntity(*t2))
             ASSERT_TRUE(t2->canReach(EntityLocation{t8}))
 
             //Now move t3 to t1, which should sever the connection to t7 and t8
             moveFn(t3, {0, 0, 0}, t1);
             ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t3->getId()))
             ASSERT_FALSE(t2->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t7->getId()))
-            ASSERT_FALSE(t7->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t7->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t7}))
-            ASSERT_FALSE(t8->isVisibleForOtherEntity(t2.get()))
+            ASSERT_FALSE(t8->isVisibleForOtherEntity(*t2))
             ASSERT_FALSE(t2->canReach(EntityLocation{t8}))
         }
     }
@@ -280,7 +280,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             Ref<Thing> t6 = new Thing(6);
             context.testWorld.addEntity(t6, t5);
 
-            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
+            ASSERT_TRUE(t2->isVisibleForOtherEntity(*t3))
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t4}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
@@ -377,14 +377,14 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
             opsHandler.clearQueues();
 
-            ASSERT_FALSE(t8->isVisibleForOtherEntity(t3.get()));
+            ASSERT_FALSE(t8->isVisibleForOtherEntity(*t3));
             //Add t3 as container observer to t7, which allows it to view its content (t8), even if it's an inventory domain, as t3 is both the observer and the owner of the inventory.
             t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
-            ASSERT_TRUE(t8->isVisibleForOtherEntity(t3.get()));
+            ASSERT_TRUE(t8->isVisibleForOtherEntity(*t3));
 
             opsHandler.clearQueues();
 
-            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
+            ASSERT_TRUE(t2->isVisibleForOtherEntity(*t3))
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t4}))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
@@ -438,11 +438,11 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             //Should still be able to reach t2, even if we can't reach into it.
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
-            ASSERT_TRUE(t2->isVisibleForOtherEntity(t3.get()))
+            ASSERT_TRUE(t2->isVisibleForOtherEntity(*t3))
             ASSERT_FALSE(t3->canReach(EntityLocation{t5}))
-            ASSERT_FALSE(t5->isVisibleForOtherEntity(t3.get()))
+            ASSERT_FALSE(t5->isVisibleForOtherEntity(*t3))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
-            ASSERT_FALSE(t6->isVisibleForOtherEntity(t3.get()))
+            ASSERT_FALSE(t6->isVisibleForOtherEntity(*t3))
             ASSERT_EQUAL(4u, queue.size()) //Get Disappear from t4, t5 and t6
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())

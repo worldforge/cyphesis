@@ -143,7 +143,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 
         auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
         mindsProp->addMind(mind.get());
-        entity->applyProperty(MindsProperty::property_name, mindsProp);
+        entity->applyProperty(*mindsProp);
 
         Atlas::Objects::Operation::Update update;
         update->setTo(entity->getId());
@@ -205,7 +205,7 @@ void Account::removeMindFromEntity(ExternalMind* mind)
         auto prop = entity->modPropertyClassFixed<MindsProperty>();
         if (prop) {
             prop->removeMind(mind, *entity);
-            entity->applyProperty(MindsProperty::property_name, prop);
+            entity->applyProperty(*prop);
             Atlas::Objects::Operation::Update update;
             update->setTo(entity->getId());
             entity->sendWorld(update);

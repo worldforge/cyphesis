@@ -246,7 +246,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* mo
     }
 
     // Allow the value to take effect.
-    applyProperty(name, prop);
+    applyProperty(name, *prop);
     return prop;
 }
 
@@ -379,7 +379,7 @@ PropertyBase* LocatedEntity::modProperty(const std::string& name, const Atlas::M
             new_prop->removeFlags(prop_flag_class);
             m_properties[name].property.reset(new_prop);
             new_prop->install(*this, name);
-            applyProperty(name, new_prop);
+            applyProperty(name, *new_prop);
             return new_prop;
         }
     }
@@ -592,12 +592,12 @@ void LocatedEntity::processAppearDisappear(std::set<const LocatedEntity*> previo
     }
 }
 
-void LocatedEntity::applyProperty(const std::string& name, PropertyBase* prop)
+void LocatedEntity::applyProperty(const std::string& name, PropertyBase& prop)
 {
     // Allow the value to take effect.
-    prop->apply(*this);
-    prop->addFlags(prop_flag_unsent);
-    propertyApplied(name, *prop);
+    prop.apply(*this);
+    prop.addFlags(prop_flag_unsent);
+    propertyApplied(name, prop);
     // Mark the Entity as unclean
     m_flags.removeFlags(entity_clean);
 }
@@ -635,25 +635,25 @@ void LocatedEntity::removeListener(OperationsListener* listener)
     //No-op in LocatedEntity
 }
 
-bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
+bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity& observer) const
 {
     //Are we looking at ourselves?
-    if (observer == this) {
+    if (&observer == this) {
         return true;
     }
 
     //Optimize for the most common case of both entities being direct child of a domain
-    if (m_location.m_parent != nullptr && observer->m_location.m_parent == m_location.m_parent && m_location.m_parent->getDomain()) {
+    if (m_location.m_parent != nullptr && observer.m_location.m_parent == m_location.m_parent && m_location.m_parent->getDomain()) {
         // Since both have the same parent, we can check right now for private and protected.
-        if (!observer->hasFlags(entity_admin) && (this->hasFlags(entity_visibility_protected) || this->hasFlags(entity_visibility_private))) {
+        if (!observer.hasFlags(entity_admin) && (this->hasFlags(entity_visibility_protected) || this->hasFlags(entity_visibility_private))) {
             return false;
         }
-        return m_location.m_parent->getDomain()->isEntityVisibleFor(*observer, *this);
+        return m_location.m_parent->getDomain()->isEntityVisibleFor(observer, *this);
     }
 
     //First find the domain which contains the observer, as well as if the observer has a domain itself.
-    const LocatedEntity* domainEntity = observer->m_location.m_parent.get();
-    const LocatedEntity* topObserverEntity = observer;
+    const LocatedEntity* domainEntity = observer.m_location.m_parent.get();
+    const LocatedEntity* topObserverEntity = &observer;
     const Domain* observerParentDomain = nullptr;
 
     while (domainEntity != nullptr) {
@@ -672,9 +672,9 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
     }
 
     //The parent entity of the observer (possible null), although unlikely.
-    auto* observerParentEntity = observer->m_location.m_parent.get();
+    auto* observerParentEntity = observer.m_location.m_parent.get();
     //The domain of the observer (possible null).
-    const Domain* observerOwnDomain = observer->getDomain();
+    const Domain* observerOwnDomain = observer.getDomain();
 
     //Now walk upwards from the entity being looked at until we reach either the observer's parent domain entity,
     //or the observer itself
@@ -686,7 +686,7 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
     while (true) {
         toAncestors.push_back(ancestorEntity);
 
-        if (ancestorEntity == observer) {
+        if (ancestorEntity == &observer) {
             ancestorDomain = observerOwnDomain;
             break;
         }
@@ -710,14 +710,14 @@ bool LocatedEntity::isVisibleForOtherEntity(const LocatedEntity* observer) const
     for (auto I = toAncestors.rbegin(); I != toAncestors.rend(); ++I) {
         const LocatedEntity* ancestor = *I;
         if (ancestorDomain) {
-            if (!ancestorDomain->isEntityVisibleFor(*observer, *ancestor)) {
+            if (!ancestorDomain->isEntityVisibleFor(observer, *ancestor)) {
                 return false;
             }
         }
-        if (ancestor->hasFlags(entity_visibility_private) && !observer->hasFlags(entity_admin)) {
+        if (ancestor->hasFlags(entity_visibility_private) && !observer.hasFlags(entity_admin)) {
             return false;
         }
-        if (ancestor->hasFlags(entity_visibility_protected) && observer != ancestor->m_location.m_parent.get() && !observer->hasFlags(entity_admin)) {
+        if (ancestor->hasFlags(entity_visibility_protected) && &observer != ancestor->m_location.m_parent.get() && !observer.hasFlags(entity_admin)) {
             return false;
         }
 

@@ -419,11 +419,11 @@ void Thing::UpdateOperation(const Operation& op, OpVector& res)
     onUpdated();
 }
 
-bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity* watcher) const
+bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity& watcher) const
 {
 
     if (isVisibleForOtherEntity(watcher)) {
-        generateSightOp(*watcher, op, res);
+        generateSightOp(watcher, op, res);
         return true;
     }
     return false;
@@ -490,7 +490,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     }
 
     if (m_location.m_parent) {
-        if (!m_location.m_parent->isVisibleForOtherEntity(&observingEntity)) {
+        if (!m_location.m_parent->isVisibleForOtherEntity(observingEntity)) {
             sarg->removeAttr("loc");
         }
     }
@@ -511,7 +511,7 @@ void Thing::LookOperation(const Operation& op, OpVector& res)
         return;
     }
 
-    bool result = lookAtEntity(op, res, from.get());
+    bool result = lookAtEntity(op, res, *from);
 
     if (!result) {
         Unseen u;
