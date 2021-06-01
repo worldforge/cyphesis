@@ -17,7 +17,7 @@
 
 #ifndef STUB_TerrainModTranslator_parseData
 //#define STUB_TerrainModTranslator_parseData
-  std::unique_ptr<Mercator::TerrainMod> TerrainModTranslator::parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation)
+  std::unique_ptr<Mercator::TerrainMod> TerrainModTranslator::parseData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation)
   {
     return *static_cast<std::unique_ptr<Mercator::TerrainMod>*>(nullptr);
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_TerrainModTranslator_parsePosition
 //#define STUB_TerrainModTranslator_parsePosition
-   float TerrainModTranslator::parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement)
+   float TerrainModTranslator::parsePosition(const WFMath::Point<3>& pos, const Atlas::Message::MapType& modElement)
   {
     return 0;
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_TerrainModTranslator_buildTranslator
 //#define STUB_TerrainModTranslator_buildTranslator
-  std::unique_ptr<InnerTranslator> TerrainModTranslator::buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement)
+  std::unique_ptr<InnerTranslator> TerrainModTranslator::buildTranslator(const Atlas::Message::MapType& modElement, const std::string& typeName, Shape<2>& shape, const Atlas::Message::Element& shapeElement)
   {
     return *static_cast<std::unique_ptr<InnerTranslator>*>(nullptr);
   }

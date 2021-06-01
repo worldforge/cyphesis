@@ -36,10 +36,11 @@
 
 #include <memory>
 
-namespace Mercator
-{
-class TerrainMod;
+namespace Mercator {
+    class TerrainMod;
 }
+
+struct InnerTranslator;
 
 /**
  * @author Erik Ogenvik <erik@ogenvik.org>
@@ -48,53 +49,40 @@ class TerrainMod;
  */
 class TerrainModTranslator
 {
-public:
+    public:
 
-	explicit TerrainModTranslator(const Atlas::Message::MapType& data);
-	~TerrainModTranslator() = default;
+        explicit TerrainModTranslator(const Atlas::Message::MapType& data);
 
-	/**
-	 * Creates a TerrainMod instance, if possible.
-	 * @param pos
-	 * @param orientation
-	 * @return A terrain mod instance, or null if none could be created.
-	 */
-	std::unique_ptr<Mercator::TerrainMod> parseData(const WFMath::Point<3> & pos, const WFMath::Quaternion & orientation);
+        ~TerrainModTranslator() = default;
 
-	/**
-	 * @brief True if there's a valid inner translator.
-	 * @return
-	 */
-	bool isValid() const;
+        /**
+         * Creates a TerrainMod instance, if possible.
+         * @param pos
+         * @param orientation
+         * @return A terrain mod instance, or null if none could be created.
+         */
+        std::unique_ptr<Mercator::TerrainMod> parseData(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation);
 
-	/**
-	 * Removes any internal translator.
-	 */
-	void reset();
+        /**
+         * @brief True if there's a valid inner translator.
+         * @return
+         */
+        bool isValid() const;
 
-	static float parsePosition(const WFMath::Point<3> & pos, const Atlas::Message::MapType& modElement);
+        /**
+         * Removes any internal translator.
+         */
+        void reset();
 
-protected:
+        static float parsePosition(const WFMath::Point<3>& pos, const Atlas::Message::MapType& modElement);
 
-	/**
-	 * Interface for inner translator.
-	 *
-	 * Concrete templated subclasses are used for both shapes and mod types.
-	 */
-	class InnerTranslator
-	{
-	public:
-        explicit InnerTranslator(const Atlas::Message::MapType &);
-        virtual ~InnerTranslator() = default;
-		virtual std::unique_ptr<Mercator::TerrainMod> createInstance(const WFMath::Point<3>& pos, const WFMath::Quaternion& orientation) = 0;
-	protected:
-		const Atlas::Message::MapType mData;
-	};
+    protected:
 
-	template<template<int> class Shape>
-    std::unique_ptr<InnerTranslator> buildTranslator(const Atlas::Message::MapType& modElement, const std::string & typeName, Shape<2> & shape, const Atlas::Message::Element & shapeElement);
 
-	std::shared_ptr<TerrainModTranslator::InnerTranslator> mInnerTranslator;
+        template<template<int> class Shape>
+        std::unique_ptr<InnerTranslator> buildTranslator(const Atlas::Message::MapType& modElement, const std::string& typeName, Shape<2>& shape, const Atlas::Message::Element& shapeElement);
+
+        std::shared_ptr<InnerTranslator> mInnerTranslator;
 };
 
 
