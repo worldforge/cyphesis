@@ -141,9 +141,9 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         res.push_back(mindInfo);
 
 
-        auto mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
-        mindsProp->addMind(mind.get());
-        entity->applyProperty(*mindsProp);
+        auto& mindsProp = entity->requirePropertyClassFixed<MindsProperty>();
+        mindsProp.addMind(mind.get());
+        entity->applyProperty(mindsProp);
 
         Atlas::Objects::Operation::Update update;
         update->setTo(entity->getId());

@@ -46,14 +46,14 @@ void DensityProperty::updateMass(LocatedEntity& entity) const
 
         double mass = volume * m_data;
 
-        auto massProp = entity.requirePropertyClass<Property<double>>("mass", 0);
+        auto& massProp = entity.requirePropertyClass<Property<double>>("mass", 0);
 
-        if (massProp->data() != mass) {
-            massProp->set(mass);
-            massProp->apply(entity);
-            massProp->removeFlags(prop_flag_persistence_clean);
-            massProp->addFlags(prop_flag_unsent);
-            entity.propertyApplied("mass", *massProp);
+        if (massProp.data() != mass) {
+            massProp.set(mass);
+            massProp.apply(entity);
+            massProp.removeFlags(prop_flag_persistence_clean);
+            massProp.addFlags(prop_flag_unsent);
+            entity.propertyApplied("mass", massProp);
         }
 
     }

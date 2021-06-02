@@ -421,16 +421,15 @@ struct PropertyEntityIntegration : public Cyphesis::TestBaseWithContext<TestCont
     template<class T>
     void test_requirePropertyClass(const TestContext& context)
     {
-        auto p = context.m_entity->requirePropertyClass<Property<T>>("bill");
-        ASSERT_NOT_NULL(p);
+        context.m_entity->requirePropertyClass<Property<T>>("bill");
     }
 
     template<class T>
     void test_requirePropertyClass_default(const TestContext& context)
     {
-        auto p = context.m_entity->requirePropertyClass<Property<T>>("bill",
+        auto& p = context.m_entity->requirePropertyClass<Property<T>>("bill",
                                                                      Element(test_values<T>::default_value));
-        ASSERT_EQUAL(p->data(), test_values<T>::default_value);
+        ASSERT_EQUAL(p.data(), test_values<T>::default_value);
     }
 
     template<class T>

@@ -177,7 +177,7 @@ void ModifyProperty::newLocation(State& state, LocatedEntity& entity, LocatedEnt
             for (auto& entry: modifiers) {
                 state.parentEntity->removeModifier(entry.first, entry.second);
             }
-            state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+            state.parentEntity->requirePropertyClassFixed<ModifiersProperty>().addFlags(prop_flag_unsent);
         }
     }
     state.parentEntity = parent;
@@ -247,7 +247,7 @@ void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)
                 auto pair = std::make_pair(appliedModifierEntry.first, appliedModifierEntry.second);
                 if (modifiersCopy.find(pair) == modifiersCopy.end()) {
                     state.parentEntity->addModifier(appliedModifierEntry.first, appliedModifierEntry.second, &entity);
-                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+                    state.parentEntity->requirePropertyClassFixed<ModifiersProperty>().addFlags(prop_flag_unsent);
                 } else {
                     modifiersCopy.erase(pair);
                 }
@@ -264,7 +264,7 @@ void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)
                 for (auto& appliedModifierEntry : activatedModifiers) {
                     state.parentEntity->addModifier(appliedModifierEntry.first, appliedModifierEntry.second, &entity);
                 }
-                state.parentEntity->requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+                state.parentEntity->requirePropertyClassFixed<ModifiersProperty>().addFlags(prop_flag_unsent);
             }
         }
     }

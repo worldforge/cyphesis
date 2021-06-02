@@ -127,9 +127,9 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                             }
                         }
                         //Check if the entity already is attached, and if so abort. The client needs to first send a detach/unwield op in this case.
-                        auto modeDataProp = new_entity->requirePropertyClassFixed<ModeDataProperty>();
-                        if (modeDataProp->getMode() == ModeProperty::Mode::Planted) {
-                            auto& plantedOnData = modeDataProp->getPlantedOnData();
+                        auto& modeDataProp = new_entity->requirePropertyClassFixed<ModeDataProperty>();
+                        if (modeDataProp.getMode() == ModeProperty::Mode::Planted) {
+                            auto& plantedOnData = modeDataProp.getPlantedOnData();
                             //Check if the entity is attached to ourselves; if so we can just detach it from ourselves.
                             //Otherwise we need to abort, since we don't allow ourselves to detach it from another entity.
                             if (plantedOnData.entityId && plantedOnData.entityId == entity.getIntId()) {
@@ -148,9 +148,9 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                             }
                         }
 
-                        modeDataProp->setPlantedData(ModeDataProperty::PlantedOnData{entity.getIntId(), attachment_name.String()});
+                        modeDataProp.setPlantedData(ModeDataProperty::PlantedOnData{entity.getIntId(), attachment_name.String()});
 
-                        new_entity->applyProperty(*modeDataProp);
+                        new_entity->applyProperty(modeDataProp);
                         {
                             Atlas::Objects::Operation::Update update;
                             update->setTo(new_entity->getId());

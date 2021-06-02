@@ -207,7 +207,7 @@ void ConnectionCreatorintegration::test_external_op()
     AdminMind mind("1", 1, m_creator);
     m_connection->addObject(&mind);
     mind.linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(mind.getId());
@@ -235,7 +235,7 @@ void ConnectionCreatorintegration::test_external_op_override()
     AdminMind mind("1", 1, m_creator);
     m_connection->addObject(&mind);
     mind.linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
     Atlas::Objects::Operation::Talk op;
     op->setFrom(mind.getId());
@@ -262,7 +262,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     AdminMind mind("1", 1, m_creator);
     m_connection->addObject(&mind);
     mind.linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
     Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);
@@ -295,7 +295,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     AdminMind mind("1", 1, m_creator);
     m_connection->addObject(&mind);
     mind.linkUp(m_connection);
-    m_creator->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
     Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
     other->setType(m_creatorType);

@@ -507,13 +507,13 @@ class LocatedEntity : public Router, public ReferenceCounted
         /// exist, or is not of the right type, a new property is created of
         /// the right type, and installed on the Entity instance.
         template<class PropertyT>
-        PropertyT* requirePropertyClass(const std::string& name,
+        PropertyT& requirePropertyClass(const std::string& name,
                                         const Atlas::Message::Element& def_val
                                         = Atlas::Message::Element())
         {
             if (!PropertyUtil::isValidName(name)) {
                 log(WARNING, String::compose("Tried to add property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
-                return nullptr;
+                throw std::runtime_error(String::compose("Tried to add property '%1' to entity '%2', which has an invalid name.", name, describeEntity()));
             }
 
             auto* p = modProperty(name, def_val);
@@ -543,7 +543,7 @@ class LocatedEntity : public Router, public ReferenceCounted
                 }
                 sp->apply(*this);
             }
-            return sp;
+            return *sp;
         }
 
         /// \brief Require that a property of a given type is set, relying on the "property_name" trait.
@@ -556,7 +556,7 @@ class LocatedEntity : public Router, public ReferenceCounted
         ///
         /// The specified class must present the "property_name" trait.
         template<class PropertyT>
-        PropertyT* requirePropertyClassFixed(const Atlas::Message::Element& def_val = Atlas::Message::Element())
+        PropertyT& requirePropertyClassFixed(const Atlas::Message::Element& def_val = Atlas::Message::Element())
         {
             return this->requirePropertyClass<PropertyT>(PropertyT::property_name, def_val);
         }

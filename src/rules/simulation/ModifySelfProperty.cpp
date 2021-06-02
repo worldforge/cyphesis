@@ -135,7 +135,7 @@ void ModifySelfProperty::checkIfActive(LocatedEntity& entity)
             auto pair = std::make_pair(appliedModifierEntry.first, appliedModifierEntry.second);
             if (modifiersCopy.find(pair) == modifiersCopy.end()) {
                 entity.addModifier(appliedModifierEntry.first, appliedModifierEntry.second, &entity);
-                entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+                entity.requirePropertyClassFixed<ModifiersProperty>().addFlags(prop_flag_unsent);
             } else {
                 modifiersCopy.erase(pair);
             }
@@ -152,7 +152,7 @@ void ModifySelfProperty::checkIfActive(LocatedEntity& entity)
             for (auto& appliedModifierEntry : activatedModifiers) {
                 entity.addModifier(appliedModifierEntry.first, appliedModifierEntry.second, &entity);
             }
-            entity.requirePropertyClassFixed<ModifiersProperty>()->addFlags(prop_flag_unsent);
+            entity.requirePropertyClassFixed<ModifiersProperty>().addFlags(prop_flag_unsent);
         }
     }
 }

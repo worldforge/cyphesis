@@ -329,9 +329,9 @@ void ContainerDomain::addObserver(std::string& entityId)
 
 
         //If we get here we have successfully created closeness observers for all domains between the observer and the container.
-        auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
-        containersActiveProperty->getActiveContainers().insert(m_entity.getId());
-        observer->applyProperty(*containersActiveProperty);
+        auto& containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+        containersActiveProperty.getActiveContainers().insert(m_entity.getId());
+        observer->applyProperty(containersActiveProperty);
 
         Atlas::Objects::Operation::Update update;
         update->setTo(observer->getId());
@@ -375,9 +375,9 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
 
         auto& observer = entry.observer;
 
-        auto containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
-        containersActiveProperty->getActiveContainers().erase(m_entity.getId());
-        observer->applyProperty(*containersActiveProperty);
+        auto& containersActiveProperty = observer->requirePropertyClassFixed<ContainersActiveProperty>();
+        containersActiveProperty.getActiveContainers().erase(m_entity.getId());
+        observer->applyProperty(containersActiveProperty);
 
         //Send an update to handle the ContainersActiveProperty being changed.
         Atlas::Objects::Operation::Update update;

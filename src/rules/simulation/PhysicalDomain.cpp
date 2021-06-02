@@ -2869,8 +2869,8 @@ void PhysicalDomain::processWaterBodies()
                     rigidBody->setDamping(0.8, 0);
                 }
                 bulletEntry->mode = ModeProperty::Mode::Submerged;
-                auto prop = bulletEntry->entity.requirePropertyClassFixed<ModeProperty>("submerged");
-                prop->set("submerged");
+                auto& prop = bulletEntry->entity.requirePropertyClassFixed<ModeProperty>("submerged");
+                prop.set("submerged");
                 bulletEntry->modeChanged = true;
                 if (!bulletEntry->addedToMovingList) {
                     m_movingEntities.emplace_back(bulletEntry);
@@ -2888,8 +2888,8 @@ void PhysicalDomain::processWaterBodies()
                     rigidBody->setDamping(0, 0);
                 }
                 bulletEntry->mode = ModeProperty::Mode::Free;
-                auto prop = bulletEntry->entity.requirePropertyClassFixed<ModeProperty>("free");
-                prop->set("free");
+                auto& prop = bulletEntry->entity.requirePropertyClassFixed<ModeProperty>("free");
+                prop.set("free");
                 bulletEntry->modeChanged = true;
                 if (!bulletEntry->addedToMovingList) {
                     m_movingEntities.emplace_back(bulletEntry);
@@ -3038,16 +3038,16 @@ void PhysicalDomain::plantOnEntity(PhysicalDomain::BulletEntry* plantedEntry, Ph
     }
 
     //We need to change the property for this
-    auto newModeDataProp = plantedEntry->entity.requirePropertyClassFixed<ModeDataProperty>();
+    auto& newModeDataProp = plantedEntry->entity.requirePropertyClassFixed<ModeDataProperty>();
 
     if (entryPlantedOn) {
-        newModeDataProp->setPlantedData({entryPlantedOn->entity.getIntId()});
+        newModeDataProp.setPlantedData({entryPlantedOn->entity.getIntId()});
         entryPlantedOn->attachedEntities.insert(plantedEntry);
     } else {
-        newModeDataProp->clearData();
+        newModeDataProp.clearData();
     }
 
-    newModeDataProp->addFlags(prop_flag_unsent);
+    newModeDataProp.addFlags(prop_flag_unsent);
 }
 
 bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, float reach, const LocatedEntity& queriedEntity, const WFMath::Point<3>& positionOnQueriedEntity) const

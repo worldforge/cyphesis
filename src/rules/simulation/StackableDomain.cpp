@@ -61,15 +61,15 @@ void StackableDomain::addEntity(LocatedEntity& entity)
     if (m_entity.getType() == entity.getType() && m_entity.hasFlags(entity_stacked)) {
         if (checkEntitiesStackable(m_entity, entity)) {
             //Entity can be stacked.
-            auto newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
+            auto& newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
 
-            auto stackProp = m_entity.requirePropertyClassFixed<AmountProperty>(1);
-            stackProp->data() += newEntityStackProp->data();
-            stackProp->removeFlags(prop_flag_persistence_clean);
-            m_entity.applyProperty(*stackProp);
+            auto& stackProp = m_entity.requirePropertyClassFixed<AmountProperty>(1);
+            stackProp.data() += newEntityStackProp.data();
+            stackProp.removeFlags(prop_flag_persistence_clean);
+            m_entity.applyProperty(stackProp);
 
-            newEntityStackProp->data() = 0;
-            entity.applyProperty(*newEntityStackProp);
+            newEntityStackProp.data() = 0;
+            entity.applyProperty(newEntityStackProp);
 
             Atlas::Objects::Operation::Update update;
             update->setTo(m_entity.getId());
@@ -127,11 +127,11 @@ HandlerResult StackableDomain::DeleteOperation(LocatedEntity& owner, const Opera
     }
 
 
-    auto amountProperty = owner.requirePropertyClassFixed<AmountProperty>(1);
+    auto& amountProperty = owner.requirePropertyClassFixed<AmountProperty>(1);
 
-    if (amountProperty->data() - amount > 0) {
-        amountProperty->data() -= amount;
-        owner.applyProperty(*amountProperty);
+    if (amountProperty.data() - amount > 0) {
+        amountProperty.data() -= amount;
+        owner.applyProperty(amountProperty);
 
         Atlas::Objects::Operation::Update update;
         update->setTo(owner.getId());
@@ -157,7 +157,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
         return OPERATION_IGNORED;
     }
 
-    auto amountProperty = owner.requirePropertyClassFixed<AmountProperty>(1);
+    auto& amountProperty = owner.requirePropertyClassFixed<AmountProperty>(1);
 
     //By default move one, unless another value is specified in "amount" in the first arg of the op.
     int amount = 1;
@@ -167,7 +167,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
         amount = amountElem.Int();
     }
 
-    amount = std::max(0, std::min(amountProperty->data(), amount));
+    amount = std::max(0, std::min(amountProperty.data(), amount));
 
     if (amount == 0) {
         log(WARNING, String::compose("Got move op in StackableDomain with 0 or less amount, for %1", owner.describeEntity()));
@@ -175,7 +175,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
     }
 
     //If we're moving all items just ignore it here and let the standard move code apply.
-    if (amount == amountProperty->data()) {
+    if (amount == amountProperty.data()) {
         return HandlerResult::OPERATION_IGNORED;
     }
 
@@ -197,8 +197,8 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
     }
 
     //We now need to decrease the amount of the original entity with as much.
-    amountProperty->data() -= amount;
-    owner.applyProperty(*amountProperty);
+    amountProperty.data() -= amount;
+    owner.applyProperty(amountProperty);
 
     Atlas::Objects::Operation::Update update;
     update->setTo(owner.getId());
@@ -300,15 +300,15 @@ bool StackableDomain::stackIfPossible(const LocatedEntity& domainEntity, Located
             if (child != &entity && child->getType() == entity.getType() && child->hasFlags(entity_stacked)) {
                 if (StackableDomain::checkEntitiesStackable(*child, entity)) {
                     //Entity can be stacked.
-                    auto newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
+                    auto& newEntityStackProp = entity.requirePropertyClassFixed<AmountProperty>(1);
 
-                    auto stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
-                    stackProp->data() += newEntityStackProp->data();
-                    stackProp->removeFlags(prop_flag_persistence_clean);
-                    child->applyProperty(*stackProp);
+                    auto& stackProp = child->requirePropertyClassFixed<AmountProperty>(1);
+                    stackProp.data() += newEntityStackProp.data();
+                    stackProp.removeFlags(prop_flag_persistence_clean);
+                    child->applyProperty(stackProp);
 
-                    newEntityStackProp->data() = 0;
-                    entity.applyProperty(*newEntityStackProp);
+                    newEntityStackProp.data() = 0;
+                    entity.applyProperty(newEntityStackProp);
 
                     Atlas::Objects::Operation::Update update;
                     update->setTo(child->getId());

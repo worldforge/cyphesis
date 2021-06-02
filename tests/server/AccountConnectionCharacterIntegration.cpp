@@ -237,7 +237,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
 
 
     ExternalMind mind("6", 6, m_character);
-    m_character->requirePropertyClassFixed<MindsProperty>()->addMind(&mind);
+    m_character->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(&other_connection);
 
     ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
