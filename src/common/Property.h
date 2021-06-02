@@ -85,7 +85,7 @@ class PropertyCore : public OperationsListener {
     /// \brief Constructor called from classes which inherit from Property
     /// @param flags default value for the Property flags
     explicit PropertyCore(std::uint32_t flags = 0);
-        PropertyCore(const PropertyCore &) = default;
+    explicit PropertyCore(const PropertyCore &) = default;
   public:
     virtual ~PropertyCore() = default;
 
@@ -207,7 +207,7 @@ class Property : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     T m_data;
-    Property(const Property<T> &) = default;
+    explicit Property(const Property<T> &) = default;
   public:
     static const std::string property_atlastype;
 
@@ -231,7 +231,7 @@ class SoftProperty : public PropertyBase {
   protected:
     Atlas::Message::Element m_data;
   public:
-    SoftProperty() = default;
+    explicit SoftProperty() = default;
     explicit SoftProperty(Atlas::Message::Element  data);
 
     int get(Atlas::Message::Element & val) const override ;
