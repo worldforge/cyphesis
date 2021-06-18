@@ -31,6 +31,12 @@ MemEntity::MemEntity(const std::string& id, long intId) :
 {
 }
 
+std::unique_ptr<PropertyBase> MemEntity::createProperty(const std::string& propertyName) const
+{
+    return PropertyManager::instance().addProperty(propertyName);
+}
+
+
 
 void MemEntity::externalOperation(const Operation& op, Link&)
 {

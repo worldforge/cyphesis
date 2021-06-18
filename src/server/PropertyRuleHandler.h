@@ -22,12 +22,17 @@
 #include "RuleHandler.h"
 
 class EntityBuilder;
+class PropertyManager;
 
-/// \brief Handle processing and updating of task ruless
+/// \brief Handle processing and updating of task rules
 class PropertyRuleHandler : public RuleHandler
 {
+    private:
+        PropertyManager& m_propertyManager;
 
     public:
+
+        PropertyRuleHandler(PropertyManager& propertyManager);
 
         int check(const Atlas::Objects::Root& desc) override;
 

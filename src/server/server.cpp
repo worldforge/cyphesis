@@ -494,7 +494,7 @@ namespace {
             PossessionAuthenticator possessionAuthenticator;
 
             ExternalMindsManager externalMindsManager;
-            StorageManager store(world, serverDatabase->database(), entityBuilder);
+            StorageManager store(world, serverDatabase->database(), entityBuilder, propertyManager);
 
             //Instantiate at startup
             HttpCache httpCache(monitors);

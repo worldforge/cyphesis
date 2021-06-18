@@ -89,6 +89,12 @@ Entity::~Entity()
     }
 }
 
+std::unique_ptr<PropertyBase> Entity::createProperty(const std::string& propertyName) const
+{
+    return PropertyManager::instance().addProperty(propertyName);
+}
+
+
 void Entity::setType(const TypeNode* t)
 {
     LocatedEntity::setType(t);

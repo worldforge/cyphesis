@@ -198,6 +198,8 @@ class LocatedEntity : public Router, public ReferenceCounted
          */
         void collectObserversForChild(const LocatedEntity& child, std::set<const LocatedEntity*>& receivers) const;
 
+        virtual std::unique_ptr<PropertyBase> createProperty(const std::string& propertyName) const = 0;
+
     public:
 
         /// Flags indicating entity behaviour

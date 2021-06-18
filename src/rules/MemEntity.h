@@ -65,6 +65,9 @@ class MemEntity : public LocatedEntity
 {
     protected:
         double m_lastSeen;
+
+        std::unique_ptr<PropertyBase> createProperty(const std::string& propertyName) const override;
+
     public:
         explicit MemEntity(const std::string& id, long intId);
 

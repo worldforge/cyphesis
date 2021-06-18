@@ -17,6 +17,7 @@
 
 
 #include "PropertyRuleHandler.h"
+#include "ServerPropertyManager.h"
 
 #include "EntityBuilder.h"
 
@@ -35,6 +36,12 @@ using String::compose;
 
 static const bool debug_flag = false;
 
+PropertyRuleHandler::PropertyRuleHandler(PropertyManager& propertyManager)
+        : m_propertyManager(propertyManager)
+{
+}
+
+
 int PropertyRuleHandler::check(const Atlas::Objects::Root& desc)
 {
     assert(!desc->getParent().empty());
@@ -52,12 +59,11 @@ int PropertyRuleHandler::install(const std::string& name,
                                  std::map<const TypeNode*, TypeNode::PropertiesUpdate>& changes)
 {
     assert(desc->getObjtype() == "type");
-    PropertyManager& pm = PropertyManager::instance();
-    if (pm.getPropertyFactory(name) != nullptr) {
+    if (m_propertyManager.getPropertyFactory(name) != nullptr) {
         log(ERROR, compose("Property rule \"%1\" already exists.", name));
         return -1;
     }
-    PropertyKit* parent_factory = pm.getPropertyFactory(parent);
+    PropertyKit* parent_factory = m_propertyManager.getPropertyFactory(parent);
     if (parent_factory == nullptr) {
         dependent = parent;
         reason = compose("Property rule \"%1\" has parent \"%2\" which does "
@@ -66,7 +72,7 @@ int PropertyRuleHandler::install(const std::string& name,
     }
     auto factory = parent_factory->duplicateFactory();
     assert(factory.get() != nullptr);
-    pm.installFactory(name, desc, std::move(factory));
+    m_propertyManager.installFactory(name, desc, std::move(factory));
     return 0;
 }
 

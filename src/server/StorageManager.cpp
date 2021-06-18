@@ -51,9 +51,14 @@ typedef Database::KeyValues KeyValues;
 
 static const bool debug_flag = false;
 
-StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder) :
+StorageManager::StorageManager(WorldRouter& world,
+                               Database& db,
+                               EntityBuilder& entityBuilder,
+                               PropertyManager& propertyManager) :
         m_world(world),
-        m_db(db), m_entityBuilder(entityBuilder),
+        m_db(db),
+        m_entityBuilder(entityBuilder),
+        m_propertyManager(propertyManager),
         m_insertEntityCount(0), m_updateEntityCount(0),
         m_insertPropertyCount(0), m_updatePropertyCount(0),
         m_insertQps(0), m_updateQps(0),
@@ -192,8 +197,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
 
         auto* prop = ent.modProperty(name, val);
         if (!prop) {
-            auto newProp = PropertyManager::instance().addProperty(name);
-            //This transfers ownership of the property to the entity.
+            auto newProp = m_propertyManager.addProperty(name);
             prop = ent.setProperty(name, std::move(newProp));
         }
 

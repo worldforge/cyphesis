@@ -42,33 +42,43 @@ using Atlas::Objects::Entity::Anonymous;
 struct TestPropertyManager : public PropertyManager
 {
 
-        TestPropertyManager() {
-            m_propertyFactories["int"] = std::make_unique<PropertyFactory<Property<int>>>();
-        }
-        std::unique_ptr<PropertyBase> addProperty(const std::string & name) const override {
-            return {};
-        }
+    TestPropertyManager()
+    {
+        m_propertyFactories["int"] = std::make_unique<PropertyFactory<Property<int>>>();
+    }
+
+    std::unique_ptr<PropertyBase> addProperty(const std::string& name) const override
+    {
+        return {};
+    }
 };
 
 
 class PropertyRuleHandlertest : public Cyphesis::TestBase
 {
-  private:
-    PropertyRuleHandler * rh;
-    PropertyManager* propertyManager;
-  public:
-    PropertyRuleHandlertest();
+    private:
+        PropertyRuleHandler* rh;
+        PropertyManager* propertyManager;
+    public:
+        PropertyRuleHandlertest();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_sequence();
-    void test_check_fail();
-    void test_check_pass();
-    void test_install();
-    void test_install_noparent();
-    void test_install_exists();
-    void test_update();
+        void teardown();
+
+        void test_sequence();
+
+        void test_check_fail();
+
+        void test_check_pass();
+
+        void test_install();
+
+        void test_install_noparent();
+
+        void test_install_exists();
+
+        void test_update();
 };
 
 PropertyRuleHandlertest::PropertyRuleHandlertest()
@@ -85,7 +95,7 @@ PropertyRuleHandlertest::PropertyRuleHandlertest()
 void PropertyRuleHandlertest::setup()
 {
     propertyManager = new TestPropertyManager;
-    rh = new PropertyRuleHandler();
+    rh = new PropertyRuleHandler(*propertyManager);
 }
 
 void PropertyRuleHandlertest::teardown()
@@ -149,9 +159,9 @@ void PropertyRuleHandlertest::test_install_exists()
 {
     std::map<const TypeNode*, TypeNode::PropertiesUpdate> changes;
 
-    PropertyManager::instance().installFactory("existing_int_type",
-          Root(),
-          std::make_unique<PropertyFactory<Property<int>>>());
+    propertyManager->installFactory("existing_int_type",
+                                    Root(),
+                                    std::make_unique<PropertyFactory<Property<int>>>());
 
     Anonymous description;
     description->setObjtype("type");
@@ -186,9 +196,11 @@ int main()
 #include "common/Inheritance.h"
 #include "common/log.h"
 #include "common/PropertyFactory_impl.h"
+
 #ifndef STUB_PropertyManager_getPropertyFactory
 #define STUB_PropertyManager_getPropertyFactory
-PropertyKit* PropertyManager::getPropertyFactory(const std::string & name) const
+
+PropertyKit* PropertyManager::getPropertyFactory(const std::string& name) const
 {
     auto I = m_propertyFactories.find(name);
     if (I != m_propertyFactories.end()) {
@@ -197,11 +209,12 @@ PropertyKit* PropertyManager::getPropertyFactory(const std::string & name) const
     }
     return 0;
 }
+
 #endif //STUB_PropertyManager_getPropertyFactory
 
 #include "../stubs/common/stubPropertyManager.h"
 
-Root atlasOpDefinition(const std::string & name, const std::string & parent)
+Root atlasOpDefinition(const std::string& name, const std::string& parent)
 {
     return Root();
 }

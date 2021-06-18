@@ -32,9 +32,14 @@
 #include <Atlas/Message/Element.h>
 
 class Entity;
+
 class EntityBuilder;
+
 class Database;
+
 class WorldRouter;
+
+class PropertyManager;
 
 /// \brief StorageManager represents the subsystem which stores world storage
 ///
@@ -49,6 +54,7 @@ class StorageManager : public sigc::trackable
         WorldRouter& m_world;
         Database& m_db;
         EntityBuilder& m_entityBuilder;
+        PropertyManager& m_propertyManager;
 
         /// \brief Queue of references to entities yet to be stored.
         Entitystore m_unstoredEntities;
@@ -97,7 +103,10 @@ class StorageManager : public sigc::trackable
         size_t restoreChildren(LocatedEntity&);
 
     public:
-        explicit StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder);
+        explicit StorageManager(WorldRouter& world,
+                                Database& db,
+                                EntityBuilder& entityBuilder,
+                                PropertyManager& propertyManager);
 
         virtual ~StorageManager();
 

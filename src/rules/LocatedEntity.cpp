@@ -202,7 +202,7 @@ PropertyBase* LocatedEntity::setAttr(const std::string& name, const Modifier* mo
         } else {
             // This is an entirely new property, not just a modification of
             // one in defaults, so we need to install it to this Entity.
-            auto newProp = PropertyManager::instance().addProperty(name);
+            auto newProp = createProperty(name);
             prop = newProp.get();
             m_properties[name].property = std::move(newProp);
             propNeedsInstalling = true;
