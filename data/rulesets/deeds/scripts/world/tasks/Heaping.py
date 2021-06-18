@@ -128,7 +128,7 @@ from physics import *
 #         area_map = {'shape': modmap['shape'],
 #                     'layer': 7}
 #
-#         mod_loc = Location(self.character.location.parent)
+#         mod_loc = Location(self.character.parent)
 #         mod_loc.velocity = Vector3D()
 #         mod_loc.pos = self.pos
 #

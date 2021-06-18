@@ -110,7 +110,7 @@ from physics import *
 #                     'layer': 7}
 #         line_map = mod_path.as_data()
 #
-#         mod_loc = Location(self.character.location.parent)
+#         mod_loc = Location(self.character.parent)
 #         mod_loc.velocity = Vector3D()
 #         mod_loc.pos = self.pos
 #

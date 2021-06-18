@@ -196,7 +196,7 @@
 
 #ifndef STUB_Steering_projectPosition
 //#define STUB_Steering_projectPosition
-  WFMath::Point<3> Steering::projectPosition(double currentTimestamp, const Location& location) const
+  WFMath::Point<3> Steering::projectPosition(double currentTimestamp, const TransformData& transform, const MovementData& movement) const
   {
     return *static_cast<WFMath::Point<3>*>(nullptr);
   }

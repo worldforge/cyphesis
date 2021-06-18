@@ -16,8 +16,8 @@ class Loggable(server.Thing):
             new_ent.scale = self.props.scale
         create = Operation("create",
                            new_ent,
-                           to=self.location.parent)
+                           to=self.parent)
         # Send through parent since this entity will be destroyed once the op is handled.
-        self.location.parent.send_world(create)
+        self.parent.send_world(create)
 
         return server.OPERATION_HANDLED

@@ -32,7 +32,7 @@ class Respawning(server.Thing):
                     # Randomize orientation
                     rotation = random.random() * math.pi * 2
                     location.orientation = physics.Quaternion(physics.Vector3D(0, 1, 0), rotation)
-                    location.parent = respawn_entity.location.parent
+                    location.parent = respawn_entity.parent
                     # Emit a sight of this entity being defeated
                     res += Operation("sight", Operation("defeated", Entity(self.id)))
                     res += Operation("move", Entity(self.id, location=location), to=self.id)

@@ -573,6 +573,7 @@ int main()
 #include "../../stubs/rules/simulation/stubDomainProperty.h"
 #include "../../stubs/rules/simulation/stubDensityProperty.h"
 #include "../../stubs/rules/stubScaleProperty.h"
+#include "../../stubs/rules/stubPhysicalProperties.h"
 #include "../../stubs/rules/stubAtlasProperties.h"
 #include "../../stubs/common/stubcustom.h"
 #include "../../stubs/common/stubRouter.h"

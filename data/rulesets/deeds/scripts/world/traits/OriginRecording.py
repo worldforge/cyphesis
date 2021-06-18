@@ -14,4 +14,4 @@ class OriginRecording(server.Thing):
     def setup_operation(self, op):
         origin = self.get_prop_map("_origin")
         if not origin:
-            return Operation('set', Entity(id=self.id, _origin={"$eid": self.location.parent.id, "pos": self.location.pos}), to=self.id)
+            return Operation('set', Entity(id=self.id, _origin={"$eid": self.parent.id, "pos": self.location.pos}), to=self.id)

@@ -77,7 +77,7 @@ int main()
 
     IGEntityExerciser ee(e);
 
-    assert(e->m_location.m_parent == nullptr);
+    assert(e->m_parent == nullptr);
 
     // Throw an op of every type at the entity
     ee.runOperations();
@@ -128,5 +128,6 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "../stubs/common/stubconst.h"
 #include "../stubs/common/stublog.h"
 #include "../stubs/common/stubid.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
 
 

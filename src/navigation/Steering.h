@@ -31,6 +31,7 @@
 
 #include <boost/optional.hpp>
 #include <rules/Location.h>
+#include <rules/MemEntity.h>
 
 
 class Awareness;
@@ -141,12 +142,11 @@ class Steering : public virtual sigc::trackable
             WFMath::Point<3> position;
 
             /**
-             * The location which is a direct child of our own parent. This is mainly of use when trying to
+             * The radius of the entity which is a direct child of our own parent. This is mainly of use when trying to
              * reach an entity which is contained in another entity, and we really need to know if we can reach
              * the other entity.
-             * Is null if we only specified a position.
              */
-            const Location* location;
+            double radius;
         };
 
         explicit Steering(MemEntity& avatar);
@@ -245,7 +245,7 @@ class Steering : public virtual sigc::trackable
 
         Steering::ResolvedPosition resolvePosition(double currentTimestamp, const EntityLocation& location) const;
 
-        WFMath::Point<3> projectPosition(double currentTimestamp, const Location& location) const;
+        WFMath::Point<3> projectPosition(double currentTimestamp, const TransformData& transform, const MovementData& movement) const;
 
         /**
          * @brief Emitted when the path has been updated.

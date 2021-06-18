@@ -28,7 +28,7 @@ const TerrainProperty * TerrainEffectorProperty::getTerrain(LocatedEntity& owner
     LocatedEntity * ent = &owner;
 
     while ((terr = ent->getPropertyClassFixed<TerrainProperty>()) == nullptr) {
-        ent = ent->m_location.m_parent.get();
+        ent = ent->m_parent;
         if (ent == nullptr) {
             return nullptr;
         }

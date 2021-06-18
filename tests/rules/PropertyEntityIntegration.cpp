@@ -544,3 +544,5 @@ Ref<LocatedEntity> BaseWorld::getEntity(long id) const
 #include "../stubs/common/stubRouter.h"
 #include "../stubs/common/stubid.h"
 #include "../stubs/common/stublog.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
+

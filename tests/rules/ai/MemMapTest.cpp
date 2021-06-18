@@ -335,16 +335,16 @@ void MemMaptest::test_findByLoc()
     e4->setVisible();
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
-    e4->m_location.m_parent = tlve;
-    e4->m_location.m_pos = Point3D(1,1,0);
+    e4->m_parent = tlve.get();
+    e4->m_transform.pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5(new MemEntity("5", 5));
     e5->setVisible();
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
-    e5->m_location.m_parent = tlve;
-    e5->m_location.m_pos = Point3D(2,2,0);
+    e5->m_parent = tlve.get();
+    e5->m_transform.pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     Location find_here(tlve);
@@ -369,16 +369,16 @@ void MemMaptest::test_findByLoc_results()
     e4->setVisible();
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
-    e4->m_location.m_parent = tlve;
-    e4->m_location.m_pos = Point3D(1,1,0);
+    e4->m_parent = tlve.get();
+    e4->m_transform.pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
-    e5->m_location.m_parent = tlve;
-    e5->m_location.m_pos = Point3D(2,2,0);
+    e5->m_parent = tlve.get();
+    e5->m_transform.pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     EntityLocation find_here(tlve);
@@ -403,16 +403,16 @@ void MemMaptest::test_findByLoc_invalid()
     e4->setVisible();
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
-    e4->m_location.m_parent = tlve;
-    e4->m_location.m_pos = Point3D(1,1,0);
+    e4->m_parent = tlve.get();
+    e4->m_transform.pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
-    e5->m_location.m_parent = tlve;
-    e5->m_location.m_pos = Point3D(2,2,0);
+    e5->m_parent = tlve.get();
+    e5->m_transform.pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     // Look in a location where these is nothing - no contains at all
@@ -439,16 +439,16 @@ void MemMaptest::test_findByLoc_consistency_check()
     e4->setVisible();
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
-    e4->m_location.m_parent = tlve;
-    e4->m_location.m_pos = Point3D(1,1,0);
+    e4->m_parent = tlve.get();
+    e4->m_transform.pos = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5 = new MemEntity("5", 5);
     e5->setVisible();
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
-    e5->m_location.m_parent = tlve;
-    e5->m_location.m_pos = Point3D(2,2,0);
+    e5->m_parent = tlve.get();
+    e5->m_transform.pos = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     // Duplicated of tlve. Same ID, but not the same entity as in
@@ -499,6 +499,8 @@ const TypeStore& TypeResolver::getTypeStore() const
 
 #include "../../stubs/rules/ai/stubTypeResolver.h"
 #include "../../stubs/rules/stubScript.h"
+#include "../../stubs/rules/stubPhysicalProperties.h"
+#include "../../stubs/common/stubProperty.h"
 
 
 WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)

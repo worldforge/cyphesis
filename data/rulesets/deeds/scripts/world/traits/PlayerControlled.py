@@ -13,7 +13,7 @@ class PlayerControlled(server.Thing):
     def respawn(self):
         limbo_entity = server.get_alias_entity("limbo")
         # If we're in limbo we should respawn
-        if limbo_entity and self.location.parent == limbo_entity:
+        if limbo_entity and self.parent == limbo_entity:
             respawn_prop = self.props["__respawn"]
             if respawn_prop:
                 set_op = Operation("set", Entity(self.id, __respawn=None), to=self.id)
@@ -32,7 +32,7 @@ class PlayerControlled(server.Thing):
     def _minds_property_update(self):
         if len(self.props._minds) == 0:
             limbo_entity = server.get_alias_entity("limbo")
-            if self.location.parent != limbo_entity:
+            if self.parent != limbo_entity:
                 self.tick_refno = self.tick_refno + 1
                 # No minds anymore, delay movement to limbo with some time
                 return Operation("tick", Entity(name=self.__class__.__name__, type="remove"), refno=self.tick_refno,
@@ -54,9 +54,9 @@ class PlayerControlled(server.Thing):
                         if minds_prop is None or len(minds_prop) == 0:
                             # Move entity to limbo
                             limbo_entity = server.get_alias_entity("limbo")
-                            if limbo_entity and self.location.parent != limbo_entity:
+                            if limbo_entity and self.parent != limbo_entity:
                                 # Store the current position in "__respawn" so we can spawn back there.
-                                res += Operation("set", Entity(self.id, __respawn={"loc": self.location.parent.id,
+                                res += Operation("set", Entity(self.id, __respawn={"loc": self.parent.id,
                                                                                    "pos": self.location.pos}), to=self.id)
                                 res += Operation("move", Entity(self.id, loc=limbo_entity.id), to=self.id)
                     else:
@@ -71,7 +71,7 @@ class PlayerControlled(server.Thing):
         limbo_entity = server.get_alias_entity("limbo")
         if not limbo_entity:
             print("Entity is set to respawn, but there's no limbo entity set in the system.")
-        if self.location.parent != limbo_entity:
+        if self.parent != limbo_entity:
             # Emit a sight of this entity being defeated
             res += Operation("sight", Operation("defeated", Entity(self.id)))
             res += Operation("imaginary", Entity(

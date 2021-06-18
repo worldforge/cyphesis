@@ -60,6 +60,8 @@ class BBoxProperty : public PropertyBase
         BBoxProperty* copy() const override;
 
         virtual void updateBboxOnEntity(LocatedEntity& entity) const;
+
+
 };
 
 #endif // RULESETS_B_BOX_PROPERTY_H

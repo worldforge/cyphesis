@@ -406,6 +406,8 @@ long newId(std::string& id)
 }
 
 #include "../stubs/common/stublog.h"
+#include "../stubs/rules/stubAtlasProperties.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
 
 
 Root atlasClass(const std::string& name, const std::string& parent)

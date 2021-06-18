@@ -20,16 +20,15 @@
 #include "Awareness.h"
 
 #include "rules/MemEntity.h"
-
-#include "common/debug.h"
+#include "rules/ScaleProperty.h"
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/rotbox.h>
 #include <wfmath/segment.h>
 
-#include <iostream>
 #include <rules/Vector3Property.h>
+#include <rules/PhysicalProperties.h>
 
 static const bool debug_flag = true;
 
@@ -52,7 +51,7 @@ Steering::Steering(MemEntity& avatar) :
         mMaxSpeed = speedGroundProp->data();
     }
 
-    auto& bbox = mAvatar.m_location.bBox();
+    auto& bbox = mAvatar.m_bbox;
     if (bbox.isValid()) {
         mAvatarHorizRadius = std::sqrt(boxSquareHorizontalBoundingRadius(bbox));
     } else {
@@ -171,7 +170,8 @@ void Steering::setAwarenessArea(double currentServerTimestamp)
 
         if (resolvedPosition.position.isValid()) {
             WFMath::Point<2> destination2d(resolvedPosition.position.x(), resolvedPosition.position.z());
-            WFMath::Point<2> entityPosition2d(mAvatar.m_location.m_pos.x(), mAvatar.m_location.m_pos.z());
+            auto pos = PositionProperty::extractPosition(mAvatar);
+            WFMath::Point<2> entityPosition2d(pos.x(), pos.z());
 
             WFMath::Vector<2> direction(destination2d - entityPosition2d);
             auto theta = std::atan2(direction.y(), direction.x()); // rotation about Y
@@ -247,10 +247,7 @@ int Steering::updatePath(double currentTimestamp)
     if (!mAwareness) {
         return -1;
     }
-    auto currentEntityPos = mAvatar.m_location.m_pos;
-    if (mAvatar.m_location.m_velocity.isValid()) {
-        currentEntityPos += (mAvatar.m_location.m_velocity * (currentTimestamp - mAvatar.m_location.timeStamp()));
-    }
+    auto currentEntityPos = projectPosition(currentTimestamp, mAvatar.m_transform, mAvatar.m_movement);
 
     return updatePath(currentTimestamp, currentEntityPos);
 }
@@ -300,15 +297,15 @@ size_t Steering::getCurrentPathIndex() const
 
 WFMath::Point<3> Steering::getCurrentAvatarPosition(double currentTimestamp) const
 {
-    return projectPosition(currentTimestamp, mAvatar.m_location);
+    return projectPosition(currentTimestamp, mAvatar.m_transform, mAvatar.m_movement);
 }
 
-WFMath::Point<3> Steering::projectPosition(double currentTimestamp, const Location& location) const
+WFMath::Point<3> Steering::projectPosition(double currentTimestamp, const TransformData& transform, const MovementData& movement) const
 {
-    if (location.m_velocity.isValid()) {
-        return location.pos() + (location.velocity() * (currentTimestamp - location.timeStamp()));
+    if (movement.velocity.data.isValid() && transform.pos.isValid()) {
+        return transform.pos + (movement.velocity.data * (currentTimestamp - movement.velocity.timestamp));
     }
-    return location.pos();
+    return transform.pos;
 }
 
 boost::optional<double> Steering::distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const
@@ -325,12 +322,13 @@ boost::optional<double> Steering::distanceTo(double currentTimestamp, const Enti
         distance -= mAvatarHorizRadius;
     }
     if (toDestination == MeasureType::EDGE) {
-        if (resolvedDestination.location) {
-            auto& bbox = resolvedDestination.location->bBox();
-            if (bbox.isValid()) {
-                distance -= std::sqrt(boxSquareHorizontalBoundingRadius(bbox));
-            }
-        }
+        distance -= resolvedDestination.radius;
+//        if (resolvedDestination.location) {
+//            auto& bbox = resolvedDestination.location->bBox();
+//            if (bbox.isValid()) {
+//                distance -= std::sqrt(boxSquareHorizontalBoundingRadius(bbox));
+//            }
+//        }
     }
     return std::max(0.0, distance);
 }
@@ -339,19 +337,19 @@ Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, co
 {
     //If there's no parent at all we're operating within the same space as the avatar.
     if (!location.m_parent) {
-        return {location.m_pos, nullptr};
+        return {location.m_pos, 0};
     }
     //If the parent is the same we're just operating on position data without any volume.
-    if (location.m_parent == mAvatar.m_location.m_parent) {
+    if (location.m_parent == mAvatar.m_parent) {
         //Just ignore any extra position supplied.
-        return {location.pos(), nullptr};
+        return {location.pos(), 0};
     }
     //If the supplied destination doesn't belong to the current domain, walk upwards until we find the entity that does.
     //This entity will then determine the position.
-    auto* entity = location.m_parent.get();
+    auto entity = location.m_parent;
 
-    while (entity->m_location.m_parent && entity->m_location.m_parent != mAvatar.m_location.m_parent) {
-        entity = entity->m_location.m_parent.get();
+    while (entity->m_parent && entity->m_parent != mAvatar.m_parent) {
+        entity = entity->m_parent;
     }
 
     //Could not find the parent domain entity
@@ -359,7 +357,13 @@ Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, co
         return {};
     }
 
-    return {projectPosition(currentTimestamp, entity->m_location), &entity->m_location};
+    double distance = 0;
+    auto& memEntity = static_cast<MemEntity&>(*entity);
+    if (memEntity.m_bbox.isValid()) {
+        distance = std::sqrt(boxSquareHorizontalBoundingRadius(memEntity.m_bbox));
+    }
+
+    return {projectPosition(currentTimestamp, memEntity.m_transform, memEntity.m_movement), distance};
 }
 
 bool Steering::isAtDestination(double currentTimestamp, const SteeringDestination& destination) const
@@ -442,7 +446,7 @@ SteeringResult Steering::update(double currentTimestamp)
                 if (velocityNorm.isValid()) {
                     if (mLastSentVelocity.isValid()) {
                         //If the entity has stopped, and we're not waiting for confirmation to a movement request we've made, we need to start moving.
-                        if (mAvatar.m_location.velocity() == WFMath::Vector<3>::ZERO() && !mExpectingServerMovement) {
+                        if (mAvatar.m_movement.velocity.data == WFMath::Vector<3>::ZERO() && !mExpectingServerMovement) {
                             shouldSend = true;
                         } else {
                             auto currentTheta = std::atan2(mLastSentVelocity.y(), mLastSentVelocity.x());
@@ -461,7 +465,7 @@ SteeringResult Steering::update(double currentTimestamp)
                 if (shouldSend) {
                     //If we're moving to a certain destination and aren't avoiding anything we should tell the server to move to the destination.
                     if (destination.isValid() && !avoiding) {
-                        result.destination = WFMath::Point<3>(destination.x(), mAvatar.m_location.m_pos.y(), destination.y());
+                        result.destination = WFMath::Point<3>(destination.x(), mAvatar.m_transform.pos.y(), destination.y());
                     }
                     result.direction = WFMath::Vector<3>(velocityNorm.x(), 0, velocityNorm.y());
                     mLastSentVelocity = velocityNorm;

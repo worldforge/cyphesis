@@ -57,6 +57,64 @@
 #endif //STUB_IdProperty_copy
 
 
+#ifndef STUB_LocationProperty_LocationProperty
+//#define STUB_LocationProperty_LocationProperty
+   LocationProperty::LocationProperty(const LocatedEntity& entity)
+    : PropertyBase(entity)
+  {
+    
+  }
+#endif //STUB_LocationProperty_LocationProperty
+
+#ifndef STUB_LocationProperty_get
+//#define STUB_LocationProperty_get
+  int LocationProperty::get(Atlas::Message::Element& val) const
+  {
+    return 0;
+  }
+#endif //STUB_LocationProperty_get
+
+#ifndef STUB_LocationProperty_set
+//#define STUB_LocationProperty_set
+  void LocationProperty::set(const Atlas::Message::Element& val)
+  {
+    
+  }
+#endif //STUB_LocationProperty_set
+
+#ifndef STUB_LocationProperty_add
+//#define STUB_LocationProperty_add
+  void LocationProperty::add(const std::string& key, Atlas::Message::MapType& map) const
+  {
+    
+  }
+#endif //STUB_LocationProperty_add
+
+#ifndef STUB_LocationProperty_add
+//#define STUB_LocationProperty_add
+  void LocationProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
+  {
+    
+  }
+#endif //STUB_LocationProperty_add
+
+#ifndef STUB_LocationProperty_copy
+//#define STUB_LocationProperty_copy
+  LocationProperty* LocationProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_LocationProperty_copy
+
+#ifndef STUB_LocationProperty_data
+//#define STUB_LocationProperty_data
+  const std::string& LocationProperty::data() const
+  {
+    static std::string instance; return instance;
+  }
+#endif //STUB_LocationProperty_data
+
+
 #ifndef STUB_NameProperty_NameProperty
 //#define STUB_NameProperty_NameProperty
    NameProperty::NameProperty(unsigned int flags)

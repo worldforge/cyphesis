@@ -47,6 +47,10 @@ class CyPy_Location : public WrapperBase<Location, CyPy_Location>
         Py::Object copy();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Location, copy);
+
+        Py::Object add_to_entity(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Location, add_to_entity);
 };
 
 

@@ -220,8 +220,8 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
         }
     }
 
-    if (ent.m_location.m_parent) {
-        auto domain = ent.m_location.m_parent->getDomain();
+    if (ent.m_parent) {
+        auto domain = ent.m_parent->getDomain();
         if (domain) {
             domain->addEntity(ent);
         }
@@ -239,13 +239,13 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
 
 //    //We should also send a sight op to the parent entity which owns the entity.
 //    //TODO: should this really be necessary or should we rely on other Sight functionality?
-//    if (ent.m_location.m_parent) {
+//    if (ent.m_parent) {
 //        Atlas::Objects::Operation::Sight sight;
-//        sight->setTo(ent.m_location.m_parent.getId());
+//        sight->setTo(ent.m_parent.getId());
 //        Atlas::Objects::Entity::Anonymous args;
 //        ent.addToEntity(args);
 //        sight->setArgs1(args);
-//        ent.m_location.m_parent.sendWorld(sight);
+//        ent.m_parent.sendWorld(sight);
 //    }
 
 }
@@ -254,16 +254,10 @@ void StorageManager::insertEntity(LocatedEntity& ent)
 {
     std::string location;
     Atlas::Message::MapType map;
-    if (ent.m_location.pos().isValid()) {
-        map["pos"] = ent.m_location.pos().toAtlas();
-    }
-    if (ent.m_location.orientation().isValid()) {
-        map["orientation"] = ent.m_location.orientation().toAtlas();
-    }
     m_db.encodeObject(map, location);
 
     m_db.insertEntity(ent.getId(),
-                      ent.m_location.m_parent->getId(),
+                      ent.m_parent->getId(),
                       ent.getType()->name(),
                       ent.getSeq(),
                       location);
@@ -291,7 +285,7 @@ void StorageManager::insertEntity(LocatedEntity& ent)
         ++m_insertPropertyCount;
     }
     ent.removeFlags(entity_queued);
-    ent.addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+    ent.addFlags(entity_clean);
     ent.updated.connect([&]() { entityUpdated(ent); });
     ent.containered.connect([&](const Ref<LocatedEntity>& container) { entityUpdated(ent); });
 }
@@ -300,20 +294,14 @@ void StorageManager::updateEntity(LocatedEntity& ent)
 {
     std::string location;
     Atlas::Message::MapType map;
-    if (ent.m_location.pos().isValid()) {
-        map["pos"] = ent.m_location.pos().toAtlas();
-    }
-    if (ent.m_location.orientation().isValid()) {
-        map["orientation"] = ent.m_location.orientation().toAtlas();
-    }
     m_db.encodeObject(map, location);
 
     //Under normal circumstances only the top world won't have a location.
-    if (ent.m_location.m_parent) {
+    if (ent.m_parent) {
         m_db.updateEntity(ent.getId(),
                           ent.getSeq(),
                           location,
-                          ent.m_location.m_parent->getId());
+                          ent.m_parent->getId());
     } else {
         m_db.updateEntityWithoutLoc(ent.getId(),
                                     ent.getSeq(),
@@ -380,8 +368,7 @@ size_t StorageManager::restoreChildren(LocatedEntity& parent)
     size_t childCount = 0;
     DatabaseResult res = m_db.selectEntities(parent.getId());
 
-    // Iterate over res creating entities, and sorting out position, location
-    // and orientation. Restore children, but don't restore any properties yet.
+    // Iterate over res creating entities. Restore children, but don't restore any properties yet.
     auto I = res.begin();
     auto Iend = res.end();
     for (; I != Iend; ++I) {
@@ -400,11 +387,7 @@ size_t StorageManager::restoreChildren(LocatedEntity& parent)
         }
         childCount++;
 
-        const std::string location_string = I.column("location");
-        MapType loc_data;
-        m_db.decodeMessage(location_string, loc_data);
-        child->m_location.readFromMessage(loc_data);
-        child->addFlags(entity_clean | entity_pos_clean | entity_orient_clean);
+        child->addFlags(entity_clean);
         m_world.addEntity(child, &parent);
         childCount += restoreChildren(*child);
     }

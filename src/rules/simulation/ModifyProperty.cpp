@@ -150,16 +150,16 @@ void ModifyProperty::remove(LocatedEntity& owner, const std::string& name)
 void ModifyProperty::install(LocatedEntity& owner, const std::string& name)
 {
     auto state = new ModifyProperty::State();
-    state->parentEntity = owner.m_location.m_parent.get();
+    state->parentEntity = owner.m_parent;
     state->updatedConnection.disconnect();
-    state->updatedConnection = owner.updated.connect([&owner, this, state]() {
-        if (state->parentEntity == owner.m_location.m_parent.get()) {
-            newLocation(*state, owner, owner.m_location.m_parent.get());
+    state->updatedConnection = owner.updated.connect([this, state, &owner]() {
+        if (state->parentEntity == owner.m_parent) {
+            newLocation(*state, owner, owner.m_parent);
             checkIfActive(*state, owner);
         }
     });
-    if (owner.m_location.m_parent) {
-        newLocation(*state, owner, owner.m_location.m_parent.get());
+    if (owner.m_parent) {
+        newLocation(*state, owner, owner.m_parent);
     }
 
     sInstanceState.addState(owner, std::unique_ptr<ModifyProperty::State>(state));

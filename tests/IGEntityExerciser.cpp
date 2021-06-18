@@ -41,21 +41,18 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 IGEntityExerciser::IGEntityExerciser(const Ref<Entity>& e) :
                            EntityExerciser(e), m_ent(e) {
-    Ref<LocatedEntity> parent;
     if (e->getIntId() == 0) {
         m_testWorld = std::make_unique<TestWorld>(e);
     } else {
-        assert(e->m_location.m_parent != nullptr);
-        parent.reset(new Entity("0", 0));
-        e->m_location.m_parent->makeContainer();
-        assert(e->m_location.m_parent->m_contains != nullptr);
-        e->m_location.m_parent->m_contains->insert(e);
-        m_testWorld = std::make_unique<TestWorld>(e->m_location.m_parent);
+        assert(e->m_parent != nullptr);
+        m_testWorld = std::make_unique<TestWorld>(e->m_parent);
+        m_testWorld->addEntity(e, e->m_parent);
     }
-    m_testWorld->addEntity(e, parent);
 }
 
 IGEntityExerciser::~IGEntityExerciser() {
@@ -195,8 +192,8 @@ void IGEntityExerciser::runOperations()
         }
         this->flushOperations(ov);
 
-        if (this->m_ent->m_location.m_parent != nullptr) {
-            move_arg->setLoc(this->m_ent->m_location.m_parent->getId());
+        if (this->m_ent->m_parent != nullptr) {
+            move_arg->setLoc(this->m_ent->m_parent->getId());
             this->m_ent->MoveOperation(op, ov);
             if (!ov.empty()) {
                 assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
@@ -205,15 +202,15 @@ void IGEntityExerciser::runOperations()
         }
 
         move_arg->setLoc(this->m_ent->getId());
-        addToEntity(this->m_ent->m_location.pos(), move_arg->modifyPos());
+        addToEntity(this->m_ent->requirePropertyClassFixed<PositionProperty>().data(), move_arg->modifyPos());
         this->m_ent->MoveOperation(op, ov);
         if (!ov.empty()) {
             assert(ov.front()->getClassNo() == Atlas::Objects::Operation::ERROR_NO);
         }
         this->flushOperations(ov);
 
-        if (this->m_ent->m_location.m_parent != nullptr) {
-            move_arg->setLoc(this->m_ent->m_location.m_parent->getId());
+        if (this->m_ent->m_parent != nullptr) {
+            move_arg->setLoc(this->m_ent->m_parent->getId());
         }
         std::vector<double> pos(3, 0);
         move_arg->setPos(pos);
@@ -401,12 +398,12 @@ void IGEntityExerciser::runOperations()
         this->m_ent->UpdateOperation(op, ov);
         this->flushOperations(ov);
 
-        this->m_ent->m_location.m_velocity = Vector3D();
+        this->m_ent->requirePropertyClassFixed<VelocityProperty>().data() = Vector3D();
         this->m_ent->UpdateOperation(op, ov);
         this->flushOperations(ov);
 
-        this->m_ent->m_location.m_pos = Point3D(0,0,0);
-        this->m_ent->m_location.m_velocity = Vector3D(1,0,0);
+        this->m_ent->requirePropertyClassFixed<PositionProperty>().data() = Point3D(0,0,0);
+        this->m_ent->requirePropertyClassFixed<VelocityProperty>().data() = Vector3D(1,0,0);
         this->m_ent->UpdateOperation(op, ov);
         this->flushOperations(ov);
     }

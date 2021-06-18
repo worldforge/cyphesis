@@ -31,6 +31,7 @@
 #include "server/EntityRuleHandler.h"
 #include "server/EntityFactory.h"
 
+#include "rules/AtlasProperties.h"
 #include "rules/Domain.h"
 #include "rules/simulation/World.h"
 
@@ -45,6 +46,7 @@
 
 
 #include <cassert>
+#include <rules/PhysicalProperties.h>
 
 #include "../DatabaseNull.h"
 #include "../TestPropertyManager.h"
@@ -107,7 +109,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
 
             ASSERT_EQUAL(3, test_world.m_entityCount);
             //Make sure ent2 is a child of ent1.
-            ASSERT_EQUAL(ent2->m_location.m_parent.get(), ent1.get());
+            ASSERT_EQUAL(ent2->m_parent, ent1.get());
 
             //Make sure that a child when removed has all references removed too.
             test_world.delEntity(ent2.get());
@@ -208,7 +210,7 @@ void WorldRouterintegration::test_sequence()
 
     Ref<Entity> ent2 = new Thing(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_pos = Point3D(0, 0, 0);
+    ent2->requirePropertyClassFixed<PositionProperty>().data() = Point3D(0, 0, 0);
     test_world.addEntity(ent2, base);
 
     Tick tick;
@@ -274,6 +276,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 }
 
 #include "../stubs/rules/stubBBoxProperty.h"
+#include "../stubs/rules/stubAtlasProperties.h"
 #include "../stubs/rules/simulation/stubTasksProperty.h"
 #include "../stubs/rules/simulation/stubTerrainProperty.h"
 #include "../stubs/rules/simulation/stubDomainProperty.h"
@@ -282,7 +285,6 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "../stubs/rules/ai/stubMemMap.h"
 #include "../stubs/rules/simulation/stubPropelProperty.h"
 #include "../stubs/rules/python/stubPythonClass.h"
-#include "../stubs/rules/simulation/stubPedestrian.h"
 #include "../stubs/rules/simulation/stubMovement.h"
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/rules/simulation/stubUsagesProperty.h"
@@ -334,16 +336,10 @@ class World;
 #include "../stubs/rules/simulation/stubWorldTimeProperty.h"
 #include "../stubs/rules/simulation/stubVoidDomain.h"
 
-#define STUB_IdProperty_get
-
-int IdProperty::get(Atlas::Message::Element& val) const
-{
-    val = m_data;
-    return 0;
-}
 
 #include "../stubs/rules/simulation/stubTask.h"
 #include "../stubs/rules/stubAtlasProperties.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
 #include "../stubs/rules/simulation/stubStatusProperty.h"
 #include "../stubs/rules/simulation/stubModeDataProperty.h"
 #include "../stubs/rules/simulation/stubModeProperty.h"
@@ -359,210 +355,4 @@ void ExternalMind::linkUp(Link* c)
 
 sigc::signal<void> python_reload_scripts;
 
-#if 0
 
-int timeoffset = 0;
-
-namespace consts {
-const char * rootWorldId = "0";
-const long rootWorldIntId = 0L;
-}
-
-namespace Atlas { namespace Objects { namespace Operation {
-int TICK_NO = -1;
-}}}
-
-SoftProperty::SoftProperty()
-{
-}
-
-SoftProperty::SoftProperty(const Element & data) :
-              PropertyBase(0), m_data(data)
-{
-}
-
-int SoftProperty::get(Element & val) const
-{
-    val = m_data;
-    return 0;
-}
-
-void SoftProperty::set(const Element & val)
-{
-}
-
-SoftProperty * SoftProperty::copy() const
-{
-    return 0;
-}
-
-PropertyBase::PropertyBase(unsigned int flags) : m_flags(flags)
-{
-}
-
-PropertyBase::~PropertyBase()
-{
-}
-
-void PropertyBase::install(LocatedEntity&, const std::string & name)
-{
-}
-
-void PropertyBase::remove(LocatedEntity&, const std::string & name)
-{
-}
-
-void PropertyBase::apply(LocatedEntity&)
-{
-}
-
-void PropertyBase::add(const std::string & s,
-                       MapType & ent) const
-{
-    get(ent[s]);
-}
-
-void PropertyBase::add(const std::string & s,
-                       const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-HandlerResult PropertyBase::operation(LocatedEntity&,
-                                      const Operation &,
-                                      OpVector &)
-{
-    return OPERATION_IGNORED;
-}
-
-template<>
-void Property<int>::set(const Element & e)
-{
-    if (e.isInt()) {
-        this->m_data = e.asInt();
-    }
-}
-
-template<>
-void Property<double>::set(const Element & e)
-{
-    if (e.isNum()) {
-        this->m_data = e.asNum();
-    }
-}
-
-template<>
-void Property<std::string>::set(const Element & e)
-{
-    if (e.isString()) {
-        this->m_data = e.String();
-    }
-}
-
-template class Property<int>;
-template class Property<double>;
-template class Property<std::string>;
-
-#include "stubs/common/stubRouter.h"
-#include "stubs/common/stubid.h"
-#include "stubs/common/stublog.h"
-
-static long idGenerator = 0;
-
-long newId(std::string & id)
-{
-    static char buf[32];
-    long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
-}
-
-#ifndef STUB_BaseWorld_getEntity
-#define STUB_BaseWorld_getEntity
-Ref<LocatedEntity> BaseWorld::getEntity(const std::string & id) const
-{
-    return getEntity(integerId(id));
-}
-
-Ref<LocatedEntity> BaseWorld::getEntity(long id) const
-{
-    auto I = m_eobjects.find(id);
-    if (I != m_eobjects.end()) {
-        assert(I->second);
-        return I->second;
-    } else {
-        return nullptr;
-    }
-}
-#endif //STUB_BaseWorld_getEntity
-
-#include "stubs/rules/simulation/stubBaseWorld.h"
-
-Inheritance * Inheritance::m_instance = nullptr;
-
-Inheritance::Inheritance() : noClass(0)
-{
-}
-
-Inheritance & Inheritance::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Inheritance();
-    }
-    return *m_instance;
-}
-
-const TypeNode * Inheritance::getType(const std::string & parent) const
-{
-    auto I = atlasObjects.find(parent);
-    if (I == atlasObjects.end()) {
-        return 0;
-    }
-    return I->second;
-}
-
-VariableBase::~VariableBase()
-{
-}
-
-template <typename T>
-Variable<T>::Variable(const T & variable) : m_variable(variable)
-{
-}
-
-template <typename T>
-Variable<T>::~Variable()
-{
-}
-
-template <typename T>
-void Variable<T>::send(std::ostream & o)
-{
-    o << m_variable;
-}
-
-template class Variable<int>;
-
-Monitors * Monitors::m_instance = nullptr;
-
-Monitors::Monitors()
-{
-}
-
-Monitors::~Monitors()
-{
-}
-
-Monitors * Monitors::instance()
-{
-    if (m_instance == nullptr) {
-        m_instance = new Monitors();
-    }
-    return m_instance;
-}
-
-void Monitors::watch(const::std::string & name, VariableBase * monitor)
-{
-}
-#endif // 0

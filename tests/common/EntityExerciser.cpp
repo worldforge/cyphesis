@@ -50,9 +50,6 @@ void LocatedEntityTest::operation(const Operation &, OpVector &)
 {
 }
 
-void LocatedEntityTest::destroy()
-{
-}
 
 EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
 {
@@ -60,10 +57,11 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
         e->makeContainer();
         assert(e->m_contains != 0);
     } else {
-        e->m_location.m_parent = new LocatedEntityTest("0", 0);
-        e->m_location.m_parent->makeContainer();
-        assert(e->m_location.m_parent->m_contains != 0);
-        e->m_location.m_parent->m_contains->insert(e);
+        m_parentEntity = Ref<LocatedEntity>(new LocatedEntityTest("0", 0));
+        e->m_parent = m_parentEntity.get();
+        m_parentEntity->makeContainer();
+        assert(m_parentEntity->m_contains != 0);
+        m_parentEntity->m_contains->insert(e);
     }
     if (e->getType() == 0) {
         test_type = std::make_unique<TypeNode>("test_type");
@@ -79,9 +77,9 @@ EntityExerciser::EntityExerciser(Ref<LocatedEntity> e) : m_ent(e)
 
 EntityExerciser::~EntityExerciser()
 {
-    if (m_ent->getIntId() != 0) {
-        m_ent->m_location.m_parent.reset();
-    }
+//    if (m_ent->getIntId() != 0) {
+//        m_ent->m_parent = nullptr;
+//    }
     if (test_type) {
         m_ent->setType(nullptr);
     }

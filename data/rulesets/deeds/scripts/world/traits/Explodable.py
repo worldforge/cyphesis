@@ -24,7 +24,7 @@ class Explodable(server.Thing):
         arg = op[0]
         if arg:
             # Place the explosion at the point of collision.
-            new_location = rules.Location(self.location.parent, arg.pos)
+            new_location = rules.Location(self.parent, arg.pos)
 
             entity = Entity(parent="explosion", location=new_location, mode="fixed")
             entity["entity_ref"] = {"$eid": get_actor_id_from_mode_data(self)}

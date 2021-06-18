@@ -29,6 +29,8 @@
 
 #include <wfmath/atlasconv.h>
 #include <common/Inheritance.h>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;
@@ -280,9 +282,12 @@ Ref<Entity> ArchetypeFactory::newEntity(const std::string& id, long intId, const
 
 std::vector<Atlas::Message::Element> ArchetypeFactory::createOriginLocationThought(const LocatedEntity& entity)
 {
-    if (entity.m_location.pos().isValid()) {
+    //TODO: is this really needed now that we do this in scripts instead?
+    auto posProp = entity.getPropertyClassFixed<PositionProperty>();
+    if (posProp && posProp->data().isValid()) {
+        auto& pos = posProp->data();
         Atlas::Message::MapType thought;
-        thought["object"] = String::compose("(%1,%2,%3)", entity.m_location.m_pos.x(), entity.m_location.m_pos.y(), entity.m_location.m_pos.z());
+        thought["object"] = String::compose("(%1,%2,%3)", pos.x(), pos.y(), pos.z());
         thought["predicate"] = "location";
         thought["subject"] = "origin";
         return std::vector<Atlas::Message::Element>{thought};

@@ -21,6 +21,7 @@
 #include "rules/Domain.h"
 #include "rules/Location.h"
 #include "ModeProperty.h"
+#include "rules/PhysicalProperties.h"
 
 #include <sigc++/connection.h>
 
@@ -128,9 +129,24 @@ class PhysicalDomain : public Domain
                     Remove
             };
             LocatedEntity& entity;
+            PositionProperty& positionProperty;
+            VelocityProperty& velocityProperty;
+            AngularVelocityProperty& angularVelocityProperty;
+            OrientationProperty& orientationProperty;
+            WFMath::AxisBox<3> bbox;
+            bool isSolid;
+
             std::shared_ptr<btCollisionShape> collisionShape;
             std::unique_ptr<btCollisionObject> collisionObject;
             sigc::connection propertyUpdatedConnection;
+
+
+            /**
+             * Location data matching the properties of the entity.
+             */
+            Location location;
+
+
             Location lastSentLocation;
             std::unique_ptr<PhysicalMotionState> motionState;
 
@@ -329,6 +345,14 @@ class PhysicalDomain : public Domain
 
         double m_visibilityCheckCountdown;
 
+        struct {
+            PositionProperty positionProperty;
+            VelocityProperty velocityProperty;
+            AngularVelocityProperty angularVelocityProperty;
+            OrientationProperty orientationProperty;
+        } mFakeProperties;
+
+
         BulletEntry mContainingEntityEntry;
 
         Mercator::Terrain* m_terrain;
@@ -377,7 +401,7 @@ class PhysicalDomain : public Domain
          * @param prop
          * @param bulletEntry
          */
-        void childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry);
+        void childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry& bulletEntry);
 
         /**
          * Listener method for changes to properties on the entity to which the property belongs.
@@ -389,7 +413,7 @@ class PhysicalDomain : public Domain
 
         float getMassForEntity(const LocatedEntity& entity) const;
 
-        void getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const;
+        void getCollisionFlagsForEntity(const BulletEntry& entry, short& collisionGroup, short& collisionMask) const;
 
         void sendMoveSight(BulletEntry& bulletEntry, bool posChange, bool velocityChange, bool orientationChange, bool angularChange, bool modeChanged);
 
@@ -397,21 +421,21 @@ class PhysicalDomain : public Domain
 
         void updateVisibilityOfDirtyEntities(OpVector& res);
 
-        void updateObservedEntry(BulletEntry* entry, OpVector& res, bool generateOps = true);
+        void updateObservedEntry(BulletEntry& entry, OpVector& res, bool generateOps = true);
 
-        void updateObserverEntry(BulletEntry* bulletEntry, OpVector& res);
+        void updateObserverEntry(BulletEntry& bulletEntry, OpVector& res);
 
-        void applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos, bool calculatePosition = true);
+        void applyNewPositionForEntity(BulletEntry& entry, const WFMath::Point<3>& pos, bool calculatePosition = true);
 
         bool getTerrainHeight(float x, float y, float& height) const;
 
-        void updateTerrainMod(const LocatedEntity& entity, bool forceUpdate = false);
+        void updateTerrainMod(const BulletEntry& entry, bool forceUpdate = false);
 
         void processDirtyTerrainAreas();
 
         void applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel);
 
-        void calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry* entry, WFMath::Point<3>& pos);
+        void calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry& entry, WFMath::Point<3>& pos);
 
         /**
          * Called each tick to process any bodies that are moving in water.
@@ -430,14 +454,14 @@ class PhysicalDomain : public Domain
          * @param posTransform
          * @param transformedEntities
          */
-        void transformRestingEntities(BulletEntry* entry,
+        void transformRestingEntities(BulletEntry& entry,
                                       const WFMath::Vector<3>& posTransform,
                                       const WFMath::Quaternion& orientationChange,
                                       std::set<LocatedEntity*>& transformedEntities);
 
-        void plantOnEntity(BulletEntry* plantedEntry, BulletEntry* entryPlantedOn);
+        void plantOnEntity(BulletEntry& plantedEntry, BulletEntry* entryPlantedOn);
 
-        void applyTransformInternal(LocatedEntity& entity,
+        void applyTransformInternal(BulletEntry& entry,
                                     const WFMath::Quaternion& orientation,
                                     const WFMath::Point<3>& pos,
                                     const WFMath::Vector<3>& impulseVelocity,
@@ -457,7 +481,7 @@ class PhysicalDomain : public Domain
          * @param entity
          * @return
          */
-        float calculateVisibilitySphereRadius(const LocatedEntity& entity) const;
+        float calculateVisibilitySphereRadius(const BulletEntry& entry) const;
 };
 
 #endif /* PHYSICALDOMAIN_H_ */

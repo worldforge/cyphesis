@@ -26,6 +26,8 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/atlasconv.h>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 
 ModeProperty::ModeProperty()
@@ -45,6 +47,8 @@ void ModeProperty::apply(LocatedEntity& entity)
         }
     }
 
+    auto orientationProperty = entity.getPropertyClassFixed<OrientationProperty>();
+
     if (m_mode == Mode::Planted) {
         //See if there's a rotation we should apply
         const auto* plantedRotation = entity.getPropertyClass<QuaternionProperty>("planted_rotation");
@@ -52,7 +56,8 @@ void ModeProperty::apply(LocatedEntity& entity)
             //Check that the rotation is applied already, otherwise apply it.
             auto& activeRotationProp = entity.requirePropertyClass<QuaternionProperty>("active_rotation");
             if (activeRotationProp.data() != plantedRotation->data()) {
-                WFMath::Quaternion currentOrientation = entity.m_location.orientation();
+                //TODO: is this right? perhaps we should just bail out if there's no valid orientation?
+                WFMath::Quaternion currentOrientation = (orientationProperty && orientationProperty->data().isValid()) ? orientationProperty->data() : WFMath::Quaternion::IDENTITY();
 
                 if (activeRotationProp.data().isValid() && activeRotationProp.data() != WFMath::Quaternion::Identity()) {
                     WFMath::Quaternion rotation = activeRotationProp.data().inverse();
@@ -84,7 +89,8 @@ void ModeProperty::apply(LocatedEntity& entity)
     } else {
         auto* activeRotationProp = entity.modPropertyClass<QuaternionProperty>("active_rotation");
         if (activeRotationProp && activeRotationProp->data().isValid()) {
-            WFMath::Quaternion currentOrientation = entity.m_location.orientation();
+            //TODO: is this right? perhaps we should just bail out if there's no valid orientation?
+            WFMath::Quaternion currentOrientation = (orientationProperty && orientationProperty->data().isValid()) ? orientationProperty->data() : WFMath::Quaternion::IDENTITY();
 
             WFMath::Quaternion rotation = activeRotationProp->data().inverse();
             //normalize to avoid drift

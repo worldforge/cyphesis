@@ -150,8 +150,7 @@ void WorldRoutertest::test_addEntity()
 
     auto ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_parent = m_rootEntity;
-    ent2->m_location.m_pos = Point3D(0,0,0);
+    ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
 }
 
@@ -162,8 +161,7 @@ void WorldRoutertest::test_addEntity_tick()
 
     auto ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_parent = m_rootEntity;
-    ent2->m_location.m_pos = Point3D(0,0,0);
+    ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
 
     Tick tick;
@@ -180,8 +178,7 @@ void WorldRoutertest::test_addEntity_tick_get()
 
     auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_parent = m_rootEntity;
-    ent2->m_location.m_pos = Point3D(0,0,0);
+    ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
 
     Tick tick;
@@ -199,8 +196,7 @@ void WorldRoutertest::test_delEntity()
 
     auto  ent2 = new Entity(id, int_id);
     assert(ent2 != 0);
-    ent2->m_location.m_parent = m_rootEntity;
-    ent2->m_location.m_pos = Point3D(0,0,0);
+    ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
 
     test_world->delEntity(ent2);
@@ -247,8 +243,8 @@ template struct OpQueEntry<LocatedEntity>;
 // memory management works correctly.
 LocatedEntity::~LocatedEntity()
 {
-    if (m_location.m_parent) {
-        m_location.m_parent = nullptr;
+    if (m_parent) {
+        m_parent = nullptr;
     }
 }
 
@@ -284,70 +280,6 @@ long integerId(const std::string & id)
 static inline float sqr(float x)
 {
     return x * x;
-}
-
-#define STUB_squareDistance
-WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
-{
-    return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
-}
-
-static bool distanceFromAncestor(const Location & self,
-                                 const Location & other, Point3D & c)
-{
-    if (&self == &other) {
-        return true;
-    }
-
-    if (other.m_parent == nullptr) {
-        return false;
-    }
-
-    if (other.orientation().isValid()) {
-        c = c.toParentCoords(other.m_pos, other.orientation());
-    } else {
-        static const Quaternion identity(1, 0, 0, 0);
-        c = c.toParentCoords(other.m_pos, identity);
-    }
-
-    return distanceFromAncestor(self, other.m_parent->m_location, c);
-}
-
-static bool distanceToAncestor(const Location & self,
-                               const Location & other, Point3D & c)
-{
-    c.setToOrigin();
-    if (distanceFromAncestor(self, other, c)) {
-        return true;
-    } else if ((self.m_parent) &&
-               distanceToAncestor(self.m_parent->m_location, other, c)) {
-        if (self.orientation().isValid()) {
-            c = c.toLocalCoords(self.m_pos, self.orientation());
-        } else {
-            static const Quaternion identity(1, 0, 0, 0);
-            c = c.toLocalCoords(self.m_pos, identity);
-        }
-        return true;
-    }
-    log(ERROR, "Broken entity hierarchy doing distance calculation");
-    if (self.m_parent) {
-        std::cerr << "Self(" << self.m_parent->getId() << "," << self.m_parent->describeEntity() << ")"
-                  << std::endl << std::flush;
-    }
-    if (other.m_parent) {
-        std::cerr << "Other(" << other.m_parent->getId() << "," << other.m_parent->describeEntity() << ")"
-                  << std::endl << std::flush;
-    }
-
-    return false;
-}
-
-#define STUB_squareDistance
-boost::optional<WFMath::CoordType> squareDistance(const Location & self, const Location & other)
-{
-    Point3D dist;
-    distanceToAncestor(self, other, dist);
-    return sqrMag(dist);
 }
 
 #include "../stubs/rules/stubLocation.h"
@@ -420,8 +352,6 @@ Ref<Entity> EntityBuilder::newEntity(const std::string & id, long intId,
 {
     if (type == "thing") {
         auto e = new Entity(id, intId);
-      //  e->m_location.m_parent = &world.getDefaultLocation();
-        e->m_location.m_pos = Point3D(0,0,0);
         return e;
     }
     return 0;

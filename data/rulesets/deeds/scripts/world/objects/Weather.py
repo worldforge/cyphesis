@@ -9,7 +9,7 @@ from atlas import Oplist, Operation, Entity
 
 class Weather(server.Thing):
     def tick_operation(self, op):
-        world = self.location.parent
+        world = self.parent
         res = Oplist()
         optick = Operation("tick", to=self)
         res = res + optick

@@ -132,6 +132,7 @@ class PropertyCore : public OperationsListener {
     /// \brief Read the value of the property from an Atlas Message
     virtual void set(const Atlas::Message::Element & val) = 0;
     /// \brief Add the value as an attribute to an Atlas map
+    //TODO: remove this as it's not used
     virtual void add(const std::string & key, Atlas::Message::MapType & map) const;
     /// \brief Add the value as an attribute to an Atlas entity
     virtual void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const;

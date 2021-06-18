@@ -124,7 +124,7 @@
 
 #ifndef STUB_Awareness_addEntity
 //#define STUB_Awareness_addEntity
-  void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity, bool isDynamic)
+  void Awareness::addEntity(const MemEntity& observer, const MemEntity& entity, bool isDynamic)
   {
     
   }
@@ -132,7 +132,7 @@
 
 #ifndef STUB_Awareness_removeEntity
 //#define STUB_Awareness_removeEntity
-  void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& entity)
+  void Awareness::removeEntity(const MemEntity& observer, const MemEntity& entity)
   {
     
   }
@@ -140,7 +140,7 @@
 
 #ifndef STUB_Awareness_updateEntityMovement
 //#define STUB_Awareness_updateEntityMovement
-  void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEntity& entity)
+  void Awareness::updateEntityMovement(const MemEntity& observer, const MemEntity& entity)
   {
     
   }
@@ -196,7 +196,7 @@
 
 #ifndef STUB_Awareness_processEntityMovementChange
 //#define STUB_Awareness_processEntityMovementChange
-  void Awareness::processEntityMovementChange(EntityEntry& entry, const LocatedEntity& entity)
+  void Awareness::processEntityMovementChange(EntityEntry& entry, const MemEntity& entity)
   {
     
   }

@@ -7,13 +7,15 @@ add_library(rulesbase
         EntityLocation.cpp
         QuaternionProperty.cpp
         Vector3Property.cpp
+        Point3Property.cpp
         SimpleTypeStore.cpp
         SolidProperty.cpp
         Domain.cpp
         BBoxProperty.cpp
         ScaleProperty.cpp
         MemEntity.cpp
-        Modifier.cpp)
+        Modifier.cpp
+        PhysicalProperties.cpp)
 add_subdirectory(python)
 add_subdirectory(entityfilter)
 add_subdirectory(ai)

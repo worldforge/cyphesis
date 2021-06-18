@@ -37,6 +37,8 @@ class Vector3Property: public PropertyBase
 
         ~Vector3Property() override = default;
 
+        void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+
         int get(Atlas::Message::Element & val) const override;
 
         void set(const Atlas::Message::Element &) override;

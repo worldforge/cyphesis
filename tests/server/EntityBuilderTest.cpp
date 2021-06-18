@@ -57,6 +57,8 @@
 #include <cstdlib>
 
 #include <cassert>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -429,10 +431,10 @@ void LocatedEntity::merge(const MapType& ent)
 {
     switch (LocatedEntity_merge_action) {
         case SET_POS:
-            this->m_location.m_pos.setValid();
+            this->requirePropertyClassFixed<PositionProperty>().data().setValid();
             break;
         case SET_VELOCITY:
-            this->m_location.m_velocity.setValid();
+            this->requirePropertyClassFixed<VelocityProperty>().data().setValid();
             break;
         case DO_NOTHING:
         default:
@@ -532,52 +534,6 @@ TypeNode::PropertiesUpdate TypeNode::injectProperty(const std::string& name,
     return {};
 }
 
-template<>
-void Property<int>::set(const Atlas::Message::Element& e)
-{
-    if (e.isInt()) {
-        this->m_data = e.asInt();
-    }
-}
-
-template<>
-void Property<double>::set(const Atlas::Message::Element& e)
-{
-    if (e.isNum()) {
-        this->m_data = e.asNum();
-    }
-}
-
-template<>
-void Property<std::string>::set(const Atlas::Message::Element& e)
-{
-    if (e.isString()) {
-        this->m_data = e.String();
-    }
-}
-
-template<>
-void Property<Atlas::Message::ListType>::set(const Atlas::Message::Element& e)
-{
-    if (e.isList()) {
-        this->m_data = e.List();
-    }
-}
-
-template
-class Property<int>;
-
-template
-class Property<double>;
-
-template
-class Property<std::string>;
-
-template
-class Property<Atlas::Message::ListType>;
-
-
-
 #ifndef STUB_BaseWorld_getEntity
 #define STUB_BaseWorld_getEntity
 
@@ -625,3 +581,5 @@ Root atlasClass(const std::string& name, const std::string& parent)
 }
 
 sigc::signal<void> python_reload_scripts;
+#include "../stubs/rules/stubPhysicalProperties.h"
+#include "../stubs/common/stubProperty.h"

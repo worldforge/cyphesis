@@ -92,7 +92,7 @@ void checkSignal()
         Ref<Entity>  container = new Entity("2", 2);
 
         // Set the location of the entity being tested, as destroy requires it.
-        e.m_location.m_parent = container;
+        e.m_parent = container.get();
         // Make sure the container has a contains structure, as destroy
         // requires it.
         container->m_contains.reset(new LocatedEntitySet);
@@ -267,7 +267,7 @@ int main()
         Ref<Entity>  container = new Entity("2", 2);
 
         // Set the location of the entity being tested, as destroy requires it.
-        e.m_location.m_parent = container;
+        e.m_parent = container.get();
         // Make sure the container has a contains structure, as destroy
         // requires it.
         container->m_contains.reset(new LocatedEntitySet);

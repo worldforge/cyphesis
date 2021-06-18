@@ -35,14 +35,13 @@ class LocatedEntityTest : public LocatedEntity {
 
     void externalOperation(const Operation &, Link &) override;
     void operation(const Operation &, OpVector &) override;
-
-    void destroy() override;
 };
 
 class EntityExerciser {
   protected:
         std::unique_ptr<TypeNode> test_type;
-    Ref<LocatedEntity> m_ent;
+        Ref<LocatedEntity> m_parentEntity;
+        Ref<LocatedEntity> m_ent;
     std::set<int> attr_types;
   public:
     explicit EntityExerciser(Ref<LocatedEntity> e);

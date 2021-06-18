@@ -13,7 +13,7 @@ LocatedEntity::LocatedEntity(long intId)
 LocatedEntity::LocatedEntity(const std::string & id, long intId)
     : Router(id, intId)
     , m_seq(0)
-    , m_type(nullptr), m_flags(0), m_contains(nullptr)
+    , m_type(nullptr), m_flags(0), m_parent(nullptr), m_contains(nullptr)
 {
 
 }

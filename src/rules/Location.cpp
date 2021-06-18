@@ -34,7 +34,6 @@ using Atlas::Objects::Entity::Anonymous;
 static const bool debug_flag = false;
 
 Location::Location() :
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0)
@@ -43,7 +42,6 @@ Location::Location() :
 
 Location::Location(Ref<LocatedEntity> rf) :
         EntityLocation(std::move(rf)),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0)
@@ -52,7 +50,6 @@ Location::Location(Ref<LocatedEntity> rf) :
 
 Location::Location(Ref<LocatedEntity> rf, const Point3D& pos) :
         EntityLocation(std::move(rf), pos),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0)
@@ -63,7 +60,6 @@ Location::Location(Ref<LocatedEntity> rf,
                    const Point3D& pos,
                    Vector3D velocity) :
         EntityLocation(std::move(rf), pos),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0),
@@ -73,7 +69,6 @@ Location::Location(Ref<LocatedEntity> rf,
 
 Location::Location(LocatedEntity* rf) :
         EntityLocation(rf),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0)
@@ -82,7 +77,6 @@ Location::Location(LocatedEntity* rf) :
 
 Location::Location(LocatedEntity* rf, const Point3D& pos) :
         EntityLocation(rf, pos),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0)
@@ -91,7 +85,6 @@ Location::Location(LocatedEntity* rf, const Point3D& pos) :
 
 Location::Location(EntityLocation entityLocation) :
         EntityLocation(std::move(entityLocation)),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0)
@@ -102,7 +95,6 @@ Location::Location(LocatedEntity* rf,
                    const Point3D& pos,
                    Vector3D velocity) :
         EntityLocation(rf, pos),
-        m_solid(true),
         m_timeStamp(0),
         m_radius(0),
         m_squareRadius(0),
@@ -256,50 +248,51 @@ void Location::modifyBBox()
 static const Location* distanceFromAncestor(const Location& self,
                                             const Location& other, Point3D& c)
 {
-    if (&self == &other) {
-        return &self;
-    }
-
-    if (other.m_parent == nullptr) {
-        return nullptr;
-    }
-
-    if (!other.m_pos.isValid()) {
-        return nullptr;
-    }
-
-    if (other.orientation().isValid()) {
-        c = c.toParentCoords(other.m_pos, other.orientation());
-    } else {
-        c = c.toParentCoords(other.m_pos, Quaternion::IDENTITY());
-    }
-
-    return distanceFromAncestor(self, other.m_parent->m_location, c);
+    return nullptr;
+//    if (&self == &other) {
+//        return &self;
+//    }
+//
+//    if (other.m_parent == nullptr) {
+//        return nullptr;
+//    }
+//
+//    if (!other.m_pos.isValid()) {
+//        return nullptr;
+//    }
+//
+//    if (other.orientation().isValid()) {
+//        c = c.toParentCoords(other.m_pos, other.orientation());
+//    } else {
+//        c = c.toParentCoords(other.m_pos, Quaternion::IDENTITY());
+//    }
+//
+//    return distanceFromAncestor(self, other.m_parent->m_location, c);
 }
 
 static const Location* distanceToAncestor(const Location& self,
                                           const Location& other, Point3D& c)
 {
-    c.setToOrigin();
-    const Location* ancestor = distanceFromAncestor(self, other, c);
-    if (ancestor) {
-        return ancestor;
-    } else if ((self.m_parent != nullptr)) {
-        if (!self.m_pos.isValid()) {
-            return nullptr;
-        }
-        ancestor = distanceToAncestor(self.m_parent->m_location, other, c);
-        if (ancestor) {
-            if (self.orientation().isValid()) {
-                c = c.toLocalCoords(self.m_pos, self.orientation());
-            } else {
-                c = c.toLocalCoords(self.m_pos, Quaternion::IDENTITY());
-            }
-            return ancestor;
-        }
-    }
-
-    c.setValid(false); //Mark distance as invalid since there's no connection between locations.
+//    c.setToOrigin();
+//    const Location* ancestor = distanceFromAncestor(self, other, c);
+//    if (ancestor) {
+//        return ancestor;
+//    } else if ((self.m_parent != nullptr)) {
+//        if (!self.m_pos.isValid()) {
+//            return nullptr;
+//        }
+//        ancestor = distanceToAncestor(self.m_parent->m_location, other, c);
+//        if (ancestor) {
+//            if (self.orientation().isValid()) {
+//                c = c.toLocalCoords(self.m_pos, self.orientation());
+//            } else {
+//                c = c.toLocalCoords(self.m_pos, Quaternion::IDENTITY());
+//            }
+//            return ancestor;
+//        }
+//    }
+//
+//    c.setValid(false); //Mark distance as invalid since there's no connection between locations.
 
     return nullptr;
 }

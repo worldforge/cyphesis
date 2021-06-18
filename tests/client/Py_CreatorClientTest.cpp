@@ -117,7 +117,6 @@ int main()
         run_python_string("assert c == server.testclient");
 
         run_python_string("assert type(c.map) == ai.MemMap");
-        run_python_string("assert type(c.entity.location) == rules.Location");
         expect_python_error("c.foo", PyExc_AttributeError);
         expect_python_error("c.foo_operation", PyExc_AttributeError);
         run_python_string("c.foo = 1");

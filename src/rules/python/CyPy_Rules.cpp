@@ -16,11 +16,14 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rules/PhysicalProperties.h>
 #include "CyPy_Rules.h"
 #include "CyPy_Props.h"
 #include "CyPy_Location.h"
 #include "CyPy_EntityLocation.h"
 #include "CyPy_MemEntity.h"
+#include "CyPy_RootEntity.h"
+#include <wfmath/atlasconv.h>
 
 CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
 {
@@ -30,6 +33,7 @@ CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
     CyPy_MemEntity::init_type();
 
     add_varargs_method("isLocation", &CyPy_Rules::is_location, "");
+    add_varargs_method("extract_location", &CyPy_Rules::extract_location, "Extracts all location data from the entity into the root entity message.");
 
     initialize("Rules");
 
@@ -45,6 +49,31 @@ Py::Object CyPy_Rules::is_location(const Py::Tuple& args)
 {
     args.verify_length(1, 1);
     return Py::Boolean(CyPy_Location::check(args[0]));
+}
+
+Py::Object CyPy_Rules::extract_location(const Py::Tuple& args)
+{
+    args.verify_length(2);
+    auto& entity = verifyObject<CyPy_LocatedEntity>(args[0]);
+    auto& rootEntity = verifyObject<CyPy_RootEntity>(args[1]);
+
+    if (entity->m_parent != nullptr) {
+        rootEntity->setLoc(entity->m_parent->getId());
+    }
+    if (auto prop = entity->getPropertyClassFixed<PositionProperty>()) {
+        ::addToEntity(prop->data(), rootEntity->modifyPos());
+    }
+    if (auto prop = entity->getPropertyClassFixed<VelocityProperty>()) {
+        ::addToEntity(prop->data(), rootEntity->modifyVelocity());
+    }
+    if (auto prop = entity->getPropertyClassFixed<OrientationProperty>()) {
+        rootEntity->setAttr("orientation", prop->data().toAtlas());
+    }
+    if (auto prop = entity->getPropertyClassFixed<AngularVelocityProperty>()) {
+        rootEntity->setAttr("angular", prop->data().toAtlas());
+    }
+
+    return args[1];
 }
 
 std::string CyPy_Rules::init()

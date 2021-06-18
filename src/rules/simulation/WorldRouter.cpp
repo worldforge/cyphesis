@@ -97,7 +97,7 @@ void WorldRouter::addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEnti
 
     ent->changeContainer(parent);
 
-    debug_print("Entity loc " << ent->m_location)
+    //debug_print("Entity loc " << ent->m_location)
 
     if (ent->m_contains != nullptr) {
         //Iterate through copy, to handle entities being deleted while iterating.

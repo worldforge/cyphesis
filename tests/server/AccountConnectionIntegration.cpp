@@ -44,6 +44,8 @@
 
 #include <cassert>
 #include <server/Persistence.h>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -66,8 +68,8 @@ class SpawningTestWorld : public TestWorld {
     SpawningTestWorld(Ref<Entity> gw) : TestWorld(gw) { }
 
     void addEntity(const Ref<LocatedEntity>& ent, const Ref<LocatedEntity>& parent) override{
-        ent->m_location.m_parent = parent;
-        ent->m_location.m_pos = WFMath::Point<3>(0,0,0);
+        ent->m_parent = parent.get();
+        ent->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(0,0,0);
         m_eobjects[ent->getIntId()] = ent;
     }
 
@@ -331,6 +333,7 @@ void Link::send(const Operation & op) const
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/common/stubPropertyManager.h"
 #include "../stubs/common/stubid.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
 
 #include <cstdio>
 

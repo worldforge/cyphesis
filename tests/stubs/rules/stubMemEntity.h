@@ -7,6 +7,8 @@
 #include "rules/MemEntity.h"
 #include "stubMemEntity_custom.h"
 
+
+
 #ifndef STUB_MemEntity_MemEntity
 //#define STUB_MemEntity_MemEntity
    MemEntity::MemEntity(const std::string& id, long intId)

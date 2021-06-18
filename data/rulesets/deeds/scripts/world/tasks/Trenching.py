@@ -52,7 +52,7 @@ from physics import *
 #
 #         res = Oplist()
 #
-#         chunk_loc = Location(self.character.location.parent)
+#         chunk_loc = Location(self.character.parent)
 #         chunk_loc.velocity = Vector3D()
 #
 #         chunk_loc.pos = self.pos

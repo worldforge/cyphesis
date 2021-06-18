@@ -236,13 +236,13 @@ Py::Object CyPy_Entity::find_in_contains(const Py::Tuple& args)
 
 Py::Object CyPy_Entity::get_parent_domain()
 {
-    auto parent = m_value->m_location.m_parent;
+    auto parent = m_value->m_parent;
     while (parent) {
         auto domain = parent->getDomain();
         if (domain) {
             return CyPy_Domain::wrap(parent);
         }
-        parent = parent->m_location.m_parent;
+        parent = parent->m_parent;
     }
     return Py::None();
 }

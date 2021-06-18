@@ -107,7 +107,7 @@ from physics import *
 #
 #         self.progress = 0
 #
-#         chunk_loc = Location(self.character.location.parent)
+#         chunk_loc = Location(self.character.parent)
 #         chunk_loc.pos = self.pos
 #         lumberh = 0  # lumberheight
 #         lumberl = 0  # lumberlength

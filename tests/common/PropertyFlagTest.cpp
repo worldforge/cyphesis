@@ -107,6 +107,8 @@ using Atlas::Objects::Entity::RootEntity;
 #include "../stubs/common/stubLink.h"
 #include "../stubs/modules/stubWeakEntityRef.h"
 #include "../stubs/rules/stubLocation.h"
+#include "../stubs/rules/stubAtlasProperties.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 #include "../stubs/common/stubPropertyManager.h"
 #include "../stubs/common/stubTypeNode.h"

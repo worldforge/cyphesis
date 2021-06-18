@@ -40,6 +40,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;
@@ -99,9 +101,8 @@ void ServerAccounttest::setup()
     {
         auto ne = ServerAccounttest::get_TestWorld_addNewEntity_ret_value();
         if (ne) {
-            ne->m_location.m_parent = gw;
-            ne->m_location.m_pos = Point3D(0,0,0);
-            assert(ne->m_location.isValid());
+            ne->m_parent = gw.get();
+            ne->requirePropertyClassFixed<PositionProperty>().data() = Point3D(0,0,0);
         }
         return ne;
     };
@@ -170,6 +171,8 @@ int main()
 #include "../stubs/rules/stubLocatedEntity.h"
 #include "../stubs/common/stubLink.h"
 #include "../stubs/rules/simulation/stubBaseWorld.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
+#include "../stubs/common/stubProperty.h"
 
 #define STUB_Router_error
 void Router::error(const Operation & op,

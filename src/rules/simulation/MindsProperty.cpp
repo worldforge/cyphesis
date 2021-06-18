@@ -21,7 +21,7 @@
 #include "TransientProperty.h"
 #include "UsagesProperty.h"
 #include "rules/simulation/BaseWorld.h"
-
+#include "rules/BBoxProperty.h"
 
 #include "common/Router.h"
 #include "common/debug.h"
@@ -39,6 +39,9 @@
 #include <wfmath/atlasconv.h>
 
 #include <iostream>
+#include <rules/ScaleProperty.h>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 #include "rules/entityfilter/Providers.h"
 #include "common/Inheritance.h"
 
@@ -353,11 +356,11 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
         }
     }
 
-    if (other->m_location.m_parent) {
-        auto containConstraint = other->m_location.m_parent->getPropertyClass<FilterProperty>("contain_constraint");
+    if (other->m_parent) {
+        auto containConstraint = other->m_parent->getPropertyClass<FilterProperty>("contain_constraint");
         if (containConstraint && containConstraint->getData()) {
             std::vector<std::string> errorMessages;
-            EntityFilter::QueryContext queryContext{EntityFilter::QueryEntityLocation{*other}, &ent, other->m_location.m_parent.get()};
+            EntityFilter::QueryContext queryContext{EntityFilter::QueryEntityLocation{*other}, &ent, other->m_parent};
             queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
             queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
             queryContext.report_error_fn = [&errorMessages](const std::string& message) { errorMessages.emplace_back(message); };
@@ -373,7 +376,7 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
     if (ent.canReach({other, {}})) {
         //Now also check that we can reach wherever we're trying to move the entity.
 
-        auto targetLoc = other->m_location.m_parent;
+        Ref<LocatedEntity> targetLoc = other->m_parent;
 
         //Only allow some things to be set when moving another entity.
         RootEntity newArgs1;
@@ -409,8 +412,10 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
             newArgs1->setPos(arg->getPos());
             targetPos.fromAtlas(arg->getPosAsList());
         }
+        auto bbox = ScaleProperty::scaledBbox(*other);
+        auto radius = bbox.isValid() ? bbox.boundingSphere().radius() : 0;
         //Check that we can reach the edge of the entity if it's placed in its new location.
-        if (!ent.canReach({targetLoc, targetPos}, other->m_location.radius())) {
+        if (!ent.canReach({targetLoc, targetPos}, radius)) {
             ent.clientError(op, "Target is too far away.", res, op->getFrom());
             return;
         }
@@ -424,7 +429,7 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
         op->setArgs1(newArgs1);
         op->setFrom(ent.getId());
         //Send the op to the current location of the entity being moved
-        op->setTo(other->m_location.m_parent->getId());
+        op->setTo(other->m_parent->getId());
 
         res.push_back(op);
 
@@ -479,14 +484,15 @@ void MindsProperty::moveOurselves(LocatedEntity& ent, const Operation& op, OpVec
 
     //If there's a position set, we'll use that to determine the propel value. However, we'll also check if there also was a propel value set,
     //since the magnitude of that indicates the speed to use (otherwise we'll use full speed).
-    if (new_pos.isValid()) {
+    auto pos = PositionProperty::extractPosition(ent);
+    if (new_pos.isValid() && pos.isValid()) {
         if (new_propel.isValid()) {
             auto mag = new_propel.mag();
-            new_propel = new_pos - ent.m_location.pos();
+            new_propel = new_pos - pos;
             new_propel.normalize();
             new_propel *= mag;
         } else {
-            new_propel = new_pos - ent.m_location.pos();
+            new_propel = new_pos - pos;
             new_propel.normalize();
         }
     }
@@ -603,8 +609,8 @@ void MindsProperty::mindLookOperation(LocatedEntity& ent, const Operation& op, O
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         //If nothing is specified, send to parent, if available.
-        if (ent.m_location.m_parent) {
-            op->setTo(ent.m_location.m_parent->getId());
+        if (ent.m_parent) {
+            op->setTo(ent.m_parent->getId());
         } else {
             return;
         }

@@ -19,6 +19,8 @@
 #ifndef CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H
 #define CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H
 
+#include <rules/PhysicalProperties.h>
+#include <rules/BBoxProperty.h>
 #include "CyPy_LocatedEntity.h"
 #include "CyPy_Point3D.h"
 #include "CyPy_Operation.h"
@@ -30,17 +32,17 @@
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, const Py::Tuple& args, const Py::Dict& kwds)
-    : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>::WrapperBase(self, args, kwds)
+        : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>::WrapperBase(self, args, kwds)
 {
 }
 
 template<typename TValue, typename TPythonClass>
 CyPy_LocatedEntityBase<TValue, TPythonClass>::CyPy_LocatedEntityBase(Py::PythonClassInstanceWeak* self, TValue value)
-    : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>::WrapperBase(self, std::move(value))
+        : WrapperBase<TValue, TPythonClass, Py::PythonClassInstanceWeak>::WrapperBase(self, std::move(value))
 {
-        if (!this->m_value) {
-            log(WARNING, "Created a Python Entity wrapper with null entity, this should not happen.");
-        }
+    if (!this->m_value) {
+        log(WARNING, "Created a Python Entity wrapper with null entity, this should not happen.");
+    }
 }
 
 
@@ -56,6 +58,14 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
         return Py::String(this->m_value->getId());
     }
 
+    if (nameStr == "parent") {
+        if (this->m_value->m_parent) {
+            return TPythonClass::wrap(this->m_value->m_parent);
+        } else {
+            return Py::None();
+        }
+    }
+
     if (nameStr == "props") {
         return CyPy_Props::wrap(this->m_value);
     }
@@ -68,8 +78,29 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
     }
 
 
+    //TODO: Perhaps move only to MemEntity? Or remove altogether?
     if (nameStr == "location") {
-        return CyPy_Location::wrap(this->m_value->m_location);
+        Location location;
+        if (this->m_value->m_parent != nullptr) {
+            location.m_parent = this->m_value->m_parent;
+        }
+        if (auto prop = this->m_value->template getPropertyClassFixed<PositionProperty>()) {
+            location.m_pos = prop->data();
+        }
+        if (auto prop = this->m_value->template getPropertyClassFixed<VelocityProperty>()) {
+            location.m_velocity = prop->data();
+        }
+        if (auto prop = this->m_value->template getPropertyClassFixed<OrientationProperty>()) {
+            location.m_orientation = prop->data();
+        }
+        if (auto prop = this->m_value->template getPropertyClassFixed<AngularVelocityProperty>()) {
+            location.m_angularVelocity = prop->data();
+        }
+        if (auto prop = this->m_value->template getPropertyClassFixed<BBoxProperty>()) {
+            location.setBBox(prop->data());
+        }
+
+        return CyPy_Location::wrap(location);
     }
 
     if (nameStr == "contains") {
@@ -79,7 +110,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
                 list.append(CyPy_LocatedEntity::wrap(child));
             }
         }
-        return list;
+        return std::move(list);
     }
 
     if (nameStr == "visible") {

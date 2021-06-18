@@ -242,7 +242,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string& type)
     ownEntity->merge(arg->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to
     // set it to.
-    ownEntity->m_location.readFromEntity(arg);
+//    ownEntity->m_location.readFromEntity(arg);
     OpVector res; //Ignored
     obj->setOwnEntity(res, std::move(ownEntity));
 

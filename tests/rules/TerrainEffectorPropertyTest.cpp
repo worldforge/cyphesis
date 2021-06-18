@@ -60,7 +60,7 @@ void TerrainEffectorPropertytest::setup()
     m_property = new TerrainEffectorProperty;
     m_world = new Entity("0", 0);
     m_entity = new Entity("1", 1);
-    m_entity->m_location.m_parent = m_world;
+    m_entity->m_parent = m_world.get();
 }
 
 void TerrainEffectorPropertytest::teardown()
@@ -70,8 +70,8 @@ void TerrainEffectorPropertytest::teardown()
 
 void TerrainEffectorPropertytest::test_none_found()
 {
-    ASSERT_FALSE(m_world->m_location.m_parent);
-    ASSERT_EQUAL(m_entity->m_location.m_parent.get(), m_world.get());
+    ASSERT_FALSE(m_world->m_parent);
+    ASSERT_EQUAL(m_entity->m_parent, m_world.get());
 
     const TerrainProperty * res = m_property->getTerrain(*m_entity);
 
@@ -80,8 +80,8 @@ void TerrainEffectorPropertytest::test_none_found()
 
 void TerrainEffectorPropertytest::test_not_terrain()
 {
-    ASSERT_FALSE(m_world->m_location.m_parent);
-    ASSERT_EQUAL(m_entity->m_location.m_parent.get(), m_world.get());
+    ASSERT_FALSE(m_world->m_parent);
+    ASSERT_EQUAL(m_entity->m_parent, m_world.get());
 
     m_world->setProperty("terrain",
                          std::unique_ptr<PropertyBase>(new Property<Atlas::Message::MapType>));
@@ -93,8 +93,8 @@ void TerrainEffectorPropertytest::test_not_terrain()
 
 void TerrainEffectorPropertytest::test_found()
 {
-    ASSERT_FALSE(m_world->m_location.m_parent);
-    ASSERT_EQUAL(m_entity->m_location.m_parent.get(), m_world.get());
+    ASSERT_FALSE(m_world->m_parent);
+    ASSERT_EQUAL(m_entity->m_parent, m_world.get());
 
     m_world->setProperty("terrain",
                          std::unique_ptr<PropertyBase>(new TerrainProperty));

@@ -295,6 +295,7 @@ int main()
 #include "../../stubs/rules/stubSimpleTypeStore.h"
 #include "../../stubs/common/stublog.h"
 #include "../../stubs/common/stubid.h"
+#include "../../stubs/rules/stubPhysicalProperties.h"
 
 
 static inline WFMath::CoordType sqr(WFMath::CoordType x)

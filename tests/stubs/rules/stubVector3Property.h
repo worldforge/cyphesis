@@ -16,6 +16,14 @@
   }
 #endif //STUB_Vector3Property_Vector3Property
 
+#ifndef STUB_Vector3Property_add
+//#define STUB_Vector3Property_add
+  void Vector3Property::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+  {
+    
+  }
+#endif //STUB_Vector3Property_add
+
 #ifndef STUB_Vector3Property_get
 //#define STUB_Vector3Property_get
   int Vector3Property::get(Atlas::Message::Element & val) const

@@ -55,7 +55,8 @@ StackableDomain::StackableDomain(LocatedEntity& entity) :
 
 void StackableDomain::addEntity(LocatedEntity& entity)
 {
-    entity.m_location.resetTransformAndMovement();
+    //TODO: make these kind of reset actions on the domain being moved out of instead. Like PhysicalDomain.
+    //entity.m_location.resetTransformAndMovement();
     entity.removeFlags(entity_clean);
 
     if (m_entity.getType() == entity.getType() && m_entity.hasFlags(entity_stacked)) {

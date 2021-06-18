@@ -32,9 +32,14 @@
 
 #include "common/Monitors.h"
 #include "common/Variable.h"
+#include "ModeDataProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include <wfmath/atlasconv.h>
 
 #include <algorithm>
 
@@ -130,7 +135,6 @@ void Entity::addToMessage(MapType& omap) const
 
     omap["stamp"] = (double) m_seq;
     omap["parent"] = m_type;
-    m_location.addToMessage(omap);
     omap["objtype"] = "obj";
 }
 
@@ -148,7 +152,6 @@ void Entity::addToEntity(const RootEntity& ent) const
     if (m_type != nullptr) {
         ent->setParent(m_type->name());
     }
-    m_location.addToEntity(ent);
     ent->setObjtype("obj");
 }
 
@@ -189,8 +192,22 @@ void Entity::destroy()
                 Atlas::Objects::Operation::Move moveOp;
                 RootEntity ent;
                 ent->setId(entity->getId());
-                ent->setAttr("mode_data", {});
-                m_location.addToEntity(ent);
+                ent->setAttr(ModeDataProperty::property_name, {});
+                if (m_parent) {
+                    ent->setLoc(m_parent->getId());
+                }
+                auto posProp = getPropertyClassFixed<PositionProperty>();
+                if (posProp && posProp->data().isValid()) {
+                    ent->setPos({posProp->data().x(), posProp->data().y(), posProp->data().z()});
+                }
+                auto orientProp = getPropertyClassFixed<OrientationProperty>();
+                if (orientProp && orientProp->data().isValid()) {
+                    orientProp->add(OrientationProperty::property_name, ent);
+                }
+                auto velocityProp = getPropertyClassFixed<VelocityProperty>();
+                if (velocityProp && velocityProp->data().isValid()) {
+                    velocityProp->add(VelocityProperty::property_name, ent);
+                }
                 moveOp->setArgs1(std::move(ent));
                 OpVector res;
 
@@ -491,8 +508,8 @@ Ref<LocatedEntity> Entity::createNewEntity(const RootEntity& ent)
     }
 
     //If there's no location set we'll use the same one as the current entity.
-    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_location.m_parent)) {
-        ent->setLoc(m_location.m_parent->getId());
+    if (!ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG) && (m_parent)) {
+        ent->setLoc(m_parent->getId());
     }
     debug_print(getId() << " creating " << type)
 

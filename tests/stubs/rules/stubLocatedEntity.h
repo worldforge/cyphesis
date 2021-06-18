@@ -28,7 +28,7 @@
 //#define STUB_LocatedEntity_LocatedEntity
    LocatedEntity::LocatedEntity(long intId)
     : Router(intId)
-    , m_type(nullptr)
+    , m_type(nullptr),m_parent(nullptr)
   {
     
   }
@@ -38,7 +38,7 @@
 //#define STUB_LocatedEntity_LocatedEntity
    LocatedEntity::LocatedEntity(const std::string& id, long intId)
     : Router(id, intId)
-    , m_type(nullptr)
+    , m_type(nullptr),m_parent(nullptr)
   {
     
   }

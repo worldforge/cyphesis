@@ -26,18 +26,18 @@ from physics import *
 #             self.irrelevant()
 #             return
 #
-#         if not self.target().location.parent:
+#         if not self.target().parent:
 #             self.irrelevant()
 #             return
 #
 #         if square_distance(self.character.location, self.target().location) > self.target().location.bbox.square_bounding_radius():
 #             return self.next_tick(1)
 #
-#         target_location = Location(self.target().location.parent, self.target().location.pos)
+#         target_location = Location(self.target().parent, self.target().location.pos)
 #         target_location.velocity = Vector3D(0, -0.5, 0)
 #         target_entity_moving = Entity(self.target().id, location=target_location)
 #
-#         target_location = Location(self.target().location.parent, Point3D(self.target().location.pos.x, self.target().location.pos.y - 0.1, self.target().location.pos.z))
+#         target_location = Location(self.target().parent, Point3D(self.target().location.pos.x, self.target().location.pos.y - 0.1, self.target().location.pos.z))
 #         target_location.velocity = Vector3D(0, 0, 0)
 #         target_entity = Entity(self.target().id, location=target_location)
 #

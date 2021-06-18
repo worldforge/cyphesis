@@ -16,3 +16,13 @@ ContainsProperty::ContainsProperty(LocatedEntitySet & data)
 
 }
 #endif //STUB_ContainsProperty_ContainsProperty
+
+
+#ifndef STUB_LocationProperty_LocationProperty
+#define STUB_LocationProperty_LocationProperty
+LocationProperty::LocationProperty(const LocatedEntity& entity)
+        : m_data(entity)
+{
+
+}
+#endif //STUB_LocationProperty_LocationProperty

@@ -13,8 +13,8 @@ void Entity::setType(const TypeNode* t)
 #define STUB_Entity_destroy
 void Entity::destroy()
 {
-    if (m_location.m_parent) {
-        m_location.m_parent->removeChild(*this);
+    if (m_parent) {
+        m_parent->removeChild(*this);
     }
     if (m_contains) {
         m_contains->clear();

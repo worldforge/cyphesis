@@ -21,6 +21,40 @@
 
 #include "rules/LocatedEntity.h"
 
+struct TransformData
+{
+    WFMath::Point<3> pos;
+    WFMath::Quaternion orientation;
+
+    bool operator!=(const TransformData& rhs) const
+    {
+        return pos != rhs.pos
+               || orientation != rhs.orientation;
+    }
+};
+
+struct MovementData
+{
+    struct
+    {
+        WFMath::Vector<3> data;
+        double timestamp = 0;
+    } velocity;
+    struct
+    {
+        WFMath::Vector<3> data;
+        double timestamp = 0;
+    } angular;
+
+    bool operator!=(const MovementData& rhs) const
+    {
+        return velocity.timestamp != rhs.velocity.timestamp
+               || velocity.data != rhs.velocity.data
+               || angular.data != rhs.angular.data
+               || angular.timestamp != rhs.angular.timestamp;
+    }
+};
+
 /// \brief This class is used to represent entities inside MemMap used
 /// by the mind of an AI.
 ///
@@ -62,6 +96,11 @@ class MemEntity : public LocatedEntity
         void operation(const Operation&, OpVector&) override;
 
         void destroy() override;
+
+        TransformData m_transform;
+        MovementData m_movement;
+        WFMath::AxisBox<3> m_bbox;
+        //Location m_location;
 
 };
 

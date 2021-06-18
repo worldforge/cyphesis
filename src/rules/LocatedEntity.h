@@ -205,8 +205,9 @@ class LocatedEntity : public Router, public ReferenceCounted
 
         /// Scripts that are associated with this entity.
         std::vector<std::unique_ptr<Script>> m_scripts;
-        /// Full details of location
-        Location m_location;
+        // Parent entity. This is a pointer instead of a ref to avoid circular references. It's expected that the owner entity should synchronize both addition of a child and
+        // setting the parent.
+        LocatedEntity* m_parent;
         /// List of entities which use this as ref
         std::unique_ptr<LocatedEntitySet> m_contains;
         // A representation of this instance used by the scripting system. This is opaque to this class.
@@ -339,7 +340,7 @@ class LocatedEntity : public Router, public ReferenceCounted
 
         virtual void onUpdated();
 
-        virtual void destroy() = 0;
+        virtual void destroy();
 
         virtual Domain* getDomain();
 

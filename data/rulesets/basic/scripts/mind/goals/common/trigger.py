@@ -22,7 +22,7 @@ class Chase(DynamicGoal):
         if other.id == me.entity.id:
             return
         # target=op[0].location.copy()
-        if other.location.parent.id != me.entity.location.parent.id:
+        if other.parent.id != me.entity.parent.id:
             return
         if hasattr(other, "type") and other.type[0] not in self.kinds:
             return
@@ -33,7 +33,7 @@ class Chase(DynamicGoal):
         # CHeat, random chance that it ignores movement
         if uniform(0, 30 / distance) < 1:
             return
-        target = Location(me.entity.location.parent)
+        target = Location(me.entity.parent)
         velocity = destination - me.entity.location.pos
         if velocity.mag() == 0:
             return

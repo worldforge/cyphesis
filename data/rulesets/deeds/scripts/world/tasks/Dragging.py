@@ -30,7 +30,7 @@ from physics import *
 #             self.irrelevant()
 #             return
 #
-#         if not self.target().location.parent:
+#         if not self.target().parent:
 #             # Make sure the user dosen't use dragging on the world entity..
 #             self.irrelevant()
 #             return
@@ -53,7 +53,7 @@ from physics import *
 #
 #         res = Oplist()
 #
-#         chunk_loc = Location(self.character.location.parent)
+#         chunk_loc = Location(self.character.parent)
 #         chunk_loc.velocity = Vector3D()
 #
 #         chunk_loc.pos = self.pos

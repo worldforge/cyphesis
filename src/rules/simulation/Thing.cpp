@@ -18,7 +18,6 @@
 
 #include "Thing.h"
 
-#include "rules/simulation/PropelProperty.h"
 #include "rules/Domain.h"
 
 #include "rules/simulation/BaseWorld.h"
@@ -34,6 +33,7 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <rules/PhysicalProperties.h>
 
 using Atlas::Objects::smart_dynamic_cast;
 
@@ -67,11 +67,11 @@ Thing::Thing(long intId) :
 
 void Thing::DeleteOperation(const Operation& op, OpVector& res)
 {
-    if (m_location.m_parent == nullptr) {
+    if (m_parent == nullptr) {
         //TODO: is this really incorrect? Why shouldn't we be allowed to delete entities that have no parent?
         log(ERROR, String::compose("Deleting %1(%2) when it is not "
                                    "in the world.", getType(), getId()));
-        assert(m_location.m_parent != nullptr);
+        assert(m_parent != nullptr);
         return;
     }
 
@@ -119,10 +119,10 @@ void Thing::MoveOperation(const Operation& op, OpVector& res)
 {
     debug_print("Thing::move_operation")
 
-//    if (m_location.m_parent == nullptr) {
+//    if (m_parent == nullptr) {
 //        log(ERROR, String::compose("Moving %1(%2) when it is not in the world.",
 //                                   getType(), getId()));
-//        assert(m_location.m_parent != nullptr);
+//        assert(m_parent != nullptr);
 //        return;
 //    }
 
@@ -160,14 +160,14 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
 {
     // new_loc should only be non-null if the LOC specified is
     // different from the current LOC
-    assert(m_location.m_parent != new_loc);
+    assert(m_parent != new_loc.get());
 //            // Check for pickup, ie if the new LOC is the actor, and the
 //            // previous LOC is the actor's LOC.
 //            if (new_loc->getId() == op->getFrom() &&
-//                m_location.m_parent == new_loc->m_location.m_parent) {
+//                m_parent == new_loc->m_parent) {
 //
 //                //Send Pickup to those entities which are currently observing
-//                if (m_location.m_parent) {
+//                if (m_parent) {
 //
 //                    Pickup p;
 //                    p->setFrom(op->getFrom());
@@ -175,21 +175,21 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
 //
 //                    Sight s;
 //                    s->setArgs1(p);
-//                    m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
+//                    m_parent->broadcast(s, res, Visibility::PUBLIC);
 //                }
 //
 //            }
 //            // Check for drop, ie if the old LOC is the actor, and the
 //            // new LOC is the actor's LOC.
-//            if (m_location.m_parent->getId() == op->getFrom() &&
-//                new_loc == m_location.m_parent->m_location.m_parent) {
+//            if (m_parent->getId() == op->getFrom() &&
+//                new_loc == m_parent->m_parent) {
 //
 //                Drop d;
 //                d->setFrom(op->getFrom());
 //                d->setTo(getId());
 //                Sight s;
 //                s->setArgs1(d);
-//                m_location.m_parent->broadcast(s, res, Visibility::PUBLIC);
+//                m_parent->broadcast(s, res, Visibility::PUBLIC);
 //            }
 
     // Update loc
@@ -203,17 +203,19 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
         std::list<LocatedEntity*> observedEntities;
         existingDomain->getVisibleEntitiesFor(*this, observedEntities);
         previousObserved.insert(observedEntities.begin(), observedEntities.end());
-        previousObserved.insert(m_location.m_parent.get());
+        previousObserved.insert(m_parent);
         previousObserved.erase(this); // Remove ourselves.
     }
 
+    //TODO: move this into the domain instead
     if (newOrientation.isValid()) {
-        m_location.m_orientation = newOrientation;
+        requirePropertyClassFixed<OrientationProperty>().data() = newOrientation;
     }
     if (newPos.isValid()) {
-        m_location.m_pos = newPos;
+        requirePropertyClassFixed<PositionProperty>().data() = newPos;
     }
 
+    //TODO: supply all required location data when changing location
     changeContainer(new_loc);
     processAppearDisappear(std::move(previousObserving), res);
 
@@ -232,7 +234,7 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
     auto newDomain = new_loc->getDomain();
     if (!previousObserved.empty()) {
         //Get all entities that were previously observed, but aren't any more, and send Disappearence op for them.
-        previousObserved.erase(m_location.m_parent.get()); //Remove the new container; we want to be able to observe it.
+        previousObserved.erase(m_parent); //Remove the new container; we want to be able to observe it.
         if (newDomain) {
             //If there's a new domain, remove all entities that we still can observe.
             std::list<LocatedEntity*> observedEntities;
@@ -325,8 +327,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     for (const auto& entry : m_properties) {
         auto& prop = entry.second.property;
         if (prop && prop->hasFlags(prop_flag_unsent)) {
-            debug(std::cout << "UPDATE:  " << prop_flag_unsent << " " << entry.first
-                            << std::endl << std::flush;);
+            debug_print("UPDATE:  " << prop_flag_unsent << " " << entry.first);
             if (prop->hasFlags(prop_flag_visibility_private)) {
                 prop->add(entry.first, set_arg_private);
                 hadPrivateChanges = true;
@@ -342,13 +343,13 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
         }
     }
 
-    //TODO: only send changed location properties
-    if (m_flags.hasFlags(entity_dirty_location)) {
-        m_location.addToEntity(set_arg);
-        removeFlags(entity_dirty_location);
-        hadChanges = true;
-        hadPublicChanges = true;
-    }
+//    //TODO: only send changed location properties
+//    if (m_flags.hasFlags(entity_dirty_location)) {
+//        m_location.addToEntity(set_arg);
+//        removeFlags(entity_dirty_location);
+//        hadChanges = true;
+//        hadPublicChanges = true;
+//    }
 
     if (hadChanges) {
         //Mark that entity needs to be written to storage.
@@ -463,7 +464,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
     if (m_type) {
         sarg->setParent(m_type->name());
     }
-    m_location.addToEntity(sarg);
+//    m_location.addToEntity(sarg);
     sarg->setObjtype("obj");
 
     s->setArgs1(sarg);
@@ -479,7 +480,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
             std::list<LocatedEntity*> entityList;
             observedEntityDomain->getVisibleEntitiesFor(observingEntity, entityList);
             for (auto& entity : entityList) {
-                if (entity->m_location.m_parent.get() == this) {
+                if (entity->m_parent == this) {
                     contlist.push_back(entity->getId());
                 }
             }
@@ -489,8 +490,9 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 //            }
     }
 
-    if (m_location.m_parent) {
-        if (!m_location.m_parent->isVisibleForOtherEntity(observingEntity)) {
+
+    if (m_parent) {
+        if (!m_parent->isVisibleForOtherEntity(observingEntity)) {
             sarg->removeAttr("loc");
         }
     }
@@ -552,7 +554,7 @@ void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& 
     Ref<LocatedEntity> new_loc = nullptr;
     if (!ent->isDefaultLoc()) {
         const std::string& new_loc_id = ent->getLoc();
-        if (new_loc_id != m_location.m_parent->getId()) {
+        if (new_loc_id != m_parent->getId()) {
             // If the LOC has not changed, we don't need to look it up, or do
             // any of the following checks.
             new_loc = BaseWorld::instance().getEntity(new_loc_id);
@@ -562,14 +564,14 @@ void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& 
             }
             debug_print("LOC: " << new_loc_id)
             auto test_loc = new_loc;
-            for (; test_loc != nullptr; test_loc = test_loc->m_location.m_parent) {
+            for (; test_loc != nullptr; test_loc = test_loc->m_parent) {
                 if (test_loc == this) {
                     error(op, "Attempt to move into itself", res, getId());
                     return;
                 }
             }
             assert(new_loc != nullptr);
-            assert(m_location.m_parent != new_loc);
+            assert(m_parent != new_loc.get());
         }
 
     }
@@ -614,8 +616,8 @@ void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& 
 
     //We can only move if there's a domain
     Domain* domain = nullptr;
-    if (m_location.m_parent) {
-        domain = m_location.m_parent->getDomain();
+    if (m_parent) {
+        domain = m_parent->getDomain();
     }
 
     //Send a Sight of the Move to any current observers. Do this before we might alter location.
@@ -702,40 +704,41 @@ void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& 
     }
 
 
-    m_location.update(current_time);
+//    m_location.update(current_time);
     removeFlags(entity_clean);
 
     // At this point the Location data for this entity has been updated.
 
-    //Check if there are any other transformed entities, and send move ops for those.
-    if (transformedEntities.size() > 1) {
-        for (auto& transformedEntity : transformedEntities) {
-            if (transformedEntity != this) {
-
-                Atlas::Objects::Entity::Anonymous setArgs;
-                setArgs->setId(transformedEntity->getId());
-                transformedEntity->m_location.addToEntity(setArgs);
-
-                auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
-                if (modeDataProp) {
-                    if (modeDataProp->hasFlags(prop_flag_unsent)) {
-                        Element modeDataElem;
-                        if (modeDataProp->get(modeDataElem) == 0) {
-                            setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
-                        }
-                    }
-                }
-
-                Set setOp;
-                setOp->setArgs1(setArgs);
-
-                Sight sight;
-                sight->setArgs1(setOp);
-                transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
-
-            }
-        }
-    }
+    //TODO: handle any transformed entities inside the domain instead
+//    //Check if there are any other transformed entities, and send move ops for those.
+//    if (transformedEntities.size() > 1) {
+//        for (auto& transformedEntity : transformedEntities) {
+//            if (transformedEntity != this) {
+//
+//                Atlas::Objects::Entity::Anonymous setArgs;
+//                setArgs->setId(transformedEntity->getId());
+//                transformedEntity->m_location.addToEntity(setArgs);
+//
+//                auto modeDataProp = transformedEntity->getPropertyClassFixed<ModeDataProperty>();
+//                if (modeDataProp) {
+//                    if (modeDataProp->hasFlags(prop_flag_unsent)) {
+//                        Element modeDataElem;
+//                        if (modeDataProp->get(modeDataElem) == 0) {
+//                            setArgs->setAttr(ModeDataProperty::property_name, modeDataElem);
+//                        }
+//                    }
+//                }
+//
+//                Set setOp;
+//                setOp->setArgs1(setArgs);
+//
+//                Sight sight;
+//                sight->setArgs1(setOp);
+//                transformedEntity->broadcast(sight, res, Visibility::PUBLIC);
+//
+//            }
+//        }
+//    }
 
 
     m_seq++;

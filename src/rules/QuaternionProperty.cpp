@@ -43,3 +43,10 @@ QuaternionProperty* QuaternionProperty::copy() const
     return new QuaternionProperty(*this);
 }
 
+void QuaternionProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
+{
+    if (m_data.isValid()) {
+        PropertyBase::add(key, ent);
+    }
+}
+

@@ -22,6 +22,7 @@
 
 #include "rules/Vector3Property.h"
 
+class BBoxProperty;
 /**
  * \brief A property which defines the scaling of an entity, as a Vector<3>.
  *
@@ -37,17 +38,25 @@ class ScaleProperty : public PropertyBase
 
         void apply(LocatedEntity&) override;
 
-        int get(Atlas::Message::Element & val) const override;
+        int get(Atlas::Message::Element& val) const override;
 
-        void set(const Atlas::Message::Element &) override;
+        void set(const Atlas::Message::Element&) override;
 
-        const WFMath::Vector<3>& data() const { return m_data; }
-        WFMath::Vector<3>& data() { return m_data; }
+        const WFMath::Vector<3>& data() const
+        { return m_data; }
 
-        ScaleProperty * copy() const override;
+        WFMath::Vector<3>& data()
+        { return m_data; }
+
+        ScaleProperty* copy() const override;
+
+        static WFMath::AxisBox<3> scaledBbox(const LocatedEntity& entity);
+
+        static WFMath::AxisBox<3> scaledBbox(const LocatedEntity& entity, const BBoxProperty& bboxProperty);
 
     protected:
         WFMath::Vector<3> m_data;
+
 
 };
 

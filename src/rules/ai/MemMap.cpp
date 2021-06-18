@@ -30,6 +30,8 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 static const bool debug_flag = false;
 
@@ -58,30 +60,35 @@ void MemMap::addEntity(const Ref<MemEntity>& entity)
 void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
-
-    entity->merge(ent->asMessage());
+    auto message = ent->asMessage();
+//    entity->m_location.readFromMessage(message);
+    entity->merge(message);
     if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)) {
-        auto old_loc = entity->m_location.m_parent;
+        auto old_loc = entity->m_parent;
         const std::string& new_loc_id = ent->getLoc();
-        // Has LOC been changed?
-        if (!old_loc || new_loc_id != old_loc->getId()) {
-            entity->m_location.m_parent = getAdd(new_loc_id);
-            assert(entity->m_location.m_parent);
-            assert(old_loc != entity->m_location.m_parent);
-            if (old_loc) {
-                assert(old_loc->m_contains != nullptr);
-                old_loc->m_contains->erase(entity);
+        if (new_loc_id == entity->getId()) {
+            log(WARNING, String::compose("Entity had itself set as parent.", entity->describeEntity()));
+        } else {
+            // Has LOC been changed?
+            if (!old_loc || new_loc_id != old_loc->getId()) {
+                entity->m_parent = getAdd(new_loc_id).get();
+                assert(entity->m_parent);
+                assert(old_loc != entity->m_parent);
+                if (old_loc) {
+                    assert(old_loc->m_contains != nullptr);
+                    old_loc->m_contains->erase(entity);
+                }
+                if (entity->m_parent->m_contains == nullptr) {
+                    entity->m_parent->m_contains = std::make_unique<LocatedEntitySet>();
+                }
+                entity->m_parent->m_contains->insert(entity);
             }
-            if (entity->m_location.m_parent->m_contains == nullptr) {
-                entity->m_location.m_parent->m_contains = std::make_unique<LocatedEntitySet>();
-            }
-            entity->m_location.m_parent->m_contains->insert(entity);
         }
     }
-    bool has_location_data = entity->m_location.readFromEntity(ent);
-    if (has_location_data) {
-        entity->m_location.update(timestamp);
-    }
+//    bool has_location_data = entity->m_location.readFromEntity(ent);
+//    if (has_location_data) {
+//        entity->m_location.update(timestamp);
+//    }
 
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         auto& parent = ent->getParent();
@@ -129,13 +136,13 @@ void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, d
 
     debug_print(" got " << entity->describeEntity())
 
-    auto old_loc = entity->m_location.m_parent;
+    auto old_loc = entity->m_parent;
     readEntity(entity, ent, timestamp);
 
     //Only signal for those entities that have resolved types.
     if (entity->getType()) {
         if (m_listener) {
-            m_listener->entityUpdated(*entity, ent, old_loc.get());
+            m_listener->entityUpdated(*entity, ent, old_loc);
         }
     }
 
@@ -162,7 +169,8 @@ MemMap::MemMap(TypeResolver& typeResolver)
 {
 }
 
-MemMap::~MemMap() {
+MemMap::~MemMap()
+{
     //Since we own all entities we need to destroy them when shutting down, to avoid circular ref-counts.
     for (auto& entity : m_entities) {
         entity.second->destroy();
@@ -339,7 +347,7 @@ void MemMap::addEntityMemory(const std::string& id,
 }
 
 void MemMap::removeEntityMemory(const std::string& id,
-                             const std::string& memory)
+                                const std::string& memory)
 {
     auto entity_memory = m_entityRelatedMemory.find(id);
     if (entity_memory != m_entityRelatedMemory.end()) {
@@ -419,10 +427,16 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
             continue;
         }
 
+        auto memEntityChild = static_cast<MemEntity*>(item.get());
+
         if (item->getType() && item->getType()->name() != what) {
             continue;
         }
-        if (squareDistance(loc.pos(), item->m_location.pos()) < square_range) {
+        auto& pos = memEntityChild->m_transform.pos;
+        if (!pos.isValid()) {
+            continue;
+        }
+        if (squareDistance(loc.pos(), pos) < square_range) {
             res.push_back(item.get());
         }
     }
@@ -441,9 +455,9 @@ void MemMap::check(const double& time)
             (me->m_contains == nullptr || me->m_contains->empty())) {
             m_checkIterator = m_entities.erase(m_checkIterator);
 
-            if (me->m_location.m_parent) {
-                me->m_location.m_parent->removeChild(*me);
-                me->m_location.m_parent = nullptr;
+            if (me->m_parent) {
+                me->m_parent->removeChild(*me);
+                me->m_parent = nullptr;
             }
 
         } else {

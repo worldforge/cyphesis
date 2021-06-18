@@ -70,6 +70,8 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 
 using Atlas::Message::Element;
@@ -89,6 +91,11 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installBaseProperty<std::string>("string", "root_type");
     installBaseProperty<ListType>("list", "root_type");
     installBaseProperty<MapType>("map", "root_type");
+
+    installProperty<PositionProperty>();
+    installProperty<VelocityProperty>();
+    installProperty<AngularVelocityProperty>();
+    installProperty<OrientationProperty>();
 
     installProperty<EntityProperty>("entity_ref");
     installProperty<ModeProperty>();

@@ -76,3 +76,33 @@ ScaleProperty* ScaleProperty::copy() const
 {
     return new ScaleProperty(*this);
 }
+
+WFMath::AxisBox<3> ScaleProperty::scaledBbox(const LocatedEntity& entity)
+{
+    auto bboxProperty = entity.getPropertyClassFixed<BBoxProperty>();
+    if (bboxProperty) {
+        return scaledBbox(entity, *bboxProperty);
+    }
+    return {};
+}
+
+WFMath::AxisBox<3> ScaleProperty::scaledBbox(const LocatedEntity& entity, const BBoxProperty& bboxProperty)
+{
+    if (bboxProperty.data().isValid()) {
+        auto scaleProperty = entity.getPropertyClassFixed<ScaleProperty>();
+        if (scaleProperty && scaleProperty->data().isValid()) {
+            auto& scale = scaleProperty->data();
+            auto bbox = bboxProperty.data();
+            bbox.lowCorner().x() *= scale.x();
+            bbox.lowCorner().y() *= scale.y();
+            bbox.lowCorner().z() *= scale.z();
+            bbox.highCorner().x() *= scale.x();
+            bbox.highCorner().y() *= scale.y();
+            bbox.highCorner().z() *= scale.z();
+            return bbox;
+        } else {
+            return bboxProperty.data();
+        }
+    }
+    return {};
+}

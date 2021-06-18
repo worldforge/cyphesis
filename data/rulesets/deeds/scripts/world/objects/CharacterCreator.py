@@ -60,7 +60,7 @@ class CharacterCreator(server.Thing):
                 # Randomize orientation
                 rotation = random.random() * math.pi * 2
                 orientation = physics.Quaternion(physics.Vector3D(0, 1, 0), rotation)
-                ent["loc"] = self.location.parent.id
+                ent["loc"] = self.parent.id
                 ent["pos"] = pos
                 ent["orientation"] = orientation.as_list()
                 ent["__account"] = arg["__account"]

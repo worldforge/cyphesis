@@ -45,8 +45,8 @@ PropertyCoverage::PropertyCoverage(PropertyBase& pb) :
     m_wrld(new TestWorld(m_tlve)),
     m_ent(new Entity("1", 1))
 {
-    m_ent->m_location.m_parent = m_tlve;
-    m_ent->m_location.m_pos = Point3D(1,0,0);
+    m_ent->m_parent = m_tlve.get();
+    //m_ent->m_location.m_pos = Point3D(1,0,0);
 
     m_tlve->m_contains.reset(new LocatedEntitySet);
     m_tlve->m_contains->insert(m_ent);
@@ -71,7 +71,7 @@ PropertyCoverage::PropertyCoverage(PropertyBase& pb) :
 
 PropertyCoverage::~PropertyCoverage()
 {
-    m_ent->m_location.m_parent.reset();
+    m_ent->m_parent = nullptr;
     m_ent.reset();
     m_tlve.reset();
     delete m_wrld;
@@ -117,13 +117,13 @@ void PropertyCoverage::basicCoverage()
 
 Ref<Entity> PropertyCoverage::createCharacterEntity()
 {
-    m_ent->m_location.m_parent = 0;
+    m_ent->m_parent = 0;
     m_tlve->m_contains->clear();
 
     Ref<Entity> chr(new Entity("2", 2));
     m_ent = chr;
-    m_ent->m_location.m_parent = m_tlve;
-    m_ent->m_location.m_pos = Point3D(1,0,0);
+    m_ent->m_parent = m_tlve.get();
+    //m_ent->m_location.m_pos = Point3D(1,0,0);
     m_tlve->m_contains->insert(m_ent);
 
     return chr;

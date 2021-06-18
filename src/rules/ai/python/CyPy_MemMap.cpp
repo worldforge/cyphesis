@@ -16,6 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 #include "CyPy_MemMap.h"
 #include "rules/python/CyPy_MemEntity.h"
 #include "rules/python/CyPy_RootEntity.h"
@@ -90,7 +92,7 @@ Py::Object CyPy_MemMap::find_by_location(const Py::Tuple& args)
     for (auto& entry : res) {
         list.append(CyPy_LocatedEntity::wrap(entry));
     }
-    return list;
+    return std::move(list);
 }
 
 Py::Object CyPy_MemMap::find_by_type(const Py::Tuple& args)
@@ -104,7 +106,7 @@ Py::Object CyPy_MemMap::find_by_type(const Py::Tuple& args)
     for (auto& entry : res) {
         list.append(CyPy_LocatedEntity::wrap(entry));
     }
-    return list;
+    return std::move(list);
 }
 
 Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
@@ -179,7 +181,7 @@ Py::Object CyPy_MemMap::get_all()
     for (auto& entry : m_value->getEntities()) {
         list.append(CyPy_MemEntity::wrap(entry.second.get()));
     }
-    return list;
+    return std::move(list);
 }
 
 ///\brief Return Python list of entities that match a given Filter
@@ -197,7 +199,7 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
             list.append(CyPy_MemEntity::wrap(entry.second.get()));
         }
     }
-    return list;
+    return std::move(list);
 }
 
 ///\brief find entities using a query in a specified location
@@ -222,14 +224,15 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
             EntityFilter::QueryContext queryContext = createFilterContext(entry.get(), m_value);
 
             if (entry->isVisible() && filter->match(queryContext)) {
-                if (squareDistance(location.pos(), entry->m_location.pos()) < square_range) {
+                auto pos = PositionProperty::extractPosition(*entry);
+                if (pos.isValid() && squareDistance(location.pos(), pos) < square_range) {
                     list.append(CyPy_LocatedEntity::wrap(entry));
                 }
             }
         }
     }
 
-    return list;
+    return std::move(list);
 }
 
 Py::Object CyPy_MemMap::add_entity_memory(const Py::Tuple& args)

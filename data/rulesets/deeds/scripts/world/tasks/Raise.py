@@ -27,7 +27,7 @@ from physics import *
 #             # print "Target is no more"
 #             self.irrelevant()
 #             return
-#         if not self.target().location.parent:
+#         if not self.target().parent:
 #             # Not withstanding famous quotes to the contrary, in these
 #             # system we can not move the world no matter how large a lever
 #             # or firm a place to stand we have.
@@ -58,7 +58,7 @@ from physics import *
 #             rotation = self.target().location.orientation * rotation
 #
 #         # print "NEW_ROT", rotation, rotation.is_valid()
-#         target_location = Location(self.target().location.parent,
+#         target_location = Location(self.target().parent,
 #                                    self.target().location.pos)
 #         target_location.orientation = rotation
 #         move = Operation("move", Entity(self.target().id,

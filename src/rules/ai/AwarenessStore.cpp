@@ -19,6 +19,7 @@
 #ifdef HAVE_CONFIG_H
 #endif
 
+#include <rules/BBoxProperty.h>
 #include "navigation/Awareness.h"
 #include "rules/LocatedEntity.h"
 
@@ -46,7 +47,8 @@ std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity&
         m_awarenesses.erase(I);
     }
 
-    auto bbox = domainEntity.m_location.bBox();
+    auto bboxProp = domainEntity.getPropertyClassFixed<BBoxProperty>();
+    auto bbox = bboxProp ? bboxProp->data() : WFMath::AxisBox<3>{};
 
     auto awareness = std::make_shared<Awareness>(domainEntity, mAgentRadius, mAgentHeight, mStepHeight, mHeightProvider, bbox, mTileSize);
     m_awarenesses.emplace(domainEntity.getIntId(), std::weak_ptr<Awareness>(awareness));

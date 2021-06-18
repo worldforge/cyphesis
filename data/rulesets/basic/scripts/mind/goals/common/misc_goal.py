@@ -135,7 +135,7 @@ class Acquire(Goal):
 
     def is_it_in_my_inventory(self, me):
         if self.what in me.things:
-            return me.things[self.what][0].location.parent == me
+            return me.things[self.what][0].parent == me
         return 0
 
 
@@ -259,7 +259,7 @@ class SpotSomething(Goal):
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist and sqr_dist < nearsqrdist and thing.location.parent and me.entity.location.parent:
+            if sqr_dist and sqr_dist < nearsqrdist and thing.parent and me.entity.parent:
                 if self.condition(thing):
                     nearest = thing
                     nearsqrdist = sqr_dist
@@ -321,7 +321,7 @@ class FetchSomething(Goal):
 
     def is_it_in_my_inventory(self, me):
         if self.what in me.things:
-            if me.things[self.what][0].location.parent == me:
+            if me.things[self.what][0].parent == me:
                 me.remove_knowledge('focus', self.what)
                 return 1
         return 0
@@ -384,16 +384,16 @@ class Amble(Goal):
             if thing is None:
                 me.remove_knowledge('focus', self.what)
             else:
-                if thing.location.parent.id != me.entity.location.parent.id:
+                if thing.parent.id != me.entity.parent.id:
                     me.remove_knowledge('focus', self.what)
                 else:
-                    if thing.location.parent.id == me.entity.id:
+                    if thing.parent.id == me.entity.id:
                         return
         # world =
         # ground = world.id
         # op = Operation("eat", ground)
         # print "Fish ambling"
-        target = Location(me.entity.location.parent, me.entity.location.pos)
+        target = Location(me.entity.parent, me.entity.location.pos)
         target.pos = Vector3D(target.pos.x + uniform(-1.5, 1.5), target.pos.y, target.pos.z + uniform(-1.5, 1.5))
         target.velocity = Vector3D(1, 0, 0)
         return Operation("move", Entity(me.entity.id, location=target))
@@ -506,7 +506,7 @@ class Graze(Feed):
             # stop moving
             me.steering.set_destination()
             return Operation("use", Operation("consume",
-                                              Entity(me.entity.id, targets=[Entity(me.entity.location.parent.id, pos=me.entity.location.pos)])))
+                                              Entity(me.entity.id, targets=[Entity(me.entity.parent.id, pos=me.entity.location.pos)])))
 
 
 ############################ BROWSE (FIND FOOD, EAT SOME, MOVE ON) ###########
@@ -783,7 +783,7 @@ class Keep(Goal):
         thing_all = me.find_thing(self.what)
         where = me.find_thing(self.where)[0]
         for thing in thing_all:
-            if thing.location.parent.id != where.id and thing.location.parent.id != me.entity.id:
+            if thing.parent.id != where.id and thing.parent.id != me.entity.id:
                 return 0
         return 1
 
@@ -799,7 +799,7 @@ class Keep(Goal):
         maxx = where.location.bbox.high_corner.x
         maxz = where.location.bbox.high_corner.z
         for thing in thing_all:
-            if thing.location.parent.id != where.id and thing.location.parent.id != me.entity.id:
+            if thing.parent.id != where.id and thing.parent.id != me.entity.id:
                 thingloc = Location(where, Point3D(uniform(minx, maxx), 0, uniform(minz, maxz)))
                 result.append(Operation("move", Entity(thing.id, location=thingloc)))
         return result
@@ -820,7 +820,7 @@ class KeepOnMe(Goal):
     def are_they_on_me(self, me):
         thing_all = me.find_thing(self.what)
         for thing in thing_all:
-            if thing.location.parent.id != me.entity.id:
+            if thing.parent.id != me.entity.id:
                 return 0
         return 1
 
@@ -830,7 +830,7 @@ class KeepOnMe(Goal):
         thing_all = me.find_thing(self.what)
         to_loc = Location(me, Point3D(0, 0, 0))
         for thing in thing_all:
-            if thing.location.parent.id != me.entity.id:
+            if thing.parent.id != me.entity.id:
                 result.append(Operation("move", Entity(thing.id, location=to_loc)))
         return result
 

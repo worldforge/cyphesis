@@ -65,7 +65,8 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
         return;
     }
 
-    entity.m_location.resetTransformAndMovement();
+    //TODO: make these kind of reset actions on the domain being moved out of instead. Like PhysicalDomain.
+    //entity.m_location.resetTransformAndMovement();
     entity.removeFlags(entity_clean);
 
 

@@ -29,14 +29,14 @@ class School(DynamicGoal):
         if ent.name != me.name:
             # print "ent.type!=me.entity.type"
             return
-        if not ent.location.parent:
-            # print "school.event, ent.location.parent is None"
+        if not ent.parent:
+            # print "school.event, ent.parent is None"
             return
-        if not me.entity.location.parent:
-            # print "school.event, me.entity.location.parent is None"
+        if not me.entity.parent:
+            # print "school.event, me.entity.parent is None"
             return
-        if me.entity.location.parent.id != ent.location.parent.id:
-            # print "me.entity.location.parent.id!=ent.location.parent.id"
+        if me.entity.parent.id != ent.parent.id:
+            # print "me.entity.parent.id!=ent.parent.id"
             return
         if type(ent.location.pos) != object:
             # print ent.location.pos
@@ -50,16 +50,16 @@ class School(DynamicGoal):
             if thing is None:
                 me.remove_knowledge('focus', self.what)
             else:
-                if thing.location.parent.id != me.entity.location.parent.id:
+                if thing.parent.id != me.entity.parent.id:
                     me.remove_knowledge('focus', self.what)
                 else:
-                    if thing.location.parent.id == me.entity.id:
+                    if thing.parent.id == me.entity.id:
                         return
         # ensures that the entity will check only other entities really close to it,
         # thereby reducing the possibility of infinite loops
         if distance < 0.4 and ent.location.velocity:
             print("changing only velocity")
-            new_loc = Location(me.entity.location.parent)
+            new_loc = Location(me.entity.parent)
             new_loc.velocity = ent.location.velocity
         if distance > 0.4 and ent.location.velocity:
             print("changing both location and velocity")
@@ -69,11 +69,11 @@ class School(DynamicGoal):
             if myvel and (evel.dot(myvel) > 0.9 or edir.dot(myvel) > 0.9):
                 return
             if edir.dot(evel) < 0:
-                new_loc = Location(me.entity.location.parent)
+                new_loc = Location(me.entity.parent)
                 # replace by rotatez?
                 new_loc.velocity = -ent.location.velocity
             else:
-                new_loc = Location(me.entity.location.parent)
+                new_loc = Location(me.entity.parent)
                 new_loc.velocity = ent.location.velocity
         else:
             print("everything perfect, not doing anything")
@@ -105,13 +105,13 @@ class flock(DynamicGoal):
         if ent.type[0] != me.entity.type[0]:
             print("not convering on something not me")
             return
-        if type(ent.location.parent) == type(None):
-            print("flock.event, ent.location.parent is None")
+        if type(ent.parent) == type(None):
+            print("flock.event, ent.parent is None")
             return
-        if type(me.entity.location.parent) == type(None):
-            print("flock.event, me.entity.location.parent is None")
+        if type(me.entity.parent) == type(None):
+            print("flock.event, me.entity.parent is None")
             return
-        if me.entity.location.parent.id != ent.location.parent.id:
+        if me.entity.parent.id != ent.parent.id:
             print("not convering on something elsewhere")
             return
         if type(ent.location.pos) != Point3D:
@@ -139,7 +139,7 @@ class flock(DynamicGoal):
             if edir.dot(evel) < - 0.5:
                 print("not convering on moving towards me")
                 return
-            new_loc = Location(me.entity.location.parent)
+            new_loc = Location(me.entity.parent)
             new_loc.velocity = ent.location.velocity
         else:
             new_loc = ent.location.copy()
@@ -169,7 +169,7 @@ class herd(DynamicGoal):
             return
         if ent.type[0] != me.entity.type[0]:
             return
-        if me.entity.location.parent.id != ent.location.parent.id:
+        if me.entity.parent.id != ent.parent.id:
             return
         try:
             val = self.herd_members[ent.id]
@@ -197,7 +197,7 @@ class herd(DynamicGoal):
             # If they are coming towards me, then do nothing
             if edir.dot(evel) < - 0.5:
                 return
-            new_loc = Location(me.entity.location.parent)
+            new_loc = Location(me.entity.parent)
             new_loc.velocity = ent.location.velocity
         else:
             new_loc = ent.location.copy()

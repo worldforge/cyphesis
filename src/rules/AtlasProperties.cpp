@@ -30,79 +30,125 @@ using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::RootEntity;
 
-IdProperty::IdProperty(const std::string & data) : PropertyBase(prop_flag_persistence_ephem),
-                                                   m_data(data)
+IdProperty::IdProperty(const std::string& data) : PropertyBase(prop_flag_persistence_ephem),
+                                                  m_data(data)
 {
 }
 
-int IdProperty::get(Atlas::Message::Element & e) const
+int IdProperty::get(Atlas::Message::Element& e) const
 {
     e = m_data;
     return 0;
 }
 
-void IdProperty::set(const Atlas::Message::Element & e)
+void IdProperty::set(const Atlas::Message::Element& e)
 {
 }
 
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
+void IdProperty::add(const std::string& key,
+                     Atlas::Message::MapType& ent) const
 {
     ent[key] = m_data;
 }
 
-void IdProperty::add(const std::string & key, const RootEntity & ent) const
+void IdProperty::add(const std::string& key, const RootEntity& ent) const
 {
     ent->setId(m_data);
 }
 
-IdProperty * IdProperty::copy() const
+IdProperty* IdProperty::copy() const
 {
     return new IdProperty(*this);
 }
+
+LocationProperty::LocationProperty(const LocatedEntity& entity)
+        : m_data(entity)
+{
+
+}
+
+int LocationProperty::get(Atlas::Message::Element& val) const
+{
+    if (m_data.m_parent) {
+        val = m_data.m_parent->getId();
+    }
+}
+
+void LocationProperty::set(const Atlas::Message::Element& val)
+{
+    //not allowed
+}
+
+void LocationProperty::add(const std::string& key, Atlas::Message::MapType& map) const
+{
+    if (m_data.m_parent) {
+        map[key] = m_data.m_parent->getId();
+    }
+}
+
+void LocationProperty::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
+{
+    if (m_data.m_parent) {
+        ent->setAttr(key, m_data.m_parent->getId());
+    }
+}
+
+
+LocationProperty* LocationProperty::copy() const
+{
+    return new LocationProperty(m_data);
+}
+
+const std::string& LocationProperty::data() const
+{
+    return m_data.m_parent ? m_data.m_parent->getId() : "";
+}
+
 
 NameProperty::NameProperty(unsigned int flags) : Property<std::string>(flags)
 {
 }
 
-void NameProperty::add(const std::string & s, const RootEntity & ent) const
+void NameProperty::add(const std::string& s, const RootEntity& ent) const
 {
     ent->setName(m_data);
 }
 
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
+ContainsProperty::ContainsProperty(LocatedEntitySet& data) :
         PropertyBase(prop_flag_persistence_ephem), m_data(data)
 {
 }
 
-int ContainsProperty::get(Element & e) const
+int ContainsProperty::get(Element& e) const
 {
     // FIXME Not sure if this is best. Why did we bother to virtualise
     // addToMessage() if we have to do this here?
     e = ListType();
-    ListType & contlist = e.List();
+    auto& contlist = e.List();
     for (auto& entry : m_data) {
         contlist.push_back(entry->getId());
     }
     return 0;
 }
 
-void ContainsProperty::set(const Element & e)
+void ContainsProperty::set(const Element& e)
 {
 }
 
 // We do not implement add, as it is probably not going to be used.
 
-void ContainsProperty::add(const std::string & s, const RootEntity & ent) const
+void ContainsProperty::add(const std::string& s, const RootEntity& ent) const
 {
-    auto& contains = ent->modifyContains();
-    contains.clear();
-    for (auto& entry : m_data) {
-        contains.push_back(entry->getId());
+    if (m_data.empty()) {
+        auto& contains = ent->modifyContains();
+        contains.clear();
+        for (auto& entry : m_data) {
+            contains.push_back(entry->getId());
+        }
     }
 }
 
-ContainsProperty * ContainsProperty::copy() const
+ContainsProperty* ContainsProperty::copy() const
 {
     return new ContainsProperty(*this);
 }

@@ -105,10 +105,10 @@ int main()
             e->setProperty("foo", std::move(prop));
         }
         Ref<Entity> wrld = new Entity("0", 0);
-        e->m_location.m_parent = wrld;
-        e->m_location.m_parent->makeContainer();
-        assert(e->m_location.m_parent->m_contains != nullptr);
-        e->m_location.m_parent->m_contains->insert(e);
+        e->m_parent = wrld.get();
+        e->m_parent->makeContainer();
+        assert(e->m_parent->m_contains != nullptr);
+        e->m_parent->m_contains->insert(e);
         TestWorld test_world(wrld);
 
         auto wrap_e = CyPy_LocatedEntity::wrap(e);
@@ -128,6 +128,8 @@ int main()
         run_python_string("assert testentity is not None");
         run_python_string("assert testentity.props.foo == 'bar'");
         run_python_string("assert testentity.is_destroyed == False");
+        run_python_string("assert testentity.parent.id == '0'"); //Parent should be world
+        run_python_string("assert testentity.parent.parent is None"); //The world should have no parent
 
         expect_python_error("Thing()", PyExc_IndexError);
         expect_python_error("Thing('s')", PyExc_TypeError);
@@ -138,7 +140,6 @@ int main()
         run_python_string("le==Thing('2')");
         run_python_string("le.type==''");
         expect_python_error("print(le.foo_operation)", PyExc_AttributeError);
-        run_python_string("print(le.location)");
         run_python_string("print(le.contains)");
         run_python_string("le.type==''");
         expect_python_error("le.type='non_exist'", PyExc_ValueError);
@@ -176,7 +177,6 @@ int main()
         expect_python_error("t.send_world('get')", PyExc_TypeError);
         run_python_string("t.type==''");
         expect_python_error("print(t.foo_operation)", PyExc_AttributeError);
-        run_python_string("print(t.location)");
         run_python_string("print(t.contains)");
 
         module.getDict().clear();

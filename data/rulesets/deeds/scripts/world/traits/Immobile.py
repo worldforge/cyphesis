@@ -10,7 +10,7 @@ class Immobile(server.Thing):
 
     def move_operation(self, op):
         # Is the move operation sent because the parent has been deleted? If so we should delete ourselves.
-        if self.location.parent.is_destroyed:
+        if self.parent.is_destroyed:
             return server.OPERATION_BLOCKED, Operation("delete", to=self)
         else:
             return server.OPERATION_BLOCKED

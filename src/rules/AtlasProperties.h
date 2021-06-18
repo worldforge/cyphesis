@@ -48,6 +48,29 @@ class IdProperty : public PropertyBase
         IdProperty* copy() const override;
 };
 
+class LocationProperty : public PropertyBase
+{
+    protected:
+        const LocatedEntity& m_data;
+    public:
+        static constexpr const char* property_name = "loc";
+        static constexpr const char* property_atlastype = "string";
+
+        explicit LocationProperty(const LocatedEntity& entity);
+
+        int get(Atlas::Message::Element& val) const override;
+
+        void set(const Atlas::Message::Element& val) override;
+
+        void add(const std::string& key, Atlas::Message::MapType& map) const override;
+
+        void add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const override;
+
+        LocationProperty* copy() const override;
+
+        const std::string& data() const;
+};
+
 /// \brief Class to handle Entity name property
 /// \ingroup PropertyClasses
 class NameProperty : public Property<std::string>
@@ -55,6 +78,7 @@ class NameProperty : public Property<std::string>
     public:
         static constexpr const char* property_name = "name";
         static constexpr const char* property_atlastype = "string";
+
         explicit NameProperty(unsigned int flags);
 
         void add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const override;

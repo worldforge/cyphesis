@@ -171,7 +171,7 @@
 
 #ifndef STUB_PhysicalDomain_childEntityPropertyApplied
 //#define STUB_PhysicalDomain_childEntityPropertyApplied
-  void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry* bulletEntry)
+  void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const PropertyBase& prop, BulletEntry& bulletEntry)
   {
     
   }
@@ -195,7 +195,7 @@
 
 #ifndef STUB_PhysicalDomain_getCollisionFlagsForEntity
 //#define STUB_PhysicalDomain_getCollisionFlagsForEntity
-  void PhysicalDomain::getCollisionFlagsForEntity(const LocatedEntity& entity, short& collisionGroup, short& collisionMask) const
+  void PhysicalDomain::getCollisionFlagsForEntity(const BulletEntry& entry, short& collisionGroup, short& collisionMask) const
   {
     
   }
@@ -227,7 +227,7 @@
 
 #ifndef STUB_PhysicalDomain_updateObservedEntry
 //#define STUB_PhysicalDomain_updateObservedEntry
-  void PhysicalDomain::updateObservedEntry(BulletEntry* entry, OpVector& res, bool generateOps )
+  void PhysicalDomain::updateObservedEntry(BulletEntry& entry, OpVector& res, bool generateOps )
   {
     
   }
@@ -235,7 +235,7 @@
 
 #ifndef STUB_PhysicalDomain_updateObserverEntry
 //#define STUB_PhysicalDomain_updateObserverEntry
-  void PhysicalDomain::updateObserverEntry(BulletEntry* bulletEntry, OpVector& res)
+  void PhysicalDomain::updateObserverEntry(BulletEntry& bulletEntry, OpVector& res)
   {
     
   }
@@ -243,7 +243,7 @@
 
 #ifndef STUB_PhysicalDomain_applyNewPositionForEntity
 //#define STUB_PhysicalDomain_applyNewPositionForEntity
-  void PhysicalDomain::applyNewPositionForEntity(BulletEntry* entry, const WFMath::Point<3>& pos, bool calculatePosition )
+  void PhysicalDomain::applyNewPositionForEntity(BulletEntry& entry, const WFMath::Point<3>& pos, bool calculatePosition )
   {
     
   }
@@ -259,7 +259,7 @@
 
 #ifndef STUB_PhysicalDomain_updateTerrainMod
 //#define STUB_PhysicalDomain_updateTerrainMod
-  void PhysicalDomain::updateTerrainMod(const LocatedEntity& entity, bool forceUpdate )
+  void PhysicalDomain::updateTerrainMod(const BulletEntry& entry, bool forceUpdate )
   {
     
   }
@@ -283,7 +283,7 @@
 
 #ifndef STUB_PhysicalDomain_calculatePositionForEntity
 //#define STUB_PhysicalDomain_calculatePositionForEntity
-  void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry* entry, WFMath::Point<3>& pos)
+  void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry& entry, WFMath::Point<3>& pos)
   {
     
   }
@@ -307,7 +307,7 @@
 
 #ifndef STUB_PhysicalDomain_transformRestingEntities
 //#define STUB_PhysicalDomain_transformRestingEntities
-  void PhysicalDomain::transformRestingEntities(BulletEntry* entry, const WFMath::Vector<3>& posTransform, const WFMath::Quaternion& orientationChange, std::set<LocatedEntity*>& transformedEntities)
+  void PhysicalDomain::transformRestingEntities(BulletEntry& entry, const WFMath::Vector<3>& posTransform, const WFMath::Quaternion& orientationChange, std::set<LocatedEntity*>& transformedEntities)
   {
     
   }
@@ -315,7 +315,7 @@
 
 #ifndef STUB_PhysicalDomain_plantOnEntity
 //#define STUB_PhysicalDomain_plantOnEntity
-  void PhysicalDomain::plantOnEntity(BulletEntry* plantedEntry, BulletEntry* entryPlantedOn)
+  void PhysicalDomain::plantOnEntity(BulletEntry& plantedEntry, BulletEntry* entryPlantedOn)
   {
     
   }
@@ -323,7 +323,7 @@
 
 #ifndef STUB_PhysicalDomain_applyTransformInternal
 //#define STUB_PhysicalDomain_applyTransformInternal
-  void PhysicalDomain::applyTransformInternal(LocatedEntity& entity, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& impulseVelocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
+  void PhysicalDomain::applyTransformInternal(BulletEntry& entry, const WFMath::Quaternion& orientation, const WFMath::Point<3>& pos, const WFMath::Vector<3>& impulseVelocity, std::set<LocatedEntity*>& transformedEntities, bool calculatePosition)
   {
     
   }
@@ -355,7 +355,7 @@
 
 #ifndef STUB_PhysicalDomain_calculateVisibilitySphereRadius
 //#define STUB_PhysicalDomain_calculateVisibilitySphereRadius
-  float PhysicalDomain::calculateVisibilitySphereRadius(const LocatedEntity& entity) const
+  float PhysicalDomain::calculateVisibilitySphereRadius(const BulletEntry& entry) const
   {
     return 0;
   }

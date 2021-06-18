@@ -77,20 +77,18 @@ BBoxProperty* BBoxProperty::copy() const
 
 void BBoxProperty::updateBboxOnEntity(LocatedEntity& entity) const
 {
-    auto scaleProp = entity.getPropertyClassFixed<ScaleProperty>();
-    if (scaleProp && scaleProp->data().isValid()) {
-        auto& scale = scaleProp->data();
-        auto bbox = m_data;
-        bbox.lowCorner().x() *= scale.x();
-        bbox.lowCorner().y() *= scale.y();
-        bbox.lowCorner().z() *= scale.z();
-        bbox.highCorner().x() *= scale.x();
-        bbox.highCorner().y() *= scale.y();
-        bbox.highCorner().z() *= scale.z();
-        entity.m_location.setBBox(bbox);
-    } else {
-        entity.m_location.setBBox(m_data);
-    }
-
-
+//    auto scaleProp = entity.getPropertyClassFixed<ScaleProperty>();
+//    if (scaleProp && scaleProp->data().isValid()) {
+//        auto& scale = scaleProp->data();
+//        auto bbox = m_data;
+//        bbox.lowCorner().x() *= scale.x();
+//        bbox.lowCorner().y() *= scale.y();
+//        bbox.lowCorner().z() *= scale.z();
+//        bbox.highCorner().x() *= scale.x();
+//        bbox.highCorner().y() *= scale.y();
+//        bbox.highCorner().z() *= scale.z();
+//        entity.m_location.setBBox(bbox);
+//    } else {
+//        entity.m_location.setBBox(m_data);
+//    }
 }

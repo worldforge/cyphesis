@@ -17,7 +17,7 @@
 
 #ifndef STUB_ScaleProperty_get
 //#define STUB_ScaleProperty_get
-  int ScaleProperty::get(Atlas::Message::Element & val) const
+  int ScaleProperty::get(Atlas::Message::Element& val) const
   {
     return 0;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_ScaleProperty_set
 //#define STUB_ScaleProperty_set
-  void ScaleProperty::set(const Atlas::Message::Element &)
+  void ScaleProperty::set(const Atlas::Message::Element&)
   {
     
   }
@@ -38,6 +38,22 @@
     return nullptr;
   }
 #endif //STUB_ScaleProperty_copy
+
+#ifndef STUB_ScaleProperty_scaledBbox
+//#define STUB_ScaleProperty_scaledBbox
+   WFMath::AxisBox<3> ScaleProperty::scaledBbox(const LocatedEntity& entity)
+  {
+    return *static_cast< WFMath::AxisBox<3>*>(nullptr);
+  }
+#endif //STUB_ScaleProperty_scaledBbox
+
+#ifndef STUB_ScaleProperty_scaledBbox
+//#define STUB_ScaleProperty_scaledBbox
+   WFMath::AxisBox<3> ScaleProperty::scaledBbox(const LocatedEntity& entity, const BBoxProperty& bboxProperty)
+  {
+    return *static_cast< WFMath::AxisBox<3>*>(nullptr);
+  }
+#endif //STUB_ScaleProperty_scaledBbox
 
 
 #endif

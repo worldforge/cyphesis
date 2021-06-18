@@ -31,6 +31,8 @@
 #include <unordered_set>
 #include <common/operations/Update.h>
 #include <algorithm>
+#include <rules/AtlasProperties.h>
+#include <rules/PhysicalProperties.h>
 
 ContainerDomain::ContainerDomain(LocatedEntity& entity) :
         Domain(entity),
@@ -47,7 +49,8 @@ void ContainerDomain::addEntity(LocatedEntity& entity)
         return;
     }
 
-    entity.m_location.resetTransformAndMovement();
+    //TODO: make these kind of reset actions on the domain being moved out of instead. Like PhysicalDomain.
+    //entity.m_location.resetTransformAndMovement();
 
     entity.removeFlags(entity_clean);
 
@@ -109,7 +112,7 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
 
 void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
 {
-    if (observingEntity.canReach(m_entity.m_location)) {
+    if (observingEntity.canReach(EntityLocation{&m_entity, PositionProperty::extractPosition(m_entity)})) {
         if (m_entity.m_contains) {
             for (auto& entity : *m_entity.m_contains) {
                 if (isEntityVisibleFor(observingEntity, *entity)) {
@@ -234,8 +237,8 @@ void ContainerDomain::addObserver(std::string& entityId)
         std::vector<std::function<void()>> disconnectFunctions;
 
         //Handle the simple case where the container and the ancestor have the same parent.
-        if (observer->m_location.m_parent == m_entity.m_location.m_parent) {
-            auto parentEntity = m_entity.m_location.m_parent.get();
+        if (observer->m_parent == m_entity.m_parent) {
+            auto parentEntity = m_entity.m_parent;
             if (parentEntity && parentEntity->getDomain()) {
                 auto disconnectFn = parentEntity->getDomain()->observeCloseness(*observer, m_entity, reach, closenessSeveredCallback);
                 if (disconnectFn) {
@@ -251,7 +254,7 @@ void ContainerDomain::addObserver(std::string& entityId)
 
         } else {
             //First find the domain which contains the observer, as well as if the observer has a domain itself.
-            LocatedEntity* domainEntity = observer->m_location.m_parent.get();
+            LocatedEntity* domainEntity = observer->m_parent;
             LocatedEntity* topObserverEntity = observer.get();
             Domain* observerParentDomain = nullptr;
 
@@ -267,11 +270,11 @@ void ContainerDomain::addObserver(std::string& entityId)
                     break;
                 }
                 topObserverEntity = domainEntity;
-                domainEntity = domainEntity->m_location.m_parent.get();
+                domainEntity = domainEntity->m_parent;
             }
 
             //The parent entity of the observer (possible null), although unlikely.
-            auto* observerParentEntity = observer->m_location.m_parent.get();
+            auto* observerParentEntity = observer->m_parent;
             //The domain of the observer (possible null).
             Domain* observerOwnDomain = observer->getDomain();
 
@@ -298,7 +301,7 @@ void ContainerDomain::addObserver(std::string& entityId)
                     break;
                 }
                 toAncestors.push_back(ancestorEntity);
-                ancestorEntity = ancestorEntity->m_location.m_parent.get();
+                ancestorEntity = ancestorEntity->m_parent;
                 if (ancestorEntity == nullptr) {
                     //Could find no common ancestor; can't interact.
                     return;

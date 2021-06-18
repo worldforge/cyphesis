@@ -44,7 +44,6 @@ int main()
 #include "../TestWorld.h"
 
 //stubs
-#include "../stubs/rules/stubQuaternionProperty.h"
 #include "../stubs/rules/simulation/stubModeDataProperty.h"
 #include "../stubs/modules/stubWeakEntityRef.h"
-
+#include "../stubs/rules/stubPhysicalProperties.h"

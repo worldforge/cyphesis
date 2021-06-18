@@ -59,11 +59,6 @@ struct TestWorld : public BaseWorld
         //Make sure that no entity references are retained.
         for (const auto& entry : m_eobjects) {
             entry.second->destroy();
-            entry.second->m_location.m_parent = nullptr;
-            if (entry.second->m_contains) {
-                entry.second->m_contains->clear();
-            }
-//            entry.second->clearProperties();
             //Set the type to null so we won't clear properties again in the destructor.
             entry.second->setType(nullptr);
         }

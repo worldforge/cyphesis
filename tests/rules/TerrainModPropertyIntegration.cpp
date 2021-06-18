@@ -34,8 +34,10 @@
 #include "rules/simulation/BaseWorld.h"
 
 #include "../stubs/rules/stubLocation.h"
+#include "../stubs/rules/stubAtlasProperties.h"
 
 #include <Atlas/Objects/Operation.h>
+#include <rules/PhysicalProperties.h>
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Operation::Delete;
@@ -73,9 +75,8 @@ void TerrainModPropertyintegration::setup()
     m_world.reset(new TestWorld(m_rootEntity));
 
     m_entity = new Entity("1", 1);
-    m_entity->m_location.m_pos = Point3D(5.f, 5.f, 5.f);
-    m_entity->m_location.m_parent = m_rootEntity;
-    ASSERT_TRUE(m_entity->m_location.isValid());
+    m_entity->requirePropertyClassFixed<PositionProperty>().data() = Point3D(5.f, 5.f, 5.f);
+    m_entity->m_parent = m_rootEntity.get();
 
     PropertyFactory<TerrainModProperty> terrainmod_property_factory;
 

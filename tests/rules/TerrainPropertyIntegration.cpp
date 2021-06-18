@@ -45,7 +45,7 @@
 #include <rules/simulation/TerrainProperty.h>
 #include <rules/simulation/TerrainPointsProperty.h>
 #include <rules/simulation/PhysicalDomain.h>
-
+#include "rules/BBoxProperty.h"
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;
@@ -90,8 +90,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
     void test_set_terrain(TestContext& context)
     {
         Ref<Thing> t1 = new Thing(1);
-        t1->m_location.setBBox({{-64, -10, -64},
-                                {64,  10,  64}});
+        t1->requirePropertyClassFixed<BBoxProperty>().data() = {{-64, -10, -64},
+                                                                {64,  10,  64}};
         t1->setAttrValue("domain", "physical");
         t1->setAttrValue(TerrainProperty::property_name, ListType{MapType{
                 {"name",    "rock"},
@@ -154,8 +154,8 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
     void test_adjust_entities_when_terrain_changes(TestContext& context)
     {
         Ref<Thing> t1 = new Thing(1);
-        t1->m_location.setBBox({{-64, -10, -64},
-                                {64,  10,  64}});
+        t1->requirePropertyClassFixed<BBoxProperty>().data() = {{-64, -10, -64},
+                                                                {64,  10,  64}};
         t1->setAttrValue("domain", "physical");
         t1->setAttrValue(TerrainProperty::property_name, ListType{MapType{
                 {"name",    "rock"},
@@ -177,22 +177,22 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         auto terrainProp = t1->getPropertyClassFixed<TerrainProperty>();
 
         Ref<Thing> tPlanted = new Thing(2);
-        tPlanted->m_location.setBBox({{-1, 0, -1},
-                                      {1,  2, 1}});
-        tPlanted->m_location.m_pos = {10, 100, 10};
+        tPlanted->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
+                                                                      {1,  2, 1}};
+        tPlanted->requirePropertyClassFixed<PositionProperty>().data() = {10, 100, 10};
         tPlanted->setAttrValue("mode", "planted");
         context.testWorld.addEntity(tPlanted, t1);
 
 
         Ref<Thing> tFixed = new Thing(3);
-        tFixed->m_location.setBBox({{-1, 0, -1},
-                                    {1,  2, 1}});
-        tFixed->m_location.m_pos = {20, 100, 10};
+        tFixed->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
+                                                                    {1,  2, 1}};
+        tFixed->requirePropertyClassFixed<PositionProperty>().data() = {20, 100, 10};
         tFixed->setAttrValue("mode", "fixed");
         context.testWorld.addEntity(tFixed, t1);
 
         //Height should not be adjusted to the height of the terrain.
-        ASSERT_FUZZY_EQUAL(100.0, tFixed->m_location.m_pos.y(), epsilon)
+        ASSERT_FUZZY_EQUAL(100.0, tFixed->requirePropertyClassFixed<PositionProperty>().data().y(), epsilon)
 
         //Adjust the terrain
         t1->setAttrValue("terrain_points!prepend", MapType{
@@ -207,9 +207,9 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         context.testWorld.getOperationsHandler().dispatchNextOp();
 
         float height;
-        terrainProp->getHeight(*t1, tPlanted->m_location.m_pos.x(), tPlanted->m_location.m_pos.z(), height);
-        ASSERT_FUZZY_EQUAL(height, tPlanted->m_location.m_pos.y(), epsilon)
-        ASSERT_FUZZY_EQUAL(100.0, tFixed->m_location.m_pos.y(), epsilon)
+        terrainProp->getHeight(*t1, tPlanted->requirePropertyClassFixed<PositionProperty>().data().x(), tPlanted->requirePropertyClassFixed<PositionProperty>().data().z(), height);
+        ASSERT_FUZZY_EQUAL(height, tPlanted->requirePropertyClassFixed<PositionProperty>().data().y(), epsilon)
+        ASSERT_FUZZY_EQUAL(100.0, tFixed->requirePropertyClassFixed<PositionProperty>().data().y(), epsilon)
 
 
         tFixed->destroy();

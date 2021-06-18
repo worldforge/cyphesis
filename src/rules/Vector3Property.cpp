@@ -55,3 +55,9 @@ Vector3Property* Vector3Property::copy() const
     return new Vector3Property(*this);
 }
 
+void Vector3Property::add(const std::string& key, const Atlas::Objects::Entity::RootEntity& ent) const
+{
+    if (m_data.isValid()) {
+        PropertyBase::add(key, ent);
+    }
+}

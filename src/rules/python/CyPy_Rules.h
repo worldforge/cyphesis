@@ -31,6 +31,8 @@ class CyPy_Rules: public Py::ExtensionModule<CyPy_Rules>
 
         Py::Object is_location(const Py::Tuple& args);
 
+        Py::Object extract_location(const Py::Tuple& args);
+
         static std::string init();
 };
 

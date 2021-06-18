@@ -143,7 +143,7 @@ set(ENTITYEXERCISE TestPropertyManager.cpp IGEntityExerciser.cpp common/EntityEx
 
 wf_add_test(rules/OgreMeshDeserializerTest.cpp ../src/rules/simulation/OgreMeshDeserializer.cpp)
 wf_add_test(rules/ModifierTest.cpp ../src/rules/Modifier.cpp)
-wf_add_test(rules/LocatedEntityTest.cpp common/EntityExerciser.cpp ../src/rules/LocatedEntity.cpp TestPropertyManager.cpp)
+wf_add_test(rules/LocatedEntityTest.cpp common/EntityExerciser.cpp ../src/rules/LocatedEntity.cpp ../src/rules/AtlasProperties TestPropertyManager.cpp)
 wf_add_test(rules/EntityTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Entity.cpp ../src/rules/LocatedEntity.cpp)
 wf_add_test(rules/ThingTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Thing.cpp)
 wf_add_test(rules/WorldTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/World.cpp)
@@ -211,7 +211,6 @@ wf_add_test(rules/ai/BaseMindTest.cpp ../src/rules/ai/BaseMind.cpp ../src/rules/
 wf_add_test(rules/MemEntityTest.cpp ../src/rules/MemEntity.cpp)
 wf_add_test(rules/ai/MemMapTest.cpp ../src/rules/ai/MemMap.cpp ../src/rules/MemEntity.cpp)
 wf_add_test(rules/MovementTest.cpp ../src/rules/simulation/Movement.cpp)
-wf_add_test(rules/PedestrianTest.cpp ../src/rules/simulation/Pedestrian.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(server/ExternalMindTest.cpp ../src/rules/simulation/ExternalMind.cpp)
 wf_add_test(rules/PythonContextTest.cpp ../src/rules/python/PythonContext.cpp)
 
@@ -302,6 +301,10 @@ wf_add_test(rules/entityfilter/EntityFilterParserTest.cpp
         ../src/rules/simulation/Entity.cpp
         ../src/rules/BBoxProperty.cpp
         ../src/rules/LocatedEntity.cpp
+        ../src/rules/PhysicalProperties.cpp
+        ../src/rules/Point3Property.cpp
+        ../src/rules/Vector3Property.cpp
+        ../src/rules/QuaternionProperty.cpp
         ../src/modules/WeakEntityRef.cpp
         ../src/common/Property.cpp
         ../src/common/TypeNode.cpp
@@ -338,6 +341,10 @@ wf_add_test(rules/PropertyEntityIntegration.cpp ../src/rules/simulation/Entity.c
         ../src/rules/Modifier.cpp)
 wf_add_test(rules/TerrainModPropertyIntegration.cpp ../src/rules/simulation/Entity.cpp
         ../src/rules/LocatedEntity.cpp
+        ../src/rules/PhysicalProperties.cpp
+        ../src/rules/Point3Property.cpp
+        ../src/rules/Vector3Property.cpp
+        ../src/rules/QuaternionProperty.cpp
         ../src/rules/simulation/TerrainEffectorProperty.cpp
         ../src/rules/simulation/TerrainModProperty.cpp
         ../src/rules/simulation/TerrainModTranslator.cpp
@@ -356,6 +363,9 @@ wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
         ../src/rules/BBoxProperty.cpp
         ../src/rules/SolidProperty.cpp
         ../src/rules/Vector3Property.cpp
+        ../src/rules/Point3Property.cpp
+        ../src/rules/QuaternionProperty.cpp
+        ../src/rules/PhysicalProperties.cpp
         ../src/rules/Location.cpp
         ../src/rules/EntityLocation.cpp
         ../src/common/Property.cpp

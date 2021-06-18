@@ -32,6 +32,14 @@
   }
 #endif //STUB_QuaternionProperty_set
 
+#ifndef STUB_QuaternionProperty_add
+//#define STUB_QuaternionProperty_add
+  void QuaternionProperty::add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const
+  {
+    
+  }
+#endif //STUB_QuaternionProperty_add
+
 #ifndef STUB_QuaternionProperty_copy
 //#define STUB_QuaternionProperty_copy
   QuaternionProperty* QuaternionProperty::copy() const

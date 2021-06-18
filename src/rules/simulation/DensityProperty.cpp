@@ -24,6 +24,7 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <iostream>
+#include <rules/BBoxProperty.h>
 
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::Set;
@@ -38,9 +39,9 @@ void DensityProperty::apply(LocatedEntity&entity)
 
 void DensityProperty::updateMass(LocatedEntity& entity) const
 {
-
-    const auto& bbox = entity.m_location.bBox();
-    if (bbox.isValid()) {
+    auto bboxProp = entity.getPropertyClassFixed<BBoxProperty>();
+    if (bboxProp && bboxProp->data().isValid()) {
+        auto& bbox = bboxProp->data();
         WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
         float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
 

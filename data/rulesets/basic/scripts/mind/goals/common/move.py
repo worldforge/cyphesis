@@ -237,7 +237,7 @@ class MoveIt(Goal):
             if (self.what in me.things) == 0:
                 return 1
             what = me.things[self.what][0]
-            if what.location.parent.id != self.location.parent.id:
+            if what.parent.id != self.parent.id:
                 return 0
             return what.location.pos.distance(self.location.pos) < 1.5
         return False
@@ -254,7 +254,7 @@ class MoveIt(Goal):
             if (self.what in me.things) == 0:
                 return
             what = me.things[self.what][0]
-            if self.speed == 0 or what.location.parent.id != self.location.parent.id:
+            if self.speed == 0 or what.parent.id != self.parent.id:
                 return Operation("move", Entity(what.id, location=self.location))
             iloc = what.location.copy()
             vel = what.location.pos.unit_vector_to(self.location.pos)
@@ -319,7 +319,7 @@ class MoveMeToPossession(Goal):
             if (what in me.things) == 0: return
             what = me.things[what][0]
         target = what.location.copy()
-        if target.parent.id == me.entity.location.parent.id:
+        if target.parent.id == me.entity.parent.id:
             target.velocity = me.entity.location.pos.unit_vector_to(target.pos)
             target.rotation = target.velocity
             return Operation("move", Entity(me.entity.id, location=target))
@@ -395,7 +395,7 @@ class MoveMeToFocusWithinReach(Goal):
 #                 me.remove_knowledge('focus', what)
 #                 return
 #             target = thing.location.copy()
-#             if target.parent.id == me.entity.location.parent.id:
+#             if target.parent.id == me.entity.parent.id:
 #                 target.velocity = me.entity.location.pos.unit_vector_to(target.pos)
 #                 return Operation("move", Entity(me.entity.id, location=target))
 
@@ -486,11 +486,11 @@ class PickUpPossession(Goal):
             if (self.what in me.things) == 0:
                 return 0
             what = me.things[self.what][0]
-        if what.location.parent.id != me.entity.id:
-            if what.location.parent.id != me.entity.location.parent.id:
+        if what.parent.id != me.entity.id:
+            if what.parent.id != me.entity.parent.id:
                 me.remove_thing(what.id)
                 me.map.delete(what.id)
-        return what.location.parent.id == me.entity.id
+        return what.parent.id == me.entity.id
 
     def pick_it_up(self, me):
         what = self.what
@@ -522,10 +522,10 @@ class PickUpFocus(Goal):
             if thing is None:
                 continue
             # If its not not near us on the ground, forget about it.
-            if thing.location.parent.id != me.entity.location.parent.id:
+            if thing.parent.id != me.entity.parent.id:
                 me.remove_knowledge('focus', what)
                 continue
-            if thing.location.parent.id != me.entity.id:
+            if thing.parent.id != me.entity.id:
                 return 0
         return 1
 
@@ -534,7 +534,7 @@ class PickUpFocus(Goal):
             thing = get_focused_thing(me, what)
             if thing is None:
                 continue
-            if thing.location.parent.id != me.entity.id:
+            if thing.parent.id != me.entity.id:
                 print("Trying to pick up {}".format(str(thing)))
                 return Operation("move", Entity(thing.id, location=Location(me.entity, Point3D(0, 0, 0))))
 
@@ -710,7 +710,7 @@ class Accompany(Goal):
             self.irrelevant = 1
             return
         dist = distance_to(me.entity.location, who.location)
-        target = Location(me.entity.location.parent)
+        target = Location(me.entity.parent)
         square_dist = dist.sqr_mag()
         if square_dist > 64:
             # print "We must be far far away - run"

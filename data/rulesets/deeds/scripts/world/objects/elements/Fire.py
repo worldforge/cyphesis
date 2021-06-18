@@ -14,9 +14,9 @@ class Fire(server.Thing):
 
     def __init__(self, cpp):
         Ticks.init_ticks(self, self.tick_interval)
-        if self.location.parent:
+        if self.parent:
             print('initial burn')
-            self.send_world(Operation("consume", Entity(consume_type='fire'), to=self.location.parent))
+            self.send_world(Operation("consume", Entity(consume_type='fire'), to=self.parent))
         else:
             print('no parent')
 
@@ -25,11 +25,11 @@ class Fire(server.Thing):
         if Ticks.verify_tick(self, op, res, self.tick_interval):
             status_prop = self.props.status
             if status_prop is not None:
-                if self.location.parent:
+                if self.parent:
                     print("Flame eating into parent")
                     # We should send an Consume op to our parent.
                     # A 'fire' consume op should be ignored by most entities except those that are flammable.
-                    res += Operation("consume", Entity(consume_type='fire'), to=self.location.parent)
+                    res += Operation("consume", Entity(consume_type='fire'), to=self.parent)
                     # Reduce status of fire
                     res += Operation("set", Entity({"status!subtract": 0.2}), to=self)
 

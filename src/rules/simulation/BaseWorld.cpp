@@ -41,11 +41,10 @@ BaseWorld::BaseWorld(TimeProviderFnType timeProviderFn) :
 
 void BaseWorld::shutdown()
 {
-    debug(std::cout << "Flushing world with " << m_eobjects.size()
-                    << " entities" << std::endl << std::flush;);
+    debug_print("Flushing world with " << m_eobjects.size() << " entities");
     //Make sure that no entity references are retained.
     for (const auto& entry : m_eobjects) {
-        entry.second->m_location.m_parent = nullptr;
+        entry.second->m_parent = nullptr;
         if (entry.second->m_contains) {
             entry.second->m_contains->clear();
         }

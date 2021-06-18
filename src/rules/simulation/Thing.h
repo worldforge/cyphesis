@@ -25,9 +25,7 @@
 /// entities inherit.
 ///
 /// It can be used itself to represent any in-game object for which
-/// any special behavior can be described by a script. It provides
-/// functionality for movement, entity creation and destruction, attribute
-/// changing, and combustion.
+/// any special behavior can be described by a script.
 class Thing : public Entity
 {
     protected:

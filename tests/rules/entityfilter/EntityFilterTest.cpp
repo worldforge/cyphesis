@@ -54,7 +54,7 @@ struct TestEntity : Entity
 
     void destroy() override
     {
-        m_location.m_parent.reset();
+        m_parent = nullptr;
         Entity::destroy();
     }
 
@@ -115,7 +115,7 @@ struct TestDomain : Domain
             return positionOnQueriedEntity.isValid();
         }
         //Only allow reaching if parent or child
-        return reachingEntity.m_location.m_parent == &queriedEntity || queriedEntity.m_location.m_parent == &reachingEntity;
+        return reachingEntity.m_parent == &queriedEntity || queriedEntity.m_parent == &reachingEntity;
     }
 
     boost::optional<std::function<void()>> observeCloseness(LocatedEntity& reacher, LocatedEntity& target, double reach, std::function<void()> callback) override
@@ -203,12 +203,12 @@ struct TestContext
 //b1 contains bl1 which contains b3
         m_b1->m_contains = std::make_unique<LocatedEntitySet>();
         m_b1->m_contains->insert(m_bl1);
-        m_bl1->m_location.m_parent = m_b1;
+        m_bl1->m_parent = m_b1.get();
         m_b1->test_setDomain(std::make_unique<TestDomain>(*m_b1));
 
         m_bl1->m_contains = std::make_unique<LocatedEntitySet>();
         m_bl1->m_contains->insert(m_b3);
-        m_b3->m_location.m_parent = m_bl1;
+        m_b3->m_parent = m_bl1.get();
 
 
 //Set up testing environment for Outfit property
@@ -293,7 +293,7 @@ struct TestContext
         m_entityOnlyReachableWithPosition->setProperty("only_reachable_with_pos", std::make_unique<SoftProperty>(Element(1)));
         m_entityOnlyReachableWithPosition->setType(types["barrel"].get());
         m_b1->m_contains->emplace(m_entityOnlyReachableWithPosition);
-        m_entityOnlyReachableWithPosition->m_location.m_parent = m_b1;
+        m_entityOnlyReachableWithPosition->m_parent = m_b1.get();
     }
 
     ~TestContext()
@@ -860,3 +860,4 @@ const TypeNode* Inheritance::getType(const std::string& parent) const
 #include "../../stubs/common/stubInheritance.h"
 #include "../../stubs/common/stublog.h"
 #include "../../stubs/rules/stubModifier.h"
+#include "../../stubs/rules/stubPhysicalProperties.h"

@@ -28,11 +28,11 @@ from physics import *
 #             self.irrelevant()
 #             return
 #
-#         if not self.target().location.parent:
+#         if not self.target().parent:
 #             self.irrelevant()
 #             return
 #
-#         target_location = Location(self.target().location.parent,
+#         target_location = Location(self.target().parent,
 #                                    self.target().location.pos)
 #         target_location.velocity = Vector3D(0, -0.5, 0)
 #         new_loc = self.character.location.pos
@@ -42,7 +42,7 @@ from physics import *
 #         target_entity_moving = Entity(self.target().id, location=target_location)
 #
 #         # Replicate the diffrence in position to the corresponding change in height.
-#         target_location = Location(self.target().location.parent,
+#         target_location = Location(self.target().parent,
 #                                    Point3D(self.target().location.pos.x,
 #                                            self.target().location.pos.y + diff,
 #                                            self.target().location.pos.z))

@@ -85,6 +85,7 @@
 #include <vector>
 #include <cstring>
 #include <queue>
+#include <rules/SolidProperty.h>
 
 static const bool debug_flag = false;
 
@@ -357,7 +358,7 @@ void Awareness::removeObserver()
     }
 }
 
-void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity, bool isDynamic)
+void Awareness::addEntity(const MemEntity& observer, const MemEntity& entity, bool isDynamic)
 {
     auto I = mObservedEntities.find(entity.getIntId());
     if (I == mObservedEntities.end()) {
@@ -365,9 +366,12 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
         entityEntry->entityId = entity.getIntId();
         entityEntry->numberOfObservers = 1;
 //        entityEntry->location = entity.m_location;
-        entityEntry->isIgnored = !entity.m_location.bBox().isValid();
+        entityEntry->isIgnored = !entity.m_bbox.isValid();
         entityEntry->isMoving = isDynamic;
         entityEntry->isActorOwned = false;
+        auto solidPropery = entity.getPropertyClassFixed<SolidProperty>();
+        //TODO: handle the entity changing solid status
+        entityEntry->isSolid = !solidPropery || solidPropery->isTrue();
         if (isDynamic) {
             mMovingEntities.insert(entityEntry.get());
         }
@@ -393,7 +397,7 @@ void Awareness::addEntity(const MemEntity& observer, const LocatedEntity& entity
 
 }
 
-void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& entity)
+void Awareness::removeEntity(const MemEntity& observer, const MemEntity& entity)
 {
     auto I = mObservedEntities.find(entity.getIntId());
     if (I != mObservedEntities.end()) {
@@ -429,7 +433,7 @@ void Awareness::removeEntity(const MemEntity& observer, const LocatedEntity& ent
     }
 }
 
-void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEntity& entity)
+void Awareness::updateEntityMovement(const MemEntity& observer, const MemEntity& entity)
 {
     //This is called when either the position, orientation, velocity, location or size of the entity has been altered.
     auto I = mObservedEntities.find(entity.getIntId());
@@ -437,7 +441,7 @@ void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEnt
         EntityEntry* entityEntry = I->second.get();
         if (!entityEntry->isActorOwned || entityEntry->entityId == observer.getIntId()) {
             //If an entity was ignored previously because it didn't have a bbox, but now has, it shouldn't be ignored anymore.
-            if (entityEntry->isIgnored && entity.m_location.bBox().isValid()) {
+            if (entityEntry->isIgnored && entity.m_bbox.isValid()) {
                 debug_print("Stopped ignoring entity " << entity.getId())
 
                 entityEntry->isIgnored = false;
@@ -447,19 +451,21 @@ void Awareness::updateEntityMovement(const MemEntity& observer, const LocatedEnt
     }
 }
 
-void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const LocatedEntity& entity)
+void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const MemEntity& entity)
 {
+
     //If entity already is moving we just need to update its location
     if (entityEntry.isMoving) {
-        entityEntry.location = entity.m_location;
         //Otherwise check if the entity already isn't being ignored; if not we need to act as it means that
         //an entity which wasn't moving is now moving
+        entityEntry.transform = entity.m_transform;
+        entityEntry.movement = entity.m_movement;
     } else if (!entityEntry.isIgnored) {
         //Check if the bbox now is invalid
-        if (!entity.m_location.bBox().isValid()) {
+        if (!entity.m_bbox.isValid()) {
             debug_print("Ignoring entity " << entity.getId())
-            entityEntry.location = entity.m_location;
             entityEntry.isIgnored = true;
+
 
             //We must now mark those areas that the entities used to touch as dirty, as well as remove the entity areas
 
@@ -469,20 +475,18 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                 markTilesAsDirty(area.boundingBox());
             }
             mEntityAreas.erase(&entityEntry);
-
+            entityEntry.transform = entity.m_transform;
+            entityEntry.movement = entity.m_movement;
+            entityEntry.bbox = entity.m_bbox;
         } else {
 
             //Only update if there's a change
-            if (((entityEntry.location.bBox().isValid() || entity.m_location.bBox().isValid()) && entityEntry.location.bBox() != entity.m_location.bBox())
-                || ((entityEntry.location.pos().isValid() || entity.m_location.pos().isValid()) && entityEntry.location.pos() != entity.m_location.pos())
-                || ((entityEntry.location.velocity().isValid() || entity.m_location.velocity().isValid()) && (entityEntry.location.velocity() != entity.m_location.velocity()))
-                || ((entityEntry.location.orientation().isValid() || entity.m_location.orientation().isValid()) && entityEntry.location.orientation() != entity.m_location.orientation())) {
-                entityEntry.location = entity.m_location;
+            if (entityEntry.movement != entity.m_movement || entityEntry.transform != entity.m_transform || entityEntry.bbox != entity.m_bbox) {
 
                 debug_print("Updating entity location for entity " << entityEntry.entityId)
 
                 //If an entity which previously didn't move start moving we need to move it to the "movable entities" collection.
-                if (entity.m_location.m_velocity.isValid() && entity.m_location.m_velocity != WFMath::Vector<3>::ZERO()) {
+                if (entity.m_movement.velocity.data.isValid() && entity.m_movement.velocity.data != WFMath::Vector<3>::ZERO()) {
                     debug_print("Entity is now moving.")
                     mMovingEntities.insert(&entityEntry);
                     entityEntry.isMoving = true;
@@ -492,7 +496,13 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                         markTilesAsDirty(existingI->second.boundingBox());
                         mEntityAreas.erase(&entityEntry);
                     }
+                    entityEntry.transform = entity.m_transform;
+                    entityEntry.movement = entity.m_movement;
+                    entityEntry.bbox = entity.m_bbox;
                 } else {
+                    entityEntry.transform = entity.m_transform;
+                    entityEntry.movement = entity.m_movement;
+                    entityEntry.bbox = entity.m_bbox;
                     auto area = buildEntityAreas(entityEntry);
 
                     if (area.isValid()) {
@@ -508,6 +518,7 @@ void Awareness::processEntityMovementChange(EntityEntry& entityEntry, const Loca
                     }
                     debug_print("Entity affects " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size())
                 }
+
             }
         }
     }
@@ -542,21 +553,21 @@ bool Awareness::avoidObstacles(long avatarEntityId,
 
     WFMath::Ball<2> playerRadius(position, 5);
 
-    for (auto& entity : mMovingEntities) {
+    for (auto& entry : mMovingEntities) {
 
         //All of the entities have the same location as we have, so we don't need to resolve the position in the world.
 
-        if (entity->entityId == avatarEntityId) {
+        if (entry->entityId == avatarEntityId) {
             //Don't avoid ourselves.
             continue;
         }
 
-        double time_diff = currentTimestamp - entity->location.timeStamp();
 
         // Update location
-        Point3D pos = entity->location.pos();
-        if (entity->location.velocity().isValid()) {
-            pos += (entity->location.velocity() * time_diff);
+        auto pos = entry->transform.pos;
+        if (entry->movement.velocity.data.isValid()) {
+            double time_diff = currentTimestamp - entry->movement.velocity.timestamp;
+            pos += (entry->movement.velocity.data * time_diff);
         }
 
         if (!pos.isValid()) {
@@ -564,11 +575,11 @@ bool Awareness::avoidObstacles(long avatarEntityId,
         }
 
         WFMath::Point<2> entityView2dPos(pos.x(), pos.z());
-        WFMath::Ball<2> entityViewRadius(entityView2dPos, (entity->location.bBox().highCorner().x() - entity->location.bBox().lowCorner().z()) * 0.5);
+        WFMath::Ball<2> entityViewRadius(entityView2dPos, (entry->bbox.highCorner().x() - entry->bbox.lowCorner().z()) * 0.5);
         //WFMath::Ball<2> entityViewRadius(entityView2dPos, (entity->location.bBox().highCorner().x() - entity->location.bBox().lowCorner().z()));
 
         if (WFMath::Intersect(playerRadius, entityViewRadius, false) || WFMath::Contains(playerRadius, entityViewRadius, false)) {
-            nearestEntities.push(EntityCollisionEntry({static_cast<float>(WFMath::Distance(position, entityView2dPos)), entity, entityView2dPos, entityViewRadius}));
+            nearestEntities.push(EntityCollisionEntry({static_cast<float>(WFMath::Distance(position, entityView2dPos)), entry, entityView2dPos, entityViewRadius}));
         }
 
     }
@@ -580,7 +591,7 @@ bool Awareness::avoidObstacles(long avatarEntityId,
             const EntityCollisionEntry& entry = nearestEntities.top();
             auto& entity = entry.entity;
             float pos[]{static_cast<float>(entry.viewPosition.x()), 0, static_cast<float>(entry.viewPosition.y())};
-            float vel[]{static_cast<float>(entity->location.velocity().x()), 0, static_cast<float>(entity->location.velocity().z())};
+            float vel[]{static_cast<float>(entity->movement.velocity.data.x()), 0, static_cast<float>(entity->movement.velocity.data.z())};
             mObstacleAvoidanceQuery->addCircle(pos, entry.viewRadius.radius(), vel, vel);
             nearestEntities.pop();
             ++i;
@@ -813,10 +824,10 @@ bool Awareness::projectPosition(long entityId, WFMath::Point<3>& pos, double cur
     auto entityI = mObservedEntities.find(entityId);
     if (entityI != mObservedEntities.end()) {
         auto& entityEntry = entityI->second;
-        pos = entityEntry->location.m_pos;
-        const auto& velocity = entityEntry->location.m_velocity;
+        pos = entityEntry->transform.pos;
+        const auto& velocity = entityEntry->movement.velocity.data;
         if (velocity.isValid() && velocity != WFMath::Vector<3>::ZERO()) {
-            pos += (velocity * (currentServerTimestamp - entityEntry->location.timeStamp()));
+            pos += (velocity * (currentServerTimestamp - entityEntry->movement.velocity.timestamp));
         }
         return true;
     }
@@ -1042,13 +1053,11 @@ WFMath::RotBox<2> Awareness::buildEntityAreas(const EntityEntry& entity)
 {
 
     //The entity is solid (i.e. can be collided with) if it has a bbox and the "solid" property isn't set to false (or 0 as it's an int).
-    bool isSolid = entity.location.bBox().isValid() && entity.location.isSolid();
-
-    if (isSolid) {
+    if (entity.isSolid) {
         //we now have to get the location of the entity in world space
-        const WFMath::Point<3>& pos = entity.location.pos();
-        const WFMath::Quaternion& orientation = entity.location.orientation();
-        const BBox& bbox = entity.location.m_bBox;
+        const WFMath::Point<3>& pos = entity.transform.pos;
+        const WFMath::Quaternion& orientation = entity.transform.orientation;
+        const BBox& bbox = entity.bbox;
 
         //If it's below walkable height just skip it.
         if (bbox.highCorner().y() - bbox.lowCorner().y() < mStepHeight) {

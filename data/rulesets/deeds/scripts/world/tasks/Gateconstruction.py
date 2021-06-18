@@ -179,7 +179,7 @@ from physics import *
 #
 #         self.progress = 0
 #
-#         chunk_loc = Location(self.character.location.parent)
+#         chunk_loc = Location(self.character.parent)
 #         chunk_loc.pos = self.pos
 #         chunk_loc.orientation = self.character.location.orientation
 #         res = Oplist()

@@ -299,7 +299,7 @@ class NPCMind(ai.Mind):
         
         This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
         obj = self.map.update(op[0], op.get_seconds())
-        if obj.location.parent and obj.location.parent.id == self.entity.id:
+        if obj.parent and obj.parent.id == self.entity.id:
             self.add_thing(obj)
             if op.to != self.id:
                 self.transfers.append((op.from_, obj.id))
@@ -858,7 +858,7 @@ class NPCMind(ai.Mind):
         if vector.sqr_mag() < 0.1:
             return
         vector = vector.unit_vector()
-        newloc = Location(self.entity.location.parent)
+        newloc = Location(self.entity.parent)
         newloc.orientation = Quaternion(Vector3D(0, 0, 1), vector, Vector3D(0, 1, 0))
         return Operation("move", Entity(self.entity.id, location=newloc))
 

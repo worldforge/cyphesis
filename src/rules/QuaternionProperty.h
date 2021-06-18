@@ -42,6 +42,8 @@ class QuaternionProperty: public PropertyBase
 
         void set(const Atlas::Message::Element &) override;
 
+        void add(const std::string & key, const Atlas::Objects::Entity::RootEntity & ent) const override;
+
         const WFMath::Quaternion& data() const { return m_data; }
         WFMath::Quaternion& data() { return m_data; }
 

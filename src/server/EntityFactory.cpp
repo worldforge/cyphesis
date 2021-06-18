@@ -61,7 +61,6 @@ void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
     //The main use of this is when doing restoration from stored entities and we don't want to apply the default attributes directly when
     //the entity first is created.
     if (attributes.isValid()) {
-        thing.m_location.readFromEntity(attributes);
 
         auto attrs = attributes->asMessage();
         //First make sure that all properties are installed, since Entity::setAttr won't install props if they exist in the type.

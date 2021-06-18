@@ -23,9 +23,10 @@
 #include "CyPy_Quaternion.h"
 #include "CyPy_Axisbox.h"
 #include "CyPy_EntityLocation.h"
+#include "CyPy_RootEntity.h"
 
 CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
-    : WrapperBase(self, args, kwds)
+        : WrapperBase(self, args, kwds)
 {
 
     if (args.length() > 0) {
@@ -46,7 +47,7 @@ CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Py::Tuple& args, Py:
 }
 
 CyPy_Location::CyPy_Location(Py::PythonClassInstance* self, Location value)
-    : WrapperBase(self, std::move(value))
+        : WrapperBase(self, std::move(value))
 {
 
 }
@@ -56,6 +57,7 @@ void CyPy_Location::init_type()
     behaviors().name("Location");
     behaviors().doc("");
     PYCXX_ADD_NOARGS_METHOD(copy, copy, "");
+    PYCXX_ADD_VARARGS_METHOD(add_to_entity, add_to_entity, "Adds the location data to the supplied entity and return the entity.");
 
     behaviors().supportNumberType(Py::PythonType::support_number_subtract);
     behaviors().supportRepr();
@@ -67,6 +69,15 @@ Py::Object CyPy_Location::copy()
 {
     return wrap(m_value);
 }
+
+Py::Object CyPy_Location::add_to_entity(const Py::Tuple& args)
+{
+    args.verify_length(1);
+    auto& rootEntity = verifyObject<CyPy_RootEntity>(args.front());
+    m_value.addToEntity(rootEntity);
+    return args.front();
+}
+
 
 Py::Object CyPy_Location::getattro(const Py::String& name)
 {

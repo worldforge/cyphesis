@@ -5,7 +5,6 @@ add_library(rulessimulation
         World.cpp
         ExternalMind.cpp
         Movement.cpp
-        Pedestrian.cpp
         LineProperty.cpp
         AreaProperty.cpp
         TerrainProperty.cpp

@@ -228,3 +228,4 @@ void BaseWorld::setIsSuspended(bool suspended)
 #include "../stubs/common/stubRouter.h"
 #include "../stubs/rules/simulation/stubDomainProperty.h"
 #include "../stubs/rules/stubAtlasProperties.h"
+#include "../stubs/rules/stubPhysicalProperties.h"

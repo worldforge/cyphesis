@@ -168,61 +168,8 @@ void addToEntity(const Point3D & p, std::vector<double> & vd)
 
 #include "../../stubs/rules/stubScript.h"
 #include "../../stubs/rules/stubLocation.h"
-
-
-IdProperty::IdProperty(const std::string & data) : PropertyBase(prop_flag_persistence_ephem),
-                                                   m_data(data)
-{
-}
-
-int IdProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void IdProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     Atlas::Message::MapType & ent) const
-{
-}
-
-void IdProperty::add(const std::string & key,
-                     const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-IdProperty * IdProperty::copy() const
-{
-    return 0;
-}
-
-ContainsProperty::ContainsProperty(LocatedEntitySet & data) :
-        PropertyBase(prop_flag_persistence_ephem), m_data(data)
-{
-}
-
-int ContainsProperty::get(Atlas::Message::Element & e) const
-{
-    return 0;
-}
-
-void ContainsProperty::set(const Atlas::Message::Element & e)
-{
-}
-
-void ContainsProperty::add(const std::string & s,
-                           const Atlas::Objects::Entity::RootEntity & ent) const
-{
-}
-
-ContainsProperty * ContainsProperty::copy() const
-{
-    return 0;
-}
-
+#include "../../stubs/rules/stubAtlasProperties.h"
+#include "../../stubs/rules/stubPhysicalProperties.h"
 #include "../../stubs/common/stubPropertyManager.h"
 #include "../../stubs/common/stubid.h"
 #include "../../stubs/common/stublog.h"

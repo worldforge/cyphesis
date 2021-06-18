@@ -23,6 +23,7 @@
 
 #include "rules/LocatedEntity.h"
 #include "rules/Location.h"
+#include "rules/MemEntity.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/rotbox.h>
@@ -39,7 +40,6 @@
 #include <unordered_map>
 #include <functional>
 
-class MemEntity;
 
 class LocatedEntity;
 
@@ -103,7 +103,10 @@ struct EntityEntry
     long entityId;
     int numberOfObservers;
 
-    Location location;
+    TransformData transform;
+    MovementData movement;
+    WFMath::AxisBox<3> bbox;
+    //Location location;
 
     /**
      * True if this entity is owned by an actor. These entities should not be updated by sights by other actors: only the actor itself should update it.
@@ -119,6 +122,11 @@ struct EntityEntry
      * True if this entity is ignored.
      */
     bool isIgnored;
+
+    /**
+     * True if this entity is solid.
+     */
+    bool isSolid;
 };
 
 
@@ -255,7 +263,7 @@ class Awareness
          * @param entity The entity to observe.
          * @param isDynamic True if the entity is moving, or is expected to move. This will remove it from the navmesh, and it will instead be treated as an "obstacle" when moving.
          */
-        void addEntity(const MemEntity& observer, const LocatedEntity& entity, bool isDynamic);
+        void addEntity(const MemEntity& observer, const MemEntity& entity, bool isDynamic);
 
         /**
          * Removes an observation of an entity.
@@ -264,9 +272,9 @@ class Awareness
          * @param observer The observer entity.
          * @param entity The entity to remove.
          */
-        void removeEntity(const MemEntity& observer, const LocatedEntity& entity);
+        void removeEntity(const MemEntity& observer, const MemEntity& entity);
 
-        void updateEntityMovement(const MemEntity& observer, const LocatedEntity& entity);
+        void updateEntityMovement(const MemEntity& observer, const MemEntity& entity);
 
         /**
          * @brief Emitted when a tile is updated.
@@ -464,7 +472,7 @@ class Awareness
          */
         size_t mObserverCount;
 
-        void processEntityMovementChange(EntityEntry& entry, const LocatedEntity& entity);
+        void processEntityMovementChange(EntityEntry& entry, const MemEntity& entity);
 
         /**
          * @brief Rebuild the tile at the specific index.
