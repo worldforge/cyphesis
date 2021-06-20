@@ -122,6 +122,8 @@ int main()
         expect_python_error("o + 1", PyExc_TypeError);
         run_python_string("assert type(o + Oplist()) == Oplist");
         run_python_string("assert type(o + Operation('get')) == Oplist");
+        run_python_string("assert type(o + None) == Operation");
+        run_python_string("assert type(None + o) == Operation");
         run_python_string("assert type(o.from_) == str");
         run_python_string("assert type(o.to) == str");
         run_python_string("assert type(o.id) == str");

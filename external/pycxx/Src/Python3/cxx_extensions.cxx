@@ -745,6 +745,19 @@ PythonExtensionBase *getPythonExtensionBase( PyObject *self )
     }
 }
 
+PythonExtensionBase *getPythonExtensionBaseExact( PyObject *self )
+{
+    if( self->ob_type->tp_flags&Py_TPFLAGS_BASETYPE )
+    {
+        PythonClassInstance *instance = reinterpret_cast<PythonClassInstance *>( self );
+        return instance->m_pycxx_object;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
 #ifdef PYCXX_PYTHON_2TO3
 extern "C" int print_handler( PyObject *self, FILE *fp, int flags )
 {
@@ -1135,8 +1148,13 @@ extern "C" PyObject *number_add_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_add( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_add( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_add( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1148,8 +1166,13 @@ extern "C" PyObject *number_subtract_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_subtract( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_subtract( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_subtract( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1161,8 +1184,13 @@ extern "C" PyObject *number_multiply_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_multiply( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_multiply( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_multiply( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1174,8 +1202,13 @@ extern "C" PyObject *number_remainder_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_remainder( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_remainder( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_remainder( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1187,8 +1220,13 @@ extern "C" PyObject *number_divmod_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_divmod( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_divmod( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_divmod( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1200,8 +1238,13 @@ extern "C" PyObject *number_lshift_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_lshift( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_lshift( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_lshift( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1213,8 +1256,13 @@ extern "C" PyObject *number_rshift_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_rshift( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_rshift( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_rshift( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1226,8 +1274,13 @@ extern "C" PyObject *number_and_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_and( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_and( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_and( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1239,8 +1292,13 @@ extern "C" PyObject *number_xor_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_xor( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_xor( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_xor( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1252,8 +1310,13 @@ extern "C" PyObject *number_or_handler( PyObject *self, PyObject *other )
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_or( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_or( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_or( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1278,8 +1341,13 @@ extern "C" PyObject *number_floor_divide_handler( PyObject *self, PyObject *othe
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_floor_divide( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_floor_divide( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_floor_divide( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1291,8 +1359,13 @@ extern "C" PyObject *number_true_divide_handler( PyObject *self, PyObject *other
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_true_divide( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_true_divide( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_true_divide( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1303,8 +1376,13 @@ extern "C" PyObject *number_inplace_floor_divide_handler( PyObject *self, PyObje
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_inplace_floor_divide( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_inplace_floor_divide( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_inplace_floor_divide( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
@@ -1315,8 +1393,13 @@ extern "C" PyObject *number_inplace_true_divide_handler( PyObject *self, PyObjec
 {
     try
     {
-        PythonExtensionBase *p = getPythonExtensionBase( self );
-        return new_reference_to( p->number_inplace_true_divide( Object( other ) ) );
+        PythonExtensionBase *p = getPythonExtensionBaseExact( self );
+        if (p) {
+            return new_reference_to( p->number_inplace_true_divide( Object( other ) ) );
+        } else {
+            p = getPythonExtensionBase(other);
+            return new_reference_to( p->number_inplace_true_divide( Object( self ) ) );
+        }
     }
     catch( BaseException & )
     {
