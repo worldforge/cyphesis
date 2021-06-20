@@ -41,8 +41,8 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 IGEntityExerciser::IGEntityExerciser(const Ref<Entity>& e) :
                            EntityExerciser(e), m_ent(e) {

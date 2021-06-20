@@ -32,11 +32,18 @@ struct TestEntity : LocatedEntity
     TestEntity() : LocatedEntity(idGenerator++)
     {
     }
+
     TestEntity(long intId) : LocatedEntity(std::to_string(intId), intId)
     {
     }
+
     TestEntity(const std::string& id, long intId) : LocatedEntity(id, intId)
     {
+    }
+
+    std::unique_ptr<PropertyBase> createProperty(const std::string& propertyName) const override
+    {
+        return {};
     }
 
     void externalOperation(const Operation& op, Link& link) override
@@ -60,6 +67,7 @@ struct TestEntity : LocatedEntity
         }
     }
 };
+
 long TestEntity::idGenerator = 0;
 
 std::function<void(TestEntity&, const Operation&, Link&)> TestEntity::externalOperationFn;

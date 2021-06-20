@@ -40,8 +40,8 @@
 
 #include <iostream>
 #include <rules/ScaleProperty.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 #include "rules/entityfilter/Providers.h"
 #include "common/Inheritance.h"
 

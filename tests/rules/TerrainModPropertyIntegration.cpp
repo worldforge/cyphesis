@@ -37,7 +37,7 @@
 #include "../stubs/rules/stubAtlasProperties.h"
 
 #include <Atlas/Objects/Operation.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/PhysicalProperties.h"
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Operation::Delete;

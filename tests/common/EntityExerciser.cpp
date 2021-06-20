@@ -42,6 +42,8 @@
 
 #include <cassert>
 
+PropertyManager* LocatedEntityTest::propertyManager = nullptr;
+
 void LocatedEntityTest::externalOperation(const Operation & op, Link &)
 {
 }

@@ -44,7 +44,7 @@ using Atlas::Objects::Root;
 
 class ExposedRuleset : public Ruleset {
   public:
-    ExposedRuleset(EntityBuilder & eb, boost::asio::io_context& io_context, const PropertyManager& propertyManager) : Ruleset(eb, io_context, propertyManager) { }
+    ExposedRuleset(EntityBuilder & eb, boost::asio::io_context& io_context, PropertyManager& propertyManager) : Ruleset(eb, io_context, propertyManager) { }
 
     void test_getRulesFromFiles(const std::string & ruleset,
                            std::map<std::string, Root> & rules) {

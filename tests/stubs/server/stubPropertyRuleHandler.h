@@ -7,6 +7,15 @@
 #include "server/PropertyRuleHandler.h"
 #include "stubPropertyRuleHandler_custom.h"
 
+#ifndef STUB_PropertyRuleHandler_PropertyRuleHandler
+//#define STUB_PropertyRuleHandler_PropertyRuleHandler
+   PropertyRuleHandler::PropertyRuleHandler(PropertyManager& propertyManager)
+    : RuleHandler(propertyManager)
+  {
+    
+  }
+#endif //STUB_PropertyRuleHandler_PropertyRuleHandler
+
 #ifndef STUB_PropertyRuleHandler_check
 //#define STUB_PropertyRuleHandler_check
   int PropertyRuleHandler::check(const Atlas::Objects::Root& desc)

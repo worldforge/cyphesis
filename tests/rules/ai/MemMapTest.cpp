@@ -27,7 +27,7 @@
 
 #include "rules/ai/MemMap.h"
 
-#include "rules/MemEntity.h"
+#include "rules/ai/MemEntity.h"
 #include "rules/Script.h"
 
 #include "common/TypeNode.h"
@@ -509,3 +509,4 @@ WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 }
 #include "../../stubs/common/stublog.h"
 #include "../../stubs/common/stubid.h"
+#include "../../stubs/rules/ai/stubMemEntityProperties.h"

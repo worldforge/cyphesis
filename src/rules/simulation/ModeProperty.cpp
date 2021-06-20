@@ -26,8 +26,8 @@
 #include <Atlas/Objects/Entity.h>
 #include <Atlas/Objects/Operation.h>
 #include <wfmath/atlasconv.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 
 ModeProperty::ModeProperty()

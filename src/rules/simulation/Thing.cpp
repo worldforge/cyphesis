@@ -33,7 +33,7 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/PhysicalProperties.h"
 
 using Atlas::Objects::smart_dynamic_cast;
 

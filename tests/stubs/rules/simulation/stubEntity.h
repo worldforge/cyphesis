@@ -7,6 +7,14 @@
 #include "rules/simulation/Entity.h"
 #include "stubEntity_custom.h"
 
+#ifndef STUB_Entity_createProperty
+//#define STUB_Entity_createProperty
+  std::unique_ptr<PropertyBase> Entity::createProperty(const std::string& propertyName) const
+  {
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
+  }
+#endif //STUB_Entity_createProperty
+
 #ifndef STUB_Entity_Entity
 //#define STUB_Entity_Entity
    Entity::Entity(long intId)

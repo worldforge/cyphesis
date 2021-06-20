@@ -208,8 +208,8 @@ wf_add_test(rules/VisibilityPropertyTest.cpp PropertyCoverage.cpp ../src/rules/s
         ../src/common/Property.cpp)
 
 wf_add_test(rules/ai/BaseMindTest.cpp ../src/rules/ai/BaseMind.cpp ../src/rules/ai/MemMap.cpp)
-wf_add_test(rules/MemEntityTest.cpp ../src/rules/MemEntity.cpp)
-wf_add_test(rules/ai/MemMapTest.cpp ../src/rules/ai/MemMap.cpp ../src/rules/MemEntity.cpp)
+wf_add_test(rules/MemEntityTest.cpp ../src/rules/ai/MemEntity.cpp)
+wf_add_test(rules/ai/MemMapTest.cpp ../src/rules/ai/MemMap.cpp ../src/rules/ai/MemEntity.cpp)
 wf_add_test(rules/MovementTest.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(server/ExternalMindTest.cpp ../src/rules/simulation/ExternalMind.cpp)
 wf_add_test(rules/PythonContextTest.cpp ../src/rules/python/PythonContext.cpp)
@@ -357,7 +357,7 @@ wf_add_test(rules/simulation/ContainedVisibilityPropertyIntegration.cpp ../src/r
         ../src/rules/LocatedEntity.cpp)
 wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
         ../src/rules/ai/BaseMind.cpp
-        ../src/rules/MemEntity.cpp
+        ../src/rules/ai/MemEntity.cpp
         ../src/rules/LocatedEntity.cpp
         ../src/rules/ai/MemMap.cpp
         ../src/rules/BBoxProperty.cpp
@@ -369,7 +369,8 @@ wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
         ../src/rules/Location.cpp
         ../src/rules/EntityLocation.cpp
         ../src/common/Property.cpp
-        ../src/client/ClientPropertyManager.cpp)
+        ../src/client/ClientPropertyManager.cpp
+        ../src/rules/ai/MemEntityProperties.cpp)
 wf_add_test(rules/simulation/AreaPropertyIntegration.cpp ../src/rules/simulation/AreaProperty.cpp
         ../src/rules/simulation/Entity.cpp
         ../src/rules/LocatedEntity.cpp
@@ -554,6 +555,7 @@ target_link_libraries(EntityExporterTest common)
 wf_add_test(navigation/SteeringIntegration.cpp)
 target_link_libraries(SteeringIntegration
         navigation
+        rulesai
         rulesbase
         modules
         common

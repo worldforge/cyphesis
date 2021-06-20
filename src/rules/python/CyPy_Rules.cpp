@@ -16,13 +16,13 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rules/PhysicalProperties.h>
 #include "CyPy_Rules.h"
 #include "CyPy_Props.h"
 #include "CyPy_Location.h"
 #include "CyPy_EntityLocation.h"
-#include "CyPy_MemEntity.h"
+#include "CyPy_LocatedEntity.h"
 #include "CyPy_RootEntity.h"
+#include "rules/PhysicalProperties.h"
 #include <wfmath/atlasconv.h>
 
 CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
@@ -30,7 +30,6 @@ CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
     CyPy_Props::init_type();
     CyPy_Location::init_type();
     CyPy_EntityLocation::init_type();
-    CyPy_MemEntity::init_type();
 
     add_varargs_method("isLocation", &CyPy_Rules::is_location, "");
     add_varargs_method("extract_location", &CyPy_Rules::extract_location, "Extracts all location data from the entity into the root entity message.");
@@ -41,7 +40,6 @@ CyPy_Rules::CyPy_Rules() : ExtensionModule("rules")
 
     d["Location"] = CyPy_Location::type();
     d["EntityLocation"] = CyPy_EntityLocation::type();
-    d["MemEntity"] = CyPy_MemEntity::type();
 
 }
 

@@ -18,7 +18,7 @@
 
 #include "MemMap.h"
 
-#include "rules/MemEntity.h"
+#include "MemEntity.h"
 #include "BaseMind.h"
 #include "rules/Script.h"
 #include "TypeResolver.h"
@@ -30,8 +30,8 @@
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 static const bool debug_flag = false;
 

@@ -23,3 +23,10 @@ void Entity::destroy()
 }
 #endif
 
+#ifndef STUB_Entity_createProperty
+#define STUB_Entity_createProperty
+std::unique_ptr<PropertyBase> Entity::createProperty(const std::string& propertyName) const
+{
+    return {};
+}
+#endif //STUB_Entity_createProperty

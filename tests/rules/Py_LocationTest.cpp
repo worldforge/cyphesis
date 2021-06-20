@@ -66,7 +66,7 @@ int main()
         expect_python_error("rules.Location(1,1,1)", PyExc_TypeError);
         run_python_string("rules.Location(server.Thing('1'))");
         //run_python_string("rules.Location(server.World())");
-        run_python_string("rules.Location(rules.MemEntity('1'))");
+        run_python_string("rules.Location(ai.MemEntity('1'))");
         expect_python_error("rules.Location(server.Thing('1'), 1)",
                             PyExc_TypeError);
         run_python_string("rules.Location(server.Thing('1'), Point3D(0,0,0))");

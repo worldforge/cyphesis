@@ -24,6 +24,14 @@
   }
 #endif //STUB_CyPy_Rules_is_location
 
+#ifndef STUB_CyPy_Rules_extract_location
+//#define STUB_CyPy_Rules_extract_location
+  Py::Object CyPy_Rules::extract_location(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Rules_extract_location
+
 #ifndef STUB_CyPy_Rules_init
 //#define STUB_CyPy_Rules_init
    std::string CyPy_Rules::init()

@@ -24,6 +24,14 @@
   }
 #endif //STUB_LocatedEntity_collectObserversForChild
 
+#ifndef STUB_LocatedEntity_createProperty
+//#define STUB_LocatedEntity_createProperty
+  std::unique_ptr<PropertyBase> LocatedEntity::createProperty(const std::string& propertyName) const
+  {
+    return *static_cast<std::unique_ptr<PropertyBase>*>(nullptr);
+  }
+#endif //STUB_LocatedEntity_createProperty
+
 #ifndef STUB_LocatedEntity_LocatedEntity
 //#define STUB_LocatedEntity_LocatedEntity
    LocatedEntity::LocatedEntity(long intId)

@@ -204,6 +204,7 @@ void LocatedEntitytest::test_coverage()
 int main()
 {
     TestPropertyManager propertyManager;
+    LocatedEntityTest::propertyManager = &propertyManager;
     // Test constructor
     {
         LocatedEntityTest e("1", 1);

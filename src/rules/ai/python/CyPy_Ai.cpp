@@ -19,7 +19,7 @@
 #include "CyPy_Ai.h"
 #include "CyPy_BaseMind.h"
 #include "CyPy_MemMap.h"
-#include "rules/python/CyPy_MemEntity.h"
+#include "CyPy_MemEntity.h"
 #include "CyPy_Steering.h"
 
 CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
@@ -28,6 +28,7 @@ CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
     CyPy_BaseMind::init_type();
     CyPy_MemMap::init_type();
     CyPy_Steering::init_type();
+    CyPy_MemEntity::init_type();
 
     initialize("Responsible for handling AI behaviour.");
 
@@ -35,6 +36,7 @@ CyPy_Ai::CyPy_Ai() : ExtensionModule("ai")
     d["Mind"] = CyPy_BaseMind::type();
     d["MemMap"] = CyPy_MemMap::type();
     d["Steering"] = CyPy_Steering::type();
+    d["MemEntity"] = CyPy_MemEntity::type();
 
     d["CENTER"] = Py::Long(0);
     d["EDGE"] = Py::Long(1);

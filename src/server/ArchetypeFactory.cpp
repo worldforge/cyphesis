@@ -29,8 +29,8 @@
 
 #include <wfmath/atlasconv.h>
 #include <common/Inheritance.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 using Atlas::Message::MapType;
 using Atlas::Message::ListType;

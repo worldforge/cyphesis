@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H
 #define CYPHESIS_CYPY_LOCATEDENTITY_IMPL_H
 
-#include <rules/PhysicalProperties.h>
+#include "rules/PhysicalProperties.h"
 #include <rules/BBoxProperty.h>
 #include "CyPy_LocatedEntity.h"
 #include "CyPy_Point3D.h"

@@ -34,6 +34,7 @@
 #include "common/SystemTime.h"
 #include "common/Property_impl.h"
 #include "../DatabaseNull.h"
+#include "../TestPropertyManager.h"
 
 #include <cassert>
 #include <server/EntityBuilder.h>
@@ -42,7 +43,7 @@ using Atlas::Message::Element;
 
 struct TestStorageManager : public StorageManager
 {
-    TestStorageManager(WorldRouter& w, Database& db, EntityBuilder& eb) : StorageManager(w, db, eb)
+    TestStorageManager(WorldRouter& w, Database& db, EntityBuilder& eb, PropertyManager& propertyManager) : StorageManager(w, db, eb, propertyManager)
     {}
 
 
@@ -89,19 +90,20 @@ int main()
     EntityBuilder eb;
     DatabaseNull database;
     Persistence persistence(database);
+    TestPropertyManager propertyManager;
 
     Ref<LocatedEntity> le(new Entity("", 0));
 
     {
         WorldRouter world(le, eb, {});
 
-        StorageManager store(world, database, eb);
+        StorageManager store(world, database, eb, propertyManager);
     }
 
     {
         WorldRouter world(le, eb, {});
 
-        StorageManager store(world, database, eb);
+        StorageManager store(world, database, eb, propertyManager);
 
         store.initWorld(le);
     }
@@ -109,7 +111,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        StorageManager store(world, database, eb);
+        StorageManager store(world, database, eb, propertyManager);
 
         store.restoreWorld(le);
     }
@@ -117,7 +119,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        StorageManager store(world, database, eb);
+        StorageManager store(world, database, eb, propertyManager);
 
         store.tick();
     }
@@ -125,7 +127,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
         Ref<Entity> e1(new Entity("1", 1));
         store.test_entityInserted(*e1);
     }
@@ -133,7 +135,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
         Ref<Entity> e1(new Entity("1", 1));
         store.test_entityUpdated(*e1);
     }
@@ -141,7 +143,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
 
         std::string val;
 
@@ -151,7 +153,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
 
         Ref<Entity> e1(new Entity("1", 1));
         store.test_restoreProperties(*e1);
@@ -160,7 +162,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
 
         Ref<Entity> e1(new Entity("1", 1));
         store.test_insertEntity(*e1);
@@ -169,7 +171,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
 
         Ref<Entity> e1(new Entity("1", 1));
         store.test_updateEntity(*e1);
@@ -178,7 +180,7 @@ int main()
     {
         WorldRouter world(le, eb, {});
 
-        TestStorageManager store(world, database, eb);
+        TestStorageManager store(world, database, eb, propertyManager);
 
         Ref<Entity> e1(new Entity("1", 1));
         store.test_restoreChildren(*e1);
@@ -289,16 +291,6 @@ class Variable<std::string>;
 
 #include "../stubs/common/stubMonitors.h"
 #include "../stubs/common/stubOperationsDispatcher.h"
-
-template<typename T>
-void Property<T>::set(const Atlas::Message::Element& e)
-{
-}
-
-template
-class Property<MapType>;
-
-
 long forceIntegerId(const std::string& id)
 {
     long intId = strtol(id.c_str(), 0, 10);
@@ -323,3 +315,4 @@ namespace consts {
 }
 
 #include "../stubs/common/stubcustom.h"
+#include "../stubs/common/stubProperty.h"

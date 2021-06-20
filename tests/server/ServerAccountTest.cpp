@@ -40,8 +40,8 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 using Atlas::Message::MapType;
 using Atlas::Objects::Root;

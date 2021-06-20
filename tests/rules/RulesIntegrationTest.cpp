@@ -35,8 +35,8 @@
 #include <rules/simulation/WorldRouter.h>
 #include <rules/simulation/MindsProperty.h>
 #include <rules/BBoxProperty.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Wield;

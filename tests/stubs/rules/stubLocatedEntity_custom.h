@@ -84,3 +84,11 @@ std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
 {
     return s;
 }
+
+#ifndef STUB_LocatedEntity_createProperty
+#define STUB_LocatedEntity_createProperty
+std::unique_ptr<PropertyBase> LocatedEntity::createProperty(const std::string& propertyName) const
+{
+    return {};
+}
+#endif //STUB_LocatedEntity_createProperty

@@ -44,8 +44,8 @@
 
 #include <cassert>
 #include <server/Persistence.h>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;

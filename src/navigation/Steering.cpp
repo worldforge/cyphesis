@@ -19,7 +19,7 @@
 #include "Steering.h"
 #include "Awareness.h"
 
-#include "rules/MemEntity.h"
+#include "rules/ai/MemEntity.h"
 #include "rules/ScaleProperty.h"
 
 #include <wfmath/point.h>
@@ -28,7 +28,7 @@
 #include <wfmath/segment.h>
 
 #include <rules/Vector3Property.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/PhysicalProperties.h"
 
 static const bool debug_flag = true;
 

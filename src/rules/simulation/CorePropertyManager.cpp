@@ -70,8 +70,8 @@
 #include <Atlas/Objects/Operation.h>
 
 #include <iostream>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 
 using Atlas::Message::Element;

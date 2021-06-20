@@ -73,5 +73,13 @@
   }
 #endif //STUB_CyPy_Location_copy
 
+#ifndef STUB_CyPy_Location_add_to_entity
+//#define STUB_CyPy_Location_add_to_entity
+  Py::Object CyPy_Location::add_to_entity(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Location_add_to_entity
+
 
 #endif

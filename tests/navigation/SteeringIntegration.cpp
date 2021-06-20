@@ -19,7 +19,7 @@
 #include <navigation/Steering.h>
 #include <navigation/Awareness.h>
 #include "navigation/IHeightProvider.h"
-#include "rules/MemEntity.h"
+#include "rules/ai/MemEntity.h"
 #include "../TestBase.h"
 #include "../TestWorld.h"
 

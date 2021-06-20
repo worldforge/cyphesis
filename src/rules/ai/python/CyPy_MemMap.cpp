@@ -16,10 +16,10 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 #include "CyPy_MemMap.h"
-#include "rules/python/CyPy_MemEntity.h"
+#include "CyPy_MemEntity.h"
 #include "rules/python/CyPy_RootEntity.h"
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 

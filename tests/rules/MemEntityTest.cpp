@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "rules/MemEntity.h"
+#include "rules/ai/MemEntity.h"
 #include "rules/SolidProperty.h"
 #include "common/Property_impl.h"
 
@@ -48,3 +48,4 @@ int main()
 #include "../stubs/rules/stubBBoxProperty.h"
 #include "../stubs/rules/stubScaleProperty.h"
 #include "../stubs/rules/stubSolidProperty.h"
+#include "../stubs/rules/ai/stubMemEntityProperties.h"

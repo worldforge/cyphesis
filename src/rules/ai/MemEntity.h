@@ -20,41 +20,7 @@
 #define RULESETS_MEM_ENTITY_H
 
 #include "rules/LocatedEntity.h"
-
-struct TransformData
-{
-    WFMath::Point<3> pos;
-    WFMath::Quaternion orientation;
-
-    bool operator!=(const TransformData& rhs) const
-    {
-        return pos != rhs.pos
-               || orientation != rhs.orientation;
-    }
-};
-
-struct MovementData
-{
-    struct
-    {
-        WFMath::Vector<3> data;
-        double timestamp = 0;
-    } velocity;
-    struct
-    {
-        WFMath::Vector<3> data;
-        double timestamp = 0;
-    } angular;
-
-    bool operator!=(const MovementData& rhs) const
-    {
-        return velocity.timestamp != rhs.velocity.timestamp
-               || velocity.data != rhs.velocity.data
-               || angular.data != rhs.angular.data
-               || angular.timestamp != rhs.angular.timestamp;
-    }
-};
-
+#include "MemEntityProperties.h"
 /// \brief This class is used to represent entities inside MemMap used
 /// by the mind of an AI.
 ///

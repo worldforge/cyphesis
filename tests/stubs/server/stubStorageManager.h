@@ -73,8 +73,8 @@
 
 #ifndef STUB_StorageManager_StorageManager
 //#define STUB_StorageManager_StorageManager
-   StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder)
-    : sigc::trackable(world, db, entityBuilder)
+   StorageManager::StorageManager(WorldRouter& world, Database& db, EntityBuilder& entityBuilder, PropertyManager& propertyManager)
+    : sigc::trackable(world, db, entityBuilder, propertyManager)
   {
     
   }

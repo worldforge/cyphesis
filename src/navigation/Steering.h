@@ -31,7 +31,7 @@
 
 #include <boost/optional.hpp>
 #include <rules/Location.h>
-#include <rules/MemEntity.h>
+#include "rules/ai/MemEntity.h"
 
 
 class Awareness;

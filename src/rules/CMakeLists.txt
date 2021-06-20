@@ -13,7 +13,6 @@ add_library(rulesbase
         Domain.cpp
         BBoxProperty.cpp
         ScaleProperty.cpp
-        MemEntity.cpp
         Modifier.cpp
         PhysicalProperties.cpp)
 add_subdirectory(python)

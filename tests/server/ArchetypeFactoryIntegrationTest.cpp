@@ -45,7 +45,7 @@
 #include <Atlas/Objects/Decoder.h>
 #include <Atlas/Codecs/XML.h>
 #include <common/Monitors.h>
-#include <rules/AtlasProperties.h>
+#include "rules/AtlasProperties.h"
 #include <server/ArchetypeRuleHandler.h>
 #include <server/EntityRuleHandler.h>
 

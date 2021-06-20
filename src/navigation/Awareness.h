@@ -23,7 +23,7 @@
 
 #include "rules/LocatedEntity.h"
 #include "rules/Location.h"
-#include "rules/MemEntity.h"
+#include "rules/ai/MemEntity.h"
 
 #include <wfmath/axisbox.h>
 #include <wfmath/rotbox.h>

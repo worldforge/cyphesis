@@ -282,7 +282,7 @@ int main()
 #include "../../stubs/common/stubcustom.h"
 #include "../../stubs/common/stubRouter.h"
 #include "../../stubs/common/stubInheritance.h"
-#include "../../stubs/rules/stubMemEntity.h"
+#include "../../stubs/rules/ai/stubMemEntity.h"
 #include "../../stubs/rules/stubLocatedEntity.h"
 #include "../../stubs/common/stubProperty.h"
 #include "../../stubs/common/stubPropertyManager.h"

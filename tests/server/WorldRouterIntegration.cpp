@@ -46,7 +46,7 @@
 
 
 #include <cassert>
-#include <rules/PhysicalProperties.h>
+#include "rules/PhysicalProperties.h"
 
 #include "../DatabaseNull.h"
 #include "../TestPropertyManager.h"
@@ -281,7 +281,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "../stubs/rules/simulation/stubTerrainProperty.h"
 #include "../stubs/rules/simulation/stubDomainProperty.h"
 #include "../stubs/rules/ai/stubBaseMind.h"
-#include "../stubs/rules/stubMemEntity.h"
+#include "../stubs/rules/ai/stubMemEntity.h"
 #include "../stubs/rules/ai/stubMemMap.h"
 #include "../stubs/rules/simulation/stubPropelProperty.h"
 #include "../stubs/rules/python/stubPythonClass.h"

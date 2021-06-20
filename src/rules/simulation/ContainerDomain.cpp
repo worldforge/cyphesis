@@ -31,8 +31,8 @@
 #include <unordered_set>
 #include <common/operations/Update.h>
 #include <algorithm>
-#include <rules/AtlasProperties.h>
-#include <rules/PhysicalProperties.h>
+#include "rules/AtlasProperties.h"
+#include "rules/PhysicalProperties.h"
 
 ContainerDomain::ContainerDomain(LocatedEntity& entity) :
         Domain(entity),
