@@ -72,6 +72,7 @@ int LocationProperty::get(Atlas::Message::Element& val) const
     if (m_data.m_parent) {
         val = m_data.m_parent->getId();
     }
+    return 0;
 }
 
 void LocationProperty::set(const Atlas::Message::Element& val)
@@ -101,7 +102,8 @@ LocationProperty* LocationProperty::copy() const
 
 const std::string& LocationProperty::data() const
 {
-    return m_data.m_parent ? m_data.m_parent->getId() : "";
+    static std::string empty;
+    return m_data.m_parent ? m_data.m_parent->getId() : empty;
 }
 
 
