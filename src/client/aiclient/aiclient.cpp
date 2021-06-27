@@ -135,93 +135,97 @@ int main(int argc, char** argv)
     }
 
 
-    boost::asio::io_context io_context;
 
     {
-        FileSystemObserver file_system_observer(io_context);
-
         ClientPropertyManager propertyManager{};
         SimpleTypeStore typeStore(propertyManager);
-        AwareMindFactory mindFactory(typeStore);
 
-        AssetsManager assets_manager(file_system_observer);
-        assets_manager.init();
+        {
+            boost::asio::io_context io_context;
+            FileSystemObserver file_system_observer(io_context);
+            AwareMindFactory mindFactory(typeStore);
 
-
-        std::vector<std::string> python_directories;
-        // Add the path to the non-ruleset specific code.
-        python_directories.push_back(share_directory + "/cyphesis/scripts");
-        python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
-
-        init_python_api({&CyPy_Ai::init,
-                         &CyPy_Rules::init,
-                         &CyPy_Physics::init,
-                         &CyPy_EntityFilter::init,
-                         &CyPy_Atlas::init,
-                         &CyPy_Common::init},
-                        std::move(python_directories), true);
-        observe_python_directories(io_context, assets_manager);
+            AssetsManager assets_manager(file_system_observer);
+            assets_manager.init();
 
 
-        run_user_scripts("cyaiclient");
+            std::vector<std::string> python_directories;
+            // Add the path to the non-ruleset specific code.
+            python_directories.push_back(share_directory + "/cyphesis/scripts");
+            python_directories.push_back(share_directory + "/cyphesis/rulesets/basic/scripts");
+
+            init_python_api({&CyPy_Ai::init,
+                             &CyPy_Rules::init,
+                             &CyPy_Physics::init,
+                             &CyPy_EntityFilter::init,
+                             &CyPy_Atlas::init,
+                             &CyPy_Common::init},
+                            std::move(python_directories), true);
+            observe_python_directories(io_context, assets_manager);
 
 
-        //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
-        std::string script_package = "mind.NPCMind";
-        std::string script_class = "NPCMind";
+            run_user_scripts("cyaiclient");
 
-        if (mindFactory.m_scriptFactory != nullptr) {
-            if (mindFactory.m_scriptFactory->package() != script_package) {
-                mindFactory.m_scriptFactory.reset();
+
+            //TODO: perhaps don't hardcode this; instead allowing for different classes for different minds?
+            std::string script_package = "mind.NPCMind";
+            std::string script_class = "NPCMind";
+
+            if (mindFactory.m_scriptFactory != nullptr) {
+                if (mindFactory.m_scriptFactory->package() != script_package) {
+                    mindFactory.m_scriptFactory.reset();
+                }
             }
-        }
-        if (mindFactory.m_scriptFactory == nullptr) {
-            auto psf = std::make_unique<PythonScriptFactory<BaseMind>>(script_package, script_class);
-            if (psf->setup() == 0) {
-                log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
-                mindFactory.m_scriptFactory = std::move(psf);
+            if (mindFactory.m_scriptFactory == nullptr) {
+                auto psf = std::make_unique<PythonScriptFactory<BaseMind>>(script_package, script_class);
+                if (psf->setup() == 0) {
+                    log(INFO, String::compose("Initialized mind code with Python class %1.%2.", script_package, script_class));
+                    mindFactory.m_scriptFactory = std::move(psf);
+                } else {
+                    log(ERROR, String::compose("Python class \"%1.%2\" failed to load", script_package, script_class));
+                }
+            }
+
+            boost::asio::signal_set signalSet(io_context);
+            //If we're not running as a daemon we should use the interactive signal handler.
+            if (!daemon_flag) {
+                signalSet.add(SIGINT);
+                signalSet.add(SIGTERM);
+                signalSet.add(SIGHUP);
+                signalSet.add(SIGQUIT);
+
             } else {
-                log(ERROR, String::compose("Python class \"%1.%2\" failed to load", script_package, script_class));
+                signalSet.add(SIGTERM);
             }
+            signalSet.async_wait([&](boost::system::error_code ec, int signal) {
+                if (!ec) {
+                    exit_flag = true;
+                    exit_flag_soft = true;
+                    io_context.stop();
+                }
+            });
+
+
+            //Reload the script factory when scripts changes.
+            //Any PossessionAccount instance will also take care of reloading the script instances.
+            python_reload_scripts.connect([&]() {
+                mindFactory.m_scriptFactory->refreshClass();
+            });
+
+            log(INFO, String::compose("Trying to connect to server at %1.", client_socket_name));
+            connectToServer(io_context, mindFactory);
+
+            /// \brief Use a "work" instance to make sure the io_context never runs out of work and is stopped.
+            boost::asio::io_context::work m_io_work(io_context);
+
+            io_context.run();
+
+            signalSet.clear();
+
+            log(INFO, "Shutting down.");
         }
-
-        boost::asio::signal_set signalSet(io_context);
-        //If we're not running as a daemon we should use the interactive signal handler.
-        if (!daemon_flag) {
-            signalSet.add(SIGINT);
-            signalSet.add(SIGTERM);
-            signalSet.add(SIGHUP);
-            signalSet.add(SIGQUIT);
-
-        } else {
-            signalSet.add(SIGTERM);
-        }
-        signalSet.async_wait([&](boost::system::error_code ec, int signal) {
-            if (!ec) {
-                exit_flag = true;
-                exit_flag_soft = true;
-                io_context.stop();
-            }
-        });
-
-
-        //Reload the script factory when scripts changes.
-        //Any PossessionAccount instance will also take care of reloading the script instances.
-        python_reload_scripts.connect([&]() {
-            mindFactory.m_scriptFactory->refreshClass();
-        });
-
-        log(INFO, String::compose("Trying to connect to server at %1.", client_socket_name));
-        connectToServer(io_context, mindFactory);
-
-        /// \brief Use a "work" instance to make sure the io_context never runs out of work and is stopped.
-        boost::asio::io_context::work m_io_work(io_context);
-
-        io_context.run();
-
-        signalSet.clear();
-
-        log(INFO, "Shutting down.");
+        //We need to collect any objects before we delete the typeStore.
+        PyGC_Collect();
     }
     shutdown_python_api();
 }
