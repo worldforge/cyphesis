@@ -21,7 +21,7 @@
 
 #include "rules/Domain.h"
 #include "modules/Ref.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

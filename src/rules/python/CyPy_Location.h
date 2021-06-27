@@ -20,7 +20,7 @@
 #define CYPHESIS_CYPY_LOCATION_H
 
 #include "rules/Location.h"
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

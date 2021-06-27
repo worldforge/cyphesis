@@ -22,7 +22,7 @@
 #include <wfmath/axisbox.h>
 #include "pycxx/CXX/Objects.hxx"
 #include "pycxx/CXX/Extensions.hxx"
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

@@ -20,7 +20,7 @@
 #define CYPHESIS_CYPY_STEERING_H
 
 #include "rules/ai/AwareMind.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * Wrapper for Steering. The object is attached to a Ref to an AwareMind.

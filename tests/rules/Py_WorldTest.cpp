@@ -29,13 +29,13 @@
 
 #include "../TestWorld.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include "rules/simulation/Entity.h"
 
 #include <cassert>
 #include <rules/simulation/python/CyPy_Server.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 #include "rules/simulation/World.h"
 #include "rules/simulation/python/CyPy_World.h"
 

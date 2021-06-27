@@ -20,7 +20,7 @@
 
 #include "Python_ClientAPI.h"
 
-#include "rules/python/Python_Script_Utils.h"
+#include "pythonbase/Python_Script_Utils.h"
 
 #include "common/log.h"
 #include "CyPy_CreatorClient.h"

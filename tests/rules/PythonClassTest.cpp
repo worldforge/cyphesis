@@ -27,10 +27,10 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/PythonClass.h"
+#include "pythonbase/PythonClass.h"
 #include "pycxx/CXX/Extensions.hxx"
 #include <cassert>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 Py::Object* stub_Get_PyClass_return = nullptr;
 Py::Module* stub_Get_PyModule_return = nullptr;
@@ -174,7 +174,7 @@ int main()
 
 #include "common/log.h"
 
-#include "rules/python/Python_Script_Utils.h"
+#include "pythonbase/Python_Script_Utils.h"
 #include "../stubs/common/stublog.h"
 
 

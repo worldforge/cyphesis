@@ -22,7 +22,7 @@
 
 #include "rules/LocatedEntity.h"
 #include "modules/Ref.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 class TerrainProperty;
 /**

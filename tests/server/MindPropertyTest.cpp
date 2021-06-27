@@ -55,7 +55,7 @@ int main()
 #include "../stubs/server/stubExternalMindsManager.h"
 #include "../stubs/server/stubExternalMindsConnection.h"
 #include "../stubs/common/stubcustom.h"
-#include "../stubs/rules/python/stubPythonClass.h"
+#include "../stubs/pythonbase/stubPythonClass.h"
 
 template<>
 PythonScriptFactory<BaseMind>::PythonScriptFactory(const std::string & package,

@@ -25,10 +25,10 @@
 
 #include <Python.h>
 
-#include "rules/python/PythonContext.h"
+#include "pythonbase/PythonContext.h"
 
 #include <cassert>
-#include <common/PythonMalloc.h>
+#include <pythonbase/PythonMalloc.h>
 
 int main()
 {

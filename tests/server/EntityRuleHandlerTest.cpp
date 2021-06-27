@@ -180,7 +180,7 @@ int PythonScriptFactory<T>::refreshClass()
     return 0;
 }
 
-#include "../stubs/rules/python/stubPythonClass.h"
+#include "../stubs/pythonbase/stubPythonClass.h"
 
 
 #ifndef STUB_Inheritance_addChild

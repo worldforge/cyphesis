@@ -24,8 +24,8 @@
 #include "PythonScriptFactory.h"
 
 #include "PythonWrapper.h"
-#include "Python_Script_Utils.h"
-#include "Python_API.h"
+#include "pythonbase/Python_Script_Utils.h"
+#include "pythonbase/Python_API.h"
 
 /// \brief PythonScriptFactory constructor
 ///

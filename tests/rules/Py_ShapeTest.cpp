@@ -29,7 +29,7 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/Py_Shape.h"
 
 #include <cassert>

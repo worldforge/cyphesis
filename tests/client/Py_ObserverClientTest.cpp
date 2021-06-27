@@ -31,7 +31,7 @@
 #include "client/cyclient/ObserverClient.h"
 #include "client/cyclient/CyPy_ObserverClient.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/SimpleTypeStore.h"
 #include "../NullPropertyManager.h"
 
@@ -39,7 +39,7 @@
 #include <rules/simulation/python/CyPy_Server.h>
 #include <rules/python/CyPy_Atlas.h>
 #include <common/Inheritance.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 Atlas::Objects::Factories factories;
 

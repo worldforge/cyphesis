@@ -21,7 +21,7 @@
 
 
 #include "rules/ai/BaseMind.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

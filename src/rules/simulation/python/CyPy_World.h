@@ -20,7 +20,7 @@
 #define CYPHESIS_CYPY_WORLD_H
 
 #include "rules/simulation/BaseWorld.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

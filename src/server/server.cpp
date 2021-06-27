@@ -38,7 +38,7 @@
 #include "TrustedConnection.h"
 #include "HttpCache.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/LocatedEntity.h"
 #include "rules/simulation/World.h"
 

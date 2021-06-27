@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_CYPY_PROPS_H
 #define CYPHESIS_CYPY_PROPS_H
 
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 #include "rules/LocatedEntity.h"
 
 /**

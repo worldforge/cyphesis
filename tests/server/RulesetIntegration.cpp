@@ -27,7 +27,7 @@
 #include "../TestWorld.h"
 
 #include "rules/simulation/World.h"
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include "server/Ruleset.h"
 #include "server/EntityBuilder.h"
@@ -720,7 +720,7 @@ void LocatedEntity::setType(const TypeNode* t)
 }
 
 #include "../stubs/rules/stubLocatedEntity.h"
-#include "../stubs/rules/python/stubPythonClass.h"
+#include "../stubs/pythonbase/stubPythonClass.h"
 
 template<class T>
 PythonScriptFactory<T>::PythonScriptFactory(const std::string& package,

@@ -30,12 +30,7 @@
 #ifdef PYTHON_MALLOC
 #include "common/PythonMalloc.h"
 #endif
-#include "rules/entityfilter/python/CyPy_EntityFilter.h"
-#include "rules/python/CyPy_Common.h"
-#include "rules/python/CyPy_Atlas.h"
-#include "rules/python/CyPy_Physics.h"
-#include "rules/simulation/python/CyPy_Server.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -45,10 +40,6 @@
 #include <boost/filesystem.hpp>
 
 #include <basedir.h>
-
-//Uncomment, or provide in build flags, if you want to have Python use C Malloc instead of its own allocator.
-//This makes everything slower, but helps with Valgrind.
-//#define PYTHON_MALLOC
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;

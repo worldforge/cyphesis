@@ -29,13 +29,13 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Atlas.h>
 #include <rules/python/CyPy_Common.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 #include "../python_testers.h"
 
 #include "../TestWorld.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/simulation/Entity.h"
 #include "rules/simulation/LineProperty.h"
 #include "rules/simulation/TerrainProperty.h"

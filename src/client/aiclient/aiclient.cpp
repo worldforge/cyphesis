@@ -16,7 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 #include "PossessionClient.h"
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/python/PythonScriptFactory.h"
 #include "rules/ai/AwareMindFactory.h"
 #include "rules/python/CyPy_Atlas.h"

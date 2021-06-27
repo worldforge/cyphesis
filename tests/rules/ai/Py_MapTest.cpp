@@ -29,7 +29,7 @@
 
 #include "../../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "../../TestPropertyManager.h"
 
 #include <cassert>
@@ -43,7 +43,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/ai/python/CyPy_Ai.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 Atlas::Objects::Factories factories;
 

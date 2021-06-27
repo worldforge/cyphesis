@@ -29,7 +29,7 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/simulation/Entity.h"
 #include "rules/simulation/TerrainProperty.h"
 #include "rules/simulation/python/CyPy_Server.h"
@@ -42,7 +42,7 @@
 #include <rules/python/CyPy_Rules.h>
 
 #include <cassert>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 class TestProp : public Py::ExtensionModule<TestProp>
 {

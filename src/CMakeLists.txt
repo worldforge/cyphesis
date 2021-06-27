@@ -9,4 +9,5 @@ add_subdirectory(metaserverapi)
 add_subdirectory(server)
 add_subdirectory(client)
 add_subdirectory(tools)
+add_subdirectory(pythonbase)
 

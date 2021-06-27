@@ -20,7 +20,7 @@
 #define RULESETS_PYTHON_SCRIPT_FACTORY_H
 
 #include "pycxx/CXX/Objects.hxx"
-#include "PythonClass.h"
+#include "pythonbase/PythonClass.h"
 
 #include "common/ScriptKit.h"
 

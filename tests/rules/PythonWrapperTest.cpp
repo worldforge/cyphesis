@@ -30,7 +30,7 @@
 #include "rules/simulation/Entity.h"
 #include "rules/simulation/BaseWorld.h"
 #include "rules/simulation/python/CyPy_Server.h"
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/python/PythonScriptFactory.h"
 #include "rules/python/PythonWrapper.h"
 #include "pycxx/CXX/Extensions.hxx"
@@ -45,7 +45,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <common/Inheritance.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);

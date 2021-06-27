@@ -29,7 +29,7 @@
 
 #include "client/cyclient/Python_ClientAPI.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include <cassert>
 #include <client/cyclient/CyPy_CreatorClient.h>
@@ -43,7 +43,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Rules.h>
 #include <common/Inheritance.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 #include "pycxx/CXX/Objects.hxx"
 #include "../NullPropertyManager.h"
 

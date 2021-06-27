@@ -16,7 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 std::string verifyString(const Py::Object& object, const std::string& message)
 {

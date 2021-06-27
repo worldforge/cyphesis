@@ -16,7 +16,6 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include <boost/algorithm/string.hpp>
 #include "PythonWrapper.h"
 #include "CyPy_Operation.h"
 #include "CyPy_Oplist.h"
@@ -26,9 +25,9 @@
 #include "common/log.h"
 #include "common/operations/Tick.h"
 #include "common/debug.h"
-#include "common/log.h"
-#include "Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "Remotery/Remotery.h"
+#include <boost/algorithm/string.hpp>
 
 static const bool debug_flag = false;
 

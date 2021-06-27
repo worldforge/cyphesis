@@ -26,7 +26,7 @@
 #include "ScriptUtils.h"
 
 #include <Atlas/Objects/Anonymous.h>
-#include <rules/python/Python_API.h>
+#include "pythonbase/Python_API.h"
 
 
 #include "pycxx/CXX/Objects.hxx"

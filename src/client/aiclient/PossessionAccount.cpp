@@ -24,7 +24,7 @@
 
 #include "rules/ai/MindFactory.h"
 #include "rules/ai/BaseMind.h"
-#include <rules/python/Python_API.h>
+#include "pythonbase/Python_API.h"
 
 #include "common/operations/Possess.h"
 #include "common/custom.h"

@@ -21,7 +21,7 @@
 
 #include "pycxx/CXX/Objects.hxx"
 #include "pycxx/CXX/Extensions.hxx"
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/SmartPtr.h>

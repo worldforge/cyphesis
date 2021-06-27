@@ -25,7 +25,7 @@
 
 #include <Python.h>
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/Py_Vector3D.h"
 
 #include "common/globals.h"

@@ -20,7 +20,7 @@
 
 #include "PythonScriptFactory_impl.h"
 
-#include "Python_Script_Utils.h"
+#include "pythonbase/Python_Script_Utils.h"
 
 #include "rules/ai/BaseMind.h"
 #include "rules/simulation/Task.h"

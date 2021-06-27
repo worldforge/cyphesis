@@ -22,7 +22,7 @@
 
 #include <boost/optional.hpp>
 #include "rules/LocatedEntity.h"
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

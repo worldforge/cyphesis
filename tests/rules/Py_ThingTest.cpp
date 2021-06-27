@@ -32,12 +32,12 @@
 #include "../TestWorld.h"
 #include "../TestPropertyManager.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/simulation/Entity.h"
 
 #include <cassert>
 #include <common/Inheritance.h>
-#include <rules/python/Python_Script_Utils.h>
+#include "pythonbase/Python_Script_Utils.h"
 #include <rules/python/CyPy_LocatedEntity.h>
 #include <rules/simulation/python/CyPy_UsageInstance.h>
 #include <rules/simulation/python/CyPy_Server.h>
@@ -47,7 +47,7 @@
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Common.h>
 #include <rules/python/CyPy_Rules.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 #include "../stubs/common/stubMonitors.h"
 

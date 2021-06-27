@@ -36,7 +36,7 @@
 #include <iostream>
 
 #include <cassert>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 struct TestTask : public Task {
     TestTask(UsageInstance usageInstance, Py::Object script): Task(usageInstance, script) {}

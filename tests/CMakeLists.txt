@@ -1,7 +1,6 @@
 add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 add_library(stubnavigation stubs/navigation/libstub.cpp DatabaseNull.h ../src/navigation/fastlz.c)
-add_library(pythonMalloc ../src/common/PythonMalloc.cpp)
 target_link_libraries(stubnavigation PUBLIC Detour)
 
 link_libraries(${PYTHON_LIBRARIES})
@@ -27,6 +26,7 @@ set(PYTHON_TESTS_LIBS
         rulessimulation_python
         entityfilter_python
         rulesbase_python
+        pythonbase
         rulesai
         rulessimulation
         entityfilter
@@ -45,7 +45,7 @@ macro(wf_add_test TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery pythonMalloc)
+    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery)
 
 endmacro()
 
@@ -67,6 +67,7 @@ wf_generate_stubs(physics)
 wf_generate_stubs(rules)
 wf_generate_stubs(server)
 wf_generate_stubs(client)
+wf_generate_stubs(pythonbase)
 
 #### Common tests #####
 wf_add_test(TestBaseTest.cpp)
@@ -148,7 +149,7 @@ wf_add_test(rules/EntityTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Entit
 wf_add_test(rules/ThingTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Thing.cpp)
 wf_add_test(rules/WorldTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/World.cpp)
 wf_add_test(rules/ThingupdatePropertiesTest.cpp ../src/rules/simulation/Thing.cpp ../src/common/Property.cpp)
-wf_add_test(rules/TaskTest.cpp ../src/rules/simulation/Task.cpp)
+wf_add_test(rules/TaskTest.cpp ../src/rules/simulation/Task.cpp ../src/pythonbase/PythonMalloc.cpp)
 wf_add_test(rules/simulation/EntityPropertyTest.cpp ../src/rules/simulation/EntityProperty.cpp ../src/modules/WeakEntityRef.cpp ../src/common/Property.cpp)
 wf_add_test(rules/simulation/AllPropertyTest.cpp PropertyExerciser.cpp ../src/rules/simulation/AreaProperty.cpp
         ../src/rules/AtlasProperties.cpp
@@ -190,14 +191,14 @@ wf_add_test(rules/SuspendedPropertyTest.cpp PropertyCoverage.cpp ../src/rules/si
 wf_add_test(rules/TerrainModPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TerrainModProperty.cpp
         ../src/rules/simulation/TerrainProperty.cpp
         ../src/common/Property.cpp)
-wf_add_test(rules/PythonClassTest.cpp python_testers.cpp ../src/rules/python/PythonClass.cpp)
+wf_add_test(rules/PythonClassTest.cpp python_testers.cpp ../src/pythonbase/PythonClass.cpp ../src/pythonbase/PythonMalloc.cpp)
 target_link_libraries(PythonClassTest pycxx)
 wf_add_test(rules/TerrainPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TerrainProperty.cpp
         ../src/common/Property.cpp)
 wf_add_test(rules/TransientPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TransientProperty.cpp
         ../src/common/Property.cpp)
 wf_add_test(rules/TasksPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TasksProperty.cpp
-        ../src/common/Property.cpp)
+        ../src/common/Property.cpp ../src/pythonbase/PythonMalloc.cpp)
 wf_add_test(common/EntityPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/EntityProperties.cpp
         ../src/common/Property.cpp)
 wf_add_test(rules/AtlasPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/AtlasProperties.cpp
@@ -212,7 +213,7 @@ wf_add_test(rules/MemEntityTest.cpp ../src/rules/ai/MemEntity.cpp)
 wf_add_test(rules/ai/MemMapTest.cpp ../src/rules/ai/MemMap.cpp ../src/rules/ai/MemEntity.cpp)
 wf_add_test(rules/MovementTest.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(server/ExternalMindTest.cpp ../src/rules/simulation/ExternalMind.cpp)
-wf_add_test(rules/PythonContextTest.cpp ../src/rules/python/PythonContext.cpp)
+wf_add_test(rules/PythonContextTest.cpp ../src/pythonbase/PythonContext.cpp ../src/pythonbase/PythonMalloc.cpp)
 
 wf_add_test(rules/TerrainModTest.cpp ../src/rules/simulation/TerrainModTranslator.cpp)
 wf_add_test(rules/TerrainEffectorPropertyTest.cpp ../src/rules/simulation/TerrainEffectorProperty.cpp)

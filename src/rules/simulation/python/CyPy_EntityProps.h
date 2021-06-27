@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_CYPY_ENTITYPROPS_H
 #define CYPHESIS_CYPY_ENTITYPROPS_H
 
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 #include "rules/simulation/Entity.h"
 
 /**

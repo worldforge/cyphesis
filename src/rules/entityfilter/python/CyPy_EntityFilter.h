@@ -22,7 +22,7 @@
 #include <rules/entityfilter/Filter.h>
 #include "pycxx/CXX/Objects.hxx"
 #include "pycxx/CXX/Extensions.hxx"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 #include <memory>
 
 

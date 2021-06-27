@@ -33,7 +33,7 @@
 #include <Atlas/Message/Element.h>
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 using Atlas::Message::ListType;
 using Atlas::Message::MapType;

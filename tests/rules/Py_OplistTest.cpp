@@ -29,13 +29,13 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include <cassert>
 #include <rules/python/CyPy_Atlas.h>
 #include <Atlas/Objects/Factories.h>
 #include <common/Inheritance.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);

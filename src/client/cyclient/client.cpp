@@ -19,7 +19,7 @@
 #include "Python_ClientAPI.h"
 #include "client/ClientPropertyManager.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include "common/globals.h"
 #include "common/log.h"

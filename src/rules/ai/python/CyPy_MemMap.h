@@ -21,7 +21,7 @@
 
 #include "rules/entityfilter/Providers.h"
 #include "rules/ai/MemMap.h"
-#include "rules/python/WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 /**
  * \ingroup PythonWrappers

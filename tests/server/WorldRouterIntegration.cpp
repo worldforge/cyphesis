@@ -284,7 +284,7 @@ int PythonScriptFactory<LocatedEntity>::setup()
 #include "../stubs/rules/ai/stubMemEntity.h"
 #include "../stubs/rules/ai/stubMemMap.h"
 #include "../stubs/rules/simulation/stubPropelProperty.h"
-#include "../stubs/rules/python/stubPythonClass.h"
+#include "../stubs/pythonbase/stubPythonClass.h"
 #include "../stubs/rules/simulation/stubMovement.h"
 #include "../stubs/rules/stubLocation.h"
 #include "../stubs/rules/simulation/stubUsagesProperty.h"

@@ -30,7 +30,7 @@
 
 #include <wfmath/atlasconv.h>
 #include <rules/simulation/python/CyPy_UsageInstance.h>
-#include <rules/python/Python_API.h>
+#include "pythonbase/Python_API.h"
 #include <common/Inheritance.h>
 
 static const bool debug_flag = false;

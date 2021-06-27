@@ -29,7 +29,7 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/simulation/Task.h"
 #include "rules/simulation/Entity.h"
 
@@ -38,7 +38,7 @@
 #include <rules/simulation/python/CyPy_UsageInstance.h>
 #include <rules/python/CyPy_LocatedEntity.h>
 #include <rules/simulation/python/CyPy_Server.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 
 int main()

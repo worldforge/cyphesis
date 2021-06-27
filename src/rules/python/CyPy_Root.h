@@ -19,7 +19,7 @@
 #ifndef CYPHESIS_CYPY_ROOT_H
 #define CYPHESIS_CYPY_ROOT_H
 
-#include "WrapperBase.h"
+#include "pythonbase/WrapperBase.h"
 
 #include <Atlas/Objects/Root.h>
 #include <Atlas/Objects/SmartPtr.h>

@@ -23,7 +23,7 @@
 #include "Persistence.h"
 #include "rules/simulation/WorldRouter.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 #include "rules/ai/MindFactory.h"
 
 #include "common/log.h"

@@ -27,12 +27,12 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include <cassert>
 #include <rules/python/CyPy_Physics.h>
 #include <rules/python/CyPy_Atlas.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 int main()
 {

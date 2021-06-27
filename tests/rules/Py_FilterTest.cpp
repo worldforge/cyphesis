@@ -11,11 +11,11 @@
 
 #include "../python_testers.h"
 
-#include "rules/python/Python_API.h"
+#include "pythonbase/Python_API.h"
 
 #include <cassert>
 #include <rules/entityfilter/python/CyPy_EntityFilter.h>
-#include <common/PythonMalloc.h>
+#include "pythonbase/PythonMalloc.h"
 
 int main()
 {
