@@ -26,6 +26,7 @@
 #include "common/log.h"
 
 class AssetsManager;
+
 class BaseWorld;
 
 
@@ -55,7 +56,14 @@ struct PythonLogGuard
 };
 
 
+/**
+ * Initializes the Python embedded interpreter and scripting engine.
+ * @param initFunctions A list of functions to call for registering modules.
+ * @param scriptDirectories A list of file system directories in which to look for Python scripts to run at startup.
+ * @param log_stdout True if Python should write log messages to std::cout.
+ */
 void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories = {}, bool log_stdout = true);
+
 void shutdown_python_api();
 
 /**

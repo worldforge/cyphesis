@@ -19,8 +19,6 @@ set(CYPHESIS_VERSION_PATCH 0)
 
 set(VERSION ${CYPHESIS_VERSION_MAJOR}.${CYPHESIS_VERSION_MINOR}.${CYPHESIS_VERSION_PATCH})
 
-option(PYTHON_USE_MALLOC "Use malloc instead of Python's own allocator. This helps with diagnosing memory usage, but us slightly slower." FALSE)
-
 # Set compiler flags
 set(WF_WARNING_FLAGS -Wall -Winit-self -Wcast-qual -Wwrite-strings -Wextra -Wundef -Wmissing-declarations -Wno-unused-parameter -Wshadow -Wno-missing-field-initializers -Wno-long-long)
 
@@ -61,10 +59,6 @@ link_libraries(Threads::Threads)
 find_package(PythonLibs 3.3 REQUIRED)
 link_directories(${PYTHON_LIBRARY_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
-
-if (PYTHON_USE_MALLOC)
-    add_compile_definitions(PYTHON_MALLOC)
-endif ()
 
 find_package(PythonInterp 3 REQUIRED)
 

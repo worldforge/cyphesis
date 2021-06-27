@@ -162,6 +162,13 @@ import pydevd
 pydevd.settrace('localhost', port=9999, stdoutToServer=False, stderrToServer=False, suspend=False)
 ```
 
+## Using standard malloc memory allocator in Python
+
+During development it can sometimes be good to use the standard "malloc" memory allocator rather than 
+the Python specific allocator. For example if you want to profile memory usage.
+This can be enabled by setting the environment variable "PYTHONMALLOC" to something (doesn't matter what).
+Upon startup Cyphesis will then use malloc, and write a line about this to the log.
+
 ## Performance measuring through Remotery
 
 Performance tracking through [Remotery](https://github.com/Celtoys/Remotery) is built in, 

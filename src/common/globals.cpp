@@ -107,8 +107,8 @@ static const usage_data usage_options[] = {
         {CYPHESIS, "assetsdir",          "<directory>",  "",              "Directory where media assets are stored, if nothing is specified Cyphesis will look under the shared directory", S},
         {CYPHESIS, "ruleset",            "<name>",       DEFAULT_RULESET,       "Ruleset name",                                                                                                   S | C | D |
                                                                                                                                                                                             A},
-        {CYPHESIS, "autoimport",         "<path>",       "",              "Path to world file to import if world is empty",                                                                  S},
-        {CYPHESIS, "remotery",          "true|false",    "false",         "Set to true to enable Remotery",                                                                                 S},
+        {CYPHESIS, "autoimport",         "<path>",       "",              "Path to world file to import if world is empty",                                                                 S},
+        {CYPHESIS, "remotery",           "true|false",   "false",         "Set to true to enable Remotery",                                                                                 S},
 
         {CYPHESIS, "servername",         "<name>",       "<hostname>",    "Published name of the server",                                                                                   S | C},
         {CYPHESIS, "tcpport",            "<portnumber>", "6767",          "Network listen port for client connections",                                                                     S | C | M},
@@ -749,6 +749,6 @@ void showUsage(const char* prgname, unsigned int usage_flags, const char* extras
             }
         }
     }
-    
+
     std::cout << std::flush;
 }

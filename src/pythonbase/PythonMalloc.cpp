@@ -15,6 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "PythonMalloc.h"
 #include <Python.h>
 #include <iostream>
 
@@ -43,7 +44,8 @@ static void Python_Free(void*, void* ptr)
 }
 
 
-void setupPythonMalloc() {
+void setupPythonMalloc()
+{
     PyMemAllocatorEx alloc = {NULL, Python_Malloc, Python_Calloc, Python_Realloc, Python_Free};
     PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &alloc);
     PyMem_SetAllocator(PYMEM_DOMAIN_MEM, &alloc);

@@ -25,29 +25,32 @@
 
 /// \brief Factory interface for creating scripts to attach to in game
 /// entity objects.
-class PythonClass {
-  protected:
-    /// \brief Name of the script package where the script type is
-    std::string m_package;
-    /// \brief Name of the script type instanced by this factory
-    std::string m_type;
-    /// \brief Base class object this should inherit from
-    //struct _typeobject * m_base;
+class PythonClass
+{
+    protected:
+        /// \brief Name of the script package where the script type is
+        std::string m_package;
+        /// \brief Name of the script type instanced by this factory
+        std::string m_type;
+        /// \brief Base class object this should inherit from
+        //struct _typeobject * m_base;
 
-    /// \brief Module object which contains the script class
-    Py::Module m_module;
-    /// \brief Class object to be instanced when creating scripts
-    boost::optional<Py::Callable> m_class;
+        /// \brief Module object which contains the script class
+        Py::Module m_module;
+        /// \brief Class object to be instanced when creating scripts
+        boost::optional<Py::Callable> m_class;
 
-    PythonClass(const std::string & package,
-                const std::string & type);
+        PythonClass(const std::string& package,
+                    const std::string& type);
 
-    int getClass(const Py::Module& module);
-    int load();
-    int refresh();
+        int getClass(const Py::Module& module);
 
-  public:
-    ~PythonClass();
+        int load();
+
+        int refresh();
+
+    public:
+        ~PythonClass();
 };
 
 #endif // RULESETS_PYTHON_CLASS_H

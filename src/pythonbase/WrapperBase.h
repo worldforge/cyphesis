@@ -99,12 +99,12 @@ class WrapperBase : public Py::PythonClass<TPythonClass, TClassInstance>
 
 template<typename TValue, typename TPythonClass, typename TClassInstance>
 WrapperBase<TValue, TPythonClass, TClassInstance>::WrapperBase(TClassInstance* self, const Py::Tuple& args, const Py::Dict& kwds)
-    : Py::PythonClass<TPythonClass, TClassInstance>::PythonClass(self, args, kwds)
+        : Py::PythonClass<TPythonClass, TClassInstance>::PythonClass(self, args, kwds)
 {}
 
 template<typename TValue, typename TPythonClass, typename TClassInstance>
 WrapperBase<TValue, TPythonClass, TClassInstance>::WrapperBase(TClassInstance* self, TValue value)
-    : Py::PythonClass<TPythonClass, TClassInstance>::PythonClass(self), m_value(std::move(value))
+        : Py::PythonClass<TPythonClass, TClassInstance>::PythonClass(self), m_value(std::move(value))
 {}
 
 template<typename TValue, typename TPythonClass, typename TClassInstance>

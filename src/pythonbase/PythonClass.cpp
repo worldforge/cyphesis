@@ -29,11 +29,11 @@
 /// 
 /// @param package name of the script package scripts are to be created from
 /// @param type name of the type instanced to create scripts
-PythonClass::PythonClass(const std::string & package,
-                         const std::string & type) :
-    m_package(package),
-    m_type(type),
-    m_module(nullptr)
+PythonClass::PythonClass(const std::string& package,
+                         const std::string& type) :
+        m_package(package),
+        m_type(type),
+        m_module(nullptr)
 {
 }
 
@@ -41,7 +41,7 @@ PythonClass::~PythonClass() = default;
 
 int PythonClass::load()
 {
-    auto module= Get_PyModule(m_package);
+    auto module = Get_PyModule(m_package);
     if (module.isNull()) {
         return -1;
     }

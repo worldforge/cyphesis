@@ -27,9 +27,7 @@
 #include "common/const.h"
 #include "common/debug.h"
 #include "common/AssetsManager.h"
-#ifdef PYTHON_MALLOC
-#include "common/PythonMalloc.h"
-#endif
+#include "PythonMalloc.h"
 #include "pythonbase/WrapperBase.h"
 
 #include <Atlas/Objects/Operation.h>
@@ -254,10 +252,12 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
         modules.emplace_back(function());
     }
 
-#ifdef PYTHON_MALLOC
-    setupPythonMalloc();
-    log(INFO, "Python is using malloc for memory allocation.");
-#endif
+    char* usemalloc = getenv("PYTHONMALLOC");
+
+    if (usemalloc) {
+        setupPythonMalloc();
+        log(INFO, "Python is using malloc for memory allocation.");
+    }
 
     Py_InitializeEx(0);
 

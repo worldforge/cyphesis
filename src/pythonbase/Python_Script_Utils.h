@@ -25,9 +25,11 @@
 class Entity;
 
 Py::Object Get_PyClass(const Py::Module& module,
-                       const std::string & package,
-                       const std::string & type);
-Py::Module Get_PyModule(const std::string & package);
+                       const std::string& package,
+                       const std::string& type);
+
+Py::Module Get_PyModule(const std::string& package);
+
 Py::Object Create_PyScript(const Py::Object& wrapper, const Py::Callable& py_class);
 
 #endif // RULESETS_PYTHON_SCRIPT_UTILS_H
