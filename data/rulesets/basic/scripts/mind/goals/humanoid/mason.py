@@ -43,10 +43,13 @@ class Welcome(Goal):
         # when it was much farther away, and can thus be ignored.
         if me.match_entity(self.filter, entity):
             distance_to_thing = me.steering.distance_to(entity, ai.CENTER, ai.CENTER)
-            if distance_to_thing < self.distance:
-                welcome_goal = lambda me: self.send_welcome(me, entity)
-                self.sub_goals.append(DelayedOneShot(sub_goals=[welcome_goal]))
-                return me.face(entity)
+            if distance_to_thing is None:
+                print("Could not get distance to newly created entity which matches the filter for Welcome.")
+            else:
+                if distance_to_thing < self.distance:
+                    welcome_goal = lambda me_: self.send_welcome(me_, entity)
+                    self.sub_goals.append(DelayedOneShot(sub_goals=[welcome_goal]))
+                    return me.face(entity)
 
     def send_welcome(self, me, entity):
         return Operation("talk", Entity(say=self.message)) + me.face(entity)

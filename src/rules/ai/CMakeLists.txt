@@ -8,7 +8,6 @@ add_library(rulesai
         AwarenessStoreProvider.cpp
         SharedTerrain.cpp
         TypeResolver.cpp
-        MemEntityProperties.cpp
         )
 
 

@@ -4,7 +4,7 @@
 import re
 
 from atlas import Operation, Entity
-from physics import distance_to, Vector3D
+from physics import Vector3D
 from rules import Location
 
 sowee_pattern = re.compile("[Ss]owee")
@@ -19,9 +19,9 @@ class Driven(DynamicGoal):
         DynamicGoal.__init__(self, trigger="touch", desc=desc)
 
     def event(self, me, original_op, op):
-        distance = distance_to(me.map.get(op.from_).location, me.entity.location)
+        direction = me.steering.direction_to(me.map.get(op.from_).location)
         destination = Location()
-        destination.velocity = distance.unit_vector()
+        destination.velocity = -direction.unit_vector()
         return Operation("move", Entity(me.entity.id, location=destination))
 
 

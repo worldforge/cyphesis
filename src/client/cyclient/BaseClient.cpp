@@ -43,8 +43,8 @@ static const bool debug_flag = false;
 
 BaseClient::BaseClient(boost::asio::io_context& io_context,
                        Atlas::Objects::Factories& factories,
-                       const PropertyManager& propertyManager) :
-        m_propertyManager(propertyManager),
+                       TypeStore& typeStore) :
+        m_typeStore(typeStore),
         m_connection(io_context, factories),
         m_character(nullptr)
 {
@@ -235,7 +235,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string& type)
         log(ERROR, String::compose("Invalid character ID \"%1\" from server.", mind_id));
     }
 
-    Ref<CreatorClient> obj(new CreatorClient(mind_id, entityId, m_connection, m_propertyManager));
+    Ref<CreatorClient> obj(new CreatorClient(mind_id, entityId, m_connection, m_typeStore));
 
     Ref<MemEntity> ownEntity = new MemEntity(mind_id, intId);
 

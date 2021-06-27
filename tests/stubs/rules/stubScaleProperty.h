@@ -55,5 +55,13 @@
   }
 #endif //STUB_ScaleProperty_scaledBbox
 
+#ifndef STUB_ScaleProperty_scaledBbox
+//#define STUB_ScaleProperty_scaledBbox
+   WFMath::AxisBox<3> ScaleProperty::scaledBbox(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& scale)
+  {
+    return *static_cast< WFMath::AxisBox<3>*>(nullptr);
+  }
+#endif //STUB_ScaleProperty_scaledBbox
+
 
 #endif

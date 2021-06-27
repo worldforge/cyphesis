@@ -33,31 +33,46 @@
 #include <Atlas/Objects/SmartPtr.h>
 
 #include <cassert>
+#include "rules/SimpleTypeStore.h"
 
 class BaseMindtest : public Cyphesis::TestBase
 {
-  protected:
-    Ref<BaseMind> bm;
-    std::unique_ptr<TestPropertyManager> propertyManager;
-  public:
-    BaseMindtest();
+    protected:
+        Ref<BaseMind> bm;
+        std::unique_ptr<TestPropertyManager> propertyManager;
+        std::unique_ptr<TypeStore> typeStore;
+    public:
+        BaseMindtest();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_getMap();
-    void test_sleep();
-    void test_awake();
-    void test_operation();
-    void test_sightOperation();
-    void test_sightCreateOperation();
-    void test_sightDeleteOperation();
-    void test_sightMoveOperation();
-    void test_sightSetOperation();
-    void test_soundOperation();
-    void test_appearanceOperation();
-    void test_disappearanceOperation();
-    void test_unseenOperation();
+        void teardown();
+
+        void test_getMap();
+
+        void test_sleep();
+
+        void test_awake();
+
+        void test_operation();
+
+        void test_sightOperation();
+
+        void test_sightCreateOperation();
+
+        void test_sightDeleteOperation();
+
+        void test_sightMoveOperation();
+
+        void test_sightSetOperation();
+
+        void test_soundOperation();
+
+        void test_appearanceOperation();
+
+        void test_disappearanceOperation();
+
+        void test_unseenOperation();
 };
 
 BaseMindtest::BaseMindtest()
@@ -80,18 +95,20 @@ BaseMindtest::BaseMindtest()
 void BaseMindtest::setup()
 {
     propertyManager = std::make_unique<TestPropertyManager>();
-    bm = new BaseMind("1", "2", *propertyManager);
+    typeStore = std::make_unique<SimpleTypeStore>(*propertyManager);
+    bm = new BaseMind("1", "2", *typeStore);
 }
 
 void BaseMindtest::teardown()
 {
     propertyManager.reset();
+    typeStore.reset();
     bm = nullptr;
 }
 
 void BaseMindtest::test_getMap()
 {
-    (void)bm->getMap();
+    (void) bm->getMap();
 }
 
 void BaseMindtest::test_sleep()
@@ -303,7 +320,7 @@ static inline WFMath::CoordType sqr(WFMath::CoordType x)
     return x * x;
 }
 
-WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
+WFMath::CoordType squareDistance(const Point3D& u, const Point3D& v)
 {
     return (sqr(u.x() - v.x()) + sqr(u.y() - v.y()) + sqr(u.z() - v.z()));
 }

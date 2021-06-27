@@ -9,8 +9,8 @@
 
 #ifndef STUB_CreatorClient_CreatorClient
 //#define STUB_CreatorClient_CreatorClient
-   CreatorClient::CreatorClient(const std::string& mindId, const std::string& entityId, ClientConnection&, const PropertyManager& propertyManager)
-    : CharacterClient(mindId, entityId, ClientConnection, propertyManager)
+   CreatorClient::CreatorClient(const std::string& mindId, const std::string& entityId, ClientConnection&, TypeStore& typeStore)
+    : CharacterClient(mindId, entityId, ClientConnection, typeStore)
   {
     
   }

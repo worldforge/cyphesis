@@ -22,6 +22,7 @@
 #include "CharacterClient.h"
 
 class LocatedEntity;
+struct TypeStore;
 
 /// \brief Class to implement a creator entity in an admin client
 class CreatorClient : public CharacterClient
@@ -30,7 +31,7 @@ class CreatorClient : public CharacterClient
         CreatorClient(const std::string& mindId,
                       const std::string& entityId,
                       ClientConnection&,
-                      const PropertyManager& propertyManager);
+                      TypeStore& typeStore);
 
         LocatedEntity* handleMakeResponse(const Atlas::Objects::Operation::RootOperation&,
                                           double);

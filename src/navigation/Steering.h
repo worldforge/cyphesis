@@ -243,9 +243,9 @@ class Steering : public virtual sigc::trackable
 
         boost::optional<double> distanceTo(double currentTimestamp, const EntityLocation& location, MeasureType fromSelf, MeasureType toDestination) const;
 
-        Steering::ResolvedPosition resolvePosition(double currentTimestamp, const EntityLocation& location) const;
+        WFMath::Vector<3> directionTo(double currentTimestamp, const EntityLocation& location) const;
 
-        WFMath::Point<3> projectPosition(double currentTimestamp, const TransformData& transform, const MovementData& movement) const;
+        Steering::ResolvedPosition resolvePosition(double currentTimestamp, const EntityLocation& location) const;
 
         /**
          * @brief Emitted when the path has been updated.

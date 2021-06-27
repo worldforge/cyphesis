@@ -6,7 +6,7 @@ import ai
 import entity_filter
 from atlas import Operation, Entity, Oplist
 from common import const
-from physics import Point3D, Vector3D, distance_to, square_horizontal_distance, square_distance
+from physics import Point3D, Vector3D
 from rules import Location, isLocation
 
 from mind.Goal import goal_create
@@ -135,7 +135,6 @@ class MoveMeArea(Goal):
                       self.is_reachable)
         self.location = location
         self.range = range
-        self.square_range = range * range
         self.arrived = 0
         self.vars = ["location", "range", "arrived"]
 
@@ -160,8 +159,8 @@ class MoveMeArea(Goal):
             return 0
         if self.arrived:
             # print "Already arrived at location"
-            square_dist = square_distance(me.entity.location, location)
-            if square_dist > self.square_range:
+            dist = me.steering.distance_to(location, ai.CENTER, ai.CENTER)
+            if dist > self.range:
                 self.arrived = 0
                 # print "Moved away"
                 return 0
@@ -307,8 +306,9 @@ class MoveMeToPossession(Goal):
             if (what in me.things) == 0:
                 return 0
             what = me.things[what][0]
-        distance = square_horizontal_distance(me.entity.location, what.location)
-        if distance and distance < 4:  # 2 * 2
+        distance = me.steering.distance_to(what, ai.EDGE, ai.EDGE)
+        # TODO: take reach etc. into account
+        if distance and distance < 2:
             return 1
         else:
             return 0
@@ -437,7 +437,7 @@ class MoveMeNearFocus(Goal):
                 return True
             # If we've already moved close to the thing, we are allowed movement within a certain movement radius
             if self.is_close_to_thing:
-                if distance_to < self.allowed_movement_radius:
+                if distance_to_thing < self.allowed_movement_radius:
                     return True
         self.is_close_to_thing = False
         return False
@@ -630,7 +630,6 @@ class HuntFor(Goal):
         self.what = what
         self.range = range
         self.proximity = proximity
-        self.square_proximity = proximity * proximity
         self.vars = ["what", "range", "proximity"]
 
     def in_range(self, me):
@@ -640,8 +639,8 @@ class HuntFor(Goal):
         thing = me.map.get(focus_id)
         if thing is None:
             return
-        square_dist = square_distance(me.entity.location, thing.location)
-        return square_dist and square_dist < self.square_proximity
+        dist = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
+        return dist is not None and dist < self.proximity
 
 
 class Patrol(Goal):
@@ -709,7 +708,7 @@ class Accompany(Goal):
         if who is None:
             self.irrelevant = 1
             return
-        dist = distance_to(me.entity.location, who.location)
+        dist = me.steering.direction_to(who)
         target = Location(me.entity.parent)
         square_dist = dist.sqr_mag()
         if square_dist > 64:

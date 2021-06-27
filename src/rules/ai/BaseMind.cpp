@@ -41,12 +41,12 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-BaseMind::BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager) :
+BaseMind::BaseMind(const std::string& mindId, std::string entityId, TypeStore& typeStore) :
         Router(mindId, std::stol(mindId)),
         m_entityId(std::move(entityId)),
         m_flags(0),
-        m_typeStore(new SimpleTypeStore(propertyManager)),
-        m_typeResolver(new TypeResolver(*m_typeStore)),
+        m_typeStore(typeStore),
+        m_typeResolver(new TypeResolver(m_typeStore)),
         m_map(*m_typeResolver),
         mServerTime(0),
         m_serialNoCounter(0),
@@ -56,7 +56,10 @@ BaseMind::BaseMind(const std::string& mindId, std::string entityId, const Proper
     m_map.setListener(this);
 }
 
-BaseMind::~BaseMind() = default;
+BaseMind::~BaseMind()
+{
+    destroy();
+}
 
 
 void BaseMind::init(OpVector& res)
@@ -567,7 +570,7 @@ void BaseMind::setScript(std::unique_ptr<Script> scrpt)
 
 const TypeStore& BaseMind::getTypeStore() const
 {
-    return *m_typeStore;
+    return m_typeStore;
 }
 
 std::string BaseMind::describeEntity() const

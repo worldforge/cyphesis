@@ -245,31 +245,6 @@ void Location::modifyBBox()
     m_radius = std::sqrt(m_squareRadius);
 }
 
-static const Location* distanceFromAncestor(const Location& self,
-                                            const Location& other, Point3D& c)
-{
-    return nullptr;
-//    if (&self == &other) {
-//        return &self;
-//    }
-//
-//    if (other.m_parent == nullptr) {
-//        return nullptr;
-//    }
-//
-//    if (!other.m_pos.isValid()) {
-//        return nullptr;
-//    }
-//
-//    if (other.orientation().isValid()) {
-//        c = c.toParentCoords(other.m_pos, other.orientation());
-//    } else {
-//        c = c.toParentCoords(other.m_pos, Quaternion::IDENTITY());
-//    }
-//
-//    return distanceFromAncestor(self, other.m_parent->m_location, c);
-}
-
 static const Location* distanceToAncestor(const Location& self,
                                           const Location& other, Point3D& c)
 {

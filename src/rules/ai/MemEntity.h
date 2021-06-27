@@ -20,7 +20,6 @@
 #define RULESETS_MEM_ENTITY_H
 
 #include "rules/LocatedEntity.h"
-#include "MemEntityProperties.h"
 /// \brief This class is used to represent entities inside MemMap used
 /// by the mind of an AI.
 ///
@@ -66,9 +65,10 @@ class MemEntity : public LocatedEntity
 
         void destroy() override;
 
-        TransformData m_transform;
-        MovementData m_movement;
-        WFMath::AxisBox<3> m_bbox;
+//        TransformData m_transform;
+//        MovementData m_movement;
+        //WFMath::AxisBox<3> m_bbox;
+        double m_lastUpdated;
         //Location m_location;
 
 };

@@ -65,6 +65,10 @@ class CyPy_Steering : public WrapperBase<Ref<AwareMind>, CyPy_Steering>
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Steering, distanceTo);
 
+        Py::Object direction_to(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Steering, direction_to);
+
         Py::Object isAtCurrentDestination();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Steering, isAtCurrentDestination);

@@ -22,33 +22,33 @@
 #include "rules/SolidProperty.h"
 #include "common/TypeNode.h"
 #include "common/PropertyManager.h"
-#include "MemEntityProperties.h"
 
 static const bool debug_flag = false;
 
 MemEntity::MemEntity(const std::string& id, long intId) :
         LocatedEntity(id, intId),
-        m_lastSeen(0.)
+        m_lastSeen(0.),
+        m_lastUpdated(0)
 {
 }
 
 std::unique_ptr<PropertyBase> MemEntity::createProperty(const std::string& propertyName) const
 {
-    if (propertyName == ReadPositionProperty::property_name) {
-        return std::make_unique<ReadPositionProperty>(const_cast<WFMath::Point<3>&>(m_transform.pos));
-    }
-    if (propertyName == ReadBboxProperty::property_name) {
-        return std::make_unique<ReadBboxProperty>(const_cast<WFMath::AxisBox<3>&>(m_bbox));
-    }
-    if (propertyName == ReadOrientationProperty::property_name) {
-        return std::make_unique<ReadOrientationProperty>(const_cast<WFMath::Quaternion&>(m_transform.orientation));
-    }
-    if (propertyName == ReadVelocityProperty::property_name) {
-        return std::make_unique<ReadVelocityProperty>(const_cast<VelocityData&>(m_movement.velocity));
-    }
-    if (propertyName == ReadAngularProperty::property_name) {
-        return std::make_unique<ReadAngularProperty>(const_cast<AngularData&>(m_movement.angular));
-    }
+//    if (propertyName == ReadPositionProperty::property_name) {
+//        return std::make_unique<ReadPositionProperty>(const_cast<WFMath::Point<3>&>(m_transform.pos));
+//    }
+//    if (propertyName == ReadBboxProperty::property_name) {
+//        return std::make_unique<ReadBboxProperty>(const_cast<WFMath::AxisBox<3>&>(m_bbox));
+//    }
+//    if (propertyName == ReadOrientationProperty::property_name) {
+//        return std::make_unique<ReadOrientationProperty>(const_cast<WFMath::Quaternion&>(m_transform.orientation));
+//    }
+//    if (propertyName == ReadVelocityProperty::property_name) {
+//        return std::make_unique<ReadVelocityProperty>(const_cast<MemEntity&>(*this));
+//    }
+//    if (propertyName == ReadAngularProperty::property_name) {
+//        return std::make_unique<ReadAngularProperty>(const_cast<MemEntity&>(*this));
+//    }
     return PropertyManager::instance().addProperty(propertyName);
 }
 

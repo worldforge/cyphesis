@@ -64,7 +64,6 @@ class Fight(StoppableTask):
     def setup(self, task_id):
         warmup = self.usage.actor.get_prop_float("warmup_" + self.usage.op.parent, 0.0)
         if warmup > 0:
-            print("first warmup")
             self.tick_interval = warmup
             self.state = "warmup"
         else:
@@ -78,16 +77,13 @@ class Fight(StoppableTask):
             # Check if we should either wait a little for warmup phase, or if we should do the strike directly
             warmup = self.usage.actor.get_prop_float("warmup_" + self.usage.op.parent, 0.0)
             if warmup > 0:
-                print("warmup")
                 self.tick_interval = warmup
                 self.state = "warmup"
                 return self.do_warmup()
             else:
-                print("strike")
                 return self.do_strike()
         else:
             # We have already done warmup; do the strike
-            print("strike")
             return self.do_strike()
 
     def tick(self):

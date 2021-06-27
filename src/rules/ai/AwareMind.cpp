@@ -44,10 +44,10 @@ static const bool debug_flag = false;
 
 AwareMind::AwareMind(const std::string& mind_id,
                      std::string entity_id,
-                     const PropertyManager& propertyManager,
+                     TypeStore& typeStore,
                      SharedTerrain& sharedTerrain,
                      AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(mind_id, std::move(entity_id), propertyManager),
+        BaseMind(mind_id, std::move(entity_id), typeStore),
         mSharedTerrain(sharedTerrain),
         mAwarenessStoreProvider(awarenessStoreProvider),
         mAwarenessStore(nullptr)
@@ -177,7 +177,6 @@ const std::shared_ptr<Awareness>& AwareMind::getAwareness() const
 
 void AwareMind::entityAdded(MemEntity& entity)
 {
-    BaseMind::entityAdded(entity);
     if (m_ownEntity) {
         if (mAwareness) {
 //        log(INFO, String::compose("Adding entity %1", entity.getId()));
@@ -198,6 +197,8 @@ void AwareMind::entityAdded(MemEntity& entity)
             }
         }
     }
+    //Call on superclass after we've added the entity to the awareness, since the superclass will execute scripts which might rely on it being in the awareness already.
+    BaseMind::entityAdded(entity);
 }
 
 void AwareMind::requestAwareness(const MemEntity& entity)
@@ -221,6 +222,9 @@ void AwareMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::R
 {
     BaseMind::entityUpdated(entity, ent, oldLocation);
     if (mAwareness) {
+        mAwareness->updateEntity(*m_ownEntity, entity, ent);
+
+
         //Update the awareness if location, position, velocity, orientation, scale or bbox has changed
         if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)
             || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)
@@ -228,23 +232,6 @@ void AwareMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::R
             || ent->hasAttr("orientation")
             || ent->hasAttr("bbox")
             || ent->hasAttr("scale")) {
-
-            if (oldLocation == entity.m_parent) {
-                //Location wasn't changed
-                if (entity.m_parent == m_ownEntity->m_parent) {
-                    //log(INFO, "Updated entity.");
-                    mAwareness->updateEntityMovement(*m_ownEntity, entity);
-                }
-            } else {
-                //Check if new location is the domain, and then add the entity
-                if (entity.m_parent == m_ownEntity->m_parent) {
-                    //log(INFO, "Adding entity.");
-                    mAwareness->addEntity(*m_ownEntity, entity, false);
-                } else if (oldLocation == m_ownEntity->m_parent) {
-                    //log(INFO, "Removing entity.");
-                    mAwareness->removeEntity(*m_ownEntity, entity);
-                }
-            }
 
             //If it was ourselves that moved we should notify steering that it shouldn't wait any more for a movement op.
             if (entity.getIntId() == m_ownEntity->getIntId()) {

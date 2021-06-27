@@ -21,7 +21,7 @@
 
 #include <rules/BBoxProperty.h>
 #include "navigation/Awareness.h"
-#include "rules/LocatedEntity.h"
+#include "rules/ai/MemEntity.h"
 
 #include "AwarenessStore.h"
 
@@ -34,7 +34,7 @@ AwarenessStore::AwarenessStore(float agentRadius, float agentHeight, float stepH
 {
 }
 
-std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity& domainEntity)
+std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const MemEntity& domainEntity)
 {
     //Check if there's already an awareness for the domain entity.
     auto I = m_awarenesses.find(domainEntity.getIntId());
@@ -50,7 +50,7 @@ std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity&
     auto bboxProp = domainEntity.getPropertyClassFixed<BBoxProperty>();
     auto bbox = bboxProp ? bboxProp->data() : WFMath::AxisBox<3>{};
 
-    auto awareness = std::make_shared<Awareness>(domainEntity, mAgentRadius, mAgentHeight, mStepHeight, mHeightProvider, bbox, mTileSize);
+    auto awareness = std::make_shared<Awareness>(domainEntity.getIntId(), mAgentRadius, mAgentHeight, mStepHeight, mHeightProvider, bbox, mTileSize);
     m_awarenesses.emplace(domainEntity.getIntId(), std::weak_ptr<Awareness>(awareness));
     return awareness;
 }

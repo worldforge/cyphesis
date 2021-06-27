@@ -369,8 +369,7 @@ wf_add_test(rules/ai/BaseMindMapEntityIntegration.cpp
         ../src/rules/Location.cpp
         ../src/rules/EntityLocation.cpp
         ../src/common/Property.cpp
-        ../src/client/ClientPropertyManager.cpp
-        ../src/rules/ai/MemEntityProperties.cpp)
+        ../src/client/ClientPropertyManager.cpp)
 wf_add_test(rules/simulation/AreaPropertyIntegration.cpp ../src/rules/simulation/AreaProperty.cpp
         ../src/rules/simulation/Entity.cpp
         ../src/rules/LocatedEntity.cpp

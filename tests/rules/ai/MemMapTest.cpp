@@ -29,6 +29,7 @@
 
 #include "rules/ai/MemEntity.h"
 #include "rules/Script.h"
+#include "rules/PhysicalProperties.h"
 
 #include "common/TypeNode.h"
 
@@ -336,7 +337,7 @@ void MemMaptest::test_findByLoc()
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
     e4->m_parent = tlve.get();
-    e4->m_transform.pos = Point3D(1,1,0);
+    e4->requirePropertyClassFixed<PositionProperty>().data() = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5(new MemEntity("5", 5));
@@ -344,7 +345,7 @@ void MemMaptest::test_findByLoc()
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
     e5->m_parent = tlve.get();
-    e5->m_transform.pos = Point3D(2,2,0);
+    e5->requirePropertyClassFixed<PositionProperty>().data() = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     Location find_here(tlve);
@@ -370,7 +371,7 @@ void MemMaptest::test_findByLoc_results()
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
     e4->m_parent = tlve.get();
-    e4->m_transform.pos = Point3D(1,1,0);
+    e4->requirePropertyClassFixed<PositionProperty>().data() = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5 = new MemEntity("5", 5);
@@ -378,7 +379,7 @@ void MemMaptest::test_findByLoc_results()
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
     e5->m_parent = tlve.get();
-    e5->m_transform.pos = Point3D(2,2,0);
+    e5->requirePropertyClassFixed<PositionProperty>().data() = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     EntityLocation find_here(tlve);
@@ -404,7 +405,7 @@ void MemMaptest::test_findByLoc_invalid()
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
     e4->m_parent = tlve.get();
-    e4->m_transform.pos = Point3D(1,1,0);
+    e4->requirePropertyClassFixed<PositionProperty>().data() = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5 = new MemEntity("5", 5);
@@ -412,7 +413,7 @@ void MemMaptest::test_findByLoc_invalid()
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
     e5->m_parent = tlve.get();
-    e5->m_transform.pos = Point3D(2,2,0);
+    e5->requirePropertyClassFixed<PositionProperty>().data() = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     // Look in a location where these is nothing - no contains at all
@@ -440,7 +441,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     e4->setType(m_sampleType);
     tested.injectEntity(e4);
     e4->m_parent = tlve.get();
-    e4->m_transform.pos = Point3D(1,1,0);
+    e4->requirePropertyClassFixed<PositionProperty>().data() = Point3D(1,1,0);
     tlve->m_contains->insert(e4);
 
     Ref<MemEntity> e5 = new MemEntity("5", 5);
@@ -448,7 +449,7 @@ void MemMaptest::test_findByLoc_consistency_check()
     e5->setType(m_sampleType);
     tested.injectEntity(e5);
     e5->m_parent = tlve.get();
-    e5->m_transform.pos = Point3D(2,2,0);
+    e5->requirePropertyClassFixed<PositionProperty>().data() = Point3D(2,2,0);
     tlve->m_contains->insert(e5);
 
     // Duplicated of tlve. Same ID, but not the same entity as in
@@ -509,4 +510,3 @@ WFMath::CoordType squareDistance(const Point3D & u, const Point3D & v)
 }
 #include "../../stubs/common/stublog.h"
 #include "../../stubs/common/stubid.h"
-#include "../../stubs/rules/ai/stubMemEntityProperties.h"

@@ -23,8 +23,8 @@
 #include "AwareMind.h"
 
 
-AwareMindFactory::AwareMindFactory(const PropertyManager& propertyManager)
-        : mPropertyManager(propertyManager),
+AwareMindFactory::AwareMindFactory(TypeStore& typeStore)
+        : mTypeStore(typeStore),
           mSharedTerrain(new SharedTerrain()),
           mAwarenessStoreProvider(new AwarenessStoreProvider(*mSharedTerrain))
 {
@@ -33,6 +33,6 @@ AwareMindFactory::AwareMindFactory(const PropertyManager& propertyManager)
 
 BaseMind* AwareMindFactory::newMind(const std::string& mind_id, const std::string& entity_id) const
 {
-    return new AwareMind(mind_id, entity_id, mPropertyManager, *mSharedTerrain, *mAwarenessStoreProvider);
+    return new AwareMind(mind_id, entity_id, mTypeStore, *mSharedTerrain, *mAwarenessStoreProvider);
 }
 

@@ -18,7 +18,7 @@
 
 #ifndef STUB_EntityFactoryBase_initializeEntity
 //#define STUB_EntityFactoryBase_initializeEntity
-  void EntityFactoryBase::initializeEntity(LocatedEntity& thing, const Atlas::Objects::Entity::RootEntity& attributes)
+  void EntityFactoryBase::initializeEntity(Entity& thing, const Atlas::Objects::Entity::RootEntity& attributes)
   {
     
   }

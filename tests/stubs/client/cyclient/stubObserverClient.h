@@ -9,8 +9,8 @@
 
 #ifndef STUB_ObserverClient_ObserverClient
 //#define STUB_ObserverClient_ObserverClient
-   ObserverClient::ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories, const PropertyManager& propertyManager)
-    : BaseClient(io_context, factories, propertyManager)
+   ObserverClient::ObserverClient(boost::asio::io_context& io_context, Atlas::Objects::Factories& factories, TypeStore& typeStore)
+    : BaseClient(io_context, factories, typeStore)
   {
     
   }

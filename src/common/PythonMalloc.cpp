@@ -25,9 +25,6 @@ static void* Python_Malloc(void* ctx, size_t size)
 
 static void* Python_Realloc(void* ctx, void* ptr, size_t size)
 {
-    if (size == 0) {
-        size = 1;
-    }
     return realloc(ptr, size ? size : 1);
 }
 

@@ -36,8 +36,8 @@ using Atlas::Objects::smart_dynamic_cast;
 CreatorClient::CreatorClient(const std::string& mindId,
                              const std::string& entityId,
                              ClientConnection& c,
-                             const PropertyManager& propertyManager) :
-        CharacterClient(mindId, entityId, c, propertyManager)
+                             TypeStore& typeStore) :
+        CharacterClient(mindId, entityId, c, typeStore)
 {
 }
 

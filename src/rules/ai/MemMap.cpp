@@ -60,6 +60,7 @@ void MemMap::addEntity(const Ref<MemEntity>& entity)
 void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, double timestamp)
 // Read the contents of an Atlas message into an entity
 {
+    entity->m_lastUpdated = timestamp;
     auto message = ent->asMessage();
 //    entity->m_location.readFromMessage(message);
     entity->merge(message);
@@ -400,6 +401,7 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
                                     WFMath::CoordType radius,
                                     const std::string& what)
 {
+    //TODO: move to awareness
     EntityVector res;
     auto place = loc.m_parent;
     if (place->m_contains == nullptr) {
@@ -427,16 +429,15 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
             continue;
         }
 
-        auto memEntityChild = static_cast<MemEntity*>(item.get());
 
         if (item->getType() && item->getType()->name() != what) {
             continue;
         }
-        auto& pos = memEntityChild->m_transform.pos;
-        if (!pos.isValid()) {
+        auto posProp = item->getPropertyClassFixed<PositionProperty>();
+        if (!posProp || !posProp->data().isValid()) {
             continue;
         }
-        if (squareDistance(loc.pos(), pos) < square_range) {
+        if (squareDistance(loc.pos(), posProp->data()) < square_range) {
             res.push_back(item.get());
         }
     }

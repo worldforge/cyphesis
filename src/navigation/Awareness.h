@@ -98,15 +98,26 @@ struct EntityConnections
     bool isIgnored;
 };
 
+template <typename T>
+struct TimestampedProperty {
+    T data;
+    double timestamp = -1.0;
+};
+
 struct EntityEntry
 {
     long entityId;
     int numberOfObservers;
 
-    TransformData transform;
-    MovementData movement;
-    WFMath::AxisBox<3> bbox;
-    //Location location;
+    TimestampedProperty<WFMath::Point<3>> pos;
+    TimestampedProperty<WFMath::Vector<3>> velocity;
+
+    TimestampedProperty<WFMath::Quaternion> orientation;
+    TimestampedProperty<WFMath::Vector<3>> angular;
+
+    TimestampedProperty<WFMath::AxisBox<3>> bbox;
+    TimestampedProperty<WFMath::Vector<3>> scale;
+    WFMath::AxisBox<3> scaledBbox;
 
     /**
      * True if this entity is owned by an actor. These entities should not be updated by sights by other actors: only the actor itself should update it.
@@ -145,6 +156,8 @@ struct EntityEntry
  *
  * Internally this class uses a dtTileCache to manage the tiles. Since the world is dynamic we need to manage the
  * navmeshes through tiles in order to keep the resource usage down.
+ *
+ * #TODO: split up the part of awareness which keeps track of entities with the same parent (i.e EntityEntry) from the path finding part
  */
 class Awareness
 {
@@ -156,11 +169,11 @@ class Awareness
 
         /**
          * @brief Ctor.
-         * @param domainEntity The entity holding the domain of the awareness.
+         * @param domainEntityId The id of the entity holding the domain of the awareness.
          * @param heightProvider A height provider, used for getting terrain height data.
          * @param tileSize The size, in voxels, of one side of a tile. The larger this is the longer each tile takes to generate, but the overhead of managing tiles is decreased.
          */
-        Awareness(const LocatedEntity& domainEntity,
+        Awareness(long domainEntityId,
                   float agentRadius,
                   float agentHeight,
                   float stepHeight,
@@ -274,7 +287,7 @@ class Awareness
          */
         void removeEntity(const MemEntity& observer, const MemEntity& entity);
 
-        void updateEntityMovement(const MemEntity& observer, const MemEntity& entity);
+        void updateEntity(const MemEntity& observer, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent);
 
         /**
          * @brief Emitted when a tile is updated.
@@ -329,18 +342,20 @@ class Awareness
          * @return True if entity could be found.
          */
         bool projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp) const;
+        WFMath::Point<3> projectPosition(long entityId, double currentServerTimestamp) const;
 
+        const std::unordered_map<long, std::unique_ptr<EntityEntry>>& getObservedEntities() const;
     protected:
 
         IHeightProvider& mHeightProvider;
 
 
         /**
-         * @brief The entity holding the domain of the awareness.
+         * @brief The id entity holding the domain of the awareness.
          *
          * This is the parent of all the entities contained in this awareness.
          */
-        const LocatedEntity& mDomainEntity;
+        long mDomainEntityId;
 
         std::unique_ptr<struct LinearAllocator> mTalloc;
         std::unique_ptr<struct FastLZCompressor> mTcomp;
@@ -472,7 +487,7 @@ class Awareness
          */
         size_t mObserverCount;
 
-        void processEntityMovementChange(EntityEntry& entry, const MemEntity& entity);
+        void processEntityUpdate(EntityEntry& entry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp);
 
         /**
          * @brief Rebuild the tile at the specific index.

@@ -78,7 +78,7 @@ class EntityFactoryBase : public EntityKit
 {
     protected:
 
-        void initializeEntity(LocatedEntity& thing,
+        void initializeEntity(Entity& thing,
                               const Atlas::Objects::Entity::RootEntity& attributes);
 
     public:

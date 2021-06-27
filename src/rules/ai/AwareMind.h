@@ -39,7 +39,7 @@ class AwareMind : public BaseMind
     public:
         AwareMind(const std::string& mind_id,
                   std::string entity_id,
-                  const PropertyManager& propertyManager,
+                  TypeStore& typeStore,
                   SharedTerrain& sharedTerrain,
                   AwarenessStoreProvider& awarenessStoreProvider);
 

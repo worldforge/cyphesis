@@ -20,6 +20,7 @@
 #include <rules/python/CyPy_EntityLocation.h>
 #include <rules/python/CyPy_Location.h>
 #include <rules/python/CyPy_LocatedEntity.h>
+#include <rules/python/CyPy_Vector3D.h>
 #include "CyPy_Steering.h"
 #include "navigation/Steering.h"
 
@@ -67,6 +68,7 @@ void CyPy_Steering::init_type()
     PYCXX_ADD_VARARGS_METHOD(query_destination, queryDestination, "");
     // PYCXX_ADD_VARARGS_METHOD(is_at_location, isAtLocation, "");
     PYCXX_ADD_VARARGS_METHOD(distance_to, distanceTo, "");
+    PYCXX_ADD_VARARGS_METHOD(direction_to, direction_to, "");
     //PYCXX_ADD_VARARGS_METHOD(distance_between, distanceBetween, "");
     PYCXX_ADD_NOARGS_METHOD(refresh_path, refreshPath, "");
 
@@ -218,6 +220,21 @@ Py::Object CyPy_Steering::distanceTo(const Py::Tuple& args)
         return Py::None();
     }
     return Py::Float(*distance);
+}
+
+Py::Object CyPy_Steering::direction_to(const Py::Tuple& args)
+{
+    args.verify_length(1);
+
+    auto steering = m_value->getSteering();
+    if (!steering) {
+        return Py::None();
+    }
+    auto direction = steering->directionTo(m_value->getCurrentServerTime(), toEntityLocation(args[0]));
+    if (!direction.isValid()) {
+        return Py::None();
+    }
+    return CyPy_Vector3D::wrap(direction);
 }
 
 

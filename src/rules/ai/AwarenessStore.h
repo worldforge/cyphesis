@@ -30,7 +30,7 @@ struct IHeightProvider;
 class Awareness;
 
 class LocatedEntity;
-
+class MemEntity;
 
 class AwarenessStore
 {
@@ -43,7 +43,7 @@ class AwarenessStore
 
         virtual ~AwarenessStore() = default;
 
-        std::shared_ptr<Awareness> requestAwareness(const LocatedEntity& domainEntity);
+        std::shared_ptr<Awareness> requestAwareness(const MemEntity& domainEntity);
 
     private:
         /**

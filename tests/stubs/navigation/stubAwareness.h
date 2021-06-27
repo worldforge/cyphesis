@@ -9,9 +9,10 @@
 
 
 
+
 #ifndef STUB_Awareness_Awareness
 //#define STUB_Awareness_Awareness
-   Awareness::Awareness(const LocatedEntity& domainEntity, float agentRadius, float agentHeight, float stepHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize )
+   Awareness::Awareness(long domainEntityId, float agentRadius, float agentHeight, float stepHeight, IHeightProvider& heightProvider, const WFMath::AxisBox<3>& extent, int tileSize )
     : mTileCache(nullptr),mNavMesh(nullptr),mNavQuery(nullptr),mObstacleAvoidanceQuery(nullptr)
   {
     
@@ -138,13 +139,13 @@
   }
 #endif //STUB_Awareness_removeEntity
 
-#ifndef STUB_Awareness_updateEntityMovement
-//#define STUB_Awareness_updateEntityMovement
-  void Awareness::updateEntityMovement(const MemEntity& observer, const MemEntity& entity)
+#ifndef STUB_Awareness_updateEntity
+//#define STUB_Awareness_updateEntity
+  void Awareness::updateEntity(const MemEntity& observer, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent)
   {
     
   }
-#endif //STUB_Awareness_updateEntityMovement
+#endif //STUB_Awareness_updateEntity
 
 #ifndef STUB_Awareness_getTileSizeInMeters
 //#define STUB_Awareness_getTileSizeInMeters
@@ -194,13 +195,29 @@
   }
 #endif //STUB_Awareness_projectPosition
 
-#ifndef STUB_Awareness_processEntityMovementChange
-//#define STUB_Awareness_processEntityMovementChange
-  void Awareness::processEntityMovementChange(EntityEntry& entry, const MemEntity& entity)
+#ifndef STUB_Awareness_projectPosition
+//#define STUB_Awareness_projectPosition
+  WFMath::Point<3> Awareness::projectPosition(long entityId, double currentServerTimestamp) const
+  {
+    return *static_cast<WFMath::Point<3>*>(nullptr);
+  }
+#endif //STUB_Awareness_projectPosition
+
+#ifndef STUB_Awareness_getObservedEntities
+//#define STUB_Awareness_getObservedEntities
+  const std::unordered_map<long, std::unique_ptr<EntityEntry>>& Awareness::getObservedEntities() const
+  {
+    return *static_cast<const std::unordered_map<long, std::unique_ptr<EntityEntry>>*>(nullptr);
+  }
+#endif //STUB_Awareness_getObservedEntities
+
+#ifndef STUB_Awareness_processEntityUpdate
+//#define STUB_Awareness_processEntityUpdate
+  void Awareness::processEntityUpdate(EntityEntry& entry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp)
   {
     
   }
-#endif //STUB_Awareness_processEntityMovementChange
+#endif //STUB_Awareness_processEntityUpdate
 
 #ifndef STUB_Awareness_rebuildTile
 //#define STUB_Awareness_rebuildTile

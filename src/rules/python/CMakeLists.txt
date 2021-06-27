@@ -25,7 +25,8 @@ add_library(rulesbase_python
     CyPy_Props.cpp
         CyPy_Rules.cpp
     CyPy_Root.cpp
-    CyPy_Ball.cpp)
+    CyPy_Ball.cpp
+    ../../common/PythonMalloc.cpp     )
 
 target_link_libraries(rulesbase_python pycxx ${PYTHON_LIBRARIES})
 

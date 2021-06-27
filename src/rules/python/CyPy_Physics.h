@@ -31,16 +31,6 @@ class CyPy_Physics : public Py::ExtensionModule<CyPy_Physics>
     public:
         CyPy_Physics();
 
-        Py::Object square_horizontal_edge_distance(const Py::Tuple& args);
-
-        Py::Object square_horizontal_distance(const Py::Tuple& args);
-
-        Py::Object square_distance(const Py::Tuple& args);
-
-        Py::Object distance_to(const Py::Tuple& args);
-
-        Py::Object distance_between(const Py::Tuple& args);
-
         static std::string init();
 };
 

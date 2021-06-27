@@ -33,8 +33,10 @@
 #include <rules/python/CyPy_Common.h>
 #include <rules/entityfilter/python/CyPy_EntityFilter.h>
 #include <rules/python/CyPy_Rules.h>
+#include <rules/SimpleTypeStore.h>
 #include "common/Property_impl.h"
-static void usage(const char * prgname)
+
+static void usage(const char* prgname)
 {
     std::cout << "usage: " << prgname << " [ [package.]function ]"
               << std::endl << std::flush;
@@ -55,9 +57,9 @@ STRING_OPTION(package, "", "client", "package",
 STRING_OPTION(function, "", "client", "function",
               "Python function to initialise the world");
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
-    int config_status = loadConfig(argc, argv, USAGE_CLIENT); 
+    int config_status = loadConfig(argc, argv, USAGE_CLIENT);
     if (config_status < 0) {
         if (config_status == CONFIG_VERSION) {
             reportVersion(argv[0]);
@@ -111,6 +113,7 @@ int main(int argc, char ** argv)
 
     extend_client_python_api();
     ClientPropertyManager clientPropertyManager;
+    SimpleTypeStore typeStore(clientPropertyManager);
 
     if (interactive) {
         python_prompt();
@@ -118,7 +121,7 @@ int main(int argc, char ** argv)
         boost::asio::io_context io_context;
         std::map<std::string, std::string> keywords;
         Atlas::Objects::Factories factories;
-        ObserverClient observerClient(io_context, factories, clientPropertyManager);
+        ObserverClient observerClient(io_context, factories, typeStore);
         observerClient.setup(account, password, server);
         python_client_script(package, function, observerClient);
     }

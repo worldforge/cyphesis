@@ -39,8 +39,8 @@ static const bool debug_flag = false;
 CharacterClient::CharacterClient(const std::string& mindId,
                                  const std::string& entityId,
                                  ClientConnection& c,
-                                 const PropertyManager& propertyManager) :
-        BaseMind(mindId, entityId, propertyManager), m_connection(c)
+                                 TypeStore& typeStore) :
+        BaseMind(mindId, entityId, typeStore), m_connection(c)
 {
 }
 

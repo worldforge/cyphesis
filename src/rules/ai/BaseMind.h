@@ -41,7 +41,7 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
 
         Flags m_flags;
 
-        std::unique_ptr<SimpleTypeStore> m_typeStore;
+        TypeStore& m_typeStore;
         std::unique_ptr<TypeResolver> m_typeResolver;
 
         /// \brief Memory map of world entities this mind knows about
@@ -81,7 +81,7 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         OpVector mOutgoingOperations;
 
     public:
-        BaseMind(const std::string& mindId, std::string entityId, const PropertyManager& propertyManager);
+        BaseMind(const std::string& mindId, std::string entityId, TypeStore& typeStore);
 
         ~BaseMind() override;
 

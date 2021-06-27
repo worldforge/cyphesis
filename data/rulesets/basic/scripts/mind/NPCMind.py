@@ -8,7 +8,7 @@ import ai
 import entity_filter
 from atlas import Operation, Entity, Oplist
 from common import log, const
-from physics import Vector3D, Point3D, distance_to, Quaternion
+from physics import Vector3D, Point3D, Quaternion
 from rules import Location
 
 from mind.Goal import goal_create
@@ -163,7 +163,8 @@ class NPCMind(ai.Mind):
     def find_op_method(self, op_id, prefix="", undefined_op_method=None):
         """find right operation to invoke"""
 
-        if not undefined_op_method: undefined_op_method = self.undefined_op_method
+        if not undefined_op_method:
+            undefined_op_method = self.undefined_op_method
         return get_dict_func(self, prefix + op_id + "_operation", undefined_op_method)
 
     def undefined_op_method(self, op):
@@ -453,7 +454,7 @@ class NPCMind(ai.Mind):
         res = res + think_op
         return res
 
-    ########## Talk operations
+    # Talk operations
     def admin_sound(self, op):
         assert (op.from_ == op.to)
         return op.from_ == self.entity.id
@@ -534,7 +535,7 @@ class NPCMind(ai.Mind):
         else:
             k_type = type(k)
             if isinstance(k_type, Location):
-                dist = distance_to(self.entity.location, k)
+                dist = self.steering.direction_to(k)
                 dist.y = 0
                 distmag = dist.mag()
                 if distmag < 8:
@@ -853,7 +854,9 @@ class NPCMind(ai.Mind):
 
     def face(self, other):
         """turn to face other entity"""
-        vector = distance_to(self.entity.location, other.location)
+        vector = self.steering.direction_to(other)
+        if vector is None:
+            return
         vector.y = 0
         if vector.sqr_mag() < 0.1:
             return

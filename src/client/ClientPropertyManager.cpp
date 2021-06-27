@@ -16,6 +16,7 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <rules/PhysicalProperties.h>
 #include "ClientPropertyManager.h"
 
 #include "rules/ScaleProperty.h"
@@ -30,9 +31,13 @@ using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 ClientPropertyManager::ClientPropertyManager()
 {
+    installFactory(PositionProperty::property_name, std::make_unique<PropertyFactory<PositionProperty>>());
+    installFactory(VelocityProperty::property_name, std::make_unique<PropertyFactory<VelocityProperty>>());
     installFactory(BBoxProperty::property_name, std::make_unique<PropertyFactory<BBoxProperty>>());
     installFactory(ScaleProperty::property_name, std::make_unique<PropertyFactory<ScaleProperty>>());
     installFactory(SolidProperty::property_name, std::make_unique<PropertyFactory<SolidProperty>>());
+    installFactory(AngularVelocityProperty::property_name, std::make_unique<PropertyFactory<AngularVelocityProperty>>());
+    installFactory(OrientationProperty::property_name, std::make_unique<PropertyFactory<OrientationProperty>>());
     installFactory("propel", std::make_unique<PropertyFactory<Vector3Property>>());
 }
 

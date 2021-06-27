@@ -23,6 +23,7 @@
 #include "rules/Vector3Property.h"
 
 class BBoxProperty;
+
 /**
  * \brief A property which defines the scaling of an entity, as a Vector<3>.
  *
@@ -53,6 +54,8 @@ class ScaleProperty : public PropertyBase
         static WFMath::AxisBox<3> scaledBbox(const LocatedEntity& entity);
 
         static WFMath::AxisBox<3> scaledBbox(const LocatedEntity& entity, const BBoxProperty& bboxProperty);
+
+        static WFMath::AxisBox<3> scaledBbox(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& scale);
 
     protected:
         WFMath::Vector<3> m_data;

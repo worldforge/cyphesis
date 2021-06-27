@@ -186,6 +186,14 @@
   }
 #endif //STUB_Steering_distanceTo
 
+#ifndef STUB_Steering_directionTo
+//#define STUB_Steering_directionTo
+  WFMath::Vector<3> Steering::directionTo(double currentTimestamp, const EntityLocation& location) const
+  {
+    return *static_cast<WFMath::Vector<3>*>(nullptr);
+  }
+#endif //STUB_Steering_directionTo
+
 #ifndef STUB_Steering_resolvePosition
 //#define STUB_Steering_resolvePosition
   Steering::ResolvedPosition Steering::resolvePosition(double currentTimestamp, const EntityLocation& location) const
@@ -193,14 +201,6 @@
     return *static_cast<Steering::ResolvedPosition*>(nullptr);
   }
 #endif //STUB_Steering_resolvePosition
-
-#ifndef STUB_Steering_projectPosition
-//#define STUB_Steering_projectPosition
-  WFMath::Point<3> Steering::projectPosition(double currentTimestamp, const TransformData& transform, const MovementData& movement) const
-  {
-    return *static_cast<WFMath::Point<3>*>(nullptr);
-  }
-#endif //STUB_Steering_projectPosition
 
 #ifndef STUB_Steering_setAwarenessArea
 //#define STUB_Steering_setAwarenessArea

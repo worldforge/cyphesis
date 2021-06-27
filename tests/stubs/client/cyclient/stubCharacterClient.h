@@ -25,8 +25,8 @@
 
 #ifndef STUB_CharacterClient_CharacterClient
 //#define STUB_CharacterClient_CharacterClient
-   CharacterClient::CharacterClient(const std::string& mindId, const std::string& entityId, ClientConnection&, const PropertyManager& propertyManager)
-    : BaseMind(mindId, entityId, ClientConnection, propertyManager)
+   CharacterClient::CharacterClient(const std::string& mindId, const std::string& entityId, ClientConnection&, TypeStore& typeStore)
+    : BaseMind(mindId, entityId, ClientConnection, typeStore)
   {
     
   }

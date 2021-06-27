@@ -34,6 +34,7 @@
 #include <cassert>
 #include <client/cyclient/CyPy_CreatorClient.h>
 #include <client/cyclient/ClientConnection.h>
+#include "rules/SimpleTypeStore.h"
 #include <rules/simulation/Entity.h>
 #include <rules/simulation/python/CyPy_Server.h>
 #include <rules/python/CyPy_Atlas.h>
@@ -58,6 +59,7 @@ int main()
     setupPythonMalloc();
     {
         NullPropertyManager propertyManager;
+        SimpleTypeStore typeStore(propertyManager);
 
         boost::asio::io_context io_context;
 
@@ -70,7 +72,7 @@ int main()
         extend_client_python_api();
 
         ClientConnection conn(io_context, factories);
-        Ref<CreatorClient> client(new CreatorClient("1", "2", conn, propertyManager));
+        Ref<CreatorClient> client(new CreatorClient("1", "2", conn, typeStore));
         Ref<MemEntity> entity(new MemEntity("1", 1));
         OpVector res;
         client->setOwnEntity(res, entity);

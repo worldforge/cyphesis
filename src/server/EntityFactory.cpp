@@ -52,7 +52,7 @@ Ref<Entity> EntityFactory<World>::newEntity(const std::string& id,
     return nullptr;
 }
 
-void EntityFactoryBase::initializeEntity(LocatedEntity& thing,
+void EntityFactoryBase::initializeEntity(Entity& thing,
                                          const Atlas::Objects::Entity::RootEntity& attributes)
 {
     thing.setType(m_type);

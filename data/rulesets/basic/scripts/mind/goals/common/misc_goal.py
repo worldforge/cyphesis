@@ -5,9 +5,10 @@
 from random import *
 
 import entity_filter
+import ai
 from atlas import Operation, Entity, Oplist
 from common import const
-from physics import square_distance, Vector3D, Point3D
+from physics import Vector3D, Point3D
 from rules import Location
 
 from mind.goals.common.common import *
@@ -210,7 +211,7 @@ class CutSomething(Task):
 class SpotSomething(Goal):
     """Pick out something and focus on it, forgetting things previously focused on after a while."""
 
-    def __init__(self, what="", range=30, condition=lambda a: 1, seconds_until_forgotten=30):
+    def __init__(self, what="", range=30, condition=lambda me, a: True, seconds_until_forgotten=30):
         Goal.__init__(self, desc="spot a thing",
                       fulfilled=self.do_i_have,
                       sub_goals=[self.do])
@@ -245,7 +246,7 @@ class SpotSomething(Goal):
     def do(self, me):
         thing_all = me.map.find_by_filter(self.filter)
         nearest = None
-        nearsqrdist = self.range * self.range
+        nearest_distance = self.range
         for thing in thing_all:
             # Check that it's not something we've already spotted
             if thing.id in self.spotted:
@@ -255,16 +256,16 @@ class SpotSomething(Goal):
                 else:
                     continue
 
-            sqr_dist = square_distance(me.entity.location, thing.location)
+            dist = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
             # FIXME We need a more sophisticated check for parent. Perhaps just
             # check its not in a persons inventory? Requires the ability to
             # do decent type checks
-            if sqr_dist and sqr_dist < nearsqrdist and thing.parent and me.entity.parent:
-                if self.condition(thing):
+            if dist is not None and dist < self.range and thing.parent and me.entity.parent:
+                if self.condition(me, thing):
                     nearest = thing
-                    nearsqrdist = sqr_dist
+                    nearest_distance = dist
         if nearest:
-            print("Spotted new thing matching '{}' at square distance of {}. Thing: {}".format(self.what, nearsqrdist, str(nearest)))
+            print("Spotted new thing matching '{}' at distance of {}. Thing: {}".format(self.what, nearest_distance, str(nearest)))
             me.add_knowledge('focus', self.what, nearest.id)
             # We should only remember things if we can keep them in memory.
             if self.seconds_until_forgotten > 0:
@@ -274,13 +275,12 @@ class SpotSomething(Goal):
 class SpotSomethingInArea(Goal):
     """Pick out something in a specified area and focus on it, forgetting things previously focused on after a while."""
 
-    def __init__(self, what, location, range=30, condition=lambda a: 1, seconds_until_forgotten=30):
+    def __init__(self, what, location, range=30, condition=lambda me, a: True, seconds_until_forgotten=30):
         Goal.__init__(self,
                       desc="spot a thing in area",
                       fulfilled=self.do_i_have,
                       sub_goals=[self.do])
         self.range = range
-        self.sqr_range = range * range
         self.area_location_name = location
         self.condition = condition
         self.inner_spot_goal = SpotSomething(what, range=range, seconds_until_forgotten=seconds_until_forgotten,
@@ -295,12 +295,12 @@ class SpotSomethingInArea(Goal):
         self.current_location = me.get_knowledge("location", self.area_location_name)
         self.inner_spot_goal.do(me)
 
-    def is_thing_in_area(self, thing):
-        if self.condition(thing):
+    def is_thing_in_area(self, me, thing):
+        if self.condition(me, thing):
             if self.current_location is None:
                 return False
-            sqr_dist = square_distance(self.current_location, thing.location)
-            if sqr_dist and sqr_dist < self.sqr_range:
+            dist = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
+            if dist is not None and dist < self.range:
                 return True
         return False
 
@@ -518,7 +518,7 @@ class Browse(Feed):
         Goal.__init__(self, "browse for food by name",
                       self.am_i_full,
                       [SpotSomething(what, range=20, condition=(
-                          lambda o, s=min_status: hasattr(o.props, "status") and o.props.status > s)),
+                          lambda me, o, s=min_status: hasattr(o.props, "status") and o.props.status > s)),
                        MoveMeToFocus(what),
                        self.eat])
         self.what = what
@@ -559,7 +559,7 @@ class PredateSmall(Feed):
     def __init__(self, what, range, max_mass):
         Goal.__init__(self, "predate something",
                       self.am_i_full,
-                      [SpotSomething(what, range, condition=(lambda o, m=max_mass: hasattr(o, "mass") and o.mass < m)),
+                      [SpotSomething(what, range, condition=(lambda me, o, m=max_mass: hasattr(o, "mass") and o.mass < m)),
                        HuntFor(what, range),
                        self.eat])
         self.what = what
@@ -585,14 +585,13 @@ class Hunt(Goal):
         self.what = what
         self.filter = entity_filter.Filter(what)
         self.range = range
-        self.square_range = range * range
         self.vars = ["weapon", "what", "range"]
 
     def none_in_range(self, me):
         thing_all = me.map.find_by_filter(self.filter)
         for thing in thing_all:
-            distance = square_distance(me.entity.location, thing.location)
-            if distance and distance < self.square_range:
+            distance = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
+            if distance and distance < self.range:
                 return 0
         return 1
 

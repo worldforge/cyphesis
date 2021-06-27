@@ -32,6 +32,7 @@
 #include "client/cyclient/CyPy_ObserverClient.h"
 
 #include "rules/python/Python_API.h"
+#include "rules/SimpleTypeStore.h"
 #include "../NullPropertyManager.h"
 
 #include <cassert>
@@ -53,6 +54,7 @@ int main()
     setupPythonMalloc();
     {
         NullPropertyManager propertyManager;
+        SimpleTypeStore typeStore(propertyManager);
 
         Inheritance inheritance(factories);
         boost::asio::io_context io_context;
@@ -60,7 +62,7 @@ int main()
         init_python_api({&CyPy_Server::init, &CyPy_Atlas::init});
         extend_client_python_api();
 
-        ObserverClient client(io_context, factories, propertyManager);
+        ObserverClient client(io_context, factories, typeStore);
 
         Py::Module module("server");
         module.setAttr("testclient", CyPy_ObserverClient::wrap(&client));
@@ -134,7 +136,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
     if (stub_createCharacter_fail) {
         return 0;
     }
-    return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection, m_propertyManager));
+    return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection, m_typeStore));
 }
 #include "../stubs/client/cyclient/stubBaseClient.h"
 

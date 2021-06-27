@@ -48,4 +48,3 @@ int main()
 #include "../stubs/rules/stubBBoxProperty.h"
 #include "../stubs/rules/stubScaleProperty.h"
 #include "../stubs/rules/stubSolidProperty.h"
-#include "../stubs/rules/ai/stubMemEntityProperties.h"

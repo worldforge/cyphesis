@@ -4,7 +4,6 @@
 import ai
 import entity_filter
 from atlas import Operation, Entity
-from physics import square_distance
 from mind.Goal import Goal
 from mind.goals.common.misc_goal import SpotSomething, false, AcquireThing, SpotSomethingInArea, ClearFocus
 from mind.goals.common.move import PickUpFocus, MoveMeArea, MoveMeToFocus, MoveMeNearFocus
@@ -142,10 +141,10 @@ class PlantSeeds(Goal):
 
         # Check that the seed isn't too close to other sources (to prevent us from planting too closely)
         sources_all = me.map.find_by_filter(self.source_filter)
-        spacing_sqr = self.spacing * self.spacing
         for thing in sources_all:
-            sqr_dist = square_distance(seed.location, thing.location)
-            if sqr_dist and sqr_dist < spacing_sqr:
+            #TODO: add "distance_between"; this won't work
+            dist = me.steering.distance_to(thing, ai.EDGE, ai.EDGE)
+            if dist is not None and dist < self.spacing:
                 # We've found a source which is too close to the seed, so we'll not plant this one
                 me.remove_knowledge('focus', self.seed)
                 return

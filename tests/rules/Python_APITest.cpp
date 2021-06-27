@@ -87,18 +87,6 @@ int main()
         run_python_string("l1=rules.Location()");
         run_python_string("l2=rules.Location()");
 
-        run_python_string("import physics");
-        expect_python_error("physics.distance_to()", PyExc_IndexError);
-        expect_python_error("physics.square_distance()", PyExc_IndexError);
-        expect_python_error("physics.square_horizontal_distance()",
-                            PyExc_IndexError);
-        run_python_string("physics.distance_to(l1, l2)");
-        run_python_string("physics.square_distance(l1, l2)");
-        run_python_string("physics.square_horizontal_distance(l1, l2)");
-        expect_python_error("physics.distance_to('1', l2)", PyExc_TypeError);
-        expect_python_error("physics.square_distance('1', l2)", PyExc_TypeError);
-        expect_python_error("physics.square_horizontal_distance('1', l2)",
-                            PyExc_TypeError);
     }
 
     shutdown_python_api();

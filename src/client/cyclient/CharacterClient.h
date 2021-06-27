@@ -22,6 +22,7 @@
 #include "rules/ai/BaseMind.h"
 
 class ClientConnection;
+struct TypeStore;
 
 /// \brief Class to implement a character entity in an admin client
 class CharacterClient : public BaseMind
@@ -37,7 +38,7 @@ class CharacterClient : public BaseMind
         CharacterClient(const std::string& mindId,
                         const std::string& entityId,
                         ClientConnection&,
-                        const PropertyManager& propertyManager);
+                        TypeStore& typeStore);
 
         void send(const Operation& op);
 

@@ -81,6 +81,14 @@
   }
 #endif //STUB_CyPy_Steering_distanceTo
 
+#ifndef STUB_CyPy_Steering_direction_to
+//#define STUB_CyPy_Steering_direction_to
+  Py::Object CyPy_Steering::direction_to(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Steering_direction_to
+
 #ifndef STUB_CyPy_Steering_isAtCurrentDestination
 //#define STUB_CyPy_Steering_isAtCurrentDestination
   Py::Object CyPy_Steering::isAtCurrentDestination()

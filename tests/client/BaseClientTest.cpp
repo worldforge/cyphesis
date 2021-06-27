@@ -25,6 +25,7 @@
 
 #include "client/cyclient/BaseClient.h"
 #include "../NullPropertyManager.h"
+#include "rules/SimpleTypeStore.h"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -38,7 +39,7 @@ Atlas::Objects::Factories factories;
 class TestBaseClient : public BaseClient
 {
   public:
-    explicit TestBaseClient(boost::asio::io_context& io_context, const PropertyManager& propertyManager) : BaseClient(io_context, factories, propertyManager) { }
+    explicit TestBaseClient(boost::asio::io_context& io_context, TypeStore& typeStore) : BaseClient(io_context, factories, typeStore) { }
 
     void idle() override { }
 };
@@ -46,15 +47,16 @@ class TestBaseClient : public BaseClient
 int main()
 {
     NullPropertyManager propertyManager;
+    SimpleTypeStore typeStore(propertyManager);
     boost::asio::io_context io_context;
     {
-        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
+        BaseClient * bc = new TestBaseClient{io_context, typeStore};
 
         delete bc;
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
+        BaseClient * bc = new TestBaseClient{io_context, typeStore};
 
         bc->createAccount("8e7e4452-f666-11df-8027-00269e5444b3", "84abee0c-f666-11df-8f7e-00269e5444b3");
 
@@ -62,7 +64,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
+        BaseClient * bc = new TestBaseClient{io_context, typeStore};
 
         bc->createSystemAccount();
 
@@ -70,7 +72,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
+        BaseClient * bc = new TestBaseClient{io_context, typeStore};
 
         bc->createCharacter("9e7f4004-f666-11df-a327-00269e5444b3");
 
@@ -78,7 +80,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
+        BaseClient * bc = new TestBaseClient{io_context, typeStore};
 
         bc->logout();
 
@@ -86,7 +88,7 @@ int main()
     }
 
     {
-        BaseClient * bc = new TestBaseClient{io_context, propertyManager};
+        BaseClient * bc = new TestBaseClient{io_context, typeStore};
 
         bc->handleNet();
 
@@ -105,6 +107,8 @@ int main()
 #include <cstdlib>
 
 #include "../stubs/rules/ai/stubBaseMind.h"
+#include "../stubs/rules/stubSimpleTypeStore.h"
+#include "../stubs/common/stubTypeNode.h"
 #include "../stubs/client/cyclient/stubCreatorClient.h"
 
 #define STUB_ClientConnection_pop

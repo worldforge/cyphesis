@@ -26,7 +26,6 @@
 #include "rules/entityfilter/python/CyPy_EntityFilter.h"
 
 #include "common/sockets.h"
-#include "common/system.h"
 #include "common/RuleTraversalTask.h"
 #include "common/Inheritance.h"
 
@@ -43,6 +42,7 @@
 
 #include <sys/prctl.h>
 #include <rules/python/CyPy_Rules.h>
+#include <rules/SimpleTypeStore.h>
 
 
 using Atlas::Message::MapType;
@@ -141,7 +141,8 @@ int main(int argc, char** argv)
         FileSystemObserver file_system_observer(io_context);
 
         ClientPropertyManager propertyManager{};
-        AwareMindFactory mindFactory(propertyManager);
+        SimpleTypeStore typeStore(propertyManager);
+        AwareMindFactory mindFactory(typeStore);
 
         AssetsManager assets_manager(file_system_observer);
         assets_manager.init();

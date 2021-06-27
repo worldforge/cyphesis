@@ -17,7 +17,7 @@
 
 #ifndef STUB_AwarenessStore_requestAwareness
 //#define STUB_AwarenessStore_requestAwareness
-  std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const LocatedEntity& domainEntity)
+  std::shared_ptr<Awareness> AwarenessStore::requestAwareness(const MemEntity& domainEntity)
   {
     return *static_cast<std::shared_ptr<Awareness>*>(nullptr);
   }

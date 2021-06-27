@@ -106,3 +106,20 @@ WFMath::AxisBox<3> ScaleProperty::scaledBbox(const LocatedEntity& entity, const 
     }
     return {};
 }
+
+WFMath::AxisBox<3> ScaleProperty::scaledBbox(const WFMath::AxisBox<3>& bbox, const WFMath::Vector<3>& scale)
+{
+    if (scale.isValid()) {
+        auto scaledBbox = bbox;
+        scaledBbox.lowCorner().x() *= scale.x();
+        scaledBbox.lowCorner().y() *= scale.y();
+        scaledBbox.lowCorner().z() *= scale.z();
+        scaledBbox.highCorner().x() *= scale.x();
+        scaledBbox.highCorner().y() *= scale.y();
+        scaledBbox.highCorner().z() *= scale.z();
+        return scaledBbox;
+    } else {
+        return bbox;
+    }
+
+}

@@ -31,6 +31,10 @@
 
 #include <client/ClientPropertyManager.h>
 #include <rules/SolidProperty.h>
+#include "rules/SimpleTypeStore.h"
+
+
+#include <memory>
 
 using Atlas::Objects::Entity::Anonymous;
 
@@ -38,6 +42,7 @@ class BaseMindMapEntityintegration : public Cyphesis::TestBase
 {
   protected:
     ClientPropertyManager* m_propertyManager;
+    std::unique_ptr<TypeStore> m_typeStore;
     Ref<BaseMind> m_mind;
     TypeNode* m_type;
   public:
@@ -69,7 +74,8 @@ BaseMindMapEntityintegration::BaseMindMapEntityintegration()
 void BaseMindMapEntityintegration::setup()
 {
     m_propertyManager = new ClientPropertyManager();
-    m_mind = new BaseMind("1", "2", *m_propertyManager);
+    m_typeStore = std::make_unique<SimpleTypeStore>(*m_propertyManager);
+    m_mind = new BaseMind("1", "2", *m_typeStore);
     m_type = new TypeNode("type");
 }
 
@@ -78,6 +84,7 @@ void BaseMindMapEntityintegration::teardown()
     m_mind = nullptr;
     delete m_type;
     m_type = nullptr;
+    m_typeStore.reset();
     delete m_propertyManager;
     m_propertyManager = nullptr;
 }

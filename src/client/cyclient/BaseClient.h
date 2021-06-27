@@ -28,13 +28,15 @@ class CreatorClient;
 
 class PropertyManager;
 
+struct TypeStore;
+
 /// \brief Base class for classes that implement clients used to connect to a
 /// cyphesis server
 /// TODO: remove in favour of common/BaseClient which uses the asio event loop
 class BaseClient
 {
     protected:
-        const PropertyManager& m_propertyManager;
+        TypeStore& m_typeStore;
         /// \brief Low level connection to the server
         ClientConnection m_connection;
         /// \brief Client object that manages the creator avatar
@@ -51,7 +53,7 @@ class BaseClient
     public:
         explicit BaseClient(boost::asio::io_context& io_context,
                             Atlas::Objects::Factories& factories,
-                            const PropertyManager& propertyManager);
+                            TypeStore& typeStore);
 
         virtual ~BaseClient();
 

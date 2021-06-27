@@ -48,4 +48,5 @@ int main()
 #include "../stubs/rules/stubScaleProperty.h"
 #include "../stubs/rules/stubSolidProperty.h"
 #include "../stubs/rules/stubVector3Property.h"
+#include "../stubs/rules/stubPhysicalProperties.h"
 #include "../stubs/common/stubProperty.h"
