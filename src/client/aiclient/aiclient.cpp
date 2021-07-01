@@ -55,46 +55,49 @@ using Atlas::Objects::Entity::Anonymous;
 
 Atlas::Objects::Factories factories;
 
-static void usage(const char* prgname)
-{
-    std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl << std::flush;
+namespace {
+    void usage(const char* prgname)
+    {
+        std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl << std::flush;
+    }
+
+    void connectToServer(boost::asio::io_context& io_context, AwareMindFactory& mindFactory)
+    {
+        if (exit_flag_soft || exit_flag) {
+            return;
+        }
+        auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_context, factories);
+
+        commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
+            if (!ec) {
+                log(INFO, "Connection detected; creating possession client.");
+                commClient->startConnect(std::make_unique<PossessionClient>(*commClient, mindFactory, std::make_unique<Inheritance>(factories), [&]() {
+                    connectToServer(io_context, mindFactory);
+                }));
+            } else {
+                //If we couldn't connect we'll wait five seconds and try again.
+                auto timer = std::make_shared<boost::asio::steady_timer>(io_context);
+#if BOOST_VERSION >= 106600
+                timer->expires_after(std::chrono::seconds(5));
+#else
+                timer->expires_from_now(std::chrono::seconds(5));
+#endif
+                timer->async_wait([&io_context, &mindFactory, timer](boost::system::error_code ecInner) {
+                    if (!ecInner) {
+                        connectToServer(io_context, mindFactory);
+                    }
+                });
+            }
+        });
+    }
 }
+
 
 STRING_OPTION(server, "localhost", "aiclient", "serverhost", "Hostname of the server to connect to");
 
 STRING_OPTION(account, "", "aiclient", "account", "Account name to use to authenticate to the server");
 
 STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenticate to the server");
-
-static void connectToServer(boost::asio::io_context& io_context, AwareMindFactory& mindFactory)
-{
-    if (exit_flag_soft || exit_flag) {
-        return;
-    }
-    auto commClient = std::make_shared<CommAsioClient<boost::asio::local::stream_protocol>>("aiclient", io_context, factories);
-
-    commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
-        if (!ec) {
-            log(INFO, "Connection detected; creating possession client.");
-            commClient->startConnect(std::make_unique<PossessionClient>(*commClient, mindFactory, std::make_unique<Inheritance>(factories), [&]() {
-                connectToServer(io_context, mindFactory);
-            }));
-        } else {
-            //If we couldn't connect we'll wait five seconds and try again.
-            auto timer = std::make_shared<boost::asio::steady_timer>(io_context);
-#if BOOST_VERSION >= 106600
-            timer->expires_after(std::chrono::seconds(5));
-#else
-            timer->expires_from_now(std::chrono::seconds(5));
-#endif
-            timer->async_wait([&io_context, &mindFactory, timer](boost::system::error_code ecInner) {
-                if (!ecInner) {
-                    connectToServer(io_context, mindFactory);
-                }
-            });
-        }
-    });
-}
 
 
 int main(int argc, char** argv)
@@ -127,13 +130,10 @@ int main(int argc, char** argv)
     assert(optindex <= argc);
 
     if (optindex == (argc - 1)) {
-        std::string arg(argv[optindex]);
-
     } else if (optindex != argc) {
         usage(argv[0]);
         return 1;
     }
-
 
 
     {
