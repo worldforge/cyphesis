@@ -85,6 +85,7 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
         Sight sToEntity;
         sToEntity->setArgs1(op);
         sToEntity->setTo(getId());
+        sToEntity->setFrom(getId());
         operation(sToEntity, res);
 
         Disappearance disappearanceOp;
@@ -93,6 +94,7 @@ void Thing::DeleteOperation(const Operation& op, OpVector& res)
         anonymous->setAttr("destroyed", 1); //Add attribute clarifying that this entity is destroyed.
         disappearanceOp->setArgs1(std::move(anonymous));
         disappearanceOp->setTo(getId());
+        disappearanceOp->setFrom(getId());
         operation(disappearanceOp, res);
 
     }
@@ -327,7 +329,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
     for (const auto& entry : m_properties) {
         auto& prop = entry.second.property;
         if (prop && prop->hasFlags(prop_flag_unsent)) {
-            debug_print("UPDATE:  " << prop_flag_unsent << " " << entry.first);
+            debug_print("UPDATE:  " << prop_flag_unsent << " " << entry.first)
             if (prop->hasFlags(prop_flag_visibility_private)) {
                 prop->add(entry.first, set_arg_private);
                 hadPrivateChanges = true;
@@ -433,7 +435,7 @@ bool Thing::lookAtEntity(const Operation& op, OpVector& res, const LocatedEntity
 
 void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operation& originalLookOp, OpVector& res) const
 {
-    debug_print("Thing::generateSightOp() observer " << observingEntity.describeEntity() << " observed " << this->describeEntity());
+    debug_print("Thing::generateSightOp() observer " << observingEntity.describeEntity() << " observed " << this->describeEntity())
 
     Sight s;
 
