@@ -40,7 +40,6 @@ using Atlas::Objects::Operation::Delete;
 using Atlas::Objects::Operation::Imaginary;
 using Atlas::Objects::Operation::Set;
 using Atlas::Objects::Operation::Get;
-using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Sound;
 using Atlas::Objects::Operation::Touch;
 using Atlas::Objects::Operation::Talk;

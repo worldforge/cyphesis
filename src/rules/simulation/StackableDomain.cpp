@@ -35,13 +35,9 @@
 static const bool debug_flag = true;
 
 using Atlas::Message::Element;
-using Atlas::Message::MapType;
 using Atlas::Objects::Root;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
-using Atlas::Objects::Operation::Set;
-using Atlas::Objects::Operation::Sight;
-using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::smart_dynamic_cast;
 
 std::vector<std::string> StackableDomain::sIgnoredProps = {"pos", "orientation", "mode_data", "amount", "id", "stamp", "mode"};

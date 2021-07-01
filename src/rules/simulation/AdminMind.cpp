@@ -35,7 +35,6 @@
 
 using Atlas::Objects::Root;
 using Atlas::Objects::Operation::Delete;
-using Atlas::Objects::Operation::Sight;
 using Atlas::Objects::Operation::Unseen;
 using Atlas::Objects::Entity::Anonymous;
 
