@@ -186,7 +186,7 @@ class Fight(Goal):
                                                             Operation(usage, Entity(me.entity.id, targets=[Entity(enemy.id)])))
                 print("Could not find any unarmed combat usages for this entity.")
         else:
-            print("Out of reach. Reach is {} and distance is {}".format(reach, self.distance_to_enemy))
+            print("Out of reach. Reach is {} and distance is {:.2f}m".format(reach, self.distance_to_enemy))
             # Check if we should stop hitting
             if tasks_prop:
                 if "melee" in tasks_prop:

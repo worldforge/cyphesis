@@ -265,7 +265,7 @@ class SpotSomething(Goal):
                     nearest = thing
                     nearest_distance = dist
         if nearest:
-            print("Spotted new thing matching '{}' at distance of {}. Thing: {}".format(self.what, nearest_distance, str(nearest)))
+            print("Spotted new thing matching '{}' at distance of {:.2f}m. Thing: {}".format(self.what, nearest_distance, str(nearest)))
             me.add_knowledge('focus', self.what, nearest.id)
             # We should only remember things if we can keep them in memory.
             if self.seconds_until_forgotten > 0:
