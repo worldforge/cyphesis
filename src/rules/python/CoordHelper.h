@@ -99,7 +99,7 @@ template<typename TValue, typename TPythonClass>
 TValue CoordHelper::parse(const Py::Object& object)
 {
     if (TPythonClass::check(object)) {
-        return Py::PythonClassObject<TPythonClass>(object).getCxxObject()->m_value;
+        return Py::PythonClassObject<TPythonClass>::getCxxObject(object)->m_value;
     }
 
     if (object.isList() || object.isTuple()) {

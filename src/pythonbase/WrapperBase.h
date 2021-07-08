@@ -120,7 +120,7 @@ Py::Object WrapperBase<TValue, TPythonClass, TClassInstance>::wrap(TValue value)
 template<typename TValue, typename TPythonClass, typename TClassInstance>
 TValue& WrapperBase<TValue, TPythonClass, TClassInstance>::value(const Py::Object& object)
 {
-    return Py::PythonClassObject<TPythonClass>(object).getCxxObject()->m_value;
+    return Py::PythonClassObject<TPythonClass>::getCxxObject(object)->m_value;
 }
 
 //template<typename TValue, typename TPythonClass>

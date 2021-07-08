@@ -119,18 +119,18 @@ int CyPy_Location::setattro(const Py::String& name, const Py::Object& attr)
         return 0;
     }
     if (nameStr == "bbox" && CyPy_Axisbox::check(attr)) {
-        m_value.setBBox(Py::PythonClassObject<CyPy_Axisbox>(attr).getCxxObject()->m_value);
+        m_value.setBBox(Py::PythonClassObject<CyPy_Axisbox>::getCxxObject(attr)->m_value);
         return 0;
     }
     if (nameStr == "orientation" && CyPy_Quaternion::check(attr)) {
-        m_value.m_orientation = Py::PythonClassObject<CyPy_Quaternion>(attr).getCxxObject()->m_value;
+        m_value.m_orientation = Py::PythonClassObject<CyPy_Quaternion>::getCxxObject(attr)->m_value;
         return 0;
     }
     Vector3D vector;
     if (CyPy_Vector3D::check(attr)) {
-        vector = Py::PythonClassObject<CyPy_Vector3D>(attr).getCxxObject()->m_value;
+        vector = Py::PythonClassObject<CyPy_Vector3D>::getCxxObject(attr)->m_value;
     } else if (CyPy_Point3D::check(attr)) {
-        vector = WFMath::Vector<3>(Py::PythonClassObject<CyPy_Point3D>(attr).getCxxObject()->m_value);
+        vector = WFMath::Vector<3>(Py::PythonClassObject<CyPy_Point3D>::getCxxObject(attr)->m_value);
     } else if (attr.isSequence()) {
         Py::Sequence seq(attr);
         if (seq.length() != 3) {
@@ -178,7 +178,7 @@ Py::Object CyPy_Location::number_subtract(const Py::Object& other)
         throw Py::TypeError("Location must subtract Location");
     }
 
-    auto& otherLocation = Py::PythonClassObject<CyPy_Location>(other).getCxxObject()->m_value;
+    auto& otherLocation = Py::PythonClassObject<CyPy_Location>::getCxxObject(other)->m_value;
     return CyPy_Vector3D::wrap(distanceTo(otherLocation, m_value));
 }
 

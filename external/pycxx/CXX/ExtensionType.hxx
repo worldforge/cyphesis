@@ -382,7 +382,7 @@ namespace Py
                     return false;
                 case 1:
                     return true;
-            }            
+            }
         }
 
         static bool check( const Object &ob )
@@ -463,6 +463,29 @@ namespace Py
         {
             return dynamic_cast< T * >( getPythonExtensionBase( ptr() ) );
         }
+
+        static T *getCxxObject(const Py::Object& obj )
+        {
+            auto ptr = obj.ptr();
+            if (!ptr || !T::check(ptr)) {
+                std::string s( "PyCXX: Error creating object of type " );
+                s += (typeid( T )).name();
+
+                if( ptr )
+                {
+                    String from_repr = obj.repr();
+                    s += " from ";
+                    s += from_repr.as_std_string();
+                }
+                else
+                {
+                    s += " from (nil)";
+                }
+                throw TypeError( s );
+            }
+            return dynamic_cast< T * >( getPythonExtensionBase( ptr ) );
+        }
+
     };
 } // Namespace Py
 

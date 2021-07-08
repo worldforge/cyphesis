@@ -56,6 +56,8 @@ int main()
         auto ent = (Py::PythonClassObject<CyPy_RootEntity>) (CyPy_RootEntity::wrap(Atlas::Objects::Entity::RootEntity()));
         assert(ent.getCxxObject() != nullptr);
         assert(ent.getCxxObject()->m_value.isValid());
+        assert(Py::PythonClassObject<CyPy_RootEntity>::getCxxObject(ent) != nullptr);
+        assert(Py::PythonClassObject<CyPy_RootEntity>::getCxxObject(ent)->m_value.isValid());
 
         run_python_string("Entity('1')");
         expect_python_error("Entity(1)", PyExc_TypeError);
