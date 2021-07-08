@@ -91,7 +91,7 @@ struct CyPy_ListElementIterator : Py::PythonClass<CyPy_ListElementIterator>
     {
         auto obj = extension_object_new(type_object(), nullptr, nullptr);
         reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_ListElementIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
-        return Py::PythonClassObject<CyPy_ListElementIterator>(obj);
+        return Py::PythonClassObject<CyPy_ListElementIterator>(obj, true);
     }
 
 
@@ -158,7 +158,7 @@ struct CyPy_MapElementIterator : Py::PythonClass<CyPy_MapElementIterator>
     {
         auto obj = extension_object_new(type_object(), nullptr, nullptr);
         reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_MapElementIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
-        return Py::PythonClassObject<CyPy_MapElementIterator>(obj);
+        return Py::PythonClassObject<CyPy_MapElementIterator>(obj, true);
     }
 
 
@@ -244,7 +244,7 @@ Py::Object CyPy_ElementList::sequence_repeat(Py_ssize_t count)
             list.append(CyPy_Element::asPyObject(entry, false));
         }
     }
-    return list;
+    return std::move(list);
 }
 
 
@@ -416,7 +416,7 @@ Py::Object CyPy_Element::mapAsPyObject(const MapType& map, bool useNativePythonT
             dict.setItem(entry.first, CyPy_Element::wrap(entry.second));
         }
     }
-    return dict;
+    return std::move(dict);
 }
 
 Py::Object CyPy_Element::listAsPyObject(const ListType& list, bool useNativePythonType)
@@ -429,7 +429,7 @@ Py::Object CyPy_Element::listAsPyObject(const ListType& list, bool useNativePyth
             pyList.append(CyPy_Element::wrap(entry));
         }
     }
-    return pyList;
+    return std::move(pyList);
 }
 
 Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj, bool useNativePythonType)

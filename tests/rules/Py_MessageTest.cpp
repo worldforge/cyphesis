@@ -117,6 +117,14 @@ int main()
         run_python_string("assert convert(Location(), True) == {}");
         run_python_string("assert convert(Vector3D(), True) == []");
         run_python_string("assert convert(Vector3D(1.0, 2.0, 3.0), True) == [1.0, 2.0, 3.0]");
+        run_python_string("aList = ElementList(1, 2)")
+        run_python_string("anotherList = []")
+        run_python_string("for i in aList: anotherList.append(i)")
+        run_python_string("assert anotherList == [1, 2]");
+        run_python_string("aMap = ElementMap(foo='bar', foz=1)")
+        run_python_string("anotherMap = {}")
+        run_python_string("for key, value in aMap.items(): anotherMap[key] = value")
+        run_python_string("assert anotherMap == {'foo': 'bar', 'foz': 1}")
 
     }
 
