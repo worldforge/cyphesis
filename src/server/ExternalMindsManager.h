@@ -30,11 +30,12 @@
 
 class LocatedEntity;
 class MindsProperty;
+class PossessionAuthenticator;
 
 class ExternalMindsManager : public virtual sigc::trackable, public Singleton<ExternalMindsManager>
 {
     public:
-        explicit ExternalMindsManager() = default;
+        explicit ExternalMindsManager(PossessionAuthenticator& possessionAuthenticator);
         ~ExternalMindsManager() override = default;
 
         int addConnection(const ExternalMindsConnection& connection);
@@ -59,6 +60,7 @@ class ExternalMindsManager : public virtual sigc::trackable, public Singleton<Ex
         void removeRequest(LocatedEntity& character);
 
     private:
+        PossessionAuthenticator& m_possessionAuthenticator;
         std::map<std::string, ExternalMindsConnection> m_connections;
         std::unordered_set<LocatedEntity*> m_unpossessedEntities;
         std::unordered_set<LocatedEntity*> m_possessedEntities;

@@ -493,7 +493,7 @@ namespace {
 
             PossessionAuthenticator possessionAuthenticator;
 
-            ExternalMindsManager externalMindsManager;
+            ExternalMindsManager externalMindsManager(possessionAuthenticator);
             StorageManager store(world, serverDatabase->database(), entityBuilder, propertyManager);
 
             //Instantiate at startup

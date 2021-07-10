@@ -24,6 +24,7 @@
 #include <boost/optional.hpp>
 #include <common/Singleton.h>
 #include "PendingPossession.h"
+
 class LocatedEntity;
 
 /// \brief Map of teleported entity IDs and their PendingState objects
@@ -33,28 +34,28 @@ typedef std::unordered_map<std::string, std::unique_ptr<PendingPossession>> Pend
 /// \brief A class that stores and authenticates possession requests
 class PossessionAuthenticator : public Singleton<PossessionAuthenticator>
 {
-  private:
+    private:
 
-    /// \brief Map of teleport requests
-    PendingPossessionsMap m_possessions;
+        /// \brief Map of teleport requests
+        PendingPossessionsMap m_possessions;
 
-    void removePossession(PendingPossessionsMap::iterator I);
+        void removePossession(PendingPossessionsMap::iterator I);
 
-  public:
+    public:
 
 
-    bool isPending(const std::string &) const;
+        bool isPending(const std::string&) const;
 
-    int addPossession(const std::string &, const std::string &);
+        int addPossession(const std::string&, const std::string&);
 
-    int removePossession(const std::string &);
+        int removePossession(const std::string&);
 
-    boost::optional<std::string> getPossessionKey(const std::string& entity_id);
+        boost::optional<std::string> getPossessionKey(const std::string& entity_id);
 
-    Ref<LocatedEntity> authenticatePossession(const std::string &,
-                                         const std::string &);
+        Ref<LocatedEntity> authenticatePossession(const std::string&,
+                                                  const std::string&);
 
-    friend class TeleportAuthenticatortest;
+        friend class TeleportAuthenticatortest;
 };
 
 #endif // SERVER_POSSESSION_AUTHENTICATOR_H

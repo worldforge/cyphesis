@@ -39,6 +39,10 @@
 
 static const bool debug_flag = false;
 
+ExternalMindsManager::ExternalMindsManager(PossessionAuthenticator& possessionAuthenticator)
+        : m_possessionAuthenticator(possessionAuthenticator)
+{}
+
 
 int ExternalMindsManager::addConnection(
         const ExternalMindsConnection& connection)
@@ -77,7 +81,7 @@ int ExternalMindsManager::removeConnection(const std::string& routerId)
                     routerId));
         return -1;
     } else {
-        debug_print(String::compose(
+        log(INFO, String::compose(
                 "Deregistered external mind connection registered for router %1. "
                 "There are now %2 connections.", routerId,
                 m_connections.size()));
@@ -94,7 +98,7 @@ void ExternalMindsManager::addPossessionEntryForCharacter(LocatedEntity& entity)
         key += ch;
     }
 
-    PossessionAuthenticator::instance().addPossession(entity.getId(), key);
+    m_possessionAuthenticator.addPossession(entity.getId(), key);
 }
 
 int ExternalMindsManager::requestPossession(LocatedEntity& entity)
@@ -128,7 +132,7 @@ void ExternalMindsManager::removeRequest(LocatedEntity& character)
 int ExternalMindsManager::requestPossessionFromRegisteredClients(const std::string& entity_id)
 {
     if (!m_connections.empty()) {
-        auto result = PossessionAuthenticator::instance().getPossessionKey(entity_id);
+        auto result = m_possessionAuthenticator.getPossessionKey(entity_id);
         if (result.is_initialized()) {
             //Use the last one registered.
             //TODO: implement a better way to select the connection to use. Should we rotate the connections?
