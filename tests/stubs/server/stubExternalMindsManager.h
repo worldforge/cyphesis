@@ -7,6 +7,15 @@
 #include "server/ExternalMindsManager.h"
 #include "stubExternalMindsManager_custom.h"
 
+#ifndef STUB_ExternalMindsManager_ExternalMindsManager
+//#define STUB_ExternalMindsManager_ExternalMindsManager
+   ExternalMindsManager::ExternalMindsManager(PossessionAuthenticator& possessionAuthenticator)
+    : sigc::trackable(possessionAuthenticator)
+  {
+    
+  }
+#endif //STUB_ExternalMindsManager_ExternalMindsManager
+
 #ifndef STUB_ExternalMindsManager_addConnection
 //#define STUB_ExternalMindsManager_addConnection
   int ExternalMindsManager::addConnection(const ExternalMindsConnection& connection)

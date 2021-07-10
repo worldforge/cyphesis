@@ -382,3 +382,4 @@ int main()
 
 #include "../stubs/server/stubTeleportProperty.h"
 #include "../stubs/server/stubExternalMindsManager.h"
+#include "../stubs/server/stubExternalMindsConnection.h"

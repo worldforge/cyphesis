@@ -17,7 +17,7 @@
 
 #ifndef STUB_PossessionAuthenticator_isPending
 //#define STUB_PossessionAuthenticator_isPending
-  bool PossessionAuthenticator::isPending(const std::string &) const
+  bool PossessionAuthenticator::isPending(const std::string&) const
   {
     return false;
   }
@@ -25,7 +25,7 @@
 
 #ifndef STUB_PossessionAuthenticator_addPossession
 //#define STUB_PossessionAuthenticator_addPossession
-  int PossessionAuthenticator::addPossession(const std::string &, const std::string &)
+  int PossessionAuthenticator::addPossession(const std::string&, const std::string&)
   {
     return 0;
   }
@@ -33,7 +33,7 @@
 
 #ifndef STUB_PossessionAuthenticator_removePossession
 //#define STUB_PossessionAuthenticator_removePossession
-  int PossessionAuthenticator::removePossession(const std::string &)
+  int PossessionAuthenticator::removePossession(const std::string&)
   {
     return 0;
   }
@@ -49,7 +49,7 @@
 
 #ifndef STUB_PossessionAuthenticator_authenticatePossession
 //#define STUB_PossessionAuthenticator_authenticatePossession
-  Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string &, const std::string &)
+  Ref<LocatedEntity> PossessionAuthenticator::authenticatePossession(const std::string&, const std::string&)
   {
     return *static_cast<Ref<LocatedEntity>*>(nullptr);
   }

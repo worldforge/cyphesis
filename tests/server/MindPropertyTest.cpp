@@ -23,17 +23,17 @@
 #define DEBUG
 #endif
 
-#include <Python.h>
-#include <server/ExternalMindsManager.h>
+#include "server/ExternalMindsManager.h"
+#include "server/PossessionAuthenticator.h"
 
 #include "../PropertyCoverage.h"
 
 #include "server/MindProperty.h"
-#include "rules/ai/MindFactory.h"
 
 int main()
 {
-    ExternalMindsManager mindsManager;
+    PossessionAuthenticator possessionAuthenticator;
+    ExternalMindsManager mindsManager(possessionAuthenticator);
     MindProperty ap;
 
     PropertyChecker<MindProperty> pc(ap);
@@ -54,6 +54,7 @@ int main()
 
 #include "../stubs/server/stubExternalMindsManager.h"
 #include "../stubs/server/stubExternalMindsConnection.h"
+#include "../stubs/server/stubPossessionAuthenticator.h"
 #include "../stubs/common/stubcustom.h"
 #include "../stubs/pythonbase/stubPythonClass.h"
 

@@ -431,7 +431,7 @@ void Accountintegration::test_connectCharacter_character()
 int main()
 {
     PossessionAuthenticator possesionAuthenticator;
-    ExternalMindsManager externalMindsManager;
+    ExternalMindsManager externalMindsManager(possesionAuthenticator);
     Monitors m;
     Accountintegration t;
 

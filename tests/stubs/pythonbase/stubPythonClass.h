@@ -9,7 +9,7 @@
 
 #ifndef STUB_PythonClass_PythonClass
 //#define STUB_PythonClass_PythonClass
-   PythonClass::PythonClass(const std::string & package, const std::string & type)
+   PythonClass::PythonClass(const std::string& package, const std::string& type)
   {
     
   }
