@@ -98,7 +98,7 @@ Py::Object CyPy_Steering::getattro(const Py::String& name)
             }
         }
 
-        return list;
+        return std::move(list);
     }
     if (nameStr == "current_path_index") {
 

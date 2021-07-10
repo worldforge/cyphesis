@@ -21,7 +21,7 @@
 
 #include <rules/BBoxProperty.h>
 #include "navigation/Awareness.h"
-#include "rules/ai/MemEntity.h"
+#include "MemEntity.h"
 
 #include "AwarenessStore.h"
 

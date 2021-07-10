@@ -131,7 +131,7 @@ Py::Object CyPy_BaseMind::matchEntities(const Py::Tuple& args)
         }
     }
 
-    return list;
+    return std::move(list);
 }
 
 

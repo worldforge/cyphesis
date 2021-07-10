@@ -21,8 +21,9 @@
 
 #include "common/OperationRouter.h"
 
-#include "rules/ai/MemEntity.h"
+#include "MemEntity.h"
 #include "modules/Ref.h"
+#include "common/TypeStore.h"
 
 #include <Atlas/Objects/ObjectsFwd.h>
 #include <Atlas/Message/Element.h>
@@ -33,7 +34,6 @@
 #include <map>
 #include <string>
 #include <boost/optional.hpp>
-#include "common/TypeStore.h"
 
 class LocatedEntity;
 
