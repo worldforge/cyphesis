@@ -145,9 +145,6 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
         mindsProp.addMind(mind.get());
         entity->applyProperty(mindsProp);
 
-        Atlas::Objects::Operation::Update update;
-        update->setTo(entity->getId());
-        update->setFrom(entity->getId());
         m_minds.emplace(entity->getIntId(), MindEntry{std::move(mind), AutoCloseConnection(destroyedConnection)});
         return 0;
     }
