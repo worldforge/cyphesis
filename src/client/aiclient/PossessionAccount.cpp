@@ -97,7 +97,7 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
             I->second->operation(op, res);
 
             if (I->second->isDestroyed()) {
-                log(NOTICE, String::compose("Deleting mind %1.", I->second->getId()));
+                log(NOTICE, String::compose("Deleting mind %1.", I->second->describeEntity()));
                 m_entitiesWithMinds.erase(I->second->getEntity()->getId());
                 m_minds.erase(I);
             }
@@ -109,7 +109,7 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
         if (I != m_entitiesWithMinds.end()) {
             I->second->operation(op, res);
             if (I->second->isDestroyed()) {
-                log(NOTICE, String::compose("Deleting mind %1.", I->second->getId()));
+                log(NOTICE, String::compose("Deleting mind %1.", I->second->describeEntity()));
                 m_minds.erase(I->second->getId());
                 m_entitiesWithMinds.erase(I);
             }
@@ -164,7 +164,7 @@ void PossessionAccount::externalOperation(const Operation& op, Link&)
 
 void PossessionAccount::PossessOperation(const Operation& op, OpVector& res)
 {
-    debug_print("Got possession request.");
+    debug_print("Got possession request.")
 
     auto args = op->getArgs();
     if (!args.empty()) {
@@ -232,6 +232,8 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
 
         createMindInstance(resInner, ent->getId(), entityId);
 
+    }, [=]() {
+        log(WARNING, String::compose("Could not take possession of entity with id %1", possessEntityId));
     });
 
 
@@ -240,7 +242,7 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
 
 void PossessionAccount::createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId)
 {
-    log(INFO, String::compose("Creating mind instance for entity id %1 with mind id %2.", entityId, mindId));
+    log(INFO, String::compose("Creating mind instance for entity id %1 with mind id %2, number of minds: %3.", entityId, mindId, m_minds.size() + 1));
     Ref<BaseMind> mind = m_mindFactory.newMind(mindId, entityId);
     m_minds.emplace(mindId, mind);
     m_entitiesWithMinds.emplace(entityId, mind);

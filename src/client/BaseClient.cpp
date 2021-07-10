@@ -206,7 +206,7 @@ void BaseClient::notifyConnectionComplete()
     createSystemAccount();
 }
 
-void BaseClient::sendWithCallback(Operation op, std::function<void(const Operation&, OpVector&)> timeout, std::function<void()> timeoutCallback, std::chrono::milliseconds duration)
+void BaseClient::sendWithCallback(Operation op, std::function<void(const Operation&, OpVector&)> callback, std::function<void()> timeoutCallback, std::chrono::milliseconds duration)
 {
     auto serialno = m_serialNo++;
     op->setSerialno(serialno);
@@ -231,7 +231,7 @@ void BaseClient::sendWithCallback(Operation op, std::function<void(const Operati
     });
 
     CallbackEntry entry{
-        std::move(timeout),
+        std::move(callback),
         std::move(timer),
         std::move(timeoutCallback)
     };

@@ -49,7 +49,8 @@ class PossessionAccount : public Router
 
         void externalOperation(const Operation& op, Link&) override;
 
-        const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const {
+        const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const
+        {
             return m_minds;
         };
 
@@ -58,7 +59,17 @@ class PossessionAccount : public Router
     protected:
         PossessionClient& m_client;
 
+        /**
+         * Map of minds, with the key being the id of the actual mind.
+         * This is separated from the m_entitiesWithMinds map, which contains mapping between the actual entity and the mind.
+         * The idea is that we might want to do some differentiation between messages sent to the mind or the entity.
+         */
         std::unordered_map<std::string, Ref<BaseMind>> m_minds;
+        /**
+         * Map of minds, with the key being the id of the entity to which the mind belongs to.
+         * This is used to send ops that are directed to the entity itself to the mind that controls it.
+         * Note that the current setup doesn't allow for multiple minds to control one entity.
+         */
         std::unordered_map<std::string, Ref<BaseMind>> m_entitiesWithMinds;
 
         const MindKit& m_mindFactory;
