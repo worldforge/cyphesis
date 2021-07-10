@@ -785,7 +785,7 @@ void MindsProperty::mind2body(LocatedEntity& ent, const Operation& op, OpVector&
 /// useful information.
 bool MindsProperty::world2mind(const Operation& op) const
 {
-    return op->getClassNo() != Atlas::Objects::Operation::RELAY_NO;
+    return !op->instanceOf(Atlas::Objects::Operation::RELAY_NO) && !op->instanceOf(Atlas::Objects::Operation::GET_NO);
 }
 
 void MindsProperty::addMind(Router* mind)
