@@ -67,9 +67,9 @@ void BaseMind::init(OpVector& res)
     Look look;
     Root lookArg;
     lookArg->setId(m_entityId);
-    look->setArgs1(lookArg);
+    look->setArgs1(std::move(lookArg));
     look->setFrom(getId());
-    res.push_back(look);
+    res.emplace_back(std::move(look));
 }
 
 void BaseMind::destroy()
@@ -123,7 +123,7 @@ void BaseMind::SoundOperation(const Operation& op, OpVector& res)
 
 void BaseMind::SightOperation(const Operation& op, OpVector& res)
 {
-    debug_print("BaseMind::SightOperation(Sight)");
+    debug_print("BaseMind::SightOperation(Sight)")
     // Deliver argument to sight things
     if (!isAwake()) { return; }
     if (op->isDefaultSeconds()) {
@@ -133,13 +133,13 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
 
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug_print(" no args!");
+        debug_print(" no args!")
         return;
     }
     const Root& arg = args.front();
     Operation op2(Atlas::Objects::smart_dynamic_cast<Operation>(arg));
     if (op2.isValid()) {
-        debug_print(String::compose(" args is an op (%1)!", op2->getParent()));
+        debug_print(String::compose(" args is an op (%1)!", op2->getParent()))
         std::string event_name("sight_");
         event_name += op2->getParent();
 
@@ -158,7 +158,7 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
             log(ERROR, "Arg of sight operation is not an op or an entity");
             return;
         }
-        debug_print(" arg is an entity!");
+        debug_print(" arg is an entity!")
         auto me = m_map.updateAdd(ent, op->getSeconds());
         if (me) {
             me->setVisible();
@@ -169,16 +169,16 @@ void BaseMind::SightOperation(const Operation& op, OpVector& res)
 void BaseMind::ThinkOperation(const Operation& op, OpVector& res)
 {
     //Get the contained op
-    debug_print("BaseMind::ThinkOperation(Think)");
+    debug_print("BaseMind::ThinkOperation(Think)")
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
-        debug_print(" no args!");
+        debug_print(" no args!")
         return;
     }
     const Root& arg = args.front();
     Operation op2(Atlas::Objects::smart_dynamic_cast<Operation>(arg));
     if (op2.isValid()) {
-        debug_print(" args is an op!");
+        debug_print(" args is an op!")
         std::string event_name("think_");
         event_name += op2->getParent();
 
@@ -389,11 +389,12 @@ void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string s
     }
 }
 
-void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::RootOperationData& op) {
+void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::RootOperationData& op)
+{
     //It's ok if the server sends an op without 'seconds' set.
     if (!op.isDefaultSeconds()) {
         //Alert if there's a too large difference in time.
-        if (op.getSeconds() - mServerTime < -30 ) {
+        if (op.getSeconds() - mServerTime < -30) {
             log(WARNING, String::compose("Operation %1 has seconds set (%2) earlier than already recorded seconds (%3).", op.getParent(), op.getSeconds(), mServerTime));
         }
         mServerTime = op.getSeconds();
@@ -531,9 +532,8 @@ void BaseMind::callSoundOperation(const Operation& op,
     m_map.getAdd(op->getFrom());
     auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
-        debug(std::cout << getId() << " could not deliver sound of "
-                        << op->getParent()
-                        << std::endl << std::flush;);
+        debug_print(getId() << " could not deliver sound of "
+                            << op->getParent())
     }
 
 #if 0
@@ -582,6 +582,17 @@ std::string BaseMind::describeEntity() const
 
 void BaseMind::entityAdded(MemEntity& entity)
 {
+    if (!m_ownEntity) {
+        //If we have resolved our own entity we should do some house keeping
+        if (entity.getId() == m_entityId) {
+            log(NOTICE, String::compose("%1: Added own entity for %2.", getId(), entity.describeEntity()));
+            OpVector res;
+            setOwnEntity(res, Ref<MemEntity>(&entity));
+            for (auto& resOp: res) {
+                mOutgoingOperations.emplace_back(std::move(resOp));
+            }
+        }
+    }
     if (!m_addHook.empty() && m_script) {
         OpVector res;
         m_script->hook(m_addHook, &entity, res);
@@ -617,9 +628,9 @@ void BaseMind::entityDeleted(MemEntity& entity)
 std::ostream& operator<<(std::ostream& s, const BaseMind& d)
 {
     if (d.m_ownEntity) {
-        s << *d.m_ownEntity;
+        s << d.getId() << "entity: " << *d.m_ownEntity;
     } else {
-        String::compose("'%1'", d.m_entityId);
+        s << d.getId() << "entity id: " << d.m_entityId;
     }
     return s;
 }
