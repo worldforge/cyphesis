@@ -51,8 +51,8 @@ class Craft(StoppableTask):
         self.temporaries["outputs"] = self.usage.tool.get_prop_list("craft_output")
 
     def setup(self, task_id):
-        """ Setup code, could do something """
-        pass
+        # TODO: match with animation in client
+        self.start_action("crafting")
 
     def tick(self):
         (valid, err) = self.usage.is_valid()

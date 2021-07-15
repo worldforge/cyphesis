@@ -23,8 +23,8 @@ class Smelt(StoppableTask):
     """ Smelting iron from iron ore """
 
     def setup(self, task_id):
-        """ Setup code, could do something """
-        pass
+        # TODO: match with animation in client
+        self.start_action("smelting")
 
     def tick(self):
         (valid, err) = self.usage.is_valid()

@@ -77,6 +77,9 @@ void CyPy_Task::init_type()
 
     PYCXX_ADD_VARARGS_METHOD(irrelevant, irrelevant, "");
     PYCXX_ADD_VARARGS_METHOD(get_arg, getArg, "");
+    PYCXX_ADD_VARARGS_METHOD(start_action, start_action, "Starts an action that will be tied to this task.");
+    PYCXX_ADD_VARARGS_METHOD(stop_action, stop_action, "Stops an action that previously was started.");
+
 
     PYCXX_ADD_NOARGS_METHOD(obsolete, obsolete, "");
 
@@ -126,6 +129,24 @@ Py::Object CyPy_Task::irrelevant(const Py::Tuple& args)
     }
     return Py::None();
 }
+
+Py::Object CyPy_Task::start_action(const Py::Tuple& args) {
+    args.verify_length(1);
+    OpVector res;
+    m_value->startAction(verifyString(args.front()), res);
+    m_value->m_usageInstance.actor->sendWorld(res);
+
+    return Py::None();
+}
+
+Py::Object CyPy_Task::stop_action(const Py::Tuple& args) {
+    OpVector res;
+    m_value->stopAction( res);
+    m_value->m_usageInstance.actor->sendWorld(res);
+
+    return Py::None();
+}
+
 
 Py::Object CyPy_Task::obsolete()
 {
@@ -207,7 +228,7 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
 
             list.append(map);
         }
-        return list;
+        return std::move(list);
     }
     if (nameStr == "task") {
         return PythonExtensionBase::getattro(name);

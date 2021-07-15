@@ -20,6 +20,7 @@
 
 #include "rules/LocatedEntity.h"
 #include "rules/Script.h"
+#include "rules/simulation/BaseWorld.h"
 
 #include "common/operations/Tick.h"
 #include "rules/simulation/UsagesProperty.h"
@@ -30,6 +31,7 @@
 
 
 #include "pycxx/CXX/Objects.hxx"
+#include "ActionsProperty.h"
 
 using Atlas::Objects::Operation::Tick;
 using Atlas::Objects::Entity::Anonymous;
@@ -64,6 +66,11 @@ void Task::irrelevant()
 {
     m_obsolete = true;
     m_script = Py::None();
+    if (!m_action.empty()) {
+        OpVector res;
+        stopAction(res);
+        m_usageInstance.actor->sendWorld(res);
+    }
 }
 
 Operation Task::nextTick(const std::string& id, const Operation& op)
@@ -196,4 +203,22 @@ void Task::callUsageScriptFunction(const std::string& function, const std::map<s
         }
     }
 }
+
+void Task::startAction(std::string actionName, OpVector& res)
+{
+    if (!m_action.empty()) {
+        stopAction(res);
+    }
+    m_action = actionName;
+    auto& actionsProp = m_usageInstance.actor->requirePropertyClassFixed<ActionsProperty>();
+    actionsProp.addAction(*m_usageInstance.actor, res, actionName, {BaseWorld::instance().getTimeAsSeconds()});
+}
+
+void Task::stopAction(OpVector& res)
+{
+    auto& actionsProp = m_usageInstance.actor->requirePropertyClassFixed<ActionsProperty>();
+    actionsProp.removeAction(*m_usageInstance.actor, res, m_action);
+    m_action = "";
+}
+
 

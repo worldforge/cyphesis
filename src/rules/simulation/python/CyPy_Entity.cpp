@@ -17,6 +17,7 @@
  */
 
 #include <rules/python/CyPy_RootEntity.h>
+#include <rules/simulation/ActionsProperty.h>
 #include "CyPy_Entity.h"
 #include "CyPy_Task.h"
 #include "CyPy_EntityProps.h"
@@ -28,9 +29,10 @@
 #include "rules/python/CyPy_Oplist.h"
 #include "common/id.h"
 #include "CyPy_Domain.h"
+#include "rules/simulation/BaseWorld.h"
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py::Dict& kwds)
-    : CyPy_LocatedEntityBase(self, args, kwds)
+        : CyPy_LocatedEntityBase(self, args, kwds)
 {
     args.verify_length(1);
 
@@ -52,7 +54,7 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py:
 
 
 CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Ref<Entity> value)
-    : CyPy_LocatedEntityBase(self, std::move(value))
+        : CyPy_LocatedEntityBase(self, std::move(value))
 {
 }
 
@@ -92,6 +94,8 @@ void CyPy_Entity::init_type()
     PYCXX_ADD_VARARGS_METHOD(send_world, send_world, "");
     PYCXX_ADD_VARARGS_METHOD(mod_property, mod_property, "");
     PYCXX_ADD_VARARGS_METHOD(start_task, start_task, "");
+    PYCXX_ADD_VARARGS_METHOD(start_action, start_action,
+                             "Starts a new action. First parameter is the action name, and the second is the duration. Since it's not tied to a task a duration is required.");
     PYCXX_ADD_NOARGS_METHOD(update_task, update_task, "");
     PYCXX_ADD_VARARGS_METHOD(find_in_contains, find_in_contains, "Returns a list of all contained entities that matches the supplied Entity Filter.");
     PYCXX_ADD_NOARGS_METHOD(get_parent_domain, get_parent_domain, "Gets the parent domain, i.e. the domain to which this entity belongs.");
@@ -102,22 +106,22 @@ void CyPy_Entity::init_type()
     behaviors().readyType();
 
     LocatedEntityScriptProvider provider{
-        [](const Ref<LocatedEntity>& locatedEntity) -> Py::Object {
-            auto memEntity = dynamic_cast<Entity*>(locatedEntity.get());
-            if (memEntity) {
-                return WrapperBase<Ref<Entity>, CyPy_Entity, Py::PythonClassInstanceWeak>::wrap(memEntity);
+            [](const Ref<LocatedEntity>& locatedEntity) -> Py::Object {
+                auto memEntity = dynamic_cast<Entity*>(locatedEntity.get());
+                if (memEntity) {
+                    return WrapperBase<Ref<Entity>, CyPy_Entity, Py::PythonClassInstanceWeak>::wrap(memEntity);
+                }
+                return Py::None();
+            },
+            [](PyObject* obj) -> bool {
+                return CyPy_Entity::check(obj);
+            }, [](const Py::Object& object) -> Ref<LocatedEntity>* {
+                if (check(object)) {
+                    //This cast should work.
+                    return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<Entity>, CyPy_Entity, Py::PythonClassInstanceWeak>::value(object));
+                }
+                return nullptr;
             }
-            return Py::None();
-        },
-        [](PyObject* obj) -> bool {
-            return CyPy_Entity::check(obj);
-        }, [](const Py::Object& object) -> Ref<LocatedEntity>* {
-            if (check(object)) {
-                //This cast should work.
-                return reinterpret_cast<Ref<LocatedEntity>*>(&WrapperBase<Ref<Entity>, CyPy_Entity, Py::PythonClassInstanceWeak>::value(object));
-            }
-            return nullptr;
-        }
     };
     CyPy_LocatedEntity::entityPythonProviders.emplace_back(std::move(provider));
 }
@@ -126,6 +130,11 @@ void CyPy_Entity::init_type()
 Py::Object CyPy_Entity::start_task(const Py::Tuple& args)
 {
     return CyPy_Entity::start_task(m_value, args);
+}
+
+Py::Object CyPy_Entity::start_action(const Py::Tuple& args)
+{
+    return CyPy_Entity::start_action(m_value, args);
 }
 
 Py::Object CyPy_Entity::update_task()
@@ -172,6 +181,21 @@ Py::Object CyPy_Entity::update_task(const Ref<Entity>& entity)
 
     return CyPy_Oplist::wrap(std::move(res));
 }
+
+
+Py::Object CyPy_Entity::start_action(const Ref<Entity>& entity, const Py::Tuple& args)
+{
+    OpVector res;
+    args.verify_length(2);
+
+    auto& actionsProp = entity->requirePropertyClassFixed<ActionsProperty>();
+    auto duration = verifyFloat(args[1]);
+    auto startTime = BaseWorld::instance().getTimeAsSeconds();
+    actionsProp.addAction(*entity, res, verifyString(args[0]), {startTime, startTime + duration});
+
+    return CyPy_Oplist::wrap(std::move(res));
+}
+
 
 Py::Object CyPy_Entity::mod_property(const Ref<Entity>& entity, const Py::Tuple& args)
 {

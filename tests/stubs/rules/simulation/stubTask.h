@@ -89,5 +89,21 @@
   }
 #endif //STUB_Task_setAttr
 
+#ifndef STUB_Task_startAction
+//#define STUB_Task_startAction
+  void Task::startAction(std::string actionName, OpVector& res)
+  {
+    
+  }
+#endif //STUB_Task_startAction
+
+#ifndef STUB_Task_stopAction
+//#define STUB_Task_stopAction
+  void Task::stopAction(OpVector& res)
+  {
+    
+  }
+#endif //STUB_Task_stopAction
+
 
 #endif

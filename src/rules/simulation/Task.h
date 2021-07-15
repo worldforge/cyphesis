@@ -79,6 +79,8 @@ class Task : public boost::noncopyable, public ReferenceCounted
          */
         std::vector<TaskUsage> m_usages;
 
+        std::string m_action;
+
     public:
 
         static std::function<Py::Object(const std::map<std::string, std::vector<UsageParameter::UsageArg>>& args)> argsCreator;
@@ -153,6 +155,10 @@ class Task : public boost::noncopyable, public ReferenceCounted
 
         /// \brief Sets additional attribute
         void setAttr(const std::string& attr, const Atlas::Message::Element& val);
+
+        void startAction(std::string actionName, OpVector& res);
+
+        void stopAction(OpVector& res);
 
         friend class Tasktest;
 };

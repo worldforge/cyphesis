@@ -33,6 +33,9 @@ class Fishing(StoppableTask):
         super().__init__(*args, **kwargs)
         self.fish_on_hook = False
 
+    def setup(self, task_id):
+        self.start_action("fishing")
+
     def tick(self):
 
         (valid, err) = self.usage.is_valid()

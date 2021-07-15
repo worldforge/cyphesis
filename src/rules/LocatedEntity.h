@@ -350,7 +350,21 @@ class LocatedEntity : public Router, public ReferenceCounted
 
         virtual void setDomain(std::unique_ptr<Domain> domain);
 
+
+        /// \brief Send an operation to the world for dispatch.
+        ///
+        /// sendWorld() bypasses serialno assignment, so you must ensure
+        /// that serialno is sorted. This allows client serialnos to get
+        /// in, so that client gets correct useful refnos back.
         virtual void sendWorld(Operation op);
+
+
+        /// \brief Sends operations to the world for dispatch.
+        ///
+        /// sendWorld() bypasses serialno assignment, so you must ensure
+        /// that serialno is sorted. This allows client serialnos to get
+        /// in, so that client gets correct useful refnos back.
+        void sendWorld(OpVector& res);
 
         virtual void setScript(std::unique_ptr<Script> script);
 

@@ -24,7 +24,7 @@ class Use(StoppableTask):
 
     def setup(self, task_id):
         """ Setup code, could do something """
-        pass
+        self.start_action(self.name.lower())
 
     def tick(self):
         (valid, err) = self.usage.is_valid()

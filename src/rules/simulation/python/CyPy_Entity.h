@@ -42,6 +42,8 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
 
         static Py::Object update_task(const Ref<Entity>& entity);
 
+        static Py::Object start_action(const Ref<Entity>& entity, const Py::Tuple& args);
+
         static Py::Object mod_property(const Ref<Entity>& entity, const Py::Tuple& args);
 
         Py::Object getattro(const Py::String&) override;
@@ -57,6 +59,10 @@ class CyPy_Entity : public CyPy_LocatedEntityBase<Ref<Entity>, CyPy_Entity>
         Py::Object start_task(const Py::Tuple& args);
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, start_task);
+
+        Py::Object start_action(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Entity, start_action);
 
         Py::Object update_task();
 

@@ -46,6 +46,14 @@ class CyPy_Task : public WrapperBase<Ref<Task>, CyPy_Task>
 
         PYCXX_VARARGS_METHOD_DECL(CyPy_Task, irrelevant);
 
+        Py::Object start_action(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Task, start_action);
+
+        Py::Object stop_action(const Py::Tuple& args);
+
+        PYCXX_VARARGS_METHOD_DECL(CyPy_Task, stop_action);
+
         Py::Object obsolete();
 
         PYCXX_NOARGS_METHOD_DECL(CyPy_Task, obsolete);
