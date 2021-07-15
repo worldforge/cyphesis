@@ -20,6 +20,10 @@ def use(instance):
 class GenericUsage(StoppableTask):
     """ A generic usage class, for simple usages where we want to wait until sending the op to the target. """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.start_action(self.name)
+
     def tick(self):
         (valid, err) = self.usage.is_valid()
         if not valid:

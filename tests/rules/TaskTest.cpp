@@ -247,3 +247,5 @@ HandlerResult Script::operation(const std::string & opname,
 }
 #include "../stubs/rules/stubScript.h"
 #include "../stubs/common/stublog.h"
+#include "../stubs/rules/simulation/stubActionsProperty.h"
+

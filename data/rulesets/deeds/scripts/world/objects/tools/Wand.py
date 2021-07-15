@@ -25,6 +25,8 @@ def shoot_in_direction(direction, instance, res):
     new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
     mode_data = {"mode": "projectile", "$eid": instance.actor.id}
 
+    # TODO: match with animation in client
+    res.append(instance.actor.start_action("wand/releasing", 1))
     res.append(Operation("create",
                          Entity(parent="fireball", location=new_loc, velocity=direction * 60, mode="projectile",
                                 mode_data=mode_data, damage_explosion=instance.tool.props.damage),
@@ -59,6 +61,8 @@ def shoot_poison_in_direction(direction, instance, res):
     new_loc.orientation = Quaternion(Vector3D(0, 0, 1), direction, Vector3D(1, 0, 0))
     mode_data = {"mode": "projectile", "$eid": instance.actor.id}
 
+    # TODO: match with animation in client
+    res.append(instance.actor.start_action("wand/releasing", 1))
     res.append(Operation("create",
                          Entity(parent="poisonball", location=new_loc, velocity=direction * 60, mode="projectile",
                                 mode_data=mode_data, damage_poison=instance.tool.props.damage),

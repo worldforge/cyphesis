@@ -228,6 +228,14 @@
   }
 #endif //STUB_LocatedEntity_sendWorld
 
+#ifndef STUB_LocatedEntity_sendWorld
+//#define STUB_LocatedEntity_sendWorld
+  void LocatedEntity::sendWorld(OpVector& res)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_sendWorld
+
 #ifndef STUB_LocatedEntity_setScript
 //#define STUB_LocatedEntity_setScript
   void LocatedEntity::setScript(std::unique_ptr<Script> script)

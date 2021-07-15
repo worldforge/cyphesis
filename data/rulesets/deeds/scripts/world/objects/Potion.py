@@ -36,5 +36,6 @@ def consume(instance):
     if msg_prop is not None:
         op_list += Operation("imaginary", Entity(description=str(msg_prop)), to=instance.actor.id,
                              from_=instance.actor.id)
+    op_list.append(instance.actor.start_action("drinking", 1))
 
     return server.OPERATION_BLOCKED, op_list

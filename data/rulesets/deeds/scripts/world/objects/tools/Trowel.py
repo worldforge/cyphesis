@@ -5,6 +5,7 @@ import server
 from atlas import Operation, Entity
 
 from world.utils import Usage
+from world.StoppableTask import StoppableTask
 
 
 def sow(instance):
@@ -17,16 +18,14 @@ def sow(instance):
     return server.OPERATION_BLOCKED, instance.actor.start_task('cultivate', task)
 
 
-class Cultivate(server.Task):
+class Cultivate(StoppableTask):
     """ A proof of concept task germinating seeds into plants."""
 
     def setup(self, task_id):
         """ Setup code, could do something """
-        pass
+        self.start_action(self.name.lower())
 
     def tick(self):
-        target = self.get_arg("targets", 0)
-
         (valid, err) = self.usage.is_valid()
         if not valid:
             return self.irrelevant(err)

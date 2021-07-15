@@ -449,14 +449,16 @@ void LocatedEntity::setDomain(std::unique_ptr<Domain> domain)
     //no-op
 }
 
-/// \brief Send an operation to the world for dispatch.
-///
-/// sendWorld() bypasses serialno assignment, so you must ensure
-/// that serialno is sorted. This allows client serialnos to get
-/// in, so that client gets correct useful refnos back.
 void LocatedEntity::sendWorld(Operation)
 {
 }
+
+void LocatedEntity::sendWorld(OpVector& res) {
+    for (auto& op: res) {
+        sendWorld(std::move(op));
+    }
+}
+
 
 /// \brief Associate a script with this entity
 ///

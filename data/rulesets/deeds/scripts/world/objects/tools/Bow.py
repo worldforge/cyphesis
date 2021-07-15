@@ -32,6 +32,8 @@ def shoot_in_direction(direction, instance, res):
 
         mode_data = {"mode": "projectile", "$eid": instance.actor.id, "extra": {"damage": 20}}
 
+        # TODO: match with animation in client
+        res.append(instance.actor.start_action("bow/releasing", 1))
         res.append(Operation("move", Entity(arrows[0].id,
                                             location=new_loc,
                                             velocity=direction * 60,
@@ -68,6 +70,10 @@ class DrawBow(StoppableTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.is_ready = False
+
+    def setup(self, task_id):
+        # TODO: match with animation in client
+        self.start_action("bow/drawing")
 
     def tick(self):
         (valid, err) = self.usage.is_valid()

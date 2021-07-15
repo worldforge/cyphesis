@@ -31,6 +31,7 @@ class Fight(StoppableTask):
     def do_strike(self):
         # Send sight even if we miss
         self.usage.actor.send_world(Operation("sight", self.usage.op))
+        self.start_action("unarmed/strike")
 
         # If there's a cooldown we need to mark the actor
         cooldown = getattr(self.usage.tool.props, "cooldown_" + self.usage.op.parent)
@@ -62,15 +63,10 @@ class Fight(StoppableTask):
         return server.OPERATION_BLOCKED
 
     def setup(self, task_id):
-        warmup = self.usage.actor.get_prop_float("warmup_" + self.usage.op.parent, 0.0)
-        if warmup > 0:
-            self.tick_interval = warmup
-            self.state = "warmup"
-        else:
-            return self.do_strike()
+        return self.do_warmup_or_strike()
 
     def do_warmup(self):
-        pass
+        self.start_action("unarmed/warmup")
 
     def do_warmup_or_strike(self):
         if self.state == "cooldown":

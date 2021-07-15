@@ -65,6 +65,22 @@
   }
 #endif //STUB_CyPy_Task_irrelevant
 
+#ifndef STUB_CyPy_Task_start_action
+//#define STUB_CyPy_Task_start_action
+  Py::Object CyPy_Task::start_action(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Task_start_action
+
+#ifndef STUB_CyPy_Task_stop_action
+//#define STUB_CyPy_Task_stop_action
+  Py::Object CyPy_Task::stop_action(const Py::Tuple& args)
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Task_stop_action
+
 #ifndef STUB_CyPy_Task_obsolete
 //#define STUB_CyPy_Task_obsolete
   Py::Object CyPy_Task::obsolete()
