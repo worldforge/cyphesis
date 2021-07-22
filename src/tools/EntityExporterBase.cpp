@@ -210,11 +210,11 @@ void EntityExporterBase::dumpEntity(RootEntity ent)
         }
     }
 
-    //Check for a zero "propel" and remove it if so.
-    auto propelI = entityMap.find("propel");
+    //Check for a zero "_propel" and remove it if so.
+    auto propelI = entityMap.find("_propel");
     if (propelI != entityMap.end()) {
         if (propelI->second.isNone() || (propelI->second.isList() && propelI->second.List() == ListType{0.0, 0.0, 0.0})) {
-            attributesToRemove.emplace_back("propel");
+            attributesToRemove.emplace_back("_propel");
         }
     }
 

@@ -38,7 +38,7 @@ ClientPropertyManager::ClientPropertyManager()
     installFactory(SolidProperty::property_name, std::make_unique<PropertyFactory<SolidProperty>>());
     installFactory(AngularVelocityProperty::property_name, std::make_unique<PropertyFactory<AngularVelocityProperty>>());
     installFactory(OrientationProperty::property_name, std::make_unique<PropertyFactory<OrientationProperty>>());
-    installFactory("propel", std::make_unique<PropertyFactory<Vector3Property>>());
+    installFactory("_propel", std::make_unique<PropertyFactory<Vector3Property>>());
 }
 
 std::unique_ptr<PropertyBase> ClientPropertyManager::addProperty(const std::string& name) const

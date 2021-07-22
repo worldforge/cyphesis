@@ -610,8 +610,8 @@ void Thing::moveOurselves(const Operation& op, const RootEntity& ent, OpVector& 
     }
 
     Element attr_propel;
-    if (ent->copyAttr("propel", attr_propel) == 0) {
-        setAttrValue("propel", attr_propel);
+    if (ent->copyAttr("_propel", attr_propel) == 0) {
+        setAttrValue("_propel", attr_propel);
     }
 
     double current_time = BaseWorld::instance().getTimeAsSeconds();

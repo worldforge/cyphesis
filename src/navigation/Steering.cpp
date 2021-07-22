@@ -395,7 +395,7 @@ SteeringResult Steering::update(double currentTimestamp)
 {
     SteeringResult result{};
     if (!mSteeringEnabled) {
-        auto propelProperty = mAvatar.getPropertyClass<Vector3Property>("propel");
+        auto propelProperty = mAvatar.getPropertyClass<Vector3Property>("_propel");
         if (propelProperty && propelProperty->data().isValid() && propelProperty->data() != WFMath::Vector<3>::ZERO()) {
             result.direction = WFMath::Vector<3>::ZERO();
         }
