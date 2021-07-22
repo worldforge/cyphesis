@@ -628,9 +628,9 @@ void BaseMind::entityDeleted(MemEntity& entity)
 std::ostream& operator<<(std::ostream& s, const BaseMind& d)
 {
     if (d.m_ownEntity) {
-        s << d.getId() << "entity: " << *d.m_ownEntity;
+        s << d.getId() << ", entity: " << *d.m_ownEntity;
     } else {
-        s << d.getId() << "entity id: " << d.m_entityId;
+        s << d.getId() << ", entity id: " << d.m_entityId;
     }
     return s;
 }
