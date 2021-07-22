@@ -103,9 +103,7 @@ class Fight(Goal):
     def equip_shield(self, me):
         # First check if we're holding a shield
         attached_current = me.get_attached_entity("hand_secondary")
-        has_attached = False
         if attached_current:
-            has_attached = True
             # Check that the attached entity is a shield
             if attached_current.is_type("shield"):
                 return None
@@ -182,11 +180,11 @@ class Fight(Goal):
                 if own_usages:
                     for usage, _ in own_usages.items():
                         if usage in unarmed_usages:
-                            return move_to_face + Operation("use",
-                                                            Operation(usage, Entity(me.entity.id, targets=[Entity(enemy.id)])))
+                            op = Operation(usage, Entity(me.entity.id, targets=[Entity(enemy.id)]))
+                            return move_to_face + Operation("use", op)
                 print("Could not find any unarmed combat usages for this entity.")
         else:
-            print("Out of reach. Reach is {} and distance is {:.2f}m".format(reach, self.distance_to_enemy))
+            # print("Out of reach. Reach is {} and distance is {:.2f}m".format(reach, self.distance_to_enemy))
             # Check if we should stop hitting
             if tasks_prop:
                 if "melee" in tasks_prop:
@@ -210,7 +208,8 @@ class Fight(Goal):
                     usages = draw_task["usages"]
                     for usage in usages:
                         if usage.name == "release":
-                            direction = (enemy.location.pos + enemy.location.bbox.center) - (me.entity.location.pos + me.entity.location.bbox.center)
+                            direction = (enemy.location.pos + enemy.location.bbox.center) - \
+                                        (me.entity.location.pos + me.entity.location.bbox.center)
                             direction.normalize()
                             return move_to_face + Operation("use",
                                                             Root(args=[Entity("release", direction=[direction])],
@@ -220,7 +219,8 @@ class Fight(Goal):
                     return True
                 direction = enemy.location.pos - me.entity.location.pos
                 direction.normalize()
-                return move_to_face + Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
+                op = Operation("use", Operation("draw", Entity(attached_current.id, direction=[direction])))
+                return move_to_face + op
 
 
 class FightOrFlight(Goal):
@@ -240,7 +240,8 @@ class ClearGrudge(DynamicGoal):
     """
 
     def __init__(self):
-        DynamicGoal.__init__(self, trigger=["sight_defeated", "sight_delete"], desc="Clear grudge data when entity defeated or deleted.")
+        DynamicGoal.__init__(self, trigger=["sight_defeated", "sight_delete"],
+                             desc="Clear grudge data when entity defeated or deleted.")
 
     def event(self, me, original_op, op):
         inner_args = op[0]
