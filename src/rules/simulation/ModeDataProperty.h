@@ -104,7 +104,8 @@ class ModeDataProperty : public PropertyBase
 
         void clearData();
 
-    private:
+    protected:
+        ModeDataProperty(const ModeDataProperty& rhs) = default;
 
 
         typedef boost::variant<NullData, PlantedOnData, ProjectileData> ModeData;

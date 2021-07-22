@@ -40,6 +40,9 @@ class AliasProperty : public Property<std::string>
 
         void remove(LocatedEntity&, const std::string& name) override;
 
+        protected:
+            AliasProperty(const AliasProperty& rhs) = default;
+
 };
 
 

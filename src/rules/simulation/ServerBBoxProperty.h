@@ -31,7 +31,12 @@
 class ServerBBoxProperty : public BBoxProperty
 {
     public:
+        ServerBBoxProperty() = default;
         void updateBboxOnEntity(LocatedEntity& entity) const override;
+
+        ServerBBoxProperty* copy() const override;
+    protected:
+        ServerBBoxProperty(const ServerBBoxProperty& rhs) = default;
 
 };
 

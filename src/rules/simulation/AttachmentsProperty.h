@@ -52,6 +52,8 @@ class AttachmentsProperty : public PropertyBase
 
         explicit AttachmentsProperty(std::uint32_t flags = 0);
 
+        AttachmentsProperty(const AttachmentsProperty& rhs) = delete;
+
         void install(LocatedEntity&, const std::string&) override;
 
         void remove(LocatedEntity&, const std::string& name) override;

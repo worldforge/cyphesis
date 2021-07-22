@@ -208,7 +208,7 @@ class Property : public PropertyBase {
   protected:
     /// \brief Reference to variable holding the value of this Property
     T m_data;
-    explicit Property(const Property<T> &) = default;
+    Property(const Property<T> &) = default;
   public:
     static const std::string property_atlastype;
 

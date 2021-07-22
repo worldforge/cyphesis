@@ -58,6 +58,7 @@ class ContainersActiveProperty : public PropertyBase
         bool hasContainer(const std::string& containerId) const;
     protected:
 
+        ContainersActiveProperty(const ContainersActiveProperty& rhs) = default;
 
         std::set<std::string> m_activeContainers;
 

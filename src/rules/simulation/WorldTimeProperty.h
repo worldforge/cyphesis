@@ -42,6 +42,9 @@ class WorldTimeProperty : public PropertyBase
         int get(Atlas::Message::Element& val) const override;
 
         void set(const Atlas::Message::Element& val) override;
+    protected:
+        WorldTimeProperty(const WorldTimeProperty& rhs) = default;
+
 };
 
 

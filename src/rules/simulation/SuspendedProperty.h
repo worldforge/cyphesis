@@ -55,6 +55,7 @@ class SuspendedProperty : public BoolProperty
                                 const Operation& op, OpVector& res) override;
 
     protected:
+        SuspendedProperty(const SuspendedProperty& rhs) = default;
 
         /**
          * \brief Store ops that needs to be sent again when the entity is resumed.

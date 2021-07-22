@@ -29,11 +29,14 @@
 class AngularFactorProperty: public PropertyBase
 {
     protected:
+        AngularFactorProperty(const AngularFactorProperty& rhs) = default;
         WFMath::Vector<3> m_data;
     public:
 
         static constexpr const char* property_name = "angularfactor";
         static constexpr const char* property_atlastype = "list";
+
+        AngularFactorProperty() = default;
 
         AngularFactorProperty * copy() const override;
 

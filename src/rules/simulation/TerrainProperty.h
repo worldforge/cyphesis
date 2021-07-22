@@ -55,6 +55,8 @@ class TerrainProperty : public Property<Atlas::Message::ListType>
 
         std::pair<std::unique_ptr<Mercator::TileShader>, std::vector<std::string>> createShaders(const Atlas::Message::ListType& surfaceList) const;
 
+        TerrainProperty(const TerrainProperty& rhs) = default;
+
         void applyToState(LocatedEntity& entity, State& state) const;
 
         static PropertyInstanceState<State> sInstanceState;
@@ -62,6 +64,8 @@ class TerrainProperty : public Property<Atlas::Message::ListType>
     public:
 
         static constexpr const char* property_name = "terrain";
+
+        TerrainProperty() = default;
 
         void install(LocatedEntity& owner, const std::string& name) override;
 

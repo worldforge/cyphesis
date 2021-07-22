@@ -43,8 +43,6 @@ class DomainProperty: public Property<std::string> {
 
         explicit DomainProperty() = default;
 
-        DomainProperty(const DomainProperty& rhs) = default;
-
         void install(LocatedEntity&, const std::string &) override;
 
         void remove(LocatedEntity&, const std::string &) override;
@@ -55,8 +53,9 @@ class DomainProperty: public Property<std::string> {
 
         HandlerResult operation(LocatedEntity& e, const Operation & op, OpVector & res) override;
 
-    private:
+    protected:
 
+        DomainProperty(const DomainProperty& rhs) = default;
 
         //void scheduleTick(LocatedEntity& entity, double timeNow);
         //HandlerResult tick_handler(LocatedEntity& e, const Operation & op, OpVector & res);

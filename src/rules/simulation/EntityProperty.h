@@ -29,6 +29,9 @@ class EntityProperty : public PropertyBase
 {
     protected:
         WeakEntityRef m_data;
+
+        EntityProperty(const EntityProperty& rhs) = default;
+
     public:
 
         static constexpr const char* property_atlastype = "string";

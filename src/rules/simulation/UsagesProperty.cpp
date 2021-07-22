@@ -263,4 +263,7 @@ HandlerResult UsagesProperty::use_handler(LocatedEntity& e,
     return OPERATION_IGNORED;
 }
 
+UsagesProperty* UsagesProperty::copy() const {
+    return new UsagesProperty(*this);
+}
 

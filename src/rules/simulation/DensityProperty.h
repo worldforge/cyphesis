@@ -33,12 +33,16 @@ class DensityProperty: public Property<double>
 
         static constexpr const char* property_name = "density";
 
+        explicit DensityProperty() = default;
+
         void apply(LocatedEntity&) override;
 
         DensityProperty * copy() const override;
 
         void updateMass(LocatedEntity& entity) const;
 
+    protected:
+        DensityProperty(const DensityProperty& rhs) = default;
 };
 
 #endif // RULESETS_DENSITY_PROPERTY_H

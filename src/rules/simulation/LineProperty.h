@@ -29,6 +29,7 @@
 /// \ingroup PropertyClasses
 class LineProperty : public PropertyBase {
   protected:
+    LineProperty(const LineProperty& rhs) = default;
     CoordList m_data;
   public:
     static constexpr const char* property_atlastype = "list";

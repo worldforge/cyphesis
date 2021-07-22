@@ -35,6 +35,9 @@ class SimulationSpeedProperty : public Property<double>
 
         SimulationSpeedProperty* copy() const override;
 
+    protected:
+        SimulationSpeedProperty(const SimulationSpeedProperty& rhs) = default;
+
 };
 
 

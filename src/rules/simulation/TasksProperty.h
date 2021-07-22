@@ -65,6 +65,8 @@ class TasksProperty : public PropertyBase
 
         explicit TasksProperty();
 
+        TasksProperty(const TasksProperty& rhs) = delete;
+
         void install(LocatedEntity&, const std::string&) override;
 
         void remove(LocatedEntity&, const std::string& name) override;

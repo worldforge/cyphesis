@@ -33,7 +33,6 @@ class ModifiersProperty : public PropertyBase
         static constexpr const char* property_atlastype = "list";
 
         ModifiersProperty();
-        ModifiersProperty(const ModifiersProperty& rhs);
 
         ~ModifiersProperty() override = default;
 
@@ -46,7 +45,8 @@ class ModifiersProperty : public PropertyBase
         int get(Atlas::Message::Element& val) const override;
 
 
-    private:
+    protected:
+        ModifiersProperty(const ModifiersProperty& rhs) = default;
 
         LocatedEntity* m_entity;
 

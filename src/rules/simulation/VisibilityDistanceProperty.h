@@ -33,6 +33,10 @@ class VisibilityDistanceProperty : public Property<float>
     ~VisibilityDistanceProperty() override = default;
 
     VisibilityDistanceProperty* copy() const override;
+
+    protected:
+        VisibilityDistanceProperty(const VisibilityDistanceProperty& rhs) = default;
+
 };
 
 #endif  // RULESETS_VISIBILITYDISTANCE_PROPERTY_H

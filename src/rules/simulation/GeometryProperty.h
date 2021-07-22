@@ -89,7 +89,8 @@ class GeometryProperty : public Property<Atlas::Message::MapType>
         std::shared_ptr<btCollisionShape> createShape(const WFMath::AxisBox<3>& bbox,
                                                       btVector3& centerOfMassOffset, float mass) const;
 
-    private:
+    protected:
+        GeometryProperty(const GeometryProperty& rhs) = default;
 
         /**
          * Defines how the geometry should be scaled in accordance to the entity bounding box.

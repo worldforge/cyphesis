@@ -33,11 +33,16 @@ class ContainedVisibilityProperty : public BoolProperty
     public:
         static constexpr const char* property_name = "contained_visibility";
 
+        explicit ContainedVisibilityProperty() = default;
+
         ContainedVisibilityProperty* copy() const override;
 
         void apply(LocatedEntity&) override;
 
         void remove(LocatedEntity&, const std::string&) override;
+
+    protected:
+        ContainedVisibilityProperty(const ContainedVisibilityProperty& rhs) = default;
 };
 
 

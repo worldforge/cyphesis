@@ -37,6 +37,10 @@ class SpawnProperty : public Property<Atlas::Message::MapType> {
     void apply(LocatedEntity&) override;
 
     void remove(LocatedEntity&, const std::string&) override;
+
+    protected:
+        SpawnProperty(const SpawnProperty& rhs) = default;
+
 };
 
 #endif // RULESETS_SPAWN_PROPERTY_H

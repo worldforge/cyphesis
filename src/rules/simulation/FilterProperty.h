@@ -36,8 +36,6 @@ class FilterProperty : public PropertyBase
 
         explicit FilterProperty() = default;
 
-        FilterProperty(const FilterProperty& rhs);
-
         FilterProperty* copy() const override;
 
         const EntityFilter::Filter* getData() const;
@@ -47,7 +45,9 @@ class FilterProperty : public PropertyBase
         /// \brief Read the value of the property from an Atlas Message
         void set(const Atlas::Message::Element& val) override;
 
-    private:
+    protected:
+
+        FilterProperty(const FilterProperty& rhs);
 
         std::unique_ptr<EntityFilter::Filter> m_data;
 };

@@ -28,3 +28,8 @@ void ServerBBoxProperty::updateBboxOnEntity(LocatedEntity& entity) const
         densityProp->updateMass(entity);
     }
 }
+
+ServerBBoxProperty* ServerBBoxProperty::copy() const {
+    return new ServerBBoxProperty(*this);
+}
+

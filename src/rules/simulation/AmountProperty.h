@@ -36,6 +36,9 @@ class AmountProperty : public Property<int>
 
         void apply(LocatedEntity& entity) override;
 
+    protected:
+        AmountProperty(const AmountProperty& rhs) = default;
+
 };
 
 

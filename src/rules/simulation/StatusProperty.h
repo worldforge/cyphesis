@@ -35,6 +35,9 @@ class StatusProperty : public Property<double>
 
         void set(const Atlas::Message::Element&) override;
 
+    protected:
+        StatusProperty(const StatusProperty& rhs) = default;
+
 };
 
 #endif // RULESETS_STATUS_PROPERTY_H

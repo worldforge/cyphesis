@@ -45,6 +45,7 @@ class VisibilityProperty : public PropertyBase
     void apply(LocatedEntity& entity) override;
 
   protected:
+    VisibilityProperty(const VisibilityProperty& rhs) = default;
     enum class Visibility { Public, Protected, Private };
 
     Visibility mData;

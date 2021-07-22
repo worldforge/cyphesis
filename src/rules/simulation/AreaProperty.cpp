@@ -39,7 +39,7 @@ AreaProperty::AreaProperty(const AreaProperty& other)
 /// \brief AreaProperty constructor
 ///
 /// @param flags Flags used to persist this property
-AreaProperty::AreaProperty() :
+AreaProperty::AreaProperty() : TerrainEffectorProperty(),
     m_layer(0)
 {
 }

@@ -35,6 +35,8 @@ class ContainerAccessProperty : public PropertyBase
 
         explicit ContainerAccessProperty(ContainerDomain& container);
 
+        ContainerAccessProperty(const ContainerAccessProperty& rhs) = delete;
+
         int get(Atlas::Message::Element&) const override;
 
         void set(const Atlas::Message::Element&) override;

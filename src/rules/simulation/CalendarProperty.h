@@ -37,6 +37,10 @@ class CalendarProperty : public PropertyBase
         void set(const Atlas::Message::Element&) override;
 
         CalendarProperty* copy() const override;
+
+    protected:
+        CalendarProperty(const CalendarProperty& rhs) = default;
+
 };
 
 #endif // RULESETS_CALENDAR_PROPERTY_H

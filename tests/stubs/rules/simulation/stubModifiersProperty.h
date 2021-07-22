@@ -17,16 +17,6 @@
   }
 #endif //STUB_ModifiersProperty_ModifiersProperty
 
-#ifndef STUB_ModifiersProperty_ModifiersProperty
-//#define STUB_ModifiersProperty_ModifiersProperty
-   ModifiersProperty::ModifiersProperty(const ModifiersProperty& rhs)
-    : PropertyBase(rhs)
-    , m_entity(nullptr)
-  {
-    
-  }
-#endif //STUB_ModifiersProperty_ModifiersProperty
-
 #ifndef STUB_ModifiersProperty_copy
 //#define STUB_ModifiersProperty_copy
   ModifiersProperty* ModifiersProperty::copy() const

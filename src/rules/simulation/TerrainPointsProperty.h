@@ -35,9 +35,13 @@ class TerrainPointsProperty : public Property<Atlas::Message::MapType>
         static constexpr const char* property_name = "terrain_points";
         static constexpr const char* property_atlastype = "map";
 
+        TerrainPointsProperty() = default;
         TerrainPointsProperty* copy() const override;
 
         void apply(LocatedEntity& entity) override;
+
+    protected:
+        TerrainPointsProperty(const TerrainPointsProperty& rhs) = default;
 
 };
 

@@ -15,5 +15,13 @@
   }
 #endif //STUB_ServerBBoxProperty_updateBboxOnEntity
 
+#ifndef STUB_ServerBBoxProperty_copy
+//#define STUB_ServerBBoxProperty_copy
+  ServerBBoxProperty* ServerBBoxProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_ServerBBoxProperty_copy
+
 
 #endif

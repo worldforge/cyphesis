@@ -37,6 +37,9 @@ class AdminProperty : public BoolProperty
         void apply(LocatedEntity& entity) override;
         AdminProperty * copy() const override;
 
+    protected:
+        AdminProperty(const AdminProperty& rhs) = default;
+
 };
 
 

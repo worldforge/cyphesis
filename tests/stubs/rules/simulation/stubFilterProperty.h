@@ -7,15 +7,6 @@
 #include "rules/simulation/FilterProperty.h"
 #include "stubFilterProperty_custom.h"
 
-#ifndef STUB_FilterProperty_FilterProperty
-//#define STUB_FilterProperty_FilterProperty
-   FilterProperty::FilterProperty(const FilterProperty& rhs)
-    : PropertyBase(rhs)
-  {
-    
-  }
-#endif //STUB_FilterProperty_FilterProperty
-
 #ifndef STUB_FilterProperty_copy
 //#define STUB_FilterProperty_copy
   FilterProperty* FilterProperty::copy() const
@@ -47,6 +38,15 @@
     
   }
 #endif //STUB_FilterProperty_set
+
+#ifndef STUB_FilterProperty_FilterProperty
+//#define STUB_FilterProperty_FilterProperty
+   FilterProperty::FilterProperty(const FilterProperty& rhs)
+    : PropertyBase(rhs)
+  {
+    
+  }
+#endif //STUB_FilterProperty_FilterProperty
 
 
 #endif

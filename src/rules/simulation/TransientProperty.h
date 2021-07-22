@@ -36,6 +36,8 @@ class TransientProperty : public Property<double> {
     void install(LocatedEntity&, const std::string &) override;
 
     void apply(LocatedEntity&) override;
+    protected:
+        TransientProperty(const TransientProperty& rhs) = default;
 };
 
 #endif // RULESETS_TRANSIENT_PROPERTY_H

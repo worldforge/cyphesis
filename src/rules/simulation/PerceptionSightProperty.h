@@ -38,6 +38,8 @@ class PerceptionSightProperty : public Property<double>
         void apply(LocatedEntity&) override;
 
         PerceptionSightProperty* copy() const override;
+    protected:
+        PerceptionSightProperty(const PerceptionSightProperty& rhs) = default;
 
 };
 

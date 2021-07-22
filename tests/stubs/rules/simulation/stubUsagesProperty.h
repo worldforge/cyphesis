@@ -39,6 +39,14 @@
   }
 #endif //STUB_UsagesProperty_operation
 
+#ifndef STUB_UsagesProperty_copy
+//#define STUB_UsagesProperty_copy
+  UsagesProperty* UsagesProperty::copy() const
+  {
+    return nullptr;
+  }
+#endif //STUB_UsagesProperty_copy
+
 #ifndef STUB_UsagesProperty_use_handler
 //#define STUB_UsagesProperty_use_handler
   HandlerResult UsagesProperty::use_handler(LocatedEntity& e, const Operation& op, OpVector& res)

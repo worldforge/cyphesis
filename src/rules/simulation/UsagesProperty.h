@@ -38,6 +38,8 @@ class UsagesProperty : public Property<Atlas::Message::MapType>
 {
     public:
 
+        UsagesProperty() = default;
+
         void set(const Atlas::Message::Element& val) override;
 
         void install(LocatedEntity& owner, const std::string& name) override;
@@ -46,7 +48,10 @@ class UsagesProperty : public Property<Atlas::Message::MapType>
 
         HandlerResult operation(LocatedEntity& e, const Operation& op, OpVector& res) override;
 
-    private:
+        UsagesProperty* copy() const override;
+
+    protected:
+        UsagesProperty(const UsagesProperty& rhs) = default;
 
         std::map<std::string, Usage> m_usages;
 

@@ -97,7 +97,8 @@ class ModeProperty : public PropertyBase
         static ModeProperty::Mode parseMode(const std::string& mode);
         static std::string encodeMode(ModeProperty::Mode mode);
 
-    private:
+    protected:
+        ModeProperty(const ModeProperty& rhs) = default;
         Mode m_mode;
 
 };
