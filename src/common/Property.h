@@ -85,7 +85,7 @@ class PropertyCore : public OperationsListener {
     /// \brief Constructor called from classes which inherit from Property
     /// @param flags default value for the Property flags
     explicit PropertyCore(std::uint32_t flags = 0);
-    explicit PropertyCore(const PropertyCore &) = default;
+    PropertyCore(const PropertyCore &) = default;
   public:
     virtual ~PropertyCore() = default;
 

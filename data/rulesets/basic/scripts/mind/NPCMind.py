@@ -861,9 +861,7 @@ class NPCMind(ai.Mind):
         if vector.sqr_mag() < 0.1:
             return
         vector = vector.unit_vector()
-        newloc = Location(self.entity.parent)
-        newloc.orientation = Quaternion(Vector3D(0, 0, 1), vector, Vector3D(0, 1, 0))
-        return Operation("move", Entity(self.entity.id, location=newloc))
+        return Operation("set", Entity(self.entity.id, _direction=Quaternion(Vector3D(0, 0, 1), vector, Vector3D(0, 1, 0)).as_list()))
 
     def address(self, entity_id, message):
         """Creates a new Talk op which is addressed to an entity"""

@@ -116,6 +116,12 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
     installProperty<TasksProperty>();
     installProperty<DomainProperty>();
     installProperty<PropelProperty>();
+    /**
+     * The "direction" property is set by the mind to indicate the direction the body should be moving.
+     */
+    installProperty<QuaternionProperty>("_direction");
+
+
     installProperty<DensityProperty>();
     installProperty<AdminProperty>();
     installProperty<CalendarProperty>();

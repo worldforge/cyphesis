@@ -314,6 +314,10 @@ class PhysicalDomain : public Domain
          */
         std::map<long, PropelEntry> m_propellingEntries;
 
+        std::set<BulletEntry*> m_propelUpdateQueue;
+        std::set<BulletEntry*> m_directionUpdateQueue;
+
+
         /**
          * Keeps track of all stepping entries, i.e. those we want clamped to the ground.
          */

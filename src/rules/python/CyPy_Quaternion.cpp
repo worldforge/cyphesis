@@ -130,7 +130,7 @@ Py::Object CyPy_Quaternion::as_list()
     list.append(Py::Float(m_value.vector().y()));
     list.append(Py::Float(m_value.vector().z()));
     list.append(Py::Float(m_value.scalar()));
-    return list;
+    return std::move(list);
 }
 
 Py::Object CyPy_Quaternion::is_valid()

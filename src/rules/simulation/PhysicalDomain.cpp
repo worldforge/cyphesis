@@ -529,7 +529,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
             } else {
                 speed = entry.second.bulletEntry->speedGround;
             }
-            btVector3 finalSpeed = entry.second.velocity * speed;
+            btVector3 finalSpeed = entry.second.velocity * (btScalar) speed;
 
             //Apply gravity
             if (!WFMath::Equal(verticalVelocity, 0, WFMath::numeric_constants<float>::epsilon())) {
@@ -788,22 +788,23 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
 
     terrainEntry.shape->setLocalScaling(btVector3(1, 1, 1));
 
-    auto res = (float) segment.getResolution();
+    auto res = segment.getResolution();
 
-    float xPos = segment.getXRef() + (res / 2.0f);
+    auto xPos = (segment.getXRef() + (res / 2));
     float yPos = min + ((max - min) * 0.5f);
-    float zPos = segment.getZRef() + (res / 2.0f);
+    auto zPos = segment.getZRef() + (res / 2);
 
     WFMath::Point<3> pos(xPos, yPos, zPos);
     btVector3 btPos = Convert::toBullet(pos);
 
     btRigidBody::btRigidBodyConstructionInfo segmentCI(.0f, nullptr, terrainEntry.shape.get());
-    auto segmentBody = new btRigidBody(segmentCI);
+    auto segmentBody = std::make_unique<btRigidBody>(segmentCI);
     segmentBody->setWorldTransform(btTransform(btQuaternion::getIdentity(), btPos));
 
-    m_dynamicsWorld->addRigidBody(segmentBody, COLLISION_MASK_TERRAIN, COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
+    m_dynamicsWorld->addRigidBody(segmentBody.get(), COLLISION_MASK_TERRAIN,
+                                  COLLISION_MASK_NON_PHYSICAL | COLLISION_MASK_PHYSICAL);
 
-    terrainEntry.rigidBody.reset(segmentBody);
+    terrainEntry.rigidBody = std::move(segmentBody);
     terrainEntry.rigidBody->setUserPointer(&mContainingEntityEntry);
     return terrainEntry;
 }
@@ -826,16 +827,16 @@ void PhysicalDomain::createDomainBorders()
                 };
 
         //Bottom plane
-        createPlane(btVector3(0, 1, 0), btVector3(0, bbox.lowerBound(1), 0));
+        createPlane(btVector3(0, 1, 0), btVector3(0, (btScalar) bbox.lowerBound(1), 0));
 
         //Top plane
-        createPlane(btVector3(0, -1, 0), btVector3(0, bbox.upperBound(1), 0));
+        createPlane(btVector3(0, -1, 0), btVector3(0, (btScalar) bbox.upperBound(1), 0));
 
         //Crate surrounding planes
-        createPlane(btVector3(1, 0, 0), btVector3(bbox.lowerBound(0), 0, 0));
-        createPlane(btVector3(-1, 0, 0), btVector3(bbox.upperBound(0), 0, 0));
-        createPlane(btVector3(0, 0, 1), btVector3(0, 0, bbox.lowerBound(2)));
-        createPlane(btVector3(0, 0, -1), btVector3(0, 0, bbox.upperBound(2)));
+        createPlane(btVector3(1, 0, 0), btVector3((btScalar) bbox.lowerBound(0), 0, 0));
+        createPlane(btVector3(-1, 0, 0), btVector3((btScalar) bbox.upperBound(0), 0, 0));
+        createPlane(btVector3(0, 0, 1), btVector3(0, 0, (btScalar) bbox.lowerBound(2)));
+        createPlane(btVector3(0, 0, -1), btVector3(0, 0, (btScalar) bbox.upperBound(2)));
     }
 }
 
@@ -1378,6 +1379,9 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
         removeAndShift(m_visibilityRecalculateQueue, entry.get());
     }
 
+    m_propelUpdateQueue.erase(entry.get());
+    m_directionUpdateQueue.erase(entry.get());
+
     mContainingEntityEntry.observingThis.erase(entry.get());
 
     //The entity owning the domain should normally not be perceptive, so we'll check first to optimize a bit.
@@ -1459,10 +1463,9 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 //            }
 //        }
     } else if (name == PropelProperty::property_name) {
-        auto propelProp = dynamic_cast<const PropelProperty*>(&prop);
-        if (propelProp) {
-            applyPropel(bulletEntry, propelProp->data());
-        }
+        m_propelUpdateQueue.insert(&bulletEntry);
+    } else if (name == "_direction") {
+        m_directionUpdateQueue.insert(&bulletEntry);
     } else if (name == "friction") {
         if (bulletEntry.collisionObject) {
             auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
@@ -2769,6 +2772,50 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     projectileCollisions.clear();
 
     postDuration = {};
+
+    for (auto &bulletEntry : m_propelUpdateQueue) {
+        auto propelProp = bulletEntry->entity.getPropertyClassFixed<PropelProperty>();
+        if (propelProp) {
+            applyPropel(*bulletEntry, propelProp->data());
+        }
+    }
+    m_propelUpdateQueue.clear();
+    for (auto &bulletEntry : m_directionUpdateQueue) {
+        auto directionProperty = bulletEntry->entity.getPropertyClass<QuaternionProperty>("_direction");
+        if (directionProperty) {
+            auto &direction = directionProperty->data();
+            if (direction.isValid()) {
+                if (bulletEntry->collisionShape) {
+                    btTransform transform = bulletEntry->collisionObject->getWorldTransform();
+                    auto existingRotation = transform.getRotation();
+                    auto newRotation = Convert::toBullet(direction);
+                    if (existingRotation != newRotation) {
+                        transform.setRotation(newRotation);
+                        bulletEntry->collisionObject->setWorldTransform(transform);
+
+                        bulletEntry->orientationProperty.data() = direction;
+                        bulletEntry->orientationProperty.flags().removeFlags(prop_flag_persistence_clean);
+                        bulletEntry->entity.applyProperty(bulletEntry->orientationProperty);
+                        bulletEntry->entity.removeFlags(entity_orient_clean);
+
+                        if (!bulletEntry->addedToMovingList) {
+                            m_movingEntities.emplace_back(bulletEntry);
+                            bulletEntry->addedToMovingList = true;
+                            bulletEntry->markedAsMovingThisFrame = false;
+                            bulletEntry->markedAsMovingLastFrame = false;
+                        }
+                    }
+//                    transform.setRotation(Convert::toBullet(orientation));
+//                    transform.setOrigin(Convert::toBullet(entry.positionProperty.data()));
+//                    transform *= btTransform(btQuaternion::getIdentity(), entry.centerOfMassOffset).inverse();
+
+                    //entry.collisionObject->setWorldTransform(transform);
+                }
+            }
+        }
+    }
+    m_directionUpdateQueue.clear();
+
     //Step simulations with 60 hz.
     m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
     auto interim = std::chrono::steady_clock::now() - start;
@@ -2976,7 +3023,7 @@ bool PhysicalDomain::getTerrainHeight(float x, float y, float& height) const
         }
         return m_terrain->getHeight(x, y, height);
     } else {
-        height = mContainingEntityEntry.bbox.lowCorner().y();
+        height = (float) mContainingEntityEntry.bbox.lowCorner().y();
         return false;
     }
 }
@@ -3138,7 +3185,7 @@ bool PhysicalDomain::isEntityReachable(const LocatedEntity& reachingEntity, floa
                                                                                : Convert::toBullet(positionOfReachingEntity);
 
             auto distance = reachingEntityPos.distance(Convert::toBullet(positionOnQueriedEntity));
-            distance -= reachingEntityEntry->bbox.boundingSphere().radius();
+            distance -= (float) reachingEntityEntry->bbox.boundingSphere().radius();
             return distance <= reach;
 
         } else {
@@ -3204,7 +3251,7 @@ bool PhysicalDomain::isWithinReach(BulletEntry& reacherEntry, BulletEntry& targe
         auto distance = reachingEntityPos.distance(rayResultCallback.m_hitPointWorld);
 
         //We measure from the edge of one entity to the edge of another.
-        distance -= reacherEntry.bbox.boundingSphere().radius();
+        distance -= (float) reacherEntry.bbox.boundingSphere().radius();
 
         return distance <= reach;
     }
@@ -3231,7 +3278,7 @@ std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath:
 
     btTransform pos(btQuaternion::getIdentity(), Convert::toBullet(sphere.center()));
 
-    btSphereShape shape(sphere.radius());
+    btSphereShape shape((btScalar) sphere.radius());
 
     btCollisionObject collisionObject;
     collisionObject.setCollisionShape(&shape);

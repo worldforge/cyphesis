@@ -22,7 +22,6 @@
 #endif
 
 #include "AwareMind.h"
-#include "AwarenessStore.h"
 #include "AwarenessStoreProvider.h"
 #include "SharedTerrain.h"
 
@@ -38,7 +37,6 @@
 #include <Atlas/Objects/Entity.h>
 
 #include <wfmath/atlasconv.h>
-#include <chrono>
 
 static const bool debug_flag = false;
 
@@ -114,26 +112,27 @@ void AwareMind::processMoveTick(const Operation& op, OpVector& res)
     if (mSteering) {
         SteeringResult result = mSteering->update(op->getSeconds());
         if (result.direction.isValid()) {
-            Atlas::Objects::Operation::Move move;
+            Atlas::Objects::Operation::Set set;
             Atlas::Objects::Entity::Anonymous what;
             what->setId(m_ownEntity->getId());
-            what->setAttr("propel", result.direction.toAtlas());
+            what->setAttr("_propel", result.direction.toAtlas());
             //log(INFO, String::compose("Moving in direction %1, %2 with velocity %3", result.direction.x(), result.direction.y(), result.direction.mag()));
             if (result.direction != WFMath::Vector<3>::ZERO()) {
                 WFMath::Quaternion orientation;
                 orientation.rotation(WFMath::Vector<3>(0, 0, 1), result.direction, WFMath::Vector<3>(0, 1, 0));
                 if (orientation.isValid()) {
-                    what->setAttr("orientation", orientation.toAtlas());
+                    what->setAttr("_direction", orientation.toAtlas());
                 } else {
                     log(WARNING, "Orientation to be sent in steering isn't valid.");
                 }
             }
-            if (result.destination.isValid()) {
-                what->setAttr("pos", result.destination.toAtlas());
-            }
+            //TODO: add back ability to set a destination position.
+//            if (result.destination.isValid()) {
+//                what->setAttr("pos", result.destination.toAtlas());
+//            }
 
-            move->setFrom(getId());
-            move->setArgs1(what);
+            set->setFrom(getId());
+            set->setArgs1(what);
 
 //            if (debug_flag) {
 //                std::cout << "Move arg {" << std::endl;
@@ -141,7 +140,7 @@ void AwareMind::processMoveTick(const Operation& op, OpVector& res)
 //                std::cout << "}" << std::endl << std::flush;
 //            }
 
-            res.push_back(move);
+            res.emplace_back(std::move(set));
         }
         if (result.timeToNextWaypoint) {
             futureTick = std::min(*result.timeToNextWaypoint, futureTick);
@@ -156,7 +155,7 @@ void AwareMind::processMoveTick(const Operation& op, OpVector& res)
     tick->setTo(getId());
     tick->setFrom(getId());
 
-    res.push_back(tick);
+    res.emplace_back(std::move(tick));
 }
 
 int AwareMind::updatePath()
