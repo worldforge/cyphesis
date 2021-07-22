@@ -307,7 +307,7 @@ void MindsProperty::mindMoveOperation(LocatedEntity& ent, const Operation& op, O
     if (other_id != ent.getId()) {
         moveOtherEntity(ent, op, res, arg, other_id);
     } else {
-        moveOurselves(ent, op, res, arg);
+        ent.clientError(op, "You can't move yourself.", res, ent.getId());
     }
 }
 
@@ -415,7 +415,7 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
         auto bbox = ScaleProperty::scaledBbox(*other);
         auto radius = bbox.isValid() ? bbox.boundingSphere().radius() : 0;
         //Check that we can reach the edge of the entity if it's placed in its new location.
-        if (!ent.canReach({targetLoc, targetPos}, radius)) {
+        if (!ent.canReach({targetLoc, targetPos}, (float)radius)) {
             ent.clientError(op, "Target is too far away.", res, op->getFrom());
             return;
         }
@@ -426,7 +426,7 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
             newArgs1->setAttr("amount", arg->getAttr("amount"));
         }
         //Replace first arg with our sanitized arg.
-        op->setArgs1(newArgs1);
+        op->setArgs1(std::move(newArgs1));
         op->setFrom(ent.getId());
         //Send the op to the current location of the entity being moved
         op->setTo(other->m_parent->getId());
@@ -438,101 +438,6 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
     }
 }
 
-void MindsProperty::moveOurselves(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
-{
-    Point3D new_pos;
-    Vector3D new_propel;
-    Quaternion new_orientation;
-    try {
-        //If there's a position specified, that takes precedence (i.e. move as quickly straight to the position).
-        //Note that we still look for a propel attribute, since that can be used to determine the speed of movement.
-        if (arg->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
-            fromStdVector(new_pos, arg->getPos());
-            debug_print("pos set to " << new_pos)
-        }
-
-        //Note that we differ between "propel", which is how an entity propels itself forward, and "velocity"
-        //which is the resulting velocity of the entity, taking all other entities as well as gravity into consideration.
-        //We do not allow minds to set the "velocity" attribute.
-        Element attr_propel;
-        if (arg->copyAttr("propel", attr_propel) == 0) {
-            try {
-                new_propel.fromAtlas(attr_propel);
-            } catch (...) {
-                //just ignore malformed data
-            }
-        }
-
-        Element orientation_attr;
-        if (arg->copyAttr("orientation", orientation_attr) == 0) {
-            new_orientation.fromAtlas(orientation_attr);
-            debug_print("ori set to " << new_orientation)
-            if (!new_orientation.isValid()) {
-                log(ERROR, "Ignoring invalid orientation from client " + ent.describeEntity() + ".");
-            }
-        }
-    } catch (Atlas::Message::WrongTypeException&) {
-        log(ERROR, "EXCEPTION: mindMoveOperation: Malformed move operation. " + ent.describeEntity());
-        return;
-    } catch (...) {
-        log(ERROR, "EXCEPTION: mindMoveOperation: Unknown exception thrown. " + ent.describeEntity());
-        return;
-    }
-
-    // Movement within current loc. Work out the speed and stuff and
-    // use movement object to track movement.
-
-    //If there's a position set, we'll use that to determine the propel value. However, we'll also check if there also was a propel value set,
-    //since the magnitude of that indicates the speed to use (otherwise we'll use full speed).
-    auto pos = PositionProperty::extractPosition(ent);
-    if (new_pos.isValid() && pos.isValid()) {
-        if (new_propel.isValid()) {
-            auto mag = new_propel.mag();
-            new_propel = new_pos - pos;
-            new_propel.normalize();
-            new_propel *= mag;
-        } else {
-            new_propel = new_pos - pos;
-            new_propel.normalize();
-        }
-    }
-    // Set up argument for operation
-    Anonymous move_arg;
-    move_arg->setId(ent.getId());
-
-    // Need to add the arguments to this op before we return it
-    // direction is already a unit vector
-//    if (new_pos.isValid()) {
-//        m_movement.setTarget(new_pos);
-//        debug_print("Target" << new_pos)
-//    }
-    if (new_propel.isValid()) {
-        auto mag = new_propel.mag();
-        if (mag == 0) {
-            move_arg->setAttr("propel", new_propel.toAtlas());
-        } else {
-            //We don't allow the mind to set any speed greater than a normalized value.
-            if (mag > 1.0) {
-                new_propel.normalize();
-            }
-            move_arg->setAttr("propel", new_propel.toAtlas());
-        }
-    }
-
-    if (new_orientation.isValid()) {
-        move_arg->setAttr("orientation", new_orientation.toAtlas());
-    }
-
-    // Create move operation
-    Move moveOp;
-    moveOp->setTo(ent.getId());
-    moveOp->setSeconds(BaseWorld::instance().getTimeAsSeconds());
-    moveOp->setArgs1(move_arg);
-
-    res.push_back(moveOp);
-
-}
-
 /// \brief Filter a Set operation coming from the mind
 ///
 /// Currently any Set op is permitted. In the future this will be locked
@@ -542,19 +447,35 @@ void MindsProperty::moveOurselves(LocatedEntity& ent, const Operation& op, OpVec
 /// @param res The filtered result is returned here.
 void MindsProperty::mindSetOperation(LocatedEntity& ent, const Operation& op, OpVector& res) const
 {
-    log(WARNING, "Set op from mind");
     const std::vector<Root>& args = op->getArgs();
     if (args.empty()) {
         log(ERROR, "mindSetOperation: set op has no argument. " + ent.describeEntity());
         return;
     }
+
     const Root& arg = args.front();
-    if (arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
-        op->setTo(arg->getId());
-    } else {
-        op->setTo(ent.getId());
+    //Clean op
+    Set setOp;
+    setOp->setTo(ent.getId());
+    setOp->setFrom(ent.getId());
+    if (!op->isDefaultSerialno()) {
+        setOp->setSerialno(op->getSerialno());
     }
-    res.push_back(op);
+    Anonymous cleanedArg;
+    cleanedArg->setId(ent.getId());
+    auto attrs = arg->asMessage();
+    for (auto entry : attrs) {
+        if (entry.first == "_propel" || entry.first == "_direction") {
+            cleanedArg->setAttr(entry.first, std::move(entry.second));
+        } else if (entry.first == "id"){
+            //no-op
+        } else {
+            log(ERROR, String::compose("mindSetOperation: set op tried to set non-allowed property '%1' on entity %2. ", entry.first, ent.describeEntity()));
+        }
+    }
+    setOp->setArgs1(std::move(cleanedArg));
+
+    res.push_back(std::move(setOp));
 }
 
 /// \brief Filter a Create operation coming from the mind
@@ -616,14 +537,14 @@ void MindsProperty::mindLookOperation(LocatedEntity& ent, const Operation& op, O
         }
     } else {
         const Root& arg = args.front();
-        if (!arg->hasAttrFlag(Atlas::Objects::ID_FLAG)) {
+        if (arg->isDefaultId()) {
             log(ERROR, ent.describeEntity() + " mindLookOperation: Op has no ID");
             return;
         }
         op->setTo(arg->getId());
     }
     debug_print("  now to [" << op->getTo() << "]")
-    res.push_back(op);
+    res.push_back(std::move(op));
 }
 
 /// \brief Filter a GoalInfo operation coming from the mind
@@ -805,13 +726,13 @@ void MindsProperty::removeMind(Router* mind, LocatedEntity& entity)
         // Send a move op stopping the current movement
         Atlas::Objects::Entity::Anonymous move_arg;
         move_arg->setId(entity.getId());
-        move_arg->setAttr("propel", Vector3D::ZERO().toAtlas());
+        move_arg->setAttr("_propel", Vector3D::ZERO().toAtlas());
 
-        Atlas::Objects::Operation::Move move;
-        move->setFrom(entity.getId());
-        move->setTo(entity.getId());
-        move->setArgs1(move_arg);
-        entity.sendWorld(move);
+        Atlas::Objects::Operation::Set setOp;
+        setOp->setFrom(entity.getId());
+        setOp->setTo(entity.getId());
+        setOp->setArgs1(std::move(move_arg));
+        entity.sendWorld(std::move(setOp));
     }
 }
 

@@ -288,13 +288,5 @@
   }
 #endif //STUB_MindsProperty_moveOtherEntity
 
-#ifndef STUB_MindsProperty_moveOurselves
-//#define STUB_MindsProperty_moveOurselves
-  void MindsProperty::moveOurselves(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const
-  {
-    
-  }
-#endif //STUB_MindsProperty_moveOurselves
-
 
 #endif

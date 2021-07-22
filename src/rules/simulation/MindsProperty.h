@@ -46,6 +46,8 @@ class MindsProperty : public PropertyBase
 
         ~MindsProperty() override;
 
+        MindsProperty(const MindsProperty&) = delete;
+
         int get(Atlas::Message::Element& val) const override;
 
         void set(const Atlas::Message::Element& val) override;
@@ -123,9 +125,6 @@ class MindsProperty : public PropertyBase
         void mind2body(LocatedEntity&, const Operation& op, OpVector&) const;
 
         void moveOtherEntity(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg, const std::string& other_id) const;
-
-        void moveOurselves(LocatedEntity& ent, const Operation& op, OpVector& res, const Atlas::Objects::Entity::RootEntity& arg) const;
-
 
 };
 
