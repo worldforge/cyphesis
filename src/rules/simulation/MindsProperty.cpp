@@ -465,12 +465,30 @@ void MindsProperty::mindSetOperation(LocatedEntity& ent, const Operation& op, Op
     cleanedArg->setId(ent.getId());
     auto attrs = arg->asMessage();
     for (auto entry : attrs) {
-        if (entry.first == "_propel" || entry.first == "_direction") {
+        if (entry.first == "_propel") {
+            Vector3D new_propel;
+            try {
+                new_propel.fromAtlas(entry.second);
+                if (new_propel.isValid()) {
+                    auto mag = new_propel.mag();
+
+                    //We don't allow the mind to set any speed greater than a normalized value.
+                    if (mag > 1.0) {
+                        new_propel.normalize();
+                    }
+                    cleanedArg->setAttr(entry.first, new_propel.toAtlas());
+                }
+            } catch (...) {
+                //just ignore malformed data
+            }
+
+        } else if (entry.first == "_direction") {
             cleanedArg->setAttr(entry.first, std::move(entry.second));
-        } else if (entry.first == "id"){
+        } else if (entry.first == "id") {
             //no-op
         } else {
-            log(ERROR, String::compose("mindSetOperation: set op tried to set non-allowed property '%1' on entity %2. ", entry.first, ent.describeEntity()));
+            log(ERROR, String::compose("mindSetOperation: set op tried to set non-allowed property '%1' on entity %2. ",
+                                       entry.first, ent.describeEntity()));
         }
     }
     setOp->setArgs1(std::move(cleanedArg));
