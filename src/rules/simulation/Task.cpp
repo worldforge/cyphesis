@@ -149,8 +149,8 @@ bool Task::tick(const std::string& id, const Operation& op, OpVector& res)
     callScriptFunction("tick", Py::Tuple(), res);
     if (!obsolete()) {
         if (m_progress >= 1.0) {
-            irrelevant();
             callScriptFunction("completed", Py::Tuple(), res);
+            irrelevant();
         } else {
             res.push_back(nextTick(id, op));
         }
