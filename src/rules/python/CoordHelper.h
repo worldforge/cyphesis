@@ -24,6 +24,7 @@
 #include "CyPy_Element.h"
 #include <wfmath/vector.h>
 #include <wfmath/atlasconv.h>
+#include <pythonbase/PythonDebug.h>
 
 struct CoordHelper
 {
@@ -145,6 +146,7 @@ template<typename TValue>
 Py::Object CoordHelper::sequence_item(const TValue& coords, Py_ssize_t pos)
 {
     if (pos < 0 || pos > 2) {
+        pythonStackTrace();
         throw Py::IndexError("Index needs to be [0..2]");
     }
     return Py::Float(coords[pos]);

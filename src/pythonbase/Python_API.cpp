@@ -269,6 +269,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
     }
 
     PyImport_ImportModule("sys");
+    PyImport_ImportModule("traceback");
 
     Py::Module sys_module(PyImport_Import(Py::String("sys").ptr()));
 

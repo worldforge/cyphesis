@@ -72,6 +72,7 @@ int main()
         run_python_string("print(p[1])");
         run_python_string("print(p[2])");
         run_python_string("print(p[-1])");
+        run_python_string("for c in p: print(c)");
         expect_python_error("print(p[3])", PyExc_IndexError);
         run_python_string("p[0]=1.0");
         run_python_string("p[1]=1.0");
