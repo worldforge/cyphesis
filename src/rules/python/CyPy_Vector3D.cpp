@@ -21,6 +21,68 @@
 #include "CoordHelper.h"
 #include "CyPy_Quaternion.h"
 
+struct CyPy_Vector3DIterator : Py::PythonClass<CyPy_Vector3DIterator>
+{
+    //The owning element. Reference count is incremented at construction and decremented at destruction.
+    CyPy_Vector3D* m_element;
+    size_t iterator;
+
+    CyPy_Vector3DIterator(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+            : PythonClass(self, args, kwds), m_element(nullptr), iterator(0)
+    {
+        throw Py::RuntimeError("Can not instantiate directly.");
+    }
+
+
+    CyPy_Vector3DIterator(Py::PythonClassInstance* self, CyPy_Vector3D* value)
+            : PythonClass(self),
+              m_element(value),
+              iterator(0)
+    {
+        m_element->self().increment_reference_count();
+    }
+
+    ~CyPy_Vector3DIterator() override
+    {
+        m_element->self().decrement_reference_count();
+    }
+
+    Py::Object iter() override
+    {
+        return self();
+    }
+
+    PyObject* iternext() override
+    {
+        if (iterator < 3) {
+            auto value = Py::Float(m_element->m_value[iterator]);
+            value.increment_reference_count();
+            iterator++;
+            return value.ptr();
+        } else {
+            return nullptr;
+        }
+    }
+
+    static void init_type()
+    {
+        behaviors().name("Vector3D iterator");
+        behaviors().doc("");
+        behaviors().supportIter(Py::PythonType::support_iter_iter | Py::PythonType::support_iter_iternext);
+
+        behaviors().readyType();
+
+
+    }
+
+    static Py::PythonClassObject<CyPy_Vector3DIterator> wrap(CyPy_Vector3D* value)
+    {
+        auto obj = extension_object_new(type_object(), nullptr, nullptr);
+        reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_Vector3DIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
+        return Py::PythonClassObject<CyPy_Vector3DIterator>(obj, true);
+    }
+};
+
 CyPy_Vector3D::CyPy_Vector3D(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
     : WrapperBase(self, args, kwds)
 {
@@ -50,6 +112,8 @@ void CyPy_Vector3D::init_type()
                                   | Py::PythonType::support_number_floor_divide
                                   | Py::PythonType::support_number_true_divide
                                   | Py::PythonType::support_number_negative);
+
+    behaviors().supportIter(Py::PythonType::support_iter_iter);
 
     PYCXX_ADD_VARARGS_METHOD(dot, dot, "");
     PYCXX_ADD_VARARGS_METHOD(cross, cross, "");
@@ -88,6 +152,11 @@ int CyPy_Vector3D::setattro(const Py::String& name, const Py::Object& attr)
 Py::Object CyPy_Vector3D::repr()
 {
     return CoordHelper::repr(m_value);
+}
+
+Py::Object CyPy_Vector3D::iter()
+{
+    return CyPy_Vector3DIterator::wrap(this);
 }
 
 Py::Object CyPy_Vector3D::dot(const Py::Tuple& args)

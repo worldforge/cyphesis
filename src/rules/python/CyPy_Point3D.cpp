@@ -21,6 +21,69 @@
 #include "CyPy_Vector3D.h"
 #include "CoordHelper.h"
 
+struct CyPy_Point3DIterator : Py::PythonClass<CyPy_Point3DIterator>
+{
+    //The owning element. Reference count is incremented at construction and decremented at destruction.
+    CyPy_Point3D* m_element;
+    size_t iterator;
+
+    CyPy_Point3DIterator(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
+            : PythonClass(self, args, kwds), m_element(nullptr), iterator(0)
+    {
+        throw Py::RuntimeError("Can not instantiate directly.");
+    }
+
+
+    CyPy_Point3DIterator(Py::PythonClassInstance* self, CyPy_Point3D* value)
+            : PythonClass(self),
+              m_element(value),
+              iterator(0)
+    {
+        m_element->self().increment_reference_count();
+    }
+
+    ~CyPy_Point3DIterator() override
+    {
+        m_element->self().decrement_reference_count();
+    }
+
+    Py::Object iter() override
+    {
+        return self();
+    }
+
+    PyObject* iternext() override
+    {
+        if (iterator < 3) {
+            auto value = Py::Float(m_element->m_value[iterator]);
+            value.increment_reference_count();
+            iterator++;
+            return value.ptr();
+        } else {
+            return nullptr;
+        }
+    }
+
+    static void init_type()
+    {
+        behaviors().name("Point3D iterator");
+        behaviors().doc("");
+        behaviors().supportIter(Py::PythonType::support_iter_iter | Py::PythonType::support_iter_iternext);
+
+        behaviors().readyType();
+
+
+    }
+
+    static Py::PythonClassObject<CyPy_Point3DIterator> wrap(CyPy_Point3D* value)
+    {
+        auto obj = extension_object_new(type_object(), nullptr, nullptr);
+        reinterpret_cast<Py::PythonClassInstance*>(obj)->m_pycxx_object = new CyPy_Point3DIterator(reinterpret_cast<Py::PythonClassInstance*>(obj), value);
+        return Py::PythonClassObject<CyPy_Point3DIterator>(obj, true);
+    }
+};
+
+
 CyPy_Point3D::CyPy_Point3D(Py::PythonClassInstance* self, Py::Tuple& args, Py::Dict& kwds)
         : WrapperBase(self, args, kwds)
 {
@@ -45,6 +108,9 @@ void CyPy_Point3D::init_type()
                                     | Py::PythonType::support_sequence_length
                                     | Py::PythonType::support_sequence_ass_item);
 
+
+    behaviors().supportIter(Py::PythonType::support_iter_iter);
+
     behaviors().supportNumberType(Py::PythonType::support_number_add
                                   | Py::PythonType::support_number_subtract);
 
@@ -55,6 +121,8 @@ void CyPy_Point3D::init_type()
     PYCXX_ADD_NOARGS_METHOD(is_valid, is_valid, "");
 
     behaviors().readyType();
+
+    CyPy_Point3DIterator::init_type();
 }
 
 WFMath::Point<3> CyPy_Point3D::parse(const Py::Object& object)
@@ -80,6 +148,11 @@ Py::Object CyPy_Point3D::repr()
 Py::Object CyPy_Point3D::rich_compare(const Py::Object& other, int type)
 {
     return CoordHelper::rich_compare<decltype(m_value), CyPy_Point3D>(m_value, other, type);
+}
+
+Py::Object CyPy_Point3D::iter()
+{
+    return CyPy_Point3DIterator::wrap(this);
 }
 
 PyCxx_ssize_t CyPy_Point3D::sequence_length()

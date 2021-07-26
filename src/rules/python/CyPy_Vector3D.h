@@ -42,6 +42,8 @@ class CyPy_Vector3D : public WrapperBase<WFMath::Vector<3>, CyPy_Vector3D>
 
         Py::Object repr() override;
 
+        Py::Object iter() override;
+
         Py::Object rich_compare(const Py::Object&, int) override;
 
         PyCxx_ssize_t sequence_length() override;
