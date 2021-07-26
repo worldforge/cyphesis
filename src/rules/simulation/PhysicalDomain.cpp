@@ -1411,6 +1411,17 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     //Otherwise the entity will still be there when we apply new positions for the attached entities.
     auto attachedEntities = std::move(entry->attachedEntities);
 
+    //Reset all physical properties when something is moved out of the physical domain.
+    entry->positionProperty.data() = {};
+    entry->entity.applyProperty(entry->positionProperty);
+    entry->orientationProperty.data() = {};
+    entry->entity.applyProperty(entry->orientationProperty);
+    entry->velocityProperty.data() = {};
+    entry->entity.applyProperty(entry->velocityProperty);
+    entry->angularVelocityProperty.data() = {};
+    entry->entity.applyProperty(entry->angularVelocityProperty);
+
+
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
@@ -1636,7 +1647,6 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
         if (bbox.isValid()) {
 
             if (bulletEntry.visibilitySphere) {
-                auto& entity = bulletEntry.entity;
                 auto radius = calculateVisibilitySphereRadius(bulletEntry);
 
                 if (radius != bulletEntry.visibilityShape->getImplicitShapeDimensions().x()) {
@@ -2476,7 +2486,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
 
     debug_print("dirty segments: " << dirtySegments.size())
     for (auto& segment : dirtySegments) {
-        debug_print("rebuilding segment at x: " << segment->getXRef() << " z: " << segment->getZRef());
+        debug_print("rebuilding segment at x: " << segment->getXRef() << " z: " << segment->getZRef())
 
         auto& terrainEntry = buildTerrainPage(*segment);
         if (friction) {
@@ -2542,29 +2552,29 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
 {
     if (!entry.observingThis.empty()) {
         LocatedEntity& entity = entry.entity;
-        Location& lastSentLocation = entry.lastSentLocation;
+        auto& lastSentLocation = entry.lastSentLocation;
         bool shouldSendOp = false;
         Anonymous move_arg;
         if (velocityChange) {
             ::addToEntity(entry.velocityProperty.data(), move_arg->modifyVelocity());
             shouldSendOp = true;
-            lastSentLocation.m_velocity = entry.velocityProperty.data();
+            lastSentLocation.velocity = entry.velocityProperty.data();
         }
         if (angularChange) {
             move_arg->setAttr("angular", entry.angularVelocityProperty.data().toAtlas());
             shouldSendOp = true;
-            lastSentLocation.m_angularVelocity = entry.angularVelocityProperty.data();
+            lastSentLocation.angularVelocity = entry.angularVelocityProperty.data();
         }
         if (orientationChange) {
             move_arg->setAttr("orientation", entry.orientationProperty.data().toAtlas());
             shouldSendOp = true;
-            lastSentLocation.m_orientation = entry.orientationProperty.data();
+            lastSentLocation.orientation = entry.orientationProperty.data();
         }
         //If the velocity changes we should also send the position, to make it easier for clients to project position.
         if (posChange || velocityChange) {
             ::addToEntity(entry.positionProperty.data(), move_arg->modifyPos());
             shouldSendOp = true;
-            lastSentLocation.m_pos = entry.positionProperty.data();
+            lastSentLocation.pos = entry.positionProperty.data();
         }
         if (modeChange) {
             auto prop = entity.getPropertyClassFixed<ModeProperty>();
@@ -2615,23 +2625,23 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
     auto& velocity = bulletEntry.velocityProperty.data();
     auto& angular = bulletEntry.angularVelocityProperty.data();
     LocatedEntity& entity = bulletEntry.entity;
-    Location& lastSentLocation = bulletEntry.lastSentLocation;
+    auto& lastSentLocation = bulletEntry.lastSentLocation;
     //This should normally not happen, but let's check nonetheless.
     if (!pos.isValid()) {
         return;
     }
 
-    bool orientationChange = orientation.isValid() && (!lastSentLocation.m_orientation.isValid() || !orientation.isEqualTo(lastSentLocation.m_orientation, 0.1f));
+    bool orientationChange = orientation.isValid() && (!lastSentLocation.orientation.isValid() || !orientation.isEqualTo(lastSentLocation.orientation, 0.1f));
     bool posChange = false;
-    if (!lastSentLocation.m_pos.isValid()) {
+    if (!lastSentLocation.pos.isValid()) {
         posChange = true;
     } else {
         //If position differs from last sent position, and there's no velocity, then send position update
-        if (lastSentLocation.m_pos != pos && (!velocity.isValid() || velocity == WFMath::Vector<3>::ZERO())) {
+        if (lastSentLocation.pos != pos && (!velocity.isValid() || velocity == WFMath::Vector<3>::ZERO())) {
             posChange = true;
         } else {
-            if (lastSentLocation.m_velocity.isValid()) {
-                auto projectedPosition = lastSentLocation.m_pos + (lastSentLocation.m_velocity * timeSinceLastUpdate);
+            if (lastSentLocation.velocity.isValid()) {
+                auto projectedPosition = lastSentLocation.pos + (lastSentLocation.velocity * timeSinceLastUpdate);
                 if (WFMath::Distance(pos, projectedPosition) > 0.5) {
                     posChange = true;
                 }
@@ -2646,37 +2656,37 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
         bool velocityChange = false;
 
         if (bulletEntry.velocityProperty.data().isValid()) {
-            bool hadValidVelocity = lastSentLocation.m_velocity.isValid();
+            bool hadValidVelocity = lastSentLocation.velocity.isValid();
             //Send an update if either the previous velocity was invalid, or any of the velocity components have changed enough, or if either the new or the old velocity is zero.
             if (!hadValidVelocity) {
-                debug_print("No previous valid velocity " << entity.describeEntity() << " " << lastSentLocation.m_velocity)
+                debug_print("No previous valid velocity " << entity.describeEntity() << " " << lastSentLocation.velocity)
                 velocityChange = true;
-                lastSentLocation.m_velocity = bulletEntry.velocityProperty.data();
+                lastSentLocation.velocity = bulletEntry.velocityProperty.data();
             } else {
-                bool xChange = !fuzzyEquals(velocity.x(), lastSentLocation.m_velocity.x(), 0.01);
-                bool yChange = !fuzzyEquals(velocity.y(), lastSentLocation.m_velocity.y(), 0.01);
-                bool zChange = !fuzzyEquals(velocity.z(), lastSentLocation.m_velocity.z(), 0.01);
-                bool hadZeroVelocity = lastSentLocation.m_velocity.isEqualTo(WFMath::Vector<3>::ZERO());
+                bool xChange = !fuzzyEquals(velocity.x(), lastSentLocation.velocity.x(), 0.01);
+                bool yChange = !fuzzyEquals(velocity.y(), lastSentLocation.velocity.y(), 0.01);
+                bool zChange = !fuzzyEquals(velocity.z(), lastSentLocation.velocity.z(), 0.01);
+                bool hadZeroVelocity = lastSentLocation.velocity.isEqualTo(WFMath::Vector<3>::ZERO());
                 if (xChange || yChange || zChange) {
                     debug_print("Velocity changed " << entity.describeEntity() << " " << velocity)
                     velocityChange = true;
-                    lastSentLocation.m_velocity = bulletEntry.velocityProperty.data();
+                    lastSentLocation.velocity = bulletEntry.velocityProperty.data();
                 } else if (bulletEntry.velocityProperty.data().isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroVelocity) {
                     debug_print("Old or new velocity zero " << entity.describeEntity() << " " << velocity)
                     velocityChange = true;
-                    lastSentLocation.m_velocity = bulletEntry.velocityProperty.data();
+                    lastSentLocation.velocity = bulletEntry.velocityProperty.data();
                 }
             }
         }
         bool angularChange = false;
 
         if (bulletEntry.angularVelocityProperty.data().isValid()) {
-            bool hadZeroAngular = lastSentLocation.m_angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO());
-            angularChange = !fuzzyEquals(lastSentLocation.m_angularVelocity, angular, 0.01);
+            bool hadZeroAngular = lastSentLocation.angularVelocity.isEqualTo(WFMath::Vector<3>::ZERO());
+            angularChange = !fuzzyEquals(lastSentLocation.angularVelocity, angular, 0.01);
             if (!angularChange && bulletEntry.angularVelocityProperty.data().isEqualTo(WFMath::Vector<3>::ZERO()) && !hadZeroAngular) {
                 debug_print("Angular changed " << entity.describeEntity() << " " << angular)
                 angularChange = true;
-                lastSentLocation.m_angularVelocity = bulletEntry.angularVelocityProperty.data();
+                lastSentLocation.angularVelocity = bulletEntry.angularVelocityProperty.data();
             }
         }
 
@@ -2684,7 +2694,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
             //Increase sequence number as properties have changed.
             entity.increaseSequenceNumber();
             sendMoveSight(bulletEntry, posChange, velocityChange, orientationChange, angularChange, bulletEntry.modeChanged);
-            lastSentLocation.m_pos = bulletEntry.positionProperty.data();
+            lastSentLocation.pos = bulletEntry.positionProperty.data();
             bulletEntry.modeChanged = false;
         }
         if (posChange && !bulletEntry.closenessObservations.empty()) {
@@ -2698,7 +2708,7 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
 
 
             for (auto& observation : invalidEntries) {
-                //It's important that we check that the observation still is valid, since it's possible that callbacks alters the collections.:
+                //It's important that we check that the observation still is valid, since it's possible that callbacks alters the collections.
                 auto I = bulletEntry.closenessObservations.find(observation);
                 if (I != bulletEntry.closenessObservations.end()) {
                     if (&bulletEntry == observation->reacher) {
@@ -2773,17 +2783,17 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     postDuration = {};
 
-    for (auto &bulletEntry : m_propelUpdateQueue) {
+    for (auto& bulletEntry : m_propelUpdateQueue) {
         auto propelProp = bulletEntry->entity.getPropertyClassFixed<PropelProperty>();
         if (propelProp) {
             applyPropel(*bulletEntry, propelProp->data());
         }
     }
     m_propelUpdateQueue.clear();
-    for (auto &bulletEntry : m_directionUpdateQueue) {
+    for (auto& bulletEntry : m_directionUpdateQueue) {
         auto directionProperty = bulletEntry->entity.getPropertyClass<QuaternionProperty>("_direction");
         if (directionProperty) {
-            auto &direction = directionProperty->data();
+            auto& direction = directionProperty->data();
             if (direction.isValid()) {
                 if (bulletEntry->collisionShape) {
                     btTransform transform = bulletEntry->collisionObject->getWorldTransform();
@@ -2876,6 +2886,8 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     //any reallocations during the processing. If any entry should be removed (because it's
     //not moving any more) we relocate the last entry to the position we're at.
     //Once we're done with processing we'll shrink the vector if any element was removed.
+    //Note that during this phase "last frame" refers to this frame, and "this frame" refers
+    //to the future frame.
     size_t movingSize = m_movingEntities.size();
     for (size_t i = 0; i < movingSize;) {
         auto movedEntry = m_movingEntities[i];

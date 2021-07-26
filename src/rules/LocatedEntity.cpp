@@ -494,6 +494,8 @@ void LocatedEntity::changeContainer(const Ref<LocatedEntity>& new_loc)
     }
     new_loc->addChild(*this);
 
+    applyProperty(LocationProperty::property_name, *m_properties[LocationProperty::property_name].property);
+
     onContainered(oldLoc);
 }
 

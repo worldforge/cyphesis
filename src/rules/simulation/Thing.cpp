@@ -211,10 +211,14 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
 
     //TODO: move this into the domain instead
     if (newOrientation.isValid()) {
-        requirePropertyClassFixed<OrientationProperty>().data() = newOrientation;
+        auto& prop = requirePropertyClassFixed<OrientationProperty>();
+        prop.data() = newOrientation;
+        applyProperty(prop);
     }
     if (newPos.isValid()) {
-        requirePropertyClassFixed<PositionProperty>().data() = newPos;
+        auto& prop = requirePropertyClassFixed<PositionProperty>();
+        prop.data() = newPos;
+        applyProperty(prop);
     }
 
     //TODO: supply all required location data when changing location

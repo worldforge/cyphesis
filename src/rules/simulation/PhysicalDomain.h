@@ -121,6 +121,13 @@ class PhysicalDomain : public Domain
 
         struct ClosenessObserverEntry;
 
+        struct PhysicalData {
+            Point3D pos;
+            Vector3D velocity;
+            Vector3D angularVelocity;
+            Quaternion orientation;
+        };
+
         struct BulletEntry
         {
             enum class VisibilityQueueOperationType
@@ -129,25 +136,32 @@ class PhysicalDomain : public Domain
                     Remove
             };
             LocatedEntity& entity;
+            /**
+             * The following properties are all "physical" properties which only make sense in this domain.
+             * The current setup is to have them as regular properties, but in reality they are "owned" by this domain.
+             */
             PositionProperty& positionProperty;
             VelocityProperty& velocityProperty;
             AngularVelocityProperty& angularVelocityProperty;
             OrientationProperty& orientationProperty;
+
+            /**
+             * We keep a copy of the bbox here for quick lookup.
+             */
             WFMath::AxisBox<3> bbox;
+
+            /**
+             * An entity that's "solid" will react physically with other entities.
+             * For now it will suffice with a simple model where things are either solid or not.
+             * Depending on requirements it might be worth looking into using a more complex system with filters. Though that might perhaps just make things too complex.
+             */
             bool isSolid;
 
             std::shared_ptr<btCollisionShape> collisionShape;
             std::unique_ptr<btCollisionObject> collisionObject;
             sigc::connection propertyUpdatedConnection;
 
-
-            /**
-             * Location data matching the properties of the entity.
-             */
-            Location location;
-
-
-            Location lastSentLocation;
+            PhysicalData lastSentLocation;
             std::unique_ptr<PhysicalMotionState> motionState;
 
             std::unique_ptr<btCollisionObject> visibilitySphere;
