@@ -380,5 +380,21 @@
   }
 #endif //STUB_LocatedEntity_describeEntity
 
+#ifndef STUB_LocatedEntity_enqueueUpdateOp
+//#define STUB_LocatedEntity_enqueueUpdateOp
+  void LocatedEntity::enqueueUpdateOp(OpVector& res)
+  {
+    
+  }
+#endif //STUB_LocatedEntity_enqueueUpdateOp
+
+#ifndef STUB_LocatedEntity_enqueueUpdateOp
+//#define STUB_LocatedEntity_enqueueUpdateOp
+  void LocatedEntity::enqueueUpdateOp()
+  {
+    
+  }
+#endif //STUB_LocatedEntity_enqueueUpdateOp
+
 
 #endif

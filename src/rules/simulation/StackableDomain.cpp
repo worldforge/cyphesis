@@ -28,7 +28,6 @@
 #include <Atlas/Objects/Anonymous.h>
 
 #include <unordered_set>
-#include <common/operations/Update.h>
 #include <Atlas/Objects/Operation.h>
 #include "common/Property_impl.h"
 
@@ -68,9 +67,7 @@ void StackableDomain::addEntity(LocatedEntity& entity)
             newEntityStackProp.data() = 0;
             entity.applyProperty(newEntityStackProp);
 
-            Atlas::Objects::Operation::Update update;
-            update->setTo(m_entity.getId());
-            m_entity.sendWorld(update);
+            m_entity.enqueueUpdateOp();
             return;
         }
     }
@@ -80,9 +77,7 @@ void StackableDomain::addEntity(LocatedEntity& entity)
         //Check that we've moved from another entity.
         if (prop->getMode() != ModeProperty::Mode::Unknown) {
             entity.setAttrValue(ModeDataProperty::property_name, Atlas::Message::Element());
-            Atlas::Objects::Operation::Update update;
-            update->setTo(entity.getId());
-            entity.sendWorld(update);
+            entity.enqueueUpdateOp();
         }
     }
 }
@@ -130,10 +125,7 @@ HandlerResult StackableDomain::DeleteOperation(LocatedEntity& owner, const Opera
         amountProperty.data() -= amount;
         owner.applyProperty(amountProperty);
 
-        Atlas::Objects::Operation::Update update;
-        update->setTo(owner.getId());
-
-        res.emplace_back(std::move(update));
+        owner.enqueueUpdateOp(res);
         return OPERATION_BLOCKED;
     }
     return OPERATION_IGNORED;
@@ -181,7 +173,11 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
     for (const auto& entry : owner.getProperties()) {
         Atlas::Message::Element elem;
         entry.second.property->get(elem);
-        new_ent->setAttr(entry.first, elem);
+        try {
+            new_ent->setAttr(entry.first, std::move(elem));
+        } catch (const Atlas::Message::WrongTypeException& ex) {
+            log(WARNING, String::compose("Error when setting attribute '%1' when copying entity '%2' with Stackable domain. Error message: %3", entry.first, owner.describeEntity(), ex.what()));
+        }
     }
     //Make sure to adjust the amount
     new_ent->setAttr(AmountProperty::property_name, amount);
@@ -197,10 +193,7 @@ HandlerResult StackableDomain::MoveOperation(LocatedEntity& owner, const Operati
     amountProperty.data() -= amount;
     owner.applyProperty(amountProperty);
 
-    Atlas::Objects::Operation::Update update;
-    update->setTo(owner.getId());
-
-    res.emplace_back(std::move(update));
+    owner.enqueueUpdateOp(res);
 
     //and finally we'll issue a new Move operation moving the new entity.
     // Since the move op has the same amount as the entity, this handler will ignore it.
@@ -307,9 +300,7 @@ bool StackableDomain::stackIfPossible(const LocatedEntity& domainEntity, Located
                     newEntityStackProp.data() = 0;
                     entity.applyProperty(newEntityStackProp);
 
-                    Atlas::Objects::Operation::Update update;
-                    update->setTo(child->getId());
-                    child->sendWorld(update);
+                    child->enqueueUpdateOp();
                     return true;
                 }
             }

@@ -159,6 +159,11 @@ static const std::uint32_t entity_visibility_protected = 1u << 16u;
  */
 static const std::uint32_t entity_visibility_private = 1u << 17u;
 
+/**
+ * The entity has a pending Update broadcast op queued, and thus doesn't need any more.
+ */
+static const std::uint32_t entity_update_broadcast_queued = 1u << 18u;
+
 /// \brief This is the base class from which in-game and in-memory objects
 /// inherit.
 ///
@@ -584,6 +589,19 @@ class LocatedEntity : public Router, public ReferenceCounted
          * @return A string describing the entity in more detail.
          */
         std::string describeEntity() const;
+
+        /**
+         * Enqueues a new Update op if there's none already queued.
+         * @param res
+         */
+        void enqueueUpdateOp(OpVector& res);
+
+        /**
+         * Enqueues a new Update op if there's none already queued.
+         * This version sends it directly to the world.
+         * @param res
+         */
+        void enqueueUpdateOp();
 
         /// Signal indicating that this entity has been changed
         sigc::signal<void> updated;

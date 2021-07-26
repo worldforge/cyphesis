@@ -306,9 +306,7 @@ void LocatedEntity::addModifier(const std::string& propertyName, Modifier* modif
             setAttr(propertyName, nullptr);
         }
     }
-    Update update;
-    update->setTo(getId());
-    sendWorld(std::move(update));
+    enqueueUpdateOp();
 }
 
 void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* modifier)
@@ -333,9 +331,7 @@ void LocatedEntity::removeModifier(const std::string& propertyName, Modifier* mo
             //FIXME: If there's no base value we should remove the property, but there's no support in the storage manager for that yet.
             setAttrValue(propertyName, propertyI->second.baseValue);
 
-            Update update;
-            update->setTo(getId());
-            sendWorld(std::move(update));
+            enqueueUpdateOp();
 
             return;
         }
@@ -859,6 +855,27 @@ std::string LocatedEntity::describeEntity() const
     ss << *this;
     return ss.str();
 }
+
+void LocatedEntity::enqueueUpdateOp(OpVector& res) {
+    if (!hasFlags(entity_update_broadcast_queued)) {
+        Update update;
+        update->setTo(getId());
+        res.push_back(std::move(update));
+
+        addFlags(entity_update_broadcast_queued);
+    }
+}
+
+void LocatedEntity::enqueueUpdateOp() {
+    if (!hasFlags(entity_update_broadcast_queued)) {
+        Update update;
+        update->setTo(getId());
+        sendWorld(std::move(update));
+
+        addFlags(entity_update_broadcast_queued);
+    }
+}
+
 
 std::ostream& operator<<(std::ostream& s, const LocatedEntity& d)
 {

@@ -67,6 +67,19 @@ struct TestContext
     {
         testWorld.shutdown();
     }
+
+    void clearUpdateOpsFlags()
+    {
+        for (auto entry : testWorld.getEntities()) {
+            entry.second->removeFlags(entity_update_broadcast_queued);
+        }
+    }
+
+    void clearQueues()
+    {
+        testWorld.getOperationsHandler().clearQueues();
+        clearUpdateOpsFlags();
+    }
 };
 
 namespace {
@@ -377,14 +390,14 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             t8->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             context.testWorld.addEntity(t8, t7);
 
-            opsHandler.clearQueues();
+            context.clearQueues();
 
             ASSERT_FALSE(t8->isVisibleForOtherEntity(*t3));
             //Add t3 as container observer to t7, which allows it to view its content (t8), even if it's an inventory domain, as t3 is both the observer and the owner of the inventory.
             t7->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
             ASSERT_TRUE(t8->isVisibleForOtherEntity(*t3));
 
-            opsHandler.clearQueues();
+            context.clearQueues();
 
             ASSERT_TRUE(t2->isVisibleForOtherEntity(*t3))
             ASSERT_TRUE(t3->canReach(EntityLocation{t2}))
@@ -406,7 +419,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_EQUAL(2u, queue.top()->getArgs().size())
 
             //Add t3 as container observer to t5, which allows it to view its content (t6)
-            opsHandler.clearQueues();
+            context.clearQueues();
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
             ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
@@ -416,7 +429,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
             ASSERT_EQUAL(1u, queue.top()->getArgs().size())
             //Remove t3 as observer from t5...
-            opsHandler.clearQueues();
+            context.clearQueues();
             t5->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
@@ -434,7 +447,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
             ASSERT_TRUE(t3->canReach(EntityLocation{t6}))
             //Remove t3 as observer from t2, which should sever the connection to t5
-            opsHandler.clearQueues();
+            context.clearQueues();
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{});
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
             ASSERT_FALSE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
@@ -445,7 +458,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_FALSE(t5->isVisibleForOtherEntity(*t3))
             ASSERT_FALSE(t3->canReach(EntityLocation{t6}))
             ASSERT_FALSE(t6->isVisibleForOtherEntity(*t3))
-            ASSERT_EQUAL(4u, queue.size()) //Get Disappear from t4, t5 and t6
+            ASSERT_EQUAL(3u, queue.size()) //Get Disappear from t4, t5 and t6
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             ASSERT_EQUAL(t3->getId(), queue.top()->getTo())
@@ -463,7 +476,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t2->getId()))
             ASSERT_TRUE(t3->getPropertyClassFixed<ContainersActiveProperty>()->hasContainer(t5->getId()))
 
-            opsHandler.clearQueues();
+            context.clearQueues();
             //Now move t3 away far enough that it can't reach or see t2 anymore.
             moveFn(t3, {510, 0, 500});
             //Make sure that it cascades, so we can't reach t6 anymore.
@@ -476,13 +489,11 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
             //The disappear ops are sent in random order (depending on memory layout) so we'll put them in a collection to check them.
             std::vector<Operation> disappearOps;
-            ASSERT_EQUAL(5u, queue.size()) //One Sight, and then one Update + Disappearance from t2, t5 and t6, as t5 is child of t2 and t6 is a child of t5
+            ASSERT_EQUAL(4u, queue.size()) //One Sight, and then one Update + Disappearance from t2 and t5, as t5 is child of t2
             queue.pop();
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             disappearOps.push_back(queue.top().op);
-            queue.pop();
-            ASSERT_EQUAL(Atlas::Objects::Operation::UPDATE_NO, queue.top()->getClassNo())
             queue.pop();
             ASSERT_EQUAL(Atlas::Objects::Operation::DISAPPEARANCE_NO, queue.top()->getClassNo())
             disappearOps.push_back(queue.top().op);
@@ -518,7 +529,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             //Move it back, access the container, and then add a new entity and expect an Appearance op
             moveFn(t3, {0, 0, 0});
             t2->setAttrValue(ContainerAccessProperty::property_name, Atlas::Message::ListType{t3->getId()});
-            opsHandler.clearQueues();
+            context.clearQueues();
             Ref<Thing> t9 = new Thing(9);
             t9->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t9->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
@@ -551,7 +562,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         domainPhysical->setDomain(std::make_unique<PhysicalDomain>(*domainPhysical));
 
         // Clear ops queue
-        opsHandler.clearQueues();
+        context.clearQueues();
 
         // Make an observer, which we'll add to the physical domain
         Ref<Thing> observer(new Thing(counter++));
@@ -569,7 +580,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         context.testWorld.addEntity(observerAdmin, domainPhysical);
 
         auto ops = collectQueue(queue);
-        opsHandler.clearQueues();
+        context.clearQueues();
         OpVector res;
 
         // Create a private entity, which should only be seen by observerAdmin
@@ -589,7 +600,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(objectPrivate1->getId(), ops.front()->getArgs().front()->getId())
         ASSERT_EQUAL(observerAdmin->getId(), ops.front()->getTo())
 
-        opsHandler.clearQueues();
+        context.clearQueues();
 
         // Move objectPrivate1 a bit; only admin observer should see it
         {
@@ -638,7 +649,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         };
 
         // Clear ops queue
-        opsHandler.clearQueues();
+        context.clearQueues();
 
         // Make an observer, which we'll add to the physical domain
         Ref<Thing> observer(new Thing(counter++));
@@ -658,7 +669,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(observer->getId(), ops[1]->getArgs().front()->getId())
         ASSERT_EQUAL(observer->getId(), ops[1]->getTo())
 
-        opsHandler.clearQueues();
+        context.clearQueues();
 
         // Make another observer, which we'll add to the void domain
         Ref<Thing> observer_void(new Thing(counter++));
@@ -668,7 +679,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         context.testWorld.addEntity(observer_void, domainVoid);
 
         // Clear ops queue
-        opsHandler.clearQueues();
+        context.clearQueues();
 
         // Create something we can look at
         Ref<Thing> object1(new Thing(counter++));
@@ -686,7 +697,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(object1->getId(), ops.front()->getArgs().front()->getId())
         ASSERT_EQUAL(observer->getId(), ops.front()->getTo())
 
-        opsHandler.clearQueues();
+        context.clearQueues();
 
         OpVector res;
 
@@ -696,7 +707,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(0u, ops.size())
         ASSERT_EQUAL(1u, res.size())  // Should only contain Tick
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         res.clear();
 
 
@@ -716,14 +727,15 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(1u, res.size())
         ASSERT_EQUAL(Atlas::Objects::Operation::SIGHT_NO, res[0]->getClassNo())
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         res.clear();
         res = domainTickFn();
         ops = collectQueue(queue);
+        context.clearQueues();
         ASSERT_EQUAL(0u, ops.size())
         ASSERT_EQUAL(1u, res.size())  // Should only contain Tick
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         res.clear();
 
 
@@ -738,6 +750,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             object1->MoveOperation(move, res);
         }
         ops = collectQueue(queue);
+        context.clearQueues();
 
         // We now expect to get a Disappearance op sent to the observer (but nothing sent to the observer in the void). The first op should be a Sight op, the second an Update op.
         ASSERT_EQUAL(0u, ops.size())
@@ -763,6 +776,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             object1->MoveOperation(move, res);
         }
         ops = collectQueue(queue);
+        context.clearQueues();
 
         // We now expect to get an Appearance op sent to the observer (but nothing sent to the observer in the void). The first op should be an Update op
         ASSERT_EQUAL(0u, ops.size())
@@ -780,6 +794,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             object1->DeleteOperation(deleteOp, res);
         }
         ops = collectQueue(queue);
+        context.clearQueues();
 
         // A Sight is sent to the deleted entity, but it's sent directly without being put on the queue.
         ASSERT_EQUAL(0u, ops.size())
@@ -807,7 +822,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(observer->getId(), ops.front()->getTo())
 
         domainTickFn();
-        opsHandler.clearQueues();
+        context.clearQueues();
         res.clear();
         // Move object2 away a great distance, outside of visible range
         {
@@ -837,7 +852,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
         ASSERT_EQUAL(object2->getId(), res[0]->getArgs().front()->getId())
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         res.clear();
         // Move object2 a bit; nothing should see it
         {
@@ -855,7 +870,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         res = domainTickFn();
         ASSERT_EQUAL(1u, res.size())  // Should only contain Tick
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         // Make object2 very much larger, so it should appear
         {
             object2->setAttrValue("bbox", WFMath::AxisBox<3>{{-500, -500, -500},
@@ -870,7 +885,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(observer->getId(), res[0]->getTo())
         ASSERT_EQUAL(object2->getId(), res[0]->getArgs().front()->getId())
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         // Make object2 smaller again, so it should disappear
         {
             object2->setAttrValue("bbox", WFMath::AxisBox<3>{{-1, -1, -1},
@@ -884,7 +899,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         ASSERT_EQUAL(object2->getId(), res[0]->getArgs().front()->getId())
 
 
-        opsHandler.clearQueues();
+        context.clearQueues();
         res.clear();
         // Move object2 close to the observer so it appears
         {

@@ -83,11 +83,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                         if (existing_entity_mode_data_prop) {
                             existing_entity_mode_data_prop->clearData();
                             existing_entity->applyProperty(*existing_entity_mode_data_prop);
-                            {
-                                Atlas::Objects::Operation::Update update;
-                                update->setTo(existing_entity->getId());
-                                existing_entity->sendWorld(update);
-                            }
+                            existing_entity->enqueueUpdateOp();
                         }
                     }
                 };
@@ -100,9 +96,7 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                     //Check if there was another entity attached to the attachment, and if so reset it's attachment.
                     resetExistingEntityPlantedOn();
 
-                    Atlas::Objects::Operation::Update update;
-                    update->setTo(entity.getId());
-                    entity.sendWorld(update);
+                    entity.enqueueUpdateOp();
 
                 } else {
 
@@ -151,20 +145,14 @@ HandlerResult AttachmentsProperty::operation(LocatedEntity& entity, const Operat
                         modeDataProp.setPlantedData(ModeDataProperty::PlantedOnData{entity.getIntId(), attachment_name.String()});
 
                         new_entity->applyProperty(modeDataProp);
-                        {
-                            Atlas::Objects::Operation::Update update;
-                            update->setTo(new_entity->getId());
-                            new_entity->sendWorld(update);
-                        }
+                        new_entity->enqueueUpdateOp();
 
                         entity.setAttrValue(attached_prop_name, Atlas::Message::MapType{{"$eid", new_entity->getId()}});
 
                         //Check if there was another entity attached to the attachment, and if so reset it's attachment.
                         resetExistingEntityPlantedOn();
 
-                        Atlas::Objects::Operation::Update update;
-                        update->setTo(entity.getId());
-                        entity.sendWorld(update);
+                        entity.enqueueUpdateOp();
 
                     } else {
                         entity.clientError(op, "Could not find wielded entity.", res, entity.getId());

@@ -232,9 +232,7 @@ void Thing::moveToNewLocation(Ref<LocatedEntity>& new_loc,
     m_flags.addFlags(entity_dirty_location);
 
     //Since the location has changed we need to issue an Update
-    Update update;
-    update->setTo(getId());
-    res.push_back(std::move(update));
+    enqueueUpdateOp(res);
 
 
     auto newDomain = new_loc->getDomain();
@@ -299,9 +297,7 @@ void Thing::SetOperation(const Operation& op, OpVector& res)
         res.emplace_back(std::move(sight));
     }
 
-    Update update;
-    update->setTo(getId());
-    res.push_back(std::move(update));
+    enqueueUpdateOp(res);
 }
 
 /// \brief Generate a Sight(Set) operation giving an update on named attributes
@@ -412,6 +408,7 @@ void Thing::updateProperties(const Operation& op, OpVector& res)
             onUpdated();
         }
     }
+    removeFlags(entity_update_broadcast_queued);
 }
 
 void Thing::UpdateOperation(const Operation& op, OpVector& res)

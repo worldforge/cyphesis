@@ -119,10 +119,7 @@ int TasksProperty::updateTask(LocatedEntity& owner, OpVector& res)
 {
     m_flags.addFlags(prop_flag_unsent);
 
-    Update update;
-    update->setTo(owner.getId());
-
-    res.push_back(update);
+    owner.enqueueUpdateOp(res);
 
     return 0;
 }

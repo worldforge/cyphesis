@@ -203,9 +203,7 @@ void Account::removeMindFromEntity(ExternalMind* mind)
         if (prop) {
             prop->removeMind(mind, *entity);
             entity->applyProperty(*prop);
-            Atlas::Objects::Operation::Update update;
-            update->setTo(entity->getId());
-            entity->sendWorld(update);
+            entity->enqueueUpdateOp();
         }
     }
 }

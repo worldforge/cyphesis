@@ -60,9 +60,7 @@ HandlerResult ActionsProperty::TickOperation(LocatedEntity& owner, const Operati
     if (hadChanges) {
         removeFlags(prop_flag_persistence_clean);
         addFlags(prop_flag_unsent);
-        Atlas::Objects::Operation::Update update;
-        update->setTo(owner.getId());
-        res.push_back(std::move(update));
+        owner.enqueueUpdateOp(res);
     }
 
     enqueueTickOp(owner, res);
@@ -169,10 +167,7 @@ void ActionsProperty::addAction(LocatedEntity& entity, OpVector& res, std::strin
     enqueueTickOp(entity, res);
 
     entity.applyProperty(*this);
-    Atlas::Objects::Operation::Update update;
-    update->setTo(entity.getId());
-    update->setFrom(entity.getId());
-    res.push_back(std::move(update));
+    entity.enqueueUpdateOp(res);
 }
 
 void ActionsProperty::removeAction(LocatedEntity& entity, OpVector& res, std::string actionName)
@@ -180,9 +175,6 @@ void ActionsProperty::removeAction(LocatedEntity& entity, OpVector& res, std::st
     auto result = m_data.erase(actionName);
     if (result) {
         entity.applyProperty(*this);
-        Atlas::Objects::Operation::Update update;
-        update->setTo(entity.getId());
-        update->setFrom(entity.getId());
-        res.push_back(std::move(update));
+        entity.enqueueUpdateOp(res);
     }
 }

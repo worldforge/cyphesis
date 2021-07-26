@@ -77,9 +77,7 @@ void InventoryDomain::addEntity(LocatedEntity& entity)
             //Check that we've moved from another entity.
             if (plantedOnData.entityId && (plantedOnData.entityId != m_entity.getIntId())) {
                 entity.setAttrValue(ModeDataProperty::property_name, Atlas::Message::Element());
-                Atlas::Objects::Operation::Update update;
-                update->setTo(entity.getId());
-                entity.sendWorld(update);
+                entity.enqueueUpdateOp();
             }
         }
     }

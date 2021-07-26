@@ -336,9 +336,7 @@ void ContainerDomain::addObserver(std::string& entityId)
         containersActiveProperty.getActiveContainers().insert(m_entity.getId());
         observer->applyProperty(containersActiveProperty);
 
-        Atlas::Objects::Operation::Update update;
-        update->setTo(observer->getId());
-        observer->sendWorld(std::move(update));
+        observer->enqueueUpdateOp();
 
         auto& entry = m_reachingEntities[entityId];
         entry.observer = observer;
@@ -383,9 +381,7 @@ void ContainerDomain::removeObserver(const std::basic_string<char>& entityId)
         observer->applyProperty(containersActiveProperty);
 
         //Send an update to handle the ContainersActiveProperty being changed.
-        Atlas::Objects::Operation::Update update;
-        update->setTo(observer->getId());
-        observer->sendWorld(std::move(update));
+        observer->enqueueUpdateOp();
 
         std::vector<Atlas::Objects::Root> args;
         for (auto& child : entry.observedEntities) {

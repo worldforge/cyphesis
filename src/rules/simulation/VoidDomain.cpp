@@ -54,9 +54,7 @@ void VoidDomain::addEntity(LocatedEntity& entity)
     if (auto prop = entity.getPropertyClassFixed<ModeDataProperty>()) {
         if (prop->getMode() != ModeProperty::Mode::Unknown) {
             entity.setAttrValue(ModeDataProperty::property_name, Atlas::Message::Element());
-            Atlas::Objects::Operation::Update update;
-            update->setTo(entity.getId());
-            entity.sendWorld(update);
+            entity.enqueueUpdateOp();
         }
     }
 
