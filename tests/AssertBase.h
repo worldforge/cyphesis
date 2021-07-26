@@ -236,6 +236,11 @@ namespace Cyphesis {
                           __FILE__, __LINE__) != 0) return;\
 }
 
+#define ASSERT_FUZZY_EQUAL_FN(_lval, _rval, _epsilon, _fn) {\
+    if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
+                          __FILE__, __LINE__) != 0) {_fn(); return;}\
+}
+
 #define ASSERT_NOT_EQUAL(_lval, _rval) {\
     if (this->assertNotEqual(#_lval, _lval, #_rval, _rval, __PRETTY_FUNCTION__,\
                              __FILE__, __LINE__) != 0) return;\

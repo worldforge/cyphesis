@@ -66,12 +66,12 @@ void OgreMeshDeserializerTest::test_readBboxMesh()
     ASSERT_EQUAL(deserializer.m_vertices[71], -1);
 
     ASSERT_EQUAL(deserializer.m_indices.size(), 12u * 3u);
-    ASSERT_EQUAL(deserializer.m_indices[0], 0);
-    ASSERT_EQUAL(deserializer.m_indices[1], 1);
-    ASSERT_EQUAL(deserializer.m_indices[2], 2);
-    ASSERT_EQUAL(deserializer.m_indices[33], 22);
-    ASSERT_EQUAL(deserializer.m_indices[34], 23);
-    ASSERT_EQUAL(deserializer.m_indices[35], 20);
+    ASSERT_EQUAL(deserializer.m_indices[0], 0u);
+    ASSERT_EQUAL(deserializer.m_indices[1], 1u);
+    ASSERT_EQUAL(deserializer.m_indices[2], 2u);
+    ASSERT_EQUAL(deserializer.m_indices[33], 22u);
+    ASSERT_EQUAL(deserializer.m_indices[34], 23u);
+    ASSERT_EQUAL(deserializer.m_indices[35], 20u);
 
 
     ASSERT_TRUE(deserializer.m_bounds.isValid());

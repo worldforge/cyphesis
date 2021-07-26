@@ -108,12 +108,6 @@ class TestPhysicalDomain : public PhysicalDomain
 
 double epsilon = 0.0001;
 
-
-#define ASSERT_FUZZY_EQUAL_FN(_lval, _rval, _epsilon, _fn) {\
-    if (this->assertFuzzyEqual(#_lval, _lval, #_rval, _rval, #_epsilon, _epsilon, __PRETTY_FUNCTION__,\
-                          __FILE__, __LINE__) != 0) {_fn(); return;}\
-}
-
 struct TestContext
 {
     long m_id_counter;
