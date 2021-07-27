@@ -75,7 +75,11 @@ void CommPeer::setup(std::unique_ptr<Link> connection)
     startConnect(std::move(connection));
 
     m_start_auth = std::chrono::steady_clock::now();
+#if BOOST_VERSION >= 106600
+    m_auth_timer.expires_after(std::chrono::seconds(1));
+#else
     m_auth_timer.expires_from_now(std::chrono::seconds(1));
+#endif
     m_auth_timer.async_wait([this](const boost::system::error_code& ec) {
         if (!ec) {
             this->checkAuth();
@@ -116,7 +120,11 @@ void CommPeer::checkAuth()
             return;
         }
     }
+#if BOOST_VERSION >= 106600
+    m_auth_timer.expires_after(std::chrono::seconds(1));
+#else
     m_auth_timer.expires_from_now(std::chrono::seconds(1));
+#endif
     m_auth_timer.async_wait([this](const boost::system::error_code& ec) {
         this->checkAuth();
     });

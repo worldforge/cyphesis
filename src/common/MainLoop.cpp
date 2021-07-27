@@ -116,8 +116,13 @@ void MainLoop::run(bool daemon,
         rmt_ScopedCPUSample(MainLoop, 0)
 
         auto max_wall_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(8);
+        auto op_handling_expiry_time = std::chrono::steady_clock::now() + tick_size;
         bool nextOpTimeExpired = false;
+#if BOOST_VERSION >= 106600
+        nextOpTimer.expires_after(tick_size);
+#else
         nextOpTimer.expires_from_now(tick_size);
+#endif
         nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
             if (ec != boost::asio::error::operation_aborted) {
                 nextOpTimeExpired = true;
@@ -159,7 +164,11 @@ void MainLoop::run(bool daemon,
             soft_exit_in_progress = true;
             if (callbacks.softExitStart) {
                 auto duration = callbacks.softExitStart();
+#if BOOST_VERSION >= 106600
+                softExitTimer.expires_after(duration);
+#else
                 softExitTimer.expires_from_now(duration);
+#endif
                 softExitTimer.async_wait([&](boost::system::error_code ec) {
                     if (!ec) {
                         if (callbacks.softExitTimeout) {

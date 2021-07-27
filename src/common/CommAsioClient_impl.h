@@ -264,7 +264,11 @@ template<class ProtocolT>
 void CommAsioClient<ProtocolT>::startNegotiation()
 {
     auto self(this->shared_from_this());
+#if BOOST_VERSION >= 106600
+    mNegotiateTimer.expires_after(std::chrono::seconds(10));
+#else
     mNegotiateTimer.expires_from_now(std::chrono::seconds(10));
+#endif
     mNegotiateTimer.async_wait([this, self](const boost::system::error_code& ec) {
         //If the negotiator still exists after the deadline it means that the negotiation hasn't
         //completed yet; we'll consider that a "timeout".

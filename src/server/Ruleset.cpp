@@ -305,7 +305,11 @@ void Ruleset::getRulesFromFiles(boost::filesystem::path directory,
 
             auto timer = std::make_shared<boost::asio::steady_timer>(m_io_context);
             m_reloadTimers.insert(timer.get());
+#if BOOST_VERSION >= 106600
+            timer->expires_after(std::chrono::milliseconds(20));
+#else
             timer->expires_from_now(std::chrono::milliseconds(20));
+#endif
             timer->async_wait([&, timer](const boost::system::error_code& ec) {
                 if (!ec) {
                     processChangedRules();

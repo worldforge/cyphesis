@@ -106,8 +106,11 @@ void CommMetaClient::do_receive()
 void CommMetaClient::keepalive()
 {
 
+#if BOOST_VERSION >= 106600
+    mKeepaliveTimer.expires_after(std::chrono::seconds(m_heartbeatTime));
+#else
     mKeepaliveTimer.expires_from_now(std::chrono::seconds(m_heartbeatTime));
-
+#endif
     mKeepaliveTimer.async_wait([this](boost::system::error_code ec)
     {
         if (!ec)

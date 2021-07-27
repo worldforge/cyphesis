@@ -65,7 +65,11 @@ CommPSQLSocket::CommPSQLSocket(boost::asio::io_context& io_context, DatabasePost
 
 void CommPSQLSocket::tryReConnect()
 {
+#if BOOST_VERSION >= 106600
+    m_reconnectTimer.expires_after(std::chrono::seconds(2));
+#else
     m_reconnectTimer.expires_from_now(std::chrono::seconds(2));
+#endif
     m_reconnectTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             if (m_db.initConnection() == 0) {
@@ -175,7 +179,11 @@ void CommPSQLSocket::vacuum()
         m_vacuumFull = !m_vacuumFull;
     }
 
+#if BOOST_VERSION >= 106600
+    m_vacuumTimer.expires_after(std::chrono::seconds(vacFreq));
+#else
     m_vacuumTimer.expires_from_now(std::chrono::seconds(vacFreq));
+#endif
     m_vacuumTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             this->vacuum();
@@ -189,7 +197,11 @@ void CommPSQLSocket::reindex()
     if (m_socket && m_socket->is_open()) {
         m_db.runMaintainance(DatabasePostgres::MAINTAIN_REINDEX);
     }
+#if BOOST_VERSION >= 106600
+    m_reindexTimer.expires_after(std::chrono::seconds(reindexFreq));
+#else
     m_reindexTimer.expires_from_now(std::chrono::seconds(reindexFreq));
+#endif
     m_reindexTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             this->reindex();

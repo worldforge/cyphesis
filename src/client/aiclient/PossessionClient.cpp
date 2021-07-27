@@ -167,7 +167,11 @@ void PossessionClient::scheduleDispatch()
 {
     m_dispatcherTimer.cancel();
     auto waitTime = m_operationsDispatcher.timeUntilNextOp();
+#if BOOST_VERSION >= 106600
+    m_dispatcherTimer.expires_after(waitTime);
+#else
     m_dispatcherTimer.expires_from_now(waitTime);
+#endif
 
     m_dispatcherTimer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {

@@ -230,7 +230,11 @@ void observe_python_directories(boost::asio::io_context& io_context, AssetsManag
                 changedPaths[path] = package;
 
                 auto timer = std::make_shared<boost::asio::steady_timer>(io_context);
+#if BOOST_VERSION >= 106600
+                timer->expires_after(std::chrono::milliseconds(20));
+#else
                 timer->expires_from_now(std::chrono::milliseconds(20));
+#endif
                 timer->async_wait([&, timer](const boost::system::error_code& ec) {
                     if (!ec) {
                         reloadChangedPaths();

@@ -29,7 +29,11 @@ IdleConnector::~IdleConnector() = default;
 
 void IdleConnector::idle()
 {
+#if BOOST_VERSION >= 106600
+    m_timer.expires_after(std::chrono::seconds(1));
+#else
     m_timer.expires_from_now(std::chrono::seconds(1));
+#endif
     m_timer.async_wait([this](boost::system::error_code ec){
         if (!ec) {
             this->idling.emit();

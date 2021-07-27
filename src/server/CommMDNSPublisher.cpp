@@ -386,7 +386,11 @@ void CommMDNSPublisher::checkTimers(time_t t)
 
 void CommMDNSPublisher::do_timer_check()
 {
+#if BOOST_VERSION >= 106600
+    m_timers_check_timer.expires_after(std::chrono::milliseconds(500));
+#else
     m_timers_check_timer.expires_from_now(std::chrono::milliseconds(500));
+#endif
     m_timers_check_timer.async_wait([this](boost::system::error_code ec)
     {
         if (!ec) {

@@ -125,7 +125,11 @@ int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& dura
     bool hasExpired = false;
     bool isCancelled = false;
     boost::asio::steady_timer timer(m_io_context);
+#if BOOST_VERSION >= 106600
+    timer.expires_after(duration);
+#else
     timer.expires_from_now(duration);
+#endif
     timer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {
             hasExpired = true;
