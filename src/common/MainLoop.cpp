@@ -149,7 +149,7 @@ void MainLoop::run(bool daemon,
                 } catch (const std::exception& ex) {
                     log(ERROR, String::compose("Exception caught in main loop: %1", ex.what()));
                 }
-            } while (!nextOpTimeExpired);
+            } while (!nextOpTimeExpired && std::chrono::steady_clock::now() < op_handling_expiry_time);
         }
         nextOpTimer.cancel();
         if (soft_exit_in_progress) {
