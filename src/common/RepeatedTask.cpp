@@ -43,7 +43,11 @@ void RepeatedTask::cancel()
 void RepeatedTask::executeTask()
 {
     mFunction();
+#if BOOST_VERSION >= 106600
     mTimer.expires_after(mInterval);
+#else
+    mTimer.expires_from_now(mInterval);
+#endif
     mTimer.async_wait([this](boost::system::error_code ec) {
         if (!ec) {
             this->executeTask();
