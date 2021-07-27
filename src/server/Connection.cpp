@@ -38,6 +38,7 @@
 #include <sigc++/adaptors/bind.h>
 
 #include <algorithm>
+#include "Remotery/Remotery.h"
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -177,9 +178,11 @@ int Connection::verifyCredentials(const Account& account,
 
 size_t Connection::dispatch(size_t numberOfOps)
 {
+    rmt_ScopedCPUSample(Connection_dispatch, 0)
     size_t processed = 0;
 
     while (!m_operationsQueue.empty() && processed < numberOfOps) {
+        rmt_ScopedCPUSample(dispatch_operation, 0)
         auto op = std::move(m_operationsQueue.front());
         m_operationsQueue.pop_front();
         debug_print("deliver locally")
@@ -208,10 +211,13 @@ size_t Connection::dispatch(size_t numberOfOps)
     }
 
     for (auto& entry: m_objects) {
-        size_t processedOps = 0;
-        while (!entry.second.opsQueue.empty() && processedOps < numberOfOps) {
-            auto op = std::move(entry.second.opsQueue.front());
-            entry.second.opsQueue.pop_front();
+        if (!entry.second.opsQueue.empty()) {
+            rmt_ScopedCPUSample(dispatch_externalOperations, 0)
+            size_t processedOps = 0;
+            while (!entry.second.opsQueue.empty() && processedOps < numberOfOps) {
+                rmt_ScopedCPUSample(dispatch_externalOperation, 0)
+                auto op = std::move(entry.second.opsQueue.front());
+                entry.second.opsQueue.pop_front();
 //            if (debug_flag) {
 //                auto timeDiff = BaseWorld::instance().getTimeAsSeconds() - op->getSeconds();
 //                if (timeDiff > 0.02) {
@@ -219,9 +225,10 @@ size_t Connection::dispatch(size_t numberOfOps)
 //                }
 //            }
 
-            entry.second.router->externalOperation(op, *this);
+                entry.second.router->externalOperation(op, *this);
+            }
+            processed += processedOps;
         }
-        processed += processedOps;
     }
 
 

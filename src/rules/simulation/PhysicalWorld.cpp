@@ -20,8 +20,11 @@
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "Remotery/Remotery.h"
 
-PhysicalWorld::PhysicalWorld(btDispatcher* dispatcher, btBroadphaseInterface* pairCache, btConstraintSolver* constraintSolver, btCollisionConfiguration* collisionConfiguration)
-    : btDiscreteDynamicsWorld(dispatcher, pairCache, constraintSolver, collisionConfiguration)
+PhysicalWorld::PhysicalWorld(btDispatcher* dispatcher,
+                             btBroadphaseInterface* pairCache,
+                             btConstraintSolver* constraintSolver,
+                             btCollisionConfiguration* collisionConfiguration)
+        : btDiscreteDynamicsWorld(dispatcher, pairCache, constraintSolver, collisionConfiguration)
 {}
 
 void PhysicalWorld::synchronizeMotionStates()
@@ -35,6 +38,7 @@ int PhysicalWorld::stepSimulation(btScalar timeStep, int maxSubSteps, btScalar f
 
     int steps = btDiscreteDynamicsWorld::stepSimulation(timeStep, maxSubSteps, fixedTimeStep);
 
+    rmt_ScopedCPUSample(PhysicalWorld_synchronizeMotionStates, 0)
     //iterate over all active rigid bodies
     for (int i = 0; i < m_nonStaticRigidBodies.size(); i++) {
         btRigidBody* body = m_nonStaticRigidBodies[i];
