@@ -226,6 +226,7 @@ size_t Connection::dispatch(size_t numberOfOps)
 //            }
 
                 entry.second.router->externalOperation(op, *this);
+                processedOps++;
             }
             processed += processedOps;
         }
