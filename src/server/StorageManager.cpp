@@ -40,7 +40,7 @@
 #include <sigc++/adaptors/bind.h>
 
 #include <unordered_set>
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 
 using Atlas::Message::MapType;
 using Atlas::Message::Element;

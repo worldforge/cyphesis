@@ -18,7 +18,7 @@
 
 #include "PhysicalWorld.h"
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 
 PhysicalWorld::PhysicalWorld(btDispatcher* dispatcher,
                              btBroadphaseInterface* pairCache,

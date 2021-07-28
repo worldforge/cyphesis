@@ -29,7 +29,7 @@
 #include "common/Variable.h"
 #include "common/operations/Tick.h"
 
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>

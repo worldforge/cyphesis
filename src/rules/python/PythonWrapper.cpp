@@ -26,7 +26,7 @@
 #include "common/operations/Tick.h"
 #include "common/debug.h"
 #include "pythonbase/Python_API.h"
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 #include <boost/algorithm/string.hpp>
 
 static const bool debug_flag = false;

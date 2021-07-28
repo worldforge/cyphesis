@@ -30,6 +30,7 @@
 #include "common/debug.h"
 
 #include "CommAsioClient.h"
+#include "Remotery.h"
 
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/RootOperation.h>
@@ -114,6 +115,7 @@ void CommAsioClient<ProtocolT>::do_read()
     mSocket.async_read_some(mReadBuffer.prepare(read_buffer_size),
                             [this, self](boost::system::error_code ec, std::size_t length) {
                                 if (!ec) {
+                                    rmt_ScopedCPUSample(read, 0)
                                     mReadBuffer.commit(length);
                                     m_codec->poll();
                                     this->dispatch();
@@ -166,6 +168,7 @@ void CommAsioClient<ProtocolT>::write()
                                  [this, self](boost::system::error_code ec, std::size_t length) {
                                      mIsSending = false;
                                      if (!ec) {
+                                         rmt_ScopedCPUSample(write, 0)
                                          mSendBuffer->consume(length);
                                          //Is there data queued for transmission which we should send right away?
                                          if (mShouldSend) {
@@ -341,8 +344,10 @@ void CommAsioClient<ProtocolT>::dispatch()
     if (!m_opQueue.empty()) {
         auto self(this->shared_from_this());
         m_io_context.post([this, self]() {
+            rmt_ScopedCPUSample(CommAsioClient_dispatch, 0)
             int i = 0;
             while (!m_opQueue.empty() && i < mMaxOpsPerDispatch) {
+                rmt_ScopedCPUSample(CommAsioClient_operation, 0)
                 auto op = std::move(m_opQueue.front());
                 m_opQueue.pop_front();
                 operation(op);

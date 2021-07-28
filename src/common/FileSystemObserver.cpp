@@ -22,6 +22,8 @@
 
 #include "log.h"
 #include "compose.hpp"
+#include "Remotery.h"
+
 #include <boost/algorithm/string.hpp>
 #include <boost/asio/steady_timer.hpp>
 
@@ -88,6 +90,7 @@ void FileSystemObserver::remove_directory(const boost::filesystem::path& dirname
 
 void FileSystemObserver::processChangedPaths()
 {
+    rmt_ScopedCPUSample(processChangedPaths, 0)
     if (!m_changedPaths.empty()) {
         auto firstI = m_changedPaths.begin();
         //check if enough time has passed for the first entry

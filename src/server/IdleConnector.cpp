@@ -17,6 +17,7 @@
 
 
 #include "IdleConnector.h"
+#include "Remotery.h"
 
 /// \brief Constructor for socket object.
 ///
@@ -36,6 +37,7 @@ void IdleConnector::idle()
 #endif
     m_timer.async_wait([this](boost::system::error_code ec){
         if (!ec) {
+            rmt_ScopedCPUSample(idling, 0)
             this->idling.emit();
             this->idle();
         }

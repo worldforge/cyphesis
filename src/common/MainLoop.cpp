@@ -24,7 +24,7 @@
 #include "log.h"
 #include <boost/asio/signal_set.hpp>
 #include <boost/asio/steady_timer.hpp>
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 
 namespace {
     void interactiveSignalsHandler(boost::asio::signal_set& this_, boost::system::error_code error, int signal_number)
@@ -115,8 +115,9 @@ void MainLoop::run(bool daemon,
 
         rmt_ScopedCPUSample(MainLoop, 0)
 
-        auto max_wall_time = std::chrono::steady_clock::now() + std::chrono::milliseconds(8);
-        auto op_handling_expiry_time = std::chrono::steady_clock::now() + tick_size;
+        auto frameStartTime = std::chrono::steady_clock::now();
+        auto max_wall_time = frameStartTime + std::chrono::milliseconds(8);
+        auto op_handling_expiry_time = frameStartTime + tick_size;
         bool nextOpTimeExpired = false;
 #if BOOST_VERSION >= 106600
         nextOpTimer.expires_after(tick_size);
@@ -145,6 +146,7 @@ void MainLoop::run(bool daemon,
 
             do {
                 try {
+                    rmt_ScopedCPUSample(runIO_one, 0)
                     io_context.run_one();
                 } catch (const std::exception& ex) {
                     log(ERROR, String::compose("Exception caught in main loop: %1", ex.what()));

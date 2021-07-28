@@ -1,7 +1,7 @@
 add_library(remotery
-    Remotery.c
+    lib/Remotery.c
 )
 
-target_include_directories(remotery PRIVATE .)
+target_include_directories(remotery PUBLIC lib)
 
 

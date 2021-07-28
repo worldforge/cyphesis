@@ -31,6 +31,7 @@
 #include "common/globals.h"
 #include "common/Monitors.h"
 #include "common/compose.hpp"
+#include "Remotery.h"
 #include <varconf/config.h>
 
 #include <boost/algorithm/string.hpp>
@@ -119,6 +120,7 @@ void CommMetaClient::keepalive()
             mResolver.async_resolve(query,
                     [this](boost::system::error_code ecInner, ip::udp::resolver::iterator iterator ) {
                         if (!ecInner) {
+                            rmt_ScopedCPUSample(MetaClientKeepAlive, 0)
                             mDestination = *iterator;
                             mHasEndpoint = true;
                             this->metaserverKeepalive();

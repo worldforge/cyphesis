@@ -38,7 +38,7 @@
 #include <sigc++/adaptors/bind.h>
 
 #include <algorithm>
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;

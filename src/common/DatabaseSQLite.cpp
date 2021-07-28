@@ -28,6 +28,7 @@
 #include "globals.h"
 #include "compose.hpp"
 #include "const.h"
+#include "Remotery.h"
 
 #include <Atlas/Codecs/Packed.h>
 
@@ -79,6 +80,7 @@ void DatabaseSQLite::poll_tasks()
     while (true) {
         std::unique_lock<std::mutex> lock(m_pendingQueriesMutex);
         if (!pendingQueries.empty()) {
+            rmt_ScopedCPUSample(DatabaseSQLite_poll_task, 0)
             auto command = std::move(pendingQueries.front());
             lock.unlock();
             runCommandQuery(command);

@@ -39,7 +39,7 @@
 #include "ModeDataProperty.h"
 #include "VisibilityDistanceProperty.h"
 #include "common/Inheritance.h"
-#include "Remotery/Remotery.h"
+#include "Remotery.h"
 
 #include <Mercator/Segment.h>
 #include <Mercator/TerrainMod.h>

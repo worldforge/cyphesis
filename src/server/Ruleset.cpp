@@ -29,7 +29,6 @@
 #include "OpRuleHandler.h"
 #include "PropertyRuleHandler.h"
 #include "ArchetypeRuleHandler.h"
-#include "Persistence.h"
 
 #include "common/log.h"
 #include "common/debug.h"
@@ -39,6 +38,7 @@
 #include "common/AtlasFileLoader.h"
 #include "common/compose.hpp"
 #include "common/AssetsManager.h"
+#include "Remotery.h"
 
 #include <Atlas/Objects/Anonymous.h>
 
@@ -234,6 +234,7 @@ int Ruleset::modifyRuleInner(const std::string& class_name,
 
 void Ruleset::processChangedRules()
 {
+    rmt_ScopedCPUSample(processChangedRules, 0)
     if (!m_changedRules.empty()) {
         RootDict updatedRules;
         for (auto& path : m_changedRules) {

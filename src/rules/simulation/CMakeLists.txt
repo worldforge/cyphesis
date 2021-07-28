@@ -60,6 +60,8 @@ add_library(rulessimulation
         AliasProperty.cpp
         ActionsProperty.cpp)
 
-target_link_libraries(rulessimulation ${BULLET_LIBRARIES})
+target_link_libraries(rulessimulation PUBLIC
+        ${BULLET_LIBRARIES}
+        common)
 
 add_subdirectory(python)

@@ -63,6 +63,7 @@
 #include "TeleportProperty.h"
 #include "ScriptReloader.h"
 #include "AccountProperty.h"
+#include "Remotery.h"
 
 #include <varconf/config.h>
 
@@ -85,7 +86,6 @@
 #include <memory>
 #include <thread>
 #include <fstream>
-#include <Remotery/Remotery.h>
 #include <rules/simulation/PhysicalDomain.h>
 
 using String::compose;

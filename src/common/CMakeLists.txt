@@ -56,7 +56,7 @@ add_library(common
         TypeStore.h
         )
 
-target_link_libraries(common ${GCRYPT_LIBRARIES})
+target_link_libraries(common ${GCRYPT_LIBRARIES} remotery)
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})
 
 target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
@@ -78,11 +78,11 @@ endif (PostgreSQL_FOUND)
 add_library(db ${db_files})
 
 if (PostgreSQL_FOUND)
-    target_link_libraries(db ${PostgreSQL_LIBRARIES})
+    target_link_libraries(db PUBLIC ${PostgreSQL_LIBRARIES})
     target_include_directories(db PUBLIC ${PostgreSQL_INCLUDE_DIRS})
 endif (PostgreSQL_FOUND)
 
-target_link_libraries(db ${SQLITE3_LIBRARIES})
+target_link_libraries(db PUBLIC ${SQLITE3_LIBRARIES} remotery)
 target_include_directories(db PUBLIC ${SQLITE3_INCLUDE_DIRS})
 
 

@@ -29,6 +29,7 @@
 #include "common/AssetsManager.h"
 #include "PythonMalloc.h"
 #include "pythonbase/WrapperBase.h"
+#include "Remotery.h"
 
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
@@ -237,6 +238,7 @@ void observe_python_directories(boost::asio::io_context& io_context, AssetsManag
 #endif
                 timer->async_wait([&, timer](const boost::system::error_code& ec) {
                     if (!ec) {
+                        rmt_ScopedCPUSample(PythonReload, 0)
                         reloadChangedPaths();
                     }
                 });

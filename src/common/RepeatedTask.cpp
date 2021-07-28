@@ -17,6 +17,7 @@
  */
 
 #include "RepeatedTask.h"
+#include "Remotery.h"
 
 RepeatedTask::RepeatedTask(boost::asio::io_context& io_context, std::chrono::steady_clock::duration interval, std::function<void()> function)
     : mInterval(std::move(interval)),
@@ -42,6 +43,7 @@ void RepeatedTask::cancel()
 
 void RepeatedTask::executeTask()
 {
+    rmt_ScopedCPUSample(RepeatedTaskExecute, 0)
     mFunction();
 #if BOOST_VERSION >= 106600
     mTimer.expires_after(mInterval);
