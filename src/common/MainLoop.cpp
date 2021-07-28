@@ -126,6 +126,7 @@ void MainLoop::run(bool daemon,
 #endif
         nextOpTimer.async_wait([&nextOpTimeExpired](boost::system::error_code ec) {
             if (ec != boost::asio::error::operation_aborted) {
+                rmt_ScopedCPUSample(nextOpTimeExpired, 0)
                 nextOpTimeExpired = true;
             }
         });
