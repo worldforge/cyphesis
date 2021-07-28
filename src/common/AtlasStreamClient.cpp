@@ -124,6 +124,7 @@ int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& dura
 {
     bool hasExpired = false;
     bool isCancelled = false;
+    auto expirationTime = std::chrono::steady_clock::now() + duration;
     boost::asio::steady_timer timer(m_io_context);
 #if BOOST_VERSION >= 106600
     timer.expires_after(duration);
@@ -141,7 +142,7 @@ int StreamClientSocketBase::poll(const std::chrono::steady_clock::duration& dura
     //We'll try to only run one handler each polling. Either our timer gets called, or one of the network handlers.
     //The reason for this loop is that when we cancel the timer we need to poll run handlers until the timer handler
     //has been run, since it references locally scoped variables.
-    while (!hasExpired && !isCancelled && !exitCheckerFn()) {
+    while (!hasExpired && !isCancelled && !exitCheckerFn() && std::chrono::steady_clock::now() < expirationTime) {
         m_io_context.run_one();
         //Check if we didn't run the timer handler; if so we should cancel it and then keep on polling until
         //it's been run.
