@@ -126,9 +126,6 @@ static rmtBool g_SettingsInitialized = RMT_FALSE;
             #include <pthread_np.h>
         #else
             #include <sys/prctl.h>
-            //On Linux we need to do a syscall to get the thread id.
-            #include <sys/types.h>
-            #include <sys/syscall.h>
         #endif
     #endif
 
@@ -1677,7 +1674,7 @@ static const char* itoa_s(rmtS32 value)
 ------------------------------------------------------------------------------------------------------------------------
 */
 
-typedef rmtU32 rmtThreadId;
+typedef rmtU64 rmtThreadId;
 
 #ifdef RMT_PLATFORM_WINDOWS
 typedef HANDLE rmtThreadHandle;
@@ -1707,14 +1704,8 @@ static rmtThreadId rmtGetCurrentThreadId()
 {
 #ifdef RMT_PLATFORM_WINDOWS
     return GetCurrentThreadId();
-#elif defined(RMT_PLATFORM_POSIX)
-    #if defined(__FreeBSD__) || defined(__OpenBSD__)
-    return pthread_getthreadid_np();
-    #else
-    return syscall(__NR_gettid);
-    #endif
 #else
-    return 0;
+    return pthread_self();
 #endif
 }
 
