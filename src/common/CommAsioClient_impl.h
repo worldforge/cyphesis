@@ -60,6 +60,7 @@ CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
     mNegotiateTimer(io_context, std::chrono::seconds(1)),
     mIsSending(false),
     mShouldSend(false),
+    mAutoFlush(false),
     mName(std::move(name))
 {
 }
@@ -385,7 +386,7 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
                             obj->getParent(), socketName(mSocket)));
         return;
     }
-    m_opQueue.push_back(op);
+    m_opQueue.emplace_back(std::move(op));
 }
 
 template<class ProtocolT>
@@ -412,7 +413,11 @@ int CommAsioClient<ProtocolT>::send(
 
     m_encoder->streamObjectsMessage(op);
 
-    return flush();
+    if (mAutoFlush) {
+        return flush();
+    } else {
+        return 0;
+    }
 }
 
 template<class ProtocolT>

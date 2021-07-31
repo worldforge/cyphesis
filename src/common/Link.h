@@ -30,6 +30,9 @@ namespace Atlas {
 }
 
 /// \brief Class representing links from a client at the Atlas level.
+///
+/// This means that operations sent to this class will then be routed through
+/// some comm socket to an external client.
 class Link : public Router {
   protected:
     /// \brief The Atlas encoder used to send objects over this link
@@ -49,13 +52,13 @@ class Link : public Router {
      * Sends an op and flushes the socket.
      *
      * If you intend to send multiple ops, consider using the overload which
-     * accepts an OpVector instead, since the socket will be flushed in this call.
+     * accepts an OpVector instead.
      * @param op An op to send.
      */
     void send(const Operation & op) const;
 
     /**
-     * Sends multiple ops, and flushes the socket.
+     * Sends multiple ops.
      *
      * @param opVector A vector of ops to send.
      */

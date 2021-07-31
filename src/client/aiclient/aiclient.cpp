@@ -71,6 +71,50 @@ namespace {
         commClient->getSocket().async_connect({client_socket_name}, [&io_context, &mindFactory, commClient](boost::system::error_code ec) {
             if (!ec) {
                 log(INFO, "Connection detected; creating possession client.");
+
+                /**
+                 * The Flusher will flush the comm socket every ten milliseconds, as long as the connection is alive.
+                 */
+                struct Flusher : public std::enable_shared_from_this<Flusher>
+                {
+                    boost::asio::io_context& io_context;
+                    std::shared_ptr<CommAsioClient<boost::asio::local::stream_protocol>> commClient;
+                    boost::asio::steady_timer timer{io_context};
+                    std::chrono::steady_clock::duration flushInterval;
+
+                    Flusher(boost::asio::io_context& _io_context,
+                            std::shared_ptr<CommAsioClient<boost::asio::local::stream_protocol>> _commClient,
+                            std::chrono::steady_clock::duration _flushInterval)
+                            : io_context(_io_context),
+                              commClient(_commClient),
+                              flushInterval(_flushInterval)
+                    {
+                    }
+
+                    void flush()
+                    {
+                        if (commClient->getSocket().is_open()) {
+                            commClient->flush();
+#if BOOST_VERSION >= 106600
+                            timer.expires_after(flushInterval);
+#else
+                            timer.expires_from_now(flushInterval);
+#endif
+                            auto self(this->shared_from_this());
+                            auto waitFn = [self](boost::system::error_code ecInner) {
+                                if (!ecInner) {
+                                    self->flush();
+                                }
+                            };
+                            timer.async_wait(waitFn);
+
+                        }
+                    }
+                };
+                auto flusher = std::shared_ptr<Flusher>(new Flusher(io_context, commClient, std::chrono::milliseconds(10)));
+                flusher->flush();
+
+
                 commClient->startConnect(std::make_unique<PossessionClient>(*commClient, mindFactory, std::make_unique<Inheritance>(factories), [&]() {
                     connectToServer(io_context, mindFactory);
                 }));
@@ -93,11 +137,11 @@ namespace {
 }
 
 
-STRING_OPTION(server, "localhost", "aiclient", "serverhost", "Hostname of the server to connect to");
+STRING_OPTION(server, "localhost", "aiclient", "serverhost", "Hostname of the server to connect to")
 
-STRING_OPTION(account, "", "aiclient", "account", "Account name to use to authenticate to the server");
+STRING_OPTION(account, "", "aiclient", "account", "Account name to use to authenticate to the server")
 
-STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenticate to the server");
+STRING_OPTION(password, "", "aiclient", "password", "Password to use to authenticate to the server")
 
 
 int main(int argc, char** argv)

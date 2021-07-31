@@ -35,16 +35,18 @@
 
 class TestLink : public Link
 {
-  public:
-    TestLink(CommSocket & socket, const std::string & id, long iid);
-    virtual ~TestLink();
+    public:
+        TestLink(CommSocket& socket, const std::string& id, long iid);
 
-    virtual void externalOperation(const Operation & op, Link &);
-    virtual void operation(const Operation&, OpVector&);
+        virtual ~TestLink();
+
+        virtual void externalOperation(const Operation& op, Link&);
+
+        virtual void operation(const Operation&, OpVector&);
 };
 
-TestLink::TestLink(CommSocket & socket, const std::string & id, long iid) :
-      Link(socket, id, iid)
+TestLink::TestLink(CommSocket& socket, const std::string& id, long iid) :
+        Link(socket, id, iid)
 {
 }
 
@@ -52,7 +54,7 @@ TestLink::~TestLink()
 {
 }
 
-void TestLink::externalOperation(const Operation & op, Link &)
+void TestLink::externalOperation(const Operation& op, Link&)
 {
 }
 
@@ -63,17 +65,18 @@ void TestLink::operation(const Operation&, OpVector&)
 
 class TestCommSocket : public CommSocket
 {
-  public:
-    explicit TestCommSocket(boost::asio::io_context & svr);
+    public:
+        explicit TestCommSocket(boost::asio::io_context& svr);
 
-    virtual ~TestCommSocket();
+        virtual ~TestCommSocket();
 
-    virtual void disconnect();
-    virtual int flush();
+        virtual void disconnect();
+
+        virtual int flush();
 
 };
 
-TestCommSocket::TestCommSocket(boost::asio::io_context & svr) : CommSocket(svr)
+TestCommSocket::TestCommSocket(boost::asio::io_context& svr) : CommSocket(svr)
 {
 }
 
@@ -83,28 +86,34 @@ TestCommSocket::~TestCommSocket()
 
 class Linktest : public Cyphesis::TestBase
 {
-  private:
-    CommSocket * m_socket;
-    Link * m_link;
-    Atlas::Bridge * m_bridge;
-    Atlas::Objects::ObjectsEncoder * m_encoder;
+    private:
+        CommSocket* m_socket;
+        Link* m_link;
+        Sink* m_bridge;
+        Atlas::Objects::ObjectsEncoder* m_encoder;
 
-    static bool CommSocket_flush_called;
-    static bool CommSocket_disconnect_called;
-  public:
-    Linktest();
+        static bool CommSocket_flush_called;
+        static bool CommSocket_disconnect_called;
+    public:
+        Linktest();
 
-    void setup();
-    void teardown();
+        void setup();
 
-    void test_send();
-    void test_send_connected();
-    void test_sendError();
-    void test_sendError_connected();
-    void test_disconnect();
+        void teardown();
 
-    static void set_CommSocket_flush_called();
-    static void set_CommSocket_disconnect_called();
+        void test_send();
+
+        void test_send_connected();
+
+        void test_sendError();
+
+        void test_sendError_connected();
+
+        void test_disconnect();
+
+        static void set_CommSocket_flush_called();
+
+        static void set_CommSocket_disconnect_called();
 };
 
 void TestCommSocket::disconnect()
@@ -143,7 +152,7 @@ Linktest::Linktest()
 void Linktest::setup()
 {
     m_bridge = new Sink;
-    m_socket = new TestCommSocket(*(boost::asio::io_context*)0);
+    m_socket = new TestCommSocket(*(boost::asio::io_context*) 0);
     m_link = new TestLink(*m_socket, "1", 1);
     m_encoder = 0;
 }
@@ -178,7 +187,7 @@ void Linktest::test_send_connected()
 
     m_link->send(op);
 
-    ASSERT_TRUE(CommSocket_flush_called);
+    ASSERT_TRUE(m_bridge->got_data)
 }
 
 void Linktest::test_sendError()
@@ -189,7 +198,7 @@ void Linktest::test_sendError()
 
     m_link->sendError(op, "test error message", "");
 
-    ASSERT_TRUE(!CommSocket_flush_called);
+    ASSERT_FALSE(m_bridge->got_data)
 }
 
 void Linktest::test_sendError_connected()
@@ -203,7 +212,7 @@ void Linktest::test_sendError_connected()
 
     m_link->sendError(op, "test error message", "");
 
-    ASSERT_TRUE(CommSocket_flush_called);
+    ASSERT_TRUE(m_bridge->got_data)
 }
 
 void Linktest::test_disconnect()

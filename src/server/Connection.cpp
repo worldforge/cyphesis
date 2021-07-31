@@ -30,6 +30,7 @@
 #include "common/TypeNode.h"
 #include "common/log.h"
 #include "common/compose.hpp"
+#include "common/CommSocket.h"
 
 
 #include <Atlas/Objects/Anonymous.h>
@@ -232,6 +233,8 @@ size_t Connection::dispatch(size_t numberOfOps)
         }
     }
 
+    m_commSocket.flush();
+
 
     return processed;
 }
@@ -293,7 +296,7 @@ void Connection::LoginOperation(const Operation& op, OpVector& res)
     }
     // Account should be the first argument of the op
     const Root& arg = args.front();
-    // Check for username, and if its not there, then check for
+    // Check for username, and if it's not there, then check for
     // id in case we are dealing with an old client.
     Element user_attr;
     std::string username;
@@ -335,7 +338,7 @@ void Connection::LoginOperation(const Operation& op, OpVector& res)
     account->addToEntity(info_arg);
     info->setArgs1(info_arg);
     debug_print("Good login")
-    res.push_back(info);
+    res.emplace_back(std::move(info));
 
     logEvent(LOGIN, String::compose("%1 %2 - Login account %3 (%4)",
                                     getId(), account->getId(), username,

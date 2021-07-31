@@ -65,6 +65,16 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
         int flush() override;
 
         /**
+         * Sets whether or not the sockets should be automatically flushed after each call to "send".
+         * By default this is off, which means that calling code needs to make sure to flush the sockets
+         * at suitable intervals.
+         * @param autoFlush
+         */
+        void setAutoFlush(bool autoFlush) {
+            mAutoFlush = autoFlush;
+        }
+
+        /**
          * Controls how many ops should be emitted per call to dispatch.
          */
         int mMaxOpsPerDispatch;
@@ -108,6 +118,13 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
          * completed.
          */
         bool mShouldSend;
+
+        /**
+         * If set to "true", the sockets are all flushed automatically whenever "send" is called.
+         * By default it's off, meaning that it's up to calling code to make sure that the sockets are flushed at
+         * suitable intervals.
+         */
+        bool mAutoFlush;
 
         enum
         {

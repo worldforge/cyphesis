@@ -48,7 +48,6 @@ void Link::send(const Operation & op) const
         }
 
         m_encoder->streamObjectsMessage(op);
-        m_commSocket.flush();
     }
 }
 
@@ -64,7 +63,6 @@ void Link::send(const OpVector& opVector) const
 
             m_encoder->streamObjectsMessage(op);
         }
-        m_commSocket.flush();
     }
 }
 

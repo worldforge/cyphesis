@@ -22,31 +22,66 @@
 #include <Atlas/Bridge.h>
 #include <Atlas/Message/Element.h>
 
-class Sink : public Atlas::Bridge
+struct Sink : public Atlas::Bridge
 {
-  public:
+    /**
+     * Set to true whenever we've gotten data.
+     */
+    bool got_data = false;
+
     ~Sink() override = default;
 
 
-    void streamBegin() override { };
-    void streamMessage() override { };
-    void streamEnd() override { };
+    void streamBegin() override
+    {};
 
-    void mapMapItem(std::string name) override { };
-    void mapListItem(std::string name) override { };
-    void mapIntItem(std::string name, Atlas::Message::IntType) override { };
-    void mapFloatItem(std::string name, Atlas::Message::FloatType) override { };
-    void mapStringItem(std::string name, std::string) override { };
-    void mapNoneItem(std::string name) override {};
-    void mapEnd() override { };
+    void streamMessage() override
+    {};
 
-    void listMapItem() override { };
-    void listListItem() override { };
-    void listIntItem(Atlas::Message::IntType) override { };
-    void listFloatItem(Atlas::Message::FloatType) override { };
-    void listStringItem(std::string) override { };
-    void listNoneItem() override {};
-    void listEnd() override { };
+    void streamEnd() override
+    {};
+
+    void mapMapItem(std::string name) override
+    { got_data = true; };
+
+    void mapListItem(std::string name) override
+    { got_data = true; };
+
+    void mapIntItem(std::string name, Atlas::Message::IntType) override
+    { got_data = true; };
+
+    void mapFloatItem(std::string name, Atlas::Message::FloatType) override
+    { got_data = true; };
+
+    void mapStringItem(std::string name, std::string) override
+    { got_data = true; };
+
+    void mapNoneItem(std::string name) override
+    { got_data = true; };
+
+    void mapEnd() override
+    { got_data = true; };
+
+    void listMapItem() override
+    { got_data = true; };
+
+    void listListItem() override
+    { got_data = true; };
+
+    void listIntItem(Atlas::Message::IntType) override
+    { got_data = true; };
+
+    void listFloatItem(Atlas::Message::FloatType) override
+    { got_data = true; };
+
+    void listStringItem(std::string) override
+    { got_data = true; };
+
+    void listNoneItem() override
+    { got_data = true; };
+
+    void listEnd() override
+    { got_data = true; };
 };
 
 #endif // TESTS_SINK_H
