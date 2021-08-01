@@ -139,7 +139,7 @@ void AccountConnectionintegration::setup()
     m_server = new ServerRouting(*m_world,
                                  "testrules",
                                  "testname",
-                                 "1", 1, "2", 2);
+                                 "2", 2);
     m_connection = new Connection(m_commSocket,
                                   *m_server,
                                   "test_addr",

@@ -40,7 +40,7 @@ extern bool restricted_flag;
 ///
 /// This class has one instance which is the core object in the server.
 /// It maintains list of all out-of-game (OOG) objects in the server.
-class ServerRouting : public Router
+class ServerRouting
 {
     protected:
         /// A shaker to generate a salt.
@@ -69,10 +69,9 @@ class ServerRouting : public Router
         ServerRouting(BaseWorld& wrld,
                       std::string ruleset,
                       std::string name,
-                      const std::string& id, long intId,
                       const std::string& lId, long lIntId);
 
-        ~ServerRouting() override;
+        ~ServerRouting();
 
         void disconnectAllConnections();
 
@@ -139,13 +138,9 @@ class ServerRouting : public Router
 
         Account* getAccountByName(const std::string& username);
 
-        void addToMessage(Atlas::Message::MapType&) const override;
+        void addToMessage(Atlas::Message::MapType&) const;
 
-        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const override;
-
-        void externalOperation(const Operation& op, Link&) override;
-
-        void operation(const Operation&, OpVector&) override;
+        void addToEntity(const Atlas::Objects::Entity::RootEntity&) const;
 
         /**
          * Performs dispatch of any queues operations.

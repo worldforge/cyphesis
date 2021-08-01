@@ -9,8 +9,7 @@
 
 #ifndef STUB_ServerRouting_ServerRouting
 //#define STUB_ServerRouting_ServerRouting
-   ServerRouting::ServerRouting(BaseWorld& wrld, std::string ruleset, std::string name, const std::string& id, long intId, const std::string& lId, long lIntId)
-    : Router(wrld, ruleset, name, id, intId, lId, lIntId)
+   ServerRouting::ServerRouting(BaseWorld& wrld, std::string ruleset, std::string name, const std::string& lId, long lIntId)
   {
     
   }
@@ -87,22 +86,6 @@
     
   }
 #endif //STUB_ServerRouting_addToEntity
-
-#ifndef STUB_ServerRouting_externalOperation
-//#define STUB_ServerRouting_externalOperation
-  void ServerRouting::externalOperation(const Operation& op, Link&)
-  {
-    
-  }
-#endif //STUB_ServerRouting_externalOperation
-
-#ifndef STUB_ServerRouting_operation
-//#define STUB_ServerRouting_operation
-  void ServerRouting::operation(const Operation&, OpVector&)
-  {
-    
-  }
-#endif //STUB_ServerRouting_operation
 
 #ifndef STUB_ServerRouting_dispatch
 //#define STUB_ServerRouting_dispatch

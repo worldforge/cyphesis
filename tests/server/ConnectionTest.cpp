@@ -183,7 +183,7 @@ void Connectiontest::setup()
     Router_error_called = false;
 
     m_server = new ServerRouting(*(BaseWorld*) 0, "noruleset", "unittesting",
-                                 "1", 1, "2", 2);
+                                 "2", 2);
 
     m_tcc = new TestCommSocket();
     m_connection = new Connection(*m_tcc, *m_server, "addr", "3", 3);

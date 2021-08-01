@@ -113,6 +113,14 @@
   }
 #endif //STUB_CyPy_Point3D_number_subtract
 
+#ifndef STUB_CyPy_Point3D_iter
+//#define STUB_CyPy_Point3D_iter
+  Py::Object CyPy_Point3D::iter()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Point3D_iter
+
 #ifndef STUB_CyPy_Point3D_mag
 //#define STUB_CyPy_Point3D_mag
   Py::Object CyPy_Point3D::mag()

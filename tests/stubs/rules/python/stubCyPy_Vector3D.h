@@ -65,6 +65,14 @@
   }
 #endif //STUB_CyPy_Vector3D_repr
 
+#ifndef STUB_CyPy_Vector3D_iter
+//#define STUB_CyPy_Vector3D_iter
+  Py::Object CyPy_Vector3D::iter()
+  {
+    return *static_cast<Py::Object*>(nullptr);
+  }
+#endif //STUB_CyPy_Vector3D_iter
+
 #ifndef STUB_CyPy_Vector3D_rich_compare
 //#define STUB_CyPy_Vector3D_rich_compare
   Py::Object CyPy_Vector3D::rich_compare(const Py::Object&, int)

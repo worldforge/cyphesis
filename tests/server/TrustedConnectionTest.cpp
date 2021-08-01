@@ -123,7 +123,7 @@ int main()
     // Entity & e = world.m_gameWorld;
 
     ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",
-                         "1", 1, "2", 2);
+                         "2", 2);
 
     TestCommSocket tcc{};
     TestConnection tc(tcc, server, "addr", "3", 3);

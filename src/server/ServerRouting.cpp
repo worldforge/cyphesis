@@ -48,9 +48,7 @@ BOOL_OPTION(restricted_flag, false, CYPHESIS, "restricted",
 ServerRouting::ServerRouting(BaseWorld& wrld,
                              std::string ruleset,
                              std::string name,
-                             const std::string& id, long intId,
                              const std::string& lId, long lIntId) :
-        Router(id, intId),
         m_svrRuleset(std::move(ruleset)),
         m_svrName(std::move(name)),
         m_lobby(new Lobby(*this, lId, lIntId)),
@@ -182,16 +180,6 @@ void ServerRouting::addToEntity(const RootEntity& ent) const
     ent->setAttr("assets", Atlas::Message::ListType{"file://" + assets_directory});
 
     // We could add all sorts of stats here, but I don't know exactly what yet.
-}
-
-void ServerRouting::externalOperation(const Operation& op, Link&)
-{
-    //TODO: should this really be a router?
-}
-
-void ServerRouting::operation(const Operation&, OpVector&)
-{
-    //TODO: should this really be a router?
 }
 
 size_t ServerRouting::dispatch(size_t numberOfOps)

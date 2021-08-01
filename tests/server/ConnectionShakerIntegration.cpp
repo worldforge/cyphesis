@@ -83,7 +83,6 @@ void ConnectionShakerintegration::setup()
     m_server = new ServerRouting(*(BaseWorld*)0,
                                  "b88aa6d3-44b4-40bd-bfa9-8db00045bdc0",
                                  "0f1fc7cb-5ab1-45c1-b0d3-ae49205ea437",
-                                 compose("%1", m_id_counter), m_id_counter++,
                                  compose("%1", m_id_counter), m_id_counter++);
     m_connection = new Connection(*(CommSocket*)0,
                                   *m_server,

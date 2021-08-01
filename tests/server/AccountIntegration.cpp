@@ -212,7 +212,7 @@ void Accountintegration::setup()
     m_world = new WorldRouter(m_rootEntity, *m_eb, []() { return std::chrono::milliseconds(0); });
 
     m_server = new ServerRouting(*m_world, "noruleset", "unittesting",
-                                 "1", 1, "2", 2);
+                                 "2", 2);
 
     m_tc = new TestCommSocket();
     m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);

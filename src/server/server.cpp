@@ -501,10 +501,10 @@ namespace {
 
             // This ID is currently generated every time, but should perhaps be
             // persistent in future.
-            std::string server_id, lobby_id;
-            long int_id, lobby_int_id;
+            std::string lobby_id;
+            long lobby_int_id;
 
-            if (((int_id = newId(server_id)) < 0) || ((lobby_int_id = newId(lobby_id)) < 0)) {
+            if ((lobby_int_id = newId(lobby_id)) < 0) {
                 log(CRITICAL, "Unable to get server IDs from Database");
                 return EXIT_DATABASE_ERROR;
             }
@@ -512,7 +512,7 @@ namespace {
             // Create the core serverRouting object, which stores central data,
             // and track objects
             ServerRouting serverRouting(world, ruleset_name,
-                                        server_name, server_id, int_id, lobby_id, lobby_int_id);
+                                        server_name, lobby_id, lobby_int_id);
 
             //Need to register the server routing instance with the Teleport property.
             TeleportProperty::s_serverRouting = &serverRouting;

@@ -90,10 +90,10 @@ int main()
 
     std::string ruleset = "test_rules";
     std::string server_name = "test_svr";
-    std::string server_id, lobby_id;
-    long int_id, lobby_int_id;
+    std::string lobby_id;
+    long  lobby_int_id;
 
-    if (((int_id = newId(server_id)) < 0) ||
+    if (
         ((lobby_int_id = newId(lobby_id)) < 0)) {
         std::cerr << "Unable to get server IDs newid";
         return 1;
@@ -101,13 +101,11 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
     }
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -120,7 +118,6 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -136,7 +133,6 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id, id2;
@@ -158,7 +154,6 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -171,7 +166,6 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -190,7 +184,6 @@ int main()
         Persistence persistence(database);
 
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -208,7 +201,6 @@ int main()
         DatabaseNull database;
         Persistence persistence(database);
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -224,7 +216,6 @@ int main()
         DatabaseNull database;
         Persistence persistence(database);
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         std::string id;
@@ -237,7 +228,6 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         Atlas::Message::MapType map;
@@ -249,7 +239,6 @@ int main()
 
     {
         ServerRouting server(world, ruleset, server_name,
-                             server_id, int_id,
                              lobby_id, lobby_int_id);
 
         Atlas::Objects::Entity::Anonymous ent;
