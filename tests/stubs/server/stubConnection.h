@@ -65,13 +65,13 @@
   }
 #endif //STUB_Connection_setPossessionEnabled
 
-#ifndef STUB_Connection_addObject
-//#define STUB_Connection_addObject
-  void Connection::addObject(Router* obj)
+#ifndef STUB_Connection_addRouter
+//#define STUB_Connection_addRouter
+  void Connection::addRouter(Router* obj)
   {
     
   }
-#endif //STUB_Connection_addObject
+#endif //STUB_Connection_addRouter
 
 #ifndef STUB_Connection_addConnectableRouter
 //#define STUB_Connection_addConnectableRouter
@@ -81,13 +81,13 @@
   }
 #endif //STUB_Connection_addConnectableRouter
 
-#ifndef STUB_Connection_removeObject
-//#define STUB_Connection_removeObject
-  void Connection::removeObject(long id)
+#ifndef STUB_Connection_removeRouter
+//#define STUB_Connection_removeRouter
+  void Connection::removeRouter(long id)
   {
     
   }
-#endif //STUB_Connection_removeObject
+#endif //STUB_Connection_removeRouter
 
 #ifndef STUB_Connection_externalOperation
 //#define STUB_Connection_externalOperation

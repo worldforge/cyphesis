@@ -127,7 +127,7 @@ void Connection::disconnectObject(ConnectableRouter* router,
     m_server.getLobby().removeAccount(router);
     router->setConnection(nullptr);
     m_connectableRouters.erase(router->getIntId());
-    removeObject(router->getIntId());
+    removeRouter(router->getIntId());
 }
 
 void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
@@ -147,22 +147,22 @@ void Connection::setPossessionEnabled(bool enabled, const std::string& routerId)
 }
 
 
-void Connection::addObject(Router* obj)
+void Connection::addRouter(Router* obj)
 {
-    m_objects[obj->getIntId()].router = obj;
+    m_routers[obj->getIntId()].router = obj;
 }
 
 void Connection::addConnectableRouter(ConnectableRouter* obj)
 {
     obj->setConnection(this);
-    addObject(obj);
+    addRouter(obj);
     m_connectableRouters[obj->getIntId()] = obj;
 }
 
 
-void Connection::removeObject(long id)
+void Connection::removeRouter(long id)
 {
-    m_objects.erase(id);
+    m_routers.erase(id);
 }
 
 int Connection::verifyCredentials(const Account& account,
@@ -211,7 +211,7 @@ size_t Connection::dispatch(size_t numberOfOps)
         }
     }
 
-    for (auto& entry: m_objects) {
+    for (auto& entry: m_routers) {
         if (!entry.second.opsQueue.empty()) {
             rmt_ScopedCPUSample(dispatch_externalOperations, 0)
             size_t processedOps = 0;
@@ -247,10 +247,10 @@ void Connection::externalOperation(const Operation& op, Link& link)
     if (op->isDefaultFrom()) {
         m_operationsQueue.emplace_back(op);
     } else {
-        const std::string& from = op->getFrom();
+        auto& from = op->getFrom();
         debug_print("send on to " << from)
-        auto I = m_objects.find(integerId(from));
-        if (I == m_objects.end()) {
+        auto I = m_routers.find(integerId(from));
+        if (I == m_routers.end()) {
             sendError(op, String::compose("Client \"%1\" op from \"%2\" is from non-existent object.",
                                           op->getParent(), from), from);
             return;
@@ -348,7 +348,7 @@ void Connection::LoginOperation(const Operation& op, OpVector& res)
 void Connection::CreateOperation(const Operation& op, OpVector& res)
 {
     debug_print("Got create op")
-    if (!m_objects.empty()) {
+    if (!m_routers.empty()) {
         clientError(op, "This connection is already logged in", res);
         return;
     }

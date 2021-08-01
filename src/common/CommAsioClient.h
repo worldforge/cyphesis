@@ -74,11 +74,6 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
             mAutoFlush = autoFlush;
         }
 
-        /**
-         * Controls how many ops should be emitted per call to dispatch.
-         */
-        int mMaxOpsPerDispatch;
-
     protected:
         typename ProtocolT::socket mSocket;
 
@@ -134,8 +129,6 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
                 read_buffer_size = 16384
         };
 
-        /// \brief Queue of operations that have been decoded by not dispatched.
-        DispatchQueue m_opQueue;
         /// \brief Atlas codec that handles encoding and decoding traffic.
         std::unique_ptr<Atlas::Codec> m_codec;
         /// \brief high level encoder passes data to the codec for transmission.
@@ -151,8 +144,6 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
 
         void write();
 
-        void dispatch();
-
         void startNegotiation();
 
         /// \brief Handle socket data related to codec negotiation.
@@ -162,9 +153,9 @@ class CommAsioClient : public Atlas::Objects::ObjectsDecoder,
 
         void negotiate_write();
 
-        int operation(const Atlas::Objects::Operation::RootOperation&);
+        void externalOperation(Atlas::Objects::Operation::RootOperation);
 
-        void objectArrived(const Atlas::Objects::Root& obj) override;
+        void objectArrived(Atlas::Objects::Root obj) override;
 };
 
 #endif /* COMMASIOCLIENT_H_ */

@@ -131,7 +131,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
             m_minds.erase(mindPtr->getEntity()->getIntId());
         });
         mind->linkUp(m_connection);
-        m_connection->addObject(mind.get());
+        m_connection->addRouter(mind.get());
 
         //Inform the client about the mind.
         Info mindInfo{};
@@ -193,7 +193,7 @@ void Account::removeMindFromEntity(ExternalMind* mind)
 {
     //Delete any mind attached to this character
     if (m_connection) {
-        m_connection->removeObject(mind->getIntId());
+        m_connection->removeRouter(mind->getIntId());
     } else {
         log(WARNING, "Account still had minds even after connection had been shut down.");
     }

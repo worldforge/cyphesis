@@ -49,19 +49,18 @@ template<class ProtocolT>
 CommAsioClient<ProtocolT>::CommAsioClient(std::string name,
                                           boost::asio::io_context& io_context,
                                           const Atlas::Objects::Factories& factories) :
-    ObjectsDecoder(factories),
-    CommSocket(io_context),
-    mMaxOpsPerDispatch(1),
-    mSocket(io_context),
-    mWriteBuffer(new boost::asio::streambuf()),
-    mSendBuffer(new boost::asio::streambuf()),
-    mInStream(&mReadBuffer),
-    mOutStream(mWriteBuffer.get()),
-    mNegotiateTimer(io_context, std::chrono::seconds(1)),
-    mIsSending(false),
-    mShouldSend(false),
-    mAutoFlush(false),
-    mName(std::move(name))
+        ObjectsDecoder(factories),
+        CommSocket(io_context),
+        mSocket(io_context),
+        mWriteBuffer(new boost::asio::streambuf()),
+        mSendBuffer(new boost::asio::streambuf()),
+        mInStream(&mReadBuffer),
+        mOutStream(mWriteBuffer.get()),
+        mNegotiateTimer(io_context, std::chrono::seconds(1)),
+        mIsSending(false),
+        mShouldSend(false),
+        mAutoFlush(false),
+        mName(std::move(name))
 {
 }
 
@@ -119,7 +118,6 @@ void CommAsioClient<ProtocolT>::do_read()
                                     rmt_ScopedCPUSample(read, 0)
                                     mReadBuffer.commit(length);
                                     m_codec->poll();
-                                    this->dispatch();
                                     if (m_active) {
                                         //By calling do_read again we make sure that the instance
                                         //doesn't go out of scope ("shared_from this"). As soon as that
@@ -330,40 +328,15 @@ int CommAsioClient<ProtocolT>::negotiate()
 }
 
 template<class ProtocolT>
-int CommAsioClient<ProtocolT>::operation(
-    const Atlas::Objects::Operation::RootOperation& op)
+void CommAsioClient<ProtocolT>::externalOperation(Atlas::Objects::Operation::RootOperation op)
 {
     assert(m_link != 0);
+    //TODO: handle the link saying that it can't accept any more ops for now. We need this for throttling.
     m_link->externalOperation(op, *m_link);
-    return 0;
 }
 
 template<class ProtocolT>
-void CommAsioClient<ProtocolT>::dispatch()
-{
-
-    if (!m_opQueue.empty()) {
-        auto self(this->shared_from_this());
-        m_io_context.post([this, self]() {
-            rmt_ScopedCPUSample(CommAsioClient_dispatch, 0)
-            int i = 0;
-            while (!m_opQueue.empty() && i < mMaxOpsPerDispatch) {
-                rmt_ScopedCPUSample(CommAsioClient_operation, 0)
-                auto op = std::move(m_opQueue.front());
-                m_opQueue.pop_front();
-                operation(op);
-                ++i;
-            }
-            if (!m_opQueue.empty()) {
-                dispatch();
-            }
-
-        });
-    }
-}
-
-template<class ProtocolT>
-void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
+void CommAsioClient<ProtocolT>::objectArrived(Atlas::Objects::Root obj)
 {
     if (comm_asio_client_debug_flag) {
         std::stringstream debugStream;
@@ -376,22 +349,19 @@ void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
         std::cerr << "received: " << debugStream.str() << std::endl << std::flush;
     }
 
-    Atlas::Objects::Operation::RootOperation op =
-        Atlas::Objects::smart_dynamic_cast<
-            Atlas::Objects::Operation::RootOperation>(obj);
+    Atlas::Objects::Operation::RootOperation op = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Operation::RootOperation>(obj);
     if (!op.isValid()) {
         log(ERROR,
             String::compose("Invalid object of type \"%1\" with parent "
                             "\"%2\" arrived from client at '%3'", obj->getObjtype(),
                             obj->getParent(), socketName(mSocket)));
-        return;
+    } else {
+        externalOperation(std::move(op));
     }
-    m_opQueue.emplace_back(std::move(op));
 }
 
 template<class ProtocolT>
-int CommAsioClient<ProtocolT>::send(
-    const Atlas::Objects::Operation::RootOperation& op)
+int CommAsioClient<ProtocolT>::send(const Atlas::Objects::Operation::RootOperation& op)
 {
     if (!mSocket.is_open()) {
         log(ERROR, "Writing to closed client");

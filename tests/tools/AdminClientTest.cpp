@@ -314,7 +314,7 @@ void AtlasStreamClient::output(const Element & item, size_t depth) const
 {
 }
 
-void AtlasStreamClient::objectArrived(const Root & obj)
+void AtlasStreamClient::objectArrived(Root obj)
 {
 }
 

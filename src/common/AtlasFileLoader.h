@@ -41,7 +41,7 @@ class AtlasFileLoader : public Atlas::Objects::ObjectsDecoder
 
         std::string m_filename;
 
-        void objectArrived(const Atlas::Objects::Root& obj) override;
+        void objectArrived(Atlas::Objects::Root obj) override;
 
     public:
         AtlasFileLoader(const Atlas::Objects::Factories& factories,

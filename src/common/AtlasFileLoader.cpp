@@ -30,7 +30,7 @@
 using Atlas::Objects::Root;
 
 /// \brief Called from the base class when a complete message has been decoded
-void AtlasFileLoader::objectArrived(const Root& obj)
+void AtlasFileLoader::objectArrived(Root obj)
 {
     if (obj->isDefaultId()) {
         log(ERROR, String::compose("Object without ID read from file %1", m_filename));
@@ -43,7 +43,7 @@ void AtlasFileLoader::objectArrived(const Root& obj)
     if (m_messages.find(id) != m_messages.end()) {
         log(WARNING, String::compose("Duplicate object ID \"%1\" loaded from file %2.", id, m_filename));
     }
-    m_messages[id] = obj;
+    m_messages[id] = std::move(obj);
     ++m_count;
 }
 

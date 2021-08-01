@@ -750,7 +750,6 @@ class Roam(Goal):
             self.set_new_target(me, move_me_goal)
 
     def set_new_target(self, me, move_me_goal):
-        # print("setting new target")
         waypoint_name = self.list[randint(0, self.count - 1)]
         waypoint = me.get_knowledge("location", waypoint_name)
 

@@ -86,7 +86,7 @@ struct TestDecoder : public Atlas::Objects::ObjectsDecoder
             ObjectsDecoder(factories)
     {}
 
-    void objectArrived(const Atlas::Objects::Root& obj) override
+    void objectArrived(Atlas::Objects::Root obj) override
     {
         m_obj = obj;
     }
@@ -176,7 +176,7 @@ void ConnectionCreatorintegration::setup()
     m_creator->setType(m_creatorType);
     m_world->addEntity(m_creator, m_gw);
 
-    m_connection->addObject(m_creator.get());
+    m_connection->addRouter(m_creator.get());
 
 }
 
@@ -205,7 +205,7 @@ void ConnectionCreatorintegration::test_external_op()
     // except that we assume that Creator was set up linked.
 
     AdminMind mind("1", 1, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     mind.linkUp(m_connection);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
@@ -233,7 +233,7 @@ void ConnectionCreatorintegration::test_external_op_override()
     // except that we assume that Creator was set up linked.
 
     AdminMind mind("1", 1, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     mind.linkUp(m_connection);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
@@ -260,7 +260,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     // shortcutting the world.
 
     AdminMind mind("1", 1, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     mind.linkUp(m_connection);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
@@ -293,7 +293,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // shortcutting the world.
 
     AdminMind mind("1", 1, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     mind.linkUp(m_connection);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 

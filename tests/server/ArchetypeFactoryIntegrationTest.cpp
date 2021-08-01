@@ -69,7 +69,7 @@ Atlas::Objects::Root fromXml(const std::string& xml)
         bool m_check;
         Atlas::Objects::Root m_obj;
 
-        void objectArrived(const Atlas::Objects::Root& obj) override
+        void objectArrived(Atlas::Objects::Root obj) override
         {
             m_check = true;
             m_obj = obj;

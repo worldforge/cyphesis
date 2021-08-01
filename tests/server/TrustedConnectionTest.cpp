@@ -102,17 +102,17 @@ class TestConnection : public TrustedConnection {
     }
 
     size_t numObjects() const {
-        return m_objects.size();
+        return m_routers.size();
     }
 
-    const RouterMap & getObjects() const {
-        return m_objects;
+    const std::map<long, RouterWithQueue> & getObjects() const {
+        return m_routers;
     }
 
     void removeObject(Router * obj) {
-        RouterMap::iterator I = m_objects.find(obj->getIntId());
-        if (I != m_objects.end()) {
-            m_objects.erase(I);
+        auto I = m_routers.find(obj->getIntId());
+        if (I != m_routers.end()) {
+            m_routers.erase(I);
         }
     }
 };

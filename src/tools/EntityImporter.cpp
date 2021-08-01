@@ -44,10 +44,10 @@ namespace {
     class ObjectDecoder : public Atlas::Objects::ObjectsDecoder
     {
         private:
-            void objectArrived(const Atlas::Objects::Root& obj) override
+            void objectArrived(Atlas::Objects::Root obj) override
             {
                 m_check = true;
-                m_obj = obj;
+                m_obj = std::move(obj);
             }
 
             bool m_check;

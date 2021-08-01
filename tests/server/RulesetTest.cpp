@@ -418,7 +418,7 @@ AtlasFileLoader::~AtlasFileLoader()
 {
 }
 
-void AtlasFileLoader::objectArrived(const Root & obj)
+void AtlasFileLoader::objectArrived(Root obj)
 {
 }
 

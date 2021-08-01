@@ -47,8 +47,6 @@ struct RouterWithQueue
     std::deque<Operation> opsQueue;
 };
 
-typedef std::map<long, RouterWithQueue> RouterMap;
-
 /// \brief Class representing connections from a client at the Atlas level.
 ///
 /// This is the first point of dispatch for any operation from the client.
@@ -62,14 +60,17 @@ class Connection : public Link, virtual public sigc::trackable
     protected:
 
         /**
-         * A queue of incoming ops.
+         * A queue of incoming ops that aren't from a specific mind.
          * Entries are put here by "externalOperation" and processed by calls to "dispatch".
          */
         std::deque<Operation> m_operationsQueue;
-        RouterMap m_objects;
+        std::map<long, RouterWithQueue> m_routers;
 
         std::map<long, ConnectableRouter*> m_connectableRouters;
 
+        /**
+         * Keeps track of any routers that have marked themselves as available for "possession".
+         */
         std::list<std::string> m_possessionRouters;
 
         Account* addNewAccount(const std::string& account,
@@ -95,8 +96,8 @@ class Connection : public Link, virtual public sigc::trackable
 
         ~Connection() override;
 
-        RouterMap& objects()
-        { return m_objects; }
+        std::map<long, RouterWithQueue>& objects()
+        { return m_routers; }
 
         /**
          * Turns on and off possession ability for the specified router id.
@@ -107,11 +108,11 @@ class Connection : public Link, virtual public sigc::trackable
          */
         void setPossessionEnabled(bool enabled, const std::string& routerId);
 
-        void addObject(Router* obj);
+        void addRouter(Router* obj);
 
         void addConnectableRouter(ConnectableRouter* obj);
 
-        void removeObject(long id);
+        void removeRouter(long id);
 
         void externalOperation(const Operation& op, Link&) override;
 
@@ -126,8 +127,12 @@ class Connection : public Link, virtual public sigc::trackable
         virtual void GetOperation(const Operation&, OpVector&);
 
         /**
-         * Dispatches incoming ops.
-         * @param numberOfOps
+         * Dispatches incoming ops into the system.
+         *
+         * All routers can receive "external" ops, i.e. ops that are sent from the client on the other side.
+         * We don't process these ops directly, but instead put them in a queue, and then process them in a controlled
+         * fashion by regular calls to this method.
+         * @param numberOfOps The max number of ops to process per external client per call.
          * @return
          */
         size_t dispatch(size_t numberOfOps);

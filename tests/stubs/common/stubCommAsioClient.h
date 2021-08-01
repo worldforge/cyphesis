@@ -98,15 +98,6 @@
   }
 #endif //STUB_CommAsioClient_write
 
-#ifndef STUB_CommAsioClient_dispatch
-//#define STUB_CommAsioClient_dispatch
-  template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::dispatch()
-  {
-    
-  }
-#endif //STUB_CommAsioClient_dispatch
-
 #ifndef STUB_CommAsioClient_startNegotiation
 //#define STUB_CommAsioClient_startNegotiation
   template <typename ProtocolT>
@@ -143,19 +134,19 @@
   }
 #endif //STUB_CommAsioClient_negotiate_write
 
-#ifndef STUB_CommAsioClient_operation
-//#define STUB_CommAsioClient_operation
+#ifndef STUB_CommAsioClient_externalOperation
+//#define STUB_CommAsioClient_externalOperation
   template <typename ProtocolT>
-  int CommAsioClient<ProtocolT>::operation(const Atlas::Objects::Operation::RootOperation&)
+  void CommAsioClient<ProtocolT>::externalOperation(Atlas::Objects::Operation::RootOperation)
   {
-    return 0;
+    
   }
-#endif //STUB_CommAsioClient_operation
+#endif //STUB_CommAsioClient_externalOperation
 
 #ifndef STUB_CommAsioClient_objectArrived
 //#define STUB_CommAsioClient_objectArrived
   template <typename ProtocolT>
-  void CommAsioClient<ProtocolT>::objectArrived(const Atlas::Objects::Root& obj)
+  void CommAsioClient<ProtocolT>::objectArrived(Atlas::Objects::Root obj)
   {
     
   }

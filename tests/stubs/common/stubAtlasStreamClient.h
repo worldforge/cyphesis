@@ -190,7 +190,7 @@
 
 #ifndef STUB_AtlasStreamClient_objectArrived
 //#define STUB_AtlasStreamClient_objectArrived
-  void AtlasStreamClient::objectArrived(const Atlas::Objects::Root &)
+  void AtlasStreamClient::objectArrived(Atlas::Objects::Root)
   {
     
   }

@@ -133,7 +133,7 @@ class AtlasStreamClient : public Atlas::Objects::ObjectsDecoder
     int waitForLoginResponse();
     void dispatch();
 
-    void objectArrived(const Atlas::Objects::Root &) override;
+    void objectArrived(Atlas::Objects::Root) override;
 
     virtual void operation(const Atlas::Objects::Operation::RootOperation &);
 

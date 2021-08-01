@@ -83,7 +83,7 @@ struct TestDecoder : public Atlas::Objects::ObjectsDecoder
             ObjectsDecoder(factories)
     {}
 
-    void objectArrived(const Atlas::Objects::Root& obj) override
+    void objectArrived(Atlas::Objects::Root obj) override
     {
         m_obj = obj;
     }
@@ -170,7 +170,7 @@ void TrustedConnectionCreatorintegration::setup()
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
 
-    m_connection->addObject(m_creator.get());
+    m_connection->addRouter(m_creator.get());
     BaseWorld::instance().addEntity(m_creator, m_gw);
 
 }
@@ -199,7 +199,7 @@ void TrustedConnectionCreatorintegration::test_external_op()
     // except that we assume that Creator was set up linked.
 
     AdminMind mind("6", 6, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
 
@@ -227,7 +227,7 @@ void TrustedConnectionCreatorintegration::test_external_op_override()
     // except that we assume that Creator was set up linked.
 
     AdminMind mind("6", 6, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
 
@@ -254,7 +254,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     // shortcutting the world.
 
     AdminMind mind("6", 6, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
 
@@ -287,7 +287,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // shortcutting the world.
 
     AdminMind mind("6", 6, m_creator);
-    m_connection->addObject(&mind);
+    m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
 

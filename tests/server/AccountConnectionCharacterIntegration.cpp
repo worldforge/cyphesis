@@ -174,10 +174,10 @@ void AccountConnectionCharacterintegration::test_connect_existing()
     // Initial state is that the account already belongs to the connection,
     // but the character does not yet, as it is new.
 
-    m_connection->m_objects[m_account->getIntId()].router = m_account;
+    m_connection->m_routers[m_account->getIntId()].router = m_account;
 
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) ==
-                m_connection->m_objects.end())
+    ASSERT_TRUE(m_connection->m_routers.find(m_character->getIntId()) ==
+                m_connection->m_routers.end())
 
     ASSERT_NULL(m_character->getPropertyClassFixed<MindsProperty>())
 
@@ -226,9 +226,9 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     // Initial state is that the account already belongs to the connection,
     // and the character is linked up to another connection
 
-    m_connection->m_objects[m_account->getIntId()].router = m_account;
+    m_connection->m_routers[m_account->getIntId()].router = m_account;
     m_connection->m_connectableRouters[m_account->getIntId()] = m_account;
-    m_connection->m_objects[m_character->getIntId()].router = m_character.get();
+    m_connection->m_routers[m_character->getIntId()].router = m_character.get();
 
     Connection  other_connection(*(CommSocket*)0,
                          *m_server,
@@ -240,8 +240,8 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     m_character->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(&other_connection);
 
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
+    ASSERT_TRUE(m_connection->m_routers.find(m_character->getIntId()) !=
+                m_connection->m_routers.end())
     ASSERT_TRUE(mind.isLinked())
     ASSERT_TRUE(!mind.isLinkedTo(m_connection))
     ASSERT_TRUE(mind.isLinkedTo(&other_connection))
@@ -255,8 +255,8 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     ASSERT_TRUE(mind.isLinked())
     ASSERT_TRUE(!mind.isLinkedTo(m_connection))
     ASSERT_TRUE(mind.isLinkedTo(&other_connection))
-    ASSERT_TRUE(m_connection->m_objects.find(m_character->getIntId()) !=
-                m_connection->m_objects.end())
+    ASSERT_TRUE(m_connection->m_routers.find(m_character->getIntId()) !=
+                m_connection->m_routers.end())
 }
 
 

@@ -91,7 +91,7 @@ void PossessionAccount::enablePossession(OpVector& res)
 
 void PossessionAccount::operation(const Operation& op, OpVector& res)
 {
-    if (!op->isDefaultTo()) {
+    if (!op->isDefaultTo() || op->getTo() != getId()) {
         auto I = m_minds.find(op->getTo());
         if (I != m_minds.end()) {
             I->second->operation(op, res);
@@ -136,7 +136,7 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
             entry.second->operation(op, res);
         }
     } else {
-        log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount", op->getParent()));
+        log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount %2", op->getParent(), getId()));
     }
 }
 

@@ -296,7 +296,7 @@ void AtlasStreamClient::output(const Root& ent) const
 /// server
 ///
 /// @param obj Object that has arrived from the server
-void AtlasStreamClient::objectArrived(const Root& obj)
+void AtlasStreamClient::objectArrived(Root obj)
 {
     RootOperation op = Atlas::Objects::smart_dynamic_cast<RootOperation>(obj);
     if (!op.isValid()) {
@@ -315,7 +315,7 @@ void AtlasStreamClient::objectArrived(const Root& obj)
         return;
     }
 
-    mOps.push_back(op);
+    mOps.push_back(std::move(op));
 }
 
 void AtlasStreamClient::dispatch()

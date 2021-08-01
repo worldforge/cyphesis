@@ -9,7 +9,7 @@
 
 #ifndef STUB_AtlasFileLoader_objectArrived
 //#define STUB_AtlasFileLoader_objectArrived
-  void AtlasFileLoader::objectArrived(const Atlas::Objects::Root& obj)
+  void AtlasFileLoader::objectArrived(Atlas::Objects::Root obj)
   {
     
   }
