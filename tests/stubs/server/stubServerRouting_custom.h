@@ -14,18 +14,18 @@ ServerRouting::ServerRouting(BaseWorld& wrld, Persistence& persistence, std::str
 
 #endif //STUB_ServerRouting_ServerRouting
 
-#ifndef STUB_ServerRouting_addObject
-#define STUB_ServerRouting_addObject
-void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
+#ifndef STUB_ServerRouting_addRouter
+#define STUB_ServerRouting_addRouter
+void ServerRouting::addRouter(std::unique_ptr<ConnectableRouter> obj)
 {
-    m_objects[obj->getIntId()] = std::move(obj);
+    m_routers[obj->getIntId()] = std::move(obj);
 }
-#endif //STUB_ServerRouting_addObject
+#endif //STUB_ServerRouting_addRouter
 
 #ifndef STUB_ServerRouting_addAccount
 #define STUB_ServerRouting_addAccount
 void ServerRouting::addAccount(std::unique_ptr<Account> a)
 {
-    addObject(std::move(a));
+    addRouter(std::move(a));
 }
 #endif //STUB_ServerRouting_addAccount

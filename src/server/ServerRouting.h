@@ -34,8 +34,6 @@ class Persistence;
 
 class Lobby;
 
-typedef std::map<long, std::unique_ptr<ConnectableRouter>> ConnectableRouterMap;
-
 extern bool restricted_flag;
 
 /// \brief ServerRouting represents the core of the server.
@@ -50,7 +48,7 @@ class ServerRouting
     private:
         /// A mapping of ID to object of all the OOG objects in the server.
         /// These are all owned by this instance.
-        ConnectableRouterMap m_objects;
+        std::map<long, std::unique_ptr<ConnectableRouter>> m_routers;
         /// A mapping of ID to object of all the accounts in the server.
         /// All of the accounts are aliases for ConnectableRouter base instances that exists in m_objects.
         std::map<std::string, Account*> m_accounts;
@@ -114,9 +112,9 @@ class ServerRouting
         { return m_shaker; }
 
         /// Accessor for OOG objects map.
-        const ConnectableRouterMap& getObjects() const
+        const std::map<long, std::unique_ptr<ConnectableRouter>>& getObjects() const
         {
-            return m_objects;
+            return m_routers;
         }
 
         const std::map<std::string, Account*>& getAccounts() const
@@ -132,11 +130,9 @@ class ServerRouting
         const std::string& getName() const
         { return m_svrName; }
 
-        void addObject(std::unique_ptr<ConnectableRouter> obj);
+        void addRouter(std::unique_ptr<ConnectableRouter> obj);
 
         void addAccount(std::unique_ptr<Account> a);
-
-        void delObject(ConnectableRouter* obj);
 
         ConnectableRouter* getObject(const std::string& id) const;
 
@@ -147,7 +143,7 @@ class ServerRouting
         void addToEntity(const Atlas::Objects::Entity::RootEntity&) const;
 
         /**
-         * Performs dispatch of any queues operations.
+         * Performs dispatch of any queued operations.
          * @param numberOfOps The max number of operations to dispatch per "actor".
          * @return The total number of dispatched operations.
          */

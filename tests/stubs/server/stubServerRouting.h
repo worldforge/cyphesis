@@ -31,13 +31,13 @@
   }
 #endif //STUB_ServerRouting_disconnectAllConnections
 
-#ifndef STUB_ServerRouting_addObject
-//#define STUB_ServerRouting_addObject
-  void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
+#ifndef STUB_ServerRouting_addRouter
+//#define STUB_ServerRouting_addRouter
+  void ServerRouting::addRouter(std::unique_ptr<ConnectableRouter> obj)
   {
     
   }
-#endif //STUB_ServerRouting_addObject
+#endif //STUB_ServerRouting_addRouter
 
 #ifndef STUB_ServerRouting_addAccount
 //#define STUB_ServerRouting_addAccount
@@ -46,14 +46,6 @@
     
   }
 #endif //STUB_ServerRouting_addAccount
-
-#ifndef STUB_ServerRouting_delObject
-//#define STUB_ServerRouting_delObject
-  void ServerRouting::delObject(ConnectableRouter* obj)
-  {
-    
-  }
-#endif //STUB_ServerRouting_delObject
 
 #ifndef STUB_ServerRouting_getObject
 //#define STUB_ServerRouting_getObject

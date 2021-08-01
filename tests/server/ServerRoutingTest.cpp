@@ -116,7 +116,7 @@ int main()
         int iid = newId(id);
         assert(iid >= 0);
 
-        server.addObject(std::make_unique<TestRouter>(id, iid));
+        server.addRouter(std::make_unique<TestRouter>(id, iid));
         assert(server.getObjects().size() == 1);
     }
 
@@ -131,10 +131,8 @@ int main()
         assert(iid >= 0);
 
         auto r = new TestRouter(id, iid);
-        server.addObject(std::unique_ptr<TestRouter>(r));
+        server.addRouter(std::unique_ptr<TestRouter>(r));
         assert(server.getObjects().size() == 1);
-        server.delObject(r);
-        assert(server.getObjects().size() == 0);
     }
 
     {
@@ -150,7 +148,7 @@ int main()
         newId(id2);
 
         ConnectableRouter* r = new TestRouter(id, iid);
-        server.addObject(std::unique_ptr<ConnectableRouter>(r));
+        server.addRouter(std::unique_ptr<ConnectableRouter>(r));
         assert(server.getObjects().size() == 1);
 
         ConnectableRouter* r2 = server.getObject(id);

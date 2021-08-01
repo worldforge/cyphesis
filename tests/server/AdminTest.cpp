@@ -501,7 +501,7 @@ void Admintest::test_LogoutOperation_known()
                               "c0e095f0-575c-477c-bafd-2055d6958d4d",
                               cid_str, cid);
 
-    m_server->addObject(std::unique_ptr<ConnectableRouter>(ac2));
+    m_server->addRouter(std::unique_ptr<ConnectableRouter>(ac2));
 
     ASSERT_EQUAL(m_server->getObject(cid_str), ac2);
 
@@ -531,7 +531,7 @@ void Admintest::test_LogoutOperation_other_but_unconnected()
                               "c0e095f0-575c-477c-bafd-2055d6958d4d",
                               cid_str, cid);
 
-    m_server->addObject(std::unique_ptr<ConnectableRouter>(ac2));
+    m_server->addRouter(std::unique_ptr<ConnectableRouter>(ac2));
 
     ASSERT_EQUAL(m_server->getObject(cid_str), ac2);
 
@@ -632,7 +632,7 @@ void Admintest::test_GetOperation_obj_OOG()
     std::string cid_str = String::compose("%1", cid);
     auto to = new TestObject(cid_str, cid);
 
-    m_server->addObject(std::unique_ptr<ConnectableRouter>(to));
+    m_server->addRouter(std::unique_ptr<ConnectableRouter>(to));
 
     Atlas::Objects::Operation::Get op;
     OpVector res;
@@ -1334,17 +1334,11 @@ int Ruleset::installRule(const std::string & class_name,
 #include "../stubs/server/stubRuleset.h"
 #include "../stubs/server/stubJuncture.h"
 
-#define STUB_ServerRouting_addObject
-void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
-{
-    m_objects[obj->getIntId()] = std::move(obj);
-}
-
 #define STUB_ServerRouting_getObject
 ConnectableRouter * ServerRouting::getObject(const std::string & id) const
 {
-    auto I = m_objects.find(integerId(id));
-    if (I == m_objects.end()) {
+    auto I = m_routers.find(integerId(id));
+    if (I == m_routers.end()) {
         return 0;
     } else {
         return I->second.get();

@@ -83,12 +83,12 @@ void ServerRouting::disconnectAllConnections()
 
 
 /// Add an OOG object to the server.
-void ServerRouting::addObject(std::unique_ptr<ConnectableRouter> obj)
+void ServerRouting::addRouter(std::unique_ptr<ConnectableRouter> obj)
 {
     assert(!obj->getId().empty());
     assert(integerId(obj->getId()) == obj->getIntId());
     assert(obj->getIntId() > 0);
-    m_objects[obj->getIntId()] = std::move(obj);
+    m_routers[obj->getIntId()] = std::move(obj);
 }
 
 /// Add an Account object to the server.
@@ -96,14 +96,9 @@ void ServerRouting::addAccount(std::unique_ptr<Account> a)
 {
     m_accounts[a->username()] = a.get();
     a->store();
-    addObject(std::move(a));
+    addRouter(std::move(a));
 }
 
-/// Remove an OOG object from the server.
-void ServerRouting::delObject(ConnectableRouter* obj)
-{
-    m_objects.erase(obj->getIntId());
-}
 
 /// \brief Find an object with the given id.
 ///
@@ -111,8 +106,8 @@ void ServerRouting::delObject(ConnectableRouter* obj)
 /// zero if no object with this id is present.
 ConnectableRouter* ServerRouting::getObject(const std::string& id) const
 {
-    auto I = m_objects.find(integerId(id));
-    if (I == m_objects.end()) {
+    auto I = m_routers.find(integerId(id));
+    if (I == m_routers.end()) {
         return nullptr;
     } else {
         return I->second.get();
@@ -134,7 +129,7 @@ Account* ServerRouting::getAccountByName(const std::string& username)
         auto account = m_persistence.getAccount(username);
         if (account) {
             auto J = m_accounts.emplace(username, account.get());
-            addObject(std::move(account));
+            addRouter(std::move(account));
             return J.first->second;
         }
     }

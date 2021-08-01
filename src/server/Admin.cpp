@@ -315,13 +315,15 @@ void Admin::CreateOperation(const Operation& op, OpVector& res)
             return;
         }
 
-        auto j = new Juncture(m_connection, junc_id, junc_iid);
-
-        m_connection->addConnectableRouter(j);
-        m_connection->m_server.addObject(std::unique_ptr<Juncture>(j));
+        auto juncture = std::make_unique<Juncture>(m_connection, junc_id, junc_iid);
 
         Anonymous info_arg;
-        j->addToEntity(info_arg);
+        juncture->addToEntity(info_arg);
+
+        m_connection->addConnectableRouter(juncture.get());
+        m_connection->m_server.addRouter(std::move(juncture));
+
+
 
         Info info;
         info->setTo(getId());
