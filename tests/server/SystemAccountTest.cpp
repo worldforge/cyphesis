@@ -81,9 +81,10 @@ void SystemAccounttest::setup()
                              m_id_counter++);
     m_world = new TestWorld(gw);
     m_server = new ServerRouting(*m_world,
+                                 *(Persistence*)nullptr,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
-                                 compose("%1", m_id_counter), m_id_counter++);
+                                 m_id_counter++);
     m_connection = new Connection(*(CommSocket*)0, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   compose("%1", m_id_counter), m_id_counter++);

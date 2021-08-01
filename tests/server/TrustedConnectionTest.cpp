@@ -122,8 +122,7 @@ int main()
     // WorldRouter world(SystemTime());
     // Entity & e = world.m_gameWorld;
 
-    ServerRouting server(*(BaseWorld*)0, "noruleset", "unittesting",
-                         "2", 2);
+    ServerRouting server(*(BaseWorld*)0, *(Persistence*)nullptr, "noruleset", "unittesting", 2);
 
     TestCommSocket tcc{};
     TestConnection tc(tcc, server, "addr", "3", 3);

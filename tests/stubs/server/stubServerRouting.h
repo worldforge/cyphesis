@@ -9,7 +9,7 @@
 
 #ifndef STUB_ServerRouting_ServerRouting
 //#define STUB_ServerRouting_ServerRouting
-   ServerRouting::ServerRouting(BaseWorld& wrld, std::string ruleset, std::string name, const std::string& lId, long lIntId)
+   ServerRouting::ServerRouting(BaseWorld& wrld, Persistence& persistence, std::string ruleset, std::string name, long lobbyId)
   {
     
   }

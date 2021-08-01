@@ -107,9 +107,10 @@ void AccountConnectionCharacterintegration::setup()
     m_world.reset();
     m_world.reset(new TestWorld(gw));
     m_server = new ServerRouting(*m_world,
+                                 *m_persistence,
                                  "989cfbbe-67e3-4571-858c-488b91e06e7d",
                                  "10658e5e-373b-4565-b34e-954b9223961e",
-                                 compose("%1", m_id_counter), m_id_counter++);
+                                 m_id_counter++);
     m_connection = new Connection(*(CommSocket*)0,
                                   *m_server,
                                   "a4754783-9909-476b-a418-6997477dff49",

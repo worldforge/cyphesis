@@ -100,13 +100,17 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -117,8 +121,10 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -132,8 +138,10 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id, id2;
         int iid = newId(id);
@@ -153,8 +161,9 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -165,8 +174,9 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -183,8 +193,8 @@ int main()
         DatabaseNull database;
         Persistence persistence(database);
 
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -200,8 +210,8 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -215,8 +225,8 @@ int main()
         stub_generate_accounts = true;
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         std::string id;
         int iid = newId(id);
@@ -227,8 +237,10 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         Atlas::Message::MapType map;
         server.addToMessage(map);
@@ -238,8 +250,10 @@ int main()
     }
 
     {
-        ServerRouting server(world, ruleset, server_name,
-                             lobby_id, lobby_int_id);
+        DatabaseNull database;
+        Persistence persistence(database);
+        ServerRouting server(world, persistence, ruleset, server_name,
+                             lobby_int_id);
 
         Atlas::Objects::Entity::Anonymous ent;
         server.addToEntity(ent);

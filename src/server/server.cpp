@@ -408,8 +408,9 @@ namespace {
 
             // Initialise the persistence subsystem.
             auto serverDatabase = createDatabase(*io_context);
+            auto& database = serverDatabase->database();
 
-            Persistence persistence(serverDatabase->database());
+            Persistence persistence(database);
             int dbstatus = persistence.init();
             if (dbstatus < 0) {
                 log(ERROR, "Error opening database.");
@@ -504,15 +505,18 @@ namespace {
             std::string lobby_id;
             long lobby_int_id;
 
-            if ((lobby_int_id = newId(lobby_id)) < 0) {
+            if ((lobby_int_id = database.newId(lobby_id)) < 0) {
                 log(CRITICAL, "Unable to get server IDs from Database");
                 return EXIT_DATABASE_ERROR;
             }
 
             // Create the core serverRouting object, which stores central data,
             // and track objects
-            ServerRouting serverRouting(world, ruleset_name,
-                                        server_name, lobby_id, lobby_int_id);
+            ServerRouting serverRouting(world,
+                                        persistence,
+                                        ruleset_name,
+                                        server_name,
+                                        lobby_int_id);
 
             //Need to register the server routing instance with the Teleport property.
             TeleportProperty::s_serverRouting = &serverRouting;

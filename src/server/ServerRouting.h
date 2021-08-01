@@ -30,6 +30,8 @@ class Account;
 
 class BaseWorld;
 
+class Persistence;
+
 class Lobby;
 
 typedef std::map<long, std::unique_ptr<ConnectableRouter>> ConnectableRouterMap;
@@ -65,11 +67,13 @@ class ServerRouting
     public:
         /// A reference to the World management object.
         BaseWorld& m_world;
+        Persistence& m_persistence;
 
         ServerRouting(BaseWorld& wrld,
+                      Persistence& persistence,
                       std::string ruleset,
                       std::string name,
-                      const std::string& lId, long lIntId);
+                      long lobbyId);
 
         ~ServerRouting();
 

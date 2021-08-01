@@ -137,9 +137,10 @@ void AccountConnectionintegration::setup()
     m_tlve = new Entity("0", 0);
     m_world = new SpawningTestWorld(m_tlve);
     m_server = new ServerRouting(*m_world,
+                                 *m_persistence,
                                  "testrules",
                                  "testname",
-                                 "2", 2);
+                                 2);
     m_connection = new Connection(m_commSocket,
                                   *m_server,
                                   "test_addr",

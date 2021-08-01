@@ -46,14 +46,16 @@ BOOL_OPTION(restricted_flag, false, CYPHESIS, "restricted",
 /// Requires a reference to the World management object, as well as the
 /// ruleset and server name. Implicitly creates the Lobby management object.
 ServerRouting::ServerRouting(BaseWorld& wrld,
+                             Persistence& persistence,
                              std::string ruleset,
                              std::string name,
-                             const std::string& lId, long lIntId) :
+                             long lobbyId) :
         m_svrRuleset(std::move(ruleset)),
         m_svrName(std::move(name)),
-        m_lobby(new Lobby(*this, lId, lIntId)),
+        m_lobby(new Lobby(*this, std::to_string(lobbyId), lobbyId)),
         m_numClients(0),
-        m_world(wrld)
+        m_world(wrld),
+        m_persistence(persistence)
 {
     Monitors& monitors = Monitors::instance();
     monitors.insert("server", "cyphesis");
@@ -129,7 +131,7 @@ Account* ServerRouting::getAccountByName(const std::string& username)
     if (I != m_accounts.end()) {
         return I->second;
     } else {
-        auto account = Persistence::instance().getAccount(username);
+        auto account = m_persistence.getAccount(username);
         if (account) {
             auto J = m_accounts.emplace(username, account.get());
             addObject(std::move(account));

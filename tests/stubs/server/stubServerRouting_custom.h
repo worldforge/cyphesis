@@ -5,9 +5,9 @@
 #ifndef STUB_ServerRouting_ServerRouting
 #define STUB_ServerRouting_ServerRouting
 
-ServerRouting::ServerRouting(BaseWorld& wrld, std::string ruleset, std::string name, const std::string& lId, long lIntId)
+ServerRouting::ServerRouting(BaseWorld& wrld, Persistence& persistence, std::string ruleset, std::string name, long lobbyId)
     : m_svrRuleset(ruleset), m_svrName(name),
-    m_lobby(new Lobby(*this, lId, lIntId)), m_numClients(0), m_world(wrld)
+    m_lobby(new Lobby(*this, std::to_string(lobbyId), lobbyId)), m_numClients(0), m_world(wrld), m_persistence(persistence)
 {
 
 }

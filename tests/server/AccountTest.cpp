@@ -402,9 +402,10 @@ void Accounttest::setup()
     m_world = new TestWorld(m_gw);
 
     m_server = new ServerRouting(*m_world,
+                                 *m_persistence,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
-                                 compose("%1", m_id_counter), m_id_counter++);
+                                 m_id_counter++);
     m_connection = new Connection(*(CommSocket*) 0, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   compose("%1", m_id_counter), m_id_counter++);
@@ -1282,13 +1283,15 @@ int main()
 #define STUB_ServerRouting_ServerRouting
 
 ServerRouting::ServerRouting(BaseWorld& wrld,
+                             Persistence& persistence,
                              std::string ruleset,
                              std::string name,
-                             const std::string& lId, long lIntId) :
+                             long lIntId) :
         m_svrRuleset(ruleset), m_svrName(name),
-        m_lobby(new Lobby(*this, lId, lIntId)),
+        m_lobby(new Lobby(*this, std::to_string(lIntId), lIntId)),
         m_numClients(0),
-        m_world(wrld)
+        m_world(wrld),
+        m_persistence(persistence)
 {
 }
 

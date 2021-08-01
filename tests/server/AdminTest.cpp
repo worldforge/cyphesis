@@ -31,6 +31,7 @@
 #include "server/Connection.h"
 #include "server/Ruleset.h"
 #include "server/ServerRouting.h"
+#include "server/Persistence.h"
 
 #include "rules/simulation/Entity.h"
 
@@ -40,6 +41,7 @@
 #include "common/Inheritance.h"
 #include "common/operations/Monitor.h"
 #include "../TestPropertyManager.h"
+#include "../DatabaseNull.h"
 
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
@@ -324,9 +326,10 @@ void Admintest::setup()
     m_world = new TestWorld(m_gw);
 
     m_server = new ServerRouting(*m_world,
+                                 *(Persistence*)nullptr,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
-                                 compose("%1", m_id_counter), m_id_counter++);
+                                 m_id_counter++);
     m_connection = new Connection(*(CommSocket*) nullptr, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   compose("%1", m_id_counter), m_id_counter++);
@@ -1275,6 +1278,7 @@ int main()
 #include <cstdio>
 #include "../stubs/common/stubProperty.h"
 #include "../stubs/common/stubPropertyManager.h"
+#include "../stubs/server/stubPersistence.h"
 
 #define STUB_Account_operation
 void Account::operation(const Operation & op, OpVector & res)

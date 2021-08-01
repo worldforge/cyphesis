@@ -182,8 +182,11 @@ void Connectiontest::setup()
     m_inheritance = new Inheritance(factories);
     Router_error_called = false;
 
-    m_server = new ServerRouting(*(BaseWorld*) 0, "noruleset", "unittesting",
-                                 "2", 2);
+    m_server = new ServerRouting(*(BaseWorld*) 0,
+                                 *(Persistence*)nullptr,
+                                 "noruleset",
+                                 "unittesting",
+                                 2);
 
     m_tcc = new TestCommSocket();
     m_connection = new Connection(*m_tcc, *m_server, "addr", "3", 3);

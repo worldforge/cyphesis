@@ -95,8 +95,8 @@ class TestPeer : public Peer
 
 int main()
 {
-    ServerRouting server(*(BaseWorld*)0, "deeds", "test_server",
-                         "2", 2);
+    ServerRouting server(*(BaseWorld*)0, *(Persistence*)nullptr, "deeds", "test_server",
+                         2);
 
     boost::asio::io_context comm_server;
     {

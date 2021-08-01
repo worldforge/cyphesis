@@ -162,9 +162,10 @@ void ConnectionCreatorintegration::setup()
         ConnectionCreatorintegration::BaseWorld_message_called(op, ent);
     };
     m_server = new ServerRouting(*m_world,
+                                 *(Persistence*)nullptr,
                                  "dd7452be-0137-4664-b90e-77dfb395ac39",
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
-                                 compose("%1", m_id_counter), m_id_counter++);
+                                 m_id_counter++);
     m_commSocket = new StubSocket(io_context);
     m_connection = new Connection(*m_commSocket,
                                   *m_server,
