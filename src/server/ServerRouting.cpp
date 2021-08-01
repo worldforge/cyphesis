@@ -181,10 +181,14 @@ void ServerRouting::addToEntity(const RootEntity& ent) const
 
 size_t ServerRouting::dispatch(size_t numberOfOps)
 {
+    size_t queuedOps = 0;
     size_t processed = 0;
     for (auto& entry: m_connections) {
         processed += entry->dispatch(numberOfOps);
+        queuedOps += entry->queuedOps();
     }
+    //This should not be a large number, and it should differ widely between frames. We put it here to help with finding bottle necks though.
+    Monitors::instance().insert("queuedExternalOps", (Atlas::Message::IntType) queuedOps);
     return processed;
 }
 

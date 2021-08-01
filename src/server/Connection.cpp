@@ -239,6 +239,15 @@ size_t Connection::dispatch(size_t numberOfOps)
     return processed;
 }
 
+size_t Connection::queuedOps() const {
+    size_t counter = m_operationsQueue.size();
+    for (auto& entry : m_routers) {
+        counter += entry.second.opsQueue.size();
+    }
+    return counter;
+}
+
+
 void Connection::externalOperation(const Operation& op, Link& link)
 {
     debug_print("Connection::externalOperation")

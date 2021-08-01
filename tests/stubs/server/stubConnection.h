@@ -145,5 +145,13 @@
   }
 #endif //STUB_Connection_dispatch
 
+#ifndef STUB_Connection_queuedOps
+//#define STUB_Connection_queuedOps
+  size_t Connection::queuedOps() const
+  {
+    return 0;
+  }
+#endif //STUB_Connection_queuedOps
+
 
 #endif

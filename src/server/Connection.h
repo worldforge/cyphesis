@@ -81,9 +81,9 @@ class Connection : public Link, virtual public sigc::trackable
                               const std::string& event);
 
         virtual std::unique_ptr<Account> newAccount(const std::string& type,
-                                    const std::string& username,
-                                    const std::string& passwd,
-                                    const std::string& id, long intId);
+                                                    const std::string& username,
+                                                    const std::string& passwd,
+                                                    const std::string& id, long intId);
 
         virtual int verifyCredentials(const Account&,
                                       const Atlas::Objects::Root&) const;
@@ -136,6 +136,12 @@ class Connection : public Link, virtual public sigc::trackable
          * @return
          */
         size_t dispatch(size_t numberOfOps);
+
+        /**
+         * Gets the amount of currently queued operations, for both the connection itself and any attached routers.
+         * @return
+         */
+        size_t queuedOps() const;
 
         friend class Connectiontest;
 
