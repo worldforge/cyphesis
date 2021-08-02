@@ -30,14 +30,29 @@ Monitors::Monitors() = default;
 Monitors::~Monitors() = default;
 
 
-void Monitors::insert(const std::string& key, const Element& val)
+void Monitors::insert(std::string key, const Element& val)
 {
-    m_pairs[key] = val;
+    m_pairs[std::move(key)] = val;
 }
 
-void Monitors::watch(const ::std::string& name, std::unique_ptr<VariableBase> monitor)
+void Monitors::watch(std::string name, std::unique_ptr<VariableBase> monitor)
 {
-    m_variableMonitors[name] = std::move(monitor);
+    m_variableMonitors[std::move(name)] = std::move(monitor);
+}
+
+void Monitors::watch(std::string name, int& value)
+{
+    watch(std::move(name), std::make_unique<Variable<int>>(value));
+}
+
+void Monitors::watch(std::string name, long& value)
+{
+    watch(std::move(name), std::make_unique<Variable<long>>(value));
+}
+
+void Monitors::watch(std::string name, float& value)
+{
+    watch(std::move(name), std::make_unique<Variable<float>>(value));
 }
 
 static std::ostream& operator<<(std::ostream& s, const Element& e)

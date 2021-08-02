@@ -47,6 +47,9 @@ class PossessionClient : public BaseClient
 
         const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const;
 
+        static long operations_in;
+        static long operations_out;
+
     protected:
 
         void operation(const Operation& op, OpVector& res) override;

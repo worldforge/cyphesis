@@ -3,8 +3,7 @@ configure_file(buildid.cpp.in buildid.cpp)
 add_library(comm
         CommMetaClient.cpp
         CommMDNSPublisher.cpp
-        IdleConnector.cpp
-        CommAsioListener_impl.h)
+        IdleConnector.cpp)
 
 target_link_libraries(comm PUBLIC
         common

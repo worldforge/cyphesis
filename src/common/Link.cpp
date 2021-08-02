@@ -24,7 +24,6 @@
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Objects/Operation.h>
 
-#include <sstream>
 #include <iostream>
 
 static const bool debug_flag = false;

@@ -50,6 +50,10 @@ using Atlas::Objects::Operation::Login;
 using Atlas::Objects::Entity::RootEntity;
 using Atlas::Objects::Entity::Anonymous;
 
+long PossessionAccount::account_count = 0;
+long PossessionAccount::mind_count = 0;
+
+
 PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client) :
         Router(id, intId),
         m_client(client),
@@ -64,11 +68,13 @@ PossessionAccount::PossessionAccount(const std::string& id, long intId, const Mi
         }
 
     });
+    account_count++;
 }
 
 PossessionAccount::~PossessionAccount()
 {
     m_python_connection.disconnect();
+    account_count--;
 }
 
 
@@ -100,6 +106,7 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
                 log(NOTICE, String::compose("Deleting mind %1.", I->second->describeEntity()));
                 m_entitiesWithMinds.erase(I->second->getEntity()->getId());
                 m_minds.erase(I);
+                mind_count--;
             }
 
             return;
@@ -111,6 +118,7 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
             if (I->second->isDestroyed()) {
                 log(NOTICE, String::compose("Deleting mind %1.", I->second->describeEntity()));
                 m_minds.erase(I->second->getId());
+                mind_count--;
                 m_entitiesWithMinds.erase(I);
             }
 
@@ -245,6 +253,7 @@ void PossessionAccount::createMindInstance(OpVector& res, const std::string& min
     log(INFO, String::compose("Creating mind instance for entity id %1 with mind id %2, number of minds: %3.", entityId, mindId, m_minds.size() + 1));
     Ref<BaseMind> mind = m_mindFactory.newMind(mindId, entityId);
     m_minds.emplace(mindId, mind);
+    mind_count++;
     m_entitiesWithMinds.emplace(entityId, mind);
 
     mind->m_scriptFactory = m_mindFactory.m_scriptFactory.get();

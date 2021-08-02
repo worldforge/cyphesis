@@ -41,10 +41,13 @@
 #include "client/ClientPropertyManager.h"
 
 #include <sys/prctl.h>
-#include <rules/python/CyPy_Rules.h>
-#include <rules/SimpleTypeStore.h>
+#include "rules/python/CyPy_Rules.h"
+#include "rules/SimpleTypeStore.h"
 #include "common/net/HttpCache.h"
 #include "common/net/CommAsioListener_impl.h"
+#include "common/Variable.h"
+#include "PossessionAccount.h"
+#include <varconf/config.h>
 
 
 using Atlas::Message::MapType;
@@ -186,6 +189,22 @@ int main(int argc, char** argv)
     }
 
 
+    Remotery* rmt = nullptr;
+    auto remoteryEnabled = global_conf->getItem(CYPHESIS, "remotery");
+    if (remoteryEnabled.is_bool() && ((bool) remoteryEnabled)) {
+        rmtSettings* settings = rmt_Settings();
+        settings->port = 17816;
+        settings->reuse_open_port = true;
+        auto error = rmt_CreateGlobalInstance(&rmt);
+        if (RMT_ERROR_NONE != error) {
+            printf("Error launching Remotery %d\n", error);
+            return -1;
+        } else {
+            log(INFO, String::compose("Remotery enabled on port %1.", settings->port));
+        }
+    }
+
+
     {
         ClientPropertyManager propertyManager{};
         SimpleTypeStore typeStore(propertyManager);
@@ -267,13 +286,19 @@ int main(int argc, char** argv)
                 client.serveRequest();
             };
 
-            auto httpListener = std::make_unique<CommAsioListener<boost::asio::ip::tcp, CommHttpClient> >(httpCreator, httpStarter, "cyaiclient", io_context,
-                                                                                                          boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v6(), http_port_num));
+            CommAsioListener<boost::asio::ip::tcp, CommHttpClient> httpListener(httpCreator, httpStarter, "cyaiclient", io_context,
+                                                                                boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v6(), http_port_num));
 
             log(INFO, String::compose("Http service. The following endpoints are available over port %1.", http_port_num));
             log(INFO, " /config : shows client configuration");
             log(INFO, " /monitors : various monitored values, suitable for time series systems");
             log(INFO, " /monitors/numerics : only numerical values, suitable for time series system that only operates on numerical data");
+
+            monitors.watch("accounts", PossessionAccount::account_count);
+            monitors.watch("minds", PossessionAccount::mind_count);
+            monitors.watch("operations_in", PossessionClient::operations_in);
+            monitors.watch("operations_out", PossessionClient::operations_out);
+
 
             //Reload the script factory when scripts changes.
             //Any PossessionAccount instance will also take care of reloading the script instances.
@@ -297,4 +322,7 @@ int main(int argc, char** argv)
         PyGC_Collect();
     }
     shutdown_python_api();
+    if (rmt) {
+        rmt_DestroyGlobalInstance(rmt);
+    }
 }

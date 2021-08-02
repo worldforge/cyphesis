@@ -56,6 +56,9 @@ class PossessionAccount : public Router
 
         Ref<BaseMind> findMindForId(const std::string& id);
 
+        static long account_count;
+        static long mind_count;
+
     protected:
         PossessionClient& m_client;
 

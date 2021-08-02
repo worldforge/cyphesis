@@ -40,9 +40,12 @@ class Monitors : public Singleton<Monitors>
 
         ~Monitors() override;
 
-        void insert(const std::string&, const Atlas::Message::Element&);
+        void insert( std::string, const Atlas::Message::Element&);
 
-        void watch(const std::string&, std::unique_ptr<VariableBase>);
+        void watch(std::string, std::unique_ptr<VariableBase>);
+        void watch(std::string, int& value);
+        void watch(std::string, long& value);
+        void watch(std::string, float& value);
 
         void send(std::ostream&) const;
 

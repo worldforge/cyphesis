@@ -361,7 +361,7 @@ namespace {
                 printf("Error launching Remotery %d\n", error);
                 return -1;
             } else {
-                log(INFO, "Remotery enabled.");
+                log(INFO, String::compose("Remotery enabled on port %1.", settings->port));
             }
         }
 

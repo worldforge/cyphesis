@@ -42,6 +42,9 @@ using Atlas::Objects::Root;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Operation::RootOperation;
 
+long PossessionClient::operations_in = 0;
+long PossessionClient::operations_out = 0;
+
 PossessionClient::PossessionClient(CommSocket& commSocket,
                                    MindKit& mindFactory,
                                    std::unique_ptr<Inheritance> inheritance,
@@ -87,17 +90,20 @@ void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> lo
         //Adjust the time of the operation to fit with the server's time
         op->setSeconds(op->getSeconds() - m_serverLocalTimeDiff);
         processOperation(op, res);
+        operations_out += res.size();
         send(res);
     }
 }
 
 void PossessionClient::operation(const Operation& op, OpVector& res)
 {
+    operations_in++;
     if (!op->isDefaultSeconds()) {
         //Store the difference between server time and local time, so we can properly adjust the time of any locally scheduled ops when they are dispatched.
         m_serverLocalTimeDiff = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count() - op->getSeconds();
     }
     processOperation(op, res);
+    operations_out += res.size();
 }
 
 void PossessionClient::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op)

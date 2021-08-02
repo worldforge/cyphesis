@@ -42,6 +42,18 @@ bool Variable<int>::isNumeric() const
 }
 
 template <>
+bool Variable<long>::isNumeric() const
+{
+    return true;
+}
+
+template <>
+bool Variable<float>::isNumeric() const
+{
+    return true;
+}
+
+template <>
 bool Variable<std::string>::isNumeric() const
 {
     return false;
@@ -54,6 +66,8 @@ bool Variable<const char *>::isNumeric() const
 }
 
 template class Variable<int>;
+template class Variable<long>;
+template class Variable<float>;
 template class Variable<std::string>;
 template class Variable<const char *>;
 
