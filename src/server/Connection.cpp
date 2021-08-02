@@ -81,9 +81,9 @@ Connection::~Connection()
 }
 
 std::unique_ptr<Account> Connection::newAccount(const std::string& type,
-                                const std::string& username,
-                                const std::string& hash,
-                                const std::string& id, long intId)
+                                                const std::string& username,
+                                                const std::string& hash,
+                                                const std::string& id, long intId)
 {
     return std::make_unique<Player>(this, username, hash, id, intId);
 }
@@ -240,7 +240,8 @@ size_t Connection::dispatch(size_t numberOfOps)
     return processed;
 }
 
-size_t Connection::queuedOps() const {
+size_t Connection::queuedOps() const
+{
     size_t counter = m_operationsQueue.size();
     for (auto& entry : m_routers) {
         counter += entry.second.opsQueue.size();
@@ -256,6 +257,9 @@ void Connection::externalOperation(const Operation& op, Link& link)
 
     if (op->isDefaultFrom()) {
         m_operationsQueue.emplace_back(op);
+        if (m_operationsQueue.size() > 1000) {
+            log(WARNING, String::compose("Operations queue for connection %1 is alarmingly high, currently at %2.", getId(), m_operationsQueue.size()));
+        }
     } else {
         auto& from = op->getFrom();
         debug_print("send on to " << from)
@@ -266,6 +270,9 @@ void Connection::externalOperation(const Operation& op, Link& link)
             return;
         } else {
             I->second.opsQueue.emplace_back(op);
+            if (I->second.opsQueue.size() > 1000) {
+                log(WARNING, String::compose("Operations queue for router %1 is alarmingly high, currently at %2.", I->second.router->getId(), I->second.opsQueue.size()));
+            }
         }
     }
 }

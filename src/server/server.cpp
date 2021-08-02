@@ -542,9 +542,6 @@ namespace {
             // we save the updated user config.
             updateUserConfiguration();
 
-            log(INFO, "Running");
-            logEvent(START, "- - - Standalone server startup");
-
             // Inform things that want to know that we are running.
             running();
 
@@ -634,6 +631,9 @@ namespace {
 
                 IdleConnector storage_idle(*io_context);
                 storage_idle.idling.connect([&store]() { store.tick(); });
+
+                log(INFO, "Running and accepting connections");
+                logEvent(START, "- - - Standalone server startup");
 
                 MainLoop::run(daemon_flag, *io_context, world.getOperationsHandler(), {softExitStart, softExitPoll, softExitTimeout, dispatchOperationsFn}, time);
                 if (metaClient) {
