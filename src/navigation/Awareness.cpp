@@ -70,6 +70,8 @@
 
 #include "rules/ai/MemEntity.h"
 
+#include "Remotery.h"
+
 #include <wfmath/wfmath.h>
 
 #include <Atlas/Message/Element.h>
@@ -382,6 +384,7 @@ void Awareness::updateEntity(const MemEntity& observer, const MemEntity& entity,
 
 void Awareness::addEntity(const MemEntity& observer, const MemEntity& entity, bool isDynamic)
 {
+    rmt_ScopedCPUSample(Awareness_addEntity, 0)
     auto I = mObservedEntities.find(entity.getIntId());
     if (I == mObservedEntities.end()) {
         std::unique_ptr<EntityEntry> entityEntry(new EntityEntry());
@@ -497,7 +500,6 @@ void Awareness::processEntityUpdate(EntityEntry& entityEntry, const MemEntity& e
             if (auto prop = entity.getPropertyClassFixed<BBoxProperty>()) {
                 entityEntry.bbox.data = prop->data();
                 entityEntry.bbox.timestamp = timestamp;
-                hasNewPosition = true;
                 hasNewBbox = true;
             }
         }
@@ -507,7 +509,6 @@ void Awareness::processEntityUpdate(EntityEntry& entityEntry, const MemEntity& e
             if (auto prop = entity.getPropertyClassFixed<ScaleProperty>()) {
                 entityEntry.scale.data = prop->data();
                 entityEntry.scale.timestamp = timestamp;
-                hasNewPosition = true;
                 hasNewBbox = true;
             }
         }
@@ -572,14 +573,27 @@ void Awareness::processEntityUpdate(EntityEntry& entityEntry, const MemEntity& e
                         auto area = buildEntityAreas(entityEntry);
 
                         if (area.isValid()) {
-                            markTilesAsDirty(area.boundingBox());
+                            auto bbox = area.boundingBox();
                             auto existingI = mEntityAreas.find(&entityEntry);
+                            //Check if it was a minor change; if so we might keep the old entry without much effect on navigation.
+                            bool isLargeEnoughChange = true;
                             if (existingI != mEntityAreas.end()) {
-                                //The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
-                                markTilesAsDirty(existingI->second.boundingBox());
-                                existingI->second = area;
-                            } else {
-                                mEntityAreas.emplace(&entityEntry, area);
+                                auto existingBbox = existingI->second.boundingBox();
+                                if (WFMath::Distance(existingBbox.lowCorner(), bbox.lowCorner()) > 0.1 || WFMath::Distance(existingBbox.highCorner(), bbox.highCorner()) > 0.1) {
+                                    isLargeEnoughChange = true;
+                                } else {
+                                    isLargeEnoughChange = false;
+                                }
+                            }
+                            if (isLargeEnoughChange) {
+                                markTilesAsDirty(area.boundingBox());
+                                if (existingI != mEntityAreas.end()) {
+                                    //The entity already was registered; mark both those tiles where the entity previously were as well as the new tiles as dirty.
+                                    markTilesAsDirty(existingI->second.boundingBox());
+                                    existingI->second = area;
+                                } else {
+                                    mEntityAreas.emplace(&entityEntry, area);
+                                }
                             }
                         }
                         debug_print("Entity affects " << area << ". Dirty unaware tiles: " << mDirtyUnwareTiles.size() << " Dirty aware tiles: " << mDirtyAwareTiles.size())
@@ -722,6 +736,7 @@ size_t Awareness::rebuildDirtyTile()
 {
     if (!mDirtyAwareTiles.empty()) {
         debug_print("Rebuilding aware tiles. Number of dirty aware tiles: " << mDirtyAwareTiles.size())
+        rmt_ScopedCPUSample(rebuildDirtyTile, 0)
         const auto tileIndexI = mDirtyAwareOrderedTiles.begin();
         const auto& tileIndex = *tileIndexI;
 
@@ -1127,9 +1142,12 @@ void Awareness::rebuildTile(int tx, int ty, const std::vector<WFMath::RotBox<2>>
         }
     }
 
-    dtStatus status = mTileCache->buildNavMeshTilesAt(tx, ty, mNavMesh);
-    if (dtStatusFailed(status)) {
-        log(WARNING, String::compose("Failed to build nav mesh tile in awareness. x: %1 y: %2 Reason: %3", tx, ty, status & DT_STATUS_DETAIL_MASK));
+    {
+        rmt_ScopedCPUSample(buildNavMeshTile, 0)
+        dtStatus status = mTileCache->buildNavMeshTilesAt(tx, ty, mNavMesh);
+        if (dtStatusFailed(status)) {
+            log(WARNING, String::compose("Failed to build nav mesh tile in awareness. x: %1 y: %2 Reason: %3", tx, ty, status & DT_STATUS_DETAIL_MASK));
+        }
     }
 
     EventTileUpdated(tx, ty);
@@ -1195,6 +1213,7 @@ void Awareness::findEntityAreas(const WFMath::AxisBox<2>& extent, std::vector<WF
 
 int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityAreas, int tx, int ty, TileCacheData* tiles, int maxTiles)
 {
+    rmt_ScopedCPUSample(rasterizeTileLayers, 0)
     std::vector<float> vertsVector;
     std::vector<int> trisVector;
 
@@ -1226,21 +1245,23 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
     int sizeX = heightsXMax - heightsXMin;
     int sizeY = heightsYMax - heightsYMin;
 
-//Blit height values with 1 meter interval
+    //Blit height values with 1 meter interval
     std::vector<float> heights(sizeX * sizeY);
-    mHeightProvider.blitHeights(heightsXMin, heightsXMax, heightsYMin, heightsYMax, heights);
-
-    float* heightData = heights.data();
-    for (int y = heightsYMin; y < heightsYMax; ++y) {
-        for (int x = heightsXMin; x < heightsXMax; ++x) {
-            vertsVector.push_back(x);
-            vertsVector.push_back(*heightData);
-            vertsVector.push_back(y);
-            heightData++;
+    {
+        rmt_ScopedCPUSample(blitHeights, 0)
+        mHeightProvider.blitHeights(heightsXMin, heightsXMax, heightsYMin, heightsYMax, heights);
+        float* heightData = heights.data();
+        for (int y = heightsYMin; y < heightsYMax; ++y) {
+            for (int x = heightsXMin; x < heightsXMax; ++x) {
+                vertsVector.push_back(x);
+                vertsVector.push_back(*heightData);
+                vertsVector.push_back(y);
+                heightData++;
+            }
         }
     }
 
-//Then define the triangles
+    //Then define the triangles
     for (int y = 0; y < (sizeY - 1); y++) {
         for (int x = 0; x < (sizeX - 1); x++) {
             int vertPtr = (y * sizeX) + x;
@@ -1266,9 +1287,12 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
         return 0;
     }
-    if (!rcCreateHeightfield(mCtx.get(), *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cs, tcfg.ch)) {
-        mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
-        return 0;
+    {
+        rmt_ScopedCPUSample(rcCreateHeightfield, 0)
+        if (!rcCreateHeightfield(mCtx.get(), *rc.solid, tcfg.width, tcfg.height, tcfg.bmin, tcfg.bmax, tcfg.cs, tcfg.ch)) {
+            mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
+            return 0;
+        }
     }
 
 // Allocate array that can hold triangle flags.
@@ -1279,10 +1303,14 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
     }
 
     memset(rc.triareas, 0, ntris * sizeof(unsigned char));
-    rcMarkWalkableTriangles(mCtx.get(), tcfg.walkableSlopeAngle, verts, nverts, tris, ntris, rc.triareas);
-
-    rcRasterizeTriangles(mCtx.get(), verts, nverts, tris, rc.triareas, ntris, *rc.solid, tcfg.walkableClimb);
-
+    {
+        rmt_ScopedCPUSample(rcMarkWalkableTriangles, 0)
+        rcMarkWalkableTriangles(mCtx.get(), tcfg.walkableSlopeAngle, verts, nverts, tris, ntris, rc.triareas);
+    }
+    {
+        rmt_ScopedCPUSample(rcRasterizeTriangles, 0)
+        rcRasterizeTriangles(mCtx.get(), verts, nverts, tris, rc.triareas, ntris, *rc.solid, tcfg.walkableClimb);
+    }
 // Once all geometry is rasterized, we do initial pass of filtering to
 // remove unwanted overhangs caused by the conservative rasterization
 // as well as filter spans where the character cannot possibly stand.
@@ -1298,52 +1326,64 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
         return 0;
     }
-    if (!rcBuildCompactHeightfield(mCtx.get(), tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid, *rc.chf)) {
-        mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
-        return 0;
+    {
+        rmt_ScopedCPUSample(rcBuildCompactHeightfield, 0)
+        if (!rcBuildCompactHeightfield(mCtx.get(), tcfg.walkableHeight, tcfg.walkableClimb, *rc.solid, *rc.chf)) {
+            mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
+            return 0;
+        }
     }
 
 // Erode the walkable area by agent radius.
-    if (!rcErodeWalkableArea(mCtx.get(), tcfg.walkableRadius, *rc.chf)) {
-        mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
-        return 0;
+    {
+        rmt_ScopedCPUSample(rcErodeWalkableArea, 0)
+
+        if (!rcErodeWalkableArea(mCtx.get(), tcfg.walkableRadius, *rc.chf)) {
+            mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
+            return 0;
+        }
     }
 
-// Mark areas.
-    for (auto& rotbox : entityAreas) {
-        float areaVerts[3 * 4];
+    {
+        rmt_ScopedCPUSample(markAreas, 0)
+        // Mark areas.
+        for (auto& rotbox : entityAreas) {
+            float areaVerts[3 * 4];
 
-        areaVerts[0] = rotbox.getCorner(1).x();
-        areaVerts[1] = 0;
-        areaVerts[2] = rotbox.getCorner(1).y();
+            areaVerts[0] = rotbox.getCorner(1).x();
+            areaVerts[1] = 0;
+            areaVerts[2] = rotbox.getCorner(1).y();
 
-        areaVerts[3] = rotbox.getCorner(3).x();
-        areaVerts[4] = 0;
-        areaVerts[5] = rotbox.getCorner(3).y();
+            areaVerts[3] = rotbox.getCorner(3).x();
+            areaVerts[4] = 0;
+            areaVerts[5] = rotbox.getCorner(3).y();
 
-        areaVerts[6] = rotbox.getCorner(2).x();
-        areaVerts[7] = 0;
-        areaVerts[8] = rotbox.getCorner(2).y();
+            areaVerts[6] = rotbox.getCorner(2).x();
+            areaVerts[7] = 0;
+            areaVerts[8] = rotbox.getCorner(2).y();
 
-        areaVerts[9] = rotbox.getCorner(0).x();
-        areaVerts[10] = 0;
-        areaVerts[11] = rotbox.getCorner(0).y();
+            areaVerts[9] = rotbox.getCorner(0).x();
+            areaVerts[10] = 0;
+            areaVerts[11] = rotbox.getCorner(0).y();
 
-        rcMarkConvexPolyArea(mCtx.get(), areaVerts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
+            rcMarkConvexPolyArea(mCtx.get(), areaVerts, 4, tcfg.bmin[1], tcfg.bmax[1], DT_TILECACHE_NULL_AREA, *rc.chf);
+        }
     }
-
     rc.lset = rcAllocHeightfieldLayerSet();
     if (!rc.lset) {
         mCtx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'lset'.");
         return 0;
     }
-    if (!rcBuildHeightfieldLayers(mCtx.get(), *rc.chf, tcfg.borderSize, tcfg.walkableHeight, *rc.lset)) {
-        mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not build heighfield layers.");
-        return 0;
+    {
+        rmt_ScopedCPUSample(rcBuildHeightfieldLayers, 0)
+        if (!rcBuildHeightfieldLayers(mCtx.get(), *rc.chf, tcfg.borderSize, tcfg.walkableHeight, *rc.lset)) {
+            mCtx->log(RC_LOG_ERROR, "buildNavigation: Could not build heighfield layers.");
+            return 0;
+        }
     }
-
     rc.ntiles = 0;
     for (int i = 0; i < rcMin(rc.lset->nlayers, MAX_LAYERS); ++i) {
+        rmt_ScopedCPUSample(buildTileCache, 0)
         TileCacheData* tile = &rc.tiles[rc.ntiles++];
         const rcHeightfieldLayer* layer = &rc.lset->layers[i];
 
@@ -1434,6 +1474,7 @@ void Awareness::processAllTiles(
 void Awareness::processTiles(std::vector<const dtCompressedTile*> tiles,
                              const std::function<void(unsigned int, dtTileCachePolyMesh&, float* origin, float cellsize, float cellheight, dtTileCacheLayer& layer)>& processor) const
 {
+    rmt_ScopedCPUSample(processTiles, 0)
     struct TileCacheBuildContext
     {
         inline explicit TileCacheBuildContext(struct dtTileCacheAlloc* a) :

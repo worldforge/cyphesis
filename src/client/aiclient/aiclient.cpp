@@ -103,6 +103,7 @@ namespace {
                     void flush()
                     {
                         if (commClient->getSocket().is_open()) {
+                            rmt_ScopedCPUSample(Flusher_flush, 0)
                             commClient->flush();
 #if BOOST_VERSION >= 106600
                             timer.expires_after(flushInterval);
@@ -193,7 +194,7 @@ int main(int argc, char** argv)
     auto remoteryEnabled = global_conf->getItem(CYPHESIS, "remotery");
     if (remoteryEnabled.is_bool() && ((bool) remoteryEnabled)) {
         rmtSettings* settings = rmt_Settings();
-        settings->port = 17816;
+        settings->port = 17816; //Use a different port than default.
         settings->reuse_open_port = true;
         auto error = rmt_CreateGlobalInstance(&rmt);
         if (RMT_ERROR_NONE != error) {
@@ -303,6 +304,7 @@ int main(int argc, char** argv)
             //Reload the script factory when scripts changes.
             //Any PossessionAccount instance will also take care of reloading the script instances.
             python_reload_scripts.connect([&]() {
+                rmt_ScopedCPUSample(python_reload, 0)
                 mindFactory.m_scriptFactory->refreshClass();
             });
 

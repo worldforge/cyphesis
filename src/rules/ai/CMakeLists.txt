@@ -10,6 +10,9 @@ add_library(rulesai
         TypeResolver.cpp
         )
 
+target_link_libraries(rulesai
+        remotery)
+
 
 add_subdirectory(python)
 

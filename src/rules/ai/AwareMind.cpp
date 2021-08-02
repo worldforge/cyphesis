@@ -25,6 +25,8 @@
 #include "AwarenessStoreProvider.h"
 #include "SharedTerrain.h"
 
+#include "Remotery.h"
+
 #include "navigation/Awareness.h"
 #include "navigation/Steering.h"
 
@@ -69,6 +71,7 @@ AwareMind::~AwareMind()
 
 void AwareMind::operation(const Operation& op, OpVector& res)
 {
+    rmt_ScopedCPUSample(AwareMind_operation, 0)
 
 
     //If it's a "move" tick we'll process it here and won't send it on to the mind.
@@ -92,6 +95,7 @@ double AwareMind::getCurrentServerTime() const
 
 void AwareMind::processMoveTick(const Operation& op, OpVector& res)
 {
+    rmt_ScopedCPUSample(AwareMind_processMoveTick, 0)
     //Default to checking movement every 0.2 seconds, unless steering tells us otherwise
     double futureTick = 0.2;
 
@@ -150,7 +154,7 @@ void AwareMind::processMoveTick(const Operation& op, OpVector& res)
     Atlas::Objects::Operation::Tick tick;
     Atlas::Objects::Entity::Anonymous arg;
     arg->setName("move");
-    tick->setArgs1(arg);
+    tick->setArgs1(std::move(arg));
     tick->setFutureSeconds(futureTick);
     tick->setTo(getId());
     tick->setFrom(getId());

@@ -21,14 +21,16 @@
 
 #include "rules/ai/MemEntity.h"
 #include "rules/ScaleProperty.h"
+#include "rules/Vector3Property.h"
+#include "rules/PhysicalProperties.h"
+
+#include "Remotery.h"
 
 #include <wfmath/point.h>
 #include <wfmath/vector.h>
 #include <wfmath/rotbox.h>
 #include <wfmath/segment.h>
 
-#include <rules/Vector3Property.h>
-#include "rules/PhysicalProperties.h"
 
 static const bool debug_flag = true;
 
@@ -216,6 +218,7 @@ int Steering::getPathResult() const
 
 int Steering::updatePath(double currentTimestamp, const WFMath::Point<3>& currentAvatarPosition)
 {
+    rmt_ScopedCPUSample(Steering_updatePath, 0)
     mPath.clear();
     mCurrentPathIndex = 0;
     if (!mAwareness) {
@@ -393,6 +396,7 @@ bool Steering::isAtCurrentDestination(double currentTimestamp) const
 
 SteeringResult Steering::update(double currentTimestamp)
 {
+    rmt_ScopedCPUSample(Steering_update, 0)
     SteeringResult result{};
     if (!mSteeringEnabled) {
         auto propelProperty = mAvatar.getPropertyClass<Vector3Property>("_propel");

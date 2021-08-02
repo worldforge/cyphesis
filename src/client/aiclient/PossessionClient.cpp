@@ -22,7 +22,7 @@
 #include "PossessionClient.h"
 #include "PossessionAccount.h"
 
-
+#include "Remotery.h"
 #include "common/operations/Possess.h"
 #include "common/id.h"
 #include "common/custom.h"
@@ -86,6 +86,8 @@ void PossessionClient::notifyAccountCreated(const std::string& accountId)
 void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity)
 {
     if (!locatedEntity->isDestroyed()) {
+        rmt_ScopedCPUSample(operationFromEntity, 0)
+
         OpVector res;
         //Adjust the time of the operation to fit with the server's time
         op->setSeconds(op->getSeconds() - m_serverLocalTimeDiff);
@@ -97,6 +99,7 @@ void PossessionClient::operationFromEntity(const Operation& op, Ref<BaseMind> lo
 
 void PossessionClient::operation(const Operation& op, OpVector& res)
 {
+    rmt_ScopedCPUSample(operation, 0)
     operations_in++;
     if (!op->isDefaultSeconds()) {
         //Store the difference between server time and local time, so we can properly adjust the time of any locally scheduled ops when they are dispatched.

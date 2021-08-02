@@ -22,6 +22,7 @@
 #include "PossessionAccount.h"
 #include "PossessionClient.h"
 
+#include "Remotery.h"
 #include "rules/ai/MindFactory.h"
 #include "rules/ai/BaseMind.h"
 #include "pythonbase/Python_API.h"
@@ -97,7 +98,7 @@ void PossessionAccount::enablePossession(OpVector& res)
 
 void PossessionAccount::operation(const Operation& op, OpVector& res)
 {
-    if (!op->isDefaultTo() || op->getTo() != getId()) {
+    if (!op->isDefaultTo() && op->getTo() != getId()) {
         auto I = m_minds.find(op->getTo());
         if (I != m_minds.end()) {
             I->second->operation(op, res);
@@ -125,26 +126,27 @@ void PossessionAccount::operation(const Operation& op, OpVector& res)
             return;
         }
 
-        if (getId() != op->getTo()) {
-            log(WARNING, String::compose("Received operation %1 directed at %2 which isn't anything recognized by the account.", op->getParent(), op->getTo()));
-            return;
-        }
-    }
+        log(WARNING, String::compose("Received operation %1 directed at %2 which isn't anything recognized by the account %3.", op->getParent(), op->getTo(), getId()));
 
-    //The operation had no id, or the id was this account, so it's directed at this account.
-    if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
-        PossessOperation(op, res);
-    } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
-        //Ignore appearance ops, since they just signal other accounts being connected
-    } else if (op->getClassNo() == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
-        //Ignore disappearance ops, since they just signal other accounts being disconnected
-    } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
-        //Send info ops on to all minds
-        for (auto& entry : m_minds) {
-            entry.second->operation(op, res);
-        }
     } else {
-        log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount %2", op->getParent(), getId()));
+
+        //The operation had no id, or the id was this account, so it's directed at this account.
+        if (op->getClassNo() == Atlas::Objects::Operation::POSSESS_NO) {
+            PossessOperation(op, res);
+        } else if (op->getClassNo() == Atlas::Objects::Operation::APPEARANCE_NO) {
+            //Ignore appearance ops, since they just signal other accounts being connected
+        } else if (op->getClassNo() == Atlas::Objects::Operation::DISAPPEARANCE_NO) {
+            //Ignore disappearance ops, since they just signal other accounts being disconnected
+        } else if (op->getClassNo() == Atlas::Objects::Operation::INFO_NO) {
+
+            rmt_ScopedCPUSample(opInfo, 0)
+            //Send info ops on to all minds
+            for (auto& entry : m_minds) {
+                entry.second->operation(op, res);
+            }
+        } else {
+            log(NOTICE, String::compose("Unknown operation %1 in PossessionAccount %2", op->getParent(), getId()));
+        }
     }
 }
 
