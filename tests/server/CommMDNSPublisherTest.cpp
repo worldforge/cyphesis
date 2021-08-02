@@ -42,7 +42,7 @@ int main()
 #ifndef HAVE_AVAHI
     }
 #else // HAVE_AVAHI
-    ServerRouting test_server(*(BaseWorld*) 0, "", "", "1", 1, "2", 2);
+    ServerRouting test_server(*(BaseWorld*) 0, *(Persistence*)nullptr, "", "", 2);
     {
 
     }
