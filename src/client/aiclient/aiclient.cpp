@@ -87,12 +87,12 @@ namespace {
                 struct Flusher : public std::enable_shared_from_this<Flusher>
                 {
                     boost::asio::io_context& io_context;
-                    std::shared_ptr<CommAsioClient<boost::asio::local::stream_protocol>> commClient;
+                    std::weak_ptr<CommAsioClient<boost::asio::local::stream_protocol>> commClient;
                     boost::asio::steady_timer timer{io_context};
                     std::chrono::steady_clock::duration flushInterval;
 
                     Flusher(boost::asio::io_context& _io_context,
-                            std::shared_ptr<CommAsioClient<boost::asio::local::stream_protocol>> _commClient,
+                            std::weak_ptr<CommAsioClient<boost::asio::local::stream_protocol>> _commClient,
                             std::chrono::steady_clock::duration _flushInterval)
                             : io_context(_io_context),
                               commClient(_commClient),
@@ -102,22 +102,23 @@ namespace {
 
                     void flush()
                     {
-                        if (commClient->getSocket().is_open()) {
-                            rmt_ScopedCPUSample(Flusher_flush, 0)
-                            commClient->flush();
+                        if (auto client = commClient.lock()) {
+                            if (client->m_active && client->getSocket().is_open()) {
+                                rmt_ScopedCPUSample(Flusher_flush, 0)
+                                client->flush();
 #if BOOST_VERSION >= 106600
-                            timer.expires_after(flushInterval);
+                                timer.expires_after(flushInterval);
 #else
-                            timer.expires_from_now(flushInterval);
+                                timer.expires_from_now(flushInterval);
 #endif
-                            auto self(this->shared_from_this());
-                            auto waitFn = [self](boost::system::error_code ecInner) {
-                                if (!ecInner) {
-                                    self->flush();
-                                }
-                            };
-                            timer.async_wait(waitFn);
-
+                                auto self(this->shared_from_this());
+                                auto waitFn = [self](boost::system::error_code ecInner) {
+                                    if (!ecInner) {
+                                        self->flush();
+                                    }
+                                };
+                                timer.async_wait(waitFn);
+                            }
                         }
                     }
                 };

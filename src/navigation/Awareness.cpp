@@ -1223,8 +1223,7 @@ int Awareness::rasterizeTileLayers(const std::vector<WFMath::RotBox<2>>& entityA
 // Tile bounds.
     const float tcs = mCfg.tileSize * mCfg.cs;
 
-    rcConfig tcfg{};
-    memcpy(&tcfg, &mCfg, sizeof(tcfg));
+    rcConfig tcfg = mCfg;
 
     tcfg.bmin[0] = mCfg.bmin[0] + tx * tcs;
     tcfg.bmin[1] = mCfg.bmin[1];
