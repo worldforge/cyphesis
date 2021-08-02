@@ -54,6 +54,7 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
         m_svrName(std::move(name)),
         m_lobby(new Lobby(*this, std::to_string(lobbyId), lobbyId)),
         m_numClients(0),
+        m_processOpsTotal(0),
         m_world(wrld),
         m_persistence(persistence)
 {
@@ -64,7 +65,8 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
     monitors.insert("ruleset", m_svrRuleset);
     monitors.insert("version", consts::version);
     monitors.insert("buildid", consts::buildId);
-    monitors.watch("clients", std::make_unique<Variable<int>>(m_numClients));
+    monitors.watch("clients", m_numClients);
+    monitors.watch("processed_ops", m_processOpsTotal);
 
 }
 
@@ -189,6 +191,7 @@ size_t ServerRouting::dispatch(size_t numberOfOps)
     }
     //This should not be a large number, and it should differ widely between frames. We put it here to help with finding bottlenecks though.
     Monitors::instance().insert("queued_external_ops", (Atlas::Message::IntType) queuedOps);
+    m_processOpsTotal += processed;
     return processed;
 }
 

@@ -64,6 +64,10 @@ class Connection : public Link, virtual public sigc::trackable
          * Entries are put here by "externalOperation" and processed by calls to "dispatch".
          */
         std::deque<Operation> m_operationsQueue;
+        /**
+         * A map of routers with an attached queue of ops that needs to be processed by the routers.
+         * The latter is done at each call to "dispatch".
+         */
         std::map<long, RouterWithQueue> m_routers;
 
         std::map<long, ConnectableRouter*> m_connectableRouters;

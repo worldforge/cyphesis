@@ -57,7 +57,7 @@ class ExternalMind : public Router
         static long s_serialNumberNext;
 
 
-    Link* m_link;
+        Link* m_link;
         Ref<LocatedEntity> m_entity;
 
         /**

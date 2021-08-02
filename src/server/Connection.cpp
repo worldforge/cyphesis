@@ -209,6 +209,7 @@ size_t Connection::dispatch(size_t numberOfOps)
             // FIXME detect socket failure here
             send(reply);
         }
+        processed++;
     }
 
     for (auto& entry: m_routers) {

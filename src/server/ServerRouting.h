@@ -62,6 +62,8 @@ class ServerRouting
         int m_numClients;
         //All client connections in the system. These aren't owned by this instance.
         std::set<Connection*> m_connections;
+
+        long m_processOpsTotal;
     public:
         /// A reference to the World management object.
         BaseWorld& m_world;
