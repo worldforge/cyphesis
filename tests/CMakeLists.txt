@@ -447,7 +447,7 @@ wf_add_test(server/LobbyTest.cpp ../src/server/Lobby.cpp)
 
 wf_add_test(server/ServerRoutingTest.cpp ../src/server/ServerRouting.cpp)
 wf_add_test(server/StorageManagerTest.cpp ../src/server/StorageManager.cpp)
-wf_add_test(server/HttpCacheTest.cpp ../src/server/HttpCache.cpp)
+wf_add_test(server/HttpCacheTest.cpp ../src/common/net/HttpCache.cpp)
 
 # SERVER_COMM_TESTS
 wf_add_test(server/CommPeerTest.cpp ../src/server/CommPeer.cpp)

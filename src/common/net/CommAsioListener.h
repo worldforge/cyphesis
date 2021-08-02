@@ -20,8 +20,6 @@
 #define COMMASIOLISTENER_H_
 
 #include "common/asio.h"
-#include "common/asio.h"
-#include "common/asio.h"
 
 #include <functional>
 

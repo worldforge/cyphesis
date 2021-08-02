@@ -21,11 +21,11 @@
 
 #endif
 
-#include "CommHttpClient.h"
+#include "common/net/CommHttpClient.h"
 #include "CommPythonClient.h"
 #include "CommMetaClient.h"
 #include "CommMDNSPublisher.h"
-#include "CommAsioListener_impl.h"
+#include "common/net/CommAsioListener_impl.h"
 #include "Connection.h"
 #include "ServerRouting.h"
 #include "EntityBuilder.h"
@@ -36,7 +36,7 @@
 #include "IdleConnector.h"
 #include "PossessionAuthenticator.h"
 #include "TrustedConnection.h"
-#include "HttpCache.h"
+#include "common/net/HttpCache.h"
 
 #include "pythonbase/Python_API.h"
 #include "rules/LocatedEntity.h"

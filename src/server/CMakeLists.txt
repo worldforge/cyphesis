@@ -1,10 +1,8 @@
 configure_file(buildid.cpp.in buildid.cpp)
 
 add_library(comm
-        CommHttpClient.cpp
         CommMetaClient.cpp
         CommMDNSPublisher.cpp
-        HttpCache.cpp
         IdleConnector.cpp
         CommAsioListener_impl.h)
 

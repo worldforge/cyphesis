@@ -54,6 +54,8 @@ add_library(common
         MainLoop.h
         CommAsioClient_impl.h
         TypeStore.h
+        net/CommHttpClient.cpp
+        net/HttpCache.cpp
         )
 
 target_link_libraries(common ${GCRYPT_LIBRARIES} remotery)

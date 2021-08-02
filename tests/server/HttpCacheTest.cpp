@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "server/HttpCache.h"
+#include "common/net/HttpCache.h"
 
 #include "common/globals.h"
 

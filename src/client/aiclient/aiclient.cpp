@@ -43,6 +43,8 @@
 #include <sys/prctl.h>
 #include <rules/python/CyPy_Rules.h>
 #include <rules/SimpleTypeStore.h>
+#include "common/net/HttpCache.h"
+#include "common/net/CommAsioListener_impl.h"
 
 
 using Atlas::Message::MapType;
@@ -56,6 +58,10 @@ using Atlas::Objects::Entity::Anonymous;
 Atlas::Objects::Factories factories;
 
 namespace {
+
+    INT_OPTION(http_port_num, 6790, CYPHESIS, "httpport",
+               "Network listen port for http connection to the client")
+
     void usage(const char* prgname)
     {
         std::cout << "usage: " << prgname << " [ local_socket_path ]" << std::endl << std::flush;
@@ -186,6 +192,7 @@ int main(int argc, char** argv)
 
         {
             boost::asio::io_context io_context;
+            HttpCache httpCache(monitors);
             FileSystemObserver file_system_observer(io_context);
             AwareMindFactory mindFactory(typeStore);
 
@@ -249,6 +256,24 @@ int main(int argc, char** argv)
                 }
             });
 
+
+            auto httpCreator = [&]() -> std::shared_ptr<CommHttpClient> {
+                return std::make_shared<CommHttpClient>("cyaiclient", io_context, httpCache);
+            };
+
+            auto httpStarter = [&](CommHttpClient& client) {
+                //Listen to both ipv4 and ipv6
+                //client.getSocket().set_option(boost::asio::ip::v6_only(false));
+                client.serveRequest();
+            };
+
+            auto httpListener = std::make_unique<CommAsioListener<boost::asio::ip::tcp, CommHttpClient> >(httpCreator, httpStarter, "cyaiclient", io_context,
+                                                                                                          boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v6(), http_port_num));
+
+            log(INFO, String::compose("Http service. The following endpoints are available over port %1.", http_port_num));
+            log(INFO, " /config : shows client configuration");
+            log(INFO, " /monitors : various monitored values, suitable for time series systems");
+            log(INFO, " /monitors/numerics : only numerical values, suitable for time series system that only operates on numerical data");
 
             //Reload the script factory when scripts changes.
             //Any PossessionAccount instance will also take care of reloading the script instances.
