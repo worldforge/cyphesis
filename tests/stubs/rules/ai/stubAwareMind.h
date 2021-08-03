@@ -121,5 +121,13 @@
   }
 #endif //STUB_AwareMind_parseTerrain
 
+#ifndef STUB_AwareMind_insertTickForMove
+//#define STUB_AwareMind_insertTickForMove
+  void AwareMind::insertTickForMove(OpVector& res, double futureSeconds)
+  {
+    
+  }
+#endif //STUB_AwareMind_insertTickForMove
+
 
 #endif

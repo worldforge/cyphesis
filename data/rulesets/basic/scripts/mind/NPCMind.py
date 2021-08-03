@@ -248,13 +248,7 @@ class NPCMind(ai.Mind):
         think_tick_op.set_to(self.id)
         think_tick_op.set_args([Entity(name="think")])
 
-        # Setup a tick operation for moving
-        move_tick_op = Operation("tick")
-        move_tick_op.set_to(self.id)
-        move_tick_op.set_args([Entity(name="move")])
-        move_tick_op.set_future_seconds(0.2)
-
-        return Operation("look") + think_tick_op + move_tick_op
+        return Operation("look") + think_tick_op
 
     def tick_operation(self, op):
         """periodically reassess situation

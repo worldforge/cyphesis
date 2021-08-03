@@ -213,9 +213,9 @@
 
 #ifndef STUB_Awareness_processEntityUpdate
 //#define STUB_Awareness_processEntityUpdate
-  void Awareness::processEntityUpdate(EntityEntry& entry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp)
+  bool Awareness::processEntityUpdate(EntityEntry& entry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp)
   {
-    
+    return false;
   }
 #endif //STUB_Awareness_processEntityUpdate
 

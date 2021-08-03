@@ -50,7 +50,8 @@ AwareMind::AwareMind(const std::string& mind_id,
         BaseMind(mind_id, std::move(entity_id), typeStore),
         mSharedTerrain(sharedTerrain),
         mAwarenessStoreProvider(awarenessStoreProvider),
-        mAwarenessStore(nullptr)
+        mAwarenessStore(nullptr),
+        mMoveTickSerialNumber(0)
 {
 }
 
@@ -79,8 +80,16 @@ void AwareMind::operation(const Operation& op, OpVector& res)
         if (!op->getArgs().empty()) {
             auto arg = op->getArgs().front();
             if (arg->getName() == "move") {
-                updateServerTimeFromOperation(*op);
-                processMoveTick(op, res);
+                if (op->isDefaultSerialno()) {
+                    log(WARNING, "Move op contained in a Tick without any serial number.");
+                    return;
+                }
+                if (op->getSerialno() == mMoveTickSerialNumber) {
+                    updateServerTimeFromOperation(*op);
+                    processMoveTick(op, res);
+                } else {
+                    log(INFO, "Ignored move tick");
+                }
                 return;
             }
         }
@@ -147,19 +156,13 @@ void AwareMind::processMoveTick(const Operation& op, OpVector& res)
             res.emplace_back(std::move(set));
         }
         if (result.timeToNextWaypoint) {
-            futureTick = std::min(*result.timeToNextWaypoint, futureTick);
+            //Prevent spamming the server with updates
+            futureTick = std::max(0.1, std::min(*result.timeToNextWaypoint, futureTick));
         }
     }
 
-    Atlas::Objects::Operation::Tick tick;
-    Atlas::Objects::Entity::Anonymous arg;
-    arg->setName("move");
-    tick->setArgs1(std::move(arg));
-    tick->setFutureSeconds(futureTick);
-    tick->setTo(getId());
-    tick->setFrom(getId());
+    insertTickForMove(res, futureTick);
 
-    res.emplace_back(std::move(tick));
 }
 
 int AwareMind::updatePath()
@@ -310,12 +313,23 @@ void AwareMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
     mAwarenessStore = &mAwarenessStoreProvider.getStore(ownEntity->getType());
 
     //Start the move ticks
+    insertTickForMove(res, 0);
+}
+
+
+void AwareMind::insertTickForMove(OpVector& res, double futureSeconds)
+{
+    mMoveTickSerialNumber++;
     Atlas::Objects::Operation::Tick tick;
     Atlas::Objects::Entity::Anonymous arg;
     arg->setName("move");
-    tick->setArgs1(arg);
+    tick->setArgs1(std::move(arg));
+    if (futureSeconds > 0) {
+        tick->setFutureSeconds(futureSeconds);
+    }
+    tick->setSerialno(mMoveTickSerialNumber);
     tick->setTo(getId());
-
-    res.push_back(tick);
+    tick->setFrom(getId());
+    res.emplace_back(std::move(tick));
 }
 

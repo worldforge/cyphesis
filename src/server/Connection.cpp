@@ -258,7 +258,8 @@ void Connection::externalOperation(const Operation& op, Link& link)
     if (op->isDefaultFrom()) {
         m_operationsQueue.emplace_back(op);
         if (m_operationsQueue.size() > 1000) {
-            log(WARNING, String::compose("Operations queue for connection %1 is alarmingly high, currently at %2.", getId(), m_operationsQueue.size()));
+            log(WARNING, String::compose("Operations queue for connection %1 is alarmingly high, currently at %2. New op of type '%3'.",
+                                         getId(), m_operationsQueue.size(), op->getParent()));
         }
     } else {
         auto& from = op->getFrom();
@@ -271,7 +272,8 @@ void Connection::externalOperation(const Operation& op, Link& link)
         } else {
             I->second.opsQueue.emplace_back(op);
             if (I->second.opsQueue.size() > 1000) {
-                log(WARNING, String::compose("Operations queue for router %1 is alarmingly high, currently at %2.", I->second.router->getId(), I->second.opsQueue.size()));
+                log(WARNING, String::compose("Operations queue for router %1 is alarmingly high, currently at %2. New op of type '%3'.",
+                                             I->second.router->getId(), I->second.opsQueue.size(), op->getParent()));
             }
         }
     }
@@ -476,7 +478,7 @@ void Connection::GetOperation(const Operation& op, OpVector& res)
     if (args.empty()) {
         Anonymous info_arg;
         m_server.addToEntity(info_arg);
-        info->setArgs1(info_arg);
+        info->setArgs1(std::move(info_arg));
         debug_print("Replying to empty get")
     } else {
         const Root& arg = args.front();
@@ -488,13 +490,11 @@ void Connection::GetOperation(const Operation& op, OpVector& res)
         debug_print("Get got for " << id)
         Atlas::Objects::Root o = Inheritance::instance().getClass(id, Visibility::PUBLIC);
         if (!o.isValid()) {
-            error(op, String::compose("Unknown type definition for \"%1\" "
-                                      "requested", id),
-                  res);
+            error(op, String::compose("Unknown type definition for \"%1\" requested", id), res);
             return;
         }
         info->setArgs1(o);
     }
 
-    res.push_back(info);
+    res.emplace_back(std::move(info));
 }

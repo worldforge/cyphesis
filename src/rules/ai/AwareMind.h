@@ -70,6 +70,12 @@ class AwareMind : public BaseMind
         std::shared_ptr<Awareness> mAwareness;
         std::unique_ptr<Steering> mSteering;
 
+        /**
+         * Keep track of the last queued move tick, so that we only ever act on the latest.
+         * This helps with when new steering goals are added, and old scheduled ticks should be ignored.
+         */
+        Atlas::Message::IntType mMoveTickSerialNumber;
+
         void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 
         void processMoveTick(const Operation& op, OpVector& res);
@@ -77,6 +83,8 @@ class AwareMind : public BaseMind
         void requestAwareness(const MemEntity& entity);
 
         void parseTerrain(const Atlas::Message::Element& terrainElement);
+
+        void insertTickForMove(OpVector& res, double futureSeconds);
 
 };
 
