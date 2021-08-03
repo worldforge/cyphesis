@@ -454,7 +454,7 @@ void Awareness::removeEntity(const MemEntity& observer, const MemEntity& entity)
     }
 }
 
-void Awareness::processEntityUpdate(EntityEntry& entityEntry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp)
+bool Awareness::processEntityUpdate(EntityEntry& entityEntry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp)
 {
     bool hasNewPosition = false;
     bool hasNewBbox = false;
@@ -603,6 +603,7 @@ void Awareness::processEntityUpdate(EntityEntry& entityEntry, const MemEntity& e
             }
         }
     }
+    return hasNewBbox || hasNewPosition;
 }
 
 bool Awareness::avoidObstacles(long avatarEntityId,

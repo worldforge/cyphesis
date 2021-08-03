@@ -487,7 +487,15 @@ class Awareness
          */
         size_t mObserverCount;
 
-        void processEntityUpdate(EntityEntry& entry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp);
+        /**
+         * Processes updates to an entity, and reacts if the position changed.
+         * @param entry
+         * @param entity
+         * @param ent
+         * @param timestamp
+         * @return True if any position or size changed.
+         */
+        bool processEntityUpdate(EntityEntry& entry, const MemEntity& entity, const Atlas::Objects::Entity::RootEntity& ent, double timestamp);
 
         /**
          * @brief Rebuild the tile at the specific index.

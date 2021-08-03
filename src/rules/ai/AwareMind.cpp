@@ -227,14 +227,8 @@ void AwareMind::entityUpdated(MemEntity& entity, const Atlas::Objects::Entity::R
     if (mAwareness) {
         mAwareness->updateEntity(*m_ownEntity, entity, ent);
 
-
-        //Update the awareness if location, position, velocity, orientation, scale or bbox has changed
-        if (ent->hasAttrFlag(Atlas::Objects::Entity::LOC_FLAG)
-            || ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)
-            || ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
-            || ent->hasAttr("orientation")
-            || ent->hasAttr("bbox")
-            || ent->hasAttr("scale")) {
+        if (ent->hasAttrFlag(Atlas::Objects::Entity::VELOCITY_FLAG)
+            || ent->hasAttr("orientation")) {
 
             //If it was ourselves that moved we should notify steering that it shouldn't wait any more for a movement op.
             if (entity.getIntId() == m_ownEntity->getIntId()) {
