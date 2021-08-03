@@ -415,7 +415,7 @@ void MindsProperty::moveOtherEntity(LocatedEntity& ent, const Operation& op, OpV
         auto bbox = ScaleProperty::scaledBbox(*other);
         auto radius = bbox.isValid() ? bbox.boundingSphere().radius() : 0;
         //Check that we can reach the edge of the entity if it's placed in its new location.
-        if (!ent.canReach({targetLoc, targetPos}, (float)radius)) {
+        if (!ent.canReach({targetLoc, targetPos}, (float) radius)) {
             ent.clientError(op, "Target is too far away.", res, op->getFrom());
             return;
         }
@@ -554,6 +554,7 @@ void MindsProperty::mindLookOperation(LocatedEntity& ent, const Operation& op, O
             return;
         }
     } else {
+        //TODO: handle multiple entities being looked at in one op, up to some limit.
         const Root& arg = args.front();
         if (arg->isDefaultId()) {
             log(ERROR, ent.describeEntity() + " mindLookOperation: Op has no ID");

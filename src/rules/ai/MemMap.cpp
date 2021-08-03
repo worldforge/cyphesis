@@ -182,14 +182,19 @@ MemMap::~MemMap()
 void MemMap::sendLooks(OpVector& res)
 {
     debug_print("MemMap::sendLooks")
-    for (auto& id : m_additionsById) {
+    size_t i = 0;
+    //TODO: refactor into a system based on fixed time steps instead, to not overwhelm the server.
+    //We'll process 3 items per call, as not to overwhelm the server.
+    while (i < 3 && !m_additionsById.empty()) {
+        auto id = std::move(m_additionsById.front());
+        m_additionsById.pop_front();
+        //TODO: look at multiple entities with one op, up to some limit set by the server.
         Look l;
         Anonymous look_arg;
         look_arg->setId(id);
         l->setArgs1(std::move(look_arg));
-        res.push_back(std::move(l));
+        res.emplace_back(std::move(l));
     }
-    m_additionsById.clear();
 }
 
 Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
@@ -199,7 +204,8 @@ Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
     assert(m_entities.find(int_id) == m_entities.end());
 
     debug_print("MemMap::add_id")
-    m_additionsById.push_back(id);
+    m_additionsById.emplace_back(id);
+    //TODO: Should we perhaps wait with creating new entities until we've actually gotten the entity data?
     Ref<MemEntity> entity(new MemEntity(id, int_id));
     addEntity(entity);
     return entity;

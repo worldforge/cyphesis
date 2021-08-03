@@ -88,7 +88,7 @@ const TypeNode* TypeResolver::requestType(const std::string& id, OpVector& res)
             get->setFrom(*m_typeProviderId);
         }
 
-        res.push_back(get);
+        res.emplace_back(std::move(get));
 
         m_pendingTypes[id] = {};
     }

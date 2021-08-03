@@ -192,7 +192,7 @@ void BaseMind::ThinkOperation(const Operation& op, OpVector& res)
             mres.front()->setRefno(op->getSerialno());
         }
         for (auto& resOp : mres) {
-            res.push_back(resOp);
+            res.emplace_back(std::move(resOp));
         }
 
     }
@@ -211,6 +211,7 @@ void BaseMind::AppearanceOperation(const Operation& op, OpVector& res)
         auto entity = m_map.getAdd(id);
         if (entity) {
             if (arg->hasAttrFlag(Atlas::Objects::STAMP_FLAG)) {
+                //TODO: look over this whole system, so it's either implemented correctly or removed.
                 if ((int) arg->getStamp() != entity->getSeq()) {
                     Look l;
                     Anonymous m;
@@ -483,7 +484,6 @@ void BaseMind::operation(const Operation& op, OpVector& res)
             }
         }
     }
-
     std::copy(mOutgoingOperations.begin(), mOutgoingOperations.end(), std::back_inserter(res));
     mOutgoingOperations.clear();
     m_map.collectTypeResolverOps(res);
