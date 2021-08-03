@@ -64,7 +64,6 @@ class NPCMind(ai.Mind):
         self.pending_things = []
         self._reverse_knowledge()
         self.goals = []
-        self.money_transfers = []
         self.transfers = []
         # A map containing lists of goals which are to be triggered
         self.trigger_goals = {}
@@ -81,7 +80,6 @@ class NPCMind(ai.Mind):
             self.entities[entity.id] = entity
 
         self.add_hook_set("add_map")
-        self.update_hook_set("update_map")
         self.delete_hook_set("delete_map")
         self.add_property_callback('_goals', 'goals_updated')
         self.add_property_callback('_knowledge', 'knowledge_updated')
@@ -232,17 +230,6 @@ class NPCMind(ai.Mind):
                 res += op_res
         return res
 
-    def update_map(self, obj):
-        """Hook called by underlying map code when an entity is updated.
-
-        Fix ownership category for objects owned temporary under 'Foo' type."""
-        # print "Map update",obj
-        foo_lst = self.things.get('Foo', [])
-        for foo in foo_lst[:]:  # use copy in loop, because it might get modified
-            if foo.id == obj.id:
-                self.remove_thing(foo)
-                self.add_thing(obj)
-
     def delete_map(self, obj):
         """Hook called by underlying map code when an entity is deleted."""
         # print("Removing entity %s" % obj.id)
@@ -294,20 +281,6 @@ class NPCMind(ai.Mind):
                     result = self.message_queue + result
                     self.message_queue = None
                 return op_tick + result
-
-    def sight_move_operation(self, op):
-        """change position in our local map
-        
-        This method is automatically invoked by the C++ BaseMind code, due to its *_*_operation name."""
-        obj = self.map.update(op[0], op.get_seconds())
-        if obj.parent and obj.parent.id == self.entity.id:
-            self.add_thing(obj)
-            if op.to != self.id:
-                self.transfers.append((op.from_, obj.id))
-            # TODO: remove this, we should do bartering in a different way
-            if obj.type[0] == "coin" and op.from_ != self.id:
-                self.money_transfers.append([op.from_, 1])
-                return Operation("imaginary", Entity(description="accepts"))
 
     def think_get_operation(self, op):
         """A Think op wrapping a Get op is used to inquire about the status of a mind.
