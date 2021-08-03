@@ -76,15 +76,20 @@ class AwareMind : public BaseMind
          */
         Atlas::Message::IntType mMoveTickSerialNumber;
 
+        bool mNavigationTickScheduled;
+
         void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 
         void processMoveTick(const Operation& op, OpVector& res);
+
+        void processNavigationTick(OpVector& res);
 
         void requestAwareness(const MemEntity& entity);
 
         void parseTerrain(const Atlas::Message::Element& terrainElement);
 
         void insertTickForMove(OpVector& res, double futureSeconds);
+        void insertTickForNavigation(OpVector& res);
 
 };
 

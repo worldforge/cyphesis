@@ -105,6 +105,14 @@
   }
 #endif //STUB_AwareMind_processMoveTick
 
+#ifndef STUB_AwareMind_processNavigationTick
+//#define STUB_AwareMind_processNavigationTick
+  void AwareMind::processNavigationTick(OpVector& res)
+  {
+    
+  }
+#endif //STUB_AwareMind_processNavigationTick
+
 #ifndef STUB_AwareMind_requestAwareness
 //#define STUB_AwareMind_requestAwareness
   void AwareMind::requestAwareness(const MemEntity& entity)
@@ -128,6 +136,14 @@
     
   }
 #endif //STUB_AwareMind_insertTickForMove
+
+#ifndef STUB_AwareMind_insertTickForNavigation
+//#define STUB_AwareMind_insertTickForNavigation
+  void AwareMind::insertTickForNavigation(OpVector& res)
+  {
+    
+  }
+#endif //STUB_AwareMind_insertTickForNavigation
 
 
 #endif

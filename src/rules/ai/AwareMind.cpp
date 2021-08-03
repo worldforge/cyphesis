@@ -51,7 +51,8 @@ AwareMind::AwareMind(const std::string& mind_id,
         mSharedTerrain(sharedTerrain),
         mAwarenessStoreProvider(awarenessStoreProvider),
         mAwarenessStore(nullptr),
-        mMoveTickSerialNumber(0)
+        mMoveTickSerialNumber(0),
+        mNavigationTickScheduled(false)
 {
 }
 
@@ -92,6 +93,10 @@ void AwareMind::operation(const Operation& op, OpVector& res)
                 }
                 return;
             }
+            if (arg->getName() == "navigation") {
+                processNavigationTick(res);
+                return;
+            }
         }
     }
     BaseMind::operation(op, res);
@@ -102,24 +107,39 @@ double AwareMind::getCurrentServerTime() const
     return mServerTime;
 }
 
+void AwareMind::processNavigationTick(OpVector& res)
+{
+    rmt_ScopedCPUSample(AwareMind_processNavigationTick, 0)
+    mNavigationTickScheduled = false;
+    bool shouldScheduleNewTick = false;
+    if (mAwareness) {
+        auto remainingDirtyTiles = mAwareness->rebuildDirtyTile();
+        if (remainingDirtyTiles > 0) {
+            shouldScheduleNewTick = true;
+        } else {
+            if (mAwareness->needsPruning()) {
+                mAwareness->pruneTiles();
+            }
+            if (mAwareness->needsPruning()) {
+                shouldScheduleNewTick = true;
+            }
+        }
+        if (shouldScheduleNewTick) {
+            insertTickForNavigation(res);
+        }
+    }
+}
+
+
 void AwareMind::processMoveTick(const Operation& op, OpVector& res)
 {
     rmt_ScopedCPUSample(AwareMind_processMoveTick, 0)
     //Default to checking movement every 0.2 seconds, unless steering tells us otherwise
     double futureTick = 0.2;
 
-    if (mAwareness) {
-        auto remainingDirtyTiles = mAwareness->rebuildDirtyTile();
-        if (remainingDirtyTiles > 0) {
-            futureTick = 0;
-        } else {
-            if (mAwareness->needsPruning()) {
-                mAwareness->pruneTiles();
-            }
-            if (mAwareness->needsPruning()) {
-                futureTick = 0;
-            }
-        }
+    if (mAwareness && mAwareness->hasDirtyAwareTiles()) {
+        //This will only insert a tick if there's none already scheduled.
+        insertTickForNavigation(res);
     }
 
     if (mSteering) {
@@ -331,5 +351,20 @@ void AwareMind::insertTickForMove(OpVector& res, double futureSeconds)
     tick->setTo(getId());
     tick->setFrom(getId());
     res.emplace_back(std::move(tick));
+}
+
+
+void AwareMind::insertTickForNavigation(OpVector& res)
+{
+    if (!mNavigationTickScheduled) {
+        Atlas::Objects::Operation::Tick tick;
+        Atlas::Objects::Entity::Anonymous arg;
+        arg->setName("navigation");
+        tick->setArgs1(std::move(arg));
+        tick->setTo(getId());
+        tick->setFrom(getId());
+        res.emplace_back(std::move(tick));
+        mNavigationTickScheduled = true;
+    }
 }
 

@@ -98,8 +98,9 @@ struct EntityConnections
     bool isIgnored;
 };
 
-template <typename T>
-struct TimestampedProperty {
+template<typename T>
+struct TimestampedProperty
+{
     T data;
     double timestamp = -1.0;
 };
@@ -243,11 +244,11 @@ class Awareness
          * @return True if the velocity had to be changed in order to avoid obstacles.
          */
         bool avoidObstacles(long avatarEntityId,
-                const WFMath::Point<2>& position,
-                const WFMath::Vector<2>& desiredVelocity,
-                WFMath::Vector<2>& newVelocity,
-                double currentTimestamp,
-                const WFMath::Point<2>* nextWayPoint) const;
+                            const WFMath::Point<2>& position,
+                            const WFMath::Vector<2>& desiredVelocity,
+                            WFMath::Vector<2>& newVelocity,
+                            double currentTimestamp,
+                            const WFMath::Point<2>* nextWayPoint) const;
 
         /**
          * @brief Prunes a tile if possible and needed.
@@ -342,9 +343,20 @@ class Awareness
          * @return True if entity could be found.
          */
         bool projectPosition(long entityId, WFMath::Point<3>& pos, double currentServerTimestamp) const;
+
         WFMath::Point<3> projectPosition(long entityId, double currentServerTimestamp) const;
 
         const std::unordered_map<long, std::unique_ptr<EntityEntry>>& getObservedEntities() const;
+
+        /**
+         * Checks whether there are any dirty aware tiles that needs to be rebuilt.
+         * @return
+         */
+        bool hasDirtyAwareTiles() const
+        {
+            return !mDirtyAwareTiles.empty();
+        }
+
     protected:
 
         IHeightProvider& mHeightProvider;
