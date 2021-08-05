@@ -57,23 +57,27 @@ void OperationsDispatcher<T>::dispatchNextOp()
     }
 }
 
-
 template<typename T>
-bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& processUntil)
+size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::duration duration, std::chrono::steady_clock::duration maxWallClockDuration)
 {
+    size_t count = 0;
+
+    auto processUntilWallClock = std::chrono::steady_clock::now() + maxWallClockDuration;
     bool opsAvailableRightNow;
+    //Use a "do"-loop to make sure that we at least process one op, even if the wall clock limit doesn't allow for it.
+    //This means that in a heavy contested situation we will process one op at least.
     do {
-        auto realtime = getTime();
-        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= realtime;
+        opsAvailableRightNow = !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= duration;
 
         if (opsAvailableRightNow) {
             auto opQueueEntry = std::move(m_operationQueue.top());
             //Pop it before we dispatch it, since dispatching might alter the queue.
             m_operationQueue.pop();
+            count++;
 
             if (m_time_diff_report.count() > 0) {
                 //Check if there's too large a difference in time
-                auto timeDiff = realtime - opQueueEntry.time_for_dispatch;
+                auto timeDiff = duration - opQueueEntry.time_for_dispatch;
                 if (timeDiff > m_time_diff_report) {
                     log(WARNING, String::compose("Op (%1, from %2 to %3) was handled too late. Time diff: %4 seconds. Ops in queue: %5",
                                                  opQueueEntry->getParent(), opQueueEntry.from->describeEntity(),
@@ -83,33 +87,7 @@ bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& 
             dispatchOperation(opQueueEntry);
         }
 
-    } while (opsAvailableRightNow && std::chrono::steady_clock::now() < processUntil);
-
-    // If there are still ops to deliver return true
-    // to tell the server not to sleep when polling clients. This ensures
-    // that we keep processing ops at a the maximum rate without leaving
-    // clients unattended.
-    Monitors::instance().insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
-    return !m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch <= std::chrono::duration_cast<std::chrono::milliseconds>(getTime());
-}
-
-template<typename T>
-size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock)
-{
-    size_t count = 0;
-    auto duration = time_point - std::chrono::steady_clock::time_point{};
-
-    while (!m_operationQueue.empty() && m_operationQueue.top().time_for_dispatch < duration && std::chrono::steady_clock::now() < max_wall_clock) {
-        count++;
-        auto opQueueEntry = std::move(m_operationQueue.top());
-        //Pop it before we dispatch it, since dispatching might alter the queue.
-        m_operationQueue.pop();
-
-        //Set the time of when this op is dispatched. That way, other components in the system can
-        //always use the seconds set on the op to know the current time.
-        opQueueEntry.op->setSeconds(std::chrono::duration_cast<std::chrono::duration<float>>(time_point.time_since_epoch()).count());
-        dispatchOperation(opQueueEntry);
-    }
+    } while (opsAvailableRightNow && std::chrono::steady_clock::now() < processUntilWallClock);
     Monitors::instance().insert("operations_queue", (Atlas::Message::IntType) m_operationQueue.size());
     return count;
 }
@@ -134,13 +112,13 @@ std::chrono::steady_clock::duration OperationsDispatcher<T>::getTime() const
 }
 
 template<typename T>
-std::chrono::steady_clock::duration OperationsDispatcher<T>::timeUntilNextOp() const
+std::chrono::steady_clock::duration OperationsDispatcher<T>::timeUntilNextOp(const std::chrono::steady_clock::duration& currentTime) const
 {
     if (m_operationQueue.empty()) {
         //600 is a fairly large number of seconds
         return std::chrono::seconds(600);
     }
-    return std::chrono::steady_clock::time_point(m_operationQueue.top().time_for_dispatch) - std::chrono::steady_clock::now();
+    return m_operationQueue.top().time_for_dispatch - currentTime;
 }
 
 
@@ -207,7 +185,7 @@ void OperationsDispatcher<T>::addOperationToQueue(Operation op, Ref<T> ent)
     }
     op->setFrom(ent->getId());
     if (opdispatcher_debug_flag) {
-        std::cout << "WorldRouter::addOperationToQueue {" << std::endl;
+        std::cout << "OperationsDispatcher::addOperationToQueue {" << std::endl;
         debug_dump(op, std::cout);
         std::cout << "}" << std::endl << std::flush;
     }

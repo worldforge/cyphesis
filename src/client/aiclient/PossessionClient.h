@@ -47,6 +47,8 @@ class PossessionClient : public BaseClient
 
         const std::unordered_map<std::string, Ref<BaseMind>>& getMinds() const;
 
+        void processResponses(const OpVector& incomingRes, OpVector& outgoingRes);
+
         static long operations_in;
         static long operations_out;
 
@@ -59,6 +61,8 @@ class PossessionClient : public BaseClient
         void operationFromEntity(const Operation& op, Ref<BaseMind> locatedEntity);
 
         std::chrono::steady_clock::duration getTime() const;
+
+        std::chrono::steady_clock::time_point m_startTime;
 
         void scheduleDispatch();
 

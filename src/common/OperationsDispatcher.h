@@ -99,23 +99,12 @@ struct OpQueEntry
 
 struct OperationsHandler
 {
-    /// \brief Main world loop function.
-    /// This function is called whenever the communications code is idle.
-    /// It updates the in-game time, and dispatches operations that are
-    /// now due for dispatch. The number of operations dispatched is specified
-    /// to ensure that client communications are always handled in a timely
-    /// manner. If the maximum number of operations are dispatched, the return
-    /// value indicates that this is the case, and the communications code
-    /// will call this function again as soon as possible rather than sleeping.
-    /// This ensures that the maximum possible number of operations are dispatched
-    /// without becoming unresponsive to client communications traffic.
-    virtual bool idle(const std::chrono::steady_clock::time_point& timeAllowed) = 0;
 
     /**
      * Gets time until the next operation needs to be dispatched.
      * @return Seconds.
      */
-    virtual std::chrono::steady_clock::duration timeUntilNextOp() const = 0;
+    virtual std::chrono::steady_clock::duration timeUntilNextOp(const std::chrono::steady_clock::duration& currentTime) const = 0;
 
     /**
      * @brief Checks if the operation queues have been marked as dirty.
@@ -139,7 +128,7 @@ struct OperationsHandler
 
     virtual void dispatchNextOp() = 0;
 
-    virtual size_t processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock) = 0;
+    virtual size_t processUntil(std::chrono::steady_clock::duration duration, std::chrono::steady_clock::duration maxWallClockDuration) = 0;
 };
 
 /// \brief Handles dispatching of operations at suitable time.
@@ -160,23 +149,11 @@ class OperationsDispatcher : public OperationsHandler
 
         virtual ~OperationsDispatcher();
 
-        /// \brief Main world loop function.
-        /// This function is called whenever the communications code is idle.
-        /// It updates the in-game time, and dispatches operations that are
-        /// now due for dispatch. The number of operations dispatched is limited
-        /// to a supplied number to ensure that client communications are always handled
-        /// in a timely manner. If the maximum number of operations are dispatched, the return
-        /// value indicates that this is the case, and the communications code
-        /// will call this function again as soon as possible rather than sleeping.
-        /// This ensures that the maximum possible number of operations are dispatched
-        /// without becoming unresponsive to client communications traffic.
-        bool idle(const std::chrono::steady_clock::time_point& processUntil) override;
-
         /**
          * Gets the number of seconds until the next operation needs to be dispatched.
          * @return Seconds.
          */
-        std::chrono::steady_clock::duration timeUntilNextOp() const override;
+        std::chrono::steady_clock::duration timeUntilNextOp(const std::chrono::steady_clock::duration& currentTime) const override;
 
         /**
          * @brief Checks if the operation queues have been marked as dirty.
@@ -221,7 +198,7 @@ class OperationsDispatcher : public OperationsHandler
 
         void dispatchNextOp() override;
 
-        size_t processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock) override;
+        size_t processUntil(std::chrono::steady_clock::duration duration, std::chrono::steady_clock::duration maxWallClockDuration) override;
 
     protected:
 

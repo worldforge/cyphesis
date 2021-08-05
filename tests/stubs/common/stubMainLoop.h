@@ -9,7 +9,7 @@
 
 #ifndef STUB_MainLoop_run
 //#define STUB_MainLoop_run
-   void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks, std::chrono::steady_clock::time_point& time)
+   void MainLoop::run(bool daemon, boost::asio::io_context& io_context, OperationsHandler& operationsHandler, const Callbacks& callbacks, std::chrono::steady_clock::duration& time)
   {
     
   }

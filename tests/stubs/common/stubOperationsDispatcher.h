@@ -44,17 +44,9 @@
 #endif //STUB_OpQueEntry_OpQueEntry_DTOR
 
 
-#ifndef STUB_OperationsHandler_idle
-//#define STUB_OperationsHandler_idle
-  bool OperationsHandler::idle(const std::chrono::steady_clock::time_point& timeAllowed)
-  {
-    return false;
-  }
-#endif //STUB_OperationsHandler_idle
-
 #ifndef STUB_OperationsHandler_timeUntilNextOp
 //#define STUB_OperationsHandler_timeUntilNextOp
-  std::chrono::steady_clock::duration OperationsHandler::timeUntilNextOp() const
+  std::chrono::steady_clock::duration OperationsHandler::timeUntilNextOp(const std::chrono::steady_clock::duration& currentTime) const
   {
     return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
   }
@@ -102,7 +94,7 @@
 
 #ifndef STUB_OperationsHandler_processUntil
 //#define STUB_OperationsHandler_processUntil
-  size_t OperationsHandler::processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock)
+  size_t OperationsHandler::processUntil(std::chrono::steady_clock::duration duration, std::chrono::steady_clock::duration maxWallClockDuration)
   {
     return 0;
   }
@@ -128,19 +120,10 @@
   }
 #endif //STUB_OperationsDispatcher_OperationsDispatcher_DTOR
 
-#ifndef STUB_OperationsDispatcher_idle
-//#define STUB_OperationsDispatcher_idle
-  template <typename T>
-  bool OperationsDispatcher<T>::idle(const std::chrono::steady_clock::time_point& processUntil)
-  {
-    return false;
-  }
-#endif //STUB_OperationsDispatcher_idle
-
 #ifndef STUB_OperationsDispatcher_timeUntilNextOp
 //#define STUB_OperationsDispatcher_timeUntilNextOp
   template <typename T>
-  std::chrono::steady_clock::duration OperationsDispatcher<T>::timeUntilNextOp() const
+  std::chrono::steady_clock::duration OperationsDispatcher<T>::timeUntilNextOp(const std::chrono::steady_clock::duration& currentTime) const
   {
     return *static_cast<std::chrono::steady_clock::duration*>(nullptr);
   }
@@ -203,7 +186,7 @@
 #ifndef STUB_OperationsDispatcher_processUntil
 //#define STUB_OperationsDispatcher_processUntil
   template <typename T>
-  size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::time_point time_point, std::chrono::steady_clock::time_point max_wall_clock)
+  size_t OperationsDispatcher<T>::processUntil(std::chrono::steady_clock::duration duration, std::chrono::steady_clock::duration maxWallClockDuration)
   {
     return 0;
   }

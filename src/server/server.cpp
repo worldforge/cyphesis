@@ -473,8 +473,8 @@ namespace {
             Ref<LocatedEntity> baseEntity = new World();
             baseEntity->setType(inheritance.getType("world"));
 
-            std::chrono::steady_clock::time_point time{};
-            auto timeProviderFn = [&]() -> std::chrono::steady_clock::duration { return time - std::chrono::steady_clock::time_point{}; };
+            std::chrono::steady_clock::duration time{};
+            auto timeProviderFn = [&]() -> std::chrono::steady_clock::duration { return time; };
 
             WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
 
@@ -618,8 +618,8 @@ namespace {
 
 
             //Initially there are a couple of pent up operations we need to run to get up to speed. 10 seconds is a suitable large number.
-            world.getOperationsHandler().idle(std::chrono::steady_clock::now() + std::chrono::seconds(10));
-            //Report to log when time diff between when an operation should have been handled and when it actually was
+            world.getOperationsHandler().processUntil(time, std::chrono::seconds(10));
+            //Report to the log when time diff between when an operation should have been handled and when it actually was
             world.getOperationsHandler().m_time_diff_report = std::chrono::milliseconds(200);
 
             //Inner loop, where listeners are active.

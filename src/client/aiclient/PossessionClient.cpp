@@ -50,6 +50,7 @@ PossessionClient::PossessionClient(CommSocket& commSocket,
                                    std::unique_ptr<Inheritance> inheritance,
                                    std::function<void()> reconnectFn) :
         BaseClient(commSocket),
+        m_startTime{std::chrono::steady_clock::now()},
         m_mindFactory(mindFactory),
         m_reconnectFn(std::move(reconnectFn)),
         m_account(nullptr),
@@ -112,7 +113,9 @@ void PossessionClient::operation(const Operation& op, OpVector& res)
 void PossessionClient::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op)
 {
     if (!op.isDefaultFutureSeconds()) {
-        double t = std::chrono::duration_cast<std::chrono::duration<float>>(getTime()).count() + (op.getFutureSeconds() * consts::time_multiplier);
+        auto timeNow = std::chrono::steady_clock::now() - m_startTime;
+        auto timeAsSeconds = std::chrono::duration_cast<std::chrono::duration<float>>(timeNow).count();
+        double t = timeAsSeconds + op.getFutureSeconds();
         op.setSeconds(t);
         op.removeAttrFlag(Atlas::Objects::Operation::FUTURE_SECONDS_FLAG);
     } else if (op.isDefaultSeconds()) {
@@ -120,19 +123,11 @@ void PossessionClient::resolveDispatchTimeForOp(Atlas::Objects::Operation::RootO
     }
 }
 
-void PossessionClient::processOperation(const Operation& op, OpVector& res)
+void PossessionClient::processResponses(const OpVector& incomingRes, OpVector& outgoingRes)
 {
-    if (debug_flag) {
-        std::cout << "PossessionClient::operation received {" << std::endl;
-        debug_dump(op, std::cout);
-        std::cout << "}" << std::endl << std::flush;
-    }
-
-    OpVector accountRes;
-    m_account->operation(op, accountRes);
     bool updatedDispatcher = false;
 
-    for (auto& resOp : accountRes) {
+    for (auto& resOp : incomingRes) {
         if (debug_flag) {
             std::cout << "PossessionClient::operation return {" << std::endl;
             debug_dump(resOp, std::cout);
@@ -149,10 +144,10 @@ void PossessionClient::processOperation(const Operation& op, OpVector& res)
                 log(WARNING, String::compose("Resulting op of type '%1' is set to the mind with id '%2', which can't be found.", resOp->getParent(), resOp->getTo()));
             }
         } else {
-//            if (resOp->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
-//                log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
-//            }
-            res.emplace_back(std::move(resOp));
+            //            if (resOp->getClassNo() != Atlas::Objects::Operation::TICK_NO) {
+            //                log(INFO, String::compose("Out %1 from %2", resOp->getParent(), resOp->getFrom()));
+            //            }
+            outgoingRes.emplace_back(std::move(resOp));
         }
     }
     if (updatedDispatcher) {
@@ -160,9 +155,23 @@ void PossessionClient::processOperation(const Operation& op, OpVector& res)
     }
 }
 
+
+void PossessionClient::processOperation(const Operation& op, OpVector& res)
+{
+    if (debug_flag) {
+        std::cout << "PossessionClient::operation received {" << std::endl;
+        debug_dump(op, std::cout);
+        std::cout << "}" << std::endl << std::flush;
+    }
+
+    OpVector accountRes;
+    m_account->operation(op, accountRes);
+    processResponses(accountRes, res);
+}
+
 std::chrono::steady_clock::duration PossessionClient::getTime() const
 {
-    return std::chrono::steady_clock::now().time_since_epoch();
+    return std::chrono::steady_clock::now() - m_startTime;
 }
 
 
@@ -175,7 +184,7 @@ const std::unordered_map<std::string, Ref<BaseMind>>& PossessionClient::getMinds
 void PossessionClient::scheduleDispatch()
 {
     m_dispatcherTimer.cancel();
-    auto waitTime = m_operationsDispatcher.timeUntilNextOp();
+    auto waitTime = m_operationsDispatcher.timeUntilNextOp(getTime());
 #if BOOST_VERSION >= 106600
     m_dispatcherTimer.expires_after(waitTime);
 #else
@@ -184,7 +193,9 @@ void PossessionClient::scheduleDispatch()
 
     m_dispatcherTimer.async_wait([&](boost::system::error_code ec) {
         if (!ec) {
-            m_operationsDispatcher.idle(std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
+            //process at least one op
+            auto currentTime = getTime();
+            m_operationsDispatcher.processUntil(currentTime, std::chrono::microseconds (100));
             scheduleDispatch();
         }
     });

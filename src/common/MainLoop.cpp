@@ -79,7 +79,7 @@ void MainLoop::run(bool daemon,
                    boost::asio::io_context& io_context,
                    OperationsHandler& operationsHandler,
                    const Callbacks& callbacks,
-                   std::chrono::steady_clock::time_point& time)
+                   std::chrono::steady_clock::duration& time)
 {
 
     boost::asio::signal_set signalSet(io_context);
@@ -116,7 +116,7 @@ void MainLoop::run(bool daemon,
         rmt_ScopedCPUSample(MainLoop, 0)
 
         auto frameStartTime = std::chrono::steady_clock::now();
-        auto max_wall_time = frameStartTime + std::chrono::milliseconds(8);
+        auto max_wall_time = std::chrono::milliseconds(8);
         auto op_handling_expiry_time = frameStartTime + tick_size;
         bool nextOpTimeExpired = false;
 #if BOOST_VERSION >= 106600
