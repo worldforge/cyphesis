@@ -26,8 +26,11 @@
             <map name="domain">
                 <string name="default">stackable</string>
             </map>
+            <map name="name">
+                <string name="default">Silkfoot</string>
+            </map>
             <map name="description">
-                <string name="default">A small and slightly slimy mushroom. The cap has a brown hue. </string>
+                <string name="default">A small and slightly slimy mushroom. The cap has a brown hue.</string>
             </map>
         </map>
         <string name="id">mushroom</string>
@@ -49,6 +52,9 @@
             <map name="description">
                 <string name="default">The cap has a bright red color, with white dots sprinkled throughout. Perhaps you shouldn't eat this one?</string>
             </map>
+            <map name="name">
+                <string name="default">Amanita</string>
+            </map>
         </map>
         <string name="id">amanita</string>
         <string name="objtype">class</string>
@@ -68,6 +74,9 @@
             </map>
             <map name="description">
                 <string name="default">Both the stem and the cap seems almost to glow with a blue hue. The mushroom seems otherworldly.</string>
+            </map>
+            <map name="name">
+                <string name="default">Blue moon</string>
             </map>
         </map>
         <string name="id">bluemoon</string>
@@ -89,6 +98,9 @@
             <map name="description">
                 <string name="default">An earthy aroma seems to eminate from the brownish mushroom.</string>
             </map>
+            <map name="name">
+                <string name="default">Galerina</string>
+            </map>
         </map>
         <string name="id">galerina</string>
         <string name="objtype">class</string>
@@ -105,6 +117,9 @@
             </map>
             <map name="present">
                 <string name="default">dural/plants/mushrooms/amanita_cluster.modeldef</string>
+            </map>
+            <map name="name">
+                <string name="default">Amanita cluster</string>
             </map>
         </map>
         <string name="id">amanita_cluster</string>
@@ -123,6 +138,9 @@
             <map name="present">
                 <string name="default">dural/plants/mushrooms/bluemoon_cluster.modeldef</string>
             </map>
+            <map name="name">
+                <string name="default">Blue moon cluster</string>
+            </map>
         </map>
         <string name="id">bluemoon_cluster</string>
         <string name="objtype">class</string>
@@ -139,6 +157,9 @@
             </map>
             <map name="present">
                 <string name="default">dural/plants/mushrooms/galerina_cluster.modeldef</string>
+            </map>
+            <map name="name">
+                <string name="default">Galerina cluster</string>
             </map>
         </map>
         <string name="id">galerina_cluster</string>

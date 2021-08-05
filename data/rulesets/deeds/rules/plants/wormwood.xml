@@ -4,6 +4,9 @@
             <map name="present">
                 <string name="default">dural/plants/shrubs/bush/bush_gnarly_brown.modeldef</string>
             </map>
+            <map name="name">
+                <string name="default">Wormwood bush</string>
+            </map>
         </map>
         <string name="id">wormwood</string>
         <string name="objtype">class</string>

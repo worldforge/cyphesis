@@ -31,6 +31,12 @@
                     </map>
                 </list>
             </map>
+            <map name="name">
+                <string name="default">Lumber</string>
+            </map>
+            <map name="description">
+                <string name="default">A large piece of wood.</string>
+            </map>
         </map>
         <string name="id">lumber</string>
         <string name="objtype">class</string>

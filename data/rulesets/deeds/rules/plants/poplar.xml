@@ -20,6 +20,9 @@
             <map name="present">
                 <string name="default">dural/plants/trees/poplar/poplar.modeldef</string>
             </map>
+            <map name="name">
+                <string name="default">Poplar</string>
+            </map>
         </map>
         <string name="id">poplar</string>
         <string name="objtype">class</string>

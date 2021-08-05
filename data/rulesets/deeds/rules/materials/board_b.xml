@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">500</float>
             </map>
+            <map name="name">
+                <string name="default">Board</string>
+            </map>
         </map>
         <string name="id">board_b</string>
         <string name="objtype">class</string>

@@ -19,6 +19,9 @@
             <map name="description">
                 <string name="default">A piece of unrefined iron.</string>
             </map>
+            <map name="name">
+                <string name="default">Hematite</string>
+            </map>
             <map name="domain">
                 <string name="default">stackable</string>
             </map>

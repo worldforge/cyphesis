@@ -2,6 +2,12 @@
 
     <map>
         <map name="attributes">
+            <map name="name">
+                <string name="default">Felsite deposit</string>
+            </map>
+            <map name="description">
+                <string name="default">A deposit of felsite.</string>
+            </map>
             <map name="density">
                 <float name="default">2500</float>
             </map>

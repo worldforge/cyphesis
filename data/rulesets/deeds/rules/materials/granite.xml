@@ -2,6 +2,9 @@
 
     <map>
         <map name="attributes">
+            <map name="name">
+                <string name="default">Granite boulder</string>
+            </map>
             <map name="density">
                 <float name="default">2500</float>
             </map>

@@ -12,7 +12,7 @@
                 <string name="default">dural/items/vehicle/cart/model/cart_d.mesh</string>
             </map>
             <map name="name">
-                <string name="default">cart</string>
+                <string name="default">Cart</string>
             </map>
         </map>
         <string name="id">cart_d</string>

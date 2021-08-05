@@ -10,6 +10,9 @@
             <map name="present">
                 <string name="default">dural/items/resources/charcoal/model/charcoal_pile.mesh</string>
             </map>
+            <map name="name">
+                <string name="default">Charcoal pile</string>
+            </map>
         </map>
         <string name="id">charcoal_pile</string>
         <string name="objtype">class</string>

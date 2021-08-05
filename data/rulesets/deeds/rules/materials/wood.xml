@@ -7,6 +7,9 @@
             <map name="present">
                 <string name="default">dural/structures/ossyja_planks/ossyja_planks.modeldef</string>
             </map>
+            <map name="name">
+                <string name="default">Wood</string>
+            </map>
         </map>
         <string name="id">wood</string>
         <string name="objtype">class</string>

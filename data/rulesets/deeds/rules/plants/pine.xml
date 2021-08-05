@@ -23,6 +23,9 @@
             <map name="maxscale">
                 <float name="default">1</float>
             </map>
+            <map name="name">
+                <string name="default">Pine tree</string>
+            </map>
         </map>
         <string name="id">pine</string>
         <string name="objtype">class</string>

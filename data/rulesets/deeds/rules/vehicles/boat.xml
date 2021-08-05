@@ -16,6 +16,9 @@
             <map name="floats">
                 <int name="default">1</int>
             </map>
+            <map name="name">
+                <string name="default">Boat</string>
+            </map>
         </map>
         <string name="id">boat</string>
         <string name="objtype">class</string>

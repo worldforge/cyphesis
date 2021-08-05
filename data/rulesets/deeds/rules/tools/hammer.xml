@@ -13,6 +13,9 @@
             <map name="density">
                 <float name="default">2000</float>
             </map>
+            <map name="name">
+                <string name="default">Hammer</string>
+            </map>
         </map>
         <string name="id">hammer</string>
         <string name="objtype">class</string>

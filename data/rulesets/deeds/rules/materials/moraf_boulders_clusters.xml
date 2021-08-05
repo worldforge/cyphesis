@@ -11,6 +11,9 @@
             <map name="present">
                 <string name="default">dural/environment/boulder/model/moraf_boulders_clusters.mesh</string>
             </map>
+            <map name="name">
+                <string name="default">Boulders</string>
+            </map>
         </map>
         <string name="id">moraf_boulder_cluster</string>
         <string name="objtype">class</string>

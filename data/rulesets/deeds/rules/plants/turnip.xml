@@ -27,6 +27,12 @@
             <map name="present">
                 <string name="default">dural/plants/fruit/beet/beet.modeldef</string>
             </map>
+            <map name="name">
+                <string name="default">Turnip</string>
+            </map>
+            <map name="description">
+                <string name="default">A small purple edible root.</string>
+            </map>
         </map>
         <string name="id">turnip</string>
         <string name="objtype">class</string>
