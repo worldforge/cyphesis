@@ -31,6 +31,7 @@
 #include <wfmath/const.h>
 
 #include <list>
+#include <deque>
 #include <map>
 #include <string>
 #include <boost/optional.hpp>
@@ -82,7 +83,7 @@ class MemMap
         ///and the value of that memory (i.e. disposition: 25)
         std::map<std::string, std::map<std::string, Atlas::Message::Element>> m_entityRelatedMemory;
 
-        OpVector m_typeResolverOps;
+        std::deque<Operation> m_typeResolverOps;
 
         void readEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity&, double timestamp);
 
@@ -119,7 +120,7 @@ class MemMap
             return m_entities;
         }
 
-        void sendLooks(OpVector&);
+        void sendLook(OpVector&);
 
         Ref<MemEntity> del(const std::string& id);
 
@@ -163,7 +164,9 @@ class MemMap
 
         void setListener(MapListener* listener);
 
-        void collectTypeResolverOps(OpVector& res);
+        std::deque<Operation>& getTypeResolverOps() {
+            return m_typeResolverOps;
+        }
 
         const TypeStore& getTypeStore() const;
 

@@ -244,11 +244,11 @@ class NPCMind(ai.Mind):
         This method is automatically invoked by the C++ BaseMind code, due to its *_operation name."""
 
         # Setup a tick operation for thinking
-        think_tick_op = Operation("tick")
-        think_tick_op.set_to(self.id)
-        think_tick_op.set_args([Entity(name="think")])
+        # think_tick_op = Operation("tick")
+        # think_tick_op.set_to(self.id)
+        # think_tick_op.set_args([Entity(name="think")])
 
-        return Operation("look") + think_tick_op
+        return None
 
     def tick_operation(self, op):
         """periodically reassess situation
@@ -806,8 +806,18 @@ class NPCMind(ai.Mind):
         return res
 
     # thinking (needs rewrite)
-    def think(self):
+    def think(self, ent):
+
+        for t in self.pending_things:
+            thing = self.map.get(t)
+            if thing and thing.type[0]:
+                self.add_thing(thing)
+        self.pending_things = []
         output = self.fulfill_goals()
+        if self.message_queue:
+            output = self.message_queue + output
+            self.message_queue = None
+
         #        if output and const.debug_thinking:
         #            log.thinking(str(self)+" result at "+str(self.time)+": "+output[-1][0].description)
         return output

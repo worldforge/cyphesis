@@ -26,10 +26,13 @@
 #include "common/debug.h"
 #include "common/TypeNode.h"
 #include "common/operations/Setup.h"
+#include "common/operations/Tick.h"
 
 #include <Atlas/Objects/SmartPtr.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Anonymous.h>
+
+#include "Remotery.h"
 
 using Atlas::Message::Element;
 using Atlas::Objects::Root;
@@ -52,6 +55,9 @@ BaseMind::BaseMind(const std::string& mindId, std::string entityId, TypeStore& t
         m_serialNoCounter(0),
         m_scriptFactory(nullptr)
 {
+    m_tickControl.navmesh.interval = std::chrono::milliseconds(600);
+    m_tickControl.move.interval = std::chrono::milliseconds(20);
+    m_tickControl.think.interval = std::chrono::milliseconds(500);
     m_typeResolver->m_typeProviderId = mindId;
     m_map.setListener(this);
 }
@@ -64,6 +70,10 @@ BaseMind::~BaseMind()
 
 void BaseMind::init(OpVector& res)
 {
+
+    //Initiate the ticks.
+    processTick(res);
+
     Look look;
     Root lookArg;
     lookArg->setId(m_entityId);
@@ -317,13 +327,10 @@ void BaseMind::setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity)
     s->setArgs1(setup_arg);
     operation(s, res);
 
-    //Start by sending a unspecified "Look". This tells the server to send us a bootstrapped view.
+    //Start by sending an unspecified "Look". This tells the server to send us a bootstrapped view.
     Look l;
     l->setFrom(getId());
     res.push_back(l);
-
-    res.insert(std::end(res), std::begin(m_pendingOperations), std::end(m_pendingOperations));
-    m_pendingOperations.clear();
 }
 
 
@@ -385,7 +392,7 @@ void BaseMind::addPropertyScriptCallback(std::string propertyName, std::string s
         if (m_ownEntity->hasAttr(propertyName)) {
             OpVector res;
             m_script->hook(scriptMethod, m_ownEntity.get(), res);
-            std::copy(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
+            std::move(res.begin(), res.end(), std::back_inserter(mOutgoingOperations));
         }
     }
 }
@@ -396,7 +403,7 @@ void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::Ro
     if (!op.isDefaultSeconds()) {
         //Alert if there's a too large difference in time.
         if (op.getSeconds() - mServerTime < -30) {
-            log(WARNING, String::compose("Operation %1 has seconds set (%2) earlier than already recorded seconds (%3).", op.getParent(), op.getSeconds(), mServerTime));
+            log(WARNING, String::compose("Operation '%1' has seconds set (%2) earlier than already recorded seconds (%3).", op.getParent(), op.getSeconds(), mServerTime));
         }
         mServerTime = op.getSeconds();
     }
@@ -405,12 +412,8 @@ void BaseMind::updateServerTimeFromOperation(const Atlas::Objects::Operation::Ro
 
 void BaseMind::operation(const Operation& op, OpVector& res)
 {
-    // This might end up being quite tricky to do
+    rmt_ScopedCPUSample(operation, 0)
 
-    // In the python the following happens here:
-    //   Find out if the op refers to any ids we don't know about.
-    //   If so create look operations to those ids
-    //   Set the minds time and date
     if (debug_flag) {
         std::cout << "BaseMind::operation received {" << std::endl;
         debug_dump(op, std::cout);
@@ -424,6 +427,8 @@ void BaseMind::operation(const Operation& op, OpVector& res)
         InfoOperation(op, res);
     } else if (op_no == Atlas::Objects::Operation::ERROR_NO) {
         ErrorOperation(op, res);
+    } else if (op_no == Atlas::Objects::Operation::TICK_NO) {
+        processTick(res);
     } else {
 
         //If we haven't yet resolved our own entity we should delay delivery of the ops
@@ -439,8 +444,6 @@ void BaseMind::operation(const Operation& op, OpVector& res)
         }
 
 
-        m_map.check(op->getSeconds());
-
         bool isPending = false;
         //Unless it's an Unseen op, we should add the entity the op was from.
         //Note that we might get an op from the account itself, so we need to check for that.
@@ -452,13 +455,13 @@ void BaseMind::operation(const Operation& op, OpVector& res)
             }
         }
         if (!isPending) {
-            m_map.sendLooks(res);
+
             if (m_script) {
                 m_script->operation("call_triggers", op, res);
                 m_script->operation(op->getParent(), op, res);
-//                    if (m_script->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
-//                        return;
-//                    }
+                //                    if (m_script->operation(op->getParent(), op, res) == OPERATION_BLOCKED) {
+                //                        return;
+                //                    }
             }
             switch (op_no) {
                 case Atlas::Objects::Operation::SIGHT_NO:
@@ -484,9 +487,7 @@ void BaseMind::operation(const Operation& op, OpVector& res)
             }
         }
     }
-    std::copy(mOutgoingOperations.begin(), mOutgoingOperations.end(), std::back_inserter(res));
-    mOutgoingOperations.clear();
-    m_map.collectTypeResolverOps(res);
+
 
     for (auto& resOp : res) {
         if (resOp->isDefaultFrom()) {
@@ -506,6 +507,62 @@ void BaseMind::operation(const Operation& op, OpVector& res)
 void BaseMind::externalOperation(const Operation& op, Link&)
 {
 
+}
+
+void BaseMind::processTick(OpVector& res)
+{
+    rmt_ScopedCPUSample(tick, 0)
+    //Start by scheduling the next tick op.
+    Atlas::Objects::Operation::Tick tick;
+    //Do one tick every 10ms. (to be revisited)
+    tick->setFutureSeconds(0.01);
+    tick->setTo(getId());
+    tick->setFrom(getId());
+    res.emplace_back(std::move(tick));
+
+    //Do some housekeeping first.
+    m_map.check(mServerTime);
+    if (m_ownEntity) {
+
+        //Check if we should think?
+        auto now = std::chrono::steady_clock::now();
+        if (now >= m_tickControl.think.next) {
+            rmt_ScopedCPUSample(think, 0)
+            m_script->hook("think", m_ownEntity.get(), res);
+            m_tickControl.think.next = now + m_tickControl.think.interval;
+        }
+
+        //Check if we should do move updates?
+        if (now >= m_tickControl.move.next) {
+            rmt_ScopedCPUSample(move, 0)
+            processMove(res);
+            m_tickControl.move.next = now + m_tickControl.move.interval;
+        }
+
+        //Check if we should do navmesh updates?
+        if (now >= m_tickControl.navmesh.next) {
+            rmt_ScopedCPUSample(navmesh, 0)
+            processNavmesh();
+            m_tickControl.navmesh.next = now + m_tickControl.navmesh.interval;
+        }
+
+        //Fill up with any pending ops.
+        if (!m_pendingOperations.empty()) {
+            res.emplace_back(std::move(m_pendingOperations.front()));
+            m_pendingOperations.pop_front();
+        }
+
+        if (!mOutgoingOperations.empty()) {
+            res.emplace_back(std::move(mOutgoingOperations.front()));
+            mOutgoingOperations.pop_front();
+        }
+    }
+    if (!m_map.getTypeResolverOps().empty()) {
+        res.emplace_back(std::move(m_map.getTypeResolverOps().front()));
+        m_map.getTypeResolverOps().pop_front();
+    }
+
+    m_map.sendLook(res);
 }
 
 

@@ -94,7 +94,9 @@ void MemMap::readEntity(const Ref<MemEntity>& entity, const RootEntity& ent, dou
     if (ent->hasAttrFlag(Atlas::Objects::PARENT_FLAG)) {
         auto& parent = ent->getParent();
         if (!entity->getType()) {
-            auto type = m_typeResolver.requestType(parent, m_typeResolverOps);
+            OpVector res;
+            auto type = m_typeResolver.requestType(parent, res);
+            std::move(res.begin(), res.end(), std::back_inserter(m_typeResolverOps));
 
             if (type) {
                 entity->setType(type);
@@ -179,13 +181,10 @@ MemMap::~MemMap()
 }
 
 
-void MemMap::sendLooks(OpVector& res)
+void MemMap::sendLook(OpVector& res)
 {
     debug_print("MemMap::sendLooks")
-    size_t i = 0;
-    //TODO: refactor into a system based on fixed time steps instead, to not overwhelm the server.
-    //We'll process 3 items per call, as not to overwhelm the server.
-    while (i < 3 && !m_additionsById.empty()) {
+    if (!m_additionsById.empty()) {
         auto id = std::move(m_additionsById.front());
         m_additionsById.pop_front();
         //TODO: look at multiple entities with one op, up to some limit set by the server.
@@ -452,7 +451,7 @@ EntityVector MemMap::findByLocation(const EntityLocation& loc,
 
 void MemMap::check(const double& time)
 {
-
+    //Check if the entity hasn't been seen the last 600 seconds, and if so removes it.
     if (m_checkIterator == m_entities.end()) {
         m_checkIterator = m_entities.begin();
     } else {
@@ -510,12 +509,6 @@ std::vector<Ref<MemEntity>> MemMap::resolveEntitiesForType(const TypeNode* typeN
         m_unresolvedEntities.erase(I);
     }
     return resolvedEntities;
-}
-
-void MemMap::collectTypeResolverOps(OpVector& res)
-{
-    res.insert(std::end(res), std::begin(m_typeResolverOps), std::end(m_typeResolverOps));
-    m_typeResolverOps.clear();
 }
 
 const TypeStore& MemMap::getTypeStore() const

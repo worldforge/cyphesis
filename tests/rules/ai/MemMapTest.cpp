@@ -208,7 +208,7 @@ void MemMaptest::test_sendLooks()
 {
     TestMemMap tested(*m_typeResolver);
     OpVector res;
-    tested.sendLooks(res);
+    tested.sendLook(res);
 }
 
 void MemMaptest::test_del()

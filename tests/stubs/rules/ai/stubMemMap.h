@@ -96,13 +96,13 @@
   }
 #endif //STUB_MemMap_find
 
-#ifndef STUB_MemMap_sendLooks
-//#define STUB_MemMap_sendLooks
-  void MemMap::sendLooks(OpVector&)
+#ifndef STUB_MemMap_sendLook
+//#define STUB_MemMap_sendLook
+  void MemMap::sendLook(OpVector&)
   {
     
   }
-#endif //STUB_MemMap_sendLooks
+#endif //STUB_MemMap_sendLook
 
 #ifndef STUB_MemMap_del
 //#define STUB_MemMap_del
@@ -207,14 +207,6 @@
     
   }
 #endif //STUB_MemMap_setListener
-
-#ifndef STUB_MemMap_collectTypeResolverOps
-//#define STUB_MemMap_collectTypeResolverOps
-  void MemMap::collectTypeResolverOps(OpVector& res)
-  {
-    
-  }
-#endif //STUB_MemMap_collectTypeResolverOps
 
 #ifndef STUB_MemMap_getTypeStore
 //#define STUB_MemMap_getTypeStore

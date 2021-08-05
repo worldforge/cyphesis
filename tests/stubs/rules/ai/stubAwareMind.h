@@ -49,14 +49,6 @@
   }
 #endif //STUB_AwareMind_entityDeleted
 
-#ifndef STUB_AwareMind_operation
-//#define STUB_AwareMind_operation
-  void AwareMind::operation(const Operation& op, OpVector& res)
-  {
-    
-  }
-#endif //STUB_AwareMind_operation
-
 #ifndef STUB_AwareMind_updatePath
 //#define STUB_AwareMind_updatePath
   int AwareMind::updatePath()
@@ -97,21 +89,21 @@
   }
 #endif //STUB_AwareMind_setOwnEntity
 
-#ifndef STUB_AwareMind_processMoveTick
-//#define STUB_AwareMind_processMoveTick
-  void AwareMind::processMoveTick(const Operation& op, OpVector& res)
+#ifndef STUB_AwareMind_processMove
+//#define STUB_AwareMind_processMove
+  void AwareMind::processMove(OpVector& res)
   {
     
   }
-#endif //STUB_AwareMind_processMoveTick
+#endif //STUB_AwareMind_processMove
 
-#ifndef STUB_AwareMind_processNavigationTick
-//#define STUB_AwareMind_processNavigationTick
-  void AwareMind::processNavigationTick(OpVector& res)
+#ifndef STUB_AwareMind_processNavmesh
+//#define STUB_AwareMind_processNavmesh
+  void AwareMind::processNavmesh()
   {
     
   }
-#endif //STUB_AwareMind_processNavigationTick
+#endif //STUB_AwareMind_processNavmesh
 
 #ifndef STUB_AwareMind_requestAwareness
 //#define STUB_AwareMind_requestAwareness
@@ -128,22 +120,6 @@
     
   }
 #endif //STUB_AwareMind_parseTerrain
-
-#ifndef STUB_AwareMind_insertTickForMove
-//#define STUB_AwareMind_insertTickForMove
-  void AwareMind::insertTickForMove(OpVector& res, double futureSeconds)
-  {
-    
-  }
-#endif //STUB_AwareMind_insertTickForMove
-
-#ifndef STUB_AwareMind_insertTickForNavigation
-//#define STUB_AwareMind_insertTickForNavigation
-  void AwareMind::insertTickForNavigation(OpVector& res)
-  {
-    
-  }
-#endif //STUB_AwareMind_insertTickForNavigation
 
 
 #endif

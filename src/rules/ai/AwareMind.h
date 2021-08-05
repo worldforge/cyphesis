@@ -51,8 +51,6 @@ class AwareMind : public BaseMind
 
         void entityDeleted(MemEntity& entity) override;
 
-        void operation(const Operation& op, OpVector& res) override;
-
         int updatePath();
 
         Steering* getSteering();
@@ -76,21 +74,15 @@ class AwareMind : public BaseMind
          */
         Atlas::Message::IntType mMoveTickSerialNumber;
 
-        bool mNavigationTickScheduled;
-
         void setOwnEntity(OpVector& res, Ref<MemEntity> ownEntity) override;
 
-        void processMoveTick(const Operation& op, OpVector& res);
+        void processMove(OpVector& res) override;
 
-        void processNavigationTick(OpVector& res);
+        void processNavmesh() override;
 
         void requestAwareness(const MemEntity& entity);
 
         void parseTerrain(const Atlas::Message::Element& terrainElement);
-
-        void insertTickForMove(OpVector& res, double futureSeconds);
-        void insertTickForNavigation(OpVector& res);
-
 };
 
 #endif /* RULESETS_MIND_AWAREMIND_H_ */

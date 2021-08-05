@@ -23,6 +23,8 @@
 
 #include "common/ScriptKit.h"
 
+#include <deque>
+
 class SimpleTypeStore;
 
 struct TypeStore;
@@ -50,7 +52,7 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         double mServerTime;
 
         std::map<std::string, std::vector<Operation>> m_pendingEntitiesOperations;
-        std::vector<Operation> m_pendingOperations;
+        std::deque<Operation> m_pendingOperations;
 
         long m_serialNoCounter;
 
@@ -76,10 +78,29 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
 
         /**
          * A list of outgoing operations as result from script hooks and callbacks.
-         * These should be sent whenever the "operations" method completes (as that's the main entry to any other methods being called).
+         * These should be at every tick.
          */
-        OpVector mOutgoingOperations;
+        std::deque<Operation> mOutgoingOperations;
 
+        struct TimeControl
+        {
+            std::chrono::steady_clock::time_point next;
+            std::chrono::steady_clock::duration interval;
+        };
+
+        struct
+        {
+            TimeControl think;
+            TimeControl move;
+            TimeControl navmesh;
+        } m_tickControl;
+
+
+        virtual void processMove(OpVector& res)
+        {};
+
+        virtual void processNavmesh()
+        {};
     public:
         BaseMind(const std::string& mindId, std::string entityId, TypeStore& typeStore);
 
@@ -172,6 +193,8 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
 
         void setDeleteHook(std::string hook)
         { m_deleteHook = std::move(hook); }
+
+        void processTick(OpVector& res);
 
 };
 

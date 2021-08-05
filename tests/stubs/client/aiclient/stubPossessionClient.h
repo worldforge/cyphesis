@@ -32,6 +32,14 @@
   }
 #endif //STUB_PossessionClient_getMinds
 
+#ifndef STUB_PossessionClient_processResponses
+//#define STUB_PossessionClient_processResponses
+  void PossessionClient::processResponses(const OpVector& incomingRes, OpVector& outgoingRes)
+  {
+    
+  }
+#endif //STUB_PossessionClient_processResponses
+
 #ifndef STUB_PossessionClient_operation
 //#define STUB_PossessionClient_operation
   void PossessionClient::operation(const Operation& op, OpVector& res)

@@ -225,5 +225,13 @@
   }
 #endif //STUB_BaseMind_describeEntity
 
+#ifndef STUB_BaseMind_processTick
+//#define STUB_BaseMind_processTick
+  void BaseMind::processTick(OpVector& res)
+  {
+    
+  }
+#endif //STUB_BaseMind_processTick
+
 
 #endif
