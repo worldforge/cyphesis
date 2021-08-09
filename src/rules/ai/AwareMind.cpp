@@ -30,10 +30,6 @@
 #include "navigation/Awareness.h"
 #include "navigation/Steering.h"
 
-#include "common/operations/Tick.h"
-#include "common/debug.h"
-
-
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Operation.h>
 #include <Atlas/Objects/Entity.h>
