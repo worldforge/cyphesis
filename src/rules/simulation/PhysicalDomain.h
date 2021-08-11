@@ -121,7 +121,8 @@ class PhysicalDomain : public Domain
 
         struct ClosenessObserverEntry;
 
-        struct PhysicalData {
+        struct PhysicalData
+        {
             Point3D pos;
             Vector3D velocity;
             Vector3D angularVelocity;
@@ -261,6 +262,8 @@ class PhysicalDomain : public Domain
              */
             BulletEntry* waterNearby = nullptr;
 
+            double step_factor = 0;
+
         };
 
         struct TerrainEntry
@@ -335,7 +338,7 @@ class PhysicalDomain : public Domain
         /**
          * Keeps track of all stepping entries, i.e. those we want clamped to the ground.
          */
-        std::map<long, std::pair<BulletEntry*, float>> m_steppingEntries;
+        std::set<BulletEntry*> m_steppingEntries;
 
         /**
          * Struct used to pass information on to the tick callbacks.
@@ -343,7 +346,7 @@ class PhysicalDomain : public Domain
         struct WorldInfo
         {
             std::map<long, PropelEntry>* propellingEntries;
-            std::map<long, std::pair<BulletEntry*, float>>* steppingEntries;
+            std::set<BulletEntry*>* steppingEntries;
         };
 
         WorldInfo mWorldInfo;
@@ -363,7 +366,8 @@ class PhysicalDomain : public Domain
 
         double m_visibilityCheckCountdown;
 
-        struct {
+        struct
+        {
             PositionProperty positionProperty;
             VelocityProperty velocityProperty;
             AngularVelocityProperty angularVelocityProperty;

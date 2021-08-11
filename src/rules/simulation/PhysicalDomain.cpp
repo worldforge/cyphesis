@@ -551,7 +551,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
         auto steppingEntries = worldInfo->steppingEntries;
         for (auto& entry : *steppingEntries) {
-            auto collisionObject = btRigidBody::upcast(entry.second.first->collisionObject.get());
+            auto collisionObject = btRigidBody::upcast(entry->collisionObject.get());
             //Check that the object has moved, and if so check if it should be clamped to the ground
             if (collisionObject->getInterpolationLinearVelocity().length2() > 0.001) {
                 struct : btCollisionWorld::ContactResultCallback
@@ -575,7 +575,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                 world->contactTest(collisionObject, collideCallback);
                 if (!collideCallback.isHit) {
                     //The entity isn't standing on top of anything. Check that we're not jumping; if not we should try to clamp it to the ground.
-                    if (!entry.second.first->isJumping) {
+                    if (!entry->isJumping) {
                         //Cast a ray from the bottom and check if we're already colliding with the object we hit with our ray.
                         //If we don't collide it means that we're in the air, and should be clamped to the ground.
                         auto& worldTransform = collisionObject->getWorldTransform();
@@ -584,7 +584,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                         btVector3 bottomOfObject = worldTransform.getOrigin();
                         bottomOfObject.setY(aabbMin.y());
                         btVector3 bottomOfRay = bottomOfObject;
-                        float rayDistance = entry.second.second * (aabbMax.y() - aabbMin.y());
+                        float rayDistance = entry->step_factor * (aabbMax.y() - aabbMin.y());
 
                         bottomOfRay.setY(bottomOfRay.y() - rayDistance);
 
@@ -608,7 +608,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
                     }
                 } else {
                     //The entity is standing on top of something, make sure it's not marked as jumping anymore.
-                    entry.second.first->isJumping = false;
+                    entry->isJumping = false;
                 }
             }
         }
@@ -1226,8 +1226,9 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
             }
 
             auto stepFactorProp = entity.getPropertyType<double>("step_factor");
-            if (stepFactorProp && stepFactorProp->data() > 0) {
-                m_steppingEntries.emplace(entity.getIntId(), std::make_pair(&entry, stepFactorProp->data()));
+            entry.step_factor = stepFactorProp ? stepFactorProp->data() : 0;
+            if (entry.step_factor > 0) {
+                m_steppingEntries.emplace(&entry);
             }
 
             //Should we only do this for "free" and "projectile"?
@@ -1421,11 +1422,11 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     entry->angularVelocityProperty.data() = {};
     entry->entity.applyProperty(entry->angularVelocityProperty);
 
+    m_steppingEntries.erase(entry.get());
 
     m_entries.erase(I);
 
     m_propellingEntries.erase(entity.getIntId());
-    m_steppingEntries.erase(entity.getIntId());
 
     std::set<LocatedEntity*> transformedEntities;
     for (auto* attachedEntry : attachedEntities) {
@@ -1721,12 +1722,15 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 //        sendMoveSight(*bulletEntry, true, false, false, false, false);
     } else if (name == "step_factor") {
         auto stepFactorProp = dynamic_cast<const Property<double>*>(&prop);
-        auto I = m_steppingEntries.find(bulletEntry.entity.getIntId());
+        if (stepFactorProp) {
+            bulletEntry.step_factor = stepFactorProp->data();
+        } else {
+            bulletEntry.step_factor = 0;
+        }
+        auto I = m_steppingEntries.find(&bulletEntry);
         if (stepFactorProp && stepFactorProp->data() > 0) {
-            if (I != m_steppingEntries.end()) {
-                I->second.second = static_cast<float>(stepFactorProp->data());
-            } else {
-                m_steppingEntries.emplace(bulletEntry.entity.getIntId(), std::make_pair(&bulletEntry, stepFactorProp->data()));
+            if (I == m_steppingEntries.end()) {
+                m_steppingEntries.emplace(&bulletEntry);
             }
         } else {
             if (I != m_steppingEntries.end()) {
@@ -2275,10 +2279,9 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
 
                     auto K = m_propellingEntries.find(entity.getIntId());
                     if (K == m_propellingEntries.end()) {
-                        const Property<double>* stepFactorProp = entity.getPropertyType<double>("step_factor");
-                        if (stepFactorProp && entry.bbox.isValid()) {
+                        if (entry.step_factor > 0) {
                             auto height = entry.bbox.upperBound(1) - entry.bbox.lowerBound(1);
-                            m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float) (height * stepFactorProp->data())});
+                            m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float) (height * entry.step_factor)});
                         } else {
                             m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0});
                         }
