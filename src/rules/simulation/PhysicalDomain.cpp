@@ -1477,8 +1477,10 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 //            }
 //        }
     } else if (name == PropelProperty::property_name) {
+        bulletEntry.control.propelProperty = dynamic_cast<const PropelProperty*>(&prop);
         m_propelUpdateQueue.insert(&bulletEntry);
     } else if (name == "_direction") {
+        bulletEntry.control.directionProperty = dynamic_cast<const QuaternionProperty*>(&prop);
         m_directionUpdateQueue.insert(&bulletEntry);
     } else if (name == "friction") {
         if (bulletEntry.collisionObject) {
@@ -2789,45 +2791,42 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     postDuration = {};
 
     for (auto& bulletEntry : m_propelUpdateQueue) {
-        auto propelProp = bulletEntry->entity.getPropertyClassFixed<PropelProperty>();
-        if (propelProp) {
-            applyPropel(*bulletEntry, propelProp->data());
-        }
+        auto propelProp = bulletEntry->control.propelProperty;
+        applyPropel(*bulletEntry, propelProp->data());
     }
     m_propelUpdateQueue.clear();
     for (auto& bulletEntry : m_directionUpdateQueue) {
-        auto directionProperty = bulletEntry->entity.getPropertyClass<QuaternionProperty>("_direction");
-        if (directionProperty) {
-            auto& direction = directionProperty->data();
-            if (direction.isValid()) {
-                if (bulletEntry->collisionShape) {
-                    btTransform transform = bulletEntry->collisionObject->getWorldTransform();
-                    auto existingRotation = transform.getRotation();
-                    auto newRotation = Convert::toBullet(direction);
-                    if (existingRotation != newRotation) {
-                        transform.setRotation(newRotation);
-                        bulletEntry->collisionObject->setWorldTransform(transform);
+        auto directionProperty = bulletEntry->control.directionProperty;
+        auto& direction = directionProperty->data();
+        if (direction.isValid()) {
+            if (bulletEntry->collisionShape) {
+                btTransform transform = bulletEntry->collisionObject->getWorldTransform();
+                auto existingRotation = transform.getRotation();
+                auto newRotation = Convert::toBullet(direction);
+                if (existingRotation != newRotation) {
+                    transform.setRotation(newRotation);
+                    bulletEntry->collisionObject->setWorldTransform(transform);
 
-                        bulletEntry->orientationProperty.data() = direction;
-                        bulletEntry->orientationProperty.flags().removeFlags(prop_flag_persistence_clean);
-                        bulletEntry->entity.applyProperty(bulletEntry->orientationProperty);
-                        bulletEntry->entity.removeFlags(entity_orient_clean);
+                    bulletEntry->orientationProperty.data() = direction;
+                    bulletEntry->orientationProperty.flags().removeFlags(prop_flag_persistence_clean);
+                    bulletEntry->entity.applyProperty(bulletEntry->orientationProperty);
+                    bulletEntry->entity.removeFlags(entity_orient_clean);
 
-                        if (!bulletEntry->addedToMovingList) {
-                            m_movingEntities.emplace_back(bulletEntry);
-                            bulletEntry->addedToMovingList = true;
-                            bulletEntry->markedAsMovingThisFrame = false;
-                            bulletEntry->markedAsMovingLastFrame = false;
-                        }
+                    if (!bulletEntry->addedToMovingList) {
+                        m_movingEntities.emplace_back(bulletEntry);
+                        bulletEntry->addedToMovingList = true;
+                        bulletEntry->markedAsMovingThisFrame = false;
+                        bulletEntry->markedAsMovingLastFrame = false;
                     }
+                }
 //                    transform.setRotation(Convert::toBullet(orientation));
 //                    transform.setOrigin(Convert::toBullet(entry.positionProperty.data()));
 //                    transform *= btTransform(btQuaternion::getIdentity(), entry.centerOfMassOffset).inverse();
 
-                    //entry.collisionObject->setWorldTransform(transform);
-                }
+                //entry.collisionObject->setWorldTransform(transform);
             }
         }
+
     }
     m_directionUpdateQueue.clear();
 

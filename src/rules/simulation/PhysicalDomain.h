@@ -65,6 +65,8 @@ class btCollisionObject;
 
 class btAxisSweep3;
 
+class PropelProperty;
+
 /**
  * @brief A regular physical domain, behaving very much like the real world.
  *
@@ -263,6 +265,15 @@ class PhysicalDomain : public Domain
             BulletEntry* waterNearby = nullptr;
 
             double step_factor = 0;
+
+            /**
+             * Contains references to properties that control the entity, if they exists.
+             */
+            struct
+            {
+                const PropelProperty* propelProperty;
+                const QuaternionProperty* directionProperty;
+            } control;
 
         };
 
