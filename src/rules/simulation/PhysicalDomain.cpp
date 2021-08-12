@@ -552,8 +552,10 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         auto steppingEntries = worldInfo->steppingEntries;
         for (auto& entry : *steppingEntries) {
             auto collisionObject = btRigidBody::upcast(entry->collisionObject.get());
-            //Check that the object has moved, and if so check if it should be clamped to the ground
-            if (collisionObject->getInterpolationLinearVelocity().length2() > 0.001) {
+            //Check that the object has moved, and if so check if it should be clamped to the ground.
+            //But only do this if there's no major upwards jumping motion.
+            auto isJumpingUpwards = entry->isJumping && collisionObject->getInterpolationLinearVelocity().y() > 0;
+            if (collisionObject->getInterpolationLinearVelocity().length2() > 0.001 && !isJumpingUpwards) {
                 struct : btCollisionWorld::ContactResultCallback
                 {
                     bool isHit = false;
