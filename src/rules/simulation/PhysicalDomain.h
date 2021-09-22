@@ -279,7 +279,7 @@ class PhysicalDomain : public Domain
 
         struct TerrainEntry
         {
-            std::unique_ptr<std::array<float, 65 * 65>> data;
+            std::unique_ptr<std::array<btScalar, 65 * 65>> data;
             std::unique_ptr<btRigidBody> rigidBody;
             std::unique_ptr<btCollisionShape> shape;
         };

@@ -90,10 +90,10 @@ namespace {
         return std::abs(a - b) < epsilon;
     }
 
-    bool fuzzyEquals(const WFMath::Point<3>& a, const WFMath::Point<3>& b, WFMath::CoordType epsilon)
-    {
-        return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
-    }
+//    bool fuzzyEquals(const WFMath::Point<3>& a, const WFMath::Point<3>& b, WFMath::CoordType epsilon)
+//    {
+//        return fuzzyEquals(a.x(), b.x(), epsilon) && fuzzyEquals(a.y(), b.y(), epsilon) && fuzzyEquals(a.z(), b.z(), epsilon);
+//    }
 
     bool fuzzyEquals(const WFMath::Vector<3>& a, const WFMath::Vector<3>& b, WFMath::CoordType epsilon)
     {
@@ -519,7 +519,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         rmt_ScopedCPUSample(PhysicalDomain_preTickCallback, 0)
         auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
         auto propellingEntries = worldInfo->propellingEntries;
-        for (auto& entry : *propellingEntries) {
+        for (auto& entry: *propellingEntries) {
             float verticalVelocity = entry.second.rigidBody->getLinearVelocity().y();
 
             //TODO: check if we're on the ground, in the water or flying and apply different speed modifiers
@@ -550,7 +550,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
         auto start = std::chrono::steady_clock::now();
         auto worldInfo = static_cast<WorldInfo*>(world->getWorldUserInfo());
         auto steppingEntries = worldInfo->steppingEntries;
-        for (auto& entry : *steppingEntries) {
+        for (auto& entry: *steppingEntries) {
             auto collisionObject = btRigidBody::upcast(entry->collisionObject.get());
             //Check that the object has moved, and if so check if it should be clamped to the ground.
             //But only do this if there's no major upwards jumping motion.
@@ -633,12 +633,12 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
 PhysicalDomain::~PhysicalDomain()
 {
-    for (auto& planeBody : m_borderPlanes) {
+    for (auto& planeBody: m_borderPlanes) {
         m_dynamicsWorld->removeCollisionObject(planeBody.first.get());
     }
     m_borderPlanes.clear();
 
-    for (auto& entry : m_terrainSegments) {
+    for (auto& entry: m_terrainSegments) {
         m_dynamicsWorld->removeCollisionObject(entry.second.rigidBody.get());
     }
     m_terrainSegments.clear();
@@ -647,7 +647,7 @@ PhysicalDomain::~PhysicalDomain()
     m_entries[m_entity.getIntId()].release();
     m_entries.erase(m_entity.getIntId());
 
-    for (auto& entry : m_entries) {
+    for (auto& entry: m_entries) {
         if (entry.second->collisionObject) {
             m_dynamicsWorld->removeCollisionObject(entry.second->collisionObject.get());
         }
@@ -737,8 +737,8 @@ void PhysicalDomain::buildTerrainPages()
     if (terrainProperty) {
         auto& terrain = terrainProperty->getData(m_entity);
         auto& segments = terrain.getTerrain();
-        for (auto& row : segments) {
-            for (auto& entry : row.second) {
+        for (auto& row: segments) {
+            for (auto& entry: row.second) {
                 auto& segment = entry.second;
                 auto& terrainEntry = buildTerrainPage(*segment);
                 if (friction) {
@@ -771,22 +771,29 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
     ss << segment.getXRef() << ":" << segment.getZRef();
     TerrainEntry& terrainEntry = m_terrainSegments[ss.str()];
     if (!terrainEntry.data) {
-        terrainEntry.data = std::make_unique<std::array<float, 65 * 65>>();
+        terrainEntry.data = std::make_unique<std::array<btScalar, 65 * 65>>();
     }
     if (terrainEntry.rigidBody) {
         m_dynamicsWorld->removeRigidBody(terrainEntry.rigidBody.get());
         terrainEntry.rigidBody.reset();
         terrainEntry.shape.reset();
     }
-    float* data = terrainEntry.data->data();
-    const float* mercatorData = segment.getPoints();
-
-    memcpy(data, mercatorData, vertexCountOneSide * vertexCountOneSide * sizeof(float));
-
+    auto* data = terrainEntry.data->data();
+    const auto* mercatorData = segment.getPoints();
     float min = segment.getMin();
     float max = segment.getMax();
 
+    //Even though the API seems to allow various types of data to be specified in the ctor for btHeightfieldTerrainShape it seems that when using doubles as btScalar we must also supply doubles.
+#if defined(BT_USE_DOUBLE_PRECISION)
+    for (size_t i = 0; i < vertexCountOneSide * vertexCountOneSide; ++i) {
+        data[i] = mercatorData[i];
+    }
     terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
+#else
+    memcpy(data, mercatorData, vertexCountOneSide * vertexCountOneSide * sizeof(double));
+    terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_DOUBLE, false);
+#endif
+
 
     terrainEntry.shape->setLocalScaling(btVector3(1, 1, 1));
 
@@ -878,7 +885,7 @@ void PhysicalDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity,
     auto observingI = m_entries.find(observingEntity.getIntId());
     if (observingI != m_entries.end()) {
         const auto& bulletEntry = observingI->second;
-        for (const auto& observedEntry : bulletEntry->observedByThis) {
+        for (const auto& observedEntry: bulletEntry->observedByThis) {
             entityList.push_back(&observedEntry->entity);
         }
     }
@@ -891,7 +898,7 @@ std::vector<LocatedEntity*> PhysicalDomain::getObservingEntitiesFor(const Locate
     auto observedI = m_entries.find(observedEntity.getIntId());
     if (observedI != m_entries.end()) {
         auto& bulletEntry = observedI->second;
-        for (const auto& observingEntry : bulletEntry->observingThis) {
+        for (const auto& observingEntry: bulletEntry->observingThis) {
             entityList.push_back(&observingEntry->entity);
         }
     }
@@ -933,7 +940,7 @@ void PhysicalDomain::updateObserverEntry(BulletEntry& bulletEntry, OpVector& res
             appearedEntry->observingThis.insert(&bulletEntry);
         };
 
-        for (auto& entry : bulletEntry.observedByThisChanges) {
+        for (auto& entry: bulletEntry.observedByThisChanges) {
             if (entry.second == BulletEntry::VisibilityQueueOperationType::Add) {
                 appearFn(entry.first);
                 bulletEntry.observedByThis.insert(entry.first);
@@ -1004,7 +1011,7 @@ void PhysicalDomain::updateObservedEntry(BulletEntry& bulletEntry, OpVector& res
             newObserverEntry->observedByThis.insert(&bulletEntry);
         };
 
-        for (auto& entry : bulletEntry.observingThisChanges) {
+        for (auto& entry: bulletEntry.observingThisChanges) {
             if (entry.second == BulletEntry::VisibilityQueueOperationType::Add) {
                 appearFn(entry.first);
                 bulletEntry.observingThis.insert(entry.first);
@@ -1293,7 +1300,7 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
     OpVector res;
     updateObserverEntry(entry, res);
     updateObservedEntry(entry, res, false); //Don't send any ops, since that will be handled by the calling code when changing locations.
-    for (auto& op : res) {
+    for (auto& op: res) {
         m_entity.sendWorld(op);
     }
 }
@@ -1326,7 +1333,7 @@ void PhysicalDomain::toggleChildPerception(LocatedEntity& entity)
 
             OpVector res;
             updateObserverEntry(*entry, res);
-            for (auto& op : res) {
+            for (auto& op: res) {
                 m_entity.sendWorld(op);
             }
         }
@@ -1371,10 +1378,10 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     if (entry->visibilitySphere) {
         m_visibilityWorld->removeCollisionObject(entry->visibilitySphere.get());
     }
-    for (BulletEntry* observer : entry->observingThis) {
+    for (BulletEntry* observer: entry->observingThis) {
         observer->observedByThis.erase(entry.get());
     }
-    for (BulletEntry* observedEntry : entry->observedByThis) {
+    for (BulletEntry* observedEntry: entry->observedByThis) {
         observedEntry->observingThis.erase(entry.get());
     }
 
@@ -1404,7 +1411,7 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     }
 
     auto closenessObservationsCopy = entry->closenessObservations;
-    for (auto& observation : closenessObservationsCopy) {
+    for (auto& observation: closenessObservationsCopy) {
         if (observation->callback) {
             observation->callback();
         }
@@ -1431,7 +1438,7 @@ void PhysicalDomain::removeEntity(LocatedEntity& entity)
     m_propellingEntries.erase(entity.getIntId());
 
     std::set<LocatedEntity*> transformedEntities;
-    for (auto* attachedEntry : attachedEntities) {
+    for (auto* attachedEntry: attachedEntities) {
         applyTransformInternal(*attachedEntry,
                                {},
                                attachedEntry->positionProperty.data(),
@@ -1566,7 +1573,7 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
 
                         //If there are attached entities, we must also make them free.
                         auto attachedEntitiesCopy = bulletEntry.attachedEntities;
-                        for (auto attachedEntry : attachedEntitiesCopy) {
+                        for (auto attachedEntry: attachedEntitiesCopy) {
                             attachedEntry->entity.setAttrValue("mode", modeProp->data());
                         }
                         if (!bulletEntry.attachedEntities.empty()) {
@@ -1887,12 +1894,12 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, const Proper
 {
     if (name == "friction") {
         auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
-        for (auto& entry : m_terrainSegments) {
+        for (auto& entry: m_terrainSegments) {
             entry.second.rigidBody->setFriction(static_cast<btScalar>(frictionProp->data()));
         }
     } else if (name == "friction_roll") {
         auto frictionRollingProp = dynamic_cast<const Property<double>*>(&prop);
-        for (auto& entry : m_terrainSegments) {
+        for (auto& entry: m_terrainSegments) {
             entry.second.rigidBody->setRollingFriction(static_cast<btScalar>(frictionRollingProp->data()));
         }
     } else if (name == "friction_spin") {
@@ -1900,7 +1907,7 @@ void PhysicalDomain::entityPropertyApplied(const std::string& name, const Proper
         log(WARNING, "Your version of Bullet doesn't support spinning friction.");
 #else
         auto frictionSpinningProp = dynamic_cast<const Property<double>*>(&prop);
-        for (auto& entry : m_terrainSegments) {
+        for (auto& entry: m_terrainSegments) {
             entry.second.rigidBody->setSpinningFriction(static_cast<btScalar>(frictionSpinningProp->data()));
         }
 #endif
@@ -2191,7 +2198,7 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry& entry, const WFMath:
     if (entry.entity.hasFlags(entity_admin)) {
         OpVector res;
         updateObserverEntry(entry, res);
-        for (auto& op : res) {
+        for (auto& op: res) {
             BaseWorld::instance().message(op, m_entity);
         }
     }
@@ -2419,7 +2426,7 @@ void PhysicalDomain::applyTransformInternal(BulletEntry& entry,
             //This is quite expensive since we're iterating through all entities (on an unordered map).
             //However, since we normally never expect a water body to move on a live server we do it this way, since we then avoid
             //having to keep track of which entities are in water and not.
-            for (auto& entityEntry : m_entries) {
+            for (auto& entityEntry: m_entries) {
                 auto childEntry = entityEntry.second.get();
                 if (childEntry->waterNearby == &entry) {
                     if (!childEntry->addedToMovingList) {
@@ -2468,7 +2475,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
     rmt_ScopedCPUSample(PhysicalDomain_processDirtyTerrainAreas, 0)
 
     std::set<Mercator::Segment*> dirtySegments;
-    for (auto& area : m_dirtyTerrainAreas) {
+    for (auto& area: m_dirtyTerrainAreas) {
         m_terrain->processSegments(area, [&](Mercator::Segment& s, int, int) { dirtySegments.insert(&s); });
     }
     m_dirtyTerrainAreas.clear();
@@ -2492,7 +2499,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
     auto worldHeight = mContainingEntityEntry.bbox.highCorner().y() - mContainingEntityEntry.bbox.lowCorner().y();
 
     debug_print("dirty segments: " << dirtySegments.size())
-    for (auto& segment : dirtySegments) {
+    for (auto& segment: dirtySegments) {
         debug_print("rebuilding segment at x: " << segment->getXRef() << " z: " << segment->getZRef())
 
         auto& terrainEntry = buildTerrainPage(*segment);
@@ -2539,7 +2546,7 @@ void PhysicalDomain::processDirtyTerrainAreas()
         m_dynamicsWorld->contactTest(&collObject, callback);
 
         debug_print("Matched " << callback.m_entries.size() << " entries")
-        for (BulletEntry* entry : callback.m_entries) {
+        for (BulletEntry* entry: callback.m_entries) {
             debug_print("Adjusting " << entry->entity.describeEntity())
             Anonymous anon;
             anon->setId(entry->entity.getId());
@@ -2612,7 +2619,7 @@ void PhysicalDomain::sendMoveSight(BulletEntry& entry, bool posChange, bool velo
             double seconds = BaseWorld::instance().getTimeAsSeconds();
             setOp->setSeconds(seconds);
 
-            for (BulletEntry* observer : entry.observingThis) {
+            for (BulletEntry* observer: entry.observingThis) {
                 Sight s;
                 s->setArgs1(setOp);
                 s->setTo(observer->entity.getId());
@@ -2707,14 +2714,14 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
         if (posChange && !bulletEntry.closenessObservations.empty()) {
             //Since callbacks can remove observations we need to first collect att invalid observations, and then remove them carefully.
             std::vector<ClosenessObserverEntry*> invalidEntries;
-            for (auto& observation : bulletEntry.closenessObservations) {
+            for (auto& observation: bulletEntry.closenessObservations) {
                 if (!isWithinReach(*observation->reacher, *observation->target, observation->reach, {})) {
                     invalidEntries.emplace_back(observation);
                 }
             }
 
 
-            for (auto& observation : invalidEntries) {
+            for (auto& observation: invalidEntries) {
                 //It's important that we check that the observation still is valid, since it's possible that callbacks alters the collections.
                 auto I = bulletEntry.closenessObservations.find(observation);
                 if (I != bulletEntry.closenessObservations.end()) {
@@ -2790,12 +2797,12 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     postDuration = {};
 
-    for (auto& bulletEntry : m_propelUpdateQueue) {
+    for (auto& bulletEntry: m_propelUpdateQueue) {
         auto propelProp = bulletEntry->control.propelProperty;
         applyPropel(*bulletEntry, propelProp->data());
     }
     m_propelUpdateQueue.clear();
-    for (auto& bulletEntry : m_directionUpdateQueue) {
+    for (auto& bulletEntry: m_directionUpdateQueue) {
         auto directionProperty = bulletEntry->control.directionProperty;
         auto& direction = directionProperty->data();
         if (direction.isValid()) {
@@ -2839,7 +2846,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     //The list of projectilecollisions will contain duplicates, so we need to keep track of the last
     //processed and check that it does not repeat.
     BulletEntry* lastCollisionEntry = nullptr;
-    for (const auto& entry : projectileCollisions) {
+    for (const auto& entry: projectileCollisions) {
         auto projectileEntry = entry.first;
         if (lastCollisionEntry == projectileEntry) {
             continue;
@@ -2862,7 +2869,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
         if (modeDataProperty && modeDataProperty->getMode() == ModeProperty::Mode::Projectile) {
             auto& projectileData = modeDataProperty->getProjectileData();
             //Copy any data found in "mode_data".
-            for (const auto& projectile_entry : projectileData.extra) {
+            for (const auto& projectile_entry: projectileData.extra) {
                 ent->setAttr(projectile_entry.first, projectile_entry.second, &Inheritance::instance().getFactories());
             }
         }
@@ -3022,7 +3029,7 @@ void PhysicalDomain::processWaterBodies()
         }
     };
 
-    for (auto entry : m_movingEntities) {
+    for (auto entry: m_movingEntities) {
         if (entry->waterNearby) {
             testEntityIsSubmergedFn(entry, entry->waterNearby);
         }
@@ -3109,7 +3116,7 @@ void PhysicalDomain::transformRestingEntities(PhysicalDomain::BulletEntry& entry
             childTransform.rotate(orientationChange);
         }
         //Move all of the objects that were resting on our object.
-        for (auto& restingEntry : objectsRestingOnOurObject) {
+        for (auto& restingEntry: objectsRestingOnOurObject) {
             //Check that we haven't already handled this entry, to avoid infinite loop with complex shapes resting on each other.
             if (transformedEntities.find(&restingEntry->entity) != transformedEntities.end()) {
                 continue;
@@ -3337,7 +3344,7 @@ void PhysicalDomain::removed()
 {
     //Copy to allow modifications to the field during callbacks.
     auto observations = std::move(m_closenessObservations);
-    for (auto& entry : observations) {
+    for (auto& entry: observations) {
         entry.second->callback();
     }
 }
