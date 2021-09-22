@@ -24,6 +24,7 @@
 #include <fstream>
 #include <wfmath/wfmath.h>
 #include <vector>
+#include <LinearMath/btScalar.h>
 
 /**
  * Deserializas OGRE3D meshes and extracts geometry only.
@@ -37,7 +38,7 @@ class OgreMeshDeserializer
 
         void deserialize();
 
-        std::vector<float> m_vertices;
+        std::vector<btScalar> m_vertices;
         std::vector<unsigned int> m_indices;
         WFMath::AxisBox<3> m_bounds;
         float m_radius;

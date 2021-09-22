@@ -2050,7 +2050,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                                 m_dynamicsWorld->contactPairTest(collisionObject, plantedOnBulletEntry->collisionObject.get(), callback);
 
                                                 if (callback.hadHit) {
-                                                    pos.y() = std::max(callback.highestPoint.y(), h);
+                                                    pos.y() = std::max(callback.highestPoint.y(), (btScalar) h);
                                                     plantedOn = true;
                                                     plantOnEntity(entry, plantedOnBulletEntry.get());
                                                     break;
@@ -2095,7 +2095,7 @@ void PhysicalDomain::calculatePositionForEntity(ModeProperty::Mode mode, Physica
                                     auto plantedOnEntry = static_cast<BulletEntry*>(callback.highestObject->getUserPointer());
                                     if (plantedOnEntry) {
                                         assert(plantedOnEntry->entity.getId() != entity.getId());
-                                        pos.y() = std::max(callback.highestPoint.y(), h);
+                                        pos.y() = std::max(callback.highestPoint.y(), (btScalar) h);
                                         plantedOn = true;
 
                                         plantOnEntity(entry, plantedOnEntry);
@@ -3308,7 +3308,7 @@ std::vector<Domain::CollisionEntry> PhysicalDomain::queryCollision(const WFMath:
         result.emplace_back(Domain::CollisionEntry{&entry.first->entity,
                                                    Convert::toWF<WFMath::Point<3>>(entry.second.getPositionWorldOnA()),
 //                                                   std::abs(entry.second.getDistance())});
-                                                   entry.second.getPositionWorldOnB().distance(pos.getOrigin())});
+                                                   (float) entry.second.getPositionWorldOnB().distance(pos.getOrigin())});
     }
     return result;
 }

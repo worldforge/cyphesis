@@ -302,7 +302,7 @@ std::shared_ptr<btCollisionShape> GeometryProperty::createShape(const WFMath::Ax
 void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> meshDeserializer)
 {
     //Shared pointers since we want these values to survive as long as "meshShape" is alive.
-    auto verts = std::make_shared<std::vector<float>>();
+    auto verts = std::make_shared<std::vector<btScalar>>();
     auto indices = std::make_shared<std::vector<unsigned int>>();
 
     if (!meshDeserializer) {

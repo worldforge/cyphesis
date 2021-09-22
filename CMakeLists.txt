@@ -143,6 +143,16 @@ find_program(SUBVERSION_CMD NAMES svn)
 find_program(PYTHON_CMD NAMES python)
 find_program(RSYNC_CMD NAMES rsync)
 
+#It would be better if Bullet provided a header which specified how it was built...
+OPTION(BT_USE_DOUBLE_PRECISION "Using double precision with Bullet. This should match what Bullet has been compiled with." OFF)
+
+if (BT_USE_DOUBLE_PRECISION)
+    message(STATUS "Using double precision with Bullet. Make sure that Bullet is compiled with this too.")
+    add_definitions(-DBT_USE_DOUBLE_PRECISION=1)
+endif ()
+
+
+
 add_custom_target(assets-download)
 if (RSYNC_CMD)
     add_custom_command(
