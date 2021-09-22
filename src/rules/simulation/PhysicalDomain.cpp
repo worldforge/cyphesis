@@ -785,13 +785,13 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
 
     //Even though the API seems to allow various types of data to be specified in the ctor for btHeightfieldTerrainShape it seems that when using doubles as btScalar we must also supply doubles.
 #if defined(BT_USE_DOUBLE_PRECISION)
-    for (size_t i = 0; i < vertexCountOneSide * vertexCountOneSide; ++i) {
+    for (size_t i = 0; i < (size_t)(vertexCountOneSide * vertexCountOneSide); ++i) {
         data[i] = mercatorData[i];
     }
-    terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
-#else
-    memcpy(data, mercatorData, vertexCountOneSide * vertexCountOneSide * sizeof(double));
     terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_DOUBLE, false);
+#else
+    memcpy(data, mercatorData, vertexCountOneSide * vertexCountOneSide * sizeof(float));
+    terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_FLOAT, false);
 #endif
 
 
