@@ -476,6 +476,10 @@ namespace {
             std::chrono::steady_clock::duration time{};
             auto timeProviderFn = [&]() -> std::chrono::steady_clock::duration { return time; };
 
+            PossessionAuthenticator possessionAuthenticator;
+
+            ExternalMindsManager externalMindsManager(possessionAuthenticator);
+
             WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
 
             std::map<int, int> operationsMap;
@@ -492,9 +496,6 @@ namespace {
 
             CyPy_Server::registerWorld(&world);
 
-            PossessionAuthenticator possessionAuthenticator;
-
-            ExternalMindsManager externalMindsManager(possessionAuthenticator);
             StorageManager store(world, serverDatabase->database(), entityBuilder, propertyManager);
 
             //Instantiate at startup
