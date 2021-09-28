@@ -36,12 +36,11 @@
 #include <iostream>
 
 #include <Python.h>
-#include <Python-ast.h>
 // This function is directly lifted from Python 2.6.7, pythonrun.c. It
 // forms part of the implementation of PyRun_SimpleStringFlags() as replicated
 // below, with modifications to treat parse errors differently.
 static PyObject *
-run_mod(mod_ty mod, const char *filename, PyObject *globals, PyObject *locals,
+run_mod(_mod* mod, const char *filename, PyObject *globals, PyObject *locals,
          PyCompilerFlags *flags, PyArena *arena)
 {
     PyCodeObject *co;
@@ -71,7 +70,7 @@ int CyPyRun_SimpleString(const char * command, PyObject * exception)
     if (arena == nullptr)
         return -1;
 
-    mod_ty mod = PyParser_ASTFromString(command, "<string>", Py_file_input, flags, arena);
+    auto mod = PyParser_ASTFromString(command, "<string>", Py_file_input, flags, arena);
     if (mod == nullptr) {
         PyArena_Free(arena);
         PyErr_Print();

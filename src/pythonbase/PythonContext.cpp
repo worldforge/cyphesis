@@ -20,7 +20,6 @@
 
 #include "common/log.h"
 #include <Python.h>
-#include <Python-ast.h>
 
 PythonContext::PythonContext()
         : m_module("__main__"),
@@ -36,10 +35,10 @@ PythonContext::~PythonContext()
 }
 
 static Py::Object
-run_mod(mod_ty mod, const char* filename, const Py::Object& globals, const Py::Object& locals,
+run_mod(_mod& mod, const char* filename, const Py::Object& globals, const Py::Object& locals,
         PyCompilerFlags* flags, PyArena* arena)
 {
-    Py::Object co((PyObject*) PyAST_Compile(mod, filename, flags, arena), true);
+    Py::Object co((PyObject*) PyAST_Compile(&mod, filename, flags, arena), true);
     if (co.isNull()) {
         return Py::None();
     }
@@ -51,18 +50,16 @@ std::string PythonContext::runCommand(const std::string& s)
 {
     // This is expanded from PyRun_SimpleString in the Python library
     // so that we can report errors better at the parsing stage
-    mod_ty mod;
-
-    mod = PyParser_ASTFromString(s.c_str(),
-                                 "<string>",
-                                 Py_single_input,
-                                 nullptr,
-                                 m_arena);
+    auto mod = PyParser_ASTFromString(s.c_str(),
+                                      "<string>",
+                                      Py_single_input,
+                                      nullptr,
+                                      m_arena);
     if (mod == nullptr) {
         PyErr_Print();
         return "[parseerror]";
     }
-    auto ret = run_mod(mod, "<string>", m_globals, m_locals, nullptr, m_arena);
+    auto ret = run_mod(*mod, "<string>", m_globals, m_locals, nullptr, m_arena);
     if (ret.isNull()) {
         PyErr_Print();
         return "ERROR";
