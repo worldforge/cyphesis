@@ -19,8 +19,8 @@
 #ifndef RULES_PYTHON_CONTEXT_H
 #define RULES_PYTHON_CONTEXT_H
 
-#include <string>
 #include "pycxx/CXX/Objects.hxx"
+#include <string>
 
 /// \brief Handle running python commands in the servers interpreter context
 class PythonContext
@@ -29,7 +29,6 @@ class PythonContext
         Py::Module m_module;
         Py::Dict m_globals;
         Py::Dict m_locals;
-        struct _arena* m_arena;
     public:
         PythonContext();
 

@@ -24,43 +24,25 @@
 PythonContext::PythonContext()
         : m_module("__main__"),
           m_globals(m_module.getDict()),
-          m_locals(),
-          m_arena(PyArena_New())
+          m_locals()
 {
 }
 
-PythonContext::~PythonContext()
-{
-    PyArena_Free(m_arena);
-}
+PythonContext::~PythonContext() = default;
 
-static Py::Object
-run_mod(_mod& mod, const char* filename, const Py::Object& globals, const Py::Object& locals,
-        PyCompilerFlags* flags, PyArena* arena)
-{
-    Py::Object co((PyObject*) PyAST_Compile(&mod, filename, flags, arena), true);
-    if (co.isNull()) {
-        return Py::None();
-    }
-
-    return Py::Object(PyEval_EvalCode(*co, *globals, *locals));
-}
 
 std::string PythonContext::runCommand(const std::string& s)
 {
-    // This is expanded from PyRun_SimpleString in the Python library
-    // so that we can report errors better at the parsing stage
-    auto mod = PyParser_ASTFromString(s.c_str(),
-                                      "<string>",
-                                      Py_single_input,
-                                      nullptr,
-                                      m_arena);
-    if (mod == nullptr) {
+    Py::String filename("<string>");
+    Py::Object parsed(Py_CompileStringObject(s.c_str(), *filename, Py_single_input, nullptr, 0), true);
+
+    if (PyErr_Occurred()) {
         PyErr_Print();
         return "[parseerror]";
     }
-    auto ret = run_mod(*mod, "<string>", m_globals, m_locals, nullptr, m_arena);
-    if (ret.isNull()) {
+    Py::Object ret(PyEval_EvalCode(*parsed, *m_globals, *m_locals), true);
+
+    if (PyErr_Occurred()) {
         PyErr_Print();
         return "ERROR";
     }
