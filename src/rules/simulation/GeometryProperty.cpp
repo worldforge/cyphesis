@@ -390,7 +390,7 @@ void GeometryProperty::buildMeshCreator(std::shared_ptr<OgreMeshDeserializer> me
         }
     }
 
-    int vertStride = sizeof(float) * 3;
+    int vertStride = sizeof(btScalar) * 3;
     int indexStride = sizeof(unsigned int) * 3;
 
     int indicesCount = static_cast<int>(indices->size() / 3);

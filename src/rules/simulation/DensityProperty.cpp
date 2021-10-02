@@ -32,7 +32,7 @@ using Atlas::Objects::Operation::Set;
 static const bool debug_flag = false;
 
 
-void DensityProperty::apply(LocatedEntity&entity)
+void DensityProperty::apply(LocatedEntity& entity)
 {
     updateMass(entity);
 }
@@ -45,22 +45,25 @@ void DensityProperty::updateMass(LocatedEntity& entity) const
         WFMath::Vector<3> volumeVector = bbox.highCorner() - bbox.lowCorner();
         float volume = volumeVector.x() * volumeVector.y() * volumeVector.z();
 
-        double mass = volume * m_data;
+        if (!std::isnormal(volume) && volume != 0) {
+            log(WARNING, String::compose("Volume of %1 is not a normal number.", volume));
+        } else {
+            double mass = volume * m_data;
 
-        auto& massProp = entity.requirePropertyClass<Property<double>>("mass", 0);
+            auto& massProp = entity.requirePropertyClass<Property<double>>("mass", mass);
 
-        if (massProp.data() != mass) {
-            massProp.set(mass);
-            massProp.apply(entity);
-            massProp.removeFlags(prop_flag_persistence_clean);
-            massProp.addFlags(prop_flag_unsent);
-            entity.propertyApplied("mass", massProp);
+            if (massProp.data() != mass) {
+                massProp.set(mass);
+                massProp.apply(entity);
+                massProp.removeFlags(prop_flag_persistence_clean);
+                massProp.addFlags(prop_flag_unsent);
+                entity.propertyApplied("mass", massProp);
+            }
         }
-
     }
 }
 
-DensityProperty * DensityProperty::copy() const
+DensityProperty* DensityProperty::copy() const
 {
     return new DensityProperty(*this);
 }
