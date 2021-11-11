@@ -273,6 +273,7 @@ class PhysicalDomain : public Domain
             {
                 const PropelProperty* propelProperty;
                 const QuaternionProperty* directionProperty;
+                const Vector3Property* destinationProperty;
             } control;
 
         };
@@ -342,8 +343,19 @@ class PhysicalDomain : public Domain
          */
         std::map<long, PropelEntry> m_propellingEntries;
 
+        /**
+         * A set of entities that have their "propel" updated and needs to be processed next tick.
+         */
         std::set<BulletEntry*> m_propelUpdateQueue;
+        /**
+         * A set of entities that have their "direction" updated and needs to be processed next tick.
+         */
         std::set<BulletEntry*> m_directionUpdateQueue;
+
+        /**
+         * A set of entities with "destination" set. These needs to be processed each tick to see the propel property needs to be updated.
+         */
+        std::vector<BulletEntry*> m_entriesWithDestination;
 
 
         /**
@@ -466,7 +478,9 @@ class PhysicalDomain : public Domain
 
         void processDirtyTerrainAreas();
 
-        void applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel);
+        void applyDestination(double tickSize, BulletEntry& entry, const PropelProperty* propelProp, const Vector3Property& destinationProp);
+
+        void applyPropel(BulletEntry& entry, btVector3 propel);
 
         void calculatePositionForEntity(ModeProperty::Mode mode, BulletEntry& entry, WFMath::Point<3>& pos);
 

@@ -476,14 +476,16 @@ void MindsProperty::mindSetOperation(LocatedEntity& ent, const Operation& op, Op
                     if (mag > 1.0) {
                         new_propel.normalize();
                     }
-                    cleanedArg->setAttr(entry.first, new_propel.toAtlas());
+                    cleanedArg->setAttr(std::move(entry.first), new_propel.toAtlas());
                 }
             } catch (...) {
                 //just ignore malformed data
             }
 
         } else if (entry.first == "_direction") {
-            cleanedArg->setAttr(entry.first, std::move(entry.second));
+            cleanedArg->setAttr(std::move(entry.first), std::move(entry.second));
+        } else if (entry.first == "_destination") {
+            cleanedArg->setAttr(std::move(entry.first), std::move(entry.second));
         } else if (entry.first == "id") {
             //no-op
         } else {

@@ -105,10 +105,15 @@ void AwareMind::processMove(OpVector& res)
                     log(WARNING, "Orientation to be sent in steering isn't valid.");
                 }
             }
-            //TODO: add back ability to set a destination position.
-//            if (result.destination.isValid()) {
-//                what->setAttr("pos", result.destination.toAtlas());
-//            }
+            if (result.destination.isValid()) {
+                what->setAttr("_destination", result.destination.toAtlas());
+            } else {
+                //Clear out any destination set.
+                auto destination = m_ownEntity->getAttr("_destination");
+                if (destination && (destination->isList() && destination->List().size() == 3)) {
+                    what->setAttr("_destination", {});
+                }
+            }
 
             set->setFrom(getId());
             set->setArgs1(what);

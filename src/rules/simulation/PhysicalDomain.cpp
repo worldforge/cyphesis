@@ -785,7 +785,7 @@ PhysicalDomain::TerrainEntry& PhysicalDomain::buildTerrainPage(Mercator::Segment
 
     //Even though the API seems to allow various types of data to be specified in the ctor for btHeightfieldTerrainShape it seems that when using doubles as btScalar we must also supply doubles.
 #if defined(BT_USE_DOUBLE_PRECISION)
-    for (size_t i = 0; i < (size_t)(vertexCountOneSide * vertexCountOneSide); ++i) {
+    for (size_t i = 0; i < (size_t) (vertexCountOneSide * vertexCountOneSide); ++i) {
         data[i] = mercatorData[i];
     }
     terrainEntry.shape = std::make_unique<btHeightfieldTerrainShape>(vertexCountOneSide, vertexCountOneSide, data, 1.0f, min, max, 1, PHY_DOUBLE, false);
@@ -1231,8 +1231,15 @@ void PhysicalDomain::addEntity(LocatedEntity& entity)
 
             auto propelProp = entity.getPropertyClassFixed<PropelProperty>();
             if (propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO()) {
-                applyPropel(entry, propelProp->data());
+                applyPropel(entry, Convert::toBullet(propelProp->data()));
             }
+            auto destinationProp = entity.getPropertyClass<Vector3Property>("_destination");
+            if (destinationProp && destinationProp->data().isValid()) {
+                childEntityPropertyApplied("_destination", *destinationProp, entry);
+            }
+
+
+            //applyPropel(entry, propelProp, destinationProp);
 
             auto stepFactorProp = entity.getPropertyType<double>("step_factor");
             entry.step_factor = stepFactorProp ? stepFactorProp->data() : 0;
@@ -1489,6 +1496,15 @@ void PhysicalDomain::childEntityPropertyApplied(const std::string& name, const P
     } else if (name == "_direction") {
         bulletEntry.control.directionProperty = dynamic_cast<const QuaternionProperty*>(&prop);
         m_directionUpdateQueue.insert(&bulletEntry);
+    } else if (name == "_destination") {
+        auto destinationProperty = dynamic_cast<const Vector3Property*>(&prop);
+        if (destinationProperty->data().isValid()) {
+
+            bulletEntry.control.destinationProperty = dynamic_cast<const Vector3Property*>(&prop);
+        }
+
+        //Use the propel update queue for destination too, as they both concern propelling.
+        m_propelUpdateQueue.insert(&bulletEntry);
     } else if (name == "friction") {
         if (bulletEntry.collisionObject) {
             auto frictionProp = dynamic_cast<const Property<double>*>(&prop);
@@ -2209,17 +2225,64 @@ void PhysicalDomain::applyNewPositionForEntity(BulletEntry& entry, const WFMath:
 
 }
 
-void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel)
+void PhysicalDomain::applyDestination(double tickSize, BulletEntry& entry, const PropelProperty* propelProp, const Vector3Property& destinationProp)
+{
+    bool hasDestination = destinationProp.data().isValid();
+    bool hasPropel = propelProp && propelProp->data().isValid() && propelProp->data() != WFMath::Vector<3>::ZERO();
+
+    if (hasDestination && entry.collisionObject) {
+        auto currentPos = entry.collisionObject->getWorldTransform().getOrigin();
+        auto btDestination = Convert::toBullet(destinationProp.data());
+        auto distance = currentPos.distance(btDestination);
+
+        //Check if we're overlapping destination. Do this by getting the vertical cross section of the entity.
+//        auto entityRadius = std::max(std::max(entry.bbox.highCorner().x(), entry.bbox.highCorner().z()), std::max(std::abs(entry.bbox.lowCorner().x()), std::abs(entry.bbox.lowCorner().z())));
+
+        //If we're within 0.1 meter we're already there.
+        if (distance < 0.1f) {
+            return;
+        }
+
+        double speed;
+        if (entry.mode == ModeProperty::Mode::Submerged) {
+            speed = entry.speedWater;
+        } else {
+            speed = entry.speedGround;
+        }
+
+        float propelSpeed = 1.0;
+        if (hasPropel) {
+            propelSpeed = propelProp->data().mag();
+        }
+
+        //Check if we should lower our speed to arrive within the next tick.
+        if (propelSpeed * speed * tickSize > distance) {
+            propelSpeed = speed / (distance * tickSize);
+        }
+
+        auto direction = btDestination - currentPos;
+        direction[1] = 0;
+        direction.normalize();
+
+
+        applyPropel(entry, direction * propelSpeed);
+    } else if (hasPropel) {
+        applyPropel(entry, Convert::toBullet(propelProp->data()));
+    }
+
+}
+
+void PhysicalDomain::applyPropel(BulletEntry& entry, btVector3 propel)
 {
     /**
      * A callback which checks if the instance is "grounded", i.e. that there's a contact point which is below its center.
      */
     struct IsGroundedCallback : public btCollisionWorld::ContactResultCallback
     {
-        const btRigidBody& m_body;
+        const btCollisionObject& m_body;
         bool& m_isGrounded;
 
-        IsGroundedCallback(const btRigidBody& body, bool& isGrounded)
+        IsGroundedCallback(const btCollisionObject& body, bool& isGrounded)
                 : btCollisionWorld::ContactResultCallback(), m_body(body), m_isGrounded(isGrounded)
         {
             m_collisionFilterGroup = body.getBroadphaseHandle()->m_collisionFilterGroup;
@@ -2255,69 +2318,66 @@ void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& pr
         }
     };
 
-    if (propel.isValid()) {
-        if (entry.collisionObject) {
-            auto rigidBody = btRigidBody::upcast(entry.collisionObject.get());
-            if (rigidBody) {
-                LocatedEntity& entity = entry.entity;
+    if (entry.collisionObject) {
+        auto rigidBody = btRigidBody::upcast(entry.collisionObject.get());
+        if (rigidBody) {
+            LocatedEntity& entity = entry.entity;
 
-                debug_print("PhysicalDomain::applyPropel " << entity.describeEntity() << " " << propel << " " << propel.mag())
 
-                btVector3 btPropel = Convert::toBullet(propel);
+            //TODO: add support for flying and swimming
+            if (!propel.isZero()) {
+                debug_print("PhysicalDomain::applyPropel " << entity.describeEntity() << " " << propel << " " << propel.length())
 
-                //TODO: add support for flying and swimming
-                if (!btPropel.isZero()) {
+                //Check if we're trying to jump
+                if (propel.m_floats[1] > 0) {
+                    auto jumpSpeedProp = entity.getPropertyType<double>("speed_jump");
+                    if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
 
-                    //Check if we're trying to jump
-                    if (btPropel.m_floats[1] > 0) {
-                        auto jumpSpeedProp = entity.getPropertyType<double>("speed_jump");
-                        if (jumpSpeedProp && jumpSpeedProp->data() > 0) {
-
-                            bool isGrounded = false;
-                            IsGroundedCallback groundedCallback(*rigidBody, isGrounded);
-                            m_dynamicsWorld->contactTest(rigidBody, groundedCallback);
-                            if (isGrounded) {
-                                //If the entity is grounded, allow it to jump by setting the vertical velocity.
-                                btVector3 newVelocity = rigidBody->getLinearVelocity();
-                                newVelocity.m_floats[1] = static_cast<btScalar>(btPropel.m_floats[1] * jumpSpeedProp->data());
-                                rigidBody->setLinearVelocity(newVelocity);
-                                //We'll mark the entity as actively jumping here, and rely on the post-tick callback to reset it when it's not jumping anymore.
-                                entry.isJumping = true;
-                            }
+                        bool isGrounded = false;
+                        IsGroundedCallback groundedCallback(*rigidBody, isGrounded);
+                        m_dynamicsWorld->contactTest(rigidBody, groundedCallback);
+                        if (isGrounded) {
+                            //If the entity is grounded, allow it to jump by setting the vertical velocity.
+                            btVector3 newVelocity = rigidBody->getLinearVelocity();
+                            newVelocity.m_floats[1] = static_cast<btScalar>(propel.m_floats[1] * jumpSpeedProp->data());
+                            rigidBody->setLinearVelocity(newVelocity);
+                            //We'll mark the entity as actively jumping here, and rely on the post-tick callback to reset it when it's not jumping anymore.
+                            entry.isJumping = true;
                         }
                     }
-                    btPropel.m_floats[1] = 0; //Don't allow vertical velocity to be set for the continuous velocity.
+                }
+                propel.m_floats[1] = 0; //Don't allow vertical velocity to be set for the continuous velocity.
 
-                    auto K = m_propellingEntries.find(entity.getIntId());
-                    if (K == m_propellingEntries.end()) {
-                        if (entry.step_factor > 0) {
-                            auto height = entry.bbox.upperBound(1) - entry.bbox.lowerBound(1);
-                            m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, (float) (height * entry.step_factor)});
-                        } else {
-                            m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, btPropel, 0});
-                        }
+                auto K = m_propellingEntries.find(entity.getIntId());
+                if (K == m_propellingEntries.end()) {
+                    if (entry.step_factor > 0) {
+                        auto height = entry.bbox.upperBound(1) - entry.bbox.lowerBound(1);
+                        m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, propel, (float) (height * entry.step_factor)});
                     } else {
-                        K->second.velocity = btPropel;
+                        m_propellingEntries.emplace(entity.getIntId(), PropelEntry{rigidBody, &entry, propel, 0});
                     }
                 } else {
-                    btVector3 bodyVelocity = rigidBody->getLinearVelocity();
-                    bodyVelocity.setX(0);
-                    bodyVelocity.setZ(0);
-
-                    if (rigidBody->getCenterOfMassPosition().y() <= 0) {
-                        bodyVelocity.setY(0);
-                    }
-
-                    rigidBody->setLinearVelocity(bodyVelocity);
-                    double friction = 1.0; //Default to 1 if no "friction" prop is present.
-                    auto frictionProp = entity.getPropertyType<double>("friction");
-                    if (frictionProp) {
-                        friction = frictionProp->data();
-                    }
-                    rigidBody->setFriction(static_cast<btScalar>(friction));
-
-                    m_propellingEntries.erase(entity.getIntId());
+                    K->second.velocity = propel;
                 }
+            } else {
+                btVector3 bodyVelocity = rigidBody->getLinearVelocity();
+                bodyVelocity.setX(0);
+                bodyVelocity.setZ(0);
+
+                if (rigidBody->getCenterOfMassPosition().y() <= 0) {
+                    bodyVelocity.setY(0);
+                }
+
+                rigidBody->setLinearVelocity(bodyVelocity);
+                double friction = 1.0; //Default to 1 if no "friction" prop is present.
+                auto frictionProp = entity.getPropertyType<double>("friction");
+                if (frictionProp) {
+                    friction = frictionProp->data();
+                }
+                rigidBody->setFriction(static_cast<btScalar>(friction));
+
+                m_propellingEntries.erase(entity.getIntId());
+
             }
         }
     }
@@ -2711,40 +2771,42 @@ void PhysicalDomain::processMovedEntity(BulletEntry& bulletEntry, double timeSin
             lastSentLocation.pos = bulletEntry.positionProperty.data();
             bulletEntry.modeChanged = false;
         }
-        if (posChange && !bulletEntry.closenessObservations.empty()) {
-            //Since callbacks can remove observations we need to first collect att invalid observations, and then remove them carefully.
-            std::vector<ClosenessObserverEntry*> invalidEntries;
-            for (auto& observation: bulletEntry.closenessObservations) {
-                if (!isWithinReach(*observation->reacher, *observation->target, observation->reach, {})) {
-                    invalidEntries.emplace_back(observation);
-                }
+
+    }
+    //If the entity has moved and there are observations attached to it, we need to check if these still are valid (like a character
+    // having opened a chest, and then moving away from it).
+    if (posChange && !bulletEntry.closenessObservations.empty()) {
+        //Since callbacks can remove observations we need to first collect att invalid observations, and then remove them carefully.
+        std::vector<ClosenessObserverEntry*> invalidEntries;
+        for (auto& observation: bulletEntry.closenessObservations) {
+            if (!isWithinReach(*observation->reacher, *observation->target, observation->reach, {})) {
+                invalidEntries.emplace_back(observation);
             }
+        }
 
 
-            for (auto& observation: invalidEntries) {
-                //It's important that we check that the observation still is valid, since it's possible that callbacks alters the collections.
-                auto I = bulletEntry.closenessObservations.find(observation);
-                if (I != bulletEntry.closenessObservations.end()) {
-                    if (&bulletEntry == observation->reacher) {
-                        observation->target->closenessObservations.erase(observation);
-                    } else {
-                        observation->reacher->closenessObservations.erase(observation);
-                    }
-                    bulletEntry.closenessObservations.erase(I);
+        for (auto& observation: invalidEntries) {
+            //It's important that we check that the observation still is valid, since it's possible that callbacks alters the collections.
+            auto I = bulletEntry.closenessObservations.find(observation);
+            if (I != bulletEntry.closenessObservations.end()) {
+                if (&bulletEntry == observation->reacher) {
+                    observation->target->closenessObservations.erase(observation);
+                } else {
+                    observation->reacher->closenessObservations.erase(observation);
+                }
+                bulletEntry.closenessObservations.erase(I);
 
-                    auto J = m_closenessObservations.find(observation);
-                    //Hold on to an instance while we call callbacks and erase it.
-                    auto observerInstance = std::move(J->second);
-                    m_closenessObservations.erase(J);
+                auto J = m_closenessObservations.find(observation);
+                //Hold on to an instance while we call callbacks and erase it.
+                auto observerInstance = std::move(J->second);
+                m_closenessObservations.erase(J);
 
-                    if (observation->callback) {
-                        observation->callback();
-                    }
+                if (observation->callback) {
+                    observation->callback();
                 }
             }
         }
     }
-
     updateTerrainMod(bulletEntry);
 }
 
@@ -2752,7 +2814,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 {
 //    CProfileManager::Reset();
 //    CProfileManager::Increment_Frame_Counter();
-    rmt_ScopedCPUSample(PhysicalDomain_tick, 0);
+    rmt_ScopedCPUSample(PhysicalDomain_tick, 0)
 
     auto start = std::chrono::steady_clock::now();
     /**
@@ -2798,8 +2860,8 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     postDuration = {};
 
     for (auto& bulletEntry: m_propelUpdateQueue) {
-        auto propelProp = bulletEntry->control.propelProperty;
-        applyPropel(*bulletEntry, propelProp->data());
+        auto propel = bulletEntry->control.propelProperty->data().isValid() ? Convert::toBullet(bulletEntry->control.propelProperty->data()) : btVector3(0, 0, 0);
+        applyPropel(*bulletEntry, propel);
     }
     m_propelUpdateQueue.clear();
     for (auto& bulletEntry: m_directionUpdateQueue) {
@@ -2836,6 +2898,11 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     }
     m_directionUpdateQueue.clear();
+
+    for (auto& entry: m_entriesWithDestination) {
+        applyDestination(tickSize, *entry, entry->control.propelProperty, *entry->control.destinationProperty);
+    }
+
 
     //Step simulations with 60 hz.
     m_dynamicsWorld->stepSimulation((float) tickSize, static_cast<int>(60 * tickSize));
@@ -2893,9 +2960,9 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
     processWaterBodies();
 
-    //We process the vector of moving entities as efficient as possible by don't doing
+    //We process the vector of moving entities as efficient as possible by not doing
     //any reallocations during the processing. If any entry should be removed (because it's
-    //not moving any more) we relocate the last entry to the position we're at.
+    //not moving anymore) we relocate the last entry to the position we're at.
     //Once we're done with processing we'll shrink the vector if any element was removed.
     //Note that during this phase "last frame" refers to this frame, and "this frame" refers
     //to the future frame.
@@ -2963,6 +3030,7 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
 
 void PhysicalDomain::processWaterBodies()
 {
+    rmt_ScopedCPUSample(PhysicalDomain_processWaterBodies, 0)
     auto testEntityIsSubmergedFn = [&](BulletEntry* bulletEntry, BulletEntry* waterEntry) -> bool {
         bool isInside;
         //If the water body entity has been deleted it will have been set to null.
