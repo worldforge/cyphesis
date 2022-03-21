@@ -56,7 +56,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-#find_package(PythonInterp 3 REQUIRED)
+find_package(PythonInterp 3 REQUIRED)
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     message(STATUS "Using Conan for dependency resolution.")
