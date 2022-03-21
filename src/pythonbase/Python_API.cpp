@@ -250,6 +250,10 @@ void observe_python_directories(boost::asio::io_context& io_context, AssetsManag
 
 void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories, bool log_stdout)
 {
+#if defined(PYTHONHOME)
+    log(INFO, "Setting Python home directory to " PYTHONHOME);
+    setenv("PYTHONHOME", PYTHONHOME, 1);
+#endif
 
     python_directories = std::move(scriptDirectories);
 

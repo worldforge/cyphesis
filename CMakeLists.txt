@@ -56,16 +56,15 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-find_package(PythonLibs 3.3 REQUIRED)
-link_directories(${PYTHON_LIBRARY_DIRS})
-include_directories(${PYTHON_INCLUDE_DIRS})
-
-find_package(PythonInterp 3 REQUIRED)
+#find_package(PythonInterp 3 REQUIRED)
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     message(STATUS "Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
+    add_definitions(-DPYTHONHOME="${CONAN_CPYTHON_ROOT}")
+
+
 
     if (NOT WIN32)
         #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
@@ -78,6 +77,10 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     link_libraries(${CONAN_LIBS})
 
 else ()
+
+    find_package(PythonLibs 3.3 REQUIRED)
+    link_directories(${PYTHON_LIBRARY_DIRS})
+    include_directories(${PYTHON_INCLUDE_DIRS})
 
     pkg_check_modules(WF REQUIRED varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.7>=0.7.0 wfmath-1.0>=1.0.3)
     link_directories(${WF_LIBRARY_DIRS})
