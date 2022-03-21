@@ -197,7 +197,7 @@ namespace {
     {
         if (!changedPaths.empty()) {
 
-            for (auto& entry : changedPaths) {
+            for (auto& entry: changedPaths) {
                 auto& package = entry.second;
                 auto& path = entry.first;
                 auto module = Get_PyModule(package);
@@ -220,7 +220,7 @@ namespace {
 void observe_python_directories(boost::asio::io_context& io_context, AssetsManager& assetsManager)
 {
 
-    for (auto& directory : python_directories) {
+    for (auto& directory: python_directories) {
         assetsManager.observeDirectory(directory, [=, &io_context](const boost::filesystem::path& path) {
             //Trim the ".py" extension
             if (boost::ends_with(path.string(), ".py")) {
@@ -250,6 +250,10 @@ void observe_python_directories(boost::asio::io_context& io_context, AssetsManag
 
 void init_python_api(std::vector<std::function<std::string()>> initFunctions, std::vector<std::string> scriptDirectories, bool log_stdout)
 {
+    //If we're using the system Python installation then everything should be setup for Python to use.
+    //But if we're instead using something like a Conan version where Python is installed in a different place
+    //we need to tell Python where to find its stuff. This is done through the PYTHONHOME environment variable.
+    //Our build system is setup so that it will inject the preprocessor variable by that same name in that case.
 #if defined(PYTHONHOME)
     log(INFO, "Setting Python home directory to " PYTHONHOME);
     setenv("PYTHONHOME", PYTHONHOME, 1);
@@ -258,7 +262,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
     python_directories = std::move(scriptDirectories);
 
     std::vector<std::string> modules;
-    for (auto& function : initFunctions) {
+    for (auto& function: initFunctions) {
         modules.emplace_back(function());
     }
 
@@ -274,7 +278,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
     //Make sure that all modules are imported, since this is needed to initialize all types.
     //Otherwise we risk that we try to invoke the types from the C++ code before they have
     //been populated.
-    for (auto& moduleName : modules) {
+    for (auto& moduleName: modules) {
         PyImport_ImportModule(moduleName.c_str());
     }
 
@@ -299,7 +303,7 @@ void init_python_api(std::vector<std::function<std::string()>> initFunctions, st
         if (sys_path.isList()) {
             Py::List paths(sys_path);
 
-            for (auto& path : python_directories) {
+            for (auto& path: python_directories) {
                 paths.append(Py::String(path));
             }
 

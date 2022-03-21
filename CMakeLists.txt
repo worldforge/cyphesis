@@ -62,6 +62,8 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     message(STATUS "Using Conan for dependency resolution.")
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup()
+    #Since we've installed Python in a non-standard place we need to tell the code that.
+    #This is done through the PYTHONHOME preprocessor directive.
     add_definitions(-DPYTHONHOME="${CONAN_CPYTHON_ROOT}")
 
 
