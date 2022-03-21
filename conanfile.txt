@@ -12,7 +12,7 @@ zlib/1.2.11
 bzip2/1.0.8
 sqlite3/3.38.1
 readline/8.1.2
-cpython/3.9.7
+cpython/3.10.0
 
 [generators]
 cmake
