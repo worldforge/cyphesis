@@ -18,6 +18,10 @@ cpython/3.10.0
 cmake
 
 [options]
+cpython:with_curses=False
+#cpython:with_sqlite3=False #Got build errors in the CPython recipe
+cpython:with_tkinter=False
+cpython:with_gdbm=False
 
 [imports]
 bin, *.dll -> ./bin
