@@ -20,7 +20,6 @@
 #define TOOLS_OPERATION_MONITOR_H
 
 #include "common/ClientTask.h"
-#include "common/SystemTime.h"
 #include <Atlas/Message/QueuedDecoder.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Bridge.h>
@@ -39,8 +38,9 @@ class OperationMonitor : public ClientTask
         std::ostream* mOutStream;
 
         int op_count;
-        SystemTime start_time;
     public:
+        std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
         ~OperationMonitor() override;
 
         int count() const
@@ -48,10 +48,6 @@ class OperationMonitor : public ClientTask
             return op_count;
         }
 
-        time_t startTime() const
-        {
-            return start_time.seconds();
-        }
 
         void setup(const std::string& arg, OpVector&) override;
 

@@ -25,34 +25,17 @@
 #include "common/compose.hpp"
 #include "common/log.h"
 
-#ifdef _WIN32
-#undef DATADIR
-#endif // _WIN32
-
-extern "C" {
-#ifdef HAVE_WINSOCK_H
-    #include <winsock.h>
-#endif // HAVE_WINSOCK_H
-}
 
 unsigned int security_check()
 {
-#ifdef HAVE_GETUID
     if (getuid() == 0 || geteuid() == 0) {
         log(CYLOG_ERROR, "Running cyphesis as the superuser is dangerous.");
         return 0;
     }
-#endif // HAVE_GETUID
     return SECURITY_OKAY;
 }
 
 std::string create_session_username()
 {
-#ifdef HAVE_GETUID
     return String::compose("admin_%1_%2", getpid(), getuid());
-#elif defined(_WIN32)
-    return String::compose("admin_%1_%2", GetCurrentProcessId(), 23);
-#else // _WIN32
-    return String::compose("admin_%1", ::rand());
-#endif // _WIN32
 }

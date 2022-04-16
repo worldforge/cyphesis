@@ -35,22 +35,9 @@ set(DESCRIPTION "The Worldforge server.")
 set(SOCKET_DIR ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/tmp)
 set(PACKAGE_BUGREPORT "erik@ogenvik.org")
 
-check_function_exists(getuid HAVE_GETUID)
-check_function_exists(nice HAVE_NICE)
-check_function_exists(sigaction HAVE_SIGACTION)
-check_function_exists(fork HAVE_FORK)
-check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
-check_function_exists(uname HAVE_UNAME)
-check_function_exists(localtime_r HAVE_LOCALTIME_R)
 check_function_exists(syslog HAVE_SYSLOG)
 
 check_include_files(syslog.h HAVE_SYSLOG_H)
-check_include_files(sys/utsname.h HAVE_SYS_UTSNAME_H)
-check_include_files(sys/un.h HAVE_SYS_UN_H)
-check_include_files(sys/wait.h HAVE_SYS_WAIT_H)
-check_include_files(io.h HAVE_IO_H)
-check_include_files(getopt.h HAVE_GETOPT_H)
-check_include_files(dirent.h HAVE_DIRENT_H)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -68,13 +55,11 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
 
 
 
-    if (NOT WIN32)
-        #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
-        #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
-        #boost filesystem lib, otherwise the system one will be used.
-        #This should be removed once it's fixed in the Conan recipes.
-        list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
-    endif ()
+    #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
+    #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
+    #boost filesystem lib, otherwise the system one will be used.
+    #This should be removed once it's fixed in the Conan recipes.
+    list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
 
     link_libraries(${CONAN_LIBS})
 

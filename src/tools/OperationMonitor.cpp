@@ -68,7 +68,7 @@ void OperationMonitor::setup(const std::string& arg, OpVector&)
     }
 
     mEncoder = std::make_unique<Atlas::Objects::ObjectsEncoder>(*mCodec);
-    start_time.update();
+    startTime = std::chrono::steady_clock::now();
 
     op_count = 0;
 

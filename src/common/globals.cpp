@@ -33,9 +33,6 @@
 #include <cstring>
 #include <memory>
 
-#ifdef HAVE_IO_H
-#include <io.h>
-#endif
 
 #include <cassert>
 #include <boost/filesystem/operations.hpp>

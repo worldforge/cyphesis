@@ -671,14 +671,12 @@ void Interactive::exec(const std::string & cmd, const std::string & arg)
 
             reply_expected = false;
 
-            SystemTime now{};
-            now.update();
 
-            time_t monitor_time = now.seconds() - om->startTime();
+            auto monitor_time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - om->startTime);
 
             std::cout << om->count() << " operations monitored in "
-                      << monitor_time << " seconds = "
-                      << om->count() / monitor_time
+                      << monitor_time.count() << " seconds = "
+                      << om->count() / monitor_time.count()
                       << " operations per second"
                       << std::endl << std::flush;
 

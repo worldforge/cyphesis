@@ -41,36 +41,13 @@ extern "C" {
 
 static void logDate(std::ostream& log_stream)
 {
-    struct tm* local_time;
-    const time_t now = time(nullptr);
-
-#ifdef HAVE_LOCALTIME_R
-
-    struct tm local_time_buffer{};
-
-    local_time = &local_time_buffer;
-
-    if (localtime_r(&now, local_time) != local_time) {
-        log_stream << "[TIME_ERROR]";
-        return;
-    }
-#else // HAVE_LOCALTIME_R
-    local_time = localtime(&now);
-#endif // HAVE_LOCALTIME_R
-
+    auto t = std::time(nullptr);
     char buf[32];
-#ifndef _WIN32
-    size_t count = strftime(buf, sizeof(buf) / sizeof(char), "%FT%T", local_time);
-#else
-    size_t count = strftime(buf, sizeof(buf) / sizeof(char), "%Y-%m-%dT%H:%M:%S", local_time);
-#endif
-
-    if (count == 0) {
+    if (std::strftime(buf, sizeof(buf), "%FT%T", std::localtime(&t))) {
+        log_stream << buf;
+    } else {
         log_stream << "[TIME_ERROR]";
-        return;
     }
-
-    log_stream << buf;
 }
 
 static std::ofstream event_log;

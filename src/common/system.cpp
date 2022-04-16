@@ -27,11 +27,6 @@
 #include "compose.hpp"
 
 #include <wfmath/MersenneTwister.h>
-
-#ifdef _WIN32
-#undef DATADIR
-#endif // _WIN32
-
 #include <gcrypt.h>
 
 #include <iostream>
@@ -42,17 +37,10 @@
 #include <vector>
 
 extern "C" {
-#ifdef HAVE_SYS_UTSNAME_H
-#endif // HAVE_SYS_UTSNAME_H
-#ifdef HAVE_SYS_WAIT_H
-    #include <sys/wait.h>
-#endif // HAVE_SYS_WAIT_H
+#include <sys/wait.h>
 #include <fcntl.h>
 }
 
-#ifdef HAVE_WINSOCK_H
-#include <winsock2.h>
-#endif // HAVE_WINSOCK_H
 
 #ifdef ERROR
 #undef ERROR
@@ -193,11 +181,9 @@ unsigned int security_setup()
 
 void reduce_priority(int p)
 {
-#ifdef HAVE_NICE
     if (nice(p) < 0) {
         log(ERROR, "Unable to increase nice level to reduce priority");
     }
-#endif // HAVE_NICE
 }
 
 namespace {
@@ -206,15 +192,11 @@ namespace {
     {
         exit_flag = true;
 
-#if defined(HAVE_SIGACTION)
         struct sigaction action{};
         sigemptyset(&action.sa_mask);
         action.sa_flags = 0;
         action.sa_handler = SIG_IGN;
         sigaction(signo, &action, nullptr);
-#else
-        signal(signo, SIG_IGN);
-#endif
     }
 
     extern "C" void soft_shutdown_on_signal(int signo)
@@ -228,15 +210,11 @@ namespace {
             exit_flag_soft = true;
         }
 
-#if defined(HAVE_SIGACTION)
         struct sigaction action{};
         sigemptyset(&action.sa_mask);
         action.sa_flags = 0;
         action.sa_handler = SIG_IGN;
         sigaction(signo, &action, nullptr);
-#else
-        signal(signo, SIG_IGN);
-#endif
     }
 
     extern "C" void report_segfault(int)
@@ -245,10 +223,6 @@ namespace {
         //And with a segfault we might have gotten a tainted stack, which might cause that call to hang.
         fprintf(stderr, "Segmentation fault");
         fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
-
-#if !defined(HAVE_SIGACTION)
-        signal(signo, SIG_DFL);
-#endif
     }
 
     extern "C" void report_abort(int)
@@ -256,10 +230,6 @@ namespace {
         //Don't print to the log in signal handler, as that involves memory allocation.
         fprintf(stderr, "Aborted");
         fprintf(stderr, "Please report this bug to " PACKAGE_BUGREPORT);
-
-#if !defined(HAVE_SIGACTION)
-        signal(signo, SIG_DFL);
-#endif
     }
 
     extern "C" void report_status(int)
@@ -279,7 +249,6 @@ namespace {
 
 void interactive_signals()
 {
-#if defined(HAVE_SIGACTION)
     struct sigaction action{};
 
     sigemptyset(&action.sa_mask);
@@ -324,23 +293,10 @@ void interactive_signals()
     action.sa_handler = report_status;
     sigaction(SIGINFO, &action, nullptr);
 #endif // __APPLE__
-
-#else // defined(HAVE_SIGACTION)
-    signal(SIGINT, shutdown_on_signal);
-    signal(SIGTERM, shutdown_on_signal);
-#ifndef _WIN32
-    signal(SIGQUIT, shutdown_on_signal);
-    signal(SIGHUP, shutdown_on_signal);
-    signal(SIGPIPE, SIG_IGN);
-#endif // _WIN32
-    signal(SIGSEGV, report_segfault);
-    signal(SIGABRT, report_abort);
-#endif // defined(HAVE_SIGACTION)
 }
 
 void daemon_signals()
 {
-#if defined(HAVE_SIGACTION)
     struct sigaction action{};
 
     sigemptyset(&action.sa_mask);
@@ -377,22 +333,11 @@ void daemon_signals()
     action.sa_flags = SA_RESETHAND;
     action.sa_handler = report_abort;
     sigaction(SIGABRT, &action, nullptr);
-#else
-    signal(SIGINT, SIG_IGN);
-    signal(SIGTERM, shutdown_on_signal);
-#ifndef _WIN32
-    signal(SIGQUIT, SIG_IGN);
-    signal(SIGHUP, rotate_logs);
-    signal(SIGPIPE, SIG_IGN);
-#endif // _WIN32
-    signal(SIGSEGV, report_segfault);
-    signal(SIGABRT, report_abort);
-#endif
+
 }
 
 int daemonise()
 {
-#ifdef HAVE_FORK
     int pid = fork();
     int new_stdio;
     int status = 0;
@@ -435,17 +380,13 @@ int daemonise()
             daemon_flag = false;
 
             // Install handler for SIGUSR1
-#if defined(HAVE_SIGACTION)
             struct sigaction action{};
             sigemptyset(&action.sa_mask);
             action.sa_flags = 0;
             action.sa_handler = soft_shutdown_on_signal;
             sigaction(SIGUSR1, &action, nullptr);
-#else
-            signal(SIGUSR1, soft_shutdown_on_signal);
-#endif
 
-            if (wait4(pid, &status, 0, nullptr) < 0) {
+            if (waitpid(pid, &status, 0) < 0) {
                 running = true;
             } else {
                 pid = -1;
@@ -477,20 +418,14 @@ int daemonise()
             break;
     }
     return pid;
-#else // HAVE_FORK
-    // On systems where we can't fork, fool the original process into thinking
-    // it is now the child.
-    return 0;
-#endif // HAVE_FORK
+
 }
 
 void running()
 {
-#ifdef HAVE_FORK
     if (daemon_flag) {
         kill(getppid(), SIGUSR1);
     }
-#endif // HAVE_FORK
 }
 
 static const char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
@@ -568,30 +503,3 @@ int check_password(const std::string & pwd, const std::string & hash)
     return hash == new_hash ? 0 : -1;
 }
 
-
-#ifndef HAVE_GETTIMEOFDAY
-
-int gettimeofday(struct timeval * tv, struct timezone * tz)
-{
-    assert(tz == 0);
-
-    SYSTEMTIME localtime;
-    struct tm unix_time;
-
-    GetLocalTime(&localtime);
-
-    unix_time.tm_sec = localtime.wSecond;
-    unix_time.tm_min = localtime.wMinute;
-    unix_time.tm_hour = localtime.wHour;
-    unix_time.tm_mday = localtime.wDay;
-    unix_time.tm_mon = localtime.wMonth - 1;
-    unix_time.tm_year = localtime.wYear - 1900;
-
-    tv->tv_usec = localtime.wMilliseconds * 1000;
-
-    tv->tv_sec = mktime(&unix_time);
-
-    return 0;
-}
-
-#endif

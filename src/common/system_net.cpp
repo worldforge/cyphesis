@@ -21,40 +21,11 @@
 #endif
 
 #include "system.h"
-
-#ifdef _WIN32
-#undef DATADIR
-#endif // _WIN32
-
-extern "C" {
-#ifdef HAVE_SYS_UTSNAME_H
-    #include <sys/utsname.h>
-#endif // HAVE_SYS_UTSNAME_H
-}
-
-#ifdef HAVE_WINSOCK_H
-#include <winsock2.h>
-#endif // HAVE_WINSOCK_H
-
-#ifdef HAVE_SYS_UN_H
-#endif // HAVE_SYS_UN_H
+#include <boost/asio.hpp>
 
 std::string get_hostname()
 {
-#ifndef HAVE_UNAME
-    char hostname_buf[256];
-
-    if (gethostname(hostname_buf, 256) != 0) {
-        return "UNKNOWN";
-    }
-    return std::string(hostname_buf);
-#else // HAVE_UNAME
-    struct utsname host_ident{};
-    if (uname(&host_ident) != 0) {
-        return "UNKNOWN";
-    }
-    return std::string(host_ident.nodename);
-#endif // HAVE_UNAME
+    return boost::asio::ip::host_name();
 }
 
 

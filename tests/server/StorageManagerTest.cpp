@@ -31,7 +31,6 @@
 #include "rules/simulation/Entity.h"
 #include "server/MindProperty.h"
 
-#include "common/SystemTime.h"
 #include "common/Property_impl.h"
 #include "../DatabaseNull.h"
 #include "../TestPropertyManager.h"
@@ -206,7 +205,6 @@ int main()
 #include "common/log.h"
 #include "common/Monitors.h"
 #include "common/PropertyManager.h"
-#include "common/SystemTime.h"
 #include "common/Variable.h"
 
 #include "../stubs/rules/simulation/stubWorldRouter.h"

@@ -25,45 +25,8 @@
 #include "system.h"
 #include <iostream>
 
-#ifdef _WIN32
-#undef DATADIR
-#endif // _WIN32
-
-#ifdef HAVE_WINDOWS_H
-#include <windows.h>
-#endif // HAVE_WINDOWS_H
-
 void getinstallprefix()
 {
-#ifdef HAVE_WINDOWS_H
-    HKEY hKey;
-
-    long res = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                            "Software\\WorldForge\\Cyphesis\\Settings",
-                            0, KEY_READ, &hKey);
-
-    if (res != ERROR_SUCCESS)
-    {
-        log(CYLOG_ERROR, "No install key for cyphesis");
-        return;
-    }
-
-    unsigned long type=REG_SZ, size=1024;
-    char path[1024]="";
-
-    res = RegQueryValueEx(hKey, "Path", nullptr, &type, (LPBYTE)&path[0], &size);
-
-    if (res != ERROR_SUCCESS)
-    {
-        log(CYLOG_ERROR, "No install key for cyphesis");
-    } else {
-        etc_directory = String::compose("%1/etc", path);
-        var_directory = String::compose("%1/var", path);
-        share_directory = String::compose("%1/share", path);
-    }
-
-    RegCloseKey(hKey);
-#else // HAVE_WINDOWS_H
     BrInitError error;
     if (br_init (&error) == 0) {
         std::cerr << "Error when setting up BinReloc: " << error << std::endl;
@@ -74,5 +37,4 @@ void getinstallprefix()
     share_directory = br_find_data_dir("data");
     var_directory = String::compose("%1/var", br_find_prefix(""));
     bin_directory = br_find_bin_dir("bin");
-#endif // HAVE_WINDOWS_H
 }

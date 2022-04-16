@@ -74,10 +74,6 @@ int main(int argc, char ** argv)
         return 1;
     }
 
-#ifdef _WIN32
-    std::cerr << argv[0] << ": This tool is not available on windows."
-              << std::endl << std::flush;
-#else // _WIN32
     io_context io_context;
     local::stream_protocol::socket sk(io_context);
     sk.connect(local::stream_protocol::endpoint(python_socket_name));
@@ -98,7 +94,6 @@ int main(int argc, char ** argv)
             sk.write_some(buffer(std::string(line) + "\n"));
         }
     }
-#endif // _WIN32
 
     delete global_conf;
     return 0;

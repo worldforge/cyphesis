@@ -59,14 +59,6 @@ int check_password(const std::string & pwd, const std::string & hash);
 
 void getinstallprefix();
 
-#ifdef _WIN32
-
-// int gettimeofday(struct timeval * tv, struct timezone * tz);
-
-#else // _WIN32
-
 #include <unistd.h>
-
-#endif // _WIN32
 
 #endif // COMMON_SYSTEM_H

@@ -106,7 +106,6 @@ int main()
 
     // Check the background mechanism
 
-#ifdef HAVE_FORK
     daemon_flag = true;
 
     int child = daemonise();
@@ -119,7 +118,6 @@ int main()
         sleep(1);
         return 0;
     }
-#endif
 
     const std::string test_password("test_password");
     std::string test_hash;
@@ -134,16 +132,6 @@ int main()
     assert(check_password("zjvspoehrgopes", "247E9405E40979403510799CBBFF88BD") == 0);
     assert(check_password("foobarbaz", test_hash) != 0);
 
-#ifndef HAVE_GETTIMEOFDAY
-#warning you got it
-
-    struct timeval time;
-    assert(gettimeofday(&time, 0) == 0);
-
-    std::cout << time.tv_sec << "." << time.tv_usec << std::endl << std::flush;
-
-    return 0;
-#endif // HAVE_GETTIMEOFDAY
 }
 #include "../stubs/common/stublog.h"
 

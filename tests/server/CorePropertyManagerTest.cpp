@@ -34,7 +34,6 @@
 #include "common/CommSocket.h"
 #include "common/Inheritance.h"
 #include "common/PropertyFactory.h"
-#include "common/SystemTime.h"
 
 #include "../TestWorld.h"
 

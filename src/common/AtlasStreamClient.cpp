@@ -33,11 +33,6 @@
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Encoder.h>
 #include <Atlas/Net/Stream.h>
-
-#ifdef _WIN32
-#undef DATADIR
-#endif // _WIN32
-
 #include <boost/asio/steady_timer.hpp>
 
 #include <iostream>

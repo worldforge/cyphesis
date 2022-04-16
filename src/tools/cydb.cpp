@@ -38,8 +38,6 @@
 
 #include "common/compose.hpp"
 
-#ifdef HAVE_GETOPT_H
-#endif // HAVE_GETOPT_H
 
 #define USE_VARARGS
 #define PREFER_STDARG
