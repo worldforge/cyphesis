@@ -29,6 +29,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <array>
 #include <Atlas/Message/Element.h>
 
 class Entity;
