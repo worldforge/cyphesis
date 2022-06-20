@@ -16,8 +16,8 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef TESTS_TEST_BASE_H
-#define TESTS_TEST_BASE_H
+#ifndef TEST_BASE_WITH_CONTEXT_H
+#define TEST_BASE_WITH_CONTEXT_H
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <sstream>
 
 //debug.cpp is linked to all tests, but we don't want to include debug.h since the "debug" macro creates conflicts.
 template<typename T>
@@ -56,6 +57,12 @@ std::ostream& operator<<(std::ostream& os,
     return os;
 }
 
+//std::ostringstream& operator<<(std::ostringstream& os,
+//                               const Atlas::Message::Element& e)
+//{
+//    debug_dump(e, os);
+//    return os;
+//}
 
 namespace Cyphesis {
 
@@ -141,4 +148,4 @@ namespace Cyphesis {
     this->addTest(#_function, [&](auto& context){this->_function(context);});\
 }
 
-#endif // TESTS_TEST_BASE_H
+#endif // TEST_BASE_WITH_CONTEXT_H
