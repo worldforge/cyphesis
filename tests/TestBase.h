@@ -56,7 +56,23 @@ std::ostream& operator<<(std::ostream& os,
     return os;
 }
 
+namespace Atlas
+{
+namespace Message
+{
+std::ostream& operator<<(std::ostream& os, const Atlas::Message::MapType& v)
+{
+    os << "[ATLAS_MAP]";
+    return os;
+}
 
+std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& e)
+{
+    debug_dump(e, os);
+    return os;
+}
+}
+}
 
 namespace Cyphesis {
 

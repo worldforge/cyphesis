@@ -201,9 +201,9 @@ class Admintest : public Cyphesis::TestBase
 };
 
 bool Admintest::Link_sent_called = false;
-Account * Admintest::Account_LogoutOperation_called = 0;
-Account * Admintest::Account_SetOperation_called = 0;
-Account * Admintest::Account_createObject_called = 0;
+Account * Admintest::Account_LogoutOperation_called = nullptr;
+Account * Admintest::Account_SetOperation_called = nullptr;
+Account * Admintest::Account_createObject_called = nullptr;
 bool Admintest::Ruleset_modifyRule_called = false;
 int Admintest::Ruleset_modifyRule_retval = 0;
 bool Admintest::Ruleset_installRule_called = false;
@@ -311,7 +311,7 @@ Admintest::Admintest() : m_server(0),
 
 long Admintest::newId()
 {
-    return ++m_id_counter;
+    return m_id_counter++;
 }
 
 Atlas::Objects::Factories factories;
@@ -321,8 +321,7 @@ void Admintest::setup()
     inheritance = new Inheritance(factories);
     Atlas::Objects::Operation::MONITOR_NO = m_id_counter++;
 
-    m_gw = new Entity(compose("%1", m_id_counter),
-                             m_id_counter++);
+    m_gw = new Entity(m_id_counter++);
     m_world = new TestWorld(m_gw);
 
     m_server = new ServerRouting(*m_world,
@@ -330,13 +329,15 @@ void Admintest::setup()
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
                                  m_id_counter++);
+    auto conn_id = m_id_counter++;
     m_connection = new Connection(*(CommSocket*) nullptr, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
-                                  compose("%1", m_id_counter), m_id_counter++);
+                                  compose("%1", conn_id), conn_id);
+    auto account_id = m_id_counter++;
     m_account = new Admin(m_connection,
                           "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
                           "fa1a03a2-a745-4033-85cb-bb694e921e62",
-                          compose("%1", m_id_counter), m_id_counter++);
+                          compose("%1", account_id), account_id);
 }
 
 void Admintest::teardown()
@@ -492,7 +493,7 @@ void Admintest::test_LogoutOperation_unknown()
 
 void Admintest::test_LogoutOperation_known()
 {
-    Account_LogoutOperation_called = 0;
+    Account_LogoutOperation_called = nullptr;
 
     long cid = m_id_counter++;
     std::string cid_str = String::compose("%1", cid);
@@ -516,7 +517,7 @@ void Admintest::test_LogoutOperation_known()
 
     ASSERT_EQUAL(res.size(), 0u);
 
-    ASSERT_EQUAL(Account_LogoutOperation_called, ac2);
+    ASSERT_EQUAL((Account*)Account_LogoutOperation_called, (Account*)ac2);
 }
 
 void Admintest::test_LogoutOperation_other_but_unconnected()

@@ -167,11 +167,12 @@ void ConnectionCreatorintegration::setup()
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  m_id_counter++);
     m_commSocket = new StubSocket(io_context);
+    auto conn_id = m_id_counter++;
     m_connection = new Connection(*m_commSocket,
                                   *m_server,
                                   "25251955-7e8c-4043-8a5e-adfb8a1e76f7",
-                                  compose("%1", m_id_counter), m_id_counter++);
-    m_creator = new Entity(compose("%1", m_id_counter), m_id_counter++);
+                                  compose("%1", conn_id), conn_id);
+    m_creator = new Entity(m_id_counter++);
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
     m_world->addEntity(m_creator, m_gw);
@@ -264,7 +265,7 @@ void ConnectionCreatorintegration::test_external_op_puppet()
     mind.linkUp(m_connection);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
-    Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity> other = new Entity(m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other, m_gw);
 
@@ -297,7 +298,7 @@ void ConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     mind.linkUp(m_connection);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
 
-    Ref<Entity> other = new Entity(compose("%1", m_id_counter), m_id_counter++);
+    Ref<Entity> other = new Entity(m_id_counter++);
     other->setType(m_creatorType);
     m_server->m_world.addEntity(other, m_gw);
 
