@@ -37,7 +37,7 @@
 
 class TestRouter : public Router {
   public:
-    TestRouter(const std::string & id, long intId) : Router(id, intId) { }
+    TestRouter(RouterId id) : Router(id) { }
 
     virtual void externalOperation(const Operation &, Link &) { }
     virtual void operation(const Operation &, OpVector &) { }
@@ -75,7 +75,7 @@ Routertest::Routertest() : m_router(0)
 
 void Routertest::setup()
 {
-    m_router = new TestRouter("1", 1);
+    m_router = new TestRouter(1);
 }
 
 void Routertest::teardown()

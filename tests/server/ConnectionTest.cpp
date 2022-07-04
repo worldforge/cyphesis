@@ -188,7 +188,7 @@ void Connectiontest::setup()
                                  2);
 
     m_tcc = new TestCommSocket();
-    m_connection = new Connection(*m_tcc, *m_server, "addr", "3", 3);
+    m_connection = new Connection(*m_tcc, *m_server, "addr", 3);
 }
 
 void Connectiontest::teardown()
@@ -403,7 +403,7 @@ void Connectiontest::test_disconnectObject_empty()
     Player ac(m_connection,
               "jim",
               "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
-              "4", 4);
+              4);
 
     ac.setConnection(m_connection);
     m_connection->m_routers[ac.getIntId()].router = &ac;
@@ -424,7 +424,7 @@ void Connectiontest::test_disconnectObject_unused_Entity()
     Player ac(m_connection,
               "jim",
               "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
-              "4", 4);
+              4);
 
     ac.setConnection(m_connection);
     m_connection->m_routers[ac.getIntId()].router = &ac;
@@ -433,7 +433,7 @@ void Connectiontest::test_disconnectObject_unused_Entity()
     auto I = m_connection->m_connectableRouters.find(ac.getIntId());
     assert(I != m_connection->m_connectableRouters.end());
 
-    Ref<Entity> avatar(new Entity("5", 5));
+    Ref<Entity> avatar(new Entity(5));
     m_connection->m_routers[avatar->getIntId()].router = avatar.get();
     ac.addCharacter(avatar);
 
@@ -453,7 +453,7 @@ void Connectiontest::test_disconnectObject_used_Entity()
     Player ac(m_connection,
               "jim",
               "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
-              "4", 4);
+              4);
 
     ac.setConnection(m_connection);
     m_connection->m_routers[ac.getIntId()].router = &ac;
@@ -462,8 +462,8 @@ void Connectiontest::test_disconnectObject_used_Entity()
     auto I = m_connection->m_connectableRouters.find(ac.getIntId());
     assert(I != m_connection->m_connectableRouters.end());
 
-    Ref<Entity> avatar(new Entity("5", 5));
-    ExternalMind mind("6", 6, avatar);
+    Ref<Entity> avatar(new Entity(5));
+    ExternalMind mind(6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(&mind);
     mind.linkUp(m_connection);
     m_connection->m_routers[avatar->getIntId()].router = avatar.get();
@@ -485,7 +485,7 @@ void Connectiontest::test_disconnectObject_others_used_Entity()
     Player ac(m_connection,
               "jim",
               "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
-              "4", 4);
+              4);
 
     ac.setConnection(m_connection);
     m_connection->m_routers[ac.getIntId()].router = &ac;
@@ -495,10 +495,10 @@ void Connectiontest::test_disconnectObject_others_used_Entity()
     assert(I != m_connection->m_connectableRouters.end());
 
     TestCommSocket otcc{};
-    Connection conn(otcc, *m_server, "addr", "6", 6);
+    Connection conn(otcc, *m_server, "addr", 6);
 
-    Ref<Entity> avatar(new Entity("5", 5));
-    ExternalMind mind("6", 6, avatar);
+    Ref<Entity> avatar(new Entity(5));
+    ExternalMind mind(6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(&mind);
     mind.linkUp(m_connection);
     m_connection->m_routers[avatar->getIntId()].router = avatar.get();
@@ -523,7 +523,7 @@ void Connectiontest::test_disconnectObject_unlinked_Entity()
     Player ac(m_connection,
               "jim",
               "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
-              "4", 4);
+              4);
 
     ac.setConnection(m_connection);
     m_connection->m_routers[ac.getIntId()].router = &ac;
@@ -532,8 +532,8 @@ void Connectiontest::test_disconnectObject_unlinked_Entity()
     auto I = m_connection->m_connectableRouters.find(ac.getIntId());
     assert(I != m_connection->m_connectableRouters.end());
 
-    Ref<Entity> avatar(new Entity("5", 5));
-    ExternalMind mind("6", 6, avatar);
+    Ref<Entity> avatar(new Entity(5));
+    ExternalMind mind(6, avatar);
     avatar->modPropertyClassFixed<MindsProperty>()->addMind(&mind);
     m_connection->m_routers[avatar->getIntId()].router = avatar.get();
     ac.addCharacter(avatar);
@@ -555,7 +555,7 @@ void Connectiontest::test_disconnectObject_non_Entity()
     Player ac(m_connection,
               "jim",
               "1e0ce8e9-304b-470c-83c4-feab11f9a2e4",
-              "4", 4);
+              4);
 
     ac.setConnection(m_connection);
     m_connection->m_routers[ac.getIntId()].router = &ac;
@@ -564,7 +564,7 @@ void Connectiontest::test_disconnectObject_non_Entity()
     auto I = m_connection->m_connectableRouters.find(ac.getIntId());
     assert(I != m_connection->m_connectableRouters.end());
 
-    Ref<Entity> avatar(new Entity("5", 5));
+    Ref<Entity> avatar(new Entity(5));
     m_connection->m_routers[avatar->getIntId()].router = avatar.get();
     ac.addCharacter(avatar.get());
 

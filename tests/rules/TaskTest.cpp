@@ -98,7 +98,7 @@ void Tasktest::setup()
 {
     Script_operation_called = false;
 
-    chr = new Entity("3", 3);
+    chr = new Entity(3);
     usageInstance = UsageInstance{};
     usageInstance.actor = chr;
     script = Py::Dict();
@@ -137,7 +137,7 @@ void Tasktest::test_operation()
 
 void Tasktest::test_sequence()
 {
-//    m_task->nextTick("1", 1.5);
+//    m_task->nextTick(1.5);
 //
 //    Atlas::Message::Element val;
 //    m_task->getAttr("foo", val);

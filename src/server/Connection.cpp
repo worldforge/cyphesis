@@ -53,11 +53,11 @@ static const bool debug_flag = false;
 Connection::Connection(CommSocket& socket,
                        ServerRouting& svr,
                        const std::string& addr,
-                       const std::string& id, long iid) :
-        Link(socket, id, iid), m_server(svr)
+                       RouterId id) :
+        Link(socket, std::move(id)), m_server(svr)
 {
     m_server.registerConnection(this);
-    logEvent(CONNECT, String::compose("%1 - - Connect from %2", id, addr));
+    logEvent(CONNECT, String::compose("%1 - - Connect from %2", id.m_id, addr));
 }
 
 Connection::~Connection()
@@ -83,9 +83,9 @@ Connection::~Connection()
 std::unique_ptr<Account> Connection::newAccount(const std::string& type,
                                                 const std::string& username,
                                                 const std::string& hash,
-                                                const std::string& id, long intId)
+                                                RouterId id)
 {
-    return std::make_unique<Player>(this, username, hash, id, intId);
+    return std::make_unique<Player>(this, username, hash, id);
 }
 
 static const int hash_salt_size = 8;
@@ -97,15 +97,14 @@ Account* Connection::addNewAccount(const std::string& type,
     std::string hash;
     std::string salt = m_server.getShaker().generateSalt(hash_salt_size);
     hash_password(password, salt, hash);
-    std::string newAccountId;
 
-    long intId = newId(newAccountId);
-    if (intId < 0) {
+    auto id = newId();
+    if (id.m_intId < 0) {
         log(ERROR, "Account creation failed as no ID available");
         return nullptr;
     }
 
-    auto account = newAccount(type, username, hash, newAccountId, intId);
+    auto account = newAccount(type, username, hash, id);
     if (!account) {
         return nullptr;
     }

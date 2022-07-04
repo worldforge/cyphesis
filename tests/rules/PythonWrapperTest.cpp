@@ -102,7 +102,7 @@ int main()
         PythonScriptFactory<LocatedEntity> psf("testmod", "TestEntity");
         int ret = psf.setup();
         assert(ret == 0);
-        Ref<Entity> e = new Entity("1", 1);
+        Ref<Entity> e = new Entity(1);
         new TestWorld(e);
         ret = psf.addScript(*e);
         assert(ret == 0);

@@ -55,8 +55,8 @@ long PossessionAccount::account_count = 0;
 long PossessionAccount::mind_count = 0;
 
 
-PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client) :
-        Router(id, intId),
+PossessionAccount::PossessionAccount(RouterId id, const MindKit& mindFactory, PossessionClient& client) :
+        Router(std::move(id)),
         m_client(client),
         m_mindFactory(mindFactory)
 {
@@ -240,7 +240,7 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
 
         auto entityId = I->second.String();
 
-        createMindInstance(resInner, ent->getId(), entityId);
+        createMindInstance(resInner, RouterId(ent->getId()), entityId);
 
     }, [=]() {
         log(WARNING, String::compose("Could not take possession of entity with id %1", possessEntityId));
@@ -250,11 +250,11 @@ void PossessionAccount::takePossession(OpVector& res, const std::string& possess
     //res.push_back(possess);
 }
 
-void PossessionAccount::createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId)
+void PossessionAccount::createMindInstance(OpVector& res, RouterId mindId, const std::string& entityId)
 {
-    log(INFO, String::compose("Creating mind instance for entity id %1 with mind id %2, number of minds: %3.", entityId, mindId, m_minds.size() + 1));
+    log(INFO, String::compose("Creating mind instance for entity id %1 with mind id %2, number of minds: %3.", entityId, mindId.m_id, m_minds.size() + 1));
     Ref<BaseMind> mind = m_mindFactory.newMind(mindId, entityId);
-    m_minds.emplace(mindId, mind);
+    m_minds.emplace(mindId.m_id, mind);
     mind_count++;
     m_entitiesWithMinds.emplace(entityId, mind);
 

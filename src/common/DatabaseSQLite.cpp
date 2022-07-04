@@ -303,16 +303,10 @@ int DatabaseSQLite::registerEntityIdGenerator()
 }
 
 
-long DatabaseSQLite::newId(std::string& id)
+long DatabaseSQLite::newId()
 {
-
-    static char buf[32];
     long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
     return new_id;
-
 }
 
 int DatabaseSQLite::registerEntityTable(const std::map<std::string, int>& chunks)

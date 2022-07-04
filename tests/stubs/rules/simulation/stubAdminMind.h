@@ -9,8 +9,8 @@
 
 #ifndef STUB_AdminMind_AdminMind
 //#define STUB_AdminMind_AdminMind
-   AdminMind::AdminMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
-    : ExternalMind(strId, id, entity)
+   AdminMind::AdminMind(RouterId id, Ref<LocatedEntity> entity)
+    : ExternalMind(id, entity)
   {
     
   }

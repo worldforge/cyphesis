@@ -38,7 +38,7 @@
 class TestExternalMind : public ExternalMind
 {
   public:
-    TestExternalMind(Ref<Entity> & e) : ExternalMind("", 0, e) { }
+    TestExternalMind(Ref<Entity> & e) : ExternalMind(0, e) { }
 
     void test_deleteEntity(const std::string & id) {
         deleteEntity(id, false);
@@ -65,13 +65,13 @@ int main()
     TestWorld world{};
 
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
-        ExternalMind em("3", 3, e);
+        ExternalMind em(3, e);
     }
 
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
         TestExternalMind em(e);
 
@@ -80,7 +80,7 @@ int main()
 
     // Purge with empty contains
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
         e->m_contains.reset(new LocatedEntitySet);
 
         TestExternalMind em(e);
@@ -90,9 +90,9 @@ int main()
 
     // Purge with populated contains
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
         e->m_contains.reset(new LocatedEntitySet);
-        e->m_contains->insert(new Entity("3", 3));
+        e->m_contains->insert(new Entity(3));
 
         TestExternalMind em(e);
 
@@ -101,47 +101,47 @@ int main()
 
     // Connect to nothing
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
-        ExternalMind em("3", 3, e);
+        ExternalMind em(3, e);
 
         em.linkUp(0);
     }
 
     // Connect to something
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
-        ExternalMind em("3", 3, e);
+        ExternalMind em(3, e);
 
         Connection conn(*(CommSocket*)0,
                         *(ServerRouting*)0,
-                        "addr", "4", 4);
+                        "addr", 4);
         em.linkUp(&conn);
     }
 
     // Connect to something, then disconnect
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
-        ExternalMind em("3", 3, e);
+        ExternalMind em(3, e);
 
         Connection conn(*(CommSocket*)0,
                         *(ServerRouting*)0,
-                        "addr", "4", 4);
+                        "addr", 4);
         em.linkUp(&conn);
         em.linkUp(0);
     }
 
     // Connect to something, then check connection ID
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
-        ExternalMind em("3", 3, e);
+        ExternalMind em(3, e);
 
         Connection conn(*(CommSocket*)0,
                         *(ServerRouting*)0,
-                        "addr", "4", 4);
+                        "addr", 4);
         em.linkUp(&conn);
         const std::string & id = em.connectionId();
         assert(id == "4");
@@ -149,7 +149,7 @@ int main()
 
     // Send a random operation
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
         TestExternalMind em(e);
 
@@ -161,7 +161,7 @@ int main()
 
     // Send a Delete operation
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
         TestExternalMind em(e);
 
@@ -173,7 +173,7 @@ int main()
 
     // Send a Delete operation to an ephemeral entity
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
         e->addFlags(entity_ephem);
 
         TestExternalMind em(e);
@@ -186,13 +186,13 @@ int main()
 
     // Send a random operation to a connected mind, and make sure it's filtered out. Only Info ops are allowed.
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
         TestExternalMind em(e);
 
         Connection conn(*(CommSocket*)0,
                         *(ServerRouting*)0,
-                        "addr", "4", 4);
+                        "addr", 4);
         em.linkUp(&conn);
 
         stub_link_send_op = -1;
@@ -205,13 +205,13 @@ int main()
 
     // Send an Info operation and an  to a connected mind, and make sure sent filtered out. Only Info ops are allowed.
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
         TestExternalMind em(e);
 
         Connection conn(*(CommSocket*)0,
                 *(ServerRouting*)0,
-                "addr", "4", 4);
+                "addr", 4);
         em.linkUp(&conn);
 
         stub_link_send_op = -1;
@@ -226,13 +226,13 @@ int main()
 
     // Send a Sight operation to a connected mind
     {
-        Ref<Entity> e(new Entity("2", 2));
+        Ref<Entity> e(new Entity(2));
 
         TestExternalMind em(e);
 
         Connection conn(*(CommSocket*)0,
                 *(ServerRouting*)0,
-                "addr", "4", 4);
+                "addr", 4);
         em.linkUp(&conn);
 
         stub_link_send_op = -1;

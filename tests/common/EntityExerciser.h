@@ -34,8 +34,8 @@ struct LocatedEntityTest : public LocatedEntity
 {
     static PropertyManager* propertyManager;
 
-    LocatedEntityTest(const std::string& id, int iid) :
-            LocatedEntity(id, iid)
+    LocatedEntityTest(RouterId id) :
+            LocatedEntity(id)
     {}
 
     void externalOperation(const Operation&, Link&) override;

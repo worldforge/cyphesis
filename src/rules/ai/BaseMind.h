@@ -102,7 +102,7 @@ class BaseMind : public Router, public ReferenceCounted, public MemMap::MapListe
         virtual void processNavmesh()
         {};
     public:
-        BaseMind(const std::string& mindId, std::string entityId, TypeStore& typeStore);
+        BaseMind(RouterId mindId, std::string entityId, TypeStore& typeStore);
 
         ~BaseMind() override;
 

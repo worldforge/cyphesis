@@ -53,14 +53,14 @@ Peer::Peer(CommSocket& client,
            ServerRouting& svr,
            const std::string& addr,
            int port,
-           const std::string& id, long iid) :
-        Link(client, id, iid),
+           RouterId id) :
+        Link(client, std::move(id)),
         m_host(addr),
         m_port(port),
         m_state(PEER_INIT),
         m_server(svr)
 {
-    logEvent(CONNECT, String::compose("%1 - - Connect to %2", id, addr));
+    logEvent(CONNECT, String::compose("%1 - - Connect to %2", id.m_id, addr));
 }
 
 Peer::~Peer()

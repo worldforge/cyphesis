@@ -77,7 +77,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
     void test_creationAndDeletion()
     {
         {
-            Ref<LocatedEntity> base = new Entity("", 0);
+            Ref<LocatedEntity> base = new Entity(0);
             WorldRouter test_world(base, *m_eb, timeProviderFn);
 
             Anonymous ent;
@@ -94,7 +94,7 @@ struct WorldRouterintegration : public Cyphesis::TestBase
         }
 
         {
-            Ref<LocatedEntity> base = new Entity("", 0);
+            Ref<LocatedEntity> base = new Entity(0);
             WorldRouter test_world(base, *m_eb, timeProviderFn);
 
             Anonymous ent;
@@ -193,7 +193,7 @@ void WorldRouterintegration::teardown()
 
 void WorldRouterintegration::test_sequence()
 {
-    Ref<Entity> base = new Entity("", 0);
+    Ref<Entity> base = new Entity(0);
     WorldRouter test_world(base, *m_eb, timeProviderFn);
 
     auto ent1 = test_world.addNewEntity("__no_such_type__",
@@ -205,10 +205,9 @@ void WorldRouterintegration::test_sequence()
     ent1 = test_world.addNewEntity("thing", ent);
     assert(ent1);
 
-    std::string id;
-    long int_id = newId(id);
+    auto id = newId();
 
-    Ref<Entity> ent2 = new Thing(id, int_id);
+    Ref<Entity> ent2 = new Thing(id);
     assert(ent2 != 0);
     ent2->requirePropertyClassFixed<PositionProperty>().data() = Point3D(0, 0, 0);
     test_world.addEntity(ent2, base);
@@ -320,9 +319,9 @@ std::unique_ptr<PropertyBase> CorePropertyManager::addProperty(const std::string
 
 #define STUB_ArchetypeFactory_newEntity
 
-Ref<Entity> ArchetypeFactory::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
+Ref<Entity> ArchetypeFactory::newEntity(RouterId id, const Atlas::Objects::Entity::RootEntity& attributes)
 {
-    return new Entity(id, intId);
+    return new Entity(id);
 }
 
 #include "../stubs/server/stubArchetypeFactory.h"

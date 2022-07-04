@@ -40,8 +40,8 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-AdminMind::AdminMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
-    : ExternalMind(strId, id, std::move(entity))
+AdminMind::AdminMind(RouterId id, Ref<LocatedEntity> entity)
+    : ExternalMind(std::move(id), std::move(entity))
 {
 
 }

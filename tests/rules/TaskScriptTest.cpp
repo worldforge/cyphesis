@@ -51,7 +51,7 @@ int main()
 
     Operation op;
 
-    Character chr("3", 3);
+    Character chr(3);
 
     {
         Task ts(chr);

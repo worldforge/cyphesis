@@ -48,7 +48,7 @@ class TestEntity : public Entity
 {
     public:
 
-        explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+        explicit TestEntity(RouterId id) : Entity(id)
         {
         }
 
@@ -98,7 +98,7 @@ void SuspendedPropertyintegration::setup()
     TestWorld::extension.messageFn = [](const Operation& op, LocatedEntity& ent) {
         worldMessageCallback(op);
     };
-    world_entity = new TestEntity("0", 0);
+    world_entity = new TestEntity(0);
     world = new TestWorld(world_entity);
 }
 
@@ -111,7 +111,7 @@ void SuspendedPropertyintegration::teardown()
 
 void SuspendedPropertyintegration::test_suspending_entity_should_prevent_ticks()
 {
-    Ref<TestEntity> entity = new TestEntity("1", 1);
+    Ref<TestEntity> entity = new TestEntity(1);
     struct TickListener : OperationsListener
     {
         bool wasCalled = false;

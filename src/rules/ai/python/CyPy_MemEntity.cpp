@@ -32,7 +32,7 @@ CyPy_MemEntity::CyPy_MemEntity(Py::PythonClassInstanceWeak* self, Py::Tuple& arg
         if (intId == -1L) {
             throw Py::TypeError("MemEntity() requires string/int ID");
         }
-        m_value = new MemEntity(id, intId);
+        m_value = new MemEntity(RouterId(intId));
     } else if (CyPy_MemEntity::check(arg)) {
         m_value = CyPy_MemEntity::value(arg);
     } else {

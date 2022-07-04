@@ -59,8 +59,7 @@ ArchetypeFactory::ArchetypeFactory(ArchetypeFactory& o)
 
 ArchetypeFactory::~ArchetypeFactory() = default;
 
-Ref<Entity> ArchetypeFactory::createEntity(const std::string& id,
-                                                  long intId,
+Ref<Entity> ArchetypeFactory::createEntity(RouterId id,
                                                   EntityCreation& entityCreation,
                                                   std::map<std::string, EntityCreation>& entities)
 {
@@ -84,7 +83,7 @@ Ref<Entity> ArchetypeFactory::createEntity(const std::string& id,
         ::addToEntity(Point3D::ZERO(), cleansedAttributes->modifyPos());
     }
 
-    auto entity = m_entityBuilder.newChildEntity(id, intId, concreteType, cleansedAttributes);
+    auto entity = m_entityBuilder.newChildEntity(id, concreteType, cleansedAttributes);
 
     if (entity == nullptr) {
         log(ERROR, String::compose("Could not create entity of type %1.", concreteType));
@@ -99,9 +98,8 @@ Ref<Entity> ArchetypeFactory::createEntity(const std::string& id,
             log(ERROR, String::compose("Referenced child entity with id %1 does not exist.", childId));
             return nullptr;
         }
-        std::string childEntityId;
-        long childIntId = newId(childEntityId);
-        auto childEntity = createEntity(childEntityId, childIntId, entityI->second, entities);
+        auto childEntityId = newId();
+        auto childEntity = createEntity(childEntityId, entityI->second, entities);
         if (childEntity == nullptr) {
             log(ERROR, String::compose("Could not create child entity with id %1.", childId));
             return nullptr;
@@ -153,7 +151,7 @@ bool ArchetypeFactory::parseEntities(const std::map<std::string, MapType>& entit
     return true;
 }
 
-Ref<Entity> ArchetypeFactory::newEntity(const std::string& id, long intId, const RootEntity& attributes)
+Ref<Entity> ArchetypeFactory::newEntity(RouterId id, const RootEntity& attributes)
 {
     //parse entities into RootEntity instances first
     std::map<std::string, EntityCreation> entities;
@@ -254,7 +252,7 @@ Ref<Entity> ArchetypeFactory::newEntity(const std::string& id, long intId, const
     if (!attributes->isDefaultPos()) {
         attrEntity->modifyPos() = attributes->getPos();
     }
-    auto entity = createEntity(id, intId, entityCreation, entities);
+    auto entity = createEntity(id, entityCreation, entities);
     entityCreation.createdEntity = entity;
 
     if (entity != nullptr) {

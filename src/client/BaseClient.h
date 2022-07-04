@@ -52,7 +52,7 @@ class BaseClient : public Link
 
         static std::string getErrorMessage(const Operation& err);
 
-        virtual void notifyAccountCreated(const std::string& accountId) = 0;
+        virtual void notifyAccountCreated(RouterId accountId) = 0;
 
     public:
         explicit BaseClient(CommSocket& commSocket);

@@ -9,7 +9,7 @@
 
 #ifndef STUB_TrustedConnection_newAccount
 //#define STUB_TrustedConnection_newAccount
-  std::unique_ptr<Account> TrustedConnection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, const std::string& id, long intId)
+  std::unique_ptr<Account> TrustedConnection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, RouterId id)
   {
     return *static_cast<std::unique_ptr<Account>*>(nullptr);
   }
@@ -17,8 +17,8 @@
 
 #ifndef STUB_TrustedConnection_TrustedConnection
 //#define STUB_TrustedConnection_TrustedConnection
-   TrustedConnection::TrustedConnection(CommSocket& client, ServerRouting& svr, const std::string& addr, const std::string& id, long iid)
-    : Connection(client, svr, addr, id, iid)
+   TrustedConnection::TrustedConnection(CommSocket& client, ServerRouting& svr, const std::string& addr, RouterId id)
+    : Connection(client, svr, addr, id)
   {
     
   }

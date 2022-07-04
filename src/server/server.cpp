@@ -243,13 +243,12 @@ namespace {
         };
 
         std::function<void(CommAsioClient<ip::tcp>&)> tcpAtlasStarter = [&](CommAsioClient<ip::tcp>& client) {
-            std::string connection_id;
-            long c_iid = newId(connection_id);
+            auto connection_id = newId();
             //Turn off Nagle's algorithm to increase responsiveness.
             client.getSocket().set_option(ip::tcp::no_delay(true));
             //Listen to both ipv4 and ipv6
             //client.getSocket().set_option(boost::asio::ip::v6_only(false));
-            client.startAccept(std::make_unique<Connection>(client, serverRouting, "", connection_id, c_iid));
+            client.startAccept(std::make_unique<Connection>(client, serverRouting, "", connection_id));
         };
 
 
@@ -315,9 +314,8 @@ namespace {
             return std::make_shared<CommAsioClient<local::stream_protocol>>(serverRouting.getName(), io_context, atlasFactories);
         };
         auto localStarter = [&](CommAsioClient<local::stream_protocol>& client) {
-            std::string connection_id;
-            long c_iid = newId(connection_id);
-            client.startAccept(std::make_unique<TrustedConnection>(client, serverRouting, "", connection_id, c_iid));
+            auto connection_id = newId();
+            client.startAccept(std::make_unique<TrustedConnection>(client, serverRouting, "", connection_id));
         };
         socketListeners.localListener = std::make_unique<CommAsioListener<local::stream_protocol, CommAsioClient<local::stream_protocol>>>(localCreator,
                                                                                                                                            localStarter,
@@ -503,10 +501,9 @@ namespace {
 
             // This ID is currently generated every time, but should perhaps be
             // persistent in future.
-            std::string lobby_id;
             long lobby_int_id;
 
-            if ((lobby_int_id = database.newId(lobby_id)) < 0) {
+            if ((lobby_int_id = database.newId()) < 0) {
                 log(CRITICAL, "Unable to get server IDs from Database");
                 return EXIT_DATABASE_ERROR;
             }

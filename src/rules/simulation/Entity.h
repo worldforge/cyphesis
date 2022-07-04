@@ -51,8 +51,7 @@ class Entity : public LocatedEntity
         std::unique_ptr<PropertyBase> createProperty(const std::string& propertyName) const override;
 
     public:
-        explicit Entity(long intId);
-        explicit Entity(const std::string& id, long intId);
+        explicit Entity(RouterId id);
 
         ~Entity() override;
 

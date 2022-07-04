@@ -42,7 +42,6 @@
 
 #include <sigc++/adaptors/bind.h>
 #include <rules/simulation/MindsProperty.h>
-#include <common/operations/Update.h>
 #include <common/Property.h>
 
 
@@ -72,9 +71,8 @@ static const bool debug_flag = false;
 Account::Account(Connection* conn,
                  std::string uname,
                  std::string passwd,
-                 const std::string& id,
-                 long intId) :
-        ConnectableRouter(id, intId),
+                 RouterId id) :
+        ConnectableRouter(std::move(id)),
         m_connection(conn),
         m_username(std::move(uname)), m_password(std::move(passwd))
 {
@@ -106,11 +104,8 @@ Connection* Account::getConnection() const
 
 std::unique_ptr<ExternalMind> Account::createMind(const Ref<LocatedEntity>& entity) const
 {
-    std::string strId;
-
-    auto id = newId(strId);
-
-    return std::make_unique<ExternalMind>(strId, id, entity);
+    auto id = newId();
+    return std::make_unique<ExternalMind>(id, entity);
 }
 
 /// \brief Connect an existing character to this account

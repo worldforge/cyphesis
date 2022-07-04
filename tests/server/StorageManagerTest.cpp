@@ -91,7 +91,7 @@ int main()
     Persistence persistence(database);
     TestPropertyManager propertyManager;
 
-    Ref<LocatedEntity> le(new Entity("", 0));
+    Ref<LocatedEntity> le(new Entity(0));
 
     {
         WorldRouter world(le, eb, {});
@@ -127,7 +127,7 @@ int main()
         WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb, propertyManager);
-        Ref<Entity> e1(new Entity("1", 1));
+        Ref<Entity> e1(new Entity(1));
         store.test_entityInserted(*e1);
     }
 
@@ -135,7 +135,7 @@ int main()
         WorldRouter world(le, eb, {});
 
         TestStorageManager store(world, database, eb, propertyManager);
-        Ref<Entity> e1(new Entity("1", 1));
+        Ref<Entity> e1(new Entity(1));
         store.test_entityUpdated(*e1);
     }
 
@@ -154,7 +154,7 @@ int main()
 
         TestStorageManager store(world, database, eb, propertyManager);
 
-        Ref<Entity> e1(new Entity("1", 1));
+        Ref<Entity> e1(new Entity(1));
         store.test_restoreProperties(*e1);
     }
 
@@ -163,7 +163,7 @@ int main()
 
         TestStorageManager store(world, database, eb, propertyManager);
 
-        Ref<Entity> e1(new Entity("1", 1));
+        Ref<Entity> e1(new Entity(1));
         store.test_insertEntity(*e1);
     }
 
@@ -172,7 +172,7 @@ int main()
 
         TestStorageManager store(world, database, eb, propertyManager);
 
-        Ref<Entity> e1(new Entity("1", 1));
+        Ref<Entity> e1(new Entity(1));
         store.test_updateEntity(*e1);
     }
 
@@ -181,7 +181,7 @@ int main()
 
         TestStorageManager store(world, database, eb, propertyManager);
 
-        Ref<Entity> e1(new Entity("1", 1));
+        Ref<Entity> e1(new Entity(1));
         store.test_restoreChildren(*e1);
     }
 

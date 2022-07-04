@@ -55,13 +55,8 @@ using Atlas::Objects::Entity::RootEntity;
 static const bool debug_flag = false;
 
 /// \brief Constructor for physical or tangible entities.
-Thing::Thing(const std::string& id, long intId) :
-        Entity(id, intId)
-{
-}
-
-Thing::Thing(long intId) :
-        Entity(std::to_string(intId), intId)
+Thing::Thing(RouterId id) :
+        Entity(std::move(id))
 {
 }
 

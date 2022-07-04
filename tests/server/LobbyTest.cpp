@@ -39,7 +39,7 @@
 class TestAccount : public Account
 {
     public:
-        TestAccount() : Account(0, "bob", "foo", "2", 2)
+        TestAccount() : Account(0, "bob", "foo", 2)
         {}
 
         virtual int characterError(const Operation&,
@@ -101,7 +101,7 @@ Lobbytest::Lobbytest()
 
 void Lobbytest::setup()
 {
-    m_lobby = new Lobby(*(ServerRouting*) 0, "1", 1);
+    m_lobby = new Lobby(*(ServerRouting*) 0, 1);
 }
 
 void Lobbytest::teardown()
@@ -158,7 +158,7 @@ void Lobbytest::test_addAccount_connected()
 {
     Connection conn(*(CommSocket*) 0,
                     *(ServerRouting*) 0,
-                    "foo", "3", 3);
+                    "foo", 3);
     TestAccount tac;
 
     tac.setConnection(&conn);
@@ -174,7 +174,7 @@ void Lobbytest::test_operation_connected()
 {
     Connection conn(*(CommSocket*) 0,
                     *(ServerRouting*) 0,
-                    "foo", "3", 3);
+                    "foo", 3);
     TestAccount tac;
 
     tac.setConnection(&conn);
@@ -191,7 +191,7 @@ void Lobbytest::test_operation_connected_other()
 {
     Connection conn(*(CommSocket*) 0,
                     *(ServerRouting*) 0,
-                    "foo", "3", 3);
+                    "foo", 3);
     TestAccount tac;
 
     tac.setConnection(&conn);

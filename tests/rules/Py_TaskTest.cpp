@@ -46,7 +46,7 @@ int main()
     setupPythonMalloc();
     init_python_api({&CyPy_Server::init});
     {
-        Ref<Entity> entity(new Entity("", 1));
+        Ref<Entity> entity(new Entity(1));
         UsageInstance usageInstance;
         usageInstance.actor = entity;
         Py::Module module("server");

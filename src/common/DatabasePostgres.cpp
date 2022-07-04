@@ -488,7 +488,7 @@ int DatabasePostgres::registerEntityIdGenerator()
     return runCommandQuery("CREATE SEQUENCE entity_ent_id_seq");
 }
 
-long DatabasePostgres::newId(std::string& id)
+long DatabasePostgres::newId()
 {
     assert(m_connection != nullptr);
 
@@ -506,18 +506,17 @@ long DatabasePostgres::newId(std::string& id)
         reportError();
         return -1;
     }
-    const char* cid = PQgetvalue(res, 0, 0);
-    id = cid;
+    std::string cid = PQgetvalue(res, 0, 0);
     PQclear(res);
     while ((res = PQgetResult(m_connection)) != nullptr) {
         PQclear(res);
         log(ERROR, "Extra database result to simple query.");
     };
-    if (id.empty()) {
+    if (cid.empty()) {
         log(ERROR, "Unknown error getting ID from database.");
         return -1;
     }
-    return forceIntegerId(id);
+    return forceIntegerId(cid);
 }
 
 int DatabasePostgres::registerEntityTable(const std::map<std::string, int>& chunks)

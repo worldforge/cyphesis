@@ -82,7 +82,7 @@ struct ProvidersTest : public Cyphesis::TestBase
         types["thing"] = m_thingType;
 
         //Make a barrel with mass and burn speed properties
-        m_b1 = new Entity("1", 1);
+        m_b1 = new Entity(1);
         add_entity(m_b1);
         m_barrelType = new TypeNode("barrel");
         m_barrelType->setParent(m_thingType);
@@ -102,7 +102,7 @@ struct ProvidersTest : public Cyphesis::TestBase
         m_b1->setProperty("string_list", std::unique_ptr<PropertyBase>(list_prop2));
 
         //Make a second barrel
-        m_b2 = new Entity("2", 2);
+        m_b2 = new Entity(2);
         add_entity(m_b2);
         m_b2->setProperty("mass", std::unique_ptr<PropertyBase>(new SoftProperty(Element(20))));
         m_b2->setProperty("burn_speed", std::unique_ptr<PropertyBase>(new SoftProperty(0.25)));
@@ -131,12 +131,12 @@ struct ProvidersTest : public Cyphesis::TestBase
         m_clothType->setParent(m_thingType);
         types["cloth"] = m_clothType;
 
-        m_cloth = new Entity("3", 3);
+        m_cloth = new Entity(3);
         add_entity(m_cloth);
         m_cloth->setType(m_clothType);
         m_cloth->setProperty("color", std::unique_ptr<PropertyBase>(new SoftProperty("green")));
 
-        m_glovesEntity = new Entity("4", 4);
+        m_glovesEntity = new Entity(4);
         add_entity(m_glovesEntity);
         m_glovesEntity->setProperty("color", std::unique_ptr<PropertyBase>(new SoftProperty("brown")));
 
@@ -155,7 +155,7 @@ struct ProvidersTest : public Cyphesis::TestBase
         //Create the character for testing
         m_characterType = new TypeNode("character");
         types["character"] = m_characterType;
-        m_ch1 = new Entity("5", 5);
+        m_ch1 = new Entity(5);
         add_entity(m_ch1);
         m_ch1->setType(m_characterType);
 
@@ -488,7 +488,7 @@ struct ProvidersTest : public Cyphesis::TestBase
     void test_InstanceOf()
     {
         //Thing for testing instance_of
-        Entity thingEntity("123", 123);
+        Entity thingEntity(123);
         thingEntity.setType(m_thingType);
 
         //Barrel is also thing but thing is not a barrel

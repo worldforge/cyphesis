@@ -59,13 +59,13 @@ int main()
 
     {
         // Test constructor
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
     }
 
     {
         // Test destructor
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         BaseWorld * tw = new MyTestWorld(wrld);
 
         delete tw;
@@ -73,7 +73,7 @@ int main()
 
     {
         // Test constructor sets singleton pointer
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         assert(&BaseWorld::instance() == &tw);
@@ -81,7 +81,7 @@ int main()
 
     {
         // Test constructor installs reference to world entity
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         assert(tw.m_gw == wrld);
@@ -89,7 +89,7 @@ int main()
 
     {
         // Test retrieving non existent entity by string ID is ok
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         assert(!tw.getEntity("2"));
@@ -97,10 +97,10 @@ int main()
 
     {
         // Test retrieving existent entity by string ID is ok
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
-        LocatedEntity * tc = new Entity("2", 2);
+        LocatedEntity * tc = new Entity(2);
 
         tw.addEntity(tc, wrld);
 
@@ -109,10 +109,10 @@ int main()
 
     {
         // Test retrieving existent entity by integer ID is ok
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
-        LocatedEntity * tc = new Entity("2", 2);
+        LocatedEntity * tc = new Entity(2);
 
         tw.addEntity(tc, wrld);
 
@@ -121,7 +121,7 @@ int main()
 
     {
         // Test retrieving non existent entity by integer ID is ok
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         assert(!tw.getEntity(2));
@@ -129,7 +129,7 @@ int main()
 
     {
         // Test retrieving reference to all entities is okay and empty
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         assert(tw.getEntities().size() == 1);
@@ -137,7 +137,7 @@ int main()
 
     {
         // Test getting the time
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         tw.getTime();
@@ -145,7 +145,7 @@ int main()
 
     {
         // Test getting the uptime
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         tw.upTime();
@@ -153,7 +153,7 @@ int main()
 
     {
         // Test connecting to the dispatch signal
-        Ref<Entity> wrld(new Entity("1", 1));
+        Ref<Entity> wrld(new Entity(1));
         MyTestWorld tw(wrld);
 
         tw.Dispatching.connect(sigc::ptr_fun(&test_function));

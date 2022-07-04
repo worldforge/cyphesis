@@ -72,10 +72,10 @@ PossessionClient::~PossessionClient()
     }
 }
 
-void PossessionClient::notifyAccountCreated(const std::string& accountId)
+void PossessionClient::notifyAccountCreated(RouterId accountId)
 {
     log(INFO, "Creating possession account on server.");
-    m_account = std::make_unique<PossessionAccount>(accountId, integerId(accountId), m_mindFactory, *this);
+    m_account = std::make_unique<PossessionAccount>(accountId, m_mindFactory, *this);
     OpVector res;
     m_account->enablePossession(res);
     for (auto& op : res) {

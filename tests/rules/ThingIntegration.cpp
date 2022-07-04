@@ -48,15 +48,10 @@ struct ThingExt : public Thing
 {
     std::unique_ptr<Domain> domain;
 
-    explicit ThingExt(long intId)
-            : ThingExt::ThingExt(std::to_string(intId), intId)
+    explicit ThingExt(RouterId id)
+            : Thing::Thing(id)
     {
-    }
-
-    explicit ThingExt(const std::string& id, long intId)
-            : Thing::Thing(id, intId)
-    {
-        m_type = new TypeNode(id);
+        m_type = new TypeNode(id.m_id);
         addFlags(entity_perceptive);
         things.emplace_back(Ref<ThingExt>(this));
     }
@@ -220,31 +215,31 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          *         T4       T5*   T7*  T8** T9
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t1(new ThingExt(1));
             t1->requirePropertyClassFixed<BBoxProperty>().data() = {{-128, -128, -128},
                                                                     {128,  128,  128}};
             t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t2->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t4(new ThingExt(4));
             t4->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t4->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t5(new ThingExt(5));
             t5->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t5->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t5->addFlags(entity_visibility_protected);
-            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t6(new ThingExt(6));
             t6->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t6->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t6->domain = std::make_unique<InventoryDomain>(*t6);
             t6->addFlags(entity_domain);
-            Ref<ThingExt> t7(new ThingExt("7", 7));
+            Ref<ThingExt> t7(new ThingExt(7));
             t7->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t7->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t7->addFlags(entity_visibility_protected);
@@ -253,7 +248,7 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
                 modeDataProp->setPlantedData({t6->getIntId()});
                 t7->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
             }
-            Ref<ThingExt> t8(new ThingExt("8", 8));
+            Ref<ThingExt> t8(new ThingExt(8));
             t8->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t8->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t8->addFlags(entity_visibility_private);
@@ -262,7 +257,7 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
                 modeDataProp->setPlantedData({t6->getIntId()});
                 t8->setProperty(ModeDataProperty::property_name, std::move(modeDataProp));
             }
-            Ref<ThingExt> t9(new ThingExt("9", 9));
+            Ref<ThingExt> t9(new ThingExt(9));
             t9->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t9->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             {
@@ -350,11 +345,11 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          *
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
-            Ref<ThingExt> t3(new ThingExt("3", 3));
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
+            Ref<ThingExt> t3(new ThingExt(3));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
             t1->addChild(*t2);
             t1->addChild(*t5);
             t2->addChild(*t3);
@@ -397,9 +392,9 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * With T2 having a void domain.
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
+            Ref<ThingExt> t3(new ThingExt(3));
             t1->addChild(*t2);
             t2->addChild(*t3);
 
@@ -445,23 +440,23 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * T8 is not perceptive.
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t1(new ThingExt(1));
             //        t1->setAttrValue()
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t4(new ThingExt(4));
             t4->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t4->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t5(new ThingExt(5));
             t5->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t5->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t6(new ThingExt("6", 6));
-            Ref<ThingExt> t7(new ThingExt("7", 7));
-            Ref<ThingExt> t8(new ThingExt("8", 8));
+            Ref<ThingExt> t6(new ThingExt(6));
+            Ref<ThingExt> t7(new ThingExt(7));
+            Ref<ThingExt> t8(new ThingExt(8));
             t8->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t8->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t8->removeFlags(entity_perceptive);
@@ -533,12 +528,12 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T3 being wielded
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
-            Ref<ThingExt> t3(new ThingExt("3", 3));
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
-            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
+            Ref<ThingExt> t3(new ThingExt(3));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
+            Ref<ThingExt> t6(new ThingExt(6));
 
             t1->addChild(*t2);
             t1->addChild(*t6);
@@ -597,18 +592,18 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
             t5->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t5->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t6(new ThingExt(6));
 
             t2->domain = std::make_unique<PhysicalDomain>(*t2);
             t2->addFlags(entity_domain);
@@ -668,22 +663,22 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t1(new ThingExt(1));
             t1->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t1->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> creator(new ThingExt("creator", 10));
+            Ref<ThingExt> creator(new ThingExt(RouterId("creator", 10)));
             creator->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             creator->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             creator->addFlags(entity_admin);
 
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
 
             t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
@@ -740,11 +735,11 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          *
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
-            Ref<ThingExt> t3(new ThingExt("3", 3));
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
+            Ref<ThingExt> t3(new ThingExt(3));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
             t1->addChild(*t2);
             t1->addChild(*t5);
             t2->addChild(*t3);
@@ -779,9 +774,9 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * With T2 having a void domain.
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
+            Ref<ThingExt> t3(new ThingExt(3));
             t1->addChild(*t2);
             t2->addChild(*t3);
 
@@ -821,23 +816,23 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * T8 is not perceptive.
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t4(new ThingExt(4));
             t4->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t4->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t5(new ThingExt(5));
             t5->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t5->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t5->setProperty("reach", createReachPropFn(10));
-            Ref<ThingExt> t6(new ThingExt("6", 6));
-            Ref<ThingExt> t7(new ThingExt("7", 7));
-            Ref<ThingExt> t8(new ThingExt("8", 8));
+            Ref<ThingExt> t6(new ThingExt(6));
+            Ref<ThingExt> t7(new ThingExt(7));
+            Ref<ThingExt> t8(new ThingExt(8));
             t8->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t8->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t8->removeFlags(entity_perceptive);
@@ -897,12 +892,12 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T3 being wielded
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
-            Ref<ThingExt> t3(new ThingExt("3", 3));
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
-            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
+            Ref<ThingExt> t3(new ThingExt(3));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
+            Ref<ThingExt> t6(new ThingExt(6));
 
             t1->addChild(*t2);
             t1->addChild(*t6);
@@ -951,19 +946,19 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t1(new ThingExt(1));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
             t5->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t5->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
             t5->setProperty("reach", createReachPropFn(10));
-            Ref<ThingExt> t6(new ThingExt("6", 6));
+            Ref<ThingExt> t6(new ThingExt(6));
 
             t2->domain = std::make_unique<PhysicalDomain>(*t2);
             t2->addFlags(entity_domain);
@@ -1014,21 +1009,21 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
          * And T4 being wielded
          */
         {
-            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t1(new ThingExt(1));
             t1->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t1->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t2->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> creator(new ThingExt("creator", 10));
+            Ref<ThingExt> creator(new ThingExt(RouterId("creator", 10)));
             creator->addFlags(entity_admin);
             creator->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             creator->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t3->requirePropertyClassFixed<BBoxProperty>().data() = bbox;
-            Ref<ThingExt> t4(new ThingExt("4", 4));
-            Ref<ThingExt> t5(new ThingExt("5", 5));
+            Ref<ThingExt> t4(new ThingExt(4));
+            Ref<ThingExt> t5(new ThingExt(5));
 
             t1->domain = std::make_unique<PhysicalDomain>(*t1);
             t1->addFlags(entity_domain);
@@ -1071,20 +1066,20 @@ struct ThingIntegration : public Cyphesis::TestBaseWithContext<Context>
         {
             WFMath::AxisBox<3> smallBbox = {{-1, -1, -1},
                                             {1,  1,  1}};
-            Ref<ThingExt> t1(new ThingExt("1", 1));
+            Ref<ThingExt> t1(new ThingExt(1));
             t1->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
             t1->requirePropertyClassFixed<BBoxProperty>().data() = {{-200, -200, -200},
                                                                     {200,  200,  200}};
-            Ref<ThingExt> t2(new ThingExt("2", 2));
+            Ref<ThingExt> t2(new ThingExt(2));
             t2->requirePropertyClassFixed<PositionProperty>().data() = {5, 0, 5};
             t2->requirePropertyClassFixed<BBoxProperty>().data() = smallBbox;
-            Ref<ThingExt> t3(new ThingExt("3", 3));
+            Ref<ThingExt> t3(new ThingExt(3));
             t3->requirePropertyClassFixed<PositionProperty>().data() = {10, 0, 10};
             t3->requirePropertyClassFixed<BBoxProperty>().data() = smallBbox;
             auto reachProp = new Property<double>();
             reachProp->data() = 20.f;
             t3->setProperty("reach", std::unique_ptr<PropertyBase>(reachProp));
-            Ref<ThingExt> t4(new ThingExt("4", 4));
+            Ref<ThingExt> t4(new ThingExt(4));
             t4->requirePropertyClassFixed<PositionProperty>().data() = {100, 0, 100};
             t4->requirePropertyClassFixed<BBoxProperty>().data() = smallBbox;
 

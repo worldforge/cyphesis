@@ -38,12 +38,12 @@
 
 static const bool debug_flag = false;
 
-AwareMind::AwareMind(const std::string& mind_id,
+AwareMind::AwareMind(RouterId mind_id,
                      std::string entity_id,
                      TypeStore& typeStore,
                      SharedTerrain& sharedTerrain,
                      AwarenessStoreProvider& awarenessStoreProvider) :
-        BaseMind(mind_id, std::move(entity_id), typeStore),
+        BaseMind(std::move(mind_id), std::move(entity_id), typeStore),
         mSharedTerrain(sharedTerrain),
         mAwarenessStoreProvider(awarenessStoreProvider),
         mAwarenessStore(nullptr),

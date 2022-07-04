@@ -40,12 +40,12 @@ int main()
         return ++id;
     };
 
-    std::string id;
 
-    long int_id = newId(id);
+    auto id = newId();
 
-    assert(!id.empty());
-    assert(int_id > 0);
+    assert(id.isValid());
+    assert(!id.m_id.empty());
+    assert(id.m_intId > 0);
 
     return 0;
 }

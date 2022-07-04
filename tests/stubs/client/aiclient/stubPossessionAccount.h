@@ -9,8 +9,8 @@
 
 #ifndef STUB_PossessionAccount_PossessionAccount
 //#define STUB_PossessionAccount_PossessionAccount
-   PossessionAccount::PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client)
-    : Router(id, intId, mindFactory, client)
+   PossessionAccount::PossessionAccount(RouterId id, const MindKit& mindFactory, PossessionClient& client)
+    : Router(id, mindFactory, client)
   {
     
   }
@@ -74,7 +74,7 @@
 
 #ifndef STUB_PossessionAccount_createMindInstance
 //#define STUB_PossessionAccount_createMindInstance
-  void PossessionAccount::createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId)
+  void PossessionAccount::createMindInstance(OpVector& res, RouterId mindId, const std::string& entityId)
   {
     
   }

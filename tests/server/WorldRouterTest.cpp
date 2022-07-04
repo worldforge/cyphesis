@@ -95,7 +95,7 @@ WorldRoutertest::WorldRoutertest()
 
 void WorldRoutertest::setup()
 {
-    m_rootEntity = new Entity("", 0);
+    m_rootEntity = new Entity(0);
     m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
     test_world = new WorldRouter(m_rootEntity, *m_eb, {});
@@ -144,10 +144,9 @@ void WorldRoutertest::test_addNewEntity_idfail()
 
 void WorldRoutertest::test_addEntity()
 {
-    std::string id;
-    long int_id = newId(id);
+    auto id = newId();
 
-    auto ent2 = new Entity(id, int_id);
+    auto ent2 = new Entity(id);
     assert(ent2 != 0);
     ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
@@ -155,10 +154,9 @@ void WorldRoutertest::test_addEntity()
 
 void WorldRoutertest::test_addEntity_tick()
 {
-    std::string id;
-    long int_id = newId(id);
+    auto id = newId();
 
-    auto ent2 = new Entity(id, int_id);
+    auto ent2 = new Entity(id);
     assert(ent2 != 0);
     ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
@@ -172,10 +170,9 @@ void WorldRoutertest::test_addEntity_tick()
 
 void WorldRoutertest::test_addEntity_tick_get()
 {
-    std::string id;
-    long int_id = newId(id);
+    auto id = newId();
 
-    auto  ent2 = new Entity(id, int_id);
+    auto  ent2 = new Entity(id);
     assert(ent2 != 0);
     ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
@@ -190,10 +187,9 @@ void WorldRoutertest::test_addEntity_tick_get()
 
 void WorldRoutertest::test_delEntity()
 {
-    std::string id;
-    long int_id = newId(id);
+    auto id = newId();
 
-    auto  ent2 = new Entity(id, int_id);
+    auto  ent2 = new Entity(id);
     assert(ent2 != 0);
     ent2->m_parent = m_rootEntity.get();
     test_world->addEntity(ent2, m_rootEntity);
@@ -285,17 +281,13 @@ static inline float sqr(float x)
 
 static long idGenerator = 2;
 
-long newId(std::string & id)
+RouterId newId()
 {
     if (stub_deny_newid) {
         return -1;
     }
-    static char buf[32];
     long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
+    return {new_id};
 }
 
 #ifndef STUB_BaseWorld_getEntity
@@ -345,12 +337,12 @@ const TypeNode* Inheritance::getType(const std::string & parent) const
 #include "common/Property_impl.h"
 
 #define STUB_EntityBuilder_newEntity
-Ref<Entity> EntityBuilder::newEntity(const std::string & id, long intId,
+Ref<Entity> EntityBuilder::newEntity(RouterId id,
                                          const std::string & type,
                                          const RootEntity & attributes) const
 {
     if (type == "thing") {
-        auto e = new Entity(id, intId);
+        auto e = new Entity(id);
         return e;
     }
     return 0;

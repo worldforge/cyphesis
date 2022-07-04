@@ -71,7 +71,7 @@ int main()
         run_python_string("from atlas import Oplist");
 
         UsageInstance usageInstance;
-        usageInstance.actor = new Entity("100", 100);
+        usageInstance.actor = new Entity(100);
         usageInstance.op = Atlas::Objects::Operation::Action();
 
         Py::Module serverModule("server");
@@ -79,7 +79,7 @@ int main()
 
         //Check that reference handling is correct.
         {
-            Ref<Entity> entity = new Entity("2", 2);
+            Ref<Entity> entity = new Entity(2);
             assert(entity->checkRef() == 1);
             {
                 auto wrap1 = CyPy_LocatedEntity::wrap(entity);
@@ -97,14 +97,14 @@ int main()
             assert(entity->checkRef() == 1);
         }
 
-        Ref<Entity> e = new Entity("1", 1);
+        Ref<Entity> e = new Entity(1);
 
         {
             auto prop = std::make_unique<SoftProperty>();
             prop->set("bar");
             e->setProperty("foo", std::move(prop));
         }
-        Ref<Entity> wrld = new Entity("0", 0);
+        Ref<Entity> wrld = new Entity(0);
         e->m_parent = wrld.get();
         e->m_parent->makeContainer();
         assert(e->m_parent->m_contains != nullptr);
@@ -117,7 +117,7 @@ int main()
         assert(CyPy_LocatedEntity::check(wrap_e_again));
         assert(wrap_e == wrap_e_again);
 
-        Ref<Entity> c = new Entity("2", 2);
+        Ref<Entity> c = new Entity(2);
         auto wrap_c = CyPy_LocatedEntity::wrap(c);
         assert(CyPy_LocatedEntity::check(wrap_c));
 

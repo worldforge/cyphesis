@@ -34,13 +34,9 @@ static std::vector<Ref<MemEntityExt>> things;
 
 struct MemEntityExt : public MemEntity
 {
-    explicit MemEntityExt(long intId)
-            : MemEntityExt::MemEntityExt(std::to_string(intId), intId)
-    {
-    }
 
-    explicit MemEntityExt(const std::string& id, long intId)
-            : MemEntity::MemEntity(id, intId)
+    explicit MemEntityExt(RouterId id)
+            : MemEntity::MemEntity(id)
     {
         things.emplace_back(Ref<MemEntityExt>(this));
     }
@@ -107,7 +103,7 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_create()
     {
-        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
+        Ref<MemEntity> avatarEntity(new MemEntityExt(1));
         avatarEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, -1, -1},
                                                                           {1,  1,  1}};
         Steering steering(*avatarEntity);
@@ -115,16 +111,16 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_resolveDestination()
     {
-        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt(0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt(1));
         avatarEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         avatarEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                           {1,  1, 1}};
-        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt(2));
         otherEntity->requirePropertyClassFixed<PositionProperty>().data() = {10, 0, 0};
-        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
-        Ref<MemEntity> otherChildEntity(new MemEntityExt("5", 5));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt(3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt(4));
+        Ref<MemEntity> otherChildEntity(new MemEntityExt(5));
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
@@ -176,24 +172,24 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_steering()
     {
-        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt(0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt(1));
         avatarEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         avatarEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                           {1,  1, 1}};
         avatarEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt(2));
         otherEntity->requirePropertyClassFixed<PositionProperty>().data() = {10, 0, 0};
         otherEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-2, 0, -2},
                                                                          {2,  3, 2}};
         otherEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
-        Ref<MemEntity> obstacleEntity(new MemEntityExt("5", 5));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt(3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt(4));
+        Ref<MemEntity> obstacleEntity(new MemEntityExt(5));
         obstacleEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                             {1,  1, 1}};
         obstacleEntity->requirePropertyClassFixed<PositionProperty>().data() = {5, 0, 0};
@@ -263,23 +259,23 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_prediction()
     {
-        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt(0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt(1));
         avatarEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         avatarEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                           {1,  1, 1}};
         avatarEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt(2));
         otherEntity->requirePropertyClassFixed<PositionProperty>().data() = {10, 0, 0};
         otherEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-2, 0, -2},
                                                                          {2,  3, 2}};
         otherEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt(3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt(4));
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
@@ -356,21 +352,21 @@ struct SteeringIntegration : public Cyphesis::TestBase
 
     void test_distance()
     {
-        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt(0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt(1));
         avatarEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         avatarEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                           {1,  1, 1}};
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt(2));
         otherEntity->requirePropertyClassFixed<PositionProperty>().data() = {10, 0, 0};
         otherEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-2, 0, -2},
                                                                          {2,  3, 2}};
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt(3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt(4));
 
         worldEntity->addChild(*avatarEntity);
         worldEntity->addChild(*otherEntity);
@@ -463,30 +459,30 @@ struct SteeringIntegration : public Cyphesis::TestBase
     void test_navigation()
     {
 
-        Ref<MemEntity> worldEntity(new MemEntityExt("0", 0));
-        Ref<MemEntity> avatarEntity(new MemEntityExt("1", 1));
+        Ref<MemEntity> worldEntity(new MemEntityExt(0));
+        Ref<MemEntity> avatarEntity(new MemEntityExt(1));
         avatarEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         avatarEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                           {1,  1, 1}};
         avatarEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
         auto avatarHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(avatarEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(1.41421, avatarHorizontalRadius, epsilon);
-        Ref<MemEntity> otherEntity(new MemEntityExt("2", 2));
+        Ref<MemEntity> otherEntity(new MemEntityExt(2));
         otherEntity->requirePropertyClassFixed<PositionProperty>().data() = {10, 0, 0};
         otherEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-2, 0, -2},
                                                                          {2,  3, 2}};
         otherEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
         auto otherHorizontalRadius = std::sqrt(boxSquareHorizontalBoundingRadius(otherEntity->requirePropertyClassFixed<BBoxProperty>().data()));
         ASSERT_FUZZY_EQUAL(2.828425, otherHorizontalRadius, epsilon);
-        Ref<MemEntity> outOfWorldEntity(new MemEntityExt("3", 3));
-        Ref<MemEntity> avatarChildEntity(new MemEntityExt("4", 4));
-        Ref<MemEntity> obstacleEntity(new MemEntityExt("5", 5));
+        Ref<MemEntity> outOfWorldEntity(new MemEntityExt(3));
+        Ref<MemEntity> avatarChildEntity(new MemEntityExt(4));
+        Ref<MemEntity> obstacleEntity(new MemEntityExt(5));
         obstacleEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{-1, 0, -1},
                                                                             {1,  2, 1}};
         obstacleEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         obstacleEntity->requirePropertyClassFixed<OrientationProperty>().data() = WFMath::Quaternion::IDENTITY();
 
-        Ref<MemEntity> smallObstacleEntity(new MemEntityExt("6", 6));
+        Ref<MemEntity> smallObstacleEntity(new MemEntityExt(6));
         smallObstacleEntity->requirePropertyClassFixed<PositionProperty>().data() = {0, 0, 0};
         smallObstacleEntity->requirePropertyClassFixed<BBoxProperty>().data() = {{0.2, 0,   0.2},
                                                                                  {0.2, 0.2, 0.2}};

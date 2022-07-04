@@ -60,7 +60,7 @@ class Peer : public Link {
     ServerRouting & m_server;
 
     Peer(CommSocket & client, ServerRouting & svr,
-         const std::string & addr, int port, const std::string & id, long iid);
+         const std::string & addr, int port, RouterId id);
 
     ~Peer() override;
 

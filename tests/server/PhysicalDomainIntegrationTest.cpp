@@ -782,7 +782,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             {
             }
 
-            explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+            explicit TestEntity(RouterId id) : Entity(id)
             {
             }
 
@@ -826,7 +826,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         domain->addEntity(lake);
 
         //Should be in water
-        Entity freeEntity("freeEntity", context.newId());
+        Entity freeEntity(RouterId("freeEntity", context.newId()));
         freeEntity.setProperty("mass", std::unique_ptr<PropertyBase>(massProp.copy()));
         freeEntity.setType(&rockType);
         freeEntity.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(-1, 1, 9);
@@ -834,7 +834,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         domain->addEntity(freeEntity);
 
         //Should not be in water
-        Entity freeEntity2("freeEntity2", context.newId());
+        Entity freeEntity2(RouterId("freeEntity2", context.newId()));
         freeEntity2.setProperty("mass", std::unique_ptr<PropertyBase>(massProp.copy()));
         freeEntity2.setType(&rockType);
         freeEntity2.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(9, 1, 1);
@@ -845,7 +845,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         plantedProp.set("planted");
         ModeDataProperty modeDataProp{};
         modeDataProp.setPlantedData({lake.getIntId()});
-        Entity floatingEntity("floatingEntity", context.newId());
+        Entity floatingEntity(RouterId("floatingEntity", context.newId()));
         floatingEntity.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(plantedProp.copy()));
         floatingEntity.setProperty(ModeDataProperty::property_name, std::unique_ptr<PropertyBase>(modeDataProp.copy()));
 
@@ -872,7 +872,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
             {
             }
 
-            explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+            explicit TestEntity(RouterId id) : Entity(id)
             {
             }
 
@@ -1521,7 +1521,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         Property<double> massProp{};
         massProp.data() = 100;
 
-        Entity freeEntity1("free1", context.newId());
+        Entity freeEntity1(RouterId("free1", context.newId()));
         freeEntity1.setProperty("mass", std::unique_ptr<PropertyBase>(massProp.copy()));
         freeEntity1.setType(&rockType);
         freeEntity1.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(10, 30, 10);
@@ -1660,7 +1660,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         TestWorld testWorld(&rootEntity);
 
 
-        Entity plantedEntity("planted", context.newId());
+        Entity plantedEntity(RouterId("planted", context.newId()));
         plantedEntity.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
         plantedEntity.setType(&rockType);
         plantedEntity.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(30, 10, 30);
@@ -1702,7 +1702,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         TestWorld testWorld(&rootEntity);
 
 
-        Entity plantedEntity("planted", context.newId());
+        Entity plantedEntity(RouterId("planted", context.newId()));
         plantedEntity.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
         plantedEntity.setType(&rockType);
         plantedEntity.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(30, 10, 30);
@@ -1738,14 +1738,14 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         TestWorld testWorld(&rootEntity);
 
-        Entity smallEntity1("small1", context.newId());
+        Entity smallEntity1(RouterId("small1", context.newId()));
         smallEntity1.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
         smallEntity1.setType(&rockType);
         smallEntity1.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(30, 0, 30);
         smallEntity1.requirePropertyClassFixed<BBoxProperty>().data() = WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 0.4, 0.2));
         domain->addEntity(smallEntity1);
 
-        Entity smallEntity2("small2", context.newId());
+        Entity smallEntity2(RouterId("small2", context.newId()));
         smallEntity2.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
         smallEntity2.setType(&rockType);
         smallEntity2.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(-31, 0, -31);
@@ -1753,7 +1753,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         domain->addEntity(smallEntity2);
 
         //This entity should always be seen, as "visibility" is specified.
-        Entity smallVisibleEntity("smallVisible", context.newId());
+        Entity smallVisibleEntity(RouterId("smallVisible", context.newId()));
         smallVisibleEntity.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
         smallVisibleEntity.setType(&rockType);
         smallVisibleEntity.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(-63, 0, -63);
@@ -1761,14 +1761,14 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         smallVisibleEntity.setProperty(VisibilityDistanceProperty::property_name, std::unique_ptr<PropertyBase>(visibilityProperty.copy()));
         domain->addEntity(smallVisibleEntity);
 
-        Entity largeEntity1("large1", context.newId());
+        Entity largeEntity1(RouterId("large1", context.newId()));
         largeEntity1.setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
         largeEntity1.setType(&rockType);
         largeEntity1.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(0, 0, 0);
         largeEntity1.requirePropertyClassFixed<BBoxProperty>().data() = WFMath::AxisBox<3>(WFMath::Point<3>(-10.f, 0, -10.f), WFMath::Point<3>(10, 20, 10));
         domain->addEntity(largeEntity1);
 
-        Entity observerEntity("observer", context.newId());
+        Entity observerEntity(RouterId("observer", context.newId()));
         observerEntity.setType(&humanType);
         observerEntity.requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(-30, 0, -30);
         observerEntity.requirePropertyClassFixed<BBoxProperty>().data() = WFMath::AxisBox<3>(WFMath::Point<3>(-0.2f, 0, -0.2f), WFMath::Point<3>(0.2, 2, 0.2));
@@ -1874,7 +1874,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         //First with an entity which doesn't step; it should collide and be kept in place
         {
-            Ref<Entity> human = new Entity("human", context.newId());
+            Ref<Entity> human = new Entity(RouterId{"human", context.newId()});
             human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
             human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp.copy()));
             human->setProperty(PropelProperty::property_name, std::unique_ptr<PropertyBase>(propelProperty.copy()));
@@ -1893,7 +1893,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
         //Then with an entity with a capsule geometry, it should step
         {
-            Ref<Entity> human = new Entity("human", context.newId());
+            Ref<Entity> human = new Entity(RouterId{"human", context.newId()});
             //human->setProperty("step_factor", stepFactorProp));
             human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
             human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp.copy()));
@@ -1915,7 +1915,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
         //The human entity shouldn't step up on the tilted entity
         {
 
-            Ref<Entity> stepElement = new Entity("tilted", context.newId());
+            Ref<Entity> stepElement = new Entity(RouterId{"tilted", context.newId()});
             stepElement->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty.copy()));
             WFMath::Point<3> pos(20, 0, 0);
             WFMath::AxisBox<3> bbox(WFMath::Point<3>(-0.4f, 0.f, 0), WFMath::Point<3>(0.4f, 1, 0.4f));
@@ -1927,7 +1927,7 @@ struct Tested : public Cyphesis::TestBaseWithContext<TestContext>
 
             domain->addEntity(*stepElement);
 
-            Ref<Entity> human = new Entity("human", context.newId());
+            Ref<Entity> human = new Entity(RouterId{"human", context.newId()});
             //human->setProperty("step_factor", stepFactorProp));
             human->setProperty(AngularFactorProperty::property_name, std::unique_ptr<PropertyBase>(angularZeroFactorProperty.copy()));
             human->setProperty("mass", std::unique_ptr<PropertyBase>(massProp.copy()));

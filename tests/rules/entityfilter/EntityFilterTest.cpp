@@ -42,13 +42,10 @@ static std::map<std::string, std::unique_ptr<TypeNode>>* s_types;
 
 struct TestEntity : Entity
 {
-    explicit TestEntity(const std::string& id, long intId) : Entity(id, intId)
+    explicit TestEntity(RouterId id) : Entity(id)
     {
     }
 
-    explicit TestEntity(long intId) : Entity(intId)
-    {
-    }
 
     std::unique_ptr<Domain> m_domain;
 
@@ -160,7 +157,7 @@ struct TestContext
     {
         s_types = &types;
 //Set up testing environment for Type/Soft properties
-        m_b1 = new TestEntity("1", 1);
+        m_b1 = new TestEntity(1);
         add_entity(m_b1);
 
         types["thing"] = std::make_unique<TypeNode>("thing");;

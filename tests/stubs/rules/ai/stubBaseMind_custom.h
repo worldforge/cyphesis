@@ -5,8 +5,8 @@
 
 #ifndef STUB_BaseMind_BaseMind
 #define STUB_BaseMind_BaseMind
-BaseMind::BaseMind(const std::string & mindId, std::string entityId, TypeStore& typeStore)
-    : Router(mindId, std::stol(mindId)),
+BaseMind::BaseMind(RouterId mindId, std::string entityId, TypeStore& typeStore)
+    : Router(mindId),
       m_flags(0),
       m_typeStore(typeStore),
       m_typeResolver(nullptr),

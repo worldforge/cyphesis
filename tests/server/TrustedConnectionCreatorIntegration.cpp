@@ -161,11 +161,10 @@ void TrustedConnectionCreatorintegration::setup()
                                  "a2feda8e-62e9-4ba0-95c4-09f92eda6a78",
                                  m_id_counter++);
     m_commSocket = new StubSocket(io_context);
-    auto conn_id = m_id_counter++;
     m_connection = new Connection(*m_commSocket,
                                   *m_server,
                                   "25251955-7e8c-4043-8a5e-adfb8a1e76f7",
-                                  compose("%1", conn_id), conn_id);
+                                  m_id_counter++);
     m_creator = new Entity(m_id_counter++);
     m_creatorType = new TypeNode("test_avatar");
     m_creator->setType(m_creatorType);
@@ -198,7 +197,7 @@ void TrustedConnectionCreatorintegration::test_external_op()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    AdminMind mind("6", 6, m_creator);
+    AdminMind mind(6, m_creator);
     m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
@@ -226,7 +225,7 @@ void TrustedConnectionCreatorintegration::test_external_op_override()
     // it being passed on to the world, exactly as if this was a Character
     // except that we assume that Creator was set up linked.
 
-    AdminMind mind("6", 6, m_creator);
+    AdminMind mind(6, m_creator);
     m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
@@ -253,7 +252,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    AdminMind mind("6", 6, m_creator);
+    AdminMind mind(6, m_creator);
     m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);
@@ -286,7 +285,7 @@ void TrustedConnectionCreatorintegration::test_external_op_puppet_nonexistant()
     // result in it being passed directly to the normal op dispatch,
     // shortcutting the world.
 
-    AdminMind mind("6", 6, m_creator);
+    AdminMind mind(6, m_creator);
     m_connection->addRouter(&mind);
     m_creator->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(m_connection);

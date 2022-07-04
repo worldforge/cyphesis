@@ -29,15 +29,11 @@ struct TestEntity : LocatedEntity
     static std::function<void(TestEntity&, const Operation&, OpVector&)> operationFn;
     static std::function<void(TestEntity&)> destroyFn;
 
-    TestEntity() : LocatedEntity(idGenerator++)
+    TestEntity() : TestEntity(idGenerator++)
     {
     }
 
-    TestEntity(long intId) : LocatedEntity(std::to_string(intId), intId)
-    {
-    }
-
-    TestEntity(const std::string& id, long intId) : LocatedEntity(id, intId)
+    TestEntity(RouterId id) : LocatedEntity(id)
     {
     }
 

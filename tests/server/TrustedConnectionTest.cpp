@@ -81,17 +81,17 @@ class TestCommSocket : public CommSocket
 class TestConnection : public TrustedConnection {
   public:
     TestConnection(CommSocket & cc, ServerRouting & svr,
-                   const std::string & addr, const std::string & id, long iid) :
-        TrustedConnection(cc, svr, addr, id, iid) {
+                   const std::string & addr, RouterId id) :
+        TrustedConnection(cc, svr, addr, id) {
       
     }
 
     std::unique_ptr<Account> test_newAccount(const std::string & type,
                               const std::string & username,
                               const std::string & passwd,
-                              const std::string & id, long intId)
+                              RouterId id)
     {
-        return newAccount(type, username, passwd, id, intId);
+        return newAccount(type, username, passwd, id);
     }
 
     int test_verifyCredentials(const Account & ac,
@@ -124,13 +124,13 @@ int main()
     ServerRouting server(*(BaseWorld*)0, *(Persistence*)nullptr, "noruleset", "unittesting", 2);
 
     TestCommSocket tcc{};
-    TestConnection tc(tcc, server, "addr", "3", 3);
+    TestConnection tc(tcc, server, "addr", 3);
 
     {
         auto ac = tc.test_newAccount("_non_type_",
                                            "bob",
                                            "unit_test_hash",
-                                           "1", 1);
+                                           1);
 
         assert(ac.get() != 0);
     }
@@ -139,7 +139,7 @@ int main()
         auto ac = tc.test_newAccount("sys",
                                            "bob",
                                            "unit_test_hash",
-                                           "1", 1);
+                                           1);
 
         assert(ac.get() != 0);
     }
@@ -148,7 +148,7 @@ int main()
         auto ac = tc.test_newAccount("admin",
                                            "bob",
                                            "unit_test_hash",
-                                           "1", 1);
+                                           1);
 
         assert(ac.get() != 0);
     }
@@ -157,13 +157,13 @@ int main()
         auto ac = tc.test_newAccount("player",
                                            "bob",
                                            "unit_test_hash",
-                                           "1", 1);
+                                           1);
 
         assert(ac.get() != 0);
     }
 
     {
-        Account * ac = new Player(0, "bill", "unit_test_password", "2", 2);
+        Account * ac = new Player(0, "bill", "unit_test_password", 2);
         Atlas::Objects::Root creds;
 
         int ret = tc.test_verifyCredentials(*ac, creds);
@@ -256,14 +256,10 @@ void encrypt_password(const std::string & pwd, std::string & hash)
 
 static long idGenerator = 0;
 
-long newId(std::string & id)
+RouterId newId()
 {
-    static char buf[32];
     long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
+    return {new_id};
 }
 
 void addToEntity(const Vector3D & v, std::vector<double> & vd)

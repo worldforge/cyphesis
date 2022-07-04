@@ -65,12 +65,10 @@ class EntityKit
 
         /// \brief Create a new Entity and make it persistent.
         ///
-        /// @param id a string giving the identifier of the Entity.
-        /// @param intId an integer giving the identifier of the Entity.
+        /// @param id an identifier of the Entity.
         /// @param attributes custom attributes set for the new instance
         /// @param attributes the location of the entity
-        virtual Ref<Entity> newEntity(const std::string& id,
-                                      long intId,
+        virtual Ref<Entity> newEntity(RouterId id,
                                       const Atlas::Objects::Entity::RootEntity& attributes) = 0;
 
         virtual void addProperties(const PropertyManager& propertyManager) = 0;

@@ -35,7 +35,7 @@ class CharacterClient : public BaseMind
         Ref<LocatedEntity> sendLook(const Operation& op);
 
     public:
-        CharacterClient(const std::string& mindId,
+        CharacterClient(RouterId mindId,
                         const std::string& entityId,
                         ClientConnection&,
                         TypeStore& typeStore);

@@ -88,7 +88,7 @@ void ConnectionShakerintegration::setup()
     m_connection = new Connection(*(CommSocket*)0,
                                   *m_server,
                                   "test_addr",
-                                  compose("%1", m_id_counter), m_id_counter++);
+                                  m_id_counter++);
 }
 
 void ConnectionShakerintegration::teardown()

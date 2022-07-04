@@ -3,8 +3,8 @@
 
 #ifndef STUB_Connection_Connection
 #define STUB_Connection_Connection
-Connection::Connection(CommSocket & commSocket, ServerRouting & svr, const std::string & addr, const std::string & id, long iid)
-    : Link(commSocket, id, iid), m_server(svr)
+Connection::Connection(CommSocket & commSocket, ServerRouting & svr, const std::string & addr, RouterId id)
+    : Link(commSocket, id), m_server(svr)
 {
 
 }
@@ -12,7 +12,7 @@ Connection::Connection(CommSocket & commSocket, ServerRouting & svr, const std::
 
 #ifndef STUB_Connection_newAccount
 #define STUB_Connection_newAccount
-std::unique_ptr<Account> Connection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, const std::string& id, long intId)
+std::unique_ptr<Account> Connection::newAccount(const std::string& type, const std::string& username, const std::string& passwd, RouterId id)
 {
     return {};
 }

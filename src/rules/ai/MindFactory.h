@@ -19,6 +19,8 @@
 #ifndef RULESETS_MIND_FACTORY_H
 #define RULESETS_MIND_FACTORY_H
 
+#include "common/RouterId.h"
+
 #include <string>
 #include <memory>
 
@@ -36,7 +38,7 @@ class MindKit {
 
     virtual ~MindKit() = default;
 
-    virtual BaseMind * newMind(const std::string & mind_id, const std::string & entity_id) const = 0;
+    virtual BaseMind * newMind(RouterId mind_id, const std::string & entity_id) const = 0;
 };
 
 

@@ -9,8 +9,8 @@
 
 #ifndef STUB_Lobby_Lobby
 //#define STUB_Lobby_Lobby
-   Lobby::Lobby(ServerRouting & serverRouting, const std::string & id, long intId)
-    : Router(serverRouting, id, intId)
+   Lobby::Lobby(ServerRouting & serverRouting, RouterId id)
+    : Router(serverRouting, id)
   {
     
   }

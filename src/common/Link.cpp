@@ -28,8 +28,8 @@
 
 static const bool debug_flag = false;
 
-Link::Link(CommSocket & socket, const std::string & id, long iid) :
-            Router(id, iid),
+Link::Link(CommSocket & socket, RouterId id) :
+            Router(std::move(id)),
             m_encoder(nullptr),
             m_commSocket(socket)
 {

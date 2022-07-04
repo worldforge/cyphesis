@@ -33,11 +33,11 @@ using Atlas::Objects::Entity::Anonymous;
 
 using Atlas::Objects::smart_dynamic_cast;
 
-CreatorClient::CreatorClient(const std::string& mindId,
+CreatorClient::CreatorClient(RouterId mindId,
                              const std::string& entityId,
                              ClientConnection& c,
                              TypeStore& typeStore) :
-        CharacterClient(mindId, entityId, c, typeStore)
+        CharacterClient(std::move(mindId), entityId, c, typeStore)
 {
 }
 

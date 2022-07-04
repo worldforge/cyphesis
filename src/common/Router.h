@@ -20,6 +20,7 @@
 #define COMMON_ROUTER_H
 
 #include "OperationRouter.h"
+#include "RouterId.h"
 
 #include <string>
 #include <map>
@@ -37,25 +38,21 @@ class Link;
 /// compatible identifier.
 ///
 class Router {
-  private:
-    /// \brief String identifier
-    const std::string m_id;
-    /// \brief Integer identifier
-    const long m_intId;
   protected:
-    explicit Router(std::string id, long intId);
+    explicit Router(RouterId id);
   public:
     Router(const Router &) = delete;
     virtual ~Router();
 
+    const RouterId m_id;
     /// \brief Read only accessor for string identity
     const std::string & getId() const {
-        return m_id;
+        return m_id.m_id;
     }
 
     /// \brief Read only accessor for Integer identity
     long getIntId() const {
-        return m_intId;
+        return m_id.m_intId;
     }
 
     void buildError(const Operation &,

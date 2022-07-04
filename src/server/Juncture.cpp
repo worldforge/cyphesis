@@ -55,7 +55,7 @@ void Juncture::onSocketConnected()
 {
     auto socket = m_socket.lock();
     m_peer = new Peer(*socket, m_connection->m_server,
-                      m_host, m_port, getId(), getIntId());
+                      m_host, m_port, m_id);
 
     //Transfers ownership to the socket. This feels dangerous, since it's a weak ptr.
     socket->setup(std::unique_ptr<Link>(m_peer));
@@ -136,8 +136,8 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
     return 0;
 }
 
-Juncture::Juncture(Connection * c, const std::string & id, long iid) :
-          ConnectableRouter(id, iid),
+Juncture::Juncture(Connection * c, RouterId id) :
+          ConnectableRouter(std::move(id)),
           m_connection(c),
           m_socket(),
           m_peer(nullptr),

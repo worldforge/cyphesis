@@ -40,7 +40,7 @@ class Link : public Router {
   public:
     CommSocket & m_commSocket;
 
-    Link(CommSocket & commSocket, const std::string & id, long iid);
+    Link(CommSocket & commSocket, RouterId id);
 
     ~Link() override;
 

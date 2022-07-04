@@ -52,9 +52,7 @@ class Thing : public Entity
 
     public:
 
-        explicit Thing(const std::string& id, long intId);
-
-        explicit Thing(long intId);
+        explicit Thing(RouterId id);
 
         ~Thing() override = default;
 

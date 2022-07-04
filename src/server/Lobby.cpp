@@ -41,8 +41,8 @@ using Atlas::Objects::Entity::Anonymous;
 
 static const bool debug_flag = false;
 
-Lobby::Lobby(ServerRouting & s, const std::string & id, long intId) :
-       Router(id, intId),
+Lobby::Lobby(ServerRouting & s, RouterId id) :
+       Router(std::move(id)),
        m_server(s)
 {
 }

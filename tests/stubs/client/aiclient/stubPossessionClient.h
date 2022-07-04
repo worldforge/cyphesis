@@ -82,7 +82,7 @@
 
 #ifndef STUB_PossessionClient_notifyAccountCreated
 //#define STUB_PossessionClient_notifyAccountCreated
-  void PossessionClient::notifyAccountCreated(const std::string& accountId)
+  void PossessionClient::notifyAccountCreated(RouterId accountId)
   {
     
   }

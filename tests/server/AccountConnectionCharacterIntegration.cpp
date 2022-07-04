@@ -102,8 +102,7 @@ void AccountConnectionCharacterintegration::setup()
 {
     m_persistence = new Persistence(m_database);
 
-    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
-                             m_id_counter++);
+    Ref<Entity> gw = new Entity(m_id_counter++);
     m_world.reset();
     m_world.reset(new TestWorld(gw));
     m_server = new ServerRouting(*m_world,
@@ -114,12 +113,12 @@ void AccountConnectionCharacterintegration::setup()
     m_connection = new Connection(*(CommSocket*)0,
                                   *m_server,
                                   "a4754783-9909-476b-a418-6997477dff49",
-                                  compose("%1", m_id_counter), m_id_counter++);
+                                  m_id_counter++);
     m_account = new Player(m_connection,
                            "fred",
                            "25846125-f1bb-4963-852e-856a8be45515",
-                           compose("%1", m_id_counter), m_id_counter++);
-    m_character = new Entity(compose("%1", m_id_counter), m_id_counter++);
+                           m_id_counter++);
+    m_character = new Entity(m_id_counter++);
     m_characterType = new TypeNode("test_avatar");
     m_character->setType(m_characterType);
 
@@ -200,7 +199,7 @@ void AccountConnectionCharacterintegration::test_unsubscribe()
 //    m_connection->m_connectableRouters[m_account->getIntId()] = m_account;
 //    m_connection->m_objects[m_character->getIntId()] = m_character.get();
 //
-//    auto mind = new ExternalMind("6", 6, *m_character);
+//    auto mind = new ExternalMind(6, *m_character);
 //    m_character->requirePropertyClassFixed<MindsProperty>()->addMind(mind);
 //    mind->linkUp(m_connection);
 //
@@ -233,10 +232,10 @@ void AccountConnectionCharacterintegration::test_unsubscribe_other()
     Connection  other_connection(*(CommSocket*)0,
                          *m_server,
                          "242eedae-6a2e-4c5b-9901-711b14d7e851",
-                         compose("%1", m_id_counter), m_id_counter++);
+                         m_id_counter++);
 
 
-    ExternalMind mind("6", 6, m_character);
+    ExternalMind mind(6, m_character);
     m_character->requirePropertyClassFixed<MindsProperty>().addMind(&mind);
     mind.linkUp(&other_connection);
 

@@ -20,7 +20,6 @@
 
 #include "rules/simulation/World.h"
 #include "rules/Domain.h"
-#include "rules/simulation/Task.h"
 
 #include "common/id.h"
 #include "common/debug.h"
@@ -127,15 +126,14 @@ Ref<LocatedEntity> WorldRouter::addNewEntity(const std::string& typestr,
                                              const RootEntity& attrs)
 {
     debug_print("WorldRouter::addNewEntity(\"" << typestr << "\", attrs)")
-    std::string id;
-    long intId = newId(id);
+    auto id = newId();
 
-    if (intId < 0) {
+    if (!id.isValid()) {
         log(ERROR, "Unable to get ID for new Entity");
         return nullptr;
     }
 
-    auto ent = m_entityCreator.newEntity(id, intId, typestr, attrs);
+    auto ent = m_entityCreator.newEntity(id, typestr, attrs);
     if (!ent) {
         log(ERROR, String::compose("Attempt to create an entity of type \"%1\" "
                                    "but type is unknown or forbidden",

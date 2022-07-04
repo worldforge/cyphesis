@@ -56,11 +56,11 @@ int Storage::putAccount(const Atlas::Message::MapType & account)
     values += hash;
     values += "'";
 
-    std::string id;
-    if (m_connection.newId(id) < 0) {
+    auto id = m_connection.newId();
+    if (id < 0) {
         return -1;
     }
-    return m_connection.createSimpleRow("accounts", id, columns, values);
+    return m_connection.createSimpleRow("accounts", std::to_string(id), columns, values);
 }
 
 /// \brief Modify the attributes of an Account in the database

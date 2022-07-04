@@ -34,7 +34,7 @@ class MemEntity : public LocatedEntity
         std::unique_ptr<PropertyBase> createProperty(const std::string& propertyName) const override;
 
     public:
-        explicit MemEntity(const std::string& id, long intId);
+        explicit MemEntity(RouterId id);
 
         ~MemEntity() override = default;
 

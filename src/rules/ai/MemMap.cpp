@@ -151,13 +151,13 @@ void MemMap::updateEntity(const Ref<MemEntity>& entity, const RootEntity& ent, d
 
 }
 
-Ref<MemEntity> MemMap::newEntity(const std::string& id, long int_id,
+Ref<MemEntity> MemMap::newEntity(RouterId id,
                                  const RootEntity& ent, double timestamp)
 // Create a new entity from an Atlas message.
 {
-    assert(m_entities.find(int_id) == m_entities.end());
+    assert(m_entities.find(id.m_intId) == m_entities.end());
 
-    Ref<MemEntity> entity = new MemEntity(id, int_id);
+    Ref<MemEntity> entity = new MemEntity(id);
 
     readEntity(entity, ent, timestamp);
 
@@ -196,16 +196,16 @@ void MemMap::sendLook(OpVector& res)
     }
 }
 
-Ref<MemEntity> MemMap::addId(const std::string& id, long int_id)
+Ref<MemEntity> MemMap::addId(RouterId id)
 // Queue the ID of an entity we are interested in
 {
-    assert(!id.empty());
-    assert(m_entities.find(int_id) == m_entities.end());
+    assert(!id.m_id.empty());
+    assert(m_entities.find(id.m_intId) == m_entities.end());
 
     debug_print("MemMap::add_id")
-    m_additionsById.emplace_back(id);
+    m_additionsById.emplace_back(id.m_id);
     //TODO: Should we perhaps wait with creating new entities until we've actually gotten the entity data?
-    Ref<MemEntity> entity(new MemEntity(id, int_id));
+    Ref<MemEntity> entity(new MemEntity(id));
     addEntity(entity);
     return entity;
 }
@@ -289,7 +289,7 @@ Ref<MemEntity> MemMap::getAdd(const std::string& id)
         assert(I->second != nullptr);
         return I->second;
     }
-    return addId(id, int_id);
+    return addId(int_id);
 }
 
 void MemMap::addContents(const RootEntity& ent)
@@ -331,7 +331,7 @@ Ref<MemEntity> MemMap::updateAdd(const RootEntity& ent, const double& d)
     auto I = m_entities.find(int_id);
     Ref<MemEntity> entity;
     if (I == m_entities.end()) {
-        entity = newEntity(id, int_id, ent, d);
+        entity = newEntity(int_id, ent, d);
     } else {
         entity = I->second;
         updateEntity(entity, ent, d);

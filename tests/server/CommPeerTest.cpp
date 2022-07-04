@@ -88,7 +88,7 @@ class TestCommPeer : public CommPeer
 class TestPeer : public Peer
 {
   public:
-    TestPeer(CommSocket & c, ServerRouting & s) : Peer(c, s, "test_addr", 6767, "5", 5)
+    TestPeer(CommSocket & c, ServerRouting & s) : Peer(c, s, "test_addr", 6767, 5)
     {
     }
 };
@@ -173,8 +173,8 @@ Peer::Peer(CommSocket & client,
            ServerRouting & svr,
            const std::string & addr,
            int port,
-           const std::string & id, long iid) :
-      Link(client, id, iid),
+           RouterId id) :
+      Link(client, id),
       m_state(PEER_INIT),
       m_server(svr)
 {

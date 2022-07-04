@@ -313,7 +313,7 @@ struct EntityFactorytest : public Cyphesis::TestBase
 
     void test_newEntity()
     {
-        auto e = m_ek->newEntity("1", 1, Atlas::Objects::Entity::RootEntity());
+        auto e = m_ek->newEntity(1, Atlas::Objects::Entity::RootEntity());
 
         ASSERT_TRUE(e)
     }

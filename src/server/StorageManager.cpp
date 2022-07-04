@@ -376,17 +376,16 @@ size_t StorageManager::restoreChildren(LocatedEntity& parent)
     auto I = res.begin();
     auto Iend = res.end();
     for (; I != Iend; ++I) {
-        const std::string id = I.column("id");
-        const long int_id = forceIntegerId(id);
+        RouterId id(I.column("id"));
         const std::string type = I.column("type");
         //By sending an empty attributes pointer we're telling the builder not to apply any default
         //attributes. We will instead apply all attributes ourselves when we later on restore attributes.
         Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
-        auto child = m_entityBuilder.newEntity(id, int_id, type, attrs);
+        auto child = m_entityBuilder.newEntity(id, type, attrs);
         if (!child) {
             log(ERROR, compose("Could not restore entity with id %1 of type %2"
                                ", most likely caused by this type missing.",
-                               id, type));
+                               id.m_id, type));
             continue;
         }
         childCount++;

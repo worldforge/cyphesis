@@ -223,7 +223,7 @@ bool database_flag = true;
 #include "../stubs/common/stublog.h"
 
 #define STUB_Database_newId
-long Database::newId(std::string & id)
+long Database::newId()
 {
     if (test_newid_fail) {
         return -1;

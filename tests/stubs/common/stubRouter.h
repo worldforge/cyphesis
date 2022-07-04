@@ -9,7 +9,7 @@
 
 #ifndef STUB_Router_Router
 //#define STUB_Router_Router
-   Router::Router(std::string id, long intId)
+   Router::Router(RouterId id)
   {
     
   }

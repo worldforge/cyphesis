@@ -100,7 +100,7 @@ LocatedEntitytest::LocatedEntitytest()
 
 void LocatedEntitytest::setup()
 {
-    m_entity = new LocatedEntityTest("1", 1);
+    m_entity = new LocatedEntityTest(1);
 }
 
 void LocatedEntitytest::teardown()
@@ -125,7 +125,7 @@ void LocatedEntitytest::test_setProperty()
 void LocatedEntitytest::test_removeAttr()
 {
     std::string test_property("test_property");
-    LocatedEntity* entity = new LocatedEntityTest("1", 1);
+    LocatedEntity* entity = new LocatedEntityTest(1);
 
     ASSERT_TRUE(!m_TestProperty_remove_called);
 
@@ -207,18 +207,18 @@ int main()
     LocatedEntityTest::propertyManager = &propertyManager;
     // Test constructor
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
     }
 
     // Test destructor
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest(1);
         delete e;
     }
 
     // Test checkRef()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest(1);
 
         assert(e->checkRef() == 0);
         delete e;
@@ -226,7 +226,7 @@ int main()
 
     // Test incRef()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest(1);
 
         e->incRef();
         assert(e->checkRef() == 1);
@@ -235,7 +235,7 @@ int main()
 
     // Test decRef()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest(1);
 
         e->incRef();
         e->incRef();
@@ -246,7 +246,7 @@ int main()
 
     // Test decRef()
     {
-        LocatedEntityTest * e = new LocatedEntityTest("1", 1);
+        LocatedEntityTest * e = new LocatedEntityTest(1);
         e->incRef();
         e->decRef();
         // Enitity deleted - verified as not leaked
@@ -254,14 +254,14 @@ int main()
 
     // Test setAttrValue()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
 
         e.setAttrValue("foo", "bar");
     }
 
     // Test setAttrValue()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
 
         e.setAttrValue("foo", "bar");
         e.setAttrValue("foo", 23);
@@ -269,7 +269,7 @@ int main()
 
     // Test getAttr()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         int ret = e.getAttr("foo", val);
@@ -279,7 +279,7 @@ int main()
 
     // Test getAttr()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         e.setAttrValue("foo", "bar");
@@ -290,7 +290,7 @@ int main()
 
     // Test getAttrType()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         int ret = e.getAttrType("foo", val, Element::TYPE_STRING);
@@ -300,7 +300,7 @@ int main()
 
     // Test getAttrType()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         int ret = e.getAttrType("id", val, Element::TYPE_STRING);
@@ -310,7 +310,7 @@ int main()
 
     // Test getAttrType()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         int ret = e.getAttrType("id", val, Element::TYPE_FLOAT);
@@ -320,7 +320,7 @@ int main()
 
     // Test hasAttr()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         bool ret = e.hasAttr("foo");
@@ -329,7 +329,7 @@ int main()
 
     // Test hasAttr()
     {
-        LocatedEntityTest e("1", 1);
+        LocatedEntityTest e(1);
         Atlas::Message::Element val;
 
         e.setAttrValue("foo", "bar");

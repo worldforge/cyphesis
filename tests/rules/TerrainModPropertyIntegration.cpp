@@ -69,12 +69,12 @@ TerrainModPropertyintegration::TerrainModPropertyintegration()
 
 void TerrainModPropertyintegration::setup()
 {
-    m_rootEntity = new Entity("0", 0);
+    m_rootEntity = new Entity(0);
 
     m_world.reset();
     m_world.reset(new TestWorld(m_rootEntity));
 
-    m_entity = new Entity("1", 1);
+    m_entity = new Entity(1);
     m_entity->requirePropertyClassFixed<PositionProperty>().data() = Point3D(5.f, 5.f, 5.f);
     m_entity->m_parent = m_rootEntity.get();
 

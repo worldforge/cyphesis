@@ -9,8 +9,8 @@
 
 #ifndef STUB_Link_Link
 //#define STUB_Link_Link
-   Link::Link(CommSocket & commSocket, const std::string & id, long iid)
-    : Router(commSocket, id, iid)
+   Link::Link(CommSocket & commSocket, RouterId id)
+    : Router(commSocket, id)
     , m_encoder(nullptr)
   {
     

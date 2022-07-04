@@ -20,8 +20,11 @@
 #define COMMON_ID_H
 
 #include <string>
+#include "RouterId.h"
 
-long newId(std::string & id);
+RouterId newId();
+RouterId idFromString(const std::string& id);
+RouterId forceIdFromString(const std::string& id);
 long integerId(const std::string & id);
 long forceIntegerId(const std::string & id);
 int integerIdCheck(const std::string & id);

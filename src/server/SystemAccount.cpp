@@ -26,8 +26,8 @@
 SystemAccount::SystemAccount(Connection* conn,
                              const std::string& username,
                              const std::string& passwd,
-                             const std::string& id, long intId) :
-        Admin(conn, username, passwd, id, intId)
+                             RouterId id) :
+        Admin(conn, username, passwd, std::move(id))
 {
 }
 

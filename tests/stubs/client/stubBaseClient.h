@@ -17,7 +17,7 @@
 
 #ifndef STUB_BaseClient_notifyAccountCreated
 //#define STUB_BaseClient_notifyAccountCreated
-  void BaseClient::notifyAccountCreated(const std::string& accountId)
+  void BaseClient::notifyAccountCreated(RouterId accountId)
   {
     
   }

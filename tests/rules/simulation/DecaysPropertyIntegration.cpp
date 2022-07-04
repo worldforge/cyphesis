@@ -61,10 +61,10 @@ DecaysPropertyintegration::DecaysPropertyintegration()
 
 void DecaysPropertyintegration::setup()
 {
-    m_world = new Entity("0", 0);
+    m_world = new Entity(0);
     new TestWorld(m_world);
 
-    m_entity = new Entity("1", 1);
+    m_entity = new Entity(1);
     m_entity->m_parent = m_world;
 
     PropertyFactory<DecaysProperty> decays_property_factory;

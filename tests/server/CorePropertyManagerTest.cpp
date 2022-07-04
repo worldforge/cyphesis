@@ -234,9 +234,9 @@ int main()
 #define STUB_EntityFactory_newEntity
 
 template<typename T>
-Ref<Entity> EntityFactory<T>::newEntity(const std::string& id, long intId, const Atlas::Objects::Entity::RootEntity& attributes)
+Ref<Entity> EntityFactory<T>::newEntity(RouterId id, const Atlas::Objects::Entity::RootEntity& attributes)
 {
-    return new Entity(id, intId);
+    return new Entity(id);
 }
 
 class Stackable;
@@ -244,7 +244,7 @@ class Stackable;
 class World;
 
 template<>
-Ref<Entity> EntityFactory<World>::newEntity(const std::string& id, long intId,
+Ref<Entity> EntityFactory<World>::newEntity(RouterId id,
                                                    const Atlas::Objects::Entity::RootEntity& attributes)
 {
     return 0;
@@ -394,14 +394,10 @@ bool database_flag = false;
 
 static long idGenerator = 0;
 
-long newId(std::string& id)
+RouterId newId()
 {
-    static char buf[32];
     long new_id = ++idGenerator;
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
+    return {new_id};
 }
 
 #include "../stubs/common/stublog.h"

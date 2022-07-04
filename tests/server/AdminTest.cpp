@@ -78,7 +78,7 @@ std::ostream & operator<<(std::ostream & os,
 class TestObject : public ConnectableRouter
 {
   public:
-    explicit TestObject(const std::string & id, long intId);
+    explicit TestObject(RouterId id);
 
         void externalOperation(const Operation &, Link &) override;
 
@@ -93,7 +93,7 @@ class TestObject : public ConnectableRouter
         }
 };
 
-TestObject::TestObject(const std::string & id, long intId) : ConnectableRouter(id, intId)
+TestObject::TestObject(RouterId id) : ConnectableRouter(id)
 {
 }
 
@@ -329,15 +329,13 @@ void Admintest::setup()
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
                                  m_id_counter++);
-    auto conn_id = m_id_counter++;
     m_connection = new Connection(*(CommSocket*) nullptr, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
-                                  compose("%1", conn_id), conn_id);
-    auto account_id = m_id_counter++;
+                                  m_id_counter++);
     m_account = new Admin(m_connection,
                           "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
                           "fa1a03a2-a745-4033-85cb-bb694e921e62",
-                          compose("%1", account_id), account_id);
+                          m_id_counter++);
 }
 
 void Admintest::teardown()
@@ -500,7 +498,7 @@ void Admintest::test_LogoutOperation_known()
     Account * ac2 = new Admin(0,
                               "f3332c00-5d2b-45c1-8cf4-3429bdf2845f",
                               "c0e095f0-575c-477c-bafd-2055d6958d4d",
-                              cid_str, cid);
+                              cid);
 
     m_server->addRouter(std::unique_ptr<ConnectableRouter>(ac2));
 
@@ -530,7 +528,7 @@ void Admintest::test_LogoutOperation_other_but_unconnected()
     Account * ac2 = new Admin(0,
                               "f3332c00-5d2b-45c1-8cf4-3429bdf2845f",
                               "c0e095f0-575c-477c-bafd-2055d6958d4d",
-                              cid_str, cid);
+                              cid);
 
     m_server->addRouter(std::unique_ptr<ConnectableRouter>(ac2));
 
@@ -631,7 +629,7 @@ void Admintest::test_GetOperation_obj_OOG()
 {
     long cid = m_id_counter++;
     std::string cid_str = String::compose("%1", cid);
-    auto to = new TestObject(cid_str, cid);
+    auto to = new TestObject(cid);
 
     m_server->addRouter(std::unique_ptr<ConnectableRouter>(to));
 
@@ -665,7 +663,7 @@ void Admintest::test_GetOperation_obj_IG()
 {
     long cid = m_id_counter++;
     std::string cid_str = String::compose("%1", cid);
-    Ref<Entity>  to = new Entity(cid_str, cid);
+    Ref<Entity>  to = new Entity(cid);
 
     m_server->m_world.addEntity(to, m_gw);
 
@@ -819,7 +817,7 @@ void Admintest::test_SetOperation_obj_IG()
     Account_SetOperation_called = 0;
 
     long cid = m_id_counter++;
-    Ref<Entity>  c = new Entity(compose("%1", cid), cid);
+    Ref<Entity>  c = new Entity(cid);
 
     m_account->m_charactersDict.emplace(cid, c);
 
@@ -1458,8 +1456,7 @@ Root atlasClass(const std::string & name, const std::string & parent)
 #include "../stubs/rules/simulation/stubExternalMind.h"
 #include "../stubs/server/stubEntityBuilder.h"
 
-Router::Router(std::string id, long intId) : m_id(id),
-                                                             m_intId(intId)
+Router::Router(RouterId id) : m_id(id)
 {
 }
 
@@ -1493,17 +1490,13 @@ void Router::error(const Operation & op,
 }
 
 
-long newId(std::string & id)
+RouterId newId()
 {
     if (Admintest::get_newId_fail()) {
-        return -1;
+        return {-1};
     }
-    static char buf[32];
     long new_id = Admintest::newId();
-    sprintf(buf, "%ld", new_id);
-    id = buf;
-    assert(!id.empty());
-    return new_id;
+    return {new_id};
 }
 
 long integerId(const std::string & id)

@@ -28,7 +28,7 @@ struct TypeStore;
 class CreatorClient : public CharacterClient
 {
     public:
-        CreatorClient(const std::string& mindId,
+        CreatorClient(RouterId mindId,
                       const std::string& entityId,
                       ClientConnection&,
                       TypeStore& typeStore);

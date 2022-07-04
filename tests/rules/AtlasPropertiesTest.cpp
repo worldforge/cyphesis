@@ -58,7 +58,7 @@ int main()
         PropertyCoverage pc(cp);
 
         // Now the world context has been set up, add some entities.
-        les.insert(new TestEntity("2", 2));
+        les.insert(new TestEntity(2));
 
         // Coverage is complete, but it wouldn't hurt to add some bad data here.
 

@@ -9,8 +9,8 @@
 
 #ifndef STUB_SystemAccount_SystemAccount
 //#define STUB_SystemAccount_SystemAccount
-   SystemAccount::SystemAccount(Connection* conn, const std::string& username, const std::string& passwd, const std::string& id, long intId)
-    : Admin(conn, username, passwd, id, intId)
+   SystemAccount::SystemAccount(Connection* conn, const std::string& username, const std::string& passwd, RouterId id)
+    : Admin(conn, username, passwd, id)
   {
     
   }

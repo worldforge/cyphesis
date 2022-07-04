@@ -28,9 +28,16 @@ int integerIdCheck(const std::string & id)
     return 0;
 }
 
-long newId(std::string & id)
+RouterId newId()
 {
-    ++_id;
-    id = std::to_string(_id);
-    return _id;
+    return RouterId(++_id);
+}
+
+RouterId idFromString(const std::string& id)
+{
+    return {integerId(id)};
+}
+
+RouterId forceIdFromString(const std::string& id) {
+    return {forceIntegerId(id)};
 }

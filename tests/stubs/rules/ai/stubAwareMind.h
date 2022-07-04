@@ -9,7 +9,7 @@
 
 #ifndef STUB_AwareMind_AwareMind
 //#define STUB_AwareMind_AwareMind
-   AwareMind::AwareMind(const std::string& mind_id, std::string entity_id, TypeStore& typeStore, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
+   AwareMind::AwareMind(RouterId mind_id, std::string entity_id, TypeStore& typeStore, SharedTerrain& sharedTerrain, AwarenessStoreProvider& awarenessStoreProvider)
     : BaseMind(mind_id, entity_id, typeStore, sharedTerrain, awarenessStoreProvider)
     , mAwarenessStore(nullptr)
   {

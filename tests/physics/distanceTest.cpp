@@ -47,7 +47,7 @@ int main()
     int ret = 0;
 
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent(new Entity("1", 1));
+//        Ref<Entity> tlve(new Entity(0)), ent(new Entity(1));
 //
 //        Location locTlve;
 //
@@ -72,7 +72,7 @@ int main()
 //    }
 //
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent1(new Entity("1", 1)), ent2(new Entity("2", 2));
+//        Ref<Entity> tlve(new Entity(0)), ent1(new Entity(1)), ent2(new Entity(2));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -92,8 +92,8 @@ int main()
 //    }
 //
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent1(new Entity("1", 1)), ent2(new Entity("2", 2)),
-//              ent3(new Entity("3", 3)), ent4(new Entity("4", 4));
+//        Ref<Entity> tlve(new Entity(0)), ent1(new Entity(1)), ent2(new Entity(2)),
+//              ent3(new Entity(3)), ent4(new Entity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -123,7 +123,7 @@ int main()
 //    }
 //
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent1(new Entity("1", 1)), ent2(new Entity("2", 2)), ent3(new Entity("3", 3)), ent4(new Entity("4", 4));
+//        Ref<Entity> tlve(new Entity(0)), ent1(new Entity(1)), ent2(new Entity(2)), ent3(new Entity(3)), ent4(new Entity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -153,8 +153,8 @@ int main()
 //    }
 //
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent1(new Entity("1", 1)), ent2(new Entity("2", 2)),
-//              ent3(new Entity("3", 3)), ent4(new Entity("4", 4));
+//        Ref<Entity> tlve(new Entity(0)), ent1(new Entity(1)), ent2(new Entity(2)),
+//              ent3(new Entity(3)), ent4(new Entity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -184,8 +184,8 @@ int main()
 //    }
 //
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent1(new Entity("1", 1)), ent2(new Entity("2", 2)),
-//              ent3(new Entity("3", 3)), ent4(new Entity("4", 4));
+//        Ref<Entity> tlve(new Entity(0)), ent1(new Entity(1)), ent2(new Entity(2)),
+//              ent3(new Entity(3)), ent4(new Entity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -217,7 +217,7 @@ int main()
 //    }
 
 //    {
-//        Ref<Entity> tlve(new Entity("0", 0)), ent1(new Entity("1", 1)), ent2(new Entity("2", 2));
+//        Ref<Entity> tlve(new Entity(0)), ent1(new Entity(1)), ent2(new Entity(2));
 //
 //        ent1->m_parent = tlve.get();
 //        Location locEnt1{tlve.get(), Point3D(1, 1, 0)};

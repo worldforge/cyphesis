@@ -9,7 +9,7 @@
 
 #ifndef STUB_MindKit_newMind
 //#define STUB_MindKit_newMind
-  BaseMind* MindKit::newMind(const std::string & mind_id, const std::string & entity_id) const
+  BaseMind* MindKit::newMind(RouterId mind_id, const std::string & entity_id) const
   {
     return nullptr;
   }

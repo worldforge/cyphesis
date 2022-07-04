@@ -35,7 +35,7 @@ class AwareMindFactory : public MindKit
 
         ~AwareMindFactory() override = default;
 
-        BaseMind* newMind(const std::string& mind_id, const std::string& entity_id) const override;
+        BaseMind* newMind(RouterId id, const std::string& entity_id) const override;
 
     protected:
         TypeStore& mTypeStore;

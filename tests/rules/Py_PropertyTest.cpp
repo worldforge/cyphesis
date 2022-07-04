@@ -89,7 +89,7 @@ int main()
                          &CyPy_Common::init});
 
 
-        Ref<Entity> wrld(new Entity("0", 0));
+        Ref<Entity> wrld(new Entity(0));
         TestWorld tw(wrld);
 
         run_python_string("from server import *");

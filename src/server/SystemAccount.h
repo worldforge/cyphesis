@@ -27,7 +27,7 @@ class SystemAccount : public Admin
         SystemAccount(Connection* conn,
                       const std::string& username,
                       const std::string& passwd,
-                      const std::string& id, long intId);
+                      RouterId id);
 
         ~SystemAccount() override;
 

@@ -2,8 +2,8 @@
 #include <Atlas/Objects/Operation.h>
 #ifndef STUB_Admin_Admin
 #define STUB_Admin_Admin
-Admin::Admin(Connection * conn, const std::string & username, const std::string & passwd, const std::string & id, long intId)
-    : Account(conn, username, passwd, id, intId)
+Admin::Admin(Connection * conn, const std::string & username, const std::string & passwd, RouterId id)
+    : Account(conn, username, passwd, id)
 {
 
 }

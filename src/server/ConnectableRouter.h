@@ -28,8 +28,8 @@ class Connection;
 ///
 struct ConnectableRouter : public Router
 {
-    explicit ConnectableRouter(const std::string& id, long intId)
-        : Router(id, intId)
+    explicit ConnectableRouter(RouterId id)
+        : Router(std::move(id))
     {
     }
 

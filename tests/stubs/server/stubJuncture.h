@@ -50,8 +50,8 @@
 
 #ifndef STUB_Juncture_Juncture
 //#define STUB_Juncture_Juncture
-   Juncture::Juncture(Connection *, const std::string & id, long iid)
-    : ConnectableRouter(Connection, id, iid)
+   Juncture::Juncture(Connection *, RouterId id)
+    : ConnectableRouter(Connection, id)
     , m_connection(nullptr),m_peer(nullptr)
   {
     

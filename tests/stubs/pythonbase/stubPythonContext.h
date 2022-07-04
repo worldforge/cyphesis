@@ -10,7 +10,6 @@
 #ifndef STUB_PythonContext_PythonContext
 //#define STUB_PythonContext_PythonContext
    PythonContext::PythonContext()
-    : m_arena(nullptr)
   {
     
   }

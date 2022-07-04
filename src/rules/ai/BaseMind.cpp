@@ -44,8 +44,8 @@ using Atlas::Objects::smart_dynamic_cast;
 
 static const bool debug_flag = false;
 
-BaseMind::BaseMind(const std::string& mindId, std::string entityId, TypeStore& typeStore) :
-        Router(mindId, std::stol(mindId)),
+BaseMind::BaseMind(RouterId mindId, std::string entityId, TypeStore& typeStore) :
+        Router(std::move(mindId)),
         m_entityId(std::move(entityId)),
         m_flags(0),
         m_typeStore(typeStore),
@@ -58,7 +58,7 @@ BaseMind::BaseMind(const std::string& mindId, std::string entityId, TypeStore& t
     m_tickControl.navmesh.interval = std::chrono::milliseconds(600);
     m_tickControl.move.interval = std::chrono::milliseconds(20);
     m_tickControl.think.interval = std::chrono::milliseconds(500);
-    m_typeResolver->m_typeProviderId = mindId;
+    m_typeResolver->m_typeProviderId = mindId.m_id;
     m_map.setListener(this);
 }
 

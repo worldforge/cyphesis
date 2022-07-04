@@ -67,16 +67,9 @@ std::unordered_map<const TypeNode*, int> Entity::s_monitorsMap;
 /// These classes are used to model all in world entities or objects.
 /// \defgroup EntityClasses In World Entity Classes
 
-Entity::Entity(long intId) : LocatedEntity(intId)
+Entity::Entity(RouterId id) : LocatedEntity(id)
 {
 
-}
-
-
-/// \brief Entity constructor
-Entity::Entity(const std::string& id, long intId) :
-        LocatedEntity(id, intId)
-{
 }
 
 Entity::~Entity()

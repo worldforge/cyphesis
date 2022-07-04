@@ -63,7 +63,7 @@ class Juncture : public ConnectableRouter, virtual public sigc::trackable {
 
     int attemptConnect(const std::string &, int);
   public:
-    Juncture(Connection *, const std::string & id, long iid);
+    Juncture(Connection *, RouterId id);
 
     ~Juncture() override;
 

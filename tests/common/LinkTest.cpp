@@ -36,7 +36,7 @@
 class TestLink : public Link
 {
     public:
-        TestLink(CommSocket& socket, const std::string& id, long iid);
+        TestLink(CommSocket& socket, RouterId id);
 
         virtual ~TestLink();
 
@@ -45,8 +45,8 @@ class TestLink : public Link
         virtual void operation(const Operation&, OpVector&);
 };
 
-TestLink::TestLink(CommSocket& socket, const std::string& id, long iid) :
-        Link(socket, id, iid)
+TestLink::TestLink(CommSocket& socket, RouterId id) :
+        Link(socket, id)
 {
 }
 
@@ -153,7 +153,7 @@ void Linktest::setup()
 {
     m_bridge = new Sink;
     m_socket = new TestCommSocket(*(boost::asio::io_context*) 0);
-    m_link = new TestLink(*m_socket, "1", 1);
+    m_link = new TestLink(*m_socket, 1);
     m_encoder = 0;
 }
 

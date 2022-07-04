@@ -66,7 +66,7 @@ class PossessionClient : public BaseClient
 
         void scheduleDispatch();
 
-        void notifyAccountCreated(const std::string& accountId) override;
+        void notifyAccountCreated(RouterId accountId) override;
 
         void resolveDispatchTimeForOp(Atlas::Objects::Operation::RootOperationData& op);
 

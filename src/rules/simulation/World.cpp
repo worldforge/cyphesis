@@ -51,7 +51,7 @@ using Atlas::Objects::smart_dynamic_cast;
 
 /// \brief Constructor for the World entity
 World::World() :
-        Thing(consts::rootWorldId, consts::rootWorldIntId),
+        Thing(consts::rootWorldIntId),
         m_serialNumber(0)
 {
     addFlags(entity_modifiers_not_allowed);

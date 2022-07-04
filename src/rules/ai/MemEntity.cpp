@@ -25,8 +25,8 @@
 
 static const bool debug_flag = false;
 
-MemEntity::MemEntity(const std::string& id, long intId) :
-        LocatedEntity(id, intId),
+MemEntity::MemEntity(RouterId id) :
+        LocatedEntity(id),
         m_lastSeen(0.),
         m_lastUpdated(0)
 {

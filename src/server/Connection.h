@@ -87,7 +87,7 @@ class Connection : public Link, virtual public sigc::trackable
         virtual std::unique_ptr<Account> newAccount(const std::string& type,
                                                     const std::string& username,
                                                     const std::string& passwd,
-                                                    const std::string& id, long intId);
+                                                    RouterId id);
 
         virtual int verifyCredentials(const Account&,
                                       const Atlas::Objects::Root&) const;
@@ -96,7 +96,7 @@ class Connection : public Link, virtual public sigc::trackable
         ServerRouting& m_server;
 
         Connection(CommSocket& commSocket, ServerRouting& svr,
-                   const std::string& addr, const std::string& id, long iid);
+                   const std::string& addr, RouterId id);
 
         ~Connection() override;
 

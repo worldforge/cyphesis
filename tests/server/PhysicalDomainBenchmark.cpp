@@ -118,7 +118,7 @@ void PhysicalDomainBenchmark::test_static_entities_no_move()
     ModeProperty* modePlantedProperty = new ModeProperty();
     modePlantedProperty->set("planted");
 
-    Entity* rootEntity = new Entity("0", newId());
+    Entity* rootEntity = new Entity(newId());
     TerrainProperty* terrainProperty = new TerrainProperty();
     rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -178,7 +178,7 @@ void PhysicalDomainBenchmark::test_determinism()
 
     TypeNode* rockType = new TypeNode("rock");
 
-    Entity* rootEntity = new Entity("0", newId());
+    Entity* rootEntity = new Entity(newId());
     TerrainProperty* terrainProperty = new TerrainProperty();
     rootEntity->setProperty("terrain", std::unique_ptr<PropertyBase>(terrainProperty));
     Mercator::Terrain& terrain = terrainProperty->getData(*rootEntity);
@@ -243,7 +243,7 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
     Property<double>* massProp = new Property<double>();
     massProp->data() = 10000;
 
-    Ref<Entity> rootEntity = new Entity("0", newId());
+    Ref<Entity> rootEntity = new Entity(newId());
     rootEntity->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>::ZERO();
     WFMath::AxisBox<3> aabb(WFMath::Point<3>(-512, 0, -512), WFMath::Point<3>(512, 64, 512));
     rootEntity->requirePropertyClassFixed<BBoxProperty>().data() = aabb;

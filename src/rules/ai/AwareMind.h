@@ -37,7 +37,7 @@ class SharedTerrain;
 class AwareMind : public BaseMind
 {
     public:
-        AwareMind(const std::string& mind_id,
+        AwareMind(RouterId mind_id,
                   std::string entity_id,
                   TypeStore& typeStore,
                   SharedTerrain& sharedTerrain,

@@ -60,7 +60,7 @@ using Atlas::Objects::Entity::RootEntity;
 
 int main()
 {
-    Ref<Thing> e(new Thing("1", 1));
+    Ref<Thing> e(new Thing(1));
     TypeNode type("thing");
     e->setType(&type);
 

@@ -94,8 +94,7 @@ ServerAccounttest::ServerAccounttest() : m_id_counter(0L),
 void ServerAccounttest::setup()
 {
 
-    Ref<Entity> gw = new Entity(compose("%1", m_id_counter),
-                             m_id_counter++);
+    Ref<Entity> gw = new Entity(m_id_counter++);
     TestWorld::extension.addNewEntityFn = [&, gw](const std::string &,
                         const Atlas::Objects::Entity::RootEntity &)
     {
@@ -115,11 +114,11 @@ void ServerAccounttest::setup()
                                  m_id_counter++);
     m_connection = new Connection(*(CommSocket*)0, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
-                                  compose("%1", m_id_counter), m_id_counter++);
+                                  m_id_counter++);
     m_account = new ServerAccount(m_connection,
                                   "6c9f3236-5de7-4ba4-8b7a-b0222df0af38",
                                   "fa1a03a2-a745-4033-85cb-bb694e921e62",
-                                  compose("%1", m_id_counter), m_id_counter++);
+                                  m_id_counter++);
 
     m_possessionAuthenticator = new PossessionAuthenticator();
 }

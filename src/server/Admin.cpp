@@ -53,9 +53,8 @@ static const bool debug_flag = false;
 Admin::Admin(Connection * conn,
              const std::string & username,
              const std::string & passwd,
-             const std::string & id,
-             long intId) :
-       Account(conn, username, passwd, id, intId)
+             RouterId id) :
+       Account(conn, username, passwd, std::move(id))
 {
 }
 
@@ -98,11 +97,9 @@ static void addTypeToList(const Root & type, ListType & typeList)
 }
 
 std::unique_ptr<ExternalMind> Admin::createMind(const Ref<LocatedEntity>& entity) const {
-    std::string strId;
+    auto id = newId();
 
-    auto id = newId(strId);
-
-    return std::make_unique<AdminMind>(strId, id, entity);
+    return std::make_unique<AdminMind>(id, entity);
 }
 
 /// \brief Function to monitor server operations
@@ -308,14 +305,13 @@ void Admin::CreateOperation(const Operation& op, OpVector& res)
             error(op, "Installing new type failed", res, getId());
         }
     } else if (type_str == "juncture") {
-        std::string junc_id;
-        long junc_iid = newId(junc_id);
-        if (junc_iid < 0) {
+        auto junc_id = newId();
+        if (junc_id.m_intId < 0) {
             error(op, "Juncture failed as no ID available", res, getId());
             return;
         }
 
-        auto juncture = std::make_unique<Juncture>(m_connection, junc_id, junc_iid);
+        auto juncture = std::make_unique<Juncture>(m_connection, junc_id);
 
         Anonymous info_arg;
         juncture->addToEntity(info_arg);

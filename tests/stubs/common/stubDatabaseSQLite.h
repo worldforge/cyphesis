@@ -130,7 +130,7 @@
 
 #ifndef STUB_DatabaseSQLite_newId
 //#define STUB_DatabaseSQLite_newId
-  long DatabaseSQLite::newId(std::string& id)
+  long DatabaseSQLite::newId()
   {
     return 0;
   }

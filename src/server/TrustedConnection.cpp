@@ -33,8 +33,8 @@
 TrustedConnection::TrustedConnection(CommSocket& client,
                                      ServerRouting& svr,
                                      const std::string& addr,
-                                     const std::string& id, long iid) :
-    Connection(client, svr, addr, id, iid)
+                                     RouterId id) :
+    Connection(client, svr, addr, id)
 {
 }
 
@@ -43,18 +43,18 @@ TrustedConnection::~TrustedConnection() = default;
 std::unique_ptr<Account> TrustedConnection::newAccount(const std::string& type,
                                        const std::string& username,
                                        const std::string& hash,
-                                       const std::string& id, long intId)
+                                       RouterId id)
 {
     if (type == "sys") {
-        return std::make_unique<SystemAccount>(this, username, hash, id, intId);
+        return std::make_unique<SystemAccount>(this, username, hash, id);
     } else if (type == "admin") {
-        return std::make_unique<Admin>(this, username, hash, id, intId);
+        return std::make_unique<Admin>(this, username, hash, id);
     } else {
         if (type != "player") {
             log(WARNING, String::compose("Local client tried to create "
                                          "account of unknown type \"%1\". "
                                          "Creating Player.", type));
         }
-        return std::make_unique<Player>(this, username, hash, id, intId);
+        return std::make_unique<Player>(this, username, hash, id);
     }
 }

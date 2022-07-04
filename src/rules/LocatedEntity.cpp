@@ -51,12 +51,10 @@ const std::set<std::string>& LocatedEntity::immutables()
     return s_immutable;
 }
 
-LocatedEntity::LocatedEntity(long intId) : LocatedEntity(std::to_string(intId), intId)
-{}
 
 /// \brief LocatedEntity constructor
-LocatedEntity::LocatedEntity(const std::string& id, long intId) :
-        Router(id, intId),
+LocatedEntity::LocatedEntity(RouterId id) :
+        Router(std::move(id)),
         m_seq(0),
         m_type(nullptr),
         m_flags(0),

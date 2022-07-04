@@ -49,10 +49,10 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
                              Persistence& persistence,
                              std::string ruleset,
                              std::string name,
-                             long lobbyId) :
+                             RouterId lobbyId) :
         m_svrRuleset(std::move(ruleset)),
         m_svrName(std::move(name)),
-        m_lobby(new Lobby(*this, std::to_string(lobbyId), lobbyId)),
+        m_lobby(new Lobby(*this, lobbyId)),
         m_numClients(0),
         m_processOpsTotal(0),
         m_world(wrld),

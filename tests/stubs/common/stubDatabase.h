@@ -179,7 +179,7 @@
 
 #ifndef STUB_Database_newId
 //#define STUB_Database_newId
-  long Database::newId(std::string& id)
+  long Database::newId()
   {
     return 0;
   }

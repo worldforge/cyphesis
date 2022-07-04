@@ -49,8 +49,8 @@
 
 #ifndef STUB_Account_Account
 //#define STUB_Account_Account
-   Account::Account(Connection* conn, std::string username, std::string passwd, const std::string& id, long intId)
-    : ConnectableRouter(conn, username, passwd, id, intId)
+   Account::Account(Connection* conn, std::string username, std::string passwd, RouterId id)
+    : ConnectableRouter(conn, username, passwd, id)
     , m_connection(nullptr)
   {
     

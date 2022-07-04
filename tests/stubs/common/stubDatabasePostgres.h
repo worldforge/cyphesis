@@ -139,7 +139,7 @@
 
 #ifndef STUB_DatabasePostgres_newId
 //#define STUB_DatabasePostgres_newId
-  long DatabasePostgres::newId(std::string& id)
+  long DatabasePostgres::newId()
   {
     return 0;
   }

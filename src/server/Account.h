@@ -84,7 +84,7 @@ class Account : public ConnectableRouter
 
         Account(Connection* conn, std::string username,
                 std::string passwd,
-                const std::string& id, long intId);
+                RouterId id);
 
         ~Account() override;
 

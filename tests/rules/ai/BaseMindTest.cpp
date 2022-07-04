@@ -96,7 +96,7 @@ void BaseMindtest::setup()
 {
     propertyManager = std::make_unique<TestPropertyManager>();
     typeStore = std::make_unique<SimpleTypeStore>(*propertyManager);
-    bm = new BaseMind("1", "2", *typeStore);
+    bm = new BaseMind(1, "2", *typeStore);
 }
 
 void BaseMindtest::teardown()

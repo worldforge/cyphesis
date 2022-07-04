@@ -96,8 +96,8 @@ class TestAccount : public Account
     public:
         TestAccount(Connection* conn, const std::string& username,
                     const std::string& passwd,
-                    const std::string& id, long intId) :
-                Account(conn, username, passwd, id, intId)
+                    RouterId id) :
+                Account(conn, username, passwd, std::move(id))
         {
         }
 
@@ -201,7 +201,7 @@ Atlas::Objects::Root composeDeclaration(std::string class_name, std::string pare
 
 void Accountintegration::setup()
 {
-    m_rootEntity = new Entity("", 0);
+    m_rootEntity = new Entity(0);
     m_persistence = new Persistence(m_database);
     m_inheritance = new Inheritance(factories);
     m_eb = new EntityBuilder();
@@ -214,8 +214,8 @@ void Accountintegration::setup()
                                  2);
 
     m_tc = new TestCommSocket();
-    m_c = new Connection(*m_tc, *m_server, "addr", "3", 3);
-    m_ac = new TestAccount(m_c, "user", "password", "4", 4);
+    m_c = new Connection(*m_tc, *m_server, "addr", 3);
+    m_ac = new TestAccount(m_c, "user", "password", 4);
 
     std::string dependent, reason;
 
@@ -411,7 +411,7 @@ void Accountintegration::test_LogoutOperation()
 void Accountintegration::test_connectCharacter_entity()
 {
     OpVector res;
-    Ref<Entity> e = new Entity("7", 7);
+    Ref<Entity> e = new Entity(7);
 
     int ret = m_ac->connectCharacter(e.get(), res);
     ASSERT_EQUAL(ret, 0);
@@ -419,7 +419,7 @@ void Accountintegration::test_connectCharacter_entity()
 
 void Accountintegration::test_connectCharacter_character()
 {
-    Ref<Entity> e = new Entity("8", 8);
+    Ref<Entity> e = new Entity(8);
     OpVector res;
     int ret = m_ac->connectCharacter(e.get(), res);
     ASSERT_EQUAL(ret, 0);

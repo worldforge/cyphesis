@@ -49,12 +49,10 @@ class EntityBuilder : public EntityCreator {
                        const Atlas::Objects::Root & class_desc,
                        std::unique_ptr<EntityKit> factory);
     EntityKit * getClassFactory(const std::string & class_name) const;
-    Ref<Entity> newEntity(const std::string & id,
-                              long intId,
+    Ref<Entity> newEntity(RouterId id,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs) const override;
-    Ref<Entity> newChildEntity(const std::string & id,
-                              long intId,
+    Ref<Entity> newChildEntity(RouterId id,
                               const std::string & type,
                               const Atlas::Objects::Entity::RootEntity & attrs) const;
 

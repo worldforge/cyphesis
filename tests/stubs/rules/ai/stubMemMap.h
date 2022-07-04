@@ -25,7 +25,7 @@
 
 #ifndef STUB_MemMap_newEntity
 //#define STUB_MemMap_newEntity
-  Ref<MemEntity> MemMap::newEntity(const std::string&, long, const Atlas::Objects::Entity::RootEntity&, double timestamp)
+  Ref<MemEntity> MemMap::newEntity(RouterId, const Atlas::Objects::Entity::RootEntity&, double timestamp)
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }
@@ -41,7 +41,7 @@
 
 #ifndef STUB_MemMap_addId
 //#define STUB_MemMap_addId
-  Ref<MemEntity> MemMap::addId(const std::string&, long)
+  Ref<MemEntity> MemMap::addId(RouterId id)
   {
     return *static_cast<Ref<MemEntity>*>(nullptr);
   }

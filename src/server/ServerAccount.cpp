@@ -52,9 +52,8 @@ static const bool debug_flag = false;
 ServerAccount::ServerAccount(Connection * conn,
              const std::string & username,
              const std::string & passwd,
-             const std::string & id,
-             long intId) :
-       Account(conn, username, passwd, id, intId)
+             RouterId id) :
+       Account(conn, username, passwd, std::move(id))
 {
 }
 

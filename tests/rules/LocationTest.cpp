@@ -48,7 +48,7 @@ void testDistanceFunctions()
     }
 
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent(new TestEntity("1", 1));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent(new TestEntity(1));
 //
 //        ent->m_parent = tlve;
 //        ent->m_location.m_pos = Point3D(1, 1, 0);
@@ -73,7 +73,7 @@ void testDistanceFunctions()
 //
 //    // Coverage for broken entity hierarchy
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2));
 //
 //        // BROKEN ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -93,7 +93,7 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -115,7 +115,7 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2));
 //
 //        // BROKEN ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -137,7 +137,7 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -158,8 +158,8 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2)),
-//              ent3(new TestEntity("3", 3)),ent4(new TestEntity("4", 4));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2)),
+//              ent3(new TestEntity(3)),ent4(new TestEntity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -189,7 +189,7 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2)),ent3(new TestEntity("3", 3)),ent4(new TestEntity("4", 4));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2)),ent3(new TestEntity(3)),ent4(new TestEntity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -220,8 +220,8 @@ void testDistanceFunctions()
 //
 //    // Coverage for no orientation
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2)),
-//              ent3(new TestEntity("3", 3)),ent4(new TestEntity("4", 4));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2)),
+//              ent3(new TestEntity(3)),ent4(new TestEntity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -247,8 +247,8 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2)),
-//              ent3(new TestEntity("3", 3)),ent4(new TestEntity("4", 4));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2)),
+//              ent3(new TestEntity(3)),ent4(new TestEntity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -278,8 +278,8 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2)),
-//              ent3(new TestEntity("3", 3)),ent4(new TestEntity("4", 4));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2)),
+//              ent3(new TestEntity(3)),ent4(new TestEntity(4));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(-1, 1, 0);
@@ -315,7 +315,7 @@ void testDistanceFunctions()
 //    }
 //
 //    {
-//        Ref<TestEntity> tlve(new TestEntity("0", 0)),ent1(new TestEntity("1", 1)),ent2(new TestEntity("2", 2));
+//        Ref<TestEntity> tlve(new TestEntity(0)),ent1(new TestEntity(1)),ent2(new TestEntity(2));
 //
 //        ent1->m_parent = tlve;
 //        ent1->m_location.m_pos = Point3D(1, 1, 0);
@@ -449,7 +449,7 @@ int main()
         testLoc.addToEntity(ent);
         assert(ent->getAttrFlags() == 0);
 
-        Ref<TestEntity> le1(new TestEntity("1", 1));
+        Ref<TestEntity> le1(new TestEntity(1));
 
         testLoc.m_parent = le1;
         testLoc.m_pos = Point3D(0,1,0);

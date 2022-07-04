@@ -273,9 +273,17 @@
   }
 #endif //STUB_PhysicalDomain_processDirtyTerrainAreas
 
+#ifndef STUB_PhysicalDomain_applyDestination
+//#define STUB_PhysicalDomain_applyDestination
+  void PhysicalDomain::applyDestination(double tickSize, BulletEntry& entry, const PropelProperty* propelProp, const Vector3Property& destinationProp)
+  {
+    
+  }
+#endif //STUB_PhysicalDomain_applyDestination
+
 #ifndef STUB_PhysicalDomain_applyPropel
 //#define STUB_PhysicalDomain_applyPropel
-  void PhysicalDomain::applyPropel(BulletEntry& entry, const WFMath::Vector<3>& propel)
+  void PhysicalDomain::applyPropel(BulletEntry& entry, btVector3 propel)
   {
     
   }

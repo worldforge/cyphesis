@@ -35,7 +35,7 @@ class Lobby : public Router {
     std::map<std::string, ConnectableRouter *> m_accounts;
     ServerRouting & m_server;
   public:
-    explicit Lobby(ServerRouting & serverRouting, const std::string & id, long intId);
+    explicit Lobby(ServerRouting & serverRouting, RouterId id);
 
     ~Lobby() override;
 

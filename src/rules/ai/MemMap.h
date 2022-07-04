@@ -89,12 +89,12 @@ class MemMap
 
         void updateEntity(const Ref<MemEntity>&, const Atlas::Objects::Entity::RootEntity&, double timestamp);
 
-        Ref<MemEntity> newEntity(const std::string&, long,
+        Ref<MemEntity> newEntity(RouterId,
                                  const Atlas::Objects::Entity::RootEntity&, double timestamp);
 
         void addContents(const Atlas::Objects::Entity::RootEntity&);
 
-        Ref<MemEntity> addId(const std::string&, long);
+        Ref<MemEntity> addId(RouterId id);
 
         void applyTypePropertiesToEntity(const Ref<MemEntity>& entity);
 

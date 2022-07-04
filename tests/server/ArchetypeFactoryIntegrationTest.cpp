@@ -236,7 +236,7 @@ struct Tested : public Cyphesis::TestBase
 ")");
         auto entityDef = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(obj);
 
-        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef);
+        auto entity = context.eb.newEntity(1, "archetype1", entityDef);
         ASSERT_NOT_NULL(entity.get());
         ASSERT_EQUAL(2UL, entity->m_contains->size());
         Atlas::Message::Element element;
@@ -291,7 +291,7 @@ struct Tested : public Cyphesis::TestBase
 ")");
         auto entityDef = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(obj);
 
-        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef);
+        auto entity = context.eb.newEntity(1, "archetype1", entityDef);
         ASSERT_NOT_NULL(entity.get());
         Atlas::Message::Element element;
 
@@ -344,7 +344,7 @@ struct Tested : public Cyphesis::TestBase
 ")");
         auto entityDef = Atlas::Objects::smart_dynamic_cast<Atlas::Objects::Entity::RootEntity>(obj);
 
-        auto entity = context.eb.newEntity("1", 1, "archetype1", entityDef);
+        auto entity = context.eb.newEntity(1, "archetype1", entityDef);
         ASSERT_NOT_NULL(entity.get());
         Atlas::Message::Element element;
         entity->getAttr("name", element);

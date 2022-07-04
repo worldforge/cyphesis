@@ -91,8 +91,7 @@ int Persistence::init()
 
     if (!findAccount("admin")) {
         debug_print("Bootstrapping admin account.")
-        std::string adminAccountId;
-        long adminAccountIntId = m_db.newId(adminAccountId);
+        auto adminAccountIntId = m_db.newId();
         if (adminAccountIntId < 0) {
             log(CRITICAL, "Unable to create admin account ID from Database");
             return -2;
@@ -104,7 +103,7 @@ int Persistence::init()
         std::string password = shaker.generateSalt(32);
 
         Admin dummyAdminAccount(nullptr, "admin", password,
-                                adminAccountId, adminAccountIntId);
+                                 adminAccountIntId);
 
         log(INFO, "Created 'admin' account with randomized password.\n"
                   "In order to use it, use the 'cypasswd' tool from the "
@@ -153,10 +152,9 @@ std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
         log(ERROR, "Unable to find id field in accounts database.");
         return nullptr;
     }
-    std::string id = c;
-    long intId = integerId(id);
-    if (intId == -1) {
-        log(ERROR, String::compose(R"(Invalid ID "%1" for account "%2" from database.)", id, name));
+    RouterId id(c);
+    if (!id.isValid()) {
+        log(ERROR, String::compose(R"(Invalid ID "%1" for account "%2" from database.)", id.m_id, name));
         return nullptr;
     }
     c = first.column("password");
@@ -172,11 +170,11 @@ std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
     }
     std::string type = c;
     if (type == "admin") {
-        return std::make_unique<Admin>(nullptr, name, passwd, id, intId);
+        return std::make_unique<Admin>(nullptr, name, passwd, id);
     } else if (type == "server") {
-        return std::make_unique<ServerAccount>(nullptr, name, passwd, id, intId);
+        return std::make_unique<ServerAccount>(nullptr, name, passwd, id);
     } else {
-        return std::make_unique<Player>(nullptr, name, passwd, id, intId);
+        return std::make_unique<Player>(nullptr, name, passwd, id);
     }
 }
 

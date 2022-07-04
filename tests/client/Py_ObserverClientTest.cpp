@@ -136,7 +136,7 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string & type)
     if (stub_createCharacter_fail) {
         return 0;
     }
-    return Ref<CreatorClient>(new CreatorClient("1", "2", m_connection, m_typeStore));
+    return Ref<CreatorClient>(new CreatorClient(1, "2", m_connection, m_typeStore));
 }
 #include "../stubs/client/cyclient/stubBaseClient.h"
 

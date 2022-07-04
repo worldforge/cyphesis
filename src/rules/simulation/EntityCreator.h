@@ -19,12 +19,13 @@
 #ifndef CYPHESIS_ENTITYCREATOR_H
 #define CYPHESIS_ENTITYCREATOR_H
 
+#include "common/RouterId.h"
+
 class Entity;
 
 struct EntityCreator
 {
-    virtual Ref<Entity> newEntity(const std::string& id,
-                                         long intId,
+    virtual Ref<Entity> newEntity(RouterId id,
                                          const std::string& type,
                                          const Atlas::Objects::Entity::RootEntity& attrs) const = 0;
 };

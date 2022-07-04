@@ -45,7 +45,7 @@ using String::compose;
 static const bool debug_flag = false;
 
 BaseClient::BaseClient(CommSocket& commSocket)
-    : Link(commSocket, "", 0), m_serialNo(0)
+    : Link(commSocket, 0), m_serialNo(0)
 {
 
 }
@@ -115,7 +115,7 @@ void BaseClient::createSystemAccount(const std::string& usernameSuffix)
                          if (!op->getArgs().empty()) {
                              auto ent = op->getArgs().front();
                              if (!ent->isDefaultId()) {
-                                 notifyAccountCreated(ent->getId());
+                                 notifyAccountCreated(RouterId(ent->getId()));
                              } else {
                                  log(ERROR, "ERROR: Logged in, but account has no id.");
                              }

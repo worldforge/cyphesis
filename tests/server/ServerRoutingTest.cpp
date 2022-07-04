@@ -48,7 +48,7 @@ static bool stub_generate_accounts = false;
 class TestRouter : public ConnectableRouter
 {
     public:
-        TestRouter(const std::string& id, int iid) : ConnectableRouter(id, iid)
+        TestRouter(RouterId id) : ConnectableRouter(id)
         {}
 
         void externalOperation(const Operation&, Link&) override
@@ -71,8 +71,8 @@ class TestAccount : public Account
     public:
         TestAccount(Connection* conn, const std::string& username,
                     const std::string& passwd,
-                    const std::string& id, long intId) :
-            Account(conn, username, passwd, id, intId)
+                    RouterId id) :
+            Account(conn, username, passwd, std::move(id))
         {
         }
 
@@ -90,11 +90,9 @@ int main()
 
     std::string ruleset = "test_rules";
     std::string server_name = "test_svr";
-    std::string lobby_id;
-    long  lobby_int_id;
+    auto lobbyId = newId();
 
-    if (
-        ((lobby_int_id = newId(lobby_id)) < 0)) {
+    if (!lobbyId.isValid()) {
         std::cerr << "Unable to get server IDs newid";
         return 1;
     }
@@ -102,35 +100,30 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
     }
 
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
-        server.addRouter(std::make_unique<TestRouter>(id, iid));
+        server.addRouter(std::make_unique<TestRouter>(id));
         assert(server.getObjects().size() == 1);
     }
 
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
-        auto r = new TestRouter(id, iid);
+        auto r = new TestRouter(id);
         server.addRouter(std::unique_ptr<TestRouter>(r));
         assert(server.getObjects().size() == 1);
     }
@@ -138,49 +131,43 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id, id2;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
-        newId(id2);
+        auto id2 = newId();
 
-        ConnectableRouter* r = new TestRouter(id, iid);
+        ConnectableRouter* r = new TestRouter(id);
         server.addRouter(std::unique_ptr<ConnectableRouter>(r));
         assert(server.getObjects().size() == 1);
 
-        ConnectableRouter* r2 = server.getObject(id);
+        ConnectableRouter* r2 = server.getObject(id.m_id);
         assert(r == r2);
 
-        r2 = server.getObject(id2);
-        assert(0 == r2);
+        r2 = server.getObject(id2.m_id);
+        assert(nullptr == r2);
     }
 
     {
         DatabaseNull database;
-        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
-        server.addAccount(std::make_unique<TestAccount>(nullptr, "bob", "", id, iid));
+        server.addAccount(std::make_unique<TestAccount>(nullptr, "bob", "", id));
         assert(server.getObjects().size() == 1);
     }
 
     {
         DatabaseNull database;
-        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
-        Account* ac = new TestAccount(0, "bob", "", id, iid);
+        Account* ac = new TestAccount(0, "bob", "", id);
         server.addAccount(std::unique_ptr<Account>(ac));;
         assert(server.getObjects().size() == 1);
         Account* rac = server.getAccountByName("bob");
@@ -191,14 +178,12 @@ int main()
         DatabaseNull database;
         Persistence persistence(database);
 
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
-        Account* ac = new TestAccount(0, "bob", "", id, iid);
+        Account* ac = new TestAccount(0, "bob", "", id);
         server.addAccount(std::unique_ptr<Account>(ac));;
         assert(server.getObjects().size() == 1);
         Account* rac = server.getAccountByName("alice");
@@ -208,12 +193,10 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
         Account* rac = server.getAccountByName("alice");
         assert(rac == 0);
@@ -223,12 +206,10 @@ int main()
         stub_generate_accounts = true;
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
-        std::string id;
-        int iid = newId(id);
-        assert(iid >= 0);
+        auto id = newId();
+        assert(id.isValid());
 
         Account* rac = server.getAccountByName("alice");
         assert(rac != 0);
@@ -237,8 +218,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
         Atlas::Message::MapType map;
         server.addToMessage(map);
@@ -250,8 +230,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name,
-                             lobby_int_id);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
 
         Atlas::Objects::Entity::Anonymous ent;
         server.addToEntity(ent);
@@ -289,11 +268,10 @@ std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
         return 0;
     }
 
-    std::string id;
-    int iid = newId(id);
-    assert(iid >= 0);
+    auto id = newId();
+    assert(id.isValid());
 
-    return std::make_unique<TestAccount>(nullptr, name, "", id, iid);
+    return std::make_unique<TestAccount>(nullptr, name, "", id);
 }
 
 #include "../stubs/server/stubPersistence.h"

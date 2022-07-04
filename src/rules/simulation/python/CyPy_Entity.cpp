@@ -44,7 +44,7 @@ CyPy_Entity::CyPy_Entity(Py::PythonClassInstanceWeak* self, Py::Tuple& args, Py:
         if (intId == -1L) {
             throw Py::TypeError("Entity() requires string/int ID");
         }
-        m_value = new Entity(id, intId);
+        m_value = new Entity(intId);
     } else if (CyPy_Entity::check(arg)) {
         m_value = CyPy_Entity::value(arg);
     } else {

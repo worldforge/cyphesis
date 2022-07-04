@@ -33,9 +33,9 @@ int main()
 {
     MindFactory * mf = new MindFactory;
 
-    mf->newMind("1", 1);
+    mf->newMind(1);
 
-    mf->newMind("2", 2);
+    mf->newMind(2);
 
     return 0;
 }

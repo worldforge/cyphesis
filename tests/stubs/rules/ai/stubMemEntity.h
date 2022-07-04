@@ -17,8 +17,8 @@
 
 #ifndef STUB_MemEntity_MemEntity
 //#define STUB_MemEntity_MemEntity
-   MemEntity::MemEntity(const std::string& id, long intId)
-    : LocatedEntity(id, intId)
+   MemEntity::MemEntity(RouterId id)
+    : LocatedEntity(id)
   {
     
   }

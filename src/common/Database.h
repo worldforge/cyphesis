@@ -186,7 +186,7 @@ class Database : public Singleton<Database>
 
         /// Creates a new unique id for the database.
         /// Note that this method will access the database, so it's a fairly expensive method.
-        virtual long newId(std::string& id) = 0;
+        virtual long newId() = 0;
 
         // Interface for Entity and Property tables.
 

@@ -9,8 +9,8 @@
 
 #ifndef STUB_Peer_Peer
 //#define STUB_Peer_Peer
-   Peer::Peer(CommSocket & client, ServerRouting & svr, const std::string & addr, int port, const std::string & id, long iid)
-    : Link(client, svr, addr, port, id, iid)
+   Peer::Peer(CommSocket & client, ServerRouting & svr, const std::string & addr, int port, RouterId id)
+    : Link(client, svr, addr, port, id)
   {
     
   }

@@ -76,7 +76,7 @@ class AccountServerLobbyintegration : public Cyphesis::TestBase
 class TestAccount : public Account
 {
   public:
-    TestAccount(ServerRouting & svr, long id, long cid);
+    TestAccount(ServerRouting & svr, RouterId id);
     ~TestAccount();
     int characterError(const Operation & op,
                        const Atlas::Objects::Root & ent,
@@ -103,8 +103,7 @@ void AccountServerLobbyintegration::setup()
 {
     m_persistence = new Persistence(m_database);
 
-    Ref<LocatedEntity> gw = new Entity(compose("%1", m_id_counter),
-                                    m_id_counter++);
+    Ref<LocatedEntity> gw = new Entity(m_id_counter++);
     m_world.reset();
     m_world.reset(new TestWorld(gw));
     m_server = new ServerRouting(*m_world, *m_persistence,
@@ -113,7 +112,6 @@ void AccountServerLobbyintegration::setup()
                                  m_id_counter++);
     for (int i = 0; i < 3; ++i) {
         m_account = new TestAccount(*m_server,
-                                    m_id_counter++,
                                     m_id_counter++);
         m_server->addAccount(std::unique_ptr<Account>(m_account));
         m_server->getLobby().addAccount(m_account);
@@ -177,15 +175,13 @@ void AccountServerLobbyintegration::test_lobby_look()
     ASSERT_TRUE(!res.empty());
 }
 
-TestAccount::TestAccount(ServerRouting & svr, long id, long cid) :
+TestAccount::TestAccount(ServerRouting & svr, RouterId cid) :
           Account(new Connection(*(CommSocket*)0,
                                  svr,
                                  "7546215f-ac75-4e1a-a2c3-a9226219259b",
-                                 compose("%1", cid),
                                  cid),
                   "cec7a6f5-ebf1-4531-a0d9-ed9bb46882ad",
                   "59cf380e-7398-48a7-81cc-961265fadcd0",
-                  compose("%1", cid),
                   cid)
 {
 }

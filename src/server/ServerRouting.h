@@ -73,7 +73,7 @@ class ServerRouting
                       Persistence& persistence,
                       std::string ruleset,
                       std::string name,
-                      long lobbyId);
+                      RouterId lobbyId);
 
         ~ServerRouting();
 

@@ -80,7 +80,7 @@ class ExternalMind : public Router
         static int s_numberOfMinds;
 
 
-        explicit ExternalMind(const std::string& strId, long id, Ref<LocatedEntity> entity);
+        explicit ExternalMind(RouterId id, Ref<LocatedEntity> entity);
 
         ~ExternalMind() override;
 

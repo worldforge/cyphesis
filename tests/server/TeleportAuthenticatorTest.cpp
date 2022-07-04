@@ -120,7 +120,7 @@ void TeleportAuthenticatortest::test_sequence()
 
 void TeleportAuthenticatortest::test_authenticatePossession()
 {
-    Ref<Entity> ent(new Entity("100", 100));
+    Ref<Entity> ent(new Entity(100));
     m_world->test_addEntity(ent.get(), 100);
 
     PossessionAuthenticator::instance().addPossession("100", "test_possess_key");
@@ -141,7 +141,7 @@ void TeleportAuthenticatortest::test_authenticatePossession()
 
 void TeleportAuthenticatortest::test_authenticatePossession_nonexist()
 {
-    Ref<Entity> ent(new Entity("100", 100));
+    Ref<Entity> ent(new Entity(100));
     m_world->test_addEntity(ent.get(), 100);
 
     PossessionAuthenticator::instance().addPossession("101", "test_possess_key");

@@ -56,10 +56,10 @@ EntityBuilder::~EntityBuilder() = default;
 /// @param intId The integer identifier of the new entity.
 /// @param type The string specifying the type of entity.
 /// @param attributes A mapping of attribute values to set on the entity.
-Ref<Entity> EntityBuilder::newEntity(const std::string& id, long intId, const std::string& type, const RootEntity& attributes) const
+Ref<Entity> EntityBuilder::newEntity(RouterId id, const std::string& type, const RootEntity& attributes) const
 {
     try {
-        return newChildEntity(id, intId, type, attributes);
+        return newChildEntity(id, type, attributes);
     } catch (const std::exception& ex) {
         log(ERROR, String::compose("Error when creating entity of type %1."
                                    " Message: %2", type, ex.what()));
@@ -67,8 +67,7 @@ Ref<Entity> EntityBuilder::newEntity(const std::string& id, long intId, const st
     }
 }
 
-Ref<Entity> EntityBuilder::newChildEntity(const std::string& id,
-                                                 long intId,
+Ref<Entity> EntityBuilder::newChildEntity(RouterId id,
                                                  const std::string& type,
                                                  const Atlas::Objects::Entity::RootEntity& attributes) const
 {
@@ -83,7 +82,7 @@ Ref<Entity> EntityBuilder::newChildEntity(const std::string& id,
     if (attributes) {
         attributes->removeAttr("parent");
     }
-    return factory->newEntity(id, intId, attributes);
+    return factory->newEntity(id, attributes);
 
 }
 

@@ -41,8 +41,8 @@
 
 #ifndef STUB_ExternalMind_ExternalMind
 //#define STUB_ExternalMind_ExternalMind
-   ExternalMind::ExternalMind(const std::string& strId, long id, Ref<LocatedEntity> entity)
-    : Router(strId, id, entity)
+   ExternalMind::ExternalMind(RouterId id, Ref<LocatedEntity> entity)
+    : Router(id, entity)
     , m_link(nullptr)
   {
     

@@ -34,13 +34,13 @@ class TrustedConnection : public Connection
         std::unique_ptr<Account> newAccount(const std::string& type,
                             const std::string& username,
                             const std::string& passwd,
-                            const std::string& id, long intId) override;
+                            RouterId id) override;
 
     public:
         TrustedConnection(CommSocket& client,
                           ServerRouting& svr,
                           const std::string& addr,
-                          const std::string& id, long iid);
+                          RouterId id);
 
         ~TrustedConnection() override;
 };

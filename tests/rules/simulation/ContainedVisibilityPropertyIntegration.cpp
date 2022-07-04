@@ -45,7 +45,7 @@ int main()
 
         void setup()
         {
-            m_char1 = new TestEntity("1", 1);
+            m_char1 = new TestEntity(1);
         }
 
         void teardown()

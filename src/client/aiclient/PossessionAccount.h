@@ -36,7 +36,7 @@ class PossessionClient;
 class PossessionAccount : public Router
 {
     public:
-        PossessionAccount(const std::string& id, long intId, const MindKit& mindFactory, PossessionClient& client);
+        PossessionAccount(RouterId id, const MindKit& mindFactory, PossessionClient& client);
 
         ~PossessionAccount() override;
 
@@ -84,7 +84,7 @@ class PossessionAccount : public Router
 
         void takePossession(OpVector& res, const std::string& possessEntityId, const std::string& possessKey);
 
-        void createMindInstance(OpVector& res, const std::string& mindId, const std::string& entityId);
+        void createMindInstance(OpVector& res, RouterId mindId, const std::string& entityId);
 
 };
 

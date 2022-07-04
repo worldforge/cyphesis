@@ -75,10 +75,9 @@ class SpawningTestWorld : public TestWorld {
 
     Ref<LocatedEntity> addNewEntity(const std::string & t,
                                   const Atlas::Objects::Entity::RootEntity &) override {
-        std::string id;
-        long intId = newId(id);
+        auto id = newId();
 
-        Ref<Entity>  e = new Entity(id, intId);
+        Ref<Entity>  e = new Entity(id);
 
         e->setType(new TypeNode(t));
         addEntity(e, m_gw);
@@ -134,7 +133,7 @@ AccountConnectionintegration::AccountConnectionintegration()
 void AccountConnectionintegration::setup()
 {
     m_persistence = new Persistence(m_database);
-    m_tlve = new Entity("0", 0);
+    m_tlve = new Entity(0);
     m_world = new SpawningTestWorld(m_tlve);
     m_server = new ServerRouting(*m_world,
                                  *m_persistence,
@@ -144,7 +143,7 @@ void AccountConnectionintegration::setup()
     m_connection = new Connection(m_commSocket,
                                   *m_server,
                                   "test_addr",
-                                  "3", 3);
+                                  3);
 }
 
 void AccountConnectionintegration::teardown()

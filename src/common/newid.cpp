@@ -19,7 +19,7 @@
 #include "common/Database.h"
 #include "id.h"
 
-long newId(std::string & id)
+RouterId newId()
 {
-    return Database::instance().newId(id);
+    return {Database::instance().newId()};
 }

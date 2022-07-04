@@ -57,17 +57,8 @@
 
 #ifndef STUB_Thing_Thing
 //#define STUB_Thing_Thing
-   Thing::Thing(const std::string& id, long intId)
-    : Entity(id, intId)
-  {
-    
-  }
-#endif //STUB_Thing_Thing
-
-#ifndef STUB_Thing_Thing
-//#define STUB_Thing_Thing
-   Thing::Thing(long intId)
-    : Entity(intId)
+   Thing::Thing(RouterId id)
+    : Entity(id)
   {
     
   }

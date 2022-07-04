@@ -72,8 +72,8 @@ int main()
         extend_client_python_api();
 
         ClientConnection conn(io_context, factories);
-        Ref<CreatorClient> client(new CreatorClient("1", "2", conn, typeStore));
-        Ref<MemEntity> entity(new MemEntity("1", 1));
+        Ref<CreatorClient> client(new CreatorClient(1, "2", conn, typeStore));
+        Ref<MemEntity> entity(new MemEntity(1));
         OpVector res;
         client->setOwnEntity(res, entity);
 
@@ -151,7 +151,7 @@ Ref<LocatedEntity> CharacterClient::look(const std::string& id)
     if (stub_look_fail) {
         return nullptr;
     }
-    return Ref<LocatedEntity>(new Entity(id, integerId(id)));
+    return Ref<LocatedEntity>(new Entity(RouterId(id)));
 }
 
 #define STUB_CharacterClient_lookFor
@@ -161,7 +161,7 @@ Ref<LocatedEntity> CharacterClient::lookFor(const RootEntity& entity)
     if (stub_lookfor_fail) {
         return nullptr;
     }
-    return Ref<LocatedEntity>(new Entity(entity->getId(), integerId(entity->getId())));
+    return Ref<LocatedEntity>(new Entity(RouterId(entity->getId())));
 }
 
 #define STUB_CreatorClient_make
@@ -171,7 +171,7 @@ Ref<LocatedEntity> CreatorClient::make(const RootEntity& entity)
     if (stub_make_fail) {
         return nullptr;
     }
-    return Ref<LocatedEntity>(new Entity(entity->getId(), integerId(entity->getId())));
+    return Ref<LocatedEntity>(new Entity(RouterId(entity->getId())));
 }
 
 #include "../stubs/client/cyclient/stubCreatorClient.h"

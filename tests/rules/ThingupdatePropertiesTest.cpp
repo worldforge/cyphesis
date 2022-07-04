@@ -41,8 +41,8 @@ using Atlas::Objects::Operation::Update;
 
 class testThing : public Thing {
   public:
-    testThing(const std::string & id, long intId) :
-        Thing(id, intId) { }
+    testThing(RouterId id) :
+        Thing(id) { }
     using Thing::updateProperties;
 };
 
@@ -51,8 +51,8 @@ static const std::string testNewName("fred");
 
 struct TestThing : public Thing
 {
-    TestThing(const std::string& id, long intId)
-            : Thing(id, intId)
+    TestThing(RouterId id)
+            : Thing(id)
     {
     }
 
@@ -87,7 +87,7 @@ void ThingupdatePropertiestest::setup()
     m_name = new Property<std::string>(prop_flag_unsent);
     m_name->data() = testName;
 
-    m_thing = new TestThing("1", 1);
+    m_thing = new TestThing(1);
     m_thing->setProperty("name", std::unique_ptr<PropertyBase>(m_name));
 }
 

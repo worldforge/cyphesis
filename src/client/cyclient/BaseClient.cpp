@@ -227,17 +227,15 @@ Ref<CreatorClient> BaseClient::createCharacter(const std::string& type)
         return nullptr;
     }
 
-    auto mind_id = arg->getId();
+    auto mind_id = idFromString(arg->getId());
 
-    long intId = integerId(mind_id);
-
-    if (intId == -1) {
-        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", mind_id));
+    if (!mind_id.isValid()) {
+        log(ERROR, String::compose("Invalid character ID \"%1\" from server.", mind_id.m_id));
     }
 
     Ref<CreatorClient> obj(new CreatorClient(mind_id, entityId, m_connection, m_typeStore));
 
-    Ref<MemEntity> ownEntity = new MemEntity(mind_id, intId);
+    Ref<MemEntity> ownEntity = new MemEntity(mind_id);
 
     ownEntity->merge(arg->asMessage());
     // FIXME We are making no attempt to set LOC, as we have no entity to

@@ -58,8 +58,8 @@ TerrainEffectorPropertytest::TerrainEffectorPropertytest() : m_property(0)
 void TerrainEffectorPropertytest::setup()
 {
     m_property = new TerrainEffectorProperty;
-    m_world = new Entity("0", 0);
-    m_entity = new Entity("1", 1);
+    m_world = new Entity(0);
+    m_entity = new Entity(1);
     m_entity->m_parent = m_world.get();
 }
 
