@@ -58,7 +58,7 @@ parts:
         override-pull: |
             #rsync -rtzu --include='*.mesh' --include='*/' --exclude='*' amber.worldforge.org::ember-media/ember-media-0.8.0/media/assets $SNAPCRAFT_PART_SRC/assets
             cd $SNAPCRAFT_PART_SRC
-            curl L https://amber.worldforge.org/ember/media/ember-media-0.8.0.tar.xz -o $SNAPCRAFT_PART_SRC/ember-media-0.8.0.tar.xz
+            curl -L https://amber.worldforge.org/ember/media/ember-media-0.8.0.tar.xz -o $SNAPCRAFT_PART_SRC/ember-media-0.8.0.tar.xz
             tar -xJf $SNAPCRAFT_PART_SRC/ember-media-0.8.0.tar.xz
         override-stage: |
             mkdir -p $SNAPCRAFT_STAGE/share/cyphesis
