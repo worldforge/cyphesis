@@ -120,6 +120,11 @@ CorePropertyManager::CorePropertyManager(Inheritance& inheritance)
      * The "direction" property is set by the mind to indicate the direction the body should be moving.
      */
     installProperty<QuaternionProperty>("_direction");
+    /**
+     * The "_destination" property is set by the mind to indicate any destination the body should be moving to.
+     * This is only to be used if the simulation easily can move the body there (it's close and nothing obscures it).
+     */
+    installProperty<Vector3Property>("_destination");
 
 
     installProperty<DensityProperty>();
