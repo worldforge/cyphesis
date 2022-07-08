@@ -36,7 +36,7 @@ void Property<int>::set(const Atlas::Message::Element& e)
 }
 
 template<>
-void Property<std::int64_t>::set(const Atlas::Message::Element& e)
+void Property<long>::set(const Atlas::Message::Element& e)
 {
     if (e.isInt()) {
         this->m_data = e.Int();
