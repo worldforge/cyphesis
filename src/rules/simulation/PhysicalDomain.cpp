@@ -2860,8 +2860,11 @@ void PhysicalDomain::tick(double tickSize, OpVector& res)
     postDuration = {};
 
     for (auto& bulletEntry: m_propelUpdateQueue) {
-        auto propel = bulletEntry->control.propelProperty->data().isValid() ? Convert::toBullet(bulletEntry->control.propelProperty->data()) : btVector3(0, 0, 0);
-        applyPropel(*bulletEntry, propel);
+        //We'll use the "m_propelUpdateQueue" also for entities with _destination set, so it's not always they have a "_propel" property.
+        if (bulletEntry->control.propelProperty) {
+            auto propel = bulletEntry->control.propelProperty->data().isValid() ? Convert::toBullet(bulletEntry->control.propelProperty->data()) : btVector3(0, 0, 0);
+            applyPropel(*bulletEntry, propel);
+        }
     }
     m_propelUpdateQueue.clear();
     for (auto& bulletEntry: m_directionUpdateQueue) {
