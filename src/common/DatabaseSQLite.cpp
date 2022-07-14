@@ -106,7 +106,7 @@ int DatabaseSQLite::initConnection()
     try {
         boost::filesystem::create_directories(db_path.parent_path());
         m_database = std::make_unique<database>(db_path.c_str());
-    } catch (const database_error& e) {
+    } catch (const std::runtime_error& e) {
         log(WARNING, "Error when opening SQLite database.");
         return -1;
     }
