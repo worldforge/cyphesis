@@ -36,6 +36,7 @@
 
 #include <cassert>
 #include <boost/filesystem/operations.hpp>
+#include <basedir.h>
 
 const char* const CYPHESIS = "cyphesis";
 const char* const SLAVE = "slave";
@@ -499,6 +500,20 @@ int loadConfig(int argc, char** argv, int usage)
             return CONFIG_ERROR;
         }
     }
+
+    //Set the var_directory by default to the XDG Data Home directory.
+    //This can be overridden either by setting the $XDG_DATA_HOME environment variable, or the "vardir" config option.
+    xdgHandle baseDirHandle{};
+    boost::filesystem::path path;
+    if (!xdgInitHandle(&baseDirHandle)) {
+        return CONFIG_ERROR;
+    }
+    auto dataHome = xdgDataHome(&baseDirHandle);
+    if (dataHome) {
+        var_directory = std::string(dataHome) + "/cyphesis";
+    }
+    xdgWipeHandle(&baseDirHandle);
+
 
     global_conf->getCmdline(argc, argv);
 
