@@ -16,14 +16,6 @@
   }
 #endif //STUB_Persistence_Persistence
 
-#ifndef STUB_Persistence_init
-//#define STUB_Persistence_init
-  int Persistence::init()
-  {
-    return 0;
-  }
-#endif //STUB_Persistence_init
-
 #ifndef STUB_Persistence_findAccount
 //#define STUB_Persistence_findAccount
   bool Persistence::findAccount(const std::string&)

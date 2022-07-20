@@ -86,6 +86,7 @@ void DatabaseSQLite::poll_tasks()
             pendingQueries.pop_front();
         } else {
             if (m_active) {
+                m_queueEmptyCondition.notify_all();
                 m_workerCondition.wait(lock);
             } else {
                 return;
@@ -93,6 +94,14 @@ void DatabaseSQLite::poll_tasks()
         }
     }
 }
+
+void DatabaseSQLite::blockUntilAllQueriesComplete() {
+    std::unique_lock<std::mutex> lock(m_pendingQueriesMutex);
+    if (!pendingQueries.empty()) {
+        m_queueEmptyCondition.wait(lock);
+    }
+}
+
 
 int DatabaseSQLite::connect(const std::string& context, std::string& error_msg)
 {

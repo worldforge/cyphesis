@@ -7,6 +7,14 @@
 #include "common/Storage.h"
 #include "stubStorage_custom.h"
 
+#ifndef STUB_Storage_Storage
+//#define STUB_Storage_Storage
+   Storage::Storage(Database& database)
+  {
+    
+  }
+#endif //STUB_Storage_Storage
+
 #ifndef STUB_Storage_putAccount
 //#define STUB_Storage_putAccount
   int Storage::putAccount(const Atlas::Message::MapType & o)

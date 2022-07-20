@@ -168,6 +168,14 @@
   }
 #endif //STUB_DatabaseSQLite_runMaintainance
 
+#ifndef STUB_DatabaseSQLite_blockUntilAllQueriesComplete
+//#define STUB_DatabaseSQLite_blockUntilAllQueriesComplete
+  void DatabaseSQLite::blockUntilAllQueriesComplete()
+  {
+    
+  }
+#endif //STUB_DatabaseSQLite_blockUntilAllQueriesComplete
+
 
 #ifndef STUB_DatabaseResultWorkerSqlite_size
 //#define STUB_DatabaseResultWorkerSqlite_size

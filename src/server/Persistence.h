@@ -47,8 +47,6 @@ class Persistence : public Singleton<Persistence>
 
         Database& m_db;
 
-        int init();
-
         bool findAccount(const std::string&);
 
         std::unique_ptr<Account> getAccount(const std::string&);

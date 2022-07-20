@@ -37,6 +37,7 @@
 #include <varconf/config.h>
 
 #include "common/compose.hpp"
+#include "DatabaseCreation.h"
 
 
 #define USE_VARARGS
@@ -653,15 +654,8 @@ int main(int argc, char ** argv)
         interactive = false;
     }
 
-    DatabaseSQLite database;
-    database.initConnection();
-
-    if (database.initConnection() != 0) {
-        log(ERROR, "Database setup failed.");
-        return 1;
-    }
-
-    Storage ab(database);
+    auto database = createDatabase();
+    Storage ab(*database);
 
     if (!interactive) {
         ret = run_command(ab, argc - optindex, &argv[optindex]);

@@ -744,6 +744,16 @@ int DatabasePostgres::clearPendingQuery()
     }
 }
 
+void DatabasePostgres::blockUntilAllQueriesComplete() {
+    while (queryQueueSize()) {
+        if (!queryInProgress()) {
+            launchNewQuery();
+        } else {
+            clearPendingQuery();
+        }
+    }
+}
+
 int DatabasePostgres::runMaintainance(unsigned int command)
 {
     // VACUUM and REINDEX tables from a common store

@@ -19,8 +19,76 @@
 #include "Storage.h"
 
 #include "system.h"
+#include "globals.h"
+#include "log.h"
+#include "compose.hpp"
+#include "debug.h"
+#include "Shaker.h"
 
 #include <iostream>
+
+static const bool debug_flag = false;
+
+Storage::Storage(Database& database) : m_connection(database) {
+    if (m_connection.initConnection() != 0) {
+        if (::instance == CYPHESIS) {
+            throw std::runtime_error("Could not create database connection.");
+        }
+        if (m_connection.createInstanceDatabase() != 0) {
+            throw std::runtime_error("Database creation failed.");
+        }
+        if (m_connection.initConnection() != 0) {
+            throw std::runtime_error("Still couldn't connect.");
+        }
+        log(INFO, String::compose("Auto created database for new instance "
+                                  "\"%1\".", ::instance));
+    }
+
+    std::map<std::string, int> chunks;
+    chunks["location"] = 0;
+
+    if (m_connection.registerEntityTable(chunks) != 0) {
+        throw std::runtime_error("Failed to create Entity in database.");
+    }
+
+    if (m_connection.registerPropertyTable() != 0) {
+        throw std::runtime_error("Failed to create Property in database.");
+    }
+
+    if (m_connection.registerThoughtsTable() != 0) {
+        throw std::runtime_error("Failed to create Thought in database.");
+    }
+
+    Atlas::Message::MapType tableDesc;
+    tableDesc["username"] = "                                                                                ";
+    tableDesc["password"] = "                                                                                ";
+    tableDesc["type"] = "          ";
+    m_connection.registerSimpleTable("accounts", tableDesc);
+
+    if (m_connection.registerEntityIdGenerator() != 0) {
+        throw std::runtime_error("Failed to register Id generator in database.");
+    }
+
+    Atlas::Message::MapType data;
+    if (getAccount("admin", data) != 0) {
+        debug_print("Bootstrapping admin account.")
+
+
+        //The shaker isn't meant for this, but it will suffice. A password of 32
+        //characters length should be safe enough.
+        Shaker shaker;
+        std::string password = shaker.generateSalt(32);
+
+
+        log(INFO, "Created 'admin' account with randomized password.\n"
+                  "In order to use it, use the 'cypasswd' tool from the "
+                  "command line to alter the password.");
+
+        putAccount({{"username", "admin"}, {"password",password}, {"type", "admin"}});
+    }
+    m_connection.blockUntilAllQueriesComplete();
+}
+
 
 /// \brief Store a new Account in the database
 ///

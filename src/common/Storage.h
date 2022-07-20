@@ -29,7 +29,7 @@ class Storage {
     Database & m_connection;
 
   public:
-    explicit Storage(Database& database) : m_connection(database) { }
+    explicit Storage(Database& database);
 
     int putAccount(const Atlas::Message::MapType & o);
     int modAccount(const Atlas::Message::MapType & o,

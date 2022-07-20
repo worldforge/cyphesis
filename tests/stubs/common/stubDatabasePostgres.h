@@ -209,6 +209,14 @@
   }
 #endif //STUB_DatabasePostgres_runMaintainance
 
+#ifndef STUB_DatabasePostgres_blockUntilAllQueriesComplete
+//#define STUB_DatabasePostgres_blockUntilAllQueriesComplete
+  void DatabasePostgres::blockUntilAllQueriesComplete()
+  {
+    
+  }
+#endif //STUB_DatabasePostgres_blockUntilAllQueriesComplete
+
 
 
 #endif

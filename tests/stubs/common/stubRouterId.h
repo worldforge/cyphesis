@@ -23,5 +23,13 @@
   }
 #endif //STUB_RouterId_RouterId
 
+#ifndef STUB_RouterId_RouterId
+//#define STUB_RouterId_RouterId
+   RouterId::RouterId(std::string id, long intId)
+  {
+    
+  }
+#endif //STUB_RouterId_RouterId
+
 
 #endif

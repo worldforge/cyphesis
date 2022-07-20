@@ -56,6 +56,7 @@ add_library(common
         TypeStore.h
         net/CommHttpClient.cpp
         net/HttpCache.cpp
+        FormattedXMLWriter.cpp
         )
 
 target_link_libraries(common ${GCRYPT_LIBRARIES} remotery)
@@ -68,6 +69,7 @@ target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
 
 
 set(db_files
+        Storage.cpp
         DatabaseSQLite.cpp)
 
 if (PostgreSQL_FOUND)
@@ -87,10 +89,6 @@ endif (PostgreSQL_FOUND)
 target_link_libraries(db PUBLIC ${SQLITE3_LIBRARIES} remotery)
 target_include_directories(db PUBLIC ${SQLITE3_INCLUDE_DIRS})
 
-
-add_library(tools
-        Storage.cpp
-        FormattedXMLWriter.cpp)
 
 
 

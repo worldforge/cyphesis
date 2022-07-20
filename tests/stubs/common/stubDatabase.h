@@ -305,6 +305,14 @@
   }
 #endif //STUB_Database_clearPendingQuery
 
+#ifndef STUB_Database_blockUntilAllQueriesComplete
+//#define STUB_Database_blockUntilAllQueriesComplete
+  void Database::blockUntilAllQueriesComplete()
+  {
+    
+  }
+#endif //STUB_Database_blockUntilAllQueriesComplete
+
 #ifndef STUB_Database_scheduleCommand
 //#define STUB_Database_scheduleCommand
   int Database::scheduleCommand(const std::string& query)

@@ -517,18 +517,7 @@ int StorageManager::restoreWorld(const Ref<LocatedEntity>& ent)
 int StorageManager::shutdown(bool& exit_flag_ref, const std::map<long, Ref<LocatedEntity>>& entites)
 {
     tick();
-    while (m_db.queryQueueSize()) {
-        //Allow for any user to abort the process.
-        if (exit_flag_ref) {
-            log(NOTICE, "Aborted entity persisting. This might lead to lost entities.");
-            return 0;
-        }
-        if (!m_db.queryInProgress()) {
-            m_db.launchNewQuery();
-        } else {
-            m_db.clearPendingQuery();
-        }
-    }
+    m_db.blockUntilAllQueriesComplete();
     return 0;
 }
 

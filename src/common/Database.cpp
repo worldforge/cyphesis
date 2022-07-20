@@ -280,8 +280,7 @@ DatabaseResult Database::selectProperties(const std::string & id)
     std::string query = compose("SELECT name, value FROM properties"
                                 " WHERE id = %1", id);
 
-    debug(std::cout << "Selecting on id = " << id << " ... "
-                    << std::endl << std::flush;);
+    debug_print("Selecting on id = " << id << " ... ");
 
     return runSimpleSelectQuery(query);
 }

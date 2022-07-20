@@ -64,6 +64,7 @@
 #include "ScriptReloader.h"
 #include "AccountProperty.h"
 #include "Remotery.h"
+#include "common/Storage.h"
 
 #include <varconf/config.h>
 
@@ -408,12 +409,9 @@ namespace {
             auto serverDatabase = createDatabase(*io_context);
             auto& database = serverDatabase->database();
 
+            //Creating a "Storage" object makes sure all database tables are setup correctly.
+            Storage storage(database);
             Persistence persistence(database);
-            int dbstatus = persistence.init();
-            if (dbstatus < 0) {
-                log(ERROR, "Error opening database.");
-                return -1;
-            }
 
             // If the restricted flag is set in the config file, then we
             // don't allow connecting users to create accounts. Accounts must

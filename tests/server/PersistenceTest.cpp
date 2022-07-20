@@ -43,14 +43,6 @@ int main()
         DatabaseNull database;
         Persistence p(database);
     }
-
-    {
-        DatabaseNull database;
-        Persistence p(database);
-        int res = p.init();
-        assert(res == 0);
-    }
-
     return 0;
 }
 

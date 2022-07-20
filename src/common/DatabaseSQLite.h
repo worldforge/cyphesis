@@ -41,6 +41,10 @@ class DatabaseSQLite : public Database
 
         std::atomic<bool> m_active;
         std::condition_variable m_workerCondition;
+        /**
+         * Emitted when the queue is emptied, which is used when the method blockUntilAllQueriesComplete is called.
+         */
+        std::condition_variable m_queueEmptyCondition;
         std::mutex m_pendingQueriesMutex;
         std::thread m_workerThread;
 
@@ -120,6 +124,8 @@ class DatabaseSQLite : public Database
         {
             return 0;
         }
+
+        void blockUntilAllQueriesComplete() override;
 
 
 };

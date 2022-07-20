@@ -119,6 +119,8 @@ class DatabasePostgres : public Database
 
         int runMaintainance(unsigned int command = MAINTAIN_VACUUM);
 
+        void blockUntilAllQueriesComplete() override;
+
 };
 
 /// \brief Class to encapsulate a result from the database.

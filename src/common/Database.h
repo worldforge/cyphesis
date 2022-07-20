@@ -234,6 +234,10 @@ class Database : public Singleton<Database>
 
         virtual int clearPendingQuery() = 0;
 
+        /**
+         * Blocks the current thread until all queries have completed.
+         */
+        virtual void blockUntilAllQueriesComplete() = 0;
 
         virtual int scheduleCommand(const std::string& query) = 0;
 
@@ -337,7 +341,7 @@ class DatabaseResult
             return m_worker->size();
         }
 
-        int empty() const
+        bool empty() const
         {
             return (size() == 0);
         }

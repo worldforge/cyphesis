@@ -218,9 +218,9 @@ int main()
 
 // stubs
 
-bool database_flag = true;
-
 #include "../stubs/common/stublog.h"
+#include "../stubs/common/stubShaker.h"
+#include "../stubs/common/stubglobals.h"
 
 #define STUB_Database_newId
 long Database::newId()

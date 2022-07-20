@@ -193,6 +193,8 @@ class DatabaseNull : public Database
         int clearPendingQuery() override
         { return 0; }
 
+        void blockUntilAllQueriesComplete() override {}
+
 };
 
 #endif //CYPHESIS_DATABASENULL_H

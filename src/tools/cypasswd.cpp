@@ -32,6 +32,8 @@
 #include "common/globals.h"
 #include "common/log.h"
 #include "common/system.h"
+#include "server/Persistence.h"
+#include "DatabaseCreation.h"
 
 #include <varconf/config.h>
 
@@ -114,6 +116,23 @@ static int get_password(const std::string & acname,
 
     return 0;
 }
+//
+//static std::unique_ptr<Database> createDatabase()
+//{
+//    std::string databaseBackend;
+//    readConfigItem(instance, "database", databaseBackend);
+//
+//    if (databaseBackend == "postgres") {
+//#ifdef POSTGRES_FOUND
+//        return std::make_unique<DatabasePostgres>();
+//#else
+//        log(ERROR, "Database specified as 'postgres', but this server is not built with Postgres SQL support.");
+//        throw std::runtime_error("Database specified as 'postgres', but this server is not built with Postgres SQL support.");
+//#endif
+//    } else {
+//        return std::make_unique<DatabaseSQLite>();
+//    }
+//}
 
 
 int main(int argc, char ** argv)
@@ -199,9 +218,9 @@ int main(int argc, char ** argv)
         return EXIT_SECURITY_ERROR;
     }
 
-    DatabaseSQLite database;
-    database.initConnection();
-    Storage db(database);
+    try {
+        auto database = createDatabase();
+        Storage db(*database);
 
     // MapType data;
 
@@ -212,7 +231,6 @@ int main(int argc, char ** argv)
         // acname = "admin";
         // action = ADD;
     // }
-    try {
         if (action != ADD) {
             MapType o;
             int res = db.getAccount(acname, o);
