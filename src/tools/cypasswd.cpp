@@ -212,61 +212,66 @@ int main(int argc, char ** argv)
         // acname = "admin";
         // action = ADD;
     // }
-    if (action != ADD) {
-        MapType o;
-        int res = db.getAccount(acname, o);
-        if (res != 0) {
-            std::cout<<"Account "<<acname<<" does not yet exist"<<std::endl<<std::flush;
-            return 1;
+    try {
+        if (action != ADD) {
+            MapType o;
+            int res = db.getAccount(acname, o);
+            if (res != 0) {
+                std::cout << "Account " << acname << " does not yet exist" << std::endl << std::flush;
+                return 1;
+            }
         }
-    }
-    if (action == DEL) {
-        int res = db.delAccount(acname);
+        if (action == DEL) {
+            int res = db.delAccount(acname);
+            if (res == 0) {
+                std::cout << "Account " << acname << " removed." << std::endl << std::flush;
+            }
+            return 0;
+        }
+
+        MapType amap;
+        if (action == MOD) {
+            std::string account_type("player");
+            if (actype == SERVER) {
+                account_type = "server";
+            } else if (actype == ADMIN) {
+                account_type = "admin";
+            }
+            amap["type"] = account_type;
+            std::cout << "Changing " << acname << " to a " << account_type
+                      << " account" << std::endl << std::flush;
+        } else {
+            std::string password, password2;
+
+            get_password(acname, password, password2);
+
+            if (password != password2) {
+                std::cout << "Passwords did not match. Account database unchanged."
+                          << std::endl << std::flush;
+                return 1;
+            }
+
+            amap["password"] = password;
+        }
+
+        int res;
+        if (action == ADD) {
+            amap["username"] = acname;
+            if (actype == SERVER) {
+                std::cout << "Creating server account" << std::endl << std::flush;
+                amap["type"] = "server";
+            }
+            res = db.putAccount(amap);
+        } else {
+            res = db.modAccount(amap, acname);
+        }
         if (res == 0) {
-            std::cout << "Account " << acname << " removed." << std::endl << std::flush;
+            std::cout << "Account changed." << std::endl << std::flush;
+            return 0;
         }
-        return 0;
+        return 1;
+    } catch (const std::runtime_error& ex) {
+        std::cout << "There was an error: " << ex.what() << std::endl;
+        return 1;
     }
-
-    MapType amap;
-    if (action == MOD) {
-        std::string account_type("player");
-        if (actype == SERVER) {
-            account_type = "server";
-        } else if (actype == ADMIN) {
-            account_type = "admin";
-        }
-        amap["type"] = account_type;
-        std::cout << "Changing " << acname << " to a " << account_type
-                  << " account" << std::endl << std::flush;
-    } else {
-        std::string password, password2;
-
-        get_password(acname, password, password2);
-    
-        if (password != password2) {
-            std::cout << "Passwords did not match. Account database unchanged."
-                      << std::endl << std::flush;
-            return 1;
-        }
-
-        amap["password"] = password;
-    }
-
-    int res;
-    if (action == ADD) {
-        amap["username"] = acname;
-        if (actype == SERVER) {
-            std::cout << "Creating server account" << std::endl << std::flush;
-            amap["type"] = "server";
-        }
-        res = db.putAccount(amap);
-    } else {
-        res = db.modAccount(amap, acname);
-    }
-    if (res == 0) {
-        std::cout << "Account changed." << std::endl << std::flush;
-        return 0;
-    }
-    return 1;
 }
