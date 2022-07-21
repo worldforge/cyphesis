@@ -94,8 +94,7 @@ bool WorldTime::operator==(const WorldTime & other) const
 
 bool WorldTime::operator==(const std::string & when) const
 {
-    debug(std::cout << "Checking whether it is " << when << " when the date is "
-                    << m_time << std::endl << std::flush;);
+    debug_print("Checking whether it is " << when << " when the date is " << m_time);
 
     auto I = m_timeInfo.find(when);
     if (I == m_timeInfo.end()) {

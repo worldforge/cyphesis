@@ -51,8 +51,7 @@ Lobby::~Lobby() = default;
 
 void Lobby::addAccount(ConnectableRouter * ac)
 {
-    debug(std::cout << "Lobby::addAccount(" << ac->getId() << ")"
-                    << std::endl << std::flush;);
+    debug_print("Lobby::addAccount(" << ac->getId() << ")");
 
     Appearance a;
     Anonymous us;
@@ -71,8 +70,7 @@ void Lobby::addAccount(ConnectableRouter * ac)
 
 void Lobby::removeAccount(ConnectableRouter * ac)
 {
-    debug(std::cout << "Lobby::delAccount(" << ac->getId() << ")"
-                    << std::endl << std::flush;);
+    debug_print("Lobby::delAccount(" << ac->getId() << ")");
                     
 
     auto result = m_accounts.erase(ac->getId());
@@ -99,8 +97,7 @@ void Lobby::externalOperation(const Operation & op, Link &)
 
 void Lobby::operation(const Operation & op, OpVector & res)
 {
-    debug(std::cout << "Lobby::operation(" << op->getParent()
-                                           << std::endl << std::flush; );
+    debug_print("Lobby::operation(" << op->getParent());
     const std::string & to = op->getTo();
     if (to.empty() || to == getId()) {
         Operation newop(op.copy());

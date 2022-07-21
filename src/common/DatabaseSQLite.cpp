@@ -154,8 +154,7 @@ int DatabaseSQLite::getObject(const std::string& table,
 {
     assert(m_database);
 
-    debug(std::cout << "Database::getObject() " << table << "." << key
-                    << std::endl << std::flush;)
+    debug_print("Database::getObject() " << table << "." << key)
     std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "'";
 
     try {
@@ -163,15 +162,14 @@ int DatabaseSQLite::getObject(const std::string& table,
 
         auto firstRowIterator = qry.begin();
         if (firstRowIterator == qry.end()) {
-            debug(std::cout << "No entry for " << key << " in " << table
-                            << " table" << std::endl << std::flush;)
+            debug_print("No entry for " << key << " in " << table
+                            << " table")
             return -1;
         }
 
         auto data = (*firstRowIterator).get<const char*>(1);
 
-        debug(std::cout << "Got record " << key << " from database, value " << data
-                        << std::endl << std::flush;)
+        debug_print("Got record " << key << " from database, value " << data)
 
         int ret = decodeMessage(data, o);
 
@@ -240,8 +238,7 @@ int DatabaseSQLite::registerRelation(std::string& tablename,
     query += targettable;
     query += " (id) ON DELETE CASCADE )";
 
-    debug(std::cout << "CREATE QUERY: " << query
-                    << std::endl << std::flush;)
+    debug_print("CREATE QUERY: " << query)
     if (runCommandQuery(query) != 0) {
         return -1;
     }
@@ -285,8 +282,7 @@ int DatabaseSQLite::registerSimpleTable(const std::string& name,
     }
     createquery += ")";
 
-    debug(std::cout << "CREATE QUERY: " << createquery
-                    << std::endl << std::flush;)
+    debug_print("CREATE QUERY: " << createquery)
     int ret = runCommandQuery(createquery);
     return ret;
 }

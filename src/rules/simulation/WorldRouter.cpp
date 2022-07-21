@@ -263,15 +263,13 @@ void WorldRouter::deliverTo(const Operation& op, Ref<LocatedEntity> ent)
     op->setSeconds(std::chrono::duration_cast<std::chrono::duration<double>>(getTime()).count());
 
     OpVector res;
-    debug(std::cout << "WorldRouter::deliverTo begin {"
+    debug_print("WorldRouter::deliverTo begin {"
                     << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                    << std::flush;)
+                    << op->getFrom() << ":" << op->getTo() << "}")
     ent->operation(op, res);
-    debug(std::cout << "WorldRouter::deliverTo done {"
+    debug_print("WorldRouter::deliverTo done {"
                     << op->getParent() << ":"
-                    << op->getFrom() << ":" << op->getTo() << "}" << std::endl
-                    << std::flush;)
+                    << op->getFrom() << ":" << op->getTo() << "}")
     for (auto& resOp : res) {
         if (op->getFrom() == resOp->getTo()) {
             if (!op->isDefaultSerialno() && resOp->isDefaultRefno()) {

@@ -413,11 +413,11 @@ void StorageManager::tick()
     while (!m_unstoredEntities.empty()) {
         auto& ent = m_unstoredEntities.front();
         if (ent && !ent->isDestroyed()) {
-            debug(std::cout << "storing " << ent->getId() << std::endl << std::flush;)
+            debug_print("storing " << ent->getId())
             insertEntity(*ent);
             ++inserts;
         } else {
-            debug(std::cout << "deleted" << std::endl << std::flush;)
+            debug_print("deleted")
         }
         m_unstoredEntities.pop_front();
     }
@@ -446,8 +446,7 @@ void StorageManager::tick()
     }
 
     if (inserts > 0 || updates > 0) {
-        debug(std::cout << "I: " << inserts << " U: " << updates
-                        << std::endl << std::flush;)
+        debug_print("I: " << inserts << " U: " << updates)
     }
     int insert_queries = m_insertEntityCount + m_insertPropertyCount
                          - old_insert_queries;

@@ -85,8 +85,7 @@ int ClientConnection::sendAndWaitReply(const Operation & op, OpVector & res)
     long no = newSerialNo();
     op->setSerialno(no);
     send(op);
-    debug(std::cout << "Waiting for reply to " << op->getParent()
-                    << std::endl << std::flush;);
+    debug_print("Waiting for reply to " << op->getParent());
     while (true) {
         if (pending()) {
             Operation input = pop();

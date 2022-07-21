@@ -46,9 +46,9 @@ int OpRuleHandler::installOpDefinition(const std::string & class_name,
     Inheritance & i = Inheritance::instance();
 
     if (!i.hasClass(parent)) {
-        debug(std::cout << "op_definition \"" << class_name
+        debug_print("op_definition \"" << class_name
                         << "\" has non existent parent \"" << parent
-                        << "\". Waiting." << std::endl << std::flush;);
+                        << "\". Waiting.");
         dependent = parent;
         reason = compose("Operation \"%1\" has parent \"%2\" which does "
                          "not exist.", class_name, parent);

@@ -108,8 +108,7 @@ Root BaseClient::createAccount(const std::string& name,
     player_ent->setAttr("password", password);
     player_ent->setParent("player");
 
-    debug(std::cout << "Loggin " << name << " in with " << password << " as password"
-                    << std::endl << std::flush;);
+    debug_print("Logging " << name << " in with " << password << " as password");
 
     Login loginAccountOp;
     loginAccountOp->setArgs1(player_ent);

@@ -161,9 +161,8 @@ void Ruleset::installItem(const std::string& class_name,
         const std::string& wClassName = I->second.name;
         const Root& wClassDesc = I->second.desc;
         readyRules.emplace(wClassName, wClassDesc);
-        debug(std::cout << "WAITING rule " << wClassName
-                        << " now ready from " << class_name
-                        << std::endl << std::flush;);
+        debug_print("WAITING rule " << wClassName
+                        << " now ready from " << class_name);
     }
     m_waitingRules.erase(class_name);
 

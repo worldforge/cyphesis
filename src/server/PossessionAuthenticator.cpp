@@ -48,8 +48,8 @@ int PossessionAuthenticator::addPossession(const std::string& entity_id,
         return -1;
     }
     m_possessions.emplace(entity_id, std::make_unique<PendingPossession>(entity_id, possess_key));
-    debug(std::cout << String::compose("Added possession auth entry for %1,%2",
-                                       entity_id, possess_key) << std::endl;);
+    debug_print(String::compose("Added possession auth entry for %1,%2",
+                                       entity_id, possess_key));
     return 0;
 }
 
@@ -65,8 +65,8 @@ int PossessionAuthenticator::removePossession(const std::string& entity_id)
         return -1;
     }
     removePossession(I);
-    debug(std::cout << String::compose("Removed possession auth entry for entity ID %1",
-                                       entity_id) << std::endl;);
+    debug_print(String::compose("Removed possession auth entry for entity ID %1",
+                                       entity_id));
 
     return 0;
 }

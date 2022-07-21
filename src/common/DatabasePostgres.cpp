@@ -210,8 +210,7 @@ int DatabasePostgres::getObject(const std::string& table,
 {
     assert(m_connection != nullptr);
 
-    debug(std::cout << "Database::getObject() " << table << "." << key
-                    << std::endl << std::flush;);
+    debug_print("Database::getObject() " << table << "." << key);
     std::string query = std::string("SELECT * FROM ") + table + " WHERE id = '" + key + "'";
 
     clearPendingQuery();
@@ -223,13 +222,13 @@ int DatabasePostgres::getObject(const std::string& table,
 
     PGresult* res;
     if ((res = PQgetResult(m_connection)) == nullptr) {
-        debug(std::cout << "Error accessing " << key << " in " << table
-                        << " table" << std::endl << std::flush;);
+        debug_print("Error accessing " << key << " in " << table
+                        << " table");
         return -1;
     }
     if (PQntuples(res) < 1 || PQnfields(res) < 2) {
-        debug(std::cout << "No entry for " << key << " in " << table
-                        << " table" << std::endl << std::flush;);
+        debug_print("No entry for " << key << " in " << table
+                        << " table");
         PQclear(res);
         while ((res = PQgetResult(m_connection)) != nullptr) {
             PQclear(res);
@@ -237,8 +236,7 @@ int DatabasePostgres::getObject(const std::string& table,
         return -1;
     }
     const char* data = PQgetvalue(res, 0, 1);
-    debug(std::cout << "Got record " << key << " from database, value " << data
-                    << std::endl << std::flush;);
+    debug_print("Got record " << key << " from database, value " << data);
 
     int ret = decodeMessage(data, o);
     PQclear(res);
@@ -372,8 +370,7 @@ int DatabasePostgres::registerRelation(std::string& tablename,
     query += targettable;
     query += " (id) ON DELETE CASCADE ) WITHOUT OIDS";
 
-    debug(std::cout << "CREATE QUERY: " << query
-                    << std::endl << std::flush;);
+    debug_print("CREATE QUERY: " << query);
     if (runCommandQuery(query) != 0) {
         return -1;
     }
@@ -457,8 +454,7 @@ int DatabasePostgres::registerSimpleTable(const std::string& name,
     }
 
     createquery += ") WITHOUT OIDS";
-    debug(std::cout << "CREATE QUERY: " << createquery
-                    << std::endl << std::flush;);
+    debug_print("CREATE QUERY: " << createquery);
     int ret = runCommandQuery(createquery);
     if (ret == 0) {
         allTables.insert(name);
@@ -693,11 +689,9 @@ int DatabasePostgres::launchNewQuery()
         debug_print("No queries to launch")
         return -1;
     }
-    debug(std::cout << pendingQueries.size() << " queries pending"
-                    << std::endl << std::flush;);
+    debug_print(pendingQueries.size() << " queries pending");
     DatabaseQuery& q = pendingQueries.front();
-    debug(std::cout << "Launching async query: " << q.first
-                    << std::endl << std::flush;);
+    debug_print("Launching async query: " << q.first);
     int status = PQsendQuery(m_connection, q.first.c_str());
     if (!status) {
         log(ERROR, "Database query error when launching.");
@@ -714,12 +708,10 @@ int DatabasePostgres::scheduleCommand(const std::string& query)
 {
     pendingQueries.push_back(std::make_pair(query, PGRES_COMMAND_OK));
     if (!m_queryInProgress) {
-        debug(std::cout << "Query: " << query << " launched"
-                        << std::endl << std::flush;);
+        debug_print("Query: " << query << " launched");
         return launchNewQuery();
     } else {
-        debug(std::cout << "Query: " << query << " scheduled"
-                        << std::endl << std::flush;);
+        debug_print("Query: " << query << " scheduled");
         return 0;
     }
 }

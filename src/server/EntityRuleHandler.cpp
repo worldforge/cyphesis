@@ -84,9 +84,9 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
         if (I != mFactories.end()) {
             factory = I->second(nullptr);
         } else {
-            debug(std::cout << "class \"" << class_name
+            debug_print("class \"" << class_name
                             << "\" has non existent parent \"" << parent
-                            << "\". Waiting." << std::endl << std::flush;)
+                            << "\". Waiting.")
             dependent = parent;
             reason = compose("Entity rule \"%1\" has parent 'game_entity' and requires a "
                              "pre-defined entity factory, which could not be found.", class_name);
@@ -96,9 +96,9 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
         auto parent_factory = dynamic_cast<EntityFactoryBase*>(m_builder.getClassFactory(parent));
         // Get the new factory for this rule
         if (parent_factory == nullptr) {
-            debug(std::cout << "class \"" << class_name
+            debug_print("class \"" << class_name
                             << "\" has non existent parent \"" << parent
-                            << "\". Waiting." << std::endl << std::flush;)
+                            << "\". Waiting.")
             dependent = parent;
             reason = compose("Entity rule \"%1\" has parent \"%2\" which does "
                              "not exist.", class_name, parent);
@@ -142,8 +142,7 @@ int EntityRuleHandler::installEntityClass(const std::string& class_name,
         return -1;
     }
 
-    debug(std::cout << "INSTALLING " << class_name << ":" << parent
-                    << std::endl << std::flush;)
+    debug_print("INSTALLING " << class_name << ":" << parent)
 
     auto factoryPtr = factory.get();
     // Install the factory in place.

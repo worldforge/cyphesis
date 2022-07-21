@@ -228,8 +228,7 @@ int AdminClient::uploadRule(const std::string & id, const std::string & set,
         const std::string & waitId = J->second.first.first;
         const std::string & waitSet = J->second.first.second;
         const MapType & waitRule = J->second.second;
-        debug(std::cout << "WAITING rule " << waitId
-                        << " now ready" << std::endl << std::flush;);
+        debug_print("WAITING rule " << waitId << " now ready");
         int ret = uploadRule(waitId, waitSet, waitRule);
         if (ret > 0) {
             count += ret;

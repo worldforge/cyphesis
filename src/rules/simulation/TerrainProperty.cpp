@@ -188,10 +188,9 @@ boost::optional<int> TerrainProperty::getSurface(LocatedEntity& entity, float x,
     WFMath::Vector<3> normal;
     float height = -23;
     segment->getHeightAndNormal(x, z, height, normal);
-    debug(std::cout << "At the point " << x << "," << z
+    debug_print("At the point " << x << "," << z
                     << " of the segment the height is " << height << std::endl;
-                  std::cout << "The segment has " << surfaces.size()
-                            << std::endl << std::flush;);
+                  std::cout << "The segment has " << surfaces.size());
     if (surfaces.empty()) {
         log(ERROR, "The terrain has no surface data");
         return boost::none;
@@ -222,10 +221,9 @@ boost::optional<std::vector<LocatedEntity*>> TerrainProperty::findMods(LocatedEn
                 log(WARNING, "Terrrain mod with no context");
                 continue;
             }
-            debug(std::cout << "Context has id" << c->m_id << std::endl;);
+            debug_print("Context has id" << c->m_id);
             auto tc = static_cast<TerrainContext*>(c);
-            debug(std::cout << "Context has pointer " << tc->m_entity.get()
-                            << std::endl;);
+            debug_print("Context has pointer " << tc->m_entity.get());
             ret.push_back(tc->m_entity.get());
         }
     }

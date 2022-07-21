@@ -147,7 +147,7 @@ TypeNode::PropertiesUpdate TypeNode::updateProperties(const MapType& attributes,
     for (auto& entry : m_defaults) {
         //Don't remove ephemeral attributes.
         if (attributes.find(entry.first) == attributes.end() && !entry.second->hasFlags(prop_flag_persistence_ephem)) {
-            debug(std::cout << entry.first << " removed" << std::endl;)
+            debug_print(entry.first << " removed")
             propertiesUpdate.removedProps.insert(entry.first);
             propertiesMapPrivate.erase(entry.first);
             propertiesMapProtected.erase(entry.first);

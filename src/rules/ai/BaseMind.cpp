@@ -572,9 +572,8 @@ void BaseMind::callSightOperation(const Operation& op,
     m_map.getAdd(op->getFrom());
     auto op_no = op->getClassNo();
     if (debug_flag && (op_no == OP_INVALID)) {
-        debug(std::cout << getId() << " could not deliver sight of "
-                        << op->getParent()
-                        << std::endl << std::flush;);
+        debug_print(getId() << " could not deliver sight of "
+                        << op->getParent());
     }
     if (op_no == Atlas::Objects::Operation::SET_NO) {
         sightSetOperation(op, res);

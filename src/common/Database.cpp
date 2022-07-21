@@ -113,7 +113,7 @@ DatabaseResult Database::selectRelation(const std::string & name,
     query += " WHERE source = ";
     query += id;
 
-    debug(std::cout << "Selecting on id = " << id << " ... " << std::flush;);
+    debug_print("Selecting on id = " << id << " ... ");
 
     return runSimpleSelectQuery(query);
 }
@@ -155,8 +155,8 @@ DatabaseResult Database::selectSimpleRowBy(const std::string & name,
     query += " = ";
     query += value;
 
-    debug(std::cout << "Selecting on " << column << " = " << value
-                    << " ... " << std::flush;);
+    debug_print("Selecting on " << column << " = " << value
+                    << " ... ");
 
     return runSimpleSelectQuery(query);
 }
@@ -237,7 +237,7 @@ DatabaseResult Database::selectEntities(const std::string & loc)
     std::string query = compose("SELECT id, type, seq, location FROM entities"
                                 " WHERE loc = %1", loc);
 
-    debug(std::cout << "Selecting on loc = " << loc << " ... " << std::flush;);
+    debug_print("Selecting on loc = " << loc << " ... ");
 
     return runSimpleSelectQuery(query);
 }
@@ -303,8 +303,7 @@ DatabaseResult Database::selectThoughts(const std::string & loc)
     std::string query = compose("SELECT thought FROM thoughts"
                                 " WHERE id = %1", loc);
 
-    debug(std::cout << "Selecting on id = " << loc << " ... "
-                    << std::endl << std::flush;);
+    debug_print("Selecting on id = " << loc << " ... ");
 
     return runSimpleSelectQuery(query);
 }
@@ -428,15 +427,13 @@ bool Database::registerArrayTable(const std::string & name,
     }
 
     createquery += ") WITHOUT OIDS";
-    debug(std::cout << "CREATE QUERY: " << createquery
-                    << std::endl << std::flush;);
+    debug_print("CREATE QUERY: " << createquery);
     int ret = runCommandQuery(createquery);
     if (ret != 0) {
         return false;
     }
     indexquery += ")";
-    debug(std::cout << "INDEX QUERY: " << indexquery
-                    << std::endl << std::flush;);
+    debug_print("INDEX QUERY: " << indexquery);
     ret = runCommandQuery(indexquery);
     if (ret != 0) {
         return false;

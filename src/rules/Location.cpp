@@ -195,7 +195,7 @@ bool Location::readFromMessage(const MapType& msg)
 bool Location::readFromEntity(const Atlas::Objects::Entity::RootEntity& ent)
 {
     bool had_data = false;
-    debug(std::cout << "Location::readFromEntity" << std::endl << std::flush;)
+    debug_print("Location::readFromEntity")
     try {
         if (ent->hasAttrFlag(Atlas::Objects::Entity::POS_FLAG)) {
             had_data = true;
