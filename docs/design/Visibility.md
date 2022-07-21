@@ -9,14 +9,14 @@ Entities with extra admin rights can override the visibility rules.
 Visibility on properties is determined by their names. Visibility of entities is determined by the "visibility" property.
 
 
-# Public
+## Public
 
 A public property can be viewed by all entities.
 
 A public entity can be viewed by all entities.
 
 
-# Protected
+## Protected
 
 A protected property can only be seen by the owning entity. Such properties are prefixed with "_", for example "_usages".
 

@@ -3,7 +3,7 @@
 Stacking handled by a specific Stackable domain.
 
 
-# Use cases
+## Use cases
 
 Combining two stacks: Move op, moving stack1 into stack2. Stack1 destroyed, stack2 grows.
 
