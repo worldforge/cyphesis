@@ -19,6 +19,14 @@ apps:
         plugs:
             - network
             - network-bind
+    cypasswd:
+        command: bin/cypasswd --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+    cycmd:
+        command: bin/cycmd --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+    cydb:
+        command: bin/cydb --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+    cyaiclient:
+        command: bin/cyaiclient --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
 
 parts:
     wfmath:
