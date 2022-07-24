@@ -402,7 +402,7 @@ namespace {
 
         auto io_context = std::make_unique<boost::asio::io_context>();
 
-        {
+        try {
             Atlas::Objects::Factories atlasFactories;
 
             // Initialise the persistence subsystem.
@@ -666,6 +666,8 @@ namespace {
             //Run outstanding tasks from the shut down connections and listeners.
             io_context->run();
 
+        } catch (const std::exception& ex) {
+            std::cerr << "There was an error when running the server, will shut down: " << ex.what() << std::endl;
         }
         //Run any outstanding tasks before shutting down service.
         io_context->run();

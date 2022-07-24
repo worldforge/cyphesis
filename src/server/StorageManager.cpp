@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -201,7 +201,7 @@ void StorageManager::restorePropertiesRecursively(LocatedEntity& ent)
             prop = ent.setProperty(name, std::move(newProp));
         }
 
-        //If we get to here the property either doesn't exists, or have a different value than the default or existing property.
+        //If we get to here the property either doesn't exist, or have a different value than the default or existing property.
         prop->set(val);
         prop->addFlags(prop_flag_persistence_clean | prop_flag_persistence_seen);
         prop->apply(ent);
@@ -383,10 +383,10 @@ size_t StorageManager::restoreChildren(LocatedEntity& parent)
         Atlas::Objects::SmartPtr<Atlas::Objects::Entity::RootEntityData> attrs(nullptr);
         auto child = m_entityBuilder.newEntity(id, type, attrs);
         if (!child) {
-            log(ERROR, compose("Could not restore entity with id %1 of type %2"
-                               ", most likely caused by this type missing.",
-                               id.m_id, type));
-            continue;
+            throw std::runtime_error(
+                compose("Could not restore entity with id %1 of type '%2'"
+                        ", most likely caused by this type missing.",
+                        id.m_id, type));
         }
         childCount++;
 
