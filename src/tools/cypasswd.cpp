@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -97,19 +97,19 @@ static int get_password(const std::string & acname,
     // TODO Catch signals, and restore terminal
 #ifdef HAVE_TERMIOS_H
     termios termios_old, termios_new;
-    
+
     tcgetattr( STDIN_FILENO, &termios_old );
     termios_new = termios_old;
     termios_new.c_lflag &= ~(ICANON|ECHO);
     tcsetattr( STDIN_FILENO, TCSADRAIN, &termios_new );
 #endif
-    
+
     std::cout << "New " << acname << " password: " << std::flush;
     std::cin >> password;
     std::cout << std::endl << "Retype " << acname << " password: " << std::flush;
     std::cin >> password2;
     std::cout << std::endl << std::flush;
-    
+
 #ifdef HAVE_TERMIOS_H
     tcsetattr( STDIN_FILENO, TCSADRAIN, &termios_old );
 #endif
@@ -134,6 +134,11 @@ static int get_password(const std::string & acname,
 //    }
 //}
 
+STRING_OPTION(add, "", "", "add", "Add a new account")
+STRING_OPTION(del, "", "", "del", "Delete an account")
+STRING_OPTION(player, "", "", "player", "Make server account")
+STRING_OPTION(server, "", "", "server", "Make admin account")
+STRING_OPTION(admin, "", "", "admin", "Make player account (default)")
 
 int main(int argc, char ** argv)
 {
@@ -235,14 +240,14 @@ int main(int argc, char ** argv)
             MapType o;
             int res = db.getAccount(acname, o);
             if (res != 0) {
-                std::cout << "Account " << acname << " does not yet exist" << std::endl << std::flush;
+                std::cout << "Account '" << acname << "' does not yet exist" << std::endl << std::flush;
                 return 1;
             }
         }
         if (action == DEL) {
             int res = db.delAccount(acname);
             if (res == 0) {
-                std::cout << "Account " << acname << " removed." << std::endl << std::flush;
+                std::cout << "Account '" << acname << "' removed." << std::endl << std::flush;
             }
             return 0;
         }
@@ -256,7 +261,7 @@ int main(int argc, char ** argv)
                 account_type = "admin";
             }
             amap["type"] = account_type;
-            std::cout << "Changing " << acname << " to a " << account_type
+            std::cout << "Changing '" << acname << "' to a " << account_type
                       << " account" << std::endl << std::flush;
         } else {
             std::string password, password2;
