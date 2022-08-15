@@ -1,9 +1,6 @@
 <atlas>
     <map>
         <map name="attributes">
-            <map name="mass">
-                <float name="default">-1</float>
-            </map>
         </map>
         <string name="id">path</string>
         <string name="objtype">class</string>
