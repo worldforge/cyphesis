@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -187,6 +187,16 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
         } else if (K != worldDict.end()) {
             Anonymous info_arg;
             K->second->addToEntity(info_arg);
+
+            //The admin is allowed to see all children, independent of visibility checks.
+            if (K->second->m_contains) {
+                auto& contains = info_arg->modifyContains();
+                contains.reserve(K->second->m_contains->size());
+                for (auto& child : *K->second->m_contains) {
+                    contains.emplace_back(child->getId());
+                }
+            }
+
             info->setArgs1(info_arg);
         } else {
             clientError(op, compose("Unknown object id \"%1\" requested", id),
