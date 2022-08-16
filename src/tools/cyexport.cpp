@@ -30,14 +30,11 @@
 
 static void usage(char* prg)
 {
-    std::cerr << "usage: " << prg << " [options] filepath" << std::endl
-              << std::flush;
+    std::cerr << "usage: " << prg << " [options] filepath" << std::endl;
 }
 
-BOOL_OPTION(transients, false, "export", "transients",
-            "Flag to control if transients should also be exported");
-BOOL_OPTION(minds, true, "export", "minds",
-            "Flag to control if minds should also be exported");
+BOOL_OPTION(transients, false, "export", "transients", "Flag to control if transients should also be exported");
+BOOL_OPTION(minds, true, "export", "minds", "Flag to control if minds should also be exported");
 
 int main(int argc, char** argv)
 {
@@ -86,51 +83,46 @@ int main(int argc, char** argv)
 
     std::cout << "Attempting local connection" << std::endl;
     if (bridge.connectLocal(localSocket) == 0) {
-        if (bridge.create("sys", create_session_username(),
-                          String::compose("%1%2", ::rand(), ::rand())) != 0) {
-            std::cerr << "Could not create sys account." << std::endl
-                      << std::flush;
+        if (bridge.create("sys", create_session_username(), String::compose("%1%2", ::rand(), ::rand())) != 0) {
+            std::cerr << "Could not create sys account." << std::endl;
             return -1;
         }
-        std::cout << " done." << std::endl << std::flush;
+        std::cout << " done." << std::endl;
         auto loginInfo = bridge.getInfoReply();
         auto accountId = loginInfo->getId();
         auto accountName = loginInfo->getName();
 
-        std::cout << "Attempting creation of agent" << std::flush;
+        std::cout << "Attempting creation of agent" << std::endl;
         auto agentCreationTask = std::make_shared<AgentCreationTask>(accountId, accountName, "creator");
         bridge.runTask(agentCreationTask, "");
         if (bridge.pollUntilTaskComplete() != 0) {
-            std::cerr << "Could not create agent." << std::endl << std::flush;
+            std::cerr << "Could not create agent." << std::endl;
             return -1;
         }
         if (!agentCreationTask->m_agent_id || !agentCreationTask->m_mind_id) {
-            std::cerr << "Could not create agent; no id received." << std::endl
-                      << std::flush;
+            std::cerr << "Could not create agent; no id received." << std::endl;
             return -1;
         }
-        std::cout << "done." << std::endl << std::flush;
+        std::cout << "done." << std::endl;
 
         auto agent_id = *agentCreationTask->m_agent_id;
         auto mind_id = *agentCreationTask->m_mind_id;
-        std::cout << "done." << std::endl << std::flush;
+        std::cout << "done." << std::endl;
 
         std::cout << "Starting export" << std::endl;
 
-        //Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
+        // Ownership of this is transferred to the bridge when it's run, so we shouldn't delete it
         auto exporter = std::make_shared<EntityExporter>(accountId, mind_id);
         exporter->setExportTransient(transients);
 
         bridge.runTask(exporter, filename);
         if (bridge.pollUntilTaskComplete() != 0) {
-            std::cerr << "Could not export." << std::endl << std::flush;
+            std::cerr << "Could not export." << std::endl;
             return -1;
         }
-        std::cout << " done." << std::endl << std::flush;
+        std::cout << " done." << std::endl;
         return 0;
     }
 
     return 0;
-
 }
-
