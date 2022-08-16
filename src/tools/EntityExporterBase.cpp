@@ -6,12 +6,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -455,8 +455,18 @@ void EntityExporterBase::adjustReferencedEntities()
                 contains = newContains;
             }
         }
-        for (auto& I : entityMap) {
-            resolveEntityReferences(I.second);
+        for (auto I = entityMap.begin(); I != entityMap.end();) {
+            // If we started with a non-empty map or list, and after resolving references have an empty such
+            //  it means that we removed a transient entity ref. In that case we'll remove the whole entry.
+            auto& propertyElement = I->second;
+            bool hadElements = (propertyElement.isList() && !propertyElement.List().empty()) || (propertyElement.isMap() && !propertyElement.Map().empty());
+            resolveEntityReferences(propertyElement);
+            bool hasNoElementsAnymore = (propertyElement.isList() && propertyElement.List().empty()) || (propertyElement.isMap() && propertyElement.Map().empty());
+            if (hadElements && hasNoElementsAnymore) {
+                I = entityMap.erase(I);
+            } else {
+                I++;
+            }
         }
     }
 }
@@ -464,21 +474,55 @@ void EntityExporterBase::adjustReferencedEntities()
 void EntityExporterBase::resolveEntityReferences(Atlas::Message::Element& element)
 {
     if (element.isMap()) {
-        auto entityRefI = element.asMap().find("$eid");
-        if (entityRefI != element.asMap().end() && entityRefI->second.isString()) {
+        auto& elementMap = element.asMap();
+        auto entityRefI = elementMap.find("$eid");
+        if (entityRefI != elementMap.end() && entityRefI->second.isString()) {
             auto I = mIdMapping.find(entityRefI->second.asString());
             if (I != mIdMapping.end()) {
                 entityRefI->second = I->second;
+            } else {
+                //If the reference is to a transient entity, we shouldn't store it, and instead remove it completely.
+                elementMap.erase(entityRefI);
             }
         }
         //If it's a map we need to process all child elements too
-        for (auto& I : element.asMap()) {
-            resolveEntityReferences(I.second);
+        for (auto I = elementMap.begin(); I != elementMap.end();) {
+            auto& childElement = I->second;
+            bool hadElements = (childElement.isList() && !childElement.List().empty()) || (childElement.isMap() && !childElement.Map().empty());
+            resolveEntityReferences(childElement);
+            bool hasNoElementsAnymore = (childElement.isList() && childElement.List().empty()) || (childElement.isMap() && childElement.Map().empty());
+            if (hadElements && hasNoElementsAnymore) {
+                I = elementMap.erase(I);
+            } else {
+                I++;
+            }
         }
     } else if (element.isList()) {
-        //If it's a list we need to process all child elements too
-        for (auto& I : element.asList()) {
-            resolveEntityReferences(I);
+        //If it's a list we need to process all child elements too.
+        //If we started with a non-empty map or list, and after resolving references have an empty such
+        // it means that we removed a transient entity ref. In that case we'll remove the whole entry.
+        auto& elementList = element.asList();
+        for (auto I = elementList.begin(); I != elementList.end(); ) {
+            if (I->isList()) {
+                auto& childElementList = I->List();
+                if (!childElementList.empty()) {
+                    resolveEntityReferences(*I);
+                    if (childElementList.empty()) {
+                        I = elementList.erase(I);
+                        continue;
+                    }
+                }
+            } else if (I->isMap()) {
+                auto& childElementMap = I->Map();
+                if (!childElementMap.empty()) {
+                    resolveEntityReferences(*I);
+                    if (childElementMap.empty()) {
+                        I = elementList.erase(I);
+                        continue;
+                    }
+                }
+            }
+            ++I;
         }
     }
 }
