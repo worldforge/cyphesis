@@ -138,7 +138,7 @@ class SpawnerInstances(SpawnerBase):
         # Check if it's as a response to an entity we've created
         if op.refno in self.create_serials:
             self.create_serials.remove(op.refno)
-            return Operation("set", Entity({"__spawner_instances!append": [op[0].id]}), to=self.id)
+            return Operation("set", Entity({"__spawner_instances!append": [{"$eid": op[0].id}]}), to=self.id)
 
     def check_spawning(self, res):
 
@@ -147,13 +147,14 @@ class SpawnerInstances(SpawnerBase):
             missing_amount = self.get_prop_int("__spawner_amount", 0)
             if missing_amount > 0:
                 instances_list = self.get_prop_list("__spawner_instances", [])
-                for entity_id in instances_list:
+                for entity_id_entry in instances_list:
+                    entity_id = entity_id_entry["$eid"]
                     entity = server.world.get_entity(entity_id)
                     if entity is not None:
                         missing_amount = missing_amount - 1
                     else:
                         # Entity doesn't exist anymore; remove it from our list of entities.
-                        res.append(Operation("set", Entity({"__spawner_instances!subtract": [entity_id]}), to=self.id))
+                        res.append(Operation("set", Entity({"__spawner_instances!subtract": [entity_id_entry]}), to=self.id))
                     if missing_amount == 0:
                         break
 
