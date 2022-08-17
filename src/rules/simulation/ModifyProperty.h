@@ -46,7 +46,7 @@ struct ModifyEntry
      */
     std::set<std::string> observedProperties;
 
-    static ModifyEntry parseEntry(const Atlas::Message::MapType& entryMap);
+    static ModifyEntry parseEntry(const Atlas::Message::MapType& observedPropertiesEntry);
 
 };
 
@@ -92,7 +92,7 @@ class ModifyProperty : public PropertyBase
          */
         struct State
         {
-            sigc::connection updatedConnection;
+            sigc::connection containeredConnection;
             sigc::connection parentEntityPropertyUpdateConnection;
             LocatedEntity* parentEntity; //Need to keep track of latest parent as there's no specific signal for when location changes.
         };

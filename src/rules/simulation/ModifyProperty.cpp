@@ -29,11 +29,11 @@ PropertyInstanceState<ModifyProperty::State> ModifyProperty::sInstanceState;
 ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap)
 {
     ModifyEntry modifyEntry;
-    AtlasQuery::find<std::string>(entryMap, "constraint", [&](const std::string& constraint) {
-        modifyEntry.constraint = std::make_unique<EntityFilter::Filter>(constraint, EntityFilter::ProviderFactory());
+    AtlasQuery::find<std::string>(entryMap, "constraint", [&](const std::string& constraintEntry) {
+        modifyEntry.constraint = std::make_unique<EntityFilter::Filter>(constraintEntry, EntityFilter::ProviderFactory());
     });
-    AtlasQuery::find<Atlas::Message::ListType>(entryMap, "observed_properties", [&](const Atlas::Message::ListType& observedProperties) {
-        for (auto& propertyEntry: observedProperties) {
+    AtlasQuery::find<Atlas::Message::ListType>(entryMap, "observed_properties", [&](const Atlas::Message::ListType& observedPropertiesEntry) {
+        for (auto& propertyEntry: observedPropertiesEntry) {
             if (propertyEntry.isString()) {
                 modifyEntry.observedProperties.emplace(propertyEntry.String());
             }
@@ -82,7 +82,7 @@ ModifyProperty::ModifyProperty(const ModifyProperty& rhs)
 void ModifyProperty::apply(LocatedEntity& entity)
 {
     auto* state = sInstanceState.getState(entity);
-    //Whenever a the value is changed and the property is applied we need to clear out all applied modifiers.
+    //Whenever the value is changed and the property is applied we need to clear out all applied modifiers.
     if (state->parentEntity) {
         auto& activeModifiers = state->parentEntity->getActiveModifiers();
         auto I = activeModifiers.find(&entity);
@@ -142,7 +142,7 @@ void ModifyProperty::remove(LocatedEntity& owner, const std::string& name)
     auto* state = sInstanceState.getState(owner);
     if (state) {
         newLocation(*state, owner, nullptr);
-        state->updatedConnection.disconnect();
+        state->containeredConnection.disconnect();
     }
     sInstanceState.removeState(owner);
 }
@@ -151,9 +151,9 @@ void ModifyProperty::install(LocatedEntity& owner, const std::string& name)
 {
     auto state = new ModifyProperty::State();
     state->parentEntity = owner.m_parent;
-    state->updatedConnection.disconnect();
-    state->updatedConnection = owner.updated.connect([this, state, &owner]() {
-        if (state->parentEntity == owner.m_parent) {
+    state->containeredConnection.disconnect();
+    state->containeredConnection = owner.containered.connect([this, state, &owner](const Ref<LocatedEntity>& oldLocation) {
+        if (state->parentEntity != owner.m_parent) {
             newLocation(*state, owner, owner.m_parent);
             checkIfActive(*state, owner);
         }
@@ -206,7 +206,16 @@ void ModifyProperty::checkIfActive(State& state, LocatedEntity& entity)
                 apply = true;
             } else {
                 EntityFilter::QueryContext queryContext{entity, state.parentEntity};
-                queryContext.entity_lookup_fn = [](const std::string& id) { return BaseWorld::instance().getEntity(id); };
+                queryContext.entity_lookup_fn = [&entity, &state](const std::string& id) {
+                    // This might be applied before the entity or its parent has been added to the world.
+                    if (id == entity.getId()) {
+                        return Ref<LocatedEntity>(&entity);
+                    } else if (id == state.parentEntity->getId()) {
+                        return Ref<LocatedEntity>(state.parentEntity);
+                    } else {
+                        return BaseWorld::instance().getEntity(id);
+                    }
+                };
                 queryContext.type_lookup_fn = [](const std::string& id) { return Inheritance::instance().getType(id); };
                 apply = modifyEntry.constraint->match(queryContext);
             }

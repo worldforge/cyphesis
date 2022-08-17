@@ -38,6 +38,7 @@ struct Modifier
     explicit Modifier(Atlas::Message::Element value) : mValue(std::move(value))
     {}
 
+    virtual ~Modifier() = default;
     /**
      * Modifies the submitted value in place.
      * @param element The value to be changed.
