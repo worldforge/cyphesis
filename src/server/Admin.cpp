@@ -26,6 +26,7 @@
 
 
 #include "rules/LocatedEntity.h"
+#include "common/TypeNode.h"
 
 #include "rules/simulation/BaseWorld.h"
 #include "common/id.h"
@@ -68,32 +69,6 @@ Admin::~Admin()
 const char * Admin::getType() const
 {
     return "admin";
-}
-
-static void addTypeToList(const Root & type, ListType & typeList)
-{
-    typeList.push_back(type->getId());
-    Element children;
-    if (type->copyAttr("children", children) != 0) {
-        return;
-    }
-    if (!children.isList()) {
-        log(ERROR, compose("Type %1 children attribute has type %2 instead of "
-                           "string.", type->getId(),
-                           Element::typeName(children.getType())));
-        return;
-    }
-    auto I = children.List().begin();
-    auto Iend = children.List().end();
-    for (; I != Iend; ++I) {
-        Root child = Inheritance::instance().getClass(I->asString(), Visibility::PRIVATE);
-        if (!child.isValid()) {
-            log(ERROR, compose("Unable to find %1 in inheritance table",
-                               I->asString()));
-            continue;
-        }
-        addTypeToList(child, typeList);
-    }
 }
 
 std::unique_ptr<ExternalMind> Admin::createMind(const Ref<LocatedEntity>& entity) const {
@@ -186,15 +161,32 @@ void Admin::GetOperation(const Operation & op, OpVector & res)
             info->setArgs1(info_arg);
         } else if (K != worldDict.end()) {
             Anonymous info_arg;
-            K->second->addToEntity(info_arg);
-
-            //The admin is allowed to see all children, independent of visibility checks.
-            if (K->second->m_contains) {
-                auto& contains = info_arg->modifyContains();
-                contains.reserve(K->second->m_contains->size());
-                for (auto& child : *K->second->m_contains) {
-                    contains.emplace_back(child->getId());
+            auto& entity = K->second;
+            //If the "archive" flag is set the clients wants a format where it can later restore the entity.
+            //In that case we need to take any modifiers into account.
+            if (arg->hasAttr("archive")) {
+                for (auto& entry : entity->getProperties()) {
+                    //Don't send any property that's ephemeral, except for "id" and "contains" which are marked such.
+                    //TODO: remove this flag from those properties and have the StorageManager look specifically for them instead. They are not ephemeral, they are just stored differently by the StorageManager.
+                    if (!entry.second.property->hasFlags(prop_flag_persistence_ephem) || entry.first == "id" || entry.first == "contains") {
+                        if (!entry.second.modifiers.empty()) {
+                            //If the base value is none, only include it if there's a default value
+                            if (!entry.second.baseValue.isNone() || (!entity->getType() || entity->getType()->defaults().find(entry.first) != entity->getType()->defaults().end())) {
+                                info_arg->setAttr(entry.first, entry.second.baseValue);
+                            }
+                        } else {
+                            entry.second.property->add(entry.first, info_arg);
+                        }
+                    }
                 }
+
+                info_arg->setStamp(entity->getSeq());
+                if (entity->getType()) {
+                    info_arg->setParent(entity->getType()->name());
+                }
+                info_arg->setObjtype("obj");
+            } else {
+                entity->addToEntity(info_arg);
             }
 
             info->setArgs1(info_arg);

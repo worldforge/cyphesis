@@ -266,6 +266,7 @@ void EntityExporterBase::pollQueue()
         Anonymous get_arg;
         get_arg->setObjtype("obj");
         get_arg->setId(mEntityQueue.front());
+        get_arg->setAttr("archive", 1);
 
         get->setArgs1(get_arg);
         get->setFrom(mAccountId);
@@ -627,6 +628,7 @@ void EntityExporterBase::startRequestingEntities()
     Anonymous get_arg;
     get_arg->setObjtype("obj");
     get_arg->setId(mRootEntityId);
+    get_arg->setAttr("archive", 1);
     get->setArgs1(get_arg);
 
     get->setFrom(mAccountId);
