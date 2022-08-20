@@ -16,6 +16,14 @@
   }
 #endif //STUB_BaseWorld_BaseWorld
 
+#ifndef STUB_BaseWorld_BaseWorld_DTOR
+//#define STUB_BaseWorld_BaseWorld_DTOR
+   BaseWorld::~BaseWorld()
+  {
+    
+  }
+#endif //STUB_BaseWorld_BaseWorld_DTOR
+
 #ifndef STUB_BaseWorld_shutdown
 //#define STUB_BaseWorld_shutdown
   void BaseWorld::shutdown()

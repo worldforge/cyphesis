@@ -9,7 +9,7 @@
 
 #ifndef STUB_ModifyEntry_parseEntry
 //#define STUB_ModifyEntry_parseEntry
-   ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& entryMap)
+   ModifyEntry ModifyEntry::parseEntry(const Atlas::Message::MapType& observedPropertiesEntry)
   {
     return *static_cast< ModifyEntry*>(nullptr);
   }
