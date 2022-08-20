@@ -466,8 +466,6 @@ namespace {
             Ruleset ruleset(entityBuilder, *io_context, propertyManager);
             ruleset.loadRules(ruleset_name);
 
-            Ref<LocatedEntity> baseEntity = new World();
-            baseEntity->setType(inheritance.getType("world"));
 
             std::chrono::steady_clock::duration time{};
             auto timeProviderFn = [&]() -> std::chrono::steady_clock::duration { return time; };
@@ -476,7 +474,10 @@ namespace {
 
             ExternalMindsManager externalMindsManager(possessionAuthenticator);
 
+            Ref<LocatedEntity> baseEntity = new World();
+            baseEntity->setType(inheritance.getType("world"));
             WorldRouter world(baseEntity, entityBuilder, timeProviderFn);
+            baseEntity.reset();
 
             std::map<int, int> operationsMap;
             monitors.watch("operations_processed", std::make_unique<Variable<int>>(world.m_operationsCount));
@@ -526,11 +527,11 @@ namespace {
 
             log(INFO, "Restoring world from database...");
 
-            store.restoreWorld(baseEntity);
+            store.restoreWorld(world.getBaseEntity());
             // Read the world entity if any from the database, or set it up.
             // If it was there, make sure it did not get any of the wrong
             // position or orientation data.
-            store.initWorld(baseEntity);
+            store.initWorld(world.getBaseEntity());
 
             log(INFO, "Restored world.");
 
@@ -558,8 +559,8 @@ namespace {
                     file.close();
                     //We should only try to import if the world isn't populated.
                     bool isPopulated = false;
-                    if (baseEntity->m_contains) {
-                        for (const auto& entity : *baseEntity->m_contains) {
+                    if (world.getBaseEntity()->m_contains) {
+                        for (const auto& entity : *world.getBaseEntity()->m_contains) {
                             //if there's any entity that's not transient we consider it populated
                             if (!entity->hasAttr("transient")) {
                                 isPopulated = true;
@@ -613,7 +614,7 @@ namespace {
             };
 
 
-            //Initially there are a couple of pent up operations we need to run to get up to speed. 10 seconds is a suitable large number.
+            //Initially there are a couple of pent-up operations we need to run to get up to speed. 10 seconds is a suitable large number.
             world.getOperationsHandler().processUntil(time, std::chrono::seconds(10));
             //Report to the log when time diff between when an operation should have been handled and when it actually was
             world.getOperationsHandler().m_time_diff_report = std::chrono::milliseconds(200);
@@ -642,7 +643,7 @@ namespace {
 
             //Actually, there's no way for the world to know that it's shutting down,
             //as the shutdown signal most probably comes from a sighandler. We need to
-            //tell it it's shutting down so it can do some housekeeping.
+            //tell it it is shutting down so that it can do some housekeeping.
             try {
                 exit_flag = false;
                 if (store.shutdown(exit_flag, world.getEntities()) != 0) {
@@ -660,7 +661,6 @@ namespace {
             serverRouting.disconnectAllConnections();
 
             //Clear out reference
-            baseEntity.reset();
             world.shutdown();
 
             //Run outstanding tasks from the shut down connections and listeners.

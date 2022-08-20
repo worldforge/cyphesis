@@ -81,9 +81,7 @@ class BaseWorld : public Singleton<BaseWorld>
 
     public:
 
-
-
-        ~BaseWorld() override = default;
+        ~BaseWorld() override;
 
         /**
          * Shuts down the simulation and frees up all entities.

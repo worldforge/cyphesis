@@ -83,6 +83,10 @@ class WorldRouter : public BaseWorld
 
         void shutdown() override;
 
+        Ref<LocatedEntity> getBaseEntity() const {
+            return m_baseEntity;
+        }
+
         void addEntity(const Ref<LocatedEntity>& obj, const Ref<LocatedEntity>& parent) override;
 
         Ref<LocatedEntity> addNewEntity(const std::string& type,
