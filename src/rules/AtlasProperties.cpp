@@ -141,7 +141,7 @@ void ContainsProperty::set(const Element& e)
 
 void ContainsProperty::add(const std::string& s, const RootEntity& ent) const
 {
-    if (m_data.empty()) {
+    if (!m_data.empty()) {
         auto& contains = ent->modifyContains();
         contains.clear();
         for (auto& entry : m_data) {

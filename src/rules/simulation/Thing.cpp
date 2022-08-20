@@ -437,15 +437,43 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 
     Anonymous sarg;
 
+    //If there's a domain we should let it decide "contains, and in that case other code shouldn't send the property itself.
+    bool filterOutContainsProp = true;
+    if (m_contains != nullptr) {
+
+        //If the observed entity has a domain, let it decide child visibility.
+        //Otherwise, show all children.
+        const Domain* observedEntityDomain = getDomain();
+        if (observedEntityDomain) {
+            auto& contlist = sarg->modifyContains();
+            contlist.clear();
+            std::list<LocatedEntity*> entityList;
+            observedEntityDomain->getVisibleEntitiesFor(observingEntity, entityList);
+            for (auto& entity : entityList) {
+                if (entity->m_parent == this) {
+                    contlist.push_back(entity->getId());
+                }
+            }
+        } else {
+            filterOutContainsProp = false;
+        }
+    }
+
     //Admin entities can see all properties
     if (observingEntity.hasFlags(entity_admin)) {
         for (auto& entry : m_properties) {
+            if (filterOutContainsProp && entry.first == "contains") {
+                continue;
+            }
             entry.second.property->add(entry.first, sarg);
         }
     } else if (observingEntity.getIntId() == getIntId()) {
         //Our own entity can see both public and protected, but not private properties.
         for (auto& entry : m_properties) {
             if (!entry.second.property->hasFlags(prop_flag_visibility_private)) {
+                if (filterOutContainsProp && entry.first == "contains") {
+                    continue;
+                }
                 entry.second.property->add(entry.first, sarg);
             }
         }
@@ -453,6 +481,9 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
         //Other entities can only see public properties.
         for (auto& entry : m_properties) {
             if (!entry.second.property->hasFlags(prop_flag_visibility_non_public)) {
+                if (filterOutContainsProp && entry.first == "contains") {
+                    continue;
+                }
                 entry.second.property->add(entry.first, sarg);
             }
         }
@@ -467,26 +498,7 @@ void Thing::generateSightOp(const LocatedEntity& observingEntity, const Operatio
 
     s->setArgs1(sarg);
 
-    if (m_contains != nullptr) {
 
-        //If the observed entity has a domain, let it decide child visibility.
-        //Otherwise show all children.
-        const Domain* observedEntityDomain = getDomain();
-        auto& contlist = sarg->modifyContains();
-        if (observedEntityDomain) {
-            contlist.clear();
-            std::list<LocatedEntity*> entityList;
-            observedEntityDomain->getVisibleEntitiesFor(observingEntity, entityList);
-            for (auto& entity : entityList) {
-                if (entity->m_parent == this) {
-                    contlist.push_back(entity->getId());
-                }
-            }
-        }
-//            if (contlist.empty()) {
-//                sarg->removeAttr("contains");
-//            }
-    }
 
 
     if (m_parent) {
