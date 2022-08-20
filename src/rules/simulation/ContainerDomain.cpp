@@ -112,7 +112,7 @@ bool ContainerDomain::isEntityVisibleFor(const LocatedEntity& observingEntity, c
 
 void ContainerDomain::getVisibleEntitiesFor(const LocatedEntity& observingEntity, std::list<LocatedEntity*>& entityList) const
 {
-    if (observingEntity.canReach(EntityLocation{&m_entity, PositionProperty::extractPosition(m_entity)})) {
+    if (observingEntity.canReach(EntityLocation{&m_entity})) {
         if (m_entity.m_contains) {
             for (auto& entity : *m_entity.m_contains) {
                 if (isEntityVisibleFor(observingEntity, *entity)) {
