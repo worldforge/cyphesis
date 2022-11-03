@@ -66,16 +66,11 @@ World::~World() = default;
 
 void World::LookOperation(const Operation& op, OpVector& res)
 {
-    // We must be the top level entity
-    assert(m_parent == nullptr);
-    // We must contains something, or where the hell did the look come from?
-    assert(m_contains != nullptr);
-
     //The top level entity is a little special, since its properties can be inspected by all entities, although it's children can not.
     //First check if there's a movement domain. If so we'll handle Look ops just like usually. However, if not we'll send the properties sans the "contains" property.
     auto from = BaseWorld::instance().getEntity(op->getFrom());
     if (!from) {
-        log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
+        //The entity which sent the look can have disappeared; that's completely normal.
         return;
     }
 
@@ -149,7 +144,7 @@ void World::clearWorld(OpVector& res)
             auto& entity = *m_contains->begin();
 
             if (entity->isPerceptive()) {
-                //Send a sight of a delete op to the entity so that it knows it has been deleted.
+                //Send a sight of a "delete" op to the entity so that it knows it has been deleted.
                 Delete delOp;
                 delOp->setTo(entity->getId());
 

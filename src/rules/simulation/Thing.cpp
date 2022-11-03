@@ -519,7 +519,7 @@ void Thing::LookOperation(const Operation& op, OpVector& res)
 {
     auto from = BaseWorld::instance().getEntity(op->getFrom());
     if (!from) {
-        log(ERROR, String::compose("Look op has invalid from %1. %2", op->getFrom(), describeEntity()));
+        //The entity which sent the look can have disappeared; that's completely normal.
         return;
     }
 
