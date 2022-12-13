@@ -65,6 +65,7 @@ WorldRouter::WorldRouter(Ref<LocatedEntity> baseEntity,
 /// the server, clears the operation queue
 WorldRouter::~WorldRouter()
 {
+    shutdown();
     m_operationsDispatcher.clearQueues();
     m_suspendedQueue = std::queue<OpQueEntry<LocatedEntity>>();
 }
