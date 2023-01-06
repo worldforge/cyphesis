@@ -16,8 +16,8 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef TEST_BASE_WITH_CONTEXT_H
-#define TEST_BASE_WITH_CONTEXT_H
+#ifndef TESTS_TEST_BASE_WITH_CONTEXT_H
+#define TESTS_TEST_BASE_WITH_CONTEXT_H
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -122,4 +122,4 @@ namespace Cyphesis {
     this->addTest(#_function, [&](auto& context){this->_function(context);});\
 }
 
-#endif // TEST_BASE_WITH_CONTEXT_H
+#endif // TESTS_TEST_BASE_WITH_CONTEXT_H

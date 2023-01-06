@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_NULLENTITYCREATOR_H
-#define CYPHESIS_NULLENTITYCREATOR_H
+#ifndef TESTS_NULL_ENTITY_CREATOR_H
+#define TESTS_NULL_ENTITY_CREATOR_H
 
 #include <rules/simulation/EntityCreator.h>
 #include <rules/LocatedEntity.h>
@@ -30,4 +30,4 @@ struct NullEntityCreator : public EntityCreator
         return {};
     }
 };
-#endif //CYPHESIS_NULLENTITYCREATOR_H
+#endif //TESTS_NULL_ENTITY_CREATOR_H

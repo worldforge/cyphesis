@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_ASSERTBASE_H
-#define CYPHESIS_ASSERTBASE_H
+#ifndef TESTS_ASSERT_BASE_H
+#define TESTS_ASSERT_BASE_H
 
 #include <cmath>
 
@@ -266,4 +266,4 @@ namespace Cyphesis {
                             __FILE__, __LINE__) != 0) return;\
 }
 
-#endif //CYPHESIS_ASSERTBASE_H
+#endif //TESTS_ASSERT_BASE_H

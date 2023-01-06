@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_DATABASENULL_H
-#define CYPHESIS_DATABASENULL_H
+#ifndef TESTS_DATABASE_NULL_H
+#define TESTS_DATABASE_NULL_H
 
 #include "common/Database.h"
 #include <functional>
@@ -197,4 +197,4 @@ class DatabaseNull : public Database
 
 };
 
-#endif //CYPHESIS_DATABASENULL_H
+#endif //TESTS_DATABASE_NULL_H

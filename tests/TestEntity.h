@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_TESTENTITY_H
-#define CYPHESIS_TESTENTITY_H
+#ifndef TESTS_TEST_ENTITY_H
+#define TESTS_TEST_ENTITY_H
 
 #include "rules/LocatedEntity.h"
 
@@ -70,5 +70,5 @@ std::function<void(TestEntity&, const Operation&, Link&)> TestEntity::externalOp
 std::function<void(TestEntity&, const Operation&, OpVector&)> TestEntity::operationFn;
 std::function<void(TestEntity&)> TestEntity::destroyFn;
 
-#endif //CYPHESIS_TESTENTITY_H
+#endif //TESTS_TEST_ENTITY_H
 

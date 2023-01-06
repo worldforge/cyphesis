@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_NULLPROPERTYMANAGER_H
-#define CYPHESIS_NULLPROPERTYMANAGER_H
+#ifndef TESTS_NULL_PROPERTY_MANAGER_H
+#define TESTS_NULL_PROPERTY_MANAGER_H
 
 #include "common/PropertyManager.h"
 
@@ -29,4 +29,4 @@ struct NullPropertyManager : PropertyManager {
 };
 
 
-#endif //CYPHESIS_NULLPROPERTYMANAGER_H
+#endif //TESTS_NULL_PROPERTY_MANAGER_H

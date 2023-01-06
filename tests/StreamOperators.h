@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_STREAMOPERATORS_H
-#define CYPHESIS_STREAMOPERATORS_H
+#ifndef TESTS_STREAM_OPERATORS_H
+#define TESTS_STREAM_OPERATORS_H
 
 #include <Atlas/Message/Element.h>
 
@@ -45,4 +45,4 @@ std::ostream& operator<<(std::ostream& os, const Atlas::Message::Element& e)
 }
 }
 
-#endif  // CYPHESIS_STREAMOPERATORS_H
+#endif  // TESTS_STREAM_OPERATORS_H

@@ -16,8 +16,8 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_TESTWORLDROUTER_H
-#define CYPHESIS_TESTWORLDROUTER_H
+#ifndef TESTS_TEST_WORLD_ROUTER_H
+#define TESTS_TEST_WORLD_ROUTER_H
 
 #include <rules/simulation/WorldRouter.h>
 
@@ -57,4 +57,4 @@ struct TestWorldRouter : public WorldRouter
     }
 };
 
-#endif //CYPHESIS_TESTWORLDROUTER_H
+#endif //TESTS_TEST_WORLD_ROUTER_H
