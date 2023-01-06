@@ -1,7 +1,8 @@
 # Stackable entities
 
-Stacking handled by a specific Stackable domain.
+__Status__: implemented
 
+Stacking handled by a specific Stackable domain.
 
 ## Use cases
 
@@ -13,6 +14,6 @@ Moving stack: Standard Move op.
 
 When stack receives Delete op it should decrease stack size if possible.
 
-Stackables should not have status properties. 
+Stackables should not have status properties.
 
 Stack handling is handled by client code. Inventory items should be placed in stacks where possible.

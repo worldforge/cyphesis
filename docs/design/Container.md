@@ -1,5 +1,7 @@
 # Container
 
+__Status__: implemented
+
 A container domain has the effect of only allowing inspection of it's contents if the inspector is close enough to reach it.
 
 A client needs to know that it's close enough.
