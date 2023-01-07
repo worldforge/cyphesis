@@ -5,7 +5,7 @@ import server
 from atlas import Operation, Entity, Oplist
 from physics import Vector3D
 from rules import extract_location
-
+from random import uniform
 
 class Skeleton(server.Thing):
     def touch_operation(self, op):
