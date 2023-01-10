@@ -44,11 +44,18 @@ CyPy_Server::CyPy_Server() : ExtensionModule("server")
     CyPy_UsageInstance::init_type();
     CyPy_Domain::init_type();
 
-    initialize("server");
+    initialize("Python bindings for code related to the simulation of the world.");
 
     Py::Dict d(moduleDictionary());
     d["Thing"] = CyPy_Entity::type();
     d["Task"] = CyPy_Task::type();
+
+    d["EntityProps"] = CyPy_EntityProps::type();
+    d["World"] = CyPy_World::type();
+    d["TerrainProperty"] = CyPy_TerrainProperty::type();
+    d["Usage"] = CyPy_Usage::type();
+    d["UsageInstance"] = CyPy_UsageInstance::type();
+    d["Domain"] = CyPy_Domain::type();
 
     d["OPERATION_IGNORED"] = Py::Long(OPERATION_IGNORED);
     d["OPERATION_HANDLED"] = Py::Long(OPERATION_HANDLED);

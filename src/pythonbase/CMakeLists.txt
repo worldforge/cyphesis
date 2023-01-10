@@ -6,7 +6,7 @@ add_library(pythonbase
         PythonMalloc.cpp
         PythonDebug.cpp)
 
-target_link_libraries(pythonbase common ${PYTHON_LIBRARIES})
+target_link_libraries(pythonbase PUBLIC common pycxx)
 
 
 

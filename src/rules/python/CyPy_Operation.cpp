@@ -89,7 +89,7 @@ void CyPy_Operation::addToArgs(std::vector<Root>& args, const Py::Object& arg)
 void CyPy_Operation::init_type()
 {
     behaviors().name("Operation");
-    behaviors().doc("");
+    behaviors().doc("An Atlas Operation.");
 
     behaviors().supportNumberType(Py::PythonType::support_number_add);
     behaviors().supportSequenceType(Py::PythonType::support_sequence_length
@@ -101,14 +101,14 @@ void CyPy_Operation::init_type()
 
 
 
-    PYCXX_ADD_VARARGS_METHOD(set_serialno, setSerialno, "");
-    PYCXX_ADD_VARARGS_METHOD(set_refno, setRefno, "");
-    PYCXX_ADD_VARARGS_METHOD(set_from, setFrom, "");
-    PYCXX_ADD_VARARGS_METHOD(set_to, setTo, "");
+    PYCXX_ADD_VARARGS_METHOD(set_serialno, setSerialno, PYCXX_SIG_DOC("set_serialno(long)", "Sets the serial number."));
+    PYCXX_ADD_VARARGS_METHOD(set_refno, setRefno, PYCXX_SIG_DOC("set_refno(long)", "Sets the reference number."));
+    PYCXX_ADD_VARARGS_METHOD(set_from, setFrom, PYCXX_SIG_DOC("set_from(string)", "Sets from which entity the operation is from."));
+    PYCXX_ADD_VARARGS_METHOD(set_to, setTo, PYCXX_SIG_DOC("set_to(string)", "Sets to which entity the operation is directed."));
     PYCXX_ADD_VARARGS_METHOD(set_seconds, setSeconds, "");
     PYCXX_ADD_VARARGS_METHOD(set_future_seconds, setFutureSeconds, "");
     PYCXX_ADD_VARARGS_METHOD(set_name, setName, "");
-    PYCXX_ADD_VARARGS_METHOD(set_args, setArgs, "");
+    PYCXX_ADD_VARARGS_METHOD(set_args, setArgs, PYCXX_SIG_DOC("set_args(sequence)", "Sets the argument list. The supplied sequence could be any of Operation|ElementMap|RootEntity|Python Dict."));
     PYCXX_ADD_NOARGS_METHOD(get_serialno, getSerialno, "");
     PYCXX_ADD_NOARGS_METHOD(is_default_serialno, isDefaultSerialno, "");
     PYCXX_ADD_NOARGS_METHOD(get_refno, getRefno, "");

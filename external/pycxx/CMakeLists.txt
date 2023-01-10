@@ -22,5 +22,6 @@ add_library(pycxx
 )
 
 target_include_directories(pycxx PRIVATE .)
+target_link_libraries(pycxx PUBLIC ${PYTHON_LIBRARIES})
 
 

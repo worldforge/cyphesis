@@ -68,6 +68,8 @@ CyPy_BaseMind::CyPy_BaseMind(Py::PythonClassInstance* self, Py::Tuple& args, Py:
     }
 }
 
+
+
 CyPy_BaseMind::~CyPy_BaseMind() = default;
 
 void CyPy_BaseMind::init_type()
@@ -86,15 +88,15 @@ void CyPy_BaseMind::init_type()
 
 
 
-    PYCXX_ADD_VARARGS_METHOD(add_hook_set, add_hook_set, "");
-    PYCXX_ADD_VARARGS_METHOD(update_hook_set, update_hook_set, "");
-    PYCXX_ADD_VARARGS_METHOD(delete_hook_set, delete_hook_set, "");
+    PYCXX_ADD_VARARGS_METHOD(add_hook_set, add_hook_set, PYCXX_SIG_DOC("add_hook_set(method_name)", "Adds a hook that will be called whenever an entity is added."));
+    PYCXX_ADD_VARARGS_METHOD(update_hook_set, update_hook_set, PYCXX_SIG_DOC("update_hook_set(method_name)", "Adds a hook that will be called whenever an entity is updated."));
+    PYCXX_ADD_VARARGS_METHOD(delete_hook_set, delete_hook_set, PYCXX_SIG_DOC("delete_hook_set(method_name)", "Adds a hook that will be called whenever an entity is deleted."));
 
-    PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, "");
+    PYCXX_ADD_VARARGS_METHOD(add_property_callback, addPropertyCallback, PYCXX_SIG_DOC("add_property_callback(property, method_name)", "Adds a callback that will be called whenever the specified property changes."));
 
 
-    PYCXX_ADD_VARARGS_METHOD(match_entity, matchEntity, "");
-    PYCXX_ADD_VARARGS_METHOD(match_entities, matchEntities, "");
+    PYCXX_ADD_VARARGS_METHOD(match_entity, matchEntity, PYCXX_SIG_DOC("match_entity(filter, entity)", "Returns true if the filter applies to the entity."));
+    PYCXX_ADD_VARARGS_METHOD(match_entities, matchEntities, PYCXX_SIG_DOC("match_entities(filter, entities)", "Processes the supplied entities and returns a list containing only those that matched the filter."));
 
     //behaviors().type_object()->tp_base = base;
 

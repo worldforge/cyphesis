@@ -9,7 +9,7 @@ add_library(rulessimulation_python
     CyPy_Domain.cpp
     )
 
-target_link_libraries(rulessimulation_python ${PYTHON_LIBRARIES} pycxx)
+target_link_libraries(rulessimulation_python PUBLIC rulessimulation pycxx)
 
 
 

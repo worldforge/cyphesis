@@ -23,7 +23,7 @@ add_library(rulesbase_python
         CyPy_Root.cpp
         CyPy_Ball.cpp)
 
-target_link_libraries(rulesbase_python pythonbase pycxx ${PYTHON_LIBRARIES})
+target_link_libraries(rulesbase_python PUBLIC pythonbase)
 
 
 

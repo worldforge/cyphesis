@@ -97,6 +97,24 @@
 
 // need to support METH_STATIC and METH_CLASS
 
+/**
+ * Python doesn't really support providing signatures in the meta data for built-in functions (i.e. any C/C++ extensions).
+ * There's however a slightly undocumented feature that if a docstring is provided in a certain format, the first part will be used as the signature.
+ * The docstring must contain on its first line a signature, without any annotations (which is a real shame), followed by "\n--\n\n" and then the docstring.
+ * Consider a method "foo(self, aNumber)".
+ * If the docstring looks like this it will work:
+ * """
+ * foo(self, aNumber)
+ * --
+ *
+ * A description of what foo does.
+ * """
+ *
+ * Note the lack of support for annotations. This would otherwise have allowed us to specify the expected types, as well as any return types. Perhaps in a future Python version...
+ */
+#define PYCXX_SIG_DOC( signature, doc ) signature "\n--\n\n" doc
+
+
 #define PYCXX_ADD_NOARGS_METHOD( PYNAME, NAME, docs ) \
     add_method( #PYNAME, (PyCFunction)PYCXX_NOARGS_METHOD_NAME( NAME ), METH_NOARGS, docs )
 #define PYCXX_ADD_VARARGS_METHOD( PYNAME, NAME, docs ) \

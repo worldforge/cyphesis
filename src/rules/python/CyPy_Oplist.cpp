@@ -35,14 +35,14 @@ CyPy_Oplist::CyPy_Oplist(Py::PythonClassInstance* self, std::vector<Atlas::Objec
 void CyPy_Oplist::init_type()
 {
     behaviors().name("Oplist");
-    behaviors().doc("");
+    behaviors().doc("A list of Atlas Operation.");
 
     behaviors().supportNumberType(Py::PythonType::support_number_add);
 
     behaviors().supportSequenceType(Py::PythonType::support_sequence_length
                                     | Py::PythonType::support_sequence_inplace_concat);
 
-    PYCXX_ADD_VARARGS_METHOD(append, append, "");
+    PYCXX_ADD_VARARGS_METHOD(append, append, PYCXX_SIG_DOC("append(object)", "Appends new operations. The supplied object can be a single Operation, or another Oplist, or a sequence of the aforementioned two."));
 
     behaviors().readyType();
 }

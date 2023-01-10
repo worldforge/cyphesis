@@ -17,7 +17,7 @@ It provides a complete solution for running an MMORPG server. Amongst its featur
 * Persistence through either SQLite or PostgreSQL
 * Powerful built in rules for visibility and containment of entities
 * Emergent gameplay through multiple simple systems interacting
-* Quick and powerful procedural terrain generation  
+* Quick and powerful procedural terrain generation
 
 ## Installation
 
@@ -36,6 +36,7 @@ This is script provided by the Worldforge project which will download and instal
 components used by Worldforge.
 
 Otherwise the server can most easily be built through the following commands.
+
 ```
 mkdir build_`arch` && cd build_`arch`
 cmake ..
@@ -44,7 +45,7 @@ make assets-download
 make install
 ```
 
-Note that you also probably want to install the defaults worlds from 
+Note that you also probably want to install the defaults worlds from
 [Worldforge Worlds](https://github.com/worldforge/worlds) (this is done automatically by the
 Hammer build tool).
 
@@ -70,11 +71,19 @@ If Doxygen is available API documentation can be generated using the ```dox``` t
 make dox
 ```
 
+### Python stubs
+
+When editing the Python scripts that make up the rulesets it's a good idea to add the directory "docs/dox/python" to
+your IDE's Python include paths. This directory contains stubs generated from the C++ bindings, which makes things such
+as type lookup and code completion easier.
+
+These stubs are auto generated from the C++ bindings through the custom target "GeneratePythonDocs". Execute this target whenever you've done edits to the Python bindings.
+
 ## Dependencies
 
-Cyphesis is built using CMake. 
+Cyphesis is built using CMake.
 It requires Python and SQLite 3 which are included with most Linux
-distributions, and Atlas-C++, varconf, Mercator and wfmath 
+distributions, and Atlas-C++, varconf, Mercator and wfmath
 which are provided by the WorldForge project. GNU readline is required by
 some of the included tools.
 Boost is used as well, mainly for the ASIO library which drives networking.
@@ -87,18 +96,17 @@ If built from source the software and data must be installed using "make
 install" before it will be ready. Go to the Section called Setup for
 information on the setup steps required after installation.
 
-
 ## Running a basic server
 
 Start the server with the ```cyphesis``` command. It will output some startup
 messages and then run in the foreground. If you want to run the server in
 the background, start the server with the option --cyphesis:daemon=true .
 
-If an empty server is started, it will automatically be populated if the 
-[Worldforge Worlds](https://github.com/worldforge/worlds) definitions have 
-been installed.  
+If an empty server is started, it will automatically be populated if the
+[Worldforge Worlds](https://github.com/worldforge/worlds) definitions have
+been installed.
 
-If you everything has worked so far, and you are not planning to do any
+If everything has worked so far, and you are not planning to do any
 server or world development at this time then you do not need to read any
 of the rest of these instructions.
 
@@ -122,15 +130,19 @@ way to handle the differences in configuration would be to use the
 ~/.cyphesis.vconf file, and avoid modifying the master configuration file.
 
 As an example, the ruleset to be used is set in cyphesis.vconf as follows:
+
 ```
    [cyphesis]
    ruleset="deeds"
 ```
+
 This setting can be overridden by invoking cyphesis with the following
 option:
+
 ```
    --cyphesis:ruleset=werewolf
 ```
+
 For more details of varconf usage see the Varconf documentation. For full
 details on configuraton options for cyphesis, see the cyphesis(1) man
 page.
@@ -139,8 +151,8 @@ The ruleset specified indicates the entity types available, the set of
 scripts that will be used for these entities, and the initialisation
 script used to populate the server.
 
-If an empty server is started, it will automatically be populated if the 
-[Worldforge Worlds](https://github.com/worldforge/worlds) definitions have 
+If an empty server is started, it will automatically be populated if the
+[Worldforge Worlds](https://github.com/worldforge/worlds) definitions have
 been installed.
 
 The default ruleset for this version is called Deeds.
@@ -155,23 +167,26 @@ This allows a developer to for example set up Python remote debugging.
 One example would be to use the remote Python debugger included in PyCharm
 Professional. By creating a file named "10-debug.py" containing this code
 a connection will be made at startup with the debugger on port 9999.
+
 ```python
 import sys
+
 sys.path.append('path_to_pycharm-debug-py3k.egg')
 import pydevd
+
 pydevd.settrace('localhost', port=9999, stdoutToServer=False, stderrToServer=False, suspend=False)
 ```
 
 ## Using standard malloc memory allocator in Python
 
-During development it can sometimes be good to use the standard "malloc" memory allocator rather than 
+During development it can sometimes be good to use the standard "malloc" memory allocator rather than
 the Python specific allocator. For example if you want to profile memory usage.
 This can be enabled by setting the environment variable "PYTHONMALLOC" to something (doesn't matter what).
 Upon startup Cyphesis will then use malloc, and write a line about this to the log.
 
 ## Performance measuring through Remotery
 
-Performance tracking through [Remotery](https://github.com/Celtoys/Remotery) is built in, 
+Performance tracking through [Remotery](https://github.com/Celtoys/Remotery) is built in,
 but not enabled by default. You need to set the option "--cyphesis:remotery=true" to enable it.
 
 After that's done you can open the file found at [external/Remotery/vis/index.html]() to see

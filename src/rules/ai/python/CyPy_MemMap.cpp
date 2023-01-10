@@ -66,7 +66,7 @@ void CyPy_MemMap::init_type()
 
     PYCXX_ADD_VARARGS_METHOD(find_by_location_query, find_by_location_query, "");
 
-    PYCXX_ADD_VARARGS_METHOD(add_entity_memory, add_entity_memory, "Adds memory for an entity. First parameter is entity id, second is memory name, and third is the memory contents.");
+    PYCXX_ADD_VARARGS_METHOD(add_entity_memory, add_entity_memory, "add_entity_memory(entity_id, name, memory)\n--\n\nAdds memory for an entity. First parameter is entity id, second is memory name, and third is the memory contents.");
 
     PYCXX_ADD_VARARGS_METHOD(remove_entity_memory, remove_entity_memory,
                              "Removes memory for an entity. First parameter is entity id, second is memory name. If no memory name is supplied all memory for that entity will be removed");

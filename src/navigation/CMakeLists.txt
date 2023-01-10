@@ -5,7 +5,10 @@ add_library(navigation
         AwarenessUtils.h
         IHeightProvider.h)
 
-target_link_libraries(navigation
+target_link_libraries(navigation PUBLIC
+        Detour
+        DetourTileCache
+        Recast
         remotery)
 
 #target_include_directories(navigation PUBLIC

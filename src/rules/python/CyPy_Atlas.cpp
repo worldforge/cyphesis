@@ -36,7 +36,7 @@ CyPy_Atlas::CyPy_Atlas() : ExtensionModule("atlas")
     CyPy_RootEntity::init_type();
 
 
-    initialize("Atlas");
+    initialize("Atlas bindings, allowing the Atlas library to be used from Python.");
 
     Py::Dict d(moduleDictionary());
 
