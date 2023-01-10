@@ -26,6 +26,9 @@ set(PYTHON_TESTS_LIBS
         rulessimulation_python
         entityfilter_python
         rulesbase_python
+        physics_python
+        atlas_python
+        common_python
         pythonbase
         rulesai
         rulessimulation

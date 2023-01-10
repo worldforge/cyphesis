@@ -75,6 +75,9 @@ target_link_libraries(cyphesis
         entityfilter
         rulesbase_python
         rulesbase
+        atlas_python
+        common_python
+        physics_python
         modules
         common
         db

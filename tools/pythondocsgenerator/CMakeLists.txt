@@ -7,4 +7,7 @@ target_link_libraries(pythondocgenerator PUBLIC
         rulessimulation_python
         entityfilter_python
         rulesbase_python
+        atlas_python
+        common_python
+        physics_python
         )

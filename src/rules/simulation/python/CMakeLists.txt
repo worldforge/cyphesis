@@ -11,7 +11,7 @@ add_library(rulessimulation_python
 
 target_link_libraries(rulessimulation_python PUBLIC
         rulessimulation
-        pycxx)
+        pythonbase)
 
 
 

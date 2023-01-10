@@ -7,7 +7,7 @@ add_library(rulesai_python
 
 target_link_libraries(rulesai_python PUBLIC
         rulesai
-        pycxx)
+        pythonbase)
 
 
 

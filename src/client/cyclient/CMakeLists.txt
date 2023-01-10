@@ -20,6 +20,9 @@ target_link_libraries(cyclient
         rulesai
         entityfilter_python
         entityfilter
+        atlas_python
+        common_python
+        physics_python
         rulesbase_python
         rulesbase
         modules

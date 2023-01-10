@@ -13,6 +13,9 @@ target_link_libraries(cyaiclient
         entityfilter
         navigation
         rulesbase_python
+        atlas_python
+        common_python
+        physics_python
         rulesbase
         modules
         common

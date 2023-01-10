@@ -3,7 +3,7 @@ add_library(entityfilter_python
         )
 
 target_link_libraries(entityfilter_python PUBLIC
-        pycxx)
+        pythonbase)
 
 
 
