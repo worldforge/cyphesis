@@ -2,8 +2,7 @@
 add_executable(cyaiclient
         PossessionClient.cpp
         aiclient.cpp
-        PossessionAccount.cpp
-        ../ClientPropertyManager.cpp)
+        PossessionAccount.cpp)
 
 
 target_link_libraries(cyaiclient

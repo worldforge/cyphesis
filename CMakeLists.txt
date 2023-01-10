@@ -228,7 +228,6 @@ add_subdirectory(docs)
 add_subdirectory(tests EXCLUDE_FROM_ALL)
 
 configure_file(docs/Doxyfile.in Doxyfile @ONLY)
-configure_file(docs/Doxyfile-python.in Doxyfile-python @ONLY)
 
 install(FILES README.md COPYING AUTHORS THANKS NEWS DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/cyphesis)
 install(DIRECTORY DESTINATION ${SOCKET_DIR})

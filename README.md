@@ -73,11 +73,12 @@ make dox
 
 ### Python stubs
 
-When editing the Python scripts that make up the rulesets it's a good idea to add the directory "docs/dox/python" to
+When editing the Python scripts that make up the rulesets it's a good idea to add the directory "docs/python" to
 your IDE's Python include paths. This directory contains stubs generated from the C++ bindings, which makes things such
 as type lookup and code completion easier.
 
-These stubs are auto generated from the C++ bindings through the custom target "GeneratePythonDocs". Execute this target whenever you've done edits to the Python bindings.
+These stubs are auto generated from the C++ bindings through the custom target "GeneratePythonDocs". 
+Execute this target whenever you've done edits to the Python bindings.
 
 ## Dependencies
 

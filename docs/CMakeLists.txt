@@ -4,7 +4,7 @@ add_subdirectory(man)
 #This target isn't run automatically because we don't want anything that alters the source code to do so.
 #That means that you need to don't forget to run this yourself whenever you update the bindings.
 add_custom_target(GeneratePythonDocs
-        COMMAND ${CMAKE_COMMAND} -E echo "Generating Python docs stubs."
+        COMMENT "Generating Python docs stubs."
         COMMAND pythondocgenerator atlas > atlas.py
         COMMAND pythondocgenerator server > server.py
         COMMAND pythondocgenerator entity_filter > entity_filter.py
@@ -12,8 +12,8 @@ add_custom_target(GeneratePythonDocs
         COMMAND pythondocgenerator ai > ai.py
         COMMAND pythondocgenerator physics > physics.py
         COMMAND pythondocgenerator rules > rules.py
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs/dox/python
-        DEPENDS pythondocgenerator rulesbase_python rulessimulation_python entityfilter_python rulesai_python
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/docs/python
+        DEPENDS pythondocgenerator rulesai_python rulessimulation_python entityfilter_python rulesbase_python
         VERBATIM
         )
 

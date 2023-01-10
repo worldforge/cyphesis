@@ -16,9 +16,8 @@ add_executable(cycmd
         JunctureContext.cpp
         Interactive.cpp)
 
-target_link_libraries(cycmd ${READLINE_LIBRARY})
-
 target_link_libraries(cycmd
+        ${READLINE_LIBRARY}
         common)
 install(TARGETS cycmd DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
@@ -39,16 +38,15 @@ add_executable(cydb
         cydb.cpp
         DatabaseCreation.cpp)
 
-target_link_libraries(cydb ${READLINE_LIBRARY})
-
 target_link_libraries(cydb
+        ${READLINE_LIBRARY}
         db
         common)
 install(TARGETS cydb DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 
 add_executable(cypython cypython.cpp)
-target_link_libraries(cypython ${READLINE_LIBRARY})
 target_link_libraries(cypython
+        ${READLINE_LIBRARY}
         common)
 install(TARGETS cypython DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 

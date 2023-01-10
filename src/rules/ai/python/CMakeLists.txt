@@ -5,7 +5,9 @@ add_library(rulesai_python
         CyPy_Steering.cpp
         CyPy_MemEntity.cpp)
 
-target_link_libraries(rulesai_python PUBLIC rulesai pycxx)
+target_link_libraries(rulesai_python PUBLIC
+        rulesai
+        pycxx)
 
 
 

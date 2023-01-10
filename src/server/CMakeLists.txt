@@ -6,12 +6,13 @@ add_library(comm
         IdleConnector.cpp)
 
 target_link_libraries(comm PUBLIC
-        common
-        )
+        common)
 
 if (AVAHI_FOUND)
     #For some reason it seems we need to also link to avahi-common
-    target_link_libraries(comm PUBLIC ${AVAHI_LIBRARIES} -lavahi-common)
+    target_link_libraries(comm PUBLIC
+            ${AVAHI_LIBRARIES}
+            -lavahi-common)
 endif (AVAHI_FOUND)
 
 set(server_files
@@ -56,8 +57,7 @@ add_library(server
         ${server_files})
 
 target_link_libraries(server PUBLIC
-        common
-        )
+        common)
 
 
 add_executable(cyphesis

@@ -30,7 +30,6 @@
 #include "common/Inheritance.h"
 #include "common/compose.hpp"
 #include "common/system.h"
-#include "common/nls.h"
 #include "common/sockets.h"
 #include "common/utils.h"
 #include "common/serialno.h"

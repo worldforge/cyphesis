@@ -13,12 +13,12 @@ add_library(common
         globals.cpp
         Database.cpp
         system.cpp
-        system_net.cpp system_uid.cpp
+        system_net.cpp
+        system_uid.cpp
         system_prefix.cpp
         serialno.cpp
         TypeNode.cpp
         Inheritance.cpp
-        Inheritance.h
         Property.cpp
         PropertyManager.cpp
         Router.cpp
@@ -27,39 +27,20 @@ add_library(common
         Variable.cpp
         AtlasStreamClient.cpp
         ClientTask.cpp
-        ScriptKit.h
         Link.cpp
         Shaker.cpp
         OperationsDispatcher.cpp
         RuleTraversalTask.cpp
-        AtlasQuery.h
-        compose.hpp
-        nls.h
-        Property_impl.h
-        PropertyFactory_impl.h
-        PropertyInstanceState.h
-        random.h
-        sockets.h
-        type_utils_impl.h
-        types.h
         FileSystemObserver.cpp
-        FileSystemObserver.h
         AssetsManager.cpp
-        AssetsManager.h
-        Singleton.h
         RepeatedTask.cpp
-        RepeatedTask.h
-        Visibility.h
         MainLoop.cpp
-        MainLoop.h
-        CommAsioClient_impl.h
-        TypeStore.h
         net/CommHttpClient.cpp
         net/HttpCache.cpp
         FormattedXMLWriter.cpp
         )
 
-target_link_libraries(common ${GCRYPT_LIBRARIES} remotery)
+target_link_libraries(common PUBLIC ${GCRYPT_LIBRARIES} remotery)
 target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})
 
 target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
