@@ -47,6 +47,8 @@ parts:
         build-packages:
             - g++
             - libsigc++-2.0-dev
+        stage-packages:
+            - libsigc++-2.0
 
     mercator:
         source: https://github.com/worldforge/mercator.git
