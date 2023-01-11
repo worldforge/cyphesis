@@ -1,5 +1,5 @@
 [requires]
-boost/1.79.0
+boost/1.81.0
 bullet3/2.89
 atlas/0.7.0@worldforge/testing
 mercator/0.4.0@worldforge/testing
@@ -10,7 +10,7 @@ sigc++/2.10.0@worldforge/stable
 libgcrypt/1.8.4
 zlib/1.2.13
 bzip2/1.0.8
-sqlite3/3.39.4
+sqlite3/3.40.1
 readline/8.1.2
 cpython/3.10.0
 

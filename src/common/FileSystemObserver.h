@@ -23,6 +23,7 @@
 
 #include "common/io_context.h"
 #include <boost/filesystem/path.hpp>
+#include <map>
 
 class FileSystemObserver
 {
