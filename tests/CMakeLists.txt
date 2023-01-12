@@ -18,7 +18,7 @@ link_libraries(${READLINE_LIBRARY})
 find_library(SEGFAULT_LIBRARY SegFault)
 if (SEGFAULT_LIBRARY)
     message(STATUS "Adding the SegFault library for nice stack traces for tests.")
-    link_libraries(${SEGFAULT_LIBRARY})
+    #link_libraries(${SEGFAULT_LIBRARY})
 endif (SEGFAULT_LIBRARY)
 
 set(PYTHON_TESTS_LIBS
