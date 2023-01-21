@@ -36,13 +36,15 @@ jobs:
             sudo apt install ccache
           fi
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
       - name: Install Conan
         shell: bash
         run: |
-          export PATH=~/.local/bin:$PATH
-
-          pip3 install --upgrade pip wheel setuptools
-          pip3 install --upgrade conan
+          pip install -r .github/workflows/requirements.txt
           conan --version
           conan user
           conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
