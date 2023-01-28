@@ -20,8 +20,6 @@
 #define SERVER_COMM_PYTHON_CLIENT_H
 
 #include "common/asio.h"
-#include "common/asio.h"
-#include "common/asio.h"
 #include <boost/array.hpp>
 
 #include <memory>

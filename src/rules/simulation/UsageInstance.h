@@ -23,7 +23,6 @@
 #include "rules/EntityLocation.h"
 #include "modules/Ref.h"
 #include "common/Property.h"
-#include "pycxx/CXX/Objects.hxx"
 
 #include <Atlas/Objects/RootOperation.h>
 
@@ -32,34 +31,37 @@
 #include <memory>
 #include <functional>
 
+namespace Py
+{
+class Object;
+}
+
 /**
  * This struct defines the requirements for a parameter.
  */
-struct UsageParameter
-{
+struct UsageParameter {
     typedef boost::variant<EntityLocation, WFMath::Point<3>, WFMath::Vector<3>> UsageArg;
 
     /**
      * The type of parameter.
      */
-    enum class Type
-    {
-            /**
-             * An entity reference is required.
-             */
-            ENTITY,
-            /**
-             * An entity location is required. This means that there must both be an entity as well as a position.
-             */
-            ENTITYLOCATION,
-            /**
-             * A position (i.e. a WFMath::Point<3>) is required.
-             */
-            POSITION,
-            /**
-             * A direction (i.e. a WFMath::Vector<3>) is required.
-             */
-            DIRECTION
+    enum class Type {
+        /**
+         * An entity reference is required.
+         */
+        ENTITY,
+        /**
+         * An entity location is required. This means that there must both be an entity as well as a position.
+         */
+        ENTITYLOCATION,
+        /**
+         * A position (i.e. a WFMath::Point<3>) is required.
+         */
+        POSITION,
+        /**
+         * A direction (i.e. a WFMath::Vector<3>) is required.
+         */
+        DIRECTION
     };
 
     /**
@@ -85,11 +87,9 @@ struct UsageParameter
     static UsageParameter parse(const Atlas::Message::Element& element);
 
     int countValidArgs(const std::vector<UsageArg>& args, const Ref<LocatedEntity>& actor, const Ref<LocatedEntity>& tool, std::vector<std::string>& errorMessages) const;
-
 };
 
-struct Usage
-{
+struct Usage {
     std::string description;
 
     std::map<std::string, UsageParameter> params;
@@ -99,43 +99,39 @@ struct Usage
      */
     std::string handler;
     std::shared_ptr<EntityFilter::Filter> constraint;
-
 };
 
 class UsageInstance
 {
-    public:
+  public:
+    static std::function<Py::Object(UsageInstance&& usageInstance)> scriptCreator;
 
-        static std::function<Py::Object(UsageInstance&& usageInstance)> scriptCreator;
+    /**
+     * The usage definition.
+     */
+    Usage definition;
 
-        /**
-         * The usage definition.
-         */
-        Usage definition;
+    /**
+     * The entity performing the usage.
+     */
+    Ref<LocatedEntity> actor;
 
-        /**
-         * The entity performing the usage.
-         */
-        Ref<LocatedEntity> actor;
+    /**
+     * The entity containing the usage.
+     */
+    Ref<LocatedEntity> tool;
 
-        /**
-         * The entity containing the usage.
-         */
-        Ref<LocatedEntity> tool;
+    /**
+     * Any arguments sent along.
+     */
+    std::map<std::string, std::vector<UsageParameter::UsageArg>> args;
 
-        /**
-         * Any arguments sent along.
-         */
-        std::map<std::string, std::vector<UsageParameter::UsageArg>> args;
+    /**
+     * The operation triggering the usage.
+     */
+    Atlas::Objects::Operation::RootOperation op;
 
-        /**
-         * The operation triggering the usage.
-         */
-        Atlas::Objects::Operation::RootOperation op;
-
-        std::pair<bool, std::string> isValid() const;
-
+    std::pair<bool, std::string> isValid() const;
 };
 
-
-#endif //CYPHESIS_USAGEINSTANCE_H
+#endif  // CYPHESIS_USAGEINSTANCE_H

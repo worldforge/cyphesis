@@ -19,7 +19,6 @@
 #ifndef CYPHESIS_USAGESPROPERTY_H
 #define CYPHESIS_USAGESPROPERTY_H
 
-#include "pycxx/CXX/Objects.hxx"
 #include "common/Property.h"
 #include "UsageInstance.h"
 

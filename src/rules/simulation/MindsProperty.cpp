@@ -17,12 +17,18 @@
  */
 
 #include "MindsProperty.h"
-#include "rules/LocatedEntity.h"
 #include "TransientProperty.h"
 #include "UsagesProperty.h"
+#include "FilterProperty.h"
+
 #include "rules/simulation/BaseWorld.h"
 #include "rules/BBoxProperty.h"
+#include "rules/LocatedEntity.h"
+#include "rules/ScaleProperty.h"
+#include "rules/AtlasProperties.h"
+#include "rules/entityfilter/Providers.h"
 
+#include "common/Inheritance.h"
 #include "common/Router.h"
 #include "common/debug.h"
 #include "common/custom.h"
@@ -30,20 +36,13 @@
 #include "common/operations/Tick.h"
 #include "common/operations/Think.h"
 #include "common/operations/Thought.h"
-#include "FilterProperty.h"
 
 #include <Atlas/Objects/RootEntity.h>
 #include <Atlas/Objects/Anonymous.h>
 #include <Atlas/Objects/Operation.h>
-
 #include <wfmath/atlasconv.h>
-
 #include <iostream>
-#include <rules/ScaleProperty.h>
-#include "rules/AtlasProperties.h"
-#include "rules/PhysicalProperties.h"
-#include "rules/entityfilter/Providers.h"
-#include "common/Inheritance.h"
+#include <algorithm>
 
 
 using Atlas::Message::Element;

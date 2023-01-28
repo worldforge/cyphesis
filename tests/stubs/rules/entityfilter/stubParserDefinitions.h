@@ -7,4 +7,28 @@
 #include "rules/entityfilter/ParserDefinitions.h"
 #include "stubParserDefinitions_custom.h"
 
+namespace EntityFilter {
+namespace parser {
+
+
+}  // namespace parser
+}  // namespace EntityFilter
+
+namespace EntityFilter {
+namespace parser {
+
+#ifndef STUB_query_parser_query_parser
+//#define STUB_query_parser_query_parser
+  template <typename Iterator>
+   query_parser<Iterator>::query_parser(const ProviderFactory& factory)
+    : qi::grammar(factory)
+  {
+    
+  }
+#endif //STUB_query_parser_query_parser
+
+
+}  // namespace parser
+}  // namespace EntityFilter
+
 #endif

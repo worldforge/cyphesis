@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.2)
 project(Cyphesis)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 include(GNUInstallDirs)
 include(FindPkgConfig)
@@ -65,9 +66,7 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
 
 else ()
 
-    find_package(PythonLibs 3.3 REQUIRED)
-    link_directories(${PYTHON_LIBRARY_DIRS})
-    include_directories(${PYTHON_INCLUDE_DIRS})
+    find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 
     pkg_check_modules(WF REQUIRED varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.7>=0.7.0 wfmath-1.0>=1.0.3)
     link_directories(${WF_LIBRARY_DIRS})
@@ -130,7 +129,6 @@ set(ASSETS_DIR assets-${VERSION})
 set(ASSETSREPO_DIR ${PROJECT_SOURCE_DIR}/assetsrepo)
 
 find_program(SUBVERSION_CMD NAMES svn)
-find_program(PYTHON_CMD NAMES python)
 find_program(RSYNC_CMD NAMES rsync)
 
 #It would be better if Bullet provided a header which specified how it was built...
@@ -199,7 +197,7 @@ macro(wf_generate_stubs DIRECTORY)
 
         add_custom_command(TARGET stubs
                 COMMAND ${CMAKE_COMMAND} -E echo "Generating stubs for ${FILE}\n"
-                COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
+                COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
                 )
 

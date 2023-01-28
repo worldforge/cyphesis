@@ -3,7 +3,6 @@ add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 add_library(stubnavigation stubs/navigation/libstub.cpp DatabaseNull.h ../src/navigation/fastlz.c)
 target_link_libraries(stubnavigation PUBLIC Detour)
 
-link_libraries(${PYTHON_LIBRARIES})
 link_libraries(${GCRYPT_LIBRARIES})
 link_libraries(${BULLET_LIBRARIES})
 if (AVAHI_FOUND)

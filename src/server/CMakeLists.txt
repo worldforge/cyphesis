@@ -57,7 +57,9 @@ add_library(server
         ${server_files})
 
 target_link_libraries(server PUBLIC
-        common)
+        common
+        pythonbase
+        )
 
 
 add_executable(cyphesis

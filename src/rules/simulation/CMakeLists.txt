@@ -1,3 +1,11 @@
+add_library(rulessimulationscripts
+        ScriptUtils.cpp
+        )
+target_link_libraries(rulessimulationscripts PUBLIC
+        pycxx
+        )
+
+
 add_library(rulessimulation
         BaseWorld.cpp
         Entity.cpp
@@ -39,7 +47,6 @@ add_library(rulessimulation
         AdminProperty.cpp
         AttachmentsProperty.cpp
         EntityProperty.cpp
-        ScriptUtils.cpp
         ServerBBoxProperty.cpp
         StackableDomain.cpp
         AmountProperty.cpp
@@ -61,7 +68,9 @@ add_library(rulessimulation
         ActionsProperty.cpp)
 
 target_link_libraries(rulessimulation PUBLIC
+        rulessimulationscripts
+        common
         ${BULLET_LIBRARIES}
-        common)
+        )
 
 add_subdirectory(python)
