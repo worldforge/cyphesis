@@ -15,8 +15,6 @@ endif (PostgreSQL_FOUND)
 link_libraries(
         pycxx
         ${BULLET_LIBRARIES}
-        ${PYTHON_LIBRARIES}
-        ${GCRYPT_LIBRARIES}
         ${mercator_LIBRARIES}
         ${wfmath_LIBRARIES}
         ${Atlas_LIBRARIES}
@@ -27,11 +25,11 @@ link_libraries(
         readline::readline
         Detour
         libxdg-basedir::libxdg-basedir
+        libgcrypt::libgcrypt
 )
 
 link_directories(
         ${BULLET_LIBRARY_DIR}
-        ${GCRYPT_LIBRARY_DIR}
         ${mercator_LIBRARY_DIR}
         ${wfmath_LIBRARY_DIR}
         ${Atlas_LIBRARY_DIR}
@@ -41,7 +39,6 @@ link_directories(
 
 include_directories(
         ${BULLET_INCLUDE_DIR}
-        ${GCRYPT_INCLUDE_DIR}
         ${mercator_INCLUDE_DIR}
         ${wfmath_INCLUDE_DIR}
         ${Atlas_INCLUDE_DIR}

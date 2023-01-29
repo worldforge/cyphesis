@@ -41,29 +41,26 @@ add_library(common
         )
 
 target_link_directories(common PUBLIC
-        ${GCRYPT_LIBRARY_DIR}
         ${wfmath_LIBRARY_DIR}
         ${Atlas_LIBRARY_DIR}
         ${varconf_LIBRARY_DIR}
         ${SigC++_LIBRARY_DIR}
         )
 target_link_libraries(common PUBLIC
-        ${GCRYPT_LIBRARIES}
         ${wfmath_LIBRARIES}
         ${Atlas_LIBRARIES}
         ${varconf_LIBRARIES}
         ${SigC++_LIBRARIES}
+        libgcrypt::libgcrypt
         remotery
         Boost::filesystem
         libxdg-basedir::libxdg-basedir
         )
 target_include_directories(common PUBLIC
-        ${GCRYPT_INCLUDE_DIR}
         ${wfmath_INCLUDE_DIR}
         ${Atlas_INCLUDE_DIR}
         ${varconf_INCLUDE_DIR}
         ${SigC++_INCLUDE_DIR}
-        ${GCRYPT_INCLUDE_DIRS}
         )
 
 
