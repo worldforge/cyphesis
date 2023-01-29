@@ -7,4 +7,7 @@ add_library(entityfilter
 
 add_subdirectory(python)
 
+target_link_libraries(entityfilter
+        common)
+
 

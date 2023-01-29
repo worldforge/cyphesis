@@ -40,10 +40,34 @@ add_library(common
         FormattedXMLWriter.cpp
         )
 
-target_link_libraries(common PUBLIC ${GCRYPT_LIBRARIES} remotery)
-target_include_directories(common PUBLIC ${GCRYPT_INCLUDE_DIRS})
+target_link_directories(common PUBLIC
+        ${GCRYPT_LIBRARY_DIR}
+        ${wfmath_LIBRARY_DIR}
+        ${Atlas_LIBRARY_DIR}
+        ${varconf_LIBRARY_DIR}
+        ${SigC++_LIBRARY_DIR}
+        )
+target_link_libraries(common PUBLIC
+        ${GCRYPT_LIBRARIES}
+        ${wfmath_LIBRARIES}
+        ${Atlas_LIBRARIES}
+        ${varconf_LIBRARIES}
+        ${SigC++_LIBRARIES}
+        remotery
+        Boost::filesystem
+        )
+target_include_directories(common PUBLIC
+        ${GCRYPT_INCLUDE_DIR}
+        ${wfmath_INCLUDE_DIR}
+        ${Atlas_INCLUDE_DIR}
+        ${varconf_INCLUDE_DIR}
+        ${SigC++_INCLUDE_DIR}
+        ${GCRYPT_INCLUDE_DIRS}
+        )
 
-target_compile_definitions(common PUBLIC -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
+
+target_compile_definitions(common PUBLIC
+        -DBINDIR="${CMAKE_INSTALL_FULL_BINDIR}"
         -DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}"
         -DSYSCONFDIR="${CMAKE_INSTALL_FULL_SYSCONFDIR}"
         -DLOCALSTATEDIR="${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
@@ -63,12 +87,15 @@ endif (PostgreSQL_FOUND)
 add_library(db ${db_files})
 
 if (PostgreSQL_FOUND)
-    target_link_libraries(db PUBLIC ${PostgreSQL_LIBRARIES})
-    target_include_directories(db PUBLIC ${PostgreSQL_INCLUDE_DIRS})
+    target_link_libraries(db PUBLIC PostgreSQL::PostgreSQL)
 endif (PostgreSQL_FOUND)
 
-target_link_libraries(db PUBLIC ${SQLITE3_LIBRARIES} remotery)
-target_include_directories(db PUBLIC ${SQLITE3_INCLUDE_DIRS})
+target_link_libraries(db PUBLIC
+        SQLite::SQLite3
+        remotery
+        common
+        )
+
 
 
 

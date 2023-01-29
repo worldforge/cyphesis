@@ -9,7 +9,8 @@ target_link_libraries(navigation PUBLIC
         Detour
         DetourTileCache
         Recast
-        remotery)
+        remotery
+        rulesai)
 
 #target_include_directories(navigation PUBLIC
 #    ../../external/RecastDetour/Recast/Include

@@ -1,23 +1,59 @@
 add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
-add_library(stubnavigation stubs/navigation/libstub.cpp DatabaseNull.h ../src/navigation/fastlz.c)
-target_link_libraries(stubnavigation PUBLIC Detour)
+add_library(stubnavigation
+        stubs/navigation/libstub.cpp
+        ../src/navigation/fastlz.c)
 
-link_libraries(${GCRYPT_LIBRARIES})
-link_libraries(${BULLET_LIBRARIES})
 if (AVAHI_FOUND)
     link_libraries(${AVAHI_LIBRARIES} -lavahi-common)
 endif (AVAHI_FOUND)
 if (PostgreSQL_FOUND)
-    link_libraries(${PostgreSQL_LIBRARIES})
+    link_libraries(PostgreSQL::PostgreSQL)
 endif (PostgreSQL_FOUND)
-link_libraries(${READLINE_LIBRARY})
+
+#Just link all libraries here.
+link_libraries(
+        pycxx
+        ${BULLET_LIBRARIES}
+        ${PYTHON_LIBRARIES}
+        ${GCRYPT_LIBRARIES}
+        ${mercator_LIBRARIES}
+        ${wfmath_LIBRARIES}
+        ${Atlas_LIBRARIES}
+        ${varconf_LIBRARIES}
+        ${SigC++_LIBRARIES}
+        remotery
+        Boost::filesystem
+        readline::readline
+        Detour
+)
+
+link_directories(
+        ${BULLET_LIBRARY_DIR}
+        ${GCRYPT_LIBRARY_DIR}
+        ${mercator_LIBRARY_DIR}
+        ${wfmath_LIBRARY_DIR}
+        ${Atlas_LIBRARY_DIR}
+        ${varconf_LIBRARY_DIR}
+        ${SigC++_LIBRARY_DIR}
+)
+
+include_directories(
+        ${BULLET_INCLUDE_DIR}
+        ${GCRYPT_INCLUDE_DIR}
+        ${mercator_INCLUDE_DIR}
+        ${wfmath_INCLUDE_DIR}
+        ${Atlas_INCLUDE_DIR}
+        ${varconf_INCLUDE_DIR}
+        ${SigC++_INCLUDE_DIR}
+        ${GCRYPT_INCLUDE_DIRS}
+)
 
 #On platforms which supports it, link the "libSegFault" library which provides nice stack traces
 find_library(SEGFAULT_LIBRARY SegFault)
 if (SEGFAULT_LIBRARY)
     message(STATUS "Adding the SegFault library for nice stack traces for tests.")
-    #link_libraries(${SEGFAULT_LIBRARY})
+    link_libraries(${SEGFAULT_LIBRARY})
 endif (SEGFAULT_LIBRARY)
 
 set(PYTHON_TESTS_LIBS
@@ -47,7 +83,7 @@ macro(wf_add_test TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(check ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery)
+
 
 endmacro()
 
@@ -57,7 +93,6 @@ macro(wf_add_benchmark TEST_FILE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
     add_dependencies(benchmark ${TEST_NAME})
-    target_link_libraries(${TEST_NAME} pycxx ${PYTHON_LIBRARIES} remotery)
 
 endmacro()
 

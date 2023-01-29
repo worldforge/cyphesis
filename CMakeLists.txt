@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.14)
 
 project(Cyphesis)
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
+#Append paths to make Conan work. This will play nicely with the cmake_find_package generator.
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/tools/cmake)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
@@ -44,87 +46,57 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-find_package(PythonInterp 3 REQUIRED)
-
-if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
     message(STATUS "Using Conan for dependency resolution.")
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup()
+    include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+
     #Since we've installed Python in a non-standard place we need to tell the code that.
     #This is done through the PYTHONHOME preprocessor directive.
     add_definitions(-DPYTHONHOME="${CONAN_CPYTHON_ROOT}")
 
+    set(Python3_ROOT_DIR CONAN_CPYTHON_ROOT)
+    #If Python has been built statically (as with Conan) we need to mark this so we can enable exports so the dynamic loading works.
+    set(PYTHON_IS_STATIC TRUE)
 
-
-    #There's an issue with the Conan provided boost libraries in that they will declare library dependencies as "-l" options
-    #rather than links to the ".a" files (as we want static libs). To work around it we need to link directly to the
-    #boost filesystem lib, otherwise the system one will be used.
-    #This should be removed once it's fixed in the Conan recipes.
-    list(APPEND WF_LIBRARIES "${CONAN_LIB_DIRS_BOOST}/libboost_filesystem.a")
-
-    link_libraries(${CONAN_LIBS})
-
-else ()
-
-    find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
-
-    pkg_check_modules(WF REQUIRED varconf-1.0>=0.6.7 mercator-0.4>=0.4.0 atlascpp-0.7>=0.7.0 wfmath-1.0>=1.0.3)
-    link_directories(${WF_LIBRARY_DIRS})
-    include_directories(${WF_INCLUDE_DIRS})
-    link_libraries(${WF_LIBRARIES})
-
-    pkg_check_modules(SIGCPP REQUIRED sigc++-2.0>=2.0.0)
-    link_directories(${SIGCPP_LIBRARY_DIRS})
-    include_directories(${SIGCPP_INCLUDE_DIRS})
-    link_libraries(${SIGCPP_LIBRARIES})
-
-    find_package(GCrypt 1.2 REQUIRED)
-    link_directories(${GCRYPT_LIBRARY_DIRS})
-    include_directories(${GCRYPT_INCLUDE_DIRS})
-
-    #The default FindBullet.cmake macro doesn't look in pkg-config first, so we'll do that ourselves.
-    pkg_check_modules(BULLET bullet>=2.81)
-    if (NOT BULLET_FOUND)
-        find_package(Bullet 2.81 REQUIRED)
-    endif (NOT BULLET_FOUND)
-
-    link_directories(${BULLET_LIBRARY_DIRS})
-    include_directories(${BULLET_INCLUDE_DIRS})
-
-    find_package(Avahi)
-    if (AVAHI_FOUND)
-        link_directories(${AVAHI_LIBRARY_DIRS})
-        include_directories(${AVAHI_INCLUDE_DIR})
-        set(HAVE_AVAHI 1)
-    endif (AVAHI_FOUND)
-
-
-    find_package(PostgreSQL 7.1)
-    cmake_dependent_option(CYPHESIS_USE_POSTGRES "Use PostgreSQL for storage" FALSE "PostgreSQL_FOUND" FALSE)
-
-    find_package(SQLite3 REQUIRED)
-    if (NOT SQLITE3_FOUND)
-        message(FATAL_ERROR "Could not find SQLite 3 development package.")
-    endif (NOT SQLITE3_FOUND)
-
-    pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
-    link_directories(${XDG_LIBRARY_DIRS})
-    link_libraries(${XDG_LIBRARIES})
-    include_directories(${XDG_INCLUDE_DIRS})
-
-    find_package(Readline REQUIRED)
-    link_directories(${READLINE_LIBRARY_DIRS})
-    include_directories(${READLINE_INCLUDE_DIRS})
-
-    find_package(Boost
-            1.46.0
-            REQUIRED
-            COMPONENTS filesystem system)
-
-    link_directories(${Boost_LIBRARY_DIRS})
-    link_libraries(${Boost_LIBRARIES})
-    include_directories(${Boost_INCLUDE_DIRS})
 endif ()
+
+find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
+
+find_package(Atlas REQUIRED)
+find_package(varconf REQUIRED)
+find_package(mercator REQUIRED)
+find_package(wfmath REQUIRED)
+
+find_package(SigC++ 2.0 REQUIRED)
+find_package(GCrypt 1.2 REQUIRED)
+find_package(Bullet 2.81 REQUIRED)
+
+find_package(Avahi)
+if (AVAHI_FOUND)
+    link_directories(${AVAHI_LIBRARY_DIRS})
+    include_directories(${AVAHI_INCLUDE_DIR})
+    set(HAVE_AVAHI 1)
+endif (AVAHI_FOUND)
+
+find_package(PostgreSQL 7.1)
+cmake_dependent_option(CYPHESIS_USE_POSTGRES "Use PostgreSQL for storage" FALSE "PostgreSQL_FOUND" FALSE)
+
+find_package(SQLite3 REQUIRED)
+if (NOT SQLITE3_FOUND)
+    message(FATAL_ERROR "Could not find SQLite 3 development package.")
+endif (NOT SQLITE3_FOUND)
+
+pkg_check_modules(XDG REQUIRED libxdg-basedir>=1.0.0)
+link_directories(${XDG_LIBRARY_DIRS})
+link_libraries(${XDG_LIBRARIES})
+include_directories(${XDG_INCLUDE_DIRS})
+
+find_package(readline REQUIRED)
+find_package(Boost
+        1.46.0
+        REQUIRED
+        COMPONENTS filesystem system)
+
 set(ASSETS_DIR assets-${VERSION})
 set(ASSETSREPO_DIR ${PROJECT_SOURCE_DIR}/assetsrepo)
 
@@ -138,7 +110,6 @@ if (BT_USE_DOUBLE_PRECISION)
     message(STATUS "Using double precision with Bullet. Make sure that Bullet is compiled with this too.")
     add_definitions(-DBT_USE_DOUBLE_PRECISION=1)
 endif ()
-
 
 
 add_custom_target(assets-download)

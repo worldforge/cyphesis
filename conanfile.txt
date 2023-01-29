@@ -15,7 +15,8 @@ readline/8.1.2
 cpython/3.10.0
 
 [generators]
-cmake
+cmake_find_package
+cmake_paths
 
 [options]
 cpython:with_curses=False

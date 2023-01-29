@@ -65,6 +65,11 @@ target_link_libraries(server PUBLIC
 add_executable(cyphesis
         server.cpp)
 
+#If Python has been built statically (as with Conan) we need to enable exports so the dynamic loading works.
+if (PYTHON_IS_STATIC)
+    set_property(TARGET cyphesis PROPERTY ENABLE_EXPORTS 1)
+endif()
+
 if (PostgreSQL_FOUND)
     target_compile_definitions(cyphesis PRIVATE POSTGRES_FOUND)
 endif (PostgreSQL_FOUND)

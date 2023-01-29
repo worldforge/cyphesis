@@ -140,7 +140,7 @@ void PhysicalDomainBenchmark::test_static_entities_no_move()
             long id = newId();
             std::stringstream ss;
             ss << "planted" << id;
-            Entity* entity = new Entity(ss.str(), id);
+            Entity* entity = new Entity(id);
             entity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
             entity->setType(rockType);
             entity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
@@ -200,7 +200,7 @@ void PhysicalDomainBenchmark::test_determinism()
             long id = newId();
             std::stringstream ss;
             ss << "free" << id;
-            Entity* freeEntity = new Entity(ss.str(), id);
+            Entity* freeEntity = new Entity(id);
             freeEntity->setProperty("mass", std::unique_ptr<PropertyBase>(massProp));
             freeEntity->setType(rockType);
             freeEntity->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(i, j, i + j);
@@ -266,7 +266,7 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
             long id = newId();
             std::stringstream ss;
             ss << "planted" << id;
-            Entity* plantedEntity = new Entity(ss.str(), id);
+            Entity* plantedEntity = new Entity(id);
             plantedEntity->setProperty(ModeProperty::property_name, std::unique_ptr<PropertyBase>(modePlantedProperty));
             plantedEntity->setType(rockType);
             plantedEntity->requirePropertyClassFixed<PositionProperty>().data() = WFMath::Point<3>(i, 0, j);
@@ -289,7 +289,7 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
         long id = newId();
         std::stringstream ss;
         ss << "observer" << id;
-        Entity* observerEntity = new Entity(ss.str(), id);
+        Entity* observerEntity = new Entity(id);
         observers.push_back(observerEntity);
         observerEntity->requirePropertyClassFixed<SolidProperty>().set(0);
         observerEntity->setType(humanType);

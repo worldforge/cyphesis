@@ -2,6 +2,7 @@ add_library(rulessimulationscripts
         ScriptUtils.cpp
         )
 target_link_libraries(rulessimulationscripts PUBLIC
+        common
         pycxx
         )
 
@@ -70,7 +71,18 @@ add_library(rulessimulation
 target_link_libraries(rulessimulation PUBLIC
         rulessimulationscripts
         common
+        ${mercator_LIBRARIES}
         ${BULLET_LIBRARIES}
+        )
+
+target_link_directories(rulessimulation PUBLIC
+        ${mercator_LIB_DIR}
+        ${BULLET_LIB_DIR}
+        )
+
+target_include_directories(rulessimulation PUBLIC
+        ${mercator_INCLUDE_DIR}
+        ${BULLET_INCLUDE_DIR}
         )
 
 add_subdirectory(python)
