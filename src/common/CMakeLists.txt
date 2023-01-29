@@ -55,6 +55,7 @@ target_link_libraries(common PUBLIC
         ${SigC++_LIBRARIES}
         remotery
         Boost::filesystem
+        libxdg-basedir::libxdg-basedir
         )
 target_include_directories(common PUBLIC
         ${GCRYPT_INCLUDE_DIR}
