@@ -144,7 +144,6 @@ int &_Py_OptimizeFlag();
 int &_Py_NoSiteFlag();
 int &_Py_TabcheckFlag();
 int &_Py_VerboseFlag();
-int &_Py_UnicodeFlag();
 
 void _XINCREF( PyObject *op );
 void _XDECREF( PyObject *op );

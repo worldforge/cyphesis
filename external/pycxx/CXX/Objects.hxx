@@ -1774,10 +1774,10 @@ namespace Py
     // Python strings return strings as individual elements.
     // I'll try having a class Char which is a String of length 1
     //
-    typedef std::basic_string<Py_UNICODE> unicodestring;
+    typedef std::basic_string<wchar_t> unicodestring;
     typedef std::basic_string<Py_UCS4> ucs4string;
 
-    extern Py_UNICODE unicode_null_string[1];
+    extern wchar_t unicode_null_string[1];
 
     class Byte: public Object
     {
@@ -1968,14 +1968,14 @@ namespace Py
             validate();
         }
 
-        Char( Py_UNICODE v )
+        Char( wchar_t v )
         : Object( PyUnicode_FromOrdinal( v ), true )
         {
             validate();
         }
 
         Char( const unicodestring &v )
-        : Object( PyUnicode_FromUnicode( const_cast<Py_UNICODE*>( v.data() ),1 ), true )
+        : Object(PyUnicode_FromWideChar( const_cast<wchar_t*>( v.data() ),1 ), true )
         {
             validate();
         }
@@ -1995,20 +1995,20 @@ namespace Py
 
         Char &operator=( const unicodestring &v )
         {
-            set( PyUnicode_FromUnicode( const_cast<Py_UNICODE*>( v.data() ), 1 ), true );
+            set( PyUnicode_FromWideChar( const_cast<wchar_t*>( v.data() ), 1 ), true );
             return *this;
         }
 
         Char &operator=( int v_ )
         {
-            Py_UNICODE v( static_cast<Py_UNICODE>( v_ ) );
-            set( PyUnicode_FromUnicode( &v, 1 ), true );
+            wchar_t v( static_cast<wchar_t>( v_ ) );
+            set( PyUnicode_FromWideChar( &v, 1 ), true );
             return *this;
         }
 
-        Char &operator=( Py_UNICODE v )
+        Char &operator=( wchar_t v )
         {
-            set( PyUnicode_FromUnicode( &v, 1 ), true );
+            set( PyUnicode_FromWideChar( &v, 1 ), true );
             return *this;
         }
 
@@ -2126,8 +2126,8 @@ namespace Py
         }
 #endif
 
-        String( const Py_UNICODE *s, int length )
-        : SeqBase<Char>( PyUnicode_FromUnicode( s, length ), true )
+        String( const wchar_t *s, int length )
+        : SeqBase<Char>( PyUnicode_FromWideChar( s, length ), true )
         {
             validate();
         }
@@ -2147,11 +2147,11 @@ namespace Py
 
         String &operator=( const unicodestring &v )
         {
-            set( PyUnicode_FromUnicode( const_cast<Py_UNICODE *>( v.data() ), v.length() ), true );
+            set( PyUnicode_FromWideChar( v.data() , v.length() ), true );
             return *this;
         }
 
-#if !defined( Py_UNICODE_WIDE )
+#if !defined( wchar_t_WIDE )
         String &operator=( const ucs4string &v )
         {
             set( PyUnicode_FromKindAndData( PyUnicode_4BYTE_KIND, reinterpret_cast<const Py_UCS4 *>( v.data() ), v.length() ), true );
@@ -2170,7 +2170,7 @@ namespace Py
             return PyUnicode_GET_LENGTH( ptr() );
         }
 
-        const Py_UNICODE *unicode_data() const
+        const wchar_t *unicode_data() const
         {
             return PyUnicode_AS_UNICODE( ptr() );
         }
