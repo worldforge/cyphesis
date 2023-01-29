@@ -53,6 +53,7 @@
 #include <rules/SolidProperty.h>
 
 #include "../stubs/common/stublog.h"
+#include "common/Monitors.h"
 
 using Atlas::Message::Element;
 using Atlas::Message::ListType;
@@ -347,6 +348,7 @@ void PhysicalDomainBenchmark::test_visibilityPerformance()
 
 int main()
 {
+    Monitors m;
     PhysicalDomainBenchmark t;
 
     return t.run();
