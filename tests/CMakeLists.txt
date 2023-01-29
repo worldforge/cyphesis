@@ -1,9 +1,5 @@
 add_definitions(-DTESTDATADIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
-add_library(stubnavigation
-        stubs/navigation/libstub.cpp
-        ../src/navigation/fastlz.c)
-
 if (AVAHI_FOUND)
     link_libraries(${AVAHI_LIBRARIES} -lavahi-common)
 endif (AVAHI_FOUND)
@@ -19,7 +15,7 @@ link_libraries(
         ${wfmath_LIBRARIES}
         ${Atlas_LIBRARIES}
         ${varconf_LIBRARIES}
-        ${SigC++_LIBRARIES}
+        sigc++::sigc++
         remotery
         Boost::filesystem
         readline::readline
@@ -34,7 +30,6 @@ link_directories(
         ${wfmath_LIBRARY_DIR}
         ${Atlas_LIBRARY_DIR}
         ${varconf_LIBRARY_DIR}
-        ${SigC++_LIBRARY_DIR}
 )
 
 include_directories(
@@ -43,7 +38,6 @@ include_directories(
         ${wfmath_INCLUDE_DIR}
         ${Atlas_INCLUDE_DIR}
         ${varconf_INCLUDE_DIR}
-        ${SigC++_INCLUDE_DIR}
         ${GCRYPT_INCLUDE_DIRS}
 )
 
@@ -53,6 +47,10 @@ if (SEGFAULT_LIBRARY)
     message(STATUS "Adding the SegFault library for nice stack traces for tests.")
     link_libraries(${SEGFAULT_LIBRARY})
 endif (SEGFAULT_LIBRARY)
+
+add_library(stubnavigation
+        stubs/navigation/libstub.cpp
+        ../src/navigation/fastlz.c)
 
 set(PYTHON_TESTS_LIBS
         rulesai_python

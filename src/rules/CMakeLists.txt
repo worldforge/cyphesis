@@ -19,19 +19,17 @@ add_library(rulesbase
 target_link_directories(rulesbase PUBLIC
         ${wfmath_LIBRARY_DIR}
         ${Atlas_LIBARY_DIR}
-        ${SigC++_LIBRARY_DIR}
         )
 target_link_libraries(rulesbase PUBLIC
         ${wfmath_LIBRARIES}
         ${Atlas_LIBRARIES}
-        ${SigC++_LIBRARIES}
+        sigc++::sigc++
         common
         )
 
 target_include_directories(rulesbase PUBLIC
         ${wfmath_INCLUDE_DIR}
         ${Atlas_INCLUDE_DIR}
-        ${SigC++_INCLUDE_DIR}
         )
 
 

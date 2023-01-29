@@ -67,7 +67,7 @@ find_package(varconf REQUIRED)
 find_package(mercator REQUIRED)
 find_package(wfmath REQUIRED)
 
-find_package(SigC++ 2.0 REQUIRED)
+find_package(sigc++ REQUIRED)
 find_package(libgcrypt 1.2 REQUIRED)
 find_package(Bullet 2.81 REQUIRED)
 

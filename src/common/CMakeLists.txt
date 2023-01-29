@@ -44,13 +44,12 @@ target_link_directories(common PUBLIC
         ${wfmath_LIBRARY_DIR}
         ${Atlas_LIBRARY_DIR}
         ${varconf_LIBRARY_DIR}
-        ${SigC++_LIBRARY_DIR}
         )
 target_link_libraries(common PUBLIC
         ${wfmath_LIBRARIES}
         ${Atlas_LIBRARIES}
         ${varconf_LIBRARIES}
-        ${SigC++_LIBRARIES}
+        sigc++::sigc++
         libgcrypt::libgcrypt
         remotery
         Boost::filesystem
@@ -60,7 +59,6 @@ target_include_directories(common PUBLIC
         ${wfmath_INCLUDE_DIR}
         ${Atlas_INCLUDE_DIR}
         ${varconf_INCLUDE_DIR}
-        ${SigC++_INCLUDE_DIR}
         )
 
 
