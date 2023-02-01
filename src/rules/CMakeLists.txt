@@ -16,20 +16,11 @@ add_library(rulesbase
         Modifier.cpp
         PhysicalProperties.cpp)
 
-target_link_directories(rulesbase PUBLIC
-        ${wfmath_LIBRARY_DIR}
-        ${Atlas_LIBARY_DIR}
-        )
 target_link_libraries(rulesbase PUBLIC
-        ${wfmath_LIBRARIES}
-        ${Atlas_LIBRARIES}
+        wfmath::wfmath
+        Atlas::Atlas
         sigc++::sigc++
         common
-        )
-
-target_include_directories(rulesbase PUBLIC
-        ${wfmath_INCLUDE_DIR}
-        ${Atlas_INCLUDE_DIR}
         )
 
 

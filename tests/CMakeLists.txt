@@ -11,10 +11,10 @@ endif (PostgreSQL_FOUND)
 link_libraries(
         pycxx
         ${BULLET_LIBRARIES}
-        ${mercator_LIBRARIES}
-        ${wfmath_LIBRARIES}
-        ${Atlas_LIBRARIES}
-        ${varconf_LIBRARIES}
+        mercator::mercator
+        wfmath::wfmath
+        Atlas::Atlas
+        varconf::varconf
         sigc++::sigc++
         remotery
         Boost::filesystem
@@ -26,19 +26,10 @@ link_libraries(
 
 link_directories(
         ${BULLET_LIBRARY_DIR}
-        ${mercator_LIBRARY_DIR}
-        ${wfmath_LIBRARY_DIR}
-        ${Atlas_LIBRARY_DIR}
-        ${varconf_LIBRARY_DIR}
 )
 
 include_directories(
         ${BULLET_INCLUDE_DIR}
-        ${mercator_INCLUDE_DIR}
-        ${wfmath_INCLUDE_DIR}
-        ${Atlas_INCLUDE_DIR}
-        ${varconf_INCLUDE_DIR}
-        ${GCRYPT_INCLUDE_DIRS}
 )
 
 #On platforms which supports it, link the "libSegFault" library which provides nice stack traces

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.23)
 
 project(Cyphesis)
 #Append paths to make Conan work. This will play nicely with the cmake_find_package generator.
@@ -62,12 +62,12 @@ endif ()
 
 find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 
-find_package(Atlas REQUIRED)
-find_package(varconf REQUIRED)
-find_package(mercator REQUIRED)
-find_package(wfmath REQUIRED)
+find_package(Atlas 0.7.0 REQUIRED)
+find_package(varconf 1.0.3 REQUIRED)
+find_package(mercator 0.4.0 REQUIRED)
+find_package(wfmath 1.0.3 REQUIRED)
 
-find_package(sigc++ REQUIRED)
+find_package(sigc++ 2.0 REQUIRED)
 find_package(libgcrypt 1.2 REQUIRED)
 find_package(Bullet 2.81 REQUIRED)
 

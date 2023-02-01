@@ -40,26 +40,22 @@ add_library(common
         FormattedXMLWriter.cpp
         )
 
-target_link_directories(common PUBLIC
-        ${wfmath_LIBRARY_DIR}
-        ${Atlas_LIBRARY_DIR}
-        ${varconf_LIBRARY_DIR}
-        )
 target_link_libraries(common PUBLIC
-        ${wfmath_LIBRARIES}
-        ${Atlas_LIBRARIES}
-        ${varconf_LIBRARIES}
+        wfmath::wfmath
+        Atlas::Atlas
+        Atlas::AtlasCodecs
+        Atlas::AtlasNet
+        Atlas::AtlasMessage
+        Atlas::AtlasObjects
+        Atlas::AtlasFilters
+        varconf::varconf
         sigc++::sigc++
         libgcrypt::libgcrypt
         remotery
         Boost::filesystem
         libxdg-basedir::libxdg-basedir
         )
-target_include_directories(common PUBLIC
-        ${wfmath_INCLUDE_DIR}
-        ${Atlas_INCLUDE_DIR}
-        ${varconf_INCLUDE_DIR}
-        )
+
 
 
 target_compile_definitions(common PUBLIC
