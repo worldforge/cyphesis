@@ -14,6 +14,11 @@ link_libraries(
         mercator::mercator
         wfmath::wfmath
         Atlas::Atlas
+        Atlas::AtlasCodecs
+        Atlas::AtlasNet
+        Atlas::AtlasMessage
+        Atlas::AtlasObjects
+        Atlas::AtlasFilters
         varconf::varconf
         sigc++::sigc++
         remotery
