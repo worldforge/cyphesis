@@ -102,7 +102,7 @@
 //#define STUB_Steering_getPath
   const std::vector<WFMath::Point<3>>& Steering::getPath() const
   {
-    static std::vector<WFMath::Point<3>> instance; return instance;
+    static std::vector<WFMath::Point<3>> _static_instance; return _static_instance;
   }
 #endif //STUB_Steering_getPath
 

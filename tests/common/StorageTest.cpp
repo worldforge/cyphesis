@@ -25,7 +25,7 @@
 
 #include "common/Storage.h"
 
-#include "common/log.h"
+#include "common/system.h"
 #include "../DatabaseNull.h"
 
 #include <cassert>

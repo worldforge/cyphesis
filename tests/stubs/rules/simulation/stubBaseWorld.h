@@ -124,7 +124,7 @@
 //#define STUB_BaseWorld_getSpawnEntities
   const std::set<std::string>& BaseWorld::getSpawnEntities() const
   {
-    static std::set<std::string> instance; return instance;
+    static std::set<std::string> _static_instance; return _static_instance;
   }
 #endif //STUB_BaseWorld_getSpawnEntities
 

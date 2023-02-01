@@ -51,22 +51,22 @@ using WFMath::RotBox;
 using WFMath::RotMatrix;
 using WFMath::Vector;
 
-void test_conversion(Shape& s)
-{
-    Atlas::Message::MapType data;
+namespace {
+    void test_conversion(Shape &s) {
+        Atlas::Message::MapType data;
 
-    s.toAtlas(data);
-    assert(!data.empty());
-    assert(data.find("type") != data.end());
-    assert(data["type"] != "unknown");
+        s.toAtlas(data);
+        assert(!data.empty());
+        assert(data.find("type") != data.end());
+        assert(data["type"] != "unknown");
 
-    auto copy = Shape::newFromAtlas(data);
-    assert(copy);
-    std::cout << "A: " << s << std::endl
-              << "B: " << *copy << std::endl;
-    assert(s == *copy);
+        auto copy = Shape::newFromAtlas(data);
+        assert(copy);
+        std::cout << "A: " << s << std::endl
+                  << "B: " << *copy << std::endl;
+        assert(s == *copy);
+    }
 }
-
 // FIXME Use a C++11 template typedef once the are supported
 template<int dim> class LinearCourse : public Course<dim, WFMath::Line>
 {

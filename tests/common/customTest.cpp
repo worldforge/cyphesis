@@ -30,7 +30,9 @@
 
 using Atlas::Objects::Root;
 
-Atlas::Objects::Factories factories;
+namespace {
+    Atlas::Objects::Factories factories;
+}
 
 int main()
 {

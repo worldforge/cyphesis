@@ -12,7 +12,7 @@
   template <typename T>
   const std::string& ScriptKit<T>::package() const
   {
-    static std::string instance; return instance;
+    static std::string _static_instance; return _static_instance;
   }
 #endif //STUB_ScriptKit_package
 

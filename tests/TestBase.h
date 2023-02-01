@@ -91,10 +91,9 @@ int TestBase::run()
 
             std::cerr << "Test \"" << (*I).name << "\" failed:" << std::endl;
 
-            std::list<std::string>::const_iterator I = m_errorReports.begin();
-            std::list<std::string>::const_iterator Iend = m_errorReports.end();
-            for (; I != Iend; ++I) {
-                std::cerr << *I << std::endl;
+
+            for (const auto& report : m_errorReports) {
+                std::cerr << report << std::endl;
             }
 
             m_errorReports.clear();

@@ -12,7 +12,7 @@
 //#define STUB_LocatedEntity_immutables
   const std::set<std::string>& LocatedEntity::immutables()
   {
-    static std::set<std::string> instance; return instance;
+    static std::set<std::string> _static_instance; return _static_instance;
   }
 #endif //STUB_LocatedEntity_immutables
 

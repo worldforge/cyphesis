@@ -42,79 +42,78 @@ static void signal_emitted()
 {
     emitted = true;
 }
+namespace {
+    void checkSignal() {
+        {
+            // Check the assignment operator causes the signal to fire
+            emitted = false;
 
-void checkSignal()
-{
-    {
-        // Check the assignment operator causes the signal to fire
-        emitted = false;
+            Entity e(1);
+            WeakEntityRef ref;
 
-        Entity e(1);
-        WeakEntityRef ref;
+            assert(emitted == false);
 
-        assert(emitted == false);
+            ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
 
-        ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
+            assert(emitted == false);
 
-        assert(emitted == false);
+            ref = WeakEntityRef(&e);
 
-        ref = WeakEntityRef(&e);
+            assert(ref.get() == &e);
+            assert(emitted == true);
+        }
 
-        assert(ref.get() == &e);
-        assert(emitted == true);
-    }
+        {
+            // Check the assignment operator does not cause the signal to fire
+            // the the pointer is unchanged
+            emitted = false;
 
-    {
-        // Check the assignment operator does not cause the signal to fire
-        // the the pointer is unchanged
-        emitted = false;
+            Entity e(1);
+            WeakEntityRef ref(&e);
 
-        Entity e(1);
-        WeakEntityRef ref(&e);
+            assert(emitted == false);
 
-        assert(emitted == false);
+            ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
 
-        ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
+            assert(emitted == false);
 
-        assert(emitted == false);
+            ref = WeakEntityRef(&e);
 
-        ref = WeakEntityRef(&e);
+            assert(ref.get() == &e);
+            assert(emitted == false);
+        }
 
-        assert(ref.get() == &e);
-        assert(emitted == false);
-    }
+        {
+            // Check that destroying the Entity makes the reference null.
+            emitted = false;
 
-    {
-        // Check that destroying the Entity makes the reference null.
-        emitted = false;
+            Entity e(1);
+            Ref<Entity> container = new Entity(2);
 
-        Entity e(1);
-        Ref<Entity>  container = new Entity(2);
+            // Set the location of the entity being tested, as destroy requires it.
+            e.m_parent = container.get();
+            // Make sure the container has a contains structure, as destroy
+            // requires it.
+            container->m_contains.reset(new LocatedEntitySet);
 
-        // Set the location of the entity being tested, as destroy requires it.
-        e.m_parent = container.get();
-        // Make sure the container has a contains structure, as destroy
-        // requires it.
-        container->m_contains.reset(new LocatedEntitySet);
+            WeakEntityRef ref(&e);
 
-        WeakEntityRef ref(&e);
+            assert(ref);
+            assert(emitted == false);
 
-        assert(ref);
-        assert(emitted == false);
+            ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
 
-        ref.Changed.connect(sigc::ptr_fun(&signal_emitted));
+            assert(ref.get() == &e);
+            assert(emitted == false);
 
-        assert(ref.get() == &e);
-        assert(emitted == false);
+            e.destroy();
 
-        e.destroy();
-
-        assert(ref.get() == 0);
-        assert(emitted == true);
-        assert(!ref);
+            assert(ref.get() == 0);
+            assert(emitted == true);
+            assert(!ref);
+        }
     }
 }
-
 int main()
 {
     {

@@ -65,9 +65,9 @@ using Atlas::Message::ListType;
 using Atlas::Message::MapType;
 using Atlas::Objects::Entity::Anonymous;
 using Atlas::Objects::Root;
-
-Atlas::Objects::Factories factories;
-
+namespace {
+    Atlas::Objects::Factories factories;
+}
 class EntityBuildertest : public Cyphesis::TestBase
 {
     private:

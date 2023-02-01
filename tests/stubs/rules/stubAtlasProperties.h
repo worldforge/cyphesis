@@ -110,7 +110,7 @@
 //#define STUB_LocationProperty_data
   const std::string& LocationProperty::data() const
   {
-    static std::string instance; return instance;
+    static std::string _static_instance; return _static_instance;
   }
 #endif //STUB_LocationProperty_data
 

@@ -250,14 +250,14 @@ void Inheritancetest::test_updateClass_nonexist()
 void Inheritancetest::test_updateClass_operation()
 {
     Inheritance & i = Inheritance::instance();
+    {
+        Root r;
+        r->setId("squigglymuff");
+        r->setParent("root_operation");
+        ASSERT_NOT_NULL(i.addChild(r));
 
-    Root r;
-    r->setId("squigglymuff");
-    r->setParent("root_operation");
-    ASSERT_NOT_NULL(i.addChild(r));
-
-    ASSERT_TRUE(i.hasClass("squigglymuff"));
-
+        ASSERT_TRUE(i.hasClass("squigglymuff"));
+    }
     {
         Root r;
 
@@ -272,12 +272,12 @@ void Inheritancetest::test_updateClass_operation()
 void Inheritancetest::test_updateClass_change_parent()
 {
     Inheritance & i = Inheritance::instance();
-
-    Root r;
-    r->setId("squigglymuff");
-    r->setParent("root_operation");
-    ASSERT_NOT_NULL(i.addChild(r));
-
+    {
+        Root r;
+        r->setId("squigglymuff");
+        r->setParent("root_operation");
+        ASSERT_NOT_NULL(i.addChild(r));
+    }
     {
         Root r;
 

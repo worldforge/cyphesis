@@ -55,8 +55,8 @@ struct RefTest : public Cyphesis::TestBase
     {
         bool& delete_marker;
 
-        RefCountedDeleteMarker(long& count_ref, bool& delete_marker)
-                : RefCounted(count_ref), delete_marker(delete_marker)
+        RefCountedDeleteMarker(long& count_ref, bool& delete_marker_)
+                : RefCounted(count_ref), delete_marker(delete_marker_)
         {
 
         }

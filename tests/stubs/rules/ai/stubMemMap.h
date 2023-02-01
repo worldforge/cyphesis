@@ -164,7 +164,7 @@
 //#define STUB_MemMap_getEntityRelatedMemory
   const std::map<std::string, std::map<std::string, Atlas::Message::Element>>& MemMap::getEntityRelatedMemory() const
   {
-    static std::map<std::string, std::map<std::string, Atlas::Message::Element>> instance; return instance;
+    static std::map<std::string, std::map<std::string, Atlas::Message::Element>> _static_instance; return _static_instance;
   }
 #endif //STUB_MemMap_getEntityRelatedMemory
 

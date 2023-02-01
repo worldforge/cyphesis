@@ -100,7 +100,7 @@
 //#define STUB_MindsProperty_getMinds
   const std::vector<Router*>& MindsProperty::getMinds() const
   {
-    static std::vector<Router*> instance; return instance;
+    static std::vector<Router*> _static_instance; return _static_instance;
   }
 #endif //STUB_MindsProperty_getMinds
 

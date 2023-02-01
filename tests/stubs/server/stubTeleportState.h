@@ -67,7 +67,7 @@
 //#define STUB_TeleportState_getPossessKey
   const std::string& TeleportState::getPossessKey() const
   {
-    static std::string instance; return instance;
+    static std::string _static_instance; return _static_instance;
   }
 #endif //STUB_TeleportState_getPossessKey
 

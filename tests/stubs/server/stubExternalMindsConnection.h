@@ -36,7 +36,7 @@
 //#define STUB_ExternalMindsConnection_getRouterId
   const std::string& ExternalMindsConnection::getRouterId() const
   {
-    static std::string instance; return instance;
+    static std::string _static_instance; return _static_instance;
   }
 #endif //STUB_ExternalMindsConnection_getRouterId
 

@@ -109,12 +109,12 @@ def _GenerateMethods(output_lines, source, class_node):
                         return_statement = 'return false;'
                     elif node.return_type.name in ['std::string', 'char*', 'const char*']:
                         if node.return_type.reference:
-                            return_statement = 'static %s instance; return instance;' % raw_return_type
+                            return_statement = 'static %s _static_instance; return _static_instance;' % raw_return_type
                         else:
                             return_statement = 'return "";'
                     elif node.return_type.name in ['std::vector', 'std::set', 'std::list', 'std::map']:
                         if node.return_type.reference:
-                            return_statement = 'static %s instance; return instance;' % raw_return_type
+                            return_statement = 'static %s _static_instance; return _static_instance;' % raw_return_type
                         else:
                             return_statement = 'return %s();' % raw_return_type
                     else:

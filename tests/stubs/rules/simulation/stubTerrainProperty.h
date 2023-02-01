@@ -107,7 +107,7 @@
 //#define STUB_TerrainProperty_getSurfaceNames
   const std::vector<std::string>& TerrainProperty::getSurfaceNames(const LocatedEntity& entity) const
   {
-    static std::vector<std::string> instance; return instance;
+    static std::vector<std::string> _static_instance; return _static_instance;
   }
 #endif //STUB_TerrainProperty_getSurfaceNames
 

@@ -37,7 +37,7 @@ namespace EntityFilter {
 //#define STUB_Filter_getDeclaration
   const std::string& Filter::getDeclaration() const
   {
-    static std::string instance; return instance;
+    static std::string _static_instance; return _static_instance;
   }
 #endif //STUB_Filter_getDeclaration
 
