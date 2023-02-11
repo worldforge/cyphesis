@@ -47,8 +47,11 @@
 #include "pycxx/CXX/Objects.hxx"
 #include "../NullPropertyManager.h"
 
+namespace
+{
 Atlas::Objects::Factories factories;
 Inheritance inheritance(factories);
+}
 
 static bool stub_make_fail = false;
 static bool stub_look_fail = false;
