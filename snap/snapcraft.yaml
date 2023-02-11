@@ -1,5 +1,5 @@
 name: cyphesis
-base: core18
+base: core22
 version: git
 title: Cyphesis MMORPG server
 summary: Server for Worldforge MMORPGs
@@ -92,10 +92,10 @@ parts:
             - libboost-system-dev
             - g++
         stage-packages:
-            - libboost-filesystem1.65.1
-            - libboost-system1.65.1
-            - libbullet2.87
-            - libpython3.6
+            - libboost-filesystem1.74.0
+            - libboost-system1.74.0
+            - libbullet3.06
+            - libpython3.10
             - libsigc++-2.0-0v5
             - libxdg-basedir1
         after:
