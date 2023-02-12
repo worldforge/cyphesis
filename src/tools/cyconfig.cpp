@@ -33,6 +33,8 @@
 #include <cstring>
 
 #include <cassert>
+#include <basedir.h>
+#include <boost/filesystem/path.hpp>
 
 static int install(int argc, char ** argv)
 {
@@ -68,14 +70,11 @@ static int runCommand(int argc, char ** argv)
 
 int main(int argc, char ** argv)
 {
-    char * home;
-    if ((home = getenv("HOME")) == nullptr) {
-        std::cerr << "ERROR: Unable to get home directory." << std::endl << std::flush;
-        return 1;
-    }
-    std::string homeDirConfig = std::string(home) + "/.cyphesis.vconf";
+    const auto* configHome = xdgConfigHome(nullptr);
+
+    auto homeDirConfig= boost::filesystem::path(configHome) / "cyphesis.vconf";
     auto config_instance = varconf::Config::inst();
-    config_instance->readFromFile(homeDirConfig);
+    config_instance->readFromFile(homeDirConfig.string());
     int optindex = config_instance->getCmdline(argc, argv);
 
     if (config_instance->findItem("", "version")) {
@@ -92,6 +91,6 @@ int main(int argc, char ** argv)
         runCommand(argc - optindex, &argv[optindex]);
     }
 
-    config_instance->writeToFile(homeDirConfig, (varconf::Scope)(varconf::USER | varconf::INSTANCE));
+    config_instance->writeToFile(homeDirConfig.string(), (varconf::Scope)(varconf::USER | varconf::INSTANCE));
     return 0;
 }

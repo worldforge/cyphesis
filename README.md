@@ -120,15 +120,15 @@ is called cyphesis.vconf, and server settings are stored in the [cyphesis]
 section. The file can be found in the cyphesis source directory, and is
 installed into the sysconf directory, which is by default /etc. Settings
 in this configuration file can be overridden in on the command line, and
-once overridden they will be stored permanently in .cyphesis.vconf in the
-users home directory. In order to drop back to the default settings,
+once overridden they will be stored permanently in ~/.config/cyphesis.vconf.
+In order to drop back to the default settings,
 remove this file. Settings can be incrementally overridden in
-~/.cyphesis.vconf non-interactively by passing them as command line
+cyphesis.vconf non-interactively by passing them as command line
 options to cyconf. cyconf will store any settings it is given in
-~/.cyphesis.vconf and then exited. If you are planning to have multiple
+cyphesis.vconf and then exited. If you are planning to have multiple
 servers run on the same system at the same or different times, the easiest
 way to handle the differences in configuration would be to use the
-~/.cyphesis.vconf file, and avoid modifying the master configuration file.
+cyphesis.vconf file, and avoid modifying the master configuration file.
 
 As an example, the ruleset to be used is set in cyphesis.vconf as follows:
 

@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -521,30 +521,28 @@ int loadConfig(int argc, char** argv, int usage)
     Options::instance()->check_config(test_cmdline, usage);
 
     // See if the user has set the install directory on the command line
-    bool home_dir_config = false;
-    char* home = getenv("HOME");
+    boost::filesystem::path homeConfigPath{};
+    const auto* configHome = xdgConfigHome(nullptr);
 
     // Read in only the users settings, and the commandline settings.
-    if (home != nullptr && boost::filesystem::exists(std::string(home) + "/.cyphesis.vconf")) {
-        log(INFO, String::compose("Reading settings from %1", std::string(home) + "/.cyphesis.vconf"));
-        home_dir_config = global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
-        if (!home_dir_config) {
-            //Not being able to read from the local config file, if it exists, should result in fail fast.
-            return CONFIG_ERROR;
+    if (configHome) {
+        homeConfigPath = boost::filesystem::path(configHome) / "cyphesis.vconf";
+        if (boost::filesystem::exists(homeConfigPath)) {
+            log(INFO, String::compose("Reading settings from %1", homeConfigPath.string()));
+            auto home_dir_config = global_conf->readFromFile(homeConfigPath.string());
+            if (!home_dir_config) {
+                // Not being able to read from the local config file, if it exists, should result in fail fast.
+                return CONFIG_ERROR;
+            }
         }
     }
 
     //Set the var_directory by default to the XDG Data Home directory.
     //This can be overridden either by setting the $XDG_DATA_HOME environment variable, or the "vardir" config option.
-    xdgHandle baseDirHandle{};
-    if (!xdgInitHandle(&baseDirHandle)) {
-        return CONFIG_ERROR;
-    }
-    const auto* dataHome = xdgDataHome(&baseDirHandle);
+    const auto* dataHome = xdgDataHome(nullptr);
     if (dataHome) {
         var_directory = std::string(dataHome) + "/cyphesis";
     }
-    xdgWipeHandle(&baseDirHandle);
 
 
     global_conf->getCmdline(argc, argv);
@@ -582,7 +580,7 @@ int loadConfig(int argc, char** argv, int usage)
         log(ERROR, String::compose("Unable to read main config file \"%1\"",
                                    etc_directory +
                                    "/cyphesis/cyphesis.vconf"));
-        if (home_dir_config) {
+        if (!homeConfigPath.empty()) {
             log(INFO, "Try removing .cyphesis.vconf from your home directory as it may specify an invalid installation directory, and then restart cyphesis.");
         } else {
             log(INFO, "Please ensure that cyphesis has been installed correctly.");
@@ -591,13 +589,15 @@ int loadConfig(int argc, char** argv, int usage)
         return CONFIG_ERROR;
     }
 
-    //Here we're reading config setting from the environment again, just like we did a couple of lines before. This is becuase we want
+    //Home config settings should override global settings, so we'll read this file again.
+    if (!homeConfigPath.empty() && boost::filesystem::exists(homeConfigPath)) {
+        global_conf->readFromFile(homeConfigPath.string());
+    }
+
+    //Here we're reading config setting from the environment again, just like we did a couple of lines before. This is because we want
     //environment settings to override config file settings.
     set_config_from_environment();
 
-    if (home_dir_config) {
-        global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
-    }
 
     auto optindex = global_conf->getCmdline(argc, argv);
 
@@ -646,12 +646,12 @@ int loadConfig(int argc, char** argv, int usage)
 
 void updateUserConfiguration()
 {
-    char* home = getenv("HOME");
+    const auto* configHome = xdgConfigHome(nullptr);
 
     // Write out any changes that have been overridden at user scope. It
     // may be a good idea to do this at shutdown.
-    if (home != nullptr) {
-        global_conf->writeToFile(std::string(home) + "/.cyphesis.vconf", varconf::USER);
+    if (configHome != nullptr) {
+        global_conf->writeToFile((boost::filesystem::path(configHome) / "cyphesis.vconf").string(), varconf::USER);
     }
 
 }
