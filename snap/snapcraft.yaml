@@ -14,36 +14,65 @@ license: GPL-2.0
 apps:
     cyphesis:
         #daemon: simple
-        command: bin/cyphesis --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+        command: bin/cyphesis
+        environment:
+            WF_cyphesis_confdir: "$SNAP/etc"
+            WF_cyphesis_vardir: "$SNAP_USER_COMMON"
+            WF_cyphesis_directory: "$SNAP/share"
+            WF_cyphesis_autoimport: "$SNAP/share/worldforge/worlds/deeds/braga/world.xml"
+            WF_cyphesis_bindir: "$SNAP/bin"
         #listen-stream: "[::]:6767"
         plugs:
             - network
             - network-bind
     cypasswd:
-        command: bin/cypasswd --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+        command: bin/cypasswd
+        environment:
+            WF_cyphesis_confdir: "$SNAP/etc"
+            WF_cyphesis_vardir: "$SNAP_USER_COMMON"
+            WF_cyphesis_directory: "$SNAP/share"
+            WF_cyphesis_bindir: "$SNAP/bin"
     cycmd:
-        command: bin/cycmd --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+        command: bin/cycmd
+        environment:
+            WF_cyphesis_confdir: "$SNAP/etc"
+            WF_cyphesis_vardir: "$SNAP_USER_COMMON"
+            WF_cyphesis_directory: "$SNAP/share"
+            WF_cyphesis_bindir: "$SNAP/bin"
     cydb:
-        command: bin/cydb --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+        command: bin/cydb
+        environment:
+            WF_cyphesis_confdir: "$SNAP/etc"
+            WF_cyphesis_vardir: "$SNAP_USER_COMMON"
+            WF_cyphesis_directory: "$SNAP/share"
+            WF_cyphesis_bindir: "$SNAP/bin"
     cyaiclient:
-        command: bin/cyaiclient --cyphesis:confdir=$SNAP/etc --cyphesis:vardir=$SNAP_USER_COMMON --cyphesis:directory=$SNAP/share --cyphesis:autoimport=$SNAP/share/worldforge/worlds/deeds/braga/world.xml --cyphesis:bindir=$SNAP/bin
+        command: bin/cyaiclient
+        environment:
+            WF_cyphesis_confdir: "$SNAP/etc"
+            WF_cyphesis_vardir: "$SNAP_USER_COMMON"
+            WF_cyphesis_directory: "$SNAP/share"
+            WF_cyphesis_bindir: "$SNAP/bin"
 
 parts:
     wfmath:
         source: https://github.com/worldforge/wfmath.git
         plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
             - g++
 
     atlas:
         source: https://github.com/worldforge/atlas-cpp.git
         plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
             - g++
 
     varconf:
         source: https://github.com/worldforge/varconf.git
         plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
             - g++
             - libsigc++-2.0-dev
@@ -53,6 +82,7 @@ parts:
     mercator:
         source: https://github.com/worldforge/mercator.git
         plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
             - g++
         after:
@@ -60,6 +90,7 @@ parts:
     worlds:
         source: https://github.com/worldforge/worlds.git
         plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
 
     media:
         build-packages:
@@ -81,6 +112,7 @@ parts:
     cyphesis:
         source: .
         plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
             - python3-dev
             - libsqlite3-dev
@@ -90,6 +122,7 @@ parts:
             - libreadline-dev
             - libboost-filesystem-dev
             - libboost-system-dev
+            - libbz2-dev
             - g++
         stage-packages:
             - libboost-filesystem1.74.0

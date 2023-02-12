@@ -114,7 +114,7 @@ of the rest of these instructions.
 ## Usage and configuration
 
 The main server binary is called cyphesis. Its command line arguments and
-configuration are managed by varconf, which means options can be set in
+configuration are managed by "varconf", which means options can be set in
 configuration files and on the command line. The main configuration file
 is called cyphesis.vconf, and server settings are stored in the [cyphesis]
 section. The file can be found in the cyphesis source directory, and is
@@ -143,6 +143,10 @@ option:
 ```
    --cyphesis:ruleset=werewolf
 ```
+
+It's also possible to specify settings using environment variables. They must be prefixed by "WF_" and first specify the
+section and then the key, separated by "_". For example, "WF_cyphesis_bindir=/foo/bar" would set the item "bindir" in
+the "cyphesis" section to "/foo/bar".
 
 For more details of varconf usage see the Varconf documentation. For full
 details on configuraton options for cyphesis, see the cyphesis(1) man

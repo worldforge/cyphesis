@@ -465,6 +465,39 @@ unixsock_config_register::unixsock_config_register(std::string& var,
 }
 
 void readInstanceConfiguration(const std::string& section);
+namespace {
+    /**
+     * Reads environment variables that start with "WF_" and inject into Varconf.
+     *
+     * The environment variables uses "_" as a separator between "section" and "key", and are case sensitive.
+     * For example, "WF_cyphesis_bindir=/foo/bar" would set the item "bindir" in the "cyphesis" section to "/foo/bar".
+     */
+    void set_config_from_environment() {
+        const std::string prefix = "WF_";
+
+        //We're here accessing the magical variable "environ" that is globally available in all POSIX processes.
+        for (size_t i = 0; environ[i] != nullptr; i++) {
+            const std::string env = environ[i];
+
+            if (env.substr(0, prefix.size()) == prefix) {
+                auto eq_pos = env.find('=');
+
+
+                if (eq_pos != std::string::npos) {
+                    auto fullname = env.substr(prefix.size(), (eq_pos - prefix.size()));
+                    auto separatorPos = fullname.find('_');
+                    if (separatorPos != std::string::npos) {
+                        auto section = fullname.substr(0, separatorPos);
+                        auto name = fullname.substr(separatorPos + 1);
+                        auto value = env.substr((eq_pos + 1), (env.size() - (eq_pos + 1)));
+                        global_conf->setItem(section, name, value, varconf::INSTANCE);
+                    }
+                }
+
+            }
+        }
+    }
+}
 
 int loadConfig(int argc, char** argv, int usage)
 {
@@ -504,11 +537,10 @@ int loadConfig(int argc, char** argv, int usage)
     //Set the var_directory by default to the XDG Data Home directory.
     //This can be overridden either by setting the $XDG_DATA_HOME environment variable, or the "vardir" config option.
     xdgHandle baseDirHandle{};
-    boost::filesystem::path path;
     if (!xdgInitHandle(&baseDirHandle)) {
         return CONFIG_ERROR;
     }
-    auto dataHome = xdgDataHome(&baseDirHandle);
+    const auto* dataHome = xdgDataHome(&baseDirHandle);
     if (dataHome) {
         var_directory = std::string(dataHome) + "/cyphesis";
     }
@@ -532,13 +564,18 @@ int loadConfig(int argc, char** argv, int usage)
         getinstallprefix();
     }
 
+    //Read config data from environment, since this might instruct us to read the config file from a specific location.
+    //Note that we'll do this once again after we've loaded the config file, since we want environment settings to override
+    //config file settings.
+    set_config_from_environment();
+
     // Check if the config directory has been overridden at this point, as if
     // it has, that will affect loading the main config.
     readConfigItem("cyphesis", "confdir", etc_directory);
 
     // Load up the rest of the system config file, and then ensure that
     // settings are overridden in the users config file, and the command line
-    bool main_config = global_conf->readFromFile(etc_directory +
+    auto main_config = global_conf->readFromFile(etc_directory +
                                                  "/cyphesis/cyphesis.vconf",
                                                  varconf::GLOBAL);
     if (!main_config) {
@@ -553,11 +590,16 @@ int loadConfig(int argc, char** argv, int usage)
         //We should fail if we can't read the config file.
         return CONFIG_ERROR;
     }
+
+    //Here we're reading config setting from the environment again, just like we did a couple of lines before. This is becuase we want
+    //environment settings to override config file settings.
+    set_config_from_environment();
+
     if (home_dir_config) {
         global_conf->readFromFile(std::string(home) + "/.cyphesis.vconf");
     }
 
-    int optindex = global_conf->getCmdline(argc, argv);
+    auto optindex = global_conf->getCmdline(argc, argv);
 
     Options::instance()->check_config(*global_conf);
 
@@ -581,8 +623,8 @@ int loadConfig(int argc, char** argv, int usage)
     Options* options = Options::instance();
 
 
-    for (auto& section_entry : options->sectionMap()) {
-        for (auto& entry: section_entry.second) {
+    for (const auto& section_entry : options->sectionMap()) {
+        for (const auto& entry: section_entry.second) {
             if (global_conf->findItem(section_entry.first, entry.first)) {
                 entry.second->read(global_conf->getItem(section_entry.first, entry.first));
             } else {
@@ -593,8 +635,8 @@ int loadConfig(int argc, char** argv, int usage)
 
     readInstanceConfiguration(instance);
 
-    for (auto& section_entry : options->sectionMap()) {
-        for (auto& entry: section_entry.second) {
+    for (const auto& section_entry : options->sectionMap()) {
+        for (const auto& entry: section_entry.second) {
             entry.second->postProcess();
         }
     }
