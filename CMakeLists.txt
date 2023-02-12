@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.12)
 
 project(Cyphesis)
 #Append paths to make Conan work. This will play nicely with the cmake_find_package generator.
