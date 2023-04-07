@@ -31,6 +31,9 @@ msheartbeat=240
 # as a pipe delimited list
 metastats="clients|entities|version|ruleset|buildid"
 
+#If enabled, it will be possible to see runtime stats of the server using Remotery.
+remotery="false"
+
 # Run in daemon mode
 daemon="false"
 # Run at an increased nice level
