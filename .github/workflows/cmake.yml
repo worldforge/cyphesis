@@ -1,105 +1,85 @@
 name: Build all
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
+    workflow_dispatch:
+    push:
+        branches:
+            - master
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-  # This makes it correctly use C++11 API on GCC by default.
-  CONAN_V2_MODE: 1
-  CONAN_REVISIONS_ENABLED: 1
-  CONAN_SCM_TO_CONANDATA: 1
-  CONAN_SYSREQUIRES_MODE: enabled
-  CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
-  CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+    CONAN_REVISIONS_ENABLED: 1
+    CONAN_SCM_TO_CONANDATA: 1
+    CONAN_SYSREQUIRES_MODE: enabled
+    CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+    CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+    PROFILE_CONAN: conan-release
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04 ]
+    build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ ubuntu-20.04, ubuntu-22.04 ]
 
-    steps:
-      - uses: actions/checkout@v3.3.0
+        steps:
+            -   uses: actions/checkout@v3.3.0
 
-      - name: Install tools
-        shell: bash
-        run: |
-          if [[ "$ImageOS" == "macos1015" ]]; then
-            brew install autoconf automake
-          else
-            sudo apt install ccache
-          fi
+            -   name: Install tools
+                shell: bash
+                run: |
+                    if [[ "$ImageOS" == "macos1015" ]]; then
+                      brew install autoconf automake
+                    else
+                      sudo apt install ccache
+                    fi
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          cache: 'pip'
+            -   uses: actions/setup-python@v4
+                with:
+                    python-version: '3.9'
+                    cache: 'pip'
 
-      - name: Install Conan
-        shell: bash
-        run: |
-          pip install -r .github/workflows/requirements.txt
-          conan --version
-          conan user
-          conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-          conan profile new default --detect
+            -   name: Install Conan
+                shell: bash
+                run: |
+                    pip install -r .github/workflows/requirements.txt
+                    conan profile detect
+                    conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
 
-      - name: Create Build Environment
-        run: cmake -E make_directory ${{github.workspace}}/build
+            -   name: Have Conan install packages
+                shell: bash
+                run: |
+                    export PATH=~/.local/bin:$PATH
+                    conan install . -pr default --build=missing --update --output-folder=build_ci -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+                    if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
+                      conan remote login worldforge $CONAN_LOGIN_USERNAME -p $CONAN_PASSWORD
+                      conan upload "*" -r worldforge -c
+                    fi
 
-      - name: Have Conan install packages
-        working-directory: ${{github.workspace}}/build
-        shell: bash
-        run: |
-          export PATH=~/.local/bin:$PATH
-          conan install .. -pr default --build=missing --update
-          if [[ x"$CONAN_PASSWORD" != "x" && x"$CONAN_LOGIN_USERNAME" != "x" ]]; then
-            conan user -p $CONAN_PASSWORD -r worldforge $CONAN_LOGIN_USERNAME
-            conan upload "*" -r worldforge -c --all
-          fi
+            -   name: Configure CMake
+                # Use a bash shell so we can use the same syntax for environment variable
+                # access regardless of the host operating system
+                shell: bash
+                run: |
+                    mkdir -p ~/install/usr
+                    cmake --preset $PROFILE_CONAN . -DCMAKE_INSTALL_PREFIX=~/install/usr
 
-      - name: Configure CMake
-        # Use a bash shell so we can use the same syntax for environment variable
-        # access regardless of the host operating system
-        shell: bash
-        working-directory: ${{github.workspace}}/build
-        # Note the current convention is to use the -S and -B options here to specify source
-        # and build directories, but this is only available with CMake 3.13 and higher.
-        # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
-        run: |
-          mkdir -p ~/install/usr
-          cmake $GITHUB_WORKSPACE -DCMAKE_INSTALL_PREFIX=~/install/usr -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+            # Disabled for now since we don't generate any package.
+            #      - name: Download media
+            #        working-directory: ${{github.workspace}}/build
+            #        shell: bash
+            #        run: cmake --build . --preset $PROFILE_CONAN --target assets-download
 
-      # Disabled for now since we don't generate any package.
-      #      - name: Download media
-      #        working-directory: ${{github.workspace}}/build
-      #        shell: bash
-      #        run: cmake --build . --config $BUILD_TYPE --target assets-download
+            -   name: Build
+                shell: bash
+                run: cmake --build --preset $PROFILE_CONAN
 
-      - name: Build
-        working-directory: ${{github.workspace}}/build
-        shell: bash
-        # Execute the build.  You can specify a specific target with "--target <NAME>"
-        run: cmake --build . --config $BUILD_TYPE
+            -   name: Test
+                shell: bash
+                run: cmake --build --preset $PROFILE_CONAN --target check
 
-      - name: Test
-        working-directory: ${{github.workspace}}/build
-        shell: bash
-        # Execute tests defined by the CMake configuration.
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: cmake --build . --config $BUILD_TYPE --target check
-
-      - name: Install
-        working-directory: ${{github.workspace}}/build
-        shell: bash
-        run: cmake --build . --config $BUILD_TYPE --target install
-
+            -   name: Install
+                shell: bash
+                run: cmake --build --preset $PROFILE_CONAN --target install
 
 #    - name: Upload artifacts
 #      working-directory: ${{github.workspace}}/build
