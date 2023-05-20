@@ -25,9 +25,9 @@ The simplest way to install all required dependencies is by using [Conan](https:
 
 ```bash
 conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-mkdir build && cd build
-conan install .. --build missing
-cmake ..
+mkdir cmake-build && cd cmake-build
+conan install .. --output-folder=. --build=missing
+cmake --preset conan-release .. -DCMAKE_INSTALL_PREFIX=../cmake-install
 make -j all assets-download install
 ```
 

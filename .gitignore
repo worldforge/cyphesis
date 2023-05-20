@@ -7,12 +7,6 @@
 default.apspec
 cyphesis.spec
 cyphesis.iss
-src/server/cyphesis
-src/tools/cycmd
-src/tools/cyconfig
-src/tools/cydb
-src/tools/cypasswd
-src/tools/cypython
 docs/man/manpage.*
 tests/*test
 tests/*test.log
@@ -21,9 +15,7 @@ tests/*integration.log
 tests/test-suite.log
 doc
 python_doc
-cc.vim
 log
-tags
 *.exe
 # Ignore temporary files
 *~
@@ -43,4 +35,5 @@ x86_64
 *.pyc
 /*build*
 /cmake-install*
+CMakeUserPresets.json
 

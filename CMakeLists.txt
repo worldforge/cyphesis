@@ -46,15 +46,9 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-if (EXISTS "${CMAKE_BINARY_DIR}/conan_paths.cmake")
+#TODO: Remove this and provide the PYTHON_IS_STATIC flag from conanfile.py instead.
+if (CONAN_CXX_FLAGS)
     message(STATUS "Using Conan for dependency resolution.")
-    include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
-
-    #Since we've installed Python in a non-standard place we need to tell the code that.
-    #This is done through the PYTHONHOME preprocessor directive.
-    add_definitions(-DPYTHONHOME="${CONAN_CPYTHON_ROOT}")
-
-    set(Python3_ROOT_DIR CONAN_CPYTHON_ROOT)
     #If Python has been built statically (as with Conan) we need to mark this so we can enable exports so the dynamic loading works.
     set(PYTHON_IS_STATIC TRUE)
 
@@ -82,9 +76,6 @@ find_package(PostgreSQL 7.1)
 cmake_dependent_option(CYPHESIS_USE_POSTGRES "Use PostgreSQL for storage" FALSE "PostgreSQL_FOUND" FALSE)
 
 find_package(SQLite3 REQUIRED)
-if (NOT SQLITE3_FOUND)
-    message(FATAL_ERROR "Could not find SQLite 3 development package.")
-endif (NOT SQLITE3_FOUND)
 
 find_package(libxdg-basedir REQUIRED)
 

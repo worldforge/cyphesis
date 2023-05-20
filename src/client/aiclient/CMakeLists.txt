@@ -7,7 +7,7 @@ add_executable(cyaiclient
 #If Python has been built statically (as with Conan) we need to enable exports so the dynamic loading works.
 if (PYTHON_IS_STATIC)
     set_property(TARGET cyaiclient PROPERTY ENABLE_EXPORTS 1)
-endif()
+endif ()
 
 target_link_libraries(cyaiclient
         client
