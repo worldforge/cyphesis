@@ -77,9 +77,7 @@ macro(wf_add_test TEST_FILE)
     add_dependencies(check ${TEST_NAME})
 
     #If Python has been built statically (as with Conan) we need to enable exports so the dynamic loading works.
-    if (PYTHON_IS_STATIC)
-        set_property(TARGET ${TEST_NAME} PROPERTY ENABLE_EXPORTS 1)
-    endif()
+    set_property(TARGET ${TEST_NAME} PROPERTY ENABLE_EXPORTS 1)
 endmacro()
 
 macro(wf_add_benchmark TEST_FILE)
@@ -90,9 +88,7 @@ macro(wf_add_benchmark TEST_FILE)
     add_dependencies(benchmark ${TEST_NAME})
 
     #If Python has been built statically (as with Conan) we need to enable exports so the dynamic loading works.
-    if (PYTHON_IS_STATIC)
-        set_property(TARGET ${TEST_NAME} PROPERTY ENABLE_EXPORTS 1)
-    endif()
+    set_property(TARGET ${TEST_NAME} PROPERTY ENABLE_EXPORTS 1)
 
 endmacro()
 
