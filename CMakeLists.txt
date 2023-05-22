@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(Cyphesis)
-#Append paths to make Conan work. This will play nicely with the cmake_find_package generator.
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/tools/cmake)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
@@ -45,14 +43,6 @@ check_include_files(syslog.h HAVE_SYSLOG_H)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
-
-#TODO: Remove this and provide the PYTHON_IS_STATIC flag from conanfile.py instead.
-if (CONAN_CXX_FLAGS)
-    message(STATUS "Using Conan for dependency resolution.")
-    #If Python has been built statically (as with Conan) we need to mark this so we can enable exports so the dynamic loading works.
-    set(PYTHON_IS_STATIC TRUE)
-
-endif ()
 
 find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 
