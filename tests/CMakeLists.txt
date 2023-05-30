@@ -181,7 +181,8 @@ wf_add_test(rules/EntityTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Entit
 wf_add_test(rules/ThingTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/Thing.cpp)
 wf_add_test(rules/WorldTest.cpp ${ENTITYEXERCISE} ../src/rules/simulation/World.cpp)
 wf_add_test(rules/ThingupdatePropertiesTest.cpp ../src/rules/simulation/Thing.cpp ../src/common/Property.cpp)
-wf_add_test(rules/TaskTest.cpp ../src/rules/simulation/Task.cpp ../src/pythonbase/PythonMalloc.cpp)
+wf_add_test(rules/TaskTest.cpp ../src/rules/simulation/Task.cpp)
+target_link_libraries(TaskTest ${PYTHON_TESTS_LIBS})
 wf_add_test(rules/simulation/EntityPropertyTest.cpp ../src/rules/simulation/EntityProperty.cpp ../src/modules/WeakEntityRef.cpp ../src/common/Property.cpp)
 wf_add_test(rules/simulation/AllPropertyTest.cpp PropertyExerciser.cpp ../src/rules/simulation/AreaProperty.cpp
         ../src/rules/AtlasProperties.cpp
@@ -230,7 +231,8 @@ wf_add_test(rules/TerrainPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simu
 wf_add_test(rules/TransientPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TransientProperty.cpp
         ../src/common/Property.cpp)
 wf_add_test(rules/TasksPropertyTest.cpp PropertyCoverage.cpp ../src/rules/simulation/TasksProperty.cpp
-        ../src/common/Property.cpp ../src/pythonbase/PythonMalloc.cpp)
+        ../src/common/Property.cpp)
+target_link_libraries(TasksPropertyTest ${PYTHON_TESTS_LIBS})
 wf_add_test(common/EntityPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/EntityProperties.cpp
         ../src/common/Property.cpp)
 wf_add_test(rules/AtlasPropertiesTest.cpp PropertyCoverage.cpp ../src/rules/AtlasProperties.cpp
@@ -245,7 +247,8 @@ wf_add_test(rules/MemEntityTest.cpp ../src/rules/ai/MemEntity.cpp)
 wf_add_test(rules/ai/MemMapTest.cpp ../src/rules/ai/MemMap.cpp ../src/rules/ai/MemEntity.cpp)
 wf_add_test(rules/MovementTest.cpp ../src/rules/simulation/Movement.cpp)
 wf_add_test(server/ExternalMindTest.cpp ../src/rules/simulation/ExternalMind.cpp)
-wf_add_test(rules/PythonContextTest.cpp ../src/pythonbase/PythonContext.cpp ../src/pythonbase/PythonMalloc.cpp)
+wf_add_test(rules/PythonContextTest.cpp ../src/pythonbase/PythonContext.cpp)
+target_link_libraries(PythonContextTest ${PYTHON_TESTS_LIBS})
 
 wf_add_test(rules/TerrainModTest.cpp ../src/rules/simulation/TerrainModTranslator.cpp)
 wf_add_test(rules/TerrainEffectorPropertyTest.cpp ../src/rules/simulation/TerrainEffectorProperty.cpp)

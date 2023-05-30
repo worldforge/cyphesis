@@ -26,6 +26,7 @@
 #include <Python.h>
 
 #include "pythonbase/PythonContext.h"
+#include "pythonbase/Python_API.h"
 
 #include <cassert>
 #include <pythonbase/PythonMalloc.h>
@@ -33,7 +34,7 @@
 int main()
 {
     setupPythonMalloc();
-    Py_InitializeEx(0);
+    init_python_api({});
 
     {
         PythonContext pc;
@@ -41,7 +42,7 @@ int main()
         pc.runCommand("1");
         pc.runCommand("foo()");
     }
-    Py_Finalize();
+    shutdown_python_api();
 
     return 0;
 }

@@ -29,6 +29,7 @@ class Conan(ConanFile):
 
         tc = CMakeToolchain(self)
         tc.variables["PYTHON_IS_STATIC"] = "TRUE"
+        tc.preprocessor_definitions["PYTHONHOME"] = "\"{}\"".format(self.dependencies["cpython"].package_folder)
         tc.generate()
 
     def layout(self):
