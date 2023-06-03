@@ -21,7 +21,7 @@ class Conan(ConanFile):
         self.requires("readline/8.1.2@worldforge")
         self.requires("cpython/3.10.0@worldforge")
         self.requires("boost/1.81.0")
-        self.requires("bullet3/2.89")
+        self.requires("bullet3/3.25")
 
     def generate(self):
         deps = CMakeDeps(self)
