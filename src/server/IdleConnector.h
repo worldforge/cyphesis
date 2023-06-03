@@ -35,7 +35,7 @@ class IdleConnector  {
     virtual ~IdleConnector();
 
 
-    sigc::signal<void> idling;
+    sigc::signal<void()> idling;
 
   protected:
     boost::asio::steady_timer m_timer;

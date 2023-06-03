@@ -580,6 +580,6 @@ Root atlasClass(const std::string& name, const std::string& parent)
     return r;
 }
 
-sigc::signal<void> python_reload_scripts;
+sigc::signal<void()> python_reload_scripts;
 #include "../stubs/rules/stubPhysicalProperties.h"
 #include "../stubs/common/stubProperty.h"

@@ -168,7 +168,7 @@ int Account::connectCharacter(const Ref<LocatedEntity>& entity, OpVector& res)
 void Account::addCharacter(const Ref<LocatedEntity>& chr)
 {
     m_charactersDict[chr->getIntId()] = chr;
-    chr->destroyed.connect(sigc::bind(sigc::mem_fun(this, &Account::characterDestroyed), chr->getIntId()));
+    chr->destroyed.connect(sigc::bind(sigc::mem_fun(*this, &Account::characterDestroyed), chr->getIntId()));
 }
 
 void Account::sendUpdateToClient()

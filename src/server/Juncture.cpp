@@ -59,8 +59,8 @@ void Juncture::onSocketConnected()
 
     //Transfers ownership to the socket. This feels dangerous, since it's a weak ptr.
     socket->setup(std::unique_ptr<Link>(m_peer));
-    m_peer->destroyed.connect(sigc::mem_fun(this, &Juncture::onPeerLost));
-    m_peer->replied.connect(sigc::mem_fun(this, &Juncture::onPeerReplied));
+    m_peer->destroyed.connect(sigc::mem_fun(*this, &Juncture::onPeerLost));
+    m_peer->replied.connect(sigc::mem_fun(*this, &Juncture::onPeerReplied));
 
     log(INFO, String::compose("Juncture onPeerC succeeded %1", getId()));
     if (m_connection != nullptr) {
@@ -128,9 +128,9 @@ int Juncture::attemptConnect(const std::string & hostname, int port)
     m_port = port;
 
     log(INFO, String::compose("Connection in progress %1", getId()));
-    peer->connected.connect(sigc::mem_fun(this,
+    peer->connected.connect(sigc::mem_fun(*this,
                                               &Juncture::onSocketConnected));
-    peer->failed.connect(sigc::mem_fun(this,
+    peer->failed.connect(sigc::mem_fun(*this,
                                            &Juncture::onSocketFailed));
 
     return 0;

@@ -58,7 +58,7 @@
 
 #ifndef STUB_World_sendRelayToEntity
 //#define STUB_World_sendRelayToEntity
-  void World::sendRelayToEntity(const LocatedEntity& entity, const Operation& op, sigc::slot<void, const Operation&, const std::string&> callback)
+  void World::sendRelayToEntity(const LocatedEntity& entity, const Operation& op, sigc::slot<void(const Operation&, const std::string&)> callback)
   {
     
   }

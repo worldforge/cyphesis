@@ -241,7 +241,7 @@ void World::RelayOperation(const Operation& op, OpVector& res)
 
 }
 
-void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc::slot<void, const Operation&, const std::string&> callback)
+void World::sendRelayToEntity(const LocatedEntity& to, const Operation& op, sigc::slot<void(const Operation&, const std::string&)> callback)
 {
     //Make the op appear to come from the destination entity.
     op->setFrom(to.getId());

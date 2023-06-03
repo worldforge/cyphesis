@@ -91,7 +91,7 @@ class WeakEntityRef
         return !this->operator!();
     }
 
-    sigc::signal<void> Changed;
+    sigc::signal<void()> Changed;
 };
 
 #endif // MODULES_WEAK_ENTITY_REF_H

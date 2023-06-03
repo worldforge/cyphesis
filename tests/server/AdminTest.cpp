@@ -118,7 +118,7 @@ class Admintest : public Cyphesis::TestBase
 
     bool m_monitor_flag;
 
-    sigc::signal<void, Operation> null_signal;
+    sigc::signal<void(Operation)> null_signal;
 
     void null_method(Operation op) { }
 
@@ -374,7 +374,7 @@ void Admintest::test_opDispatched()
     Link_sent_called = false;
 
     m_account->m_monitorConnection =
-          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+          null_signal.connect(sigc::mem_fun(*this, &Admintest::null_method));
     ASSERT_TRUE(m_account->m_monitorConnection.connected());
 
     Operation op;
@@ -411,7 +411,7 @@ void Admintest::test_opDispatched_unconnected_monitored()
     Link_sent_called = false;
 
     m_account->m_monitorConnection =
-          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+          null_signal.connect(sigc::mem_fun(*this, &Admintest::null_method));
     ASSERT_TRUE(m_account->m_monitorConnection.connected());
 
     Operation op;
@@ -968,8 +968,7 @@ void Admintest::test_OtherOperation_monitor()
 void Admintest::test_customMonitorOperation_succeed()
 {
     // Check that Dispatching in not yet connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 
     Atlas::Objects::Operation::Monitor op;
     OpVector res;
@@ -982,20 +981,18 @@ void Admintest::test_customMonitorOperation_succeed()
     ASSERT_TRUE(m_account->m_monitorConnection.connected());
 
     // Check that Dispatching has been connected
-    assert(m_server->m_world.Dispatching.slots().begin() !=
-                 m_server->m_world.Dispatching.slots().end());
+    assert(!m_server->m_world.Dispatching.empty());
 
 }
 
 void Admintest::test_customMonitorOperation_monitorin()
 {
     // Check that Dispatching in not yet connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 
     // Set it up so it is already monitoring
     m_account->m_monitorConnection =
-          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+          null_signal.connect(sigc::mem_fun(*this, &Admintest::null_method));
     ASSERT_TRUE(m_account->m_monitorConnection.connected());
 
     Atlas::Objects::Operation::Monitor op;
@@ -1009,8 +1006,7 @@ void Admintest::test_customMonitorOperation_monitorin()
     ASSERT_TRUE(m_account->m_monitorConnection.connected());
 
     // Check that Dispatching in not been connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 
 }
 
@@ -1019,8 +1015,7 @@ void Admintest::test_customMonitorOperation_unconnected()
     m_account->m_connection = 0;
 
     // Check that Dispatching in not yet connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 
     Atlas::Objects::Operation::Monitor op;
     OpVector res;
@@ -1033,20 +1028,18 @@ void Admintest::test_customMonitorOperation_unconnected()
     ASSERT_TRUE(!m_account->m_monitorConnection.connected());
 
     // Check that Dispatching has not been connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 }
 
 void Admintest::test_customMonitorOperation_no_args()
 {
     // Set it up so it is already monitoring
     m_account->m_monitorConnection =
-          null_signal.connect(sigc::mem_fun(this, &Admintest::null_method));
+          null_signal.connect(sigc::mem_fun(*this, &Admintest::null_method));
     ASSERT_TRUE(m_account->m_monitorConnection.connected());
 
     // Check that Dispatching in not yet connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 
     Atlas::Objects::Operation::Monitor op;
     OpVector res;
@@ -1056,8 +1049,7 @@ void Admintest::test_customMonitorOperation_no_args()
     ASSERT_TRUE(!m_account->m_monitorConnection.connected());
 
     // Check that Dispatching has not been connected
-    assert(m_server->m_world.Dispatching.slots().begin() ==
-                 m_server->m_world.Dispatching.slots().end());
+    assert(m_server->m_world.Dispatching.empty());
 }
 
 void Admintest::test_createObject_class_no_id()

@@ -250,7 +250,7 @@ class Steering : public virtual sigc::trackable
         /**
          * @brief Emitted when the path has been updated.
          */
-        sigc::signal<void> EventPathUpdated;
+        sigc::signal<void()> EventPathUpdated;
 
     private:
 

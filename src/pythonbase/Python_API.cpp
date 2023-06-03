@@ -186,7 +186,7 @@ Py::Object Create_PyScript(const Py::Object& wrapper, const Py::Callable& py_cla
     }
 }
 
-sigc::signal<void> python_reload_scripts;
+sigc::signal<void()> python_reload_scripts;
 
 std::vector<std::string> python_directories;
 

@@ -49,7 +49,7 @@ target_link_libraries(common PUBLIC
         Atlas::AtlasObjects
         Atlas::AtlasFilters
         varconf::varconf
-        sigc++::sigc++
+        libsigcpp::sigc++
         libgcrypt::libgcrypt
         remotery
         Boost::filesystem

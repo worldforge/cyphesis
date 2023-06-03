@@ -198,7 +198,7 @@ void EntityImporterBase::sendResolvedEntityReferences()
             set->setArgs1(entity);
 
             mSetOpsInTransit++;
-            sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
+            sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityImporterBase::operationSetResult);
             sendAndAwaitResponse(set, slot);
         }
     } else {
@@ -650,7 +650,7 @@ void EntityImporterBase::startEntityWalking()
 void EntityImporterBase::sendOperation(const Operation& op)
 {
     if (!op->isDefaultSerialno()) {
-        sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityImporterBase::operation);
+        sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityImporterBase::operation);
         sendAndAwaitResponse(op, slot);
     } else {
         send(op);

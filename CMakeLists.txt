@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 
 project(Cyphesis)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/tools/cmake)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 include(GNUInstallDirs)
@@ -51,7 +51,7 @@ find_package(varconf 1.0.3 REQUIRED)
 find_package(mercator 0.4.0 REQUIRED)
 find_package(wfmath 1.0.3 REQUIRED)
 
-find_package(sigc++ 2.0 REQUIRED)
+find_package(sigc++-3 3.0 REQUIRED)
 find_package(libgcrypt 1.2 REQUIRED)
 find_package(Bullet 2.81 REQUIRED)
 

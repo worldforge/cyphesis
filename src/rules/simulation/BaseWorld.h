@@ -155,7 +155,7 @@ class BaseWorld : public Singleton<BaseWorld>
         virtual Ref<LocatedEntity> findByType(const std::string& type) = 0;
 
         /// \brief Signal that an operation is being dispatched.
-        sigc::signal<void, Atlas::Objects::Operation::RootOperation> Dispatching;
+        sigc::signal<void(Atlas::Objects::Operation::RootOperation)> Dispatching;
 };
 
 #endif // RULESETS_BASE_WORLD_H

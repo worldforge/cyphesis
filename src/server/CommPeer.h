@@ -40,8 +40,8 @@ class CommPeer : public CommAsioClient<boost::asio::ip::tcp>
 
         void setup(std::unique_ptr<Link>);
 
-        sigc::signal<void> connected;
-        sigc::signal<void> failed;
+        sigc::signal<void()> connected;
+        sigc::signal<void()> failed;
 
     protected:
         boost::asio::steady_timer m_auth_timer;

@@ -33,7 +33,7 @@ class BaseWorld;
 /**
  * Emitted when python scripts needs reloading.
  */
-extern sigc::signal<void> python_reload_scripts;
+extern sigc::signal<void()> python_reload_scripts;
 
 
 /**

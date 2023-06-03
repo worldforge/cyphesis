@@ -20,7 +20,7 @@ link_libraries(
         Atlas::AtlasObjects
         Atlas::AtlasFilters
         varconf::varconf
-        sigc++::sigc++
+        libsigcpp::sigc++
         remotery
         Boost::filesystem
         readline::readline
@@ -74,6 +74,7 @@ macro(wf_add_test TEST_FILE)
     add_executable(${TEST_NAME} ${TEST_FILE} ../src/common/debug.cpp TestWorld.cpp ${ARGN})
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 
+    target_compile_options(${TEST_NAME} PUBLIC "-w")
     add_dependencies(check ${TEST_NAME})
 
     #If Python has been built statically (as with Conan) we need to enable exports so the dynamic loading works.

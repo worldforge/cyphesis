@@ -352,6 +352,6 @@ void ExternalMind::linkUp(Link* c)
 
 #include "../stubs/rules/simulation/stubExternalMind.h"
 
-sigc::signal<void> python_reload_scripts;
+sigc::signal<void()> python_reload_scripts;
 
 

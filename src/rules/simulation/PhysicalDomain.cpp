@@ -628,7 +628,7 @@ PhysicalDomain::PhysicalDomain(LocatedEntity& entity) :
 
     buildTerrainPages();
 
-    m_entity.propertyApplied.connect(sigc::mem_fun(this, &PhysicalDomain::entityPropertyApplied));
+    m_entity.propertyApplied.connect(sigc::mem_fun(*this, &PhysicalDomain::entityPropertyApplied));
 }
 
 PhysicalDomain::~PhysicalDomain()

@@ -68,7 +68,7 @@ StorageManager::StorageManager(WorldRouter& world,
         m_insertQpsRing(), m_updateQpsRing()
 {
 
-    world.inserted.connect(sigc::mem_fun(this,
+    world.inserted.connect(sigc::mem_fun(*this,
                                          &StorageManager::entityInserted));
 
     Monitors::instance().watch("storage_entity_inserts",

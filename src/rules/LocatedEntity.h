@@ -602,23 +602,23 @@ class LocatedEntity : public Router, public ReferenceCounted
         void enqueueUpdateOp();
 
         /// Signal indicating that this entity has been changed
-        sigc::signal<void> updated;
+        sigc::signal<void()> updated;
 
         /// Signal indicating that this entity has changed its LOC.
         /// First parameter is the old location.
-        sigc::signal<void, const Ref<LocatedEntity>&> containered;
+        sigc::signal<void(const Ref<LocatedEntity>&)> containered;
 
         /// \brief Signal emitted when this entity is removed from the server
         ///
         /// Note that this is usually well before the object is actually deleted
         /// and marks the conceptual destruction of the concept this entity
         /// represents, not the destruction of this object.
-        sigc::signal<void> destroyed;
+        sigc::signal<void()> destroyed;
 
         /// @brief Signal emitted whenever a property update is applied.
         ///
         /// The first parameter is the name of the property, the second is the updated property.
-        sigc::signal<void, const std::string&, const PropertyBase&> propertyApplied;
+        sigc::signal<void(const std::string&, const PropertyBase&)> propertyApplied;
 
         friend std::ostream& operator<<(std::ostream& s, const LocatedEntity& d);
 

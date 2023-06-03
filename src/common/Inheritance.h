@@ -92,7 +92,7 @@ class Inheritance : public Singleton<Inheritance>, public TypeStore
         /**
          * Emitted when types have been changed.
          */
-        sigc::signal<void, const std::map<const TypeNode*, TypeNode::PropertiesUpdate>&> typesUpdated;
+        sigc::signal<void(const std::map<const TypeNode*, TypeNode::PropertiesUpdate>&)> typesUpdated;
 
         const Atlas::Objects::Factories& getFactories() const override;
         Atlas::Objects::Factories& getFactories() override;

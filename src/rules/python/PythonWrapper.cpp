@@ -69,11 +69,12 @@ HandlerResult PythonWrapper::operation(const std::string& op_type,
         return processScriptResult(op_name, ret, res);
 
     } catch (const Py::BaseException& py_ex) {
-        log(ERROR, String::compose("Python error calling \"%1\" on " +
-                                   m_wrapper.as_string(), op_name));
         if (PyErr_Occurred()) {
             PyErr_Print();
         }
+        //It's important that we only access m_wrapper.as_string() after PyErr_Print(), as it's invalid to access any Python stuff when there's an error set.
+        log(ERROR, String::compose("Python error calling \"%1\" on " +
+                                   m_wrapper.as_string(), op_name));
         if (op->getClassNo() == Atlas::Objects::Operation::TICK_NO) {
             log(ERROR,
                 String::compose("Script for %1 has reported an error "
@@ -145,10 +146,11 @@ void PythonWrapper::hook(const std::string& function,
         //Ignore Handler result; it does nothing in this context. But process any ops.
         processScriptResult(function, ret, res);
     } catch (const Py::BaseException& py_ex) {
-        log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, m_wrapper.str(), entity->describeEntity()));
         if (PyErr_Occurred()) {
             PyErr_Print();
         }
+        //It's important that we only access m_wrapper.str() after PyErr_Print(), as it's invalid to access any Python stuff when there's an error set.
+        log(ERROR, String::compose("Could not call hook function %1 on %2 for entity %3", function, m_wrapper.str(), entity->describeEntity()));
     }
 
 }

@@ -356,8 +356,8 @@ void Interactive::loginSuccess(const Atlas::Objects::Root & arg)
     addCurrentContext(shared_ptr<ObjectContext>(ac));
 }
 
-sigc::signal<void, char *> CmdLine;
-sigc::signal<void, int, int> ContextSwitch;
+sigc::signal<void(char *)> CmdLine;
+sigc::signal<void(int, int)> ContextSwitch;
 
 void Interactive::gotCommand(char * cmd)
 {
@@ -461,8 +461,8 @@ void Interactive::loop()
     rl_callback_handler_install(m_prompt.c_str(),
                                 &Interactive::gotCommand);
     rl_completion_entry_function = &completion_generator;
-    CmdLine.connect(sigc::mem_fun(this, &Interactive::runCommand));
-    ContextSwitch.connect(sigc::mem_fun(this, &Interactive::switchContext));
+    CmdLine.connect(sigc::mem_fun(*this, &Interactive::runCommand));
+    ContextSwitch.connect(sigc::mem_fun(*this, &Interactive::switchContext));
     while (select() == 0);
     std::cout << std::endl << std::flush;
     rl_callback_handler_remove();

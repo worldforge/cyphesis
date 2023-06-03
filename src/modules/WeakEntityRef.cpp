@@ -23,7 +23,7 @@
 void WeakEntityRef::setup()
 {
     if (m_inner) {
-        m_connection = m_inner->destroyed.connect(sigc::mem_fun(this, &WeakEntityRef::onEntityDeleted));
+        m_connection = m_inner->destroyed.connect(sigc::mem_fun(*this, &WeakEntityRef::onEntityDeleted));
     } else {
         m_connection.disconnect();
     }

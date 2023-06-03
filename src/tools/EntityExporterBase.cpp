@@ -272,7 +272,7 @@ void EntityExporterBase::pollQueue()
         get->setFrom(mAccountId);
         get->setSerialno(newSerialNumber());
 
-        sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
+        sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
         sendAndAwaitResponse(get, slot);
         S_LOG_VERBOSE("Requesting info about entity with id " << get_arg->getId())
 
@@ -346,7 +346,7 @@ void EntityExporterBase::requestRule(const std::string& rule)
     get->setSerialno(newSerialNumber());
     get->setFrom(mAccountId);
 
-    sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetRuleResult);
+    sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetRuleResult);
     sendAndAwaitResponse(get, slot);
 
     mStats.rulesQueried++;
@@ -634,7 +634,7 @@ void EntityExporterBase::startRequestingEntities()
     get->setFrom(mAccountId);
     get->setSerialno(newSerialNumber());
 
-    sigc::slot<void, const Operation&> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
+    sigc::slot<void(const Operation&)> slot = sigc::mem_fun(*this, &EntityExporterBase::operationGetResult);
     sendAndAwaitResponse(get, slot);
 
     mStats.entitiesQueried++;

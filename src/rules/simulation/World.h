@@ -47,7 +47,7 @@ class World : public Thing {
         /// \brief The entity to which the operation was relayed.
         std::string entityId;
         /// \brief A callback to call when a response is received.
-        sigc::slot<void, const Operation&, const std::string&> callback;
+        sigc::slot<void(const Operation&, const std::string&)> callback;
     };
 
 public:
@@ -70,7 +70,7 @@ public:
     /// \param callback A callback which will be called when either a
     ///             response is received or a timeout is reached.
     void sendRelayToEntity(const LocatedEntity& entity, const Operation& op,
-            sigc::slot<void, const Operation&, const std::string&> callback);
+            sigc::slot<void(const Operation&, const std::string&)> callback);
 
   protected:
 

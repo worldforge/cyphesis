@@ -184,13 +184,13 @@ class EntityImporterBase : public virtual sigc::trackable
         /**
          * @brief Emitted when the load has been completed.
          */
-        sigc::signal<void> EventCompleted;
+        sigc::signal<void()> EventCompleted;
 
         /**
          * @brief Emitted when an entity has been updated or created.
          *
          */
-        sigc::signal<void> EventProgress;
+        sigc::signal<void()> EventProgress;
 
     protected:
 
@@ -383,7 +383,7 @@ class EntityImporterBase : public virtual sigc::trackable
 
         std::vector<std::string> extractChildEntities(Atlas::Objects::Factories& factories, Atlas::Message::ListType contains);
 
-        typedef sigc::slot<void, const Atlas::Objects::Operation::RootOperation&> CallbackFunction;
+        typedef sigc::slot<void(const Atlas::Objects::Operation::RootOperation&)> CallbackFunction;
 
         /**
          * @brief Create a new unique serial number for operations.

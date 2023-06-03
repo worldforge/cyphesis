@@ -295,7 +295,7 @@ class Awareness
          * @param int Tile x index.
          * @param int Tile y index.
          */
-        sigc::signal<void, int, int> EventTileUpdated;
+        sigc::signal<void(int, int)> EventTileUpdated;
 
         /**
          * @brief Emitted when a tile is removed.
@@ -303,14 +303,14 @@ class Awareness
          * @param int Tile y index.
          * @param int Tile layer.
          */
-        sigc::signal<void, int, int, int> EventTileRemoved;
+        sigc::signal<void(int, int, int)> EventTileRemoved;
 
         /**
          * @brief Emitted when a tile has been marked as dirty.
          *
          * Any controlling code should call rebuildDirtyTile() to rebuild the dirty tiles.
          */
-        sigc::signal<void> EventTileDirty;
+        sigc::signal<void()> EventTileDirty;
 
         float getTileSizeInMeters() const;
 

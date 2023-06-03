@@ -75,8 +75,8 @@ class Peer : public Link {
 
     void cleanTeleports();
 
-    sigc::signal<void> destroyed;
-    sigc::signal<void, const Operation &> replied;
+    sigc::signal<void()> destroyed;
+    sigc::signal<void(const Operation &)> replied;
 };
 
 #endif // SERVER_PEER_H

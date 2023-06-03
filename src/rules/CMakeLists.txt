@@ -19,7 +19,7 @@ add_library(rulesbase
 target_link_libraries(rulesbase PUBLIC
         wfmath::wfmath
         Atlas::Atlas
-        sigc++::sigc++
+        libsigcpp::sigc++
         common
         )
 
