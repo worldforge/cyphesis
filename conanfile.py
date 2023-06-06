@@ -1,11 +1,16 @@
 from conan import ConanFile
 from conan.tools.cmake import cmake_layout, CMakeDeps, CMakeToolchain
-from conan.tools.microsoft import is_msvc
 
 
 class Conan(ConanFile):
     package_type = "application"
     settings = "os", "arch", "compiler", "build_type"
+    url = "https://github.com/worldforge/cyphesis"
+    homepage = "https://www.worldforge.org"
+    description = "Cyphesis - Worldforge server"
+    license = "GPL-2.0-or-later"
+    author = "Erik Ogenvik <erik@ogenvik.org>"
+    deprecated = "A server for the Worldforge MMORPG project."
 
     def requirements(self):
         self.requires("atlas/0.7.0@worldforge")

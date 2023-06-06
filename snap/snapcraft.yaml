@@ -75,9 +75,9 @@ parts:
         cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
             - g++
-            - libsigc++-2.0-dev
+            - libsigc++-3.0-dev
         stage-packages:
-            - libsigc++-2.0-0v5
+            - libsigc++-3.0-0
 
     mercator:
         source: https://github.com/worldforge/mercator.git
@@ -129,7 +129,7 @@ parts:
             - libboost-system1.74.0
             - libbullet3.06
             - libpython3.10
-            - libsigc++-2.0-0v5
+            - libsigc++-3.0-0
             - libxdg-basedir1
         after:
             - media
