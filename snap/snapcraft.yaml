@@ -55,6 +55,14 @@ apps:
             WF_cyphesis_bindir: "$SNAP/bin"
 
 parts:
+    sigc++:
+        source: https://github.com/libsigcplusplus/libsigcplusplus
+        source-tag: 3.4.0
+        plugin: cmake
+        cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
+        build-packages:
+            - g++
+
     wfmath:
         source: https://github.com/worldforge/wfmath.git
         plugin: cmake
@@ -74,10 +82,9 @@ parts:
         plugin: cmake
         cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
-            - g++
-            - libsigc++-3.0-dev
-        stage-packages:
-            - libsigc++-3.0-0
+            - g++§
+        after:
+            - sigc++
 
     mercator:
         source: https://github.com/worldforge/mercator.git
@@ -129,7 +136,6 @@ parts:
             - libboost-system1.74.0
             - libbullet3.06
             - libpython3.10
-            - libsigc++-3.0-0
             - libxdg-basedir1
         after:
             - media
@@ -137,3 +143,4 @@ parts:
             - varconf
             - mercator
             - worlds
+            - sigc++
