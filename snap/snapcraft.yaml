@@ -56,7 +56,7 @@ apps:
 
 parts:
     sigc++:
-        source: https://github.com/libsigcplusplus/libsigcplusplus
+        source: https://github.com/libsigcplusplus/libsigcplusplus.git
         source-tag: 3.4.0
         plugin: cmake
         cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
