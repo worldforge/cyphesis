@@ -82,7 +82,7 @@ parts:
         plugin: cmake
         cmake-parameters: [ "-DCMAKE_INSTALL_PREFIX=" ]
         build-packages:
-            - g++§
+            - g++
         after:
             - sigc++
 
