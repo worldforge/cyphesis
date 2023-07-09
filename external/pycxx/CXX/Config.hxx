@@ -45,35 +45,6 @@ typedef Py_ssize_t PyCxx_ssize_t;
 
 
 //
-// Microsoft VC++ 6.0 has no traits
-//
-#if defined( _MSC_VER )
-
-#  define STANDARD_LIBRARY_HAS_ITERATOR_TRAITS 1
-
-#elif defined( __GNUC__ )
-#  if __GNUC__ >= 3
-#    define STANDARD_LIBRARY_HAS_ITERATOR_TRAITS 1
-#  else
-#    define STANDARD_LIBRARY_HAS_ITERATOR_TRAITS 0
-#endif
-
-//
-//	Assume all other compilers do
-//
-#else
-
-// Macros to deal with deficiencies in compilers
-#  define STANDARD_LIBRARY_HAS_ITERATOR_TRAITS 1
-#endif
-
-#if STANDARD_LIBRARY_HAS_ITERATOR_TRAITS
-#  define random_access_iterator_parent(itemtype) std::iterator<std::random_access_iterator_tag,itemtype,int>
-#else
-#  define random_access_iterator_parent(itemtype) std::random_access_iterator<itemtype, int>
-#endif
-
-//
 //	Which C++ standard is in use?
 //
 #if defined( _MSC_VER )

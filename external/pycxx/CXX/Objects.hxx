@@ -1438,8 +1438,15 @@ namespace Py
             }
         }
 
-        class iterator: public random_access_iterator_parent( seqref<T> )
+        class iterator
         {
+            // iterator traits
+            using difference_type = int;
+            using value_type = seqref<T>;
+            using pointer = seqref<T>*;
+            using reference = seqref<T>&;
+            using iterator_category = std::random_access_iterator_tag;
+
         protected:
             friend class SeqBase<T>;
             SeqBase<T> *seq;
@@ -1591,8 +1598,14 @@ namespace Py
         }
 
         class const_iterator
-        : public random_access_iterator_parent( const Object )
         {
+            // iterator traits
+            using difference_type = int;
+            using value_type = const Object;
+            using pointer = const Object*;
+            using reference = const Object&;
+            using iterator_category = std::random_access_iterator_tag;
+
         protected:
             friend class SeqBase<T>;
             const SeqBase<T> *seq;
