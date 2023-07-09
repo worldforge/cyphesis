@@ -92,7 +92,7 @@ Py::Object CyPy_MemMap::find_by_location(const Py::Tuple& args)
     for (auto& entry : res) {
         list.append(CyPy_LocatedEntity::wrap(entry));
     }
-    return std::move(list);
+    return list;
 }
 
 Py::Object CyPy_MemMap::find_by_type(const Py::Tuple& args)
@@ -106,7 +106,7 @@ Py::Object CyPy_MemMap::find_by_type(const Py::Tuple& args)
     for (auto& entry : res) {
         list.append(CyPy_LocatedEntity::wrap(entry));
     }
-    return std::move(list);
+    return list;
 }
 
 Py::Object CyPy_MemMap::updateAdd(const Py::Tuple& args)
@@ -181,7 +181,7 @@ Py::Object CyPy_MemMap::get_all()
     for (auto& entry : m_value->getEntities()) {
         list.append(CyPy_MemEntity::wrap(entry.second.get()));
     }
-    return std::move(list);
+    return list;
 }
 
 ///\brief Return Python list of entities that match a given Filter
@@ -199,7 +199,7 @@ Py::Object CyPy_MemMap::find_by_filter(const Py::Tuple& args)
             list.append(CyPy_MemEntity::wrap(entry.second.get()));
         }
     }
-    return std::move(list);
+    return list;
 }
 
 ///\brief find entities using a query in a specified location
@@ -232,7 +232,7 @@ Py::Object CyPy_MemMap::find_by_location_query(const Py::Tuple& args)
         }
     }
 
-    return std::move(list);
+    return list;
 }
 
 Py::Object CyPy_MemMap::add_entity_memory(const Py::Tuple& args)

@@ -133,7 +133,7 @@ Py::Object CyPy_BaseMind::matchEntities(const Py::Tuple& args)
         }
     }
 
-    return std::move(list);
+    return list;
 }
 
 

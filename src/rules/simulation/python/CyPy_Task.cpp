@@ -228,7 +228,7 @@ Py::Object CyPy_Task::getattro(const Py::String& name)
 
             list.append(map);
         }
-        return std::move(list);
+        return list;
     }
     if (nameStr == "task") {
         return PythonExtensionBase::getattro(name);

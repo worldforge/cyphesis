@@ -255,7 +255,7 @@ Py::Object CyPy_Entity::find_in_contains(const Py::Tuple& args)
             }
         }
     }
-    return std::move(list);
+    return list;
 }
 
 Py::Object CyPy_Entity::get_parent_domain()

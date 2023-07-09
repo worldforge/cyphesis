@@ -244,7 +244,7 @@ Py::Object CyPy_ElementList::sequence_repeat(Py_ssize_t count)
             list.append(CyPy_Element::asPyObject(entry, false));
         }
     }
-    return std::move(list);
+    return list;
 }
 
 
@@ -416,7 +416,7 @@ Py::Object CyPy_Element::mapAsPyObject(const MapType& map, bool useNativePythonT
             dict.setItem(entry.first, CyPy_Element::wrap(entry.second));
         }
     }
-    return std::move(dict);
+    return dict;
 }
 
 Py::Object CyPy_Element::listAsPyObject(const ListType& list, bool useNativePythonType)
@@ -429,7 +429,7 @@ Py::Object CyPy_Element::listAsPyObject(const ListType& list, bool useNativePyth
             pyList.append(CyPy_Element::wrap(entry));
         }
     }
-    return std::move(pyList);
+    return pyList;
 }
 
 Py::Object CyPy_Element::asPyObject(const Atlas::Message::Element& obj, bool useNativePythonType)

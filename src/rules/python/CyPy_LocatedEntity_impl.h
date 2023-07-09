@@ -110,7 +110,7 @@ Py::Object CyPy_LocatedEntityBase<TValue, TPythonClass>::getattro(const Py::Stri
                 list.append(CyPy_LocatedEntity::wrap(child));
             }
         }
-        return std::move(list);
+        return list;
     }
 
     if (nameStr == "visible") {
