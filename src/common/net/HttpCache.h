@@ -21,30 +21,47 @@
 
 #include <list>
 #include <string>
+#include <filesystem>
 #include "common/Monitors.h"
 #include "CommHttpClient.h"
 
+struct HttpHandleContext {
+    std::ostream& io;
+    const std::list<std::string>& headers;
+    const std::string& path;
+};
+
+
 /// \brief A caching generator for the results of http requests.
 ///
-class HttpCache : public HttpRequestProcessor
-{
-    protected:
-        const Monitors& m_monitors;
+class HttpCache : public HttpRequestProcessor {
+public:
+    enum class HandleResult {
+        Handled, Ignored
+    };
+    typedef  std::function<HandleResult(HttpHandleContext)> HttpHandler ;
 
-        void sendHeaders(std::ostream&,
-                         int status = 200,
-                         const std::string& type = "text/plain",
-                         const std::string& mesg = "OK");
 
-        void reportBadRequest(std::ostream&,
-                              int status = 400,
-                              const std::string& mesg = "Bad Request");
+    HttpCache(const Monitors& monitors);
 
-    public:
+    void processQuery(std::ostream&, const std::list<std::string>&);
 
-        HttpCache(const Monitors& monitors);
+    //std::vector<std::unique_ptr<HttpPathHandler>> mHandlers;
+    std::vector<HttpHandler> mHandlers;
 
-        void processQuery(std::ostream&, const std::list<std::string>&);
+    static void sendHeaders(std::ostream&,
+                            int status = 200,
+                            const std::string& type = "text/plain",
+                            const std::string& mesg = "OK",
+                            std::vector<std::string> extraHeaders = {});
+
+    static void reportBadRequest(std::ostream&,
+                                 int status = 400,
+                                 const std::string& mesg = "Bad Request");
+
+private:
+    const Monitors& m_monitors;
+
 };
 
 #endif // SERVER_HTTP_CACHE_H

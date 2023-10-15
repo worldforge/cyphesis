@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software Foundation,
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -49,15 +49,15 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
                              Persistence& persistence,
                              std::string ruleset,
                              std::string name,
-                             RouterId lobbyId) :
+                             RouterId lobbyId,
+                             AssetsHandler assetsHandler) :
         m_svrRuleset(std::move(ruleset)),
         m_svrName(std::move(name)),
         m_lobby(new Lobby(*this, lobbyId)),
         m_numClients(0),
         m_processOpsTotal(0),
         m_world(wrld),
-        m_persistence(persistence)
-{
+        m_persistence(persistence) {
     Monitors& monitors = Monitors::instance();
     monitors.insert("server", "cyphesis");
     monitors.insert("instance", ::instance);
@@ -71,13 +71,11 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
 }
 
 /// Server destructor, implicitly destroys all OOG objects in the server.
-ServerRouting::~ServerRouting()
-{
+ServerRouting::~ServerRouting() {
     disconnectAllConnections();
 }
 
-void ServerRouting::disconnectAllConnections()
-{
+void ServerRouting::disconnectAllConnections() {
     for (auto connection: m_connections) {
         connection->disconnect();
     }
@@ -85,8 +83,7 @@ void ServerRouting::disconnectAllConnections()
 
 
 /// Add an OOG object to the server.
-void ServerRouting::addRouter(std::unique_ptr<ConnectableRouter> obj)
-{
+void ServerRouting::addRouter(std::unique_ptr<ConnectableRouter> obj) {
     assert(!obj->getId().empty());
     assert(integerId(obj->getId()) == obj->getIntId());
     assert(obj->getIntId() > 0);
@@ -94,8 +91,7 @@ void ServerRouting::addRouter(std::unique_ptr<ConnectableRouter> obj)
 }
 
 /// Add an Account object to the server.
-void ServerRouting::addAccount(std::unique_ptr<Account> a)
-{
+void ServerRouting::addAccount(std::unique_ptr<Account> a) {
     m_accounts[a->username()] = a.get();
     a->store();
     addRouter(std::move(a));
@@ -106,8 +102,7 @@ void ServerRouting::addAccount(std::unique_ptr<Account> a)
 ///
 /// @return a pointer to the object with the given id, or
 /// zero if no object with this id is present.
-ConnectableRouter* ServerRouting::getObject(const std::string& id) const
-{
+ConnectableRouter* ServerRouting::getObject(const std::string& id) const {
     auto I = m_routers.find(integerId(id));
     if (I == m_routers.end()) {
         return nullptr;
@@ -122,8 +117,7 @@ ConnectableRouter* ServerRouting::getObject(const std::string& id) const
 /// username, or zero if the Account is not present. Does
 /// not check any external authentication sources, or the
 /// database.
-Account* ServerRouting::getAccountByName(const std::string& username)
-{
+Account* ServerRouting::getAccountByName(const std::string& username) {
     auto I = m_accounts.find(username);
     if (I != m_accounts.end()) {
         return I->second;
@@ -138,8 +132,7 @@ Account* ServerRouting::getAccountByName(const std::string& username)
     return nullptr;
 }
 
-void ServerRouting::addToMessage(MapType& omap) const
-{
+void ServerRouting::addToMessage(MapType& omap) const {
     omap["objtype"] = "obj";
     omap["server"] = "cyphesis";
     omap["ruleset"] = m_svrRuleset;
@@ -154,13 +147,13 @@ void ServerRouting::addToMessage(MapType& omap) const
         omap["restricted"] = "true";
     }
     omap["entities"] = (Atlas::Message::IntType) m_world.getEntities().size();
-    omap["assets"] = Atlas::Message::ListType{"file://" + assets_directory};
+    omap["assets"] = Atlas::Message::ListType{m_assetsHandler.resolveAssetsUrl()};
+    //"squall://localhost:6880/#c1eac889a2e74eceaf3e417c59de6754c90ee83a89b3a36ada4d7a41011d8dd"
 
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
-void ServerRouting::addToEntity(const RootEntity& ent) const
-{
+void ServerRouting::addToEntity(const RootEntity& ent) const {
     ent->setObjtype("obj");
     ent->setAttr("server", "cyphesis");
     ent->setAttr("ruleset", m_svrRuleset);
@@ -176,13 +169,12 @@ void ServerRouting::addToEntity(const RootEntity& ent) const
     }
     ent->setAttr("entities", (Atlas::Message::IntType) m_world.getEntities().size());
 
-    ent->setAttr("assets", Atlas::Message::ListType{"file://" + assets_directory});
+    ent->setAttr("assets", Atlas::Message::ListType{m_assetsHandler.resolveAssetsUrl()});
 
     // We could add all sorts of stats here, but I don't know exactly what yet.
 }
 
-size_t ServerRouting::dispatch(size_t numberOfOps)
-{
+size_t ServerRouting::dispatch(size_t numberOfOps) {
     size_t queuedOps = 0;
     size_t processed = 0;
     for (auto& entry: m_connections) {

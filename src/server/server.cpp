@@ -65,6 +65,7 @@
 #include "AccountProperty.h"
 #include "Remotery.h"
 #include "common/Storage.h"
+#include "common/net/SquallHandler.h"
 
 #include <varconf/config.h>
 
@@ -494,9 +495,12 @@ namespace {
             CyPy_Server::registerWorld(&world);
 
             StorageManager store(world, serverDatabase->database(), entityBuilder, propertyManager);
+            //TODO: fetch from assets dynamically
+            AssetsHandler assetsHandler{"c1eac889a2e74eceaf3e417c59de6754c90ee83a89b3a36ada4d7a41011d8dd"};
 
             //Instantiate at startup
             HttpCache httpCache(monitors);
+            httpCache.mHandlers.emplace_back(buildSquallHandler(std::filesystem::path(var_directory) / "lib" / "cyphesis" / "squall" / "data"));
 
             // This ID is currently generated every time, but should perhaps be
             // persistent in future.
@@ -513,7 +517,8 @@ namespace {
                                         persistence,
                                         ruleset_name,
                                         server_name,
-                                        lobby_int_id);
+                                        lobby_int_id,
+                                        assetsHandler);
 
             //Need to register the server routing instance with the Teleport property.
             TeleportProperty::s_serverRouting = &serverRouting;

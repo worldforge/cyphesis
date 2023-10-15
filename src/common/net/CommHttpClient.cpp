@@ -59,6 +59,7 @@ void CommHttpClient::do_read()
 void CommHttpClient::write()
 {
     m_requestProcessor.processQuery(mStream, m_headers);
+    mStream << std::flush;
     auto self(this->shared_from_this());
     boost::asio::async_write(mSocket, mBuffer.data(),
                              [this, self](boost::system::error_code ec, std::size_t length) {

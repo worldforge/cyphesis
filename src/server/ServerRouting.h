@@ -23,6 +23,7 @@
 #include "common/Router.h"
 #include "common/Shaker.h"
 #include "ConnectableRouter.h"
+#include "common/AssetsHandler.h"
 #include <memory>
 #include <set>
 
@@ -42,10 +43,9 @@ extern bool restricted_flag;
 /// It maintains list of all out-of-game (OOG) objects in the server.
 class ServerRouting
 {
-    protected:
+    private:
         /// A shaker to generate a salt.
         Shaker m_shaker;
-    private:
         /// A mapping of ID to object of all the OOG objects in the server.
         /// These are all owned by this instance.
         std::map<long, std::unique_ptr<ConnectableRouter>> m_routers;
@@ -58,6 +58,8 @@ class ServerRouting
         const std::string m_svrName;
         /// The Lobby management object.
         std::unique_ptr<Lobby> m_lobby;
+
+        AssetsHandler m_assetsHandler;
         /// The number of clients currently connected.
         int m_numClients;
         //All client connections in the system. These aren't owned by this instance.
@@ -73,7 +75,8 @@ class ServerRouting
                       Persistence& persistence,
                       std::string ruleset,
                       std::string name,
-                      RouterId lobbyId);
+                      RouterId lobbyId,
+                      AssetsHandler assetsHandler);
 
         ~ServerRouting();
 

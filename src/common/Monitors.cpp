@@ -30,33 +30,27 @@ Monitors::Monitors() = default;
 Monitors::~Monitors() = default;
 
 
-void Monitors::insert(std::string key, const Element& val)
-{
+void Monitors::insert(std::string key, const Element& val) {
     m_pairs[std::move(key)] = val;
 }
 
-void Monitors::watch(std::string name, std::unique_ptr<VariableBase> monitor)
-{
+void Monitors::watch(std::string name, std::unique_ptr<VariableBase> monitor) {
     m_variableMonitors[std::move(name)] = std::move(monitor);
 }
 
-void Monitors::watch(std::string name, int& value)
-{
+void Monitors::watch(std::string name, int& value) {
     watch(std::move(name), std::make_unique<Variable<int>>(value));
 }
 
-void Monitors::watch(std::string name, long& value)
-{
+void Monitors::watch(std::string name, long& value) {
     watch(std::move(name), std::make_unique<Variable<long>>(value));
 }
 
-void Monitors::watch(std::string name, float& value)
-{
+void Monitors::watch(std::string name, float& value) {
     watch(std::move(name), std::make_unique<Variable<float>>(value));
 }
 
-static std::ostream& operator<<(std::ostream& s, const Element& e)
-{
+static std::ostream& operator<<(std::ostream& s, const Element& e) {
     switch (e.getType()) {
         case Atlas::Message::Element::TYPE_INT:
             s << e.Int();
@@ -73,48 +67,37 @@ static std::ostream& operator<<(std::ostream& s, const Element& e)
     return s;
 }
 
-void Monitors::send(std::ostream& io) const
-{
-    auto I = m_pairs.begin();
-    auto Iend = m_pairs.end();
-    for (; I != Iend; ++I) {
-        io << I->first << " " << I->second << std::endl;
+void Monitors::send(std::ostream& io) const {
+    for (auto& entry: m_pairs) {
+        io << entry.first << " " << entry.second << "\n";
     }
 
-    auto J = m_variableMonitors.begin();
-    auto Jend = m_variableMonitors.end();
-    for (; J != Jend; ++J) {
-        io << J->first << " ";
-        J->second->send(io);
-        io << std::endl;
+    for (auto& entry: m_variableMonitors) {
+        io << entry.first << " ";
+        entry.second->send(io);
+        io << "\n";
     }
 }
 
-void Monitors::sendNumerics(std::ostream& io) const
-{
-    auto I = m_pairs.begin();
-    auto Iend = m_pairs.end();
-    for (; I != Iend; ++I) {
-        if (I->second.isNum()) {
-            io << I->first << " " << I->second << std::endl;
+void Monitors::sendNumerics(std::ostream& io) const {
+    for (auto& entry: m_pairs) {
+        if (entry.second.isNum()) {
+            io << entry.first << " " << entry.second << "\n";
         }
     }
 
-    auto J = m_variableMonitors.begin();
-    auto Jend = m_variableMonitors.end();
-    for (; J != Jend; ++J) {
-        if (J->second->isNumeric()) {
-            io << J->first << " ";
-            J->second->send(io);
-            io << std::endl;
+    for (auto& entry: m_variableMonitors) {
+        if (entry.second->isNumeric()) {
+            io << entry.first << " ";
+            entry.second->send(io);
+            io << "\n";
         }
     }
 
 
 }
 
-int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const
-{
+int Monitors::readVariable(const std::string& key, std::ostream& out_stream) const {
     auto J = m_variableMonitors.find(key);
     if (J != m_variableMonitors.end()) {
         J->second->send(out_stream);

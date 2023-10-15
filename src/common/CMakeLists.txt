@@ -38,6 +38,8 @@ add_library(common
         net/CommHttpClient.cpp
         net/HttpCache.cpp
         FormattedXMLWriter.cpp
+        AssetsHandler.cpp
+        net/SquallHandler.cpp
         )
 
 target_link_libraries(common PUBLIC
