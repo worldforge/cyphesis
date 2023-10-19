@@ -44,6 +44,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
+#If we're using Conan this won't set the Python3_EXECUTABLE environment variables as expected, which is why we do that in conanfile.py
 find_package(Python3 COMPONENTS Development Interpreter REQUIRED)
 
 find_package(Atlas 0.7.0 REQUIRED)
@@ -226,6 +227,6 @@ set(CPACK_SOURCE_IGNORE_FILES
         # no hidden files
         "/\\\\..+$"
         "~$"
-        )
+)
 
 include(CPack)
