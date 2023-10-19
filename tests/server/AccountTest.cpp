@@ -404,7 +404,8 @@ void Accounttest::setup()
                                  *m_persistence,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
-                                 m_id_counter++);
+                                 m_id_counter++,
+                                 AssetsHandler({}));
     m_connection = new Connection(*(CommSocket*) 0, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   m_id_counter++);
@@ -1278,6 +1279,7 @@ int main()
 
 #include "../stubs/server/stubConnection.h"
 #include "../stubs/server/stubConnectableRouter.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 #define STUB_ServerRouting_ServerRouting
 
@@ -1285,12 +1287,14 @@ ServerRouting::ServerRouting(BaseWorld& wrld,
                              Persistence& persistence,
                              std::string ruleset,
                              std::string name,
-                             RouterId lobbyId) :
+                             RouterId lobbyId,
+                             AssetsHandler assetsHandler) :
         m_svrRuleset(ruleset), m_svrName(name),
         m_lobby(new Lobby(*this, lobbyId)),
         m_numClients(0),
         m_world(wrld),
-        m_persistence(persistence)
+        m_persistence(persistence),
+        m_assetsHandler(assetsHandler)
 {
 }
 

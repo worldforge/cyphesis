@@ -36,7 +36,7 @@ add_library(common
         RepeatedTask.cpp
         MainLoop.cpp
         net/CommHttpClient.cpp
-        net/HttpCache.cpp
+        net/HttpHandling.cpp
         FormattedXMLWriter.cpp
         AssetsHandler.cpp
         net/SquallHandler.cpp

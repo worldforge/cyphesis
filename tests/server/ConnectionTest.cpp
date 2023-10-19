@@ -185,7 +185,8 @@ void Connectiontest::setup()
                                  *(Persistence*)nullptr,
                                  "noruleset",
                                  "unittesting",
-                                 2);
+                                 2,
+                                 AssetsHandler({}));
 
     m_tcc = new TestCommSocket();
     m_connection = new Connection(*m_tcc, *m_server, "addr", 3);
@@ -620,6 +621,7 @@ void Account::addCharacter(const Ref<LocatedEntity>& chr)
 #include "../stubs/server/stubConnectableRouter.h"
 #include "../stubs/server/stubServerRouting.h"
 #include "../stubs/server/stubLobby.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 #define STUB_ExternalMind_connectionId
 

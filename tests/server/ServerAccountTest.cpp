@@ -111,7 +111,8 @@ void ServerAccounttest::setup()
                                  *(Persistence*)nullptr,
                                  "5529d7a4-0158-4dc1-b4a5-b5f260cac635",
                                  "bad621d4-616d-4faf-b9e6-471d12b139a9",
-                                 m_id_counter++);
+                                 m_id_counter++,
+                                 AssetsHandler({}));
     m_connection = new Connection(*(CommSocket*)0, *m_server,
                                   "8d18a4e8-f14f-4a46-997e-ada120d5438f",
                                   m_id_counter++);
@@ -172,6 +173,7 @@ int main()
 #include "../stubs/rules/simulation/stubBaseWorld.h"
 #include "../stubs/rules/stubPhysicalProperties.h"
 #include "../stubs/common/stubProperty.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 #define STUB_Router_error
 void Router::error(const Operation & op,

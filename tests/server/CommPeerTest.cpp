@@ -96,7 +96,7 @@ class TestPeer : public Peer
 int main()
 {
     ServerRouting server(*(BaseWorld*)0, *(Persistence*)nullptr, "deeds", "test_server",
-                         2);
+                         2,AssetsHandler({}));
 
     boost::asio::io_context comm_server;
     {
@@ -168,6 +168,7 @@ void log(LogLevel, const std::string & msg)
 #include "../stubs/server/stubLobby.h"
 #include "../stubs/common/stubRouter.h"
 #include "../stubs/common/stubLink.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 Peer::Peer(CommSocket & client,
            ServerRouting & svr,

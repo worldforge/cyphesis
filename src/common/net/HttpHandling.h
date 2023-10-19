@@ -16,8 +16,8 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#ifndef SERVER_HTTP_CACHE_H
-#define SERVER_HTTP_CACHE_H
+#ifndef SERVER_HTTP_HANDLING_H
+#define SERVER_HTTP_HANDLING_H
 
 #include <list>
 #include <string>
@@ -34,15 +34,15 @@ struct HttpHandleContext {
 
 /// \brief A caching generator for the results of http requests.
 ///
-class HttpCache : public HttpRequestProcessor {
+class HttpHandling : public HttpRequestProcessor {
 public:
     enum class HandleResult {
         Handled, Ignored
     };
-    typedef  std::function<HandleResult(HttpHandleContext)> HttpHandler ;
+    typedef std::function<HandleResult(HttpHandleContext)> HttpHandler;
 
 
-    HttpCache(const Monitors& monitors);
+    HttpHandling(const Monitors& monitors);
 
     void processQuery(std::ostream&, const std::list<std::string>&);
 
@@ -64,4 +64,4 @@ private:
 
 };
 
-#endif // SERVER_HTTP_CACHE_H
+#endif // SERVER_HTTP_HANDLING_H

@@ -43,7 +43,7 @@
 #include <sys/prctl.h>
 #include "rules/python/CyPy_Rules.h"
 #include "rules/SimpleTypeStore.h"
-#include "common/net/HttpCache.h"
+#include "common/net/HttpHandling.h"
 #include "common/net/CommAsioListener_impl.h"
 #include "common/Variable.h"
 #include "PossessionAccount.h"
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
 
         {
             boost::asio::io_context io_context;
-            HttpCache httpCache(monitors);
+            HttpHandling httpCache(monitors);
             FileSystemObserver file_system_observer(io_context);
             AwareMindFactory mindFactory(typeStore);
 

@@ -121,7 +121,7 @@ int main()
     // WorldRouter world(SystemTime());
     // Entity & e = world.m_gameWorld;
 
-    ServerRouting server(*(BaseWorld*)0, *(Persistence*)nullptr, "noruleset", "unittesting", 2);
+    ServerRouting server(*(BaseWorld*)0, *(Persistence*)nullptr, "noruleset", "unittesting", 2,AssetsHandler({}));
 
     TestCommSocket tcc{};
     TestConnection tc(tcc, server, "addr", 3);
@@ -195,6 +195,7 @@ int CommSocket::flush()
 #include "../stubs/server/stubConnection.h"
 #include "../stubs/server/stubServerRouting.h"
 #include "../stubs/server/stubLobby.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 #define STUB_ExternalMind_connectionId
 const std::string & ExternalMind::connectionId()

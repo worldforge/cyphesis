@@ -19,9 +19,9 @@
 #ifndef CYPHESIS_SQUALLHANDLER_H
 #define CYPHESIS_SQUALLHANDLER_H
 
-#include "HttpCache.h"
+#include "HttpHandling.h"
 
-HttpCache::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath);
+HttpHandling::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath);
 
 
 #endif //CYPHESIS_SQUALLHANDLER_H

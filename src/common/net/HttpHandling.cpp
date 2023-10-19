@@ -16,7 +16,7 @@
 // Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 
-#include "HttpCache.h"
+#include "HttpHandling.h"
 
 #include "common/const.h"
 #include "common/globals.h"
@@ -26,9 +26,10 @@
 #include <varconf/config.h>
 #include <fstream>
 
-HttpCache::HttpCache(const Monitors& monitors)
+HttpHandling::HttpHandling(const Monitors& monitors)
         : m_monitors(monitors) {
 
+    //Should we perhaps make this something the caller has to register?
     mHandlers.emplace_back([this](HttpHandleContext
                                   context) -> HandleResult {
         if (context.path == "/config") {
@@ -53,11 +54,11 @@ HttpCache::HttpCache(const Monitors& monitors)
     });
 }
 
-void HttpCache::sendHeaders(std::ostream& io,
-                            int status,
-                            const std::string& type,
-                            const std::string& msg,
-                            std::vector<std::string> extraHeaders) {
+void HttpHandling::sendHeaders(std::ostream& io,
+                               int status,
+                               const std::string& type,
+                               const std::string& msg,
+                               std::vector<std::string> extraHeaders) {
     io << "HTTP/1.1 " << status << " " << msg << "\n";
     io << "Content-Type: " << type << "\n";
     io << "Server: cyphesis/" << consts::version << "\n";
@@ -67,17 +68,17 @@ void HttpCache::sendHeaders(std::ostream& io,
     io << "\n";
 }
 
-void HttpCache::reportBadRequest(std::ostream& io,
-                                 int status,
-                                 const std::string& msg) {
+void HttpHandling::reportBadRequest(std::ostream& io,
+                                    int status,
+                                    const std::string& msg) {
     sendHeaders(io, status, "text/html", msg);
     io << "<html><head><title>" << status << " " << msg
        << "</title></head><body><h1>" << status << " - " << msg
        << "</h1></body></html>\n";
 }
 
-void HttpCache::processQuery(std::ostream& io,
-                             const std::list<std::string>& headers) {
+void HttpHandling::processQuery(std::ostream& io,
+                                const std::list<std::string>& headers) {
     if (headers.empty()) {
         reportBadRequest(io);
         return;
@@ -109,51 +110,4 @@ void HttpCache::processQuery(std::ostream& io,
     }
     log(NOTICE, std::string("Path '") + path + "'not found.");
     reportBadRequest(io, 404, "Not Found");
-//
-//    if (path == "/config") {
-//        sendHeaders(io);
-//        auto& conf = global_conf->getSection(::instance);
-//
-//        for (auto& entry: conf) {
-//            io << entry.first << " " << entry.second << "\n";
-//        }
-//    } else if (path == "/monitors") {
-//        sendHeaders(io);
-//        m_monitors.send(io);
-//    } else if (path == "/monitors/numerics") {
-//        sendHeaders(io);
-//        m_monitors.sendNumerics(io);
-//    } else if (path.rfind("/squall/", 0) == 0) {
-//        auto squallPathSegment = path.substr(8);
-//        auto squallPath = mRepositoryPath / squallPathSegment;
-//        auto absolutePath = std::filesystem::absolute(squallPath);
-//        auto relative = std::filesystem::relative(absolutePath, mRepositoryPath);
-//        if (relative.empty()) {
-//            log(WARNING, std::string("Requested path ") + path + " is not relative to squall root path. Someone is trying to compromise the system.");
-//            reportBadRequest(io, 401, "Invalid request");
-//        } else {
-//            if (!std::filesystem::exists(absolutePath)) {
-//                log(NOTICE, std::string("Squall path '") + path + "'not found.");
-//                reportBadRequest(io, 404, "Not Found");
-//            } else {
-//                if (std::ifstream is{absolutePath, std::ios::binary | std::ios::ate}) {
-//                    auto size = is.tellg();
-//                    log(NOTICE, std::string("Serving up '") + absolutePath.generic_string() + "', with size of " + std::to_string(size) + " bytes.");
-//                    is.seekg(0, std::ios::beg);
-//                    sendHeaders(io, 200, "application/octet-stream", "OK", {std::string("Content-Length: ") + std::to_string(size)});
-//
-//                    std::array<char, 2028> buffer;
-//                    while (is) {
-//                        is.read(buffer.data(), buffer.size());
-//                        auto readSize = is.gcount();
-//                        io.write(buffer.data(), readSize);
-//                    }
-//                }
-//            }
-//        }
-//    } else {
-//        log(NOTICE, std::string("Path '") + path + "'not found.");
-//        reportBadRequest(io, 404, "Not Found");
-//    }
-//    io << std::flush;
 }

@@ -23,7 +23,7 @@
 #define DEBUG
 #endif
 
-#include "common/net/HttpCache.h"
+#include "common/net/HttpHandling.h"
 
 #include "common/globals.h"
 
@@ -31,10 +31,10 @@
 
 #include <cassert>
 
-class TestHttpCache : public HttpCache
+class TestHttpCache : public HttpHandling
 {
   public:
-        TestHttpCache(const Monitors& m): HttpCache(m)
+        TestHttpCache(const Monitors& m): HttpHandling(m)
         { }
 
     void test_sendHeaders(std::ostream & io,
@@ -56,12 +56,12 @@ int main()
     global_conf = varconf::Config::inst();
 
     {
-        HttpCache httpCache(Monitors::instance());
+        HttpHandling httpCache(Monitors::instance());
     }
 
     // No header, invalid
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         hc.processQuery(std::cout, std::list<std::string>());
 
@@ -69,7 +69,7 @@ int main()
 
     // Bad request header
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("boo");
@@ -80,7 +80,7 @@ int main()
 
     // Legacy HTTP (0.9??)
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET foo");
@@ -91,7 +91,7 @@ int main()
 
     // HTTP (n.m??)
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET foo HTTP/1.0");
@@ -102,7 +102,7 @@ int main()
 
     // HTTP get /config
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET /config HTTP/1.0");
@@ -113,7 +113,7 @@ int main()
 
     // HTTP get /config with some config
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         global_conf->setItem(instance, "bar", "value");
 
@@ -126,7 +126,7 @@ int main()
 
     // HTTP get /monitors
     {
-        HttpCache hc(Monitors::instance());
+        HttpHandling hc(Monitors::instance());
 
         std::list<std::string> headers;
         headers.push_back("GET /monitors HTTP/1.0");
@@ -153,6 +153,7 @@ int main()
 // stubs
 
 #include "../stubs/common/stubMonitors.h"
+#include "../stubs/common/stublog.h"
 
 
 varconf::Config * global_conf = nullptr;

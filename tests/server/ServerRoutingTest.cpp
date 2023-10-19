@@ -100,13 +100,13 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
     }
 
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -118,7 +118,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -131,7 +131,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -151,7 +151,7 @@ int main()
 
     {
         DatabaseNull database;
-        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -162,7 +162,7 @@ int main()
 
     {
         DatabaseNull database;
-        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        Persistence persistence(database);        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -178,7 +178,7 @@ int main()
         DatabaseNull database;
         Persistence persistence(database);
 
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -193,7 +193,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -206,7 +206,7 @@ int main()
         stub_generate_accounts = true;
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         auto id = newId();
         assert(id.isValid());
@@ -218,7 +218,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         Atlas::Message::MapType map;
         server.addToMessage(map);
@@ -230,7 +230,7 @@ int main()
     {
         DatabaseNull database;
         Persistence persistence(database);
-        ServerRouting server(world, persistence, ruleset, server_name, lobbyId);
+        ServerRouting server(world, persistence, ruleset, server_name, lobbyId, AssetsHandler({}));
 
         Atlas::Objects::Entity::Anonymous ent;
         server.addToEntity(ent);
@@ -280,6 +280,7 @@ std::unique_ptr<Account> Persistence::getAccount(const std::string& name)
 #include "../stubs/server/stubLobby.h"
 #include "../stubs/common/stubVariable.h"
 #include "../stubs/common/stubMonitors.h"
+#include "../stubs/common/stubAssetsHandler.h"
 #include "../stubs/server/stubBuildid.h"
 
 bool_config_register::bool_config_register(bool& var,

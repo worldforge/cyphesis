@@ -114,7 +114,7 @@ install(TARGETS cyphesis DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 #        SlaveClientConnection.cpp
 #        Peer.cpp
 #        Master.cpp
-#        HttpCache.cpp
+#        HttpHandling.cpp
 #        CommPeer.cpp
 #        CommHttpClient.cpp
 #        CommMaster.cpp

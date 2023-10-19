@@ -188,7 +188,7 @@ int main()
 
     // Login op, username & password in arg, connected
     {
-        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3);
+        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3,AssetsHandler({}));
         TestJuncture j(0);
         boost::asio::io_context io_context;
         CommPeer cp("", io_context, factories);
@@ -209,7 +209,7 @@ int main()
 
     // Login op, username & password in arg, connected already authenticating
     {
-        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3);
+        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3,AssetsHandler({}));
 
         TestJuncture j(0);
 
@@ -234,7 +234,7 @@ int main()
 
     // Login op, username & password in arg, connected, with serialno
     {
-        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3);
+        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3,AssetsHandler({}));
 
         TestJuncture j(0);
 
@@ -286,7 +286,7 @@ int main()
 
     // Connect op, no args, already connected
     {
-        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3);
+        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3,AssetsHandler({}));
         TestJuncture j(0);
 
         boost::asio::io_context io_context;
@@ -332,7 +332,7 @@ int main()
 
     // Connect op, hostname and port in arg, connected this end
     {
-        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3);
+        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3, AssetsHandler({}));
         boost::asio::io_context io_context;
         StubSocket cc(io_context);
         Connection c(cc, sr, "", 4);
@@ -355,7 +355,7 @@ int main()
     {
         stub_CommPeer_connect_return = -1;
 
-        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3);
+        ServerRouting sr(*(BaseWorld*)0, *(Persistence*)nullptr, "", "", 3,AssetsHandler({}));
         boost::asio::io_context io_context;
         StubSocket cc(io_context);
         Connection c(cc, sr, "", 4);
@@ -442,6 +442,7 @@ int CONNECT_NO = 500;
 #include "../stubs/common/stubTypeNode.h"
 #include "../stubs/common/stubProperty.h"
 #include "../stubs/server/stubCommPeer.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 Peer::Peer(CommSocket & client,
            ServerRouting & svr,

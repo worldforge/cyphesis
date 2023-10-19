@@ -21,8 +21,8 @@
 #include <filesystem>
 #include <fstream>
 
-HttpCache::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath) {
-    return [repositoryPath](HttpHandleContext context) -> HttpCache::HandleResult {
+HttpHandling::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath) {
+    return [repositoryPath](HttpHandleContext context) -> HttpHandling::HandleResult {
         if (context.path.rfind("/squall/", 0) == 0) {
             auto squallPathSegment = context.path.substr(8);
             auto squallPath = repositoryPath / squallPathSegment;
@@ -30,17 +30,17 @@ HttpCache::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath) 
             auto relative = std::filesystem::relative(absolutePath, repositoryPath);
             if (relative.empty()) {
                 log(WARNING, std::string("Requested path ") + context.path + " is not relative to squall root path. Someone is trying to compromise the system.");
-                HttpCache::reportBadRequest(context.io, 401, "Invalid request");
+                HttpHandling::reportBadRequest(context.io, 401, "Invalid request");
             } else {
                 if (!std::filesystem::exists(absolutePath)) {
                     log(NOTICE, std::string("Squall path '") + context.path + "'not found.");
-                    HttpCache::reportBadRequest(context.io, 404, "Not Found");
+                    HttpHandling::reportBadRequest(context.io, 404, "Not Found");
                 } else {
                     if (std::ifstream is{absolutePath, std::ios::binary | std::ios::ate}) {
                         auto size = is.tellg();
                         log(NOTICE, std::string("Serving up '") + absolutePath.generic_string() + "', with size of " + std::to_string(size) + " bytes.");
                         is.seekg(0, std::ios::beg);
-                        HttpCache::sendHeaders(context.io, 200, "application/octet-stream", "OK", {std::string("Content-Length: ") + std::to_string(size)});
+                        HttpHandling::sendHeaders(context.io, 200, "application/octet-stream", "OK", {std::string("Content-Length: ") + std::to_string(size)});
 
                         std::array<char, 2028> buffer;
                         while (is) {
@@ -51,9 +51,9 @@ HttpCache::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath) 
                     }
                 }
             }
-            return HttpCache::HandleResult::Handled;
+            return HttpHandling::HandleResult::Handled;
         } else {
-            return HttpCache::HandleResult::Ignored;
+            return HttpHandling::HandleResult::Ignored;
         }
     };
 }

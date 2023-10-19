@@ -84,7 +84,8 @@ void ConnectionShakerintegration::setup()
                                  *(Persistence*)nullptr,
                                  "b88aa6d3-44b4-40bd-bfa9-8db00045bdc0",
                                  "0f1fc7cb-5ab1-45c1-b0d3-ae49205ea437",
-                                 m_id_counter++);
+                                 m_id_counter++,
+                                 AssetsHandler({}));
     m_connection = new Connection(*(CommSocket*)0,
                                   *m_server,
                                   "test_addr",
@@ -110,6 +111,7 @@ int main()
 
 #include "common/Inheritance.h"
 #include "../stubs/common/stubLink.h"
+#include "../stubs/common/stubAssetsHandler.h"
 
 using Atlas::Objects::Root;
 

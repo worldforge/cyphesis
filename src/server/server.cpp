@@ -36,7 +36,7 @@
 #include "IdleConnector.h"
 #include "PossessionAuthenticator.h"
 #include "TrustedConnection.h"
-#include "common/net/HttpCache.h"
+#include "common/net/HttpHandling.h"
 
 #include "pythonbase/Python_API.h"
 #include "rules/LocatedEntity.h"
@@ -499,7 +499,7 @@ namespace {
             AssetsHandler assetsHandler{"c1eac889a2e74eceaf3e417c59de6754c90ee83a89b3a36ada4d7a41011d8dd"};
 
             //Instantiate at startup
-            HttpCache httpCache(monitors);
+            HttpHandling httpCache(monitors);
             httpCache.mHandlers.emplace_back(buildSquallHandler(std::filesystem::path(var_directory) / "lib" / "cyphesis" / "squall" / "data"));
 
             // This ID is currently generated every time, but should perhaps be
