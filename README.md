@@ -82,20 +82,10 @@ Execute this target whenever you've done edits to the Python bindings.
 
 ## Dependencies
 
-Cyphesis is built using CMake.
-It requires Python and SQLite 3 which are included with most Linux
-distributions, and Atlas-C++, varconf, Mercator and wfmath
-which are provided by the WorldForge project. GNU readline is required by
-some of the included tools.
-Boost is used as well, mainly for the ASIO library which drives networking.
-
-If a PostgreSQL development package is detected the optional PostgreSQL
-database backend will be built. This has to be enabled through a config option;
-by default data is persisted through SQLite.
-
-If built from source the software and data must be installed using "make
-install" before it will be ready. Go to the Section called Setup for
-information on the setup steps required after installation.
+We use Conan for our dependency handling. If you're developing locally you can issue this command to setup both a "debug" and "release" environment.
+```bash
+conan install -s build_type=Debug . --build missing --update  && conan install . --build missing --update
+```
 
 ## Running a basic server
 
