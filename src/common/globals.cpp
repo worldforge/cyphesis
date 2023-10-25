@@ -668,11 +668,6 @@ void readInstanceConfiguration(const std::string& section)
 
     readConfigItem(section, "vardir", var_directory);
 
-    //If not specified, the assets directory is dependent on the share directory.
-    if (readConfigItem(section, "assetsdir", assets_directory) != 0) {
-        assets_directory = share_directory + "/cyphesis/assets";
-    }
-
     readConfigItem(section, "daemon", daemon_flag);
 
     if (readConfigItem(section, "tcpport", client_port_num) != 0) {
@@ -696,6 +691,13 @@ void readInstanceConfiguration(const std::string& section)
                                  varconf::USER);
         }
     }
+
+    //If not specified, the assets directory is dependent on the share directory.
+    if (readConfigItem(ruleset_name, "assetsdir", assets_directory) != 0) {
+        log(ERROR, String::compose("No 'assetdir' config option specified for ruleset \"%1\".", ruleset_name));
+        throw std::runtime_error(String::compose("No 'assetdir' config option specified for ruleset \"%1\".", ruleset_name));
+    }
+
 
     if (check_tmp_path(var_directory) != 0) {
         if (var_directory != "/usr/var") {

@@ -571,7 +571,7 @@ namespace {
             //Check if the world is populated; if it's not we should perhaps import some entities into it.
             //Note that we only check the top level; we don't perform a full hierarchical
             //traversal. Mainly because we never need to.
-            auto autoImport = global_conf->getItem(CYPHESIS, "autoimport");
+            auto autoImport = global_conf->getItem(ruleset_name, "autoimport");
             if (autoImport.is_string() && !autoImport.as_string().empty()) {
                 std::string importPath = autoImport.as_string();
                 std::ifstream file(importPath);
