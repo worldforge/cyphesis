@@ -66,6 +66,7 @@
 #include "Remotery.h"
 #include "common/Storage.h"
 #include "common/net/SquallHandler.h"
+#include "SquallAssetsGenerator.h"
 
 #include <varconf/config.h>
 
@@ -440,6 +441,20 @@ namespace {
 
             log(INFO, String::compose("Reading assets from %1", assets_directory));
 
+            std::filesystem::path squallRepositoryPath = std::filesystem::path(var_directory) / "lib" / "cyphesis" / "squall" ;
+
+            SquallAssetsGenerator assetsGenerator{Squall::Repository(squallRepositoryPath), std::filesystem::path(assets_directory)};
+
+            log(INFO, String::compose("Setting up Squall repository at %1, with assets located at %2.", squallRepositoryPath.string(), assets_directory));
+            log(INFO, "Will now generate the Squall repository. This will take some time the first time the server is ran, but should be quick once done.");
+            auto rootSignature = assetsGenerator.generateFromAssets("cyphesis");
+            if (rootSignature) {
+                log(INFO, String::compose("Generated squall signature %1.", rootSignature->str()));
+            } else {
+                log(WARNING, "Could not generate Squall signature.");
+                return 1;
+            }
+
             AssetsManager assets_manager(file_system_observer);
             assets_manager.init();
 
@@ -496,11 +511,11 @@ namespace {
 
             StorageManager store(world, serverDatabase->database(), entityBuilder, propertyManager);
             //TODO: fetch from assets dynamically
-            AssetsHandler assetsHandler{"c1eac889a2e74eceaf3e417c59de6754c90ee83a89b3a36ada4d7a41011d8dd"};
+            AssetsHandler assetsHandler{rootSignature->str()};
 
             //Instantiate at startup
             HttpHandling httpCache(monitors);
-            httpCache.mHandlers.emplace_back(buildSquallHandler(std::filesystem::path(var_directory) / "lib" / "cyphesis" / "squall" / "data"));
+            httpCache.mHandlers.emplace_back(buildSquallHandler(squallRepositoryPath / "data"));
 
             // This ID is currently generated every time, but should perhaps be
             // persistent in future.

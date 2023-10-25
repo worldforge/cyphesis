@@ -16,12 +16,21 @@
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CYPHESIS_SQUALLHANDLER_H
-#define CYPHESIS_SQUALLHANDLER_H
+#ifndef CYPHESIS_SQUALLASSETSGENERATOR_H
+#define CYPHESIS_SQUALLASSETSGENERATOR_H
 
-#include "HttpHandling.h"
+#include <squall/core/Repository.h>
 
-HttpHandling::HttpHandler buildSquallHandler(std::filesystem::path repositoryDataPath);
+class SquallAssetsGenerator {
+public:
+    SquallAssetsGenerator(Squall::Repository repository, std::filesystem::path assetsPath);
+
+    std::optional<Squall::Signature> generateFromAssets(const std::string& rootName);
+
+private:
+    Squall::Repository mRepository;
+    std::filesystem::path mAssetsPath;
+};
 
 
-#endif //CYPHESIS_SQUALLHANDLER_H
+#endif //CYPHESIS_SQUALLASSETSGENERATOR_H

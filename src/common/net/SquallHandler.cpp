@@ -21,13 +21,13 @@
 #include <filesystem>
 #include <fstream>
 
-HttpHandling::HttpHandler buildSquallHandler(std::filesystem::path repositoryPath) {
-    return [repositoryPath](HttpHandleContext context) -> HttpHandling::HandleResult {
+HttpHandling::HttpHandler buildSquallHandler(std::filesystem::path repositoryDataPath) {
+    return [repositoryDataPath](HttpHandleContext context) -> HttpHandling::HandleResult {
         if (context.path.rfind("/squall/", 0) == 0) {
             auto squallPathSegment = context.path.substr(8);
-            auto squallPath = repositoryPath / squallPathSegment;
+            auto squallPath = repositoryDataPath / squallPathSegment;
             auto absolutePath = std::filesystem::absolute(squallPath);
-            auto relative = std::filesystem::relative(absolutePath, repositoryPath);
+            auto relative = std::filesystem::relative(absolutePath, repositoryDataPath);
             if (relative.empty()) {
                 log(WARNING, std::string("Requested path ") + context.path + " is not relative to squall root path. Someone is trying to compromise the system.");
                 HttpHandling::reportBadRequest(context.io, 401, "Invalid request");
@@ -42,6 +42,7 @@ HttpHandling::HttpHandler buildSquallHandler(std::filesystem::path repositoryPat
                         is.seekg(0, std::ios::beg);
                         HttpHandling::sendHeaders(context.io, 200, "application/octet-stream", "OK", {std::string("Content-Length: ") + std::to_string(size)});
 
+                        //Blocking write here, should be improved
                         std::array<char, 2028> buffer;
                         while (is) {
                             is.read(buffer.data(), buffer.size());

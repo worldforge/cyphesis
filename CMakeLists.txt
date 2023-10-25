@@ -51,6 +51,7 @@ find_package(Atlas 0.7.0 REQUIRED)
 find_package(varconf 1.0.3 REQUIRED)
 find_package(mercator 0.4.0 REQUIRED)
 find_package(wfmath 1.0.3 REQUIRED)
+find_package(Squall 0.1.0 REQUIRED)
 
 find_package(sigc++-3 3.0 REQUIRED)
 find_package(libgcrypt 1.2 REQUIRED)

@@ -18,6 +18,7 @@ class Conan(ConanFile):
         self.requires("varconf/1.0.3@worldforge")
         self.requires("wfmath/1.0.3@worldforge")
         self.requires("libxdg-basedir/1.2.3@worldforge")
+        self.requires("squall/0.1.0@worldforge")
         self.requires("libsigcpp/3.0.7")
         self.requires("libgcrypt/1.8.4")
         self.requires("zlib/1.2.13")

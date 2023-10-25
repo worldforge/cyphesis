@@ -51,6 +51,7 @@ set(server_files
         TypeUpdateCoordinator.cpp
         ScriptReloader.cpp
         AccountProperty.cpp
+        SquallAssetsGenerator.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/buildid.cpp)
 
 add_library(server
@@ -59,7 +60,8 @@ add_library(server
 target_link_libraries(server PUBLIC
         common
         pythonbase
-        )
+        squall::squall
+)
 
 
 add_executable(cyphesis
@@ -68,7 +70,7 @@ add_executable(cyphesis
 #If Python has been built statically (as with Conan) we need to enable exports so the dynamic loading works.
 if (PYTHON_IS_STATIC)
     set_property(TARGET cyphesis PROPERTY ENABLE_EXPORTS 1)
-endif()
+endif ()
 
 if (PostgreSQL_FOUND)
     target_compile_definitions(cyphesis PRIVATE POSTGRES_FOUND)
@@ -92,7 +94,7 @@ target_link_libraries(cyphesis
         comm
         metaserverapi
         remotery
-        )
+)
 
 install(TARGETS cyphesis DESTINATION ${CMAKE_INSTALL_FULL_BINDIR})
 

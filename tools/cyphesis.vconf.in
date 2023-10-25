@@ -78,6 +78,8 @@ tcpport=6768
 
 [mason]
 ruleset="basic"
+assetsdir="@CMAKE_INSTALL_PREFIX@/share/cyphesis/assets"
 
 [deeds]
 ruleset="basic"
+assetsdir="@CMAKE_INSTALL_PREFIX@/share/cyphesis/assets"

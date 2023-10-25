@@ -26,6 +26,6 @@ AssetsHandler::AssetsHandler(std::string squallSignature)
 std::string AssetsHandler::resolveAssetsUrl() const {
     //By omitting host we're telling the client to use the same host as the current connection.
 //    return std::string("http://:6780/squall/" + mSquallSignature.substr(0, 2) + "/" + mSquallSignature.substr(2));
-    return std::string("squall://:6780/squall/#" + mSquallSignature);
+    return std::string("squall://:6780/squall#" + mSquallSignature);
 }
 
