@@ -58,7 +58,7 @@ void GeometryProperty::set(const Atlas::Message::Element& data)
     AtlasQuery::find<std::string>(data, "path", [&](const std::string& path) {
         try {
             if (boost::algorithm::ends_with(path, ".mesh")) {
-                boost::filesystem::path fullpath = boost::filesystem::path(assets_directory) / path;
+                auto fullpath = AssetsManager::instance().getAssetsPath() / path;
                 AssetsManager::instance().observeFile(fullpath, [this, fullpath](const boost::filesystem::path& changedPath) {
 
                     log(NOTICE, String::compose("Reloading geometry from %1.", fullpath));

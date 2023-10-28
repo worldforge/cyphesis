@@ -20,37 +20,50 @@
 #include "AssetsManager.h"
 #include "FileSystemObserver.h"
 #include "globals.h"
+#include "log.h"
+#include "compose.hpp"
 
 AssetsManager::AssetsManager(FileSystemObserver& file_system_observer)
-    : m_file_system_observer(file_system_observer)
-{
+        : m_file_system_observer(file_system_observer) {
+    std::filesystem::path assetsDirectory(assets_directory);
+    if (std::filesystem::exists(assetsDirectory)) {
+        mAssetsPath = assetsDirectory;
+    } else {
+        mAssetsPath = std::filesystem::path(CYPHESIS_RAW_ASSETS_DIRECTORY);
+        if (std::filesystem::exists(mAssetsPath)) {
+            log(INFO, String::compose("Could not find any assets directory in '%1' but found raw assets in '%2'.", assets_directory, CYPHESIS_RAW_ASSETS_DIRECTORY));
+        } else {
+            log(ERROR,
+                String::compose("Could not find neither assets directory in '%1' or found raw assets in '%2'. Will continue but the server will probably not function correctly.", assets_directory,
+                                CYPHESIS_RAW_ASSETS_DIRECTORY));
+        }
+    }
 
 }
 
 AssetsManager::~AssetsManager() {
     m_file_system_observer.remove_directory(boost::filesystem::path(share_directory) / "cyphesis" / "scripts");
     m_file_system_observer.remove_directory(boost::filesystem::path(share_directory) / "cyphesis" / "rulesets");
-    m_file_system_observer.remove_directory(boost::filesystem::path(assets_directory));
+    m_file_system_observer.remove_directory(boost::filesystem::path(mAssetsPath));
     m_file_system_observer.remove_directory(boost::filesystem::path(etc_directory) / "cyphesis");
 
 }
 
-void AssetsManager::init()
-{
+void AssetsManager::init() {
 
     auto observerCallback = [&](const FileSystemObserver::FileSystemEvent& event) {
         auto I = m_callbacks.find(event.ev.path);
         if (I != m_callbacks.end()) {
-            for (auto& callback : I->second) {
+            for (auto& callback: I->second) {
                 callback(event.ev.path);
             }
         }
 
-        for (auto& entry : m_directoryCallbacks) {
+        for (auto& entry: m_directoryCallbacks) {
 
             if (boost::starts_with(event.ev.path.string(), entry.first.string())) {
                 if (!boost::filesystem::is_directory(event.ev.path)) {
-                    for (auto& callback : entry.second) {
+                    for (auto& callback: entry.second) {
                         callback(event.ev.path);
                     }
                 } else {
@@ -59,7 +72,7 @@ void AssetsManager::init()
                         boost::filesystem::recursive_directory_iterator dir(event.ev.path), end{};
                         while (dir != end) {
                             if (!boost::filesystem::is_directory(dir->status())) {
-                                for (auto& callback : entry.second) {
+                                for (auto& callback: entry.second) {
                                     callback(dir->path());
                                 }
                             }
@@ -75,19 +88,17 @@ void AssetsManager::init()
     //TODO: implement for all asset paths
     m_file_system_observer.add_directory(boost::filesystem::path(share_directory) / "cyphesis" / "scripts", observerCallback);
     m_file_system_observer.add_directory(boost::filesystem::path(share_directory) / "cyphesis" / "rulesets", observerCallback);
-    m_file_system_observer.add_directory(boost::filesystem::path(assets_directory), observerCallback);
+    m_file_system_observer.add_directory(boost::filesystem::path(mAssetsPath), observerCallback);
 
     m_file_system_observer.add_directory(boost::filesystem::path(etc_directory) / "cyphesis", observerCallback);
 
 
 }
 
-void AssetsManager::observeFile(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
-{
+void AssetsManager::observeFile(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback) {
     m_callbacks[std::move(path)].push_back(callback);
 }
 
-void AssetsManager::observeDirectory(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback)
-{
+void AssetsManager::observeDirectory(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback) {
     m_directoryCallbacks[std::move(path)].push_back(callback);
 }

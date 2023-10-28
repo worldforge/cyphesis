@@ -692,12 +692,7 @@ void readInstanceConfiguration(const std::string& section)
         }
     }
 
-    //If not specified, the assets directory is dependent on the share directory.
-    if (readConfigItem(ruleset_name, "assetsdir", assets_directory) != 0) {
-        log(ERROR, String::compose("No 'assetdir' config option specified for ruleset \"%1\".", ruleset_name));
-        throw std::runtime_error(String::compose("No 'assetdir' config option specified for ruleset \"%1\".", ruleset_name));
-    }
-
+    readConfigItem(ruleset_name, "assetsdir", assets_directory);
 
     if (check_tmp_path(var_directory) != 0) {
         if (var_directory != "/usr/var") {

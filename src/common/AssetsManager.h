@@ -24,6 +24,7 @@
 #include <boost/filesystem/path.hpp>
 #include <list>
 #include <map>
+#include <filesystem>
 
 class FileSystemObserver;
 
@@ -38,9 +39,13 @@ class AssetsManager : public Singleton<AssetsManager>
 
         void observeFile(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback);
         void observeDirectory(boost::filesystem::path path, const std::function<void(const boost::filesystem::path& path)>& callback);
+
+        std::filesystem::path getAssetsPath() const { return mAssetsPath;}
     private:
 
         FileSystemObserver& m_file_system_observer;
+
+        std::filesystem::path mAssetsPath;
 
         std::map<boost::filesystem::path, std::list<std::function<void(const boost::filesystem::path& path)>>> m_callbacks;
         std::map<boost::filesystem::path, std::list<std::function<void(const boost::filesystem::path& path)>>> m_directoryCallbacks;

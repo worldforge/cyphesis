@@ -395,13 +395,6 @@ namespace {
         // If we are a daemon logging to syslog, we need to set it up.
         initLogger();
 
-        //Check that there's a valid assets directory, and warn if not.
-        if (!boost::filesystem::is_directory(assets_directory)) {
-            log(ERROR, String::compose("Could not find any valid assets directory at '%1'.", assets_directory));
-            log(ERROR, "If you've built Cyphesis yourself make sure you've run the 'make assets-download' command.");
-        }
-
-
         auto io_context = std::make_unique<boost::asio::io_context>();
 
         try {
@@ -439,13 +432,19 @@ namespace {
 
             FileSystemObserver file_system_observer(*io_context);
 
-            log(INFO, String::compose("Reading assets from %1", assets_directory));
+
+
+            AssetsManager assets_manager(file_system_observer);
+            assets_manager.init();
+
+            //Perhaps move all this into the AssetsManager?
+            log(INFO, String::compose("Reading assets from %1", assets_manager.getAssetsPath()));
 
             std::filesystem::path squallRepositoryPath = std::filesystem::path(var_directory) / "lib" / "cyphesis" / "squall" ;
 
-            SquallAssetsGenerator assetsGenerator{Squall::Repository(squallRepositoryPath), std::filesystem::path(assets_directory)};
+            SquallAssetsGenerator assetsGenerator{Squall::Repository(squallRepositoryPath), assets_manager.getAssetsPath()};
 
-            log(INFO, String::compose("Setting up Squall repository at %1, with assets located at %2.", squallRepositoryPath.string(), assets_directory));
+            log(INFO, String::compose("Setting up Squall repository at %1, with assets located at %2.", squallRepositoryPath.string(), assets_manager.getAssetsPath().string()));
             log(INFO, "Will now generate the Squall repository. This will take some time the first time the server is ran, but should be quick once done.");
             auto rootSignature = assetsGenerator.generateFromAssets("cyphesis");
             if (rootSignature) {
@@ -455,8 +454,6 @@ namespace {
                 return 1;
             }
 
-            AssetsManager assets_manager(file_system_observer);
-            assets_manager.init();
 
             std::vector<std::string> python_directories;
             // Add the path to the non-ruleset specific code.

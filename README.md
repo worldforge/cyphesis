@@ -28,7 +28,7 @@ conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/cona
 mkdir cmake-build && cd cmake-build
 conan install .. --output-folder=. --build=missing
 cmake --preset conan-release .. -DCMAKE_INSTALL_PREFIX=../cmake-install
-make -j all assets-download install
+make -j all mediarepo-checkout install
 ```
 
 Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool.
