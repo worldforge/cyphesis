@@ -446,7 +446,7 @@ namespace {
 
             log(INFO, String::compose("Setting up Squall repository at %1, with assets located at %2.", squallRepositoryPath.string(), assets_manager.getAssetsPath().string()));
             log(INFO, "Will now generate the Squall repository. This will take some time the first time the server is ran, but should be quick once done.");
-            auto rootSignature = assetsGenerator.generateFromAssets("cyphesis");
+            auto rootSignature = assetsGenerator.generateFromAssets("cyphesis-" + ruleset_name);
             if (rootSignature) {
                 log(INFO, String::compose("Generated squall signature %1.", rootSignature->str()));
             } else {
