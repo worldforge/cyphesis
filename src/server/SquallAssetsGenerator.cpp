@@ -26,7 +26,7 @@ SquallAssetsGenerator::SquallAssetsGenerator(Squall::Repository repository, std:
 
 std::optional<Squall::Signature> SquallAssetsGenerator::generateFromAssets(const std::string& rootName) {
     auto root = mRepository.readRoot(rootName);
-    std::unordered_map<std::filesystem::path, Squall::Generator::ExistingEntry> existingEntries;
+    std::map<std::filesystem::path, Squall::Generator::ExistingEntry> existingEntries;
     if (root) {
         existingEntries = Squall::Generator::readExistingEntries(mRepository, root->signature);
     }
