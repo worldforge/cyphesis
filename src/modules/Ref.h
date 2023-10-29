@@ -58,7 +58,7 @@ class Ref
             return Ref<const TSubclass>(m_inner);
         }
 
-        virtual ~Ref();
+        ~Ref();
 
         constexpr Ref<T>& operator=(T* rhs);
 
@@ -80,9 +80,7 @@ class Ref
             if (rhs.get()) {
                 rhs.get()->incRef();
             }
-            if (this->m_inner) {
-                this->m_inner->decRef();
-            }
+            decRef();
             this->m_inner = rhs.m_inner;
             return *this;
         }
@@ -101,9 +99,7 @@ class Ref
         constexpr Ref& operator=(Ref<TSubclass>&& rhs) noexcept
         {
 
-            if (this->m_inner) {
-                this->m_inner->decRef();
-            }
+            decRef();
             this->m_inner = rhs.m_inner;
             rhs.m_inner = nullptr;
 
@@ -174,8 +170,17 @@ class Ref
 
         constexpr explicit operator T*() const;
 
-    protected:
+    private:
         T* m_inner;
+
+        void decRef() {
+            if (this->m_inner) {
+                if (this->m_inner->decRef() == 0) {
+                    delete this->m_inner;
+                    this->m_inner = nullptr;
+                }
+            }
+        }
 
 };
 
@@ -219,10 +224,7 @@ constexpr Ref<T>::Ref(T* entity)
 template<typename T>
 Ref<T>::~Ref()
 {
-    if (this->m_inner) {
-        this->m_inner->decRef();
-    }
-
+    decRef();
 }
 
 template<typename T>
@@ -238,9 +240,7 @@ constexpr void Ref<T>::reset(T* ptr)
     if (ptr) {
         ptr->incRef();
     }
-    if (this->m_inner) {
-        this->m_inner->decRef();
-    }
+    decRef();
     this->m_inner = ptr;
 }
 
@@ -252,9 +252,7 @@ constexpr Ref<T>& Ref<T>::operator=(const Ref<T>& rhs)
     if (rhs.m_inner) {
         rhs.m_inner->incRef();
     }
-    if (this->m_inner) {
-        this->m_inner->decRef();
-    }
+    decRef();
     this->m_inner = rhs.m_inner;
     return *this;
 }
@@ -263,9 +261,7 @@ template<typename T>
 constexpr Ref<T>& Ref<T>::operator=(Ref<T>&& rhs) noexcept
 {
     if (this != &rhs) {
-        if (this->m_inner) {
-            this->m_inner->decRef();
-        }
+        decRef();
         this->m_inner = rhs.m_inner;
         rhs.m_inner = nullptr;
     }
