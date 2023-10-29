@@ -58,7 +58,7 @@ class Ref
             return Ref<const TSubclass>(m_inner);
         }
 
-        ~Ref();
+        virtual ~Ref();
 
         constexpr Ref<T>& operator=(T* rhs);
 
