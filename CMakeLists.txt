@@ -143,6 +143,27 @@ else (SUBVERSION_CMD)
     )
 endif (SUBVERSION_CMD)
 
+set(MEDIAREPO_PROCESSED_DIR ${CMAKE_INSTALL_PREFIX}/share/cyphesis/assets)
+if (NOT MEDIA_PROCESS_TEXTURE_MAX_SIZE)
+    set(MEDIA_PROCESS_TEXTURE_MAX_SIZE 512)
+endif ()
+
+add_custom_target(media-process-install)
+if (Python3_EXECUTABLE)
+    add_custom_command(
+            TARGET media-process-install
+            COMMAND ${CMAKE_COMMAND} -E echo "Processing media in '${MEDIAREPO_DIR}/trunk' and placing it in '${MEDIAREPO_PROCESSED_DIR}'."
+            COMMAND ${CMAKE_COMMAND} -E echo "NOTE: this will make Cyphesis use the processed media in '${MEDIAREPO_PROCESSED_DIR}' instead of the raw media in '${MEDIAREPO_DIR}/trunk'."
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/scripts/make_dist_media.py ${MEDIAREPO_DIR}/trunk ${MEDIAREPO_PROCESSED_DIR} ${MEDIA_PROCESS_TEXTURE_MAX_SIZE}
+    )
+else (Python3_EXECUTABLE)
+    add_custom_command(
+            TARGET media-process-install
+            COMMAND ${CMAKE_COMMAND} -E echo "Could not find the Python command 'python'. The target 'mediarepo-process' is disabled."
+    )
+endif (Python3_EXECUTABLE)
+
+
 ##TODO: check for binreloc?
 
 #We'll use xmllint for validating schemas of some of our xml files.

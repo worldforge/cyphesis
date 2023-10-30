@@ -24,6 +24,13 @@ jobs:
         steps:
             -   uses: actions/checkout@v3.3.0
 
+            -   name: Cache media
+                uses: actions/cache@v3.2.3
+                with:
+                    path: |
+                        ${{github.workspace}}/mediarepo
+                    key: dev-media
+
             -   name: Install tools
                 shell: bash
                 run: |
@@ -65,12 +72,6 @@ jobs:
                     mkdir -p ~/install/usr
                     cmake --preset $PROFILE_CONAN . -DCMAKE_INSTALL_PREFIX=~/install/usr
 
-            # Disabled for now since we don't generate any package.
-            #      - name: Download media
-            #        working-directory: ${{github.workspace}}/build
-            #        shell: bash
-            #        run: cmake --build . --preset $PROFILE_CONAN --target assets-download
-
             -   name: Build
                 shell: bash
                 run: cmake --build --preset $PROFILE_CONAN
@@ -82,6 +83,16 @@ jobs:
             -   name: Install
                 shell: bash
                 run: cmake --build --preset $PROFILE_CONAN --target install
+
+            -   name: Download media
+                working-directory: ${{github.workspace}}/build
+                shell: bash
+                run: cmake --build . --preset $PROFILE_CONAN --target mediarepo-checkout
+
+            -   name: Process and install media
+                working-directory: ${{github.workspace}}/build
+                shell: bash
+                run: cmake --build . --preset $PROFILE_CONAN --target media-process-install
 
             -   name: Build Snap
                 if: env.BUILD_SNAP == 'true'

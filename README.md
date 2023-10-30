@@ -27,26 +27,15 @@ The simplest way to install all required dependencies is by using [Conan](https:
 conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
 conan install . --build missing
 cmake --preset conan-release -DCMAKE_INSTALL_PREFIX=./build/install/release
-cmake --build --preset conan-release -j --target all --target mediarepo-checkout --target install
+cmake --build --preset conan-release -j --target all
+cmake --build --preset conan-release -j --target mediarepo-checkout 
+cmake --build --preset conan-release -j --target media-process-install 
+cmake --build --preset conan-release -j --target install
 ```
 
-Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool.
-This is script provided by the Worldforge project which will download and install all of the required libraries and
-components used by Worldforge.
-
-Otherwise the server can most easily be built through the following commands.
-
-```
-mkdir build_`arch` && cd build_`arch`
-cmake ..
-make
-make assets-download
-make install
-```
-
-Note that you also probably want to install the defaults worlds from
-[Worldforge Worlds](https://github.com/worldforge/worlds) (this is done automatically by the
-Hammer build tool).
+NOTE: The invocation of the target "media-process-install" is optional. It will go through the raw Subversion assets and
+convert .png to .dds as well as scaling down textures. If you omit this step Cyphesis will instead use the raw
+Subversion media. Which you might want if you're developing locally.
 
 ### Tests
 
@@ -76,12 +65,14 @@ When editing the Python scripts that make up the rulesets it's a good idea to ad
 your IDE's Python include paths. This directory contains stubs generated from the C++ bindings, which makes things such
 as type lookup and code completion easier.
 
-These stubs are auto generated from the C++ bindings through the custom target "GeneratePythonDocs". 
+These stubs are auto generated from the C++ bindings through the custom target "GeneratePythonDocs".
 Execute this target whenever you've done edits to the Python bindings.
 
 ## Dependencies
 
-We use Conan for our dependency handling. If you're developing locally you can issue this command to setup both a "debug" and "release" environment.
+We use Conan for our dependency handling. If you're developing locally you can issue this command to setup both a "
+debug" and "release" environment.
+
 ```bash
 conan install -s build_type=Debug . --build missing --update  && conan install . --build missing --update
 ```
