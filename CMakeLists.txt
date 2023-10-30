@@ -92,6 +92,20 @@ if (BT_USE_DOUBLE_PRECISION)
     add_definitions(-DBT_USE_DOUBLE_PRECISION=1)
 endif ()
 
+#You can specify an exernal installation of the Worlds though WORLDFORGE_WORLDS_PATH environment variable. If that's not specified,
+#Worlds data will be installed as specified by the WORLDFORGE_WORLDS_SOURCE_PATH environment variable (which is set by Conan).
+if (WORLDFORGE_WORLDS_PATH)
+    message(STATUS "An installation of the Worldforge Worlds has been specified through the WORLDFORGE_WORLDS_PATH environment variable: ${WORLDFORGE_WORLDS_PATH}.")
+else ()
+    set(WORLDFORGE_WORLDS_PATH "${CMAKE_INSTALL_PREFIX}/share/cyphesis/worlds")
+
+    if (WORLDFORGE_WORLDS_SOURCE_PATH)
+        install(DIRECTORY ${WORLDFORGE_WORLDS_SOURCE_PATH}/ DESTINATION ${WORLDFORGE_WORLDS_PATH})
+        message(STATUS "Added installation of the Worldforge Worlds from '${WORLDFORGE_WORLDS_SOURCE_PATH}' to the 'install' target.")
+    else ()
+        message(STATUS "No Worldforge Worlds installation has been specified (through the WORLDFORGE_WORLDS_SOURCE_PATH environment variable); we will work on the assumption that there's an installation already at '${WORLDFORGE_WORLDS_PATH}'.")
+    endif ()
+endif ()
 
 #add_custom_target(assets-download)
 #if (RSYNC_CMD)
@@ -151,7 +165,7 @@ macro(wf_generate_stubs DIRECTORY)
                 COMMAND ${CMAKE_COMMAND} -E echo "Generating stubs for ${FILE}\n"
                 COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/scripts/generator/generate_stub.py ${FILE} ${STUB_DIRECTORY}
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src
-                )
+        )
 
         list(APPEND STUB_HEADERS ${STUB_FILE})
     endforeach (FILE)

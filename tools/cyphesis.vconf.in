@@ -82,4 +82,4 @@ assetsdir="@CMAKE_INSTALL_PREFIX@/share/cyphesis/assets"
 # Automatically import this world if the server is unpopulated.
 # The default value relies on the content of the "Worldforge World" project
 # being installed.
-autoimport="@CMAKE_INSTALL_PREFIX@/share/worldforge/worlds/deeds/braga/world.xml"
+autoimport="@WORLDFORGE_WORLDS_PATH@/deeds/braga/world.xml"

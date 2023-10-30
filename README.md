@@ -25,10 +25,9 @@ The simplest way to install all required dependencies is by using [Conan](https:
 
 ```bash
 conan remote add worldforge https://artifactory.ogenvik.org/artifactory/api/conan/conan
-mkdir cmake-build && cd cmake-build
-conan install .. --output-folder=. --build=missing
-cmake --preset conan-release .. -DCMAKE_INSTALL_PREFIX=../cmake-install
-make -j all mediarepo-checkout install
+conan install . --build missing
+cmake --preset conan-release -DCMAKE_INSTALL_PREFIX=./build/install/release
+cmake --build --preset conan-release -j --target all --target mediarepo-checkout --target install
 ```
 
 Alternatively you can use the [Hammer](http://wiki.worldforge.org/wiki/Hammer_Script "The Hammer script") tool.

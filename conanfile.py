@@ -1,3 +1,5 @@
+import os
+
 from conan import ConanFile
 from conan.tools.cmake import cmake_layout, CMakeDeps, CMakeToolchain
 
@@ -19,6 +21,7 @@ class Conan(ConanFile):
         self.requires("wfmath/1.0.3@worldforge")
         self.requires("libxdg-basedir/1.2.3@worldforge")
         self.requires("squall/0.1.0@worldforge")
+        self.requires("worldforge-worlds/0.1.0@worldforge")
         self.requires("libsigcpp/3.0.7")
         self.requires("libgcrypt/1.8.4")
         self.requires("zlib/1.2.13")
@@ -36,7 +39,9 @@ class Conan(ConanFile):
         tc = CMakeToolchain(self)
         tc.variables["PYTHON_IS_STATIC"] = "TRUE"
         # The default CMake FindPython3 component will set the Python3_EXECUTABLE, which is then used in Cyphesis. Therefore do this here.
-        tc.variables["Python3_EXECUTABLE"] = self.dependencies["cpython"].package_folder + "/bin/python"
+        tc.variables["Python3_EXECUTABLE"] = os.path.join(self.dependencies["cpython"].package_folder, "bin/python")
+        tc.variables["WORLDFORGE_WORLDS_SOURCE_PATH"] = os.path.join(
+            self.dependencies["worldforge-worlds"].package_folder, "worlds")
         tc.preprocessor_definitions["PYTHONHOME"] = "\"{}\"".format(self.dependencies["cpython"].package_folder)
         tc.generate()
 
